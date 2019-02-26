@@ -57,6 +57,13 @@ function Commune({balId, commune, voies}) {
       </Pane>
       <Pane flex={1} overflowY='scroll'>
         <Table>
+          {shownVoies.length === 0 && (
+            <Table.Row>
+              <Table.TextCell color='muted' fontStyle='italic'>
+                Aucun résultat
+              </Table.TextCell>
+            </Table.Row>
+          )}
           {shownVoies.map(voie => (
             <Table.Row key={voie.codeVoie} isSelectable onSelect={() => onSelect(voie)}>
               <Table.TextCell>{voie.nomVoie}</Table.TextCell>

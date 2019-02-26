@@ -82,8 +82,8 @@ function Index() {
   }
 
   return (
-    <>
-      <Pane>
+    <Pane display='flex' flex={1} flexDirection='column' overflowY='scroll'>
+      <Pane paddingX={16} paddingBottom={16}>
         <Heading size={600} margin='default'>Modifier une Base Adresse Locale existante</Heading>
         <Paragraph margin='default'>
           Pour être éditable à l’aide de cet outil, votre fichier doit être conforme au modèle BAL 1.1 de l’AITF.
@@ -125,7 +125,7 @@ function Index() {
         )}
       </Pane>
 
-      <Pane borderTop marginTop='auto' paddingTop={12}>
+      <Pane borderTop marginTop='auto' padding={16} paddingTop={8}>
         <NextLink href='/new/ban'>
           <Link href='/new/ban' display='block' marginY={6}>
             Créer une Base Adresse Locale à partir de la BAN
@@ -137,7 +137,7 @@ function Index() {
           </Link>
         </NextLink>
       </Pane>
-    </>
+    </Pane>
   )
 }
 

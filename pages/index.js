@@ -4,7 +4,7 @@ import {Pane, Heading, UnorderedList, ListItem, Link} from 'evergreen-ui'
 
 function Index() {
   return (
-    <Pane>
+    <Pane paddingX={16} paddingBottom={16}>
       <Heading size={600} margin='default'>Créer ou modifier une Base Adresse Locale</Heading>
       <UnorderedList>
         <ListItem>

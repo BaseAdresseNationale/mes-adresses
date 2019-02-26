@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, forwardRef} from 'react'
+import React, {useState, useEffect, forwardRef} from 'react'
 import PropTypes from 'prop-types'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'

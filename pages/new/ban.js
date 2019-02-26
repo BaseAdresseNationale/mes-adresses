@@ -4,8 +4,8 @@ import {Pane, Heading, Paragraph, Link} from 'evergreen-ui'
 
 function Index() {
   return (
-    <>
-      <Pane>
+    <Pane display='flex' flex={1} flexDirection='column' overflowY='scroll'>
+      <Pane paddingX={16} paddingBottom={16}>
         <Heading size={600} margin='default'>Créer une Base Adresse Locale à partir de la BAN</Heading>
         <Paragraph>
           Toutes les données de votre collectivités contenues dans la Base Adresse Nationale seront recopiées dans votre fichier Base Adresse Locale.
@@ -15,7 +15,7 @@ function Index() {
         </Paragraph>
       </Pane>
 
-      <Pane borderTop marginTop='auto' paddingTop={12}>
+      <Pane borderTop marginTop='auto' padding={16} paddingTop={8}>
         <NextLink href='/new/upload'>
           <Link href='/new/upload' display='block' marginY={6}>
             Modifier une Base Adresse Locale existante
@@ -27,7 +27,7 @@ function Index() {
           </Link>
         </NextLink>
       </Pane>
-    </>
+    </Pane>
   )
 }
 

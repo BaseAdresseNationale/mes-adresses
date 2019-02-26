@@ -4,15 +4,20 @@ import {Pane} from 'evergreen-ui'
 
 function Fullscreen({children, ...props}) {
   return (
-    <Pane position='absolute' width='100%' height='100%'>
+    <Pane
+      position='fixed'
+      width='100%'
+      height='100%'
+      display='flex'
+      flexGrow='1'
+      alignItems='center'
+      justifyContent='center'
+    >
       <Pane
         width='100%'
-        minHeight='90%'
-        marginX='auto'
-        marginY={60}
+        height='90%'
+        marginX={24}
         maxWidth={1200}
-        paddingX={16}
-        paddingBottom={16}
         {...props}
       >
         {children}
