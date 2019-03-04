@@ -4,7 +4,7 @@ import NextApp, {Container} from 'next/app'
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
 
-import Map from '../components/map-uber'
+import Map from '../components/map'
 
 const layoutMap = {
   fullscreen: Fullscreen,
