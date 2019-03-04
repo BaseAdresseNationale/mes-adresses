@@ -1,4 +1,4 @@
-import React, {forwardRef} from 'react'
+import React from 'react'
 import dynamic from 'next/dynamic'
 import {Pane} from 'evergreen-ui'
 
@@ -11,12 +11,12 @@ const Map = dynamic(() => import('./map'), {
   )
 })
 
-function MapWrapper(props, ref) {
+function MapWrapper(props) {
   return (
     <Pane position='fixed' display='flex' top={0} right={0} bottom={0} left={0}>
-      <Map ref={ref} {...props} />
+      <Map {...props} />
     </Pane>
   )
 }
 
-export default forwardRef(MapWrapper)
+export default MapWrapper

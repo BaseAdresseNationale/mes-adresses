@@ -22,15 +22,6 @@ class App extends NextApp {
     return {pageProps}
   }
 
-  constructor(props) {
-    super(props)
-    this.mapRef = React.createRef()
-  }
-
-  componentDidUpdate() {
-    console.log(this.mapRef.current)
-  }
-
   render() {
     const {Component, pageProps: {
       layout,
@@ -44,7 +35,6 @@ class App extends NextApp {
       <Container>
         <>
           <Map
-            ref={this.mapRef}
             interactive={layout === 'sidebar'}
             {...(map || {})}
           />

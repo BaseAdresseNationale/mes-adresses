@@ -1,74 +1,99 @@
 import React, {useState, useEffect, useRef} from 'react'
-import NextLink from 'next/link'
 import Router from 'next/router'
 import Fuse from 'fuse.js'
 import {debounce} from 'lodash'
-import {Pane, SearchInput, Table, Link, Text} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Table, IconButton, Popover, Menu, Position} from 'evergreen-ui'
 
-import Storage from '../../lib/storage'
+import {getCommune} from '../../lib/storage'
 import {communeNumerosToGeoJson, communeVoiesToGeoJson} from '../../lib/geojson'
 
-function Commune({balId, commune, voies}) {
+import Breadcrumbs from '../../components/breadcrumbs'
+
+function Commune({bal}) {
   const fuse = useRef()
-  const [shownVoies, setShownVoies] = useState(voies)
+  const [filtered, setFiltered] = useState(bal.commune.voies)
 
   useEffect(() => {
-    fuse.current = new Fuse(voies, {
+    fuse.current = new Fuse(bal.commune.voies, {
       shouldSort: true,
       threshold: 0.4,
       keys: [
         'nomVoie'
       ]
     })
-  }, [voies])
-
-  const onSelect = voie => {
-    Router.push(
-      `/bal/voie?id=${balId}&communeCode=${commune.code}&codeVoie=${voie.codeVoie}`,
-      `/bal/${balId}/communes/${commune.code}/voies/${voie.codeVoie}`
-    )
-  }
+  }, [bal])
 
   const onFilter = debounce(value => {
     if (fuse.current) {
       if (value) {
-        setShownVoies(fuse.current.search(value))
+        setFiltered(fuse.current.search(value))
       } else {
-        setShownVoies(voies)
+        setFiltered(bal.commune.voies)
       }
     }
   }, 200)
 
+  const onClick = voie => e => {
+    if (e.target.closest('[data-browsable]')) {
+      Router.push(
+        `/bal/voie?id=${bal.id}&communeCode=${bal.commune.code}&codeVoie=${voie.codeVoie}`,
+        `/bal/${bal.id}/communes/${bal.commune.code}/voies/${voie.codeVoie}`
+      )
+    }
+  }
+
   return (
     <>
       <Pane zIndex={1} flexShrink={0} elevation={0} backgroundColor='white'>
-        <Pane paddingY={4} paddingX={16} borderBottom='muted' background='tint1'>
-          <NextLink href={`/bal?id=${balId}`} as={`/bal/${balId}`}>
-            <Link display='inline-block' href={`/bal/${balId}`} marginY={6}>
-              BAL
-            </Link>
-          </NextLink>
-          <Text color='muted'>{' > '}</Text>
-          <Text>{commune.nom}</Text>
-        </Pane>
+        <Breadcrumbs bal={bal} />
         <Pane padding={16}>
-          <SearchInput placeholder='Rechercher une voie…' onChange={e => onFilter(e.target.value)} />
+          <Heading>Liste des voies</Heading>
+          <Paragraph size={300} margin={0} color='muted'>Lorem ipsum…</Paragraph>
         </Pane>
       </Pane>
+
       <Pane flex={1} overflowY='scroll'>
         <Table>
-          {shownVoies.length === 0 && (
+          <Table.Head>
+            <Table.SearchHeaderCell
+              placeholder='Rechercher une voie'
+              onChange={onFilter}
+            />
+          </Table.Head>
+          {filtered.length === 0 && (
             <Table.Row>
               <Table.TextCell color='muted' fontStyle='italic'>
                 Aucun résultat
               </Table.TextCell>
             </Table.Row>
           )}
-          {shownVoies.map(voie => (
-            <Table.Row key={voie.codeVoie} isSelectable onSelect={() => onSelect(voie)}>
-              <Table.TextCell>{voie.nomVoie}</Table.TextCell>
-              <Table.TextCell flex='0 1 1'>
+          {filtered.map(voie => (
+            <Table.Row key={voie.codeVoie} isSelectable onClick={onClick(voie)}>
+              <Table.TextCell data-browsable>{voie.nomVoie}</Table.TextCell>
+              <Table.TextCell data-browsable flex='0 1 1'>
                 {voie.position ? 'Toponyme' : `${voie.numerosCount} numéros`}
+              </Table.TextCell>
+              <Table.TextCell flex='0 1 1'>
+                <Popover
+                  position={Position.BOTTOM_LEFT}
+                  content={
+                    <Menu>
+                      <Menu.Group title='Actions'>
+                        <Menu.Item icon='edit'>
+                          Renommer
+                        </Menu.Item>
+                      </Menu.Group>
+                      <Menu.Divider />
+                      <Menu.Group title='destructive'>
+                        <Menu.Item icon='trash' intent='danger'>
+                          Supprimer…
+                        </Menu.Item>
+                      </Menu.Group>
+                    </Menu>
+                  }
+                >
+                  <IconButton height={24} icon='more' appearance='minimal' className='foo' />
+                </Popover>
               </Table.TextCell>
             </Table.Row>
           ))}
@@ -80,104 +105,75 @@ function Commune({balId, commune, voies}) {
 
 Commune.getInitialProps = async ({query}) => {
   const {id, communeCode} = query
+  const commune = await getCommune(id, communeCode)
 
-  if (id) {
-    const bal = Storage.get(id)
-
-    if (bal) {
-      const commune = bal.communes[communeCode]
-      const voies = Object.values(commune.voies).map(({numeros, ...voie}) => voie)
-
-      return {
-        layout: 'sidebar',
-        balId: id,
-        commune,
-        voies,
-        map: {
-          sources: [
-            {
-              name: 'numeros',
-              data: communeNumerosToGeoJson(commune)
-            },
-            {
-              name: 'voies',
-              data: communeVoiesToGeoJson(commune)
-            }
-          ],
-          layers: [
-            {
-              id: 'numeros-point',
-              type: 'circle',
-              source: 'numeros',
-              maxzoom: 17,
-              paint: {
-                'circle-color': {
-                  type: 'identity',
-                  property: 'color'
-                },
-                'circle-radius': {
-                  stops: [
-                    [12, 0.5],
-                    [17, 4]
-                  ]
-                }
-              }
-            },
-
-            {
-              id: 'voies',
-              type: 'symbol',
-              source: 'voies',
-              maxzoom: 17,
-              paint: {
-                'text-halo-blur': 0.5,
-                'text-halo-color': '#ffffff',
-                'text-halo-width': 2
-              },
-              layout: {
-                'text-field': [
-                  'format',
-
-                  ['get', 'nomVoie'],
-                  {'font-scale': 0.9},
-
-                  [
-                    'case',
-                    ['==', ['get', 'numerosCount'], 0],
-                    '\nToponyme',
-                    ['==', ['get', 'numerosCount'], '1'],
-                    '\n1 numéro',
-                    ['concat', '\n', ['get', 'numerosCount'], ' numéros']
-                  ],
-                  {'font-scale': 0.7}
-                ],
-                'text-anchor': 'top',
-                'text-font': ['Noto Sans Regular']
-              }
-            },
-
-            {
-              id: 'numeros',
-              type: 'symbol',
-              source: 'numeros',
-              minzoom: 17,
-              paint: {
-                'text-color': '#ffffff',
-                'text-halo-color': {
-                  type: 'identity',
-                  property: 'color'
-                },
-                'text-halo-width': 1.7
-              },
-              layout: {
-                'text-font': ['Roboto Regular'],
-                'text-field': '{numeroComplet}',
-                'text-ignore-placement': true
-              }
-            }
-          ]
+  return {
+    layout: 'sidebar',
+    bal: {
+      id,
+      commune
+    },
+    map: {
+      sources: [
+        {
+          name: 'numeros',
+          data: communeNumerosToGeoJson(commune)
+        },
+        {
+          name: 'voies',
+          data: communeVoiesToGeoJson(commune)
         }
-      }
+      ],
+      layers: [
+        {
+          id: 'numeros-point',
+          type: 'circle',
+          source: 'numeros',
+          paint: {
+            'circle-color': {
+              type: 'identity',
+              property: 'color'
+            },
+            'circle-radius': {
+              stops: [
+                [12, 0.5],
+                [17, 4]
+              ]
+            }
+          }
+        },
+
+        {
+          id: 'voies',
+          type: 'symbol',
+          source: 'voies',
+          paint: {
+            'text-halo-blur': 0.5,
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 2
+          },
+          layout: {
+            'text-field': [
+              'format',
+
+              ['get', 'nomVoie'],
+              {'font-scale': 0.9},
+
+              [
+                'case',
+                ['==', ['get', 'numerosCount'], 0],
+                '\nToponyme',
+                ['==', ['get', 'numerosCount'], '1'],
+                '\n1 numéro',
+                ['concat', '\n', ['get', 'numerosCount'], ' numéros']
+              ],
+              {'font-scale': 0.7}
+            ],
+            'text-anchor': 'top',
+            'text-font': ['Noto Sans Regular']
+          }
+        }
+      ]
     }
   }
 }

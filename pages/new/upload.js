@@ -4,8 +4,7 @@ import Router from 'next/router'
 import {Pane, Alert, Heading, Paragraph, Button, Link} from 'evergreen-ui'
 import {validate, extractAsTree} from '@etalab/bal'
 
-import Bal from '../../lib/bal/model'
-import Storage from '../../lib/storage'
+import {createBal} from '../../lib/storage'
 import Uploader from '../../components/uploader'
 
 function getFileExtension(name) {
@@ -56,7 +55,7 @@ function Index() {
           setReport(report)
         }
 
-        const tree = extractAsTree(report.normalizedRows, true)
+        const tree = extractAsTree(report.normalizedRows, false)
         setTree(tree)
       } else {
         onError('Le fichier n’est pas conforme.')
@@ -75,10 +74,9 @@ function Index() {
   }, [file])
 
   const onEdit = () => {
-    const bal = new Bal(tree)
-    Storage.set(bal._id, bal)
+    const id = createBal(tree)
 
-    Router.push(`/bal?id=${bal._id}`, `/bal/${bal._id}`)
+    Router.push(`/bal?id=${id}`, `/bal/${id}`)
   }
 
   return (

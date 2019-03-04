@@ -1,4 +1,4 @@
-import React, {useState, useEffect, forwardRef} from 'react'
+import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
@@ -38,7 +38,7 @@ function generateNewStyle(sources, layers) {
   return newStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({children, sources, layers, interactive}, ref) {
+function Map({children, sources, layers, interactive}) {
   const windowSize = useWindowSize()
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
@@ -82,7 +82,6 @@ function Map({children, sources, layers, interactive}, ref) {
 
   return (
     <MapGl
-      ref={ref}
       {...getInteractionProps(interactive)}
       {...viewport}
       mapStyle={style}
@@ -109,4 +108,4 @@ Map.defaultProps = {
   interactive: true
 }
 
-export default forwardRef(Map)
+export default Map

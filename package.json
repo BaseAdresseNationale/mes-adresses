@@ -23,11 +23,10 @@
     "@turf/centroid": "^6.0.2",
     "@turf/concave": "^6.0.5",
     "@turf/helpers": "^6.1.4",
-    "evergreen-ui": "^4.12.1",
+    "evergreen-ui": "^4.13.0",
     "fuse.js": "^3.4.2",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.11",
-    "mapbox-gl": "^0.53.0",
     "next": "^8.0.3",
     "papaparse": "^4.6.3",
     "prop-types": "^15.7.2",
@@ -35,7 +34,7 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-dropzone": "^9.0.0",
-    "react-map-gl": "^4.0.12",
+    "react-map-gl": "^4.0.13",
     "viewport-mercator-project": "^6.1.1"
   },
   "devDependencies": {
@@ -43,7 +42,7 @@
     "babel-plugin-inline-import": "^3.0.0",
     "eslint-config-xo-nextjs": "^1.3.0",
     "eslint-plugin-react": "^7.12.4",
-    "webpack-bundle-analyzer": "^3.0.4",
+    "webpack-bundle-analyzer": "^3.1.0",
     "xo": "^0.24.0"
   },
   "xo": {
