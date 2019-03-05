@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Dropzone from 'react-dropzone'
+import {useDropzone} from 'react-dropzone'
 import {Pane, Spinner, Paragraph} from 'evergreen-ui'
 
 function Uploader({file, placeholder, onDrop, height, loading, loadingLabel, ...props}) {
@@ -21,36 +21,32 @@ function Uploader({file, placeholder, onDrop, height, loading, loadingLabel, ...
     )
   }
 
-  return (
-    <Dropzone multiple={false} onDrop={onDrop}>
-      {({getRootProps, getInputProps, isDragActive}) => {
-        const rootProps = getRootProps()
-        const inputProps = getInputProps()
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({
+    onDrop,
+    multiple: false
+  })
 
-        return (
-          <div {...rootProps} className={`dropzone ${isDragActive ? 'active' : ''}`}>
-            <Pane
-              border
-              height={height}
-              background='tint1'
-              display='flex'
-              alignItems='center'
-              justifyContent='center'
-              textAlign='center'
-              cursor='pointer'
-              wordWrap='break-word'
-              elevation={isDragActive ? 0 : null}
-              {...props}
-            >
-              <input {...inputProps} />
-              <Paragraph color={file ? 'default' : 'muted'}>
-                {file ? file.name : placeholder}
-              </Paragraph>
-            </Pane>
-          </div>
-        )
-      }}
-    </Dropzone>
+  return (
+    <div {...getRootProps()} className={`dropzone ${isDragActive ? 'active' : ''}`}>
+      <Pane
+        border
+        height={height}
+        background='tint1'
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        textAlign='center'
+        cursor='pointer'
+        wordWrap='break-word'
+        elevation={isDragActive ? 0 : null}
+        {...props}
+      >
+        <input {...getInputProps()} />
+        <Paragraph color={file ? 'default' : 'muted'}>
+          {file ? file.name : placeholder}
+        </Paragraph>
+      </Pane>
+    </div>
   )
 }
 

@@ -30,7 +30,7 @@
     "randomcolor": "^0.5.4",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
-    "react-dropzone": "^9.0.0",
+    "react-dropzone": "^10.0.6",
     "react-map-gl": "^4.1.1",
     "use-debounce": "^1.1.1"
   },
