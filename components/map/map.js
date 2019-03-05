@@ -9,6 +9,7 @@ import bbox from '@turf/bbox'
 import useWindowSize from '../../hooks/window-size'
 
 import {vector, ortho} from './styles'
+import useBal from './bal'
 
 import StyleSwitch from './style-switch'
 
@@ -54,10 +55,11 @@ function generateNewStyle(style, sources, layers) {
   return newStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({children, sources, layers, interactive, offset, style: defaultStyle}) {
+function Map({interactive, offset, style: defaultStyle, bal}) {
   const windowSize = useWindowSize()
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
+  const [sources, layers] = useBal(bal)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
   const onViewportChange = useCallback(viewport => {
@@ -116,21 +118,14 @@ function Map({children, sources, layers, interactive, offset, style: defaultStyl
       height={innerHeight}
       onViewportChange={onViewportChange}
     >
-      <>
-        {children}
-
-        {interactive && (
-          <StyleSwitch style={style} setStyle={setStyle} offset={offset} />
-        )}
-      </>
+      {interactive && (
+        <StyleSwitch style={style} setStyle={setStyle} offset={offset} />
+      )}
     </MapGl>
   )
 }
 
 Map.propTypes = {
-  children: PropTypes.node,
-  sources: PropTypes.array,
-  layers: PropTypes.array,
   interactive: PropTypes.bool,
   offset: PropTypes.number,
   style: PropTypes.oneOf([
@@ -140,9 +135,6 @@ Map.propTypes = {
 }
 
 Map.defaultProps = {
-  children: null,
-  sources: null,
-  layers: null,
   interactive: true,
   offset: 0,
   style: 'vector'

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
@@ -16,13 +16,18 @@ const SIDEBAR_WIDTH = 500
 
 function App({Component, pageProps}) {
   const [size, setSize] = useState(SIDEBAR_WIDTH)
+  const [bal, setBal] = useState(pageProps.bal)
 
-  const {layout, map, ...otherPageProps} = pageProps
+  const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
 
   const onToggle = () => {
     setSize(size => size === 0 ? SIDEBAR_WIDTH : 0)
   }
+
+  useEffect(() => {
+    setBal(pageProps.bal)
+  }, [pageProps.bal])
 
   return (
     <Container>
@@ -30,7 +35,7 @@ function App({Component, pageProps}) {
         <Map
           interactive={layout === 'sidebar'}
           offset={size}
-          {...(map || {})}
+          bal={bal}
         />
 
         <Wrapper
@@ -41,7 +46,7 @@ function App({Component, pageProps}) {
           flexDirection='column'
           onToggle={onToggle}
         >
-          <Component {...otherPageProps} />
+          <Component setBal={setBal} {...otherPageProps} />
         </Wrapper>
       </>
     </Container>

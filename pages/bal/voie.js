@@ -1,7 +1,6 @@
 import React from 'react'
 import {Pane, Paragraph, Heading, Table, IconButton, Popover, Menu, Position} from 'evergreen-ui'
 
-import {voieNumerosToGeoJson} from '../../lib/geojson'
 import {getCommune} from '../../lib/storage'
 
 import Breadcrumbs from '../../components/breadcrumbs'
@@ -66,32 +65,6 @@ Voie.getInitialProps = async ({query}) => {
       id,
       commune,
       voie
-    },
-    map: {
-      sources: [
-        {
-          name: 'numeros',
-          data: voieNumerosToGeoJson(voie)
-        }
-      ],
-      layers: [
-        {
-          id: 'numeros',
-          type: 'symbol',
-          source: 'numeros',
-          minzoom: 10,
-          paint: {
-            'text-color': '#ffffff',
-            'text-halo-color': '#0081d5',
-            'text-halo-width': 1.7
-          },
-          layout: {
-            'text-font': ['Roboto Regular'],
-            'text-field': '{numeroComplet}',
-            'text-ignore-placement': true
-          }
-        }
-      ]
     }
   }
 }
