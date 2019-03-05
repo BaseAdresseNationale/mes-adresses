@@ -148,8 +148,8 @@ Commune.getInitialProps = async ({query}) => {
           type: 'symbol',
           source: 'voies',
           paint: {
+            'text-halo-color': '#f8f4f0',
             'text-halo-blur': 0.5,
-            'text-halo-color': '#ffffff',
             'text-halo-width': 2
           },
           layout: {
@@ -157,7 +157,7 @@ Commune.getInitialProps = async ({query}) => {
               'format',
 
               ['get', 'nomVoie'],
-              {'font-scale': 0.9},
+              {},
 
               [
                 'case',
@@ -167,9 +167,22 @@ Commune.getInitialProps = async ({query}) => {
                 '\n1 numéro',
                 ['concat', '\n', ['get', 'numerosCount'], ' numéros']
               ],
-              {'font-scale': 0.7}
+              {'font-scale': 0.9}
             ],
             'text-anchor': 'top',
+            'text-size': {
+              base: 1,
+              stops: [
+                [
+                  14,
+                  13
+                ],
+                [
+                  15,
+                  14
+                ]
+              ]
+            },
             'text-font': ['Noto Sans Regular']
           }
         }
