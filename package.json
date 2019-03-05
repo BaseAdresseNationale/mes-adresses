@@ -28,7 +28,7 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-dropzone": "^9.0.0",
-    "react-map-gl": "^4.0.13",
+    "react-map-gl": "^4.0.14",
     "viewport-mercator-project": "^6.1.1"
   },
   "devDependencies": {
