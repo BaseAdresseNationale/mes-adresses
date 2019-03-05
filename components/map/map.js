@@ -10,6 +10,8 @@ import useWindowSize from '../../hooks/window-size'
 
 import {vector, ortho} from './styles'
 
+import StyleSwitch from './style-switch'
+
 const defaultViewport = {
   latitude: 46.5693,
   longitude: 1.1771,
@@ -52,10 +54,11 @@ function generateNewStyle(style, sources, layers) {
   return newStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({children, sources, layers, interactive, offset, style}) {
+function Map({children, sources, layers, interactive, offset, style: defaultStyle}) {
   const windowSize = useWindowSize()
   const [viewport, setViewport] = useState(defaultViewport)
-  const [mapStyle, setMapStyle] = useState(getBaseStyle(style))
+  const [style, setStyle] = useState(defaultStyle)
+  const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
   useEffect(() => {
     if (sources && sources.length > 0) {
@@ -108,7 +111,13 @@ function Map({children, sources, layers, interactive, offset, style}) {
       height={innerHeight}
       onViewportChange={viewport => setViewport(viewport)}
     >
-      {children}
+      <>
+        {children}
+
+        {interactive && (
+          <StyleSwitch style={style} setStyle={setStyle} offset={offset} />
+        )}
+      </>
     </MapGl>
   )
 }
