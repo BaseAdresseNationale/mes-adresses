@@ -8,7 +8,7 @@ import {getCommunes} from '../../lib/storage'
 
 import CommuneSearch from '../../components/commune-search'
 
-function Index({bal}) {
+const Index = React.memo(({bal}) => {
   const fuse = useRef()
   const [communes, setCommunes] = useState(bal.communes)
   const [filtered, setFiltered] = useState(bal.communes)
@@ -119,7 +119,7 @@ function Index({bal}) {
       </Pane>
     </>
   )
-}
+})
 
 Index.getInitialProps = async ({query}) => {
   const {id} = query

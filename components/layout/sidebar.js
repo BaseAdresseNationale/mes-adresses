@@ -1,29 +1,23 @@
-import React, {useState} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Icon} from 'evergreen-ui'
 
-function Sidebar(props) {
-  const [isOpen, setIsOpen] = useState(true)
-  const width = isOpen ? 500 : 0
-
-  const onToggle = () => {
-    setIsOpen(!isOpen)
-  }
-
+function Sidebar({size, onToggle, ...props}) {
   return (
     <Pane
       position='fixed'
       height='100vh'
-      width={width}
+      width={size}
       maxWidth='100vw'
       left={0}
       right='auto'
+      zIndex={2}
     >
       <Button
         position='fixed'
         paddingX={8}
         height={50}
-        left={width}
+        left={size}
         border='muted'
         top={15}
         elevation={0}
@@ -31,14 +25,14 @@ function Sidebar(props) {
         onClick={onToggle}
       >
         <Icon
-          icon={isOpen ? 'chevron-left' : 'chevron-right'}
+          icon={size === 0 ? 'chevron-right' : 'chevron-left'}
         />
       </Button>
 
       <Pane
         height='100vh'
         maxHeight='100vh'
-        width={width}
+        width={size}
         flex={1}
         overflow='hidden'
         {...props}
@@ -48,7 +42,11 @@ function Sidebar(props) {
 }
 
 Sidebar.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  size: PropTypes.shape({
+    current: PropTypes.number.isRequired
+  }).isRequired,
+  onToggle: PropTypes.func.isRequired
 }
 
 export default Sidebar

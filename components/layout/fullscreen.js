@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
-function Fullscreen({children, ...props}) {
+function Fullscreen({isOpen, size, onToggle, ...props}) {
   return (
     <Pane
       position='fixed'
@@ -12,6 +12,7 @@ function Fullscreen({children, ...props}) {
       flexGrow='1'
       alignItems='center'
       justifyContent='center'
+      zIndex={2}
     >
       <Pane
         width='100%'
@@ -19,15 +20,24 @@ function Fullscreen({children, ...props}) {
         marginX={24}
         maxWidth={1200}
         {...props}
-      >
-        {children}
-      </Pane>
+      />
     </Pane>
   )
 }
 
 Fullscreen.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+
+  // Ignored props
+  isOpen: PropTypes.bool,
+  size: PropTypes.number,
+  onToggle: PropTypes.func
+}
+
+Fullscreen.defaultProps = {
+  isOpen: null,
+  size: null,
+  onToggle: null
 }
 
 export default Fullscreen

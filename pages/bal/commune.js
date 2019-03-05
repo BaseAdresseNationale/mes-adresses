@@ -9,7 +9,7 @@ import {communeNumerosToGeoJson, communeVoiesToGeoJson} from '../../lib/geojson'
 
 import Breadcrumbs from '../../components/breadcrumbs'
 
-function Commune({bal}) {
+const Commune = React.memo(({bal}) => {
   const fuse = useRef()
   const [filtered, setFiltered] = useState(bal.commune.voies)
 
@@ -101,7 +101,7 @@ function Commune({bal}) {
       </Pane>
     </>
   )
-}
+})
 
 Commune.getInitialProps = async ({query}) => {
   const {id, communeCode} = query

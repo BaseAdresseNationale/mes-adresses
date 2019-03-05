@@ -1,5 +1,5 @@
-import React from 'react'
-import NextApp, {Container} from 'next/app'
+import React, {useState} from 'react'
+import {Container} from 'next/app'
 
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
@@ -11,41 +11,51 @@ const layoutMap = {
   sidebar: Sidebar
 }
 
-class App extends NextApp {
-  static async getInitialProps({Component, ctx}) {
-    let pageProps = {}
+const SIDEBAR_WIDTH = 500
 
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx)
-    }
+function App({Component, pageProps}) {
+  const [size, setSize] = useState(SIDEBAR_WIDTH)
 
-    return {pageProps}
+  const {layout, map, ...otherPageProps} = pageProps
+  const Wrapper = layoutMap[layout] || Fullscreen
+
+  const onToggle = () => {
+    setSize(size => size === 0 ? SIDEBAR_WIDTH : 0)
   }
 
-  render() {
-    const {Component, pageProps: {
-      layout,
-      map,
-      ...pageProps
-    }} = this.props
+  return (
+    <Container>
+      <>
+        <Map
+          interactive={layout === 'sidebar'}
+          offset={size}
+          {...(map || {})}
+        />
 
-    const Wrapper = layoutMap[layout] || Fullscreen
-
-    return (
-      <Container>
-        <>
-          <Map
-            interactive={layout === 'sidebar'}
-            {...(map || {})}
-          />
-
-          <Wrapper elevation={4} background='tint2' display='flex' flexDirection='column'>
-            <Component {...pageProps} />
-          </Wrapper>
-        </>
-      </Container>
-    )
-  }
+        <Wrapper
+          size={size}
+          elevation={4}
+          background='tint2'
+          display='flex'
+          flexDirection='column'
+          onToggle={onToggle}
+        >
+          <Component {...otherPageProps} />
+        </Wrapper>
+      </>
+    </Container>
+  )
 }
+
+App.getInitialProps = async ({Component, ctx}) => {
+  let pageProps = {}
+
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx)
+  }
+
+  return {pageProps}
+}
+
 
 export default App

@@ -6,7 +6,7 @@ import {getCommune} from '../../lib/storage'
 
 import Breadcrumbs from '../../components/breadcrumbs'
 
-function Voie({bal}) {
+const Voie = React.memo(({bal}) => {
   const onClick = numero => e => {
     if (e.target.closest('[data-browsable]')) {
       console.log(numero)
@@ -53,7 +53,7 @@ function Voie({bal}) {
       </Pane>
     </>
   )
-}
+})
 
 Voie.getInitialProps = async ({query}) => {
   const {id, communeCode, codeVoie} = query

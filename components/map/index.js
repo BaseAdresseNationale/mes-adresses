@@ -13,7 +13,7 @@ const Map = dynamic(() => import('./map'), {
 
 function MapWrapper(props) {
   return (
-    <Pane position='fixed' display='flex' top={0} right={0} bottom={0} left={0}>
+    <Pane position='fixed' display='flex' top={0} right={0} bottom={0} left={0} zIndex={1}>
       <Map {...props} />
     </Pane>
   )

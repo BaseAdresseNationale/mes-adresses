@@ -7,7 +7,8 @@ import {merge} from '@mapbox/geojson-merge'
 import bbox from '@turf/bbox'
 
 import useWindowSize from '../../hooks/window-size'
-import defaultStyle from './style'
+
+import {vector, ortho} from './styles'
 
 const defaultViewport = {
   latitude: 46.5693,
@@ -28,8 +29,21 @@ function getInteractionProps(enabled) {
   }
 }
 
-function generateNewStyle(sources, layers) {
-  let newStyle = defaultStyle
+function getBaseStyle(style) {
+  switch (style) {
+    case 'ortho':
+      return ortho
+
+    case 'vector':
+      return vector
+
+    default:
+      return vector
+  }
+}
+
+function generateNewStyle(style, sources, layers) {
+  let newStyle = getBaseStyle(style)
 
   for (const {name, data} of sources) {
     newStyle = newStyle.setIn(['sources', name], fromJS({type: 'geojson', data}))
@@ -38,14 +52,14 @@ function generateNewStyle(sources, layers) {
   return newStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({children, sources, layers, interactive}) {
+function Map({children, sources, layers, interactive, offset, style}) {
   const windowSize = useWindowSize()
   const [viewport, setViewport] = useState(defaultViewport)
-  const [style, setStyle] = useState(defaultStyle)
+  const [mapStyle, setMapStyle] = useState(getBaseStyle(style))
 
   useEffect(() => {
     if (sources && sources.length > 0) {
-      setStyle(generateNewStyle(sources, layers))
+      setMapStyle(generateNewStyle(style, sources, layers))
 
       const [minLng, minLat, maxLng, maxLat] = bbox(merge(sources.map(s => s.data)))
 
@@ -61,7 +75,7 @@ function Map({children, sources, layers, interactive}) {
           top: 80,
           right: 80,
           bottom: 80,
-          left: 580
+          left: offset + 80
         }}
       )
 
@@ -72,7 +86,7 @@ function Map({children, sources, layers, interactive}) {
         zoom
       })
     } else {
-      setStyle(defaultStyle)
+      setMapStyle(getBaseStyle(style))
       setViewport({
         ...viewport,
         ...defaultViewport
@@ -84,7 +98,7 @@ function Map({children, sources, layers, interactive}) {
     <MapGl
       {...getInteractionProps(interactive)}
       {...viewport}
-      mapStyle={style}
+      mapStyle={mapStyle}
       width={innerWidth}
       height={innerHeight}
       onViewportChange={viewport => setViewport(viewport)}
@@ -98,14 +112,21 @@ Map.propTypes = {
   children: PropTypes.node,
   sources: PropTypes.array,
   layers: PropTypes.array,
-  interactive: PropTypes.bool
+  interactive: PropTypes.bool,
+  offset: PropTypes.number,
+  style: PropTypes.oneOf([
+    'ortho',
+    'vector'
+  ])
 }
 
 Map.defaultProps = {
   children: null,
   sources: null,
   layers: null,
-  interactive: true
+  interactive: true,
+  offset: 0,
+  style: 'ortho'
 }
 
 export default Map
