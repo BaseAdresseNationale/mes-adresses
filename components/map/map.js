@@ -64,7 +64,7 @@ function Map({children, sources, layers, interactive, offset, style: defaultStyl
     if (sources && sources.length > 0) {
       setMapStyle(generateNewStyle(style, sources, layers))
     } else {
-      setMapStyle(getBaseStyle(style))
+      setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
     }
   }, [sources, layers, style])
 
@@ -106,6 +106,7 @@ function Map({children, sources, layers, interactive, offset, style: defaultStyl
     <MapGl
       {...getInteractionProps(interactive)}
       {...viewport}
+      reuseMap
       mapStyle={mapStyle}
       width={innerWidth}
       height={innerHeight}
