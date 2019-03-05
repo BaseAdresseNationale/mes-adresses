@@ -43,9 +43,7 @@ function Sidebar({size, onToggle, ...props}) {
 
 Sidebar.propTypes = {
   children: PropTypes.node.isRequired,
-  size: PropTypes.shape({
-    current: PropTypes.number.isRequired
-  }).isRequired,
+  size: PropTypes.number.isRequired,
   onToggle: PropTypes.func.isRequired
 }
 

@@ -60,7 +60,13 @@ function Map({children, sources, layers, interactive, offset, style}) {
   useEffect(() => {
     if (sources && sources.length > 0) {
       setMapStyle(generateNewStyle(style, sources, layers))
+    } else {
+      setMapStyle(getBaseStyle(style))
+    }
+  }, [sources, layers, style])
 
+  useEffect(() => {
+    if (sources && sources.length > 0) {
       const [minLng, minLat, maxLng, maxLat] = bbox(merge(sources.map(s => s.data)))
 
       const vp = new WebMercatorViewport({
@@ -86,13 +92,12 @@ function Map({children, sources, layers, interactive, offset, style}) {
         zoom
       })
     } else {
-      setMapStyle(getBaseStyle(style))
       setViewport({
         ...viewport,
         ...defaultViewport
       })
     }
-  }, [sources, layers])
+  }, [sources])
 
   return (
     <MapGl
@@ -126,7 +131,7 @@ Map.defaultProps = {
   layers: null,
   interactive: true,
   offset: 0,
-  style: 'ortho'
+  style: 'vector'
 }
 
 export default Map
