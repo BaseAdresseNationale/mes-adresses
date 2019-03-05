@@ -1,16 +1,16 @@
-import React from 'react'
+import React, {useCallback} from 'react'
+import PropTypes from 'prop-types'
 import {Pane, Image} from 'evergreen-ui'
 
-function StyleSwitch({style, setStyle, offset}) {
-  const toggleStyle = () => {
-    if (style === 'ortho') {
-      setStyle('vector')
-    } else {
-      setStyle('ortho')
-    }
-  }
+const styleSwitchMap = {
+  ortho: 'vector',
+  vector: 'ortho'
+}
 
-  const otherStyle = style === 'ortho' ? 'vector' : 'ortho'
+function StyleSwitch({style, setStyle, offset}) {
+  const toggleStyle = useCallback(() => {
+    setStyle(styleSwitchMap[style])
+  }, [style])
 
   return (
     <Pane
@@ -26,12 +26,25 @@ function StyleSwitch({style, setStyle, offset}) {
     >
       <Image
         display='block'
-        src={`/static/images/preview-${otherStyle}.png`}
+        src={`/static/images/preview-${styleSwitchMap[style]}.png`}
         width={72}
         height={72}
       />
     </Pane>
   )
+}
+
+StyleSwitch.propTypes = {
+  style: PropTypes.oneOf([
+    'ortho',
+    'vector'
+  ]).isRequired,
+  setStyle: PropTypes.func.isRequired,
+  offset: PropTypes.number
+}
+
+StyleSwitch.defaultProps = {
+  offset: 0
 }
 
 export default StyleSwitch
