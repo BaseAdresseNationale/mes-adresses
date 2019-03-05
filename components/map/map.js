@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
@@ -60,6 +60,10 @@ function Map({children, sources, layers, interactive, offset, style: defaultStyl
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
+  const onViewportChange = useCallback(viewport => {
+    setViewport(viewport)
+  }, [])
+
   useEffect(() => {
     if (sources && sources.length > 0) {
       setMapStyle(generateNewStyle(style, sources, layers))
@@ -110,7 +114,7 @@ function Map({children, sources, layers, interactive, offset, style: defaultStyl
       mapStyle={mapStyle}
       width={innerWidth}
       height={innerHeight}
-      onViewportChange={viewport => setViewport(viewport)}
+      onViewportChange={onViewportChange}
     >
       <>
         {children}
