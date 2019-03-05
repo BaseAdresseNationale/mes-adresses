@@ -1,7 +1,8 @@
 import React from 'react'
 import NextDocument, {Head, Main, NextScript} from 'next/document'
 import {extractStyles} from 'evergreen-ui'
-import mapboxCss from 'mapbox-gl/dist/mapbox-gl.css'
+
+import mapboxCss from 'mapbox-gl/dist/mapbox-gl.css' // eslint-disable-line import/no-extraneous-dependencies
 
 class Document extends NextDocument {
   static async getInitialProps(ctx) {

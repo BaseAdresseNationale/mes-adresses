@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
 import Fullscreen from '../components/layout/fullscreen'
@@ -57,5 +58,9 @@ App.getInitialProps = async ({Component, ctx}) => {
   return {pageProps}
 }
 
+App.propTypes = {
+  Component: PropTypes.any.isRequired,
+  pageProps: PropTypes.object.isRequired
+}
 
 export default App
