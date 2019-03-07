@@ -1,5 +1,6 @@
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
+import Router from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
 import WebMercatorViewport from 'viewport-mercator-project'
@@ -59,12 +60,36 @@ function Map({interactive, offset, style: defaultStyle, bal}) {
   const windowSize = useWindowSize()
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
-  const [sources, layers] = useBal(bal)
+  const [sources, layers] = useBal(bal, style)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
+
+  const interactiveLayerIds = useMemo(() => {
+    return layers.filter(layer => layer.interactive).map(layer => layer.id)
+  }, [layers])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
   }, [])
+
+  const onClick = useCallback(event => {
+    const feature = event.features && event.features[0]
+
+    if (feature) {
+      switch (feature.layer.id) {
+        case 'voies-label': {
+          console.log(feature)
+          const {codeCommune, codeVoie} = feature.properties
+          return Router.push(
+            `/bal/voie?id=${bal.id}&communeCode=${codeCommune}&codeVoie=${codeVoie}`,
+            `/bal/${bal.id}/communes/${codeCommune}/voies/${codeVoie}`
+          )
+        }
+
+        default:
+          console.log('nothing')
+      }
+    }
+  }, [bal])
 
   useEffect(() => {
     if (sources && sources.length > 0) {
@@ -94,17 +119,17 @@ function Map({interactive, offset, style: defaultStyle, bal}) {
         }}
       )
 
-      setViewport({
+      setViewport(viewport => ({
         ...viewport,
         longitude,
         latitude,
         zoom
-      })
+      }))
     } else {
-      setViewport({
+      setViewport(viewport => ({
         ...viewport,
         ...defaultViewport
-      })
+      }))
     }
   }, [sources])
 
@@ -116,7 +141,9 @@ function Map({interactive, offset, style: defaultStyle, bal}) {
       mapStyle={mapStyle}
       width={innerWidth}
       height={innerHeight}
+      interactiveLayerIds={interactiveLayerIds}
       onViewportChange={onViewportChange}
+      onClick={onClick}
     >
       {interactive && (
         <StyleSwitch style={style} setStyle={setStyle} offset={offset} />
@@ -131,13 +158,15 @@ Map.propTypes = {
   style: PropTypes.oneOf([
     'ortho',
     'vector'
-  ])
+  ]),
+  bal: PropTypes.object
 }
 
 Map.defaultProps = {
   interactive: true,
   offset: 0,
-  style: 'vector'
+  style: 'vector',
+  bal: null
 }
 
 export default Map
