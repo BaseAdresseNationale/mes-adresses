@@ -6,6 +6,7 @@ import {fromJS} from 'immutable'
 import WebMercatorViewport from 'viewport-mercator-project'
 import {merge} from '@mapbox/geojson-merge'
 import bbox from '@turf/bbox'
+import buffer from '@turf/buffer'
 
 import useWindowSize from '../../hooks/window-size'
 
@@ -101,7 +102,13 @@ function Map({interactive, offset, style: defaultStyle, bal}) {
 
   useEffect(() => {
     if (sources && sources.length > 0) {
-      const [minLng, minLat, maxLng, maxLat] = bbox(merge(sources.map(s => s.data)))
+      let data = merge(sources.map(s => s.data))
+
+      if (data.features.length === 1 && data.features[0].geometry.type === 'Point') {
+        data = buffer(data, 0.3)
+      }
+
+      const [minLng, minLat, maxLng, maxLat] = bbox(data)
 
       const vp = new WebMercatorViewport({
         ...viewport,

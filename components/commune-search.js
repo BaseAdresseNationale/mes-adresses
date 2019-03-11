@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Autocomplete, SearchInput} from 'evergreen-ui'
 import {debounce} from 'lodash'
@@ -27,10 +27,6 @@ function CommuneSearch({placeholder, exclude, onSelect, ...props}) {
     setCommunes(result.filter(c => !exclude.includes(c.code)))
   }, 300)
 
-  const onChange = useCallback(e => {
-    onSearch(e.target.value)
-  }, [])
-
   return (
     <Autocomplete
       isFilterDisabled
@@ -44,7 +40,9 @@ function CommuneSearch({placeholder, exclude, onSelect, ...props}) {
             placeholder={placeholder}
             value={inputValue}
             innerRef={getRef}
-            {...getInputProps({onChange})}
+            {...getInputProps({
+              onChange: e => onSearch(e.target.value)
+            })}
             {...props}
           />
         )

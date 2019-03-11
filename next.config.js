@@ -1,6 +1,13 @@
 const {join} = require('path')
+const nextRuntimeDotenv = require('next-runtime-dotenv')
 
-module.exports = {
+const withConfig = nextRuntimeDotenv({
+  public: [
+    'API_URL'
+  ]
+})
+
+module.exports = withConfig({
   target: 'serverless',
 
   webpack(config, {dev, isServer}) {
@@ -22,4 +29,4 @@ module.exports = {
 
     return config
   }
-}
+})
