@@ -7,7 +7,9 @@
       "use": "@now/next"
     }
   ],
-  "env": {
-    "API_URL": "https://api-bal.adresse.data.gouv.fr/v1/"
+  "build": {
+    "env": {
+      "API_URL": "https://api-bal.adresse.data.gouv.fr/v1"
+    }
   }
 }
