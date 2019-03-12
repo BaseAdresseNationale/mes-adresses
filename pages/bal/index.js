@@ -1,32 +1,22 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState} from 'react'
 import Router from 'next/router'
-import Fuse from 'fuse.js'
-import {debounce} from 'lodash'
 import {Pane, Heading, Button, Table, Paragraph} from 'evergreen-ui'
 
 import {getCommunes} from '../../lib/storage'
 
+import useFuse from '../../hooks/fuse'
 import CommuneSearch from '../../components/commune-search'
 
 const Index = React.memo(({bal}) => {
-  const fuse = useRef()
   const [communes, setCommunes] = useState(bal.communes)
-  const [filtered, setFiltered] = useState(bal.communes)
   const [selectedCommune, setSelectedCommune] = useState()
   const [isAdding, setIsAdding] = useState(false)
 
-  useEffect(() => {
-    fuse.current = new Fuse(communes, {
-      shouldSort: true,
-      threshold: 0.4,
-      keys: [
-        'code',
-        'nom'
-      ]
-    })
-
-    setFiltered(communes)
-  }, [communes])
+  const [filtered, onFilter] = useFuse(bal.commune.voies, 200, {
+    keys: [
+      'nomVoie'
+    ]
+  })
 
   const onSelect = commune => {
     Router.push(
@@ -34,16 +24,6 @@ const Index = React.memo(({bal}) => {
       `/bal/${bal.id}/communes/${commune.code}`
     )
   }
-
-  const onFilter = debounce(value => {
-    if (fuse.current) {
-      if (value) {
-        setFiltered(fuse.current.search(value))
-      } else {
-        setFiltered(fuse.current.list)
-      }
-    }
-  }, 200)
 
   const onCommuneSelect = commune => {
     setSelectedCommune(commune)

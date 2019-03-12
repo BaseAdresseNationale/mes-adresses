@@ -1,36 +1,18 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React from 'react'
 import Router from 'next/router'
-import Fuse from 'fuse.js'
-import {debounce} from 'lodash'
 import {Pane, Heading, Paragraph, Table, IconButton, Popover, Menu, Position} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/storage'
 
+import useFuse from '../../hooks/fuse'
 import Breadcrumbs from '../../components/breadcrumbs'
 
 const Commune = React.memo(({bal}) => {
-  const fuse = useRef()
-  const [filtered, setFiltered] = useState(bal.commune.voies)
-
-  useEffect(() => {
-    fuse.current = new Fuse(bal.commune.voies, {
-      shouldSort: true,
-      threshold: 0.4,
-      keys: [
-        'nomVoie'
-      ]
-    })
-  }, [bal])
-
-  const onFilter = debounce(value => {
-    if (fuse.current) {
-      if (value) {
-        setFiltered(fuse.current.search(value))
-      } else {
-        setFiltered(bal.commune.voies)
-      }
-    }
-  }, 200)
+  const [filtered, setFilter] = useFuse(bal.commune.voies, 200, {
+    keys: [
+      'nomVoie'
+    ]
+  })
 
   const onClick = voie => e => {
     if (e.target.closest('[data-browsable]')) {
@@ -56,7 +38,7 @@ const Commune = React.memo(({bal}) => {
           <Table.Head>
             <Table.SearchHeaderCell
               placeholder='Rechercher une voie'
-              onChange={onFilter}
+              onChange={setFilter}
             />
           </Table.Head>
           {filtered.length === 0 && (

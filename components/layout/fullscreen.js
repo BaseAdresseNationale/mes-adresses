@@ -17,7 +17,9 @@ function Fullscreen({isOpen, size, onToggle, ...props}) {
       <Pane
         width='100%'
         height='90%'
+        overflow='hidden'
         marginX={24}
+        flex={1}
         maxWidth={1200}
         {...props}
       />

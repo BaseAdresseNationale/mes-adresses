@@ -22,8 +22,7 @@
     "fuse.js": "^3.4.2",
     "glamor": "^2.20.40",
     "immutable": "^4.0.0-rc.12",
-    "ky": "^0.9.0",
-    "ky-universal": "^0.1.0",
+    "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.11",
     "next": "^8.0.3",
     "next-runtime-dotenv": "^1.0.2",
@@ -34,6 +33,7 @@
     "react-dom": "^16.8.4",
     "react-dropzone": "^9.0.0",
     "react-map-gl": "^4.0.14",
+    "use-debounce": "^1.1.1",
     "viewport-mercator-project": "^6.1.1"
   },
   "devDependencies": {
