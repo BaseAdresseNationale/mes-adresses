@@ -1,14 +1,14 @@
+require('dotenv').config()
 const {join} = require('path')
-const nextRuntimeDotenv = require('next-runtime-dotenv')
 
-const withConfig = nextRuntimeDotenv({
-  public: [
-    'API_URL'
-  ]
-})
+const {API_BAL} = process.env
 
-module.exports = withConfig({
+module.exports = {
   target: 'serverless',
+
+  env: {
+    API_BAL
+  },
 
   webpack(config, {dev, isServer}) {
     if (!dev && !isServer) {
@@ -29,4 +29,4 @@ module.exports = withConfig({
 
     return config
   }
-})
+}

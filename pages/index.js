@@ -52,7 +52,7 @@ function Index({bals}) {
             </Pane>
           ) : (
             <>
-              <Pane borderTop flex={1}>
+              <Pane borderTop flex={1} overflowY='scroll'>
                 <Table>
                   <Table.Head>
                     <Table.SearchHeaderCell
