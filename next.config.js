@@ -1,13 +1,17 @@
 require('dotenv').config()
 const {join} = require('path')
 
-const {API_URL} = process.env
+const {
+  BAL_API_URL,
+  GEO_API_URL
+} = process.env
 
 module.exports = {
   target: 'serverless',
 
   env: {
-    API_URL
+    BAL_API_URL,
+    GEO_API_URL
   },
 
   webpack(config, {dev, isServer}) {

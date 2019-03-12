@@ -1,7 +1,8 @@
 import React, {useState, useMemo, useCallback} from 'react'
+import Router from 'next/router'
 import {Pane, Heading, Table, Paragraph, Alert, Button} from 'evergreen-ui'
 
-import {list} from '../lib/bal'
+import {list} from '../lib/bal-api'
 
 import useFuse from '../hooks/fuse'
 import CommuneSearch from '../components/commune-search'
@@ -24,6 +25,10 @@ function Index({bals}) {
     ]
   })
 
+  const onCreate = useCallback(() => {
+    Router.push(`/new?commune=${commune.code}`)
+  }, [commune])
+
   return (
     <>
       <Pane paddingX={16} paddingBottom={10} marginBottom={10}>
@@ -45,7 +50,7 @@ function Index({bals}) {
                 <Paragraph size={300} color='muted'>
                   Vous pouvez créer une nouvelle Base Adresse Locale pour la commune de {commune.nom}.
                 </Paragraph>
-                <Button marginTop={10} appearance='primary'>
+                <Button marginTop={10} appearance='primary' onClick={onCreate}>
                   Créer une nouvelle Base Adresse Locale
                 </Button>
               </Alert>
@@ -84,7 +89,7 @@ function Index({bals}) {
                 <Paragraph size={300} color='muted'>
                   Vous pouvez également créer une nouvelle Base Adresse Locale pour la commune de {commune.nom}.
                 </Paragraph>
-                <Button marginTop={10} appearance='primary'>
+                <Button marginTop={10} appearance='primary' onClick={onCreate}>
                   Créer une nouvelle Base Adresse Locale
                 </Button>
               </Pane>
