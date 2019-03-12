@@ -12,9 +12,9 @@ const Index = React.memo(({bal}) => {
   const [selectedCommune, setSelectedCommune] = useState()
   const [isAdding, setIsAdding] = useState(false)
 
-  const [filtered, onFilter] = useFuse(bal.commune.voies, 200, {
+  const [filtered, onFilter] = useFuse(bal.communes, 200, {
     keys: [
-      'nomVoie'
+      'nom'
     ]
   })
 
