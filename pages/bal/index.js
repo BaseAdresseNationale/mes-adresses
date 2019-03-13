@@ -100,7 +100,11 @@ const Index = React.memo(({baseLocale, bal}) => {
             <Table.Row key={commune.code} isSelectable onSelect={() => onSelect(commune)}>
               <Table.TextCell isNumber flex='0 1 1'>{commune.code}</Table.TextCell>
               <Table.TextCell>{commune.nom}</Table.TextCell>
-              <Table.TextCell flex='0 1 1'>{commune.voiesCount} voies</Table.TextCell>
+              <Table.TextCell flex='0 1 1'>
+                {!commune.voiesCount && 'aucune voie'}
+                {commune.voiesCount === 1 && 'une voie'}
+                {commune.voiesCount > 1 && `${commune.voiesCount} voies`}
+              </Table.TextCell>
             </Table.Row>
           ))}
         </Table>
