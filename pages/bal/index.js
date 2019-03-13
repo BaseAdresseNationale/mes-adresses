@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
-import {Pane, Heading, Button, IconButton, Table, Paragraph, Checkbox} from 'evergreen-ui'
+import {Pane, Heading, Button, Table, Paragraph} from 'evergreen-ui'
 
 import {getBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
