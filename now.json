@@ -9,7 +9,18 @@
   ],
   "build": {
     "env": {
-      "API_URL": "https://api-bal.adresse.data.gouv.fr/v1"
+      "BAL_API_URL": "https://api-bal.adresse.data.gouv.fr/v1",
+      "GEO_API_URL": "https://geo.api.gouv.fr"
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/bal/(?<id>[^/]+)$",
+      "dest": "/bal?id=$id"
+    },
+    {
+      "src": "/bal/(?<id>[^/]+)/communes/(?<codeCommune>[^/]+)$",
+      "dest": "/bal/commune?id=$id&codeCommune=$codeCommune"
+    }
+  ]
 }

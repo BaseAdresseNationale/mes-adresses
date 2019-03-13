@@ -1,5 +1,7 @@
 require('dotenv').config()
+
 const {join} = require('path')
+const webpack = require('webpack')
 
 const {
   BAL_API_URL,
@@ -25,6 +27,12 @@ module.exports = {
         defaultSizes: 'gzip'
       }))
     }
+
+    config.plugins.push(
+      new webpack.ProvidePlugin({
+        URL: ['url', 'URL'],
+      })
+    )
 
     config.node = {
       ...config.node,
