@@ -1,11 +1,11 @@
-import {useState, useLayoutEffect} from 'react'
+import {useState, useEffect} from 'react'
 
 import {getBalToken} from '../lib/tokens'
 
 function useToken(balId) {
   const [token, setToken] = useState()
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setToken(getBalToken(balId))
   }, [balId])
 

@@ -1,17 +1,17 @@
-import React, {useState} from 'react'
+import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
-import {Pane, Heading, Button, Table, Paragraph} from 'evergreen-ui'
+import {Pane, Heading, Button, IconButton, Table, Paragraph, Checkbox} from 'evergreen-ui'
 
-import {getBaseLocale, addCommune} from '../../lib/bal-api'
+import {getBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
 
 import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
-import {CommuneSearch} from '../../components/commune-search'
+
+import CommuneAdd from '../../components/bal/commune-add'
 
 const Index = React.memo(({baseLocale, bal}) => {
   const [communes, setCommunes] = useState(bal.communes)
-  const [selectedCommune, setSelectedCommune] = useState()
   const [isAdding, setIsAdding] = useState(false)
   const token = useToken(baseLocale._id)
 
@@ -21,30 +21,31 @@ const Index = React.memo(({baseLocale, bal}) => {
     ]
   })
 
-  const onSelect = commune => {
-    Router.push(
-      `/bal/commune?id=${baseLocale._id}&codeCommune=${commune.code}`,
-      `/bal/${baseLocale._id}/communes/${commune.code}`
-    )
-  }
+  const onCommuneAdd = useCallback(async ({commune, populate}) => {
+    setIsAdding(false)
 
-  const onCommuneSelect = commune => {
-    setSelectedCommune(commune.code)
-  }
+    const updated = await addCommune(baseLocale._id, commune, token)
 
-  const onCommuneAdd = async e => {
-    e.preventDefault()
-
-    const updated = await addCommune(baseLocale._id, selectedCommune, token)
+    if (populate) {
+      try {
+        await populateCommune(baseLocale._id, commune, token)
+      } catch (error) {
+        console.log('Not implemented yet')
+      }
+    }
 
     const updatedCommunes = await Promise.all(
       updated.communes.map(commune => getCommune(commune))
     )
 
     setCommunes(updatedCommunes)
+  }, [baseLocale, token])
 
-    setIsAdding(false)
-    setSelectedCommune(null)
+  const onSelect = commune => {
+    Router.push(
+      `/bal/commune?id=${baseLocale._id}&codeCommune=${commune.code}`,
+      `/bal/${baseLocale._id}/communes/${commune.code}`
+    )
   }
 
   return (
@@ -80,12 +81,13 @@ const Index = React.memo(({baseLocale, bal}) => {
             />
           </Table.Head>
           {isAdding && (
-            <Table.Row>
-              <Table.Cell is='form' display='flex' onSubmit={onCommuneAdd}>
-                <CommuneSearch width='100%' exclude={communes.map(c => c.code)} onSelect={onCommuneSelect} />
-                <Button type='submit' appearance='primary' intent='success' marginLeft={6} disabled={!selectedCommune}>
-                  Ajouter
-                </Button>
+            <Table.Row height='auto'>
+              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+                <CommuneAdd
+                  exclude={communes.map(c => c.code)}
+                  onSubmit={onCommuneAdd}
+                  onCancel={() => setIsAdding(false)}
+                />
               </Table.Cell>
             </Table.Row>
           )}

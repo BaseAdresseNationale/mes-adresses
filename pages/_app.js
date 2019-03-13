@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
+import {getBaseLocale} from '../lib/bal-api'
+
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
 
