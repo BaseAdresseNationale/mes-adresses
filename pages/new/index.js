@@ -1,4 +1,5 @@
 import React, {useCallback, useState} from 'react'
+import Router from 'next/router'
 import {Pane, Heading, Paragraph, TextInputField, Checkbox, Button} from 'evergreen-ui'
 
 import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
@@ -40,6 +41,8 @@ function Index({defaultCommune}) {
         console.log('Not implemented yet')
       }
     }
+
+    Router.push(`/bal?id=${bal._id}`, `/bal/${bal._id}`)
   }
 
   return (
