@@ -6,6 +6,14 @@ import {getNumerosPointLayer, getNumerosLabelLayer} from './bal/numeros'
 import {getVoiesLabelLayer} from './bal/voies'
 
 function getCommuneData(commune) {
+  // Temporary
+  return [
+    {
+      name: 'commune',
+      data: commune.contour
+    }
+  ]
+
   return [
     {
       name: 'numeros',

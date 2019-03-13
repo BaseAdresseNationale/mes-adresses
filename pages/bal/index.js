@@ -2,17 +2,20 @@ import React, {useState} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Button, Table, Paragraph} from 'evergreen-ui'
 
-import {getCommunes} from '../../lib/storage'
+import {getBaseLocale, addCommune} from '../../lib/bal-api'
+import {getCommune} from '../../lib/geo-api'
 
+import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
-import CommuneSearch from '../../components/commune-search'
+import {CommuneSearch} from '../../components/commune-search'
 
-const Index = React.memo(({bal}) => {
+const Index = React.memo(({baseLocale, bal}) => {
   const [communes, setCommunes] = useState(bal.communes)
   const [selectedCommune, setSelectedCommune] = useState()
   const [isAdding, setIsAdding] = useState(false)
+  const token = useToken(baseLocale._id)
 
-  const [filtered, onFilter] = useFuse(bal.communes, 200, {
+  const [filtered, onFilter] = useFuse(communes, 200, {
     keys: [
       'nom'
     ]
@@ -20,22 +23,25 @@ const Index = React.memo(({bal}) => {
 
   const onSelect = commune => {
     Router.push(
-      `/bal/commune?id=${bal.id}&communeCode=${commune.code}`,
-      `/bal/${bal.id}/communes/${commune.code}`
+      `/bal/commune?id=${baseLocale._id}&codeCommune=${commune.code}`,
+      `/bal/${baseLocale._id}/communes/${commune.code}`
     )
   }
 
   const onCommuneSelect = commune => {
-    setSelectedCommune(commune)
+    setSelectedCommune(commune.code)
   }
 
-  const onCommuneAdd = e => {
+  const onCommuneAdd = async e => {
     e.preventDefault()
 
-    setCommunes([
-      selectedCommune,
-      ...communes
-    ])
+    const updated = await addCommune(baseLocale._id, selectedCommune, token)
+
+    const updatedCommunes = await Promise.all(
+      updated.communes.map(commune => getCommune(commune))
+    )
+
+    setCommunes(updatedCommunes)
 
     setIsAdding(false)
     setSelectedCommune(null)
@@ -46,20 +52,22 @@ const Index = React.memo(({bal}) => {
       <Pane zIndex={1} flexShrink={0} elevation={0} backgroundColor='white'>
         <Pane padding={16} display='flex'>
           <Pane>
-            <Heading>Liste des communes</Heading>
-            <Paragraph size={300} margin={0} color='muted'>Lorem ipsum…</Paragraph>
+            <Heading>{baseLocale.nom}</Heading>
+            <Paragraph size={300} margin={0} color='muted'>{baseLocale.description || 'Base Adresse Locale'}</Paragraph>
           </Pane>
-          <Pane marginLeft='auto'>
-            <Button
-              iconBefore='add'
-              appearance='primary'
-              intent='success'
-              disabled={isAdding}
-              onClick={() => setIsAdding(true)}
-            >
-              Ajouter une commune
-            </Button>
-          </Pane>
+          {token && (
+            <Pane marginLeft='auto'>
+              <Button
+                iconBefore='add'
+                appearance='primary'
+                intent='success'
+                disabled={isAdding}
+                onClick={() => setIsAdding(true)}
+              >
+                Ajouter une commune
+              </Button>
+            </Pane>
+          )}
         </Pane>
       </Pane>
       <Pane flex={1} overflowY='scroll'>
@@ -102,13 +110,17 @@ const Index = React.memo(({bal}) => {
 })
 
 Index.getInitialProps = async ({query}) => {
-  const {id} = query
-  const communes = await getCommunes(id)
+  const baseLocale = await getBaseLocale(query.id)
+
+  const communes = await Promise.all(
+    baseLocale.communes.map(commune => getCommune(commune))
+  )
 
   return {
     layout: 'fullscreen',
+    baseLocale,
     bal: {
-      id,
+      id: baseLocale._id,
       communes
     }
   }

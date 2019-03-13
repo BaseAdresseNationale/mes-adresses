@@ -8,7 +8,6 @@ function useFuse(source, delay, options) {
 
   const fuse = useMemo(() => {
     return new Fuse(source, {
-      shouldSort: true,
       threshold: 0.4,
       ...options
     })

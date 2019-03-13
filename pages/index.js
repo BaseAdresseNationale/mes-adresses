@@ -2,16 +2,26 @@ import React, {useState, useMemo, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Table, Paragraph, Alert, Button} from 'evergreen-ui'
 
-import {list} from '../lib/bal-api'
+import {listBasesLocales} from '../lib/bal-api'
+import {getCommune} from '../lib/geo-api'
 
 import useFuse from '../hooks/fuse'
-import CommuneSearch from '../components/commune-search'
+import {CommuneSearch} from '../components/commune-search'
 
-function Index({bals}) {
-  const [commune, setCommune] = useState()
+function Index({bals, defaultCommune}) {
+  const [commune, setCommune] = useState(defaultCommune)
 
-  const onSelect = useCallback(commune => {
+  const onCommuneSelect = useCallback(commune => {
     setCommune(commune)
+
+    const href = `/?commune=${commune.code}`
+    Router.push(href, href, {
+      shallow: true
+    })
+  }, [])
+
+  const onBalSelect = useCallback(bal => {
+    Router.push(`/bal?id=${bal._id}`, `/bal/${bal._id}`)
   }, [])
 
   const matchingBals = useMemo(() => {
@@ -32,14 +42,15 @@ function Index({bals}) {
   return (
     <>
       <Pane paddingX={16} paddingBottom={10} marginBottom={10}>
-        <Heading size={600} margin='default'>Créer ou modifier une Base Adresse Locale</Heading>
+        <Heading size={600} margin='default'>Rechercher une Base Adresse Locale</Heading>
         <Paragraph marginBottom={16}>
-          Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale.
+          Sélectionnez une commune pour laquelle vous souhaitez visualiser, créer ou modifier une Base Adresse Locale.
         </Paragraph>
         <CommuneSearch
           placeholder='Rechercher une commune…'
+          defaultSelectedItem={defaultCommune}
           width='100%'
-          onSelect={onSelect}
+          onSelect={onCommuneSelect}
         />
       </Pane>
       {commune && (
@@ -74,7 +85,7 @@ function Index({bals}) {
                   )}
                   <Table.Body background='tint1'>
                     {filtered.map(bal => (
-                      <Table.Row key={bal._id} isSelectable>
+                      <Table.Row key={bal._id} isSelectable onSelect={() => onBalSelect(bal)}>
                         <Table.TextCell>{bal.nom}</Table.TextCell>
                         <Table.TextCell flex='0 1 1'>
                           {bal.communes.length < 2 ? `${bal.communes.length} commune` : `${bal.communes.length} communes`}
@@ -101,10 +112,18 @@ function Index({bals}) {
   )
 }
 
-Index.getInitialProps = async () => {
-  const bals = await list()
+Index.getInitialProps = async ({query}) => {
+  let defaultCommune
+  if (query.commune) {
+    defaultCommune = await getCommune(query.commune, {
+      fields: 'departement'
+    })
+  }
+
+  const bals = await listBasesLocales()
 
   return {
+    defaultCommune,
     bals,
     layout: 'fullscreen'
   }

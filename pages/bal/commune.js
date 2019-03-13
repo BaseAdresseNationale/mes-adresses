@@ -2,12 +2,16 @@ import React from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Table, IconButton, Popover, Menu, Position} from 'evergreen-ui'
 
-import {getCommune} from '../../lib/storage'
+import {getBaseLocale} from '../../lib/bal-api'
+import {getCommune} from '../../lib/geo-api'
+// import {getCommune} from '../../lib/storage'
 
 import useFuse from '../../hooks/fuse'
 import Breadcrumbs from '../../components/breadcrumbs'
 
 const Commune = React.memo(({bal}) => {
+  bal.commune.voies = []
+
   const [filtered, setFilter] = useFuse(bal.commune.voies, 200, {
     keys: [
       'nomVoie'
@@ -85,13 +89,15 @@ const Commune = React.memo(({bal}) => {
 })
 
 Commune.getInitialProps = async ({query}) => {
-  const {id, communeCode} = query
-  const commune = await getCommune(id, communeCode)
+  const bal = await getBaseLocale(query.id)
+  const commune = await getCommune(query.codeCommune, {
+    fields: 'contour'
+  })
 
   return {
     layout: 'sidebar',
     bal: {
-      id,
+      id: bal._id,
       commune
     }
   }
