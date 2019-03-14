@@ -16,11 +16,11 @@
   "routes": [
     {
       "src": "/bal/(?<id>[^/]+)$",
-      "dest": "/bal?id=$id"
+      "dest": "/bal?balId=$id"
     },
     {
       "src": "/bal/(?<id>[^/]+)/communes/(?<codeCommune>[^/]+)$",
-      "dest": "/bal/commune?id=$id&codeCommune=$codeCommune"
+      "dest": "/bal/commune?balId=$id&codeCommune=$codeCommune"
     }
   ]
 }

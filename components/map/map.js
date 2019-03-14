@@ -81,7 +81,7 @@ function Map({interactive, offset, style: defaultStyle, bal}) {
           console.log(feature)
           const {codeCommune, codeVoie} = feature.properties
           return Router.push(
-            `/bal/voie?id=${bal.id}&communeCode=${codeCommune}&codeVoie=${codeVoie}`,
+            `/bal/voie?balId=${bal.id}&communeCode=${codeCommune}&codeVoie=${codeVoie}`,
             `/bal/${bal.id}/communes/${codeCommune}/voies/${codeVoie}`
           )
         }

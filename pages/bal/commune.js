@@ -21,7 +21,7 @@ const Commune = React.memo(({bal}) => {
   const onClick = voie => e => {
     if (e.target.closest('[data-browsable]')) {
       Router.push(
-        `/bal/voie?id=${bal.id}&communeCode=${bal.commune.code}&codeVoie=${voie.codeVoie}`,
+        `/bal/voie?balId=${bal.id}&communeCode=${bal.commune.code}&codeVoie=${voie.codeVoie}`,
         `/bal/${bal.id}/communes/${bal.commune.code}/voies/${voie.codeVoie}`
       )
     }
@@ -88,8 +88,7 @@ const Commune = React.memo(({bal}) => {
   )
 })
 
-Commune.getInitialProps = async ({query}) => {
-  const bal = await getBaseLocale(query.id)
+Commune.getInitialProps = async ({baseLocale, query}) => {
   const commune = await getCommune(query.codeCommune, {
     fields: 'contour'
   })
@@ -97,7 +96,7 @@ Commune.getInitialProps = async ({query}) => {
   return {
     layout: 'sidebar',
     bal: {
-      id: bal._id,
+      id: baseLocale._id,
       commune
     }
   }

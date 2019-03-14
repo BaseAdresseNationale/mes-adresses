@@ -1,4 +1,5 @@
-import React, {useState, useMemo, useCallback} from 'react'
+import React, {useMemo, useCallback} from 'react'
+import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Heading, Table, Paragraph, Alert, Button} from 'evergreen-ui'
 
@@ -8,25 +9,22 @@ import {getCommune} from '../lib/geo-api'
 import useFuse from '../hooks/fuse'
 import {CommuneSearch} from '../components/commune-search'
 
-function Index({bals, defaultCommune}) {
-  const [commune, setCommune] = useState(defaultCommune)
-
+function Index({basesLocales, commune}) {
   const onCommuneSelect = useCallback(commune => {
-    setCommune(commune)
-
-    const href = `/?commune=${commune.code}`
-    Router.push(href, href, {
-      shallow: true
-    })
+    Router.push(`/?commune=${commune.code}`)
   }, [])
 
   const onBalSelect = useCallback(bal => {
-    Router.push(`/bal?id=${bal._id}`, `/bal/${bal._id}`)
+    Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
   }, [])
 
+  const onCreate = useCallback(() => {
+    Router.push(`/new?commune=${commune.code}`)
+  }, [commune])
+
   const matchingBals = useMemo(() => {
-    return commune ? bals.filter(bal => bal.communes.includes(commune.code)) : []
-  }, [bals, commune])
+    return commune ? basesLocales.filter(bal => bal.communes.includes(commune.code)) : []
+  }, [basesLocales, commune])
 
   const [filtered, onFilter] = useFuse(matchingBals, 200, {
     keys: [
@@ -34,10 +32,6 @@ function Index({bals, defaultCommune}) {
       'commune'
     ]
   })
-
-  const onCreate = useCallback(() => {
-    Router.push(`/new?commune=${commune.code}`)
-  }, [commune])
 
   return (
     <>
@@ -48,7 +42,7 @@ function Index({bals, defaultCommune}) {
         </Paragraph>
         <CommuneSearch
           placeholder='Rechercher une commune…'
-          defaultSelectedItem={defaultCommune}
+          defaultSelectedItem={commune}
           width='100%'
           onSelect={onCommuneSelect}
         />
@@ -113,18 +107,18 @@ function Index({bals, defaultCommune}) {
 }
 
 Index.getInitialProps = async ({query}) => {
-  let defaultCommune
+  let commune
   if (query.commune) {
-    defaultCommune = await getCommune(query.commune, {
+    commune = await getCommune(query.commune, {
       fields: 'departement'
     })
   }
 
-  const bals = await listBasesLocales()
+  const basesLocales = await listBasesLocales()
 
   return {
-    defaultCommune,
-    bals,
+    commune,
+    basesLocales,
     layout: 'fullscreen'
   }
 }

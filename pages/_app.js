@@ -58,8 +58,16 @@ function App({Component, pageProps}) {
 App.getInitialProps = async ({Component, ctx}) => {
   let pageProps = {}
 
+  let baseLocale
+  if (ctx.query.balId) {
+    baseLocale = await getBaseLocale(ctx.query.balId)
+  }
+
   if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx)
+    pageProps = await Component.getInitialProps({
+      ...ctx,
+      baseLocale
+    })
   }
 
   return {pageProps}

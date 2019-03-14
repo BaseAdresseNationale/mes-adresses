@@ -42,7 +42,7 @@ function Index({defaultCommune}) {
       }
     }
 
-    Router.push(`/bal?id=${bal._id}`, `/bal/${bal._id}`)
+    Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
   }
 
   return (

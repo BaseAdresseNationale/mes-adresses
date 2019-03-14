@@ -43,7 +43,7 @@ const Index = React.memo(({baseLocale, bal}) => {
 
   const onSelect = commune => {
     Router.push(
-      `/bal/commune?id=${baseLocale._id}&codeCommune=${commune.code}`,
+      `/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`,
       `/bal/${baseLocale._id}/communes/${commune.code}`
     )
   }
@@ -115,9 +115,7 @@ const Index = React.memo(({baseLocale, bal}) => {
   )
 })
 
-Index.getInitialProps = async ({query}) => {
-  const baseLocale = await getBaseLocale(query.id)
-
+Index.getInitialProps = async ({baseLocale}) => {
   const communes = await Promise.all(
     baseLocale.communes.map(commune => getCommune(commune))
   )

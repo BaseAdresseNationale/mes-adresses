@@ -3,17 +3,17 @@ const {Router} = require('express')
 module.exports = app => {
   const router = new Router()
 
-  router.get('/bal/:id', (req, res) => {
+  router.get('/bal/:balId', (req, res) => {
     app.render(req, res, '/bal', {
       ...req.query,
-      id: req.params.id
+      balId: req.params.balId
     })
   })
 
-  router.get('/bal/:id/communes/:codeCommune', (req, res) => {
+  router.get('/bal/:balId/communes/:codeCommune', (req, res) => {
     app.render(req, res, '/bal/commune', {
       ...req.query,
-      id: req.params.id,
+      balId: req.params.balId,
       codeCommune: req.params.codeCommune
     })
   })

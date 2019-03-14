@@ -76,7 +76,7 @@ function Index() {
   const onEdit = () => {
     const id = createBal(tree)
 
-    Router.push(`/bal?id=${id}`, `/bal/${id}`)
+    Router.push(`/bal?balId=${id}`, `/bal/${id}`)
   }
 
   return (

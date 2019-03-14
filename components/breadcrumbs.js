@@ -6,7 +6,7 @@ import {Pane, Link, Text} from 'evergreen-ui'
 function Breadcrumbs({bal}) {
   return (
     <Pane paddingY={4} paddingX={16} borderBottom='muted' background='tint1'>
-      <NextLink href={`/bal?id=${bal.id}`} as={`/bal/${bal.id}`}>
+      <NextLink href={`/bal?balId=${bal.id}`} as={`/bal/${bal.id}`}>
         <Link display='inline-block' href={`/bal/${bal.id}`} marginY={6}>
           BAL
         </Link>
@@ -14,7 +14,7 @@ function Breadcrumbs({bal}) {
       {bal.voie ? (
         <>
           <Text color='muted'>{' > '}</Text>
-          <NextLink href={`/bal/commune?id=${bal.id}&communeCode=${bal.commune.code}`} as={`/bal/${bal.id}/communes/${bal.commune.code}`}>
+          <NextLink href={`/bal/commune?balId=${bal.id}&communeCode=${bal.commune.code}`} as={`/bal/${bal.id}/communes/${bal.commune.code}`}>
             <Link display='inline-block' href={`/bal/${bal.id}/communes/${bal.commune.code}`} marginY={6}>
               {bal.commune.nom}
             </Link>
