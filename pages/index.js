@@ -123,4 +123,12 @@ Index.getInitialProps = async ({query}) => {
   }
 }
 
+Index.propTypes = {
+  basesLocales: PropTypes.array.isRequired,
+  commune: PropTypes.shape({
+    code: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired
+  })
+}
+
 export default Index
