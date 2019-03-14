@@ -1,12 +1,13 @@
-import React, {useCallback, useRef, useEffect} from 'react'
+import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInput, Button, IconButton} from 'evergreen-ui'
 
 import {useInput} from '../../hooks/input'
+import useFocus from '../../hooks/focus'
 
 function VoieAdd({onSubmit, onCancel}) {
-  const focusRef = useRef()
   const [nom, onNomChange] = useInput()
+  const setRef = useFocus()
 
   const onFormSubmit = useCallback(e => {
     e.preventDefault()
@@ -21,16 +22,6 @@ function VoieAdd({onSubmit, onCancel}) {
 
     onCancel()
   }, [onCancel])
-
-  const setRef = useCallback(ref => {
-    focusRef.current = ref
-  }, [])
-
-  useEffect(() => {
-    if (focusRef.current) {
-      focusRef.current.focus()
-    }
-  }, [focusRef])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
