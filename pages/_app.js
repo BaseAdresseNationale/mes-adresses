@@ -2,7 +2,8 @@ import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
-import {getBaseLocale} from '../lib/bal-api'
+import {getBaseLocale, getVoies} from '../lib/bal-api'
+import {getCommune} from '../lib/geo-api'
 
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
@@ -18,7 +19,6 @@ const SIDEBAR_WIDTH = 500
 
 function App({Component, pageProps}) {
   const [size, setSize] = useState(SIDEBAR_WIDTH)
-  const [bal, setBal] = useState(pageProps.bal)
 
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
@@ -27,17 +27,13 @@ function App({Component, pageProps}) {
     setSize(size => size === 0 ? SIDEBAR_WIDTH : 0)
   }
 
-  useEffect(() => {
-    setBal(pageProps.bal)
-  }, [pageProps.bal])
-
   return (
     <Container>
       <>
         <Map
           interactive={layout === 'sidebar'}
           offset={size}
-          bal={bal}
+          commune={pageProps.commune}
         />
 
         <Wrapper
@@ -48,7 +44,7 @@ function App({Component, pageProps}) {
           flexDirection='column'
           onToggle={onToggle}
         >
-          <Component setBal={setBal} {...otherPageProps} />
+          <Component {...otherPageProps} />
         </Wrapper>
       </>
     </Container>
@@ -57,16 +53,30 @@ function App({Component, pageProps}) {
 
 App.getInitialProps = async ({Component, ctx}) => {
   let pageProps = {}
-
   let baseLocale
+  let commune
+  let voies
+
   if (ctx.query.balId) {
     baseLocale = await getBaseLocale(ctx.query.balId)
+  }
+
+  if (ctx.query.codeCommune) {
+    commune = await getCommune(ctx.query.codeCommune, {
+      fields: 'contour'
+    })
+  }
+
+  if (baseLocale && commune) {
+    voies = await getVoies(baseLocale._id, commune.code)
   }
 
   if (Component.getInitialProps) {
     pageProps = await Component.getInitialProps({
       ...ctx,
-      baseLocale
+      baseLocale,
+      commune,
+      voies
     })
   }
 

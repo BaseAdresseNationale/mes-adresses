@@ -3,29 +3,29 @@ import PropTypes from 'prop-types'
 import NextLink from 'next/link'
 import {Pane, Link, Text} from 'evergreen-ui'
 
-function Breadcrumbs({bal}) {
+function Breadcrumbs({baseLocale, commune, voie}) {
   return (
     <Pane paddingY={4} paddingX={16} borderBottom='muted' background='tint1'>
-      <NextLink href={`/bal?balId=${bal.id}`} as={`/bal/${bal.id}`}>
-        <Link display='inline-block' href={`/bal/${bal.id}`} marginY={6}>
-          BAL
+      <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
+        <Link display='inline-block' href={`/bal/${baseLocale._id}`} marginY={6}>
+          {baseLocale.nom || 'Base Adresse Locale'}
         </Link>
       </NextLink>
-      {bal.voie ? (
+      {voie ? (
         <>
           <Text color='muted'>{' > '}</Text>
-          <NextLink href={`/bal/commune?balId=${bal.id}&communeCode=${bal.commune.code}`} as={`/bal/${bal.id}/communes/${bal.commune.code}`}>
-            <Link display='inline-block' href={`/bal/${bal.id}/communes/${bal.commune.code}`} marginY={6}>
-              {bal.commune.nom}
+          <NextLink href={`/bal/commune?balId=${baseLocale._id}&communeCode=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+            <Link display='inline-block' href={`/bal/${baseLocale._id}/communes/${commune.code}`} marginY={6}>
+              {commune.nom}
             </Link>
           </NextLink>
           <Text color='muted'>{' > '}</Text>
-          <Text>{bal.voie.nomVoie}</Text>
+          <Text>{voie.nomVoie}</Text>
         </>
       ) : (
         <>
           <Text color='muted'>{' > '}</Text>
-          <Text>{bal.commune.nom}</Text>
+          <Text>{commune.nom}</Text>
         </>
       )}
     </Pane>
@@ -33,18 +33,19 @@ function Breadcrumbs({bal}) {
 }
 
 Breadcrumbs.propTypes = {
-  bal: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    nom: PropTypes.string
+  }).isRequired,
 
-    commune: PropTypes.shape({
-      code: PropTypes.string.isRequired,
-      nom: PropTypes.string.isRequired
-    }).isRequired,
+  commune: PropTypes.shape({
+    code: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired
+  }).isRequired,
 
-    voie: PropTypes.shape({
-      nomVoie: PropTypes.string.isRequired
-    })
-  }).isRequired
+  voie: PropTypes.shape({
+    nomVoie: PropTypes.string.isRequired
+  })
 }
 
 export default Breadcrumbs

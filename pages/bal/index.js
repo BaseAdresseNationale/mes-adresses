@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Button, Table, Paragraph} from 'evergreen-ui'
 
-import {getBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
+import {addCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
 
 import useToken from '../../hooks/token'
@@ -10,8 +10,8 @@ import useFuse from '../../hooks/fuse'
 
 import CommuneAdd from '../../components/bal/commune-add'
 
-const Index = React.memo(({baseLocale, bal}) => {
-  const [communes, setCommunes] = useState(bal.communes)
+const Index = React.memo(({baseLocale, defaultCommunes}) => {
+  const [communes, setCommunes] = useState(defaultCommunes)
   const [isAdding, setIsAdding] = useState(false)
   const token = useToken(baseLocale._id)
 
@@ -122,11 +122,8 @@ Index.getInitialProps = async ({baseLocale}) => {
 
   return {
     layout: 'fullscreen',
-    baseLocale,
-    bal: {
-      id: baseLocale._id,
-      communes
-    }
+    defaultCommunes: communes,
+    baseLocale
   }
 }
 

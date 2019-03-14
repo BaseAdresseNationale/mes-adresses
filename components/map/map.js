@@ -57,58 +57,96 @@ function generateNewStyle(style, sources, layers) {
   return newStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, offset, style: defaultStyle, bal}) {
+function Map({interactive, offset, style: defaultStyle, commune}) {
   const windowSize = useWindowSize()
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
-  const [sources, layers] = useBal(bal, style)
+  // const [sources, layers] = useBal(bal, style)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const interactiveLayerIds = useMemo(() => {
-    return layers.filter(layer => layer.interactive).map(layer => layer.id)
-  }, [layers])
+  // const interactiveLayerIds = useMemo(() => {
+  //   return layers.filter(layer => layer.interactive).map(layer => layer.id)
+  // }, [layers])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
   }, [])
 
-  const onClick = useCallback(event => {
-    const feature = event.features && event.features[0]
+  // const onClick = useCallback(event => {
+  //   const feature = event.features && event.features[0]
 
-    if (feature) {
-      switch (feature.layer.id) {
-        case 'voies-label': {
-          console.log(feature)
-          const {codeCommune, codeVoie} = feature.properties
-          return Router.push(
-            `/bal/voie?balId=${bal.id}&communeCode=${codeCommune}&codeVoie=${codeVoie}`,
-            `/bal/${bal.id}/communes/${codeCommune}/voies/${codeVoie}`
-          )
-        }
+  //   if (feature) {
+  //     switch (feature.layer.id) {
+  //       case 'voies-label': {
+  //         console.log(feature)
+  //         const {codeCommune, codeVoie} = feature.properties
+  //         return Router.push(
+  //           `/bal/voie?balId=${bal.id}&communeCode=${codeCommune}&codeVoie=${codeVoie}`,
+  //           `/bal/${bal.id}/communes/${codeCommune}/voies/${codeVoie}`
+  //         )
+  //       }
 
-        default:
-          console.log('nothing')
-      }
-    }
-  }, [bal])
+  //       default:
+  //         console.log('nothing')
+  //     }
+  //   }
+  // }, [bal])
+
+  // useEffect(() => {
+  //   if (sources && sources.length > 0) {
+  //     setMapStyle(generateNewStyle(style, sources, layers))
+  //   } else {
+  //     setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
+  //   }
+  // }, [sources, layers, style])
 
   useEffect(() => {
-    if (sources && sources.length > 0) {
-      setMapStyle(generateNewStyle(style, sources, layers))
-    } else {
-      setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
-    }
-  }, [sources, layers, style])
+    setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
+  }, [interactive, style, defaultStyle])
+
+  // useEffect(() => {
+  //   if (sources && sources.length > 0) {
+  //     let data = merge(sources.map(s => s.data))
+
+  //     if (data.features.length === 1 && data.features[0].geometry.type === 'Point') {
+  //       data = buffer(data, 0.3)
+  //     }
+
+  //     const [minLng, minLat, maxLng, maxLat] = bbox(data)
+
+  //     const vp = new WebMercatorViewport({
+  //       ...viewport,
+  //       height: windowSize.innerHeight,
+  //       width: windowSize.innerWidth
+  //     })
+
+  //     const {longitude, latitude, zoom} = vp.fitBounds(
+  //       [[minLng, minLat], [maxLng, maxLat]],
+  //       {padding: {
+  //         top: 80,
+  //         right: 80,
+  //         bottom: 80,
+  //         left: offset + 80
+  //       }}
+  //     )
+
+  //     setViewport(viewport => ({
+  //       ...viewport,
+  //       longitude,
+  //       latitude,
+  //       zoom
+  //     }))
+  //   } else {
+  //     setViewport(viewport => ({
+  //       ...viewport,
+  //       ...defaultViewport
+  //     }))
+  //   }
+  // }, [sources])
 
   useEffect(() => {
-    if (sources && sources.length > 0) {
-      let data = merge(sources.map(s => s.data))
-
-      if (data.features.length === 1 && data.features[0].geometry.type === 'Point') {
-        data = buffer(data, 0.3)
-      }
-
-      const [minLng, minLat, maxLng, maxLat] = bbox(data)
+    if (commune) {
+      const [minLng, minLat, maxLng, maxLat] = bbox(commune.contour)
 
       const vp = new WebMercatorViewport({
         ...viewport,
@@ -138,7 +176,7 @@ function Map({interactive, offset, style: defaultStyle, bal}) {
         ...defaultViewport
       }))
     }
-  }, [sources])
+  }, [commune])
 
   return (
     <MapGl
@@ -148,9 +186,9 @@ function Map({interactive, offset, style: defaultStyle, bal}) {
       mapStyle={mapStyle}
       width={innerWidth}
       height={innerHeight}
-      interactiveLayerIds={interactiveLayerIds}
+      // interactiveLayerIds={interactiveLayerIds}
       onViewportChange={onViewportChange}
-      onClick={onClick}
+      // onClick={onClick}
     >
       {interactive && (
         <StyleSwitch style={style} setStyle={setStyle} offset={offset} />

@@ -55,14 +55,13 @@ const Voie = React.memo(({bal}) => {
 })
 
 Voie.getInitialProps = async ({query}) => {
-  const {id, communeCode, codeVoie} = query
-  const commune = await getCommune(id, communeCode)
+  const {balId, communeCode, codeVoie} = query
+  const commune = await getCommune(balId, communeCode)
   const voie = commune.voies.find(voie => voie.codeVoie === codeVoie)
 
   return {
     layout: 'sidebar',
     bal: {
-      id,
       commune,
       voie
     }
