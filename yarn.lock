@@ -2779,10 +2779,10 @@ eslint-plugin-promise@^4.0.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-4.0.1.tgz#2d074b653f35a23d1ba89d8e976a985117d1c6a2"
   integrity sha512-Si16O0+Hqz1gDHsys6RtFRrW7cCTB6P7p3OJmKp3Y3dxpQE2qwOA7d3xnV+0mBmrPoi0RBnxlCKvqu70te6wjg==
 
-eslint-plugin-react-hooks@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-1.4.0.tgz#ad86001e05519368e55a888b1b31004b8e2ae8f6"
-  integrity sha512-fMGlzztW/5hSQT0UBnlPwulao0uF8Kyp0Uv6PA81lzmcDz2LBtthkWQaE8Wz2F2kEe7mSRDgK8ABEFK1ipeDxw==
+eslint-plugin-react-hooks@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-1.5.1.tgz#3c601326914ee0e1fedd709115db4940bdbbed4a"
+  integrity sha512-i3dIrmZ+Ssrm0LrbbtuGcRf7EEpe1FaMuL8XnnpZO0X4tk3dZNzevWxD0/7nMAFa5yZQfNnYkfEP0MmwLvbdHw==
 
 eslint-plugin-react@^7.12.4:
   version "7.12.4"
@@ -2963,10 +2963,10 @@ events@^3.0.0:
   resolved "https://registry.yarnpkg.com/events/-/events-3.0.0.tgz#9a0a0dfaf62893d92b875b8f2698ca4114973e88"
   integrity sha512-Dc381HFWJzEOhQ+d8pkNon++bk9h6cdAoAj4iE6Q4y6xgTzySWXlKn05/TVNpjnfRqi/X0EpJEJohPjNI3zpVA==
 
-evergreen-ui@^4.13.1:
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/evergreen-ui/-/evergreen-ui-4.13.1.tgz#2c6d08cc6682b4a2283c6d5f2fc817ee04d91598"
-  integrity sha512-csyElvMtkm3XQEZbTtTj2e0Nc4vFI866PSMBcOl8bVLRUy4pzzq8ZqK+adbhKs1lBTuXhPMH5vUxn5ZCLDvFYg==
+evergreen-ui@^4.14.0:
+  version "4.14.0"
+  resolved "https://registry.yarnpkg.com/evergreen-ui/-/evergreen-ui-4.14.0.tgz#54ddb0030e9aa289bc67961c53d9e8050e6d2e4f"
+  integrity sha512-drX9EYReCiJXum2SD412e+jxwPM7aqnNb7uhpSVcj5+V0d83683sV3a1GM/MJzsFnXjv+oCmmAhphu1pitFLcg==
   dependencies:
     "@babel/runtime" "^7.1.2"
     "@blueprintjs/icons" "^3.2.0"
@@ -5885,10 +5885,10 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-map-gl@^4.0.14:
-  version "4.0.14"
-  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-4.0.14.tgz#3bd79d9402a40496427791b7d4aa04ce68b3561d"
-  integrity sha512-Ijr0UIQ/wLGJZQgLzNDY2DVCduaLm4ILptEMoaKz66XG+XEEk27SssFWkfs2++E12TlFb7RctxiYRtEi87HyCw==
+react-map-gl@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-4.1.1.tgz#354baa5e5b4afbf21b4252983e44804b10a112d4"
+  integrity sha512-GvbaGLD5AGFDmhHPC0vMVITjNZbGHrXJjzZPKSP/2OiCzQA5JOt9hivJ4N/hkU82XhO9FzQtLk0p1SEmYdnO2A==
   dependencies:
     "@babel/runtime" "^7.0.0"
     mapbox-gl "~0.53.0"
