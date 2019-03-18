@@ -145,7 +145,7 @@ function Map({interactive, offset, style: defaultStyle, commune}) {
   // }, [sources])
 
   useEffect(() => {
-    if (commune) {
+    if (commune && commune.contour) {
       const [minLng, minLat, maxLng, maxLat] = bbox(commune.contour)
 
       const vp = new WebMercatorViewport({
