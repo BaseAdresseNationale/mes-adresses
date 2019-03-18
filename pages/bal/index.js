@@ -35,7 +35,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
 
     setIsAdding(false)
     setCommunes(updatedCommunes)
-  }, [baseLocale._id, token])
+  }, [baseLocale, token])
 
   const onRemove = useCallback(async codeCommune => {
     const updated = await removeCommune(baseLocale._id, codeCommune, token)
@@ -45,14 +45,14 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
     )
 
     setCommunes(updatedCommunes)
-  }, [baseLocale._id, token])
+  }, [baseLocale, token])
 
   const onSelect = useCallback(codeCommune => {
     Router.push(
       `/bal/commune?balId=${baseLocale._id}&codeCommune=${codeCommune}`,
       `/bal/${baseLocale._id}/communes/${codeCommune}`
     )
-  }, [baseLocale._id])
+  }, [baseLocale])
 
   return (
     <>

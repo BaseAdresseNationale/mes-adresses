@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
-import {getBaseLocale, getVoies} from '../lib/bal-api'
+import {getBaseLocale, getVoies, getVoie, getNumeros} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
 import Fullscreen from '../components/layout/fullscreen'
@@ -56,6 +56,8 @@ App.getInitialProps = async ({Component, ctx}) => {
   let baseLocale
   let commune
   let voies
+  let voie
+  let numeros
 
   if (ctx.query.balId) {
     baseLocale = await getBaseLocale(ctx.query.balId)
@@ -67,6 +69,11 @@ App.getInitialProps = async ({Component, ctx}) => {
     })
   }
 
+  if (ctx.query.voieId) {
+    voie = await getVoie(ctx.query.voieId)
+    numeros = await getNumeros(voie._id)
+  }
+
   if (baseLocale && commune) {
     voies = await getVoies(baseLocale._id, commune.code)
   }
@@ -76,7 +83,9 @@ App.getInitialProps = async ({Component, ctx}) => {
       ...ctx,
       baseLocale,
       commune,
-      voies
+      voies,
+      voie,
+      numeros
     })
   }
 

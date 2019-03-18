@@ -1,52 +1,57 @@
-import React from 'react'
-import {Pane, Paragraph, Heading, Table, IconButton, Popover, Menu, Position} from 'evergreen-ui'
+import React, {useState} from 'react'
+import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
 
-import {getCommune} from '../../lib/storage'
+import useToken from '../../hooks/token'
 
 import Breadcrumbs from '../../components/breadcrumbs'
+import TableRow from '../../components/table-row'
 
-const Voie = React.memo(({bal}) => {
-  const onClick = numero => e => {
-    if (e.target.closest('[data-browsable]')) {
-      console.log(numero)
-    }
-  }
+const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
+  const [numeros, setNumeros] = useState(defaultNumeros)
+  const [isAdding, setIsAdding] = useState(false)
+  const token = useToken(baseLocale._id)
 
   return (
     <>
       <Pane zIndex={1} flexShrink={0} elevation={0} backgroundColor='white'>
-        <Breadcrumbs bal={bal} />
-        <Pane padding={16}>
-          <Heading>Liste des numéros</Heading>
-          <Paragraph size={300} margin={0} color='muted'>Lorem ipsum…</Paragraph>
+        <Breadcrumbs baseLocale={baseLocale} commune={commune} voie={voie} />
+        <Pane padding={16} display='flex'>
+          <Pane>
+            <Heading marginBottom={8}>Liste des numéros</Heading>
+            <Paragraph size={300} margin={0} color='muted'>Lorem ipsum…</Paragraph>
+          </Pane>
+          {token && (
+            <Pane marginLeft='auto'>
+              <Button
+                iconBefore='add'
+                appearance='primary'
+                intent='success'
+                disabled={isAdding}
+                onClick={() => setIsAdding(true)}
+              >
+                Ajouter un numéro
+              </Button>
+            </Pane>
+          )}
         </Pane>
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
         <Table>
-          {Object.values(bal.voie.numeros).map(numero => (
-            <Table.Row key={numero.numeroComplet} isSelectable onClick={onClick(numero)}>
-              <Table.TextCell data-browsable>{numero.numeroComplet}</Table.TextCell>
-              <Table.TextCell data-browsable flex='0 1 1'>
-                {bal.voie.source.join(', ')}
-              </Table.TextCell>
-              <Table.TextCell flex='0 1 1'>
-                <Popover
-                  position={Position.BOTTOM_LEFT}
-                  content={
-                    <Menu>
-                      <Menu.Group title='destructive'>
-                        <Menu.Item icon='trash' intent='danger'>
-                          Supprimer…
-                        </Menu.Item>
-                      </Menu.Group>
-                    </Menu>
-                  }
-                >
-                  <IconButton height={24} icon='more' appearance='minimal' className='foo' />
-                </Popover>
+          {numeros.length === 0 && (
+            <Table.Row>
+              <Table.TextCell color='muted' fontStyle='italic'>
+                Aucun numéro
               </Table.TextCell>
             </Table.Row>
+          )}
+          {numeros.map(numero => (
+            <TableRow
+              key={numero._id}
+              isSelectable={false}
+              id={numero._id}
+              label={numero.numeroComplet}
+            />
           ))}
         </Table>
       </Pane>
@@ -54,17 +59,13 @@ const Voie = React.memo(({bal}) => {
   )
 })
 
-Voie.getInitialProps = async ({query}) => {
-  const {balId, communeCode, codeVoie} = query
-  const commune = await getCommune(balId, communeCode)
-  const voie = commune.voies.find(voie => voie.codeVoie === codeVoie)
-
+Voie.getInitialProps = ({baseLocale, commune, voie, numeros}) => {
   return {
     layout: 'sidebar',
-    bal: {
-      commune,
-      voie
-    }
+    baseLocale,
+    commune,
+    voie,
+    defaultNumeros: numeros
   }
 }
 

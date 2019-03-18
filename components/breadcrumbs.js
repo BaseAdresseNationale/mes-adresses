@@ -14,13 +14,13 @@ function Breadcrumbs({baseLocale, commune, voie}) {
       {voie ? (
         <>
           <Text color='muted'>{' > '}</Text>
-          <NextLink href={`/bal/commune?balId=${baseLocale._id}&communeCode=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+          <NextLink href={`/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
             <Link display='inline-block' href={`/bal/${baseLocale._id}/communes/${commune.code}`} marginY={6}>
               {commune.nom}
             </Link>
           </NextLink>
           <Text color='muted'>{' > '}</Text>
-          <Text>{voie.nomVoie}</Text>
+          <Text>{voie.nom}</Text>
         </>
       ) : (
         <>
@@ -44,7 +44,7 @@ Breadcrumbs.propTypes = {
   }).isRequired,
 
   voie: PropTypes.shape({
-    nomVoie: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired
   })
 }
 

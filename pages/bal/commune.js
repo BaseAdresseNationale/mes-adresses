@@ -31,7 +31,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
     setIsAdding(false)
     setVoies(voies)
-  }, [baseLocale._id, commune.code, token])
+  }, [baseLocale, commune, token])
 
   const onEdit = useCallback(async (id, {nom}) => {
     await editVoie(id, {
@@ -41,14 +41,14 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     const voies = await getVoies(baseLocale._id, commune.code)
 
     setVoies(voies)
-  }, [baseLocale._id, commune.code, token])
+  }, [baseLocale, commune, token])
 
   const onSelect = useCallback(voieId => {
     Router.push(
-      `/bal/voie?balId=${baseLocale._id}&communeCode=${commune.code}&codeVoie=${voieId}`,
+      `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&voieId=${voieId}`,
       `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voieId}`
     )
-  }, [baseLocale._id, commune.code])
+  }, [baseLocale, commune])
 
   return (
     <>

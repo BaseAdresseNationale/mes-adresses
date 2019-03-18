@@ -8,6 +8,8 @@ function TableRow({
   label,
   secondary,
 
+  isSelectable,
+
   renderEditor,
 
   onSelect,
@@ -61,7 +63,7 @@ function TableRow({
   }
 
   return (
-    <Table.Row isSelectable onClick={onClick}>
+    <Table.Row isSelectable={isSelectable} onClick={onClick}>
       {code && (
         <Table.TextCell data-browsable isNumber flex='0 1 1'>{code}</Table.TextCell>
       )}
@@ -100,6 +102,14 @@ function TableRow({
       )}
     </Table.Row>
   )
+}
+
+TableRow.propTypes = {
+  isSelectable: PropTypes.bool
+}
+
+TableRow.defaultProps = {
+  isSelectable: true
 }
 
 export default TableRow
