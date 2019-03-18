@@ -82,7 +82,7 @@ function Index({defaultCommune}) {
           required
           id='commune'
           defaultSelectedItem={defaultCommune}
-          label='Commune initiale'
+          label='Commune'
           maxWidth={500}
           hint='Vous pourrez ajouter plusieurs communes à la Base Adresse Locale plus tard.'
           onSelect={onSelect}
