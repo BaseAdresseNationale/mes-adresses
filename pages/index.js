@@ -6,10 +6,13 @@ import {Pane, Heading, Table, Paragraph, Alert, Button} from 'evergreen-ui'
 import {listBasesLocales} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
+import useFocus from '../hooks/focus'
 import useFuse from '../hooks/fuse'
 import {CommuneSearch} from '../components/commune-search'
 
 function Index({basesLocales, defaultCommune}) {
+  const focusRef = useFocus()
+
   const onCommuneSelect = useCallback(commune => {
     Router.push(`/?commune=${commune.code}`)
   }, [])
@@ -41,6 +44,7 @@ function Index({basesLocales, defaultCommune}) {
           Sélectionnez une commune pour laquelle vous souhaitez visualiser, créer ou modifier une Base Adresse Locale.
         </Paragraph>
         <CommuneSearch
+          innerRef={defaultCommune ? null : focusRef}
           placeholder='Rechercher une commune…'
           defaultSelectedItem={defaultCommune}
           width='100%'

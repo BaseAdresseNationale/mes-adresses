@@ -54,6 +54,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
         width='100%'
         maxWidth={500}
         value={nom}
+        maxLength={200}
         marginBottom={16}
         placeholder='Nom de la voie…'
         onChange={onNomChange}

@@ -4,7 +4,7 @@ import Router from 'next/router'
 import {Pane, Alert, Heading, Paragraph, Button, Link} from 'evergreen-ui'
 import {validate, extractAsTree} from '@etalab/bal'
 
-import {createBal} from '../../lib/storage'
+// import {createBal} from '../../lib/storage'
 import Uploader from '../../components/uploader'
 
 function getFileExtension(name) {
@@ -74,9 +74,8 @@ function Index() {
   }, [file])
 
   const onEdit = () => {
-    const id = createBal(tree)
-
-    Router.push(`/bal?balId=${id}`, `/bal/${id}`)
+    // const id = createBal(tree)
+    // Router.push(`/bal?balId=${id}`, `/bal/${id}`)
   }
 
   return (

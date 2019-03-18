@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 
-import {addVoie, editVoie, getVoies} from '../../lib/bal-api'
+import {addVoie, editVoie, getVoies, removeVoie} from '../../lib/bal-api'
 
 import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
@@ -33,10 +33,18 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setVoies(voies)
   }, [baseLocale, commune, token])
 
-  const onEdit = useCallback(async (id, {nom}) => {
-    await editVoie(id, {
+  const onEdit = useCallback(async (idVoie, {nom}) => {
+    await editVoie(idVoie, {
       nom
     }, token)
+
+    const voies = await getVoies(baseLocale._id, commune.code)
+
+    setVoies(voies)
+  }, [baseLocale, commune, token])
+
+  const onRemove = useCallback(async idVoie => {
+    await removeVoie(idVoie, token)
 
     const voies = await getVoies(baseLocale._id, commune.code)
 
@@ -105,17 +113,16 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               key={voie._id}
               id={voie._id}
               label={voie.nom}
-              renderEditor={({onSubmit, onCancel}) => {
-                return (
-                  <VoieEditor
-                    initialValue={voie}
-                    onSubmit={onSubmit}
-                    onCancel={onCancel}
-                  />
-                )
-              }}
-              onEdit={onEdit}
+              renderEditor={({onSubmit, onCancel}) => (
+                <VoieEditor
+                  initialValue={voie}
+                  onSubmit={onSubmit}
+                  onCancel={onCancel}
+                />
+              )}
               onSelect={onSelect}
+              onEdit={onEdit}
+              onRemove={onRemove}
             />
           ))}
         </Table>

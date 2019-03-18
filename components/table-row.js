@@ -79,20 +79,18 @@ function TableRow({
             position={Position.BOTTOM_LEFT}
             content={
               <Menu>
-                {renderEditor && (
-                  <Menu.Group>
+                <Menu.Group>
+                  {renderEditor && (
                     <Menu.Item icon='edit' onSelect={onEnableEditing}>
                       Modifier
                     </Menu.Item>
-                  </Menu.Group>
-                )}
-                {onRemove && (
-                  <Menu.Group>
+                  )}
+                  {onRemove && (
                     <Menu.Item icon='trash' intent='danger' onSelect={_onRemove}>
                       Supprimer…
                     </Menu.Item>
-                  </Menu.Group>
-                )}
+                  )}
+                </Menu.Group>
               </Menu>
             }
           >
