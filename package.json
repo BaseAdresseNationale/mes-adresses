@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node server",
     "build": "next build",
-    "deploy": "now && now alias && now rm -s -y mapper"
+    "deploy": "now && now alias && now rm --safe -y mapper"
   },
   "dependencies": {
     "@etalab/bal": "^0.14.3",
