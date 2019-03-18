@@ -31,7 +31,10 @@ function CommuneSearch({placeholder, exclude, onSelect, innerRef, defaultSelecte
             placeholder={placeholder}
             value={inputValue}
             innerRef={ref => {
-              innerRef(ref)
+              if (innerRef) {
+                innerRef(ref)
+              }
+
               return getRef(ref)
             }}
             {...getInputProps({
@@ -46,9 +49,18 @@ function CommuneSearch({placeholder, exclude, onSelect, innerRef, defaultSelecte
 }
 
 CommuneSearch.propTypes = {
+  defaultSelectedItem: PropTypes.shape({
+    code: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired,
+    departement: PropTypes.shape({
+      code: PropTypes.string.isRequired,
+      nom: PropTypes.string.isRequired
+    }).isRequired
+  }),
   placeholder: PropTypes.string,
   exclude: PropTypes.array,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
+  innerRef: PropTypes.func,
 }
 
 CommuneSearch.defaultProps = {
