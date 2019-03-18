@@ -5,7 +5,7 @@ import {useDebouncedCallback} from 'use-debounce'
 
 import {searchCommunes} from '../../lib/geo-api'
 
-function CommuneSearch({placeholder, exclude, onSelect, innerRef, defaultSelectedItem, ...props}) {
+function CommuneSearch({placeholder, exclude, innerRef, defaultSelectedItem, onSelect, ...props}) {
   const [communes, setCommunes] = useState([])
 
   const [onSearch] = useDebouncedCallback(async value => {
@@ -59,8 +59,8 @@ CommuneSearch.propTypes = {
   }),
   placeholder: PropTypes.string,
   exclude: PropTypes.array,
-  onSelect: PropTypes.func,
   innerRef: PropTypes.func,
+  onSelect: PropTypes.func
 }
 
 CommuneSearch.defaultProps = {
