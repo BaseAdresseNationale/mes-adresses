@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Table, Popover, Menu, Position, IconButton} from 'evergreen-ui'
 
@@ -8,15 +8,57 @@ function TableRow({
   label,
   secondary,
 
+  renderEditor,
+
   onSelect,
   onEdit,
-  onDelete
+  onRemove
 }) {
+  const [isEditing, setIsEditing] = useState(false)
+
   const onClick = useCallback(e => {
     if (e.target.closest('[data-browsable]')) {
       onSelect(id)
     }
   }, [id, onSelect])
+
+  const onEnableEditing = useCallback(() => {
+    setIsEditing(true)
+  }, [])
+
+  const onDisableEditing = useCallback(() => {
+    setIsEditing(false)
+  }, [])
+
+  const _onRemove = useCallback(async () => {
+    if (onRemove) {
+      onRemove(id)
+    }
+  }, [id, onRemove])
+
+  const _onEdit = useCallback(async result => {
+    if (onEdit) {
+      await onEdit(id, result)
+    }
+
+    setIsEditing(false)
+  }, [id, onEdit])
+
+  if (isEditing) {
+    return (
+      <Table.Row height='auto'>
+        <Table.Cell display='block' paddingY={12} background='tint1'>
+          {renderEditor({
+            id,
+            code,
+            label,
+            onSubmit: _onEdit,
+            onCancel: onDisableEditing
+          })}
+        </Table.Cell>
+      </Table.Row>
+    )
+  }
 
   return (
     <Table.Row isSelectable onClick={onClick}>
@@ -29,25 +71,22 @@ function TableRow({
           {secondary}
         </Table.TextCell>
       )}
-      {(onEdit || onDelete) && (
+      {(renderEditor || onRemove) && (
         <Table.TextCell flex='0 1 1'>
           <Popover
             position={Position.BOTTOM_LEFT}
             content={
               <Menu>
-                {onEdit && (
-                  <>
-                    <Menu.Group>
-                      <Menu.Item icon='edit'>
-                        Modifier
-                      </Menu.Item>
-                    </Menu.Group>
-                    <Menu.Divider />
-                  </>
-                )}
-                {onDelete && (
+                {renderEditor && (
                   <Menu.Group>
-                    <Menu.Item icon='trash' intent='danger'>
+                    <Menu.Item icon='edit' onSelect={onEnableEditing}>
+                      Modifier
+                    </Menu.Item>
+                  </Menu.Group>
+                )}
+                {onRemove && (
+                  <Menu.Group>
+                    <Menu.Item icon='trash' intent='danger' onSelect={_onRemove}>
                       Supprimer…
                     </Menu.Item>
                   </Menu.Group>

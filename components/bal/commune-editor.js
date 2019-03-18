@@ -1,14 +1,21 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInput, Button, IconButton} from 'evergreen-ui'
+import {Pane, Checkbox, Button, IconButton} from 'evergreen-ui'
 
-import {useInput} from '../../hooks/input'
+import {useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 
-function VoieAdd({onSubmit, onCancel}) {
+import {CommuneSearch} from '../commune-search'
+
+function CommuneEditor({onSubmit, onCancel, ...props}) {
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput()
+  const [commune, setCommune] = useState(null)
+  const [populate, onPopulateChange] = useCheckboxInput(true)
   const setRef = useFocus()
+
+  const onSelect = useCallback(commune => {
+    setCommune(commune.code)
+  }, [])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -16,13 +23,14 @@ function VoieAdd({onSubmit, onCancel}) {
     setIsLoading(true)
 
     try {
-      onSubmit({
-        nom
+      await onSubmit({
+        commune,
+        populate
       })
     } catch (error) {
       setIsLoading(false)
     }
-  }, [onSubmit, nom])
+  }, [onSubmit, commune, populate])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -32,16 +40,21 @@ function VoieAdd({onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <TextInput
+      <CommuneSearch
         required
         disabled={isLoading}
-        innerRef={setRef}
         width='100%'
         maxWidth={500}
-        value={nom}
-        marginBottom={16}
-        placeholder='Nom de la voie…'
-        onChange={onNomChange}
+        innerRef={setRef}
+        onSelect={onSelect}
+        {...props}
+      />
+
+      <Checkbox
+        checked={populate}
+        label='Importer les données de la BAN'
+        disabled={isLoading}
+        onChange={onPopulateChange}
       />
 
       <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
@@ -62,9 +75,9 @@ function VoieAdd({onSubmit, onCancel}) {
   )
 }
 
-VoieAdd.propTypes = {
+CommuneEditor.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
 }
 
-export default VoieAdd
+export default CommuneEditor

@@ -2,14 +2,14 @@ import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 
-import {addVoie, getVoies} from '../../lib/bal-api'
+import {addVoie, editVoie, getVoies} from '../../lib/bal-api'
 
 import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
 
 import Breadcrumbs from '../../components/breadcrumbs'
 import TableRow from '../../components/table-row'
-import VoieAdd from '../../components/bal/voie-add'
+import VoieEditor from '../../components/bal/voie-editor'
 
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [voies, setVoies] = useState(defaultVoies)
@@ -22,7 +22,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     ]
   })
 
-  const onVoieAdd = useCallback(async ({nom}) => {
+  const onAdd = useCallback(async ({nom}) => {
     await addVoie(baseLocale._id, commune.code, {
       nom
     }, token)
@@ -31,7 +31,17 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
     setIsAdding(false)
     setVoies(voies)
-  }, [baseLocale, commune, token])
+  }, [baseLocale._id, commune.code, token])
+
+  const onEdit = useCallback(async (id, {nom}) => {
+    await editVoie(id, {
+      nom
+    }, token)
+
+    const voies = await getVoies(baseLocale._id, commune.code)
+
+    setVoies(voies)
+  }, [baseLocale._id, commune.code, token])
 
   const onSelect = useCallback(voieId => {
     Router.push(
@@ -76,8 +86,8 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
           {isAdding && (
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                <VoieAdd
-                  onSubmit={onVoieAdd}
+                <VoieEditor
+                  onSubmit={onAdd}
                   onCancel={() => setIsAdding(false)}
                 />
               </Table.Cell>
@@ -95,7 +105,16 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               key={voie._id}
               id={voie._id}
               label={voie.nom}
-              secondary={voie.position ? 'Toponyme' : `${voie.numerosCount || 0} numéros`}
+              renderEditor={({onSubmit, onCancel}) => {
+                return (
+                  <VoieEditor
+                    initialValue={voie}
+                    onSubmit={onSubmit}
+                    onCancel={onCancel}
+                  />
+                )
+              }}
+              onEdit={onEdit}
               onSelect={onSelect}
             />
           ))}

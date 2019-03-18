@@ -2,14 +2,14 @@ import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Button, Table, Paragraph} from 'evergreen-ui'
 
-import {addCommune, populateCommune} from '../../lib/bal-api'
+import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
 
 import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
 
 import TableRow from '../../components/table-row'
-import CommuneAdd from '../../components/bal/commune-add'
+import CommuneEditor from '../../components/bal/commune-editor'
 
 const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [communes, setCommunes] = useState(defaultCommunes)
@@ -22,7 +22,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
     ]
   })
 
-  const onCommuneAdd = useCallback(async ({commune, populate}) => {
+  const onAdd = useCallback(async ({commune, populate}) => {
     const updated = await addCommune(baseLocale._id, commune, token)
 
     if (populate) {
@@ -35,7 +35,17 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
 
     setIsAdding(false)
     setCommunes(updatedCommunes)
-  }, [baseLocale, token])
+  }, [baseLocale._id, token])
+
+  const onRemove = useCallback(async codeCommune => {
+    const updated = await removeCommune(baseLocale._id, codeCommune, token)
+
+    const updatedCommunes = await Promise.all(
+      updated.communes.map(commune => getCommune(commune))
+    )
+
+    setCommunes(updatedCommunes)
+  }, [baseLocale._id, token])
 
   const onSelect = useCallback(codeCommune => {
     Router.push(
@@ -79,9 +89,9 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
           {isAdding && (
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                <CommuneAdd
+                <CommuneEditor
                   exclude={communes.map(c => c.code)}
-                  onSubmit={onCommuneAdd}
+                  onSubmit={onAdd}
                   onCancel={() => setIsAdding(false)}
                 />
               </Table.Cell>
@@ -100,14 +110,8 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
               id={commune.code}
               code={commune.code}
               label={commune.nom}
-              secondary={
-                <>
-                  {!commune.voiesCount && 'aucune voie'}
-                  {commune.voiesCount === 1 && 'une voie'}
-                  {commune.voiesCount > 1 && `${commune.voiesCount} voies`}
-                </>
-              }
               onSelect={onSelect}
+              onRemove={onRemove}
             />
           ))}
         </Table>
