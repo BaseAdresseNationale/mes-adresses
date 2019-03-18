@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInput, Button, IconButton} from 'evergreen-ui'
 
@@ -6,15 +6,22 @@ import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 
 function VoieAdd({onSubmit, onCancel}) {
+  const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput()
   const setRef = useFocus()
 
-  const onFormSubmit = useCallback(e => {
+  const onFormSubmit = useCallback(async e => {
     e.preventDefault()
 
-    onSubmit({
-      nom
-    })
+    setIsLoading(true)
+
+    try {
+      onSubmit({
+        nom
+      })
+    } catch (error) {
+      setIsLoading(false)
+    }
   }, [onSubmit, nom])
 
   const onFormCancel = useCallback(e => {
@@ -27,6 +34,7 @@ function VoieAdd({onSubmit, onCancel}) {
     <Pane is='form' onSubmit={onFormSubmit}>
       <TextInput
         required
+        disabled={isLoading}
         innerRef={setRef}
         width='100%'
         maxWidth={500}
@@ -36,12 +44,13 @@ function VoieAdd({onSubmit, onCancel}) {
         onChange={onNomChange}
       />
 
-      <Button type='submit' appearance='primary' intent='success'>
-        Ajouter
+      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
+        {isLoading ? 'En cours…' : 'Ajouter'}
       </Button>
 
       {onCancel && (
         <IconButton
+          disabled={isLoading}
           icon='undo'
           appearance='minimal'
           marginLeft={8}

@@ -9,7 +9,7 @@ import {getCommune} from '../lib/geo-api'
 import useFuse from '../hooks/fuse'
 import {CommuneSearch} from '../components/commune-search'
 
-function Index({basesLocales, commune}) {
+function Index({basesLocales, defaultCommune}) {
   const onCommuneSelect = useCallback(commune => {
     Router.push(`/?commune=${commune.code}`)
   }, [])
@@ -19,12 +19,12 @@ function Index({basesLocales, commune}) {
   }, [])
 
   const onCreate = useCallback(() => {
-    Router.push(`/new?commune=${commune.code}`)
-  }, [commune])
+    Router.push(`/new?commune=${defaultCommune.code}`)
+  }, [defaultCommune])
 
   const matchingBals = useMemo(() => {
-    return commune ? basesLocales.filter(bal => bal.communes.includes(commune.code)) : []
-  }, [basesLocales, commune])
+    return defaultCommune ? basesLocales.filter(bal => bal.communes.includes(defaultCommune.code)) : []
+  }, [basesLocales, defaultCommune])
 
   const [filtered, onFilter] = useFuse(matchingBals, 200, {
     keys: [
@@ -42,18 +42,18 @@ function Index({basesLocales, commune}) {
         </Paragraph>
         <CommuneSearch
           placeholder='Rechercher une commune…'
-          defaultSelectedItem={commune}
+          defaultSelectedItem={defaultCommune}
           width='100%'
           onSelect={onCommuneSelect}
         />
       </Pane>
-      {commune && (
+      {defaultCommune && (
         <>
           {matchingBals.length === 0 ? (
             <Pane borderTop padding={16}>
               <Alert title='Aucune Base Adresse Locale ne contient cette commune'>
                 <Paragraph size={300} color='muted'>
-                  Vous pouvez créer une nouvelle Base Adresse Locale pour la commune de {commune.nom}.
+                  Vous pouvez créer une nouvelle Base Adresse Locale pour la commune de {defaultCommune.nom}.
                 </Paragraph>
                 <Button marginTop={10} appearance='primary' onClick={onCreate}>
                   Créer une nouvelle Base Adresse Locale
@@ -92,7 +92,7 @@ function Index({basesLocales, commune}) {
 
               <Pane borderTop marginTop='auto' padding={16}>
                 <Paragraph size={300} color='muted'>
-                  Vous pouvez également créer une nouvelle Base Adresse Locale pour la commune de {commune.nom}.
+                  Vous pouvez également créer une nouvelle Base Adresse Locale pour la commune de {defaultCommune.nom}.
                 </Paragraph>
                 <Button marginTop={10} appearance='primary' onClick={onCreate}>
                   Créer une nouvelle Base Adresse Locale
@@ -107,9 +107,9 @@ function Index({basesLocales, commune}) {
 }
 
 Index.getInitialProps = async ({query}) => {
-  let commune
+  let defaultCommune
   if (query.commune) {
-    commune = await getCommune(query.commune, {
+    defaultCommune = await getCommune(query.commune, {
       fields: 'departement'
     })
   }
@@ -117,7 +117,7 @@ Index.getInitialProps = async ({query}) => {
   const basesLocales = await listBasesLocales()
 
   return {
-    commune,
+    defaultCommune,
     basesLocales,
     layout: 'fullscreen'
   }
@@ -125,7 +125,7 @@ Index.getInitialProps = async ({query}) => {
 
 Index.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  commune: PropTypes.shape({
+  defaultCommune: PropTypes.shape({
     code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
   })

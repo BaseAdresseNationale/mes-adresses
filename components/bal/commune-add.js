@@ -8,6 +8,7 @@ import useFocus from '../../hooks/focus'
 import {CommuneSearch} from '../commune-search'
 
 function CommuneAdd({onSubmit, onCancel, ...props}) {
+  const [isLoading, setIsLoading] = useState(false)
   const [commune, setCommune] = useState(null)
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const setRef = useFocus()
@@ -16,13 +17,19 @@ function CommuneAdd({onSubmit, onCancel, ...props}) {
     setCommune(commune.code)
   }, [])
 
-  const onFormSubmit = useCallback(e => {
+  const onFormSubmit = useCallback(async e => {
     e.preventDefault()
 
-    onSubmit({
-      commune,
-      populate
-    })
+    setIsLoading(true)
+
+    try {
+      await onSubmit({
+        commune,
+        populate
+      })
+    } catch (error) {
+      setIsLoading(false)
+    }
   }, [onSubmit, commune, populate])
 
   const onFormCancel = useCallback(e => {
@@ -35,6 +42,7 @@ function CommuneAdd({onSubmit, onCancel, ...props}) {
     <Pane is='form' onSubmit={onFormSubmit}>
       <CommuneSearch
         required
+        disabled={isLoading}
         width='100%'
         maxWidth={500}
         innerRef={setRef}
@@ -45,15 +53,17 @@ function CommuneAdd({onSubmit, onCancel, ...props}) {
       <Checkbox
         checked={populate}
         label='Importer les données de la BAN'
+        disabled={isLoading}
         onChange={onPopulateChange}
       />
 
-      <Button type='submit' appearance='primary' intent='success'>
-        Ajouter
+      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
+        {isLoading ? 'En cours…' : 'Ajouter'}
       </Button>
 
       {onCancel && (
         <IconButton
+          disabled={isLoading}
           icon='undo'
           appearance='minimal'
           marginLeft={8}

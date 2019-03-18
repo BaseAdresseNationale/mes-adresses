@@ -8,6 +8,7 @@ import {getCommune} from '../../lib/geo-api'
 import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
 
+import TableRow from '../../components/table-row'
 import CommuneAdd from '../../components/bal/commune-add'
 
 const Index = React.memo(({baseLocale, defaultCommunes}) => {
@@ -22,31 +23,26 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   })
 
   const onCommuneAdd = useCallback(async ({commune, populate}) => {
-    setIsAdding(false)
-
     const updated = await addCommune(baseLocale._id, commune, token)
 
     if (populate) {
-      try {
-        await populateCommune(baseLocale._id, commune, token)
-      } catch (error) {
-        console.log('Not implemented yet')
-      }
+      await populateCommune(baseLocale._id, commune, token)
     }
 
     const updatedCommunes = await Promise.all(
       updated.communes.map(commune => getCommune(commune))
     )
 
+    setIsAdding(false)
     setCommunes(updatedCommunes)
   }, [baseLocale, token])
 
-  const onSelect = commune => {
+  const onSelect = useCallback(codeCommune => {
     Router.push(
-      `/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`,
-      `/bal/${baseLocale._id}/communes/${commune.code}`
+      `/bal/commune?balId=${baseLocale._id}&codeCommune=${codeCommune}`,
+      `/bal/${baseLocale._id}/communes/${codeCommune}`
     )
-  }
+  }, [baseLocale._id])
 
   return (
     <>
@@ -99,15 +95,20 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
             </Table.Row>
           )}
           {filtered.map(commune => (
-            <Table.Row key={commune.code} isSelectable onSelect={() => onSelect(commune)}>
-              <Table.TextCell isNumber flex='0 1 1'>{commune.code}</Table.TextCell>
-              <Table.TextCell>{commune.nom}</Table.TextCell>
-              <Table.TextCell flex='0 1 1'>
-                {!commune.voiesCount && 'aucune voie'}
-                {commune.voiesCount === 1 && 'une voie'}
-                {commune.voiesCount > 1 && `${commune.voiesCount} voies`}
-              </Table.TextCell>
-            </Table.Row>
+            <TableRow
+              key={commune.code}
+              id={commune.code}
+              code={commune.code}
+              label={commune.nom}
+              secondary={
+                <>
+                  {!commune.voiesCount && 'aucune voie'}
+                  {commune.voiesCount === 1 && 'une voie'}
+                  {commune.voiesCount > 1 && `${commune.voiesCount} voies`}
+                </>
+              }
+              onSelect={onSelect}
+            />
           ))}
         </Table>
       </Pane>

@@ -4,7 +4,6 @@ function useFocus() {
   const [ref, setRef] = useState()
 
   useEffect(() => {
-    console.log(ref)
     if (ref) {
       ref.focus()
     }

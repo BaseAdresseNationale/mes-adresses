@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
-import {Pane, Heading, Paragraph, Table, Button, IconButton, Popover, Menu, Position} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 
 import {addVoie, getVoies} from '../../lib/bal-api'
 
@@ -8,6 +8,7 @@ import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
 
 import Breadcrumbs from '../../components/breadcrumbs'
+import TableRow from '../../components/table-row'
 import VoieAdd from '../../components/bal/voie-add'
 
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
@@ -22,25 +23,22 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   })
 
   const onVoieAdd = useCallback(async ({nom}) => {
-    setIsAdding(false)
-
     await addVoie(baseLocale._id, commune.code, {
       nom
     }, token)
 
     const voies = await getVoies(baseLocale._id, commune.code)
 
+    setIsAdding(false)
     setVoies(voies)
   }, [baseLocale, commune, token])
 
-  const onClick = voie => e => {
-    if (e.target.closest('[data-browsable]')) {
-      Router.push(
-        `/bal/voie?balId=${baseLocale._id}&communeCode=${commune.code}&codeVoie=${voie.codeVoie}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voie.codeVoie}`
-      )
-    }
-  }
+  const onSelect = useCallback(voieId => {
+    Router.push(
+      `/bal/voie?balId=${baseLocale._id}&communeCode=${commune.code}&codeVoie=${voieId}`,
+      `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voieId}`
+    )
+  }, [baseLocale._id, commune.code])
 
   return (
     <>
@@ -93,34 +91,13 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
             </Table.Row>
           )}
           {filtered.map(voie => (
-            <Table.Row key={voie._id} isSelectable onClick={onClick(voie)}>
-              <Table.TextCell data-browsable>{voie.nom}</Table.TextCell>
-              <Table.TextCell data-browsable flex='0 1 1'>
-                {voie.position ? 'Toponyme' : `${voie.numerosCount || 0} numéros`}
-              </Table.TextCell>
-              <Table.TextCell flex='0 1 1'>
-                <Popover
-                  position={Position.BOTTOM_LEFT}
-                  content={
-                    <Menu>
-                      <Menu.Group>
-                        <Menu.Item icon='edit'>
-                          Modifier
-                        </Menu.Item>
-                      </Menu.Group>
-                      <Menu.Divider />
-                      <Menu.Group>
-                        <Menu.Item icon='trash' intent='danger'>
-                          Supprimer…
-                        </Menu.Item>
-                      </Menu.Group>
-                    </Menu>
-                  }
-                >
-                  <IconButton height={24} icon='more' appearance='minimal' className='foo' />
-                </Popover>
-              </Table.TextCell>
-            </Table.Row>
+            <TableRow
+              key={voie._id}
+              id={voie._id}
+              label={voie.nom}
+              secondary={voie.position ? 'Toponyme' : `${voie.numerosCount || 0} numéros`}
+              onSelect={onSelect}
+            />
           ))}
         </Table>
       </Pane>
