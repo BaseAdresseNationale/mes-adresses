@@ -36,9 +36,10 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setVoies(voies)
   }, [baseLocale, commune, token])
 
-  const onAdd = useCallback(async ({nom}) => {
+  const onAdd = useCallback(async ({nom, positions}) => {
     await addVoie(baseLocale._id, commune.code, {
-      nom
+      nom,
+      positions
     }, token)
 
     const voies = await getVoies(baseLocale._id, commune.code)
@@ -47,9 +48,10 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setVoies(voies)
   }, [baseLocale, commune, token])
 
-  const onEdit = useCallback(async (idVoie, {nom}) => {
+  const onEdit = useCallback(async (idVoie, {nom, positions}) => {
     await editVoie(idVoie, {
-      nom
+      nom,
+      positions
     }, token)
 
     const voies = await getVoies(baseLocale._id, commune.code)
@@ -127,6 +129,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               key={voie._id}
               id={voie._id}
               label={voie.nom}
+              secondary={voie.positions.length === 1 ? 'Toponyme' : null}
               renderEditor={({onSubmit, onCancel}) => (
                 <VoieEditor
                   initialValue={voie}

@@ -17,7 +17,7 @@ function EditableMarker({viewport}) {
 
   useEffect(() => {
     if (enabled) {
-      setMarker({
+      setMarker(marker => marker || {
         latitude: viewport.latitude,
         longitude: viewport.longitude
       })

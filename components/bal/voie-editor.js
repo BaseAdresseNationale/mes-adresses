@@ -34,12 +34,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     if (marker) {
       body.positions = [
         {
-          type: 'Feature',
-          properties: {},
-          geometry: {
+          point: {
             type: 'Point',
             coordinates: [marker.longitude, marker.latitude]
-          }
+          },
+          type: 'entrée'
         }
       ]
     }
@@ -57,6 +56,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     e.preventDefault()
 
     onCancel()
+    disableMarker()
   }, [onCancel])
 
   const submitLabel = useMemo(() => {
@@ -75,7 +75,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   useEffect(() => {
     if (isToponyme) {
-      enableMarker()
+      enableMarker(initialValue ? initialValue.positions[0] : null)
     } else {
       disableMarker()
     }
@@ -107,7 +107,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
       {isToponyme && marker && (
         <PositionEditor
-          alert='Déplacez le marqueur sur la carte pour placer le toponyme.'
+          alert={
+            initialValue ?
+              'Déplacez le marqueur sur la carte pour déplacer le toponyme.' :
+              'Déplacez le marqueur sur la carte pour placer le toponyme.'
+          }
           marker={marker}
         />
       )}

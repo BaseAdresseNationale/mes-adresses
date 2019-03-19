@@ -32,9 +32,11 @@ function PositionEditor({marker, alert}) {
         />
       </Pane>
 
-      <Alert marginBottom={16}>
-        {alert || 'Déplacez le marqueur sur la carte'}
-      </Alert>
+      {alert && (
+        <Alert marginBottom={16}>
+          {alert}
+        </Alert>
+      )}
     </Pane>
   )
 }
