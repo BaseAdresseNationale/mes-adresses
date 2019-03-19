@@ -1,12 +1,10 @@
-import React, {useState, useEffect, useCallback, useMemo} from 'react'
+import React, {useState, useRef, useEffect, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import WebMercatorViewport from 'viewport-mercator-project'
 import {merge} from '@mapbox/geojson-merge'
 import bbox from '@turf/bbox'
-import buffer from '@turf/buffer'
 
 import useWindowSize from '../../hooks/window-size'
 
@@ -14,6 +12,8 @@ import {vector, ortho} from './styles'
 import useBal from './bal'
 
 import StyleSwitch from './style-switch'
+import NavControl from './nav-control'
+import EditableMarker from './editable-marker'
 
 const defaultViewport = {
   latitude: 46.5693,
@@ -58,6 +58,7 @@ function generateNewStyle(style, sources, layers) {
 }
 
 function Map({interactive, offset, style: defaultStyle, commune}) {
+  const sourceRef = useRef()
   const windowSize = useWindowSize()
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
@@ -145,54 +146,59 @@ function Map({interactive, offset, style: defaultStyle, commune}) {
   // }, [sources])
 
   useEffect(() => {
+    const map = sourceRef.current.getMap()
+
     if (commune && commune.contour) {
       const [minLng, minLat, maxLng, maxLat] = bbox(commune.contour)
 
-      const vp = new WebMercatorViewport({
-        ...viewport,
-        height: windowSize.innerHeight,
-        width: windowSize.innerWidth
-      })
-
-      const {longitude, latitude, zoom} = vp.fitBounds(
-        [[minLng, minLat], [maxLng, maxLat]],
-        {padding: {
+      const camera = map.cameraForBounds([[minLng, minLat], [maxLng, maxLat]], {
+        duration: 0,
+        padding: {
           top: 80,
           right: 80,
           bottom: 80,
           left: offset + 80
-        }}
-      )
+        }
+      })
 
-      setViewport(viewport => ({
-        ...viewport,
-        longitude,
-        latitude,
-        zoom
-      }))
+      if (camera) {
+        setViewport(viewport => ({
+          ...viewport,
+          bearing: camera.bearing,
+          longitude: camera.center.lng,
+          latitude: camera.center.lat,
+          zoom: camera.zoom
+        }))
+      }
     } else {
       setViewport(viewport => ({
         ...viewport,
         ...defaultViewport
       }))
     }
-  }, [commune])
+  }, [sourceRef.current, commune])
 
   return (
     <MapGl
-      {...getInteractionProps(interactive)}
-      {...viewport}
+      ref={sourceRef}
       reuseMap
+      viewState={viewport}
       mapStyle={mapStyle}
       width={innerWidth}
       height={innerHeight}
+      {...getInteractionProps(interactive)}
       // interactiveLayerIds={interactiveLayerIds}
-      onViewportChange={onViewportChange}
       // onClick={onClick}
+      onViewportChange={onViewportChange}
     >
       {interactive && (
-        <StyleSwitch style={style} setStyle={setStyle} offset={offset} />
+        <>
+          <NavControl onViewportChange={onViewportChange} />
+          <StyleSwitch style={style} setStyle={setStyle} offset={offset} />
+        </>
       )}
+
+      <EditableMarker viewport={viewport} />
     </MapGl>
   )
 }

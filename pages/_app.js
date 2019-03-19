@@ -10,6 +10,8 @@ import Sidebar from '../components/layout/sidebar'
 
 import Map from '../components/map'
 
+import {MarkerContextProvider, MarkerContextConsumer} from '../contexts/marker'
+
 const layoutMap = {
   fullscreen: Fullscreen,
   sidebar: Sidebar
@@ -29,7 +31,7 @@ function App({Component, pageProps}) {
 
   return (
     <Container>
-      <>
+      <MarkerContextProvider>
         <Map
           interactive={layout === 'sidebar'}
           offset={size}
@@ -46,7 +48,7 @@ function App({Component, pageProps}) {
         >
           <Component {...otherPageProps} />
         </Wrapper>
-      </>
+      </MarkerContextProvider>
     </Container>
   )
 }

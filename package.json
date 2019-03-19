@@ -13,7 +13,6 @@
     "@etalab/project-legal": "^0.3.3",
     "@mapbox/geojson-merge": "^1.0.2",
     "@turf/bbox": "^6.0.1",
-    "@turf/buffer": "^5.1.5",
     "@turf/centroid": "^6.0.2",
     "@turf/concave": "^6.0.5",
     "@turf/helpers": "^6.1.4",
@@ -34,8 +33,7 @@
     "react-dom": "^16.8.4",
     "react-dropzone": "^9.0.0",
     "react-map-gl": "^4.1.1",
-    "use-debounce": "^1.1.1",
-    "viewport-mercator-project": "^6.1.1"
+    "use-debounce": "^1.1.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

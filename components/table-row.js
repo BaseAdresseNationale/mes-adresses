@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Table, Popover, Menu, Position, IconButton} from 'evergreen-ui'
 
-function TableRow({
+const TableRow = React.memo(({
   id,
   code,
   label,
@@ -15,14 +15,16 @@ function TableRow({
   onSelect,
   onEdit,
   onRemove
-}) {
+}) => {
   const [isEditing, setIsEditing] = useState(false)
 
   const onClick = useCallback(e => {
-    if (e.target.closest('[data-browsable]')) {
-      onSelect(id)
+    if (isSelectable) {
+      if (e.target.closest('[data-browsable]')) {
+        onSelect(id)
+      }
     }
-  }, [id, onSelect])
+  }, [id, isSelectable, onSelect])
 
   const onEnableEditing = useCallback(() => {
     setIsEditing(true)
@@ -100,7 +102,7 @@ function TableRow({
       )}
     </Table.Row>
   )
-}
+})
 
 TableRow.propTypes = {
   isSelectable: PropTypes.bool

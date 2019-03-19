@@ -1,29 +1,57 @@
-import React, {useState, useMemo, useCallback} from 'react'
+import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInput, Button, IconButton} from 'evergreen-ui'
+import {Pane, TextInput, Button, Checkbox, IconButton} from 'evergreen-ui'
 
-import {useInput} from '../../hooks/input'
+import MarkerContext from '../../contexts/marker'
+
+import {useInput, useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
+import PositionEditor from './position-editor'
+
 function VoieEditor({initialValue, onSubmit, onCancel}) {
   const [isLoading, setIsLoading] = useState(false)
+  const [isToponyme, onIsToponymeChange] = useCheckboxInput(initialValue && initialValue.positions[0])
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const setRef = useFocus()
+
+  const {
+    marker,
+    enableMarker,
+    disableMarker
+  } = useContext(MarkerContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
 
     setIsLoading(true)
 
+    const body = {
+      nom
+    }
+
+    if (marker) {
+      body.positions = [
+        {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Point',
+            coordinates: [marker.longitude, marker.latitude]
+          }
+        }
+      ]
+    }
+
     try {
-      await onSubmit({
-        nom
-      })
+      await onSubmit(body)
     } catch (error) {
       setIsLoading(false)
     }
-  }, [onSubmit, nom])
+
+    disableMarker()
+  }, [nom, marker, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -45,10 +73,19 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     }
   }, [onCancel])
 
+  useEffect(() => {
+    if (isToponyme) {
+      enableMarker()
+    } else {
+      disableMarker()
+    }
+  }, [disableMarker, enableMarker, isToponyme])
+
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
       <TextInput
         required
+        display='block'
         disabled={isLoading}
         innerRef={setRef}
         width='100%'
@@ -56,9 +93,24 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
         value={nom}
         maxLength={200}
         marginBottom={16}
-        placeholder='Nom de la voie…'
+        placeholder={isToponyme ? 'Nom du toponyme…' : 'Nom de la voie…'}
         onChange={onNomChange}
       />
+
+      {!initialValue && (
+        <Checkbox
+          checked={isToponyme}
+          label='Ajouter un toponyme'
+          onChange={onIsToponymeChange}
+        />
+      )}
+
+      {isToponyme && marker && (
+        <PositionEditor
+          alert='Déplacez le marqueur sur la carte pour placer le toponyme.'
+          marker={marker}
+        />
+      )}
 
       <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
         {submitLabel}
@@ -80,7 +132,8 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
 VoieEditor.propTypes = {
   initialValue: PropTypes.shape({
-    nom: PropTypes.string
+    nom: PropTypes.string,
+    positions: PropTypes.array.isRequired
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func

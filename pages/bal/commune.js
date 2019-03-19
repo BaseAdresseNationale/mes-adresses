@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 
-import {addVoie, editVoie, getVoies, removeVoie} from '../../lib/bal-api'
+import {addVoie, populateCommune, editVoie, getVoies, removeVoie} from '../../lib/bal-api'
 
 import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
@@ -14,13 +14,27 @@ import VoieEditor from '../../components/bal/voie-editor'
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [voies, setVoies] = useState(defaultVoies)
   const [isAdding, setIsAdding] = useState(false)
+  const [isPopulating, setIsPopulating] = useState(false)
   const token = useToken(baseLocale._id)
+
+  console.log('rendering', baseLocale._id, commune.code, voies.length, isAdding, isPopulating, token)
 
   const [filtered, setFilter] = useFuse(voies, 200, {
     keys: [
       'nom'
     ]
   })
+
+  const onPopulate = useCallback(async () => {
+    setIsPopulating(true)
+
+    await populateCommune(baseLocale._id, commune.code, token)
+
+    const voies = await getVoies(baseLocale._id, commune.code)
+
+    setIsPopulating(false)
+    setVoies(voies)
+  }, [baseLocale, commune, token])
 
   const onAdd = useCallback(async ({nom}) => {
     await addVoie(baseLocale._id, commune.code, {
@@ -73,7 +87,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
                 iconBefore='add'
                 appearance='primary'
                 intent='success'
-                disabled={isAdding}
+                disabled={isAdding || isPopulating}
                 onClick={() => setIsAdding(true)}
               >
                 Ajouter une voie
@@ -127,6 +141,16 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
           ))}
         </Table>
       </Pane>
+      {token && voies.length === 0 && (
+        <Pane borderTop marginTop='auto' padding={16}>
+          <Paragraph size={300} color='muted'>
+            Vous souhaitez importer les voies de la commune de {commune.nom} depuis la Base Adresse Nationale ?
+          </Paragraph>
+          <Button marginTop={10} appearance='primary' disabled={isAdding || isPopulating} onClick={onPopulate}>
+            Importer les données de la BAN
+          </Button>
+        </Pane>
+      )}
     </>
   )
 })
