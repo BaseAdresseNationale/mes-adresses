@@ -17,7 +17,7 @@
     "@turf/helpers": "^6.1.4",
     "compression": "^1.7.3",
     "dotenv": "^6.2.0",
-    "evergreen-ui": "4.13.1",
+    "evergreen-ui": "^4.14.1",
     "express": "^4.16.4",
     "fuse.js": "^3.4.4",
     "glamor": "^2.20.40",
