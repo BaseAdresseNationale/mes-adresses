@@ -14,21 +14,25 @@ function Sidebar({isHidden, size, onToggle, ...props}) {
       right='auto'
       zIndex={2}
     >
-      <Button
+      <Pane
+        background='white'
         position='absolute'
-        paddingX={8}
-        height={50}
         left={size}
-        border='muted'
         top={15}
-        elevation={0}
-        borderRadius={0}
-        onClick={onToggle}
       >
-        <Icon
-          icon={isHidden ? 'chevron-right' : 'chevron-left'}
-        />
-      </Button>
+        <Button
+          border='muted'
+          height={50}
+          paddingX={8}
+          elevation={0}
+          borderRadius={0}
+          onClick={onToggle}
+        >
+          <Icon
+            icon={isHidden ? 'chevron-right' : 'chevron-left'}
+          />
+        </Button>
+      </Pane>
 
       <Pane
         height='100vh'

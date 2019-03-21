@@ -42,6 +42,7 @@ function App({Component, pageProps}) {
       <MarkerContextProvider>
         <Map
           left={mapOffset}
+          animate={layout === 'sidebar'}
           interactive={layout === 'sidebar'}
           commune={pageProps.commune}
         />
