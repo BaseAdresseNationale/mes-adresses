@@ -15,16 +15,16 @@
   },
   "routes": [
     {
-      "src": "/bal/(?<id>[^/]+)$",
-      "dest": "/bal?balId=$id"
+      "src": "/bal/(?<id>[^/]+)/communes/(?<codeCommune>[^/]+)/voies/(?<voieId>[^/]+)$",
+      "dest": "/bal/commune?balId=$id&codeCommune=$codeCommune&voieId=$voieId"
     },
     {
       "src": "/bal/(?<id>[^/]+)/communes/(?<codeCommune>[^/]+)$",
       "dest": "/bal/commune?balId=$id&codeCommune=$codeCommune"
     },
     {
-      "src": "/bal/(?<id>[^/]+)/communes/(?<codeCommune>[^/]+)/voies/(?<voieId>[^/]+)$",
-      "dest": "/bal/commune?balId=$id&codeCommune=$codeCommune&voieId=$voieId"
+      "src": "/bal/(?<id>[^/]+)$",
+      "dest": "/bal?balId=$id"
     }
   ]
 }

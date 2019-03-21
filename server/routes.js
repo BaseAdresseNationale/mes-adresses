@@ -3,10 +3,12 @@ const {Router} = require('express')
 module.exports = app => {
   const router = new Router()
 
-  router.get('/bal/:balId', (req, res) => {
-    app.render(req, res, '/bal', {
+  router.get('/bal/:balId/communes/:codeCommune/voies/:voieId', (req, res) => {
+    app.render(req, res, '/bal/voie', {
       ...req.query,
-      balId: req.params.balId
+      balId: req.params.balId,
+      codeCommune: req.params.codeCommune,
+      voieId: req.params.voieId
     })
   })
 
@@ -18,12 +20,10 @@ module.exports = app => {
     })
   })
 
-  router.get('/bal/:balId/communes/:codeCommune/voies/:voieId', (req, res) => {
-    app.render(req, res, '/bal/voie', {
+  router.get('/bal/:balId', (req, res) => {
+    app.render(req, res, '/bal', {
       ...req.query,
-      balId: req.params.balId,
-      codeCommune: req.params.codeCommune,
-      voieId: req.params.voieId
+      balId: req.params.balId
     })
   })
 
