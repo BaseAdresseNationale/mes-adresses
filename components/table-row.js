@@ -16,8 +16,6 @@ const TableRow = React.memo(({
   onEdit,
   onRemove
 }) => {
-  const [isEditing, setIsEditing] = useState(false)
-
   const onClick = useCallback(e => {
     if (isSelectable) {
       if (e.target.closest('[data-browsable]')) {
@@ -26,43 +24,13 @@ const TableRow = React.memo(({
     }
   }, [id, isSelectable, onSelect])
 
-  const onEnableEditing = useCallback(() => {
-    setIsEditing(true)
-  }, [])
+  const _onEdit = useCallback(() => {
+    onEdit(id)
+  }, [onEdit, id])
 
-  const onDisableEditing = useCallback(() => {
-    setIsEditing(false)
-  }, [])
-
-  const _onRemove = useCallback(async () => {
-    if (onRemove) {
-      onRemove(id)
-    }
-  }, [id, onRemove])
-
-  const _onEdit = useCallback(async result => {
-    if (onEdit) {
-      await onEdit(id, result)
-    }
-
-    setIsEditing(false)
-  }, [id, onEdit])
-
-  if (isEditing) {
-    return (
-      <Table.Row height='auto'>
-        <Table.Cell display='block' paddingY={12} background='tint1'>
-          {renderEditor({
-            id,
-            code,
-            label,
-            onSubmit: _onEdit,
-            onCancel: onDisableEditing
-          })}
-        </Table.Cell>
-      </Table.Row>
-    )
-  }
+  const _onRemove = useCallback(() => {
+    onRemove(id)
+  }, [onRemove, id])
 
   return (
     <Table.Row isSelectable={isSelectable} onClick={onClick}>
@@ -75,15 +43,15 @@ const TableRow = React.memo(({
           {secondary}
         </Table.TextCell>
       )}
-      {(renderEditor || onRemove) && (
+      {(onEdit || onRemove) && (
         <Table.TextCell flex='0 1 1'>
           <Popover
             position={Position.BOTTOM_LEFT}
             content={
               <Menu>
                 <Menu.Group>
-                  {renderEditor && (
-                    <Menu.Item icon='edit' onSelect={onEnableEditing}>
+                  {onEdit && (
+                    <Menu.Item icon='edit' onSelect={_onEdit}>
                       Modifier
                     </Menu.Item>
                   )}
@@ -96,7 +64,7 @@ const TableRow = React.memo(({
               </Menu>
             }
           >
-            <IconButton height={24} icon='more' appearance='minimal' className='foo' />
+            <IconButton height={24} icon='more' appearance='minimal' />
           </Popover>
         </Table.TextCell>
       )}

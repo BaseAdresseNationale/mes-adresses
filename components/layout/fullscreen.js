@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
-function Fullscreen({isOpen, size, onToggle, ...props}) {
+function Fullscreen({isOpen, isHidden, size, onToggle, ...props}) {
   return (
     <Pane
       position='fixed'
@@ -32,14 +32,9 @@ Fullscreen.propTypes = {
 
   // Ignored props
   isOpen: PropTypes.bool,
+  isHidden: PropTypes.bool,
   size: PropTypes.number,
   onToggle: PropTypes.func
-}
-
-Fullscreen.defaultProps = {
-  isOpen: null,
-  size: null,
-  onToggle: null
 }
 
 export default Fullscreen

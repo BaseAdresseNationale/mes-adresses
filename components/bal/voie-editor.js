@@ -43,11 +43,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       ]
     }
 
-    try {
-      await onSubmit(body)
-    } catch (error) {
-      setIsLoading(false)
-    }
+    await onSubmit(body)
 
     disableMarker()
   }, [nom, marker, onSubmit])
@@ -79,7 +75,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     } else {
       disableMarker()
     }
-  }, [disableMarker, enableMarker, isToponyme])
+  }, [initialValue, disableMarker, enableMarker, isToponyme])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>

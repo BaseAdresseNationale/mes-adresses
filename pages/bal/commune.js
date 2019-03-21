@@ -14,10 +14,10 @@ import VoieEditor from '../../components/bal/voie-editor'
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [voies, setVoies] = useState(defaultVoies)
   const [isAdding, setIsAdding] = useState(false)
+  const [editingId, setEditingId] = useState(null)
   const [isPopulating, setIsPopulating] = useState(false)
-  const token = useToken(baseLocale._id)
 
-  console.log('rendering', baseLocale._id, commune.code, voies.length, isAdding, isPopulating, token)
+  const token = useToken(baseLocale._id)
 
   const [filtered, setFilter] = useFuse(voies, 200, {
     keys: [
@@ -48,16 +48,26 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setVoies(voies)
   }, [baseLocale, commune, token])
 
-  const onEdit = useCallback(async (idVoie, {nom, positions}) => {
-    await editVoie(idVoie, {
+  const onEnableAdding = useCallback(() => {
+    setIsAdding(true)
+  }, [])
+
+  const onEnableEditing = useCallback(idVoie => {
+    setIsAdding(false)
+    setEditingId(idVoie)
+  }, [])
+
+  const onEdit = useCallback(async ({nom, positions}) => {
+    await editVoie(editingId, {
       nom,
       positions
     }, token)
 
     const voies = await getVoies(baseLocale._id, commune.code)
 
+    setEditingId(null)
     setVoies(voies)
-  }, [baseLocale, commune, token])
+  }, [editingId, baseLocale, commune, token])
 
   const onRemove = useCallback(async idVoie => {
     await removeVoie(idVoie, token)
@@ -74,6 +84,11 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     )
   }, [baseLocale, commune])
 
+  const onCancel = useCallback(() => {
+    setIsAdding(false)
+    setEditingId(null)
+  }, [])
+
   return (
     <>
       <Pane zIndex={1} flexShrink={0} elevation={0} backgroundColor='white'>
@@ -89,8 +104,8 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
                 iconBefore='add'
                 appearance='primary'
                 intent='success'
-                disabled={isAdding || isPopulating}
-                onClick={() => setIsAdding(true)}
+                disabled={isAdding || isPopulating || Boolean(editingId)}
+                onClick={onEnableAdding}
               >
                 Ajouter une voie
               </Button>
@@ -112,7 +127,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
                 <VoieEditor
                   onSubmit={onAdd}
-                  onCancel={() => setIsAdding(false)}
+                  onCancel={onCancel}
                 />
               </Table.Cell>
             </Table.Row>
@@ -124,21 +139,25 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               </Table.TextCell>
             </Table.Row>
           )}
-          {filtered.map(voie => (
+          {filtered.map(voie => voie._id === editingId ? (
+            <Table.Row key={voie._id} height='auto'>
+              <Table.Cell display='block' paddingY={12} background='tint1'>
+                <VoieEditor
+                  initialValue={voie}
+                  onSubmit={onEdit}
+                  onCancel={onCancel}
+                />
+              </Table.Cell>
+            </Table.Row>
+          ) : (
             <TableRow
               key={voie._id}
               id={voie._id}
+              isSelectable={!isAdding && !isPopulating && !editingId && voie.positions.length === 0}
               label={voie.nom}
               secondary={voie.positions.length === 1 ? 'Toponyme' : null}
-              renderEditor={({onSubmit, onCancel}) => (
-                <VoieEditor
-                  initialValue={voie}
-                  onSubmit={onSubmit}
-                  onCancel={onCancel}
-                />
-              )}
               onSelect={onSelect}
-              onEdit={onEdit}
+              onEdit={onEnableEditing}
               onRemove={onRemove}
             />
           ))}
