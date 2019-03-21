@@ -29,7 +29,7 @@ function App({Component, pageProps}) {
     setIsHidden(isHidden => !isHidden)
   }, [])
 
-  const mapOffset = useMemo(() => {
+  const leftOffset = useMemo(() => {
     if (layout === 'sidebar' && !isHidden) {
       return SIDEBAR_WIDTH
     }
@@ -41,7 +41,7 @@ function App({Component, pageProps}) {
     <Container>
       <MarkerContextProvider>
         <Map
-          left={mapOffset}
+          left={leftOffset}
           animate={layout === 'sidebar'}
           interactive={layout === 'sidebar'}
           commune={pageProps.commune}
