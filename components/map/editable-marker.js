@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect, useContext} from 'react'
+import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
+import {Icon} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 
-import Pin from './pin'
-
-function EditableMarker({viewport}) {
+function EditableMarker({viewport, size}) {
   const {enabled, marker, setMarker} = useContext(MarkerContext)
 
   const onDrag = useCallback(event => {
@@ -34,9 +34,22 @@ function EditableMarker({viewport}) {
       draggable
       onDrag={onDrag}
     >
-      <Pin />
+      <Icon
+        icon='map-marker'
+        color='info'
+        transform='translate(-50%, -100%)'
+        size={size}
+      />
     </Marker>
   )
+}
+
+EditableMarker.propTypes = {
+  size: PropTypes.number
+}
+
+EditableMarker.defaultProps = {
+  size: 32
 }
 
 export default EditableMarker
