@@ -19,7 +19,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 
     try {
       await onSubmit({
-        numero,
+        numero: parseInt(numero, 10),
         suffixe
       })
     } catch (error) {
