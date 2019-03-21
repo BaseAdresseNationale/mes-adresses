@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
@@ -10,7 +10,7 @@ import Sidebar from '../components/layout/sidebar'
 
 import Map from '../components/map'
 
-import {MarkerContextProvider, MarkerContextConsumer} from '../contexts/marker'
+import {MarkerContextProvider} from '../contexts/marker'
 
 const layoutMap = {
   fullscreen: Fullscreen,
@@ -20,26 +20,35 @@ const layoutMap = {
 const SIDEBAR_WIDTH = 500
 
 function App({Component, pageProps}) {
-  const [size, setSize] = useState(SIDEBAR_WIDTH)
+  const [isHidden, setIsHidden] = useState(false)
 
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
 
-  const onToggle = () => {
-    setSize(size => size === 0 ? SIDEBAR_WIDTH : 0)
-  }
+  const onToggle = useCallback(() => {
+    setIsHidden(isHidden => !isHidden)
+  }, [])
+
+  const mapOffset = useMemo(() => {
+    if (layout === 'sidebar' && !isHidden) {
+      return SIDEBAR_WIDTH
+    }
+
+    return 0
+  }, [layout, isHidden])
 
   return (
     <Container>
       <MarkerContextProvider>
         <Map
+          left={mapOffset}
           interactive={layout === 'sidebar'}
-          offset={size}
           commune={pageProps.commune}
         />
 
         <Wrapper
-          size={size}
+          isHidden={isHidden}
+          size={SIDEBAR_WIDTH}
           elevation={4}
           background='tint2'
           display='flex'

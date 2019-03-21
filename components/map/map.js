@@ -1,15 +1,13 @@
-import React, {useState, useRef, useEffect, useCallback, useMemo, useContext} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import {merge} from '@mapbox/geojson-merge'
 import bbox from '@turf/bbox'
 
-import useWindowSize from '../../hooks/window-size'
+import MarkerContext from '../../contexts/marker'
 
 import {vector, ortho} from './styles'
-import useBal from './bal'
 
 import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
@@ -57,23 +55,28 @@ function generateNewStyle(style, sources, layers) {
   return newStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, offset, style: defaultStyle, commune}) {
-  const sourceRef = useRef()
-  const windowSize = useWindowSize()
+function Map({interactive, style: defaultStyle, commune, ...props}) {
+  const [map, setMap] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
-  // const [sources, layers] = useBal(bal, style)
+  // Const [sources, layers] = useBal(bal, style)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  // const interactiveLayerIds = useMemo(() => {
+  // Const interactiveLayerIds = useMemo(() => {
   //   return layers.filter(layer => layer.interactive).map(layer => layer.id)
   // }, [layers])
+
+  const mapRef = useCallback(ref => {
+    if (ref) {
+      setMap(ref.getMap())
+    }
+  }, [])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
   }, [])
 
-  // const onClick = useCallback(event => {
+  // Const onClick = useCallback(event => {
   //   const feature = event.features && event.features[0]
 
   //   if (feature) {
@@ -105,7 +108,7 @@ function Map({interactive, offset, style: defaultStyle, commune}) {
     setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
   }, [interactive, style, defaultStyle])
 
-  // useEffect(() => {
+  // UseEffect(() => {
   //   if (sources && sources.length > 0) {
   //     let data = merge(sources.map(s => s.data))
 
@@ -146,55 +149,48 @@ function Map({interactive, offset, style: defaultStyle, commune}) {
   // }, [sources])
 
   useEffect(() => {
-    const map = sourceRef.current.getMap()
+    if (map) {
+      if (commune && commune.contour) {
+        const featureBbox = bbox(commune.contour)
+        const camera = map.cameraForBounds(featureBbox, {
+          padding: 80
+        })
 
-    if (commune && commune.contour) {
-      const [minLng, minLat, maxLng, maxLat] = bbox(commune.contour)
-
-      const camera = map.cameraForBounds([[minLng, minLat], [maxLng, maxLat]], {
-        duration: 0,
-        padding: {
-          top: 80,
-          right: 80,
-          bottom: 80,
-          left: offset + 80
+        if (camera) {
+          setViewport(viewport => ({
+            ...viewport,
+            bearing: camera.bearing,
+            longitude: camera.center.lng,
+            latitude: camera.center.lat,
+            zoom: camera.zoom
+          }))
         }
-      })
-
-      if (camera) {
+      } else {
         setViewport(viewport => ({
           ...viewport,
-          bearing: camera.bearing,
-          longitude: camera.center.lng,
-          latitude: camera.center.lat,
-          zoom: camera.zoom
+          ...defaultViewport
         }))
       }
-    } else {
-      setViewport(viewport => ({
-        ...viewport,
-        ...defaultViewport
-      }))
     }
-  }, [sourceRef.current, commune])
+  }, [map, commune])
 
   return (
     <MapGl
-      ref={sourceRef}
+      ref={mapRef}
       reuseMap
       viewState={viewport}
       mapStyle={mapStyle}
       width={innerWidth}
       height={innerHeight}
       {...getInteractionProps(interactive)}
-      // interactiveLayerIds={interactiveLayerIds}
+      // InteractiveLayerIds={interactiveLayerIds}
       // onClick={onClick}
       onViewportChange={onViewportChange}
     >
       {interactive && (
         <>
           <NavControl onViewportChange={onViewportChange} />
-          <StyleSwitch style={style} setStyle={setStyle} offset={offset} />
+          <StyleSwitch style={style} setStyle={setStyle} />
         </>
       )}
 
@@ -205,19 +201,15 @@ function Map({interactive, offset, style: defaultStyle, commune}) {
 
 Map.propTypes = {
   interactive: PropTypes.bool,
-  offset: PropTypes.number,
   style: PropTypes.oneOf([
     'ortho',
     'vector'
-  ]),
-  bal: PropTypes.object
+  ])
 }
 
 Map.defaultProps = {
   interactive: true,
-  offset: 0,
-  style: 'vector',
-  bal: null
+  style: 'vector'
 }
 
 export default Map

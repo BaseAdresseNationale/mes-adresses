@@ -11,7 +11,6 @@
   "dependencies": {
     "@etalab/bal": "^0.14.3",
     "@etalab/project-legal": "^0.3.3",
-    "@mapbox/geojson-merge": "^1.0.2",
     "@turf/bbox": "^6.0.1",
     "@turf/centroid": "^6.0.2",
     "@turf/concave": "^6.0.5",

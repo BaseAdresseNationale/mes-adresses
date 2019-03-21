@@ -7,16 +7,16 @@ const styleSwitchMap = {
   vector: 'ortho'
 }
 
-function StyleSwitch({style, setStyle, offset}) {
+function StyleSwitch({style, setStyle}) {
   const toggleStyle = useCallback(() => {
     setStyle(styleSwitchMap[style])
-  }, [style])
+  }, [style, setStyle])
 
   return (
     <Pane
       position='absolute'
       display='flex'
-      left={offset + 16}
+      left={16}
       bottom={16}
       border='muted'
       elevation={2}
@@ -39,12 +39,7 @@ StyleSwitch.propTypes = {
     'ortho',
     'vector'
   ]).isRequired,
-  setStyle: PropTypes.func.isRequired,
-  offset: PropTypes.number
-}
-
-StyleSwitch.defaultProps = {
-  offset: 0
+  setStyle: PropTypes.func.isRequired
 }
 
 export default StyleSwitch

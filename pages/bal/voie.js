@@ -75,7 +75,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
               key={numero._id}
               isSelectable={false}
               id={numero._id}
-              label={`${numero.numero} ${numero.suffixe}`}
+              label={numero.numeroComplet}
             />
           ))}
         </Table>
