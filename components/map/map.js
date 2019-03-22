@@ -13,6 +13,11 @@ import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
 
+import {getVoiesLabelLayer, getToponymesLabelLayer} from './bal/voies'
+import {getNumerosPointLayer} from './bal/numeros'
+
+import useBalData from './hooks/bal-data'
+
 const defaultViewport = {
   latitude: 46.5693,
   longitude: 1.1771,
@@ -45,24 +50,33 @@ function getBaseStyle(style) {
   }
 }
 
-function generateNewStyle(style, sources, layers) {
-  let newStyle = getBaseStyle(style)
+function generateNewStyle(style, sources) {
+  let baseStyle = getBaseStyle(style)
 
   for (const {name, data} of sources) {
-    newStyle = newStyle.setIn(['sources', name], fromJS({type: 'geojson', data}))
+    baseStyle = baseStyle.setIn(['sources', name], fromJS({
+      type: 'geojson',
+      data
+    }))
   }
 
-  return newStyle.updateIn(['layers'], arr => arr.push(...layers))
+  return baseStyle.updateIn(['layers'], arr => arr.push(...[
+    getNumerosPointLayer(style),
+    getVoiesLabelLayer(style),
+    getToponymesLabelLayer(style)
+  ]))
 }
 
-function Map({interactive, style: defaultStyle, commune, ...props}) {
+function Map({interactive, style: defaultStyle, geojson, commune, ...props}) {
   const [map, setMap] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
   // Const [sources, layers] = useBal(bal, style)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  // Const interactiveLayerIds = useMemo(() => {
+  const sources = useBalData(geojson, style)
+
+  // const interactiveLayerIds = useMemo(() => {
   //   return layers.filter(layer => layer.interactive).map(layer => layer.id)
   // }, [layers])
 
@@ -96,17 +110,17 @@ function Map({interactive, style: defaultStyle, commune, ...props}) {
   //   }
   // }, [bal])
 
-  // useEffect(() => {
-  //   if (sources && sources.length > 0) {
-  //     setMapStyle(generateNewStyle(style, sources, layers))
-  //   } else {
-  //     setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
-  //   }
-  // }, [sources, layers, style])
-
   useEffect(() => {
-    setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
-  }, [interactive, style, defaultStyle])
+    if (sources.length > 0) {
+      setMapStyle(generateNewStyle(style, sources))
+    } else {
+      setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
+    }
+  }, [interactive, sources, style, defaultStyle])
+
+  // useEffect(() => {
+  //   setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
+  // }, [interactive, style, defaultStyle])
 
   // UseEffect(() => {
   //   if (sources && sources.length > 0) {
@@ -150,10 +164,10 @@ function Map({interactive, style: defaultStyle, commune, ...props}) {
 
   useEffect(() => {
     if (map) {
-      if (commune && commune.contour) {
-        const featureBbox = bbox(commune.contour)
+      if (commune) {
+        const featureBbox = bbox(geojson && geojson.features.length > 0 ? geojson : commune.contour)
         const camera = map.cameraForBounds(featureBbox, {
-          padding: 80
+          padding: 100
         })
 
         if (camera) {
@@ -172,7 +186,7 @@ function Map({interactive, style: defaultStyle, commune, ...props}) {
         }))
       }
     }
-  }, [map, commune])
+  }, [map, geojson, commune])
 
   return (
     <MapGl

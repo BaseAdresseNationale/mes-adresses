@@ -2,7 +2,7 @@ import React, {useState, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
-import {getBaseLocale, getVoies, getVoie, getNumeros} from '../lib/bal-api'
+import {getBaseLocale, getCommuneGeoJson, getVoies, getVoie, getNumeros} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
 import Fullscreen from '../components/layout/fullscreen'
@@ -19,7 +19,7 @@ const layoutMap = {
 
 const SIDEBAR_WIDTH = 500
 
-function App({Component, pageProps}) {
+function App({Component, pageProps, geojson}) {
   const [isHidden, setIsHidden] = useState(false)
 
   const {layout, ...otherPageProps} = pageProps
@@ -45,6 +45,7 @@ function App({Component, pageProps}) {
           animate={layout === 'sidebar'}
           interactive={layout === 'sidebar'}
           commune={pageProps.commune}
+          geojson={geojson}
         />
 
         <Wrapper
@@ -70,6 +71,7 @@ App.getInitialProps = async ({Component, ctx}) => {
   let voies
   let voie
   let numeros
+  let geojson
 
   if (ctx.query.balId) {
     baseLocale = await getBaseLocale(ctx.query.balId)
@@ -88,6 +90,7 @@ App.getInitialProps = async ({Component, ctx}) => {
 
   if (baseLocale && commune) {
     voies = await getVoies(baseLocale._id, commune.code)
+    geojson = await getCommuneGeoJson(baseLocale._id, commune.code)
   }
 
   if (Component.getInitialProps) {
@@ -101,7 +104,7 @@ App.getInitialProps = async ({Component, ctx}) => {
     })
   }
 
-  return {pageProps}
+  return {pageProps, geojson}
 }
 
 App.propTypes = {

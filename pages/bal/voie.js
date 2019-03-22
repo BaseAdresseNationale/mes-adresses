@@ -35,7 +35,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
             <Heading marginBottom={8}>Liste des numéros</Heading>
             <Paragraph size={300} margin={0} color='muted'>Lorem ipsum…</Paragraph>
           </Pane>
-          {token && (
+          {voie.positions.length === 0 && token && (
             <Pane marginLeft='auto'>
               <Button
                 iconBefore='add'
@@ -52,33 +52,41 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
-        <Table>
-          {isAdding && (
-            <Table.Row height='auto'>
-              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                <NumeroEditor
-                  onSubmit={onAdd}
-                  onCancel={() => setIsAdding(false)}
-                />
-              </Table.Cell>
-            </Table.Row>
-          )}
-          {numeros.length === 0 && (
-            <Table.Row>
-              <Table.TextCell color='muted' fontStyle='italic'>
-                Aucun numéro
-              </Table.TextCell>
-            </Table.Row>
-          )}
-          {numeros.map(numero => (
-            <TableRow
-              key={numero._id}
-              isSelectable={false}
-              id={numero._id}
-              label={numero.numeroComplet}
-            />
-          ))}
-        </Table>
+        {voie.positions.length === 0 ? (
+          <Table>
+            {isAdding && (
+              <Table.Row height='auto'>
+                <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+                  <NumeroEditor
+                    onSubmit={onAdd}
+                    onCancel={() => setIsAdding(false)}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            )}
+            {numeros.length === 0 && (
+              <Table.Row>
+                <Table.TextCell color='muted' fontStyle='italic'>
+                  Aucun numéro
+                </Table.TextCell>
+              </Table.Row>
+            )}
+            {numeros.map(numero => (
+              <TableRow
+                key={numero._id}
+                isSelectable={false}
+                id={numero._id}
+                label={numero.numeroComplet}
+              />
+            ))}
+          </Table>
+        ) : (
+          <Pane padding={16}>
+            <Paragraph>
+              La voie « {voie.nom} » est un toponyme et ne peut pas contenir de numéro.
+            </Paragraph>
+          </Pane>
+        )}
       </Pane>
     </>
   )

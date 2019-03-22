@@ -2,7 +2,7 @@ export function getNumerosPointLayer(style) {
   const layer = {
     id: 'numeros-point',
     type: 'circle',
-    source: 'numeros',
+    source: 'positions',
     paint: {
       'circle-color': {
         type: 'identity',
