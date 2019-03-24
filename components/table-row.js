@@ -1,6 +1,6 @@
-import React, {useState, useCallback} from 'react'
+import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Table, Popover, Menu, Position, IconButton} from 'evergreen-ui'
+import {Table, Popover, Menu, Position, IconButton, toaster} from 'evergreen-ui'
 
 const TableRow = React.memo(({
   id,
@@ -28,8 +28,12 @@ const TableRow = React.memo(({
     onEdit(id)
   }, [onEdit, id])
 
-  const _onRemove = useCallback(() => {
-    onRemove(id)
+  const _onRemove = useCallback(async () => {
+    try {
+      await onRemove(id)
+    } catch (error) {
+      toaster.danger(`Erreur : ${error.message}`)
+    }
   }, [onRemove, id])
 
   return (
