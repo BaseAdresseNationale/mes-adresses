@@ -1,10 +1,14 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import NextLink from 'next/link'
 import Router from 'next/router'
-import {Pane, Alert, Heading, Paragraph, Button, Link} from 'evergreen-ui'
+import {Pane, Alert, Heading, Paragraph, Button, TextInputField} from 'evergreen-ui'
 import {validate, extractAsTree} from '@etalab/bal'
 
-// import {createBal} from '../../lib/storage'
+import {createBaseLocale, uploadBaseLocaleCsv} from '../../lib/bal-api'
+import {storeBalAccess} from '../../lib/tokens'
+
+import {useInput} from '../../hooks/input'
+
 import Uploader from '../../components/uploader'
 
 function getFileExtension(name) {
@@ -18,23 +22,22 @@ function getFileExtension(name) {
 
 function Index() {
   const [file, setFile] = useState(null)
-  const [report, setReport] = useState(null)
-  const [tree, setTree] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [nom, onNomChange] = useInput('')
+  const [email, onEmailChange] = useInput('')
 
   const onError = error => {
     setFile(null)
-    setTree(null)
-    setLoading(false)
+    setIsLoading(false)
     setError(error)
   }
 
-  const onDrop = ([file]) => {
-    setLoading(true)
-    setReport(null)
-    setTree(null)
+  const onCreateNew = useCallback(() => {
+    Router.push('/new')
+  }, [])
 
+  const onDrop = useCallback(([file]) => {
     if (getFileExtension(file.name) !== 'csv') {
       return onError('Ce type de fichier n’est pas supporté. Vous devez déposer un fichier CSV.')
     }
@@ -45,96 +48,103 @@ function Index() {
 
     setFile(file)
     setError(null)
-  }
+  }, [])
 
-  const parseFile = async () => {
+  const onSubmit = useCallback(async e => {
+    e.preventDefault()
+
+    setIsLoading(true)
+
+    const baseLocale = await createBaseLocale({
+      nom,
+      emails: [
+        email
+      ]
+    })
+
+    storeBalAccess(baseLocale._id, baseLocale.token)
+
     try {
-      const report = await validate(file)
-      if (report) {
-        if (!report.isValid) {
-          setReport(report)
-        }
-
-        const tree = extractAsTree(report.normalizedRows, false)
-        setTree(tree)
-      } else {
-        onError('Le fichier n’est pas conforme.')
-      }
+      await uploadBaseLocaleCsv(baseLocale._id, file, baseLocale.token)
     } catch (error) {
-      return onError(`Impossible d’analyser le fichier… [${error.message}]`)
+      setError(error.message)
+      setIsLoading(false)
     }
 
-    setLoading(false)
-  }
-
-  useEffect(() => {
-    if (file) {
-      parseFile()
-    }
-  }, [file])
-
-  const onEdit = () => {
-    // const id = createBal(tree)
-    // Router.push(`/bal?balId=${id}`, `/bal/${id}`)
-  }
+    Router.push(`/bal?balId=${baseLocale._id}`, `/bal/${baseLocale._id}`)
+  }, [nom, email, file])
 
   return (
-    <Pane display='flex' flex={1} flexDirection='column' overflowY='scroll'>
-      <Pane paddingX={16} paddingBottom={16}>
-        <Heading size={600} margin='default'>Modifier une Base Adresse Locale existante</Heading>
-        <Paragraph margin='default'>
+    <>
+      <Pane paddingX={16} paddingBottom={10} marginBottom={10}>
+        <Heading size={600} margin='default'>Nouvelle Base Adresse Locale</Heading>
+        <Paragraph>
           Pour être éditable à l’aide de cet outil, votre fichier doit être conforme au modèle BAL 1.1 de l’AITF.
         </Paragraph>
+      </Pane>
+
+      <Pane borderTop is='form' padding={16} flex={1} overflowY='scroll' onSubmit={onSubmit}>
         <Uploader
           file={file}
           height={150}
+          marginBottom={24}
           placeholder='Sélectionnez ou glissez ici votre fichier BAL au format CSV (maximum 100 Mo)'
-          loading={loading}
           loadingLabel='Analyse en cours'
+          disabled={isLoading}
           onDrop={onDrop}
         />
+
+        {file && (
+          <>
+            <TextInputField
+              required
+              name='nom'
+              id='nom'
+              value={nom}
+              maxWidth={600}
+              disabled={isLoading}
+              label='Nom de la Base Adresse Locale'
+              placeholder='Nom'
+              onChange={onNomChange}
+            />
+
+            <TextInputField
+              required
+              type='email'
+              name='email'
+              id='email'
+              value={email}
+              maxWidth={400}
+              disabled={isLoading}
+              label='Votre adresse email'
+              placeholder='nom@example.com'
+              onChange={onEmailChange}
+            />
+          </>
+        )}
+
         {error && (
-          <Alert
-            intent='danger'
-            title={error}
-            marginTop={10}
-          />
-        )}
-        {report && (
-          <Alert
-            intent='warning'
-            title='Le fichier contient des erreurs de validation :'
-            marginTop={10}
-          >
-            TODO
+          <Alert marginBottom={16} intent='danger' title='Erreur'>
+            {error}
           </Alert>
         )}
-        {tree && (
-          <Alert
-            intent='success'
-            title='Le fichier sélectionné est conforme !'
-            marginTop={10}
-          >
-            <Button height={40} marginTop={10} appearance='primary' intent='success' onClick={onEdit}>
-              Modifier la Base Adresse Locale
-            </Button>
-          </Alert>
+
+        {file && (
+          <Button height={40} type='submit' appearance='primary' isLoading={isLoading}>
+            {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
+          </Button>
         )}
       </Pane>
 
-      <Pane borderTop marginTop='auto' padding={16} paddingTop={8}>
-        <NextLink href='/new/ban'>
-          <Link href='/new/ban' display='block' marginY={6}>
-            Créer une Base Adresse Locale à partir de la BAN
-          </Link>
-        </NextLink>
-        <NextLink href='/new/empty'>
-          <Link href='/new/empty' display='block' marginY={6}>
-            Créer une Base Adresse Locale vide
-          </Link>
-        </NextLink>
+      <Pane borderTop marginTop='auto' padding={16}>
+        <Paragraph size={300} color='muted'>
+          Vous pouvez créer une nouvelle Base Adresse Locale à partir de la commune de votre choix.
+        </Paragraph>
+        <Button marginTop={10} onClick={onCreateNew}>
+          Créer une nouvelle Base Adresse Locale
+        </Button>
       </Pane>
-    </Pane>
+    </>
   )
 }
 

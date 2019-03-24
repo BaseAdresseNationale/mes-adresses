@@ -21,7 +21,11 @@ function Index({defaultCommune}) {
     setCommune(commune.code)
   }, [])
 
-  const onSubmit = async e => {
+  const onCreateUpload = useCallback(() => {
+    Router.push('/new/upload')
+  }, [])
+
+  const onSubmit = useCallback(async e => {
     e.preventDefault()
 
     setIsLoading(true)
@@ -42,7 +46,7 @@ function Index({defaultCommune}) {
     }
 
     Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
-  }
+  }, [commune, nom, email, populate])
 
   return (
     <>
@@ -99,6 +103,15 @@ function Index({defaultCommune}) {
 
         <Button height={40} marginTop={8} type='submit' appearance='primary' isLoading={isLoading}>
           {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
+        </Button>
+      </Pane>
+
+      <Pane borderTop marginTop='auto' padding={16}>
+        <Paragraph size={300} color='muted'>
+          Vous pouvez créer une nouvelle Base Adresse Locale à partir d’un fichier CSV conforme au modèle BAL 1.1 de l’AITF.
+        </Paragraph>
+        <Button marginTop={10} onClick={onCreateUpload}>
+          Créer une nouvelle Base Adresse Locale
         </Button>
       </Pane>
     </>

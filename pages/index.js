@@ -25,6 +25,10 @@ function Index({basesLocales, defaultCommune}) {
     Router.push(`/new?commune=${defaultCommune.code}`)
   }, [defaultCommune])
 
+  const onCreateUpload = useCallback(() => {
+    Router.push('/new/upload')
+  }, [])
+
   const matchingBals = useMemo(() => {
     return defaultCommune ? basesLocales.filter(bal => bal.communes.includes(defaultCommune.code)) : []
   }, [basesLocales, defaultCommune])
@@ -51,7 +55,7 @@ function Index({basesLocales, defaultCommune}) {
           onSelect={onCommuneSelect}
         />
       </Pane>
-      {defaultCommune && (
+      {defaultCommune ? (
         <>
           {matchingBals.length === 0 ? (
             <Pane borderTop padding={16}>
@@ -105,6 +109,15 @@ function Index({basesLocales, defaultCommune}) {
             </>
           )}
         </>
+      ) : (
+        <Pane borderTop marginTop='auto' padding={16}>
+          <Paragraph size={300} color='muted'>
+            Vous pouvez créer une nouvelle Base Adresse Locale à partir d’un fichier CSV conforme au modèle BAL 1.1 de l’AITF.
+          </Paragraph>
+          <Button marginTop={10} onClick={onCreateUpload}>
+            Créer une nouvelle Base Adresse Locale
+          </Button>
+        </Pane>
       )}
     </>
   )
