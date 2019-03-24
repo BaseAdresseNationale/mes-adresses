@@ -56,27 +56,33 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
 
   return (
     <>
-      <Pane zIndex={1} flexShrink={0} elevation={0} backgroundColor='white'>
-        <Pane padding={16} display='flex'>
-          <Pane>
-            <Heading>{baseLocale.nom}</Heading>
-            <Paragraph size={300} margin={0} color='muted'>{baseLocale.description || 'Base Adresse Locale'}</Paragraph>
-          </Pane>
-          {token && (
-            <Pane marginLeft='auto'>
-              <Button
-                iconBefore='add'
-                appearance='primary'
-                intent='success'
-                disabled={isAdding}
-                onClick={() => setIsAdding(true)}
-              >
-                Ajouter une commune
-              </Button>
-            </Pane>
-          )}
+      <Pane
+        flexShrink={0}
+        elevation={0}
+        backgroundColor='white'
+        padding={16}
+        display='flex'
+        alignItems='center'
+        minHeight={64}
+      >
+        <Pane>
+          <Heading>Liste des communes</Heading>
         </Pane>
+        {token && (
+          <Pane marginLeft='auto'>
+            <Button
+              iconBefore='add'
+              appearance='primary'
+              intent='success'
+              disabled={isAdding}
+              onClick={() => setIsAdding(true)}
+            >
+              Ajouter une commune
+            </Button>
+          </Pane>
+        )}
       </Pane>
+
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
@@ -126,7 +132,7 @@ Index.getInitialProps = async ({baseLocale}) => {
   )
 
   return {
-    layout: 'fullscreen',
+    layout: 'sidebar',
     defaultCommunes: communes,
     baseLocale
   }

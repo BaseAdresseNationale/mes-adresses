@@ -12,13 +12,13 @@ const Map = dynamic(() => import('./map'), {
   )
 })
 
-function MapWrapper({animate, left, ...props}) {
+function MapWrapper({animate, left, top, ...props}) {
   return (
     <Pane
       position='fixed'
       display='flex'
       transition={animate ? 'left 0.3s' : null}
-      top={0}
+      top={top}
       right={0}
       bottom={0}
       left={left}
@@ -31,11 +31,13 @@ function MapWrapper({animate, left, ...props}) {
 
 MapWrapper.propTypes = {
   animate: PropTypes.bool,
+  top: PropTypes.number,
   left: PropTypes.number
 }
 
 MapWrapper.defaultProps = {
   animate: false,
+  top: 0,
   left: 0
 }
 

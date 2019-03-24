@@ -7,7 +7,6 @@ import {addVoie, populateCommune, editVoie, getVoies, removeVoie} from '../../li
 import useToken from '../../hooks/token'
 import useFuse from '../../hooks/fuse'
 
-import Breadcrumbs from '../../components/breadcrumbs'
 import TableRow from '../../components/table-row'
 import VoieEditor from '../../components/bal/voie-editor'
 
@@ -91,27 +90,31 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
   return (
     <>
-      <Pane zIndex={1} flexShrink={0} elevation={0} backgroundColor='white'>
-        <Breadcrumbs baseLocale={baseLocale} commune={commune} />
-        <Pane padding={16} display='flex'>
-          <Pane>
-            <Heading marginBottom={8}>Liste des voies</Heading>
-            <Paragraph size={300} margin={0} color='muted'>Lorem ipsum…</Paragraph>
-          </Pane>
-          {token && (
-            <Pane marginLeft='auto'>
-              <Button
-                iconBefore='add'
-                appearance='primary'
-                intent='success'
-                disabled={isAdding || isPopulating || Boolean(editingId)}
-                onClick={onEnableAdding}
-              >
-                Ajouter une voie
-              </Button>
-            </Pane>
-          )}
+      <Pane
+        flexShrink={0}
+        elevation={0}
+        backgroundColor='white'
+        padding={16}
+        display='flex'
+        alignItems='center'
+        minHeight={64}
+      >
+        <Pane>
+          <Heading>Liste des voies</Heading>
         </Pane>
+        {token && (
+          <Pane marginLeft='auto'>
+            <Button
+              iconBefore='add'
+              appearance='primary'
+              intent='success'
+              disabled={isAdding || isPopulating || Boolean(editingId)}
+              onClick={onEnableAdding}
+            >
+              Ajouter une voie
+            </Button>
+          </Pane>
+        )}
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>

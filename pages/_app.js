@@ -5,6 +5,7 @@ import {Container} from 'next/app'
 import {getBaseLocale, getCommuneGeoJson, getVoies, getVoie, getNumeros} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
+import Header from '../components/header'
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
 
@@ -37,10 +38,19 @@ function App({Component, pageProps, geojson}) {
     return 0
   }, [layout, isHidden])
 
+  const topOffset = useMemo(() => {
+    return pageProps.baseLocale ? 40 : 0
+  }, [pageProps.baseLocale])
+
   return (
     <Container>
       <MarkerContextProvider>
+        {pageProps.baseLocale && (
+          <Header {...pageProps} />
+        )}
+
         <Map
+          top={topOffset}
           left={leftOffset}
           animate={layout === 'sidebar'}
           interactive={layout === 'sidebar'}
@@ -49,6 +59,7 @@ function App({Component, pageProps, geojson}) {
         />
 
         <Wrapper
+          top={topOffset}
           isHidden={isHidden}
           size={SIDEBAR_WIDTH}
           elevation={4}

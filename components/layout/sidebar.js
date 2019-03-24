@@ -2,16 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Icon} from 'evergreen-ui'
 
-function Sidebar({isHidden, size, onToggle, ...props}) {
+function Sidebar({isHidden, top, size, onToggle, ...props}) {
   return (
     <Pane
       position='fixed'
-      height='100vh'
       width={size}
       transition='left 0.3s'
       maxWidth='100vw'
       left={isHidden ? -size : 0}
       right='auto'
+      top={top}
+      bottom={0}
       zIndex={2}
     >
       <Pane
@@ -35,8 +36,8 @@ function Sidebar({isHidden, size, onToggle, ...props}) {
       </Pane>
 
       <Pane
-        height='100vh'
-        maxHeight='100vh'
+        height='100%'
+        maxHeight='100%'
         width={size}
         flex={1}
         overflow='hidden'
@@ -50,11 +51,13 @@ Sidebar.propTypes = {
   isHidden: PropTypes.bool,
   children: PropTypes.node.isRequired,
   size: PropTypes.number.isRequired,
+  top: PropTypes.number,
   onToggle: PropTypes.func.isRequired
 }
 
 Sidebar.defaultProps = {
-  isHidden: false
+  isHidden: false,
+  top: 0
 }
 
 export default Sidebar

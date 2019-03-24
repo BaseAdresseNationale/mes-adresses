@@ -194,8 +194,8 @@ function Map({interactive, style: defaultStyle, geojson, commune, ...props}) {
       reuseMap
       viewState={viewport}
       mapStyle={mapStyle}
-      width={innerWidth}
-      height={innerHeight}
+      width='100%'
+      height='100%'
       {...getInteractionProps(interactive)}
       // InteractiveLayerIds={interactiveLayerIds}
       // onClick={onClick}

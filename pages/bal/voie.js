@@ -5,7 +5,6 @@ import {addNumero, getNumeros} from '../../lib/bal-api'
 
 import useToken from '../../hooks/token'
 
-import Breadcrumbs from '../../components/breadcrumbs'
 import TableRow from '../../components/table-row'
 import NumeroEditor from '../../components/bal/numero-editor'
 
@@ -28,27 +27,31 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
 
   return (
     <>
-      <Pane zIndex={1} flexShrink={0} elevation={0} backgroundColor='white'>
-        <Breadcrumbs baseLocale={baseLocale} commune={commune} voie={voie} />
-        <Pane padding={16} display='flex'>
-          <Pane>
-            <Heading marginBottom={8}>Liste des numéros</Heading>
-            <Paragraph size={300} margin={0} color='muted'>Lorem ipsum…</Paragraph>
-          </Pane>
-          {voie.positions.length === 0 && token && (
-            <Pane marginLeft='auto'>
-              <Button
-                iconBefore='add'
-                appearance='primary'
-                intent='success'
-                disabled={isAdding}
-                onClick={() => setIsAdding(true)}
-              >
-                Ajouter un numéro
-              </Button>
-            </Pane>
-          )}
+      <Pane
+        flexShrink={0}
+        elevation={0}
+        backgroundColor='white'
+        padding={16}
+        display='flex'
+        alignItems='center'
+        minHeight={64}
+      >
+        <Pane>
+          <Heading>Liste des numéros</Heading>
         </Pane>
+        {voie.positions.length === 0 && token && (
+          <Pane marginLeft='auto'>
+            <Button
+              iconBefore='add'
+              appearance='primary'
+              intent='success'
+              disabled={isAdding}
+              onClick={() => setIsAdding(true)}
+            >
+              Ajouter un numéro
+            </Button>
+          </Pane>
+        )}
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
