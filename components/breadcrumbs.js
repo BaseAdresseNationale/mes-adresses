@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import NextLink from 'next/link'
 import {Pane, Link, Text} from 'evergreen-ui'
 
-function Breadcrumbs({baseLocale, commune, voie}) {
+const Breadcrumbs = React.memo(({baseLocale, commune, voie}) => {
   if (!commune) {
     return (
       <Pane paddingY={10} paddingX={16}>
@@ -45,7 +45,7 @@ function Breadcrumbs({baseLocale, commune, voie}) {
       <Text>{voie.nom}</Text>
     </Pane>
   )
-}
+})
 
 Breadcrumbs.propTypes = {
   baseLocale: PropTypes.shape({
