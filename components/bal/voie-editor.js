@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInput, Button, Checkbox, IconButton} from 'evergreen-ui'
+import {Pane, TextInput, Button, Checkbox, IconButton, Alert} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 
@@ -14,6 +14,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(initialValue && initialValue.positions[0])
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
+  const [error, setError] = useState()
   const setRef = useFocus()
 
   const {
@@ -43,9 +44,13 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       ]
     }
 
-    await onSubmit(body)
-
-    disableMarker()
+    try {
+      await onSubmit(body)
+      disableMarker()
+    } catch (error) {
+      setIsLoading(false)
+      setError(error.message)
+    }
   }, [nom, marker, onSubmit])
 
   const onFormCancel = useCallback(e => {
@@ -110,6 +115,12 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
           }
           marker={marker}
         />
+      )}
+
+      {error && (
+        <Alert marginBottom={16} intent='danger' title='Erreur'>
+          {error}
+        </Alert>
       )}
 
       <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>

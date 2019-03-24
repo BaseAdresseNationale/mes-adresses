@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Checkbox, Button, IconButton} from 'evergreen-ui'
+import {Pane, Checkbox, Button, IconButton, Alert} from 'evergreen-ui'
 
 import {useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
@@ -11,6 +11,7 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
   const [isLoading, setIsLoading] = useState(false)
   const [commune, setCommune] = useState(null)
   const [populate, onPopulateChange] = useCheckboxInput(true)
+  const [error, setError] = useState()
   const setRef = useFocus()
 
   const onSelect = useCallback(commune => {
@@ -28,6 +29,7 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
         populate
       })
     } catch (error) {
+      setError(error.message)
       setIsLoading(false)
     }
   }, [onSubmit, commune, populate])
@@ -56,6 +58,12 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
         disabled={isLoading}
         onChange={onPopulateChange}
       />
+
+      {error && (
+        <Alert marginBottom={16} intent='danger' title='Erreur'>
+          {error}
+        </Alert>
+      )}
 
       <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
         {isLoading ? 'En cours…' : 'Ajouter'}
