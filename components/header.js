@@ -1,10 +1,19 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
+
+import {downloadBaseLocaleCsv} from '../lib/bal-api'
 
 import Breadcrumbs from './breadcrumbs'
 
 const Header = React.memo(({baseLocale, commune, voie}) => {
+  const onDownload = useCallback(async () => {
+    const res = await downloadBaseLocaleCsv(baseLocale._id)
+    const blob = await res.blob()
+
+    window.open(URL.createObjectURL(blob))
+  }, [baseLocale._id])
+
   return (
     <Pane
       position='fixed'
@@ -13,7 +22,7 @@ const Header = React.memo(({baseLocale, commune, voie}) => {
       height={40}
       width='100%'
       background='tint1'
-      elevation={1}
+      elevation={0}
       zIndex={3}
       display='flex'
       paddingY={8}
@@ -26,8 +35,8 @@ const Header = React.memo(({baseLocale, commune, voie}) => {
         content={
           <Menu>
             <Menu.Group>
-              <Menu.Item disabled icon='edit'>
-                Todo…
+              <Menu.Item icon='download' onSelect={onDownload}>
+                Télécharger le fichier CSV
               </Menu.Item>
             </Menu.Group>
           </Menu>
