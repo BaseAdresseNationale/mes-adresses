@@ -76,10 +76,10 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setVoies(voies)
   }, [baseLocale, commune, token])
 
-  const onSelect = useCallback(voieId => {
+  const onSelect = useCallback(idVoie => {
     Router.push(
-      `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&voieId=${voieId}`,
-      `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voieId}`
+      `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+      `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
     )
   }, [baseLocale, commune])
 

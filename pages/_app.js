@@ -94,8 +94,8 @@ App.getInitialProps = async ({Component, ctx}) => {
     })
   }
 
-  if (ctx.query.voieId) {
-    voie = await getVoie(ctx.query.voieId)
+  if (ctx.query.idVoie) {
+    voie = await getVoie(ctx.query.idVoie)
     numeros = await getNumeros(voie._id)
   }
 

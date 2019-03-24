@@ -3,12 +3,12 @@ const {Router} = require('express')
 module.exports = app => {
   const router = new Router()
 
-  router.get('/bal/:balId/communes/:codeCommune/voies/:voieId', (req, res) => {
+  router.get('/bal/:balId/communes/:codeCommune/voies/:idVoie', (req, res) => {
     app.render(req, res, '/bal/voie', {
       ...req.query,
       balId: req.params.balId,
       codeCommune: req.params.codeCommune,
-      voieId: req.params.voieId
+      idVoie: req.params.idVoie
     })
   })
 

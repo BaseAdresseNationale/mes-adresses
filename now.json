@@ -15,8 +15,8 @@
   },
   "routes": [
     {
-      "src": "/bal/(?<id>[^/]+)/communes/(?<codeCommune>[^/]+)/voies/(?<voieId>[^/]+)$",
-      "dest": "/bal/commune?balId=$id&codeCommune=$codeCommune&voieId=$voieId"
+      "src": "/bal/(?<id>[^/]+)/communes/(?<codeCommune>[^/]+)/voies/(?<idVoie>[^/]+)$",
+      "dest": "/bal/commune?balId=$id&codeCommune=$codeCommune&idVoie=$idVoie"
     },
     {
       "src": "/bal/(?<id>[^/]+)/communes/(?<codeCommune>[^/]+)$",
