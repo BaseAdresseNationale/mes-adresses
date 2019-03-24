@@ -23,26 +23,26 @@ const layoutMap = {
 
 const SIDEBAR_WIDTH = 500
 
-function App({Component, pageProps, token, geojson}) {
+function App({Component, pageProps, query, geojson}) {
   const [isHidden, setIsHidden] = useState(false)
 
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
 
   useEffect(() => {
-    if (token && pageProps.baseLocale) {
-      storeBalAccess(pageProps.baseLocale._id, token)
+    if (query.token && pageProps.baseLocale) {
+      storeBalAccess(pageProps.baseLocale._id, query.token)
 
-      const {token: i0, ...query} = Router.query
+      const {token: _0, ...hrefQuery} = query
       const [hostname, qs] = Router.asPath.split('?', 2)
-      const {token: i1, ...asQuery} = parse(qs)
+      const {token: _1, ...asQuery} = parse(qs)
 
       Router.replace(
-        `${Router.pathname}?${stringify(query)}`,
+        `${Router.pathname}?${stringify(hrefQuery)}`,
         `${hostname}?${stringify(asQuery)}`
       )
     }
-  }, [token, pageProps.baseLocale])
+  }, [query.token, pageProps.baseLocale])
 
   const onToggle = useCallback(() => {
     setIsHidden(isHidden => !isHidden)
@@ -136,7 +136,7 @@ App.getInitialProps = async ({Component, ctx}) => {
 
   return {
     pageProps,
-    token: ctx.query.token,
+    query: ctx.query,
     geojson
   }
 }
