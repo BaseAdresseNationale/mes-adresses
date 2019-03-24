@@ -42,7 +42,7 @@ function App({Component, pageProps, query, geojson}) {
         `${hostname}?${stringify(asQuery)}`
       )
     }
-  }, [query.token, pageProps.baseLocale])
+  }, [query.token, pageProps.baseLocale, query])
 
   const onToggle = useCallback(() => {
     setIsHidden(isHidden => !isHidden)

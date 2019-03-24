@@ -4,6 +4,11 @@ import {useDropzone} from 'react-dropzone'
 import {Pane, Spinner, Paragraph} from 'evergreen-ui'
 
 function Uploader({file, placeholder, onDrop, height, loading, loadingLabel, ...props}) {
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({
+    onDrop,
+    multiple: false
+  })
+
   if (loading) {
     return (
       <Pane
@@ -20,11 +25,6 @@ function Uploader({file, placeholder, onDrop, height, loading, loadingLabel, ...
       </Pane>
     )
   }
-
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({
-    onDrop,
-    multiple: false
-  })
 
   return (
     <div {...getRootProps()} className={`dropzone ${isDragActive ? 'active' : ''}`}>
