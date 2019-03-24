@@ -11,6 +11,7 @@ import {useInput, useCheckboxInput} from '../../hooks/input'
 import {CommuneSearchField} from '../../components/commune-search'
 
 function Index({defaultCommune}) {
+  const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
@@ -22,6 +23,8 @@ function Index({defaultCommune}) {
 
   const onSubmit = async e => {
     e.preventDefault()
+
+    setIsLoading(true)
 
     const bal = await createBaseLocale({
       nom,
@@ -35,11 +38,7 @@ function Index({defaultCommune}) {
     await addCommune(bal._id, commune, bal.token)
 
     if (populate) {
-      try {
-        await populateCommune(bal._id, commune, bal.token)
-      } catch (error) {
-        console.log('Not implemented yet')
-      }
+      await populateCommune(bal._id, commune, bal.token)
     }
 
     Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
@@ -61,6 +60,7 @@ function Index({defaultCommune}) {
           id='nom'
           value={nom}
           maxWidth={600}
+          disabled={isLoading}
           label='Nom de la Base Adresse Locale'
           placeholder='Nom'
           onChange={onNomChange}
@@ -73,6 +73,7 @@ function Index({defaultCommune}) {
           id='email'
           value={email}
           maxWidth={400}
+          disabled={isLoading}
           label='Votre adresse email'
           placeholder='nom@example.com'
           onChange={onEmailChange}
@@ -84,6 +85,7 @@ function Index({defaultCommune}) {
           defaultSelectedItem={defaultCommune}
           label='Commune'
           maxWidth={500}
+          disabled={isLoading}
           hint='Vous pourrez ajouter plusieurs communes à la Base Adresse Locale plus tard.'
           onSelect={onSelect}
         />
@@ -91,11 +93,12 @@ function Index({defaultCommune}) {
         <Checkbox
           label='Importer les noms des voies'
           checked={populate}
+          disabled={isLoading}
           onChange={onPopulateChange}
         />
 
-        <Button height={40} marginTop={8} type='submit' appearance='primary'>
-          Créer la Base Adresse Locale
+        <Button height={40} marginTop={8} type='submit' appearance='primary' isLoading={isLoading}>
+          {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
         </Button>
       </Pane>
     </>
