@@ -1,9 +1,12 @@
-import React, {useState, useCallback, useMemo} from 'react'
+import {stringify, parse} from 'querystring'
+import React, {useState, useCallback, useMemo, useEffect} from 'react'
+import Router from 'next/router'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
 import {getBaseLocale, getCommuneGeoJson, getVoies, getVoie, getNumeros} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
+import {storeBalAccess} from '../lib/tokens'
 
 import Header from '../components/header'
 import Fullscreen from '../components/layout/fullscreen'
@@ -20,11 +23,26 @@ const layoutMap = {
 
 const SIDEBAR_WIDTH = 500
 
-function App({Component, pageProps, geojson}) {
+function App({Component, pageProps, token, geojson}) {
   const [isHidden, setIsHidden] = useState(false)
 
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
+
+  useEffect(() => {
+    if (token && pageProps.baseLocale) {
+      storeBalAccess(pageProps.baseLocale._id, token)
+
+      const {token: i0, ...query} = Router.query
+      const [hostname, qs] = Router.asPath.split('?', 2)
+      const {token: i1, ...asQuery} = parse(qs)
+
+      Router.replace(
+        `${Router.pathname}?${stringify(query)}`,
+        `${hostname}?${stringify(asQuery)}`
+      )
+    }
+  }, [token, pageProps.baseLocale])
 
   const onToggle = useCallback(() => {
     setIsHidden(isHidden => !isHidden)
@@ -116,7 +134,11 @@ App.getInitialProps = async ({Component, ctx}) => {
     })
   }
 
-  return {pageProps, geojson}
+  return {
+    pageProps,
+    token: ctx.query.token,
+    geojson
+  }
 }
 
 App.propTypes = {
