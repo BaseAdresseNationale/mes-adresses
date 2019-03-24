@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 
@@ -23,6 +23,10 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       'nom'
     ]
   })
+
+  useEffect(() => {
+    setVoies(defaultVoies)
+  }, [defaultVoies])
 
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)

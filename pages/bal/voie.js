@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
 
 import {addNumero, getNumeros} from '../../lib/bal-api'
@@ -12,6 +12,10 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [numeros, setNumeros] = useState(defaultNumeros)
   const [isAdding, setIsAdding] = useState(false)
   const token = useToken(baseLocale._id)
+
+  useEffect(() => {
+    setNumeros(defaultNumeros)
+  }, [defaultNumeros])
 
   const onAdd = useCallback(async ({numero, suffixe}) => {
     await addNumero(voie._id, {
