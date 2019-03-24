@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, Text} from 'evergreen-ui'
+import {Pane, Spinner} from 'evergreen-ui'
 
 function MapLoader() {
   return (
@@ -9,7 +9,7 @@ function MapLoader() {
       alignItems='center'
       justifyContent='center'
     >
-      <Text>Chargement de la carte…</Text>
+      <Spinner size={64} />
     </Pane>
   )
 }
