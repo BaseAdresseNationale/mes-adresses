@@ -67,7 +67,11 @@ function generateNewStyle(style, sources) {
   ]))
 }
 
-function Map({interactive, style: defaultStyle, geojson, commune, ...props}) {
+const interactiveLayerIds = [
+  'voie-label'
+]
+
+function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, ...props}) {
   const [map, setMap] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
@@ -75,10 +79,6 @@ function Map({interactive, style: defaultStyle, geojson, commune, ...props}) {
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
   const sources = useBalData(geojson, style)
-
-  // const interactiveLayerIds = useMemo(() => {
-  //   return layers.filter(layer => layer.interactive).map(layer => layer.id)
-  // }, [layers])
 
   const mapRef = useCallback(ref => {
     if (ref) {
@@ -90,25 +90,24 @@ function Map({interactive, style: defaultStyle, geojson, commune, ...props}) {
     setViewport(viewport)
   }, [])
 
-  // Const onClick = useCallback(event => {
-  //   const feature = event.features && event.features[0]
+  const onClick = useCallback(event => {
+    const feature = event.features && event.features[0]
 
-  //   if (feature) {
-  //     switch (feature.layer.id) {
-  //       case 'voies-label': {
-  //         console.log(feature)
-  //         const {codeCommune, codeVoie} = feature.properties
-  //         return Router.push(
-  //           `/bal/voie?balId=${bal.id}&communeCode=${codeCommune}&codeVoie=${codeVoie}`,
-  //           `/bal/${bal.id}/communes/${codeCommune}/voies/${codeVoie}`
-  //         )
-  //       }
+    if (feature) {
+      switch (feature.layer.id) {
+        case 'voie-label': {
+          const {idVoie} = feature.properties
+          return Router.push(
+            `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+            `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+          )
+        }
 
-  //       default:
-  //         console.log('nothing')
-  //     }
-  //   }
-  // }, [bal])
+        default:
+          console.log('nothing')
+      }
+    }
+  }, [baseLocale, commune])
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -197,8 +196,8 @@ function Map({interactive, style: defaultStyle, geojson, commune, ...props}) {
       width='100%'
       height='100%'
       {...getInteractionProps(interactive)}
-      // InteractiveLayerIds={interactiveLayerIds}
-      // onClick={onClick}
+      interactiveLayerIds={interactiveLayerIds}
+      onClick={onClick}
       onViewportChange={onViewportChange}
     >
       {interactive && (

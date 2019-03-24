@@ -54,6 +54,7 @@ function App({Component, pageProps, geojson}) {
           left={leftOffset}
           animate={layout === 'sidebar'}
           interactive={layout === 'sidebar'}
+          baseLocale={pageProps.baseLocale}
           commune={pageProps.commune}
           geojson={geojson}
         />
