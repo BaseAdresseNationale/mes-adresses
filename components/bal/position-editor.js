@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInputField, Alert} from 'evergreen-ui'
+import {Pane, TextInputField, SelectField, Alert} from 'evergreen-ui'
 
-function PositionEditor({marker, alert}) {
+function PositionEditor({type, marker, alert, onTypeChange}) {
   return (
     <Pane>
       <Pane display='flex'>
@@ -32,6 +32,25 @@ function PositionEditor({marker, alert}) {
         />
       </Pane>
 
+      <SelectField
+        flex={1}
+        label='Type'
+        display='block'
+        marginBottom={16}
+        value={type}
+        onChange={onTypeChange}
+      >
+        <option value='entrée'>Entrée</option>
+        <option value='délivrance postale'>Délivrance postale</option>
+        <option value='bâtiment'>Bâtiment</option>
+        <option value='cage d’escalier'>Cage d’escalier</option>
+        <option value='logement'>Logement</option>
+        <option value='parcelle'>Parcelle</option>
+        <option value='segment'>Segment</option>
+        <option value='service technique'>Service technique</option>
+        <option value='inconnue'>Inconnue</option>
+      </SelectField>
+
       {alert && (
         <Alert marginBottom={16}>
           {alert}
@@ -42,11 +61,13 @@ function PositionEditor({marker, alert}) {
 }
 
 PositionEditor.propTypes = {
+  type: PropTypes.string,
   marker: PropTypes.shape({
     latitude: PropTypes.number,
     longitude: PropTypes.number
   }),
-  alert: PropTypes.string
+  alert: PropTypes.string,
+  onTypeChange: PropTypes.func
 }
 
 export default PositionEditor

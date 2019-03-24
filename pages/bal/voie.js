@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
 
-import {addNumero, getNumeros} from '../../lib/bal-api'
+import {addNumero, getNumeros, editNumero, removeNumero} from '../../lib/bal-api'
 
 import useToken from '../../hooks/token'
 
@@ -11,16 +11,18 @@ import NumeroEditor from '../../components/bal/numero-editor'
 const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [numeros, setNumeros] = useState(defaultNumeros)
   const [isAdding, setIsAdding] = useState(false)
+  const [editingId, setEditingId] = useState(null)
   const token = useToken(baseLocale._id)
 
   useEffect(() => {
     setNumeros(defaultNumeros)
   }, [defaultNumeros])
 
-  const onAdd = useCallback(async ({numero, suffixe}) => {
+  const onAdd = useCallback(async ({numero, suffixe, positions}) => {
     await addNumero(voie._id, {
       numero,
-      suffixe
+      suffixe,
+      positions
     }, token)
 
     const numeros = await getNumeros(voie._id)
@@ -28,6 +30,41 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     setIsAdding(false)
     setNumeros(numeros)
   }, [voie, token])
+
+  const onEnableAdding = useCallback(() => {
+    setIsAdding(true)
+  }, [])
+
+  const onEnableEditing = useCallback(idNumero => {
+    setIsAdding(false)
+    setEditingId(idNumero)
+  }, [])
+
+  const onEdit = useCallback(async ({numero, suffixe, positions}) => {
+    await editNumero(editingId, {
+      numero,
+      suffixe,
+      positions
+    }, token)
+
+    const numeros = await getNumeros(voie._id)
+
+    setEditingId(null)
+    setNumeros(numeros)
+  }, [editingId, voie._id, token])
+
+  const onRemove = useCallback(async idNumero => {
+    await removeNumero(idNumero, token)
+
+    const numeros = await getNumeros(voie._id)
+
+    setNumeros(numeros)
+  }, [voie._id, token])
+
+  const onCancel = useCallback(() => {
+    setIsAdding(false)
+    setEditingId(null)
+  }, [])
 
   return (
     <>
@@ -50,7 +87,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
               appearance='primary'
               intent='success'
               disabled={isAdding}
-              onClick={() => setIsAdding(true)}
+              onClick={onEnableAdding}
             >
               Ajouter un numéro
             </Button>
@@ -66,7 +103,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
                 <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
                     onSubmit={onAdd}
-                    onCancel={() => setIsAdding(false)}
+                    onCancel={onCancel}
                   />
                 </Table.Cell>
               </Table.Row>
@@ -78,12 +115,24 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
                 </Table.TextCell>
               </Table.Row>
             )}
-            {numeros.map(numero => (
+            {numeros.map(numero => numero._id === editingId ? (
+              <Table.Row key={voie._id} height='auto'>
+                <Table.Cell display='block' paddingY={12} background='tint1'>
+                  <NumeroEditor
+                    initialValue={numero}
+                    onSubmit={onEdit}
+                    onCancel={onCancel}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            ) : (
               <TableRow
                 key={numero._id}
                 isSelectable={false}
                 id={numero._id}
                 label={numero.numeroComplet}
+                onEdit={onEnableEditing}
+                onRemove={onRemove}
               />
             ))}
           </Table>
