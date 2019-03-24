@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Pane} from 'evergreen-ui'
+import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
 
 import Breadcrumbs from './breadcrumbs'
 
@@ -15,8 +15,31 @@ const Header = React.memo(({baseLocale, commune, voie}) => {
       background='tint1'
       elevation={1}
       zIndex={3}
+      display='flex'
+      paddingY={8}
+      paddingX={16}
     >
       <Breadcrumbs baseLocale={baseLocale} commune={commune} voie={voie} />
+
+      <Popover
+        position={Position.BOTTOM_RIGHT}
+        content={
+          <Menu>
+            <Menu.Group>
+              <Menu.Item disabled icon='edit'>
+                Todo…
+              </Menu.Item>
+            </Menu.Group>
+          </Menu>
+        }
+      >
+        <IconButton
+          height={24}
+          icon='menu'
+          appearance='minimal'
+          marginLeft='auto'
+        />
+      </Popover>
     </Pane>
   )
 })

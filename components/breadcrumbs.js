@@ -6,7 +6,7 @@ import {Pane, Link, Text} from 'evergreen-ui'
 const Breadcrumbs = React.memo(({baseLocale, commune, voie}) => {
   if (!commune) {
     return (
-      <Pane paddingY={10} paddingX={16}>
+      <Pane paddingY={2}>
         <Text>{baseLocale.nom}</Text>
       </Pane>
     )
@@ -14,7 +14,7 @@ const Breadcrumbs = React.memo(({baseLocale, commune, voie}) => {
 
   if (!voie) {
     return (
-      <Pane paddingY={10} paddingX={16}>
+      <Pane paddingY={2}>
         <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
           <Link display='inline-block' href={`/bal/${baseLocale._id}`}>
             {baseLocale.nom || 'Base Adresse Locale'}
@@ -28,7 +28,7 @@ const Breadcrumbs = React.memo(({baseLocale, commune, voie}) => {
   }
 
   return (
-    <Pane paddingY={10} paddingX={16}>
+    <Pane paddingY={2}>
       <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
         <Link display='inline-block' href={`/bal/${baseLocale._id}`}>
           {baseLocale.nom || 'Base Adresse Locale'}
