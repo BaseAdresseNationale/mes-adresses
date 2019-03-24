@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useMemo, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
@@ -67,10 +67,6 @@ function generateNewStyle(style, sources) {
   ]))
 }
 
-const interactiveLayerIds = [
-  'voie-label'
-]
-
 function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, ...props}) {
   const [map, setMap] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
@@ -85,6 +81,12 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, ..
       setMap(ref.getMap())
     }
   }, [])
+
+  const interactiveLayerIds = useMemo(() => {
+    return sources.length > 0 ? [
+      'voie-label'
+    ] : null
+  }, [sources])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
