@@ -25,6 +25,12 @@ function useBounds(geojson, commune, voie) {
         }
       }
 
+      if (data.features.length === 1) {
+        return buffer(data.features[0], 100, {
+          units: 'meters'
+        })
+      }
+
       if (data.features.length > 0) {
         return data
       }
