@@ -32,8 +32,11 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
     setIsLoading(true)
 
     const body = {
-      numero: Number(numero),
-      suffixe
+      numero: Number(numero)
+    }
+
+    if (suffixe) {
+      body.suffixe = suffixe
     }
 
     if (marker) {
