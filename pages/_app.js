@@ -1,6 +1,7 @@
 import React, {useState, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
+import ErrorPage from 'next/error'
 
 import {getBaseLocale, getCommuneGeoJson, getVoies, getVoie, getNumeros} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
@@ -21,7 +22,7 @@ const layoutMap = {
 
 const SIDEBAR_WIDTH = 500
 
-function App({Component, pageProps, query, geojson}) {
+function App({error, Component, pageProps, query = {}, geojson}) {
   const [isHidden, setIsHidden] = useState(false)
 
   const {layout, ...otherPageProps} = pageProps
@@ -71,7 +72,11 @@ function App({Component, pageProps, query, geojson}) {
             flexDirection='column'
             onToggle={onToggle}
           >
-            <Component {...otherPageProps} />
+            {error ? (
+              <ErrorPage statusCode={error.statusCode} />
+            ) : (
+              <Component {...otherPageProps} />
+            )}
           </Wrapper>
         </MarkerContextProvider>
       </TokenContextProvider>
@@ -80,7 +85,9 @@ function App({Component, pageProps, query, geojson}) {
 }
 
 App.getInitialProps = async ({Component, ctx}) => {
-  let pageProps = {}
+  let pageProps = {
+    layout: 'fullscreen'
+  }
   let baseLocale
   let commune
   let voies
@@ -89,7 +96,16 @@ App.getInitialProps = async ({Component, ctx}) => {
   let geojson
 
   if (ctx.query.balId) {
-    baseLocale = await getBaseLocale(ctx.query.balId)
+    try {
+      baseLocale = await getBaseLocale(ctx.query.balId)
+    } catch (error) {
+      return {
+        pageProps,
+        error: {
+          statusCode: 404
+        }
+      }
+    }
   }
 
   if (ctx.query.codeCommune) {
