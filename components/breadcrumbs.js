@@ -22,7 +22,11 @@ function Breadcrumbs({baseLocale, commune, voie}) {
         </NextLink>
 
         <Text color='muted'>{' > '}</Text>
-        <Text>{commune.nom}</Text>
+        {commune.nom ? (
+          <Text>{commune.nom}</Text>
+        ) : (
+          <Text fontStyle='italic'>Commune {commune.code}</Text>
+        )}
       </Pane>
     )
   }
@@ -37,9 +41,15 @@ function Breadcrumbs({baseLocale, commune, voie}) {
 
       <Text color='muted'>{' > '}</Text>
       <NextLink href={`/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
-        <Link display='inline-block' href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
-          {commune.nom}
-        </Link>
+        {commune.nom ? (
+          <Link display='inline-block' href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+            {commune.nom}
+          </Link>
+        ) : (
+          <Link display='inline-block' fontStyle='italic' href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+            Commune {commune.code}
+          </Link>
+        )}
       </NextLink>
 
       <Text color='muted'>{' > '}</Text>
@@ -56,7 +66,7 @@ Breadcrumbs.propTypes = {
 
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string
   }),
 
   voie: PropTypes.shape({
