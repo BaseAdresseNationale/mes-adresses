@@ -77,6 +77,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
+      disableMarker()
       onCancel()
     }
   }, [onCancel])

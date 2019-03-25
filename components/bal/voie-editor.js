@@ -59,8 +59,8 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
-    onCancel()
     disableMarker()
+    onCancel()
   }, [onCancel])
 
   const submitLabel = useMemo(() => {
@@ -73,8 +73,8 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
-      onCancel()
       disableMarker()
+      onCancel()
     }
   }, [onCancel])
 
