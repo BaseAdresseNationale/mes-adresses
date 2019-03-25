@@ -207,7 +207,7 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, vo
         </>
       )}
 
-      <EditableMarker viewport={viewport} voie={voie} />
+      <EditableMarker viewport={viewport} />
     </MapGl>
   )
 }

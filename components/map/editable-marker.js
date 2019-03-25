@@ -1,12 +1,11 @@
-import React, {useMemo, useCallback, useEffect, useContext} from 'react'
+import React, {useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Icon} from 'evergreen-ui'
-import randomColor from 'randomcolor'
 
 import MarkerContext from '../../contexts/marker'
 
-function EditableMarker({viewport, size, voie}) {
+function EditableMarker({viewport, size}) {
   const {enabled, marker, setMarker} = useContext(MarkerContext)
 
   const onDrag = useCallback(event => {
@@ -25,17 +24,6 @@ function EditableMarker({viewport, size, voie}) {
     }
   }, [enabled, setMarker])
 
-  const color = useMemo(() => {
-    if (voie) {
-      return randomColor({
-        luminosity: 'dark',
-        seed: voie._id
-      })
-    }
-
-    return 'info'
-  }, [voie])
-
   if (!enabled || !marker) {
     return null
   }
@@ -48,7 +36,8 @@ function EditableMarker({viewport, size, voie}) {
     >
       <Icon
         icon='map-marker'
-        color={color}
+        filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
+        color='info'
         transform='translate(-50%, -100%)'
         size={size}
       />
