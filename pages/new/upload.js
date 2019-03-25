@@ -7,6 +7,7 @@ import {validate, extractAsTree} from '@etalab/bal'
 import {createBaseLocale, uploadBaseLocaleCsv} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
 
+import useFocus from '../../hooks/focus'
 import {useInput} from '../../hooks/input'
 
 import Uploader from '../../components/uploader'
@@ -26,6 +27,7 @@ function Index() {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
+  const focusRef = useFocus()
 
   const onError = error => {
     setFile(null)
@@ -98,6 +100,7 @@ function Index() {
           <>
             <TextInputField
               required
+              innerRef={focusRef}
               name='nom'
               id='nom'
               value={nom}
