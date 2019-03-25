@@ -17,7 +17,7 @@
     "fuse.js": "^3.4.4",
     "immutable": "^4.0.0-rc.12",
     "isomorphic-unfetch": "^3.0.0",
-    "lodash": "^4.17.11",
+    "lodash-es": "^4.17.11",
     "next": "^8.0.3",
     "next-runtime-dotenv": "^1.1.1",
     "prop-types": "^15.7.2",

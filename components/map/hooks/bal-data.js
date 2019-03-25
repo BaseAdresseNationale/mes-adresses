@@ -1,5 +1,5 @@
 import {useMemo} from 'react'
-import {groupBy} from 'lodash'
+import {groupBy} from 'lodash-es'
 import computeCentroid from '@turf/centroid'
 
 function useBalData(geojson) {
