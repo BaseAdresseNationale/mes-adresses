@@ -129,7 +129,15 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
 
 Index.getInitialProps = async ({baseLocale}) => {
   const communes = await Promise.all(
-    baseLocale.communes.map(commune => getCommune(commune))
+    baseLocale.communes.map(async codeCommune => {
+      try {
+        return await getCommune(codeCommune)
+      } catch (error) {
+        return {
+          code: codeCommune
+        }
+      }
+    })
   )
 
   return {
