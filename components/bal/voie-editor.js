@@ -11,9 +11,12 @@ import useKeyEvent from '../../hooks/key-event'
 import PositionEditor from './position-editor'
 
 function VoieEditor({initialValue, onSubmit, onCancel}) {
+  const position = initialValue ? initialValue.positions[0] : null
+
   const [isLoading, setIsLoading] = useState(false)
-  const [isToponyme, onIsToponymeChange] = useCheckboxInput(initialValue && initialValue.positions[0])
+  const [isToponyme, onIsToponymeChange] = useCheckboxInput(Boolean(position))
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
+  const [positionType, onPositionTypeChange] = useInput(position ? position.type : 'entrée')
   const [error, setError] = useState()
   const setRef = useFocus()
 
@@ -39,7 +42,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
             type: 'Point',
             coordinates: [marker.longitude, marker.latitude]
           },
-          type: 'entrée'
+          type: positionType
         }
       ]
     }
@@ -51,7 +54,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, marker, onSubmit])
+  }, [nom, marker, positionType, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -76,11 +79,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   useEffect(() => {
     if (isToponyme) {
-      enableMarker(initialValue ? initialValue.positions[0] : null)
+      enableMarker(position)
     } else {
       disableMarker()
     }
-  }, [initialValue, disableMarker, enableMarker, isToponyme])
+  }, [position, disableMarker, enableMarker, isToponyme])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -101,19 +104,22 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       {!initialValue && (
         <Checkbox
           checked={isToponyme}
-          label='Ajouter un toponyme'
+          label='Cette voie est un toponyme'
           onChange={onIsToponymeChange}
         />
       )}
 
       {isToponyme && marker && (
         <PositionEditor
+          initialValue={position}
           alert={
             initialValue ?
               'Déplacez le marqueur sur la carte pour déplacer le toponyme.' :
               'Déplacez le marqueur sur la carte pour placer le toponyme.'
           }
           marker={marker}
+          type={positionType}
+          onTypeChange={onPositionTypeChange}
         />
       )}
 
