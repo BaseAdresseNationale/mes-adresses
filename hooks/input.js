@@ -1,15 +1,21 @@
 import {useState, useCallback} from 'react'
 
-export function useInput(initialValue, prop = 'value') {
-  const [value, setValue] = useState(initialValue)
+export function useInput(initialValue) {
+  const [value, setValue] = useState(initialValue || '')
 
   const onChange = useCallback(e => {
-    setValue(e.target[prop])
+    setValue(e.target.value)
   }, [])
 
   return [value, onChange]
 }
 
 export function useCheckboxInput(initialValue) {
-  return useInput(initialValue, 'checked')
+  const [checked, setChecked] = useState(initialValue || false)
+
+  const onChange = useCallback(e => {
+    setChecked(e.target.checked)
+  }, [])
+
+  return [checked, onChange]
 }
