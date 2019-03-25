@@ -1,6 +1,7 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInput, Button, IconButton, Alert} from 'evergreen-ui'
+import {point} from '@turf/helpers'
 
 import MarkerContext from '../../contexts/marker'
 
@@ -42,10 +43,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
     if (marker) {
       body.positions = [
         {
-          point: {
-            type: 'Point',
-            coordinates: [marker.longitude, marker.latitude]
-          },
+          point: point([marker.longitude, marker.latitude]),
           type
         }
       ]
@@ -128,7 +126,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 
       {marker && (
         <PositionEditor
-          initialValue={initialValue ? initialValue.positions[0] : null}
+          initialValue={position}
           alert={
             initialValue ?
               'Déplacez le marqueur sur la carte pour déplacer le numéro.' :

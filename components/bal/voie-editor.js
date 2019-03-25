@@ -74,6 +74,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
       onCancel()
+      disableMarker()
     }
   }, [onCancel])
 

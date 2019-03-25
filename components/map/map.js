@@ -5,8 +5,6 @@ import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
 import bbox from '@turf/bbox'
 
-import MarkerContext from '../../contexts/marker'
-
 import {vector, ortho} from './styles'
 
 import StyleSwitch from './style-switch'
@@ -16,6 +14,7 @@ import EditableMarker from './editable-marker'
 import {getVoiesLabelLayer, getToponymesLabelLayer} from './bal/voies'
 import {getNumerosPointLayer} from './bal/numeros'
 
+import useBounds from './hooks/bounds'
 import useBalData from './hooks/bal-data'
 
 const defaultViewport = {
@@ -67,12 +66,14 @@ function generateNewStyle(style, sources) {
   ]))
 }
 
-function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, ...props}) {
+function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, voie, ...props}) {
   const [map, setMap] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
   // Const [sources, layers] = useBal(bal, style)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
+
+  const bounds = useBounds(geojson, commune, voie)
 
   const sources = useBalData(geojson, style)
 
@@ -165,9 +166,8 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, ..
 
   useEffect(() => {
     if (map) {
-      if (commune) {
-        const featureBbox = bbox(geojson && geojson.features.length > 0 ? geojson : commune.contour)
-        const camera = map.cameraForBounds(featureBbox, {
+      if (bounds) {
+        const camera = map.cameraForBounds(bounds, {
           padding: 100
         })
 
@@ -187,7 +187,7 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, ..
         }))
       }
     }
-  }, [map, geojson, commune])
+  }, [map, bounds])
 
   return (
     <MapGl
