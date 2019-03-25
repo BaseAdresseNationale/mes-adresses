@@ -18,7 +18,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
   const [suffixe, onSuffixeChange] = useInput(initialValue ? initialValue.suffixe : '')
   const [type, onTypeChange] = useInput(position ? position.type : 'entrée')
   const [error, setError] = useState()
-  const setRef = useFocus()
+  const focusRef = useFocus()
 
   const {
     marker,
@@ -98,7 +98,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
           display='block'
           type='number'
           disabled={isLoading}
-          innerRef={setRef}
+          innerRef={focusRef}
           width='100%'
           maxWidth={300}
           min={0}
