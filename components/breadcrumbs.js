@@ -41,6 +41,7 @@ function Breadcrumbs({baseLocale, commune, voie}) {
           {commune.nom}
         </Link>
       </NextLink>
+
       <Text color='muted'>{' > '}</Text>
       <Text>{voie.nom}</Text>
     </Pane>
