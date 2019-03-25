@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import bbox from '@turf/bbox'
 
 import {vector, ortho} from './styles'
 
@@ -11,11 +10,11 @@ import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
 
-import {getVoiesLabelLayer, getToponymesLabelLayer} from './bal/voies'
-import {getNumerosPointLayer} from './bal/numeros'
+import {getVoiesLabelLayer, getToponymesLabelLayer} from './layers/voies'
+import {getNumerosPointLayer} from './layers/numeros'
 
 import useBounds from './hooks/bounds'
-import useBalData from './hooks/bal-data'
+import useSources from './hooks/sources'
 
 const defaultViewport = {
   latitude: 46.5693,
@@ -73,9 +72,8 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, vo
   // Const [sources, layers] = useBal(bal, style)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
+  const sources = useSources(geojson, voie)
   const bounds = useBounds(geojson, commune, voie)
-
-  const sources = useBalData(geojson, style)
 
   const mapRef = useCallback(ref => {
     if (ref) {
@@ -209,7 +207,7 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, vo
         </>
       )}
 
-      <EditableMarker viewport={viewport} />
+      <EditableMarker viewport={viewport} voie={voie} />
     </MapGl>
   )
 }
