@@ -1,7 +1,6 @@
 import {useMemo, useContext} from 'react'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
-import {point} from '@turf/helpers'
 
 import MarkerContext from '../../../contexts/marker'
 
@@ -10,7 +9,10 @@ function useBounds(geojson, commune, voie) {
 
   const data = useMemo(() => {
     if (enabled && marker && !voie) {
-      return buffer(point([marker.longitude, marker.latitude]), 50, {
+      return buffer({
+        type: 'Point',
+        coordinates: [marker.longitude, marker.latitude]
+      }, 50, {
         units: 'meters'
       })
     }
