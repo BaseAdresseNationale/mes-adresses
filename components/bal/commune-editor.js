@@ -4,6 +4,7 @@ import {Pane, Checkbox, Button, IconButton, Alert} from 'evergreen-ui'
 
 import {useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
+import useKeyEvent from '../../hooks/key-event'
 
 import {CommuneSearch} from '../commune-search'
 
@@ -38,6 +39,12 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
     e.preventDefault()
 
     onCancel()
+  }, [onCancel])
+
+  useKeyEvent('keyup', ({key}) => {
+    if (key === 'Escape') {
+      onCancel()
+    }
   }, [onCancel])
 
   return (
