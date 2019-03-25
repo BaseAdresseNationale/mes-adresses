@@ -9,17 +9,13 @@
     "deploy": "now --target production && now rm --safe -y mapper"
   },
   "dependencies": {
-    "@etalab/project-legal": "^0.3.3",
     "@turf/bbox": "^6.0.1",
     "@turf/centroid": "^6.0.2",
-    "@turf/concave": "^6.0.5",
-    "@turf/helpers": "^6.1.4",
     "compression": "^1.7.4",
     "dotenv": "^6.2.0",
     "evergreen-ui": "^4.14.1",
     "express": "^4.16.4",
     "fuse.js": "^3.4.4",
-    "glamor": "^2.20.40",
     "immutable": "^4.0.0-rc.12",
     "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.11",
