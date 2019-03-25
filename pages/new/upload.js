@@ -1,8 +1,6 @@
-import React, {useState, useEffect, useCallback} from 'react'
-import NextLink from 'next/link'
+import React, {useState, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Alert, Heading, Paragraph, Button, TextInputField} from 'evergreen-ui'
-import {validate, extractAsTree} from '@etalab/bal'
 
 import {createBaseLocale, uploadBaseLocaleCsv} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
