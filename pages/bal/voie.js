@@ -4,6 +4,7 @@ import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
 import {addNumero, getNumeros, editNumero, removeNumero} from '../../lib/bal-api'
 
 import useToken from '../../hooks/token'
+import useFuse from '../../hooks/fuse'
 
 import TableRow from '../../components/table-row'
 import NumeroEditor from '../../components/bal/numero-editor'
@@ -13,6 +14,12 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const token = useToken(baseLocale._id)
+
+  const [filtered, setFilter] = useFuse(numeros, 200, {
+    keys: [
+      'numeroComplet'
+    ]
+  })
 
   useEffect(() => {
     setNumeros(defaultNumeros)
@@ -98,6 +105,12 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
       <Pane flex={1} overflowY='scroll'>
         {voie.positions.length === 0 ? (
           <Table>
+            <Table.Head>
+              <Table.SearchHeaderCell
+                placeholder='Rechercher un numéro'
+                onChange={setFilter}
+              />
+            </Table.Head>
             {isAdding && (
               <Table.Row height='auto'>
                 <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
@@ -108,14 +121,14 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
                 </Table.Cell>
               </Table.Row>
             )}
-            {numeros.length === 0 && (
+            {filtered.length === 0 && (
               <Table.Row>
                 <Table.TextCell color='muted' fontStyle='italic'>
                   Aucun numéro
                 </Table.TextCell>
               </Table.Row>
             )}
-            {numeros.map(numero => numero._id === editingId ? (
+            {filtered.map(numero => numero._id === editingId ? (
               <Table.Row key={voie._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
