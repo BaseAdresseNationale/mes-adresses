@@ -1,20 +1,14 @@
-require('dotenv').config()
-
 const {join} = require('path')
+const nextRuntimeDotenv = require('next-runtime-dotenv')
 
-const {
-  BAL_API_URL,
-  GEO_API_URL
-} = process.env
+const withConfig = nextRuntimeDotenv({
+  public: [
+    'BAL_API_URL',
+    'GEO_API_URL'
+  ]
+})
 
-module.exports = {
-  target: 'serverless',
-
-  env: {
-    BAL_API_URL,
-    GEO_API_URL
-  },
-
+module.exports = withConfig({
   webpack(config, {dev, isServer}) {
     if (!dev && !isServer) {
       const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
@@ -34,4 +28,4 @@ module.exports = {
 
     return config
   }
-}
+})

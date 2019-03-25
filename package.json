@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node server",
     "build": "next build",
-    "deploy": "now --target production && now rm --safe -y mapper"
+    "start": "NODE_ENV=production node server"
   },
   "dependencies": {
     "@turf/bbox": "^6.0.1",
@@ -20,6 +20,7 @@
     "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.11",
     "next": "^8.0.3",
+    "next-runtime-dotenv": "^1.1.1",
     "prop-types": "^15.7.2",
     "randomcolor": "^0.5.4",
     "react": "^16.8.5",

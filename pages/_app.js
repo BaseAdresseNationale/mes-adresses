@@ -59,6 +59,7 @@ function App({error, Component, pageProps, query, geojson}) {
             interactive={layout === 'sidebar'}
             baseLocale={pageProps.baseLocale}
             commune={pageProps.commune}
+            voie={pageProps.voie}
             geojson={geojson}
           />
 

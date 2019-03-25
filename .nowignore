@@ -1,6 +1,0 @@
-node_modules
-reports
-.next
-.env*
-
-server
