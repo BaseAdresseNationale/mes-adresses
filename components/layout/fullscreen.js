@@ -7,7 +7,8 @@ function Fullscreen({isOpen, isHidden, size, top, onToggle, ...props}) {
     <Pane
       position='fixed'
       width='100%'
-      height='100%'
+      top={top + 24}
+      bottom={24}
       display='flex'
       flexGrow='1'
       alignItems='center'
@@ -16,7 +17,7 @@ function Fullscreen({isOpen, isHidden, size, top, onToggle, ...props}) {
     >
       <Pane
         width='100%'
-        height='90%'
+        height='100%'
         overflow='hidden'
         marginX={24}
         flex={1}
