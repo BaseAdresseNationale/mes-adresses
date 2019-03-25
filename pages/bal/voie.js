@@ -142,10 +142,11 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
             ) : (
               <TableRow
                 key={numero._id}
-                isSelectable={false}
                 id={numero._id}
+                isSelectable={!isAdding && !editingId && numero.positions.length > 1}
                 label={numero.numeroComplet}
-                onEdit={onEnableEditing}
+                secondary={numero.positions.length > 1 && `${numero.positions.length} positions`}
+                onEdit={numero.positions.length === 1 && onEnableEditing}
                 onRemove={onRemove}
               />
             ))}
