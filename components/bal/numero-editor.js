@@ -101,8 +101,9 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
           innerRef={setRef}
           width='100%'
           maxWidth={300}
+          min={0}
+          max={9999}
           value={numero}
-          maxLength={200}
           marginBottom={16}
           placeholder='Numéro'
           onChange={onNumeroChange}
@@ -115,7 +116,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
           width='100%'
           flex={1}
           value={suffixe}
-          maxLength={200}
+          maxLength={10}
           marginBottom={16}
           placeholder='Suffixe'
           onChange={onSuffixeChange}
