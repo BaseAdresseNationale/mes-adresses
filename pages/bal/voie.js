@@ -130,7 +130,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
               </Table.Row>
             )}
             {filtered.map(numero => numero._id === editingId ? (
-              <Table.Row key={voie._id} height='auto'>
+              <Table.Row key={numero._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
                     initialValue={numero}
