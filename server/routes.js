@@ -20,6 +20,14 @@ module.exports = app => {
     })
   })
 
+  router.get('/bal/:balId/:token', (req, res) => {
+    app.render(req, res, '/bal', {
+      ...req.query,
+      balId: req.params.balId,
+      token: req.params.token
+    })
+  })
+
   router.get('/bal/:balId', (req, res) => {
     app.render(req, res, '/bal', {
       ...req.query,

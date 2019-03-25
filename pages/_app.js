@@ -1,4 +1,3 @@
-import {stringify, parse} from 'querystring'
 import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import Router from 'next/router'
 import PropTypes from 'prop-types'
@@ -33,13 +32,9 @@ function App({Component, pageProps, query, geojson}) {
     if (query.token && pageProps.baseLocale) {
       storeBalAccess(pageProps.baseLocale._id, query.token)
 
-      const {token: _0, ...hrefQuery} = query
-      const [hostname, qs] = Router.asPath.split('?', 2)
-      const {token: _1, ...asQuery} = parse(qs)
-
       Router.replace(
-        `${Router.pathname}?${stringify(hrefQuery)}`,
-        `${hostname}?${stringify(asQuery)}`
+        `/bal?balId=${pageProps.baseLocale._id}`,
+        `/bal/${pageProps.baseLocale._id}`
       )
     }
   }, [query.token, pageProps.baseLocale, query])
