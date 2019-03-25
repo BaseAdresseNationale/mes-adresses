@@ -22,7 +22,7 @@ const layoutMap = {
 
 const SIDEBAR_WIDTH = 500
 
-function App({error, Component, pageProps, query = {}, geojson}) {
+function App({error, Component, pageProps, query, geojson}) {
   const [isHidden, setIsHidden] = useState(false)
 
   const {layout, ...otherPageProps} = pageProps
@@ -85,6 +85,7 @@ function App({error, Component, pageProps, query = {}, geojson}) {
 }
 
 App.getInitialProps = async ({Component, ctx}) => {
+  const {query} = ctx
   let pageProps = {
     layout: 'fullscreen'
   }
@@ -95,9 +96,9 @@ App.getInitialProps = async ({Component, ctx}) => {
   let numeros
   let geojson
 
-  if (ctx.query.balId) {
+  if (query.balId) {
     try {
-      baseLocale = await getBaseLocale(ctx.query.balId)
+      baseLocale = await getBaseLocale(query.balId)
     } catch (error) {
       return {
         pageProps,
@@ -108,20 +109,30 @@ App.getInitialProps = async ({Component, ctx}) => {
     }
   }
 
-  if (ctx.query.codeCommune) {
-    commune = await getCommune(ctx.query.codeCommune, {
-      fields: 'contour'
-    })
+  if (query.codeCommune) {
+    try {
+      commune = await getCommune(query.codeCommune, {
+        fields: 'contour'
+      })
+    } catch (error) {
+      commune = {
+        code: query.codeCommune
+      }
+    }
   }
 
-  if (ctx.query.idVoie) {
-    voie = await getVoie(ctx.query.idVoie)
-    numeros = await getNumeros(voie._id)
+  if (query.idVoie) {
+    [voie, numeros] = await Promise.all([
+      getVoie(query.idVoie),
+      getNumeros(query.idVoie)
+    ])
   }
 
   if (baseLocale && commune) {
-    voies = await getVoies(baseLocale._id, commune.code)
-    geojson = await getCommuneGeoJson(baseLocale._id, commune.code)
+    [voies, geojson] = await Promise.all([
+      getVoies(baseLocale._id, commune.code),
+      getCommuneGeoJson(baseLocale._id, commune.code)
+    ])
   }
 
   if (Component.getInitialProps) {
@@ -137,14 +148,23 @@ App.getInitialProps = async ({Component, ctx}) => {
 
   return {
     pageProps,
-    query: ctx.query,
+    query,
     geojson
   }
 }
 
 App.propTypes = {
+  error: PropTypes.shape({
+    statusCode: PropTypes.number
+  }),
   Component: PropTypes.any.isRequired,
-  pageProps: PropTypes.object.isRequired
+  pageProps: PropTypes.object.isRequired,
+  query: PropTypes.object,
+  geojson: PropTypes.object
+}
+
+App.defaultProps = {
+  query: {}
 }
 
 export default App
