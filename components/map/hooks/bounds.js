@@ -9,7 +9,7 @@ function useBounds(geojson, commune, voie) {
   const {marker, enabled} = useContext(MarkerContext)
 
   const data = useMemo(() => {
-    if (enabled && marker && !voie) {
+    if (enabled && marker) {
       return buffer(point([marker.longitude, marker.latitude]), 100, {
         units: 'meters'
       })
