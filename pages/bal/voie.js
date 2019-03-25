@@ -1,9 +1,10 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
 
 import {addNumero, getNumeros, editNumero, removeNumero} from '../../lib/bal-api'
 
-import useToken from '../../hooks/token'
+import TokenContext from '../../contexts/token'
+
 import useFuse from '../../hooks/fuse'
 
 import TableRow from '../../components/table-row'
@@ -13,7 +14,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [numeros, setNumeros] = useState(defaultNumeros)
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState(null)
-  const token = useToken(baseLocale._id)
+  const token = useContext(TokenContext)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [

@@ -1,11 +1,9 @@
-import React, {useState, useCallback, useMemo, useEffect} from 'react'
-import Router from 'next/router'
+import React, {useState, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 
 import {getBaseLocale, getCommuneGeoJson, getVoies, getVoie, getNumeros} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
-import {storeBalAccess} from '../lib/tokens'
 
 import Header from '../components/header'
 import Fullscreen from '../components/layout/fullscreen'
@@ -14,6 +12,7 @@ import Sidebar from '../components/layout/sidebar'
 import Map from '../components/map'
 
 import {MarkerContextProvider} from '../contexts/marker'
+import {TokenContextProvider} from '../contexts/token'
 
 const layoutMap = {
   fullscreen: Fullscreen,
@@ -27,17 +26,6 @@ function App({Component, pageProps, query, geojson}) {
 
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
-
-  useEffect(() => {
-    if (query.token && pageProps.baseLocale) {
-      storeBalAccess(pageProps.baseLocale._id, query.token)
-
-      Router.replace(
-        `/bal?balId=${pageProps.baseLocale._id}`,
-        `/bal/${pageProps.baseLocale._id}`
-      )
-    }
-  }, [query.token, pageProps.baseLocale, query])
 
   const onToggle = useCallback(() => {
     setIsHidden(isHidden => !isHidden)
@@ -57,34 +45,36 @@ function App({Component, pageProps, query, geojson}) {
 
   return (
     <Container>
-      <MarkerContextProvider>
-        {pageProps.baseLocale && (
-          <Header {...pageProps} />
-        )}
+      <TokenContextProvider balId={query.balId} token={query.token}>
+        <MarkerContextProvider>
+          {pageProps.baseLocale && (
+            <Header {...pageProps} />
+          )}
 
-        <Map
-          top={topOffset}
-          left={leftOffset}
-          animate={layout === 'sidebar'}
-          interactive={layout === 'sidebar'}
-          baseLocale={pageProps.baseLocale}
-          commune={pageProps.commune}
-          geojson={geojson}
-        />
+          <Map
+            top={topOffset}
+            left={leftOffset}
+            animate={layout === 'sidebar'}
+            interactive={layout === 'sidebar'}
+            baseLocale={pageProps.baseLocale}
+            commune={pageProps.commune}
+            geojson={geojson}
+          />
 
-        <Wrapper
-          top={topOffset}
-          isHidden={isHidden}
-          size={SIDEBAR_WIDTH}
-          elevation={4}
-          background='tint2'
-          display='flex'
-          flexDirection='column'
-          onToggle={onToggle}
-        >
-          <Component {...otherPageProps} />
-        </Wrapper>
-      </MarkerContextProvider>
+          <Wrapper
+            top={topOffset}
+            isHidden={isHidden}
+            size={SIDEBAR_WIDTH}
+            elevation={4}
+            background='tint2'
+            display='flex'
+            flexDirection='column'
+            onToggle={onToggle}
+          >
+            <Component {...otherPageProps} />
+          </Wrapper>
+        </MarkerContextProvider>
+      </TokenContextProvider>
     </Container>
   )
 }

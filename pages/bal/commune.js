@@ -1,10 +1,11 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 
 import {addVoie, populateCommune, editVoie, getVoies, removeVoie} from '../../lib/bal-api'
 
-import useToken from '../../hooks/token'
+import TokenContext from '../../contexts/token'
+
 import useFuse from '../../hooks/fuse'
 
 import TableRow from '../../components/table-row'
@@ -15,8 +16,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [isPopulating, setIsPopulating] = useState(false)
-
-  const token = useToken(baseLocale._id)
+  const token = useContext(TokenContext)
 
   const [filtered, setFilter] = useFuse(voies, 200, {
     keys: [

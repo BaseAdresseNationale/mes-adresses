@@ -1,11 +1,12 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useContext} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Button, Table} from 'evergreen-ui'
 
 import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
 
-import useToken from '../../hooks/token'
+import TokenContext from '../../contexts/token'
+
 import useFuse from '../../hooks/fuse'
 
 import TableRow from '../../components/table-row'
@@ -14,7 +15,7 @@ import CommuneEditor from '../../components/bal/commune-editor'
 const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [communes, setCommunes] = useState(defaultCommunes)
   const [isAdding, setIsAdding] = useState(false)
-  const token = useToken(baseLocale._id)
+  const token = useContext(TokenContext)
 
   const [filtered, onFilter] = useFuse(communes, 200, {
     keys: [
