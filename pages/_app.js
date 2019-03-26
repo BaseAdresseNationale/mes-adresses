@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 import ErrorPage from 'next/error'
 
-import {getBaseLocale, getCommuneGeoJson, getVoies, getVoie, getNumeros} from '../lib/bal-api'
+import {getBaseLocale, getVoie} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
 import Header from '../components/header'
@@ -14,6 +14,7 @@ import Map from '../components/map'
 
 import {MarkerContextProvider} from '../contexts/marker'
 import {TokenContextProvider} from '../contexts/token'
+import {MapDataContextProvider} from '../contexts/map-data'
 
 const layoutMap = {
   fullscreen: Fullscreen,
@@ -22,7 +23,7 @@ const layoutMap = {
 
 const SIDEBAR_WIDTH = 500
 
-function App({error, Component, pageProps, query, geojson}) {
+function App({error, Component, pageProps, query}) {
   const [isHidden, setIsHidden] = useState(false)
 
   const {layout, ...otherPageProps} = pageProps
@@ -47,39 +48,40 @@ function App({error, Component, pageProps, query, geojson}) {
   return (
     <Container>
       <TokenContextProvider balId={query.balId} token={query.token}>
-        <MarkerContextProvider>
-          {pageProps.baseLocale && (
-            <Header {...pageProps} />
-          )}
-
-          <Map
-            top={topOffset}
-            left={leftOffset}
-            animate={layout === 'sidebar'}
-            interactive={layout === 'sidebar'}
-            baseLocale={pageProps.baseLocale}
-            commune={pageProps.commune}
-            voie={pageProps.voie}
-            geojson={geojson}
-          />
-
-          <Wrapper
-            top={topOffset}
-            isHidden={isHidden}
-            size={SIDEBAR_WIDTH}
-            elevation={4}
-            background='tint2'
-            display='flex'
-            flexDirection='column'
-            onToggle={onToggle}
-          >
-            {error ? (
-              <ErrorPage statusCode={error.statusCode} />
-            ) : (
-              <Component {...otherPageProps} />
+        <MapDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
+          <MarkerContextProvider>
+            {pageProps.baseLocale && (
+              <Header {...pageProps} />
             )}
-          </Wrapper>
-        </MarkerContextProvider>
+
+            <Map
+              top={topOffset}
+              left={leftOffset}
+              animate={layout === 'sidebar'}
+              interactive={layout === 'sidebar'}
+              baseLocale={pageProps.baseLocale}
+              commune={pageProps.commune}
+              voie={pageProps.voie}
+            />
+
+            <Wrapper
+              top={topOffset}
+              isHidden={isHidden}
+              size={SIDEBAR_WIDTH}
+              elevation={4}
+              background='tint2'
+              display='flex'
+              flexDirection='column'
+              onToggle={onToggle}
+            >
+              {error ? (
+                <ErrorPage statusCode={error.statusCode} />
+              ) : (
+                <Component {...otherPageProps} />
+              )}
+            </Wrapper>
+          </MarkerContextProvider>
+        </MapDataContextProvider>
       </TokenContextProvider>
     </Container>
   )
@@ -87,15 +89,14 @@ function App({error, Component, pageProps, query, geojson}) {
 
 App.getInitialProps = async ({Component, ctx}) => {
   const {query} = ctx
+
   let pageProps = {
     layout: 'fullscreen'
   }
+
   let baseLocale
   let commune
-  let voies
   let voie
-  let numeros
-  let geojson
 
   if (query.balId) {
     try {
@@ -123,17 +124,7 @@ App.getInitialProps = async ({Component, ctx}) => {
   }
 
   if (query.idVoie) {
-    [voie, numeros] = await Promise.all([
-      getVoie(query.idVoie),
-      getNumeros(query.idVoie)
-    ])
-  }
-
-  if (baseLocale && commune) {
-    [voies, geojson] = await Promise.all([
-      getVoies(baseLocale._id, commune.code),
-      getCommuneGeoJson(baseLocale._id, commune.code)
-    ])
+    voie = await getVoie(query.idVoie)
   }
 
   if (Component.getInitialProps) {
@@ -141,16 +132,13 @@ App.getInitialProps = async ({Component, ctx}) => {
       ...ctx,
       baseLocale,
       commune,
-      voies,
-      voie,
-      numeros
+      voie
     })
   }
 
   return {
     pageProps,
-    query,
-    geojson
+    query
   }
 }
 

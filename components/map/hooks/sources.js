@@ -1,39 +1,45 @@
-import {useMemo, useCallback} from 'react'
+import {useMemo, useContext} from 'react'
 import {groupBy} from 'lodash-es'
 import computeCentroid from '@turf/centroid'
 import randomColor from 'randomcolor'
 
-function useSources(geojson, voie) {
-  const getColor = useCallback(idVoie => {
-    if (voie && voie._id !== idVoie) {
-      return '#cccccc'
-    }
+import MapDataContext from '../../../contexts/map-data'
 
-    return randomColor({
-      luminosity: 'dark',
-      seed: idVoie
-    })
-  }, [voie])
+function useSources(voie) {
+  const {geojson} = useContext(MapDataContext)
 
-  const sources = useMemo(() => {
+  return useMemo(() => {
     const sources = []
 
-    if (geojson && geojson.features.length > 0) {
+    if (!geojson) {
+      return sources
+    }
+
+    let {features} = geojson
+
+    if (voie) {
+      features = features.filter(feature => feature.properties.idVoie !== voie._id)
+    }
+
+    if (features.length > 0) {
       sources.push({
         name: 'positions',
         data: {
           type: 'FeatureCollection',
-          features: geojson.features.map(feature => ({
+          features: features.map(feature => ({
             ...feature,
             properties: {
               ...feature.properties,
-              color: getColor(feature.properties.idVoie)
+              color: voie ? '#cccccc' : randomColor({
+                luminosity: 'dark',
+                seed: feature.properties.idVoie
+              })
             }
           }))
         }
       })
 
-      const adresses = geojson.features.filter(feature => feature.properties.type === 'adresse')
+      const adresses = features.filter(feature => feature.properties.type === 'adresse')
       const groups = groupBy(adresses, feature => feature.properties.idVoie)
 
       const voies = Object.values(groups).map(features => {
@@ -59,9 +65,7 @@ function useSources(geojson, voie) {
     }
 
     return sources
-  }, [geojson, getColor])
-
-  return sources
+  }, [geojson, voie])
 }
 
 export default useSources

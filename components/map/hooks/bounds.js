@@ -2,13 +2,19 @@ import {useMemo, useContext} from 'react'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 
+import MapDataContext from '../../../contexts/map-data'
 import MarkerContext from '../../../contexts/marker'
 
-function useBounds(geojson, commune, voie) {
+function useBounds(commune, voie) {
+  const {geojson} = useContext(MapDataContext)
   const {marker, enabled} = useContext(MarkerContext)
 
   const data = useMemo(() => {
-    if (enabled && marker && !voie) {
+    if (enabled && marker) {
+      if (voie) {
+        return false
+      }
+
       return buffer({
         type: 'Point',
         coordinates: [marker.longitude, marker.latitude]
@@ -49,7 +55,7 @@ function useBounds(geojson, commune, voie) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geojson, commune, voie, enabled])
 
-  return useMemo(() => data ? bbox(data) : null, [data])
+  return useMemo(() => data ? bbox(data) : data, [data])
 }
 
 export default useBounds

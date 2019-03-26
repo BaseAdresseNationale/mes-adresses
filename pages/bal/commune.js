@@ -1,10 +1,11 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import React, {useState, useCallback, useContext} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 
-import {addVoie, populateCommune, editVoie, getVoies, removeVoie} from '../../lib/bal-api'
+import {getVoies, addVoie, populateCommune, editVoie, removeVoie} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
+import MapDataContext from '../../contexts/map-data'
 
 import useFuse from '../../hooks/fuse'
 
@@ -12,31 +13,26 @@ import TableRow from '../../components/table-row'
 import VoieEditor from '../../components/bal/voie-editor'
 
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
-  const [voies, setVoies] = useState(defaultVoies)
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [isPopulating, setIsPopulating] = useState(false)
-  const token = useContext(TokenContext)
 
-  const [filtered, setFilter] = useFuse(voies, 200, {
+  const token = useContext(TokenContext)
+  const {voies, reloadVoies} = useContext(MapDataContext)
+
+  const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
     keys: [
       'nom'
     ]
   })
 
-  useEffect(() => {
-    setVoies(defaultVoies)
-  }, [defaultVoies])
-
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)
 
     await populateCommune(baseLocale._id, commune.code, token)
-
-    const voies = await getVoies(baseLocale._id, commune.code)
+    await reloadVoies()
 
     setIsPopulating(false)
-    setVoies(voies)
   }, [baseLocale, commune, token])
 
   const onAdd = useCallback(async ({nom, positions}) => {
@@ -45,10 +41,9 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       positions
     }, token)
 
-    const voies = await getVoies(baseLocale._id, commune.code)
+    await reloadVoies()
 
     setIsAdding(false)
-    setVoies(voies)
   }, [baseLocale, commune, token])
 
   const onEnableAdding = useCallback(() => {
@@ -66,18 +61,14 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       positions
     }, token)
 
-    const voies = await getVoies(baseLocale._id, commune.code)
+    await reloadVoies()
 
     setEditingId(null)
-    setVoies(voies)
   }, [editingId, baseLocale, commune, token])
 
   const onRemove = useCallback(async idVoie => {
     await removeVoie(idVoie, token)
-
-    const voies = await getVoies(baseLocale._id, commune.code)
-
-    setVoies(voies)
+    await reloadVoies()
   }, [baseLocale, commune, token])
 
   const onSelect = useCallback(idVoie => {
@@ -170,7 +161,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
           ))}
         </Table>
       </Pane>
-      {token && voies.length === 0 && (
+      {token && voies && voies.length === 0 && (
         <Pane borderTop marginTop='auto' padding={16}>
           <Paragraph size={300} color='muted'>
             Vous souhaitez importer les voies de la commune de {commune.nom} depuis la Base Adresse Nationale ?
@@ -184,12 +175,14 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   )
 })
 
-Commune.getInitialProps = ({baseLocale, commune, voies}) => {
+Commune.getInitialProps = async ({baseLocale, commune, voies}) => {
+  const defaultVoies = await getVoies(baseLocale._id, commune.code)
+
   return {
     layout: 'sidebar',
     baseLocale,
     commune,
-    defaultVoies: voies
+    defaultVoies
   }
 }
 

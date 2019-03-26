@@ -1,20 +1,21 @@
-import React, {useState, useMemo, useEffect, useCallback} from 'react'
+import React, {useState, useMemo, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
+
+import MapDataContext from '../../contexts/map-data'
 
 import {vector, ortho} from './styles'
 
 import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
-
-import {getVoiesLabelLayer, getToponymesLabelLayer} from './layers/voies'
-import {getNumerosPointLayer} from './layers/numeros'
+import NumeroMarker from './numero-marker'
 
 import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
+import useLayers from './hooks/layers'
 
 const defaultViewport = {
   latitude: 46.5693,
@@ -48,7 +49,7 @@ function getBaseStyle(style) {
   }
 }
 
-function generateNewStyle(style, sources) {
+function generateNewStyle(style, sources, layers) {
   let baseStyle = getBaseStyle(style)
 
   for (const {name, data} of sources) {
@@ -58,22 +59,20 @@ function generateNewStyle(style, sources) {
     }))
   }
 
-  return baseStyle.updateIn(['layers'], arr => arr.push(...[
-    getNumerosPointLayer(style),
-    getVoiesLabelLayer(style),
-    getToponymesLabelLayer(style)
-  ]))
+  return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, voie, ...props}) {
+function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...props}) {
   const [map, setMap] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
-  // Const [sources, layers] = useBal(bal, style)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const sources = useSources(geojson, voie)
-  const bounds = useBounds(geojson, commune, voie)
+  const {numeros} = useContext(MapDataContext)
+
+  const sources = useSources(voie)
+  const bounds = useBounds(commune, voie)
+  const layers = useLayers(voie, style)
 
   const mapRef = useCallback(ref => {
     if (ref) {
@@ -82,10 +81,10 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, vo
   }, [])
 
   const interactiveLayerIds = useMemo(() => {
-    return sources.length > 0 ? [
+    return commune && !voie ? [
       'voie-label'
     ] : null
-  }, [sources])
+  }, [commune, voie])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
@@ -112,59 +111,20 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, vo
 
   useEffect(() => {
     if (sources.length > 0) {
-      setMapStyle(generateNewStyle(style, sources))
+      setMapStyle(generateNewStyle(style, sources, layers))
     } else {
       setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
     }
-  }, [interactive, sources, style, defaultStyle])
-
-  // useEffect(() => {
-  //   setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
-  // }, [interactive, style, defaultStyle])
-
-  // UseEffect(() => {
-  //   if (sources && sources.length > 0) {
-  //     let data = merge(sources.map(s => s.data))
-
-  //     if (data.features.length === 1 && data.features[0].geometry.type === 'Point') {
-  //       data = buffer(data, 0.3)
-  //     }
-
-  //     const [minLng, minLat, maxLng, maxLat] = bbox(data)
-
-  //     const vp = new WebMercatorViewport({
-  //       ...viewport,
-  //       height: windowSize.innerHeight,
-  //       width: windowSize.innerWidth
-  //     })
-
-  //     const {longitude, latitude, zoom} = vp.fitBounds(
-  //       [[minLng, minLat], [maxLng, maxLat]],
-  //       {padding: {
-  //         top: 80,
-  //         right: 80,
-  //         bottom: 80,
-  //         left: offset + 80
-  //       }}
-  //     )
-
-  //     setViewport(viewport => ({
-  //       ...viewport,
-  //       longitude,
-  //       latitude,
-  //       zoom
-  //     }))
-  //   } else {
-  //     setViewport(viewport => ({
-  //       ...viewport,
-  //       ...defaultViewport
-  //     }))
-  //   }
-  // }, [sources])
+  }, [interactive, sources, layers, style, defaultStyle])
 
   useEffect(() => {
     if (map) {
-      if (bounds) {
+      if (bounds === null) {
+        setViewport(viewport => ({
+          ...viewport,
+          ...defaultViewport
+        }))
+      } else if (bounds !== false) {
         const camera = map.cameraForBounds(bounds, {
           padding: 100
         })
@@ -178,11 +138,6 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, vo
             zoom: camera.zoom
           }))
         }
-      } else {
-        setViewport(viewport => ({
-          ...viewport,
-          ...defaultViewport
-        }))
       }
     }
   }, [map, bounds])
@@ -206,6 +161,13 @@ function Map({interactive, style: defaultStyle, geojson, baseLocale, commune, vo
           <StyleSwitch style={style} setStyle={setStyle} />
         </>
       )}
+
+      {voie && numeros && numeros.map(numero => (
+        <NumeroMarker
+          key={numero._id}
+          numero={numero}
+        />
+      ))}
 
       <EditableMarker viewport={viewport} />
     </MapGl>

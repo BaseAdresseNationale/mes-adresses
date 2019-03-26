@@ -1,9 +1,10 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import React, {useState, useCallback, useContext} from 'react'
 import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
 
-import {addNumero, getNumeros, editNumero, removeNumero} from '../../lib/bal-api'
+import {addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
+import MapDataContext from '../../contexts/map-data'
 
 import useFuse from '../../hooks/fuse'
 
@@ -11,20 +12,17 @@ import TableRow from '../../components/table-row'
 import NumeroEditor from '../../components/bal/numero-editor'
 
 const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
-  const [numeros, setNumeros] = useState(defaultNumeros)
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState(null)
-  const token = useContext(TokenContext)
 
-  const [filtered, setFilter] = useFuse(numeros, 200, {
+  const token = useContext(TokenContext)
+  const {numeros, reloadNumeros} = useContext(MapDataContext)
+
+  const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
       'numeroComplet'
     ]
   })
-
-  useEffect(() => {
-    setNumeros(defaultNumeros)
-  }, [defaultNumeros])
 
   const onAdd = useCallback(async ({numero, suffixe, positions}) => {
     await addNumero(voie._id, {
@@ -33,10 +31,9 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
       positions
     }, token)
 
-    const numeros = await getNumeros(voie._id)
+    await reloadNumeros()
 
     setIsAdding(false)
-    setNumeros(numeros)
   }, [voie, token])
 
   const onEnableAdding = useCallback(() => {
@@ -55,18 +52,14 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
       positions
     }, token)
 
-    const numeros = await getNumeros(voie._id)
+    await reloadNumeros()
 
     setEditingId(null)
-    setNumeros(numeros)
   }, [editingId, voie._id, token])
 
   const onRemove = useCallback(async idNumero => {
     await removeNumero(idNumero, token)
-
-    const numeros = await getNumeros(voie._id)
-
-    setNumeros(numeros)
+    await reloadNumeros()
   }, [voie._id, token])
 
   const onCancel = useCallback(() => {
@@ -163,13 +156,15 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   )
 })
 
-Voie.getInitialProps = ({baseLocale, commune, voie, numeros}) => {
+Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
+  const defaultNumeros = await getNumeros(voie._id)
+
   return {
     layout: 'sidebar',
     baseLocale,
     commune,
     voie,
-    defaultNumeros: numeros
+    defaultNumeros
   }
 }
 
