@@ -11,6 +11,7 @@ import {vector, ortho} from './styles'
 import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
+import NumeroSwitch from './numero-switch'
 import NumeroMarker from './numero-marker'
 
 import useBounds from './hooks/bounds'
@@ -64,6 +65,7 @@ function generateNewStyle(style, sources, layers) {
 
 function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...props}) {
   const [map, setMap] = useState(null)
+  const [showNumeros, setShowNumeros] = useState(false)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
@@ -90,6 +92,10 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
     setViewport(viewport)
   }, [])
 
+  const onShowNumeroChange = useCallback(value => {
+    setShowNumeros(value)
+  }, [])
+
   const onClick = useCallback(event => {
     const feature = event.features && event.features[0]
 
@@ -104,7 +110,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
         }
 
         default:
-          console.log('nothing')
+          return false
       }
     }
   }, [baseLocale, commune])
@@ -162,12 +168,19 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
         </>
       )}
 
-      {voie && numeros && numeros.map(numero => (
-        <NumeroMarker
-          key={numero._id}
-          numero={numero}
-        />
-      ))}
+      {voie && (
+        <>
+          <NumeroSwitch enabled={showNumeros} onChange={onShowNumeroChange} />
+
+          {numeros && numeros.map(numero => (
+            <NumeroMarker
+              key={numero._id}
+              showNumero={showNumeros}
+              numero={numero}
+            />
+          ))}
+        </>
+      )}
 
       <EditableMarker viewport={viewport} />
     </MapGl>

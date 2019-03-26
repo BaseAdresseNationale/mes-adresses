@@ -1,41 +1,42 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {Marker} from 'react-map-gl'
 import {Text} from 'evergreen-ui'
 import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
 
-const markerStyle = css({
-  borderRadius: 20,
-  marginTop: -10,
-  marginLeft: -10,
-  color: 'transparent',
-  whiteSpace: 'nowrap',
+function NumeroMarker({numero, showNumero}) {
+  const position = numero.positions[0]
 
-  '&:before': {
-    content: ' ',
-    backgroundColor: '#1070ca',
-    border: '1px solid white',
-    display: 'inline-block',
-    width: 8,
-    height: 8,
-    borderRadius: '50%',
-    marginLeft: 6
-  },
+  const markerStyle = useMemo(() => css({
+    borderRadius: 20,
+    marginTop: -10,
+    marginLeft: -10,
+    color: 'transparent',
+    whiteSpace: 'nowrap',
+    background: showNumero ? 'rgba(0, 0, 0, 0.7)' : null,
 
-  '& > span': {
-    display: 'none'
-  },
-
-  '&:hover': {
-    background: 'rgba(0, 0, 0, 0.7)',
+    '&:before': {
+      content: ' ',
+      backgroundColor: '#1070ca',
+      border: '1px solid white',
+      display: 'inline-block',
+      width: 8,
+      height: 8,
+      borderRadius: '50%',
+      marginLeft: 6
+    },
 
     '& > span': {
-      display: 'inline-block'
-    }
-  }
-})
+      display: showNumero ? 'inline-block' : 'none'
+    },
 
-function NumeroMarker({numero}) {
-  const position = numero.positions[0]
+    '&:hover': showNumero ? null : {
+      background: 'rgba(0, 0, 0, 0.7)',
+
+      '& > span': {
+        display: 'inline-block'
+      }
+    }
+  }), [showNumero])
 
   if (!position) {
     return null
