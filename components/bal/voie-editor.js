@@ -80,11 +80,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   useEffect(() => {
     if (isToponyme) {
-      enableMarker(position)
+      enableMarker(initialValue ? initialValue._id : null, position)
     } else {
       disableMarker()
     }
-  }, [position, disableMarker, enableMarker, isToponyme])
+  }, [initialValue, disableMarker, enableMarker, isToponyme])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>

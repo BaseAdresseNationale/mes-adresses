@@ -1,9 +1,13 @@
-import React, {useMemo} from 'react'
+import React, {useMemo, useContext} from 'react'
 import {Marker} from 'react-map-gl'
 import {Text} from 'evergreen-ui'
 import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
 
+import MarkerContext from '../../contexts/marker'
+
 function NumeroMarker({numero, showNumero}) {
+  const {marker} = useContext(MarkerContext)
+
   const position = numero.positions[0]
 
   const markerStyle = useMemo(() => css({
@@ -39,6 +43,10 @@ function NumeroMarker({numero, showNumero}) {
   }), [showNumero])
 
   if (!position) {
+    return null
+  }
+
+  if (marker && marker.id === numero._id) {
     return null
   }
 

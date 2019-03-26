@@ -88,7 +88,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 
   useEffect(() => {
     if (hasPositionEditor) {
-      enableMarker(position)
+      enableMarker(initialValue ? initialValue._id : null, position)
     } else {
       disableMarker()
     }

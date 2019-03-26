@@ -9,10 +9,11 @@ function EditableMarker({viewport, size}) {
   const {enabled, marker, setMarker} = useContext(MarkerContext)
 
   const onDrag = useCallback(event => {
-    setMarker({
+    setMarker(marker => ({
+      ...marker,
       longitude: event.lngLat[0],
       latitude: event.lngLat[1]
-    })
+    }))
   }, [setMarker])
 
   useEffect(() => {

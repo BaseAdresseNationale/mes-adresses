@@ -6,9 +6,10 @@ export function MarkerContextProvider(props) {
   const [enabled, setEnabled] = useState(false)
   const [marker, setMarker] = useState(null)
 
-  const enableMarker = useCallback(defaultValue => {
+  const enableMarker = useCallback((id, defaultValue) => {
     if (defaultValue) {
       setMarker({
+        id,
         longitude: defaultValue.point.coordinates[0],
         latitude: defaultValue.point.coordinates[1]
       })
