@@ -1,6 +1,8 @@
-import React, {useCallback} from 'react'
+import React, {useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Table, Popover, Menu, Position, IconButton, toaster} from 'evergreen-ui'
+
+import TokenContext from '../contexts/token'
 
 const TableRow = React.memo(({
   id,
@@ -16,6 +18,8 @@ const TableRow = React.memo(({
   onEdit,
   onRemove
 }) => {
+  const token = useContext(TokenContext)
+
   const onClick = useCallback(e => {
     if (isSelectable) {
       if (e.target.closest('[data-browsable]')) {
@@ -47,7 +51,7 @@ const TableRow = React.memo(({
           {secondary}
         </Table.TextCell>
       )}
-      {(onEdit || onRemove) && (
+      {token && (onEdit || onRemove) && (
         <Table.TextCell flex='0 1 1'>
           <Popover
             position={Position.BOTTOM_LEFT}
