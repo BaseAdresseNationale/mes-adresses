@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Tooltip, IconButton, Position} from 'evergreen-ui'
+import {Pane, Tooltip, Icon, Position} from 'evergreen-ui'
 
 function NumeroSwitch({enabled, onChange}) {
   const onToggle = useCallback(e => {
@@ -11,16 +11,23 @@ function NumeroSwitch({enabled, onChange}) {
   return (
     <Pane
       position='absolute'
-      display='flex'
-      background='white'
-      alignItems='center'
       top={88}
       right={16}
       zIndex={2}
-      borderRadius={3}
+      background={enabled ? '#e1e1e1' : null}
+      className='mapboxgl-ctrl mapboxgl-ctrl-group'
     >
-      <Tooltip position={Position.LEFT} content={enabled ? 'Masquer les numéros' : 'Afficher les numéros'}>
-        <IconButton icon='numerical' isActive={enabled} background='white' onClick={onToggle} />
+      <Tooltip
+        position={Position.LEFT}
+        content={enabled ? 'Masquer les numéros' : 'Afficher les numéros'}
+      >
+        <Pane
+          is='button'
+          className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
+          onClick={onToggle}
+        >
+          <Icon icon='numerical' size={18} />
+        </Pane>
       </Tooltip>
     </Pane>
   )
