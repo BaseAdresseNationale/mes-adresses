@@ -51,7 +51,12 @@ function App({error, Component, pageProps, query}) {
         <MapDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
           <MarkerContextProvider>
             {pageProps.baseLocale && (
-              <Header {...pageProps} />
+              <Header
+                {...pageProps}
+                isSidebarHidden={isHidden}
+                size={SIDEBAR_WIDTH}
+                onToggle={onToggle}
+              />
             )}
 
             <Map

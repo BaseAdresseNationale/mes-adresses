@@ -6,7 +6,7 @@ import {Pane, Link, Text} from 'evergreen-ui'
 function Breadcrumbs({baseLocale, commune, voie}) {
   if (!commune) {
     return (
-      <Pane paddingY={2}>
+      <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
         <Text>{baseLocale.nom}</Text>
       </Pane>
     )
@@ -14,9 +14,9 @@ function Breadcrumbs({baseLocale, commune, voie}) {
 
   if (!voie) {
     return (
-      <Pane paddingY={2}>
+      <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
         <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
-          <Link display='inline-block' href={`/bal/${baseLocale._id}`}>
+          <Link href={`/bal/${baseLocale._id}`}>
             {baseLocale.nom || 'Base Adresse Locale'}
           </Link>
         </NextLink>
@@ -32,7 +32,7 @@ function Breadcrumbs({baseLocale, commune, voie}) {
   }
 
   return (
-    <Pane paddingY={2}>
+    <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
       <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
         <Link display='inline-block' href={`/bal/${baseLocale._id}`}>
           {baseLocale.nom || 'Base Adresse Locale'}
@@ -42,11 +42,11 @@ function Breadcrumbs({baseLocale, commune, voie}) {
       <Text color='muted'>{' > '}</Text>
       <NextLink href={`/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
         {commune.nom ? (
-          <Link display='inline-block' href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+          <Link href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
             {commune.nom}
           </Link>
         ) : (
-          <Link display='inline-block' fontStyle='italic' href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+          <Link fontStyle='italic' href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
             Commune {commune.code}
           </Link>
         )}
