@@ -29,23 +29,27 @@ const Header = React.memo(({baseLocale, commune, voie, size, isSidebarHidden, on
       elevation={0}
       zIndex={3}
       display='flex'
-      paddingY={8}
-      paddingX={16}
+      padding={8}
     >
-      <Breadcrumbs baseLocale={baseLocale} commune={commune} voie={voie} />
+      {innerWidth < size && (
+        <IconButton
+          height={24}
+          marginRight={8}
+          icon='menu'
+          isActive={!isSidebarHidden}
+          appearance='minimal'
+          onClick={onToggle}
+        />
+      )}
+
+      <Breadcrumbs
+        baseLocale={baseLocale}
+        commune={commune}
+        voie={voie}
+        marginRight={8}
+      />
 
       <Pane marginLeft='auto' display='flex'>
-        {innerWidth < size && (
-          <IconButton
-            height={24}
-            marginRight={8}
-            icon='map'
-            isActive={isSidebarHidden}
-            appearance='minimal'
-            onClick={onToggle}
-          />
-        )}
-
         <Popover
           position={Position.BOTTOM_RIGHT}
           content={
@@ -60,7 +64,7 @@ const Header = React.memo(({baseLocale, commune, voie, size, isSidebarHidden, on
         >
           <IconButton
             height={24}
-            icon='menu'
+            icon='cog'
             appearance='minimal'
           />
         </Popover>

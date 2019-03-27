@@ -119,6 +119,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
           disabled={isLoading}
           width='100%'
           flex={1}
+          minWidth={59}
           value={suffixe}
           maxLength={10}
           marginBottom={16}

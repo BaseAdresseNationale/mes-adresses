@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import NextLink from 'next/link'
 import {Pane, Link, Text} from 'evergreen-ui'
 
-function Breadcrumbs({baseLocale, commune, voie}) {
+function Breadcrumbs({baseLocale, commune, voie, ...props}) {
   if (!commune) {
     return (
-      <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
+      <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
         <Text>{baseLocale.nom}</Text>
       </Pane>
     )
@@ -14,7 +14,7 @@ function Breadcrumbs({baseLocale, commune, voie}) {
 
   if (!voie) {
     return (
-      <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
+      <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
         <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
           <Link href={`/bal/${baseLocale._id}`}>
             {baseLocale.nom || 'Base Adresse Locale'}
@@ -32,7 +32,7 @@ function Breadcrumbs({baseLocale, commune, voie}) {
   }
 
   return (
-    <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
+    <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
       <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
         <Link display='inline-block' href={`/bal/${baseLocale._id}`}>
           {baseLocale.nom || 'Base Adresse Locale'}
