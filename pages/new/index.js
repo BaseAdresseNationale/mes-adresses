@@ -50,14 +50,14 @@ function Index({defaultCommune}) {
 
   return (
     <>
-      <Pane paddingX={16} paddingBottom={10} marginBottom={10}>
-        <Heading size={600} margin='default'>Nouvelle Base Adresse Locale</Heading>
+      <Pane borderBottom padding={16} backgroundColor='white'>
+        <Heading size={600} marginBottom={8}>Nouvelle Base Adresse Locale</Heading>
         <Paragraph>
           Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale.
         </Paragraph>
       </Pane>
 
-      <Pane borderTop is='form' padding={16} flex={1} overflowY='scroll' onSubmit={onSubmit}>
+      <Pane is='form' padding={16} flex={1} overflowY='scroll' onSubmit={onSubmit}>
         <TextInputField
           required
           name='nom'
@@ -111,7 +111,7 @@ function Index({defaultCommune}) {
           Vous pouvez créer une nouvelle Base Adresse Locale à partir d’un fichier CSV conforme au modèle BAL 1.1 de l’AITF.
         </Paragraph>
         <Button marginTop={10} onClick={onCreateUpload}>
-          Créer une nouvelle Base Adresse Locale
+          Créer une nouvelle Base Adresse Locale à partir d’un fichier CSV
         </Button>
       </Pane>
     </>

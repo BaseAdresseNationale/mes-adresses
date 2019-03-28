@@ -76,14 +76,14 @@ function Index() {
 
   return (
     <>
-      <Pane paddingX={16} paddingBottom={10} marginBottom={10}>
-        <Heading size={600} margin='default'>Nouvelle Base Adresse Locale</Heading>
+      <Pane borderBottom padding={16} backgroundColor='white'>
+        <Heading size={600} marginBottom={8}>Nouvelle Base Adresse Locale</Heading>
         <Paragraph>
           Pour être éditable à l’aide de cet outil, votre fichier doit être conforme au modèle BAL 1.1 de l’AITF.
         </Paragraph>
       </Pane>
 
-      <Pane borderTop is='form' padding={16} flex={1} overflowY='scroll' onSubmit={onSubmit}>
+      <Pane is='form' padding={16} flex={1} overflowY='scroll' onSubmit={onSubmit}>
         <Uploader
           file={file}
           height={150}
@@ -142,7 +142,7 @@ function Index() {
           Vous pouvez créer une nouvelle Base Adresse Locale à partir de la commune de votre choix.
         </Paragraph>
         <Button marginTop={10} onClick={onCreateNew}>
-          Créer une nouvelle Base Adresse Locale
+          Créer une nouvelle Base Adresse Locale à partir d’une commune
         </Button>
       </Pane>
     </>

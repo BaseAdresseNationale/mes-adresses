@@ -1,7 +1,8 @@
 import React, {useMemo, useCallback} from 'react'
 import PropTypes from 'prop-types'
+import NextLink from 'next/link'
 import Router from 'next/router'
-import {Pane, Heading, Table, Paragraph, Alert, Button} from 'evergreen-ui'
+import {Pane, Heading, Table, Paragraph, Alert, Button, Link} from 'evergreen-ui'
 
 import {listBasesLocales} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
@@ -42,11 +43,13 @@ function Index({basesLocales, defaultCommune}) {
 
   return (
     <>
-      <Pane paddingX={16} paddingBottom={10} marginBottom={10}>
-        <Heading size={600} margin='default'>Rechercher une Base Adresse Locale</Heading>
-        <Paragraph marginBottom={16}>
+      <Pane borderBottom padding={16} backgroundColor='white'>
+        <Heading size={600} marginBottom={8}>Rechercher une Base Adresse Locale</Heading>
+        <Paragraph>
           Sélectionnez une commune pour laquelle vous souhaitez visualiser, créer ou modifier une Base Adresse Locale.
         </Paragraph>
+      </Pane>
+      <Pane padding={16}>
         <CommuneSearch
           innerRef={defaultCommune ? null : focusRef}
           placeholder='Rechercher une commune…'
@@ -110,14 +113,21 @@ function Index({basesLocales, defaultCommune}) {
           )}
         </>
       ) : (
-        <Pane borderTop marginTop='auto' padding={16}>
-          <Paragraph size={300} color='muted'>
-            Vous pouvez créer une nouvelle Base Adresse Locale à partir d’un fichier CSV conforme au modèle BAL 1.1 de l’AITF.
-          </Paragraph>
-          <Button marginTop={10} onClick={onCreateUpload}>
-            Créer une nouvelle Base Adresse Locale
-          </Button>
-        </Pane>
+        <>
+          <Pane paddingX={16} textAlign='right'>
+            <NextLink href='/all'>
+              <Link href='/all' size={300}>Voir toutes les Bases Adresses Locales</Link>
+            </NextLink>
+          </Pane>
+          <Pane borderTop marginTop='auto' padding={16}>
+            <Paragraph size={300} color='muted'>
+              Vous pouvez créer une nouvelle Base Adresse Locale à partir d’un fichier CSV conforme au modèle BAL 1.1 de l’AITF.
+            </Paragraph>
+            <Button marginTop={10} onClick={onCreateUpload}>
+              Créer une nouvelle Base Adresse Locale
+            </Button>
+          </Pane>
+        </>
       )}
     </>
   )
