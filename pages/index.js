@@ -116,7 +116,9 @@ function Index({basesLocales, defaultCommune}) {
         <>
           <Pane paddingX={16} textAlign='right'>
             <NextLink href='/all'>
-              <Link href='/all' size={300}>Voir toutes les Bases Adresses Locales</Link>
+              <Link href='/all' size={300} color='neutral'>
+                Voir toutes les Bases Adresses Locales
+              </Link>
             </NextLink>
           </Pane>
           <Pane borderTop marginTop='auto' padding={16}>

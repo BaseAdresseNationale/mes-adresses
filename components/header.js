@@ -31,7 +31,7 @@ const Header = React.memo(({baseLocale, commune, voie, size, isSidebarHidden, on
       display='flex'
       padding={8}
     >
-      {innerWidth < size && (
+      {innerWidth && innerWidth < size && (
         <IconButton
           height={24}
           marginRight={8}
