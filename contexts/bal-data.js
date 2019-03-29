@@ -2,9 +2,9 @@ import React, {useState, useCallback, useEffect} from 'react'
 
 import {getCommuneGeoJson, getNumeros, getVoies} from '../lib/bal-api'
 
-const MapDataContext = React.createContext()
+const BalDataContext = React.createContext()
 
-export function MapDataContextProvider({balId, codeCommune, idVoie, ...props}) {
+export function BalDataContextProvider({balId, codeCommune, idVoie, ...props}) {
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
@@ -49,7 +49,7 @@ export function MapDataContextProvider({balId, codeCommune, idVoie, ...props}) {
   }, [reloadVoies])
 
   return (
-    <MapDataContext.Provider
+    <BalDataContext.Provider
       value={{
         geojson,
         numeros,
@@ -62,4 +62,4 @@ export function MapDataContextProvider({balId, codeCommune, idVoie, ...props}) {
   )
 }
 
-export default MapDataContext
+export default BalDataContext

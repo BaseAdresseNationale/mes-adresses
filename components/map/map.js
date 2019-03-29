@@ -4,7 +4,7 @@ import Router from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
 
-import MapDataContext from '../../contexts/map-data'
+import BalDataContext from '../../contexts/bal-data'
 
 import {vector, ortho} from './styles'
 
@@ -70,7 +70,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const {numeros} = useContext(MapDataContext)
+  const {numeros} = useContext(BalDataContext)
 
   const sources = useSources(voie)
   const bounds = useBounds(commune, voie)

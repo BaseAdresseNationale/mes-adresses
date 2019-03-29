@@ -3,10 +3,10 @@ import {groupBy} from 'lodash-es'
 import computeCentroid from '@turf/centroid'
 import randomColor from 'randomcolor'
 
-import MapDataContext from '../../../contexts/map-data'
+import BalDataContext from '../../../contexts/bal-data'
 
 function useSources(voie) {
-  const {geojson} = useContext(MapDataContext)
+  const {geojson} = useContext(BalDataContext)
 
   return useMemo(() => {
     const sources = []

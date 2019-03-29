@@ -14,7 +14,7 @@ import Map from '../components/map'
 
 import {MarkerContextProvider} from '../contexts/marker'
 import {TokenContextProvider} from '../contexts/token'
-import {MapDataContextProvider} from '../contexts/map-data'
+import {BalDataContextProvider} from '../contexts/bal-data'
 
 const layoutMap = {
   fullscreen: Fullscreen,
@@ -48,7 +48,7 @@ function App({error, Component, pageProps, query}) {
   return (
     <Container>
       <TokenContextProvider balId={query.balId} token={query.token}>
-        <MapDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
+        <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
           <MarkerContextProvider>
             {pageProps.baseLocale && (
               <Header
@@ -86,7 +86,7 @@ function App({error, Component, pageProps, query}) {
               )}
             </Wrapper>
           </MarkerContextProvider>
-        </MapDataContextProvider>
+        </BalDataContextProvider>
       </TokenContextProvider>
     </Container>
   )

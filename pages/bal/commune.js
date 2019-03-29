@@ -5,7 +5,7 @@ import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
-import MapDataContext from '../../contexts/map-data'
+import BalDataContext from '../../contexts/bal-data'
 
 import useFuse from '../../hooks/fuse'
 
@@ -18,7 +18,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isPopulating, setIsPopulating] = useState(false)
 
   const token = useContext(TokenContext)
-  const {voies, reloadVoies} = useContext(MapDataContext)
+  const {voies, reloadVoies} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
     keys: [

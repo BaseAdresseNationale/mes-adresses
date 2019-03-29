@@ -2,11 +2,11 @@ import {useMemo, useContext} from 'react'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 
-import MapDataContext from '../../../contexts/map-data'
+import BalDataContext from '../../../contexts/bal-data'
 import MarkerContext from '../../../contexts/marker'
 
 function useBounds(commune, voie) {
-  const {geojson} = useContext(MapDataContext)
+  const {geojson} = useContext(BalDataContext)
   const {marker, enabled} = useContext(MarkerContext)
 
   const data = useMemo(() => {

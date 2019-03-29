@@ -4,7 +4,7 @@ import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
 import {addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
-import MapDataContext from '../../contexts/map-data'
+import BalDataContext from '../../contexts/bal-data'
 
 import useFuse from '../../hooks/fuse'
 
@@ -16,7 +16,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [editingId, setEditingId] = useState(null)
 
   const token = useContext(TokenContext)
-  const {numeros, reloadNumeros} = useContext(MapDataContext)
+  const {numeros, reloadNumeros} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
