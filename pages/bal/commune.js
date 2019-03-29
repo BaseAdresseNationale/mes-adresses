@@ -16,7 +16,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
 
-  const token = useContext(TokenContext)
+  const {token} = useContext(TokenContext)
 
   const {
     voies,

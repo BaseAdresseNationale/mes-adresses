@@ -15,7 +15,7 @@ import CommuneEditor from '../../components/bal/commune-editor'
 const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [communes, setCommunes] = useState(defaultCommunes)
   const [isAdding, setIsAdding] = useState(false)
-  const token = useContext(TokenContext)
+  const {token} = useContext(TokenContext)
 
   const [filtered, onFilter] = useFuse(communes, 200, {
     keys: [

@@ -1,8 +1,11 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
+import NextLink from 'next/link'
+import {Pane, Popover, Menu, IconButton, Position, Link} from 'evergreen-ui'
 
 import {downloadBaseLocaleCsv} from '../lib/bal-api'
+
+import TokenContext from '../contexts/token'
 
 import useWindowSize from '../hooks/window-size'
 
@@ -10,6 +13,7 @@ import Breadcrumbs from './breadcrumbs'
 
 const Header = React.memo(({baseLocale, commune, voie, isSidebarHidden, onToggle}) => {
   const {innerWidth} = useWindowSize()
+  const {token} = useContext(TokenContext)
 
   const onDownload = useCallback(async () => {
     const res = await downloadBaseLocaleCsv(baseLocale._id)
@@ -59,6 +63,18 @@ const Header = React.memo(({baseLocale, commune, voie, isSidebarHidden, onToggle
                   Télécharger le fichier CSV
                 </Menu.Item>
               </Menu.Group>
+              {token && (
+                <>
+                  <Menu.Divider />
+                  <Menu.Group>
+                    <NextLink href={`/bal/settings?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}/settings`}>
+                      <Menu.Item icon='cog' is='a' href={`/bal/${baseLocale._id}/settings`} color='inherit' textDecoration='none'>
+                        Paramètres
+                      </Menu.Item>
+                    </NextLink>
+                  </Menu.Group>
+                </>
+              )}
             </Menu>
           }
         >

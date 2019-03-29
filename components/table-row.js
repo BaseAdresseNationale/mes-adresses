@@ -18,7 +18,7 @@ const TableRow = React.memo(({
   onEdit,
   onRemove
 }) => {
-  const token = useContext(TokenContext)
+  const {token} = useContext(TokenContext)
 
   const onClick = useCallback(e => {
     if (isSelectable) {
@@ -72,7 +72,7 @@ const TableRow = React.memo(({
               </Menu>
             }
           >
-            <IconButton height={24} icon='more' appearance='minimal' />
+            <IconButton type='button' height={24} icon='more' appearance='minimal' />
           </Popover>
         </Table.TextCell>
       )}

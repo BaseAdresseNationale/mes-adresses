@@ -8,13 +8,22 @@ import {getBalToken, storeBalAccess} from '../lib/tokens'
 const TokenContext = React.createContext()
 
 export function TokenContextProvider({balId, token, ...props}) {
-  const [localToken, setLocalToken] = useState()
+  const [state, setState] = useState({
+    token: null
+  })
 
   const verify = useCallback(async token => {
     const baseLocale = await getBaseLocale(balId, token)
 
     if (baseLocale.token) {
-      setLocalToken(baseLocale.token)
+      setState({
+        token: baseLocale.token,
+        emails: baseLocale.emails
+      })
+    } else {
+      setState({
+        token: false
+      })
     }
   }, [balId])
 
@@ -34,7 +43,7 @@ export function TokenContextProvider({balId, token, ...props}) {
   }, [verify, balId, token])
 
   return (
-    <TokenContext.Provider value={localToken} {...props} />
+    <TokenContext.Provider value={state} {...props} />
   )
 }
 

@@ -14,7 +14,7 @@ import NumeroEditor from '../../components/bal/numero-editor'
 const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [isAdding, setIsAdding] = useState(false)
 
-  const token = useContext(TokenContext)
+  const {token} = useContext(TokenContext)
 
   const {
     numeros,

@@ -7,7 +7,11 @@ export function useInput(initialValue) {
     setValue(e.target.value)
   }, [])
 
-  return [value, onChange]
+  const resetInput = useCallback(() => {
+    setValue(initialValue || '')
+  }, [initialValue])
+
+  return [value, onChange, resetInput]
 }
 
 export function useCheckboxInput(initialValue) {

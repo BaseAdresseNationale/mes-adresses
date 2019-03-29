@@ -13,7 +13,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
 
-  const token = useContext(TokenContext)
+  const {token} = useContext(TokenContext)
 
   const reloadGeojson = useCallback(async () => {
     if (balId && codeCommune) {
