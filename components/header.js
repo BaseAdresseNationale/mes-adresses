@@ -8,7 +8,7 @@ import useWindowSize from '../hooks/window-size'
 
 import Breadcrumbs from './breadcrumbs'
 
-const Header = React.memo(({baseLocale, commune, voie, size, isSidebarHidden, onToggle}) => {
+const Header = React.memo(({baseLocale, commune, voie, isSidebarHidden, onToggle}) => {
   const {innerWidth} = useWindowSize()
 
   const onDownload = useCallback(async () => {
@@ -31,7 +31,7 @@ const Header = React.memo(({baseLocale, commune, voie, size, isSidebarHidden, on
       display='flex'
       padding={8}
     >
-      {innerWidth && innerWidth < size && (
+      {innerWidth && innerWidth < 800 && (
         <IconButton
           height={24}
           marginRight={8}

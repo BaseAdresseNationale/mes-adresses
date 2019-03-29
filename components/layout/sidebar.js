@@ -19,7 +19,7 @@ function Sidebar({isHidden, top, size, onToggle, ...props}) {
       bottom={0}
       zIndex={2}
     >
-      {innerWidth > size && (
+      {innerWidth > 800 && (
         <Pane
           background='white'
           position='absolute'

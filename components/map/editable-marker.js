@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
-import {Icon} from 'evergreen-ui'
+import {Pane, Icon, Text} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 
@@ -35,13 +35,26 @@ function EditableMarker({viewport, size}) {
       draggable
       onDrag={onDrag}
     >
-      <Icon
-        icon='map-marker'
-        filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
-        color='info'
-        transform='translate(-50%, -100%)'
-        size={size}
-      />
+      <Pane>
+        <Text
+          position='absolute'
+          top={-58}
+          transform='translate(-50%)'
+          borderRadius={20}
+          backgroundColor='rgba(0, 0, 0, 0.7)'
+          color='white'
+          paddingX={8}
+        >
+          Cool
+        </Text>
+        <Icon
+          icon='map-marker'
+          filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
+          color='info'
+          transform='translate(-50%, -100%)'
+          size={size}
+        />
+      </Pane>
     </Marker>
   )
 }

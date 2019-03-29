@@ -21,8 +21,6 @@ const layoutMap = {
   sidebar: Sidebar
 }
 
-const SIDEBAR_WIDTH = 500
-
 function App({error, Component, pageProps, query}) {
   const [isHidden, setIsHidden] = useState(false)
 
@@ -35,7 +33,7 @@ function App({error, Component, pageProps, query}) {
 
   const leftOffset = useMemo(() => {
     if (layout === 'sidebar' && !isHidden) {
-      return SIDEBAR_WIDTH
+      return 500
     }
 
     return 0
@@ -54,7 +52,6 @@ function App({error, Component, pageProps, query}) {
               <Header
                 {...pageProps}
                 isSidebarHidden={isHidden}
-                size={SIDEBAR_WIDTH}
                 onToggle={onToggle}
               />
             )}
@@ -72,7 +69,7 @@ function App({error, Component, pageProps, query}) {
             <Wrapper
               top={topOffset}
               isHidden={isHidden}
-              size={SIDEBAR_WIDTH}
+              size={500}
               elevation={2}
               background='tint2'
               display='flex'
