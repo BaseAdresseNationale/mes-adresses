@@ -87,7 +87,7 @@ const Settings = React.memo(({baseLocale}) => {
             />
 
             <Label display='block' marginBottom={4}>
-              Emails
+              Adresses email
               {' '}
               <span title='This field is required.'>*</span>
             </Label>
@@ -145,7 +145,7 @@ const Settings = React.memo(({baseLocale}) => {
             )}
 
             <Button height={40} marginTop={8} type='submit' appearance='primary' isLoading={isLoading}>
-              {isLoading ? 'En cours…' : 'Modifier'}
+              {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
           </Pane>
         ) : token === false ? (

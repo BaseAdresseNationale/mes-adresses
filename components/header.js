@@ -60,7 +60,7 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
             <Menu>
               <Menu.Group>
                 <Menu.Item icon='download' onSelect={onDownload}>
-                  Télécharger le fichier CSV
+                  Télécharger au format CSV
                 </Menu.Item>
               </Menu.Group>
               {token && (
