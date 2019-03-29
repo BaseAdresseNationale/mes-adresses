@@ -1,14 +1,18 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 
 import {getCommuneGeoJson, getNumeros, getVoies} from '../lib/bal-api'
+
+import TokenContext from './token'
 
 const BalDataContext = React.createContext()
 
 export function BalDataContextProvider({balId, codeCommune, idVoie, ...props}) {
-  const [editingId, setEditingId] = useState()
+  const [editingId, _setEditingId] = useState()
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
+
+  const token = useContext(TokenContext)
 
   const reloadGeojson = useCallback(async () => {
     if (balId && codeCommune) {
@@ -36,6 +40,12 @@ export function BalDataContextProvider({balId, codeCommune, idVoie, ...props}) {
       setNumeros(null)
     }
   }, [idVoie])
+
+  const setEditingId = useCallback(editingId => {
+    if (token) {
+      _setEditingId(editingId)
+    }
+  }, [token])
 
   useEffect(() => {
     reloadGeojson()
