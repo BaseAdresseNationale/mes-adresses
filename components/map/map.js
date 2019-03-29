@@ -180,7 +180,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
         </>
       )}
 
-      {(voie || toponymes) && (
+      {(voie || (toponymes && toponymes.length)) && (
         <NumeroSwitch
           enabled={showNumeros}
           enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
