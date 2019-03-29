@@ -63,7 +63,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...props}) {
+function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
   const [map, setMap] = useState(null)
   const [showNumeros, setShowNumeros] = useState(false)
   const [viewport, setViewport] = useState(defaultViewport)

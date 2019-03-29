@@ -180,7 +180,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   )
 })
 
-Commune.getInitialProps = async ({baseLocale, commune, voies}) => {
+Commune.getInitialProps = async ({baseLocale, commune}) => {
   const defaultVoies = await getVoies(baseLocale._id, commune.code)
 
   return {

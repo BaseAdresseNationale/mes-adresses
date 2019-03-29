@@ -11,7 +11,7 @@ import useFuse from '../../hooks/fuse'
 import TableRow from '../../components/table-row'
 import NumeroEditor from '../../components/bal/numero-editor'
 
-const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
+const Voie = React.memo(({voie, defaultNumeros}) => {
   const [isAdding, setIsAdding] = useState(false)
 
   const {token} = useContext(TokenContext)

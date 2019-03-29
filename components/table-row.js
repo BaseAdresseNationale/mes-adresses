@@ -12,8 +12,6 @@ const TableRow = React.memo(({
 
   isSelectable,
 
-  renderEditor,
-
   onSelect,
   onEdit,
   onRemove
