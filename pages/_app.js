@@ -73,7 +73,7 @@ function App({error, Component, pageProps, query}) {
               top={topOffset}
               isHidden={isHidden}
               size={SIDEBAR_WIDTH}
-              elevation={4}
+              elevation={2}
               background='tint2'
               display='flex'
               flexDirection='column'
