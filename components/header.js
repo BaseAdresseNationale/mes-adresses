@@ -1,7 +1,7 @@
 import React, {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Popover, Menu, IconButton, Position, Link} from 'evergreen-ui'
+import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
 
 import {downloadBaseLocaleCsv} from '../lib/bal-api'
 
@@ -11,7 +11,7 @@ import useWindowSize from '../hooks/window-size'
 
 import Breadcrumbs from './breadcrumbs'
 
-const Header = React.memo(({baseLocale, commune, voie, isSidebarHidden, onToggle}) => {
+const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, onToggle}) => {
   const {innerWidth} = useWindowSize()
   const {token} = useContext(TokenContext)
 
@@ -35,7 +35,7 @@ const Header = React.memo(({baseLocale, commune, voie, isSidebarHidden, onToggle
       display='flex'
       padding={8}
     >
-      {innerWidth && innerWidth < 800 && (
+      {layout !== 'fullscreen' && innerWidth && innerWidth < 800 && (
         <IconButton
           height={24}
           marginRight={8}

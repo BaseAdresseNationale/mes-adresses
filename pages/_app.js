@@ -51,6 +51,7 @@ function App({error, Component, pageProps, query}) {
             {pageProps.baseLocale && (
               <Header
                 {...pageProps}
+                layout={layout}
                 isSidebarHidden={isHidden}
                 onToggle={onToggle}
               />
