@@ -1,4 +1,5 @@
 import React, {useMemo, useCallback, useContext} from 'react'
+import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, Text} from 'evergreen-ui'
 import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
@@ -6,11 +7,13 @@ import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependenc
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
 
-function NumeroMarker({numero, showNumero}) {
+function NumeroMarker({numero, labelProperty, showLabel}) {
   const {marker} = useContext(MarkerContext)
-  const {setEditingId} = useContext(BalDataContext)
+  const {editingId, setEditingId} = useContext(BalDataContext)
 
-  const onEnableEditing = useCallback(() => {
+  const onEnableEditing = useCallback(e => {
+    e.stopPropagation()
+
     setEditingId(numero._id)
   }, [setEditingId, numero])
 
@@ -22,7 +25,7 @@ function NumeroMarker({numero, showNumero}) {
     marginLeft: -10,
     color: 'transparent',
     whiteSpace: 'nowrap',
-    background: showNumero ? 'rgba(0, 0, 0, 0.7)' : null,
+    background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
 
     '&:before': {
       content: ' ',
@@ -36,23 +39,23 @@ function NumeroMarker({numero, showNumero}) {
     },
 
     '& > span': {
-      display: showNumero ? 'inline-block' : 'none'
+      display: showLabel ? 'inline-block' : 'none'
     },
 
-    '&:hover': showNumero ? null : {
+    '&:hover': showLabel ? null : {
       background: 'rgba(0, 0, 0, 0.7)',
 
       '& > span': {
         display: 'inline-block'
       }
     }
-  }), [showNumero])
+  }), [showLabel])
 
   if (!position) {
     return null
   }
 
-  if (marker && marker.id === numero._id) {
+  if (marker && editingId === numero._id) {
     return null
   }
 
@@ -62,11 +65,29 @@ function NumeroMarker({numero, showNumero}) {
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
       <Pane className={markerStyle} onClick={onEnableEditing}>
         <Text color='white' paddingLeft={8} paddingRight={10}>
-          {numero.numeroComplet}
+          {numero[labelProperty]}
         </Text>
       </Pane>
     </Marker>
   )
+}
+
+NumeroMarker.propTypes = {
+  numero: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    positions: PropTypes.arrayOf(PropTypes.shape({
+      point: PropTypes.shape({
+        coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
+      }).isRequired
+    }))
+  }).isRequired,
+  labelProperty: PropTypes.string,
+  showLabel: PropTypes.bool
+}
+
+NumeroMarker.defaultProps = {
+  labelProperty: 'numeroComplet',
+  showLabel: false
 }
 
 export default React.memo(NumeroMarker)

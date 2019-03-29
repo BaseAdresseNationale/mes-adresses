@@ -1,4 +1,6 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useEffect, useCallback, useContext} from 'react'
+
+import BalDataContext from './bal-data'
 
 const MarkerContext = React.createContext()
 
@@ -6,10 +8,20 @@ export function MarkerContextProvider(props) {
   const [enabled, setEnabled] = useState(false)
   const [marker, setMarker] = useState(null)
 
-  const enableMarker = useCallback((id, defaultValue) => {
+  const {editingId} = useContext(BalDataContext)
+
+  useEffect(() => {
+    if (editingId) {
+      setEnabled(true)
+    } else {
+      setEnabled(false)
+      setMarker(null)
+    }
+  }, [editingId])
+
+  const enableMarker = useCallback(defaultValue => {
     if (defaultValue) {
       setMarker({
-        id,
         longitude: defaultValue.point.coordinates[0],
         latitude: defaultValue.point.coordinates[1]
       })

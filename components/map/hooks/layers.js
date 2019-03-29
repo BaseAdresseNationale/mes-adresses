@@ -1,6 +1,6 @@
 import {useMemo} from 'react'
 
-import {getVoiesLabelLayer, getToponymesLabelLayer} from '../layers/voies'
+import {getVoiesLabelLayer} from '../layers/voies'
 import {getNumerosPointLayer} from '../layers/numeros'
 
 function useLayers(voie, style) {
@@ -11,8 +11,7 @@ function useLayers(voie, style) {
 
     if (!voie) {
       layers.push(
-        getVoiesLabelLayer(style),
-        getToponymesLabelLayer(style)
+        getVoiesLabelLayer(style)
       )
     }
 

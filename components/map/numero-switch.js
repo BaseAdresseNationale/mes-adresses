@@ -2,7 +2,7 @@ import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Tooltip, Icon, Position} from 'evergreen-ui'
 
-function NumeroSwitch({enabled, onChange}) {
+function NumeroSwitch({enabled, icon, enabledHint, disabledHint, onChange}) {
   const onToggle = useCallback(e => {
     e.stopPropagation()
     onChange(enabled => !enabled)
@@ -19,14 +19,14 @@ function NumeroSwitch({enabled, onChange}) {
     >
       <Tooltip
         position={Position.LEFT}
-        content={enabled ? 'Masquer les numéros' : 'Afficher les numéros'}
+        content={enabled ? enabledHint : disabledHint}
       >
         <Pane
           is='button'
           className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
           onClick={onToggle}
         >
-          <Icon icon='numerical' size={18} />
+          <Icon icon={icon} size={18} />
         </Pane>
       </Tooltip>
     </Pane>
@@ -35,7 +35,16 @@ function NumeroSwitch({enabled, onChange}) {
 
 NumeroSwitch.propTypes = {
   enabled: PropTypes.bool,
+  icon: PropTypes.string,
+  enabledHint: PropTypes.string,
+  disabledHint: PropTypes.string,
   onChange: PropTypes.func.isRequired
+}
+
+NumeroSwitch.defaultProps = {
+  icon: 'map-marker',
+  enabledHint: 'Masquer les numéros',
+  disabledHint: 'Afficher les numéros'
 }
 
 export default NumeroSwitch

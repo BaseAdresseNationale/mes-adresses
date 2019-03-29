@@ -70,7 +70,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const {numeros} = useContext(BalDataContext)
+  const {numeros, toponymes, editingId} = useContext(BalDataContext)
 
   const sources = useSources(voie)
   const bounds = useBounds(commune, voie)
@@ -83,10 +83,18 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
   }, [])
 
   const interactiveLayerIds = useMemo(() => {
-    return commune && !voie ? [
-      'voie-label'
-    ] : null
-  }, [commune, voie])
+    if (editingId) {
+      return null
+    }
+
+    if (commune && !voie) {
+      return [
+        'voie-label'
+      ]
+    }
+
+    return null
+  }, [commune, voie, editingId])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
@@ -98,6 +106,10 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
 
   const onClick = useCallback(event => {
     const feature = event.features && event.features[0]
+
+    if (editingId) {
+      return null
+    }
 
     if (feature) {
       switch (feature.layer.id) {
@@ -113,7 +125,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
           return false
       }
     }
-  }, [baseLocale, commune])
+  }, [baseLocale, commune, editingId])
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -168,19 +180,31 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie, ...pr
         </>
       )}
 
-      {voie && (
-        <>
-          <NumeroSwitch enabled={showNumeros} onChange={onShowNumeroChange} />
-
-          {numeros && numeros.map(numero => (
-            <NumeroMarker
-              key={numero._id}
-              showNumero={showNumeros}
-              numero={numero}
-            />
-          ))}
-        </>
+      {(voie || toponymes) && (
+        <NumeroSwitch
+          enabled={showNumeros}
+          enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
+          disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
+          onChange={onShowNumeroChange}
+        />
       )}
+
+      {voie && numeros && numeros.map(numero => (
+        <NumeroMarker
+          key={numero._id}
+          numero={numero}
+          showLabel={showNumeros}
+        />
+      ))}
+
+      {toponymes && toponymes.map(toponyme => (
+        <NumeroMarker
+          key={toponyme._id}
+          numero={toponyme}
+          labelProperty='nom'
+          showLabel={showNumeros}
+        />
+      ))}
 
       <EditableMarker viewport={viewport} />
     </MapGl>

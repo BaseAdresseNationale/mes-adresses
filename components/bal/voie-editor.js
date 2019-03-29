@@ -80,7 +80,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   useEffect(() => {
     if (isToponyme) {
-      enableMarker(initialValue ? initialValue._id : null, position)
+      enableMarker(position)
     } else {
       disableMarker()
     }
