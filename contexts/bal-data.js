@@ -58,6 +58,14 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
     }
   }, [token])
 
+  const editingItem = useMemo(() => {
+    if (editingId) {
+      return numeros ?
+        numeros.find(numero => numero._id === editingId) :
+        toponymes.find(toponyme => toponyme._id === editingId)
+    }
+  }, [editingId, numeros, toponymes])
+
   useEffect(() => {
     reloadGeojson()
     setEditingId(null)
@@ -75,6 +83,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
     <BalDataContext.Provider
       value={{
         editingId,
+        editingItem,
         geojson,
         numeros,
         voies,
