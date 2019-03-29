@@ -5,6 +5,7 @@ import {getCommuneGeoJson, getNumeros, getVoies} from '../lib/bal-api'
 const BalDataContext = React.createContext()
 
 export function BalDataContextProvider({balId, codeCommune, idVoie, ...props}) {
+  const [editingId, setEditingId] = useState()
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
@@ -38,6 +39,7 @@ export function BalDataContextProvider({balId, codeCommune, idVoie, ...props}) {
 
   useEffect(() => {
     reloadGeojson()
+    setEditingId(null)
   }, [reloadGeojson, voies, numeros])
 
   useEffect(() => {
@@ -51,9 +53,11 @@ export function BalDataContextProvider({balId, codeCommune, idVoie, ...props}) {
   return (
     <BalDataContext.Provider
       value={{
+        editingId,
         geojson,
         numeros,
         voies,
+        setEditingId,
         reloadNumeros,
         reloadVoies
       }}

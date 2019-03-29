@@ -1,12 +1,18 @@
-import React, {useMemo, useContext} from 'react'
+import React, {useMemo, useCallback, useContext} from 'react'
 import {Marker} from 'react-map-gl'
-import {Text} from 'evergreen-ui'
+import {Pane, Text} from 'evergreen-ui'
 import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
 
 import MarkerContext from '../../contexts/marker'
+import BalDataContext from '../../contexts/bal-data'
 
 function NumeroMarker({numero, showNumero}) {
   const {marker} = useContext(MarkerContext)
+  const {setEditingId} = useContext(BalDataContext)
+
+  const onEnableEditing = useCallback(() => {
+    setEditingId(numero._id)
+  }, [setEditingId, numero])
 
   const position = numero.positions[0]
 
@@ -53,17 +59,14 @@ function NumeroMarker({numero, showNumero}) {
   const {coordinates} = position.point
 
   return (
-    <Marker
-      longitude={coordinates[0]}
-      latitude={coordinates[1]}
-      captureDrag={false}
-      className={markerStyle}
-    >
-      <Text color='white' paddingLeft={8} paddingRight={10}>
-        {numero.numeroComplet}
-      </Text>
+    <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
+      <Pane className={markerStyle} onClick={onEnableEditing}>
+        <Text color='white' paddingLeft={8} paddingRight={10}>
+          {numero.numeroComplet}
+        </Text>
+      </Pane>
     </Marker>
   )
 }
 
-export default NumeroMarker
+export default React.memo(NumeroMarker)

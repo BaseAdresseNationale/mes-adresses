@@ -14,11 +14,16 @@ import VoieEditor from '../../components/bal/voie-editor'
 
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
-  const [editingId, setEditingId] = useState(null)
   const [isPopulating, setIsPopulating] = useState(false)
 
   const token = useContext(TokenContext)
-  const {voies, reloadVoies} = useContext(BalDataContext)
+
+  const {
+    voies,
+    reloadVoies,
+    editingId,
+    setEditingId
+  } = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
     keys: [
@@ -33,7 +38,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     await reloadVoies()
 
     setIsPopulating(false)
-  }, [baseLocale, commune, token])
+  }, [baseLocale, commune, reloadVoies, token])
 
   const onAdd = useCallback(async ({nom, positions}) => {
     await addVoie(baseLocale._id, commune.code, {
@@ -44,7 +49,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     await reloadVoies()
 
     setIsAdding(false)
-  }, [baseLocale, commune, token])
+  }, [baseLocale, commune, reloadVoies, token])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -53,7 +58,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const onEnableEditing = useCallback(idVoie => {
     setIsAdding(false)
     setEditingId(idVoie)
-  }, [])
+  }, [setEditingId])
 
   const onEdit = useCallback(async ({nom, positions}) => {
     await editVoie(editingId, {
@@ -64,12 +69,12 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     await reloadVoies()
 
     setEditingId(null)
-  }, [editingId, baseLocale, commune, token])
+  }, [editingId, setEditingId, reloadVoies, token])
 
   const onRemove = useCallback(async idVoie => {
     await removeVoie(idVoie, token)
     await reloadVoies()
-  }, [baseLocale, commune, token])
+  }, [reloadVoies, token])
 
   const onSelect = useCallback(idVoie => {
     Router.push(
@@ -81,7 +86,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const onCancel = useCallback(() => {
     setIsAdding(false)
     setEditingId(null)
-  }, [])
+  }, [setEditingId])
 
   return (
     <>

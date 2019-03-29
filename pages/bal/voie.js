@@ -13,10 +13,15 @@ import NumeroEditor from '../../components/bal/numero-editor'
 
 const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [isAdding, setIsAdding] = useState(false)
-  const [editingId, setEditingId] = useState(null)
 
   const token = useContext(TokenContext)
-  const {numeros, reloadNumeros} = useContext(BalDataContext)
+
+  const {
+    numeros,
+    reloadNumeros,
+    editingId,
+    setEditingId
+  } = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
@@ -34,7 +39,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     await reloadNumeros()
 
     setIsAdding(false)
-  }, [voie, token])
+  }, [voie._id, reloadNumeros, token])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -43,7 +48,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const onEnableEditing = useCallback(idNumero => {
     setIsAdding(false)
     setEditingId(idNumero)
-  }, [])
+  }, [setEditingId])
 
   const onEdit = useCallback(async ({numero, suffixe, positions}) => {
     await editNumero(editingId, {
@@ -55,17 +60,17 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     await reloadNumeros()
 
     setEditingId(null)
-  }, [editingId, voie._id, token])
+  }, [editingId, setEditingId, reloadNumeros, token])
 
   const onRemove = useCallback(async idNumero => {
     await removeNumero(idNumero, token)
     await reloadNumeros()
-  }, [voie._id, token])
+  }, [reloadNumeros, token])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
     setEditingId(null)
-  }, [])
+  }, [setEditingId])
 
   return (
     <>
