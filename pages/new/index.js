@@ -12,7 +12,9 @@ import {CommuneSearchField} from '../../components/commune-search'
 
 function Index({defaultCommune}) {
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput('')
+  const [nom, onNomChange] = useInput(
+    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
+  )
   const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
@@ -95,7 +97,7 @@ function Index({defaultCommune}) {
         />
 
         <Checkbox
-          label='Importer les noms des voies'
+          label='Importer les voies et numéros depuis la BAN'
           checked={populate}
           disabled={isLoading}
           onChange={onPopulateChange}
