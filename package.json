@@ -24,7 +24,7 @@
     "prop-types": "^15.7.2",
     "randomcolor": "^0.5.4",
     "react": "^16.8.5",
-    "react-dom": "^16.8.5",
+    "react-dom": "^16.8.6",
     "react-dropzone": "^10.0.6",
     "react-map-gl": "^4.1.1",
     "use-debounce": "^1.1.1"
