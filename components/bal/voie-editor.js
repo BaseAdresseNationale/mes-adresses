@@ -21,6 +21,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   const setRef = useFocus()
 
   const {
+    enabled,
     marker,
     enableMarker,
     disableMarker
@@ -84,7 +85,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     } else {
       disableMarker()
     }
-  }, [initialValue, disableMarker, enableMarker, isToponyme])
+  }, [enabled, initialValue, disableMarker, enableMarker, isToponyme])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
