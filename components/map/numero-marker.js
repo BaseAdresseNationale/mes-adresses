@@ -26,6 +26,7 @@ function NumeroMarker({numero, labelProperty, showLabel}) {
     color: 'transparent',
     whiteSpace: 'nowrap',
     background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
+    cursor: 'pointer',
 
     '&:before': {
       content: ' ',
