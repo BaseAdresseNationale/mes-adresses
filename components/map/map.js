@@ -193,6 +193,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
         <NumeroMarker
           key={numero._id}
           numero={numero}
+          colorSeed={numero.voie}
           showLabel={showNumeros}
         />
       ))}

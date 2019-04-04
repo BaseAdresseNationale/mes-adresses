@@ -32,7 +32,8 @@ function useSources(voie) {
             ...feature,
             properties: {
               ...feature.properties,
-              color: voie || editingId ? '#cccccc' : randomColor({
+              opacity: voie || editingId ? 0.4 : 1,
+              color: randomColor({
                 luminosity: 'dark',
                 seed: feature.properties.idVoie
               })

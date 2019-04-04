@@ -2,12 +2,13 @@ import React, {useMemo, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, Text} from 'evergreen-ui'
+import randomColor from 'randomcolor'
 import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
 
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
 
-function NumeroMarker({numero, labelProperty, showLabel}) {
+function NumeroMarker({numero, labelProperty, colorSeed, showLabel}) {
   const {marker} = useContext(MarkerContext)
   const {editingId, setEditingId} = useContext(BalDataContext)
 
@@ -30,7 +31,10 @@ function NumeroMarker({numero, labelProperty, showLabel}) {
 
     '&:before': {
       content: ' ',
-      backgroundColor: '#1070ca',
+      backgroundColor: colorSeed ? randomColor({
+        luminosity: 'dark',
+        seed: colorSeed
+      }) : '#1070ca',
       border: '1px solid white',
       display: 'inline-block',
       width: 8,
@@ -50,7 +54,7 @@ function NumeroMarker({numero, labelProperty, showLabel}) {
         display: 'inline-block'
       }
     }
-  }), [showLabel])
+  }), [colorSeed, showLabel])
 
   if (!position) {
     return null
@@ -83,11 +87,13 @@ NumeroMarker.propTypes = {
     }))
   }).isRequired,
   labelProperty: PropTypes.string,
+  colorSeed: PropTypes.string,
   showLabel: PropTypes.bool
 }
 
 NumeroMarker.defaultProps = {
   labelProperty: 'numeroComplet',
+  colorSeed: null,
   showLabel: false
 }
 

@@ -8,6 +8,10 @@ export function getNumerosPointLayer(style) {
         type: 'identity',
         property: 'color'
       },
+      'circle-opacity': {
+        type: 'identity',
+        property: 'opacity'
+      },
       'circle-radius': {
         stops: [
           [12, 0.8],
