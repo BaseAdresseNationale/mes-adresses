@@ -18,6 +18,10 @@ import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
 import useLayers from './hooks/layers'
 
+const settings = {
+  maxZoom: 19
+}
+
 const defaultViewport = {
   latitude: 46.5693,
   longitude: 1.1771,
@@ -168,6 +172,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       mapStyle={mapStyle}
       width='100%'
       height='100%'
+      {...settings}
       {...getInteractionProps(interactive)}
       interactiveLayerIds={interactiveLayerIds}
       onClick={onClick}
