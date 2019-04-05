@@ -35,6 +35,24 @@ export function getNumerosPointLayer(style) {
   return layer
 }
 
+export function getHoveredLayer(style) {
+  const {paint} = getNumerosPointLayer(style)
+  paint['circle-radius'] = {
+    stops: [
+      [12, 1],
+      [17, 6]
+    ]
+  }
+  const layer = {
+    id: 'numeros-hovered',
+    type: 'circle',
+    source: 'hovered',
+    paint
+  }
+
+  return layer
+}
+
 export function getNumerosLabelLayer() {
   const layer = {
     id: 'numeros-label',
