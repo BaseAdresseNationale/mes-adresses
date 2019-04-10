@@ -28,7 +28,7 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
     window.open(URL.createObjectURL(blob))
   }, [baseLocale._id])
   
-  const publicationUrl = `${BAL_API_URL}/bases-locales/${baseLocale._id}/csv`
+  const csvUrl = `${BAL_API_URL}/bases-locales/${baseLocale._id}/csv`
 
   return (
     <Pane
@@ -62,7 +62,7 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
       />
 
       <Pane marginLeft='auto' display='flex'>
-        <NextLink href={`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(publicationUrl)}`}>
+        <NextLink href={`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`}>
           <a><Button height={24} appearance='primary'>Publier</Button></a>
         </NextLink>
 
