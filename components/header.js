@@ -1,7 +1,8 @@
 import React, {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
+import getConfig from 'next/config'
+import {Pane, Popover, Menu, IconButton, Button, Position} from 'evergreen-ui'
 
 import {downloadBaseLocaleCsv} from '../lib/bal-api'
 
@@ -10,6 +11,11 @@ import TokenContext from '../contexts/token'
 import useWindowSize from '../hooks/window-size'
 
 import Breadcrumbs from './breadcrumbs'
+
+const {publicRuntimeConfig: {
+  ADRESSE_URL,
+  BAL_API_URL
+}} = getConfig()
 
 const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, onToggle}) => {
   const {innerWidth} = useWindowSize()
@@ -21,6 +27,8 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
 
     window.open(URL.createObjectURL(blob))
   }, [baseLocale._id])
+  
+  const csvUrl = `${BAL_API_URL}/bases-locales/${baseLocale._id}/csv`
 
   return (
     <Pane
@@ -54,6 +62,10 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
       />
 
       <Pane marginLeft='auto' display='flex'>
+        <NextLink href={`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`}>
+          <a><Button height={24} appearance='primary'>Publier</Button></a>
+        </NextLink>
+
         <Popover
           position={Position.BOTTOM_RIGHT}
           content={
