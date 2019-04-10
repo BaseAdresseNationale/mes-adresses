@@ -1,10 +1,10 @@
-import React, {useCallback, useContext} from 'react'
+import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
 import getConfig from 'next/config'
 import {Pane, Popover, Menu, IconButton, Button, Position} from 'evergreen-ui'
 
-import {downloadBaseLocaleCsv} from '../lib/bal-api'
+import {getBaseLocaleCsvUrl} from '../lib/bal-api'
 
 import TokenContext from '../contexts/token'
 
@@ -13,22 +13,14 @@ import useWindowSize from '../hooks/window-size'
 import Breadcrumbs from './breadcrumbs'
 
 const {publicRuntimeConfig: {
-  ADRESSE_URL,
-  BAL_API_URL
+  ADRESSE_URL
 }} = getConfig()
 
 const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, onToggle}) => {
   const {innerWidth} = useWindowSize()
   const {token} = useContext(TokenContext)
 
-  const onDownload = useCallback(async () => {
-    const res = await downloadBaseLocaleCsv(baseLocale._id)
-    const blob = await res.blob()
-
-    window.open(URL.createObjectURL(blob))
-  }, [baseLocale._id])
-  
-  const csvUrl = `${BAL_API_URL}/bases-locales/${baseLocale._id}/csv`
+  const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
 
   return (
     <Pane
@@ -71,9 +63,11 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
           content={
             <Menu>
               <Menu.Group>
-                <Menu.Item icon='download' onSelect={onDownload}>
-                  Télécharger au format CSV
-                </Menu.Item>
+                <NextLink href={csvUrl}>
+                  <Menu.Item icon='download' is='a' href={csvUrl} color='inherit' textDecoration='none'>
+                    Télécharger au format CSV
+                  </Menu.Item>
+                </NextLink>
               </Menu.Group>
               {token && (
                 <>
