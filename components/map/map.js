@@ -18,6 +18,10 @@ import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
 import useLayers from './hooks/layers'
 
+const settings = {
+  maxZoom: 19
+}
+
 const defaultViewport = {
   latitude: 46.5693,
   longitude: 1.1771,
@@ -65,14 +69,15 @@ function generateNewStyle(style, sources, layers) {
 
 function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
   const [map, setMap] = useState(null)
-  const [showNumeros, setShowNumeros] = useState(false)
+  const [showNumeros, setShowNumeros] = useState(true)
+  const [hovered, setHovered] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
   const {numeros, toponymes, editingId} = useContext(BalDataContext)
 
-  const sources = useSources(voie)
+  const sources = useSources(voie, hovered)
   const bounds = useBounds(commune, voie)
   const layers = useLayers(voie, style)
 
@@ -87,13 +92,10 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       return null
     }
 
-    if (commune && !voie) {
-      return [
-        'voie-label'
-      ]
-    }
-
-    return null
+    return [
+      'numeros-point',
+      'numeros-hovered'
+    ]
   }, [commune, voie, editingId])
 
   const onViewportChange = useCallback(viewport => {
@@ -107,25 +109,28 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
   const onClick = useCallback(event => {
     const feature = event.features && event.features[0]
 
-    if (editingId) {
-      return null
-    }
-
     if (feature) {
-      switch (feature.layer.id) {
-        case 'voie-label': {
-          const {idVoie} = feature.properties
-          return Router.push(
-            `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-            `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
-          )
-        }
-
-        default:
-          return false
+      const {id} = feature.layer
+      if (id === 'voie-label' || id === 'numeros-hovered') {
+        const {idVoie} = feature.properties
+        return Router.push(
+          `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+          `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+        )
       }
     }
   }, [baseLocale, commune, editingId])
+
+  const onHover = useCallback(event => {
+    const feature = event.features && event.features[0]
+
+    if (feature) {
+      const {idVoie} = feature.properties
+      setHovered(idVoie)
+    } else {
+      setHovered(null)
+    }
+  }, [])
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -168,9 +173,11 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       mapStyle={mapStyle}
       width='100%'
       height='100%'
+      {...settings}
       {...getInteractionProps(interactive)}
       interactiveLayerIds={interactiveLayerIds}
       onClick={onClick}
+      onHover={onHover}
       onViewportChange={onViewportChange}
     >
       {interactive && (
@@ -193,6 +200,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
         <NumeroMarker
           key={numero._id}
           numero={numero}
+          colorSeed={numero.voie}
           showLabel={showNumeros}
         />
       ))}
