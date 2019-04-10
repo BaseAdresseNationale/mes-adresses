@@ -1,7 +1,7 @@
 import React, {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
+import {Pane, Popover, Menu, IconButton, Button, Position} from 'evergreen-ui'
 
 import {downloadBaseLocaleCsv} from '../lib/bal-api'
 
@@ -54,6 +54,10 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
       />
 
       <Pane marginLeft='auto' display='flex'>
+        <NextLink href={`https://adresse.data.gouv.fr/bases-locales/publication?url=https://api-bal.adresse.data.gouv.fr/v1/bases-locales/${baseLocale._id}/csv`}>
+          <a><Button height={24} appearance='primary'>Publier</Button></a>
+        </NextLink>
+
         <Popover
           position={Position.BOTTOM_RIGHT}
           content={
