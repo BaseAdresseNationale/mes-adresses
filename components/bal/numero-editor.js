@@ -35,9 +35,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
       numero: Number(numero)
     }
 
-    if (suffixe) {
-      body.suffixe = suffixe
-    }
+    body.suffixe = suffixe.length > 0 ? suffixe : null
 
     if (marker) {
       body.positions = [
