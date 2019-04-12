@@ -19,12 +19,14 @@ const TableRow = React.memo(({
   const {token} = useContext(TokenContext)
 
   const onClick = useCallback(e => {
-    if (isSelectable) {
+    if (e.target.closest('[data-editable]') && !code) { // Not a commune
+      onEdit(id)
+    } else if (isSelectable) {
       if (e.target.closest('[data-browsable]')) {
         onSelect(id)
       }
     }
-  }, [id, isSelectable, onSelect])
+  }, [id, isSelectable, onEdit, onSelect])
 
   const _onEdit = useCallback(() => {
     onEdit(id)
@@ -43,7 +45,10 @@ const TableRow = React.memo(({
       {code && (
         <Table.TextCell data-browsable isNumber flex='0 1 1'>{code}</Table.TextCell>
       )}
-      <Table.TextCell data-browsable>{label}</Table.TextCell>
+      <Table.Cell data-editable style={{cursor: 'text'}}>
+        <Table.TextCell>{label}</Table.TextCell>
+      </Table.Cell>
+      <Table.Cell data-browsable />
       {secondary && (
         <Table.TextCell data-browsable flex='0 1 1'>
           {secondary}
