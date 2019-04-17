@@ -52,28 +52,3 @@ export function getHoveredLayer(style) {
 
   return layer
 }
-
-export function getNumerosLabelLayer() {
-  const layer = {
-    id: 'numeros-label',
-    type: 'symbol',
-    source: 'numeros',
-    paint: {
-      'text-color': '#ffffff',
-      'text-halo-color': '#0081d5',
-      'text-halo-width': {
-        stops: [
-          [12, 1.5],
-          [18, 2]
-        ]
-      }
-    },
-    layout: {
-      'text-font': ['Noto Sans Regular'],
-      'text-field': '{numeroComplet}',
-      'text-ignore-placement': true
-    }
-  }
-
-  return layer
-}
