@@ -243,7 +243,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
             )}
 
             <Control
-              icon='plus'
+              icon='new-object'
               enabled={openForm}
               enabledHint='Annuler'
               disabledHint='Créer une adresse'
