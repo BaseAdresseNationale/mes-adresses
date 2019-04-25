@@ -106,7 +106,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       'numeros-point',
       'numeros-hovered'
     ]
-  }, [commune, voie, editingId])
+  }, [editingId])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
@@ -129,7 +129,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
         )
       }
     }
-  }, [baseLocale, commune, editingId])
+  }, [baseLocale, commune])
 
   const onHover = event => {
     const feature = event.features && event.features[0]
