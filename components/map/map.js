@@ -6,6 +6,12 @@ import {Pane} from 'evergreen-ui'
 import {fromJS} from 'immutable'
 
 import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '../../contexts/token'
+import MarkerContext from '../../contexts/marker'
+
+import {addNumero, addVoie} from '../../lib/bal-api'
+
+import AddressEditor from '../bal/address-editor'
 
 import {vector, ortho} from './styles'
 
@@ -71,12 +77,15 @@ function generateNewStyle(style, sources, layers) {
 function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
   const [map, setMap] = useState(null)
   const [showNumeros, setShowNumeros] = useState(true)
+  const [openForm, setOpenForm] = useState(false)
   const [hovered, setHovered] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const {numeros, toponymes, editingId} = useContext(BalDataContext)
+  const {numeros, reloadNumeros, toponymes, reloadVoies, editingId} = useContext(BalDataContext)
+  const {enableMarker, disableMarker} = useContext(MarkerContext)
+  const {token} = useContext(TokenContext)
 
   const sources = useSources(voie, hovered)
   const bounds = useBounds(commune, voie)
@@ -130,10 +139,18 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       setHovered(idVoie)
     }
   }
+
+  const onAddAddress = useCallback(async (body, idVoie) => {
+    if (idVoie) {
+      await addNumero(idVoie, body, token)
+      await reloadNumeros(idVoie)
     } else {
-      setHovered(null)
+      await addVoie(baseLocale._id, commune.code, body, token)
+      await reloadVoies()
     }
-  }, [])
+
+    setOpenForm(false)
+  }, [baseLocale, commune, reloadNumeros, reloadVoies, token])
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -168,28 +185,44 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
     }
   }, [map, bounds])
 
+  useEffect(() => {
+    if (editingId) {
+      setOpenForm(false)
+    }
+  }, [editingId, openForm])
+
+  useEffect(() => {
+    if (openForm) {
+      enableMarker()
+    } else if (!openForm && !editingId) {
+      disableMarker()
+    }
+  }, [openForm, disableMarker, enableMarker, editingId])
+
   return (
-    <MapGl
-      ref={mapRef}
-      reuseMap
-      viewState={viewport}
-      mapStyle={mapStyle}
-      width='100%'
-      height='100%'
-      {...settings}
-      {...getInteractionProps(interactive)}
-      interactiveLayerIds={interactiveLayerIds}
-      onClick={onClick}
-      onHover={onHover}
+    <Pane display='flex' flexDirection='column' flex={1}>
+      <Pane display='flex' flex={1}>
+        <MapGl
+          ref={mapRef}
+          reuseMap
+          viewState={viewport}
+          mapStyle={mapStyle}
+          width='100%'
+          height='100%'
+          {...settings}
+          {...getInteractionProps(interactive)}
+          interactiveLayerIds={interactiveLayerIds}
+          onClick={onClick}
+          onHover={onHover}
           onMouseLeave={() => setHovered(null)}
-      onViewportChange={onViewportChange}
-    >
-      {interactive && (
-        <>
-          <NavControl onViewportChange={onViewportChange} />
-          <StyleSwitch style={style} setStyle={setStyle} />
-        </>
-      )}
+          onViewportChange={onViewportChange}
+        >
+          {interactive && (
+            <>
+              <NavControl onViewportChange={onViewportChange} />
+              <StyleSwitch style={style} setStyle={setStyle} />
+            </>
+          )}
 
           <Pane
             position='absolute'
@@ -199,38 +232,56 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
             zIndex={2}
           >
 
-      {(voie || (toponymes && toponymes.length)) && (
+            {(voie || (toponymes && toponymes.length)) && (
               <Control
                 icon='map-marker'
-          enabled={showNumeros}
-          enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
-          disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
-          onChange={onShowNumeroChange}
-        />
-      )}
+                enabled={showNumeros}
+                enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
+                disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
+                onChange={onShowNumeroChange}
+              />
+            )}
 
+            <Control
+              icon='plus'
+              enabled={openForm}
+              enabledHint='Annuler'
+              disabledHint='Créer une adresse'
+              onChange={setOpenForm}
+            />
           </Pane>
 
-      {voie && numeros && numeros.map(numero => (
-        <NumeroMarker
-          key={numero._id}
-          numero={numero}
-          colorSeed={numero.voie}
-          showLabel={showNumeros}
-        />
-      ))}
+          {voie && numeros && numeros.map(numero => (
+            <NumeroMarker
+              key={numero._id}
+              numero={numero}
+              colorSeed={numero.voie}
+              showLabel={showNumeros}
+            />
+          ))}
 
-      {toponymes && toponymes.map(toponyme => (
-        <NumeroMarker
-          key={toponyme._id}
-          numero={toponyme}
-          labelProperty='nom'
-          showLabel={showNumeros}
-        />
-      ))}
+          {toponymes && toponymes.map(toponyme => (
+            <NumeroMarker
+              key={toponyme._id}
+              numero={toponyme}
+              labelProperty='nom'
+              showLabel={showNumeros}
+            />
+          ))}
 
-      <EditableMarker viewport={viewport} />
-    </MapGl>
+          <EditableMarker viewport={viewport} />
+        </MapGl>
+      </Pane>
+
+      {commune && openForm && (
+        <Pane padding={20} background='white'>
+          <AddressEditor
+            onSubmit={onAddAddress}
+            onCancel={() => setOpenForm(false)}
+          />
+        </Pane>
+      )}
+    </Pane>
   )
 }
 
