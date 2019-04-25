@@ -290,12 +290,18 @@ Map.propTypes = {
   style: PropTypes.oneOf([
     'ortho',
     'vector'
-  ])
+  ]),
+  baseLocale: PropTypes.object,
+  commune: PropTypes.object,
+  voie: PropTypes.object
 }
 
 Map.defaultProps = {
   interactive: true,
-  style: 'vector'
+  style: 'vector',
+  baseLocale: null,
+  commune: null,
+  voie: null
 }
 
 export default Map
