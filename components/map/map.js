@@ -2,6 +2,7 @@ import React, {useState, useMemo, useEffect, useCallback, useContext} from 'reac
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
+import {Pane} from 'evergreen-ui'
 import {fromJS} from 'immutable'
 
 import BalDataContext from '../../contexts/bal-data'
@@ -11,7 +12,7 @@ import {vector, ortho} from './styles'
 import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
-import NumeroSwitch from './numero-switch'
+import Control from './control'
 import NumeroMarker from './numero-marker'
 
 import useBounds from './hooks/bounds'
@@ -187,14 +188,25 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
         </>
       )}
 
+          <Pane
+            position='absolute'
+            className='mapboxgl-ctrl-group mapboxgl-ctrl'
+            top={88}
+            right={16}
+            zIndex={2}
+          >
+
       {(voie || (toponymes && toponymes.length)) && (
-        <NumeroSwitch
+              <Control
+                icon='map-marker'
           enabled={showNumeros}
           enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
           disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
           onChange={onShowNumeroChange}
         />
       )}
+
+          </Pane>
 
       {voie && numeros && numeros.map(numero => (
         <NumeroMarker
