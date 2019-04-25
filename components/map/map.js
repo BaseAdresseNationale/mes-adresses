@@ -122,12 +122,14 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
     }
   }, [baseLocale, commune, editingId])
 
-  const onHover = useCallback(event => {
+  const onHover = event => {
     const feature = event.features && event.features[0]
 
     if (feature) {
       const {idVoie} = feature.properties
       setHovered(idVoie)
+    }
+  }
     } else {
       setHovered(null)
     }
@@ -179,6 +181,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       interactiveLayerIds={interactiveLayerIds}
       onClick={onClick}
       onHover={onHover}
+          onMouseLeave={() => setHovered(null)}
       onViewportChange={onViewportChange}
     >
       {interactive && (
