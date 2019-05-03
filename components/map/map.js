@@ -271,7 +271,10 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
             />
           ))}
 
-          <EditableMarker viewport={viewport} />
+          <EditableMarker
+            viewport={viewport}
+            style={style || defaultStyle}
+          />
         </MapGl>
       </Pane>
 
