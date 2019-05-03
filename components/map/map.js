@@ -232,9 +232,9 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
             zIndex={2}
           >
 
-            {(voie || (toponymes && toponymes.length)) && (
+            {(voie || (toponymes && toponymes.length > 0)) && (
               <Control
-                icon='map-marker'
+                icon={showNumeros ? 'eye-off' : 'eye-open'}
                 enabled={showNumeros}
                 enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
                 disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
@@ -242,13 +242,15 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
               />
             )}
 
-            <Control
-              icon='new-object'
-              enabled={openForm}
-              enabledHint='Annuler'
-              disabledHint='Créer une adresse'
-              onChange={setOpenForm}
-            />
+            {commune && (
+              <Control
+                icon='map-marker'
+                enabled={openForm}
+                enabledHint='Annuler'
+                disabledHint='Créer une adresse'
+                onChange={setOpenForm}
+              />
+            )}
           </Pane>
 
           {voie && numeros && numeros.map(numero => (
