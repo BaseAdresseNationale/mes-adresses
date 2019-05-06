@@ -103,11 +103,17 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       return null
     }
 
-    return [
+    const layers = [
       'numeros-point',
       'numeros-label'
     ]
-  }, [editingId])
+
+    if (!voie) {
+      layers.push('voie-label')
+    }
+
+    return layers
+  }, [editingId, voie])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
