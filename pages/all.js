@@ -9,7 +9,14 @@ import useFuse from '../hooks/fuse'
 
 function All({basesLocales}) {
   const onBalSelect = useCallback(bal => {
-    Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
+    if (bal.communes.length === 1) {
+      Router.push(
+        `/bal/commune?balId=${bal._id}&codeCommune=${bal.communes[0]}`,
+        `/bal/${bal._id}/communes/${bal.communes[0]}`
+      )
+    } else {
+      Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
+    }
   }, [])
 
   const onCreate = useCallback(() => {

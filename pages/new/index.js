@@ -47,7 +47,10 @@ function Index({defaultCommune}) {
       await populateCommune(bal._id, commune, bal.token)
     }
 
-    Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
+    Router.push(
+      `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
+      `/bal/${bal._id}/communes/${commune}`
+    )
   }, [commune, nom, email, populate])
 
   return (
