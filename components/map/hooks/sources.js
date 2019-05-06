@@ -6,24 +6,24 @@ import randomColor from 'randomcolor'
 import BalDataContext from '../../../contexts/bal-data'
 
 function useSources(voie, hovered) {
-  const {geojson, editingId} = useContext(BalDataContext)
-
-  const setPaintProperties = features => {
-    return features.map(feature => ({
-      ...feature,
-      properties: {
-        ...feature.properties,
-        opacity: voie || editingId ? 0.4 : 1,
-        color: randomColor({
-          luminosity: 'dark',
-          seed: feature.properties.idVoie
-        })
-      }
-    }))
-  }
+  const {geojson} = useContext(BalDataContext)
 
   return useMemo(() => {
     const sources = []
+    const setPaintProperties = features => {
+      return features.map(feature => ({
+        ...feature,
+        id: feature.properties.idNumero || feature.properties.idVoie,
+        properties: {
+          ...feature.properties,
+          opacity: feature.properties.idVoie === hovered ? 1 : 0.4,
+          color: randomColor({
+            luminosity: 'dark',
+            seed: feature.properties.idVoie
+          })
+        }
+      }))
+    }
 
     if (!geojson) {
       return sources
@@ -71,18 +71,10 @@ function useSources(voie, hovered) {
           features: voies
         }
       })
-
-      sources.push({
-        name: 'hovered',
-        data: {
-          type: 'FeatureCollection',
-          features: adresses.filter(address => address.properties.idVoie === hovered)
-        }
-      })
     }
 
     return sources
-  }, [hovered, geojson, voie, editingId])
+  }, [geojson, voie, hovered])
 }
 
 export default useSources
