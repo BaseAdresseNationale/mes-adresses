@@ -1,0 +1,20 @@
+{
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "BAL_API_URL": "https://api-bal.adresse.data.gouv.fr/v1",
+    "GEO_API_URL": "https://geo.api.gouv.fr"
+  },
+  "formation": {
+  },
+  "name": "editeur-bal",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
