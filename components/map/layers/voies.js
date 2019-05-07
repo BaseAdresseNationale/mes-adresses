@@ -4,7 +4,14 @@ export function getVoiesLabelLayer(style) {
     interactive: true,
     type: 'symbol',
     source: 'voies',
+    maxzoom: 17,
     paint: {
+      'text-color': [
+        'case',
+        ['==', ['get', 'opacity'], 1],
+        ['get', 'color'],
+        '#000'
+      ],
       'text-halo-color': '#f8f4f0',
       'text-halo-blur': 0.5,
       'text-halo-width': {

@@ -103,11 +103,17 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       return null
     }
 
-    return [
+    const layers = [
       'numeros-point',
-      'numeros-hovered'
+      'numeros-label'
     ]
-  }, [editingId])
+
+    if (!voie) {
+      layers.push('voie-label')
+    }
+
+    return layers
+  }, [editingId, voie])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
@@ -121,17 +127,14 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
     const feature = event.features && event.features[0]
 
     if (feature) {
-      const {id} = feature.layer
-      if (id === 'voie-label' || id === 'numeros-hovered') {
-        const {idVoie} = feature.properties
-        return Router.push(
-          `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-          `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
-        )
-      }
-    } else {
-      setShowContextMenu(null)
+      const {idVoie} = feature.properties
+      return Router.push(
+        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+      )
     }
+
+    setShowContextMenu(null)
   }, [baseLocale, commune])
 
   const onHover = event => {
