@@ -6,7 +6,7 @@ import {Pane, Icon, Text} from 'evergreen-ui'
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
 
-function EditableMarker({viewport, size}) {
+function EditableMarker({viewport, size, style}) {
   const {enabled, marker, setMarker} = useContext(MarkerContext)
   const {editingItem} = useContext(BalDataContext)
 
@@ -25,7 +25,7 @@ function EditableMarker({viewport, size}) {
         longitude: viewport.longitude
       })
     }
-  }, [enabled, setMarker])
+  }, [enabled, setMarker, viewport])
 
   if (!enabled || !marker) {
     return null
@@ -56,7 +56,7 @@ function EditableMarker({viewport, size}) {
         <Icon
           icon='map-marker'
           filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
-          color='info'
+          color={style === 'vector' ? 'info' : 'success'}
           transform='translate(-50%, -100%)'
           size={size}
         />
@@ -66,11 +66,17 @@ function EditableMarker({viewport, size}) {
 }
 
 EditableMarker.propTypes = {
-  size: PropTypes.number
+  viewport: PropTypes.shape({
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired
+  }).isRequired,
+  size: PropTypes.number,
+  style: PropTypes.string
 }
 
 EditableMarker.defaultProps = {
-  size: 32
+  size: 32,
+  style: 'vector'
 }
 
 export default EditableMarker

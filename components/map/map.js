@@ -2,16 +2,23 @@ import React, {useState, useMemo, useEffect, useCallback, useContext} from 'reac
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
+import {Pane} from 'evergreen-ui'
 import {fromJS} from 'immutable'
 
 import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '../../contexts/token'
+import MarkerContext from '../../contexts/marker'
+
+import {addNumero, addVoie} from '../../lib/bal-api'
+
+import AddressEditor from '../bal/address-editor'
 
 import {vector, ortho} from './styles'
 
 import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
-import NumeroSwitch from './numero-switch'
+import Control from './control'
 import NumeroMarker from './numero-marker'
 
 import useBounds from './hooks/bounds'
@@ -70,12 +77,15 @@ function generateNewStyle(style, sources, layers) {
 function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
   const [map, setMap] = useState(null)
   const [showNumeros, setShowNumeros] = useState(true)
+  const [openForm, setOpenForm] = useState(false)
   const [hovered, setHovered] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const {numeros, toponymes, editingId} = useContext(BalDataContext)
+  const {numeros, reloadNumeros, toponymes, reloadVoies, editingId} = useContext(BalDataContext)
+  const {enableMarker, disableMarker} = useContext(MarkerContext)
+  const {token} = useContext(TokenContext)
 
   const sources = useSources(voie, hovered)
   const bounds = useBounds(commune, voie)
@@ -96,7 +106,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
       'numeros-point',
       'numeros-hovered'
     ]
-  }, [commune, voie, editingId])
+  }, [editingId])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)
@@ -119,18 +129,28 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
         )
       }
     }
-  }, [baseLocale, commune, editingId])
+  }, [baseLocale, commune])
 
-  const onHover = useCallback(event => {
+  const onHover = event => {
     const feature = event.features && event.features[0]
 
     if (feature) {
       const {idVoie} = feature.properties
       setHovered(idVoie)
-    } else {
-      setHovered(null)
     }
-  }, [])
+  }
+
+  const onAddAddress = useCallback(async (body, idVoie) => {
+    if (idVoie) {
+      await addNumero(idVoie, body, token)
+      await reloadNumeros(idVoie)
+    } else {
+      await addVoie(baseLocale._id, commune.code, body, token)
+      await reloadVoies()
+    }
+
+    setOpenForm(false)
+  }, [baseLocale, commune, reloadNumeros, reloadVoies, token])
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -165,57 +185,108 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
     }
   }, [map, bounds])
 
+  useEffect(() => {
+    if (editingId) {
+      setOpenForm(false)
+    }
+  }, [editingId, openForm])
+
+  useEffect(() => {
+    if (openForm) {
+      enableMarker()
+    } else if (!openForm && !editingId) {
+      disableMarker()
+    }
+  }, [openForm, disableMarker, enableMarker, editingId])
+
   return (
-    <MapGl
-      ref={mapRef}
-      reuseMap
-      viewState={viewport}
-      mapStyle={mapStyle}
-      width='100%'
-      height='100%'
-      {...settings}
-      {...getInteractionProps(interactive)}
-      interactiveLayerIds={interactiveLayerIds}
-      onClick={onClick}
-      onHover={onHover}
-      onViewportChange={onViewportChange}
-    >
-      {interactive && (
-        <>
-          <NavControl onViewportChange={onViewportChange} />
-          <StyleSwitch style={style} setStyle={setStyle} />
-        </>
+    <Pane display='flex' flexDirection='column' flex={1}>
+      <Pane display='flex' flex={1}>
+        <MapGl
+          ref={mapRef}
+          reuseMap
+          viewState={viewport}
+          mapStyle={mapStyle}
+          width='100%'
+          height='100%'
+          {...settings}
+          {...getInteractionProps(interactive)}
+          interactiveLayerIds={interactiveLayerIds}
+          onClick={onClick}
+          onHover={onHover}
+          onMouseLeave={() => setHovered(null)}
+          onViewportChange={onViewportChange}
+        >
+          {interactive && (
+            <>
+              <NavControl onViewportChange={onViewportChange} />
+              <StyleSwitch style={style} setStyle={setStyle} />
+            </>
+          )}
+
+          <Pane
+            position='absolute'
+            className='mapboxgl-ctrl-group mapboxgl-ctrl'
+            top={88}
+            right={16}
+            zIndex={2}
+          >
+
+            {(voie || (toponymes && toponymes.length > 0)) && (
+              <Control
+                icon={showNumeros ? 'eye-off' : 'eye-open'}
+                enabled={showNumeros}
+                enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
+                disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
+                onChange={onShowNumeroChange}
+              />
+            )}
+
+            {commune && (
+              <Control
+                icon='map-marker'
+                enabled={openForm}
+                enabledHint='Annuler'
+                disabledHint='Créer une adresse'
+                onChange={setOpenForm}
+              />
+            )}
+          </Pane>
+
+          {voie && numeros && numeros.map(numero => (
+            <NumeroMarker
+              key={numero._id}
+              numero={numero}
+              colorSeed={numero.voie}
+              showLabel={showNumeros}
+            />
+          ))}
+
+          {toponymes && toponymes.map(toponyme => (
+            <NumeroMarker
+              key={toponyme._id}
+              numero={toponyme}
+              labelProperty='nom'
+              showLabel={showNumeros}
+            />
+          ))}
+
+          <EditableMarker
+            viewport={viewport}
+            style={style || defaultStyle}
+          />
+        </MapGl>
+      </Pane>
+
+      {commune && openForm && (
+        <Pane padding={20} background='white'>
+          <AddressEditor
+            onSubmit={onAddAddress}
+            onCancel={() => setOpenForm(false)}
+          />
+        </Pane>
       )}
-
-      {(voie || (toponymes && toponymes.length)) && (
-        <NumeroSwitch
-          enabled={showNumeros}
-          enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
-          disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
-          onChange={onShowNumeroChange}
-        />
-      )}
-
-      {voie && numeros && numeros.map(numero => (
-        <NumeroMarker
-          key={numero._id}
-          numero={numero}
-          colorSeed={numero.voie}
-          showLabel={showNumeros}
-        />
-      ))}
-
-      {toponymes && toponymes.map(toponyme => (
-        <NumeroMarker
-          key={toponyme._id}
-          numero={toponyme}
-          labelProperty='nom'
-          showLabel={showNumeros}
-        />
-      ))}
-
-      <EditableMarker viewport={viewport} />
-    </MapGl>
+    </Pane>
   )
 }
 
@@ -224,12 +295,18 @@ Map.propTypes = {
   style: PropTypes.oneOf([
     'ortho',
     'vector'
-  ])
+  ]),
+  baseLocale: PropTypes.object,
+  commune: PropTypes.object,
+  voie: PropTypes.object
 }
 
 Map.defaultProps = {
   interactive: true,
-  style: 'vector'
+  style: 'vector',
+  baseLocale: null,
+  commune: null,
+  voie: null
 }
 
 export default Map

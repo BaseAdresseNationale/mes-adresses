@@ -1,7 +1,7 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 
-import {getCommuneGeoJson, getNumeros, getVoies} from '../lib/bal-api'
+import {getCommuneGeoJson, getNumeros, getVoies, getVoie} from '../lib/bal-api'
 
 import TokenContext from './token'
 
@@ -12,6 +12,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
+  const [voie, setVoie] = useState()
 
   const {token} = useContext(TokenContext)
 
@@ -43,11 +44,16 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
     }
   }, [voies, numeros])
 
-  const reloadNumeros = useCallback(async () => {
-    if (idVoie) {
-      const numeros = await getNumeros(idVoie)
+  const reloadNumeros = useCallback(async _idVoie => {
+    const id = _idVoie || idVoie
+
+    if (id) {
+      const voie = await getVoie(id)
+      const numeros = await getNumeros(id)
+      setVoie(voie)
       setNumeros(numeros)
     } else {
+      setVoie(null)
       setNumeros(null)
     }
   }, [idVoie])
@@ -85,6 +91,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
         editingId,
         editingItem,
         geojson,
+        voie,
         numeros,
         voies,
         toponymes,
