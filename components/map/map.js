@@ -78,6 +78,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
   const [map, setMap] = useState(null)
   const [showNumeros, setShowNumeros] = useState(true)
   const [openForm, setOpenForm] = useState(false)
+  const [showContextMenu, setShowContextMenu] = useState(null)
   const [hovered, setHovered] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
@@ -128,6 +129,8 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
           `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
         )
       }
+    } else {
+      setShowContextMenu(null)
     }
   }, [baseLocale, commune])
 
@@ -259,6 +262,8 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
               numero={numero}
               colorSeed={numero.voie}
               showLabel={showNumeros}
+              showContextMenu={numero._id === showContextMenu}
+              setShowContextMenu={setShowContextMenu}
             />
           ))}
 
@@ -268,6 +273,8 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
               numero={toponyme}
               labelProperty='nom'
               showLabel={showNumeros}
+              showContextMenu={toponyme._id === showContextMenu}
+              setShowContextMenu={setShowContextMenu}
             />
           ))}
 

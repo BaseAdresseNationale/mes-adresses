@@ -1,16 +1,24 @@
-import React, {useMemo, useCallback, useContext} from 'react'
+import React, {useMemo, useCallback, useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
-import {Pane, Text} from 'evergreen-ui'
+import {Pane, Text, Menu} from 'evergreen-ui'
 import randomColor from 'randomcolor'
 import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
 
+import {removeNumero, removeVoie} from '../../lib/bal-api'
+
+import useError from '../../hooks/error'
+
+import TokenContext from '../../contexts/token'
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
 
-function NumeroMarker({numero, labelProperty, colorSeed, showLabel}) {
+function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
+  const [setError] = useError()
+
+  const {token} = useContext(TokenContext)
   const {marker} = useContext(MarkerContext)
-  const {editingId, setEditingId} = useContext(BalDataContext)
+  const {editingId, setEditingId, reloadNumeros, reloadVoies} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
@@ -56,6 +64,24 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel}) {
     }
   }), [colorSeed, showLabel])
 
+  const removeAddress = (async () => {
+    const {_id} = numero
+
+    try {
+      if (numero.numero) {
+        await removeNumero(_id, token)
+        await reloadNumeros()
+      } else {
+        await removeVoie(_id, token)
+        await reloadVoies()
+      }
+    } catch (error) {
+      setError(error.message)
+    }
+
+    setShowContextMenu(false)
+  })
+
   if (!position) {
     return null
   }
@@ -67,13 +93,27 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel}) {
   const {coordinates} = position.point
 
   return (
-    <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-      <Pane className={markerStyle} onClick={onEnableEditing}>
-        <Text color='white' paddingLeft={8} paddingRight={10}>
-          {numero[labelProperty]}
-        </Text>
-      </Pane>
-    </Marker>
+    <>
+      <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
+        <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+          <Text color='white' paddingLeft={8} paddingRight={10}>
+            {numero[labelProperty]}
+          </Text>
+        </Pane>
+
+        {showContextMenu && (
+          <Pane background='tint1' position='absolute' margin={10}>
+            <Menu>
+              <Menu.Group>
+                <Menu.Item icon='trash' intent='danger' onSelect={removeAddress}>
+                  Supprimer…
+                </Menu.Item>
+              </Menu.Group>
+            </Menu>
+          </Pane>
+        )}
+      </Marker>
+    </>
   )
 }
 
@@ -88,13 +128,16 @@ NumeroMarker.propTypes = {
   }).isRequired,
   labelProperty: PropTypes.string,
   colorSeed: PropTypes.string,
-  showLabel: PropTypes.bool
+  showLabel: PropTypes.bool,
+  showContextMenu: PropTypes.bool,
+  setShowContextMenu: PropTypes.func.isRequired
 }
 
 NumeroMarker.defaultProps = {
   labelProperty: 'numeroComplet',
   colorSeed: null,
-  showLabel: false
+  showLabel: false,
+  showContextMenu: false
 }
 
 export default React.memo(NumeroMarker)
