@@ -126,7 +126,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
   const onClick = useCallback(event => {
     const feature = event.features && event.features[0]
 
-    if (feature) {
+    if (feature && feature.properties.idVoie) {
       const {idVoie} = feature.properties
       return Router.push(
         `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
