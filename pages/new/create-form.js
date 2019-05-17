@@ -51,6 +51,7 @@ function CreateForm({defaultCommune}) {
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='tint2' onSubmit={onSubmit}>
       <TextInputField
+        required
         name='nom'
         id='nom'
         value={nom}
