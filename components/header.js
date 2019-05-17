@@ -1,5 +1,6 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
+import Router from 'next/router'
 import NextLink from 'next/link'
 import getConfig from 'next/config'
 import {Pane, Popover, Menu, IconButton, Button, Position} from 'evergreen-ui'
@@ -45,6 +46,14 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
           onClick={onToggle}
         />
       )}
+
+      <IconButton
+        height={24}
+        marginRight={8}
+        icon='home'
+        appearance='minimal'
+        onClick={() => Router.push('/')}
+      />
 
       <Breadcrumbs
         baseLocale={baseLocale}
