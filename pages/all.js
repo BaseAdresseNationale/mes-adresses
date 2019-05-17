@@ -21,7 +21,9 @@ function All({basesLocales}) {
         </Paragraph>
       </Pane>
 
-      <BasesLocalesList basesLocales={basesLocales} />
+      <Pane flex={1} overflowY='scroll'>
+        <BasesLocalesList basesLocales={basesLocales} />
+      </Pane>
 
       <Pane borderTop marginTop='auto' padding={16}>
         <Paragraph size={300} color='muted'>

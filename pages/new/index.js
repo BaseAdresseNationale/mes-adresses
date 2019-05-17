@@ -19,22 +19,24 @@ function Index({defaultCommune}) {
         </Paragraph>
       </Pane>
 
-      <TabNavigation marginLeft={16}>
-        {['Créer une Base Adresse Locale', 'Créer une Base Adresse Locale à partir d’un fichier CSV'].map((tab, idx) => (
+      <TabNavigation display='flex' marginLeft={16}>
+        {['Créer', 'Importer un fichier CSV'].map((tab, idx) => (
           <Tab key={tab} id={tab} isSelected={index === idx} onSelect={() => setIndex(idx)}>
             {tab}
           </Tab>
         ))}
       </TabNavigation>
 
-      {index === 0 ? (
-        <CreateForm defaultCommune={defaultCommune} />
-      ) : (
-        <UploadForm />
-      )}
+      <Pane flex={1} overflowY='scroll'>
+        {index === 0 ? (
+          <CreateForm defaultCommune={defaultCommune} />
+        ) : (
+          <UploadForm />
+        )}
 
-      <Pane display='flex' flex={1} margin={16} marginTop={32}>
-        <BackButton is='a' href='/'>Retour</BackButton>
+        <Pane display='flex' flex={1} margin={16} marginTop={32}>
+          <BackButton is='a' href='/'>Retour</BackButton>
+        </Pane>
       </Pane>
     </Pane>
   )

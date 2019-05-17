@@ -26,26 +26,30 @@ function Index() {
         </Paragraph>
       </Pane>
 
-      <UserBasesLocales />
+      <Pane display='flex' flexDirection='column'>
+        <Pane flex={1} overflowY='scroll'>
+          <UserBasesLocales />
+        </Pane>
 
-      <Pane
-        display='flex'
-        flex={1}
-        height={100}
-        alignItems='center'
-        justifyContent='center'
-        padding={16}
-      >
-        <Button
-          iconBefore='plus'
-          marginTop={10}
-          appearance='primary'
-          height={40}
-          onClick={onCreate}
+        <Pane
+          display='flex'
+          height={100}
+          alignItems='center'
+          justifyContent='center'
+          padding={16}
         >
-          Créer Base Adresse Locale
-        </Button>
+          <Button
+            iconBefore='plus'
+            marginTop={10}
+            appearance='primary'
+            height={40}
+            onClick={onCreate}
+          >
+            Créer Base Adresse Locale
+          </Button>
+        </Pane>
       </Pane>
+
     </>
   )
 }

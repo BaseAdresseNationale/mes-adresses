@@ -29,7 +29,7 @@ function BasesLocalesList({basesLocales}) {
   return (
     <>
       {basesLocales.length > 0 && (
-        <Pane borderTop flex={1} overflowY='scroll'>
+        <Pane borderTop>
           <Table>
             <Table.Head>
               <Table.SearchHeaderCell
