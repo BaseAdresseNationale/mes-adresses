@@ -1,125 +1,44 @@
-import React, {useCallback, useState} from 'react'
-import Router from 'next/router'
-import {Pane, Heading, Paragraph, TextInputField, Checkbox, Button} from 'evergreen-ui'
+import React, {useState} from 'react'
+import PropTypes from 'prop-types'
+import {Pane, Heading, TabNavigation, Tab, Paragraph, BackButton} from 'evergreen-ui'
 
-import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
-import {storeBalAccess} from '../../lib/tokens'
 
-import {useInput, useCheckboxInput} from '../../hooks/input'
-
-import {CommuneSearchField} from '../../components/commune-search'
+import CreateForm from './create-form'
+import UploadForm from './upload-form'
 
 function Index({defaultCommune}) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput(
-    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
-  )
-  const [email, onEmailChange] = useInput('')
-  const [populate, onPopulateChange] = useCheckboxInput(true)
-  const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
-
-  const onSelect = useCallback(commune => {
-    setCommune(commune.code)
-  }, [])
-
-  const onCreateUpload = useCallback(() => {
-    Router.push('/new/upload')
-  }, [])
-
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
-
-    setIsLoading(true)
-
-    const bal = await createBaseLocale({
-      nom,
-      emails: [
-        email
-      ]
-    })
-
-    storeBalAccess(bal._id, bal.token)
-
-    await addCommune(bal._id, commune, bal.token)
-
-    if (populate) {
-      await populateCommune(bal._id, commune, bal.token)
-    }
-
-    Router.push(
-      `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
-      `/bal/${bal._id}/communes/${commune}`
-    )
-  }, [commune, nom, email, populate])
+  const [index, setIndex] = useState(0)
 
   return (
-    <>
-      <Pane borderBottom padding={16} backgroundColor='white'>
+    <Pane backgroundColor='white'>
+      <Pane padding={16}>
         <Heading size={600} marginBottom={8}>Nouvelle Base Adresse Locale</Heading>
         <Paragraph>
           Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale.
         </Paragraph>
       </Pane>
 
-      <Pane is='form' padding={16} flex={1} overflowY='scroll' onSubmit={onSubmit}>
-        <TextInputField
-          required
-          name='nom'
-          id='nom'
-          value={nom}
-          maxWidth={600}
-          disabled={isLoading}
-          label='Nom de la Base Adresse Locale'
-          placeholder='Nom'
-          onChange={onNomChange}
-        />
+      <TabNavigation display='flex' marginLeft={16}>
+        {['Créer', 'Importer un fichier CSV'].map((tab, idx) => (
+          <Tab key={tab} id={tab} isSelected={index === idx} onSelect={() => setIndex(idx)}>
+            {tab}
+          </Tab>
+        ))}
+      </TabNavigation>
 
-        <TextInputField
-          required
-          type='email'
-          name='email'
-          id='email'
-          value={email}
-          maxWidth={400}
-          disabled={isLoading}
-          label='Votre adresse email'
-          placeholder='nom@example.com'
-          onChange={onEmailChange}
-        />
+      <Pane flex={1} overflowY='scroll'>
+        {index === 0 ? (
+          <CreateForm defaultCommune={defaultCommune} />
+        ) : (
+          <UploadForm />
+        )}
 
-        <CommuneSearchField
-          required
-          id='commune'
-          defaultSelectedItem={defaultCommune}
-          label='Commune'
-          maxWidth={500}
-          disabled={isLoading}
-          hint='Vous pourrez ajouter plusieurs communes à la Base Adresse Locale plus tard.'
-          onSelect={onSelect}
-        />
-
-        <Checkbox
-          label='Importer les voies et numéros depuis la BAN'
-          checked={populate}
-          disabled={isLoading}
-          onChange={onPopulateChange}
-        />
-
-        <Button height={40} marginTop={8} type='submit' appearance='primary' isLoading={isLoading}>
-          {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
-        </Button>
+        <Pane display='flex' flex={1} margin={16} marginTop={32}>
+          <BackButton is='a' href='/'>Retour</BackButton>
+        </Pane>
       </Pane>
-
-      <Pane borderTop marginTop='auto' padding={16}>
-        <Paragraph size={300} color='muted'>
-          Vous pouvez créer une nouvelle Base Adresse Locale à partir d’un fichier CSV conforme au modèle BAL 1.1 de l’AITF.
-        </Paragraph>
-        <Button marginTop={10} onClick={onCreateUpload}>
-          Créer une nouvelle Base Adresse Locale à partir d’un fichier CSV
-        </Button>
-      </Pane>
-    </>
+    </Pane>
   )
 }
 
@@ -135,6 +54,14 @@ Index.getInitialProps = async ({query}) => {
     defaultCommune,
     layout: 'fullscreen'
   }
+}
+
+Index.propTypes = {
+  defaultCommune: PropTypes.string
+}
+
+Index.defaultProps = {
+  defaultCommune: null
 }
 
 export default Index
