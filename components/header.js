@@ -63,9 +63,11 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
       />
 
       <Pane marginLeft='auto' display='flex'>
-        <NextLink href={`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`}>
-          <a style={{textDecoration: 'none'}}><Button marginRight={8} height={24} appearance='primary'>Publier</Button></a>
-        </NextLink>
+        {token && (
+          <NextLink href={`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`}>
+            <a style={{textDecoration: 'none'}}><Button marginRight={8} height={24} appearance='primary'>Publier</Button></a>
+          </NextLink>
+        )}
 
         <Popover
           position={Position.BOTTOM_RIGHT}
