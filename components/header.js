@@ -1,9 +1,10 @@
-import React, {useContext} from 'react'
+import React, {useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import NextLink from 'next/link'
 import getConfig from 'next/config'
-import {Pane, Popover, Menu, IconButton, Button, Position} from 'evergreen-ui'
+import {Pane, Popover, Menu, IconButton, Button, Position, Tooltip} from 'evergreen-ui'
+import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
 
 import {getBaseLocaleCsvUrl} from '../lib/bal-api'
 
@@ -22,6 +23,16 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
   const {token} = useContext(TokenContext)
 
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
+
+  const editTip = useMemo(() => css({
+    '@media (max-width: 700px)': {
+      marginLeft: -10,
+
+      '& > span': {
+        display: 'none'
+      }
+    }
+  }), [])
 
   return (
     <Pane
@@ -63,10 +74,19 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
       />
 
       <Pane marginLeft='auto' display='flex'>
-        {token && (
+        {token ? (
           <NextLink href={`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`}>
             <a style={{textDecoration: 'none'}}><Button marginRight={8} height={24} appearance='primary'>Publier</Button></a>
           </NextLink>
+        ) : (
+          <Tooltip
+            content='Vous n’êtes pas identifié comme administrateur de cette base adresse locale, vous ne pouvez donc pas l’éditer.'
+            position={Position.BOTTOM_RIGHT}
+          >
+            <Button height={24} marginRight={8} appearance='primary' intent='danger' iconBefore='edit'>
+              <div className={editTip}><span>Édition impossible</span></div>
+            </Button>
+          </Tooltip>
         )}
 
         <Popover
