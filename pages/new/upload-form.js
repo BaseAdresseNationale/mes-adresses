@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
 import {Pane, Alert, Button, TextInputField} from 'evergreen-ui'
 
@@ -20,6 +20,7 @@ function getFileExtension(name) {
 }
 
 function Index() {
+  const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -51,24 +52,39 @@ function Index() {
 
     setIsLoading(true)
 
-    const baseLocale = await createBaseLocale({
-      nom,
-      emails: [
-        email
-      ]
-    })
+    if (!bal) {
+      const baseLocale = await createBaseLocale({
+        nom,
+        emails: [
+          email
+        ]
+      })
 
-    storeBalAccess(baseLocale._id, baseLocale.token)
-
-    try {
-      await uploadBaseLocaleCsv(baseLocale._id, file, baseLocale.token)
-    } catch (error) {
-      setError(error.message)
-      setIsLoading(false)
+      storeBalAccess(baseLocale._id, baseLocale.token)
+      setBal(baseLocale)
     }
 
-    Router.push(`/bal?balId=${baseLocale._id}`, `/bal/${baseLocale._id}`)
-  }, [nom, email, file])
+    setIsLoading(false)
+  }, [bal, nom, email])
+
+  useEffect(() => {
+    async function upload() {
+      try {
+        await uploadBaseLocaleCsv(bal._id, file, bal.token)
+        Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
+      } catch (error) {
+        setError(error.message)
+        setIsLoading(false)
+      }
+    }
+
+    if (file && bal) {
+      setIsLoading(true)
+      upload()
+    }
+
+    setIsLoading(false)
+  }, [bal, file])
 
   return (
     <>
@@ -120,7 +136,7 @@ function Index() {
         )}
 
         {file && (
-          <Button height={40} type='submit' appearance='primary' isLoading={isLoading}>
+          <Button height={40} type='submit' appearance='primary' disabled={Boolean(error)} isLoading={isLoading}>
             {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
           </Button>
         )}
