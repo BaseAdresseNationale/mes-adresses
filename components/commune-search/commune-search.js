@@ -14,7 +14,10 @@ function CommuneSearch({placeholder, exclude, innerRef, defaultSelectedItem, onS
       limit: 7
     })
 
-    setCommunes(result.filter(c => !exclude.includes(c.code)))
+    setCommunes(result
+      .filter(c => c.departement) // Filter communes without departements
+      .filter(c => !exclude.includes(c.code))
+    )
   }, 300, [exclude])
 
   return (
