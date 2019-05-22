@@ -4,7 +4,7 @@ import Router from 'next/router'
 import NextLink from 'next/link'
 import getConfig from 'next/config'
 import {Pane, Popover, Menu, IconButton, Button, Position, Tooltip} from 'evergreen-ui'
-import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
+import {css} from 'glamor'
 
 import {getBaseLocaleCsvUrl} from '../lib/bal-api'
 
