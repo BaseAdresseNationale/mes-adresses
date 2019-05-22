@@ -1,9 +1,9 @@
-import React, {useMemo, useCallback, useState, useContext} from 'react'
+import React, {useMemo, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, Text, Menu} from 'evergreen-ui'
 import randomColor from 'randomcolor'
-import {css} from 'glamor' // eslint-disable-line import/no-extraneous-dependencies
+import {css} from 'glamor'
 
 import {removeNumero, removeVoie} from '../../lib/bal-api'
 
