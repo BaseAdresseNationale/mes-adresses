@@ -4,18 +4,7 @@ import {Table, Popover, Menu, Position, IconButton, toaster} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 
-const TableRow = React.memo(({
-  id,
-  code,
-  label,
-  secondary,
-
-  isSelectable,
-
-  onSelect,
-  onEdit,
-  onRemove
-}) => {
+const TableRow = React.memo(({id, code, label, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
   const {token} = useContext(TokenContext)
 
   const onClick = useCallback(e => {
@@ -84,11 +73,21 @@ const TableRow = React.memo(({
 })
 
 TableRow.propTypes = {
-  isSelectable: PropTypes.bool
+  id: PropTypes.string.isRequired,
+  code: PropTypes.string,
+  label: PropTypes.string.isRequired,
+  secondary: PropTypes.string,
+  isSelectable: PropTypes.bool,
+  onSelect: PropTypes.func.isRequired,
+  onEdit: PropTypes.func,
+  onRemove: PropTypes.func.isRequired
 }
 
 TableRow.defaultProps = {
-  isSelectable: true
+  code: null,
+  secondary: null,
+  isSelectable: true,
+  onEdit: null
 }
 
 export default TableRow

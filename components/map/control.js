@@ -33,4 +33,8 @@ NumeroSwitch.propTypes = {
   onChange: PropTypes.func.isRequired
 }
 
+NumeroSwitch.defaultProps = {
+  enabled: true
+}
+
 export default NumeroSwitch

@@ -173,4 +173,9 @@ NumeroEditor.propTypes = {
   onCancel: PropTypes.func
 }
 
+NumeroEditor.defaultProps = {
+  initialValue: null,
+  onCancel: null
+}
+
 export default NumeroEditor

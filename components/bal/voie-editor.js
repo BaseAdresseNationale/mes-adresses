@@ -158,4 +158,9 @@ VoieEditor.propTypes = {
   onCancel: PropTypes.func
 }
 
+VoieEditor.defaultProps = {
+  initialValue: null,
+  onCancel: null
+}
+
 export default VoieEditor

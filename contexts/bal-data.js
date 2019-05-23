@@ -110,4 +110,10 @@ BalDataContextProvider.propTypes = {
   idVoie: PropTypes.string
 }
 
+BalDataContextProvider.defaultProps = {
+  balId: null,
+  codeCommune: null,
+  idVoie: null
+}
+
 export default BalDataContext

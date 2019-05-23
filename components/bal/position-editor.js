@@ -65,9 +65,14 @@ PositionEditor.propTypes = {
   marker: PropTypes.shape({
     latitude: PropTypes.number,
     longitude: PropTypes.number
-  }),
+  }).isRequired,
   alert: PropTypes.string,
-  onTypeChange: PropTypes.func
+  onTypeChange: PropTypes.func.isRequired
+}
+
+PositionEditor.defaultProps = {
+  type: 'entrée',
+  alert: null
 }
 
 export default PositionEditor
