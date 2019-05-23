@@ -1,7 +1,8 @@
-import React, {useState, useCallback, useMemo} from 'react'
+import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 import ErrorPage from 'next/error'
+import {Pane, Dialog, Button, Paragraph} from 'evergreen-ui'
 
 import {getBaseLocale, getVoie} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
@@ -16,12 +17,16 @@ import {MarkerContextProvider} from '../contexts/marker'
 import {TokenContextProvider} from '../contexts/token'
 import {BalDataContextProvider} from '../contexts/bal-data'
 
+import useWindowSize from '../hooks/window-size'
+
 const layoutMap = {
   fullscreen: Fullscreen,
   sidebar: Sidebar
 }
 
 function App({error, Component, pageProps, query}) {
+  const {innerWidth} = useWindowSize()
+  const [isShown, setIsShown] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
 
   const {layout, ...otherPageProps} = pageProps
@@ -43,8 +48,35 @@ function App({error, Component, pageProps, query}) {
     return pageProps.baseLocale ? 40 : 0
   }, [pageProps.baseLocale])
 
+  useEffect(() => {
+    if (innerWidth && innerWidth < 700) {
+      setIsShown(true)
+    }
+  }, [innerWidth])
+
   return (
     <Container>
+
+      <Pane>
+        <Dialog
+          isShown={isShown}
+          title='Attention'
+          confirmLabel='Continuer'
+          hasCancel={false}
+          onCloseComplete={() => setIsShown(false)}
+        >
+          <Paragraph marginTop='default'>
+            Afin de profiter d’une meilleure expérience, il est recommandé d’utiliser cet outil sur un écran plus grand 🖥
+          </Paragraph>
+          <Paragraph marginTop='default'>
+            Une version mobile est en cours de développement pour toujours avoir sa Base Adresse Local à porté de main 💪🏻
+          </Paragraph>
+          <Paragraph marginTop='default'>
+            Merci de votre patience 🙏
+          </Paragraph>
+        </Dialog>
+      </Pane>
+
       <TokenContextProvider balId={query.balId} token={query.token}>
         <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
           <MarkerContextProvider>
