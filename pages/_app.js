@@ -69,7 +69,7 @@ function App({error, Component, pageProps, query}) {
             Afin de profiter d’une meilleure expérience, il est recommandé d’utiliser cet outil sur un écran plus grand 🖥
           </Paragraph>
           <Paragraph marginTop='default'>
-            Une version mobile est en cours de développement pour toujours avoir sa Base Adresse Local à porté de main 💪🏻
+            Une version mobile est en cours de développement pour toujours avoir sa Base Adresse Locale à portée de main 💪🏻
           </Paragraph>
           <Paragraph marginTop='default'>
             Merci de votre patience 🙏
