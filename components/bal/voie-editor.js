@@ -55,14 +55,14 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, marker, positionType, onSubmit])
+  }, [nom, marker, positionType, onSubmit, disableMarker])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
     disableMarker()
     onCancel()
-  }, [onCancel])
+  }, [disableMarker, onCancel])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -85,7 +85,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     } else {
       disableMarker()
     }
-  }, [enabled, initialValue, disableMarker, enableMarker, isToponyme])
+  }, [enabled, initialValue, disableMarker, enableMarker, isToponyme, position])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>

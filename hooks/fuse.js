@@ -11,7 +11,7 @@ function useFuse(source, delay, options) {
       threshold: 0.4,
       ...options
     })
-  }, [source])
+  }, [options, source])
 
   useEffect(() => {
     setFiltered(source)

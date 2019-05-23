@@ -56,14 +56,14 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [onSubmit, numero, suffixe, marker, type])
+  }, [numero, suffixe, marker, type, onSubmit, disableMarker])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
     disableMarker()
     onCancel()
-  }, [onCancel])
+  }, [disableMarker, onCancel])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -90,7 +90,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
     } else {
       disableMarker()
     }
-  }, [initialValue, hasPositionEditor])
+  }, [initialValue, hasPositionEditor, enableMarker, position, disableMarker])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
