@@ -5,6 +5,8 @@ import buffer from '@turf/buffer'
 import BalDataContext from '../../../contexts/bal-data'
 import MarkerContext from '../../../contexts/marker'
 
+const BUFFER_RADIUS = 100
+
 function useBounds(commune, voie) {
   const {geojson} = useContext(BalDataContext)
   const {marker, enabled} = useContext(MarkerContext)
@@ -18,7 +20,7 @@ function useBounds(commune, voie) {
       return buffer({
         type: 'Point',
         coordinates: [marker.longitude, marker.latitude]
-      }, 50, {
+      }, BUFFER_RADIUS, {
         units: 'meters'
       })
     }
@@ -34,7 +36,7 @@ function useBounds(commune, voie) {
       }
 
       if (data.features.length === 1) {
-        return buffer(data.features[0], 50, {
+        return buffer(data.features[0], BUFFER_RADIUS, {
           units: 'meters'
         })
       }
