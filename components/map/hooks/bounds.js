@@ -1,32 +1,25 @@
-import {useMemo, useContext} from 'react'
+import {useState, useMemo, useContext} from 'react'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 
 import BalDataContext from '../../../contexts/bal-data'
-import MarkerContext from '../../../contexts/marker'
+
+const BUFFER_RADIUS = 100
 
 function useBounds(commune, voie) {
+  const [currentVoie, setCurrentVoie] = useState(null)
   const {geojson} = useContext(BalDataContext)
-  const {marker, enabled} = useContext(MarkerContext)
 
   const data = useMemo(() => {
-    if (enabled && marker) {
-      if (voie) {
-        return false
-      }
-
-      return buffer({
-        type: 'Point',
-        coordinates: [marker.longitude, marker.latitude]
-      }, 50, {
-        units: 'meters'
-      })
-    }
-
     if (geojson) {
       let data = geojson
 
       if (voie) {
+        if (voie._id === currentVoie) {
+          return false
+        }
+
+        setCurrentVoie(voie._id)
         data = {
           type: 'FeatureCollection',
           features: data.features.filter(feature => feature.properties.idVoie === voie._id)
@@ -34,7 +27,7 @@ function useBounds(commune, voie) {
       }
 
       if (data.features.length === 1) {
-        return buffer(data.features[0], 50, {
+        return buffer(data.features[0], BUFFER_RADIUS, {
           units: 'meters'
         })
       }
@@ -49,11 +42,7 @@ function useBounds(commune, voie) {
     }
 
     return null
-
-    // We’re depending on `enabled` and not `marker` here so that
-    // we only re-center the map when the marker gets enabled.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [geojson, commune, voie, enabled])
+  }, [geojson, commune, voie])
 
   return useMemo(() => data ? bbox(data) : data, [data])
 }
