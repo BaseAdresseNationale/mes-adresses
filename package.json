@@ -14,7 +14,7 @@
     "@turf/centroid": "^6.0.2",
     "compression": "^1.7.4",
     "evergreen-ui": "^4.15.0",
-    "express": "^4.16.4",
+    "express": "^4.17.0",
     "fuse.js": "^3.4.4",
     "glamor": "^2.20.40",
     "immutable": "^4.0.0-rc.12",
