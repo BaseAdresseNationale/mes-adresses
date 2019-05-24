@@ -95,4 +95,8 @@ CommuneEditor.propTypes = {
   onCancel: PropTypes.func
 }
 
+CommuneEditor.defaultProps = {
+  onCancel: null
+}
+
 export default CommuneEditor

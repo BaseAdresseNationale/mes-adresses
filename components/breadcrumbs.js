@@ -67,15 +67,18 @@ Breadcrumbs.propTypes = {
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string
   }).isRequired,
-
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
     nom: PropTypes.string
   }),
-
   voie: PropTypes.shape({
     nom: PropTypes.string.isRequired
   })
+}
+
+Breadcrumbs.defaultProps = {
+  commune: null,
+  voie: null
 }
 
 export default React.memo(Breadcrumbs)

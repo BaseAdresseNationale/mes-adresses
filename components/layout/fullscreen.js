@@ -33,10 +33,14 @@ Fullscreen.propTypes = {
 
   // Ignored props
   isOpen: PropTypes.bool,
-  isHidden: PropTypes.bool,
-  size: PropTypes.number,
-  top: PropTypes.number,
-  onToggle: PropTypes.func
+  isHidden: PropTypes.bool.isRequired,
+  size: PropTypes.number.isRequired,
+  top: PropTypes.number.isRequired,
+  onToggle: PropTypes.func.isRequired
+}
+
+Fullscreen.defaultProps = {
+  isOpen: false
 }
 
 export default Fullscreen

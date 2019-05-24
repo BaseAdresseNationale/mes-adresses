@@ -1,4 +1,5 @@
 import React, {useState, useContext, useEffect, useCallback} from 'react'
+import PropTypes from 'prop-types'
 import {Pane, Heading, TextInputField, TextInput, IconButton, Button, Alert, Spinner, Label, toaster} from 'evergreen-ui'
 
 import {updateBaseLocale} from '../../lib/bal-api'
@@ -169,4 +170,10 @@ Settings.getInitialProps = ({baseLocale}) => {
   }
 }
 
+Settings.propTypes = {
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired
+  }).isRequired
+}
 export default Settings

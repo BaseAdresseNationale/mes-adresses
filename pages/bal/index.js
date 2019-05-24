@@ -1,4 +1,5 @@
 import React, {useState, useCallback, useContext} from 'react'
+import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Heading, Button, Table} from 'evergreen-ui'
 
@@ -145,6 +146,17 @@ Index.getInitialProps = async ({baseLocale}) => {
     defaultCommunes: communes,
     baseLocale
   }
+}
+
+Index.propTypes = {
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired
+  }).isRequired,
+  defaultCommunes: PropTypes.array
+}
+
+Index.defaultProps = {
+  defaultCommunes: null
 }
 
 export default Index

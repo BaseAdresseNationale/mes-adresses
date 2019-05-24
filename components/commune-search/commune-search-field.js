@@ -64,16 +64,29 @@ CommuneSearchField.propTypes = {
   ...CommuneSearch.propTypes,
 
   label: PropTypes.node.isRequired,
-  labelFor: PropTypes.string,
-  isRequired: PropTypes.bool,
   description: PropTypes.node,
   hint: PropTypes.node,
   validationMessage: PropTypes.node,
   inputHeight: PropTypes.number,
-  inputWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  inputWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  isInvalid: PropTypes.bool,
+  appearance: PropTypes.string,
+  placeholder: PropTypes.string,
+  spellCheck: PropTypes.bool
 }
 
 CommuneSearchField.defaultProps = {
+  description: null,
+  hint: null,
+  validationMessage: null,
+  disabled: false,
+  required: false,
+  isInvalid: false,
+  appearance: null,
+  placeholder: null,
+  spellCheck: true,
   inputWidth: '100%',
   inputHeight: 32
 }

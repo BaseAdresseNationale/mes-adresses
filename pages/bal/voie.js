@@ -1,4 +1,5 @@
 import React, {useState, useCallback, useContext} from 'react'
+import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
 
 import {addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
@@ -143,7 +144,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 id={numero._id}
                 isSelectable={!isAdding && !editingId && numero.positions.length > 1}
                 label={numero.numeroComplet}
-                secondary={numero.positions.length > 1 && `${numero.positions.length} positions`}
+                secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
                 onEdit={numero.positions.length === 1 && onEnableEditing}
                 onRemove={onRemove}
               />
@@ -171,6 +172,19 @@ Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
     voie,
     defaultNumeros
   }
+}
+
+Voie.propTypes = {
+  voie: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired,
+    positions: PropTypes.array.isRequired
+  }).isRequired,
+  defaultNumeros: PropTypes.array
+}
+
+Voie.defaultProps = {
+  defaultNumeros: null
 }
 
 export default Voie

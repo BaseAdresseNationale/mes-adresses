@@ -67,8 +67,10 @@ CommuneSearch.propTypes = {
 }
 
 CommuneSearch.defaultProps = {
+  defaultSelectedItem: null,
   placeholder: 'Chercher une commune…',
   exclude: [],
+  innerRef: () => {},
   onSelect: () => {}
 }
 

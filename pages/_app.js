@@ -156,7 +156,9 @@ App.propTypes = {
 }
 
 App.defaultProps = {
-  query: {}
+  query: {},
+  error: null,
+  geojson: null
 }
 
 export default App

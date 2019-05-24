@@ -129,7 +129,16 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
 Header.propTypes = {
   baseLocale: PropTypes.object.isRequired,
   commune: PropTypes.object,
-  voie: PropTypes.object
+  voie: PropTypes.object,
+  layout: PropTypes.oneOf(['fullscreen', 'sidebar']).isRequired,
+  isSidebarHidden: PropTypes.bool,
+  onToggle: PropTypes.func.isRequired
+}
+
+Header.defaultProps = {
+  commune: null,
+  voie: null,
+  isSidebarHidden: false
 }
 
 export default Header

@@ -52,6 +52,11 @@ TokenContextProvider.propTypes = {
   token: PropTypes.string
 }
 
+TokenContextProvider.defaultProps = {
+  balId: null,
+  token: null
+}
+
 export const MarkerContextConsumer = TokenContext.Consumer
 
 export default TokenContext

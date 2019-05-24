@@ -1,4 +1,5 @@
 import React, {useState, useCallback, useContext} from 'react'
+import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
 
@@ -189,6 +190,21 @@ Commune.getInitialProps = async ({baseLocale, commune}) => {
     commune,
     defaultVoies
   }
+}
+
+Commune.propTypes = {
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired
+  }).isRequired,
+  commune: PropTypes.shape({
+    code: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired
+  }).isRequired,
+  defaultVoies: PropTypes.array
+}
+
+Commune.defaultProps = {
+  defaultVoies: null
 }
 
 export default Commune
