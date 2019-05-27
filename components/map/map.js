@@ -248,7 +248,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
               />
             )}
 
-            {commune && (
+            {token && commune && (
               <Control
                 icon='map-marker'
                 enabled={openForm}
