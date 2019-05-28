@@ -6,6 +6,7 @@ import {Pane, TextInputField, Checkbox, Button} from 'evergreen-ui'
 import {storeBalAccess} from '../../lib/tokens'
 import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
 
+import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
 
 import {CommuneSearchField} from '../../components/commune-search'
@@ -18,6 +19,7 @@ function CreateForm({defaultCommune}) {
   const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
+  const focusRef = useFocus()
 
   const onSelect = useCallback(commune => {
     setCommune(commune.code)
@@ -52,6 +54,7 @@ function CreateForm({defaultCommune}) {
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='tint2' onSubmit={onSubmit}>
       <TextInputField
         required
+        innerRef={focusRef}
         name='nom'
         id='nom'
         value={nom}
