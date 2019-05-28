@@ -145,7 +145,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 isSelectable={!isAdding && !editingId && numero.positions.length > 1}
                 label={numero.numeroComplet}
                 secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-                onEdit={numero.positions.length === 1 && onEnableEditing}
+                onEdit={onEnableEditing}
                 onRemove={onRemove}
               />
             ))}

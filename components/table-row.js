@@ -1,10 +1,11 @@
-import React, {useContext, useCallback} from 'react'
+import React, {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Table, Popover, Menu, Position, IconButton, toaster} from 'evergreen-ui'
+import {Table, Popover, Menu, Position, IconButton, toaster, Icon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 
 const TableRow = React.memo(({id, code, label, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
+  const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
 
   const onClick = useCallback(e => {
@@ -15,7 +16,7 @@ const TableRow = React.memo(({id, code, label, secondary, isSelectable, onSelect
         onSelect(id)
       }
     }
-  }, [id, isSelectable, onEdit, onSelect])
+  }, [code, id, isSelectable, onEdit, onSelect])
 
   const _onEdit = useCallback(() => {
     onEdit(id)
@@ -29,13 +30,32 @@ const TableRow = React.memo(({id, code, label, secondary, isSelectable, onSelect
     }
   }, [onRemove, id])
 
+  const _onMouseEnter = useCallback(() => {
+    if (onEdit) {
+      setHovered(true)
+    }
+  }, [onEdit])
+
+  const _onMouseLeave = useCallback(() => {
+    setHovered(false)
+  }, [])
+
   return (
     <Table.Row isSelectable={isSelectable} onClick={onClick}>
       {code && (
         <Table.TextCell data-browsable isNumber flex='0 1 1'>{code}</Table.TextCell>
       )}
-      <Table.Cell data-editable style={{cursor: 'text'}}>
-        <Table.TextCell>{label}</Table.TextCell>
+      <Table.Cell
+        data-editable
+        style={{cursor: onEdit ? 'text' : 'default'}}
+        onMouseEnter={() => _onMouseEnter(id)}
+        onMouseLeave={_onMouseLeave}
+      >
+        <Table.TextCell>
+          {label} {hovered && (
+            <Icon marginBottom={-4} marginLeft={8} icon='edit' />
+          )}
+        </Table.TextCell>
       </Table.Cell>
       <Table.Cell data-browsable />
       {secondary && (
