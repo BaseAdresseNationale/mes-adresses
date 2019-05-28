@@ -26,7 +26,7 @@ function VoieSearch({defaultVoie, onSelect}) {
         return (
           <TextInput
             required
-            placeholder='Voies'
+            placeholder='Voie'
             value={defaultVoie ? defaultVoie.nom : inputValue}
             innerRef={getRef}
             {...getInputProps({
