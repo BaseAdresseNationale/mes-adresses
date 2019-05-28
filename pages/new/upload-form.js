@@ -63,18 +63,19 @@ function Index() {
       storeBalAccess(baseLocale._id, baseLocale.token)
       setBal(baseLocale)
     }
-
-    setIsLoading(false)
   }, [bal, nom, email])
 
   useEffect(() => {
     async function upload() {
       try {
-        await uploadBaseLocaleCsv(bal._id, file, bal.token)
+        const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
+        if (!response.isValid) {
+          throw new Error('Fichier invalide')
+        }
+
         Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
       } catch (error) {
         setError(error.message)
-        setIsLoading(false)
       }
     }
 
@@ -82,9 +83,13 @@ function Index() {
       setIsLoading(true)
       upload()
     }
+  }, [bal, error, file])
 
-    setIsLoading(false)
-  }, [bal, file])
+  useEffect(() => {
+    if (file || error) {
+      setIsLoading(false)
+    }
+  }, [error, file])
 
   return (
     <>
@@ -104,7 +109,7 @@ function Index() {
             <TextInputField
               required
               innerRef={focusRef}
-              autocomplete='new-password' // Hack to bypass chrome autocomplete
+              autoComplete='new-password' // Hack to bypass chrome autocomplete
               name='nom'
               id='nom'
               value={nom}
