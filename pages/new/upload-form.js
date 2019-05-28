@@ -63,8 +63,6 @@ function Index() {
       storeBalAccess(baseLocale._id, baseLocale.token)
       setBal(baseLocale)
     }
-
-    setIsLoading(false)
   }, [bal, nom, email])
 
   useEffect(() => {
@@ -74,7 +72,6 @@ function Index() {
         Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
       } catch (error) {
         setError(error.message)
-        setIsLoading(false)
       }
     }
 
@@ -82,9 +79,13 @@ function Index() {
       setIsLoading(true)
       upload()
     }
+  }, [bal, error, file])
 
+  useEffect(() => {
+    if (file || error) {
     setIsLoading(false)
-  }, [bal, file])
+    }
+  }, [error, file])
 
   return (
     <>
