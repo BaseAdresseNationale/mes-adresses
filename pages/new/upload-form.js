@@ -104,7 +104,7 @@ function Index() {
             <TextInputField
               required
               innerRef={focusRef}
-              autocomplete='new-password' // Hack to bypass chrome autocomplete
+              autoComplete='new-password' // Hack to bypass chrome autocomplete
               name='nom'
               id='nom'
               value={nom}
