@@ -70,6 +70,11 @@ const TableRow = React.memo(({id, code, label, secondary, isSelectable, onSelect
             content={
               <Menu>
                 <Menu.Group>
+                  {isSelectable && (
+                    <Menu.Item icon='send-to-map' onSelect={() => onSelect(id)}>
+                      Consulter
+                    </Menu.Item>
+                  )}
                   {onEdit && (
                     <Menu.Item icon='edit' onSelect={_onEdit}>
                       Modifier
