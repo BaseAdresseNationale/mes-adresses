@@ -68,7 +68,11 @@ function Index() {
   useEffect(() => {
     async function upload() {
       try {
-        await uploadBaseLocaleCsv(bal._id, file, bal.token)
+        const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
+        if (!response.isValid) {
+          throw new Error('Fichier invalide')
+        }
+
         Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
       } catch (error) {
         setError(error.message)
@@ -83,7 +87,7 @@ function Index() {
 
   useEffect(() => {
     if (file || error) {
-    setIsLoading(false)
+      setIsLoading(false)
     }
   }, [error, file])
 
