@@ -59,6 +59,13 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   return (
     <>
       <Pane
+        display='flex'
+        background='tint1'
+        padding={16}
+      >
+        <Heading>{baseLocale.nom}</Heading>
+      </Pane>
+      <Pane
         flexShrink={0}
         elevation={0}
         backgroundColor='white'
