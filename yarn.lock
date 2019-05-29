@@ -6878,10 +6878,10 @@ url@0.11.0, url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-use-debounce@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-1.1.1.tgz#86d8e4bbda1a718683be5c21c752b4f6eaa5ae64"
-  integrity sha512-wDA5sZaQj9TRd/yYeFmDateUfTRPfOILY7AZFNVsTbwYpcpBIxh6yx8/XS1UNNf9DIFJJAxazxbWWEOy+BG9vA==
+use-debounce@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-2.0.2.tgz#dd73c523d43460bf017c1bd054bcae66333747e3"
+  integrity sha512-OznHFKN6WQV6kRVaI4M3mAxEVZsf8vNJyz1fFaJT/iu5vFAICezTKeFt9YJ4w9InHMzOdpAva32+giRIVkEqug==
 
 use@^3.1.0:
   version "3.1.1"
