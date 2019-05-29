@@ -10,12 +10,14 @@ import BalDataContext from '../../contexts/bal-data'
 
 import useFuse from '../../hooks/fuse'
 
+import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
 import VoieEditor from '../../components/bal/voie-editor'
 
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
+  const [toRemove, setToRemove] = useState(null)
 
   const {token} = useContext(TokenContext)
 
@@ -72,10 +74,11 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setEditingId(null)
   }, [editingId, setEditingId, reloadVoies, token])
 
-  const onRemove = useCallback(async idVoie => {
-    await removeVoie(idVoie, token)
+  const onRemove = useCallback(async () => {
+    await removeVoie(toRemove, token)
     await reloadVoies()
-  }, [reloadVoies, token])
+    setToRemove(null)
+  }, [reloadVoies, toRemove, token])
 
   const onSelect = useCallback(idVoie => {
     Router.push(
@@ -91,6 +94,18 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
   return (
     <>
+      <DeleteWarning
+        content={toRemove ? (
+          <Paragraph>
+            Êtes vous bien sûr de vouloir supprimer cette voie ainsi que tous ses numéros ?
+          </Paragraph>
+        ) :
+          null
+        }
+        onCancel={() => setToRemove(null)}
+        onConfirm={onRemove}
+      />
+
       <Pane
         flexShrink={0}
         elevation={0}
@@ -162,7 +177,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               secondary={voie.positions.length === 1 ? 'Toponyme' : null}
               onSelect={onSelect}
               onEdit={onEnableEditing}
-              onRemove={onRemove}
+              onRemove={id => setToRemove(id)}
             />
           ))}
         </Table>
