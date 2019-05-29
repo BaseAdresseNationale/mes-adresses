@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Heading, Button, Table, Text} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Button, Table, Text} from 'evergreen-ui'
 
 import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
@@ -10,12 +10,14 @@ import TokenContext from '../../contexts/token'
 
 import useFuse from '../../hooks/fuse'
 
+import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
 import CommuneEditor from '../../components/bal/commune-editor'
 
 const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [communes, setCommunes] = useState(defaultCommunes)
   const [isAdding, setIsAdding] = useState(false)
+  const [toRemove, setToRemove] = useState(null)
   const {token} = useContext(TokenContext)
 
   const [filtered, onFilter] = useFuse(communes, 200, {
@@ -39,15 +41,16 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
     setCommunes(updatedCommunes)
   }, [baseLocale, token])
 
-  const onRemove = useCallback(async codeCommune => {
-    const updated = await removeCommune(baseLocale._id, codeCommune, token)
+  const onRemove = useCallback(async () => {
+    const updated = await removeCommune(baseLocale._id, toRemove, token)
 
     const updatedCommunes = await Promise.all(
       updated.communes.map(commune => getCommune(commune))
     )
 
     setCommunes(updatedCommunes)
-  }, [baseLocale, token])
+    setToRemove(null)
+  }, [baseLocale._id, toRemove, token])
 
   const onSelect = useCallback(codeCommune => {
     Router.push(
@@ -58,6 +61,18 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
 
   return (
     <>
+      <DeleteWarning
+        content={toRemove ? (
+          <Paragraph>
+            Êtes vous bien sûr de vouloir supprimer cette commune ainsi que toutes ses voies et numéros ?
+          </Paragraph>
+        ) :
+          null
+        }
+        onCancel={() => setToRemove(null)}
+        onConfirm={onRemove}
+      />
+
       <Pane
         display='flex'
         flexDirection='column'
@@ -128,7 +143,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
               code={commune.code}
               label={commune.nom}
               onSelect={onSelect}
-              onRemove={onRemove}
+              onRemove={id => setToRemove(id)}
             />
           ))}
         </Table>
