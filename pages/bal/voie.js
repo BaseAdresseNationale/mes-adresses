@@ -1,8 +1,8 @@
-import React, {useState, useCallback, useContext} from 'react'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Paragraph, Heading, Table, Button} from 'evergreen-ui'
+import {Pane, Text, Paragraph, Heading, Table, Button, Icon} from 'evergreen-ui'
 
-import {addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
+import {editVoie, addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -10,14 +10,20 @@ import BalDataContext from '../../contexts/bal-data'
 import useFuse from '../../hooks/fuse'
 
 import TableRow from '../../components/table-row'
+import VoieEditor from '../../components/bal/voie-editor'
 import NumeroEditor from '../../components/bal/numero-editor'
 
 const Voie = React.memo(({voie, defaultNumeros}) => {
+  const [voieName, setVoieName] = useState(voie.nom)
+  const [isEdited, setEdited] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
 
   const {token} = useContext(TokenContext)
 
   const {
+    voies,
+    reloadVoies,
     numeros,
     reloadNumeros,
     editingId,
@@ -41,6 +47,17 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
     setIsAdding(false)
   }, [voie._id, reloadNumeros, token])
+
+  const onEditVoie = useCallback(async ({nom, positions}) => {
+    await editVoie(voie._id, {
+      nom,
+      positions
+    }, token)
+
+    await reloadVoies()
+
+    setEdited(false)
+  }, [reloadVoies, token, voie._id])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -73,8 +90,47 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(null)
   }, [setEditingId])
 
+  useEffect(() => {
+    if (voies) {
+      setVoieName(voies.find(v => v._id === voie._id).nom)
+    }
+  }, [voie._id, voies])
+
   return (
     <>
+      <Pane
+        display='flex'
+        flexDirection='column'
+        background='tint1'
+        padding={16}
+      >
+        {isEdited ? (
+          <VoieEditor
+            initialValue={{...voie, nom: voieName}}
+            onSubmit={onEditVoie}
+            onCancel={() => setEdited(false)}
+          />
+        ) : (
+          <Heading
+            style={{cursor: hovered ? 'text' : 'default'}}
+            onClick={() => setEdited(true)}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+          >
+            {voieName}
+            <Icon
+              icon='edit'
+              marginBottom={-2}
+              marginLeft={8}
+              color={hovered ? 'black' : 'muted'}
+            />
+          </Heading>
+        )}
+        {numeros && (
+          <Text>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        )}
+      </Pane>
+
       <Pane
         flexShrink={0}
         elevation={0}
@@ -145,7 +201,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 isSelectable={!isAdding && !editingId && numero.positions.length > 1}
                 label={numero.numeroComplet}
                 secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-                onEdit={numero.positions.length === 1 && onEnableEditing}
+                onEdit={onEnableEditing}
                 onRemove={onRemove}
               />
             ))}
@@ -153,7 +209,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         ) : (
           <Pane padding={16}>
             <Paragraph>
-              La voie « {voie.nom} » est un toponyme et ne peut pas contenir de numéro.
+              La voie « {voieName} » est un toponyme et ne peut pas contenir de numéro.
             </Paragraph>
           </Pane>
         )}

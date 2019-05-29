@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Heading, Paragraph, Button, Table} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Button, Table, Text} from 'evergreen-ui'
 
 import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
@@ -73,6 +73,15 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
         onConfirm={onRemove}
       />
 
+      <Pane
+        display='flex'
+        flexDirection='column'
+        background='tint1'
+        padding={16}
+      >
+        <Heading>{baseLocale.nom}</Heading>
+        <Text>{communes.length} commune{communes.length > 1 ? 's' : ''}</Text>
+      </Pane>
       <Pane
         flexShrink={0}
         elevation={0}

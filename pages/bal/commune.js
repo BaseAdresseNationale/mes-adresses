@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Heading, Paragraph, Table, Button} from 'evergreen-ui'
+import {Pane, Heading, Text, Paragraph, Table, Button} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie} from '../../lib/bal-api'
 
@@ -105,6 +105,18 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
         onCancel={() => setToRemove(null)}
         onConfirm={onRemove}
       />
+
+      <Pane
+        display='flex'
+        flexDirection='column'
+        background='tint1'
+        padding={16}
+      >
+        <Heading>{commune.nom} - {commune.code}</Heading>
+        {voies && (
+          <Text>{voies.length} voie{voies.length > 1 ? 's' : ''}</Text>
+        )}
+      </Pane>
 
       <Pane
         flexShrink={0}
