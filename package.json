@@ -15,7 +15,7 @@
     "compression": "^1.7.4",
     "evergreen-ui": "^4.17.0",
     "express": "^4.17.1",
-    "fuse.js": "^3.4.4",
+    "fuse.js": "^3.4.5",
     "glamor": "^2.20.40",
     "immutable": "^4.0.0-rc.12",
     "isomorphic-unfetch": "^3.0.0",
