@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react'
 import {Pane, Heading} from 'evergreen-ui'
 import {map} from 'lodash-es'
 
+import {arePublished} from '../helpers/bases-locales'
+
 import {getBalAccess} from '../lib/tokens'
 import {getBaseLocale} from '../lib/bal-api'
 
@@ -21,6 +23,8 @@ function UserBasesLocales() {
             console.log(`Impossible de récupérer la bal ${id}`)
           }
         }))
+
+        await arePublished(bals)
 
       setbals(bals.filter(bal => Boolean(bal)))
     }

@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Table} from 'evergreen-ui'
+import {Pane, Table, Badge} from 'evergreen-ui'
 
 import useFuse from '../hooks/fuse'
 
@@ -47,10 +47,16 @@ function BasesLocalesList({basesLocales}) {
             <Table.Body background='tint1'>
               {filtered.map(bal => (
                 <Table.Row key={bal._id} isSelectable onSelect={() => onBalSelect(bal)}>
-                  <Table.TextCell>{bal.nom}</Table.TextCell>
-                  <Table.TextCell flex='0 1 1'>
+                  <Table.TextCell flexGrow={2}>{bal.nom}</Table.TextCell>
+                  <Table.TextCell>
                     {bal.communes.length < 2 ? `${bal.communes.length} commune` : `${bal.communes.length} communes`}
                   </Table.TextCell>
+                  <Table.Cell>
+                    {bal.published ? (
+                      <Badge color='green'>Publiée</Badge>
+                    ) : (
+                      <Badge color='neutral'>Brouillon</Badge>
+                    )}</Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
