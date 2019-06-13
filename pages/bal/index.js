@@ -62,13 +62,12 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   return (
     <>
       <DeleteWarning
-        content={toRemove ? (
+        isShown={Boolean(toRemove)}
+        content={(
           <Paragraph>
             Êtes vous bien sûr de vouloir supprimer cette commune ainsi que toutes ses voies et numéros ?
           </Paragraph>
-        ) :
-          null
-        }
+        )}
         onCancel={() => setToRemove(null)}
         onConfirm={onRemove}
       />

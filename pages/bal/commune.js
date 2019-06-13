@@ -95,13 +95,12 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   return (
     <>
       <DeleteWarning
-        content={toRemove ? (
+        isShown={Boolean(toRemove)}
+        content={(
           <Paragraph>
             Êtes vous bien sûr de vouloir supprimer cette voie ainsi que tous ses numéros ?
           </Paragraph>
-        ) :
-          null
-        }
+        )}
         onCancel={() => setToRemove(null)}
         onConfirm={onRemove}
       />
