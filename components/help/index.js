@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import {Pane, SideSheet, Paragraph, Heading, Tablist, Tab, Card} from 'evergreen-ui'
+import {Pane, SideSheet, Paragraph, Heading, Tablist, Tab} from 'evergreen-ui'
 
 import HelpContext from '../../contexts/help'
 
@@ -41,15 +41,7 @@ const Help = () => {
         </Pane>
 
         <Pane flex='1' overflowY='scroll' background='tint1' padding={16}>
-          <Card
-            backgroundColor='white'
-            elevation={0}
-            height={240}
-            display='flex'
-            padding={8}
-          >
-            <HelpTabs tab={selectedIndex} />
-          </Card>
+          <HelpTabs tab={selectedIndex} />
         </Pane>
 
         <Pane padding={16} background='tint2'>
