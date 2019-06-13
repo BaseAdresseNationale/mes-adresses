@@ -1,14 +1,22 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, TabNavigation, Tab, Paragraph, BackButton} from 'evergreen-ui'
+import {Pane, Heading, TabNavigation, Tab, Paragraph, BackButton, IconButton} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
+
+import HelpContext from '../../contexts/help'
 
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
 
 function Index({defaultCommune}) {
   const [index, setIndex] = useState(0)
+  const {showHelp, setShowHelp, setSelectedIndex} = useContext(HelpContext)
+
+  const handleHelp = useCallback(() => {
+    setSelectedIndex(0)
+    setShowHelp(!showHelp)
+  }, [setSelectedIndex, setShowHelp, showHelp])
 
   return (
     <Pane backgroundColor='white'>
@@ -34,8 +42,14 @@ function Index({defaultCommune}) {
           <UploadForm />
         )}
 
-        <Pane display='flex' flex={1} margin={16} marginTop={32}>
+        <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
           <BackButton is='a' href='/'>Retour</BackButton>
+          <IconButton
+            height={32}
+            icon='help'
+            appearance='minimal'
+            onClick={handleHelp}
+          />
         </Pane>
       </Pane>
     </Pane>

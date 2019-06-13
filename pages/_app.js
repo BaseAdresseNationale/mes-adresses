@@ -2,7 +2,7 @@ import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Container} from 'next/app'
 import ErrorPage from 'next/error'
-import {Pane, Dialog, Button, Paragraph} from 'evergreen-ui'
+import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import {getBaseLocale, getVoie} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
@@ -12,7 +12,9 @@ import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
 
 import Map from '../components/map'
+import Help from '../components/help'
 
+import {HelpContextProvider} from '../contexts/help'
 import {MarkerContextProvider} from '../contexts/marker'
 import {TokenContextProvider} from '../contexts/token'
 import {BalDataContextProvider} from '../contexts/bal-data'
@@ -80,41 +82,46 @@ function App({error, Component, pageProps, query}) {
       <TokenContextProvider balId={query.balId} token={query.token}>
         <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
           <MarkerContextProvider>
-            {pageProps.baseLocale && (
-              <Header
-                {...pageProps}
-                layout={layout}
-                isSidebarHidden={isHidden}
-                onToggle={onToggle}
-              />
-            )}
+            <HelpContextProvider>
 
-            <Map
-              top={topOffset}
-              left={leftOffset}
-              animate={layout === 'sidebar'}
-              interactive={layout === 'sidebar'}
-              baseLocale={pageProps.baseLocale}
-              commune={pageProps.commune}
-              voie={pageProps.voie}
-            />
+              <Help />
 
-            <Wrapper
-              top={topOffset}
-              isHidden={isHidden}
-              size={500}
-              elevation={2}
-              background='tint2'
-              display='flex'
-              flexDirection='column'
-              onToggle={onToggle}
-            >
-              {error ? (
-                <ErrorPage statusCode={error.statusCode} />
-              ) : (
-                <Component {...otherPageProps} />
+              {pageProps.baseLocale && (
+                <Header
+                  {...pageProps}
+                  layout={layout}
+                  isSidebarHidden={isHidden}
+                  onToggle={onToggle}
+                />
               )}
-            </Wrapper>
+
+              <Map
+                top={topOffset}
+                left={leftOffset}
+                animate={layout === 'sidebar'}
+                interactive={layout === 'sidebar'}
+                baseLocale={pageProps.baseLocale}
+                commune={pageProps.commune}
+                voie={pageProps.voie}
+              />
+
+              <Wrapper
+                top={topOffset}
+                isHidden={isHidden}
+                size={500}
+                elevation={2}
+                background='tint2'
+                display='flex'
+                flexDirection='column'
+                onToggle={onToggle}
+              >
+                {error ? (
+                  <ErrorPage statusCode={error.statusCode} />
+                ) : (
+                  <Component {...otherPageProps} />
+                )}
+              </Wrapper>
+            </HelpContextProvider>
           </MarkerContextProvider>
         </BalDataContextProvider>
       </TokenContextProvider>
