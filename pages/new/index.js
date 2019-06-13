@@ -1,6 +1,6 @@
 import React, {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, TabNavigation, Tab, Paragraph, BackButton, IconButton} from 'evergreen-ui'
+import { Pane, Heading, TabNavigation, Tab, Paragraph, BackButton, Button} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
@@ -44,12 +44,7 @@ function Index({defaultCommune}) {
 
         <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
           <BackButton is='a' href='/'>Retour</BackButton>
-          <IconButton
-            height={32}
-            icon='help'
-            appearance='minimal'
-            onClick={handleHelp}
-          />
+          <Button height={32} iconAfter='help' onClick={handleHelp}>Besoin d’aide</Button>
         </Pane>
       </Pane>
     </Pane>
