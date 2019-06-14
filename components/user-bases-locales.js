@@ -14,10 +14,15 @@ function UserBasesLocales() {
     const balAccess = getBalAccess()
     const getUserBals = async () => {
       const bals = await Promise.all(
-        map(balAccess, (token, id) => getBaseLocale(id, token))
-      )
+        map(balAccess, async (token, id) => {
+          try {
+            return await getBaseLocale(id, token)
+          } catch (error) {
+            console.log(`Impossible de récupérer la bal ${id}`)
+          }
+        }))
 
-      setbals(bals)
+      setbals(bals.filter(bal => Boolean(bal)))
     }
 
     if (balAccess) {
