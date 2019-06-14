@@ -1,13 +1,22 @@
-import React, {useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Table} from 'evergreen-ui'
+import {Pane, Table, Paragraph, Badge, IconButton} from 'evergreen-ui'
+
+import {getBalAccess, getBalToken, removeBalAccess} from '../lib/tokens'
 
 import useFuse from '../hooks/fuse'
+import useError from '../hooks/error'
 
-import {listBasesLocales} from '../lib/bal-api'
+import {listBasesLocales, removeBaseLocale} from '../lib/bal-api'
 
-function BasesLocalesList({basesLocales}) {
+import DeleteWarning from './delete-warning'
+
+function BasesLocalesList({basesLocales, updateBasesLocales}) {
+  const [toRemove, setToRemove] = useState(null)
+
+  const [setError] = useError(null)
+
   const onBalSelect = useCallback(bal => {
     if (bal.communes.length === 1) {
       Router.push(
@@ -26,10 +35,44 @@ function BasesLocalesList({basesLocales}) {
     ]
   })
 
+  const onRemove = useCallback(async () => {
+    try {
+      const token = getBalToken(toRemove)
+      await removeBaseLocale(toRemove, token)
+      removeBalAccess(toRemove)
+      const balAccess = getBalAccess()
+      updateBasesLocales(balAccess)
+    } catch (error) {
+      setError(error.message)
+    }
+
+    setToRemove(null)
+    setError(null)
+  }, [setError, toRemove, updateBasesLocales])
+
+  const handleRemove = useCallback((e, balId) => {
+    e.stopPropagation()
+
+    setToRemove(balId)
+  }, [])
+
   return (
     <>
       {basesLocales.length > 0 && (
         <Pane borderTop>
+
+          <DeleteWarning
+            isShow={Boolean(toRemove)}
+            content={(toRemove ? (
+              <Paragraph>
+                Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
+              </Paragraph>
+            ) : null
+            )}
+            onCancel={() => setToRemove(null)}
+            onConfirm={onRemove}
+          />
+
           <Table>
             <Table.Head>
               <Table.SearchHeaderCell
@@ -47,9 +90,18 @@ function BasesLocalesList({basesLocales}) {
             <Table.Body background='tint1'>
               {filtered.map(bal => (
                 <Table.Row key={bal._id} isSelectable onSelect={() => onBalSelect(bal)}>
-                  <Table.TextCell>{bal.nom}</Table.TextCell>
-                  <Table.TextCell flex='0 1 1'>
+                  <Table.TextCell flexGrow={2}>{bal.nom}</Table.TextCell>
+                  <Table.TextCell>
                     {bal.communes.length < 2 ? `${bal.communes.length} commune` : `${bal.communes.length} communes`}
+                  </Table.TextCell>
+                  <Table.Cell>
+                    {bal.published ? (
+                      <Badge color='green'>Publiée</Badge>
+                    ) : (
+                      <Badge color='neutral'>Brouillon</Badge>
+                    )}</Table.Cell>
+                  <Table.TextCell flexBasis={100} flexGrow={0}>
+                    <IconButton icon='trash' intent='danger' onClick={e => handleRemove(e, bal._id)} />
                   </Table.TextCell>
                 </Table.Row>
               ))}
@@ -71,7 +123,8 @@ BasesLocalesList.getInitialProps = async () => {
 }
 
 BasesLocalesList.propTypes = {
-  basesLocales: PropTypes.array.isRequired
+  basesLocales: PropTypes.array.isRequired,
+  updateBasesLocales: PropTypes.func.isRequired
 }
 
 export default BasesLocalesList
