@@ -10,12 +10,12 @@ import {getBaseLocale} from '../lib/bal-api'
 import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {
-  const [bals, setbals] = useState([])
+  const [basesLocales, setBasesLocales] = useState([])
 
   useEffect(() => {
     const balAccess = getBalAccess()
     const getUserBals = async () => {
-      const bals = await Promise.all(
+      const basesLocales = await Promise.all(
         map(balAccess, async (token, id) => {
           try {
             return await getBaseLocale(id, token)
@@ -24,9 +24,9 @@ function UserBasesLocales() {
           }
         }))
 
-      await expandWithPublished(bals)
+      await expandWithPublished(basesLocales)
 
-      setbals(bals.filter(bal => Boolean(bal)))
+      setBasesLocales(basesLocales)
     }
 
     if (balAccess) {
@@ -34,14 +34,14 @@ function UserBasesLocales() {
     }
   }, [])
 
-  if (bals.length === 0) {
+  if (basesLocales.length === 0) {
     return null
   }
 
   return (
     <Pane flex={2}>
       <Heading padding={16} size={400}>Mes Bases Adresse Locales</Heading>
-      <BasesLocalesList basesLocales={bals} />
+      <BasesLocalesList basesLocales={basesLocales} />
     </Pane>
   )
 }
