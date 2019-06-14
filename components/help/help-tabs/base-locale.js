@@ -1,7 +1,9 @@
 import React from 'react'
 import {Pane, OrderedList, ListItem, Button, Paragraph, Tablist, Tab} from 'evergreen-ui'
 
-import Tuto from './tuto'
+import Tuto from '../tuto'
+import Unauthorized from '../tuto/unauthorized'
+
 import Problems from './problems'
 
 const BaseLocale = () => {
@@ -33,27 +35,7 @@ const BaseLocale = () => {
       </Tuto>
 
       <Problems>
-        <Tuto title='Je n’arrive pas à éditer ma BAL'>
-          <Paragraph marginTop='default'>
-            Assurez vous que
-            <Button
-              height={24}
-              margin={8}
-              appearance='primary'
-              intent='danger'
-              iconBefore='edit'
-            >
-              Édition impossible
-            </Button>
-            n’apparaisse pas en haut de votre écran.
-          </Paragraph>
-          <Paragraph marginTop='default'>
-            Il indique que vous n’êtes pas authentifié ou que vous n’avez pas les droits pour modifier cette BAL.
-          </Paragraph>
-          <Paragraph marginTop='default'>
-            Si cependant, vous en êtes bien le propriétaire alors il vous suffit de cliquer sur le lien qui vous a été envoyé par mail lors de la création de votre BAL.
-          </Paragraph>
-        </Tuto>
+        <Unauthorized title='Je n’arrive pas à éditer ma BAL' />
 
         <Tuto title='Je ne trouve pas ma commune'>
           <Paragraph marginTop='default'>
