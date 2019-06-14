@@ -65,7 +65,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
             isShow={Boolean(toRemove)}
             content={(toRemove ? (
               <Paragraph>
-                Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitif.
+                Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
               </Paragraph>
             ) : null
             )}
