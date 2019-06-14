@@ -11,9 +11,9 @@ import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {
   const [basesLocales, setBasesLocales] = useState([])
+  const [balAccess, setBalAccess] = useState(getBalAccess())
 
   useEffect(() => {
-    const balAccess = getBalAccess()
     const getUserBals = async () => {
       const basesLocales = await Promise.all(
         map(balAccess, async (token, id) => {
@@ -24,15 +24,17 @@ function UserBasesLocales() {
           }
         }))
 
-      await expandWithPublished(basesLocales)
+      const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
 
-      setBasesLocales(basesLocales)
+      await expandWithPublished(findedBasesLocales)
+
+      setBasesLocales(findedBasesLocales)
     }
 
     if (balAccess) {
       getUserBals()
     }
-  }, [])
+  }, [balAccess])
 
   if (basesLocales.length === 0) {
     return null
@@ -41,7 +43,7 @@ function UserBasesLocales() {
   return (
     <Pane flex={2}>
       <Heading padding={16} size={400}>Mes Bases Adresse Locales</Heading>
-      <BasesLocalesList basesLocales={basesLocales} />
+      <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
     </Pane>
   )
 }
