@@ -36,10 +36,12 @@ const Communes = () => {
             Cliquer sur le bouton <Button iconBefore='more' appearance='minimal' /> se situant à droite du nom de la commune
           </ListItem>
           <ListItem>
-            Dans le menu qui vient d’apparaître, choisissez
-            <Menu.Item icon='trash' intent='danger'>
-              Supprimer…
-            </Menu.Item>
+            <Pane display='flex' alignItems='center'>
+              Dans le menu qui vient d’apparaître, choisissez
+              <Menu.Item background='tint1' marginLeft={8} icon='trash' intent='danger'>
+                Supprimer…
+              </Menu.Item>
+            </Pane>
           </ListItem>
           <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
         </OrderedList>
@@ -52,10 +54,12 @@ const Communes = () => {
             Cliquer sur le bouton <Button iconBefore='more' appearance='minimal' /> se situant à droite du nom de la commune
           </ListItem>
           <ListItem>
-            Dans le menu qui vient d’apparaître, choisissez
-            <Menu.Item icon='send-to-map'>
-              Consulter
-            </Menu.Item>
+            <Pane display='flex' alignItems='center'>
+              Dans le menu qui vient d’apparaître, choisissez
+              <Menu.Item background='tint1' marginLeft={8} icon='send-to-map'>
+                Consulter
+              </Menu.Item>
+            </Pane>
           </ListItem>
         </OrderedList>
       </Tuto>

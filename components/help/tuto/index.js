@@ -10,7 +10,7 @@ const Tuto = ({title, children}) => {
       display='flex'
       flexDirection='column'
       marginBottom={16}
-      padding={8}
+      padding={16}
     >
       <Heading is='h2'>{title}</Heading>
       {children}
