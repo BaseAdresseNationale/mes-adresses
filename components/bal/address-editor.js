@@ -105,7 +105,7 @@ function CreateAddress({onSubmit, onCancel}) {
           max={9999}
           value={numero}
           marginBottom={16}
-          placeholder={isToponyme ? 'Toponyme' : 'Numéro'}
+          placeholder={isToponyme ? 'Nom du toponyme…' : 'Numéro'}
           onChange={onNumeroChange}
         />
 

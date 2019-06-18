@@ -21,7 +21,6 @@ const Tuto = ({children}) => {
 }
 
 Tuto.propTypes = {
-  title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired
 }
 
