@@ -4,7 +4,7 @@ import {Paragraph, Button} from 'evergreen-ui'
 import Tuto from '.'
 
 const Sidebar = () => (
-  <Tuto title='Je ne vois pas le menu dépliant'>
+  <Tuto title='Je ne vois pas le menu latéral'>
     <Paragraph marginTop='default'>
       Ce menu peut-être cacher afin de laisser plus d’espace à la cartographie.
     </Paragraph>
