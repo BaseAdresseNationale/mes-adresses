@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu} from 'evergreen-ui'
+import {Pane, Paragraph, OrderedList, Strong, ListItem, Button, Menu} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
@@ -7,13 +7,17 @@ import Unauthorized from '../tuto/unauthorized'
 import Sidebar from '../tuto/sidebar'
 import Problems from './problems'
 
+const before = (
+  <Paragraph marginTop='default'>
+    Affichez la liste des communes de votre BAL en cliquant sur le nom de celle-ci se trouvant en haut à gauche de votre écran.
+  </Paragraph>
+)
+
 const Communes = () => {
   return (
     <Pane>
       <Tuto title='Ajouter une commune'>
-        <Paragraph marginTop='default'>
-          Affichez la liste des communes de votre BAL en cliquant sur le nom de celle-ci se trouvant en haut à gauche de votre écran.
-        </Paragraph>
+        {before}
         <OrderedList margin={8}>
           <ListItem>
             Cliquer sur le bouton
@@ -26,9 +30,7 @@ const Communes = () => {
       </Tuto>
 
       <Tuto title='Supprimer une commune'>
-        <Paragraph marginTop='default'>
-          Affichez la liste des communes de votre BAL en cliquant sur le nom de celle-ci se trouvant en haut à gauche de votre écran.
-        </Paragraph>
+        {before}
         <OrderedList margin={8}>
           <ListItem>
             Cliquer sur le bouton <Button iconBefore='more' appearance='minimal' /> se situant à droite du nom de la commune
@@ -44,9 +46,7 @@ const Communes = () => {
       </Tuto>
 
       <Tuto title='Consulter une commune'>
-        <Paragraph marginTop='default'>
-          Affichez la liste des communes de votre BAL en cliquant sur le nom de celle-ci se trouvant en haut à gauche de votre écran.
-        </Paragraph>
+        {before}
         <OrderedList margin={8}>
           <ListItem>
             Cliquer sur le bouton <Button iconBefore='more' appearance='minimal' /> se situant à droite du nom de la commune
