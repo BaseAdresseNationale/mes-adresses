@@ -8,6 +8,7 @@ import {getCommune} from '../../lib/geo-api'
 
 import TokenContext from '../../contexts/token'
 
+import useHelp from '../../hooks/help'
 import useFuse from '../../hooks/fuse'
 
 import DeleteWarning from '../../components/delete-warning'
@@ -18,8 +19,10 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [communes, setCommunes] = useState(defaultCommunes)
   const [isAdding, setIsAdding] = useState(false)
   const [toRemove, setToRemove] = useState(null)
+
   const {token} = useContext(TokenContext)
 
+  useHelp(1)
   const [filtered, onFilter] = useFuse(communes, 200, {
     keys: [
       'nom'

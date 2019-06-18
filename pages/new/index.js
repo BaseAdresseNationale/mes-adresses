@@ -1,8 +1,10 @@
 import React, {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import { Pane, Heading, TabNavigation, Tab, Paragraph, BackButton, Button} from 'evergreen-ui'
+import {Pane, Heading, TabNavigation, Tab, Paragraph, BackButton, Button} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
+
+import useHelp from '../../hooks/help'
 
 import HelpContext from '../../contexts/help'
 
@@ -12,6 +14,8 @@ import UploadForm from './upload-form'
 function Index({defaultCommune}) {
   const [index, setIndex] = useState(0)
   const {showHelp, setShowHelp, setSelectedIndex} = useContext(HelpContext)
+
+  useHelp(0)
 
   const handleHelp = useCallback(() => {
     setSelectedIndex(0)
