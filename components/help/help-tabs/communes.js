@@ -21,11 +21,11 @@ const Communes = () => {
         <OrderedList margin={8}>
           <ListItem>
             Cliquer sur le bouton
-            <Button iconBefore='add' margin={8} appearance='primary' intent='success'>Ajouter une commune</Button>
+            <Button iconBefore='add' marginX={4} appearance='primary' intent='success'>Ajouter une commune</Button>
           </ListItem>
           <ListItem>Recherche votre commune puis sélectionnez la dans la liste des suggestions.</ListItem>
           <ListItem>Si vous souhaitez partir de zéro, décochez la case <Strong size={500} fontStyle='italic'>Importer les voies et numéros depuis la BAN</Strong>.</ListItem>
-          <ListItem>Pour terminer, cliquez sur le bouton <Button margin={8} appearance='primary' intent='success'>Ajouter</Button></ListItem>
+          <ListItem>Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button></ListItem>
         </OrderedList>
       </Tuto>
 
@@ -41,7 +41,7 @@ const Communes = () => {
               Supprimer…
             </Menu.Item>
           </ListItem>
-          <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button intent='danger' appearance='primary'>Supprimer</Button></ListItem>
+          <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
         </OrderedList>
       </Tuto>
 
