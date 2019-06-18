@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, Paragraph, OrderedList, ListItem, Text, Button, Menu} from 'evergreen-ui'
+import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
@@ -20,7 +20,7 @@ const Communes = () => {
             <Button iconBefore='add' margin={8} appearance='primary' intent='success'>Ajouter une commune</Button>
           </ListItem>
           <ListItem>Recherche votre commune puis sélectionnez la dans la liste des suggestions.</ListItem>
-          <ListItem>Si vous souhaitez partir de zéro, décochez la case <b>"Importer les voies et numéros depuis la BAN"</b>.</ListItem>
+          <ListItem>Si vous souhaitez partir de zéro, décochez la case <Strong size={500} fontStyle='italic'>Importer les voies et numéros depuis la BAN</Strong>.</ListItem>
           <ListItem>Pour terminer, cliquez sur le bouton <Button margin={8} appearance='primary' intent='success'>Ajouter</Button></ListItem>
         </OrderedList>
       </Tuto>
