@@ -29,6 +29,23 @@ const Communes = () => {
         </OrderedList>
       </Tuto>
 
+      <Tuto title='Consulter une commune'>
+        {before}
+        <OrderedList margin={8}>
+          <ListItem>
+            Cliquer sur le bouton <Button iconBefore='more' appearance='minimal' /> se situant à droite du nom de la commune
+          </ListItem>
+          <ListItem>
+            <Pane display='flex' alignItems='center'>
+              Dans le menu qui vient d’apparaître, choisissez
+              <Menu.Item background='tint1' marginLeft={8} icon='send-to-map'>
+                Consulter
+              </Menu.Item>
+            </Pane>
+          </ListItem>
+        </OrderedList>
+      </Tuto>
+
       <Tuto title='Supprimer une commune'>
         {before}
         <OrderedList margin={8}>
@@ -44,23 +61,6 @@ const Communes = () => {
             </Pane>
           </ListItem>
           <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
-        </OrderedList>
-      </Tuto>
-
-      <Tuto title='Consulter une commune'>
-        {before}
-        <OrderedList margin={8}>
-          <ListItem>
-            Cliquer sur le bouton <Button iconBefore='more' appearance='minimal' /> se situant à droite du nom de la commune
-          </ListItem>
-          <ListItem>
-            <Pane display='flex' alignItems='center'>
-              Dans le menu qui vient d’apparaître, choisissez
-              <Menu.Item background='tint1' marginLeft={8} icon='send-to-map'>
-                Consulter
-              </Menu.Item>
-            </Pane>
-          </ListItem>
         </OrderedList>
       </Tuto>
 

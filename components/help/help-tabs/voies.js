@@ -94,6 +94,32 @@ const Voies = () => {
 
         </Tuto>
 
+        <Tuto title='Consulter une voie'>
+          {before}
+
+          <SubTuto title='Depuis le menu latéral' icon='column-layout'>
+            <OrderedList margin={8}>
+              <ListItem>
+                Cliquer sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du nom de la voie
+              </ListItem>
+              <ListItem>
+                <Pane display='flex' alignItems='center'>
+                  Dans le menu qui vient d’apparaître, choisissez
+                  <Menu.Item background='tint1' marginLeft={8} icon='send-to-map'>
+                    Consulter
+                  </Menu.Item>
+                </Pane>
+              </ListItem>
+            </OrderedList>
+          </SubTuto>
+
+          <SubTuto title='Depuis la carte' icon='map'>
+            <OrderedList margin={8}>
+              <ListItem>Cliquez sur le nom de la voie ou sur l’un de ses numéros</ListItem>
+            </OrderedList>
+          </SubTuto>
+        </Tuto>
+
         <Tuto title='Supprimer une voie'>
           {before}
 
@@ -111,34 +137,22 @@ const Voies = () => {
             </ListItem>
             <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
           </OrderedList>
-
         </Tuto>
 
-        <Tuto title='Consulter une voie'>
-          {before}
-
-          <SubTuto title='Depuis le menu latéral' icon='column-layout'>
+        <Tuto title='Supprimer un toponyme'>
+          <SubTuto title='Depuis la carte' icon='map'>
             <OrderedList margin={8}>
-              <ListItem>
-                Cliquer sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du nom de la voie
-              </ListItem>
+              <ListItem>Faites un clique droit sur le toponyme</ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
-                Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon='send-to-map'>
-                    Consulter
+                  Dans le menu qui vient d’apparaître, choisissez
+                  <Menu.Item background='tint1' marginLeft={8} icon='trash' intent='danger'>
+                    Supprimer…
                   </Menu.Item>
                 </Pane>
               </ListItem>
             </OrderedList>
           </SubTuto>
-
-          <SubTuto title='Depuis la carte' icon='map'>
-            <OrderedList margin={8}>
-              <ListItem>Cliquez sur le nom de la voie ou sur l’un de ses numéros</ListItem>
-            </OrderedList>
-          </SubTuto>
-
         </Tuto>
 
         <Problems>
