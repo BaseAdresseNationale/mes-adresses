@@ -200,6 +200,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               <TableRow
                 key={numero._id}
                 id={numero._id}
+                comment={numero.comment}
                 isSelectable={!isAdding && !editingId && numero.positions.length > 1}
                 label={numero.numeroComplet}
                 secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
