@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Textarea, Label} from 'evergreen-ui'
 
-const Comment = ({input, onChange}) => {
+const Comment = ({input, limit, onChange}) => {
   return (
     <Pane>
       <Label marginBottom={4} display='block'>
@@ -11,7 +11,7 @@ const Comment = ({input, onChange}) => {
       <Textarea
         placeholder='Note…'
         value={input}
-        onChange={onChange}
+        onChange={input.length < limit ? onChange : () => {}}
       />
     </Pane>
   )
@@ -19,11 +19,13 @@ const Comment = ({input, onChange}) => {
 
 Comment.propTypes = {
   input: PropTypes.string,
+  limit: PropTypes.number,
   onChange: PropTypes.func.isRequired
 }
 
 Comment.defaultProps = {
-  input: ''
+  input: '',
+  limit: 5000
 }
 
 export default Comment
