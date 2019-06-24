@@ -38,10 +38,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     ]
   })
 
-  const onAdd = useCallback(async ({numero, suffixe, positions}) => {
+  const onAdd = useCallback(async ({numero, suffixe, comment, positions}) => {
     await addNumero(voie._id, {
       numero,
       suffixe,
+      comment,
       positions
     }, token)
 

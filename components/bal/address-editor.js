@@ -9,6 +9,8 @@ import {useInput, useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
+import Comment from '../comment'
+
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
@@ -20,6 +22,7 @@ function CreateAddress({onSubmit, onCancel}) {
   const [numero, onNumeroChange] = useInput('')
   const [selectedVoie, setSelectedVoie] = useState(voie)
   const [suffixe, onSuffixeChange] = useInput('')
+  const [comment, onCommentChange] = useInput('')
   const [type, onTypeChange] = useInput('entrée')
   const [error, setError] = useState()
   const focusRef = useFocus()
@@ -41,6 +44,7 @@ function CreateAddress({onSubmit, onCancel}) {
     } else {
       body.numero = Number(numero)
       body.suffixe = suffixe.length > 0 ? suffixe : null
+      body.comment = comment.length > 0 ? comment : null
     }
 
     body.positions = [
@@ -60,7 +64,7 @@ function CreateAddress({onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [isToponyme, marker, type, numero, suffixe, onSubmit, selectedVoie, disableMarker])
+  }, [isToponyme, marker, type, numero, suffixe, comment, onSubmit, selectedVoie, disableMarker])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -145,6 +149,10 @@ function CreateAddress({onSubmit, onCancel}) {
           type={type}
           onTypeChange={onTypeChange}
         />
+      )}
+
+      {!isToponyme && (
+        <Comment input={comment} onChange={onCommentChange} />
       )}
 
       {error && (

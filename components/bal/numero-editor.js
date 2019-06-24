@@ -19,7 +19,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
   const [numero, onNumeroChange] = useInput(initialValue ? initialValue.numero : '')
   const [suffixe, onSuffixeChange] = useInput(initialValue ? initialValue.suffixe : '')
   const [type, onTypeChange] = useInput(position ? position.type : 'entrée')
-  const [comment, onCommentChange] = useInput(initialValue.comment || '')
+  const [comment, onCommentChange] = useInput(initialValue ? initialValue.comment : '')
   const [error, setError] = useState()
   const focusRef = useFocus()
 
