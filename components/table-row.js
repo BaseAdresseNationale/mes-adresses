@@ -1,10 +1,10 @@
 import React, {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Table, Popover, Menu, Position, IconButton, toaster, Icon} from 'evergreen-ui'
+import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, Icon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 
-const TableRow = React.memo(({id, code, label, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
+const TableRow = React.memo(({id, code, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
 
@@ -63,6 +63,16 @@ const TableRow = React.memo(({id, code, label, secondary, isSelectable, onSelect
           {secondary}
         </Table.TextCell>
       )}
+      {comment && (
+        <Table.Cell>
+          <Tooltip
+            content={comment}
+            position={Position.BOTTOM_RIGHT}
+          >
+            <Icon icon='comment' color='muted' />
+          </Tooltip>
+        </Table.Cell>
+      )}
       {token && (onEdit || onRemove) && (
         <Table.TextCell flex='0 1 1'>
           <Popover
@@ -101,6 +111,7 @@ TableRow.propTypes = {
   id: PropTypes.string.isRequired,
   code: PropTypes.string,
   label: PropTypes.string.isRequired,
+  comment: PropTypes.string,
   secondary: PropTypes.string,
   isSelectable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
@@ -110,6 +121,7 @@ TableRow.propTypes = {
 
 TableRow.defaultProps = {
   code: null,
+  comment: null,
   secondary: null,
   isSelectable: true,
   onEdit: null

@@ -38,10 +38,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     ]
   })
 
-  const onAdd = useCallback(async ({numero, suffixe, positions}) => {
+  const onAdd = useCallback(async ({numero, suffixe, comment, positions}) => {
     await addNumero(voie._id, {
       numero,
       suffixe,
+      comment,
       positions
     }, token)
 
@@ -70,10 +71,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(idNumero)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({numero, suffixe, positions}) => {
+  const onEdit = useCallback(async ({numero, suffixe, comment, positions}) => {
     await editNumero(editingId, {
       numero,
       suffixe,
+      comment,
       positions
     }, token)
 
@@ -200,6 +202,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               <TableRow
                 key={numero._id}
                 id={numero._id}
+                comment={numero.comment}
                 isSelectable={!isAdding && !editingId && numero.positions.length > 1}
                 label={numero.numeroComplet}
                 secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}

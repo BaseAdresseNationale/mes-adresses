@@ -8,6 +8,8 @@ import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
+import Comment from '../comment'
+
 import PositionEditor from './position-editor'
 
 function NumeroEditor({initialValue, onSubmit, onCancel}) {
@@ -17,6 +19,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
   const [numero, onNumeroChange] = useInput(initialValue ? initialValue.numero : '')
   const [suffixe, onSuffixeChange] = useInput(initialValue ? initialValue.suffixe : '')
   const [type, onTypeChange] = useInput(position ? position.type : 'entrée')
+  const [comment, onCommentChange] = useInput(initialValue ? initialValue.comment : '')
   const [error, setError] = useState()
   const focusRef = useFocus()
 
@@ -36,6 +39,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
     }
 
     body.suffixe = suffixe.length > 0 ? suffixe : null
+    body.comment = comment.length > 0 ? comment : null
 
     if (marker) {
       body.positions = [
@@ -56,7 +60,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, suffixe, marker, type, onSubmit, disableMarker])
+  }, [numero, suffixe, comment, marker, type, onSubmit, disableMarker])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -139,6 +143,8 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
           onTypeChange={onTypeChange}
         />
       )}
+
+      <Comment input={comment} onChange={onCommentChange} />
 
       {error && (
         <Alert marginBottom={16} intent='danger' title='Erreur'>
