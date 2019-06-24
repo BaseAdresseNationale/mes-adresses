@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Dialog} from 'evergreen-ui'
 
-function DeleteWarning({content, onCancel, onConfirm}) {
+function DeleteWarning({isShown, content, onCancel, onConfirm}) {
   return (
     <>
       <Pane>
         <Dialog
-          isShown={content}
+          isShown={isShown}
           title='Attention'
           intent='danger'
           cancelLabelstring='Annuler'
@@ -24,13 +24,14 @@ function DeleteWarning({content, onCancel, onConfirm}) {
 }
 
 DeleteWarning.propTypes = {
-  content: PropTypes.node,
+  isShown: PropTypes.bool,
+  content: PropTypes.node.isRequired,
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired
 }
 
 DeleteWarning.defaultProps = {
-  content: null
+  isShown: false
 }
 
 export default DeleteWarning

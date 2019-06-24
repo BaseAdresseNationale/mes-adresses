@@ -7,6 +7,7 @@ import {editVoie, addNumero, editNumero, removeNumero, getNumeros} from '../../l
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
 
+import useHelp from '../../hooks/help'
 import useFuse from '../../hooks/fuse'
 
 import TableRow from '../../components/table-row'
@@ -30,6 +31,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId
   } = useContext(BalDataContext)
 
+  useHelp(3)
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
       'numeroComplet'

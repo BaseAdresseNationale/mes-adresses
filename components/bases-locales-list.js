@@ -62,12 +62,11 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
         <Pane borderTop>
 
           <DeleteWarning
-            isShow={Boolean(toRemove)}
-            content={(toRemove ? (
+            isShown={Boolean(toRemove)}
+            content={(
               <Paragraph>
                 Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
               </Paragraph>
-            ) : null
             )}
             onCancel={() => setToRemove(null)}
             onConfirm={onRemove}

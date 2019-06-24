@@ -9,6 +9,7 @@ import {css} from 'glamor'
 import {getBaseLocaleCsvUrl} from '../lib/bal-api'
 
 import TokenContext from '../contexts/token'
+import HelpContext from '../contexts/help'
 
 import useWindowSize from '../hooks/window-size'
 
@@ -19,6 +20,8 @@ const {publicRuntimeConfig: {
 }} = getConfig()
 
 const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, onToggle}) => {
+  const {showHelp, setShowHelp} = useContext(HelpContext)
+
   const {innerWidth} = useWindowSize()
   const {token} = useContext(TokenContext)
 
@@ -88,6 +91,13 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
             </Button>
           </Tooltip>
         )}
+
+        <IconButton
+          height={24}
+          icon='help'
+          appearance='minimal'
+          onClick={() => setShowHelp(!showHelp)}
+        />
 
         <Popover
           position={Position.BOTTOM_RIGHT}

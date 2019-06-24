@@ -9,6 +9,7 @@ import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
 
 import useFuse from '../../hooks/fuse'
+import useHelp from '../../hooks/help'
 
 import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
@@ -28,6 +29,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setEditingId
   } = useContext(BalDataContext)
 
+  useHelp(2)
   const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
     keys: [
       'nom'
@@ -95,13 +97,12 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   return (
     <>
       <DeleteWarning
-        content={toRemove ? (
+        isShown={Boolean(toRemove)}
+        content={(
           <Paragraph>
             Êtes vous bien sûr de vouloir supprimer cette voie ainsi que tous ses numéros ?
           </Paragraph>
-        ) :
-          null
-        }
+        )}
         onCancel={() => setToRemove(null)}
         onConfirm={onRemove}
       />
