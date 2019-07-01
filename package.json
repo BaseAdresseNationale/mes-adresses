@@ -35,7 +35,7 @@
     "babel-plugin-inline-import": "^3.0.0",
     "eslint-config-xo-nextjs": "^1.4.0",
     "eslint-plugin-react": "^7.14.1",
-    "eslint-plugin-react-hooks": "^1.6.0",
+    "eslint-plugin-react-hooks": "^1.6.1",
     "webpack-bundle-analyzer": "^3.3.2",
     "xo": "^0.24.0"
   },
