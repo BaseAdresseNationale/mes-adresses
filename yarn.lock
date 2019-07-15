@@ -2857,10 +2857,10 @@ events@^3.0.0:
   resolved "https://registry.yarnpkg.com/events/-/events-3.0.0.tgz#9a0a0dfaf62893d92b875b8f2698ca4114973e88"
   integrity sha512-Dc381HFWJzEOhQ+d8pkNon++bk9h6cdAoAj4iE6Q4y6xgTzySWXlKn05/TVNpjnfRqi/X0EpJEJohPjNI3zpVA==
 
-evergreen-ui@^4.17.0:
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/evergreen-ui/-/evergreen-ui-4.17.0.tgz#a42e4852edef52a6c7bcd2f3cf67390cab7dd0b7"
-  integrity sha512-9ycFaWrQBBy9ui9AQmXK4q7//d1DHwJNM7Zn1slqbY2RQ8Uuat1uf9mcnHBYGd5m1so1/Tz6xJUN4pc9gLQOBQ==
+evergreen-ui@^4.18.1:
+  version "4.18.1"
+  resolved "https://registry.yarnpkg.com/evergreen-ui/-/evergreen-ui-4.18.1.tgz#b277e05ae0beefbf361499a7148ff45b7db7cc31"
+  integrity sha512-JnUlyQe9J62DrIbalU8AUVCs7SQ58qjdlXTVutkeXj2mxi7XtJXZg+Er9ud9SaR6ZDLZVnuS35NOs3GPYe/68Q==
   dependencies:
     "@babel/runtime" "^7.1.2"
     "@blueprintjs/icons" "^3.2.0"
