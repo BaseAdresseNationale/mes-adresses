@@ -5628,10 +5628,10 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-map-gl@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-5.0.3.tgz#d48279da5f9c7ac9e674388abe3d40b32206408b"
-  integrity sha512-lvnSId2IQ8GQmOb97MSNFECiH39uq8nYn86WVLN0NtGmlalXDGyMlXi6pqnWE45mGqfY3nuu3cgh+J6ekMze7w==
+react-map-gl@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/react-map-gl/-/react-map-gl-5.0.4.tgz#210cdcb14cab68ec16681e194144bf2d8a7b427a"
+  integrity sha512-gDyY3Y6l61ZX2YLRnFHzoOASjx5t3sSHPrgMVsqgEXja3CElMS6ENCxLw0JmOe2DxAQbTxNRgKeg+VT2BkUQ+Q==
   dependencies:
     "@babel/runtime" "^7.0.0"
     mapbox-gl "^1.0.0"
