@@ -21,7 +21,7 @@
     "isomorphic-unfetch": "^3.0.0",
     "lodash-es": "^4.17.11",
     "next": "^8.0.4",
-    "next-runtime-dotenv": "^1.1.1",
+    "next-runtime-dotenv": "^1.2.0",
     "prop-types": "^15.7.2",
     "randomcolor": "^0.5.4",
     "react": "^16.8.6",
