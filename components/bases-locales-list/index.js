@@ -1,16 +1,17 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Table, Paragraph, Badge, IconButton} from 'evergreen-ui'
+import {Pane, Table, Paragraph} from 'evergreen-ui'
 
-import {getBalAccess, getBalToken, removeBalAccess} from '../lib/tokens'
+import {getBalAccess, getBalToken, removeBalAccess} from '../../lib/tokens'
 
-import useFuse from '../hooks/fuse'
-import useError from '../hooks/error'
+import useFuse from '../../hooks/fuse'
+import useError from '../../hooks/error'
 
-import {listBasesLocales, removeBaseLocale} from '../lib/bal-api'
+import {listBasesLocales, removeBaseLocale} from '../../lib/bal-api'
 
-import DeleteWarning from './delete-warning'
+import DeleteWarning from '../delete-warning'
+import BaseLocaleRow from './base-locale-row'
 
 function BasesLocalesList({basesLocales, updateBasesLocales}) {
   const [toRemove, setToRemove] = useState(null)
@@ -34,11 +35,11 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
       'commune'
     ]
   })
-  
+
   // Actuellement cette variable est inférée par la présence ou non de cette fonction, injectée plus haut.
   // La page public est la page /all
   // À améliorer !!
-  const isPublicPage = !Boolean(updateBasesLocales)
+  const isPublicPage = !updateBasesLocales
 
   const onRemove = useCallback(async () => {
     try {
@@ -93,23 +94,13 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
             )}
             <Table.Body background='tint1'>
               {filtered.map(bal => (
-                <Table.Row key={bal._id} isSelectable onSelect={() => onBalSelect(bal)}>
-                  <Table.TextCell flexGrow={2}>{bal.nom}</Table.TextCell>
-                  <Table.TextCell>
-                    {bal.communes.length < 2 ? `${bal.communes.length} commune` : `${bal.communes.length} communes`}
-                  </Table.TextCell>
-                  <Table.Cell>
-                    {bal.published ? (
-                      <Badge color='green'>Publiée</Badge>
-                    ) : (
-                      <Badge color='neutral'>Brouillon</Badge>
-                    )}</Table.Cell>
-                  <Table.TextCell flexBasis={100} flexGrow={0}>
-                    {!bal.published && !isPublicPage && (
-                      <IconButton icon='trash' intent='danger' onClick={e => handleRemove(e, bal._id)} />
-                    )}
-                  </Table.TextCell>
-                </Table.Row>
+                <BaseLocaleRow
+                  key={bal._id}
+                  baseLocale={bal}
+                  editable={!isPublicPage}
+                  onSelect={() => onBalSelect(bal)}
+                  onRemove={e => handleRemove(e, bal._id)}
+                />
               ))}
             </Table.Body>
           </Table>
