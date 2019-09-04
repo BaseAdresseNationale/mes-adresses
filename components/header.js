@@ -15,9 +15,8 @@ import useWindowSize from '../hooks/window-size'
 
 import Breadcrumbs from './breadcrumbs'
 
-const {publicRuntimeConfig: {
-  ADRESSE_URL
-}} = getConfig()
+const {publicRuntimeConfig} = getConfig()
+const ADRESSE_URL = publicRuntimeConfig.ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
 const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, onToggle}) => {
   const {showHelp, setShowHelp} = useContext(HelpContext)
