@@ -34,6 +34,11 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
       'commune'
     ]
   })
+  
+  // Actuellement cette variable est inférée par la présence ou non de cette fonction, injectée plus haut.
+  // La page public est la page /all
+  // À améliorer !!
+  const isPublicPage = !Boolean(updateBasesLocales)
 
   const onRemove = useCallback(async () => {
     try {
@@ -100,7 +105,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
                       <Badge color='neutral'>Brouillon</Badge>
                     )}</Table.Cell>
                   <Table.TextCell flexBasis={100} flexGrow={0}>
-                    {!bal.published && updateBasesLocales && (
+                    {!bal.published && !isPublicPage && (
                       <IconButton icon='trash' intent='danger' onClick={e => handleRemove(e, bal._id)} />
                     )}
                   </Table.TextCell>
