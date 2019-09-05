@@ -2,8 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Table, Badge, IconButton} from 'evergreen-ui'
 
+function getBadge(status) {
+  switch (status) {
+    case 'published':
+      return {color: 'green', label: 'Publiée'}
+    case 'ready-to-publish':
+      return {color: 'blue', label: 'Prête à être publiée'}
+    default:
+      return {color: 'neutral', label: 'Brouillon'}
+  }
+}
+
 function BaseLocaleRow({baseLocale, editable, onSelect, onRemove}) {
-  const {_id, nom, communes, published} = baseLocale
+  const {_id, nom, communes, status} = baseLocale
+  const badge = getBadge(status)
 
   return (
     <Table.Row key={_id} isSelectable onSelect={onSelect}>
@@ -12,13 +24,12 @@ function BaseLocaleRow({baseLocale, editable, onSelect, onRemove}) {
         {communes.length < 2 ? `${communes.length} commune` : `${communes.length} communes`}
       </Table.TextCell>
       <Table.Cell>
-        {published ? (
-          <Badge color='green'>Publiée</Badge>
-        ) : (
-          <Badge color='neutral'>Brouillon</Badge>
-        )}</Table.Cell>
+        <Badge color={badge.color}>{badge.label}</Badge>
+      </Table.Cell>
       <Table.TextCell flexBasis={100} flexGrow={0}>
-        {!published && editable && <IconButton icon='trash' intent='danger' onClick={onRemove} />}
+        {status === 'draft' && editable && (
+          <IconButton icon='trash' intent='danger' onClick={onRemove} />
+        )}
       </Table.TextCell>
     </Table.Row>
   )
@@ -34,7 +45,9 @@ BaseLocaleRow.propTypes = {
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
     communes: PropTypes.array.isRequired,
-    published: PropTypes.bool
+    status: PropTypes.oneOf([
+      'draft', 'ready-to-publish', 'published'
+    ])
   }).isRequired,
   editable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
