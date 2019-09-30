@@ -13,7 +13,7 @@
     "@turf/buffer": "^5.1.5",
     "@turf/centroid": "^6.0.2",
     "compression": "^1.7.4",
-    "evergreen-ui": "^4.17.0",
+    "evergreen-ui": "^4.19.1",
     "express": "^4.17.1",
     "fuse.js": "^3.4.5",
     "glamor": "^2.20.40",
