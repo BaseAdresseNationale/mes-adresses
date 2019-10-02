@@ -1,40 +1,53 @@
-import React, {useContext, useMemo} from 'react'
+import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import NextLink from 'next/link'
 import getConfig from 'next/config'
-import {Pane, Popover, Menu, IconButton, Button, Position, Tooltip} from 'evergreen-ui'
-import {css} from 'glamor'
+import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
 
-import {getBaseLocaleCsvUrl} from '../lib/bal-api'
+import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
-import TokenContext from '../contexts/token'
-import HelpContext from '../contexts/help'
+import TokenContext from '../../contexts/token'
+import HelpContext from '../../contexts/help'
 
-import useWindowSize from '../hooks/window-size'
+import useError from '../../hooks/error'
+import useWindowSize from '../../hooks/window-size'
 
-import Breadcrumbs from './breadcrumbs'
+import Breadcrumbs from '../breadcrumbs'
+
+import Publication from './publication'
 
 const {publicRuntimeConfig} = getConfig()
 const ADRESSE_URL = publicRuntimeConfig.ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
-const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, onToggle}) => {
+const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, refreshBaseLocale, onToggle}) => {
   const {showHelp, setShowHelp} = useContext(HelpContext)
+  const [setError] = useError(null)
 
   const {innerWidth} = useWindowSize()
   const {token} = useContext(TokenContext)
 
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
 
-  const editTip = useMemo(() => css({
-    '@media (max-width: 700px)': {
-      marginLeft: -10,
+  const handleChangeStatus = async () => {
+    try {
+      const newStatus = baseLocale.status === 'draft' ? 'ready-to-publish' : 'draft'
+      await updateBaseLocale(baseLocale._id, {status: newStatus}, token)
 
-      '& > span': {
-        display: 'none'
-      }
+      refreshBaseLocale()
+    } catch (error) {
+      setError(error.message)
     }
-  }), [])
+  }
+
+  const handlePublication = async () => {
+    try {
+      await updateBaseLocale(baseLocale._id, {status: 'ready-to-publish'}, token)
+      Router.push(`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`)
+    } catch (error) {
+      setError(error.message)
+    }
+  }
 
   return (
     <Pane
@@ -76,20 +89,12 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
       />
 
       <Pane marginLeft='auto' display='flex'>
-        {token ? (
-          <NextLink href={`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`}>
-            <a style={{textDecoration: 'none'}}><Button marginRight={8} height={24} appearance='primary'>Publier</Button></a>
-          </NextLink>
-        ) : (
-          <Tooltip
-            content='Vous n’êtes pas identifié comme administrateur de cette base adresse locale, vous ne pouvez donc pas l’éditer.'
-            position={Position.BOTTOM_RIGHT}
-          >
-            <Button height={24} marginRight={8} appearance='primary' intent='danger' iconBefore='edit'>
-              <div className={editTip}><span>Édition impossible</span></div>
-            </Button>
-          </Tooltip>
-        )}
+        <Publication
+          token={token}
+          status={baseLocale.published ? 'published' : baseLocale.status}
+          onChangeStatus={handleChangeStatus}
+          onPublish={handlePublication}
+        />
 
         <IconButton
           height={24}
@@ -141,6 +146,7 @@ Header.propTypes = {
   voie: PropTypes.object,
   layout: PropTypes.oneOf(['fullscreen', 'sidebar']).isRequired,
   isSidebarHidden: PropTypes.bool,
+  refreshBaseLocale: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired
 }
 
