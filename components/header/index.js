@@ -43,7 +43,7 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
   const handlePublication = async () => {
     try {
       await updateBaseLocale(baseLocale._id, {status: 'ready-to-publish'}, token)
-      Router.push(`${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`)
+      window.location.href = `${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`
     } catch (error) {
       setError(error.message)
     }
