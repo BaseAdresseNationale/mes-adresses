@@ -113,7 +113,6 @@ function App({error, Component, pageProps, query}) {
           <MarkerContextProvider>
             <HelpContextProvider>
 
-              <IEWarning />
               <Help />
 
               {baseLocale && (
@@ -150,7 +149,10 @@ function App({error, Component, pageProps, query}) {
                 {error ? (
                   <ErrorPage statusCode={error.statusCode} />
                 ) : (
-                  <Component {...otherPageProps} />
+                  <>
+                    <IEWarning />
+                    <Component {...otherPageProps} />
+                  </>
                 )}
               </Wrapper>
             </HelpContextProvider>
