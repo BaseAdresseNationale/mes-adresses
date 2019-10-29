@@ -88,8 +88,6 @@ function App({error, Component, pageProps, query}) {
   return (
     <Container>
 
-      <IEWarning />
-
       <Pane>
         <Dialog
           isShown={isShown}
@@ -115,6 +113,7 @@ function App({error, Component, pageProps, query}) {
           <MarkerContextProvider>
             <HelpContextProvider>
 
+              <IEWarning />
               <Help />
 
               {baseLocale && (
