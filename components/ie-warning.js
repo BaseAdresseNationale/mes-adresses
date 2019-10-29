@@ -18,7 +18,7 @@ const IEWarning = () => (
 
 				@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 					/* IE10+ CSS */
-					.ei-warning {
+					.ie-warning {
 						display: block;
 					}
 				}
