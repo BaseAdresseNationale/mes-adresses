@@ -8,6 +8,7 @@ import {getBaseLocale, getVoie} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
 import Header from '../components/header'
+import IEWarning from '../components/ie-warning'
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
 
@@ -86,6 +87,8 @@ function App({error, Component, pageProps, query}) {
 
   return (
     <Container>
+
+      <IEWarning />
 
       <Pane>
         <Dialog
