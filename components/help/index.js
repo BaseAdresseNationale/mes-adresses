@@ -45,7 +45,7 @@ const Help = () => {
         </Pane>
 
         <Pane padding={16} background='tint2'>
-          <Heading>Vous n’avez pas trouvez la solution à votre problème ?</Heading>
+          <Heading>Vous n’avez pas trouvé la solution à votre problème ?</Heading>
           <Paragraph>
             Contactez nous sur <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>
           </Paragraph>

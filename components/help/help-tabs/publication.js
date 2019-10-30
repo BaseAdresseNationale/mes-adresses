@@ -12,7 +12,7 @@ const Publication = () => {
         <Paragraph marginTop='default'>
           L'édition de votre Base Adresse Locale est terminée: <br /> vous pouvez cliquer sur le bouton
           <Button margin={5} height={24} appearance='primary'>
-            Prête à être publiée
+            Prêt à publier
           </Button>
           <br />
           <i>(Cela vous permettra de différencier les BAL prêtes à être publiées de celles dont l'édition n'est pas terminée.)</i>
@@ -55,12 +55,6 @@ const Publication = () => {
       </Tuto>
       <Problems>
         <Unauthorized title='Je n’arrive pas à éditer ma BAL' />
-        <Tuto title='Je ne trouve pas ma commune'>
-          <Paragraph marginTop='default'>
-            Si votre commune est une commune nouvelle issue d’une fusion, alors il est possible qu’elle n’apparaisse pas dans la liste des propositions.
-          Si c’est votre cas, vous pouvez nous contactez nous sur <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>
-          </Paragraph>
-        </Tuto>
       </Problems>
     </Pane>
   )

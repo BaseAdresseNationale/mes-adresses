@@ -60,7 +60,7 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
         </div>
       ) : (
         <Button marginRight={8} height={24} appearance='primary' onClick={onChangeStatus}>
-          {status === 'published' ? 'Mettre à jour' : 'Prêt à être publié' }
+          {status === 'published' ? 'Mettre à jour' : 'Prêt à publier' }
         </Button>
       )}
     </>
