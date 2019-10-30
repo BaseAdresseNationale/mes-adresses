@@ -5,12 +5,14 @@ import BaseLocale from './base-locale'
 import Communes from './communes'
 import Voies from './voies'
 import Numeros from './numeros'
+import Publication from './publication'
 
 export const TABS = [
   'Base locale',
   'Communes',
   'Voies',
-  'Numéros'
+  'Numéros',
+  'Publication'
 ]
 
 const HelpTabs = ({tab}) => {
@@ -23,6 +25,8 @@ const HelpTabs = ({tab}) => {
       return <Voies />
     case 3:
       return <Numeros />
+    case 4:
+      return <Publication />
     default:
       return <BaseLocale />
   }
