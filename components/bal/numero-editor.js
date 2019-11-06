@@ -38,7 +38,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
       numero: Number(numero)
     }
 
-    body.suffixe = suffixe.length > 0 ? suffixe : null
+    body.suffixe = suffixe.length > 0 ? suffixe.toLowerCase().trim() : null
     body.comment = comment.length > 0 ? comment : null
 
     if (marker) {
@@ -116,6 +116,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
         />
 
         <TextInput
+          style={{textTransform: 'lowercase'}}
           display='block'
           marginLeft={8}
           disabled={isLoading}
@@ -173,7 +174,9 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 NumeroEditor.propTypes = {
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,
-    suffixe: PropTypes.string
+    suffixe: PropTypes.string,
+    comment: PropTypes.string,
+    positions: PropTypes.array
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
