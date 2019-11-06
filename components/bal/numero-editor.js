@@ -173,7 +173,9 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 NumeroEditor.propTypes = {
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,
-    suffixe: PropTypes.string
+    suffixe: PropTypes.string,
+    comment: PropTypes.string,
+    positions: PropTypes.array
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
