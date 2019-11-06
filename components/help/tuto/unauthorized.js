@@ -23,7 +23,7 @@ const Unauthorized = ({title}) => (
       Il indique que vous n’êtes pas authentifié ou que vous n’avez pas les droits pour modifier cette BAL.
     </Paragraph>
     <Paragraph marginTop='default'>
-      Si cependant, vous en êtes bien le propriétaire alors il vous suffit de cliquer sur le lien qui vous a été envoyé par mail lors de la création de votre BAL.
+      Cependant, si vous en êtes bien le propriétaire, il vous suffit de cliquer sur le lien qui vous a été envoyé par mail lors de la création de votre BAL.
     </Paragraph>
   </Tuto>
 )

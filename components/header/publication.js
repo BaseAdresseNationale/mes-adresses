@@ -2,7 +2,7 @@ import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 
-import {Button, Menu, Popover, Tooltip, Position} from 'evergreen-ui'
+import {Badge, Button, Menu, Popover, Tooltip, Position} from 'evergreen-ui'
 
 const Publication = ({token, status, onChangeStatus, onPublish}) => {
   const editTip = useMemo(() => css({
@@ -58,10 +58,29 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
             </Button>
           </Popover>
         </div>
+      ) : status === 'published' ? (
+        <Tooltip
+          position={Position.BOTTOM_LEFT}
+          content="Votre BAL est désormais publiée ! Pour la mettre à jour, il vous suffit de l'éditer ici et les changements seront appliqués d'ici quelques jours"
+        >
+          <Badge 
+            color={'green'}
+            marginRight={8}
+            paddingTop={2}
+            height={20}
+          >
+            Publiée
+          </Badge>
+        </Tooltip>
       ) : (
-        <Button marginRight={8} height={24} appearance='primary' onClick={onChangeStatus}>
-          {status === 'published' ? 'Mettre à jour' : 'Prêt à être publié' }
-        </Button>
+          <Button
+            marginRight={8}
+            height={24}
+            appearance='primary'
+            onClick={onChangeStatus}
+          >
+            Prêt à publier
+          </Button>
       )}
     </>
   )

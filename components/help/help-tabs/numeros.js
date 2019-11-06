@@ -97,7 +97,7 @@ const Numeros = () => {
                 </Pane>
               </ListItem>
               <ListItem>
-                Il vous désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <Icon icon='map-marker' color='info' /> sur la carte
+                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <Icon icon='map-marker' color='info' /> sur la carte
               </ListItem>
             </OrderedList>
           </SubTuto>
@@ -108,7 +108,7 @@ const Numeros = () => {
                 Cliquez sur le numéro
               </ListItem>
               <ListItem>
-                Il vous désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <Icon icon='map-marker' color='info' /> sur la carte
+                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <Icon icon='map-marker' color='info' /> sur la carte
               </ListItem>
             </OrderedList>
           </SubTuto>
@@ -172,7 +172,7 @@ const Numeros = () => {
           </OrderedList>
 
           <Paragraph>
-            Vous remarquerez un <Icon icon='comment' /> sur la ligne du numéro. Le survolez vous permettra de faire apparaitre le commentaire.
+            Vous remarquerez un <Icon icon='comment' /> sur la ligne du numéro. Le survoler vous permettra de faire apparaitre le commentaire.
           </Paragraph>
         </Tuto>
 

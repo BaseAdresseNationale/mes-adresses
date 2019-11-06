@@ -22,11 +22,11 @@ const Voies = () => {
           {before}
           <OrderedList margin={8}>
             <ListItem>
-              Cliquer sur le bouton
+              Cliquez sur le bouton
               <Button iconBefore='add' marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
             </ListItem>
             <ListItem>
-              Entrez le nom de la voie que vous souhaitez créer dans le champs <Strong size={500} fontStyle='italic'>Nom de la voie…</Strong>
+              Entrez le nom de la voie que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom de la voie…</Strong>
             </ListItem>
             <ListItem>
               Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
@@ -40,14 +40,14 @@ const Voies = () => {
 
             <OrderedList margin={8}>
               <ListItem>
-                Cliquer sur le bouton
+                Cliquez sur le bouton
                 <Button iconBefore='add' marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
               </ListItem>
               <ListItem>
                 Cochez la case <Strong size={500} fontStyle='italic'>Cette voie est un toponyme</Strong>
               </ListItem>
               <ListItem>
-                Entrez le nom du toponyme que vous souhaitez créer dans le champs <Strong size={500} fontStyle='italic'>Nom du toponyme…</Strong>
+                Entrez le nom du toponyme que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom du toponyme…</Strong>
               </ListItem>
               <ListItem>
                 Un <Icon icon='map-marker' color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
@@ -62,7 +62,7 @@ const Voies = () => {
             <OrderedList margin={8}>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
-                  Cliquer sur le bouton <IconButton marginLeft={8} icon='map-marker' />
+                  Cliquez sur le bouton <IconButton marginLeft={8} icon='map-marker' />
                 </Pane>
               </ListItem>
               <ListItem>
@@ -72,7 +72,7 @@ const Voies = () => {
                 Dans le nouveau menu qui est apparu, cochez la case <Strong size={500} fontStyle='italic'>Cette voie est un toponyme</Strong>
               </ListItem>
               <ListItem>
-                Entrez le nom du toponyme que vous souhaitez créer dans le champs <Strong size={500} fontStyle='italic'>Nom du toponyme…</Strong>
+                Entrez le nom du toponyme que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom du toponyme…</Strong>
               </ListItem>
               <ListItem>
                 Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
@@ -85,7 +85,7 @@ const Voies = () => {
           {before}
 
           <OrderedList margin={8}>
-            <ListItem>Cliquer sur le du nom de la voie</ListItem>
+            <ListItem>Cliquez sur le du nom de la voie</ListItem>
             <ListItem>Éditer le nom de la voie</ListItem>
             <ListItem>
               Pour terminer, cliquez sur <Button marginX={4} appearance='primary' intent='success'>Modifier</Button>
@@ -100,7 +100,7 @@ const Voies = () => {
           <SubTuto title='Depuis le menu latéral' icon='column-layout'>
             <OrderedList margin={8}>
               <ListItem>
-                Cliquer sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du nom de la voie
+                Cliquez sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du nom de la voie
               </ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
@@ -125,7 +125,7 @@ const Voies = () => {
 
           <OrderedList margin={8}>
             <ListItem>
-              Cliquer sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du nom de la voie
+              Cliquez sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du nom de la voie
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
