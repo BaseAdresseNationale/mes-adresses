@@ -106,8 +106,8 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
               >
                 Prête à être publiée
               </Badge>
-              <br />{}Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.
-              <br />{}Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.
+              <Paragraph>Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.</Paragraph>
+              <Paragraph>Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.</Paragraph>
             </Paragraph>
           </Dialog>
           <Badge

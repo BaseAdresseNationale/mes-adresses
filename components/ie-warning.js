@@ -2,10 +2,8 @@ import React from 'react'
 
 const IEWarning = () => (
   <div className='ie-warning'>
-    <p>
-        Votre navigateur <b>Internet Explorer</b> n‘est plus supporté par notre service. <br />
-      <b>Nous vous recommandons d‘utiliser un autre navigateur</b>
-    </p>
+    <p>Votre navigateur <b>Internet Explorer</b> n‘est plus supporté par notre service.</p>
+    <p><b>Nous vous recommandons d‘utiliser un autre navigateur</b></p>
 
     <style jsx>{`
         .ie-warning {
