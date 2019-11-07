@@ -2,7 +2,7 @@ import React, {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 
-import {Badge, Button, Dialog, Menu, Popover, Tooltip, Position} from 'evergreen-ui'
+import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position} from 'evergreen-ui'
 
 const Publication = ({token, status, onChangeStatus, onPublish}) => {
   const [isShown, setIsShown] = useState(false)
@@ -96,7 +96,7 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
               onChangeStatus()
             }}
           >
-            <p marginTop='default'>
+            <Paragraph marginTop='default'>
               <b>Votre Base Adresse Locale est maintenant &nbsp;</b>
               <Badge
                 color='blue'
@@ -109,7 +109,7 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
               </Badge>
               <br />{}Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.
               <br />{}Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.
-            </p>
+            </Paragraph>
           </Dialog>
           <Badge
             marginRight={8}
