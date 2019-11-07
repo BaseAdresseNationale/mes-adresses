@@ -2,7 +2,7 @@ import React, {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 
-import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position} from 'evergreen-ui'
+import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position, Strong} from 'evergreen-ui'
 
 const Publication = ({token, status, onChangeStatus, onPublish}) => {
   const [isShown, setIsShown] = useState(false)
@@ -97,11 +97,10 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
             }}
           >
             <Paragraph marginTop='default'>
-              <b>Votre Base Adresse Locale est maintenant &nbsp;</b>
+              <Strong>Votre Base Adresse Locale est maintenant &nbsp;</Strong>
               <Badge
                 color='blue'
                 marginRight={8}
-                marginBottom={20}
                 paddingTop={2}
                 height={20}
               >
