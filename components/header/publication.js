@@ -1,10 +1,12 @@
-import React, {useMemo} from 'react'
+import React, {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 
-import {Badge, Button, Menu, Popover, Tooltip, Position} from 'evergreen-ui'
+import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position, Strong} from 'evergreen-ui'
 
 const Publication = ({token, status, onChangeStatus, onPublish}) => {
+  const [isShown, setIsShown] = useState(false)
+
   const editTip = useMemo(() => css({
     '@media (max-width: 700px)': {
       marginLeft: -10,
@@ -32,6 +34,14 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
     <>
       {status === 'ready-to-publish' ? (
         <div>
+          <Badge
+            color='blue'
+            marginRight={8}
+            paddingTop={2}
+            height={20}
+          >
+            Prête à être publiée
+          </Badge>
           <Popover
             position={Position.BOTTOM_RIGHT}
             content={
@@ -63,8 +73,8 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
           position={Position.BOTTOM_LEFT}
           content="Votre BAL est désormais publiée ! Pour la mettre à jour, il vous suffit de l'éditer ici et les changements seront appliqués d'ici quelques jours"
         >
-          <Badge 
-            color={'green'}
+          <Badge
+            color='green'
             marginRight={8}
             paddingTop={2}
             height={20}
@@ -73,14 +83,49 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
           </Badge>
         </Tooltip>
       ) : (
+        <div>
+          <Dialog
+            isShown={isShown}
+            title='Félicitations, vous y êtes presque &nbsp; 🎉'
+            intent='success'
+            confirmLabel='Publier'
+            cancelLabel='Plus tard'
+            onConfirm={onPublish}
+            onCloseComplete={() => {
+              setIsShown(false)
+              onChangeStatus()
+            }}
+          >
+            <Paragraph marginTop='default'>
+              <Strong>Votre Base Adresse Locale est maintenant &nbsp;</Strong>
+              <Badge
+                color='blue'
+                marginRight={8}
+                paddingTop={2}
+                height={20}
+              >
+                Prête à être publiée
+              </Badge>
+              <Paragraph>Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.</Paragraph>
+              <Paragraph>Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.</Paragraph>
+            </Paragraph>
+          </Dialog>
+          <Badge
+            marginRight={8}
+            paddingTop={2}
+            height={20}
+          >
+            Brouillon
+          </Badge>
           <Button
             marginRight={8}
             height={24}
             appearance='primary'
-            onClick={onChangeStatus}
+            onClick={setIsShown}
           >
-            Prêt à publier
+            Publier
           </Button>
+        </div>
       )}
     </>
   )
