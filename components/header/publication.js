@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from 'react'
+import React, {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
-import { css } from 'glamor'
+import {css} from 'glamor'
 
-import { Badge, Button, Dialog, Menu, Popover, Tooltip, Position } from 'evergreen-ui'
+import {Badge, Button, Dialog, Menu, Popover, Tooltip, Position} from 'evergreen-ui'
 
-const Publication = ({ token, status, onChangeStatus, onPublish }) => {
+const Publication = ({token, status, onChangeStatus, onPublish}) => {
   const [isShown, setIsShown] = useState(false)
 
   const editTip = useMemo(() => css({
@@ -35,7 +35,7 @@ const Publication = ({ token, status, onChangeStatus, onPublish }) => {
       {status === 'ready-to-publish' ? (
         <div>
           <Badge
-            color={'blue'}
+            color='blue'
             marginRight={8}
             paddingTop={2}
             height={20}
@@ -74,7 +74,7 @@ const Publication = ({ token, status, onChangeStatus, onPublish }) => {
           content="Votre BAL est désormais publiée ! Pour la mettre à jour, il vous suffit de l'éditer ici et les changements seront appliqués d'ici quelques jours"
         >
           <Badge
-            color={'green'}
+            color='green'
             marginRight={8}
             paddingTop={2}
             height={20}
@@ -83,53 +83,51 @@ const Publication = ({ token, status, onChangeStatus, onPublish }) => {
           </Badge>
         </Tooltip>
       ) : (
-          <>
-            <Dialog
-              isShown={isShown}
-              title='Félicitations, vous y êtes presque &nbsp; 🎉'
-              intent='success'
-              confirmLabel={'Publier'}
-              cancelLabel={'Plus tard'}
-              onConfirm={onPublish}
-              onCloseComplete={() => {
-                setIsShown(false)
-                onChangeStatus()
-              }}
-            >
-              <p marginTop='default'>
-                <b>Votre Base Adresse Locale est maintenant &nbsp;</b>
-                <Badge
-                  color={'blue'}
-                  marginRight={8}
-                  marginBottom={20}
-                  paddingTop={2}
-                  height={20}
-                >
-                  Prête à être publiée
-                </Badge>
-                <br/>
-                Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale. 
-                <br/>
-                Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.
-              </p>
-            </Dialog>
-            <Badge
+        <div>
+          <Dialog
+            isShown={isShown}
+            title='Félicitations, vous y êtes presque &nbsp; 🎉'
+            intent='success'
+            confirmLabel='Publier'
+            cancelLabel='Plus tard'
+            onConfirm={onPublish}
+            onCloseComplete={() => {
+              setIsShown(false)
+              onChangeStatus()
+            }}
+          >
+            <p marginTop='default'>
+              <b>Votre Base Adresse Locale est maintenant &nbsp;</b>
+              <Badge
+                color='blue'
                 marginRight={8}
+                marginBottom={20}
                 paddingTop={2}
                 height={20}
               >
-              Brouillon
-            </Badge>
-            <Button
-              marginRight={8}
-              height={24}
-              appearance='primary'
-              onClick={setIsShown}
-            >
-              Publier
-            </Button>
-          </>
-        )}
+                Prête à être publiée
+              </Badge>
+              <br />{}Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.
+              <br />{}Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.
+            </p>
+          </Dialog>
+          <Badge
+            marginRight={8}
+            paddingTop={2}
+            height={20}
+          >
+            Brouillon
+          </Badge>
+          <Button
+            marginRight={8}
+            height={24}
+            appearance='primary'
+            onClick={setIsShown}
+          >
+            Publier
+          </Button>
+        </div>
+      )}
     </>
   )
 }

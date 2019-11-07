@@ -42,7 +42,7 @@ function useBounds(commune, voie) {
     }
 
     return null
-  }, [geojson, commune, voie])
+  }, [geojson, commune, voie, currentVoie])
 
   return useMemo(() => data ? bbox(data) : data, [data])
 }

@@ -83,7 +83,7 @@ function CreateAddress({onSubmit, onCancel}) {
 
   useEffect(() => {
     setSelectedVoie(isToponyme ? null : voie)
-  }, [isToponyme])
+  }, [isToponyme, voie])
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
