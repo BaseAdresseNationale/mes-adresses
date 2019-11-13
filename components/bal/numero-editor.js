@@ -157,14 +157,14 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
       </Button>
 
       {onCancel && (
-        <IconButton
+        <Button
           disabled={isLoading}
-          icon='undo'
-          appearance='minimal'
           marginLeft={8}
           display='inline-flex'
           onClick={onFormCancel}
-        />
+        >
+          Annuler
+        </Button>
       )}
     </Pane>
   )
