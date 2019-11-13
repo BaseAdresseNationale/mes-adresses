@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInput, Button, IconButton, Alert} from 'evergreen-ui'
+import {Pane, TextInput, Button, Alert} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 
