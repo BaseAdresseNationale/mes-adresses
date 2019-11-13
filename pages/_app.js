@@ -35,12 +35,15 @@ function App({error, Component, pageProps, query}) {
   const {innerWidth} = useWindowSize()
   const [isShown, setIsShown] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
-
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
 
-  const onToggle = useCallback(() => {
-    setIsHidden(isHidden => !isHidden)
+  const onToggle = useCallback(isEditing => {
+    if (isEditing === null) {
+      setIsHidden(isHidden => !isHidden)
+    } else {
+      setIsHidden(false)
+    }
   }, [])
 
   const leftOffset = useMemo(() => {
