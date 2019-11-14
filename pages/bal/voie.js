@@ -102,6 +102,19 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     }
   }, [voie._id, voies])
 
+  useEffect(() => {
+    if (editingId) {
+      setEdited(false)
+      setHovered(false)
+    }
+  }, [editingId])
+
+  useEffect(() => {
+    if (isEdited) {
+      setEditingId(null)
+    }
+  }, [isEdited, setEditingId])
+
   return (
     <>
       <Pane
