@@ -10,7 +10,7 @@ import useKeyEvent from '../../hooks/key-event'
 
 import PositionEditor from './position-editor'
 
-function VoieEditor({initialValue, onSubmit, onCancel}) {
+function VoieEditor({initialValue, onSubmit, onCancel, handleMouseEnter}) {
   const position = initialValue ? initialValue.positions[0] : null
 
   const [isLoading, setIsLoading] = useState(false)
@@ -88,7 +88,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   }, [enabled, initialValue, disableMarker, enableMarker, isToponyme, position])
 
   return (
-    <Pane is='form' onSubmit={onFormSubmit}>
+    <Pane is='form' onSubmit={onFormSubmit} onMouseEnter={handleMouseEnter}>
       <TextInput
         required
         display='block'
@@ -138,6 +138,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       {onCancel && (
         <Button
           disabled={isLoading}
+          appearance='minimal'
           marginLeft={8}
           display='inline-flex'
           onClick={onFormCancel}

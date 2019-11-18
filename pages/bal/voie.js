@@ -105,7 +105,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   useEffect(() => {
     if (editingId) {
       setEdited(false)
-      setHovered(false)
     }
   }, [editingId])
 
@@ -126,6 +125,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         {isEdited ? (
           <VoieEditor
             initialValue={{...voie, nom: voieName}}
+            handleMouseEnter={() => setHovered(false)}
             onSubmit={onEditVoie}
             onCancel={() => setEdited(false)}
           />
@@ -204,7 +204,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               </Table.Row>
             )}
             {editingId ? (
-              <Table.Row key={editedNumero._id} height='auto'>
+              <Table.Row height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
                     initialValue={editedNumero}

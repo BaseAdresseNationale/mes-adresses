@@ -152,14 +152,16 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
         </Alert>
       )}
 
-      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
+      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success' marginTop={16}>
         {submitLabel}
       </Button>
 
       {onCancel && (
         <Button
           disabled={isLoading}
+          appearance='minimal'
           marginLeft={8}
+          marginTop={16}
           display='inline-flex'
           onClick={onFormCancel}
         >

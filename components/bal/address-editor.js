@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, TextInput, Button, IconButton, Alert, Checkbox} from 'evergreen-ui'
+import {Pane, Heading, TextInput, Button, Alert, Checkbox} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
@@ -161,19 +161,21 @@ function CreateAddress({onSubmit, onCancel}) {
         </Alert>
       )}
 
-      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
+      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success' marginTop={16}>
         {submitLabel}
       </Button>
 
       {onCancel && (
-        <IconButton
+        <Button
           disabled={isLoading}
-          icon='undo'
           appearance='minimal'
           marginLeft={8}
+          marginTop={16}
           display='inline-flex'
           onClick={onFormCancel}
-        />
+        >
+          Annuler
+        </Button>
       )}
     </Pane>
   )

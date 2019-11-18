@@ -9,7 +9,6 @@ const Comment = ({input, limit, onChange}) => {
         Commentaire
       </Label>
       <Textarea
-        marginBottom={16}
         placeholder='Note…'
         value={input}
         onChange={input.length < limit ? onChange : () => {}}
