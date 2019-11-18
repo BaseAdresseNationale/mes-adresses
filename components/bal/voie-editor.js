@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInput, Button, Checkbox, IconButton, Alert} from 'evergreen-ui'
+import {Pane, TextInput, Button, Checkbox, Alert} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 
@@ -136,14 +136,15 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       </Button>
 
       {onCancel && (
-        <IconButton
+        <Button
           disabled={isLoading}
-          icon='undo'
           appearance='minimal'
           marginLeft={8}
           display='inline-flex'
           onClick={onFormCancel}
-        />
+        >
+          Annuler
+        </Button>
       )}
     </Pane>
   )

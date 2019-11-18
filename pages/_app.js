@@ -35,13 +35,16 @@ function App({error, Component, pageProps, query}) {
   const {innerWidth} = useWindowSize()
   const [isShown, setIsShown] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
-
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
 
-  const onToggle = useCallback(() => {
-    setIsHidden(isHidden => !isHidden)
-  }, [])
+  const onToggle = useCallback(isEditing => {
+    if (isEditing && isHidden) { // Force opening sidebar when numero is edited:
+      setIsHidden(false)
+    } else {
+      setIsHidden(isHidden => !isHidden)
+    }
+  }, [isHidden])
 
   const leftOffset = useMemo(() => {
     if (layout === 'sidebar' && !isHidden) {

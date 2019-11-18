@@ -1,11 +1,19 @@
-import React from 'react'
+import React, {useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Icon} from 'evergreen-ui'
 
 import useWindowSize from '../../hooks/window-size'
+import BalDataContext from '../../contexts/bal-data'
 
 function Sidebar({isHidden, top, size, onToggle, ...props}) {
   const {innerWidth} = useWindowSize()
+  const {editingId, setEditingId} = useContext(BalDataContext)
+
+  useEffect(() => {
+    if (editingId && isHidden) {
+      onToggle()
+    }
+  }, [editingId, isHidden, onToggle])
 
   return (
     <Pane
@@ -32,10 +40,10 @@ function Sidebar({isHidden, top, size, onToggle, ...props}) {
             paddingX={8}
             elevation={0}
             borderRadius={0}
-            onClick={onToggle}
+            onClick={() => editingId && !isHidden ? setEditingId(false) : onToggle(editingId)}
           >
             <Icon
-              icon={isHidden ? 'chevron-right' : 'chevron-left'}
+              icon={isHidden ? 'chevron-right' : editingId ? 'cross' : 'chevron-left'}
             />
           </Button>
         </Pane>

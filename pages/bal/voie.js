@@ -38,6 +38,8 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     ]
   })
 
+  const editedNumero = filtered.find(numero => numero._id === editingId)
+
   const onAdd = useCallback(async ({numero, suffixe, comment, positions}) => {
     await addNumero(voie._id, {
       numero,
@@ -100,6 +102,18 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     }
   }, [voie._id, voies])
 
+  useEffect(() => {
+    if (editingId) {
+      setEdited(false)
+    }
+  }, [editingId])
+
+  useEffect(() => {
+    if (isEdited) {
+      setEditingId(null)
+    }
+  }, [isEdited, setEditingId])
+
   return (
     <>
       <Pane
@@ -117,7 +131,10 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         ) : (
           <Heading
             style={{cursor: hovered ? 'text' : 'default'}}
-            onClick={() => setEdited(true)}
+            onClick={() => {
+              setEdited(true)
+              setHovered(false)
+            }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
@@ -188,28 +205,31 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 </Table.TextCell>
               </Table.Row>
             )}
-            {filtered.map(numero => numero._id === editingId ? (
-              <Table.Row key={numero._id} height='auto'>
+            {editingId ? (
+              <Table.Row height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
-                    initialValue={numero}
+                    initialValue={editedNumero}
                     onSubmit={onEdit}
                     onCancel={onCancel}
                   />
                 </Table.Cell>
               </Table.Row>
             ) : (
-              <TableRow
-                key={numero._id}
-                id={numero._id}
-                comment={numero.comment}
-                isSelectable={!isAdding && !editingId && numero.positions.length > 1}
-                label={numero.numeroComplet}
-                secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-                onEdit={onEnableEditing}
-                onRemove={onRemove}
-              />
-            ))}
+              filtered.map(numero => (
+                <TableRow
+                  {...numero}
+                  key={numero._id}
+                  id={numero._id}
+                  comment={numero.comment}
+                  isSelectable={!isAdding && !editingId && numero.positions.length > 1}
+                  label={numero.numeroComplet}
+                  secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+                  onEdit={onEnableEditing}
+                  onRemove={onRemove}
+                />
+              ))
+            )}
           </Table>
         ) : (
           <Pane padding={16}>
