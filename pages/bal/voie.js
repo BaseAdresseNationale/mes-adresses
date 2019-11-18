@@ -125,7 +125,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         {isEdited ? (
           <VoieEditor
             initialValue={{...voie, nom: voieName}}
-            handleMouseEnter={() => setHovered(false)}
             onSubmit={onEditVoie}
             onCancel={() => setEdited(false)}
           />

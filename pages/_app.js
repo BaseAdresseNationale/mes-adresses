@@ -39,8 +39,7 @@ function App({error, Component, pageProps, query}) {
   const Wrapper = layoutMap[layout] || Fullscreen
 
   const onToggle = useCallback(isEditing => {
-    if (isEditing && isHidden) {
-    // Force opening sidebar when numero is edited:
+    if (isEditing && isHidden) { // Force opening sidebar when numero is edited:
       setIsHidden(false)
     } else {
       setIsHidden(isHidden => !isHidden)
