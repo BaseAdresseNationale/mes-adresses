@@ -132,7 +132,10 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         ) : (
           <Heading
             style={{cursor: hovered ? 'text' : 'default'}}
-            onClick={() => setEdited(true)}
+            onClick={() => {
+              setEdited(true)
+              setHovered(false)
+            }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
