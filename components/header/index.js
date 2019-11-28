@@ -7,6 +7,7 @@ import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
+import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 import HelpContext from '../../contexts/help'
 import SettingsContext from '../../contexts/settings'
@@ -21,7 +22,8 @@ import Publication from './publication'
 const {publicRuntimeConfig} = getConfig()
 const ADRESSE_URL = publicRuntimeConfig.ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
-const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, refreshBaseLocale, onToggle}) => {
+const Header = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) => {
+  const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
   const {showHelp, setShowHelp} = useContext(HelpContext)
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token} = useContext(TokenContext)
@@ -36,7 +38,7 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
       const newStatus = baseLocale.status === 'draft' ? 'ready-to-publish' : 'draft'
       await updateBaseLocale(baseLocale._id, {status: newStatus}, token)
 
-      refreshBaseLocale()
+      await reloadBaseLocale()
     } catch (error) {
       setError(error.message)
     }
@@ -141,12 +143,10 @@ const Header = React.memo(({baseLocale, commune, voie, layout, isSidebarHidden, 
 })
 
 Header.propTypes = {
-  baseLocale: PropTypes.object.isRequired,
   commune: PropTypes.object,
   voie: PropTypes.object,
   layout: PropTypes.oneOf(['fullscreen', 'sidebar']).isRequired,
   isSidebarHidden: PropTypes.bool,
-  refreshBaseLocale: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired
 }
 

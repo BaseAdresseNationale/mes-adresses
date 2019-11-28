@@ -10,21 +10,23 @@ import TokenContext from '../contexts/token'
 import {useInput} from '../hooks/input'
 import SettingsContext from '../contexts/settings'
 import {validateEmail} from '../lib/utils/email'
+import BalDataContext from '../contexts/bal-data'
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const Settings = React.memo(({baseLocale}) => {
+const Settings = React.memo(({nomBaseLocale}) => {
+  const {showSettings, setShowSettings} = useContext(SettingsContext)
+  const {token, emails, reloadEmails} = useContext(TokenContext)
+  const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
+
   const [isLoading, setIsLoading] = useState(false)
   const [balEmails, setBalEmails] = useState([])
-  const [nom, onNomChange] = useInput(baseLocale.nom)
+  const [nomInput, onNomInputChange] = useInput(nomBaseLocale)
   const [email, onEmailChange, resetEmail] = useInput()
   const [hasChanges, setHasChanges] = useState(false)
   const [error, setError] = useState()
-
-  const {showSettings, setShowSettings} = useContext(SettingsContext)
-  const {token, emails} = useContext(TokenContext)
 
   useEffect(() => {
     setBalEmails(emails || [])
@@ -53,9 +55,12 @@ const Settings = React.memo(({baseLocale}) => {
 
     try {
       await updateBaseLocale(baseLocale._id, {
-        nom,
+        nom: nomInput,
         emails: balEmails
       }, token)
+
+      await reloadEmails()
+      await reloadBaseLocale()
 
       toaster.success('La Base Adresse Locale a été modifiée avec succès !')
     } catch (error) {
@@ -63,7 +68,7 @@ const Settings = React.memo(({baseLocale}) => {
     }
 
     setIsLoading(false)
-  }, [baseLocale._id, nom, balEmails, token])
+  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale])
 
   useEffect(() => {
     if (error) {
@@ -72,12 +77,12 @@ const Settings = React.memo(({baseLocale}) => {
   }, [email]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (nom !== baseLocale.nom || mailHasChanged(emails || [], balEmails)) {
+    if (nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails)) {
       setHasChanges(true)
     } else {
       setHasChanges(false)
     }
-  }, [nom, balEmails, emails, baseLocale.nom])
+  }, [nomInput, balEmails, emails, baseLocale.nom])
 
   return (
     <SideSheet
@@ -110,12 +115,12 @@ const Settings = React.memo(({baseLocale}) => {
               required
               name='nom'
               id='nom'
-              value={nom}
+              value={nomInput || baseLocale.nom}
               maxWidth={600}
               disabled={isLoading}
               label='Nom'
               placeholder='Nom'
-              onChange={onNomChange}
+              onChange={onNomInputChange}
             />
 
             <Label display='block' marginBottom={4}>
@@ -195,17 +200,8 @@ const Settings = React.memo(({baseLocale}) => {
   )
 })
 
-Settings.getInitialProps = ({baseLocale}) => {
-  return {
-    layout: 'fullscreen',
-    baseLocale
-  }
+Settings.propTypes = {
+  nomBaseLocale: PropTypes.string.isRequired
 }
 
-Settings.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired
-}
 export default Settings
