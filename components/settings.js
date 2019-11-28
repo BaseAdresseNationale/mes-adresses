@@ -8,6 +8,7 @@ import TokenContext from '../contexts/token'
 
 import {useInput} from '../hooks/input'
 import SettingsContext from '../contexts/settings'
+import {validateEmail} from '../lib/utils/email'
 
 const Settings = React.memo(({baseLocale}) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -30,13 +31,18 @@ const Settings = React.memo(({baseLocale}) => {
   const onAddEmail = useCallback(e => {
     e.preventDefault()
 
+    if (validateEmail(email)) {
     setBalEmails(emails => [...emails, email])
     resetEmail()
+    } else {
+      setError('Cet email n’est pas valide')
+    }
   }, [email, resetEmail])
 
   const onSubmit = useCallback(async e => {
     e.preventDefault()
 
+    setError(null)
     setIsLoading(true)
 
     try {
@@ -51,7 +57,13 @@ const Settings = React.memo(({baseLocale}) => {
     }
 
     setIsLoading(false)
-  }, [baseLocale._id, nom, balEmails, token])
+
+  useEffect(() => {
+    if (error) {
+      setError(null)
+    }
+  }, [email]) // eslint-disable-line react-hooks/exhaustive-deps
+
 
   return (
     <SideSheet
@@ -128,6 +140,7 @@ const Settings = React.memo(({baseLocale}) => {
                 width='100%'
                 placeholder='Ajouter une adresse email…'
                 maxWidth={400}
+                isInvalid={Boolean(error)}
                 value={email}
                 onChange={onEmailChange}
               />
