@@ -16,6 +16,7 @@ import Map from '../components/map'
 import Help from '../components/help'
 
 import {HelpContextProvider} from '../contexts/help'
+import {SettingsContextProvider} from '../contexts/settings'
 import {MarkerContextProvider} from '../contexts/marker'
 import {TokenContextProvider} from '../contexts/token'
 import {BalDataContextProvider} from '../contexts/bal-data'
@@ -23,6 +24,7 @@ import {BalDataContextProvider} from '../contexts/bal-data'
 import useWindowSize from '../hooks/window-size'
 import useError from '../hooks/error'
 import {getPublishedBasesLocales} from '../lib/adresse-backend'
+import Settings from '../components/settings'
 
 const layoutMap = {
   fullscreen: Fullscreen,
@@ -119,14 +121,17 @@ function App({error, Component, pageProps, query}) {
               <Help />
 
               {baseLocale && (
-                <Header
-                  {...pageProps}
-                  baseLocale={baseLocale}
-                  layout={layout}
-                  isSidebarHidden={isHidden}
-                  refreshBaseLocale={refreshBaseLocale}
-                  onToggle={onToggle}
-                />
+                <SettingsContextProvider>
+                  <Settings baseLocale={baseLocale} />
+                  <Header
+                    {...pageProps}
+                    baseLocale={baseLocale}
+                    layout={layout}
+                    isSidebarHidden={isHidden}
+                    refreshBaseLocale={refreshBaseLocale}
+                    onToggle={onToggle}
+                  />
+                </SettingsContextProvider>
               )}
 
               <Map

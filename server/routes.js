@@ -20,13 +20,6 @@ module.exports = app => {
     })
   })
 
-  router.get('/bal/:balId/settings', (req, res) => {
-    app.render(req, res, '/bal/settings', {
-      ...req.query,
-      balId: req.params.balId
-    })
-  })
-
   router.get('/bal/:balId/:token', (req, res) => {
     app.render(req, res, '/bal', {
       ...req.query,

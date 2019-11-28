@@ -1,12 +1,13 @@
 import React, {useState, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, TextInputField, TextInput, IconButton, Button, Alert, Spinner, Label, toaster} from 'evergreen-ui'
+import {SideSheet, Pane, Heading, TextInputField, TextInput, IconButton, Button, Alert, Spinner, Label, toaster} from 'evergreen-ui'
 
-import {updateBaseLocale} from '../../lib/bal-api'
+import {updateBaseLocale} from '../lib/bal-api'
 
-import TokenContext from '../../contexts/token'
+import TokenContext from '../contexts/token'
 
-import {useInput} from '../../hooks/input'
+import {useInput} from '../hooks/input'
+import SettingsContext from '../contexts/settings'
 
 const Settings = React.memo(({baseLocale}) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -15,6 +16,7 @@ const Settings = React.memo(({baseLocale}) => {
   const [email, onEmailChange, resetEmail] = useInput()
   const [error, setError] = useState()
 
+  const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails} = useContext(TokenContext)
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const Settings = React.memo(({baseLocale}) => {
         emails: balEmails
       }, token)
 
-      toaster.success('La Base Adresse Locale a été modifiée avec succès !')
+      toaster.success('La Base Adresse Locale a été modifiée avec succès !')
     } catch (error) {
       setError(error.message)
     }
@@ -52,7 +54,10 @@ const Settings = React.memo(({baseLocale}) => {
   }, [baseLocale._id, nom, balEmails, token])
 
   return (
-    <>
+    <SideSheet
+      isShown={showSettings}
+      onCloseComplete={() => setShowSettings(false)}
+    >
       <Pane
         flexShrink={0}
         elevation={0}
@@ -159,7 +164,7 @@ const Settings = React.memo(({baseLocale}) => {
           <Spinner size={64} margin='auto' />
         )}
       </Pane>
-    </>
+    </SideSheet>
   )
 })
 
