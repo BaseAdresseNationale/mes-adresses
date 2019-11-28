@@ -55,7 +55,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
 
     try {
       await updateBaseLocale(baseLocale._id, {
-        nom: nomInput,
+        nom: nomInput.trim(),
         emails: balEmails
       }, token)
 
@@ -115,7 +115,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
               required
               name='nom'
               id='nom'
-              value={nomInput || baseLocale.nom}
+              value={nomInput}
               maxWidth={600}
               disabled={isLoading}
               label='Nom'
@@ -159,7 +159,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
                 width='100%'
                 placeholder='Ajouter une adresse email…'
                 maxWidth={400}
-                isInvalid={Boolean(error)}
+                isInvalid={Boolean(error && error.includes('mail'))}
                 value={email}
                 onChange={onEmailChange}
               />
