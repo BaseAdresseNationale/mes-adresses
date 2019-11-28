@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {SideSheet, Pane, Heading, TextInputField, TextInput, IconButton, Button, Alert, Spinner, Label, toaster} from 'evergreen-ui'
+import {isEqual} from 'lodash'
 
 import {updateBaseLocale} from '../lib/bal-api'
 
@@ -10,11 +11,16 @@ import {useInput} from '../hooks/input'
 import SettingsContext from '../contexts/settings'
 import {validateEmail} from '../lib/utils/email'
 
+const mailHasChanged = (listA, listB) => {
+  return !isEqual([...listA].sort(), [...listB].sort())
+}
+
 const Settings = React.memo(({baseLocale}) => {
   const [isLoading, setIsLoading] = useState(false)
   const [balEmails, setBalEmails] = useState([])
   const [nom, onNomChange] = useInput(baseLocale.nom)
   const [email, onEmailChange, resetEmail] = useInput()
+  const [hasChanges, setHasChanges] = useState(false)
   const [error, setError] = useState()
 
   const {showSettings, setShowSettings} = useContext(SettingsContext)
@@ -32,8 +38,8 @@ const Settings = React.memo(({baseLocale}) => {
     e.preventDefault()
 
     if (validateEmail(email)) {
-    setBalEmails(emails => [...emails, email])
-    resetEmail()
+      setBalEmails(emails => [...emails, email])
+      resetEmail()
     } else {
       setError('Cet email n’est pas valide')
     }
@@ -57,6 +63,7 @@ const Settings = React.memo(({baseLocale}) => {
     }
 
     setIsLoading(false)
+  }, [baseLocale._id, nom, balEmails, token])
 
   useEffect(() => {
     if (error) {
@@ -64,6 +71,13 @@ const Settings = React.memo(({baseLocale}) => {
     }
   }, [email]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (nom !== baseLocale.nom || mailHasChanged(emails || [], balEmails)) {
+      setHasChanges(true)
+    } else {
+      setHasChanges(false)
+    }
+  }, [nom, balEmails, emails, baseLocale.nom])
 
   return (
     <SideSheet
@@ -163,7 +177,7 @@ const Settings = React.memo(({baseLocale}) => {
               </Alert>
             )}
 
-            <Button height={40} marginTop={8} type='submit' appearance='primary' isLoading={isLoading}>
+            <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanges} isLoading={isLoading}>
               {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
           </Pane>
