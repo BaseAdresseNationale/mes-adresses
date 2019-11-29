@@ -16,13 +16,13 @@ import Map from '../components/map'
 import Help from '../components/help'
 
 import {HelpContextProvider} from '../contexts/help'
+import {SettingsContextProvider} from '../contexts/settings'
 import {MarkerContextProvider} from '../contexts/marker'
 import {TokenContextProvider} from '../contexts/token'
 import {BalDataContextProvider} from '../contexts/bal-data'
 
 import useWindowSize from '../hooks/window-size'
-import useError from '../hooks/error'
-import {getPublishedBasesLocales} from '../lib/adresse-backend'
+import Settings from '../components/settings'
 
 const layoutMap = {
   fullscreen: Fullscreen,
@@ -30,8 +30,6 @@ const layoutMap = {
 }
 
 function App({error, Component, pageProps, query}) {
-  const [baseLocale, setBaseLocale] = useState(null)
-  const [setError] = useError(null)
   const {innerWidth} = useWindowSize()
   const [isShown, setIsShown] = useState(false)
   const [isHidden, setIsHidden] = useState(false)
@@ -55,38 +53,14 @@ function App({error, Component, pageProps, query}) {
   }, [layout, isHidden])
 
   const topOffset = useMemo(() => {
-    return baseLocale ? 40 : 0
-  }, [baseLocale])
+    return pageProps.baseLocale ? 40 : 0
+  }, [pageProps.baseLocale])
 
   useEffect(() => {
     if (innerWidth && innerWidth < 700) {
       setIsShown(true)
     }
   }, [innerWidth])
-
-  useEffect(() => {
-    const expandWithPublished = async baseLocale => {
-      const publishedBasesLocales = await getPublishedBasesLocales()
-      baseLocale.published = Boolean(publishedBasesLocales.find(bal => bal._id === baseLocale._id))
-      setBaseLocale(baseLocale)
-    }
-
-    if (pageProps.baseLocale) {
-      const {baseLocale} = pageProps
-      expandWithPublished(baseLocale)
-    } else {
-      setBaseLocale(null)
-    }
-  }, [pageProps, pageProps.baseLocale])
-
-  const refreshBaseLocale = async () => {
-    try {
-      const baseLocale = await getBaseLocale(query.balId)
-      setBaseLocale(baseLocale)
-    } catch (error) {
-      setError(error.message)
-    }
-  }
 
   return (
     <Container>
@@ -118,15 +92,16 @@ function App({error, Component, pageProps, query}) {
 
               <Help />
 
-              {baseLocale && (
-                <Header
-                  {...pageProps}
-                  baseLocale={baseLocale}
-                  layout={layout}
-                  isSidebarHidden={isHidden}
-                  refreshBaseLocale={refreshBaseLocale}
-                  onToggle={onToggle}
-                />
+              {pageProps.baseLocale && (
+                <SettingsContextProvider>
+                  <Settings nomBaseLocale={pageProps.baseLocale.nom} />
+                  <Header
+                    {...pageProps}
+                    layout={layout}
+                    isSidebarHidden={isHidden}
+                    onToggle={onToggle}
+                  />
+                </SettingsContextProvider>
               )}
 
               <Map
@@ -134,7 +109,6 @@ function App({error, Component, pageProps, query}) {
                 left={leftOffset}
                 animate={layout === 'sidebar'}
                 interactive={layout === 'sidebar'}
-                baseLocale={baseLocale}
                 commune={pageProps.commune}
                 voie={pageProps.voie}
               />

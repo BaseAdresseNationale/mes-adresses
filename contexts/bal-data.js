@@ -1,7 +1,9 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 
-import {getCommuneGeoJson, getNumeros, getVoies, getVoie} from '../lib/bal-api'
+import {getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale} from '../lib/bal-api'
+
+import {getPublishedBasesLocales} from '../lib/adresse-backend'
 
 import TokenContext from './token'
 
@@ -13,6 +15,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
   const [voie, setVoie] = useState()
+  const [baseLocale, setBaseLocal] = useState({})
 
   const {token} = useContext(TokenContext)
 
@@ -58,6 +61,16 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
     }
   }, [idVoie])
 
+  const reloadBaseLocale = useCallback(async () => {
+    if (balId) {
+      const baseLocale = await getBaseLocale(balId)
+      const publishedBasesLocales = await getPublishedBasesLocales()
+      baseLocale.published = Boolean(publishedBasesLocales.find(bal => bal._id === baseLocale._id))
+
+      setBaseLocal(baseLocale)
+    }
+  }, [balId])
+
   const setEditingId = useCallback(editingId => {
     if (token) {
       _setEditingId(editingId)
@@ -85,19 +98,25 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
     reloadVoies()
   }, [reloadVoies])
 
+  useEffect(() => {
+    reloadBaseLocale()
+  }, [reloadBaseLocale])
+
   return (
     <BalDataContext.Provider
       value={{
         editingId,
         editingItem,
         geojson,
+        baseLocale,
         voie,
         numeros,
         voies,
         toponymes,
         setEditingId,
         reloadNumeros,
-        reloadVoies
+        reloadVoies,
+        reloadBaseLocale
       }}
       {...props}
     />

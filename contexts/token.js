@@ -42,8 +42,12 @@ export function TokenContextProvider({balId, token, ...props}) {
     }
   }, [verify, balId, token])
 
+  const reloadEmails = useCallback(async () => {
+    verify(getBalToken(balId))
+  }, [verify, balId])
+
   return (
-    <TokenContext.Provider value={state} {...props} />
+    <TokenContext.Provider value={{...state, reloadEmails}} {...props} />
   )
 }
 

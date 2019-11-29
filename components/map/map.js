@@ -74,7 +74,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
+function Map({interactive, style: defaultStyle, commune, voie}) {
   const [map, setMap] = useState(null)
   const [showNumeros, setShowNumeros] = useState(true)
   const [openForm, setOpenForm] = useState(false)
@@ -84,7 +84,7 @@ function Map({interactive, style: defaultStyle, baseLocale, commune, voie}) {
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const {numeros, reloadNumeros, toponymes, reloadVoies, editingId} = useContext(BalDataContext)
+  const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId} = useContext(BalDataContext)
   const {enableMarker, disableMarker} = useContext(MarkerContext)
   const {token} = useContext(TokenContext)
 
@@ -306,7 +306,6 @@ Map.propTypes = {
     'ortho',
     'vector'
   ]),
-  baseLocale: PropTypes.object,
   commune: PropTypes.object,
   voie: PropTypes.object
 }
@@ -314,7 +313,6 @@ Map.propTypes = {
 Map.defaultProps = {
   interactive: true,
   style: 'vector',
-  baseLocale: null,
   commune: null,
   voie: null
 }

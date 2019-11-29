@@ -1,21 +1,32 @@
 import React, {useState, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, TextInputField, TextInput, IconButton, Button, Alert, Spinner, Label, toaster} from 'evergreen-ui'
+import {SideSheet, Pane, Heading, TextInputField, TextInput, IconButton, Button, Alert, Spinner, Label, toaster} from 'evergreen-ui'
+import {isEqual} from 'lodash'
 
-import {updateBaseLocale} from '../../lib/bal-api'
+import {updateBaseLocale} from '../lib/bal-api'
 
-import TokenContext from '../../contexts/token'
+import TokenContext from '../contexts/token'
 
-import {useInput} from '../../hooks/input'
+import {useInput} from '../hooks/input'
+import SettingsContext from '../contexts/settings'
+import {validateEmail} from '../lib/utils/email'
+import BalDataContext from '../contexts/bal-data'
 
-const Settings = React.memo(({baseLocale}) => {
+const mailHasChanged = (listA, listB) => {
+  return !isEqual([...listA].sort(), [...listB].sort())
+}
+
+const Settings = React.memo(({nomBaseLocale}) => {
+  const {showSettings, setShowSettings} = useContext(SettingsContext)
+  const {token, emails, reloadEmails} = useContext(TokenContext)
+  const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
+
   const [isLoading, setIsLoading] = useState(false)
   const [balEmails, setBalEmails] = useState([])
-  const [nom, onNomChange] = useInput(baseLocale.nom)
+  const [nomInput, onNomInputChange] = useInput(nomBaseLocale)
   const [email, onEmailChange, resetEmail] = useInput()
+  const [hasChanges, setHasChanges] = useState(false)
   const [error, setError] = useState()
-
-  const {token, emails} = useContext(TokenContext)
 
   useEffect(() => {
     setBalEmails(emails || [])
@@ -28,31 +39,56 @@ const Settings = React.memo(({baseLocale}) => {
   const onAddEmail = useCallback(e => {
     e.preventDefault()
 
-    setBalEmails(emails => [...emails, email])
-    resetEmail()
+    if (validateEmail(email)) {
+      setBalEmails(emails => [...emails, email])
+      resetEmail()
+    } else {
+      setError('Cet email n’est pas valide')
+    }
   }, [email, resetEmail])
 
   const onSubmit = useCallback(async e => {
     e.preventDefault()
 
+    setError(null)
     setIsLoading(true)
 
     try {
       await updateBaseLocale(baseLocale._id, {
-        nom,
+        nom: nomInput.trim(),
         emails: balEmails
       }, token)
 
-      toaster.success('La Base Adresse Locale a été modifiée avec succès !')
+      await reloadEmails()
+      await reloadBaseLocale()
+
+      toaster.success('La Base Adresse Locale a été modifiée avec succès !')
     } catch (error) {
       setError(error.message)
     }
 
     setIsLoading(false)
-  }, [baseLocale._id, nom, balEmails, token])
+  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale])
+
+  useEffect(() => {
+    if (error) {
+      setError(null)
+    }
+  }, [email]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails)) {
+      setHasChanges(true)
+    } else {
+      setHasChanges(false)
+    }
+  }, [nomInput, balEmails, emails, baseLocale.nom])
 
   return (
-    <>
+    <SideSheet
+      isShown={showSettings}
+      onCloseComplete={() => setShowSettings(false)}
+    >
       <Pane
         flexShrink={0}
         elevation={0}
@@ -79,12 +115,12 @@ const Settings = React.memo(({baseLocale}) => {
               required
               name='nom'
               id='nom'
-              value={nom}
+              value={nomInput}
               maxWidth={600}
               disabled={isLoading}
               label='Nom'
               placeholder='Nom'
-              onChange={onNomChange}
+              onChange={onNomInputChange}
             />
 
             <Label display='block' marginBottom={4}>
@@ -123,6 +159,7 @@ const Settings = React.memo(({baseLocale}) => {
                 width='100%'
                 placeholder='Ajouter une adresse email…'
                 maxWidth={400}
+                isInvalid={Boolean(error && error.includes('mail'))}
                 value={email}
                 onChange={onEmailChange}
               />
@@ -145,7 +182,7 @@ const Settings = React.memo(({baseLocale}) => {
               </Alert>
             )}
 
-            <Button height={40} marginTop={8} type='submit' appearance='primary' isLoading={isLoading}>
+            <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanges} isLoading={isLoading}>
               {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
           </Pane>
@@ -159,21 +196,12 @@ const Settings = React.memo(({baseLocale}) => {
           <Spinner size={64} margin='auto' />
         )}
       </Pane>
-    </>
+    </SideSheet>
   )
 })
 
-Settings.getInitialProps = ({baseLocale}) => {
-  return {
-    layout: 'fullscreen',
-    baseLocale
-  }
+Settings.propTypes = {
+  nomBaseLocale: PropTypes.string.isRequired
 }
 
-Settings.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired
-}
 export default Settings
