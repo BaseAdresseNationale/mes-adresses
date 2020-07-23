@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {orderBy} from 'lodash-es'
+import {orderBy, deburr} from 'lodash-es'
 import {Pane, Heading, Paragraph, Button, Table, Text} from 'evergreen-ui'
 
 import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
@@ -141,7 +141,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
               </Table.TextCell>
             </Table.Row>
           )}
-          {orderBy(filtered, [v => v.nom.toLowerCase()], ['asc'])
+          {orderBy(filtered, [v => deburr(v.nom.toLowerCase())], ['asc'])
             .map(commune => (
               <TableRow
                 key={commune.code}

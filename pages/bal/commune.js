@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {orderBy} from 'lodash-es'
+import {orderBy, deburr} from 'lodash-es'
 import {Pane, Heading, Text, Paragraph, Table, Button} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie} from '../../lib/bal-api'
@@ -172,7 +172,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               </Table.TextCell>
             </Table.Row>
           )}
-          {orderBy(filtered, [v => v.nom.toLowerCase()], ['asc'])
+          {orderBy(filtered, [v => deburr(v.nom.toLowerCase())], ['asc'])
             .map(voie => voie._id === editingId ? (
               <Table.Row key={voie._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
