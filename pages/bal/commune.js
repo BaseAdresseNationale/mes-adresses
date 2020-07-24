@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {orderBy, deburr} from 'lodash-es'
+import {sortBy} from 'lodash-es'
 import {Pane, Heading, Text, Paragraph, Table, Button} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie} from '../../lib/bal-api'
@@ -15,6 +15,7 @@ import useHelp from '../../hooks/help'
 import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
 import VoieEditor from '../../components/bal/voie-editor'
+import {normalizeSort} from '../../lib/normalize'
 
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
@@ -172,7 +173,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               </Table.TextCell>
             </Table.Row>
           )}
-          {orderBy(filtered, [v => deburr(v.nom.toLowerCase())], ['asc'])
+          {sortBy(filtered, v => normalizeSort(v.nom))
             .map(voie => voie._id === editingId ? (
               <Table.Row key={voie._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>

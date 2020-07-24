@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {orderBy, deburr} from 'lodash-es'
+import {sortBy} from 'lodash-es'
 import {Pane, Heading, Paragraph, Button, Table, Text} from 'evergreen-ui'
 
 import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
@@ -16,6 +16,7 @@ import useFuse from '../../hooks/fuse'
 import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
 import CommuneEditor from '../../components/bal/commune-editor'
+import {normalizeSort} from '../../lib/normalize'
 
 const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [communes, setCommunes] = useState(defaultCommunes)
@@ -141,7 +142,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
               </Table.TextCell>
             </Table.Row>
           )}
-          {orderBy(filtered, [v => deburr(v.nom.toLowerCase())], ['asc'])
+          {sortBy(filtered, v => normalizeSort(v.nom))
             .map(commune => (
               <TableRow
                 key={commune.code}
