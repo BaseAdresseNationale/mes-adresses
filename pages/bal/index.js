@@ -1,6 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
+import {sortBy} from 'lodash-es'
 import {Pane, Heading, Paragraph, Button, Table, Text} from 'evergreen-ui'
 
 import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
@@ -15,6 +16,7 @@ import useFuse from '../../hooks/fuse'
 import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
 import CommuneEditor from '../../components/bal/commune-editor'
+import {normalizeSort} from '../../lib/normalize'
 
 const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [communes, setCommunes] = useState(defaultCommunes)
@@ -140,16 +142,17 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
               </Table.TextCell>
             </Table.Row>
           )}
-          {filtered.map(commune => (
-            <TableRow
-              key={commune.code}
-              id={commune.code}
-              code={commune.code}
-              label={commune.nom}
-              onSelect={onSelect}
-              onRemove={id => setToRemove(id)}
-            />
-          ))}
+          {sortBy(filtered, v => normalizeSort(v.nom))
+            .map(commune => (
+              <TableRow
+                key={commune.code}
+                id={commune.code}
+                code={commune.code}
+                label={commune.nom}
+                onSelect={onSelect}
+                onRemove={id => setToRemove(id)}
+              />
+            ))}
         </Table>
       </Pane>
     </>

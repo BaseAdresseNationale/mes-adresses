@@ -1,6 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
+import {sortBy} from 'lodash-es'
 import {Pane, Heading, Text, Paragraph, Table, Button} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie} from '../../lib/bal-api'
@@ -14,6 +15,7 @@ import useHelp from '../../hooks/help'
 import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
 import VoieEditor from '../../components/bal/voie-editor'
+import {normalizeSort} from '../../lib/normalize'
 
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
@@ -171,28 +173,29 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               </Table.TextCell>
             </Table.Row>
           )}
-          {filtered.map(voie => voie._id === editingId ? (
-            <Table.Row key={voie._id} height='auto'>
-              <Table.Cell display='block' paddingY={12} background='tint1'>
-                <VoieEditor
-                  initialValue={voie}
-                  onSubmit={onEdit}
-                  onCancel={onCancel}
-                />
-              </Table.Cell>
-            </Table.Row>
-          ) : (
-            <TableRow
-              key={voie._id}
-              id={voie._id}
-              isSelectable={!isAdding && !isPopulating && !editingId && voie.positions.length === 0}
-              label={voie.nom}
-              secondary={voie.positions.length === 1 ? 'Toponyme' : null}
-              onSelect={onSelect}
-              onEdit={onEnableEditing}
-              onRemove={id => setToRemove(id)}
-            />
-          ))}
+          {sortBy(filtered, v => normalizeSort(v.nom))
+            .map(voie => voie._id === editingId ? (
+              <Table.Row key={voie._id} height='auto'>
+                <Table.Cell display='block' paddingY={12} background='tint1'>
+                  <VoieEditor
+                    initialValue={voie}
+                    onSubmit={onEdit}
+                    onCancel={onCancel}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            ) : (
+              <TableRow
+                key={voie._id}
+                id={voie._id}
+                isSelectable={!isAdding && !isPopulating && !editingId && voie.positions.length === 0}
+                label={voie.nom}
+                secondary={voie.positions.length === 1 ? 'Toponyme' : null}
+                onSelect={onSelect}
+                onEdit={onEnableEditing}
+                onRemove={id => setToRemove(id)}
+              />
+            ))}
         </Table>
       </Pane>
       {token && voies && voies.length === 0 && (
