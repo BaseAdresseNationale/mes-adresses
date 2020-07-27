@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {sortBy} from 'lodash-es'
+import {sortBy} from 'lodash'
 import {Pane, Heading, Text, Paragraph, Table, Button} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie} from '../../lib/bal-api'

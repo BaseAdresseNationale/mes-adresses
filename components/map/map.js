@@ -2,8 +2,9 @@ import React, {useState, useMemo, useEffect, useCallback, useContext} from 'reac
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
-import {Pane} from 'evergreen-ui'
+// import {Pane} from 'evergreen-ui'
 import {fromJS} from 'immutable'
+import {Pane, Popover, Icon, Button, Position} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
@@ -13,7 +14,7 @@ import {addNumero, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
 
-import {vector, ortho} from './styles'
+import {vector, ortho, vectorCadastre} from './styles'
 
 import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
@@ -56,6 +57,9 @@ function getBaseStyle(style) {
     case 'vector':
       return vector
 
+    case 'vector-cadastre':
+      return vectorCadastre
+
     default:
       return vector
   }
@@ -83,6 +87,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
+  const [showPopover, setShowPopover] = useState(false)
 
   const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId} = useContext(BalDataContext)
   const {enableMarker, disableMarker} = useContext(MarkerContext)
@@ -226,7 +231,41 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           {interactive && (
             <>
               <NavControl onViewportChange={onViewportChange} />
-              <StyleSwitch style={style} setStyle={setStyle} />
+              <Pane
+                position='absolute'
+                display='flex'
+                left={16}
+                bottom={16}
+                border='none'
+                elevation={2}
+                zIndex={2}
+                cursor='pointer'
+                onClick={() => setShowPopover(!showPopover)}
+              >
+                <Popover
+                  content={
+                    <Pane
+                      width={200}
+                      height={140}
+                      display='flex'
+                      alignItems='center'
+                      justifyContent='space-around'
+                      flexDirection='column'
+                      elevation={2}
+                      margin='auto'
+                      style={{backgroundColor: '#f5f6f7'}}
+                    >
+                      <Button onClick={() => setStyle('vector')}>Vectoriel</Button>
+                      <Button onClick={() => setStyle('ortho')}>Satellite</Button>
+                      <Button onClick={() => setStyle('vector-cadastre')}>Vectoriel + Cadastre</Button>
+                    </Pane>
+                  }
+                  position={Position.RIGHT}
+                  isShown={showPopover}
+                >
+                  <Button><Icon icon='map' /></Button>
+                </Popover>
+              </Pane>
             </>
           )}
 
@@ -304,7 +343,8 @@ Map.propTypes = {
   interactive: PropTypes.bool,
   style: PropTypes.oneOf([
     'ortho',
-    'vector'
+    'vector',
+    'vector-cadastre'
   ]),
   commune: PropTypes.object,
   voie: PropTypes.object
