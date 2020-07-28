@@ -1,5 +1,5 @@
 import {useMemo, useContext} from 'react'
-import {groupBy} from 'lodash-es'
+import {groupBy} from 'lodash'
 import computeCentroid from '@turf/centroid'
 import randomColor from 'randomcolor'
 

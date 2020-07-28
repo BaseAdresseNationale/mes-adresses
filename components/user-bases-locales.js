@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {Pane, Heading} from 'evergreen-ui'
-import {map} from 'lodash-es'
+import {map} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
 
