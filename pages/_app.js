@@ -94,7 +94,7 @@ function App({error, Component, pageProps, query}) {
 
               {pageProps.baseLocale && (
                 <SettingsContextProvider>
-                  <Settings nomBaseLocale={pageProps.baseLocale.nom} />
+                  <Settings nomBaseLocale={pageProps.baseLocale.nom} isEnableComplement={pageProps.baseLocale.enableComplement} />
                   <Header
                     {...pageProps}
                     layout={layout}

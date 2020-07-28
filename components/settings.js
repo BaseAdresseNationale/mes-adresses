@@ -1,13 +1,26 @@
 import React, {useState, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {SideSheet, Pane, Heading, TextInputField, TextInput, IconButton, Button, Alert, Spinner, Label, toaster} from 'evergreen-ui'
+import {
+  SideSheet,
+  Pane,
+  Heading,
+  TextInputField,
+  TextInput,
+  IconButton,
+  Button,
+  Alert,
+  Spinner,
+  Label,
+  toaster,
+  Switch
+} from 'evergreen-ui'
 import {isEqual} from 'lodash'
 
 import {updateBaseLocale} from '../lib/bal-api'
 
 import TokenContext from '../contexts/token'
 
-import {useInput} from '../hooks/input'
+import {useInput, useCheckboxInput} from '../hooks/input'
 import SettingsContext from '../contexts/settings'
 import {validateEmail} from '../lib/utils/email'
 import BalDataContext from '../contexts/bal-data'
@@ -16,7 +29,17 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const Settings = React.memo(({nomBaseLocale}) => {
+const enableComplementHasChanged = (baseLocale, enableComplement) => {
+  const hasAdditionalFieldProperty = Object.prototype.hasOwnProperty.call(baseLocale, 'enableComplement')
+
+  if (!hasAdditionalFieldProperty) {
+    return enableComplement !== false
+  }
+
+  return enableComplement !== baseLocale.enableComplement
+}
+
+const Settings = React.memo(({nomBaseLocale, isEnableComplement}) => {
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails, reloadEmails} = useContext(TokenContext)
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
@@ -27,6 +50,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
   const [email, onEmailChange, resetEmail] = useInput()
   const [hasChanges, setHasChanges] = useState(false)
   const [error, setError] = useState()
+  const [enableComplement, onEnableComplement] = useCheckboxInput(Boolean(isEnableComplement))
 
   useEffect(() => {
     setBalEmails(emails || [])
@@ -56,7 +80,8 @@ const Settings = React.memo(({nomBaseLocale}) => {
     try {
       await updateBaseLocale(baseLocale._id, {
         nom: nomInput.trim(),
-        emails: balEmails
+        emails: balEmails,
+        enableComplement
       }, token)
 
       await reloadEmails()
@@ -68,7 +93,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
     }
 
     setIsLoading(false)
-  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale])
+  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, enableComplement])
 
   useEffect(() => {
     if (error) {
@@ -77,12 +102,12 @@ const Settings = React.memo(({nomBaseLocale}) => {
   }, [email]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails)) {
+    if (nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails) || enableComplementHasChanged(baseLocale, enableComplement)) {
       setHasChanges(true)
     } else {
       setHasChanges(false)
     }
-  }, [nomInput, balEmails, emails, baseLocale.nom])
+  }, [nomInput, balEmails, emails, baseLocale, enableComplement])
 
   return (
     <SideSheet
@@ -183,6 +208,16 @@ const Settings = React.memo(({nomBaseLocale}) => {
               </Alert>
             )}
 
+            <Label marginBottom={4} display='block'>
+              Complément pour les toponymes
+            </Label>
+            <Switch
+              height={20}
+              marginBottom={10}
+              checked={enableComplement}
+              onChange={onEnableComplement}
+            />
+
             <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanges} isLoading={isLoading}>
               {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
@@ -212,7 +247,8 @@ const Settings = React.memo(({nomBaseLocale}) => {
 })
 
 Settings.propTypes = {
-  nomBaseLocale: PropTypes.string.isRequired
+  nomBaseLocale: PropTypes.string.isRequired,
+  isEnableComplement: PropTypes.bool.isRequired
 }
 
 export default Settings
