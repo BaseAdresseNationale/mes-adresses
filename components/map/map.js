@@ -2,7 +2,6 @@ import React, {useState, useMemo, useEffect, useCallback, useContext} from 'reac
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
-// import {Pane} from 'evergreen-ui'
 import {fromJS} from 'immutable'
 import {Pane, Popover, Icon, Button, Position} from 'evergreen-ui'
 
@@ -16,7 +15,6 @@ import AddressEditor from '../bal/address-editor'
 
 import {vector, ortho, vectorCadastre} from './styles'
 
-import StyleSwitch from './style-switch'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
 import Control from './control'
