@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import {Pane, SideSheet, Paragraph, Heading, Tablist, Tab} from 'evergreen-ui'
+import {Pane, SideSheet, Paragraph, Heading, Tablist, Tab, Link} from 'evergreen-ui'
 
 import HelpContext from '../../contexts/help'
 
@@ -44,8 +44,12 @@ const Help = () => {
           <HelpTabs tab={selectedIndex} />
         </Pane>
 
-        <Pane padding={16} background='tint2'>
+        <Pane padding={16} background='tint2' elevation={1}>
           <Heading>Vous n’avez pas trouvé la solution à votre problème ?</Heading>
+          <Paragraph>
+            <Link href='https://adresse.data.gouv.fr/data/docs/guide-bal-v1.0.pdf' target='_blank'>Télécharger le Guide Base Adresse Locale</Link>
+          </Paragraph>
+          <Paragraph>ou</Paragraph>
           <Paragraph>
             Contactez nous sur <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>
           </Paragraph>
