@@ -253,9 +253,9 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
                       margin='auto'
                       style={{backgroundColor: '#f5f6f7'}}
                     >
-                      <Button onClick={() => setStyle('vector')}>Vectoriel</Button>
-                      <Button onClick={() => setStyle('ortho')}>Satellite</Button>
-                      <Button onClick={() => setStyle('vector-cadastre')}>Vectoriel + Cadastre</Button>
+                      <Button onClick={() => setStyle('vector')}>Plan OpenMapTiles</Button>
+                      <Button onClick={() => setStyle('ortho')}>Photographie aérienne</Button>
+                      <Button onClick={() => setStyle('vector-cadastre')}>Plan cadastral</Button>
                     </Pane>
                   }
                   position={Position.RIGHT}
