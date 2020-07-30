@@ -209,7 +209,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
             )}
 
             <Label marginBottom={4} display='block'>
-              Complément du nom de voie (lieu-dit, hameau, …)
+              Activer la saisie du complément du nom de voie (lieu-dit, hameau, …)
             </Label>
             <Switch
               height={20}
