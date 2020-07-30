@@ -39,7 +39,7 @@ const enableComplementHasChanged = (baseLocale, enableComplement) => {
   return enableComplement !== baseLocale.enableComplement
 }
 
-const Settings = React.memo(({nomBaseLocale, isEnableComplement}) => {
+const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails, reloadEmails} = useContext(TokenContext)
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
@@ -50,7 +50,7 @@ const Settings = React.memo(({nomBaseLocale, isEnableComplement}) => {
   const [email, onEmailChange, resetEmail] = useInput()
   const [hasChanges, setHasChanges] = useState(false)
   const [error, setError] = useState()
-  const [enableComplement, onEnableComplement] = useCheckboxInput(Boolean(isEnableComplement))
+  const [enableComplement, onEnableComplement] = useCheckboxInput(Boolean(isEnabledComplement))
 
   useEffect(() => {
     setBalEmails(emails || [])
@@ -248,7 +248,7 @@ const Settings = React.memo(({nomBaseLocale, isEnableComplement}) => {
 
 Settings.propTypes = {
   nomBaseLocale: PropTypes.string.isRequired,
-  isEnableComplement: PropTypes.bool.isRequired
+  isEnabledComplement: PropTypes.bool.isRequired
 }
 
 export default Settings

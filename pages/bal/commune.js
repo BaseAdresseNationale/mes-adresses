@@ -163,7 +163,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
                 <VoieEditor
-                  isEnableComplement={Boolean(baseLocale.enableComplement)}
+                  isEnabledComplement={Boolean(baseLocale.enableComplement)}
                   onSubmit={onAdd}
                   onCancel={onCancel}
                 />
@@ -182,7 +182,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
               <Table.Row key={voie._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <VoieEditor
-                    isEnableComplement={Boolean(baseLocale.enableComplement)}
+                    isEnabledComplement={Boolean(baseLocale.enableComplement)}
                     initialValue={voie}
                     onSubmit={onEdit}
                     onCancel={onCancel}

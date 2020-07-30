@@ -10,7 +10,7 @@ import useKeyEvent from '../../hooks/key-event'
 
 import PositionEditor from './position-editor'
 
-function VoieEditor({initialValue, onSubmit, onCancel, isEnableComplement}) {
+function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
   const position = initialValue ? initialValue.positions[0] : null
 
   const [isLoading, setIsLoading] = useState(false)
@@ -104,7 +104,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnableComplement}) {
         placeholder={isToponyme ? 'Nom du toponyme…' : 'Nom de la voie…'}
         onChange={onNomChange}
       />
-      {isEnableComplement && (
+      {isEnabledComplement && (
         <TextInput
           display='block'
           disabled={isLoading}
@@ -173,13 +173,13 @@ VoieEditor.propTypes = {
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func,
-  isEnableComplement: PropTypes.bool
+  isEnabledComplement: PropTypes.bool
 }
 
 VoieEditor.defaultProps = {
   initialValue: null,
   onCancel: null,
-  isEnableComplement: false
+  isEnabledComplement: false
 }
 
 export default VoieEditor
