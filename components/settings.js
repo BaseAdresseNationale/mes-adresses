@@ -209,7 +209,7 @@ const Settings = React.memo(({nomBaseLocale, isEnableComplement}) => {
             )}
 
             <Label marginBottom={4} display='block'>
-              Complément pour les toponymes
+              Complément du nom de voie (lieu-dit, hameau, …)
             </Label>
             <Switch
               height={20}
