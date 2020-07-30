@@ -35,7 +35,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnableComplement}) {
 
     const body = {
       nom,
-      complement
+      complement: complement ? complement : null
     }
 
     if (marker) {
