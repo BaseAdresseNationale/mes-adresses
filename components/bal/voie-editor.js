@@ -104,11 +104,10 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnableComplement}) {
         placeholder={isToponyme ? 'Nom du toponyme…' : 'Nom de la voie…'}
         onChange={onNomChange}
       />
-      {isEnableComplement && isToponyme && (
+      {isEnableComplement && (
         <TextInput
           display='block'
           disabled={isLoading}
-          innerRef={setRef}
           width='100%'
           maxWidth={500}
           value={complement}
