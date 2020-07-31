@@ -1,7 +1,8 @@
-import React, {useMemo, useCallback, useContext} from 'react'
+import React, {useMemo, useCallback, useContext, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
-import {Pane, Text, Menu} from 'evergreen-ui'
+import {Pane, Text, Menu, Icon} from 'evergreen-ui'
+import {Alert} from 'evergreen-ui/commonjs/alert'
 import randomColor from 'randomcolor'
 import {css} from 'glamor'
 
@@ -15,6 +16,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
+  const [isHovered, setIsHovered] = useState(false)
 
   const {token} = useContext(TokenContext)
   const {marker} = useContext(MarkerContext)
@@ -26,6 +28,14 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
     setEditingId(numero._id)
   }, [setEditingId, numero])
 
+  const handleMouseEnter = useCallback(e => {
+    e.stopPropagation()
+
+    if (numero.positions[0].type === 'inconnue') {
+      setIsHovered(true)
+    }
+  }, [numero])
+
   const position = numero.positions[0]
 
   const markerStyle = useMemo(() => css({
@@ -36,6 +46,8 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
     whiteSpace: 'nowrap',
     background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
     cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
 
     '&:before': {
       content: ' ',
@@ -94,10 +106,24 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
 
   return (
     <>
+      {isHovered && (
+        <Alert
+          appearance='card'
+          intent='warning'
+          title='Type du numéro inconnu'
+          marginLeft={32}
+          marginTop={18}
+        />
+      )}
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-        <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-          <Text color='white' paddingLeft={8} paddingRight={10}>
+        <Pane className={markerStyle} onMouseEnter={handleMouseEnter} onMouseLeave={() => setIsHovered(false)} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+          <Text color='white' paddingLeft={8} paddingRight={5}>
             {numero[labelProperty]}
+          </Text>
+          <Text color='yellow' paddingRight={5} fontSize={20}>
+            {numero.positions[0].type === 'inconnue' && (
+              <Icon icon='warning-sign' color='warning' />
+            )}
           </Text>
         </Pane>
 
@@ -123,7 +149,8 @@ NumeroMarker.propTypes = {
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
         coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
-      }).isRequired
+      }).isRequired,
+      type: PropTypes.string
     }))
   }).isRequired,
   labelProperty: PropTypes.string,
