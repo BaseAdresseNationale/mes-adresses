@@ -1,8 +1,12 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInput, Button, Alert} from 'evergreen-ui'
+import {Pane, SelectField, TextInput, Button, Alert} from 'evergreen-ui'
+import {sortBy} from 'lodash'
+
+import {normalizeSort} from '../../lib/normalize'
 
 import MarkerContext from '../../contexts/marker'
+import BalDataContext from '../../contexts/bal-data'
 
 import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
@@ -17,6 +21,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange] = useInput(initialValue ? initialValue.numero : '')
+  const [voie, setVoie] = useState(initialValue ? initialValue.voie : null)
   const [suffixe, onSuffixeChange] = useInput(initialValue ? initialValue.suffixe : '')
   const [type, onTypeChange] = useInput(position ? position.type : 'entrée')
   const [comment, onCommentChange] = useInput(initialValue ? initialValue.comment : '')
@@ -29,6 +34,8 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
     disableMarker
   } = useContext(MarkerContext)
 
+  const {voies} = useContext(BalDataContext)
+
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
 
@@ -36,6 +43,10 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 
     const body = {
       numero: Number(numero)
+    }
+
+    if (initialValue && voie !== initialValue.voie) {
+      body.voie = voie
     }
 
     body.suffixe = suffixe.length > 0 ? suffixe.toLowerCase().trim() : null
@@ -60,7 +71,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, suffixe, comment, marker, type, onSubmit, disableMarker])
+  }, [initialValue, numero, voie, suffixe, comment, marker, type, onSubmit, disableMarker])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -98,6 +109,26 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
+      {initialValue && (
+        <Pane display='flex'>
+          <SelectField
+            label='Voie'
+            flex={1}
+            marginBottom={16}
+            onChange={event => setVoie(event.target.value)}
+          >
+            {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
+              <option
+                key={_id}
+                selected={_id === initialValue.voie}
+                value={_id}
+              >
+                {nom}
+              </option>
+            ))}
+          </SelectField>
+        </Pane>)}
+
       <Pane display='flex'>
         <TextInput
           required
@@ -176,6 +207,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 NumeroEditor.propTypes = {
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,
+    voie: PropTypes.string.isRequired,
     suffixe: PropTypes.string,
     comment: PropTypes.string,
     positions: PropTypes.array
