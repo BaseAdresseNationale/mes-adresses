@@ -29,16 +29,6 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const enableComplementHasChanged = (baseLocale, enableComplement) => {
-  const hasAdditionalFieldProperty = Object.prototype.hasOwnProperty.call(baseLocale, 'enableComplement')
-
-  if (!hasAdditionalFieldProperty) {
-    return enableComplement !== false
-  }
-
-  return enableComplement !== baseLocale.enableComplement
-}
-
 const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails, reloadEmails} = useContext(TokenContext)
@@ -102,7 +92,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
   }, [email]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails) || enableComplementHasChanged(baseLocale, enableComplement)) {
+    if (nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails) || enableComplement !== Boolean(baseLocale.enableComplement)) {
       setHasChanges(true)
     } else {
       setHasChanges(false)
