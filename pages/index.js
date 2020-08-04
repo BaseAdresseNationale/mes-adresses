@@ -1,7 +1,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
-import {Pane, Heading, Paragraph, Button, Spinner} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Button, Spinner, Link} from 'evergreen-ui'
 
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
@@ -47,6 +47,13 @@ function Index() {
           >
             Créer Base Adresse Locale
           </Button>
+        </Pane>
+
+        <Pane
+          textAlign='center'
+          padding='1em'
+        >
+          <Link href='https://adresse.data.gouv.fr/data/docs/guide-bal-v1.0.pdf' fontSize='1em'>Télécharger le Guide de la Base Adresse Locale</Link>
         </Pane>
       </Pane>
 
