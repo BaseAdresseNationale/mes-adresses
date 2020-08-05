@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInputField, SelectField, Alert} from 'evergreen-ui'
 
-function PositionEditor({type, marker, alert, onTypeChange}) {
+function PositionEditor({type, marker, alert, isInconnuType, onTypeChange}) {
   return (
     <Pane>
       <Pane display='flex'>
@@ -51,6 +51,12 @@ function PositionEditor({type, marker, alert, onTypeChange}) {
         <option value='inconnue'>Inconnue</option>
       </SelectField>
 
+      {isInconnuType && (
+        <Alert marginBottom={16} intent='warning'>
+          Veuillez sélectionner un autre type de position.
+        </Alert>
+      )}
+
       {alert && (
         <Alert marginBottom={16}>
           {alert}
@@ -67,11 +73,13 @@ PositionEditor.propTypes = {
     longitude: PropTypes.number
   }).isRequired,
   alert: PropTypes.string,
+  isInconnuType: PropTypes.bool,
   onTypeChange: PropTypes.func.isRequired
 }
 
 PositionEditor.defaultProps = {
   type: 'entrée',
+  isInconnuType: false,
   alert: null
 }
 

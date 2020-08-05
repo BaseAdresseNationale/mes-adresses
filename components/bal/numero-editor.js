@@ -139,6 +139,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
               'Déplacez le marqueur sur la carte pour déplacer le numéro.' :
               'Déplacez le marqueur sur la carte pour placer le numéro.'
           }
+          isInconnuType={type === 'inconnue'}
           marker={marker}
           type={type}
           onTypeChange={onTypeChange}

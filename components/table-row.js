@@ -4,7 +4,7 @@ import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, Icon} from
 
 import TokenContext from '../contexts/token'
 
-const TableRow = React.memo(({id, code, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
+const TableRow = React.memo(({id, code, label, comment, secondary, isSelectable, onSelect, isInconnuType, onEdit, onRemove}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
 
@@ -73,6 +73,13 @@ const TableRow = React.memo(({id, code, label, comment, secondary, isSelectable,
           </Tooltip>
         </Table.Cell>
       )}
+      {isInconnuType && (
+        <Table.TextCell flex='0 1 1'>
+          <Tooltip content='Le type de la position est inconnu' position={Position.BOTTOM}>
+            <Icon icon='warning-sign' color='warning' style={{verticalAlign: 'bottom'}} />
+          </Tooltip>
+        </Table.TextCell>
+      )}
       {token && (onEdit || onRemove) && (
         <Table.TextCell flex='0 1 1'>
           <Popover
@@ -115,6 +122,7 @@ TableRow.propTypes = {
   secondary: PropTypes.string,
   isSelectable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
+  isInconnuType: PropTypes.bool,
   onEdit: PropTypes.func,
   onRemove: PropTypes.func.isRequired
 }
@@ -124,6 +132,7 @@ TableRow.defaultProps = {
   comment: null,
   secondary: null,
   isSelectable: true,
+  isInconnuType: false,
   onEdit: null
 }
 
