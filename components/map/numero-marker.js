@@ -37,8 +37,6 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
     whiteSpace: 'nowrap',
     background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
     cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
 
     '&:before': {
       content: ' ',
@@ -104,14 +102,12 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
               <Text color='white' paddingLeft={8} paddingRight={5}>
                 {numero[labelProperty]}
               </Text>
-              <Text color='yellow' paddingRight={5} fontSize={20}>
-                <Icon icon='warning-sign' color='warning' />
-              </Text>
+              <Icon icon='warning-sign' color='warning' size={13} marginLeft={2} marginRight={6} style={{verticalAlign: 'middle'}} />
             </Pane>
           </Tooltip>
         ) : (
           <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-            <Text color='white' paddingLeft={8} paddingRight={5}>
+            <Text color='white' paddingLeft={8} paddingRight={10}>
               {numero[labelProperty]}
             </Text>
           </Pane>
