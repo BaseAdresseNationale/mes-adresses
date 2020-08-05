@@ -117,7 +117,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
               id='nom'
               value={nomInput}
               maxWidth={600}
-              disabled={isLoading}
+              disabled={isLoading || baseLocale.isTest}
               label='Nom'
               placeholder='Nom'
               onChange={onNomInputChange}
@@ -161,6 +161,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
                 maxWidth={400}
                 isInvalid={Boolean(error && error.includes('mail'))}
                 value={email}
+                disabled={baseLocale.isTest}
                 onChange={onEmailChange}
               />
               {email && !balEmails.includes(email) && (
@@ -195,6 +196,16 @@ const Settings = React.memo(({nomBaseLocale}) => {
         ) : (
           <Spinner size={64} margin='auto' />
         )}
+      </Pane>
+
+      <Pane padding={16}>
+        <Alert
+          intent='none'
+          title='Version d’essai de l’éditeur de base adresse locale'
+          marginBottom={32}
+        >
+          Il est impossible de modifier les paramètres de la base adresse locale en version d’essai.
+        </Alert>
       </Pane>
     </SideSheet>
   )
