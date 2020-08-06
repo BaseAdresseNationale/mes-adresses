@@ -42,6 +42,12 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
   const [error, setError] = useState()
   const [enableComplement, onEnableComplement] = useCheckboxInput(Boolean(isEnabledComplement))
 
+  const formHasChanged = useCallback(() => {
+    return nomInput !== baseLocale.nom ||
+    mailHasChanged(emails || [], balEmails) ||
+    enableComplement !== Boolean(baseLocale.enableComplement)
+  }, [nomInput, baseLocale, emails, balEmails, enableComplement])
+
   useEffect(() => {
     setBalEmails(emails || [])
   }, [emails])
@@ -92,12 +98,8 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
   }, [email]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails) || enableComplement !== Boolean(baseLocale.enableComplement)) {
-      setHasChanges(true)
-    } else {
-      setHasChanges(false)
-    }
-  }, [nomInput, balEmails, emails, baseLocale, enableComplement])
+    setHasChanges(formHasChanged())
+  }, [formHasChanged])
 
   return (
     <SideSheet
