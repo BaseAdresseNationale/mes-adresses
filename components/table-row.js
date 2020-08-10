@@ -7,7 +7,7 @@ import TokenContext from '../contexts/token'
 const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {type} = positions[0]
+  const {type} = positions[0] || {}
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && !code) { // Not a commune
