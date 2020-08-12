@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useContext, useMemo} from 'react'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, Paragraph, Heading, Table, Button, Icon} from 'evergreen-ui'
 
@@ -17,13 +17,17 @@ import VoieEditor from '../../components/bal/voie-editor'
 import NumeroEditor from '../../components/bal/numero-editor'
 
 const Voie = React.memo(({voie, defaultNumeros}) => {
+  const [editedVoie, setEditedVoie] = useState(voie)
   const [isEdited, setEdited] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
 
   const {token} = useContext(TokenContext)
 
+  const currentVoie = editedVoie || voie
+
   const {
+    baseLocale,
     reloadVoies,
     numeros,
     reloadNumeros,
@@ -51,18 +55,21 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     await reloadNumeros()
 
     setIsAdding(false)
-  }, [voie._id, reloadNumeros, token])
+  }, [voie, reloadNumeros, token])
 
-  const onEditVoie = useCallback(async ({nom, positions}) => {
-    await editVoie(voie._id, {
+  const onEditVoie = useCallback(async ({nom, complement, positions}) => {
+    const editedVoie = await editVoie(voie._id, {
       nom,
+      complement,
       positions
     }, token)
 
     await reloadVoies()
 
+    setEditedVoie(editedVoie)
+
     setEdited(false)
-  }, [reloadVoies, token, voie._id])
+  }, [reloadVoies, token, voie])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -97,10 +104,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(null)
   }, [setEditingId])
 
-  const fullVoieName = useMemo(() => {
-    return getFullVoieName(voie)
-  }, [voie])
-
   useEffect(() => {
     if (editingId) {
       setEdited(false)
@@ -123,7 +126,8 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       >
         {isEdited ? (
           <VoieEditor
-            initialValue={{...voie}}
+            initialValue={{...currentVoie}}
+            isEnabledComplement={Boolean(baseLocale.enableComplement)}
             onSubmit={onEditVoie}
             onCancel={() => setEdited(false)}
           />
@@ -137,7 +141,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
-            {fullVoieName}
+            {getFullVoieName(currentVoie, baseLocale.enableComplement)}
             <Icon
               icon='edit'
               marginBottom={-2}
@@ -163,7 +167,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         <Pane>
           <Heading>Liste des numéros</Heading>
         </Pane>
-        {voie.positions.length === 0 && token && (
+        {currentVoie.positions.length === 0 && token && (
           <Pane marginLeft='auto'>
             <Button
               iconBefore='add'
@@ -179,7 +183,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
-        {voie.positions.length === 0 ? (
+        {currentVoie.positions.length === 0 ? (
           <Table>
             <Table.Head>
               <Table.SearchHeaderCell
@@ -233,7 +237,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         ) : (
           <Pane padding={16}>
             <Paragraph>
-              La voie « {voie.nom} » est un toponyme et ne peut pas contenir de numéro.
+              La voie « {currentVoie.nom} » est un toponyme et ne peut pas contenir de numéro.
             </Paragraph>
           </Pane>
         )}
@@ -247,9 +251,9 @@ Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
 
   return {
     layout: 'sidebar',
+    voie,
     baseLocale,
     commune,
-    voie,
     defaultNumeros
   }
 }
