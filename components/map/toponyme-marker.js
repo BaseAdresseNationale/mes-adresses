@@ -5,20 +5,20 @@ import {Pane, Text, Menu} from 'evergreen-ui'
 import {css} from 'glamor'
 
 import {removeVoie} from '../../lib/bal-api'
+import {getFullVoieName} from '../../lib/voie'
 
 import useError from '../../hooks/error'
 
 import TokenContext from '../../contexts/token'
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
-import {getFullVoieName} from '../../lib/voie'
 
 function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
   const {marker} = useContext(MarkerContext)
-  const {editingId, setEditingId, reloadVoies} = useContext(BalDataContext)
+  const {baseLocale, editingId, setEditingId, reloadVoies} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
@@ -70,7 +70,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
         <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(toponyme._id)}>
           <Text color='white' paddingLeft={8} paddingRight={10}>
-            {getFullVoieName(toponyme)}
+            {getFullVoieName(toponyme, baseLocale.enableComplement)}
           </Text>
         </Pane>
 

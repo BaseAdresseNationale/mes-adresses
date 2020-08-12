@@ -195,7 +195,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
                 key={voie._id}
                 id={voie._id}
                 isSelectable={!isAdding && !isPopulating && !editingId && voie.positions.length === 0}
-                label={getFullVoieName(voie)}
+                label={getFullVoieName(voie, baseLocale.enableComplement)}
                 secondary={voie.positions.length === 1 ? 'Toponyme' : null}
                 onSelect={onSelect}
                 onEdit={onEnableEditing}
