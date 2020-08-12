@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInput, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
+import {Pane, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 
@@ -91,8 +91,9 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <TextInput
+      <TextInputField
         required
+        label='Nom de la voie'
         display='block'
         disabled={isLoading}
         innerRef={setRef}
@@ -110,10 +111,10 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
           disabled={isLoading}
           width='100%'
           maxWidth={500}
+          label='Complément d’adresse'
           value={complement}
           maxLength={200}
           marginBottom={16}
-          description='Champ optionnel'
           placeholder='Complément du nom de voie (lieu-dit, hameau, …)'
           onChange={onComplementChange}
         />
