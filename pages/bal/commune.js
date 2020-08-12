@@ -16,6 +16,7 @@ import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
 import VoieEditor from '../../components/bal/voie-editor'
 import {normalizeSort} from '../../lib/normalize'
+import {getFullVoieName} from '../../lib/voie'
 
 const Commune = React.memo(({commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
@@ -194,7 +195,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
                 key={voie._id}
                 id={voie._id}
                 isSelectable={!isAdding && !isPopulating && !editingId && voie.positions.length === 0}
-                label={voie.nom}
+                label={getFullVoieName(voie)}
                 secondary={voie.positions.length === 1 ? 'Toponyme' : null}
                 onSelect={onSelect}
                 onEdit={onEnableEditing}

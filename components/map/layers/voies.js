@@ -22,7 +22,12 @@ export function getVoiesLabelLayer(style) {
       }
     },
     layout: {
-      'text-field': '{nomVoie}',
+      'text-field': [
+        'case',
+        ['has', 'complement'],
+        ['concat', ['get', 'nomVoie'], '\n(', ['get', 'complement'], ')'],
+        ['get', 'nomVoie']
+      ],
       'text-anchor': 'top',
       'text-size': {
         base: 1,

@@ -1,8 +1,10 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import React, {useState, useCallback, useEffect, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, Paragraph, Heading, Table, Button, Icon} from 'evergreen-ui'
 
 import {editVoie, addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
+
+import {getFullVoieName} from '../../lib/voie'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -15,7 +17,6 @@ import VoieEditor from '../../components/bal/voie-editor'
 import NumeroEditor from '../../components/bal/numero-editor'
 
 const Voie = React.memo(({voie, defaultNumeros}) => {
-  const [voieName, setVoieName] = useState(voie.nom)
   const [isEdited, setEdited] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
@@ -23,7 +24,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const {token} = useContext(TokenContext)
 
   const {
-    voies,
     reloadVoies,
     numeros,
     reloadNumeros,
@@ -97,11 +97,9 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(null)
   }, [setEditingId])
 
-  useEffect(() => {
-    if (voies) {
-      setVoieName(voies.find(v => v._id === voie._id).nom)
-    }
-  }, [voie._id, voies])
+  const fullVoieName = useMemo(() => {
+    return getFullVoieName(voie)
+  }, [voie])
 
   useEffect(() => {
     if (editingId) {
@@ -125,7 +123,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       >
         {isEdited ? (
           <VoieEditor
-            initialValue={{...voie, nom: voieName}}
+            initialValue={{...voie}}
             onSubmit={onEditVoie}
             onCancel={() => setEdited(false)}
           />
@@ -139,7 +137,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
-            {voieName}
+            {fullVoieName}
             <Icon
               icon='edit'
               marginBottom={-2}
@@ -235,7 +233,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         ) : (
           <Pane padding={16}>
             <Paragraph>
-              La voie « {voieName} » est un toponyme et ne peut pas contenir de numéro.
+              La voie « {voie.nom} » est un toponyme et ne peut pas contenir de numéro.
             </Paragraph>
           </Pane>
         )}
@@ -260,6 +258,7 @@ Voie.propTypes = {
   voie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
+    complement: PropTypes.string,
     positions: PropTypes.array.isRequired
   }).isRequired,
   defaultNumeros: PropTypes.array
