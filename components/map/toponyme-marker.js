@@ -2,31 +2,31 @@ import React, {useMemo, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, Text, Menu} from 'evergreen-ui'
-import randomColor from 'randomcolor'
 import {css} from 'glamor'
 
-import {removeNumero} from '../../lib/bal-api'
+import {removeVoie} from '../../lib/bal-api'
 
 import useError from '../../hooks/error'
 
 import TokenContext from '../../contexts/token'
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
+import {getFullVoieName} from '../../lib/voie'
 
-function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
+function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
   const {marker} = useContext(MarkerContext)
-  const {editingId, setEditingId, reloadNumeros} = useContext(BalDataContext)
+  const {editingId, setEditingId, reloadVoies} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
 
-    setEditingId(numero._id)
-  }, [setEditingId, numero])
+    setEditingId(toponyme._id)
+  }, [toponyme._id, setEditingId])
 
-  const position = numero.positions[0]
+  const position = toponyme.positions[0]
 
   const markerStyle = useMemo(() => css({
     borderRadius: 20,
@@ -34,42 +34,20 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     marginLeft: -10,
     color: 'transparent',
     whiteSpace: 'nowrap',
-    background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
+    background: showLabel ? 'rgba(0, 0, 0, 0.5)' : null,
     cursor: 'pointer',
-
-    '&:before': {
-      content: ' ',
-      backgroundColor: colorSeed ? randomColor({
-        luminosity: 'dark',
-        seed: colorSeed
-      }) : '#1070ca',
-      border: '1px solid white',
-      display: 'inline-block',
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      marginLeft: 6
-    },
 
     '& > span': {
       display: showLabel ? 'inline-block' : 'none'
-    },
-
-    '&:hover': showLabel ? null : {
-      background: 'rgba(0, 0, 0, 0.7)',
-
-      '& > span': {
-        display: 'inline-block'
-      }
     }
-  }), [colorSeed, showLabel])
+  }), [showLabel])
 
   const removeAddress = (async () => {
-    const {_id} = numero
+    const {_id} = toponyme
 
     try {
-      await removeNumero(_id, token)
-      await reloadNumeros()
+      await removeVoie(_id, token)
+      await reloadVoies()
     } catch (error) {
       setError(error.message)
     }
@@ -81,7 +59,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     return null
   }
 
-  if (marker && editingId === numero._id) {
+  if (marker && editingId === toponyme._id) {
     return null
   }
 
@@ -90,9 +68,9 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
   return (
     <>
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-        <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+        <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(toponyme._id)}>
           <Text color='white' paddingLeft={8} paddingRight={10}>
-            {numero.numeroComplet}
+            {getFullVoieName(toponyme)}
           </Text>
         </Pane>
 
@@ -112,26 +90,23 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
   )
 }
 
-NumeroMarker.propTypes = {
-  numero: PropTypes.shape({
+ToponymeMarker.propTypes = {
+  toponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    numeroComplet: PropTypes.string.isRequired,
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
         coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
       }).isRequired
     }))
   }).isRequired,
-  colorSeed: PropTypes.string,
   showLabel: PropTypes.bool,
   showContextMenu: PropTypes.bool,
   setShowContextMenu: PropTypes.func.isRequired
 }
 
-NumeroMarker.defaultProps = {
-  colorSeed: null,
+ToponymeMarker.defaultProps = {
   showLabel: false,
   showContextMenu: false
 }
 
-export default React.memo(NumeroMarker)
+export default React.memo(ToponymeMarker)

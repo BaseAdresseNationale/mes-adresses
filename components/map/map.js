@@ -19,6 +19,7 @@ import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
 import Control from './control'
 import NumeroMarker from './numero-marker'
+import ToponymeMarker from './toponyme-marker'
 
 import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
@@ -302,10 +303,9 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           ))}
 
           {toponymes && toponymes.map(toponyme => (
-            <NumeroMarker
+            <ToponymeMarker
               key={toponyme._id}
-              numero={toponyme}
-              labelProperty='nom'
+              toponyme={toponyme}
               showLabel={showNumeros}
               showContextMenu={toponyme._id === showContextMenu}
               setShowContextMenu={setShowContextMenu}
