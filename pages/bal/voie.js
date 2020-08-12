@@ -73,9 +73,10 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(idNumero)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({numero, suffixe, comment, positions}) => {
+  const onEdit = useCallback(async ({numero, voie, suffixe, comment, positions}) => {
     await editNumero(editingId, {
       numero,
+      voie,
       suffixe,
       comment,
       positions
