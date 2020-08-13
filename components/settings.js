@@ -206,6 +206,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
             <Switch
               height={20}
               marginBottom={10}
+              disabled={baseLocale.isTest}
               checked={enableComplement}
               onChange={onEnableComplement}
             />
