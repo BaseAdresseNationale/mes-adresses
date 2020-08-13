@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tablist, Tab} from 'evergreen-ui'
+import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tablist, Tab, Icon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
@@ -32,6 +32,25 @@ const BaseLocale = () => {
           <ListItem>Indiquez l’adresse email de votre mairie ou de l’administrateur de la Base Adresse Locale. C’est cette adresse qui recevra le lien permettant d’accèder à l’édition de votre Base Adresse Locale.</ListItem>
           <ListItem>Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary'>Créer la Base Adresse Locale</Button></ListItem>
         </OrderedList>
+      </Tuto>
+
+      <Tuto title='Administrer votre Base Adresse Locale'>
+        <Paragraph marginTop='default'>
+          Accédez aux paramètres de votre Base Adresse Locale en cliquand sur l’icone <span><Icon marginX={4} icon='cog' /></span> situé en haut à droite de votre écran.
+          Puis choissez «Paramètres».
+        </Paragraph>
+        <Paragraph marginTop='default'>
+          Il vous sera possible de :
+        </Paragraph>
+        <OrderedList margin={8}>
+          <ListItem>Changer le nom de votre Base Adresse Locale</ListItem>
+          <ListItem>Ajouter ou supprimer des collaborateurs</ListItem>
+          <ListItem>Activer ou désactiver la saisie du complément du nom de voie</ListItem>
+        </OrderedList>
+
+        <Paragraph marginTop='default'>
+          Une fois vos réglages terminés, cliquez sur <Button marginX={4} appearance='primary'>Enregistrer les changements</Button>
+        </Paragraph>
       </Tuto>
 
       <Problems>
