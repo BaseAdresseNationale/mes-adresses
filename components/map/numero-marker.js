@@ -1,7 +1,8 @@
 import React, {useMemo, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
-import {Pane, Text, Menu} from 'evergreen-ui'
+import {Pane, Text, Menu, Icon, Position} from 'evergreen-ui'
+import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
 import randomColor from 'randomcolor'
 import {css} from 'glamor'
 
@@ -90,11 +91,23 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
   return (
     <>
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-        <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-          <Text color='white' paddingLeft={8} paddingRight={10}>
-            {numero.numeroComplet}
-          </Text>
-        </Pane>
+
+        {numero.positions[0].type === 'inconnue' ? (
+          <Tooltip content='Le type de la position est inconnu' position={Position.RIGHT}>
+            <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+              <Text color='white' paddingLeft={8} paddingRight={5}>
+                {numero.numeroComplet}
+              </Text>
+              <Icon icon='warning-sign' color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
+            </Pane>
+          </Tooltip>
+        ) : (
+          <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+            <Text color='white' paddingLeft={8} paddingRight={10}>
+              {numero.numeroComplet}
+            </Text>
+          </Pane>
+        )}
 
         {showContextMenu && (
           <Pane background='tint1' position='absolute' margin={10}>
@@ -119,7 +132,8 @@ NumeroMarker.propTypes = {
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
         coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
-      }).isRequired
+      }).isRequired,
+      type: PropTypes.string
     }))
   }).isRequired,
   colorSeed: PropTypes.string,

@@ -4,9 +4,10 @@ import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, Icon} from
 
 import TokenContext from '../contexts/token'
 
-const TableRow = React.memo(({id, code, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
+const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
+  const {type} = positions[0] || {}
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && !code) { // Not a commune
@@ -73,6 +74,13 @@ const TableRow = React.memo(({id, code, label, comment, secondary, isSelectable,
           </Tooltip>
         </Table.Cell>
       )}
+      {type === 'inconnue' && (
+        <Table.TextCell flex='0 1 1'>
+          <Tooltip content='Le type de la position est inconnu' position={Position.BOTTOM}>
+            <Icon icon='warning-sign' color='warning' style={{verticalAlign: 'bottom'}} />
+          </Tooltip>
+        </Table.TextCell>
+      )}
       {token && (onEdit || onRemove) && (
         <Table.TextCell flex='0 1 1'>
           <Popover
@@ -110,6 +118,7 @@ const TableRow = React.memo(({id, code, label, comment, secondary, isSelectable,
 TableRow.propTypes = {
   id: PropTypes.string.isRequired,
   code: PropTypes.string,
+  positions: PropTypes.array,
   label: PropTypes.string.isRequired,
   comment: PropTypes.string,
   secondary: PropTypes.string,
@@ -121,6 +130,7 @@ TableRow.propTypes = {
 
 TableRow.defaultProps = {
   code: null,
+  positions: [],
   comment: null,
   secondary: null,
   isSelectable: true,

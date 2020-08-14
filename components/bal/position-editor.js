@@ -51,6 +51,12 @@ function PositionEditor({type, marker, alert, onTypeChange}) {
         <option value='inconnue'>Inconnue</option>
       </SelectField>
 
+      {type === 'inconnue' && (
+        <Alert marginBottom={16} intent='warning'>
+          Veuillez sélectionner un autre type de position.
+        </Alert>
+      )}
+
       {alert && (
         <Alert marginBottom={16}>
           {alert}
