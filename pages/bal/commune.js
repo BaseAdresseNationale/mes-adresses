@@ -16,13 +16,15 @@ import DeleteWarning from '../../components/delete-warning'
 import TableRow from '../../components/table-row'
 import VoieEditor from '../../components/bal/voie-editor'
 import {normalizeSort} from '../../lib/normalize'
+import {getFullVoieName} from '../../lib/voie'
 
-const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
+const Commune = React.memo(({commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
   const [toRemove, setToRemove] = useState(null)
 
   const {token} = useContext(TokenContext)
+  const {baseLocale} = useContext(BalDataContext)
 
   const {
     voies,
@@ -47,10 +49,11 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setIsPopulating(false)
   }, [baseLocale, commune, reloadVoies, token])
 
-  const onAdd = useCallback(async ({nom, positions}) => {
+  const onAdd = useCallback(async ({nom, positions, complement}) => {
     await addVoie(baseLocale._id, commune.code, {
       nom,
-      positions
+      positions,
+      complement
     }, token)
 
     await reloadVoies()
@@ -67,10 +70,11 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setEditingId(idVoie)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({nom, positions}) => {
+  const onEdit = useCallback(async ({nom, positions, complement}) => {
     await editVoie(editingId, {
       nom,
-      positions
+      positions,
+      complement
     }, token)
 
     await reloadVoies()
@@ -160,6 +164,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
                 <VoieEditor
+                  isEnabledComplement={Boolean(baseLocale.enableComplement)}
                   onSubmit={onAdd}
                   onCancel={onCancel}
                 />
@@ -178,6 +183,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               <Table.Row key={voie._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <VoieEditor
+                    isEnabledComplement={Boolean(baseLocale.enableComplement)}
                     initialValue={voie}
                     onSubmit={onEdit}
                     onCancel={onCancel}
@@ -189,7 +195,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
                 key={voie._id}
                 id={voie._id}
                 isSelectable={!isAdding && !isPopulating && !editingId && voie.positions.length === 0}
-                label={voie.nom}
+                label={getFullVoieName(voie, baseLocale.enableComplement)}
                 secondary={voie.positions.length === 1 ? 'Toponyme' : null}
                 onSelect={onSelect}
                 onEdit={onEnableEditing}
@@ -224,9 +230,6 @@ Commune.getInitialProps = async ({baseLocale, commune}) => {
 }
 
 Commune.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired
-  }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired

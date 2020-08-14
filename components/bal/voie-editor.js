@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInput, Button, Checkbox, Alert} from 'evergreen-ui'
+import {Pane, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 
@@ -10,12 +10,13 @@ import useKeyEvent from '../../hooks/key-event'
 
 import PositionEditor from './position-editor'
 
-function VoieEditor({initialValue, onSubmit, onCancel}) {
+function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
   const position = initialValue ? initialValue.positions[0] : null
 
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(Boolean(position))
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
+  const [complement, onComplementChange] = useInput(initialValue ? initialValue.complement : '')
   const [positionType, onPositionTypeChange] = useInput(position ? position.type : 'entrée')
   const [error, setError] = useState()
   const setRef = useFocus()
@@ -33,7 +34,8 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     setIsLoading(true)
 
     const body = {
-      nom
+      nom,
+      complement: complement.length > 1 ? complement : null
     }
 
     if (marker) {
@@ -55,7 +57,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, marker, positionType, onSubmit, disableMarker])
+  }, [nom, marker, positionType, onSubmit, disableMarker, complement])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -89,8 +91,9 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <TextInput
+      <TextInputField
         required
+        label='Nom de la voie'
         display='block'
         disabled={isLoading}
         innerRef={setRef}
@@ -102,6 +105,20 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
         placeholder={isToponyme ? 'Nom du toponyme…' : 'Nom de la voie…'}
         onChange={onNomChange}
       />
+      {isEnabledComplement && (
+        <TextInputField
+          display='block'
+          disabled={isLoading}
+          width='100%'
+          maxWidth={500}
+          label='Complément d’adresse'
+          value={complement}
+          maxLength={200}
+          marginBottom={16}
+          placeholder='Complément du nom de voie (lieu-dit, hameau, …)'
+          onChange={onComplementChange}
+        />
+      )}
 
       {!initialValue && (
         <Checkbox
@@ -153,15 +170,18 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 VoieEditor.propTypes = {
   initialValue: PropTypes.shape({
     nom: PropTypes.string,
+    complement: PropTypes.string,
     positions: PropTypes.array.isRequired
   }),
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
+  isEnabledComplement: PropTypes.bool
 }
 
 VoieEditor.defaultProps = {
   initialValue: null,
-  onCancel: null
+  onCancel: null,
+  isEnabledComplement: false
 }
 
 export default VoieEditor
