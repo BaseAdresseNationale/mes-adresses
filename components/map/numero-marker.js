@@ -98,7 +98,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
               <Text color='white' paddingLeft={8} paddingRight={5}>
                 {numero.numeroComplet}
               </Text>
-              <Icon icon='warning-sign' color='warning' size={13} marginLeft={2} marginRight={6} style={{verticalAlign: 'middle'}} />
+              <Icon icon='warning-sign' color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
             </Pane>
           </Tooltip>
         ) : (
