@@ -10,8 +10,9 @@ import HelpContext from '../../contexts/help'
 
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
+import TestForm from './test-form'
 
-function Index({defaultCommune}) {
+function Index({defaultCommune, isTest}) {
   const [index, setIndex] = useState(0)
   const {showHelp, setShowHelp, setSelectedIndex} = useContext(HelpContext)
 
@@ -31,25 +32,30 @@ function Index({defaultCommune}) {
         </Paragraph>
       </Pane>
 
-      <TabNavigation display='flex' marginLeft={16}>
-        {['Créer', 'Importer un fichier CSV'].map((tab, idx) => (
-          <Tab key={tab} id={tab} isSelected={index === idx} onSelect={() => setIndex(idx)}>
-            {tab}
-          </Tab>
-        ))}
-      </TabNavigation>
+      {isTest ? (
+        <TestForm />
+      ) :
+        (<>
+          <TabNavigation display='flex' marginLeft={16}>
+            {['Créer', 'Importer un fichier CSV'].map((tab, idx) => (
+              <Tab key={tab} id={tab} isSelected={index === idx} onSelect={() => setIndex(idx)}>
+                {tab}
+              </Tab>
+            ))}
+          </TabNavigation>
 
-      <Pane flex={1} overflowY='scroll'>
-        {index === 0 ? (
-          <CreateForm defaultCommune={defaultCommune} />
-        ) : (
-          <UploadForm />
-        )}
+          <Pane flex={1} overflowY='scroll'>
+            {index === 0 ? (
+              <CreateForm defaultCommune={defaultCommune} isTest={isTest} />
+            ) : (
+              <UploadForm />
+            )}
+          </Pane>
+        </>)}
 
-        <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
-          <BackButton is='a' href='/'>Retour</BackButton>
-          <Button height={32} iconAfter='help' onClick={handleHelp}>Besoin d’aide</Button>
-        </Pane>
+      <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
+        <BackButton is='a' href='/'>Retour</BackButton>
+        <Button height={32} iconAfter='help' onClick={handleHelp}>Besoin d’aide</Button>
       </Pane>
     </Pane>
   )
@@ -65,16 +71,19 @@ Index.getInitialProps = async ({query}) => {
 
   return {
     defaultCommune,
+    isTest: query.test === '1',
     layout: 'fullscreen'
   }
 }
 
 Index.propTypes = {
-  defaultCommune: PropTypes.string
+  defaultCommune: PropTypes.string,
+  isTest: PropTypes.bool
 }
 
 Index.defaultProps = {
-  defaultCommune: null
+  defaultCommune: null,
+  isTest: false
 }
 
 export default Index

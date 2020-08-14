@@ -181,7 +181,8 @@ Index.getInitialProps = async ({baseLocale}) => {
 
 Index.propTypes = {
   baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired
+    _id: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired
   }).isRequired,
   defaultCommunes: PropTypes.array
 }

@@ -1,13 +1,26 @@
 import React, {useState, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {SideSheet, Pane, Heading, TextInputField, TextInput, IconButton, Button, Alert, Spinner, Label, toaster} from 'evergreen-ui'
+import {
+  SideSheet,
+  Pane,
+  Heading,
+  TextInputField,
+  TextInput,
+  IconButton,
+  Button,
+  Alert,
+  Spinner,
+  Label,
+  toaster,
+  Switch
+} from 'evergreen-ui'
 import {isEqual} from 'lodash'
 
 import {updateBaseLocale} from '../lib/bal-api'
 
 import TokenContext from '../contexts/token'
 
-import {useInput} from '../hooks/input'
+import {useInput, useCheckboxInput} from '../hooks/input'
 import SettingsContext from '../contexts/settings'
 import {validateEmail} from '../lib/utils/email'
 import BalDataContext from '../contexts/bal-data'
@@ -16,7 +29,7 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const Settings = React.memo(({nomBaseLocale}) => {
+const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails, reloadEmails} = useContext(TokenContext)
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
@@ -27,6 +40,13 @@ const Settings = React.memo(({nomBaseLocale}) => {
   const [email, onEmailChange, resetEmail] = useInput()
   const [hasChanges, setHasChanges] = useState(false)
   const [error, setError] = useState()
+  const [enableComplement, onEnableComplement] = useCheckboxInput(Boolean(isEnabledComplement))
+
+  const formHasChanged = useCallback(() => {
+    return nomInput !== baseLocale.nom ||
+    mailHasChanged(emails || [], balEmails) ||
+    enableComplement !== Boolean(baseLocale.enableComplement)
+  }, [nomInput, baseLocale, emails, balEmails, enableComplement])
 
   useEffect(() => {
     setBalEmails(emails || [])
@@ -56,7 +76,8 @@ const Settings = React.memo(({nomBaseLocale}) => {
     try {
       await updateBaseLocale(baseLocale._id, {
         nom: nomInput.trim(),
-        emails: balEmails
+        emails: balEmails,
+        enableComplement
       }, token)
 
       await reloadEmails()
@@ -68,7 +89,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
     }
 
     setIsLoading(false)
-  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale])
+  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, enableComplement])
 
   useEffect(() => {
     if (error) {
@@ -77,12 +98,8 @@ const Settings = React.memo(({nomBaseLocale}) => {
   }, [email]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails)) {
-      setHasChanges(true)
-    } else {
-      setHasChanges(false)
-    }
-  }, [nomInput, balEmails, emails, baseLocale.nom])
+    setHasChanges(formHasChanged())
+  }, [formHasChanged])
 
   return (
     <SideSheet
@@ -117,7 +134,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
               id='nom'
               value={nomInput}
               maxWidth={600}
-              disabled={isLoading}
+              disabled={isLoading || baseLocale.isTest}
               label='Nom'
               placeholder='Nom'
               onChange={onNomInputChange}
@@ -161,6 +178,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
                 maxWidth={400}
                 isInvalid={Boolean(error && error.includes('mail'))}
                 value={email}
+                disabled={baseLocale.isTest}
                 onChange={onEmailChange}
               />
               {email && !balEmails.includes(email) && (
@@ -182,6 +200,17 @@ const Settings = React.memo(({nomBaseLocale}) => {
               </Alert>
             )}
 
+            <Label marginBottom={4} display='block'>
+              Activer la saisie du complément du nom de voie (lieu-dit, hameau, …)
+            </Label>
+            <Switch
+              height={20}
+              marginBottom={10}
+              disabled={baseLocale.isTest}
+              checked={enableComplement}
+              onChange={onEnableComplement}
+            />
+
             <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanges} isLoading={isLoading}>
               {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
@@ -196,12 +225,23 @@ const Settings = React.memo(({nomBaseLocale}) => {
           <Spinner size={64} margin='auto' />
         )}
       </Pane>
+
+      <Pane padding={16}>
+        <Alert
+          intent='none'
+          title='Version d’essai de l’éditeur de base adresse locale'
+          marginBottom={32}
+        >
+          Il est impossible de modifier les paramètres de la base adresse locale en version d’essai.
+        </Alert>
+      </Pane>
     </SideSheet>
   )
 })
 
 Settings.propTypes = {
-  nomBaseLocale: PropTypes.string.isRequired
+  nomBaseLocale: PropTypes.string.isRequired,
+  isEnabledComplement: PropTypes.bool.isRequired
 }
 
 export default Settings

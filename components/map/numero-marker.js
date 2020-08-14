@@ -6,7 +6,7 @@ import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
 import randomColor from 'randomcolor'
 import {css} from 'glamor'
 
-import {removeNumero, removeVoie} from '../../lib/bal-api'
+import {removeNumero} from '../../lib/bal-api'
 
 import useError from '../../hooks/error'
 
@@ -14,12 +14,12 @@ import TokenContext from '../../contexts/token'
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
 
-function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
+function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
   const {marker} = useContext(MarkerContext)
-  const {editingId, setEditingId, reloadNumeros, reloadVoies} = useContext(BalDataContext)
+  const {editingId, setEditingId, reloadNumeros} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
@@ -69,13 +69,8 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
     const {_id} = numero
 
     try {
-      if (numero.numero) {
-        await removeNumero(_id, token)
-        await reloadNumeros()
-      } else {
-        await removeVoie(_id, token)
-        await reloadVoies()
-      }
+      await removeNumero(_id, token)
+      await reloadNumeros()
     } catch (error) {
       setError(error.message)
     }
@@ -96,11 +91,12 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
   return (
     <>
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
+
         {numero.positions[0].type === 'inconnue' ? (
           <Tooltip content='Le type de la position est inconnu' position={Position.RIGHT}>
             <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
               <Text color='white' paddingLeft={8} paddingRight={5}>
-                {numero[labelProperty]}
+                {numero.numeroComplet}
               </Text>
               <Icon icon='warning-sign' color='warning' size={13} marginLeft={2} marginRight={6} style={{verticalAlign: 'middle'}} />
             </Pane>
@@ -108,10 +104,11 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
         ) : (
           <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
             <Text color='white' paddingLeft={8} paddingRight={10}>
-              {numero[labelProperty]}
+              {numero.numeroComplet}
             </Text>
           </Pane>
         )}
+
         {showContextMenu && (
           <Pane background='tint1' position='absolute' margin={10}>
             <Menu>
@@ -131,6 +128,7 @@ function NumeroMarker({numero, labelProperty, colorSeed, showLabel, showContextM
 NumeroMarker.propTypes = {
   numero: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    numeroComplet: PropTypes.string.isRequired,
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
         coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
@@ -138,7 +136,6 @@ NumeroMarker.propTypes = {
       type: PropTypes.string
     }))
   }).isRequired,
-  labelProperty: PropTypes.string,
   colorSeed: PropTypes.string,
   showLabel: PropTypes.bool,
   showContextMenu: PropTypes.bool,
@@ -146,7 +143,6 @@ NumeroMarker.propTypes = {
 }
 
 NumeroMarker.defaultProps = {
-  labelProperty: 'numeroComplet',
   colorSeed: null,
   showLabel: false,
   showContextMenu: false

@@ -1,6 +1,7 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, TextInput, Button, Alert, Checkbox} from 'evergreen-ui'
+import {useRouter} from 'next/router'
 
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
@@ -15,7 +16,10 @@ import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
 function CreateAddress({onSubmit, onCancel}) {
-  const {voie} = useContext(BalDataContext)
+  const router = useRouter()
+
+  const {baseLocale, voie} = useContext(BalDataContext)
+  const {marker, disableMarker} = useContext(MarkerContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
@@ -26,8 +30,6 @@ function CreateAddress({onSubmit, onCancel}) {
   const [type, onTypeChange] = useInput('entrée')
   const [error, setError] = useState()
   const focusRef = useFocus()
-
-  const {marker, disableMarker} = useContext(MarkerContext)
 
   const onSelectVoie = useCallback(selectedVoie => {
     setSelectedVoie(selectedVoie)
@@ -60,11 +62,18 @@ function CreateAddress({onSubmit, onCancel}) {
     try {
       await onSubmit(body, selectedVoie ? selectedVoie._id : null)
       disableMarker()
+
+      if (selectedVoie._id !== voie._id) {
+        router.push(
+          `/bal/voie?balId=${baseLocale._id}&codeCommune=${selectedVoie.commune}&idVoie=${selectedVoie._id}`,
+          `/bal/${baseLocale._id}/communes/${selectedVoie.commune}/voies/${selectedVoie._id}`
+        )
+      }
     } catch (error) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [isToponyme, marker, type, numero, suffixe, comment, onSubmit, selectedVoie, disableMarker])
+  }, [isToponyme, marker, type, numero, suffixe, comment, onSubmit, selectedVoie, disableMarker, voie, router, baseLocale])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -83,7 +92,7 @@ function CreateAddress({onSubmit, onCancel}) {
 
   useEffect(() => {
     setSelectedVoie(isToponyme ? null : voie)
-  }, [isToponyme])
+  }, [isToponyme, voie])
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {

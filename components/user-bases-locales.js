@@ -41,7 +41,7 @@ function UserBasesLocales() {
   }
 
   return (
-    <Pane flex={2}>
+    <Pane flex={2} minHeight={200}>
       <Heading padding={16} size={400}>Mes Bases Adresse Locales</Heading>
       <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
     </Pane>

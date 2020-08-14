@@ -13,9 +13,6 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
 })
 
 function Index() {
-  const onCreate = () => {
-    Router.push('/new')
-  }
 
   return (
     <>
@@ -36,6 +33,7 @@ function Index() {
           height={100}
           alignItems='center'
           justifyContent='center'
+          flexDirection='column'
           padding={16}
         >
           <Button
@@ -43,9 +41,17 @@ function Index() {
             marginTop={10}
             appearance='primary'
             height={40}
-            onClick={onCreate}
+            onClick={() => Router.push('/new')}
           >
             Créer Base Adresse Locale
+          </Button>
+          <Button
+            marginTop={10}
+            appearance='alt'
+            height={40}
+            onClick={() => Router.push('/new?test=1')}
+          >
+            Essayer l’éditeur de base adresse locale
           </Button>
         </Pane>
 

@@ -93,12 +93,13 @@ const Header = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) =
       />
 
       <Pane marginLeft='auto' display='flex'>
-        <Publication
-          token={token}
-          status={baseLocale.published ? 'published' : baseLocale.status}
-          onChangeStatus={handleChangeStatus}
-          onPublish={handlePublication}
-        />
+        {!baseLocale.isTest && (
+          <Publication
+            token={token}
+            status={baseLocale.published ? 'published' : baseLocale.status}
+            onChangeStatus={handleChangeStatus}
+            onPublish={handlePublication}
+          />)}
 
         <IconButton
           height={24}

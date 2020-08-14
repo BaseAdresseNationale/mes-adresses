@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import {Pane, Popover, Icon, Button, Position} from 'evergreen-ui'
+import {Pane, SelectMenu, Icon, Button, Position} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
@@ -19,6 +19,7 @@ import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
 import Control from './control'
 import NumeroMarker from './numero-marker'
+import ToponymeMarker from './toponyme-marker'
 
 import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
@@ -46,6 +47,12 @@ function getInteractionProps(enabled) {
     doubleClickZoom: enabled
   }
 }
+
+const mapStyles = [
+  {label: 'Plan OpenMapTiles', value: 'vector'},
+  {label: 'Photographie aérienne', value: 'ortho'},
+  {label: 'Plan cadastral', value: 'vector-cadastre'}
+]
 
 function getBaseStyle(style) {
   switch (style) {
@@ -240,29 +247,17 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
                 cursor='pointer'
                 onClick={() => setShowPopover(!showPopover)}
               >
-                <Popover
-                  content={
-                    <Pane
-                      width={200}
-                      height={140}
-                      display='flex'
-                      alignItems='center'
-                      justifyContent='space-around'
-                      flexDirection='column'
-                      elevation={2}
-                      margin='auto'
-                      style={{backgroundColor: '#f5f6f7'}}
-                    >
-                      <Button onClick={() => setStyle('vector')}>Plan OpenMapTiles</Button>
-                      <Button onClick={() => setStyle('ortho')}>Photographie aérienne</Button>
-                      <Button onClick={() => setStyle('vector-cadastre')}>Plan cadastral</Button>
-                    </Pane>
-                  }
-                  position={Position.RIGHT}
-                  isShown={showPopover}
+                <SelectMenu
+                  position={Position.TOP_LEFT}
+                  title='Choix du fond de carte'
+                  hasFilter={false}
+                  height={150}
+                  options={mapStyles}
+                  selected={style}
+                  onSelect={style => setStyle(style.value)}
                 >
                   <Button><Icon icon='map' /></Button>
-                </Popover>
+                </SelectMenu>
               </Pane>
             </>
           )}
@@ -308,10 +303,9 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           ))}
 
           {toponymes && toponymes.map(toponyme => (
-            <NumeroMarker
+            <ToponymeMarker
               key={toponyme._id}
-              numero={toponyme}
-              labelProperty='nom'
+              toponyme={toponyme}
               showLabel={showNumeros}
               showContextMenu={toponyme._id === showContextMenu}
               setShowContextMenu={setShowContextMenu}
