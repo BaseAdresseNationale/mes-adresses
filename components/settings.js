@@ -226,15 +226,17 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
         )}
       </Pane>
 
-      <Pane padding={16}>
-        <Alert
-          intent='none'
-          title='Version d’essai de l’éditeur de base adresse locale'
-          marginBottom={32}
-        >
-          Il est impossible de modifier les paramètres de la base adresse locale en version d’essai.
-        </Alert>
-      </Pane>
+      {baseLocale.isTest && (
+        <Pane padding={16}>
+          <Alert
+            intent='none'
+            title='Version d’essai de l’éditeur de base adresse locale'
+            marginBottom={32}
+          >
+            Il est impossible de modifier les paramètres de la base adresse locale en version d’essai.
+          </Alert>
+        </Pane>
+      )}
     </SideSheet>
   )
 })
