@@ -79,9 +79,8 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
 
   const editingItem = useMemo(() => {
     if (editingId) {
-      return numeros ?
-        numeros.find(numero => numero._id === editingId) :
-        voies.find(voie => voie._id === editingId)
+      const voie = voies.find(voie => voie._id === editingId)
+      return voie || numeros.find(numero => numero._id === editingId)
     }
   }, [editingId, numeros, voies])
 

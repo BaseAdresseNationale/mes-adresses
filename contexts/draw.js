@@ -5,6 +5,7 @@ import BalDataContext from './bal-data'
 const DrawContext = React.createContext()
 
 export function DrawContextProvider(props) {
+  const [drawEnabled, setDrawEnabled] = useState(false)
   const [modeId, setModeId] = useState(null)
   const [hint, setHint] = useState(null)
   const [data, setData] = useState(null)
@@ -25,7 +26,7 @@ export function DrawContextProvider(props) {
   }, [data, setModeId])
 
   useEffect(() => {
-    if (editingItem) {
+    if (editingItem && editingItem.typeNumerotation === 'metric') {
       if (editingItem.lineVoie) {
         setData(editingItem.lineVoie)
         setModeId('editing')
@@ -35,9 +36,19 @@ export function DrawContextProvider(props) {
     }
   }, [editingItem])
 
+  useEffect(() => {
+    if (!drawEnabled) {
+      setData(null)
+      setModeId(null)
+    }
+  }, [drawEnabled])
+
   return (
     <DrawContext.Provider
       value={{
+        drawEnabled,
+        enableDraw: () => setDrawEnabled(true),
+        disableDraw: () => setDrawEnabled(false),
         modeId,
         setModeId,
         hint,

@@ -24,9 +24,9 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   const [toRemove, setToRemove] = useState(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale} = useContext(BalDataContext)
 
   const {
+    baseLocale,
     voies,
     reloadVoies,
     editingId,

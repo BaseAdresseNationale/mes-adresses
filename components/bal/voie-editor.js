@@ -26,7 +26,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
   const [error, setError] = useState()
   const setRef = useFocus()
 
-  const {data, setModeId, setData} = useContext(DrawContext)
+  const {data, enableDraw, disableDraw, setModeId, setData} = useContext(DrawContext)
   const {
     enabled,
     marker,
@@ -36,9 +36,8 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
 
   const onUnmount = useCallback(() => {
     disableMarker()
-    setData(null)
-    setModeId(null)
-  }, [disableMarker, setData, setModeId])
+    disableDraw()
+  }, [disableDraw, disableMarker])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -71,7 +70,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, isMetric, complement, data, marker, positionType, onSubmit, onUnmount])
+  }, [nom, isMetric, complement, data, initialValue.lineVoie, marker, positionType, onSubmit, onUnmount])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -106,8 +105,13 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
   useEffect(() => {
     if (isMetric) {
       onIsToponymeChange({target: {checked: false}})
+
+      setModeId(data ? 'editing' : 'drawLineString')
+      enableDraw()
+    } else {
+      disableDraw()
     }
-  }, [isMetric, onIsToponymeChange])
+  }, [data, disableDraw, enableDraw, isMetric, onIsToponymeChange, setData, setModeId])
 
   useEffect(() => {
     if (isToponyme) {
@@ -117,9 +121,9 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
 
   useEffect(() => {
     return () => {
-      console.log('UNMOUNT')
+      disableDraw()
     }
-  }, [])
+  }, [disableDraw])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>

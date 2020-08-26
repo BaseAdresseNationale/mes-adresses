@@ -12,7 +12,7 @@ const MODES = {
 }
 
 const Draw = ({hoverPos}) => {
-  const {modeId, data, hint, setHint, setData} = useContext(DrawContext)
+  const {drawEnabled, modeId, data, hint, setHint, setData} = useContext(DrawContext)
 
   const _onUpdate = useCallback(({data, editType}) => {
     if (editType === 'addTentativePosition') {
@@ -30,7 +30,7 @@ const Draw = ({hoverPos}) => {
     return Mode ? new Mode() : null
   }, [modeId])
 
-  if (!mode) {
+  if (!drawEnabled || !mode) {
     return null
   }
 
