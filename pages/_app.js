@@ -17,6 +17,7 @@ import Help from '../components/help'
 
 import {HelpContextProvider} from '../contexts/help'
 import {SettingsContextProvider} from '../contexts/settings'
+import {DrawContextProvider} from '../contexts/draw'
 import {MarkerContextProvider} from '../contexts/marker'
 import {TokenContextProvider} from '../contexts/token'
 import {BalDataContextProvider} from '../contexts/bal-data'
@@ -87,53 +88,55 @@ function App({error, Component, pageProps, query}) {
 
       <TokenContextProvider balId={query.balId} token={query.token}>
         <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
-          <MarkerContextProvider>
-            <HelpContextProvider>
+          <DrawContextProvider>
+            <MarkerContextProvider>
+              <HelpContextProvider>
 
-              <Help />
+                <Help />
 
-              {pageProps.baseLocale && (
-                <SettingsContextProvider>
-                  <Settings nomBaseLocale={pageProps.baseLocale.nom} isEnabledComplement={pageProps.baseLocale.enableComplement} />
-                  <Header
-                    {...pageProps}
-                    layout={layout}
-                    isSidebarHidden={isHidden}
-                    onToggle={onToggle}
-                  />
-                </SettingsContextProvider>
-              )}
-
-              <Map
-                top={topOffset}
-                left={leftOffset}
-                animate={layout === 'sidebar'}
-                interactive={layout === 'sidebar'}
-                commune={pageProps.commune}
-                voie={pageProps.voie}
-              />
-
-              <Wrapper
-                top={topOffset}
-                isHidden={isHidden}
-                size={500}
-                elevation={2}
-                background='tint2'
-                display='flex'
-                flexDirection='column'
-                onToggle={onToggle}
-              >
-                {error ? (
-                  <ErrorPage statusCode={error.statusCode} />
-                ) : (
-                  <>
-                    <IEWarning />
-                    <Component {...otherPageProps} />
-                  </>
+                {pageProps.baseLocale && (
+                  <SettingsContextProvider>
+                    <Settings nomBaseLocale={pageProps.baseLocale.nom} isEnabledComplement={pageProps.baseLocale.enableComplement} />
+                    <Header
+                      {...pageProps}
+                      layout={layout}
+                      isSidebarHidden={isHidden}
+                      onToggle={onToggle}
+                    />
+                  </SettingsContextProvider>
                 )}
-              </Wrapper>
-            </HelpContextProvider>
-          </MarkerContextProvider>
+
+                <Map
+                  top={topOffset}
+                  left={leftOffset}
+                  animate={layout === 'sidebar'}
+                  interactive={layout === 'sidebar'}
+                  commune={pageProps.commune}
+                  voie={pageProps.voie}
+                />
+
+                <Wrapper
+                  top={topOffset}
+                  isHidden={isHidden}
+                  size={500}
+                  elevation={2}
+                  background='tint2'
+                  display='flex'
+                  flexDirection='column'
+                  onToggle={onToggle}
+                >
+                  {error ? (
+                    <ErrorPage statusCode={error.statusCode} />
+                  ) : (
+                    <>
+                      <IEWarning />
+                      <Component {...otherPageProps} />
+                    </>
+                  )}
+                </Wrapper>
+              </HelpContextProvider>
+            </MarkerContextProvider>
+          </DrawContextProvider>
         </BalDataContextProvider>
       </TokenContextProvider>
     </Container>

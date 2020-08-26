@@ -49,10 +49,11 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsPopulating(false)
   }, [baseLocale, commune, reloadVoies, token])
 
-  const onAdd = useCallback(async ({nom, positions, complement}) => {
+  const onAdd = useCallback(async ({nom, positions, lineVoie, complement}) => {
     await addVoie(baseLocale._id, commune.code, {
       nom,
       positions,
+      lineVoie,
       complement
     }, token)
 
@@ -70,9 +71,11 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setEditingId(idVoie)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({nom, positions, complement}) => {
+  const onEdit = useCallback(async ({nom, typeNumerotation, lineVoie, positions, complement}) => {
     await editVoie(editingId, {
       nom,
+      typeNumerotation,
+      lineVoie,
       positions,
       complement
     }, token)

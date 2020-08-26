@@ -7,6 +7,7 @@ import {Pane, SelectMenu, Icon, Button, Position} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
+import DrawContext from '../../contexts/draw'
 import MarkerContext from '../../contexts/marker'
 
 import {addNumero, addVoie} from '../../lib/bal-api'
@@ -20,6 +21,7 @@ import EditableMarker from './editable-marker'
 import Control from './control'
 import NumeroMarker from './numero-marker'
 import ToponymeMarker from './toponyme-marker'
+import Draw from './draw'
 
 import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
@@ -94,7 +96,10 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [showPopover, setShowPopover] = useState(false)
 
+  const [hoverPos, setHoverPos] = useState(null)
+
   const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId} = useContext(BalDataContext)
+  const {modeId} = useContext(DrawContext)
   const {enableMarker, disableMarker} = useContext(MarkerContext)
   const {token} = useContext(TokenContext)
 
@@ -147,14 +152,17 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     setShowContextMenu(null)
   }, [baseLocale, commune])
 
-  const onHover = event => {
+  const onHover = useCallback(event => {
     const feature = event.features && event.features[0]
+
+    const {lng, lat} = map.unproject(event.point)
+    setHoverPos({longitude: lng, latitude: lat})
 
     if (feature) {
       const {idVoie} = feature.properties
       setHovered(idVoie)
     }
-  }
+  }, [map])
 
   const onAddAddress = useCallback(async (body, idVoie) => {
     if (idVoie) {
@@ -228,11 +236,13 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           {...settings}
           {...getInteractionProps(interactive)}
           interactiveLayerIds={interactiveLayerIds}
+          getCursor={() => modeId === 'drawLineString' ? 'crosshair' : 'default'}
           onClick={onClick}
           onHover={onHover}
           onMouseLeave={() => setHovered(null)}
           onViewportChange={onViewportChange}
         >
+
           {interactive && (
             <>
               <NavControl onViewportChange={onViewportChange} />
@@ -316,6 +326,8 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             viewport={viewport}
             style={style || defaultStyle}
           />
+
+          <Draw hoverPos={hoverPos} />
         </MapGl>
       </Pane>
 

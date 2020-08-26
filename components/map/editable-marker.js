@@ -38,7 +38,7 @@ function EditableMarker({viewport, size, style}) {
       onDrag={onDrag}
     >
       <Pane>
-        {editingItem && (
+        {editingItem && editingItem.positions && (
           <Text
             position='absolute'
             top={-58}

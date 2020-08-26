@@ -81,9 +81,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
     if (editingId) {
       return numeros ?
         numeros.find(numero => numero._id === editingId) :
-        toponymes.find(toponyme => toponyme._id === editingId)
+        voies.find(voie => voie._id === editingId)
     }
-  }, [editingId, numeros, toponymes])
+  }, [editingId, numeros, voies])
 
   useEffect(() => {
     reloadGeojson()
