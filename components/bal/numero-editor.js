@@ -1,6 +1,8 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectField, TextInput, Button, Alert} from 'evergreen-ui'
+import nearestPointOnLine from '@turf/nearest-point-on-line'
+import rhumbDistance from '@turf/rhumb-distance'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
@@ -16,12 +18,15 @@ import Comment from '../comment'
 
 import PositionEditor from './position-editor'
 
-function NumeroEditor({initialValue, onSubmit, onCancel}) {
+function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   const position = initialValue ? initialValue.positions[0] : null
+
+  const {voies} = useContext(BalDataContext)
+
+  const [voie, setVoie] = useState(initialVoie)
 
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange] = useInput(initialValue ? initialValue.numero : '')
-  const [voie, setVoie] = useState(initialValue ? initialValue.voie : null)
   const [suffixe, onSuffixeChange] = useInput(initialValue ? initialValue.suffixe : '')
   const [type, onTypeChange] = useInput(position ? position.type : 'entrée')
   const [comment, onCommentChange] = useInput(initialValue ? initialValue.comment : '')
@@ -31,10 +36,9 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
   const {
     marker,
     enableMarker,
-    disableMarker
+    disableMarker,
+    setOverrideText
   } = useContext(MarkerContext)
-
-  const {voies} = useContext(BalDataContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -42,15 +46,11 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
     setIsLoading(true)
 
     const body = {
-      numero: Number(numero)
+      numero: Number(numero),
+      voie: voie._id,
+      suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
+      comment: comment.length > 0 ? comment : null
     }
-
-    if (initialValue && voie !== initialValue.voie) {
-      body.voie = voie
-    }
-
-    body.suffixe = suffixe.length > 0 ? suffixe.toLowerCase().trim() : null
-    body.comment = comment.length > 0 ? comment : null
 
     if (marker) {
       body.positions = [
@@ -71,7 +71,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [initialValue, numero, voie, suffixe, comment, marker, type, onSubmit, disableMarker])
+  }, [numero, voie, suffixe, comment, marker, type, onSubmit, disableMarker])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -88,6 +88,13 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
     return initialValue ? 'Modifier' : 'Ajouter'
   }, [initialValue, isLoading])
 
+  const handleVoieChange = event => {
+    const {value} = event.target
+    const voie = voies.find(({_id}) => _id === value)
+
+    setVoie(voie)
+  }
+
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
       disableMarker()
@@ -99,6 +106,32 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
     return initialValue ? initialValue.positions.length < 2 : true
   }, [initialValue])
 
+  const numeroSuggestion = useMemo(() => {
+    if (marker && voie.lineVoie) {
+      const {lineVoie} = voie
+      const point = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: [marker.longitude, marker.latitude]
+        }
+      }
+      const from = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: lineVoie.geometry.coordinates[0]
+        }
+      }
+
+      const to = nearestPointOnLine(lineVoie, point, {units: 'kilometers'})
+      const distance = rhumbDistance(from, to, {units: 'kilometers'}) * 1000
+      return distance.toFixed(0)
+    }
+  }, [marker, voie])
+
   useEffect(() => {
     if (hasPositionEditor) {
       enableMarker(position)
@@ -106,6 +139,10 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
       disableMarker()
     }
   }, [initialValue, hasPositionEditor, enableMarker, position, disableMarker])
+
+  useEffect(() => {
+    setOverrideText(numero || numeroSuggestion)
+  }, [numeroSuggestion, numero, setOverrideText])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -115,7 +152,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
             label='Voie'
             flex={1}
             marginBottom={16}
-            onChange={event => setVoie(event.target.value)}
+            onChange={handleVoieChange}
           >
             {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
               <option
@@ -142,7 +179,7 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
           max={9999}
           value={numero}
           marginBottom={16}
-          placeholder='Numéro'
+          placeholder={`Numéro${numeroSuggestion ? ` recommandé : ${numeroSuggestion}` : ''}`}
           onChange={onNumeroChange}
         />
 
@@ -205,6 +242,10 @@ function NumeroEditor({initialValue, onSubmit, onCancel}) {
 }
 
 NumeroEditor.propTypes = {
+  initialVoie: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    lineVoie: PropTypes.object
+  }).isRequired,
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,
     voie: PropTypes.string.isRequired,

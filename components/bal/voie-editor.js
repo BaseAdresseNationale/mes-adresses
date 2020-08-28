@@ -70,7 +70,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, isMetric, complement, data, initialValue.lineVoie, marker, positionType, onSubmit, onUnmount])
+  }, [nom, isMetric, complement, data, marker, positionType, onSubmit, onUnmount])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()

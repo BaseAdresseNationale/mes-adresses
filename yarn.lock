@@ -1282,7 +1282,7 @@
   dependencies:
     "@turf/helpers" "^5.1.5"
 
-"@turf/nearest-point-on-line@>=4.0.0":
+"@turf/nearest-point-on-line@>=4.0.0", "@turf/nearest-point-on-line@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@turf/nearest-point-on-line/-/nearest-point-on-line-6.0.2.tgz#4b2c1177595d9a1743af76905a9013ced03bc0dc"
   integrity sha512-re9tSEwYyG1EMo4ObXXAKYVhkMVANPIIJQ1V/J1lKcNfHVc1pYmd3D5jkTNBh+oriI9VL4PVML3eqYE+Zcg0mg==
@@ -1370,7 +1370,7 @@
     "@turf/helpers" "^5.1.5"
     "@turf/invariant" "^5.1.5"
 
-"@turf/rhumb-distance@6.x":
+"@turf/rhumb-distance@6.x", "@turf/rhumb-distance@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@turf/rhumb-distance/-/rhumb-distance-6.0.1.tgz#ae1c5c823b4b04f75cd7fc240f7f93647db8bdd4"
   integrity sha512-3G45DQtQByzzfHFPcCyJdUZFwsd45zfZ7sAb1ddF7mhEj4G70+T2G3GKjInymqDNrbyh2gbG6wQiZSToC8Uf9g==

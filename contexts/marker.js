@@ -7,17 +7,23 @@ const MarkerContext = React.createContext()
 export function MarkerContextProvider(props) {
   const [enabled, setEnabled] = useState(false)
   const [marker, setMarker] = useState(null)
+  const [overrideText, setOverrideText] = useState(null)
 
   const {editingId} = useContext(BalDataContext)
+
+  const disableMarker = useCallback(() => {
+    setEnabled(false)
+    setMarker(null)
+    setOverrideText(null)
+  }, [])
 
   useEffect(() => {
     if (editingId) {
       setEnabled(true)
     } else {
-      setEnabled(false)
-      setMarker(null)
+      disableMarker()
     }
-  }, [editingId])
+  }, [disableMarker, editingId])
 
   const enableMarker = useCallback(defaultValue => {
     if (defaultValue) {
@@ -30,18 +36,15 @@ export function MarkerContextProvider(props) {
     setEnabled(true)
   }, [])
 
-  const disableMarker = useCallback(() => {
-    setEnabled(false)
-    setMarker(null)
-  }, [])
-
   return (
     <MarkerContext.Provider
       value={{
         enabled,
         marker,
+        overrideText,
         setMarker,
         enableMarker,
+        setOverrideText,
         disableMarker
       }}
       {...props}
