@@ -56,7 +56,7 @@ function useSources(voie, hovered) {
         name: 'positions',
         data: {
           type: 'FeatureCollection',
-          features: features.filter(f => !f.lineVoie)
+          features: features.filter(({properties}) => properties.type !== 'voie-line')
         }
       })
 

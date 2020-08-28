@@ -49,15 +49,23 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsPopulating(false)
   }, [baseLocale, commune, reloadVoies, token])
 
-  const onAdd = useCallback(async ({nom, positions, lineVoie, complement}) => {
-    await addVoie(baseLocale._id, commune.code, {
+  const onAdd = useCallback(async ({nom, positions, typeNumerotation, lineVoie, complement}) => {
+    const voie = await addVoie(baseLocale._id, commune.code, {
       nom,
+      typeNumerotation,
       positions,
       lineVoie,
       complement
     }, token)
 
-    await reloadVoies()
+    if (lineVoie) {
+      Router.push(
+        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${voie._id}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voie._id}`
+      )
+    } else {
+      await reloadVoies()
+    }
 
     setIsAdding(false)
   }, [baseLocale, commune, reloadVoies, token])
