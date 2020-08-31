@@ -17,7 +17,7 @@ import VoieEditor from '../../components/bal/voie-editor'
 import NumeroEditor from '../../components/bal/numero-editor'
 
 const Voie = React.memo(({voie, defaultNumeros}) => {
-  const [editedVoie, setEditedVoie] = useState(voie)
+  const [editedVoie, setEditedVoie] = useState(null)
   const [isEdited, setEdited] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
@@ -115,6 +115,12 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       setEditingId(null)
     }
   }, [isEdited, setEditingId])
+
+  useEffect(() => {
+    if (voie) {
+      setEditedVoie(null)
+    }
+  }, [voie])
 
   return (
     <>
