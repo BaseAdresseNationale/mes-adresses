@@ -1,12 +1,14 @@
 import React, {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, Icon} from 'evergreen-ui'
+import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, Icon, Checkbox} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
+import BalDataContext from '../contexts/bal-data'
 
-const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove}) => {
+const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
+  const {numeros} = useContext(BalDataContext)
   const {type} = positions[0] || {}
 
   const onClick = useCallback(e => {
@@ -43,6 +45,14 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
 
   return (
     <Table.Row isSelectable={isSelectable} onClick={onClick}>
+      {token && positions && positions.length === 1 && numeros && numeros.length > 1 && (
+        <Table.Cell flex='0 1 1'>
+          <Checkbox
+            checked={isSelected}
+            onChange={() => handleSelect(id)}
+          />
+        </Table.Cell>
+      )}
       {code && (
         <Table.TextCell data-browsable isNumber flex='0 1 1'>{code}</Table.TextCell>
       )}
@@ -52,7 +62,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
         onMouseEnter={() => _onMouseEnter(id)}
         onMouseLeave={_onMouseLeave}
       >
-        <Table.TextCell>
+        <Table.TextCell flex='0 1 1'>
           {label} {hovered && (
             <Icon marginBottom={-4} marginLeft={8} icon='edit' />
           )}
@@ -65,7 +75,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
         </Table.TextCell>
       )}
       {comment && (
-        <Table.Cell>
+        <Table.Cell flex='0 1 1'>
           <Tooltip
             content={comment}
             position={Position.BOTTOM_RIGHT}
@@ -125,7 +135,9 @@ TableRow.propTypes = {
   isSelectable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
   onEdit: PropTypes.func,
-  onRemove: PropTypes.func.isRequired
+  onRemove: PropTypes.func.isRequired,
+  handleSelect: PropTypes.func,
+  isSelected: PropTypes.boolean
 }
 
 TableRow.defaultProps = {
@@ -134,7 +146,9 @@ TableRow.defaultProps = {
   comment: null,
   secondary: null,
   isSelectable: true,
-  onEdit: null
+  onEdit: null,
+  handleSelect: null,
+  isSelected: false
 }
 
 export default TableRow

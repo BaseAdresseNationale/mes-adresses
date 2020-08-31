@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Text, Paragraph, Heading, Table, Button, Icon} from 'evergreen-ui'
+import {Pane, Text, Paragraph, Heading, Table, Button, Icon, Checkbox, Alert} from 'evergreen-ui'
 
 import {editVoie, addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
 
@@ -15,12 +15,16 @@ import useFuse from '../../hooks/fuse'
 import TableRow from '../../components/table-row'
 import VoieEditor from '../../components/bal/voie-editor'
 import NumeroEditor from '../../components/bal/numero-editor'
+import DeleteWarning from '../../components/delete-warning'
+import GroupedActions from '../../components/grouped-actions'
 
 const Voie = React.memo(({voie, defaultNumeros}) => {
   const [editedVoie, setEditedVoie] = useState(voie)
   const [isEdited, setEdited] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
+  const [error, setError] = useState()
+  const [toRemove, setToRemove] = useState(null)
 
   const {token} = useContext(TokenContext)
 
@@ -41,6 +45,26 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       'numeroComplet'
     ]
   })
+
+  const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
+
+  const handleSelect = id => {
+    setSelectedNumerosIds(selectedNumerosIds => {
+      if (selectedNumerosIds.find(f => f === id)) {
+        return selectedNumerosIds.filter(f => f !== id)
+      }
+
+      return [...selectedNumerosIds, id]
+    })
+  }
+
+  const handleSelectAll = () => {
+    if (selectedNumerosIds.length === filtered.length) {
+      setSelectedNumerosIds([])
+    } else {
+      setSelectedNumerosIds(filtered.map(({_id}) => _id))
+    }
+  }
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
@@ -100,10 +124,41 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(null)
   }, [editingId, setEditingId, reloadNumeros, token])
 
+  const onMultipleEdit = useCallback(async body => {
+    body.map(async r => {
+      try {
+        await editNumero(r._id, {
+          ...r
+        }, token)
+      } catch (error) {
+        setError(error.message)
+      }
+    })
+
+    await reloadNumeros()
+  }, [reloadNumeros, token])
+
   const onRemove = useCallback(async idNumero => {
     await removeNumero(idNumero, token)
     await reloadNumeros()
   }, [reloadNumeros, token])
+
+  const onMultipleRemove = useCallback(async numeros => {
+    numeros.map(async r => {
+      try {
+        await onRemove(r)
+      } catch (error) {
+        setError(error.message)
+      }
+    })
+
+    await reloadNumeros()
+
+    const unselectedNumeros = numeros.filter((numero => !selectedNumerosIds.includes(numero)))
+
+    setSelectedNumerosIds(unselectedNumeros)
+    setToRemove(null)
+  }, [reloadNumeros, onRemove, selectedNumerosIds, setSelectedNumerosIds])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -191,10 +246,43 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         )}
       </Pane>
 
+      <GroupedActions
+        voie={voie}
+        selectedNumerosIds={selectedNumerosIds}
+        setSelectedNumerosIds={setSelectedNumerosIds}
+        setToRemove={setToRemove}
+        onSubmit={onMultipleEdit}
+      />
+
+      <DeleteWarning
+        isShown={Boolean(toRemove)}
+        content={(
+          <Paragraph>
+              Êtes vous bien sûr de vouloir supprimer tous les numéros sélectionnés ?
+          </Paragraph>
+        )}
+        onCancel={() => setToRemove(null)}
+        onConfirm={() => onMultipleRemove(selectedNumerosIds)}
+      />
+
+      {error && (
+        <Alert marginY={5} intent='danger' title='Erreur'>
+          {error}
+        </Alert>
+      )}
+
       <Pane flex={1} overflowY='scroll'>
         {currentVoie.positions.length === 0 ? (
           <Table>
             <Table.Head>
+              {!editingId && token && filtered.length > 1 && (
+                <Table.Cell flex='0 1 1'>
+                  <Checkbox
+                    checked={selectedNumerosIds.length === filtered.length}
+                    onChange={handleSelectAll}
+                  />
+                </Table.Cell>
+              )}
               <Table.SearchHeaderCell
                 placeholder='Rechercher un numéro'
                 onChange={setFilter}
@@ -239,6 +327,8 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                   isSelectable={!isAdding && !editingId && numero.positions.length > 1}
                   label={numero.numeroComplet}
                   secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+                  handleSelect={handleSelect}
+                  isSelected={Boolean(selectedNumerosIds.find(id => id === numero._id))}
                   onEdit={onEnableEditing}
                   onRemove={onRemove}
                 />
