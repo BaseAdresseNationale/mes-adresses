@@ -1,10 +1,11 @@
 import React, {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Dialog, SelectField, Button, Paragraph, Alert} from 'evergreen-ui'
+import {Dialog, SelectField, Button, Paragraph, Alert, Checkbox} from 'evergreen-ui'
 import {sortBy} from 'lodash'
-import {useInput} from '../hooks/input'
+import {useInput, useCheckboxInput} from '../hooks/input'
 import BalDataContext from '../contexts/bal-data'
 import {normalizeSort} from '../lib/normalize'
+import Comment from './comment'
 
 const DialogEdition = ({_id, selectedNumerosIds, setSelectedNumerosIds, onSubmit}) => {
   const {voies, numeros} = useContext(BalDataContext)
@@ -14,6 +15,8 @@ const DialogEdition = ({_id, selectedNumerosIds, setSelectedNumerosIds, onSubmit
   const [positionType, onPositionTypeChange] = useInput('entrée')
   const [idVoie, setIdVoie] = useState(_id)
   const [error, setError] = useState()
+  const [comment, onCommentChange] = useInput('')
+  const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
 
   const handleComplete = () => {
     setIsShown(false)
@@ -40,6 +43,7 @@ const DialogEdition = ({_id, selectedNumerosIds, setSelectedNumerosIds, onSubmit
     body.map(r => {
       r.voie = idVoie
       r.positions[0].type = type
+      r.comment = removeAllComments ? null : (comment === '' ? (r.comment || null) : (r.comment ? `${r.comment}, ${comment}` : comment))
       return r
     })
 
@@ -51,7 +55,7 @@ const DialogEdition = ({_id, selectedNumerosIds, setSelectedNumerosIds, onSubmit
     }
 
     setSelectedNumerosIds([])
-  }, [setSelectedNumerosIds, idVoie, onSubmit])
+  }, [removeAllComments, comment, setSelectedNumerosIds, idVoie, onSubmit])
 
   return (
     <>
@@ -99,6 +103,14 @@ const DialogEdition = ({_id, selectedNumerosIds, setSelectedNumerosIds, onSubmit
           <option value='service technique'>Service technique</option>
           <option value='inconnue'>Inconnue</option>
         </SelectField>
+
+        <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
+
+        <Checkbox
+          label='Effacer tous les commentaires'
+          checked={removeAllComments}
+          onChange={onRemoveAllCommentsChange}
+        />
 
         <Paragraph marginY={8} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
 
