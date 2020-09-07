@@ -107,8 +107,8 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   }, [initialValue])
 
   const numeroSuggestion = useMemo(() => {
-    if (marker && voie.lineVoie) {
-      const {lineVoie} = voie
+    if (marker && voie.trace) {
+      const {trace} = voie
       const point = {
         type: 'Feature',
         properties: {},
@@ -122,11 +122,11 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: lineVoie.geometry.coordinates[0]
+          coordinates: trace.geometry.coordinates[0]
         }
       }
 
-      const to = nearestPointOnLine(lineVoie, point, {units: 'kilometers'})
+      const to = nearestPointOnLine(trace, point, {units: 'kilometers'})
       const distance = rhumbDistance(from, to, {units: 'kilometers'}) * 1000
       return distance.toFixed(0)
     }
@@ -244,7 +244,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
 NumeroEditor.propTypes = {
   initialVoie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    lineVoie: PropTypes.object
+    trace: PropTypes.object
   }).isRequired,
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,

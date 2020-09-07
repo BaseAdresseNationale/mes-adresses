@@ -34,16 +34,16 @@ function useSources(voie, hovered) {
 
     if (voie) {
       // Filter current voie’s numeros out
-      features = features.filter(({properties}) => (properties.idVoie !== voie._id) || (properties.idVoie === voie._id && properties.type === 'voie-line'))
+      features = features.filter(({properties}) => (properties.idVoie !== voie._id) || (properties.idVoie === voie._id && properties.type === 'voie-trace'))
     }
 
     features = features.map(feature => setPaintProperties(feature))
 
-    const lines = features.filter(({properties}) => properties.type === 'voie-line')
+    const lines = features.filter(({properties}) => properties.type === 'voie-trace')
 
     if (lines.length > 0) {
       sources.push({
-        name: 'voie-line',
+        name: 'voie-trace',
         data: {
           type: 'FeatureCollection',
           features: lines
@@ -56,7 +56,7 @@ function useSources(voie, hovered) {
         name: 'positions',
         data: {
           type: 'FeatureCollection',
-          features: features.filter(({properties}) => properties.type !== 'voie-line')
+          features: features.filter(({properties}) => properties.type !== 'voie-trace')
         }
       })
 

@@ -48,7 +48,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
       nom,
       typeNumerotation: isMetric ? 'metric' : 'numeric',
       complement: complement.length > 1 ? complement : null,
-      lineVoie: data
+      trace: data
     }
 
     if (marker) {
@@ -171,7 +171,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
       )}
 
       {isMetric && (
-        <DrawEditor voieLine={initialValue ? initialValue.lineVoie : null} />
+        <DrawEditor trace={initialValue ? initialValue.trace : null} />
       )}
 
       {isToponyme && marker && (
@@ -218,7 +218,7 @@ VoieEditor.propTypes = {
     nom: PropTypes.string,
     complement: PropTypes.string,
     typeNumerotation: PropTypes.string,
-    lineVoie: PropTypes.object,
+    trace: PropTypes.object,
     positions: PropTypes.array.isRequired
   }),
   onSubmit: PropTypes.func.isRequired,

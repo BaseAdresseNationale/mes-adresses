@@ -21,7 +21,6 @@ const Draw = ({hoverPos}) => {
 
     if (data) {
       setData(data[0])
-      console.log('setData')
     }
   }, [setData, setHint])
 
@@ -55,15 +54,11 @@ const Draw = ({hoverPos}) => {
 }
 
 Draw.defaultProps = {
-  lineVoie: null,
   hoverPos: null
 }
 
 Draw.propTypes = {
-  lineVoie: PropTypes.array,
-  hoverPos: PropTypes.object,
-  handleVoieLine: PropTypes.func.isRequired,
-  setModeId: PropTypes.func.isRequired
+  hoverPos: PropTypes.object
 }
 
 export default Draw

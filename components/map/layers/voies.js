@@ -47,11 +47,11 @@ export function getVoiesLabelLayer(style) {
   return layer
 }
 
-export function getVoieLineLayer() {
+export function getVoieTraceLayer() {
   const layer = {
-    id: 'voie-line',
+    id: 'voie-trace-line',
     type: 'line',
-    source: 'voie-line',
+    source: 'voie-trace',
     paint: {
       'line-color': ['get', 'color'],
       'line-width': 4

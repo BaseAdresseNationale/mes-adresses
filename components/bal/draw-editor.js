@@ -5,20 +5,20 @@ import {isEqual} from 'lodash'
 
 import DrawContext from '../../contexts/draw'
 
-const DrawEditor = ({lineVoie}) => {
+const DrawEditor = ({trace}) => {
   const {modeId, data, setData} = useContext(DrawContext)
 
   const handleCancel = useCallback(() => {
-    setData(lineVoie)
-  }, [setData, lineVoie])
+    setData(trace)
+  }, [setData, trace])
 
   const isModified = useMemo(() => {
-    if (data && lineVoie) {
-      return !isEqual(data.geometry.coordinates, lineVoie.geometry.coordinates, isEqual)
+    if (data && trace) {
+      return !isEqual(data.geometry.coordinates, trace.geometry.coordinates, isEqual)
     }
 
     return false
-  }, [data, lineVoie])
+  }, [data, trace])
 
   return (
     <Pane>
@@ -61,11 +61,11 @@ const DrawEditor = ({lineVoie}) => {
 }
 
 DrawEditor.defaultProps = {
-  lineVoie: null
+  trace: null
 }
 
 DrawEditor.propTypes = {
-  lineVoie: PropTypes.object
+  trace: PropTypes.object
 }
 
 export default DrawEditor

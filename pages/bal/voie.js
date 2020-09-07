@@ -57,11 +57,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setIsAdding(false)
   }, [voie, reloadNumeros, token])
 
-  const onEditVoie = useCallback(async ({nom, typeNumerotation, lineVoie, complement, positions}) => {
+  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace, complement, positions}) => {
     const editedVoie = await editVoie(voie._id, {
       nom,
       typeNumerotation,
-      lineVoie,
+      trace,
       complement,
       positions
     }, token)
