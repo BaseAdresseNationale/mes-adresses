@@ -66,10 +66,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       positions
     }, token)
 
+    setEditingId(null)
     await reloadVoies()
 
     setEditedVoie(editedVoie)
-  }, [reloadVoies, token, voie])
+  }, [reloadVoies, setEditingId, token, voie])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)

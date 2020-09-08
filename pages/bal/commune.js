@@ -63,9 +63,9 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${voie._id}`,
         `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voie._id}`
       )
-    } else {
-      await reloadVoies()
     }
+
+    await reloadVoies()
 
     setIsAdding(false)
   }, [baseLocale, commune, reloadVoies, token])

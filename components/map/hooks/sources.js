@@ -5,7 +5,7 @@ import randomColor from 'randomcolor'
 
 import BalDataContext from '../../../contexts/bal-data'
 
-function useSources(voie, hovered) {
+function useSources(voie, hovered, editingId) {
   const {geojson} = useContext(BalDataContext)
 
   return useMemo(() => {
@@ -39,17 +39,15 @@ function useSources(voie, hovered) {
 
     features = features.map(feature => setPaintProperties(feature))
 
-    const lines = features.filter(({properties}) => properties.type === 'voie-trace')
+    const lines = features.filter(({properties, id}) => properties.type === 'voie-trace' && id !== editingId)
 
-    if (lines.length > 0) {
-      sources.push({
-        name: 'voie-trace',
-        data: {
-          type: 'FeatureCollection',
-          features: lines
-        }
-      })
-    }
+    sources.push({
+      name: 'voie-trace',
+      data: {
+        type: 'FeatureCollection',
+        features: lines
+      }
+    })
 
     if (features.length > 0) {
       sources.push({
@@ -86,7 +84,7 @@ function useSources(voie, hovered) {
     }
 
     return sources
-  }, [geojson, voie, hovered])
+  }, [geojson, voie, hovered, editingId])
 }
 
 export default useSources

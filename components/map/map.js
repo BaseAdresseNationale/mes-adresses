@@ -103,7 +103,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const {enableMarker, disableMarker} = useContext(MarkerContext)
   const {token} = useContext(TokenContext)
 
-  const sources = useSources(voie, hovered)
+  const sources = useSources(voie, hovered, editingId)
   const bounds = useBounds(commune, voie)
   const layers = useLayers(voie, style)
 
@@ -301,7 +301,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             )}
           </Pane>
 
-          {voie && numeros && numeros.map(numero => (
+          {voie && !modeId && numeros && numeros.map(numero => (
             <NumeroMarker
               key={numero._id}
               numero={numero}
