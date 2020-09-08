@@ -99,7 +99,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
   const [hoverPos, setHoverPos] = useState(null)
 
-  const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId} = useContext(BalDataContext)
+  const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId, setEditingId} = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
   const {enableMarker, disableMarker} = useContext(MarkerContext)
   const {token} = useContext(TokenContext)
@@ -121,7 +121,8 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
     const layers = [
       'numeros-point',
-      'numeros-label'
+      'numeros-label',
+      'voie-trace-line'
     ]
 
     if (!voie) {
@@ -144,14 +145,18 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
     if (feature && feature.properties.idVoie) {
       const {idVoie} = feature.properties
-      return Router.push(
-        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
-      )
+      if (feature.layer.id === 'voie-trace-line' && idVoie === voie._id) {
+        setEditingId(voie._id)
+      } else {
+        Router.push(
+          `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+          `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+        )
+      }
     }
 
     setShowContextMenu(null)
-  }, [baseLocale, commune])
+  }, [baseLocale, commune, setEditingId, voie])
 
   const onHover = useCallback(event => {
     const feature = event.features && event.features[0]
