@@ -93,6 +93,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [hovered, setHovered] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
+  const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [showPopover, setShowPopover] = useState(false)
 
@@ -183,6 +184,17 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
       setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
     }
   }, [interactive, sources, layers, style, defaultStyle])
+
+  useEffect(() => {
+    setStyle(prevStyle => {
+      if (modeId) {
+        setEditPrevSyle(prevStyle)
+        return 'ortho'
+      }
+
+      return editPrevStyle
+    })
+  }, [modeId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (map) {
