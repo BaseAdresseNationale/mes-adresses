@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import React, {useState, useCallback, useEffect, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, Paragraph, Heading, Table, Button, Icon, Checkbox, Alert} from 'evergreen-ui'
 
@@ -24,7 +24,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const [hovered, setHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
-  const [toRemove, setToRemove] = useState(null)
+  const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
 
   const {token} = useContext(TokenContext)
 
@@ -47,10 +47,18 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   })
 
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
+  const filteredSelected = filtered.filter(({_id}) => selectedNumerosIds.includes(_id))
+
+  const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
+
+  const isAllSelected = useMemo(() => numeros && ((filtered.length === numeros.length && (selectedNumerosIds.length === numeros.length)) ||
+  (filtered.length !== numeros.length && (filtered.length === filteredSelected.length))), [selectedNumerosIds, numeros, filtered, filteredSelected])
+
+  const toEdit = useMemo(() => numeros && (filtered.length === numeros.length) ? selectedNumerosIds : filteredSelected.map(({_id}) => _id), [filtered, numeros, selectedNumerosIds, filteredSelected])
 
   const handleSelect = id => {
     setSelectedNumerosIds(selectedNumerosIds => {
-      if (selectedNumerosIds.find(f => f === id)) {
+      if (selectedNumerosIds.includes(id)) {
         return selectedNumerosIds.filter(f => f !== id)
       }
 
@@ -59,7 +67,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   }
 
   const handleSelectAll = () => {
-    if (selectedNumerosIds.length === filtered.length) {
+    if (isAllSelected) {
       setSelectedNumerosIds([])
     } else {
       setSelectedNumerosIds(filtered.map(({_id}) => _id))
@@ -125,15 +133,15 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   }, [editingId, setEditingId, reloadNumeros, token])
 
   const onMultipleEdit = useCallback(async body => {
-    body.map(async r => {
+    await Promise.all(body.map(async numero => {
       try {
-        await editNumero(r._id, {
-          ...r
+        await editNumero(numero._id, {
+          ...numero
         }, token)
       } catch (error) {
         setError(error.message)
       }
-    })
+    }))
 
     await reloadNumeros()
   }, [reloadNumeros, token])
@@ -144,21 +152,19 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   }, [reloadNumeros, token])
 
   const onMultipleRemove = useCallback(async numeros => {
-    numeros.map(async r => {
+    await Promise.all(numeros.map(async numero => {
       try {
-        await onRemove(r)
+        await onRemove(numero)
       } catch (error) {
         setError(error.message)
       }
-    })
+    }))
 
     await reloadNumeros()
 
-    const unselectedNumeros = numeros.filter((numero => !selectedNumerosIds.includes(numero)))
-
-    setSelectedNumerosIds(unselectedNumeros)
-    setToRemove(null)
-  }, [reloadNumeros, onRemove, selectedNumerosIds, setSelectedNumerosIds])
+    setSelectedNumerosIds([])
+    setIsRemoveWarningShown(false)
+  }, [reloadNumeros, onRemove, setSelectedNumerosIds])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -246,23 +252,26 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         )}
       </Pane>
 
-      <GroupedActions
-        voie={voie}
-        selectedNumerosIds={selectedNumerosIds}
-        setSelectedNumerosIds={setSelectedNumerosIds}
-        setToRemove={setToRemove}
-        onSubmit={onMultipleEdit}
-      />
+      {isGroupedActionsShown && (
+        <GroupedActions
+          idVoie={voie._id}
+          numeros={numeros}
+          selectedNumerosIds={toEdit}
+          resetSelectedNumerosIds={() => setSelectedNumerosIds([])}
+          setIsRemoveWarningShown={setIsRemoveWarningShown}
+          onSubmit={onMultipleEdit}
+        />
+      )}
 
       <DeleteWarning
-        isShown={Boolean(toRemove)}
+        isShown={isRemoveWarningShown}
         content={(
           <Paragraph>
               Êtes vous bien sûr de vouloir supprimer tous les numéros sélectionnés ?
           </Paragraph>
         )}
-        onCancel={() => setToRemove(null)}
-        onConfirm={() => onMultipleRemove(selectedNumerosIds)}
+        onCancel={() => setIsRemoveWarningShown(false)}
+        onConfirm={() => onMultipleRemove(toEdit)}
       />
 
       {error && (
@@ -275,10 +284,10 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         {currentVoie.positions.length === 0 ? (
           <Table>
             <Table.Head>
-              {!editingId && token && filtered.length > 1 && (
+              {!editingId && numeros && token && filtered.length > 1 && (
                 <Table.Cell flex='0 1 1'>
                   <Checkbox
-                    checked={selectedNumerosIds.length === filtered.length}
+                    checked={isAllSelected}
                     onChange={handleSelectAll}
                   />
                 </Table.Cell>
@@ -328,7 +337,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                   label={numero.numeroComplet}
                   secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
                   handleSelect={handleSelect}
-                  isSelected={Boolean(selectedNumerosIds.find(id => id === numero._id))}
+                  isSelected={selectedNumerosIds.includes(numero._id)}
                   onEdit={onEnableEditing}
                   onRemove={onRemove}
                 />
