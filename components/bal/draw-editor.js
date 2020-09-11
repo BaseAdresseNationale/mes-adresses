@@ -9,12 +9,16 @@ const DrawEditor = ({trace}) => {
   const {modeId, data, setData} = useContext(DrawContext)
 
   const handleCancel = useCallback(() => {
-    setData(trace)
+    setData({
+      type: 'Feature',
+      properties: {},
+      geometry: trace
+    })
   }, [setData, trace])
 
   const isModified = useMemo(() => {
     if (data && trace) {
-      return !isEqual(data.geometry.coordinates, trace.geometry.coordinates, isEqual)
+      return !isEqual(data.geometry.coordinates, trace.coordinates, isEqual)
     }
 
     return false

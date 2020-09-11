@@ -19,7 +19,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
 
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(checkIsToponyme(initialValue))
-  const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metric' : false)
+  const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [complement, onComplementChange] = useInput(initialValue ? initialValue.complement : '')
   const [positionType, onPositionTypeChange] = useInput(position ? position.type : 'entrée')
@@ -48,7 +48,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
       nom,
       typeNumerotation: isMetric ? 'metrique' : 'numerique',
       complement: complement.length > 1 ? complement : null,
-      trace: data
+      trace: data ? data.geometry : null
     }
 
     if (marker) {

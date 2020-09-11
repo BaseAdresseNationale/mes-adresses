@@ -29,7 +29,11 @@ export function DrawContextProvider(props) {
     if (editingItem) {
       if (editingItem.typeNumerotation === 'metrique') {
         if (editingItem.trace) {
-          setData(editingItem.trace)
+          setData({
+            type: 'Feature',
+            properties: {},
+            geometry: editingItem.trace
+          })
           setModeId('editing')
         } else {
           setModeId('drawLineString')

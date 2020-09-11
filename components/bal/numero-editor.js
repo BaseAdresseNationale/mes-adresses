@@ -122,11 +122,11 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: trace.geometry.coordinates[0]
+          coordinates: trace.coordinates[0]
         }
       }
 
-      const to = nearestPointOnLine(trace, point, {units: 'kilometers'})
+      const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
       const distance = rhumbDistance(from, to, {units: 'kilometers'}) * 1000
       return distance.toFixed(0)
     }
