@@ -36,7 +36,7 @@ const BaseLocale = () => {
 
       <Tuto title='Administrer votre Base Adresse Locale'>
         <Paragraph marginTop='default'>
-          Accédez aux paramètres de votre Base Adresse Locale en cliquand sur l’icone <span><Icon marginX={4} icon='cog' /></span> situé en haut à droite de votre écran.
+          Accédez aux paramètres de votre Base Adresse Locale en cliquant sur l’icône <span><Icon marginX={4} icon='cog' /></span> située en haut à droite de votre écran.
           Puis choissez «Paramètres».
         </Paragraph>
         <Paragraph marginTop='default'>
