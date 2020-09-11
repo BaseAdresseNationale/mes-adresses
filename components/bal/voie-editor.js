@@ -46,7 +46,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
 
     const body = {
       nom,
-      typeNumerotation: isMetric ? 'metric' : 'numeric',
+      typeNumerotation: isMetric ? 'metrique' : 'numerique',
       complement: complement.length > 1 ? complement : null,
       trace: data
     }

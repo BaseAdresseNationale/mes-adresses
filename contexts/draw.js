@@ -27,7 +27,7 @@ export function DrawContextProvider(props) {
 
   useEffect(() => {
     if (editingItem) {
-      if (editingItem.typeNumerotation === 'metric') {
+      if (editingItem.typeNumerotation === 'metrique') {
         if (editingItem.trace) {
           setData(editingItem.trace)
           setModeId('editing')
