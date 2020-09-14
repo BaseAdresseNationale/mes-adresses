@@ -7,6 +7,7 @@ import {Pane, SelectMenu, Icon, Button, Position} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
+import DrawContext from '../../contexts/draw'
 import MarkerContext from '../../contexts/marker'
 
 import {addNumero, addVoie} from '../../lib/bal-api'
@@ -20,6 +21,7 @@ import EditableMarker from './editable-marker'
 import Control from './control'
 import NumeroMarker from './numero-marker'
 import ToponymeMarker from './toponyme-marker'
+import Draw from './draw'
 
 import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
@@ -91,14 +93,18 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [hovered, setHovered] = useState(null)
   const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
+  const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [showPopover, setShowPopover] = useState(false)
 
-  const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId} = useContext(BalDataContext)
+  const [hoverPos, setHoverPos] = useState(null)
+
+  const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId, setEditingId} = useContext(BalDataContext)
+  const {modeId} = useContext(DrawContext)
   const {enableMarker, disableMarker} = useContext(MarkerContext)
   const {token} = useContext(TokenContext)
 
-  const sources = useSources(voie, hovered)
+  const sources = useSources(voie, hovered, editingId)
   const bounds = useBounds(commune, voie)
   const layers = useLayers(voie, style)
 
@@ -115,7 +121,8 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
     const layers = [
       'numeros-point',
-      'numeros-label'
+      'numeros-label',
+      'voie-trace-line'
     ]
 
     if (!voie) {
@@ -138,23 +145,30 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
     if (feature && feature.properties.idVoie) {
       const {idVoie} = feature.properties
-      return Router.push(
-        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
-      )
+      if (feature.layer.id === 'voie-trace-line' && idVoie === voie._id) {
+        setEditingId(voie._id)
+      } else {
+        Router.push(
+          `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+          `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+        )
+      }
     }
 
     setShowContextMenu(null)
-  }, [baseLocale, commune])
+  }, [baseLocale, commune, setEditingId, voie])
 
-  const onHover = event => {
+  const onHover = useCallback(event => {
     const feature = event.features && event.features[0]
+
+    const {lng, lat} = map.unproject(event.point)
+    setHoverPos({longitude: lng, latitude: lat})
 
     if (feature) {
       const {idVoie} = feature.properties
       setHovered(idVoie)
     }
-  }
+  }, [map])
 
   const onAddAddress = useCallback(async (body, idVoie) => {
     if (idVoie) {
@@ -175,6 +189,17 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
       setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
     }
   }, [interactive, sources, layers, style, defaultStyle])
+
+  useEffect(() => {
+    setStyle(prevStyle => {
+      if (modeId) {
+        setEditPrevSyle(prevStyle)
+        return 'ortho'
+      }
+
+      return editPrevStyle
+    })
+  }, [modeId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (map) {
@@ -228,11 +253,13 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           {...settings}
           {...getInteractionProps(interactive)}
           interactiveLayerIds={interactiveLayerIds}
+          getCursor={() => modeId === 'drawLineString' ? 'crosshair' : 'default'}
           onClick={onClick}
           onHover={onHover}
           onMouseLeave={() => setHovered(null)}
           onViewportChange={onViewportChange}
         >
+
           {interactive && (
             <>
               <NavControl onViewportChange={onViewportChange} />
@@ -291,7 +318,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             )}
           </Pane>
 
-          {voie && numeros && numeros.map(numero => (
+          {voie && !modeId && numeros && numeros.map(numero => (
             <NumeroMarker
               key={numero._id}
               numero={numero}
@@ -316,6 +343,8 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             viewport={viewport}
             style={style || defaultStyle}
           />
+
+          <Draw hoverPos={hoverPos} />
         </MapGl>
       </Pane>
 

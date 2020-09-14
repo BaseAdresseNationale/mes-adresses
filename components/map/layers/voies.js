@@ -46,3 +46,20 @@ export function getVoiesLabelLayer(style) {
 
   return layer
 }
+
+export function getVoieTraceLayer() {
+  const layer = {
+    id: 'voie-trace-line',
+    type: 'line',
+    source: 'voie-trace',
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 4
+    },
+    layout: {
+      'line-join': 'round'
+    }
+  }
+
+  return layer
+}

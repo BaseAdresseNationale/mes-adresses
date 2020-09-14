@@ -5,13 +5,13 @@ import randomColor from 'randomcolor'
 
 import BalDataContext from '../../../contexts/bal-data'
 
-function useSources(voie, hovered) {
+function useSources(voie, hovered, editingId) {
   const {geojson} = useContext(BalDataContext)
 
   return useMemo(() => {
     const sources = []
-    const setPaintProperties = features => {
-      return features.map(feature => ({
+    const setPaintProperties = feature => {
+      return {
         ...feature,
         id: feature.properties.idNumero || feature.properties.idVoie,
         properties: {
@@ -22,7 +22,7 @@ function useSources(voie, hovered) {
             seed: feature.properties.idVoie
           })
         }
-      }))
+      }
     }
 
     if (!geojson) {
@@ -34,17 +34,27 @@ function useSources(voie, hovered) {
 
     if (voie) {
       // Filter current voie’s numeros out
-      features = features.filter(feature => feature.properties.idVoie !== voie._id)
+      features = features.filter(({properties}) => (properties.idVoie !== voie._id) || (properties.idVoie === voie._id && properties.type === 'voie-trace'))
     }
 
-    features = setPaintProperties(features)
+    features = features.map(feature => setPaintProperties(feature))
+
+    const lines = features.filter(({properties, id}) => properties.type === 'voie-trace' && id !== editingId)
+
+    sources.push({
+      name: 'voie-trace',
+      data: {
+        type: 'FeatureCollection',
+        features: lines
+      }
+    })
 
     if (features.length > 0) {
       sources.push({
         name: 'positions',
         data: {
           type: 'FeatureCollection',
-          features
+          features: features.filter(({properties}) => properties.type !== 'voie-trace')
         }
       })
 
@@ -74,7 +84,7 @@ function useSources(voie, hovered) {
     }
 
     return sources
-  }, [geojson, voie, hovered])
+  }, [geojson, voie, hovered, editingId])
 }
 
 export default useSources

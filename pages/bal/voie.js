@@ -17,7 +17,7 @@ import VoieEditor from '../../components/bal/voie-editor'
 import NumeroEditor from '../../components/bal/numero-editor'
 
 const Voie = React.memo(({voie, defaultNumeros}) => {
-  const [editedVoie, setEditedVoie] = useState(null)
+  const [editedVoie, setEditedVoie] = useState(voie)
   const [isEdited, setEdited] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
@@ -57,19 +57,20 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setIsAdding(false)
   }, [voie, reloadNumeros, token])
 
-  const onEditVoie = useCallback(async ({nom, complement, positions}) => {
+  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace, complement, positions}) => {
     const editedVoie = await editVoie(voie._id, {
       nom,
+      typeNumerotation,
+      trace,
       complement,
       positions
     }, token)
 
+    setEditingId(null)
     await reloadVoies()
 
     setEditedVoie(editedVoie)
-
-    setEdited(false)
-  }, [reloadVoies, token, voie])
+  }, [reloadVoies, setEditingId, token, voie])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -79,6 +80,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setIsAdding(false)
     setEditingId(idNumero)
   }, [setEditingId])
+
+  const onEnableVoieEditing = useCallback(() => {
+    setEditingId(voie._id)
+    setHovered(false)
+  }, [setEditingId, voie._id])
 
   const onEdit = useCallback(async ({numero, voie, suffixe, comment, positions}) => {
     await editNumero(editingId, {
@@ -130,20 +136,17 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         background='tint1'
         padding={16}
       >
-        {isEdited ? (
+        {editingId === voie._id ? (
           <VoieEditor
             initialValue={{...currentVoie}}
             isEnabledComplement={Boolean(baseLocale.enableComplement)}
             onSubmit={onEditVoie}
-            onCancel={() => setEdited(false)}
+            onCancel={() => setEditingId(null)}
           />
         ) : (
           <Heading
             style={{cursor: hovered ? 'text' : 'default'}}
-            onClick={() => {
-              setEdited(true)
-              setHovered(false)
-            }}
+            onClick={onEnableVoieEditing}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
@@ -201,6 +204,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               <Table.Row height='auto'>
                 <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
+                    initialVoie={voie}
                     onSubmit={onAdd}
                     onCancel={onCancel}
                   />
@@ -214,10 +218,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 </Table.TextCell>
               </Table.Row>
             )}
-            {editingId ? (
+            {editingId && editingId !== voie._id ? (
               <Table.Row height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
+                    initialVoie={voie}
                     initialValue={editedNumero}
                     onSubmit={onEdit}
                     onCancel={onCancel}

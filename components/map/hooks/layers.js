@@ -1,13 +1,14 @@
 import {useMemo} from 'react'
 
-import {getVoiesLabelLayer} from '../layers/voies'
+import {getVoiesLabelLayer, getVoieTraceLayer} from '../layers/voies'
 import {getNumerosPointLayer, getNumerosLabelLayer} from '../layers/numeros'
 
 function useLayers(voie, style) {
   return useMemo(() => {
     const layers = [
       getNumerosPointLayer(style),
-      getNumerosLabelLayer()
+      getNumerosLabelLayer(),
+      getVoieTraceLayer(style)
     ]
 
     if (!voie) {

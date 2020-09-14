@@ -2,7 +2,7 @@ import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Tooltip, Icon, Position} from 'evergreen-ui'
 
-function NumeroSwitch({enabled, icon, enabledHint, disabledHint, onChange}) {
+function Control({enabled, icon, enabledHint, disabledHint, onChange}) {
   const onToggle = useCallback(e => {
     e.stopPropagation()
     onChange(enabled => !enabled)
@@ -25,7 +25,7 @@ function NumeroSwitch({enabled, icon, enabledHint, disabledHint, onChange}) {
   )
 }
 
-NumeroSwitch.propTypes = {
+Control.propTypes = {
   enabled: PropTypes.bool,
   icon: PropTypes.string.isRequired,
   enabledHint: PropTypes.string.isRequired,
@@ -33,8 +33,8 @@ NumeroSwitch.propTypes = {
   onChange: PropTypes.func.isRequired
 }
 
-NumeroSwitch.defaultProps = {
+Control.defaultProps = {
   enabled: true
 }
 
-export default NumeroSwitch
+export default Control

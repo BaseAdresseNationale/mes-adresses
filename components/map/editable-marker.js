@@ -7,7 +7,7 @@ import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
 
 function EditableMarker({viewport, size, style}) {
-  const {enabled, marker, setMarker} = useContext(MarkerContext)
+  const {enabled, marker, overrideText, setMarker} = useContext(MarkerContext)
   const {editingItem} = useContext(BalDataContext)
 
   const onDrag = useCallback(event => {
@@ -38,7 +38,7 @@ function EditableMarker({viewport, size, style}) {
       onDrag={onDrag}
     >
       <Pane>
-        {editingItem && (
+        {((editingItem && editingItem.positions) || overrideText) && (
           <Text
             position='absolute'
             top={-58}
@@ -49,7 +49,7 @@ function EditableMarker({viewport, size, style}) {
             paddingX={8}
             whiteSpace='nowrap'
           >
-            {editingItem.nom || editingItem.numeroComplet}
+            {overrideText || editingItem.nom || editingItem.numeroComplet}
           </Text>
         )}
 

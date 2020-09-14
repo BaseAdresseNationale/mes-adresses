@@ -1,4 +1,4 @@
-import {useState, useMemo, useContext} from 'react'
+import {useMemo, useContext} from 'react'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 
@@ -7,7 +7,6 @@ import BalDataContext from '../../../contexts/bal-data'
 const BUFFER_RADIUS = 100
 
 function useBounds(commune, voie) {
-  const [currentVoie, setCurrentVoie] = useState(null)
   const {geojson} = useContext(BalDataContext)
 
   const data = useMemo(() => {
@@ -15,11 +14,6 @@ function useBounds(commune, voie) {
       let data = geojson
 
       if (voie) {
-        if (voie._id === currentVoie) {
-          return false
-        }
-
-        setCurrentVoie(voie._id)
         data = {
           type: 'FeatureCollection',
           features: data.features.filter(feature => feature.properties.idVoie === voie._id)

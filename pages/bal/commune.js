@@ -24,9 +24,9 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   const [toRemove, setToRemove] = useState(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale} = useContext(BalDataContext)
 
   const {
+    baseLocale,
     voies,
     reloadVoies,
     editingId,
@@ -49,12 +49,21 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsPopulating(false)
   }, [baseLocale, commune, reloadVoies, token])
 
-  const onAdd = useCallback(async ({nom, positions, complement}) => {
-    await addVoie(baseLocale._id, commune.code, {
+  const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace, complement}) => {
+    const voie = await addVoie(baseLocale._id, commune.code, {
       nom,
+      typeNumerotation,
       positions,
+      trace,
       complement
     }, token)
+
+    if (trace) {
+      Router.push(
+        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${voie._id}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voie._id}`
+      )
+    }
 
     await reloadVoies()
 
@@ -70,9 +79,11 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setEditingId(idVoie)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({nom, positions, complement}) => {
+  const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions, complement}) => {
     await editVoie(editingId, {
       nom,
+      typeNumerotation,
+      trace,
       positions,
       complement
     }, token)
