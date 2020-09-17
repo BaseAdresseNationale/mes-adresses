@@ -14,7 +14,7 @@ import {
   toaster,
   Switch
 } from 'evergreen-ui'
-import {isEqual} from 'lodash'
+import {isEqual, difference} from 'lodash'
 
 import {updateBaseLocale} from '../lib/bal-api'
 
@@ -24,6 +24,8 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 import SettingsContext from '../contexts/settings'
 import {validateEmail} from '../lib/utils/email'
 import BalDataContext from '../contexts/bal-data'
+
+import RenewTokenDialog from './renew-token-dialog'
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
@@ -41,6 +43,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
   const [hasChanges, setHasChanges] = useState(false)
   const [error, setError] = useState()
   const [enableComplement, onEnableComplement] = useCheckboxInput(Boolean(isEnabledComplement))
+  const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] = useState(false)
 
   const formHasChanged = useCallback(() => {
     return nomInput !== baseLocale.nom ||
@@ -83,13 +86,17 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
       await reloadEmails()
       await reloadBaseLocale()
 
+      if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length !== 0) {
+        setIsRenewTokenWarningShown(true)
+      }
+
       toaster.success('La Base Adresse Locale a été modifiée avec succès !')
     } catch (error) {
       setError(error.message)
     }
 
     setIsLoading(false)
-  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, enableComplement])
+  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, enableComplement, emails])
 
   useEffect(() => {
     if (error) {
@@ -198,6 +205,17 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
               <Alert marginBottom={16} intent='danger' title='Erreur'>
                 {error}
               </Alert>
+            )}
+
+            {isRenewTokenWarningShown && (
+              <RenewTokenDialog
+                token={token}
+                emails={emails}
+                baseLocaleId={baseLocale._id}
+                isShown={isRenewTokenWarningShown}
+                setIsShown={setIsRenewTokenWarningShown}
+                setError={setError}
+              />
             )}
 
             <Label marginBottom={4} display='block'>
