@@ -35,8 +35,8 @@ const RenewTokenDialog = ({token, baseLocaleId, isShown, setIsShown, setError}) 
         onCloseComplete={() => setIsShown(false)}
       >
         <Paragraph>Vous avez supprimé un ou plusieurs collaborateurs, souhaitez-vous procéder au renouvellement des autorisations ?</Paragraph>
-        <Alert marginY={8} intent='warning'>
-          Action irreversible, vous ne pourrez plus modifier la BAL sans récupérer la nouvelle autorisation que vous recevrez par courriel.
+        <Alert title='Action irréversible' marginY={8} intent='warning'>
+          Vous ne pourrez plus modifier la Base Adresse Locale avant de récupérer la nouvelle autorisation que vous recevrez par courriel.
         </Alert>
       </Dialog>
     </Pane>
