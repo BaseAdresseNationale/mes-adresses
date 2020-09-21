@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInputField, SelectField, Alert} from 'evergreen-ui'
 
+import {positionsTypesList} from '../../lib/positions-types-list'
+
 function PositionEditor({type, marker, alert, onTypeChange}) {
   return (
     <Pane>
@@ -40,15 +42,9 @@ function PositionEditor({type, marker, alert, onTypeChange}) {
         value={type}
         onChange={onTypeChange}
       >
-        <option value='entrée'>Entrée</option>
-        <option value='délivrance postale'>Délivrance postale</option>
-        <option value='bâtiment'>Bâtiment</option>
-        <option value='cage d’escalier'>Cage d’escalier</option>
-        <option value='logement'>Logement</option>
-        <option value='parcelle'>Parcelle</option>
-        <option value='segment'>Segment</option>
-        <option value='service technique'>Service technique</option>
-        <option value='inconnue'>Inconnue</option>
+        {positionsTypesList.map(positionType => (
+          <option key={positionType.value} value={positionType.value}>{positionType.name}</option>
+        ))}
       </SelectField>
 
       {type === 'inconnue' && (
