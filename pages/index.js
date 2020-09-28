@@ -59,7 +59,7 @@ function Index() {
           textAlign='center'
           padding='1em'
         >
-          <Link href='https://adresse.data.gouv.fr/data/docs/guide-bal-v1.0.pdf' fontSize='1em'>Télécharger le Guide de la Base Adresse Locale</Link>
+          <Link href='https://adresse.data.gouv.fr/guides' fontSize='1em'>Télécharger le guide de la Base Adresse Locale</Link>
         </Pane>
       </Pane>
 
