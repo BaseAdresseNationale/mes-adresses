@@ -14,7 +14,7 @@ import useKeyEvent from '../../hooks/key-event'
 import PositionEditor from './position-editor'
 import DrawEditor from './draw-editor'
 
-function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
+function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComplement}) {
   const position = initialValue ? initialValue.positions[0] : null
 
   const [isLoading, setIsLoading] = useState(false)
@@ -61,6 +61,8 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
           type: positionType
         }
       ]
+    } else {
+      body.positions = []
     }
 
     try {
@@ -162,7 +164,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
         onChange={onIsMetricChange}
       />
 
-      {!initialValue && (
+      {(isToponyme || !hasNumeros) && (
         <Checkbox
           checked={isToponyme}
           label='Cette voie est un toponyme'
@@ -223,13 +225,15 @@ VoieEditor.propTypes = {
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func,
-  isEnabledComplement: PropTypes.bool
+  isEnabledComplement: PropTypes.bool,
+  hasNumeros: PropTypes.bool
 }
 
 VoieEditor.defaultProps = {
   initialValue: null,
   onCancel: null,
-  isEnabledComplement: false
+  isEnabledComplement: false,
+  hasNumeros: false
 }
 
 export default VoieEditor

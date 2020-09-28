@@ -25,6 +25,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
+  const [hasNumeros, setHasNumeros] = useState(false)
 
   const {token} = useContext(TokenContext)
 
@@ -114,9 +115,10 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   }, [setEditingId])
 
   const onEnableVoieEditing = useCallback(() => {
+    setHasNumeros(filtered.length !== 0)
     setEditingId(voie._id)
     setHovered(false)
-  }, [setEditingId, voie._id])
+  }, [setEditingId, voie._id, filtered])
 
   const onEdit = useCallback(async ({numero, voie, suffixe, comment, positions}) => {
     await editNumero(editingId, {
@@ -199,6 +201,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       >
         {editingId === voie._id ? (
           <VoieEditor
+            hasNumeros={hasNumeros}
             initialValue={{...currentVoie}}
             isEnabledComplement={Boolean(baseLocale.enableComplement)}
             onSubmit={onEditVoie}
