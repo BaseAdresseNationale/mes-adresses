@@ -20,8 +20,8 @@ function Index({defaultCommune, isTest}) {
 
   return (
     <FullscreenContainer
-      title='Nouvelle Base Adresse Locale'
-      subtitle='Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale.'
+      title={`Nouvelle Base Adresse Locale ${isTest ? 'de démonstration' : ''}`}
+      subtitle={`Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale ${isTest ? ' de démonstration' : ''}.`}
     >
       <Pane paddingTop={16} flex={1}>
         {isTest ? (
