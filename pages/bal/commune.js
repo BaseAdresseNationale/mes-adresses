@@ -41,11 +41,6 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     ]
   })
 
-  const numerosList = useCallback(async id => {
-    const numero = await getNumeros(id)
-    setSelectedVoieHasNumeros(numero.length > 0)
-  }, [setSelectedVoieHasNumeros])
-
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)
 
@@ -81,10 +76,12 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   }, [])
 
   const onEnableEditing = useCallback(async idVoie => {
-    await numerosList(idVoie)
+    const numeros = await getNumeros(idVoie)
+
+    setSelectedVoieHasNumeros(numeros.length > 0)
     setIsAdding(false)
     setEditingId(idVoie)
-  }, [setEditingId, numerosList])
+  }, [setEditingId, setSelectedVoieHasNumeros])
 
   const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions, complement}) => {
     await editVoie(editingId, {
