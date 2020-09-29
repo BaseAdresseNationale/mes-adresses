@@ -199,6 +199,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       >
         {editingId === voie._id ? (
           <VoieEditor
+            hasNumeros={numeros.length > 0}
             initialValue={{...currentVoie}}
             isEnabledComplement={Boolean(baseLocale.enableComplement)}
             onSubmit={onEditVoie}

@@ -1,10 +1,10 @@
-import React, {useState, useCallback, useContext} from 'react'
+import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {sortBy} from 'lodash'
 import {Pane, Heading, Text, Paragraph, Table, Button} from 'evergreen-ui'
 
-import {getVoies, addVoie, populateCommune, editVoie, removeVoie} from '../../lib/bal-api'
+import {getVoies, addVoie, populateCommune, editVoie, removeVoie, getNumeros} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -22,6 +22,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
   const [toRemove, setToRemove] = useState(null)
+  const [selectedVoieHasNumeros, setSelectedVoieHasNumeros] = useState(false)
 
   const {token} = useContext(TokenContext)
 
@@ -74,10 +75,13 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsAdding(true)
   }, [])
 
-  const onEnableEditing = useCallback(idVoie => {
+  const onEnableEditing = useCallback(async idVoie => {
+    const numeros = await getNumeros(idVoie)
+
+    setSelectedVoieHasNumeros(numeros.length > 0)
     setIsAdding(false)
     setEditingId(idVoie)
-  }, [setEditingId])
+  }, [setEditingId, setSelectedVoieHasNumeros])
 
   const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions, complement}) => {
     await editVoie(editingId, {
@@ -110,6 +114,12 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsAdding(false)
     setEditingId(null)
   }, [setEditingId])
+
+  useEffect(() => {
+    if (!editingId) {
+      setSelectedVoieHasNumeros(false)
+    }
+  }, [editingId])
 
   return (
     <>
@@ -194,6 +204,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
               <Table.Row key={voie._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <VoieEditor
+                    hasNumeros={selectedVoieHasNumeros}
                     isEnabledComplement={Boolean(baseLocale.enableComplement)}
                     initialValue={voie}
                     onSubmit={onEdit}
