@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext} from 'react'
+import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {sortBy} from 'lodash'
@@ -22,7 +22,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
   const [toRemove, setToRemove] = useState(null)
-  const [hasNumeros, setHasNumeros] = useState(false)
+  const [selectedVoieHasNumeros, setSelectedVoieHasNumeros] = useState(false)
 
   const {token} = useContext(TokenContext)
 
@@ -43,8 +43,8 @@ const Commune = React.memo(({commune, defaultVoies}) => {
 
   const numerosList = useCallback(async id => {
     const numero = await getNumeros(id)
-    setHasNumeros(numero.length !== 0)
-  }, [])
+    setSelectedVoieHasNumeros(numero.length > 0)
+  }, [setSelectedVoieHasNumeros])
 
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)
@@ -117,6 +117,12 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsAdding(false)
     setEditingId(null)
   }, [setEditingId])
+
+  useEffect(() => {
+    if (!editingId) {
+      setSelectedVoieHasNumeros(false)
+    }
+  }, [editingId])
 
   return (
     <>
@@ -201,7 +207,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
               <Table.Row key={voie._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <VoieEditor
-                    hasNumeros={hasNumeros}
+                    hasNumeros={selectedVoieHasNumeros}
                     isEnabledComplement={Boolean(baseLocale.enableComplement)}
                     initialValue={voie}
                     onSubmit={onEdit}
