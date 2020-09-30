@@ -13,7 +13,6 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
 })
 
 function Index() {
-
   return (
     <>
       <Pane borderBottom padding={16} backgroundColor='white'>
@@ -47,7 +46,6 @@ function Index() {
           </Button>
           <Button
             marginTop={10}
-            appearance='alt'
             height={40}
             onClick={() => Router.push('/new?test=1')}
           >
