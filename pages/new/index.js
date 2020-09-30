@@ -39,7 +39,7 @@ function Index({defaultCommune, isTest}) {
       </Pane>
 
       {isTest ? (
-        <TestForm />
+        <TestForm defaultCommune={defaultCommune} />
       ) :
         (<>
           <TabNavigation display='flex' marginLeft={16}>
