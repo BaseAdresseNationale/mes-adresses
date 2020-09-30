@@ -48,7 +48,7 @@ function TestForm({defaultCommune}) {
         required
         innerRef={focusRef}
         id='commune'
-        defaultSelectedItem={defaultCommune}
+        initialSelectedItem={defaultCommune}
         label='Commune'
         maxWidth={500}
         disabled={isLoading}

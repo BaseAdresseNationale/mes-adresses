@@ -82,7 +82,7 @@ function CreateForm({defaultCommune}) {
       <CommuneSearchField
         required
         id='commune'
-        defaultSelectedItem={defaultCommune}
+        initialSelectedItem={defaultCommune}
         label='Commune'
         maxWidth={500}
         disabled={isLoading}

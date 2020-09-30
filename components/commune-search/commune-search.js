@@ -5,7 +5,7 @@ import {useDebouncedCallback} from 'use-debounce'
 
 import {searchCommunes} from '../../lib/geo-api'
 
-function CommuneSearch({placeholder, exclude, innerRef, defaultSelectedItem, onSelect, ...props}) {
+function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onSelect, ...props}) {
   const [communes, setCommunes] = useState([])
 
   const [onSearch] = useDebouncedCallback(async value => {
@@ -23,7 +23,7 @@ function CommuneSearch({placeholder, exclude, innerRef, defaultSelectedItem, onS
   return (
     <Autocomplete
       isFilterDisabled
-      defaultSelectedItem={defaultSelectedItem}
+      initialSelectedItem={initialSelectedItem}
       items={communes}
       itemToString={item => item ? `${item.nom} (${item.departement.nom} - ${item.departement.code})` : ''}
       onChange={onSelect}
@@ -52,7 +52,7 @@ function CommuneSearch({placeholder, exclude, innerRef, defaultSelectedItem, onS
 }
 
 CommuneSearch.propTypes = {
-  defaultSelectedItem: PropTypes.shape({
+  initialSelectedItem: PropTypes.shape({
     code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
     departement: PropTypes.shape({
@@ -67,7 +67,7 @@ CommuneSearch.propTypes = {
 }
 
 CommuneSearch.defaultProps = {
-  defaultSelectedItem: null,
+  initialSelectedItem: null,
   placeholder: 'Chercher une commune…',
   exclude: [],
   innerRef: () => {},
