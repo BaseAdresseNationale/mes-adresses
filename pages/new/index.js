@@ -1,14 +1,11 @@
-import React, {useState, useContext, useCallback} from 'react'
+import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-
-import {Pane, Heading, TabNavigation, Tab, Paragraph, Button} from 'evergreen-ui'
+import {Pane, Heading, TabNavigation, Tab, Paragraph} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
-import useHelp from '../../hooks/help'
-
-import HelpContext from '../../contexts/help'
+import Footer from '../../components/footer'
 
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
@@ -20,14 +17,6 @@ const BackToUserBals = dynamic(import('./back-to-user-bals'), {
 
 function Index({defaultCommune, isTest}) {
   const [index, setIndex] = useState(0)
-  const {showHelp, setShowHelp, setSelectedIndex} = useContext(HelpContext)
-
-  useHelp(0)
-
-  const handleHelp = useCallback(() => {
-    setSelectedIndex(0)
-    setShowHelp(!showHelp)
-  }, [setSelectedIndex, setShowHelp, showHelp])
 
   return (
     <Pane backgroundColor='white'>
@@ -61,8 +50,8 @@ function Index({defaultCommune, isTest}) {
 
       <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
         <BackToUserBals />
-        <Button iconBefore='help' onClick={handleHelp}>Besoin d’aide</Button>
       </Pane>
+      <Footer />
     </Pane>
   )
 }
