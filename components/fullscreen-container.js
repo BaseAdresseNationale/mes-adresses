@@ -6,7 +6,7 @@ import Footer from './footer'
 
 const FullscreenContainer = ({title, subtitle, children}) => {
   return (
-    <Pane display='flex' flexDirection='column' flex={1} >
+    <Pane height='100%' display='flex' flexDirection='column' >
       <Pane borderBottom padding={16} backgroundColor='white'>
         <Heading size={600} marginBottom={8}>{title}</Heading>
         <Paragraph>

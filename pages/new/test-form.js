@@ -43,7 +43,7 @@ function TestForm({defaultCommune}) {
   }, [commune, populate])
 
   return (
-    <Pane is='form' margin={16} padding={16} overflowY='scroll' background='tint2' onSubmit={onSubmit}>
+    <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
       <CommuneSearchField
         required
         innerRef={focusRef}

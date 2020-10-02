@@ -8,7 +8,7 @@ import FullscreenContainer from '../components/fullscreen-container'
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
   loading: () => (
-    <Pane display='flex' alignItems='center' justifyContent='center' height={400}>
+    <Pane display='flex' flex={1} alignItems='center' justifyContent='center'>
       <Spinner />
     </Pane>
   )
@@ -22,8 +22,7 @@ function Index() {
 
         <Pane
           display='flex'
-          flex={1}
-          height={100}
+          height='50%'
           alignItems='center'
           justifyContent='center'
           flexDirection='column'
@@ -36,7 +35,7 @@ function Index() {
             height={40}
             onClick={() => Router.push('/new')}
           >
-              Créer Base Adresse Locale
+            Créer Base Adresse Locale
           </Button>
           <Button
             marginTop={10}
