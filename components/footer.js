@@ -5,30 +5,34 @@ import {Pane, Heading, Button, Paragraph} from 'evergreen-ui'
 import HelpContext from '../contexts/help'
 import useHelp from '../hooks/help'
 
-const Doc = ({text, link, isClickable, onClick}) => (
+const DocumentationLink = ({title, description, link, onClick}) => (
   <Pane display='flex' flexDirection='column' alignItems='center'>
-    {isClickable ? (
-      <Button iconBefore='manual' appearance='minimal' height={56} onClick={onClick}>Guide interactif</Button>
+    {link ? (
+      <Button iconBefore='download' is='a' appearance='minimal' height={56} href={link} target='_blank' fontSize='0.8em'>
+        {title}
+      </Button>
     ) : (
-      <Button iconBefore='download' is='a' appearance='minimal' height={56} href={link} fontSize='1em'>Guide de l’éditeur de Base Adresse Locale</Button>
+      <Button iconBefore='manual' appearance='minimal' height={56} fontSize='0.8em' onClick={onClick}>
+        {title}
+      </Button>
     )}
-    <Paragraph textAlign='center' fontStyle='italic'>
-      <small>{text}</small>
+
+    <Paragraph marginTop={4} textAlign='center' fontStyle='italic'>
+      <small>{description}</small>
     </Paragraph>
   </Pane>
 )
 
-Doc.propTypes = {
-  text: PropTypes.string.isRequired,
-  link: PropTypes.string,
-  isClickable: PropTypes.bool,
-  onClick: PropTypes.func
+DocumentationLink.defaultProps = {
+  link: null,
+  onClick: null
 }
 
-Doc.defaultProps = {
-  link: null,
-  isClickable: false,
-  onClick: null
+DocumentationLink.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  link: PropTypes.string,
+  onClick: PropTypes.func
 }
 
 const Footer = () => {
@@ -43,26 +47,28 @@ const Footer = () => {
 
   return (
     <Pane
-      position='absolute'
       bottom={0}
       background='tint1'
       padding={16}
+      elevation={1}
     >
       <Pane>
         <Heading textAlign='center' marginBottom={5} size={600}>Besoin d’aide ?</Heading>
       </Pane>
       <Pane display='grid' gridTemplateColumns='1fr 1fr 1fr' justifyContent='space-between' alignItems='center'>
-        <Doc
-          text='Apprendre à utiliser les fonctionnalités essentielles de l’éditeur'
+        <DocumentationLink
+          title='Guide de l’éditeur'
+          description='Apprendre à utiliser les fonctionnalités essentielles de l’éditeur'
           link='https://adresse.data.gouv.fr/data/docs/guide-editeur-bal-v1.2.pdf'
         />
-        <Doc
-          isClickable
-          text='Apprendre à utiliser les fonctionnalités essentielles de l’éditeur'
+        <DocumentationLink
+          title='Guide interactif'
+          description='Le manuel de l’éditeur toutjours à porté de main'
           onClick={handleHelp}
         />
-        <Doc
-          text='Les bonnes pratiques pour nommer et numéroter les voies'
+        <DocumentationLink
+          title='Guide des bonnes pratiques'
+          description='Les bonnes pratiques pour nommer et numéroter les voies'
           link='https://adresse.data.gouv.fr/data/docs/guide-bonnes-pratiques-v1.0.pdf'
         />
       </Pane>
