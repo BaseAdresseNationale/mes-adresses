@@ -16,6 +16,7 @@ function Fullscreen({isOpen, isHidden, size, top, onToggle, ...props}) {
       zIndex={2}
     >
       <Pane
+        display='flex'
         width='100%'
         height='100%'
         overflow='hidden'
