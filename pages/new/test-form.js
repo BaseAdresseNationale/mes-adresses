@@ -63,7 +63,7 @@ function TestForm({defaultCommune}) {
         onChange={onPopulateChange}
       />
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' isLoading={isLoading}>
+      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
       </Button>
     </Pane>

@@ -142,7 +142,7 @@ function Index() {
         )}
 
         {file && (
-          <Button height={40} type='submit' appearance='primary' disabled={Boolean(error)} isLoading={isLoading}>
+          <Button height={40} type='submit' appearance='primary' intent='success' disabled={Boolean(error)} isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
             {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
           </Button>
         )}
