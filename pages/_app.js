@@ -106,14 +106,16 @@ function App({error, Component, pageProps, query}) {
                   </SettingsContextProvider>
                 )}
 
-                <Map
-                  top={topOffset}
-                  left={leftOffset}
-                  animate={layout === 'sidebar'}
-                  interactive={layout === 'sidebar'}
-                  commune={pageProps.commune}
-                  voie={pageProps.voie}
-                />
+                {pageProps.baseLocale && (
+                  <Map
+                    top={topOffset}
+                    left={leftOffset}
+                    animate={layout === 'sidebar'}
+                    interactive={layout === 'sidebar'}
+                    commune={pageProps.commune}
+                    voie={pageProps.voie}
+                  />
+                )}
 
                 <Wrapper
                   top={topOffset}
