@@ -16,10 +16,10 @@ function getBadge(status) {
   }
 }
 
-const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove}) => {
+const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, isOpen}) => {
   const {nom, communes, status, _updated, _created, emails} = baseLocale
   const [nomCommune, setNomCommune] = useState()
-  const [openInfo, setOpenInfo] = useState()
+  const [openInfo, setOpenInfo] = useState(isOpen)
   const badge = getBadge(status)
 
   const handleOpenInfo = () => {
@@ -134,6 +134,7 @@ BaseLocaleCard.propTypes = {
       'draft', 'ready-to-publish', 'published'
     ])
   }).isRequired,
+  isOpen: PropTypes.bool.isRequired,
   editable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
   onRemove: PropTypes.func
