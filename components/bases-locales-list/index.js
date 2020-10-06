@@ -11,7 +11,7 @@ import useError from '../../hooks/error'
 import {listBasesLocales, removeBaseLocale} from '../../lib/bal-api'
 
 import DeleteWarning from '../delete-warning'
-import BaseLocaleRow from './base-locale-row'
+import BaseLocaleCard from './base-locale-card'
 
 function BasesLocalesList({basesLocales, updateBasesLocales}) {
   const [toRemove, setToRemove] = useState(null)
@@ -94,7 +94,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
             )}
             <Table.Body background='tint1'>
               {filtered.map(bal => (
-                <BaseLocaleRow
+                <BaseLocaleCard
                   key={bal._id}
                   baseLocale={bal}
                   editable={!isPublicPage}
