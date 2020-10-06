@@ -55,21 +55,16 @@ const Footer = () => {
       <Pane>
         <Heading textAlign='center' marginBottom={5} size={600}>Besoin d’aide ?</Heading>
       </Pane>
-      <Pane display='grid' gridTemplateColumns='1fr 1fr 1fr' justifyContent='space-between' alignItems='center'>
+      <Pane display='grid' gridTemplateColumns='1fr 1fr' justifyContent='space-between' alignItems='center'>
         <DocumentationLink
           title='Guide de l’éditeur'
           description='Apprendre à utiliser les fonctionnalités essentielles de l’éditeur'
-          link='https://adresse.data.gouv.fr/data/docs/guide-editeur-bal-v1.2.pdf'
+          link='https://adresse.data.gouv.fr/guides'
         />
         <DocumentationLink
           title='Guide interactif'
           description='Le manuel de l’éditeur toutjours à porté de main'
           onClick={handleHelp}
-        />
-        <DocumentationLink
-          title='Guide des bonnes pratiques'
-          description='Les bonnes pratiques pour nommer et numéroter les voies'
-          link='https://adresse.data.gouv.fr/data/docs/guide-bonnes-pratiques-v1.0.pdf'
         />
       </Pane>
     </Pane>
