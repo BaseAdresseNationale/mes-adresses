@@ -45,7 +45,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
       padding={12}
       display='grid'
       gridTemplateColumns='repeat(1fr)'
-      background='tint1'
+      background={baseLocale.isTest ? '#E4E7EB' : 'tint1'}
     >
       <Pane padding='.5em' display='flex' justifyContent='space-between' cursor='pointer' onClick={handleIsOpen}>
         <Pane>
@@ -61,7 +61,11 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
           )}
         </Pane>
         <Pane display='flex' flexDirection='row' justifyContent='space-between'>
-          <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
+          {baseLocale.isTest ? (
+            <Badge isSolid color='neutral' margin='auto'>TEST</Badge>
+          ) : (
+            <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
+          )}
           <Icon icon={isOpen ? 'chevron-down' : 'chevron-right'} size={25} marginX='1em' marginY='auto' />
         </Pane>
       </Pane>
@@ -132,6 +136,7 @@ BaseLocaleCard.propTypes = {
     _updated: PropTypes.string,
     _created: PropTypes.string,
     description: PropTypes.string,
+    isTest: PropTypes.bool,
     status: PropTypes.oneOf([
       'draft', 'ready-to-publish', 'published'
     ])

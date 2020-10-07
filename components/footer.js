@@ -58,7 +58,7 @@ const Footer = () => {
       <Pane display='grid' gridTemplateColumns='1fr 1fr' justifyContent='space-between' alignItems='center'>
         <DocumentationLink
           title='Guides de l’adressage'
-          description='Apprendre à utiliser les fonctionnalités essentielles de l’éditeur'
+          description='Pour vous accompagner dans la gestion des adresses de votre commune'
           link='https://adresse.data.gouv.fr/guides'
         />
         <DocumentationLink
