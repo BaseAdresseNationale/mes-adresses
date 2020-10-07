@@ -42,7 +42,7 @@ function Index() {
             height={40}
             onClick={() => Router.push('/new?test=1')}
           >
-              Essayer l’éditeur de base adresse locale
+            Essayer l’éditeur de base adresse locale
           </Button>
         </Pane>
       </Pane>

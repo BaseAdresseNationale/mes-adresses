@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Badge, Card, Pane, Button, Tooltip, Icon, Text} from 'evergreen-ui'
+import {Heading, Badge, Card, Pane, Button, Tooltip, Icon, Text} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
 import {fr} from 'date-fns/locale'
+
 import {getCommune} from '../../lib/geo-api'
 
 function getBadge(status) {
@@ -16,22 +17,24 @@ function getBadge(status) {
   }
 }
 
-const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, isOpen}) => {
+const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen}) => {
   const {nom, communes, status, _updated, _created, emails} = baseLocale
-  const [nomCommune, setNomCommune] = useState()
-  const [openInfo, setOpenInfo] = useState(editable ? isOpen : false)
+  const [commune, setCommune] = useState()
+  const [isOpen, setIsOpen] = useState(editable ? initialIsOpen : false)
+  const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
+  const createDate = format(new Date(_created), 'PPP', {locale: fr})
   const badge = getBadge(status)
 
-  const handleOpenInfo = () => {
-    setOpenInfo(!openInfo)
+  const handleIsOpen = () => {
+    setIsOpen(!isOpen)
   }
 
   useEffect(() => {
-    const fetchNomCommune = async code => {
-      setNomCommune(await getCommune(code))
+    const fetchCommune = async code => {
+      setCommune(await getCommune(code))
     }
 
-    fetchNomCommune(communes[0])
+    fetchCommune(communes[0])
   }, [communes])
 
   return (
@@ -40,40 +43,39 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, isOpen}) => {
       elevation={2}
       margin={8}
       padding={12}
-      fontFamily='Helvetica Neue'
       display='grid'
       gridTemplateColumns='repeat(1fr)'
       background='tint1'
     >
-      <Pane padding='.5em' display='flex' justifyContent='space-between' cursor='pointer' onClick={handleOpenInfo}>
+      <Pane padding='.5em' display='flex' justifyContent='space-between' cursor='pointer' onClick={handleIsOpen}>
         <Pane>
           <Pane display='flex' flexDirection='row' justifyContent='start'>
             <Icon icon='globe' marginRight='.5em' marginY='auto' />
-            <Pane fontSize='18px'>{nom}</Pane>
+            <Heading fontSize='18px'>{nom}</Heading>
           </Pane>
-          <Text fontSize='12px' fontStyle='italic'>{_updated ? 'Dernière mise à jour il y a ' + formatDistanceToNow(new Date(_updated), {locale: fr}) : 'Jamais mise à jour'} - </Text>
-          {nomCommune && communes.length < 2 ? (
-            <Text fontSize='12px' fontStyle='italic'>{nomCommune.nom} ({nomCommune.codeDepartement}) </Text>
+          <Text fontSize='12px' fontStyle='italic'>{_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} - </Text>
+          {communes.length < 2 ? (
+            commune && <Text fontSize='12px' fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
           ) : (
             <Text fontSize='12px' fontStyle='italic'>{communes.length} Communes</Text>
           )}
         </Pane>
         <Pane display='flex' flexDirection='row' justifyContent='space-between'>
           <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
-          <Icon icon={openInfo ? 'caret-down' : 'caret-right'} size={25} marginX='1em' marginY='auto' />
+          <Icon icon={isOpen ? 'chevron-down' : 'chevron-right'} size={25} marginX='1em' marginY='auto' />
         </Pane>
       </Pane>
 
-      {openInfo && (
+      {isOpen && (
         <>
           <Pane borderTop flex={3} display='flex' flexDirection='row' paddingTop='1em'>
             <Pane flex={1} textAlign='center' margin='auto'>
-              <Pane>Créée le <Pane><b>{format(new Date(_created), 'PPP', {locale: fr})}</b></Pane></Pane>
+              <Text>Créée le <Pane><b>{createDate}</b></Pane></Text>
             </Pane>
 
             {emails && editable && (
               <Pane flex={1} textAlign='center' padding='8px' display='flex' flexDirection='row' justifyContent='center' margin='auto'>
-                {emails.length < 2 ? emails.length + ' Administrateur' : emails.length + ' Administrateurs'}
+                <Text>{emails.length < 2 ? '1 Administrateur' : emails.length + ' Administrateurs'}</Text>
                 <Tooltip
                   content={
                     emails.map(email => (
@@ -102,7 +104,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, isOpen}) => {
                 <Button iconAfter='trash' intent='danger' onClick={onRemove}>Supprimer</Button>
               ) : (
                 <Tooltip content='Vous ne pouvez pas supprimer une BAL losrqu‘elle est prête à être publiée'>
-                  <Button isActive iconAfter='trash' >Supprimer</Button>
+                  <Button isActive iconAfter='trash'>Supprimer</Button>
                 </Tooltip>
               )}
               <Button appearance='primary' iconAfter='edit' marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
@@ -134,7 +136,7 @@ BaseLocaleCard.propTypes = {
       'draft', 'ready-to-publish', 'published'
     ])
   }).isRequired,
-  isOpen: PropTypes.bool.isRequired,
+  initialIsOpen: PropTypes.bool.isRequired,
   editable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
   onRemove: PropTypes.func

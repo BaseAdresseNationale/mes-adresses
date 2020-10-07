@@ -8,7 +8,7 @@ import useHelp from '../hooks/help'
 const DocumentationLink = ({title, description, link, onClick}) => (
   <Pane display='flex' flexDirection='column' alignItems='center'>
     {link ? (
-      <Button iconBefore='download' is='a' appearance='minimal' height={56} href={link} target='_blank' fontSize='0.8em'>
+      <Button iconBefore='manual' is='a' appearance='minimal' height={56} href={link} target='_blank' fontSize='0.8em'>
         {title}
       </Button>
     ) : (
@@ -57,7 +57,7 @@ const Footer = () => {
       </Pane>
       <Pane display='grid' gridTemplateColumns='1fr 1fr' justifyContent='space-between' alignItems='center'>
         <DocumentationLink
-          title='Guide de l’éditeur'
+          title='Guides de l’adressage'
           description='Apprendre à utiliser les fonctionnalités essentielles de l’éditeur'
           link='https://adresse.data.gouv.fr/guides'
         />
