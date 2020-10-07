@@ -1,11 +1,14 @@
 import React, {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
+import NextLink from 'next/link'
 
-import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position, Strong} from 'evergreen-ui'
+import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position, Strong, Link, Icon} from 'evergreen-ui'
+import {getBaseLocaleCsvUrl} from '../../lib/bal-api'
 
-const Publication = ({token, status, onChangeStatus, onPublish}) => {
+const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => {
   const [isShown, setIsShown] = useState(false)
+  const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
 
   const editTip = useMemo(() => css({
     '@media (max-width: 700px)': {
@@ -109,6 +112,10 @@ const Publication = ({token, status, onChangeStatus, onPublish}) => {
               <Paragraph>Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.</Paragraph>
               <Paragraph>Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.</Paragraph>
             </Paragraph>
+            <Link href={csvUrl} display='flex' justifyContent='flex-start' marginTop='1em'>
+              Télécharger vos adresses au format CSV
+              <Icon icon='download' marginLeft='.5em' marginTop='3px' />
+            </Link>
           </Dialog>
           <Badge
             marginRight={8}

@@ -96,6 +96,7 @@ const Header = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) =
         {!baseLocale.isTest && (
           <Publication
             token={token}
+            baseLocale={baseLocale}
             status={baseLocale.published ? 'published' : baseLocale.status}
             onChangeStatus={handleChangeStatus}
             onPublish={handlePublication}
