@@ -19,7 +19,7 @@ function getBadge(status) {
 const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, isOpen}) => {
   const {nom, communes, status, _updated, _created, emails} = baseLocale
   const [nomCommune, setNomCommune] = useState()
-  const [openInfo, setOpenInfo] = useState(isOpen)
+  const [openInfo, setOpenInfo] = useState(editable ? isOpen : false)
   const badge = getBadge(status)
 
   const handleOpenInfo = () => {
@@ -42,7 +42,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, isOpen}) => {
       padding={12}
       fontFamily='Helvetica Neue'
       display='grid'
-      gridTemplateColumn='repeat(1fr)'
+      gridTemplateColumns='repeat(1fr)'
       background='tint1'
     >
       <Pane padding='.5em' display='flex' justifyContent='space-between' cursor='pointer' onClick={handleOpenInfo}>

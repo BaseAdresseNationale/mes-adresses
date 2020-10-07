@@ -120,9 +120,13 @@ BasesLocalesList.getInitialProps = async () => {
   }
 }
 
+BasesLocalesList.defaultProps = {
+  updateBasesLocales: null
+}
+
 BasesLocalesList.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  updateBasesLocales: PropTypes.func.isRequired
+  updateBasesLocales: PropTypes.func
 }
 
 export default BasesLocalesList
