@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Pane, Heading} from 'evergreen-ui'
+import {Pane, Heading, Spinner} from 'evergreen-ui'
 import {map} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
@@ -10,7 +10,7 @@ import {getBaseLocale} from '../lib/bal-api'
 import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {
-  const [basesLocales, setBasesLocales] = useState([])
+  const [basesLocales, setBasesLocales] = useState(null)
   const [balAccess, setBalAccess] = useState(getBalAccess())
 
   useEffect(() => {
@@ -36,14 +36,24 @@ function UserBasesLocales() {
     }
   }, [balAccess])
 
+  if (!basesLocales) {
+    return (
+      <Pane display='flex' alignItems='center' justifyContent='center' flex={1}>
+        <Spinner />
+      </Pane>
+    )
+  }
+
   if (basesLocales.length === 0) {
     return null
   }
 
   return (
-    <Pane flex={2} minHeight={200}>
+    <Pane height='80%'>
       <Heading padding={16} size={400}>Mes Bases Adresse Locales</Heading>
-      <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
+      <Pane height='calc(100% - 52px)' overflow='scroll'>
+        <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
+      </Pane>
     </Pane>
   )
 }

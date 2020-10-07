@@ -11,7 +11,7 @@ import useError from '../../hooks/error'
 import {listBasesLocales, removeBaseLocale} from '../../lib/bal-api'
 
 import DeleteWarning from '../delete-warning'
-import BaseLocaleRow from './base-locale-row'
+import BaseLocaleCard from './base-locale-card'
 
 function BasesLocalesList({basesLocales, updateBasesLocales}) {
   const [toRemove, setToRemove] = useState(null)
@@ -94,10 +94,11 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
             )}
             <Table.Body background='tint1'>
               {filtered.map(bal => (
-                <BaseLocaleRow
+                <BaseLocaleCard
                   key={bal._id}
                   baseLocale={bal}
                   editable={!isPublicPage}
+                  initialIsOpen={basesLocales[0]._id === bal._id}
                   onSelect={() => onBalSelect(bal)}
                   onRemove={e => handleRemove(e, bal._id)}
                 />
@@ -119,9 +120,13 @@ BasesLocalesList.getInitialProps = async () => {
   }
 }
 
+BasesLocalesList.defaultProps = {
+  updateBasesLocales: null
+}
+
 BasesLocalesList.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  updateBasesLocales: PropTypes.func.isRequired
+  updateBasesLocales: PropTypes.func
 }
 
 export default BasesLocalesList

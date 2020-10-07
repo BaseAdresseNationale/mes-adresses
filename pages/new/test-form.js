@@ -43,12 +43,12 @@ function TestForm({defaultCommune}) {
   }, [commune, populate])
 
   return (
-    <Pane is='form' margin={16} padding={16} overflowY='scroll' background='tint2' onSubmit={onSubmit}>
+    <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
       <CommuneSearchField
         required
         innerRef={focusRef}
         id='commune'
-        defaultSelectedItem={defaultCommune}
+        initialSelectedItem={defaultCommune}
         label='Commune'
         maxWidth={500}
         disabled={isLoading}
@@ -63,7 +63,7 @@ function TestForm({defaultCommune}) {
         onChange={onPopulateChange}
       />
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' isLoading={isLoading}>
+      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
       </Button>
     </Pane>
