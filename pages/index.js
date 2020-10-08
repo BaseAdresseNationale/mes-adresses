@@ -21,6 +21,7 @@ function Index() {
         <UserBasesLocales />
 
         <Pane
+          borderTop
           display='flex'
           height='50%'
           alignItems='center'
