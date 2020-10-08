@@ -7,6 +7,8 @@ import {getBaseLocaleCsvUrl} from '../../lib/bal-api'
 
 const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => {
   const [isShown, setIsShown] = useState(false)
+  const [noBal, setNoBal] = useState(false)
+  const [multiBal, setMultiBal] = useState(false)
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
 
   const editTip = useMemo(() => css({
@@ -18,6 +20,16 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
       }
     }
   }), [])
+
+  const handleDialogs = () => {
+    if (baseLocale.communes.length === 0) {
+      setNoBal(true)
+    } else if (baseLocale.communes.length > 1) {
+      setMultiBal(true)
+    } else {
+      setIsShown(true)
+    }
+  }
 
   if (!token) {
     return (
@@ -116,6 +128,22 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
               <Icon icon='download' marginLeft='.5em' marginTop='3px' />
             </Link>
           </Dialog>
+          <Dialog
+            isShown={noBal}
+            hasFooter={false}
+            title='Votre Base Adresse Locale est vide'
+            onCloseComplete={() => setNoBal(false)}
+          >
+            <Paragraph>Merci d’ajouter au moins une commune à votre Base Adresse Locale.</Paragraph>
+          </Dialog>
+          <Dialog
+            isShown={multiBal}
+            hasFooter={false}
+            title='Votre Base Adresse Locale contient plusieurs communes'
+            onCloseComplete={() => setMultiBal(false)}
+          >
+            <Paragraph>Pour vous authentifier et assurer une publication rapide, adressez-nous le lien de votre Base Adresse Locale à <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a></Paragraph>
+          </Dialog>
           <Badge
             marginRight={8}
             paddingTop={2}
@@ -127,7 +155,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
             marginRight={8}
             height={24}
             appearance='primary'
-            onClick={setIsShown}
+            onClick={handleDialogs}
           >
             Publier
           </Button>
