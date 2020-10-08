@@ -102,7 +102,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
             )}
           </Pane>
 
-          {editable && (
+          {editable ? (
             <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
               {status === 'draft' ? (
                 <Button iconAfter='trash' intent='danger' onClick={onRemove}>Supprimer</Button>
@@ -112,6 +112,10 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
                 </Tooltip>
               )}
               <Button appearance='primary' iconAfter='edit' marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
+            </Pane>
+          ) : (
+            <Pane borderTop display='flex' justifyContent='flex-end' paddingTop='1em' marginTop='1em'>
+              <Button appearance='primary' marginRight='8px' onClick={onSelect}>Consulter</Button>
             </Pane>
           )}
 
