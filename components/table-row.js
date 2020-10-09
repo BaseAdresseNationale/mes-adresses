@@ -44,7 +44,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
   }, [])
 
   return (
-    <Table.Row isSelectable={isSelectable} onClick={onClick}>
+    <Table.Row isSelectable={isSelectable} style={{backgroundColor: hovered ? '#f5f6f7' : ''}} onClick={onClick}>
       {token && numeros && numeros.length > 1 && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
@@ -56,13 +56,15 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
       {code && (
         <Table.TextCell data-browsable isNumber flex='0 1 1'>{code}</Table.TextCell>
       )}
-      <Table.Cell
-        data-editable
-        style={{cursor: onEdit ? 'text' : 'default'}}
-        onMouseEnter={() => _onMouseEnter(id)}
-        onMouseLeave={_onMouseLeave}
-      >
-        <Table.TextCell flex='0 1 1'>
+      <Table.Cell data-browsable>
+        <Table.TextCell
+          data-editable
+          flex='0 1 1'
+          style={{cursor: onEdit ? 'text' : 'default'}}
+          position='absolute'
+          onMouseEnter={() => _onMouseEnter(id)}
+          onMouseLeave={_onMouseLeave}
+        >
           {label} {hovered && (
             <Icon marginBottom={-4} marginLeft={8} icon='edit' />
           )}
