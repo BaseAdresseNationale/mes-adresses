@@ -50,11 +50,19 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const filteredSelected = filtered.filter(({_id}) => selectedNumerosIds.includes(_id))
 
   const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
+  const allSelectedNumeros = numeros && filtered.length === numeros.length
+  const allSelectedNumerosIds = allSelectedNumeros && (selectedNumerosIds.length === numeros.length)
+  const allFilteredSelected = !allSelectedNumeros && (filtered.length === filteredSelected.length)
 
-  const isAllSelected = useMemo(() => numeros && ((filtered.length === numeros.length && (selectedNumerosIds.length === numeros.length)) ||
-  (filtered.length !== numeros.length && (filtered.length === filteredSelected.length))), [selectedNumerosIds, numeros, filtered, filteredSelected])
+  const isAllSelected = useMemo(() => allSelectedNumerosIds || allFilteredSelected, [allFilteredSelected, allSelectedNumerosIds])
 
-  const toEdit = useMemo(() => numeros && (filtered.length === numeros.length) ? selectedNumerosIds : filteredSelected.map(({_id}) => _id), [filtered, numeros, selectedNumerosIds, filteredSelected])
+  const toEdit = useMemo(() => {
+    if (numeros && allSelectedNumeros) {
+      return selectedNumerosIds
+    }
+
+    return filteredSelected.map(({_id}) => _id)
+  }, [numeros, selectedNumerosIds, filteredSelected, allSelectedNumeros])
 
   const handleSelect = id => {
     setSelectedNumerosIds(selectedNumerosIds => {
