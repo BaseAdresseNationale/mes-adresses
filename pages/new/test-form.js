@@ -52,7 +52,6 @@ function TestForm({defaultCommune}) {
         label='Commune'
         maxWidth={500}
         disabled={isLoading}
-        hint='Vous pourrez ajouter plusieurs communes à la Base Adresse Locale plus tard.'
         onSelect={onSelect}
       />
 
@@ -64,7 +63,7 @@ function TestForm({defaultCommune}) {
       />
 
       <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
-        {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
+        {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
       </Button>
     </Pane>
   )
