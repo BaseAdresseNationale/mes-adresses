@@ -40,10 +40,28 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
     setIsLoading(true)
 
+    const commentCondition = r => {
+      if (removeAllComments) {
+        return null
+      }
+
+      if (comment === '') {
+        return r.comment || null
+      }
+
+      if (r.comment) {
+        return `${r.comment} , ${comment}`
+      }
+
+      return comment
+    }
+
     body.map(r => {
       r.voie = selectedVoieId
       r.positions[0].type = type === '' ? r.positions[0].type : type
-      r.comment = removeAllComments ? null : (comment === '' ? (r.comment || null) : (r.comment ? `${r.comment}, ${comment}` : comment))
+
+      r.comment = commentCondition(r)
+
       return r
     })
 
