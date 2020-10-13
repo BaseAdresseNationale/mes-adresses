@@ -61,7 +61,6 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           data-editable
           flex='0 1 1'
           style={{cursor: onEdit ? 'text' : 'default'}}
-          position='absolute'
           onMouseEnter={() => _onMouseEnter(id)}
           onMouseLeave={_onMouseLeave}
         >
