@@ -14,7 +14,7 @@ const FullscreenContainer = ({title, subtitle, children}) => {
         </Paragraph>
       </Pane>
 
-      <Pane flex={1} display='flex' overflowY='scroll'>
+      <Pane flex={1} display='flex' flexDirection='column' overflowY='scroll'>
         {children}
       </Pane>
 

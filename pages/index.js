@@ -17,35 +17,30 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
 function Index() {
   return (
     <FullscreenContainer title='Bienvenue sur l’Éditeur de Base Adresse Locale' subtitle='Créez une Base Adresse Locale ou sélectionnez une de vos Bases Adresse Locales afin de poursuivre son édition.'>
-      <Pane display='flex' flex={1} flexDirection='column'>
-        <UserBasesLocales />
+      <UserBasesLocales />
 
-        <Pane
-          borderTop
-          display='flex'
-          height='50%'
-          alignItems='center'
-          justifyContent='center'
-          flexDirection='column'
-          padding={16}
+      <Pane
+        borderTop
+        display='flex'
+        minHeight='100px'
+        alignItems='center'
+        justifyContent='center'
+        flexDirection='column'
+      >
+        <Button
+          iconBefore='plus'
+          marginTop={10}
+          appearance='primary'
+          onClick={() => Router.push('/new')}
         >
-          <Button
-            iconBefore='plus'
-            marginTop={10}
-            appearance='primary'
-            height={40}
-            onClick={() => Router.push('/new')}
-          >
-            Créer Base Adresse Locale
-          </Button>
-          <Button
-            marginTop={10}
-            height={40}
-            onClick={() => Router.push('/new?test=1')}
-          >
-            Essayer l’éditeur de base adresse locale
-          </Button>
-        </Pane>
+          Créer Base Adresse Locale
+        </Button>
+        <Button
+          marginTop={10}
+          onClick={() => Router.push('/new?test=1')}
+        >
+          Essayer l’éditeur de base adresse locale
+        </Button>
       </Pane>
     </FullscreenContainer>
   )
