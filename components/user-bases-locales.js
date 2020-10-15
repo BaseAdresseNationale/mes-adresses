@@ -49,7 +49,7 @@ function UserBasesLocales() {
   }
 
   return (
-    <Pane height='80%'>
+    <Pane overflowY='scroll'>
       <Heading padding={16} size={400}>Mes Bases Adresse Locales</Heading>
       <Pane height='calc(100% - 52px)' overflow='scroll'>
         <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />

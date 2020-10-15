@@ -46,28 +46,37 @@ const Footer = () => {
   }, [setSelectedIndex, setShowHelp, showHelp])
 
   return (
-    <Pane
-      bottom={0}
-      background='tint1'
-      padding={16}
-      elevation={1}
-    >
-      <Pane>
-        <Heading textAlign='center' marginBottom={5} size={600}>Besoin d’aide ?</Heading>
+    <div className='hide-on-short-screen'>
+      <Pane
+        bottom={0}
+        background='tint1'
+        padding={16}
+        elevation={1}
+      >
+        <Pane>
+          <Heading textAlign='center' marginBottom={5} size={600}>Besoin d’aide ?</Heading>
+        </Pane>
+        <Pane display='grid' gridTemplateColumns='1fr 1fr' justifyContent='space-between' alignItems='center'>
+          <DocumentationLink
+            title='Guides de l’adressage'
+            description='Pour vous accompagner dans la gestion des adresses de votre commune'
+            link='https://adresse.data.gouv.fr/guides'
+          />
+          <DocumentationLink
+            title='Guide interactif'
+            description='Le manuel de l’éditeur toutjours à porté de main'
+            onClick={handleHelp}
+          />
+        </Pane>
       </Pane>
-      <Pane display='grid' gridTemplateColumns='1fr 1fr' justifyContent='space-between' alignItems='center'>
-        <DocumentationLink
-          title='Guides de l’adressage'
-          description='Pour vous accompagner dans la gestion des adresses de votre commune'
-          link='https://adresse.data.gouv.fr/guides'
-        />
-        <DocumentationLink
-          title='Guide interactif'
-          description='Le manuel de l’éditeur toutjours à porté de main'
-          onClick={handleHelp}
-        />
-      </Pane>
-    </Pane>
+      <style jsx>{`
+        @media all and (max-height: 600px) {
+          .hide-on-short-screen {
+            display: none;
+          }
+        }
+      `}</style>
+    </div>
   )
 }
 
