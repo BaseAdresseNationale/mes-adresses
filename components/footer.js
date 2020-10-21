@@ -69,13 +69,6 @@ const Footer = () => {
           />
         </Pane>
       </Pane>
-      <style jsx>{`
-        @media all and (max-height: 600px) {
-          .hide-on-short-screen {
-            display: none;
-          }
-        }
-      `}</style>
     </div>
   )
 }
