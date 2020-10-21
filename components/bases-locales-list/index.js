@@ -65,7 +65,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
   return (
     <>
       {basesLocales.length > 0 && (
-        <Pane borderTop>
+        <Pane borderTop flexGrow='1'>
 
           <DeleteWarning
             isShown={Boolean(toRemove)}

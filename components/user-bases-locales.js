@@ -49,9 +49,7 @@ function UserBasesLocales() {
   }
 
   return (
-    <Pane height='calc(100% - 52px)' overflow='none'>
-      <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
-    </Pane>
+    <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
   )
 }
 
