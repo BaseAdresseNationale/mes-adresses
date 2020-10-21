@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Pane, Heading, Spinner} from 'evergreen-ui'
+import {Pane, Spinner} from 'evergreen-ui'
 import {map} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
@@ -49,11 +49,8 @@ function UserBasesLocales() {
   }
 
   return (
-    <Pane overflowY='scroll'>
-      <Heading padding={16} size={400}>Mes Bases Adresse Locales</Heading>
-      <Pane height='calc(100% - 52px)' overflow='scroll'>
-        <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
-      </Pane>
+    <Pane height='calc(100% - 52px)' overflow='none'>
+      <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
     </Pane>
   )
 }

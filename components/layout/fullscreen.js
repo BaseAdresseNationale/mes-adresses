@@ -5,26 +5,13 @@ import {Pane} from 'evergreen-ui'
 function Fullscreen({isOpen, isHidden, size, top, onToggle, ...props}) {
   return (
     <Pane
-      position='fixed'
+      display='flex'
       width='100%'
       height='100%'
-      display='flex'
-      flexGrow='1'
-      alignItems='center'
-      justifyContent='center'
-      zIndex={2}
-      background='overlay'
-    >
-      <Pane
-        display='flex'
-        width='100%'
-        height='calc(100% - 48px)'
-        overflow='hidden'
-        flex={1}
-        maxWidth={1200}
-        {...props}
-      />
-    </Pane>
+      overflow='hidden'
+      flex={1}
+      {...props}
+    />
   )
 }
 

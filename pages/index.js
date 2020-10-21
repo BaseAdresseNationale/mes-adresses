@@ -1,9 +1,10 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
-import {Pane, Button, Spinner} from 'evergreen-ui'
+import {Pane, Button, Spinner, Heading, Text} from 'evergreen-ui'
 
-import FullscreenContainer from '../components/fullscreen-container'
+import Nav from '../components/nav'
+import Footer from '../components/footer'
 
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
@@ -16,33 +17,21 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
 
 function Index() {
   return (
-    <FullscreenContainer title='Bienvenue sur l’Éditeur de Base Adresse Locale' subtitle='Créez une Base Adresse Locale ou sélectionnez une de vos Bases Adresse Locales afin de poursuivre son édition.'>
+    <Pane height='100%' display='flex' flexDirection='column' overflowY='scroll'>
+      <Nav />
+      <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3'>
+        Mes Bases Adresse Locales
+        <Button iconBefore='plus' onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
+      </Heading>
       <UserBasesLocales />
-
-      <Pane
-        borderTop
-        display='flex'
-        minHeight='100px'
-        alignItems='center'
-        justifyContent='center'
-        flexDirection='column'
-      >
-        <Button
-          iconBefore='plus'
-          marginTop={10}
-          appearance='primary'
-          onClick={() => Router.push('/new')}
-        >
-          Créer Base Adresse Locale
-        </Button>
-        <Button
-          marginTop={10}
-          onClick={() => Router.push('/new?test=1')}
-        >
-          Essayer l’éditeur de base adresse locale
-        </Button>
+      <Pane display='flex' flexDirection='column' alignItems='center' justifyContent='center' backgroundColor='#0053b3' padding='1em'>
+        <Text color='snow'>
+          Vous voulez simplement essayer l’éditeur, sans créer de Base Adresse Locale ?
+        </Text>
+        <Button marginTop='1em' onClick={() => Router.push('/new?test=1')}>Cliquez ici</Button>
       </Pane>
-    </FullscreenContainer>
+      <Footer />
+    </Pane>
   )
 }
 

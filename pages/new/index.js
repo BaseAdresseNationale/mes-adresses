@@ -1,12 +1,11 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-import {Pane, TabNavigation, Tab} from 'evergreen-ui'
+import {Pane, TabNavigation, Tab, Heading, Paragraph} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
-import FullscreenContainer from '../../components/fullscreen-container'
-
+import Nav from '../../components/nav'
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
 import TestForm from './test-form'
@@ -19,10 +18,15 @@ function Index({defaultCommune, isTest}) {
   const [index, setIndex] = useState(0)
 
   return (
-    <FullscreenContainer
-      title={`Nouvelle Base Adresse Locale ${isTest ? 'de démonstration' : ''}`}
-      subtitle={`Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale ${isTest ? ' de démonstration' : ''}.`}
-    >
+    <Pane>
+      <Nav />
+      <Pane padding={12}>
+        <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${isTest ? 'de démonstration' : ''}`}</Heading>
+        <Paragraph>
+          {`Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale ${isTest ? ' de démonstration' : ''}.`}
+        </Paragraph>
+      </Pane>
+
       <Pane paddingTop={16} flex={1}>
         {isTest ? (
           <TestForm defaultCommune={defaultCommune} />
@@ -49,7 +53,7 @@ function Index({defaultCommune, isTest}) {
           <BackToUserBals />
         </Pane>
       </Pane>
-    </FullscreenContainer>
+    </Pane>
   )
 }
 
