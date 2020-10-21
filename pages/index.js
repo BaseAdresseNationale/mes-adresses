@@ -19,16 +19,18 @@ function Index() {
   return (
     <Pane height='100%' display='flex' flexDirection='column' overflowY='scroll'>
       <Nav />
-      <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3'>
+      <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
         Mes Bases Adresse Locales
         <Button iconBefore='plus' onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
       </Heading>
       <UserBasesLocales />
-      <Pane display='flex' flexDirection='column' alignItems='center' justifyContent='center' backgroundColor='#0053b3' padding='1em'>
+      <Pane display='flex' flexDirection='column' alignItems='center' justifyContent='center' backgroundColor='#0053b3' padding='1em' flexShrink='0'>
         <Text color='snow'>
           Vous voulez simplement essayer l’éditeur, sans créer de Base Adresse Locale ?
         </Text>
-        <Button marginTop='1em' onClick={() => Router.push('/new?test=1')}>Cliquez ici</Button>
+        <Pane marginTop='1em'>
+          <Button onClick={() => Router.push('/new?test=1')}>Cliquez ici</Button>
+        </Pane>
       </Pane>
       <Footer />
     </Pane>

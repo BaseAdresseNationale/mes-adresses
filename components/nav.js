@@ -15,7 +15,7 @@ const Nav = () => {
   }, [setSelectedIndex, setShowHelp, showHelp])
 
   return (
-    <Pane borderBottom padding={16} backgroundColor='white' display='flex' justifyContent='space-between' alignItems='center'>
+    <Pane borderBottom padding={16} backgroundColor='white' display='flex' justifyContent='space-between' alignItems='center' flexShrink='0'>
       <img src='../static/images/mes-adresses.svg' height='50px' />
       <Pane display='flex' justifyContent='space-around' alignItems='center'>
         <Button appearance='minimal' marginRight='12px' iconBefore='manual'>
