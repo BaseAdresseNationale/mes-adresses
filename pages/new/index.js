@@ -6,6 +6,7 @@ import {Pane, TabNavigation, Tab, Heading, Paragraph} from 'evergreen-ui'
 import {getCommune} from '../../lib/geo-api'
 
 import Nav from '../../components/nav'
+import DemoBal from '../../components/demo-bal'
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
 import TestForm from './test-form'
@@ -49,6 +50,9 @@ function Index({defaultCommune, isTest}) {
             </Pane>
           </>)}
 
+        {!isTest && (
+          <DemoBal />
+        )}
         <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
           <BackToUserBals />
         </Pane>
