@@ -98,7 +98,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
                   key={bal._id}
                   baseLocale={bal}
                   editable={!isPublicPage}
-                  initialIsOpen={basesLocales[0]._id === bal._id}
+                  initialIsOpen={basesLocales.length === 1}
                   onSelect={() => onBalSelect(bal)}
                   onRemove={e => handleRemove(e, bal._id)}
                 />
