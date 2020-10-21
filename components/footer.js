@@ -8,11 +8,11 @@ import useHelp from '../hooks/help'
 const DocumentationLink = ({title, description, link, onClick}) => (
   <Pane display='flex' flexDirection='column' alignItems='center'>
     {link ? (
-      <Button iconBefore='manual' is='a' appearance='minimal' height={56} href={link} target='_blank' fontSize='0.8em'>
+      <Button iconBefore='manual' is='a' appearance='minimal' height={30} href={link} target='_blank' fontSize='0.8em'>
         {title}
       </Button>
     ) : (
-      <Button iconBefore='manual' appearance='minimal' height={56} fontSize='0.8em' onClick={onClick}>
+      <Button iconBefore='manual' appearance='minimal' height={30} fontSize='0.8em' onClick={onClick}>
         {title}
       </Button>
     )}
@@ -54,7 +54,7 @@ const Footer = () => {
         elevation={1}
       >
         <Pane>
-          <Heading textAlign='center' marginBottom={5} size={600}>Besoin d’aide ?</Heading>
+          <Heading textAlign='center' marginBottom={2} size={600}>Besoin d’aide ?</Heading>
         </Pane>
         <Pane display='grid' gridTemplateColumns='1fr 1fr' justifyContent='space-between' alignItems='center'>
           <DocumentationLink

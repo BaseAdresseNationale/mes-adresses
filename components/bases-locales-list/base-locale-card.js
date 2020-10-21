@@ -43,7 +43,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
     <Card
       border
       elevation={2}
-      margin={8}
+      margin={10}
       padding={12}
       display='grid'
       gridTemplateColumns='repeat(1fr)'
