@@ -46,7 +46,7 @@ const Footer = () => {
   }, [setSelectedIndex, setShowHelp, showHelp])
 
   return (
-    <div className='hide-on-short-screen'>
+    <div>
       <Pane
         bottom={0}
         background='tint1'

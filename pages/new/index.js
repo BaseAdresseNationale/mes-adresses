@@ -1,12 +1,13 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-import {Pane, TabNavigation, Tab, Heading, Paragraph} from 'evergreen-ui'
+import Router from 'next/router'
+import {Pane, TabNavigation, Tab, Heading, Paragraph, Alert, Text, Button} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
 import Nav from '../../components/nav'
-import DemoBal from '../../components/demo-bal'
+import Footer from '../../components/footer'
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
 import TestForm from './test-form'
@@ -19,7 +20,7 @@ function Index({defaultCommune, isTest}) {
   const [index, setIndex] = useState(0)
 
   return (
-    <Pane>
+    <Pane height='100%' display='flex' flexDirection='column'>
       <Nav />
       <Pane padding={12}>
         <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${isTest ? 'de démonstration' : ''}`}</Heading>
@@ -51,12 +52,20 @@ function Index({defaultCommune, isTest}) {
           </>)}
 
         {!isTest && (
-          <DemoBal />
+          <Pane padding='22px'>
+            <Alert>
+              <Text>
+                Vous voulez simplement essayer l’éditeur, sans créer de Base Adresse Locale ?
+              </Text>
+              <Button appearance='primary' marginLeft='1em' onClick={() => Router.push('/new?test=1')}>Cliquez ici</Button>
+            </Alert>
+          </Pane>
         )}
         <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
           <BackToUserBals />
         </Pane>
       </Pane>
+      <Footer />
     </Pane>
   )
 }
