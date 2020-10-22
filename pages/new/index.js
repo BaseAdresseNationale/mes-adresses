@@ -7,6 +7,7 @@ import {Pane, TabNavigation, Tab, Heading, Paragraph, Alert, Text, Button} from 
 import {getCommune} from '../../lib/geo-api'
 
 import Nav from '../../components/nav'
+import DemoBal from '../../components/demo-bal'
 import Footer from '../../components/footer'
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
@@ -52,14 +53,7 @@ function Index({defaultCommune, isTest}) {
           </>)}
 
         {!isTest && (
-          <Pane padding='22px'>
-            <Alert>
-              <Text>
-                Vous voulez simplement essayer l’éditeur, sans créer de Base Adresse Locale ?
-              </Text>
-              <Button appearance='primary' marginLeft='1em' onClick={() => Router.push('/new?test=1')}>Cliquez ici</Button>
-            </Alert>
-          </Pane>
+          <DemoBal />
         )}
         <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
           <BackToUserBals />
