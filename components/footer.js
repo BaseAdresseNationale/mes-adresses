@@ -64,7 +64,7 @@ const Footer = () => {
           />
           <DocumentationLink
             title='Guide interactif'
-            description='Le manuel de l’éditeur toutjours à porté de main'
+            description='Le manuel de l’éditeur toujours à porté de main'
             onClick={handleHelp}
           />
         </Pane>
