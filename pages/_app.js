@@ -7,7 +7,7 @@ import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 import {getBaseLocale, getVoie} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
-import Header from '../components/header'
+import SubHeader from '../components/sub-header'
 import IEWarning from '../components/ie-warning'
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
@@ -24,6 +24,8 @@ import {BalDataContextProvider} from '../contexts/bal-data'
 
 import useWindowSize from '../hooks/window-size'
 import Settings from '../components/settings'
+
+import Header from '../components/header'
 
 const layoutMap = {
   fullscreen: Fullscreen,
@@ -97,7 +99,8 @@ function App({error, Component, pageProps, query}) {
                 {pageProps.baseLocale && (
                   <SettingsContextProvider>
                     <Settings nomBaseLocale={pageProps.baseLocale.nom} isEnabledComplement={pageProps.baseLocale.enableComplement} />
-                    <Header
+                    <Header />
+                    <SubHeader
                       {...pageProps}
                       layout={layout}
                       isSidebarHidden={isHidden}

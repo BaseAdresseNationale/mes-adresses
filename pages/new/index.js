@@ -5,7 +5,7 @@ import {Pane, TabNavigation, Tab, Heading, Paragraph} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
-import Nav from '../../components/nav'
+import Header from '../../components/header'
 import DemoBal from '../../components/demo-bal'
 import Footer from '../../components/footer'
 import CreateForm from './create-form'
@@ -21,7 +21,7 @@ function Index({defaultCommune, isTest}) {
 
   return (
     <Pane height='100%' display='flex' flexDirection='column'>
-      <Nav />
+      <Header />
       <Pane padding={12}>
         <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${isTest ? 'de démonstration' : ''}`}</Heading>
         <Paragraph>

@@ -23,7 +23,7 @@ function Sidebar({isHidden, top, size, onToggle, ...props}) {
       maxWidth='100vw'
       left={isHidden ? -size : 0}
       right='auto'
-      top={top}
+      top={116}
       bottom={0}
       zIndex={2}
     >
