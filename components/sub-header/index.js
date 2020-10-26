@@ -1,9 +1,8 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
-import Router from 'next/router'
 import NextLink from 'next/link'
 import getConfig from 'next/config'
-import {Pane, Popover, Menu, IconButton, Position} from 'evergreen-ui'
+import {Pane, Popover, Menu, IconButton, Position, Button} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
@@ -22,7 +21,7 @@ import Publication from './publication'
 const {publicRuntimeConfig} = getConfig()
 const ADRESSE_URL = publicRuntimeConfig.ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
-const Header = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) => {
+const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) => {
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
   const {showHelp, setShowHelp} = useContext(HelpContext)
   const {showSettings, setShowSettings} = useContext(SettingsContext)
@@ -56,7 +55,7 @@ const Header = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) =
   return (
     <Pane
       position='fixed'
-      top={0}
+      top={76}
       left={0}
       height={40}
       width='100%'
@@ -77,37 +76,25 @@ const Header = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) =
         />
       )}
 
-      <IconButton
-        height={24}
-        marginRight={8}
-        icon='home'
-        appearance='minimal'
-        onClick={() => Router.push('/')}
-      />
-
       <Breadcrumbs
         baseLocale={baseLocale}
         commune={commune}
         voie={voie}
-        marginRight={8}
+        marginLeft={8}
       />
 
       <Pane marginLeft='auto' display='flex'>
-        {!baseLocale.isTest && (
-          <Publication
-            token={token}
-            baseLocale={baseLocale}
-            status={baseLocale.published ? 'published' : baseLocale.status}
-            onChangeStatus={handleChangeStatus}
-            onPublish={handlePublication}
-          />)}
 
-        <IconButton
+        <Button
           height={24}
-          icon='help'
+          iconAfter='help'
           appearance='minimal'
+          marginRight={16}
+          color='dimgrey'
           onClick={() => setShowHelp(!showHelp)}
-        />
+        >
+          Besoin d’aide
+        </Button>
 
         <Popover
           position={Position.BOTTOM_RIGHT}
@@ -133,18 +120,32 @@ const Header = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) =
             </Menu>
           }
         >
-          <IconButton
+          <Button
             height={24}
-            icon='cog'
+            iconAfter='cog'
             appearance='minimal'
-          />
+            marginRight={16}
+            color='dimgrey'
+          >
+            Paramètres
+          </Button>
         </Popover>
+
+        {!baseLocale.isTest && (
+          <Publication
+            border
+            token={token}
+            baseLocale={baseLocale}
+            status={baseLocale.published ? 'published' : baseLocale.status}
+            onChangeStatus={handleChangeStatus}
+            onPublish={handlePublication}
+          />)}
       </Pane>
     </Pane>
   )
 })
 
-Header.propTypes = {
+SubHeader.propTypes = {
   commune: PropTypes.object,
   voie: PropTypes.object,
   layout: PropTypes.oneOf(['fullscreen', 'sidebar']).isRequired,
@@ -152,10 +153,10 @@ Header.propTypes = {
   onToggle: PropTypes.func.isRequired
 }
 
-Header.defaultProps = {
+SubHeader.defaultProps = {
   commune: null,
   voie: null,
   isSidebarHidden: false
 }
 
-export default Header
+export default SubHeader

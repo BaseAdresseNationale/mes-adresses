@@ -5,7 +5,7 @@ import {Pane, Button, Icon} from 'evergreen-ui'
 import useWindowSize from '../../hooks/window-size'
 import BalDataContext from '../../contexts/bal-data'
 
-function Sidebar({isHidden, top, size, onToggle, ...props}) {
+function Sidebar({isHidden, size, onToggle, ...props}) {
   const {innerWidth} = useWindowSize()
   const {editingId, setEditingId} = useContext(BalDataContext)
 
@@ -23,7 +23,7 @@ function Sidebar({isHidden, top, size, onToggle, ...props}) {
       maxWidth='100vw'
       left={isHidden ? -size : 0}
       right='auto'
-      top={top}
+      top={116}
       bottom={0}
       zIndex={2}
     >
@@ -66,13 +66,11 @@ Sidebar.propTypes = {
   isHidden: PropTypes.bool,
   children: PropTypes.node.isRequired,
   size: PropTypes.number.isRequired,
-  top: PropTypes.number,
   onToggle: PropTypes.func.isRequired
 }
 
 Sidebar.defaultProps = {
-  isHidden: false,
-  top: 0
+  isHidden: false
 }
 
 export default Sidebar
