@@ -5,7 +5,7 @@ import {Pane, Button, Spinner, Heading} from 'evergreen-ui'
 
 import Header from '../components/header'
 import Footer from '../components/footer'
-import DemoBal from '../components/demo-bal'
+import DemoBALAlert from '../components/demo-bal-alert'
 
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
@@ -18,14 +18,14 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
 
 function Index() {
   return (
-    <Pane display='flex' flexDirection='column' overflowY='scroll' height='100%'>
+    <Pane display='flex' flexDirection='column' height='100%'>
       <Header />
       <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
         Mes Bases Adresse Locales
         <Button iconBefore='plus' onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
       </Heading>
       <UserBasesLocales />
-      <DemoBal />
+      <DemoBALAlert />
       <Footer />
     </Pane>
   )

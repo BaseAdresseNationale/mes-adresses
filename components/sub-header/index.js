@@ -84,20 +84,13 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
       />
 
       <Pane marginLeft='auto' display='flex'>
-        {/* {!baseLocale.isTest && (
-          <Publication
-            token={token}
-            baseLocale={baseLocale}
-            status={baseLocale.published ? 'published' : baseLocale.status}
-            onChangeStatus={handleChangeStatus}
-            onPublish={handlePublication}
-          />)} */}
 
         <Button
           height={24}
           iconAfter='help'
           appearance='minimal'
           marginRight={16}
+          color='dimgrey'
           onClick={() => setShowHelp(!showHelp)}
         >
           Besoin d’aide

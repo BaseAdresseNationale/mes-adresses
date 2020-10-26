@@ -3,7 +3,7 @@ import Router from 'next/router'
 import {Pane, Button, Link} from 'evergreen-ui'
 
 const links = [
-  {text: 'Guide de l’adressage', link: 'https://adresse.data.gouv.fr/guides'}
+  {text: 'Guides de l’adressage', link: 'https://adresse.data.gouv.fr/guides'}
 ]
 
 const Header = () => {
