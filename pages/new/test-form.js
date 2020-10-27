@@ -63,10 +63,12 @@ function TestForm({defaultCommune}) {
       />
 
       <Alert
-        intent='danger'
-        title='Attention vous vous apprêtez à créer une Base Adresse Locale de démonstration. Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans la Base Adresse Nationale'
+        intent='warning'
+        title='Attention vous vous apprêtez à créer une Base Adresse Locale de démonstration.'
         marginY='1em'
-      />
+      >
+        Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans la Base Adresse Nationale
+      </Alert>
 
       <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
