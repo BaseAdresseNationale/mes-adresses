@@ -64,7 +64,7 @@ function TestForm({defaultCommune}) {
 
       <Alert
         intent='danger'
-        title='Cette Base Adresse Locale ne pourra pas être publiée. Cette fonctionnalité a pour but d’essayer l’éditeur.'
+        title='Attention vous vous apprêtez à créer une Base Adresse Locale de démonstration. Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans la Base Adresse Nationale'
         marginY='1em'
       />
 
