@@ -24,7 +24,9 @@ function Index() {
         Mes Bases Adresse Locales
         <Button iconBefore='plus' onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
       </Heading>
-      <UserBasesLocales />
+      <Pane height='100%' display='flex' flexDirection='column' justifyContent='center'>
+        <UserBasesLocales />
+      </Pane>
       <DemoBALAlert />
       <Footer />
     </Pane>
