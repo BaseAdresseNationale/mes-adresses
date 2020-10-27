@@ -64,7 +64,7 @@ function App({error, Component, pageProps, query}) {
   }, [pageProps.baseLocale])
 
   useEffect(() => {
-    if (innerWidth && innerWidth < 700) {
+    if (innerWidth && innerWidth < 700 && !/(\/dashboard)/.test(location.pathname)) {
       setIsShown(true)
     }
   }, [innerWidth])
