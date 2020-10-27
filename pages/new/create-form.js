@@ -55,7 +55,7 @@ function CreateForm({defaultCommune}) {
       <TextInputField
         required
         innerRef={focusRef}
-        autoComplete='new-password' // Hack to bypass chrome autocomplete
+        autoComplete='off'
         name='nom'
         id='nom'
         value={nom}
