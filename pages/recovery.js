@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import {useRouter} from 'next/router'
 import {Pane, Heading, Spinner} from 'evergreen-ui'
+import getConfig from 'next/config'
 
 import {storeBalAccess} from '../lib/tokens'
 
 import Header from '../components/header'
 
-const MES_ADRESSES = '//localhost:8000'
+const {publicRuntimeConfig} = getConfig()
+const MES_ADRESSES_URL = publicRuntimeConfig.MES_ADRESSES_URL || 'https://mes-adresses.data.gouv.fr'
 
 const RetrieveBALAccessComponent = dynamic(() => import('../components/retrieve-bal-acccess'), {
   ssr: false
@@ -32,11 +34,11 @@ function Index({recoveredBals}) {
     if (!recoveredBals && bals) {
       if (Object.keys(bals).length === 0) {
         setTimeout(() => {
-          router.push(MES_ADRESSES)
+          router.push(MES_ADRESSES_URL)
         }, 3000)
       } else {
         const query = Object.entries(bals).map(pair => pair.map(encodeURIComponent).join('=')).join('&')
-        const url = `${MES_ADRESSES}/recovery?${query}`
+        const url = `${MES_ADRESSES_URL}/recovery?${query}`
 
         router.push(url)
       }
@@ -69,7 +71,6 @@ Index.propTypes = {
 }
 
 Index.getInitialProps = async ({query}) => {
-  console.log(query)
   return {
     recoveredBals: Object.keys(query).length > 0 ? query : null,
     layout: 'fullscreen'
