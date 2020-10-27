@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Checkbox, Button} from 'evergreen-ui'
+import {Pane, Checkbox, Button, Alert} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
 import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
@@ -60,6 +60,12 @@ function TestForm({defaultCommune}) {
         checked={populate}
         disabled={isLoading}
         onChange={onPopulateChange}
+      />
+
+      <Alert
+        intent='danger'
+        title='Cette Base Adresse Locale ne pourra pas être publiée. Cette fonctionnalité a pour but d’essayer l’éditeur.'
+        marginY='1em'
       />
 
       <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
