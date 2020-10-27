@@ -1,10 +1,14 @@
 import React from 'react'
 import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tablist, Tab, Icon} from 'evergreen-ui'
+import getConfig from 'next/config'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
 
 import Problems from './problems'
+
+const {publicRuntimeConfig} = getConfig()
+const EDITEUR_URL = publicRuntimeConfig.EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
 
 const BaseLocale = () => {
   return (
@@ -51,6 +55,15 @@ const BaseLocale = () => {
         <Paragraph marginTop='default'>
           Une fois vos réglages terminés, cliquez sur <Button marginX={4} appearance='primary'>Enregistrer les changements</Button>
         </Paragraph>
+      </Tuto>
+
+      <Tuto title='Récupérer vos Bases Adresses Locales'>
+        <Paragraph marginTop='default'>
+          Si toutes vos Bases Adresse Locales n’apparaissent pas dans votre liste, il est possible que leur récupération ait échouée.
+        </Paragraph>
+        <OrderedList margin={8}>
+          <ListItem>Vous pouvez tenter de les récupérer de nous en cliquant <a href={`${EDITEUR_URL}/recovery`}>ici</a>.</ListItem>
+        </OrderedList>
       </Tuto>
 
       <Problems>
