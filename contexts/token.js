@@ -4,38 +4,33 @@ import Router from 'next/router'
 import getConfig from 'next/config'
 
 import {getBaseLocale} from '../lib/bal-api'
-import {getBalToken, getHasRecovered, saveRecoveryLocation, setHasRecovered, storeBalAccess} from '../lib/tokens'
+import {getBalToken, getHasRecovered, saveRecoveryLocation, storeHasRecovered, storeBalAccess} from '../lib/tokens'
 
 const {publicRuntimeConfig} = getConfig()
 const EDITEUR_URL = publicRuntimeConfig.EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
 
 const TokenContext = React.createContext()
 
-export function TokenContextProvider({balId, token, ...props}) {
-  const [state, setState] = useState({
-    token: null,
-    hasRecovered: null
-  })
+export function TokenContextProvider({balId, _token, ...props}) {
+  const [token, setToken] = useState(null)
+  const [emails, setEmails] = useState(null)
+  const [hasRecovered, setHasRecovered] = useState(null)
 
   const verify = useCallback(async token => {
     const baseLocale = await getBaseLocale(balId, token)
 
     if (baseLocale.token) {
-      setState({
-        token: baseLocale.token,
-        emails: baseLocale.emails
-      })
+      setToken(baseLocale.token)
+      setEmails(baseLocale.emails)
     } else {
-      setState({
-        token: false
-      })
+      setToken(false)
     }
   }, [balId])
 
   useEffect(() => {
     if (balId) {
-      if (token) {
-        storeBalAccess(balId, token)
+      if (_token) {
+        storeBalAccess(balId, _token)
 
         Router.replace(
           `/bal?balId=${balId}`,
@@ -45,38 +40,38 @@ export function TokenContextProvider({balId, token, ...props}) {
         verify(getBalToken(balId))
       }
     }
-  }, [verify, balId, token])
+  }, [verify, balId, _token])
 
   useEffect(() => {
-    if (state.hasRecovered === null) {
+    if (hasRecovered === null) {
       const hasRecovered = getHasRecovered()
       if (hasRecovered) {
-        setState({...state, hasRecovered: true})
-      } else {
         setHasRecovered(true)
+      } else {
+        storeHasRecovered(true)
         saveRecoveryLocation()
         Router.push(`${EDITEUR_URL}/recovery`)
       }
     }
-  }, [state])
+  }, [hasRecovered])
 
   const reloadEmails = useCallback(async () => {
     verify(getBalToken(balId))
   }, [verify, balId])
 
   return (
-    <TokenContext.Provider value={{...state, reloadEmails}} {...props} />
+    <TokenContext.Provider value={{token, emails, hasRecovered, reloadEmails}} {...props} />
   )
 }
 
 TokenContextProvider.propTypes = {
   balId: PropTypes.string,
-  token: PropTypes.string
+  _token: PropTypes.string
 }
 
 TokenContextProvider.defaultProps = {
   balId: null,
-  token: null
+  _token: null
 }
 
 export const MarkerContextConsumer = TokenContext.Consumer
