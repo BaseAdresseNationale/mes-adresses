@@ -88,7 +88,7 @@ function App({error, Component, pageProps, query}) {
         </Dialog>
       </Pane>
 
-      <TokenContextProvider balId={query.balId} _token={query.token}>
+      <TokenContextProvider balId={query.balId} token={query.token}>
         <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
           <DrawContextProvider>
             <MarkerContextProvider>
