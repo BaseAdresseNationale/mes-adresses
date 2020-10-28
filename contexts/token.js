@@ -1,36 +1,36 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import getConfig from 'next/config'
 
 import {getBaseLocale} from '../lib/bal-api'
-import {getBalToken, getHasRecovered, saveRecoveryLocation, storeHasRecovered, storeBalAccess} from '../lib/tokens'
-
-const {publicRuntimeConfig} = getConfig()
-const EDITEUR_URL = publicRuntimeConfig.EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
+import {getBalToken, storeBalAccess} from '../lib/tokens'
 
 const TokenContext = React.createContext()
 
-export function TokenContextProvider({balId, _token, ...props}) {
-  const [token, setToken] = useState(null)
-  const [emails, setEmails] = useState(null)
-  const [hasRecovered, setHasRecovered] = useState(null)
+export function TokenContextProvider({balId, token, ...props}) {
+  const [state, setState] = useState({
+    token: null
+  })
 
   const verify = useCallback(async token => {
     const baseLocale = await getBaseLocale(balId, token)
 
     if (baseLocale.token) {
-      setToken(baseLocale.token)
-      setEmails(baseLocale.emails)
+      setState({
+        token: baseLocale.token,
+        emails: baseLocale.emails
+      })
     } else {
-      setToken(false)
+      setState({
+        token: false
+      })
     }
   }, [balId])
 
   useEffect(() => {
     if (balId) {
-      if (_token) {
-        storeBalAccess(balId, _token)
+      if (token) {
+        storeBalAccess(balId, token)
 
         Router.replace(
           `/bal?balId=${balId}`,
@@ -40,38 +40,25 @@ export function TokenContextProvider({balId, _token, ...props}) {
         verify(getBalToken(balId))
       }
     }
-  }, [verify, balId, _token])
-
-  useEffect(() => {
-    if (hasRecovered === null) {
-      const hasRecovered = getHasRecovered()
-      if (hasRecovered) {
-        setHasRecovered(true)
-      } else {
-        storeHasRecovered(true)
-        saveRecoveryLocation()
-        Router.push(`${EDITEUR_URL}/recovery`)
-      }
-    }
-  }, [hasRecovered])
+  }, [verify, balId, token])
 
   const reloadEmails = useCallback(async () => {
     verify(getBalToken(balId))
   }, [verify, balId])
 
   return (
-    <TokenContext.Provider value={{token, emails, hasRecovered, reloadEmails}} {...props} />
+    <TokenContext.Provider value={{...state, reloadEmails}} {...props} />
   )
 }
 
 TokenContextProvider.propTypes = {
   balId: PropTypes.string,
-  _token: PropTypes.string
+  token: PropTypes.string
 }
 
 TokenContextProvider.defaultProps = {
   balId: null,
-  _token: null
+  token: null
 }
 
 export const MarkerContextConsumer = TokenContext.Consumer
