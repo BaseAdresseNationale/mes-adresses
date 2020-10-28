@@ -4,7 +4,7 @@ import Router from 'next/router'
 import getConfig from 'next/config'
 
 import {getBaseLocale} from '../lib/bal-api'
-import {getBalToken, getHasRecovered, setHasRecovered, storeBalAccess} from '../lib/tokens'
+import {getBalToken, getHasRecovered, saveRecoveryLocation, setHasRecovered, storeBalAccess} from '../lib/tokens'
 
 const {publicRuntimeConfig} = getConfig()
 const EDITEUR_URL = publicRuntimeConfig.EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
@@ -54,6 +54,7 @@ export function TokenContextProvider({balId, token, ...props}) {
         setState({...state, hasRecovered: true})
       } else {
         setHasRecovered(true)
+        saveRecoveryLocation()
         Router.push(`${EDITEUR_URL}/recovery`)
       }
     }

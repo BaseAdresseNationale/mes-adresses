@@ -5,7 +5,7 @@ import {useRouter} from 'next/router'
 import {Pane, Heading, Spinner} from 'evergreen-ui'
 import getConfig from 'next/config'
 
-import {storeBalAccess} from '../lib/tokens'
+import {storeBalAccess, getRecoveryLocation} from '../lib/tokens'
 
 import Header from '../components/header'
 
@@ -26,7 +26,8 @@ function Index({recoveredBals}) {
         storeBalAccess(id, recoveredBals[id])
       })
 
-      router.push('/')
+      const pathname = getRecoveryLocation()
+      router.push(pathname)
     }
   }, [recoveredBals, router])
 
