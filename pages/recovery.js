@@ -27,7 +27,7 @@ function Index({recoveredBals}) {
       })
 
       const pathname = getRecoveryLocation()
-      router.push(pathname)
+      window.location = pathname
     }
   }, [recoveredBals, router])
 
@@ -35,13 +35,13 @@ function Index({recoveredBals}) {
     if (!recoveredBals && bals) {
       if (Object.keys(bals).length === 0) {
         setTimeout(() => {
-          router.push(MES_ADRESSES_URL)
+          window.location = MES_ADRESSES_URL
         }, 3000)
       } else {
         const query = Object.entries(bals).map(pair => pair.map(encodeURIComponent).join('=')).join('&')
         const url = `${MES_ADRESSES_URL}/recovery?${query}`
 
-        router.push(url)
+        window.location = url
       }
     }
   }, [bals, recoveredBals, router])

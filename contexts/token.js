@@ -50,7 +50,7 @@ export function TokenContextProvider({balId, _token, ...props}) {
       } else {
         storeHasRecovered(true)
         saveRecoveryLocation()
-        Router.push(`${EDITEUR_URL}/recovery`)
+        window.location = `${EDITEUR_URL}/recovery`
       }
     }
   }, [hasRecovered])
