@@ -42,6 +42,7 @@ export function CommuneSearchField({
       description={description}
       validationMessage={validationMessage}
       labelFor={id}
+      autocomplete='off'
       {...matchedProps}
     >
       <CommuneSearch
