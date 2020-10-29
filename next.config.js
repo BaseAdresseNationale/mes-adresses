@@ -6,6 +6,8 @@ const withConfig = nextRuntimeDotenv({
     'BAL_API_URL',
     'GEO_API_URL',
     'ADRESSE_URL',
+    'EDITEUR_URL',
+    'MES_ADRESSES_URL',
     'ADRESSE_BACKEND_URL'
   ]
 })
