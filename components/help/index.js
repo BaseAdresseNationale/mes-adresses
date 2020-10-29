@@ -47,7 +47,7 @@ const Help = () => {
         <Pane padding={16} background='tint2' elevation={1}>
           <Heading>Vous n’avez pas trouvé la solution à votre problème ?</Heading>
           <Paragraph>
-            <Link href='https://adresse.data.gouv.fr/data/docs/guide-bal-v1.0.pdf'>Télécharger le Guide de la Base Adresse Locale</Link>
+            <Link target='_blank' href='https://adresse.data.gouv.fr/guides'>Consultez les guides de l’adressage</Link>
           </Paragraph>
           <Paragraph>ou</Paragraph>
           <Paragraph>
