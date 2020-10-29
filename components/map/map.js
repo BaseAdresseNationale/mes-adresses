@@ -106,7 +106,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
   const sources = useSources(voie, hovered, editingId)
   const bounds = useBounds(commune, voie)
-  const layers = useLayers(voie, style)
+  const layers = useLayers(voie, sources, style)
 
   const mapRef = useCallback(ref => {
     if (ref) {
@@ -120,17 +120,19 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     }
 
     const layers = [
-      'numeros-point',
-      'numeros-label',
       'voie-trace-line'
     ]
+
+    if (sources.find(({name}) => name === 'positions')) {
+      layers.push('numeros-point', 'numeros-label')
+    }
 
     if (!voie) {
       layers.push('voie-label')
     }
 
     return layers
-  }, [editingId, voie])
+  }, [editingId, sources, voie])
 
   const onViewportChange = useCallback(viewport => {
     setViewport(viewport)

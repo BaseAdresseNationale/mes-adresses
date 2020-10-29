@@ -21,27 +21,23 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
 function Index() {
   const {hasRecovered} = useContext(TokenContext)
   return (
-    <Pane display='flex' flexDirection='column' height='100%'>
+    <Pane height='100vh' display='flex' flexDirection='column'>
       <Header />
-      <Pane height='100%' display='flex' flexDirection='column'>
-        {hasRecovered ? (
-          <>
-            <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
+      {hasRecovered ? (
+        <>
+          <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
             Mes Bases Adresse Locales
-              <Button iconBefore='plus' onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
-            </Heading>
-            <Pane height='100%' display='flex' flexDirection='column' justifyContent='center'>
-              <UserBasesLocales />
-            </Pane>
-            <DemoBALAlert />
-            <Footer />
-          </>
-        ) : (
-          <Pane height='100%' display='flex' flexDirection='column' flex={1} alignItems='center' justifyContent='center'>
-            <Spinner />
-          </Pane>
-        )}
-      </Pane>
+            <Button iconBefore='plus' onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
+          </Heading>
+          <UserBasesLocales />
+          <DemoBALAlert />
+          <Footer />
+        </>
+      ) : (
+        <Pane height='100%' display='flex' flexDirection='column' flex={1} alignItems='center' justifyContent='center'>
+          <Spinner />
+        </Pane>
+      )}
     </Pane>
   )
 }
