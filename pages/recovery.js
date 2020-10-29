@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-import {useRouter} from 'next/router'
 import {Pane, Heading, Spinner} from 'evergreen-ui'
 import getConfig from 'next/config'
 
@@ -17,7 +16,6 @@ const RetrieveBALAccessComponent = dynamic(() => import('../components/retrieve-
 })
 
 function Index({recoveredBals}) {
-  const router = useRouter()
   const [bals, setBals] = useState()
 
   useEffect(() => {
@@ -27,24 +25,24 @@ function Index({recoveredBals}) {
       })
 
       const pathname = getRecoveryLocation()
-      router.push(pathname)
+      window.location = pathname
     }
-  }, [recoveredBals, router])
+  }, [recoveredBals])
 
   useEffect(() => {
     if (!recoveredBals && bals) {
       if (Object.keys(bals).length === 0) {
         setTimeout(() => {
-          router.push(MES_ADRESSES_URL)
+          window.location = MES_ADRESSES_URL
         }, 3000)
       } else {
         const query = Object.entries(bals).map(pair => pair.map(encodeURIComponent).join('=')).join('&')
         const url = `${MES_ADRESSES_URL}/recovery?${query}`
 
-        router.push(url)
+        window.location = url
       }
     }
-  }, [bals, recoveredBals, router])
+  }, [bals, recoveredBals])
 
   return (
     <Pane display='flex' flexDirection='column' height='100%'>
