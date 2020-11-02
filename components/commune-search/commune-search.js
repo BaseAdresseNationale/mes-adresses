@@ -31,6 +31,7 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
       {({getInputProps, getRef, inputValue}) => {
         return (
           <SearchInput
+            autocomplete='chrome-off'
             placeholder={placeholder}
             value={inputValue}
             innerRef={ref => {
