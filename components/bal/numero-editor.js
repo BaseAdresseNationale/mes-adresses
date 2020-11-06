@@ -2,7 +2,8 @@ import React, {useState, useMemo, useCallback, useContext, useEffect} from 'reac
 import PropTypes from 'prop-types'
 import {Pane, SelectField, TextInput, Button, Alert} from 'evergreen-ui'
 import nearestPointOnLine from '@turf/nearest-point-on-line'
-import rhumbDistance from '@turf/rhumb-distance'
+import length from '@turf/length'
+import lineSlice from '@turf/line-slice'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
@@ -127,8 +128,8 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       }
 
       const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
-      const distance = rhumbDistance(from, to, {units: 'kilometers'}) * 1000
-      return distance.toFixed(0)
+      const slicedLine = length(lineSlice(from, to, trace)) * 1000
+      return slicedLine.toFixed(0)
     }
   }, [marker, voie])
 
