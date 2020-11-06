@@ -11,27 +11,10 @@ const BALCounterChart = ({basesLocales}) => {
   const BALByStatus = getBALByStatus(basesLocales)
 
   return (
-    <div className='chart-container'>
-      <Pane elevation={1} border='default'>
-        <Counter
-          label='Bases Adresse locales'
-          value={basesLocales.length}
-          size={30}
-        />
-        <div className='chart'>
-          <PieChart height={150} data={BALByStatus} />
-        </div>
-      </Pane>
-      <style jsx>{`
-      .chart-container {
-          width: 40vw;
-        }
-
-        .chart{
-          position: relative;
-        }  
-      `}</style>
-    </div>
+    <Pane display='flex' flexDirection='column' alignItems='center' >
+      <Counter label='Bases Adresse locales' value={basesLocales.length} />
+      <PieChart height={240} data={BALByStatus} />
+    </Pane>
   )
 }
 

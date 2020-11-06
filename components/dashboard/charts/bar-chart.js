@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading} from 'evergreen-ui'
+import {Heading} from 'evergreen-ui'
 import {Bar} from 'react-chartjs-2'
 
-const BarChart = ({title, data, height}) => {
+const BarChart = ({title, data}) => {
   const options = {
     maintainAspectRatio: false,
     tooltips: {
@@ -28,33 +28,13 @@ const BarChart = ({title, data, height}) => {
   }
 
   return (
-    <div className='chart-container'>
-      <Pane padding={8} elevation={1} border='default'>
-        {title && (
-          <Heading marginBottom={16} textAlign='center'>
-            {title}
-          </Heading>
-        )}
-        <div className='chart'>
-          <Bar height={height} data={data} options={options} />
-        </div>
-      </Pane>
-      <style jsx>{`
-        .chart-container {
-          margin: 0 auto;
-          width: 55vw;
-        }
-
-        .chart{
-          position: relative;
-        }
-
-        @media screen and (max-width: 960px) {
-          .chart-container {
-            width: 100%;
-          }
-        }
-        `}</style>
+    <div style={{height: '100%', width: '100%'}}>
+      {title && (
+        <Heading marginBottom={16} textAlign='center'>
+          {title}
+        </Heading>
+      )}
+      <Bar data={data} options={options} />
     </div>
 
   )
@@ -62,13 +42,11 @@ const BarChart = ({title, data, height}) => {
 
 BarChart.propTypes = {
   title: PropTypes.string,
-  height: PropTypes.number,
   data: PropTypes.object.isRequired
 }
 
 BarChart.defaultProps = {
-  title: null,
-  height: null
+  title: null
 }
 
 export default BarChart

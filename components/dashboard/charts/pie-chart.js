@@ -21,27 +21,15 @@ const PieChart = ({title, data, height}) => {
   }
 
   return (
-    <div className='chart-container'>
-      <Pane elevation={1} border='default'>
-        {title && (
-          <Heading textAlign='center'>
-            {title}
-          </Heading>
-        )}
-        <div className='chart'>
-          <Pie ref={chartRef} height={height} data={chart} options={options} />
-        </div>
-      </Pane>
-      <style jsx>{`
-      .chart-container {
-          width: 40vw;
-        }
+    <Pane display='flex' flexDirection='column'>
+      {title && (
+        <Heading textAlign='center'>
+          {title}
+        </Heading>
+      )}
 
-        .chart{
-          position: relative;
-        }  
-      `}</style>
-    </div>
+      <Pie ref={chartRef} height={height} data={chart} options={options} />
+    </Pane>
   )
 }
 

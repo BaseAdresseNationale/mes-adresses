@@ -14,83 +14,74 @@ import BALCounterChart from '../components/dashboard/bal-counter-chart'
 import Counter from '../components/dashboard/counter'
 
 const Index = ({basesLocales, contoursCommunes}) => {
-  const communeCount = () => {
-    return uniq(flattenDeep(basesLocales.filter(({communes}) => communes.length > 0).map(({communes}) => communes))).length
-  }
+  const communeCount = uniq(flattenDeep(
+    basesLocales
+      .filter(({communes}) => communes.length > 0)
+      .map(({communes}) => communes)
+  )).length
 
   return (
-    <div className='index-container'>
+    <div className='dashboard-container'>
       <Heading size={600} marginY={8} textAlign='center'>
         Tableau de bord des Bases Adresse Locales
       </Heading>
 
-      <Counter
-        label='Communes couvertes par une Base Adresse Locale'
-        value={communeCount()}
-        size={30}
-      />
-
-      <div className='pie-creation-charts-container'>
-        <div>
+      <Pane display='flex' flexWrap='wrap'>
+        <div className='chart-container'>
           <BALCounterChart basesLocales={basesLocales} />
         </div>
-        <div>
+
+        <div className='chart-container map'>
+          <Counter label='Communes couvertes par une Base Adresse Locale' value={communeCount} />
+          <Pane flexGrow={1} width='100%'>
+            <Map basesLocales={basesLocales} contours={contoursCommunes} />
+          </Pane>
+        </div>
+      </Pane>
+
+      <Pane display='flex' flexWrap='wrap'>
+        <div className='chart-container'>
           <BALCreationChart basesLocales={basesLocales} />
         </div>
-      </div>
 
-      <div className='charts-map-container'>
-        <div className='chart-bal-creation-container'>
+        <div className='chart-container'>
           <StatusVariationChart basesLocales={basesLocales} />
         </div>
-        <Pane width='100%' elevation={1} border='default'>
-          <Map basesLocales={basesLocales} contours={contoursCommunes} />
-        </Pane>
-      </div>
+      </Pane>
 
       <style jsx>{`
-        .index-container {
-          padding: 0 16px;
-          overflow-y: auto;
-        }
-
-        .pie-creation-charts-container {
+        .dashboard-container {
           display: flex;
-          justify-content: space-between;  
+          flex-direction: column;
+          flex-wrap: wrap;
         }
-
-        .chart-bal-creation-container {
-          margin-right: 10px;
-        }
-
-        .charts-map-container {
+        .chart-container {
           display: flex;
-          justify-content: space-between;
-          margin-top: 10px;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          flex: 1;
+          margin: 1em;
+          padding: 1em;
+          min-width: 300px;
+          max-height: 400px;
+          background-color: #fff;
+          box-shadow: 0 0 1px rgba(67, 90, 111, 0.3), 0 2px 4px -2px rgba(67, 90, 111, 0.47);
         }
 
-        @media screen and (max-width: 960px) {
-          .index-container {
-            padding: 0;
-          }
-
-          .chart-bal-container {
-            margin: 0;
-          }
-
-          .chart-bal-container, .charts-map-container, .chart-bal-creation-container {
-            margin-bottom: 10px;
-          }
-
-          .chart-bal-creation-container {
-            margin-right: 0;
-          }
-
-          .charts-map-container {
-            flex-direction: column;
-          }
-
+        .chart-container.map {
+          flex: 2;
+          padding: 0;
         }
+
+        @media (max-width: 380px) {
+          .chart-container {
+            margin: 0.4em;
+            padding: 0.4em;
+            min-width: 180px;
+          }
+        }
+
       `}</style>
     </div>
   )

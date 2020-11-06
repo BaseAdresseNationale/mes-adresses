@@ -1,16 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Paragraph} from 'evergreen-ui'
+import {Pane, Heading} from 'evergreen-ui'
 
-const Counter = ({label, value, color, size}) => {
+const Counter = ({label, value, color}) => {
   return (
-    <Pane width={100} margin={10} textAlign='center' elevation={1} border='default'>
-      <Paragraph fontSize={size} fontWeight='bold' color={color}>
+    <Pane marginY={16} maxWidth={250} textAlign='center'>
+      <Heading size={700} color={color}>
         {value}
-      </Paragraph>
-      <Paragraph color={color}>
+      </Heading>
+      <Heading size={500} fontWeight={300} color='muted'>
         {label}
-      </Paragraph>
+      </Heading>
     </Pane>
   )
 }
@@ -18,12 +18,11 @@ const Counter = ({label, value, color, size}) => {
 Counter.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
-  color: PropTypes.string,
-  size: PropTypes.number.isRequired
+  color: PropTypes.string
 }
 
 Counter.defaultProps = {
-  color: 'black'
+  color: '#222'
 }
 
 export default Counter

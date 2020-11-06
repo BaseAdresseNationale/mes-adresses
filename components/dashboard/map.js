@@ -129,11 +129,11 @@ const Map = ({basesLocales, contours}) => {
   }, [handleResize])
 
   useEffect(() => {
-    const mapBox = document.querySelector('.map')
+    const map = mapRef.current
+    map.addEventListener('touchmove', handleMobileTouch)
 
-    mapBox.addEventListener('touchmove', handleMobileTouch)
     return () => {
-      mapBox.addEventListener('touchmove', handleMobileTouch)
+      map.addEventListener('touchmove', handleMobileTouch)
     }
   }, [handleMobileTouch])
 
@@ -147,7 +147,7 @@ const Map = ({basesLocales, contours}) => {
   }, [warningZoom])
 
   return (
-    <div ref={mapRef} className='map'>
+    <div ref={mapRef} className='map-container'>
       <MapGL
         {...viewport}
         touchZoom
@@ -214,22 +214,10 @@ const Map = ({basesLocales, contours}) => {
       </MapGL>
 
       <style jsx>{`
-        .map {
-          width: 100%;
-          min-width: 270px;
-          height: 100%;
-        }
-
-        .warning-zoom {
-          text-align: center;
-          background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        @media screen and (max-width: 960px) {
-          .map {
-            height: 330px;
-          }
-        }
+         .map-container {
+           width: 100%;
+           height: 100%;
+           min-height: 300px;
         `}</style>
     </div>
   )

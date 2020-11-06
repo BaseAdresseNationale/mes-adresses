@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading} from 'evergreen-ui'
+import {Heading} from 'evergreen-ui'
 import {Line} from 'react-chartjs-2'
 
-const LineChart = ({title, height, data}) => {
+const LineChart = ({title, data}) => {
   const options = {
     maintainAspectRatio: false,
     tooltips: {
@@ -31,45 +31,24 @@ const LineChart = ({title, height, data}) => {
   }
 
   return (
-    <div className='chart-container'>
-      <Pane padding={8} elevation={1} border='default'>
-        {title && (
-          <Heading marginBottom={16} textAlign='center'>
-            {title}
-          </Heading>
-        )}
-        <div className='chart'>
-          <Line height={height} data={data} options={options} />
-        </div>
-      </Pane>
-      <style jsx>{`
-        .chart-container {
-          width: 50vw;
-        }
-
-        .chart{
-          position: relative;
-        }
-
-        @media screen and (max-width: 960px) {
-          .chart-container {
-            width: 100%;
-          }
-        }
-        `}</style>
+    <div style={{height: '100%', width: '100%'}}>
+      {title && (
+        <Heading marginBottom={16} textAlign='center'>
+          {title}
+        </Heading>
+      )}
+      <Line data={data} options={options} />
     </div>
   )
 }
 
 LineChart.propTypes = {
   title: PropTypes.string,
-  height: PropTypes.number,
   data: PropTypes.object.isRequired
 }
 
 LineChart.defaultProps = {
-  title: null,
-  height: null
+  title: null
 }
 
 export default LineChart

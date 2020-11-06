@@ -1,7 +1,6 @@
 import React from 'react'
 import {groupBy, sortBy} from 'lodash'
 import PropTypes from 'prop-types'
-import {Pane} from 'evergreen-ui'
 
 import {colors} from '../../lib/colors'
 import {formatDateYYYYMMDD} from '../../lib/date'
@@ -46,31 +45,7 @@ const StatusVariationChart = ({basesLocales}) => {
   }
 
   return (
-    <div className='chart-container'>
-      <Pane padding={8} elevation={1} border='default'>
-        <div className='chart'>
-          <LineChart
-            title='Bases Adresse Locales mises à jour'
-            height={300}
-            data={data} />
-        </div>
-      </Pane>
-      <style jsx>{`
-        .chart-container {
-          width: 50vw;
-        }
-
-        .chart{
-          position: relative;
-        }
-
-        @media screen and (max-width: 960px) {
-          .chart-container {
-            width: 100%;
-          }
-        }
-        `}</style>
-    </div>
+    <LineChart title='Bases Adresse Locales mises à jour' data={data} />
   )
 }
 

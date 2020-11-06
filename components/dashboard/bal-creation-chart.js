@@ -1,6 +1,5 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane} from 'evergreen-ui'
 import {groupBy} from 'lodash'
 
 import {colors} from '../../lib/colors'
@@ -52,34 +51,7 @@ const BALCreationChart = ({basesLocales}) => {
   }
 
   return (
-    <div className='chart-container'>
-      <Pane padding={8} elevation={1} border='default'>
-        <div className='chart'>
-          <BarChart
-            title='Cumul des Bases Adresse Locales'
-            height={300}
-            data={data}
-          />
-        </div>
-      </Pane>
-      <style jsx>{`
-        .chart-container {
-          margin: 0 auto;
-          width: 55vw;
-        }
-
-        .chart{
-          position: relative;
-        }
-
-        @media screen and (max-width: 960px) {
-          .chart-container {
-            width: 100%;
-          }
-        }
-        `}</style>
-    </div>
-
+    <BarChart title='Cumul des Bases Adresse Locales' data={data} />
   )
 }
 
