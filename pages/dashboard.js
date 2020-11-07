@@ -4,7 +4,6 @@ import {Heading, Pane} from 'evergreen-ui'
 import {uniq, flattenDeep} from 'lodash'
 
 import {getContoursCommunes, listBasesLocales} from '../lib/bal-api'
-import {formatDateYYYYMMDD} from '../lib/date'
 import {expandWithPublished} from '../helpers/bases-locales'
 
 import Map from '../components/dashboard/map'
@@ -93,21 +92,8 @@ Index.getInitialProps = async () => {
   const basesLocalesWithoutTest = basesLocales.filter((({isTest}) => !isTest))
   await expandWithPublished(basesLocalesWithoutTest)
 
-  const datedBaseLocales = basesLocalesWithoutTest.map(baseLocale => {
-    const {_created, _updated} = baseLocale
-    const day = formatDateYYYYMMDD(_created)
-    const [year, monthNumber] = day.split('-')
-    const month = `${year}-${monthNumber}`
-
-    const updatedDay = formatDateYYYYMMDD(_updated)
-    const [updatedYear, updatedMonthNumber] = updatedDay.split('-')
-    const updatedMonth = `${updatedYear}-${updatedMonthNumber}`
-
-    return {...baseLocale, day, year, month, updatedDay, updatedMonth, updatedYear}
-  })
-
   return {
-    basesLocales: datedBaseLocales,
+    basesLocales: basesLocalesWithoutTest,
     contoursCommunes
   }
 }

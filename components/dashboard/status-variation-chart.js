@@ -1,26 +1,28 @@
 import React from 'react'
 import {groupBy, sortBy} from 'lodash'
 import PropTypes from 'prop-types'
+import {subMonths, lastDayOfMonth, format, formatISO} from 'date-fns'
 
 import {colors} from '../../lib/colors'
-import {formatDateYYYYMMDD} from '../../lib/date'
 import {filterByStatus} from '../../lib/bases-locales'
 
 import LineChart from './charts/line-chart'
 
-const CURRENT_DAY = formatDateYYYYMMDD()
-const [CURRENT_YEAR, CURRENT_MONTH] = CURRENT_DAY.split('-')
+const LAST_MONTH = subMonths(new Date(), 1)
+const LAST_DAY_OF_THE_MONTH = lastDayOfMonth(LAST_MONTH)
 
 const excludeCurrentMonth = basesLocales => {
-  return basesLocales.filter(({updatedMonth}) => {
-    return updatedMonth !== `${CURRENT_YEAR}-${CURRENT_MONTH}`
+  return basesLocales.filter(({_updated}) => {
+    return new Date(_updated) < LAST_DAY_OF_THE_MONTH
   })
 }
 
 const StatusVariationChart = ({basesLocales}) => {
   const BALWithoutCurrentMonth = excludeCurrentMonth(basesLocales)
   const orderedBalByUpdate = sortBy(BALWithoutCurrentMonth, '_updated')
-  const groupedByUpdate = Object.values(groupBy(orderedBalByUpdate, 'updatedMonth'))
+  const groupedByUpdate = Object.values(groupBy(orderedBalByUpdate, ({_updated}) => {
+    return format(new Date(_updated), 'yyyy-MM')
+  }))
 
   const datasets = [
     {
@@ -40,7 +42,9 @@ const StatusVariationChart = ({basesLocales}) => {
   ]
 
   const data = {
-    labels: groupedByUpdate.map(data => data[0].updatedDay),
+    labels: groupedByUpdate.map(data => {
+      return formatISO(new Date(data[0]._updated), {representation: 'date'})
+    }),
     datasets
   }
 

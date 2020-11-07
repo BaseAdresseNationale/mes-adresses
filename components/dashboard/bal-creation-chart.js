@@ -1,6 +1,7 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {groupBy} from 'lodash'
+import {format, formatISO} from 'date-fns'
 
 import {colors} from '../../lib/colors'
 import {filterByStatus} from '../../lib/bases-locales'
@@ -8,7 +9,9 @@ import {filterByStatus} from '../../lib/bases-locales'
 import BarChart from './charts/bar-chart'
 
 const BALCreationChart = ({basesLocales}) => {
-  const groupedByMonth = Object.values(groupBy(basesLocales, 'month'))
+  const groupedByMonth = Object.values(groupBy(basesLocales, ({_created}) => {
+    return format(new Date(_created), 'yyyy-MM')
+  }))
 
   const sumByStatus = useCallback(status => {
     const sums = []
@@ -46,7 +49,9 @@ const BALCreationChart = ({basesLocales}) => {
   ]
 
   const data = {
-    labels: groupedByMonth.map(data => data[0].month),
+    labels: groupedByMonth.map(data => {
+      return formatISO(new Date(data[0]._created), {representation: 'date'})
+    }),
     datasets
   }
 
