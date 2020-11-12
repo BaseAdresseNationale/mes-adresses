@@ -56,7 +56,11 @@ function App({error, Component, pageProps, query}) {
   }, [layout, isHidden])
 
   const topOffset = useMemo(() => {
-    return pageProps.baseLocale ? 40 : 0
+    if (pageProps.baseLocale && pageProps.baseLocale.isTest) {
+      return 156
+    }
+
+    return pageProps.baseLocale ? 116 : 0
   }, [pageProps.baseLocale])
 
   useEffect(() => {

@@ -18,7 +18,7 @@ function MapWrapper({animate, left, top, ...props}) {
       position='fixed'
       display='flex'
       transition={animate ? 'left 0.3s' : null}
-      top={116}
+      top={top}
       right={0}
       bottom={0}
       left={left}

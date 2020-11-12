@@ -17,6 +17,7 @@ import useWindowSize from '../../hooks/window-size'
 import Breadcrumbs from '../breadcrumbs'
 
 import Publication from './publication'
+import Demowarning from './demo-warning'
 
 const {publicRuntimeConfig} = getConfig()
 const ADRESSE_URL = publicRuntimeConfig.ADRESSE_URL || 'https://adresse.data.gouv.fr'
@@ -53,61 +54,62 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
   }
 
   return (
-    <Pane
-      position='fixed'
-      top={76}
-      left={0}
-      height={40}
-      width='100%'
-      background='tint1'
-      elevation={0}
-      zIndex={3}
-      display='flex'
-      padding={8}
-    >
-      {layout !== 'fullscreen' && innerWidth && innerWidth < 800 && (
-        <IconButton
-          height={24}
-          marginRight={8}
-          icon='menu'
-          isActive={!isSidebarHidden}
-          appearance='minimal'
-          onClick={onToggle}
+    <>
+      <Pane
+        position='fixed'
+        top={76}
+        left={0}
+        height={40}
+        width='100%'
+        background='tint1'
+        elevation={0}
+        zIndex={3}
+        display='flex'
+        padding={8}
+      >
+        {layout !== 'fullscreen' && innerWidth && innerWidth < 800 && (
+          <IconButton
+            height={24}
+            marginRight={8}
+            icon='menu'
+            isActive={!isSidebarHidden}
+            appearance='minimal'
+            onClick={onToggle}
+          />
+        )}
+
+        <Breadcrumbs
+          baseLocale={baseLocale}
+          commune={commune}
+          voie={voie}
+          marginLeft={8}
         />
-      )}
 
-      <Breadcrumbs
-        baseLocale={baseLocale}
-        commune={commune}
-        voie={voie}
-        marginLeft={8}
-      />
+        <Pane marginLeft='auto' display='flex'>
 
-      <Pane marginLeft='auto' display='flex'>
-
-        <Button
-          height={24}
-          iconAfter='help'
-          appearance='minimal'
-          marginRight={16}
-          color='dimgrey'
-          onClick={() => setShowHelp(!showHelp)}
-        >
+          <Button
+            height={24}
+            iconAfter='help'
+            appearance='minimal'
+            marginRight={16}
+            color='dimgrey'
+            onClick={() => setShowHelp(!showHelp)}
+          >
           Besoin d’aide
-        </Button>
+          </Button>
 
-        <Popover
-          position={Position.BOTTOM_RIGHT}
-          content={
-            <Menu>
-              <Menu.Group>
-                <NextLink href={csvUrl}>
-                  <Menu.Item icon='download' is='a' href={csvUrl} color='inherit' textDecoration='none'>
+          <Popover
+            position={Position.BOTTOM_RIGHT}
+            content={
+              <Menu>
+                <Menu.Group>
+                  <NextLink href={csvUrl}>
+                    <Menu.Item icon='download' is='a' href={csvUrl} color='inherit' textDecoration='none'>
                     Télécharger au format CSV
-                  </Menu.Item>
-                </NextLink>
-              </Menu.Group>
-              {token && (
+                    </Menu.Item>
+                  </NextLink>
+                </Menu.Group>
+                {token && (
                 <>
                   <Menu.Divider />
                   <Menu.Group>
@@ -116,32 +118,36 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
                     </Menu.Item>
                   </Menu.Group>
                 </>
-              )}
-            </Menu>
-          }
-        >
-          <Button
-            height={24}
-            iconAfter='cog'
-            appearance='minimal'
-            marginRight={16}
-            color='dimgrey'
+                )}
+              </Menu>
+            }
           >
+            <Button
+              height={24}
+              iconAfter='cog'
+              appearance='minimal'
+              marginRight={16}
+              color='dimgrey'
+            >
             Paramètres
-          </Button>
-        </Popover>
+            </Button>
+          </Popover>
 
-        {!baseLocale.isTest && (
-          <Publication
-            border
-            token={token}
-            baseLocale={baseLocale}
-            status={baseLocale.published ? 'published' : baseLocale.status}
-            onChangeStatus={handleChangeStatus}
-            onPublish={handlePublication}
-          />)}
+          {!baseLocale.isTest && (
+            <Publication
+              border
+              token={token}
+              baseLocale={baseLocale}
+              status={baseLocale.published ? 'published' : baseLocale.status}
+              onChangeStatus={handleChangeStatus}
+              onPublish={handlePublication}
+            />)}
+        </Pane>
       </Pane>
-    </Pane>
+      {baseLocale.isTest && (
+        <Demowarning />
+      )}
+    </>
   )
 })
 
