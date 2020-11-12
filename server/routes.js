@@ -35,6 +35,13 @@ module.exports = app => {
     })
   })
 
+  router.get('/dashboard/departement/:codeDepartement', (req, res) => {
+    app.render(req, res, '/dashboard/departement', {
+      ...req.query,
+      codeDepartement: req.params.codeDepartement
+    })
+  })
+
   router.get('*', (req, res) => {
     app.render(req, res, req.params[0], req.query)
   })
