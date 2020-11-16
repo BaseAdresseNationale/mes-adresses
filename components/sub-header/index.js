@@ -17,7 +17,7 @@ import useWindowSize from '../../hooks/window-size'
 import Breadcrumbs from '../breadcrumbs'
 
 import Publication from './publication'
-import Demowarning from './demo-warning'
+import DemoWarning from './demo-warning'
 
 const {publicRuntimeConfig} = getConfig()
 const ADRESSE_URL = publicRuntimeConfig.ADRESSE_URL || 'https://adresse.data.gouv.fr'
@@ -145,7 +145,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
         </Pane>
       </Pane>
       {baseLocale.isTest && (
-        <Demowarning />
+        <DemoWarning baseLocale={baseLocale} token={token} />
       )}
     </>
   )
