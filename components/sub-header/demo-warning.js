@@ -20,24 +20,23 @@ const DemoWarning = ({baseLocale, token}) => {
 
   const onSubmit = useCallback(async () => {
     setIsLoading(true)
-    if (nom && email) {
-      const bal = await updateBaseLocale(
-        baseLocale._id,
-        {
-          isTest: false,
-          nom: nom.trim(),
-          emails: [email]
-        },
-        token
-      )
 
-      if (bal) {
-        setIsLoading(false)
-        setIsShown(false)
-      }
+    const bal = await updateBaseLocale(
+      baseLocale._id,
+      {
+        isTest: false,
+        nom: nom.trim(),
+        emails: [email]
+      },
+      token
+    )
 
-      Router.push(`/bal/${bal._id}`)
+    if (bal) {
+      setIsLoading(false)
+      setIsShown(false)
     }
+
+    Router.push(`/bal/${bal._id}`)
   }, [baseLocale, token, email, nom])
 
   useEffect(() => {

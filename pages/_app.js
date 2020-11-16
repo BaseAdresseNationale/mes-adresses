@@ -57,7 +57,7 @@ function App({error, Component, pageProps, query}) {
 
   const topOffset = useMemo(() => {
     if (pageProps.baseLocale && pageProps.baseLocale.isTest) {
-      return 166
+      return 166 // Adding space for demo-warning component
     }
 
     return pageProps.baseLocale ? 116 : 0
