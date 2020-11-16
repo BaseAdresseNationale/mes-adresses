@@ -56,7 +56,7 @@ const DemoWarning = ({baseLocale, token}) => {
       position='fixed'
       top={116}
       left={0}
-      height={40}
+      height={50}
       width='100%'
       backgroundColor='#F7D154'
       elevation={0}
