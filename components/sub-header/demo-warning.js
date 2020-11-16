@@ -13,8 +13,8 @@ const DemoWarning = ({baseLocale, token}) => {
   const {communes} = baseLocale
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [defaultCommune, setDefaultCommune] = useState()
-  const [nom, onNomChange] = useInput()
+  const [placeholder, setPlaceholder] = useState('')
+  const [nom, setNom] = useState()
   const [email, onEmailChange] = useInput()
   const focusRef = useFocus()
 
@@ -41,12 +41,15 @@ const DemoWarning = ({baseLocale, token}) => {
   useEffect(() => {
     const fetchCommune = async code => {
       if (communes.length > 0) {
-        setDefaultCommune(await getCommune(code))
+        const commune = await getCommune(code)
+        setPlaceholder(commune.nom)
+        setNom(`Adresses de ${commune.nom}`)
       }
     }
 
     fetchCommune(communes[0])
-  }, [communes])
+    return () => null
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Pane
@@ -77,6 +80,7 @@ const DemoWarning = ({baseLocale, token}) => {
           isConfirmLoading={isLoading}
           confirmLabel={isLoading ? 'Chargement...' : 'Transformer'}
           hasFooter={false}
+          onCloseComplete={() => setIsShown(false)}
         >
           <form onSubmit={onSubmit}>
 
@@ -89,8 +93,8 @@ const DemoWarning = ({baseLocale, token}) => {
               disabled={isLoading}
               value={nom}
               label='Nom de la Base Adresse Locale'
-              placeholder={defaultCommune ? `Adresses de ${defaultCommune.nom}` : 'Nom'}
-              onChange={onNomChange}
+              placeholder={placeholder}
+              onChange={e => setNom(e.target.value)}
             />
 
             <TextInputField
