@@ -31,11 +31,6 @@ const DemoWarning = ({baseLocale, token}) => {
       token
     )
 
-    if (bal) {
-      setIsLoading(false)
-      setIsShown(false)
-    }
-
     Router.push(`/bal/${bal._id}`)
   }, [baseLocale, token, email, nom])
 
