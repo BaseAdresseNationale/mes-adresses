@@ -72,11 +72,11 @@ const DemoWarning = ({baseLocale, token}) => {
       >
         <Icon icon='warning-sign' size={20} marginX='.5em' style={{verticalAlign: 'sub'}} />
         <Text>
-          Vous gérez actuellement une Base Adresse Locale de démonstration. Tous les changements peuvent être perdus.
+          Vous êtes actuellement en mode démonstration
         </Text>
         <Dialog
           isShown={isShown}
-          title='Transformer en Base Adresse Locale'
+          title='Sauvegarder mes modifications'
           cancelLabel='Annuler'
           intent='success'
           isConfirmLoading={isLoading}
@@ -110,10 +110,10 @@ const DemoWarning = ({baseLocale, token}) => {
               placeholder='nom@example.com'
               onChange={onEmailChange}
             />
-            <Button appearance='primary' intent='success' type='submit' >{isLoading ? 'Chargement...' : 'Transformer'}</Button>
+            <Button appearance='primary' intent='success' type='submit' >{isLoading ? 'Chargement...' : 'Sauvegarder'}</Button>
           </form>
         </Dialog>
-        <Button height={24} marginX='.5em' onClick={() => setIsShown(true)}>Transformer en Base Adresse Locale</Button>
+        <Button height={24} marginX='.5em' onClick={() => setIsShown(true)}>Sauvegarder mes modifications</Button>
       </div>
     </Pane>
   )
