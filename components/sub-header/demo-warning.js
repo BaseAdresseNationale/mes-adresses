@@ -7,7 +7,7 @@ import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 
 import {getCommune} from '../../lib/geo-api'
-import {updateBaseLocale} from '../../lib/bal-api'
+import {updateBaseLocaleTest} from '../../lib/bal-api'
 
 const DemoWarning = ({baseLocale, token}) => {
   const {communes} = baseLocale
@@ -21,7 +21,7 @@ const DemoWarning = ({baseLocale, token}) => {
   const onSubmit = useCallback(async () => {
     setIsLoading(true)
 
-    const bal = await updateBaseLocale(
+    const bal = await updateBaseLocaleTest(
       baseLocale._id,
       {
         isTest: false,
