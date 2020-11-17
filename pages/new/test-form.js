@@ -4,7 +4,7 @@ import Router from 'next/router'
 import {Pane, Checkbox, Button, Alert} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
-import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
+import {createBaseLocaleTest, addCommune, populateCommune} from '../../lib/bal-api'
 
 import useFocus from '../../hooks/focus'
 import {useCheckboxInput} from '../../hooks/input'
@@ -26,7 +26,7 @@ function TestForm({defaultCommune}) {
 
     setIsLoading(true)
 
-    const bal = await createBaseLocale({isTest: true})
+    const bal = await createBaseLocaleTest()
 
     storeBalAccess(bal._id, bal.token)
 
