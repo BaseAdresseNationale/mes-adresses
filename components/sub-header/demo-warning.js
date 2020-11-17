@@ -24,8 +24,7 @@ const DemoWarning = ({baseLocale, token}) => {
     const bal = await updateBaseLocaleTest(
       baseLocale._id,
       {
-        isTest: false,
-        nom: nom.trim(),
+        nom: nom ? nom.trim() : null,
         emails: [email]
       },
       token
