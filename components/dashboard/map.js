@@ -1,9 +1,12 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react'
+import Router from 'next/router'
 import PropTypes from 'prop-types'
-import MapGL, {Source, Layer, Popup} from 'react-map-gl'
+import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
 import {Paragraph, Heading, Alert} from 'evergreen-ui'
 
 import {colors} from '../../lib/colors'
+
+import geo from '../../geo'
 
 const defaultViewport = {
   latitude: 46.9,
@@ -11,26 +14,16 @@ const defaultViewport = {
   zoom: 4
 }
 
-const communesLayer = {
-  id: 'communes-fill',
-  'source-layer': 'communes',
-  type: 'fill',
-  paint: {
-    'fill-color': '#ffffff',
-    'fill-opacity': 0.75,
-    'fill-outline-color': '#ffffff'
-  }
-}
-
-const Map = ({basesLocales, contours}) => {
+const Map = ({departement, basesLocales, contours}) => {
   const [viewport, setViewport] = useState(defaultViewport)
   const [hovered, setHovered] = useState(null)
-  const [hoveredStateId, setHoveredStateId] = useState(null)
+  const [hoveredId, setHoveredId] = useState(null)
   const [warningZoom, setWarningZoom] = useState(false)
   const [isZoomActivated, setIsZoomActivated] = useState(false)
   const [isTouchScreenDevice, setIsTouchScreenDevice] = useState(false)
   const [isDragPanEnabled, setIsDragPanEnabled] = useState(false)
   const [hoveredCommune, setHoveredCommune] = useState(null)
+  const [selectedDepartement, setSelectedDepartement] = useState(null)
   const mapRef = useRef()
 
   const balLayer = {
@@ -50,7 +43,7 @@ const Map = ({basesLocales, contours}) => {
       ],
       'fill-opacity': [
         'case',
-        ['==', ['get', 'code'], hoveredStateId ? hoveredStateId : null],
+        ['==', ['get', 'code'], hoveredId ? hoveredId : null],
         0.8,
         1
       ],
@@ -58,38 +51,64 @@ const Map = ({basesLocales, contours}) => {
     }
   }
 
+  const departementsLayer = {
+    id: 'departements-fill',
+    'source-layer': 'departements',
+    type: 'fill',
+    paint: {
+      'fill-color': '#ffffff',
+      'fill-opacity': [
+        'case',
+        ['==', ['get', 'code'], selectedDepartement ? selectedDepartement : null],
+        1,
+        ['==', ['get', 'code'], hoveredId ? hoveredId : null],
+        1,
+        0.3
+      ],
+      'fill-outline-color': '#000'
+    }
+  }
+
   const handleResize = useCallback(() => {
     if (mapRef && mapRef.current) {
+      const {width, height} = mapRef.current.getBoundingClientRect()
+      const location = departement ? `DEP-${departement}` : 'FRA'
+
+      const {bbox} = geo[location]
+      const padding = width > 50 && height > 50 ? 20 : 0
+      const viewport = new WebMercatorViewport({width, height})
+        .fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], {padding})
+
       setViewport(viewport)
     }
-  }, [viewport])
+  }, [departement])
 
   const onHover = useCallback(event => {
     if (event.features && event.features.length > 0) {
       const feature = event.features[0]
-      const nextHoveredStateId = feature.properties.code
+      const nextHoveredId = feature.properties.code
       const [longitude, latitude] = event.lngLat
       const hoverInfo = {
         longitude,
         latitude,
         feature
       }
-      const communeNumber = basesLocales.filter(({communes}) => communes.includes(hoveredStateId)).length
+      const communeBALNumber = basesLocales.filter(({communes}) => communes.includes(hoveredId)).length
 
       setHovered(hoverInfo)
-      setHoveredCommune(communeNumber)
+      setHoveredCommune(communeBALNumber)
 
-      if (hoveredStateId !== nextHoveredStateId) {
-        setHoveredStateId(nextHoveredStateId)
+      if (hoveredId !== nextHoveredId) {
+        setHoveredId(nextHoveredId)
       }
     }
-  }, [basesLocales, hoveredStateId])
+  }, [basesLocales, hoveredId])
 
   const onLeave = useCallback(() => {
-    if (hoveredStateId) {
-      setHoveredStateId(null)
+    if (hoveredId) {
+      setHoveredId(null)
     }
-  }, [hoveredStateId])
+  }, [hoveredId])
 
   const onWheel = useCallback(event => {
     event.stopPropagation()
@@ -100,10 +119,30 @@ const Map = ({basesLocales, contours}) => {
     }
   }, [isZoomActivated])
 
+  const onDepartementSelect = useCallback(codeDepartement => {
+    const as = `/dashboard/departement/${codeDepartement}`
+
+    Router.push({
+      pathname: '/dashboard/departement',
+      query: {codeDepartement}
+    }, as)
+  }, [])
+
   const handleDoubleClick = useCallback(event => {
     event.stopPropagation()
     setIsZoomActivated(!isZoomActivated)
   }, [isZoomActivated])
+
+  const handleClick = useCallback(event => {
+    event.stopPropagation()
+    const departementsSourceLayer = event.features.find(({sourceLayer}) => sourceLayer === 'departements')
+
+    if (departementsSourceLayer) {
+      const {code} = departementsSourceLayer.properties
+
+      onDepartementSelect(code)
+    }
+  }, [onDepartementSelect])
 
   const handleMobileTouch = useCallback(event => {
     event.stopPropagation()
@@ -114,6 +153,12 @@ const Map = ({basesLocales, contours}) => {
       setIsDragPanEnabled(false)
     }
   }, [])
+
+  useEffect(() => {
+    if (departement) {
+      setSelectedDepartement(departement)
+    }
+  }, [departement])
 
   useEffect(() => {
     setIsTouchScreenDevice('ontouchstart' in document.documentElement)
@@ -157,7 +202,9 @@ const Map = ({basesLocales, contours}) => {
         doubleClickZoom={false}
         scrollZoom={isZoomActivated}
         mapStyle='https://etalab-tiles.fr/styles/osm-bright/style.json'
+        getCursor={() => hoveredId ? 'pointer' : 'default'}
         onDblClick={handleDoubleClick}
+        onClick={handleClick}
         onViewportChange={setViewport}
         onHover={onHover}
         onLeave={onLeave}
@@ -178,8 +225,8 @@ const Map = ({basesLocales, contours}) => {
           url='https://openmaptiles.geo.data.gouv.fr/data/decoupage-administratif.json'
         >
           <Layer
-            {...communesLayer}
-            id='decoupage-administratif-fills'
+            {...departementsLayer}
+            id='decoupage-departement-fills'
             source='decoupage-administratif'
             beforeId='place-town'
           />
@@ -206,9 +253,26 @@ const Map = ({basesLocales, contours}) => {
             <Heading>
               {hovered.feature.properties.nom}
             </Heading>
-            <Paragraph>
-              {`${hoveredCommune} ${hoveredCommune > 1 ? 'Bases Adresse Locales' : 'base adresse locale'}`}
-            </Paragraph>
+            {hoveredCommune > 0 && (
+              <Paragraph>
+                {`${hoveredCommune} ${hoveredCommune > 1 ? 'Bases Adresse Locales' : 'Base Adresse Locale'}`}
+              </Paragraph>
+            )}
+          </Popup>
+        )}
+
+        {hovered && hoveredId && !hovered.feature.properties.maxStatus && (
+          <Popup
+            longitude={hovered.longitude}
+            latitude={hovered.latitude}
+            closeButton={false}
+            closeOnClick={false}
+            anchor='bottom-left'
+            onClose={() => setHovered(null)}
+          >
+            <Heading>
+              {hovered.feature.properties.nom}
+            </Heading>
           </Popup>
         )}
       </MapGL>
@@ -218,17 +282,21 @@ const Map = ({basesLocales, contours}) => {
            width: 100%;
            height: 100%;
            min-height: 300px;
+         }
         `}</style>
     </div>
   )
 }
 
 Map.defaultProps = {
+  departement: null,
+  basesLocales: null,
   contours: null
 }
 
 Map.propTypes = {
-  basesLocales: PropTypes.array.isRequired,
+  departement: PropTypes.string,
+  basesLocales: PropTypes.array,
   contours: PropTypes.object
 }
 
