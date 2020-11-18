@@ -11,6 +11,7 @@ import StatusVariationChart from '../components/dashboard/status-variation-chart
 import BALCreationChart from '../components/dashboard/bal-creation-chart'
 import BALCounterChart from '../components/dashboard/bal-counter-chart'
 import Counter from '../components/dashboard/counter'
+import Header from '../components/header'
 
 const Index = ({basesLocales, contoursCommunes}) => {
   const communeCount = uniq(flattenDeep(
@@ -20,34 +21,36 @@ const Index = ({basesLocales, contoursCommunes}) => {
   )).length
 
   return (
-    <div className='dashboard-container'>
-      <Heading size={600} marginY={8} textAlign='center'>
+    <Pane height='100vh' display='flex' flexDirection='column'>
+      <Header />
+      <div className='dashboard-container'>
+        <Heading size={600} marginY={8} textAlign='center'>
         Tableau de bord des Bases Adresse Locales
-      </Heading>
+        </Heading>
 
-      <Pane display='flex' flexWrap='wrap'>
-        <div className='chart-container'>
-          <BALCounterChart basesLocales={basesLocales} />
-        </div>
+        <Pane display='flex' flexWrap='wrap'>
+          <div className='chart-container'>
+            <BALCounterChart basesLocales={basesLocales} />
+          </div>
 
-        <div className='chart-container map'>
-          <Counter label='Communes couvertes par une Base Adresse Locale' value={communeCount} />
-          <Pane flexGrow={1} width='100%'>
-            <Map basesLocales={basesLocales} contours={contoursCommunes} />
-          </Pane>
-        </div>
-      </Pane>
+          <div className='chart-container map'>
+            <Counter label='Communes couvertes par une Base Adresse Locale' value={communeCount} />
+            <Pane flexGrow={1} width='100%'>
+              <Map basesLocales={basesLocales} contours={contoursCommunes} />
+            </Pane>
+          </div>
+        </Pane>
 
-      <Pane display='flex' flexWrap='wrap'>
-        <div className='chart-container'>
-          <BALCreationChart basesLocales={basesLocales} />
-        </div>
+        <Pane display='flex' flexWrap='wrap'>
+          <div className='chart-container'>
+            <BALCreationChart basesLocales={basesLocales} />
+          </div>
 
-        <div className='chart-container'>
-          <StatusVariationChart basesLocales={basesLocales} />
-        </div>
-      </Pane>
-
+          <div className='chart-container'>
+            <StatusVariationChart basesLocales={basesLocales} />
+          </div>
+        </Pane>
+      </div>
       <style jsx>{`
         .dashboard-container {
           display: flex;
@@ -82,7 +85,7 @@ const Index = ({basesLocales, contoursCommunes}) => {
         }
 
       `}</style>
-    </div>
+    </Pane>
   )
 }
 
@@ -94,7 +97,8 @@ Index.getInitialProps = async () => {
 
   return {
     basesLocales: basesLocalesWithoutTest,
-    contoursCommunes
+    contoursCommunes,
+    layout: 'fullscreen'
   }
 }
 
