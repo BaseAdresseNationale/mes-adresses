@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Heading, Pane, Button} from 'evergreen-ui'
-import {flatten, groupBy} from 'lodash'
+import {flatten, groupBy, uniq} from 'lodash'
 import Router from 'next/router'
 
 import {getContoursCommunes, listBALByCodeDepartement} from '../../lib/bal-api'
@@ -17,6 +17,7 @@ import Header from '../../components/header'
 
 const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartement, basesLocalesDepartementWithoutTest, BALGroupedByCommune, contoursCommunes}) => {
   const {nom, code} = departement
+  const numberCommunesWithoutTest = uniq(basesLocalesDepartementWithoutTest.map(({communes}) => communes)).length
 
   const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutTest)
 
@@ -56,10 +57,10 @@ const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartemen
             )}
 
             <div className='chart-container map'>
-              {basesLocalesDepartementWithoutTest.length > 0 && (
+              {numberCommunesWithoutTest > 0 && (
                 <Counter
-                  label={`${filteredCommunesInBAL.length > 1 ? 'Communes couvertes' : 'Commune couverte'} par une Base Adresse Locale`}
-                  value={filteredCommunesInBAL.length}
+                  label={`${numberCommunesWithoutTest > 1 ? 'Communes couvertes' : 'Commune couverte'} par une Base Adresse Locale`}
+                  value={numberCommunesWithoutTest}
                 />
               )}
 
