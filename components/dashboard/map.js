@@ -60,9 +60,9 @@ const Map = ({departement, basesLocales, contours}) => {
       'fill-opacity': [
         'case',
         ['==', ['get', 'code'], selectedDepartement ? selectedDepartement : null],
-        1,
+        0.5,
         ['==', ['get', 'code'], hoveredId ? hoveredId : null],
-        1,
+        0.8,
         0.3
       ],
       'fill-outline-color': '#000'
