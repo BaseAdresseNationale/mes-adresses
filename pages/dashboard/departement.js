@@ -15,7 +15,10 @@ import DashboardLayout from '../../components/layout/dashboard'
 
 const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartement, basesLocalesDepartementWithoutTest, BALGroupedByCommune, contoursCommunes}) => {
   const {nom, code} = departement
-  const numberCommunesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutTest.map(({communes}) => communes))).length
+
+  const codesCommunes = filteredCommunesInBAL.map(({code}) => code)
+  const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutTest.map(({communes}) => communes)))
+  const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.includes(c)).length
 
   const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutTest)
 
@@ -24,14 +27,15 @@ const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartemen
     basesLocales: basesLocalesDepartementWithoutTest,
     contours: contoursCommunes
   }
+
   return (
     <DashboardLayout backButton title={`Tableau de bord des Bases Adresse Locales - ${nom} (${code})`} mapData={mapData}>
       {basesLocalesDepartement.length >= 1 ? (
         <Pane display='grid' gridGap='2em' padding={8}>
-          {numberCommunesWithoutTest > 0 && (
+          {countCommunesActuelles > 0 && (
             <Counter
-              label={`${numberCommunesWithoutTest > 1 ? 'Communes couvertes' : 'Commune couverte'} par une Base Adresse Locale`}
-              value={numberCommunesWithoutTest}
+              label={`${countCommunesActuelles > 1 ? 'Communes couvertes' : 'Commune couverte'} par une Base Adresse Locale`}
+              value={countCommunesActuelles}
             />
           )}
 
