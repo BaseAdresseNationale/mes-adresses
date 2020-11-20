@@ -4,7 +4,7 @@ import {Heading, Pane} from 'evergreen-ui'
 import {flatten, groupBy, uniq} from 'lodash'
 
 import {getContoursCommunes, listBALByCodeDepartement} from '../../lib/bal-api'
-import {getDepartement} from '../../lib/geo-api'
+import {getDepartement, searchCommunesByCode} from '../../lib/geo-api'
 import {getBALByStatus} from '../../lib/bases-locales'
 
 import Counter from '../../components/dashboard/counter'
@@ -67,9 +67,6 @@ const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartemen
 }
 
 Departement.getInitialProps = async ({query}) => {
-  const communes = require('@etalab/decoupage-administratif/data/communes.json')
-    .filter(c => c.type === 'commune-actuelle')
-
   const {codeDepartement} = query
 
   const contoursCommunes = await getContoursCommunes()
@@ -82,7 +79,12 @@ Departement.getInitialProps = async ({query}) => {
   const BALAddedOneCodeCommune = flatten(basesLocalesDepartement.map(b => b.communes.map(c => ({...b, commune: c}))))
   const BALGroupedByCommune = groupBy(BALAddedOneCodeCommune, 'commune')
 
-  const filteredCommunesInBAL = communes.filter(({code}) => Object.keys(BALGroupedByCommune).includes(code))
+  const communesActuelles = flatten(await Promise.all(Object.keys(BALGroupedByCommune).map(async c => {
+    const communes = await searchCommunesByCode(c)
+    return communes
+  })))
+
+  const filteredCommunesInBAL = communesActuelles.filter(({code}) => Object.keys(BALGroupedByCommune).includes(code))
 
   return {
     departement,
