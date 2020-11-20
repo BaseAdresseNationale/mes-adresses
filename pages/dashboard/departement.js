@@ -17,7 +17,7 @@ import Header from '../../components/header'
 
 const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartement, basesLocalesDepartementWithoutTest, BALGroupedByCommune, contoursCommunes}) => {
   const {nom, code} = departement
-  const numberCommunesWithoutTest = uniq(basesLocalesDepartementWithoutTest.map(({communes}) => communes)).length
+  const numberCommunesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutTest.map(({communes}) => communes))).length
 
   const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutTest)
 
