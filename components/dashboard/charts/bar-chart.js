@@ -5,7 +5,6 @@ import {Bar} from 'react-chartjs-2'
 
 const BarChart = ({title, data}) => {
   const options = {
-    maintainAspectRatio: false,
     tooltips: {
       mode: 'index'
     },
@@ -28,7 +27,7 @@ const BarChart = ({title, data}) => {
   }
 
   return (
-    <div style={{height: '100%', width: '100%'}}>
+    <div>
       {title && (
         <Heading marginBottom={16} textAlign='center'>
           {title}

@@ -4,7 +4,7 @@ import {Pane, Heading} from 'evergreen-ui'
 
 const Counter = ({label, value, color}) => {
   return (
-    <Pane marginY={16} maxWidth={250} textAlign='center'>
+    <Pane marginY={16} marginX='auto' textAlign='center'>
       <Heading size={700} color={color}>
         {value}
       </Heading>

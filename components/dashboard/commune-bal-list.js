@@ -6,7 +6,7 @@ import {Heading, Icon, Pane} from 'evergreen-ui'
 import BaseLocaleCard from '../bases-locales-list/base-locale-card'
 
 const CommuneBALList = ({nomCommune, basesLocales}) => {
-  const [isOpen, setIsOpen] = useState(basesLocales.length === 1)
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen)
