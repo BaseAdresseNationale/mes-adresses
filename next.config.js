@@ -1,4 +1,7 @@
 const nextRuntimeDotenv = require('next-runtime-dotenv')
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true'
+})
 
 const withConfig = nextRuntimeDotenv({
   public: [
@@ -11,13 +14,15 @@ const withConfig = nextRuntimeDotenv({
   ]
 })
 
-module.exports = withConfig({
-  webpack(config) {
-    config.node = {
-      ...config.node,
-      fs: 'empty'
-    }
+module.exports = withBundleAnalyzer(
+  withConfig({
+    webpack(config) {
+      config.node = {
+        ...config.node,
+        fs: 'empty'
+      }
 
-    return config
-  }
-})
+      return config
+    }
+  })
+)

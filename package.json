@@ -9,6 +9,7 @@
     "start": "NODE_ENV=production node server"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^10.0.2",
     "@turf/bbox": "^6.0.1",
     "@turf/buffer": "^5.1.5",
     "@turf/centroid": "^6.0.2",
