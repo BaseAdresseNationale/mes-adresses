@@ -95,7 +95,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
             color='dimgrey'
             onClick={() => setShowHelp(!showHelp)}
           >
-          Besoin d’aide
+            Besoin d’aide
           </Button>
 
           <Popover
@@ -105,7 +105,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
                 <Menu.Group>
                   <NextLink href={csvUrl}>
                     <Menu.Item icon='download' is='a' href={csvUrl} color='inherit' textDecoration='none'>
-                    Télécharger au format CSV
+                      Télécharger au format CSV
                     </Menu.Item>
                   </NextLink>
                 </Menu.Group>
@@ -129,7 +129,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
               marginRight={16}
               color='dimgrey'
             >
-            Paramètres
+              Paramètres
             </Button>
           </Popover>
 
