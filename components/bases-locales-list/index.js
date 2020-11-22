@@ -88,7 +88,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales}) {
             {filtered.length === 0 && (
               <Table.Row>
                 <Table.TextCell color='muted' fontStyle='italic'>
-                    Aucun résultat
+                  Aucun résultat
                 </Table.TextCell>
               </Table.Row>
             )}

@@ -80,7 +80,7 @@ const Publication = () => {
               >
                 Publication
               </Button>
-               puis &nbsp;
+              puis &nbsp;
               <Button appearance='default' iconBefore='edit'>
                 Revenir au brouillon
               </Button>

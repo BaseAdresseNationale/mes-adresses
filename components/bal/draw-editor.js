@@ -47,7 +47,7 @@ const DrawEditor = ({trace}) => {
           iconBefore='edit'
           onClick={handleCancel}
         >
-        Annuler les modifications
+          Annuler les modifications
         </Button>
       )}
 
@@ -60,7 +60,7 @@ const DrawEditor = ({trace}) => {
           iconBefore='eraser'
           onClick={() => setData(null)}
         >
-        Effacer le tracé
+          Effacer le tracé
         </Button>
       )}
 

@@ -268,7 +268,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         isShown={isRemoveWarningShown}
         content={(
           <Paragraph>
-              Êtes vous bien sûr de vouloir supprimer tous les numéros sélectionnés ?
+            Êtes vous bien sûr de vouloir supprimer tous les numéros sélectionnés ?
           </Paragraph>
         )}
         onCancel={() => setIsRemoveWarningShown(false)}
