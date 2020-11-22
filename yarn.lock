@@ -2904,17 +2904,17 @@ eslint-config-prettier@^3.3.0:
   dependencies:
     get-stdin "^6.0.0"
 
-eslint-config-xo-nextjs@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-xo-nextjs/-/eslint-config-xo-nextjs-1.4.0.tgz#571804e49a8dbcbb12969a415970e4d2b2376943"
-  integrity sha512-jki5DJMapeFqyRM8F48zg4J6FymVUaecszSHh8tTuiyz0dzblZ2ZKU8CNSBs5/i9uKbcHRVOaIrsTwV7yQVD0g==
+eslint-config-xo-nextjs@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-xo-nextjs/-/eslint-config-xo-nextjs-1.6.0.tgz#d07088e893e3985458f3dee13d073ba472fde8bd"
+  integrity sha512-MTSwiLiMWokSEH0Couz9L0575j7CaHQyOWjgRGusqRg3IVbW7VxbMeBAMzpOzk7wOof4/4ePMAx9MD2yq2rdgQ==
   dependencies:
-    eslint-config-xo-react "^0.19.0"
+    eslint-config-xo-react "^0.23.0"
 
-eslint-config-xo-react@^0.19.0:
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-xo-react/-/eslint-config-xo-react-0.19.0.tgz#26c452c4729750935fb6b65923e222c4fd42b214"
-  integrity sha512-0PizlypxrXj92rW+u39sQndo2/7B7PL3wBpZs6+wXHx4+RiBO/V2yB/rUXdwS7DGpoKPtQzTdmQquPW5+vbbZw==
+eslint-config-xo-react@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-xo-react/-/eslint-config-xo-react-0.23.0.tgz#a6e4cfc3e1231cf9291fa19000f559dc53183090"
+  integrity sha512-yBNoMF6COjJLRijlWksC1Jws6CGWHMgTfR/PAReCdZUo5cg/ZsyNeZx/fntyU4SbARwW2RvuezMeKle+jI5yoA==
 
 eslint-config-xo@^0.26.0:
   version "0.26.0"
