@@ -56,7 +56,7 @@ const BALCreationChart = ({basesLocales}) => {
   }
 
   return (
-    <BarChart title='Cumul des Bases Adresse Locales' data={data} />
+    <BarChart title='Évolution du nombre de Bases Adresses Locales' data={data} />
   )
 }
 
