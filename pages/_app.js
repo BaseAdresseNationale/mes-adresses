@@ -1,6 +1,5 @@
 import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Container} from 'next/app'
 import ErrorPage from 'next/error'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
@@ -70,8 +69,7 @@ function App({error, Component, pageProps, query}) {
   }, [innerWidth])
 
   return (
-    <Container>
-
+    <>
       <Pane>
         <Dialog
           isShown={isShown}
@@ -148,7 +146,7 @@ function App({error, Component, pageProps, query}) {
           </DrawContextProvider>
         </BalDataContextProvider>
       </TokenContextProvider>
-    </Container>
+    </>
   )
 }
 
