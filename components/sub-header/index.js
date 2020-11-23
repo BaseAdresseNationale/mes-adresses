@@ -1,7 +1,6 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import getConfig from 'next/config'
 import {Pane, Popover, Menu, IconButton, Position, Button} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
@@ -19,8 +18,7 @@ import Breadcrumbs from '../breadcrumbs'
 import Publication from './publication'
 import DemoWarning from './demo-warning'
 
-const {publicRuntimeConfig} = getConfig()
-const ADRESSE_URL = publicRuntimeConfig.ADRESSE_URL || 'https://adresse.data.gouv.fr'
+const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
 const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) => {
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)

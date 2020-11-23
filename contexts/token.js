@@ -1,13 +1,11 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import getConfig from 'next/config'
 
 import {getBaseLocale} from '../lib/bal-api'
 import {getBalToken, getHasRecovered, saveRecoveryLocation, storeHasRecovered, storeBalAccess} from '../lib/tokens'
 
-const {publicRuntimeConfig} = getConfig()
-const EDITEUR_URL = publicRuntimeConfig.EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
+const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
 
 const TokenContext = React.createContext()
 
