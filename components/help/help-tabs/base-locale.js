@@ -1,14 +1,12 @@
 import React from 'react'
 import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tablist, Tab, Icon} from 'evergreen-ui'
-import getConfig from 'next/config'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
 
 import Problems from './problems'
 
-const {publicRuntimeConfig} = getConfig()
-const EDITEUR_URL = publicRuntimeConfig.EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
+const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
 
 const BaseLocale = () => {
   return (
