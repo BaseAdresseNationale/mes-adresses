@@ -6,12 +6,14 @@ import {Paragraph, Heading, Alert} from 'evergreen-ui'
 
 import {colors} from '../../lib/colors'
 
-import geo from '../../geo'
-
 const defaultViewport = {
   latitude: 46.9,
   longitude: 1.7,
   zoom: 4
+}
+
+const defaultGeoData = {
+  bbox: [-5.317, 41.277, 9.689, 51.234]
 }
 
 const Map = ({departement, basesLocales, contours}) => {
@@ -24,6 +26,7 @@ const Map = ({departement, basesLocales, contours}) => {
   const [isDragPanEnabled, setIsDragPanEnabled] = useState(false)
   const [hoveredCommune, setHoveredCommune] = useState(null)
   const [selectedDepartement, setSelectedDepartement] = useState(null)
+  const [geoData, setGeoData] = useState(defaultGeoData)
   const mapRef = useRef()
 
   const balLayer = {
@@ -72,16 +75,15 @@ const Map = ({departement, basesLocales, contours}) => {
   const handleResize = useCallback(() => {
     if (mapRef && mapRef.current) {
       const {width, height} = mapRef.current.getBoundingClientRect()
-      const location = departement ? `DEP-${departement}` : 'FRA'
 
-      const {bbox} = geo[location]
+      const {bbox} = geoData
       const padding = width > 50 && height > 50 ? 20 : 0
       const viewport = new WebMercatorViewport({width, height})
         .fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], {padding})
 
       setViewport(viewport)
     }
-  }, [departement])
+  }, [geoData])
 
   const onHover = useCallback(event => {
     if (event.features && event.features.length > 0) {
@@ -153,6 +155,20 @@ const Map = ({departement, basesLocales, contours}) => {
       setIsDragPanEnabled(false)
     }
   }, [])
+
+  useEffect(() => {
+    const getGeoData = async location => {
+      const fetchGeoData = await fetch(`/geo/${location}`)
+      const response = await fetchGeoData.json()
+      setGeoData(response)
+    }
+
+    if (departement) {
+      getGeoData(`DEP-${departement}`)
+    } else {
+      setGeoData(defaultGeoData)
+    }
+  }, [departement])
 
   useEffect(() => {
     if (departement) {
