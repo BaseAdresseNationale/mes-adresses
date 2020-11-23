@@ -2,14 +2,12 @@ import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import {Pane, Heading, Spinner} from 'evergreen-ui'
-import getConfig from 'next/config'
 
 import {storeBalAccess, getRecoveryLocation} from '../lib/tokens'
 
 import Header from '../components/header'
 
-const {publicRuntimeConfig} = getConfig()
-const MES_ADRESSES_URL = publicRuntimeConfig.MES_ADRESSES_URL || 'https://mes-adresses.data.gouv.fr'
+const MES_ADRESSES_URL = process.env.NEXT_PUBLIC_MES_ADRESSES_URL || 'https://mes-adresses.data.gouv.fr'
 
 const RetrieveBALAccessComponent = dynamic(() => import('../components/retrieve-bal-acccess'), {
   ssr: false
