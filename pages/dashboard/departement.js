@@ -53,7 +53,6 @@ const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartemen
             {filteredCommunesInBAL.map(({code, nom}, key) => (
               <Pane key={code} background={key % 2 ? 'tin1' : 'tint2'}>
                 <CommuneBALList
-                  key={code}
                   nomCommune={nom}
                   basesLocales={BALGroupedByCommune[code]}
                 />

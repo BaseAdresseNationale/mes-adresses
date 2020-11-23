@@ -29,12 +29,12 @@ const CommuneBALList = ({nomCommune, basesLocales}) => {
         padding={8}
         display={isOpen ? '' : 'flex'}
         justifyContent={isOpen ? '' : 'space-between'}
+        cursor='pointer'
+        onClick={handleIsOpen}
       >
         <Pane
-          cursor='pointer'
           display='flex'
           alignItems='center'
-          onClick={handleIsOpen}
         >
           <Icon icon={isOpen ? 'chevron-down' : 'chevron-right'} size={30} marginY='auto' />
           <Heading size={600}>
@@ -43,11 +43,9 @@ const CommuneBALList = ({nomCommune, basesLocales}) => {
         </Pane>
 
         {!isOpen && (
-          <Pane>
-            <Heading size={600}>
-              {`${basesLocales.length > 1 ? `${basesLocales.length} Bases Adresses Locales` : `${basesLocales.length} Base Adresse Locale`}`}
-            </Heading>
-          </Pane>
+          <Heading size={600}>
+            {`${basesLocales.length > 1 ? `${basesLocales.length} Bases Adresses Locales` : `${basesLocales.length} Base Adresse Locale`}`}
+          </Heading>
         )}
 
       </Pane>
