@@ -10,7 +10,7 @@ import DemoBALAlert from '../../components/demo-bal-alert'
 import Footer from '../../components/footer'
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
-import TestForm from './test-form'
+import DemoForm from './demo-form'
 
 const BackToUserBals = dynamic(import('./back-to-user-bals'), {
   ssr: false
@@ -31,7 +31,7 @@ function Index({defaultCommune, isDemo}) {
 
       <Pane paddingTop={16} flex={1}>
         {isDemo ? (
-          <TestForm defaultCommune={defaultCommune} />
+          <DemoForm defaultCommune={defaultCommune} />
         ) :
           (<>
             <TabNavigation display='flex' marginLeft={16}>
