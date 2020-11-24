@@ -30,12 +30,6 @@ function TestForm({defaultCommune}) {
 
     storeBalAccess(bal._id, bal.token)
 
-    await addCommune(bal._id, commune, bal.token)
-
-    if (populate) {
-      await populateCommune(bal._id, commune, bal.token)
-    }
-
     Router.push(
       `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
       `/bal/${bal._id}/communes/${commune}`

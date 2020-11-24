@@ -108,7 +108,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
 
           {editable ? (
             <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
-              {status === 'draft' ? (
+              {status === 'draft' || status === 'demo' ? (
                 <Button iconAfter='trash' intent='danger' onClick={onRemove}>Supprimer</Button>
               ) : (
                 <Tooltip content='Vous ne pouvez pas supprimer une BAL losrqu‘elle est prête à être publiée'>

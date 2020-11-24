@@ -18,14 +18,15 @@ const DemoWarning = ({baseLocale, token}) => {
   const [email, onEmailChange] = useInput()
   const focusRef = useFocus()
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(async e => {
+    e.preventDefault()
     setIsLoading(true)
 
     const bal = await transformToDraft(
       baseLocale._id,
       {
         nom: nom ? nom.trim() : null,
-        emails: [email]
+        email
       },
       token
     )
@@ -77,7 +78,7 @@ const DemoWarning = ({baseLocale, token}) => {
           hasFooter={false}
           onCloseComplete={() => setIsShown(false)}
         >
-          <form onSubmit={onSubmit}>
+          <form onSubmit={(onSubmit)}>
 
             <TextInputField
               required
