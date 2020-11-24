@@ -16,21 +16,21 @@ const BackToUserBals = dynamic(import('./back-to-user-bals'), {
   ssr: false
 })
 
-function Index({defaultCommune, isTest}) {
+function Index({defaultCommune, isDemo}) {
   const [index, setIndex] = useState(0)
 
   return (
     <Pane height='100%' display='flex' flexDirection='column'>
       <Header />
       <Pane padding={12}>
-        <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${isTest ? 'de démonstration' : ''}`}</Heading>
+        <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${isDemo ? 'de démonstration' : ''}`}</Heading>
         <Paragraph>
-          {`Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale ${isTest ? ' de démonstration' : ''}.`}
+          {`Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale ${isDemo ? ' de démonstration' : ''}.`}
         </Paragraph>
       </Pane>
 
       <Pane paddingTop={16} flex={1}>
-        {isTest ? (
+        {isDemo ? (
           <TestForm defaultCommune={defaultCommune} />
         ) :
           (<>
@@ -44,14 +44,14 @@ function Index({defaultCommune, isTest}) {
 
             <Pane flex={1} overflowY='scroll'>
               {index === 0 ? (
-                <CreateForm defaultCommune={defaultCommune} isTest={isTest} />
+                <CreateForm defaultCommune={defaultCommune} />
               ) : (
                 <UploadForm />
               )}
             </Pane>
           </>)}
 
-        {!isTest && (
+        {!isDemo && (
           <DemoBALAlert />
         )}
         <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
@@ -73,19 +73,19 @@ Index.getInitialProps = async ({query}) => {
 
   return {
     defaultCommune,
-    isTest: query.test === '1',
+    isDemo: query.demo === '1',
     layout: 'fullscreen'
   }
 }
 
 Index.propTypes = {
   defaultCommune: PropTypes.string,
-  isTest: PropTypes.bool
+  isDemo: PropTypes.bool
 }
 
 Index.defaultProps = {
   defaultCommune: null,
-  isTest: false
+  isDemo: false
 }
 
 export default Index

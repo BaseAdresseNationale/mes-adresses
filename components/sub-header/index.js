@@ -131,7 +131,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
             </Button>
           </Popover>
 
-          {!baseLocale.isTest && (
+          {!baseLocale.status === 'demo' && (
             <Publication
               border
               token={token}
@@ -142,7 +142,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
             />)}
         </Pane>
       </Pane>
-      {baseLocale.isTest && (
+      {baseLocale.status === 'demo' && (
         <DemoWarning baseLocale={baseLocale} token={token} />
       )}
     </>

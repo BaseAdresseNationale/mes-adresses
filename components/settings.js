@@ -141,7 +141,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
               id='nom'
               value={nomInput}
               maxWidth={600}
-              disabled={isLoading || baseLocale.isTest}
+              disabled={isLoading || baseLocale.status === 'demo'}
               label='Nom'
               placeholder='Nom'
               onChange={onNomInputChange}
@@ -185,7 +185,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
                 maxWidth={400}
                 isInvalid={Boolean(error && error.includes('mail'))}
                 value={email}
-                disabled={baseLocale.isTest}
+                disabled={baseLocale.status === 'demo'}
                 onChange={onEmailChange}
               />
               {email && !balEmails.includes(email) && (
@@ -224,7 +224,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
             <Switch
               height={20}
               marginBottom={10}
-              disabled={baseLocale.isTest}
+              disabled={baseLocale.status === 'demo'}
               checked={enableComplement}
               onChange={onEnableComplement}
             />
@@ -244,7 +244,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
         )}
       </Pane>
 
-      {baseLocale.isTest && (
+      {baseLocale.status === 'demo' && (
         <Pane padding={16}>
           <Alert
             intent='none'
