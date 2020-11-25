@@ -1,5 +1,6 @@
 import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import Head from 'next/head'
 import ErrorPage from 'next/error'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
@@ -70,6 +71,10 @@ function App({error, Component, pageProps, query}) {
 
   return (
     <>
+      <Head>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+      </Head>
+
       <Pane>
         <Dialog
           isShown={isShown}
