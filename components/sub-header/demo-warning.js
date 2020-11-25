@@ -31,7 +31,7 @@ const DemoWarning = ({baseLocale, token}) => {
       token
     )
 
-    if (baseLocale && baseLocale.communes.length === 1) {
+    if (baseLocale.communes.length === 1) {
       Router.push(`/bal/communes?balId=${baseLocale._id}&codeCommune=${baseLocale.communes[0]}`,
         `/bal/${baseLocale._id}/communes/${baseLocale.communes[0]}`)
     } else {
