@@ -9,7 +9,7 @@ const DemoBALAlert = () => {
         <Text>
           Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?
         </Text>
-        <Button appearance='primary' marginLeft='1em' onClick={() => Router.push('/new?test=1')}>Cliquez ici</Button>
+        <Button appearance='primary' marginLeft='1em' onClick={() => Router.push('/new?demo=1')}>Cliquez ici</Button>
       </Alert>
     </Pane>
   )

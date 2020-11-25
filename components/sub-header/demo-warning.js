@@ -7,7 +7,7 @@ import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 
 import {getCommune} from '../../lib/geo-api'
-import {updateBaseLocaleTest} from '../../lib/bal-api'
+import {transformToDraft} from '../../lib/bal-api'
 
 const DemoWarning = ({baseLocale, token}) => {
   const {communes} = baseLocale
@@ -18,14 +18,15 @@ const DemoWarning = ({baseLocale, token}) => {
   const [email, onEmailChange] = useInput()
   const focusRef = useFocus()
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(async e => {
+    e.preventDefault()
     setIsLoading(true)
 
-    const bal = await updateBaseLocaleTest(
+    const bal = await transformToDraft(
       baseLocale._id,
       {
         nom: nom ? nom.trim() : null,
-        emails: [email]
+        email
       },
       token
     )
@@ -65,7 +66,7 @@ const DemoWarning = ({baseLocale, token}) => {
       >
         <Icon icon='warning-sign' size={20} marginX='.5em' style={{verticalAlign: 'sub'}} />
         <Text>
-          Vous êtes actuellement en mode démonstration
+          Cette Base Adresse Locale de démonstration sera supprimée d’ici 24 heures sans modifications
         </Text>
         <Dialog
           isShown={isShown}
@@ -73,7 +74,7 @@ const DemoWarning = ({baseLocale, token}) => {
           cancelLabel='Annuler'
           intent='success'
           isConfirmLoading={isLoading}
-          confirmLabel={isLoading ? 'Chargement...' : 'Transformer'}
+          confirmLabel='Conserver'
           hasFooter={false}
           onCloseComplete={() => setIsShown(false)}
         >
@@ -103,10 +104,10 @@ const DemoWarning = ({baseLocale, token}) => {
               placeholder='nom@example.com'
               onChange={onEmailChange}
             />
-            <Button appearance='primary' intent='success' isLoading={isLoading} type='submit' >{'Sauvegarder'}</Button>
+            <Button appearance='primary' intent='success' isLoading={isLoading} type='submit' >Sauvegarder</Button>
           </form>
         </Dialog>
-        <Button height={24} marginX='.5em' onClick={() => setIsShown(true)}>Sauvegarder mes modifications</Button>
+        <Button height={24} marginX='.5em' onClick={() => setIsShown(true)}>Je souhaite la conserver</Button>
       </div>
     </Pane>
   )
