@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Tooltip, Icon, Position} from 'evergreen-ui'
+import {Pane, Tooltip, Position, IconButton} from 'evergreen-ui'
 
 function Control({enabled, icon, enabledHint, disabledHint, onChange}) {
   const onToggle = useCallback(e => {
@@ -19,7 +19,7 @@ function Control({enabled, icon, enabledHint, disabledHint, onChange}) {
         className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
         onClick={onToggle}
       >
-        <Icon icon={icon} size={18} />
+        <IconButton icon={icon} />
       </Pane>
     </Tooltip>
   )

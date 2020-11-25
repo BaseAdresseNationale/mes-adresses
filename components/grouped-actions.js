@@ -1,6 +1,6 @@
 import React, {useContext, useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert} from 'evergreen-ui'
+import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon} from 'evergreen-ui'
 import {sortBy, uniq} from 'lodash'
 
 import {normalizeSort} from '../lib/normalize'
@@ -125,7 +125,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           </Alert>
         )}
         <Button
-          iconBefore='edit'
+          iconBefore={EditIcon}
           appearance='primary'
           intent='infos'
           onClick={() => handleClick()}
@@ -134,7 +134,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
         </Button>
         <Button
           marginLeft={16}
-          iconBefore='trash'
+          iconBefore={TrashIcon}
           intent='danger'
           onClick={() => setIsRemoveWarningShown(true)}
         >

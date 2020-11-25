@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
-import {Pane, Icon, Text} from 'evergreen-ui'
+import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
 
 import MarkerContext from '../../contexts/marker'
 import BalDataContext from '../../contexts/bal-data'
@@ -53,8 +53,7 @@ function EditableMarker({viewport, size, style}) {
           </Text>
         )}
 
-        <Icon
-          icon='map-marker'
+        <MapMarkerIcon
           filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
           color={style === 'vector' ? 'info' : 'success'}
           transform='translate(-50%, -100%)'

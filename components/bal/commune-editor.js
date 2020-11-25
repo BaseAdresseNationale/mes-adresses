@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Checkbox, Button, IconButton, Alert} from 'evergreen-ui'
+import {Pane, Checkbox, Button, IconButton, Alert, UndoIcon} from 'evergreen-ui'
 
 import {useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
@@ -79,7 +79,7 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
       {onCancel && (
         <IconButton
           disabled={isLoading}
-          icon='undo'
+          icon={UndoIcon}
           appearance='minimal'
           marginLeft={8}
           display='inline-flex'

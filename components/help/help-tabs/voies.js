@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, Paragraph, OrderedList, ListItem, Strong, Menu, Button, Icon, IconButton} from 'evergreen-ui'
+import {Pane, Paragraph, OrderedList, ListItem, Strong, Menu, Button, IconButton, MapMarkerIcon, AddIcon, ColumnLayoutIcon, MapIcon, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import SubTuto from '../tuto/sub-tuto'
@@ -23,7 +23,7 @@ const Voies = () => {
           <OrderedList margin={8}>
             <ListItem>
               Cliquez sur le bouton
-              <Button iconBefore='add' marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
+              <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
             </ListItem>
             <ListItem>
               Entrez le nom de la voie que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom de la voie…</Strong>
@@ -35,13 +35,13 @@ const Voies = () => {
         </Tuto>
 
         <Tuto title='Ajouter un toponyme'>
-          <SubTuto title='Depuis le menu latéral' icon='column-layout'>
+          <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             {before}
 
             <OrderedList margin={8}>
               <ListItem>
                 Cliquez sur le bouton
-                <Button iconBefore='add' marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
+                <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
               </ListItem>
               <ListItem>
                 Cochez la case <Strong size={500} fontStyle='italic'>Cette voie est un toponyme</Strong>
@@ -50,7 +50,7 @@ const Voies = () => {
                 Entrez le nom du toponyme que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom du toponyme…</Strong>
               </ListItem>
               <ListItem>
-                Un <Icon icon='map-marker' color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
+                Un <MapMarkerIcon color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
               </ListItem>
               <ListItem>
                 Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
@@ -58,15 +58,15 @@ const Voies = () => {
             </OrderedList>
           </SubTuto>
 
-          <SubTuto title='Depuis la carte' icon='map'>
+          <SubTuto title='Depuis la carte' icon={MapIcon}>
             <OrderedList margin={8}>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
-                  Cliquez sur le bouton <IconButton marginLeft={8} icon='map-marker' />
+                  Cliquez sur le bouton <IconButton marginLeft={8} icon={MapMarkerIcon} />
                 </Pane>
               </ListItem>
               <ListItem>
-                Un <Icon icon='map-marker' color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
+                Un <MapMarkerIcon color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
               </ListItem>
               <ListItem>
                 Dans le nouveau menu qui est apparu, cochez la case <Strong size={500} fontStyle='italic'>Cette voie est un toponyme</Strong>
@@ -97,15 +97,15 @@ const Voies = () => {
         <Tuto title='Consulter une voie'>
           {before}
 
-          <SubTuto title='Depuis le menu latéral' icon='column-layout'>
+          <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             <OrderedList margin={8}>
               <ListItem>
-                Cliquez sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du nom de la voie
+                Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
               </ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon='send-to-map'>
+                  <Menu.Item background='tint1' marginLeft={8} icon={SendToMapIcon}>
                     Consulter
                   </Menu.Item>
                 </Pane>
@@ -113,7 +113,7 @@ const Voies = () => {
             </OrderedList>
           </SubTuto>
 
-          <SubTuto title='Depuis la carte' icon='map'>
+          <SubTuto title='Depuis la carte' icon={MapIcon}>
             <OrderedList margin={8}>
               <ListItem>Cliquez sur le nom de la voie ou sur l’un de ses numéros</ListItem>
             </OrderedList>
@@ -125,12 +125,12 @@ const Voies = () => {
 
           <OrderedList margin={8}>
             <ListItem>
-              Cliquez sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du nom de la voie
+              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
                 Dans le menu qui vient d’apparaître, choisissez
-                <Menu.Item background='tint1' marginLeft={8} icon='trash' intent='danger'>
+                <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
                   Supprimer…
                 </Menu.Item>
               </Pane>
@@ -140,13 +140,13 @@ const Voies = () => {
         </Tuto>
 
         <Tuto title='Supprimer un toponyme'>
-          <SubTuto title='Depuis la carte' icon='map'>
+          <SubTuto title='Depuis la carte' icon={MapIcon}>
             <OrderedList margin={8}>
               <ListItem>Faites un clique droit sur le toponyme</ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon='trash' intent='danger'>
+                  <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
                     Supprimer…
                   </Menu.Item>
                 </Pane>

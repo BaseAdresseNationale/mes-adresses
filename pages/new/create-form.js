@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, TextInputField, Checkbox, Button} from 'evergreen-ui'
+import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
 import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
@@ -96,7 +96,7 @@ function CreateForm({defaultCommune}) {
         onChange={onPopulateChange}
       />
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
+      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
       </Button>
     </Pane>

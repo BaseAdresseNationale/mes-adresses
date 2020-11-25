@@ -1,7 +1,7 @@
 import React, {useContext} from 'react'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
-import {Pane, Button, Spinner, Heading} from 'evergreen-ui'
+import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 
@@ -27,7 +27,7 @@ function Index() {
         <>
           <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
             Mes Bases Adresse Locales
-            <Button iconBefore='plus' onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
+            <Button iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
           </Heading>
           <UserBasesLocales />
           <DemoBALAlert />

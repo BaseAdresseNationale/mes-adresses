@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Heading, Badge, Card, Pane, Button, Tooltip, Icon, Text} from 'evergreen-ui'
+import {Heading, Badge, Card, Pane, Button, Tooltip, Text, GlobeIcon, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 
@@ -52,7 +52,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
       <Pane padding='.5em' display='flex' justifyContent='space-between' cursor='pointer' onClick={handleIsOpen}>
         <Pane>
           <Pane display='flex' flexDirection='row' justifyContent='start'>
-            <Icon icon='globe' marginRight='.5em' marginY='auto' />
+            <GlobeIcon marginRight='.5em' marginY='auto' />
             <Heading fontSize='18px'>{nom}</Heading>
           </Pane>
           <Text fontSize='12px' fontStyle='italic'>{_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} - </Text>
@@ -70,7 +70,11 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
           ) : (
             <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
           )}
-          <Icon icon={isOpen ? 'chevron-down' : 'chevron-right'} size={25} marginX='1em' marginY='auto' />
+          {isOpen ? (
+            <ChevronDownIcon size={25} marginX='1em' marginY='auto' />
+          ) : (
+            <ChevronRightIcon size={25} marginX='1em' marginY='auto' />
+          )}
         </Pane>
       </Pane>
 
@@ -88,14 +92,14 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
                   content={
                     emails.map(email => (
                       <Pane key={email} fontFamily='Helvetica Neue' padding='.5em'>
-                        <Icon icon='user' marginRight='.5em' style={{verticalAlign: 'middle'}} />
+                        <UserIcon marginRight='.5em' style={{verticalAlign: 'middle'}} />
                         {email}
                       </Pane>
                     ))
                   }
                   appearance='card'
                 >
-                  <Icon icon='info-sign' marginY='auto' marginX='.5em' />
+                  <InfoSignIcon marginY='auto' marginX='.5em' />
                 </Tooltip>
               </Pane>
             )}
@@ -109,13 +113,13 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
           {editable ? (
             <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
               {status === 'draft' || status === 'demo' ? (
-                <Button iconAfter='trash' intent='danger' onClick={onRemove}>Supprimer</Button>
+                <Button iconAfter={TrashIcon} intent='danger' onClick={onRemove}>Supprimer</Button>
               ) : (
                 <Tooltip content='Vous ne pouvez pas supprimer une BAL losrqu‘elle est prête à être publiée'>
-                  <Button isActive iconAfter='trash'>Supprimer</Button>
+                  <Button isActive iconAfter={TrashIcon}>Supprimer</Button>
                 </Tooltip>
               )}
-              <Button appearance='primary' iconAfter='edit' marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
+              <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
             </Pane>
           ) : (
             <Pane borderTop display='flex' justifyContent='flex-end' paddingTop='1em' marginTop='1em'>

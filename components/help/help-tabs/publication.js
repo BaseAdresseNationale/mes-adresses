@@ -1,5 +1,5 @@
 import React from 'react'
-import {Badge, Button, ListItem, OrderedList, Pane, Paragraph, Strong} from 'evergreen-ui'
+import {Badge, Button, ListItem, OrderedList, Pane, Paragraph, Strong, CaretDownIcon, UploadIcon, EditIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
@@ -27,7 +27,7 @@ const Publication = () => {
               margin={5}
               height={24}
               appearance='primary'
-              iconAfter='caret-down'
+              iconAfter={CaretDownIcon}
             >
               Publication
             </Button>
@@ -35,7 +35,7 @@ const Publication = () => {
           <ListItem>
             <Paragraph>
               Cliquez sur &nbsp;
-              <Button appearance='default' iconBefore='upload'>
+              <Button appearance='default' iconBefore={UploadIcon}>
                 Publier
               </Button>
               &nbsp; pour publier votre Base Adresse Locale.
@@ -76,12 +76,12 @@ const Publication = () => {
                 margin={5}
                 height={24}
                 appearance='primary'
-                iconAfter='caret-down'
+                iconAfter={CaretDownIcon}
               >
                 Publication
               </Button>
               puis &nbsp;
-              <Button appearance='default' iconBefore='edit'>
+              <Button appearance='default' iconBefore={EditIcon}>
                 Revenir au brouillon
               </Button>
             </ListItem>

@@ -1,6 +1,6 @@
 import React, {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, Icon, Checkbox} from 'evergreen-ui'
+import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 import BalDataContext from '../contexts/bal-data'
@@ -65,7 +65,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           onMouseLeave={_onMouseLeave}
         >
           {label} {hovered && (
-            <Icon marginBottom={-4} marginLeft={8} icon='edit' />
+            <EditIcon marginBottom={-4} marginLeft={8} />
           )}
         </Table.TextCell>
       </Table.Cell>
@@ -81,14 +81,14 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
             content={comment}
             position={Position.BOTTOM_RIGHT}
           >
-            <Icon icon='comment' color='muted' />
+            <CommentIcon color='muted' />
           </Tooltip>
         </Table.Cell>
       )}
       {type === 'inconnue' && (
         <Table.TextCell flex='0 1 1'>
           <Tooltip content='Le type de la position est inconnu' position={Position.BOTTOM}>
-            <Icon icon='warning-sign' color='warning' style={{verticalAlign: 'bottom'}} />
+            <WarningSignIcon color='warning' style={{verticalAlign: 'bottom'}} />
           </Tooltip>
         </Table.TextCell>
       )}
@@ -100,17 +100,17 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
               <Menu>
                 <Menu.Group>
                   {isSelectable && (
-                    <Menu.Item icon='send-to-map' onSelect={() => onSelect(id)}>
+                    <Menu.Item icon={SendToMapIcon} onSelect={() => onSelect(id)}>
                       Consulter
                     </Menu.Item>
                   )}
                   {onEdit && (
-                    <Menu.Item icon='edit' onSelect={_onEdit}>
+                    <Menu.Item icon={EditIcon} onSelect={_onEdit}>
                       Modifier
                     </Menu.Item>
                   )}
                   {onRemove && (
-                    <Menu.Item icon='trash' intent='danger' onSelect={_onRemove}>
+                    <Menu.Item icon={TrashIcon} intent='danger' onSelect={_onRemove}>
                       Supprimer…
                     </Menu.Item>
                   )}
@@ -118,7 +118,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
               </Menu>
             }
           >
-            <IconButton type='button' height={24} icon='more' appearance='minimal' />
+            <IconButton type='button' height={24} icon={MoreIcon} appearance='minimal' />
           </Popover>
         </Table.TextCell>
       )}

@@ -1,6 +1,6 @@
 import React, {useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, Button, Paragraph} from 'evergreen-ui'
+import {Pane, Heading, Button, Paragraph, ManualIcon} from 'evergreen-ui'
 
 import HelpContext from '../contexts/help'
 import useHelp from '../hooks/help'
@@ -8,11 +8,11 @@ import useHelp from '../hooks/help'
 const DocumentationLink = ({title, description, link, onClick}) => (
   <Pane display='flex' flexDirection='column' alignItems='center'>
     {link ? (
-      <Button iconBefore='manual' is='a' appearance='minimal' height={30} href={link} target='_blank' fontSize='0.8em'>
+      <Button iconBefore={ManualIcon} is='a' appearance='minimal' height={30} href={link} target='_blank' fontSize='0.8em'>
         {title}
       </Button>
     ) : (
-      <Button iconBefore='manual' appearance='minimal' height={30} fontSize='0.8em' onClick={onClick}>
+      <Button iconBefore={ManualIcon} appearance='minimal' height={30} fontSize='0.8em' onClick={onClick}>
         {title}
       </Button>
     )}

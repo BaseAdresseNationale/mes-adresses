@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useEffect, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Text, Paragraph, Heading, Table, Button, Icon, Checkbox, Alert} from 'evergreen-ui'
+import {Pane, Text, Paragraph, Heading, Table, Button, Checkbox, Alert, EditIcon, AddIcon} from 'evergreen-ui'
 
 import {editVoie, addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
 
@@ -213,8 +213,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
             onMouseLeave={() => setHovered(false)}
           >
             {getFullVoieName(currentVoie, baseLocale.enableComplement)}
-            <Icon
-              icon='edit'
+            <EditIcon
               marginBottom={-2}
               marginLeft={8}
               color={hovered ? 'black' : 'muted'}
@@ -241,7 +240,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         {currentVoie.positions.length === 0 && token && (
           <Pane marginLeft='auto'>
             <Button
-              iconBefore='add'
+              iconBefore={AddIcon}
               appearance='primary'
               intent='success'
               disabled={isAdding}

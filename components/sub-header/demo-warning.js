@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Text, Button, Icon, Dialog, TextInputField} from 'evergreen-ui'
+import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
 
 import Router from 'next/router'
 import {useInput} from '../../hooks/input'
@@ -69,7 +69,7 @@ const DemoWarning = ({baseLocale, token}) => {
       <div
         style={{margin: 'auto', textAlign: 'center'}}
       >
-        <Icon icon='warning-sign' size={20} marginX='.5em' style={{verticalAlign: 'sub'}} />
+        <WarningSignIcon size={20} marginX='.5em' style={{verticalAlign: 'sub'}} />
         <Text>
           Cette Base Adresse Locale de démonstration sera supprimée d’ici 24 heures sans modifications
         </Text>

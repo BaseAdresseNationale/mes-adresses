@@ -1,7 +1,7 @@
 import React, {useMemo, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
-import {Pane, Text, Menu} from 'evergreen-ui'
+import {Pane, Text, Menu, TrashIcon} from 'evergreen-ui'
 import {css} from 'glamor'
 
 import {removeVoie} from '../../lib/bal-api'
@@ -78,7 +78,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
           <Pane background='tint1' position='absolute' margin={10}>
             <Menu>
               <Menu.Group>
-                <Menu.Item icon='trash' intent='danger' onSelect={removeAddress}>
+                <Menu.Item icon={TrashIcon} intent='danger' onSelect={removeAddress}>
                   Supprimer…
                 </Menu.Item>
               </Menu.Group>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import {Pane, SelectMenu, Icon, Button, Position} from 'evergreen-ui'
+import {Pane, SelectMenu, Button, Position, MapIcon, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
@@ -285,7 +285,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
                   selected={style}
                   onSelect={style => setStyle(style.value)}
                 >
-                  <Button><Icon icon='map' /></Button>
+                  <Button><MapIcon /></Button>
                 </SelectMenu>
               </Pane>
             </>
@@ -301,7 +301,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
             {(voie || (toponymes && toponymes.length > 0)) && (
               <Control
-                icon={showNumeros ? 'eye-off' : 'eye-open'}
+                icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
                 enabled={showNumeros}
                 enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
                 disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
@@ -311,7 +311,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
             {token && commune && (
               <Control
-                icon='map-marker'
+                icon={MapMarkerIcon}
                 enabled={openForm}
                 enabledHint='Annuler'
                 disabledHint='Créer une adresse'

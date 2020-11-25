@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Icon} from 'evergreen-ui'
+import {Pane, Button, ChevronRightIcon, CrossIcon, ChevronLeftIcon} from 'evergreen-ui'
 
 import useWindowSize from '../../hooks/window-size'
 import BalDataContext from '../../contexts/bal-data'
@@ -42,9 +42,13 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
             borderRadius={0}
             onClick={() => editingId && !isHidden ? setEditingId(false) : onToggle(editingId)}
           >
-            <Icon
-              icon={isHidden ? 'chevron-right' : editingId ? 'cross' : 'chevron-left'}
-            />
+            {isHidden ? (
+              <ChevronRightIcon />
+            ) : editingId ? (
+              <CrossIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
           </Button>
         </Pane>
       )}

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, Paragraph, OrderedList, Strong, ListItem, Button, Menu} from 'evergreen-ui'
+import {Pane, Paragraph, OrderedList, Strong, ListItem, Button, Menu, AddIcon, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
@@ -21,7 +21,7 @@ const Communes = () => {
         <OrderedList margin={8}>
           <ListItem>
             Cliquer sur le bouton
-            <Button iconBefore='add' marginX={4} appearance='primary' intent='success'>Ajouter une commune</Button>
+            <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter une commune</Button>
           </ListItem>
           <ListItem>Recherchez votre commune puis sélectionnez la dans la liste des suggestions.</ListItem>
           <ListItem>Si vous souhaitez partir de zéro, décochez la case <Strong size={500} fontStyle='italic'>Importer les voies et numéros depuis la BAN</Strong>.</ListItem>
@@ -33,12 +33,12 @@ const Communes = () => {
         {before}
         <OrderedList margin={8}>
           <ListItem>
-            Cliquez sur le bouton <Button iconBefore='more' appearance='minimal' /> se situant à droite du nom de la commune
+            Cliquez sur le bouton <Button iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la commune
           </ListItem>
           <ListItem>
             <Pane display='flex' alignItems='center'>
               Dans le menu qui vient d’apparaître, choisissez
-              <Menu.Item background='tint1' marginLeft={8} icon='send-to-map'>
+              <Menu.Item background='tint1' marginLeft={8} icon={SendToMapIcon}>
                 Consulter
               </Menu.Item>
             </Pane>
@@ -50,12 +50,12 @@ const Communes = () => {
         {before}
         <OrderedList margin={8}>
           <ListItem>
-            Cliquez sur le bouton <Button iconBefore='more' appearance='minimal' /> se situant à droite du nom de la commune
+            Cliquez sur le bouton <Button iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la commune
           </ListItem>
           <ListItem>
             <Pane display='flex' alignItems='center'>
               Dans le menu qui vient d’apparaître, choisissez
-              <Menu.Item background='tint1' marginLeft={8} icon='trash' intent='danger'>
+              <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
                 Supprimer…
               </Menu.Item>
             </Pane>

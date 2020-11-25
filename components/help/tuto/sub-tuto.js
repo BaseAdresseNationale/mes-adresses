@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Heading, Pane, Icon} from 'evergreen-ui'
+import {Heading, Pane, IconButton} from 'evergreen-ui'
 
 const SubTuto = ({title, icon, children}) => {
   return (
     <Pane marginTop={16}>
       <Heading display='flex' alignItems='center'>
-        {title} {icon && <Icon marginLeft={8} icon={icon} />}
+        {title} {icon && <IconButton marginLeft={8} icon={icon} />}
       </Heading>
       {children}
     </Pane>
