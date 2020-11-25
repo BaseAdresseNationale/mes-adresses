@@ -104,7 +104,7 @@ const DemoWarning = ({baseLocale, token}) => {
               placeholder='nom@example.com'
               onChange={onEmailChange}
             />
-            <Button appearance='primary' intent='success' isLoading={isLoading} type='submit' >{'Sauvegarder'}</Button>
+            <Button appearance='primary' intent='success' isLoading={isLoading} type='submit' >Sauvegarder</Button>
           </form>
         </Dialog>
         <Button height={24} marginX='.5em' onClick={() => setIsShown(true)}>Je souhaite la conserver</Button>
