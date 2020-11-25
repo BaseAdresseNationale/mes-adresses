@@ -22,7 +22,7 @@ const DemoWarning = ({baseLocale, token}) => {
     e.preventDefault()
     setIsLoading(true)
 
-    const bal = await transformToDraft(
+    await transformToDraft(
       baseLocale._id,
       {
         nom: nom ? nom.trim() : null,
@@ -31,8 +31,12 @@ const DemoWarning = ({baseLocale, token}) => {
       token
     )
 
-    Router.push(`/bal/communes?balId=${bal._id}&codeCommune=${bal.communes[0]}`,
-      `/bal/${bal._id}/communes/${bal.communes[0]}`)
+    if (baseLocale && baseLocale.communes.length === 1) {
+      Router.push(`/bal/communes?balId=${baseLocale._id}&codeCommune=${baseLocale.communes[0]}`,
+        `/bal/${baseLocale._id}/communes/${baseLocale.communes[0]}`)
+    } else {
+      Router.push(`/bal/${baseLocale._id}`)
+    }
   }, [baseLocale, token, email, nom])
 
   useEffect(() => {
