@@ -86,8 +86,8 @@ const DemoWarning = ({baseLocale, token}) => {
           <form onSubmit={onSubmit}>
 
             <TextInputField
+              ref={focusRef}
               required
-              innerRef={focusRef}
               autoComplete='new-password' // Hack to bypass chrome autocomplete
               name='nom'
               id='nom'

@@ -53,8 +53,8 @@ function CreateForm({defaultCommune}) {
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
       <TextInputField
+        ref={focusRef}
         required
-        innerRef={focusRef}
         autoComplete='new-password' // Hack to bypass chrome autocomplete
         name='nom'
         id='nom'
