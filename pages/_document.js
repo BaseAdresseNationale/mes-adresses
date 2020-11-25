@@ -1,5 +1,5 @@
 import React from 'react'
-import NextDocument, {Head, Main, NextScript} from 'next/document'
+import NextDocument, {Html, Head, Main, NextScript} from 'next/document'
 import {extractStyles} from 'evergreen-ui'
 
 import mapboxCss from 'mapbox-gl/dist/mapbox-gl.css' // eslint-disable-line import/no-extraneous-dependencies
@@ -20,7 +20,7 @@ class Document extends NextDocument {
     const {css, hydrationScript} = this.props
 
     return (
-      <html>
+      <Html lang='fr'>
         <Head>
           <meta name='viewport' content='width=device-width, initial-scale=1.0' />
 
@@ -51,7 +51,7 @@ class Document extends NextDocument {
           {hydrationScript}
           <NextScript />
         </body>
-      </html>
+      </Html>
     )
   }
 }
