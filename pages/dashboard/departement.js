@@ -13,24 +13,24 @@ import CommuneBALList from '../../components/dashboard/commune-bal-list'
 import {expandWithPublished} from '../../helpers/bases-locales'
 import DashboardLayout from '../../components/layout/dashboard'
 
-const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutTest, BALGroupedByCommune, contoursCommunes}) => {
+const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) => {
   const {nom, code} = departement
 
   const codesCommunes = filteredCommunesInBAL.map(({code}) => code)
-  const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutTest.map(({communes}) => communes)))
+  const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutDemo.map(({communes}) => communes)))
   const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.includes(c)).length
 
-  const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutTest)
+  const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutDemo)
 
   const mapData = {
     departement: code,
-    basesLocales: basesLocalesDepartementWithoutTest,
+    basesLocales: basesLocalesDepartementWithoutDemo,
     contours: contoursCommunes
   }
 
   return (
     <DashboardLayout backButton title={`Tableau de bord des Bases Adresse Locales - ${nom} (${code})`} mapData={mapData}>
-      {basesLocalesDepartementWithoutTest.length >= 1 ? (
+      {basesLocalesDepartementWithoutDemo.length >= 1 ? (
         <Pane display='grid' gridGap='2em' padding={8}>
           {countCommunesActuelles > 0 && (
             <Counter
@@ -41,8 +41,8 @@ const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartemen
 
           <Pane display='flex' flexDirection='column' alignItems='center' >
             <Counter
-              label={`${basesLocalesDepartementWithoutTest.length > 1 ? 'Bases Adresses Locales' : 'Base Adresse Locale'}`}
-              value={basesLocalesDepartementWithoutTest.length} />
+              label={`${basesLocalesDepartementWithoutDemo.length > 1 ? 'Bases Adresses Locales' : 'Base Adresse Locale'}`}
+              value={basesLocalesDepartementWithoutDemo.length} />
             <PieChart height={240} data={BALByStatus} />
           </Pane>
 
@@ -73,11 +73,11 @@ Departement.getInitialProps = async ({query}) => {
   const contoursCommunes = await getContoursCommunes()
   const departement = await getDepartement(codeDepartement)
   const basesLocalesDepartement = await listBALByCodeDepartement(codeDepartement)
-  const basesLocalesDepartementWithoutTest = basesLocalesDepartement.filter((({isTest}) => !isTest))
+  const basesLocalesDepartementWithoutDemo = basesLocalesDepartement.filter(b => b.status !== 'demo')
 
-  await expandWithPublished(basesLocalesDepartementWithoutTest)
+  await expandWithPublished(basesLocalesDepartementWithoutDemo)
 
-  const BALAddedOneCodeCommune = flatten(basesLocalesDepartementWithoutTest.map(b => b.communes.map(c => ({...b, commune: c}))))
+  const BALAddedOneCodeCommune = flatten(basesLocalesDepartementWithoutDemo.map(b => b.communes.map(c => ({...b, commune: c}))))
   const BALGroupedByCommune = groupBy(BALAddedOneCodeCommune, 'commune')
 
   const communesActuelles = flatten(await Promise.all(Object.keys(BALGroupedByCommune).map(async c => {
@@ -91,7 +91,7 @@ Departement.getInitialProps = async ({query}) => {
     departement,
     filteredCommunesInBAL,
     contoursCommunes,
-    basesLocalesDepartementWithoutTest,
+    basesLocalesDepartementWithoutDemo,
     BALGroupedByCommune,
     layout: 'fullscreen'
   }
@@ -100,7 +100,7 @@ Departement.getInitialProps = async ({query}) => {
 Departement.propTypes = {
   departement: PropTypes.object.isRequired,
   filteredCommunesInBAL: PropTypes.array.isRequired,
-  basesLocalesDepartementWithoutTest: PropTypes.array.isRequired,
+  basesLocalesDepartementWithoutDemo: PropTypes.array.isRequired,
   BALGroupedByCommune: PropTypes.object.isRequired,
   contoursCommunes: PropTypes.object.isRequired
 }

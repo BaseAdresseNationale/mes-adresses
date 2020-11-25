@@ -33,11 +33,11 @@ const Index = ({basesLocales, contoursCommunes}) => {
 Index.getInitialProps = async () => {
   const basesLocales = await listBasesLocales()
   const contoursCommunes = await getContoursCommunes()
-  const basesLocalesWithoutTest = basesLocales.filter((({isTest}) => !isTest))
-  await expandWithPublished(basesLocalesWithoutTest)
+  const basesLocalesWithoutDemo = basesLocales.filter((b => b.status !== 'demo'))
+  await expandWithPublished(basesLocalesWithoutDemo)
 
   return {
-    basesLocales: basesLocalesWithoutTest,
+    basesLocales: basesLocalesWithoutDemo,
     contoursCommunes,
     layout: 'fullscreen'
   }
