@@ -31,7 +31,8 @@ const DemoWarning = ({baseLocale, token}) => {
       token
     )
 
-    Router.push(`/bal/${bal._id}`)
+    Router.push(`/bal/communes?balId=${bal._id}&codeCommune=${bal.communes[0]}`,
+      `/bal/${bal._id}/communes/${bal.communes[0]}`)
   }, [baseLocale, token, email, nom])
 
   useEffect(() => {
