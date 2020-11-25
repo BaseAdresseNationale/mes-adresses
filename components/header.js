@@ -1,5 +1,6 @@
 import React from 'react'
-import Router from 'next/router'
+import NextLink from 'next/link'
+import Image from 'next/image'
 import {Pane, Button, Link} from 'evergreen-ui'
 
 const links = [
@@ -9,7 +10,11 @@ const links = [
 const Header = () => {
   return (
     <Pane borderBottom padding={16} backgroundColor='white' display='flex' justifyContent='space-between' alignItems='center' flexShrink='0' width='100%' maxHeight={76}>
-      <img src='/static/images/mes-adresses.svg' alt='Page d’accueil du site mes-adresses.data.gouv.fr' onClick={() => Router.push('/')} />
+      <Pane cursor='pointer'>
+        <NextLink href='/'>
+          <Image className='img' height='34' width='304' src='/static/images/mes-adresses.svg' alt='Page d’accueil du site mes-adresses.data.gouv.fr' />
+        </NextLink>
+      </Pane>
       <Pane display='flex' justifyContent='space-around' alignItems='center'>
         {links.map(link => (
           <Button key={link.text} appearance='minimal' marginRight='12px' minHeight='55px'>
@@ -19,11 +24,6 @@ const Header = () => {
           </Button>
         ))}
       </Pane>
-      <style jsx>{`
-        img:hover {
-          cursor: pointer;
-        }
-      `}</style>
     </Pane>
   )
 }
