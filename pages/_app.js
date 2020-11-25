@@ -1,6 +1,5 @@
 import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Container} from 'next/app'
 import ErrorPage from 'next/error'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
@@ -64,14 +63,13 @@ function App({error, Component, pageProps, query}) {
   }, [pageProps.baseLocale])
 
   useEffect(() => {
-    if (innerWidth && innerWidth < 700) {
+    if (innerWidth && innerWidth < 700 && !/(\/dashboard)/.test(location.pathname)) {
       setIsShown(true)
     }
   }, [innerWidth])
 
   return (
-    <Container>
-
+    <>
       <Pane>
         <Dialog
           isShown={isShown}
@@ -148,7 +146,7 @@ function App({error, Component, pageProps, query}) {
           </DrawContextProvider>
         </BalDataContextProvider>
       </TokenContextProvider>
-    </Container>
+    </>
   )
 }
 

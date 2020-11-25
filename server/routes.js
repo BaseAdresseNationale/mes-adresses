@@ -1,4 +1,5 @@
 const {Router} = require('express')
+const geo = require('../geo.json')
 
 module.exports = app => {
   const router = new Router()
@@ -33,6 +34,23 @@ module.exports = app => {
       ...req.query,
       balId: req.params.balId
     })
+  })
+
+  router.get('/dashboard/departement/:codeDepartement', (req, res) => {
+    app.render(req, res, '/dashboard/departement', {
+      ...req.query,
+      codeDepartement: req.params.codeDepartement
+    })
+  })
+
+  router.get('/geo/:location', (req, res) => {
+    const {location} = req.params
+
+    if (!(location in geo)) {
+      return res.sendStatus(404)
+    }
+
+    return res.send(geo[location])
   })
 
   router.get('*', (req, res) => {

@@ -132,7 +132,8 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
 
 BaseLocaleCard.defaultProps = {
   editable: false,
-  onRemove: null
+  onRemove: null,
+  initialIsOpen: false
 }
 
 BaseLocaleCard.propTypes = {
@@ -148,7 +149,7 @@ BaseLocaleCard.propTypes = {
       'draft', 'ready-to-publish', 'published', 'demo'
     ])
   }).isRequired,
-  initialIsOpen: PropTypes.bool.isRequired,
+  initialIsOpen: PropTypes.bool,
   editable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
   onRemove: PropTypes.func
