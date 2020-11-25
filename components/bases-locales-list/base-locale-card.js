@@ -47,7 +47,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
       padding={12}
       display='grid'
       gridTemplateColumns='repeat(1fr)'
-      background={baseLocale.isTest ? '#E4E7EB' : 'tint1'}
+      background={baseLocale.status === 'demo' ? '#E4E7EB' : 'tint1'}
     >
       <Pane padding='.5em' display='flex' justifyContent='space-between' cursor='pointer' onClick={handleIsOpen}>
         <Pane>
@@ -65,7 +65,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
           )}
         </Pane>
         <Pane display='flex' flexDirection='row' justifyContent='space-between'>
-          {baseLocale.isTest ? (
+          {baseLocale.status === 'demo' ? (
             <Badge isSolid color='neutral' margin='auto'>TEST</Badge>
           ) : (
             <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
@@ -108,7 +108,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
 
           {editable ? (
             <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
-              {status === 'draft' ? (
+              {status === 'draft' || status === 'demo' ? (
                 <Button iconAfter='trash' intent='danger' onClick={onRemove}>Supprimer</Button>
               ) : (
                 <Tooltip content='Vous ne pouvez pas supprimer une BAL losrqu‘elle est prête à être publiée'>
@@ -145,9 +145,8 @@ BaseLocaleCard.propTypes = {
     _updated: PropTypes.string,
     _created: PropTypes.string,
     description: PropTypes.string,
-    isTest: PropTypes.bool,
     status: PropTypes.oneOf([
-      'draft', 'ready-to-publish', 'published'
+      'draft', 'ready-to-publish', 'published', 'demo'
     ])
   }).isRequired,
   initialIsOpen: PropTypes.bool,

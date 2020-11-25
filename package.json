@@ -31,7 +31,6 @@
     "glamor": "^2.20.40",
     "got": "^11.8.0",
     "immutable": "^4.0.0-rc.12",
-    "isomorphic-unfetch": "^3.1.0",
     "lodash": "^4.17.20",
     "next": "^10.0.2",
     "prop-types": "^15.7.2",
