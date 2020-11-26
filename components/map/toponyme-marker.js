@@ -68,7 +68,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
   return (
     <>
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-        <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(toponyme._id)}>
+        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(toponyme._id)}>
           <Text color='white' paddingLeft={8} paddingRight={10}>
             {getFullVoieName(toponyme, baseLocale.enableComplement)}
           </Text>

@@ -94,7 +94,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
         {numero.positions[0].type === 'inconnue' ? (
           <Tooltip content='Le type de la position est inconnu' position={Position.RIGHT}>
-            <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+            <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
               <Text color='white' paddingLeft={8} paddingRight={5}>
                 {numero.numeroComplet}
               </Text>
@@ -102,7 +102,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
             </Pane>
           </Tooltip>
         ) : (
-          <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+          <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
             <Text color='white' paddingLeft={8} paddingRight={10}>
               {numero.numeroComplet}
             </Text>
