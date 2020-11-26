@@ -9,19 +9,28 @@ function Control({enabled, icon, enabledHint, disabledHint, onChange}) {
   }, [onChange])
 
   return (
-    <Tooltip
-      position={Position.LEFT}
-      background={enabled ? '#e1e1e1' : null}
-      content={enabled ? enabledHint : disabledHint}
-    >
-      <Pane
-        is='button'
-        className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
-        onClick={onToggle}
+    <>
+      <Tooltip
+        position={Position.LEFT}
+        background={enabled ? '#e1e1e1' : null}
+        content={enabled ? enabledHint : disabledHint}
       >
-        <IconButton icon={icon} />
-      </Pane>
-    </Tooltip>
+        <Pane
+          is='button'
+          className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
+          onClick={onToggle}
+        >
+          <IconButton icon={icon} />
+        </Pane>
+
+      </Tooltip>
+      {/* Unifying MapboxGL and Evergreen style */}
+      <style jsx global>{`
+        .ub-w_14px.ub-h_14px.ub-box-szg_border-box {
+          fill: black !important;
+        }
+      `}</style>
+    </>
   )
 }
 
