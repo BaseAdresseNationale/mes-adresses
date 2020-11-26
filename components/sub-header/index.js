@@ -90,7 +90,6 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
             iconAfter={HelpIcon}
             appearance='minimal'
             marginRight={16}
-            color='dimgrey'
             onClick={() => setShowHelp(!showHelp)}
           >
             Besoin d’aide
@@ -125,7 +124,6 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
               iconAfter={CogIcon}
               appearance='minimal'
               marginRight={16}
-              color='dimgrey'
             >
               Paramètres
             </Button>
