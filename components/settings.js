@@ -12,7 +12,9 @@ import {
   Spinner,
   Label,
   toaster,
-  Switch
+  Switch,
+  DeleteIcon,
+  AddIcon
 } from 'evergreen-ui'
 import {isEqual, difference} from 'lodash'
 
@@ -166,7 +168,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
                 {balEmails.length > 1 && (
                   <IconButton
                     type='button'
-                    icon='delete'
+                    icon={DeleteIcon}
                     marginLeft={4}
                     appearance='minimal'
                     intent='danger'
@@ -191,7 +193,7 @@ const Settings = React.memo(({nomBaseLocale, isEnabledComplement}) => {
               {email && !balEmails.includes(email) && (
                 <IconButton
                   type='submit'
-                  icon='add'
+                  icon={AddIcon}
                   marginLeft={4}
                   disabled={!email}
                   appearance='minimal'

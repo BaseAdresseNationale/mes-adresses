@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, TextInputField, Checkbox, Button} from 'evergreen-ui'
+import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
 import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
@@ -53,8 +53,8 @@ function CreateForm({defaultCommune}) {
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
       <TextInputField
+        ref={focusRef}
         required
-        innerRef={focusRef}
         autoComplete='new-password' // Hack to bypass chrome autocomplete
         name='nom'
         id='nom'
@@ -96,7 +96,7 @@ function CreateForm({defaultCommune}) {
         onChange={onPopulateChange}
       />
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
+      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
       </Button>
     </Pane>

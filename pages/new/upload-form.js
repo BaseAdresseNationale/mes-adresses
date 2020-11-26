@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
-import {Pane, Alert, Button, TextInputField} from 'evergreen-ui'
+import {Pane, Alert, Button, TextInputField, PlusIcon} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
@@ -107,8 +107,8 @@ function Index() {
         {file && (
           <>
             <TextInputField
+              ref={focusRef}
               required
-              innerRef={focusRef}
               autoComplete='new-password' // Hack to bypass chrome autocomplete
               name='nom'
               id='nom'
@@ -142,7 +142,7 @@ function Index() {
         )}
 
         {file && (
-          <Button height={40} type='submit' appearance='primary' intent='success' disabled={Boolean(error)} isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
+          <Button height={40} type='submit' appearance='primary' intent='success' disabled={Boolean(error)} isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
             {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
           </Button>
         )}

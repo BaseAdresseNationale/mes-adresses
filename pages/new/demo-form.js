@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Checkbox, Button, Alert} from 'evergreen-ui'
+import {Pane, Checkbox, Button, Alert, PlusIcon} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
 import {createBaseLocaleDemo} from '../../lib/bal-api'
@@ -64,7 +64,7 @@ function DemoForm({defaultCommune}) {
         Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans la Base Adresse Nationale
       </Alert>
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : 'plus'}>
+      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
       </Button>
     </Pane>

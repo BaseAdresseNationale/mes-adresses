@@ -25,10 +25,10 @@ function VoieSearch({defaultVoie, onSelect}) {
       {({getInputProps, getRef, inputValue}) => {
         return (
           <TextInput
+            ref={getRef}
             required
             placeholder='Voie'
             value={defaultVoie ? defaultVoie.nom : inputValue}
-            innerRef={getRef}
             {...getInputProps({
               onChange: e => onFilter(e.target.value)
             })}

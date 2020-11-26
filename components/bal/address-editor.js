@@ -107,11 +107,11 @@ function CreateAddress({onSubmit, onCancel}) {
 
       <Pane display='flex'>
         <TextInput
+          ref={focusRef}
           required
           display='block'
           type={isToponyme ? 'text' : 'number'}
           disabled={isLoading}
-          innerRef={focusRef}
           width='100%'
           maxWidth={300}
           min={0}

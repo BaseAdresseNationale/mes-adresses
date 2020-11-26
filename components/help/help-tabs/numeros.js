@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu, Icon, IconButton} from 'evergreen-ui'
+import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu, IconButton, MapMarkerIcon, CommentIcon, ColumnLayoutIcon, AddIcon, MapIcon, MoreIcon, EditIcon, TrashIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import SubTuto from '../tuto/sub-tuto'
@@ -21,14 +21,14 @@ const Numeros = () => {
         <Tuto title='Ajouter un numéro'>
           {before}
 
-          <SubTuto title='Depuis le menu latéral' icon='column-layout'>
+          <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             <OrderedList margin={8}>
               <ListItem>
                 Cliquez sur le bouton
-                <Button iconBefore='add' marginX={4} appearance='primary' intent='success'>Ajouter un numéro</Button>
+                <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter un numéro</Button>
               </ListItem>
               <ListItem>
-                Un <Icon icon='map-marker' color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
+                Un <MapMarkerIcon color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
               </ListItem>
               <ListItem>
                 Indiquez le numéro dans le champ <Strong size={500}>Numéro</Strong>
@@ -49,15 +49,15 @@ const Numeros = () => {
             </OrderedList>
           </SubTuto>
 
-          <SubTuto title='Depuis la carte' icon='map'>
+          <SubTuto title='Depuis la carte' icon={MapIcon}>
             <OrderedList margin={8}>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
-                  Cliquez sur le bouton <IconButton marginLeft={8} icon='map-marker' />
+                  Cliquez sur le bouton <IconButton marginLeft={8} icon={MapMarkerIcon} />
                 </Pane>
               </ListItem>
               <ListItem>
-                Un <Icon icon='map-marker' color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
+                Un <MapMarkerIcon color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
               </ListItem>
               <ListItem>
                 Dans le nouveau menu qui est apparu, indiquez le numéro dans le champ <Strong size={500}>Numéro</Strong>
@@ -83,32 +83,32 @@ const Numeros = () => {
         <Tuto title='Éditer un numéro'>
           {before}
 
-          <SubTuto title='Depuis le menu latéral' icon='column-layout'>
+          <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             <OrderedList margin={8}>
               <ListItem>
-                Cliquez sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du numéro
+                Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
               </ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon='edit'>
+                  <Menu.Item background='tint1' marginLeft={8} icon={EditIcon}>
                     Modifier
                   </Menu.Item>
                 </Pane>
               </ListItem>
               <ListItem>
-                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <Icon icon='map-marker' color='info' /> sur la carte
+                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <MapMarkerIcon icon={MapMarkerIcon} color='info' /> sur la carte
               </ListItem>
             </OrderedList>
           </SubTuto>
 
-          <SubTuto title='Depuis la carte' icon='map'>
+          <SubTuto title='Depuis la carte' icon={MapIcon}>
             <OrderedList margin={8}>
               <ListItem>
                 Cliquez sur le numéro
               </ListItem>
               <ListItem>
-                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <Icon icon='map-marker' color='info' /> sur la carte
+                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <MapMarkerIcon icon={MapMarkerIcon} color='info' /> sur la carte
               </ListItem>
             </OrderedList>
           </SubTuto>
@@ -117,15 +117,15 @@ const Numeros = () => {
         <Tuto title='Supprimer un numéro'>
           {before}
 
-          <SubTuto title='Depuis le menu latéral' icon='column-layout'>
+          <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             <OrderedList margin={8}>
               <ListItem>
-                Cliquez sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du numéro
+                Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
               </ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon='trash' intent='danger'>
+                  <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
                     Supprimer…
                   </Menu.Item>
                 </Pane>
@@ -133,13 +133,13 @@ const Numeros = () => {
             </OrderedList>
           </SubTuto>
 
-          <SubTuto title='Depuis la carte' icon='map'>
+          <SubTuto title='Depuis la carte' icon={MapIcon}>
             <OrderedList margin={8}>
               <ListItem>Faites un clique droit sur le numéro</ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon='trash' intent='danger'>
+                  <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
                     Supprimer…
                   </Menu.Item>
                 </Pane>
@@ -153,12 +153,12 @@ const Numeros = () => {
 
           <OrderedList margin={8}>
             <ListItem>
-              Cliquez sur le bouton <Button background='tint1' iconBefore='more' appearance='minimal' /> se situant à droite du numéro
+              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
                 Dans le menu qui vient d’apparaître, choisissez
-                <Menu.Item background='tint1' marginLeft={8} icon='edit'>
+                <Menu.Item background='tint1' marginLeft={8} icon={EditIcon}>
                   Modifier
                 </Menu.Item>
               </Pane>
@@ -172,7 +172,7 @@ const Numeros = () => {
           </OrderedList>
 
           <Paragraph>
-            Vous remarquerez un <Icon icon='comment' /> sur la ligne du numéro. Le survoler vous permettra de faire apparaitre le commentaire.
+            Vous remarquerez un <CommentIcon /> sur la ligne du numéro. Le survoler vous permettra de faire apparaitre le commentaire.
           </Paragraph>
         </Tuto>
 

@@ -1,7 +1,7 @@
 import React, {useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {isEqual} from 'lodash'
-import {Pane, Heading, Button, Alert} from 'evergreen-ui'
+import {Pane, Heading, Button, Alert, EditIcon, EraserIcon} from 'evergreen-ui'
 
 import DrawContext from '../../contexts/draw'
 
@@ -44,7 +44,7 @@ const DrawEditor = ({trace}) => {
         <Button
           type='button'
           marginY={8} marginRight={12}
-          iconBefore='edit'
+          iconBefore={EditIcon}
           onClick={handleCancel}
         >
           Annuler les modifications
@@ -57,7 +57,7 @@ const DrawEditor = ({trace}) => {
           appearance='primary'
           intent='danger'
           marginY={8} marginRight={12}
-          iconBefore='eraser'
+          iconBefore={EraserIcon}
           onClick={() => setData(null)}
         >
           Effacer le tracé

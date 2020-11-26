@@ -130,11 +130,11 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
       <TextInputField
+        ref={setRef}
         required
         label='Nom de la voie'
         display='block'
         disabled={isLoading}
-        innerRef={setRef}
         width='100%'
         maxWidth={500}
         value={nom}

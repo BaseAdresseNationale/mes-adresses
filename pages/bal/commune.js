@@ -2,7 +2,7 @@ import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {sortBy} from 'lodash'
-import {Pane, Heading, Text, Paragraph, Table, Button} from 'evergreen-ui'
+import {Pane, Heading, Text, Paragraph, Table, Button, AddIcon} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie, getNumeros} from '../../lib/bal-api'
 
@@ -161,7 +161,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         {token && (
           <Pane marginLeft='auto'>
             <Button
-              iconBefore='add'
+              iconBefore={AddIcon}
               appearance='primary'
               intent='success'
               disabled={isAdding || isPopulating || Boolean(editingId)}

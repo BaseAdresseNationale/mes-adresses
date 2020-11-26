@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Paragraph, Button} from 'evergreen-ui'
+import {Paragraph, Button, EditIcon} from 'evergreen-ui'
 
 import Tuto from '.'
 
@@ -13,7 +13,7 @@ const Unauthorized = ({title}) => (
         margin={8}
         appearance='primary'
         intent='danger'
-        iconBefore='edit'
+        iconBefore={EditIcon}
       >
         Édition impossible
       </Button>

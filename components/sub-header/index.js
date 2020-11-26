@@ -1,7 +1,7 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Popover, Menu, IconButton, Position, Button} from 'evergreen-ui'
+import {Pane, Popover, Menu, IconButton, Position, Button, MenuIcon, HelpIcon, CogIcon, DownloadIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
@@ -69,7 +69,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
           <IconButton
             height={24}
             marginRight={8}
-            icon='menu'
+            icon={MenuIcon}
             isActive={!isSidebarHidden}
             appearance='minimal'
             onClick={onToggle}
@@ -87,10 +87,9 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
 
           <Button
             height={24}
-            iconAfter='help'
+            iconAfter={HelpIcon}
             appearance='minimal'
             marginRight={16}
-            color='dimgrey'
             onClick={() => setShowHelp(!showHelp)}
           >
             Besoin d’aide
@@ -102,7 +101,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
               <Menu>
                 <Menu.Group>
                   <NextLink href={csvUrl}>
-                    <Menu.Item icon='download' is='a' href={csvUrl} color='inherit' textDecoration='none'>
+                    <Menu.Item icon={DownloadIcon} is='a' href={csvUrl} color='inherit' textDecoration='none'>
                       Télécharger au format CSV
                     </Menu.Item>
                   </NextLink>
@@ -111,7 +110,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
                 <>
                   <Menu.Divider />
                   <Menu.Group>
-                    <Menu.Item icon='cog' onSelect={() => setShowSettings(!showSettings)}>
+                    <Menu.Item icon={CogIcon} onSelect={() => setShowSettings(!showSettings)}>
                       Paramètres
                     </Menu.Item>
                   </Menu.Group>
@@ -122,10 +121,9 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
           >
             <Button
               height={24}
-              iconAfter='cog'
+              iconAfter={CogIcon}
               appearance='minimal'
               marginRight={16}
-              color='dimgrey'
             >
               Paramètres
             </Button>

@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
-import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position, Strong, Link, Icon} from 'evergreen-ui'
+import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl} from '../../lib/bal-api'
 
@@ -37,7 +37,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
         content='Vous n’êtes pas identifié comme administrateur de cette base adresse locale, vous ne pouvez donc pas l’éditer.'
         position={Position.BOTTOM_RIGHT}
       >
-        <Button height={24} marginRight={8} appearance='primary' intent='danger' iconBefore='edit'>
+        <Button height={24} marginRight={8} appearance='primary' intent='danger' iconBefore={EditIcon}>
           <div className={editTip}><span>Édition impossible</span></div>
         </Button>
       </Tooltip>
@@ -61,10 +61,10 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
             content={
               <Menu>
                 <Menu.Group>
-                  <Menu.Item icon='upload' onClick={onPublish}>
+                  <Menu.Item icon={UploadIcon} onClick={onPublish}>
                     Publier
                   </Menu.Item>
-                  <Menu.Item icon='edit' onClick={onChangeStatus}>
+                  <Menu.Item icon={EditIcon} onClick={onChangeStatus}>
                     Revenir au brouillon
                   </Menu.Item>
                 </Menu.Group>
@@ -76,7 +76,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
               appearance='primary'
               marginRight={8}
               height={24}
-              iconAfter='caret-down'
+              iconAfter={CaretDownIcon}
             >
               Publication
             </Button>
@@ -125,7 +125,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
             </Paragraph>
             <Link href={csvUrl} display='flex' marginTop='1em'>
               Télécharger vos adresses au format CSV
-              <Icon icon='download' marginLeft='.5em' marginTop='3px' />
+              <DownloadIcon marginLeft='.5em' marginTop='3px' />
             </Link>
           </Dialog>
           <Dialog

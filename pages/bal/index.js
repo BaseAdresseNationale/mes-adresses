@@ -2,7 +2,7 @@ import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {sortBy} from 'lodash'
-import {Pane, Heading, Paragraph, Button, Table, Text} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Button, Table, Text, AddIcon} from 'evergreen-ui'
 
 import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
@@ -103,7 +103,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
         {token && (
           <Pane marginLeft='auto'>
             <Button
-              iconBefore='add'
+              iconBefore={AddIcon}
               appearance='primary'
               intent='success'
               disabled={isAdding}

@@ -169,11 +169,11 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
 
       <Pane display='flex'>
         <TextInput
+          ref={focusRef}
           required
           display='block'
           type='number'
           disabled={isLoading}
-          innerRef={focusRef}
           width='100%'
           maxWidth={300}
           min={0}

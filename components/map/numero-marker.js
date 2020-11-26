@@ -1,7 +1,7 @@
 import React, {useMemo, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
-import {Pane, Text, Menu, Icon, Position} from 'evergreen-ui'
+import {Pane, Text, Menu, Position, WarningSignIcon, TrashIcon} from 'evergreen-ui'
 import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
 import randomColor from 'randomcolor'
 import {css} from 'glamor'
@@ -94,15 +94,15 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
         {numero.positions[0].type === 'inconnue' ? (
           <Tooltip content='Le type de la position est inconnu' position={Position.RIGHT}>
-            <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+            <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
               <Text color='white' paddingLeft={8} paddingRight={5}>
                 {numero.numeroComplet}
               </Text>
-              <Icon icon='warning-sign' color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
+              <WarningSignIcon color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
             </Pane>
           </Tooltip>
         ) : (
-          <Pane className={markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+          <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
             <Text color='white' paddingLeft={8} paddingRight={10}>
               {numero.numeroComplet}
             </Text>
@@ -113,7 +113,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
           <Pane background='tint1' position='absolute' margin={10}>
             <Menu>
               <Menu.Group>
-                <Menu.Item icon='trash' intent='danger' onSelect={removeAddress}>
+                <Menu.Item icon={TrashIcon} intent='danger' onSelect={removeAddress}>
                   Supprimer…
                 </Menu.Item>
               </Menu.Group>
