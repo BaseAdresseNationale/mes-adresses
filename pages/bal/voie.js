@@ -1,10 +1,8 @@
 import React, {useState, useCallback, useEffect, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Text, Paragraph, Heading, Table, Button, Checkbox, Alert, EditIcon, AddIcon} from 'evergreen-ui'
+import {Pane, Paragraph, Heading, Table, Button, Checkbox, Alert, AddIcon} from 'evergreen-ui'
 
-import {editVoie, addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
-
-import {getFullVoieName} from '../../lib/voie'
+import {addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -13,15 +11,15 @@ import useHelp from '../../hooks/help'
 import useFuse from '../../hooks/fuse'
 
 import TableRow from '../../components/table-row'
-import VoieEditor from '../../components/bal/voie-editor'
 import NumeroEditor from '../../components/bal/numero-editor'
 import DeleteWarning from '../../components/delete-warning'
 import GroupedActions from '../../components/grouped-actions'
 
+import VoieHeading from './voie-heading'
+
 const Voie = React.memo(({voie, defaultNumeros}) => {
   const [editedVoie, setEditedVoie] = useState(voie)
   const [isEdited, setEdited] = useState(false)
-  const [hovered, setHovered] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
@@ -31,8 +29,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const currentVoie = editedVoie || voie
 
   const {
-    baseLocale,
-    reloadVoies,
     numeros,
     reloadNumeros,
     editingId,
@@ -97,21 +93,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setIsAdding(false)
   }, [voie, reloadNumeros, token])
 
-  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace, complement, positions}) => {
-    const editedVoie = await editVoie(voie._id, {
-      nom,
-      typeNumerotation,
-      trace,
-      complement,
-      positions
-    }, token)
-
-    setEditingId(null)
-    await reloadVoies()
-
-    setEditedVoie(editedVoie)
-  }, [reloadVoies, setEditingId, token, voie])
-
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
   }, [])
@@ -120,11 +101,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setIsAdding(false)
     setEditingId(idNumero)
   }, [setEditingId])
-
-  const onEnableVoieEditing = useCallback(() => {
-    setEditingId(voie._id)
-    setHovered(false)
-  }, [setEditingId, voie._id])
 
   const onEdit = useCallback(async ({numero, voie, suffixe, comment, positions}) => {
     await editNumero(editingId, {
@@ -199,40 +175,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   return (
     <>
-      <Pane
-        display='flex'
-        flexDirection='column'
-        background='tint1'
-        padding={16}
-      >
-        {editingId === voie._id ? (
-          <VoieEditor
-            hasNumeros={numeros.length > 0}
-            initialValue={{...currentVoie}}
-            isEnabledComplement={Boolean(baseLocale.enableComplement)}
-            onSubmit={onEditVoie}
-            onCancel={() => setEditingId(null)}
-          />
-        ) : (
-          <Heading
-            style={{cursor: hovered ? 'text' : 'default'}}
-            onClick={onEnableVoieEditing}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-          >
-            {getFullVoieName(currentVoie, baseLocale.enableComplement)}
-            <EditIcon
-              marginBottom={-2}
-              marginLeft={8}
-              color={hovered ? 'black' : 'muted'}
-            />
-          </Heading>
-        )}
-        {numeros && (
-          <Text>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
-        )}
-      </Pane>
-
+      <VoieHeading voie={voie} />
       <Pane
         flexShrink={0}
         elevation={0}
