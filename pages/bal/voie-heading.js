@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, Icon, Text} from 'evergreen-ui'
+import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
 import {editVoie} from '../../lib/bal-api'
 import {getFullVoieName} from '../../lib/voie'
@@ -60,8 +60,7 @@ const VoieHeading = ({voie}) => {
           onMouseLeave={() => setHovered(false)}
         >
           {getFullVoieName(currentVoie, baseLocale.enableComplement)}
-          <Icon
-            icon='edit'
+          <EditIcon
             marginBottom={-2}
             marginLeft={8}
             color={hovered ? 'black' : 'muted'}
