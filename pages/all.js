@@ -24,7 +24,7 @@ function All({basesLocales}) {
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
-        <BasesLocalesList basesLocales={basesLocales} />
+        <BasesLocalesList all basesLocales={basesLocales} />
       </Pane>
 
       <Pane borderTop marginTop='auto' padding={16}>
