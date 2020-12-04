@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Router from 'next/router'
 import {Pane, Spinner, Button, PlusIcon} from 'evergreen-ui'
-import {map} from 'lodash'
+import {map, orderBy} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
 
@@ -13,6 +13,10 @@ import BasesLocalesList from './bases-locales-list'
 function UserBasesLocales() {
   const [basesLocales, setBasesLocales] = useState(null)
   const [balAccess, setBalAccess] = useState(getBalAccess())
+
+  function sortBalByUpdate(array) {
+    return orderBy(array, ['_updated'], ['desc'])
+  }
 
   useEffect(() => {
     const getUserBals = async () => {
@@ -48,7 +52,7 @@ function UserBasesLocales() {
   return (
     <>
       {basesLocales.length > 0 ? (
-        <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
+        <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} sortBal={sortBalByUpdate} />
       ) : (
         <Button height={40} appearance='primary' margin='auto' iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
       )}

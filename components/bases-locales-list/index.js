@@ -2,7 +2,6 @@ import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Table, Paragraph} from 'evergreen-ui'
-import {orderBy} from 'lodash'
 
 import {getBalAccess, getBalToken, removeBalAccess} from '../../lib/tokens'
 
@@ -14,7 +13,7 @@ import {listBasesLocales, removeBaseLocale} from '../../lib/bal-api'
 import DeleteWarning from '../delete-warning'
 import BaseLocaleCard from './base-locale-card'
 
-function BasesLocalesList({basesLocales, updateBasesLocales, all}) {
+function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
   const [toRemove, setToRemove] = useState(null)
 
   const [setError] = useError(null)
@@ -94,7 +93,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales, all}) {
               </Table.Row>
             )}
             <Table.Body background='tint1'>
-              {orderBy(filtered, [all ? filter => filter.nom.toLowerCase() : '_updated'], [all ? 'asc' : 'desc']).map(bal => (
+              {sortBal(filtered).map(bal => (
                 <BaseLocaleCard
                   key={bal._id}
                   baseLocale={bal}
@@ -123,13 +122,13 @@ BasesLocalesList.getInitialProps = async () => {
 
 BasesLocalesList.defaultProps = {
   updateBasesLocales: null,
-  all: false
+  sortBal: null
 }
 
 BasesLocalesList.propTypes = {
   basesLocales: PropTypes.array.isRequired,
   updateBasesLocales: PropTypes.func,
-  all: PropTypes.bool
+  sortBal: PropTypes.func
 }
 
 export default BasesLocalesList

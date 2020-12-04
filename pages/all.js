@@ -2,6 +2,7 @@ import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Button} from 'evergreen-ui'
+import {orderBy} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
 
@@ -14,6 +15,10 @@ function All({basesLocales}) {
     Router.push('/new')
   }, [])
 
+  function sortBalByName(array) {
+    return orderBy(array, [array => array.nom.toLowerCase()])
+  }
+
   return (
     <>
       <Pane padding={16} backgroundColor='white'>
@@ -24,7 +29,7 @@ function All({basesLocales}) {
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
-        <BasesLocalesList all basesLocales={basesLocales} />
+        <BasesLocalesList basesLocales={basesLocales} sortBal={sortBalByName} />
       </Pane>
 
       <Pane borderTop marginTop='auto' padding={16}>
