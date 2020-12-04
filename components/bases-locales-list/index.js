@@ -4,6 +4,7 @@ import Router from 'next/router'
 import {Pane, Table, Paragraph} from 'evergreen-ui'
 
 import {getBalAccess, getBalToken, removeBalAccess} from '../../lib/tokens'
+import {sortBalByUpdate} from '../../lib/sort-bal'
 
 import useFuse from '../../hooks/fuse'
 import useError from '../../hooks/error'
@@ -122,7 +123,7 @@ BasesLocalesList.getInitialProps = async () => {
 
 BasesLocalesList.defaultProps = {
   updateBasesLocales: null,
-  sortBal: null
+  sortBal: sortBalByUpdate
 }
 
 BasesLocalesList.propTypes = {

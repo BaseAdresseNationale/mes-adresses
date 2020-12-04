@@ -7,7 +7,6 @@ import {expandWithPublished} from '../helpers/bases-locales'
 
 import {getBalAccess} from '../lib/tokens'
 import {getBaseLocale} from '../lib/bal-api'
-import {sortBalByUpdate} from '../lib/sort-bal'
 
 import BasesLocalesList from './bases-locales-list'
 
@@ -49,7 +48,7 @@ function UserBasesLocales() {
   return (
     <>
       {basesLocales.length > 0 ? (
-        <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} sortBal={sortBalByUpdate} />
+        <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
       ) : (
         <Button height={40} appearance='primary' margin='auto' iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
       )}
