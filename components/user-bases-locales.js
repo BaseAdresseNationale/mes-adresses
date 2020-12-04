@@ -1,22 +1,19 @@
 import React, {useState, useEffect} from 'react'
 import Router from 'next/router'
 import {Pane, Spinner, Button, PlusIcon} from 'evergreen-ui'
-import {map, orderBy} from 'lodash'
+import {map} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
 
 import {getBalAccess} from '../lib/tokens'
 import {getBaseLocale} from '../lib/bal-api'
+import {sortBalByUpdate} from '../lib/sort-bal'
 
 import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {
   const [basesLocales, setBasesLocales] = useState(null)
   const [balAccess, setBalAccess] = useState(getBalAccess())
-
-  function sortBalByUpdate(array) {
-    return orderBy(array, ['_updated'], ['desc'])
-  }
 
   useEffect(() => {
     const getUserBals = async () => {

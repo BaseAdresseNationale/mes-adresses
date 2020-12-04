@@ -2,11 +2,11 @@ import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Button} from 'evergreen-ui'
-import {orderBy} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
 
 import {listBasesLocales} from '../lib/bal-api'
+import {sortBalByName} from '../lib/sort-bal'
 
 import BasesLocalesList from '../components/bases-locales-list'
 
@@ -14,10 +14,6 @@ function All({basesLocales}) {
   const onCreate = useCallback(() => {
     Router.push('/new')
   }, [])
-
-  function sortBalByName(array) {
-    return orderBy(array, [array => array.nom.toLowerCase()])
-  }
 
   return (
     <>
