@@ -41,7 +41,7 @@
     "react-dropzone": "^10.1.10",
     "react-map-gl": "^5.2.7",
     "react-map-gl-draw": "^0.19.2",
-    "use-debounce": "^1.1.1"
+    "use-debounce": "^5.2.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
