@@ -42,39 +42,38 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     ]
   })
 
-  const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
-  const filteredSelected = filtered.filter(({_id}) => selectedNumerosIds.includes(_id))
+  const [selectedNumeros, setSelectedNumeros] = useState([])
 
-  const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
-  const allSelectedNumeros = numeros && filtered.length === numeros.length
-  const allSelectedNumerosIds = allSelectedNumeros && (selectedNumerosIds.length === numeros.length)
-  const allFilteredSelected = !allSelectedNumeros && (filtered.length === filteredSelected.length)
+  const isGroupedActionsShown = useMemo(() => token && selectedNumeros.length > 1, [token, selectedNumeros])
+  const noFilter = numeros && filtered.length === numeros.length
+  const allNumerosSelected = noFilter && (selectedNumeros.length === numeros.length)
+  const allFilteredNumerosSelected = !noFilter && (filtered.length === selectedNumeros.length)
 
-  const isAllSelected = useMemo(() => allSelectedNumerosIds || allFilteredSelected, [allFilteredSelected, allSelectedNumerosIds])
+  const isAllSelected = useMemo(() => allNumerosSelected || allFilteredNumerosSelected, [allFilteredNumerosSelected, allNumerosSelected])
 
   const toEdit = useMemo(() => {
-    if (numeros && allSelectedNumeros) {
-      return selectedNumerosIds
+    if (numeros && noFilter) {
+      return selectedNumeros
     }
 
-    return filteredSelected.map(({_id}) => _id)
-  }, [numeros, selectedNumerosIds, filteredSelected, allSelectedNumeros])
+    return selectedNumeros.map(({_id}) => _id)
+  }, [numeros, selectedNumeros, noFilter])
 
   const handleSelect = id => {
-    setSelectedNumerosIds(selectedNumerosIds => {
-      if (selectedNumerosIds.includes(id)) {
-        return selectedNumerosIds.filter(f => f !== id)
+    setSelectedNumeros(selectedNumero => {
+      if (selectedNumero.includes(id)) {
+        return selectedNumeros.filter(f => f !== id)
       }
 
-      return [...selectedNumerosIds, id]
+      return [...selectedNumeros, id]
     })
   }
 
   const handleSelectAll = () => {
     if (isAllSelected) {
-      setSelectedNumerosIds([])
+      setSelectedNumeros([])
     } else {
-      setSelectedNumerosIds(filtered.map(({_id}) => _id))
+      setSelectedNumeros(filtered.map(({_id}) => _id))
     }
   }
 
@@ -146,9 +145,9 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
     await reloadNumeros()
 
-    setSelectedNumerosIds([])
+    setSelectedNumeros([])
     setIsRemoveWarningShown(false)
-  }, [reloadNumeros, onRemove, setSelectedNumerosIds])
+  }, [reloadNumeros, onRemove, setSelectedNumeros])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -208,7 +207,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
           idVoie={voie._id}
           numeros={numeros}
           selectedNumerosIds={toEdit}
-          resetSelectedNumerosIds={() => setSelectedNumerosIds([])}
+          resetSelectedNumerosIds={() => setSelectedNumeros([])}
           setIsRemoveWarningShown={setIsRemoveWarningShown}
           onSubmit={onMultipleEdit}
         />
@@ -288,7 +287,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                   label={numero.numeroComplet}
                   secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
                   handleSelect={handleSelect}
-                  isSelected={selectedNumerosIds.includes(numero._id)}
+                  isSelected={selectedNumeros.includes(numero._id)}
                   onEdit={onEnableEditing}
                   onRemove={onRemove}
                 />
