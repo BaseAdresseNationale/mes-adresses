@@ -50,7 +50,18 @@ function UserBasesLocales() {
       {basesLocales.length > 0 ? (
         <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
       ) : (
-        <Button height={40} appearance='primary' margin='auto' iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
+        <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' margin='auto'>
+          <Button
+            marginBottom={12}
+            height={40}
+            appearance='primary'
+            iconBefore={PlusIcon}
+            onClick={() => Router.push('/new')}
+          >
+            Créer une Base Adresse Locale
+          </Button>
+          <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
+        </Pane>
       )}
     </>
   )
