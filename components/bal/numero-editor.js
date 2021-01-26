@@ -8,7 +8,7 @@ import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
 
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
 import {useInput} from '../../hooks/input'
@@ -35,11 +35,11 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   const focusRef = useFocus()
 
   const {
-    marker,
-    enableMarker,
-    disableMarker,
+    markers,
+    enableMarkers,
+    disableMarkers,
     setOverrideText
-  } = useContext(MarkerContext)
+  } = useContext(MarkersContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -53,12 +53,12 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       comment: comment.length > 0 ? comment : null
     }
 
-    if (marker) {
+    if (markers[0]) {
       body.positions = [
         {
           point: {
             type: 'Point',
-            coordinates: [marker.longitude, marker.latitude]
+            coordinates: [markers[0].longitude, markers[0].latitude]
           },
           type
         }
@@ -67,19 +67,19 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
 
     try {
       await onSubmit(body)
-      disableMarker()
+      disableMarkers()
     } catch (error) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voie, suffixe, comment, marker, type, onSubmit, disableMarker])
+  }, [numero, voie, suffixe, comment, markers, type, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
-    disableMarker()
+    disableMarkers()
     onCancel()
-  }, [disableMarker, onCancel])
+  }, [disableMarkers, onCancel])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -98,7 +98,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
-      disableMarker()
+      disableMarkers()
       onCancel()
     }
   }, [onCancel])
@@ -108,14 +108,14 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   }, [initialValue])
 
   const numeroSuggestion = useMemo(() => {
-    if (marker && voie.trace) {
+    if (markers[0] && voie.trace) {
       const {trace} = voie
       const point = {
         type: 'Feature',
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: [marker.longitude, marker.latitude]
+          coordinates: [markers[0].longitude, markers[0].latitude]
         }
       }
       const from = {
@@ -131,15 +131,15 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       const slicedLine = length(lineSlice(from, to, trace)) * 1000
       return slicedLine.toFixed(0)
     }
-  }, [marker, voie])
+  }, [markers, voie])
 
   useEffect(() => {
     if (hasPositionEditor) {
-      enableMarker(position)
+      enableMarkers(position)
     } else {
-      disableMarker()
+      disableMarkers()
     }
-  }, [initialValue, hasPositionEditor, enableMarker, position, disableMarker])
+  }, [initialValue, hasPositionEditor, enableMarkers, position, disableMarkers])
 
   useEffect(() => {
     setOverrideText(numero || numeroSuggestion)
@@ -209,7 +209,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
         />
       </Pane>
 
-      {marker && (
+      {markers.length > 0 && (
         <PositionEditor
           initialValue={position}
           alert={
@@ -217,7 +217,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
               'Déplacez le marqueur sur la carte pour déplacer le numéro.' :
               'Déplacez le marqueur sur la carte pour placer le numéro.'
           }
-          marker={marker}
+          marker={markers[0]}
           type={type}
           onTypeChange={onTypeChange}
         />

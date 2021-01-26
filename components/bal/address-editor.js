@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Pane, Heading, TextInput, Button, Alert, Checkbox} from 'evergreen-ui'
 import {useRouter} from 'next/router'
 
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
 import {useInput, useCheckboxInput} from '../../hooks/input'
@@ -19,7 +19,7 @@ function CreateAddress({onSubmit, onCancel}) {
   const router = useRouter()
 
   const {baseLocale, voie} = useContext(BalDataContext)
-  const {marker, disableMarker} = useContext(MarkerContext)
+  const {markers, disableMarkers} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
@@ -53,7 +53,7 @@ function CreateAddress({onSubmit, onCancel}) {
       {
         point: {
           type: 'Point',
-          coordinates: [marker.longitude, marker.latitude]
+          coordinates: [markers[0].longitude, markers[0].latitude]
         },
         type
       }
@@ -61,7 +61,7 @@ function CreateAddress({onSubmit, onCancel}) {
 
     try {
       await onSubmit(body, selectedVoie ? selectedVoie._id : null)
-      disableMarker()
+      disableMarkers()
 
       if (selectedVoie._id !== voie._id) {
         router.push(
@@ -73,14 +73,14 @@ function CreateAddress({onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [isToponyme, marker, type, numero, suffixe, comment, onSubmit, selectedVoie, disableMarker, voie, router, baseLocale])
+  }, [isToponyme, markers, type, numero, suffixe, comment, onSubmit, selectedVoie, disableMarkers, voie, router, baseLocale])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
-    disableMarker()
+    disableMarkers()
     onCancel()
-  }, [disableMarker, onCancel])
+  }, [disableMarkers, onCancel])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -96,7 +96,7 @@ function CreateAddress({onSubmit, onCancel}) {
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
-      disableMarker()
+      disableMarkers()
       onCancel()
     }
   }, [onCancel])
@@ -152,9 +152,9 @@ function CreateAddress({onSubmit, onCancel}) {
         onChange={onIsToponymeChange}
       />
 
-      {marker && (
+      {markers[0] && (
         <PositionEditor
-          marker={marker}
+          marker={markers[0]}
           type={type}
           onTypeChange={onTypeChange}
         />

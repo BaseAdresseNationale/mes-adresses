@@ -11,14 +11,14 @@ import {removeNumero} from '../../lib/bal-api'
 import useError from '../../hooks/error'
 
 import TokenContext from '../../contexts/token'
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
 function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {marker} = useContext(MarkerContext)
+  const {markers} = useContext(MarkersContext)
   const {editingId, setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
@@ -84,7 +84,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     return null
   }
 
-  if (marker && editingId === numero._id) {
+  if (markers.length > 0 && editingId === numero._id) {
     return null
   }
 

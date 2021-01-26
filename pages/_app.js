@@ -19,7 +19,7 @@ import Help from '../components/help'
 import {HelpContextProvider} from '../contexts/help'
 import {SettingsContextProvider} from '../contexts/settings'
 import {DrawContextProvider} from '../contexts/draw'
-import {MarkerContextProvider} from '../contexts/marker'
+import {MarkersContextProvider} from '../contexts/markers'
 import {TokenContextProvider} from '../contexts/token'
 import {BalDataContextProvider} from '../contexts/bal-data'
 
@@ -100,7 +100,7 @@ function App({error, Component, pageProps, query}) {
       <TokenContextProvider balId={query.balId} _token={query.token}>
         <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
           <DrawContextProvider>
-            <MarkerContextProvider>
+            <MarkersContextProvider>
               <HelpContextProvider>
 
                 <Help />
@@ -150,7 +150,7 @@ function App({error, Component, pageProps, query}) {
                   )}
                 </Wrapper>
               </HelpContextProvider>
-            </MarkerContextProvider>
+            </MarkersContextProvider>
           </DrawContextProvider>
         </BalDataContextProvider>
       </TokenContextProvider>

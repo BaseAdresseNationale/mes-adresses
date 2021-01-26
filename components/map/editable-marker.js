@@ -3,64 +3,68 @@ import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
 
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
 function EditableMarker({viewport, size, style}) {
-  const {enabled, marker, overrideText, setMarker} = useContext(MarkerContext)
+  const {enabled, markers, overrideText, setMarkers} = useContext(MarkersContext)
   const {editingItem} = useContext(BalDataContext)
 
-  const onDrag = useCallback(event => {
-    setMarker(marker => ({
-      ...marker,
-      longitude: event.lngLat[0],
-      latitude: event.lngLat[1]
-    }))
-  }, [setMarker])
+  const onDrag = useCallback((event, idx) => {
+    const [longitude, latitude] = event.lngLat
+    setMarkers(prevMarkers => {
+      const newMarkers = [...prevMarkers]
+      newMarkers[idx] = {_id: newMarkers[idx]._id, longitude, latitude}
+      return newMarkers
+    })
+  }, [setMarkers])
 
   useEffect(() => {
-    if (enabled) {
-      setMarker(marker => marker || {
+    if (enabled && markers.length === 0) {
+      setMarkers([{
         latitude: viewport.latitude,
         longitude: viewport.longitude
-      })
+      }])
     }
-  }, [enabled, setMarker, viewport])
+  }, [enabled, setMarkers, viewport, markers])
 
-  if (!enabled || !marker) {
+  if (!enabled || markers.length === 0) {
     return null
   }
 
   return (
-    <Marker
-      {...marker}
-      draggable
-      onDrag={onDrag}
-    >
-      <Pane>
-        {((editingItem && editingItem.positions) || overrideText) && (
-          <Text
-            position='absolute'
-            top={-58}
-            transform='translate(-50%)'
-            borderRadius={20}
-            backgroundColor='rgba(0, 0, 0, 0.7)'
-            color='white'
-            paddingX={8}
-            whiteSpace='nowrap'
-          >
-            {overrideText || editingItem.nom || editingItem.numeroComplet}
-          </Text>
-        )}
+    markers.map((marker, idx) => (
+      <Marker
+        key={marker._id}
+        {...markers[idx]}
+        draggable
+        onDrag={e => onDrag(e, idx)}
+      >
+        <Pane>
+          {((editingItem && editingItem.positions) || overrideText) && (
+            <Text
+              position='absolute'
+              top={-58}
+              transform='translate(-50%)'
+              borderRadius={20}
+              backgroundColor='rgba(0, 0, 0, 0.7)'
+              color='white'
+              paddingX={8}
+              whiteSpace='nowrap'
+            >
+              {overrideText || editingItem.nom || editingItem.numeroComplet}
+            </Text>
+          )}
 
-        <MapMarkerIcon
-          filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
-          color={style === 'vector' ? 'info' : 'success'}
-          transform='translate(-50%, -100%)'
-          size={size}
-        />
-      </Pane>
-    </Marker>
+          <MapMarkerIcon
+            filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
+            color={style === 'vector' ? 'info' : 'success'}
+            transform='translate(-50%, -100%)'
+            size={size}
+          />
+        </Pane>
+      </Marker>
+    ))
   )
 }
 

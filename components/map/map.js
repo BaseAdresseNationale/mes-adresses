@@ -8,7 +8,7 @@ import {Pane, SelectMenu, Button, Position, MapIcon, MapMarkerIcon, EyeOffIcon, 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 
 import {addNumero, addVoie} from '../../lib/bal-api'
 
@@ -111,7 +111,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     isEditing
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
-  const {enableMarker, disableMarker} = useContext(MarkerContext)
+  const {enableMarkers, disableMarkers} = useContext(MarkersContext)
   const {token} = useContext(TokenContext)
 
   const sources = useSources(voie, hovered, editingId)
@@ -241,12 +241,12 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   useEffect(() => {
     if (openForm) {
       setIsEditing(true)
-      enableMarker()
+      enableMarkers()
     } else {
       setIsEditing(false)
-      disableMarker()
+      disableMarkers()
     }
-  }, [openForm, disableMarker, enableMarker, setIsEditing])
+  }, [openForm, disableMarkers, enableMarkers, setIsEditing])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
