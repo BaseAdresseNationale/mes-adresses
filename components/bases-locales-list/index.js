@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Table, Paragraph, Button, Heading} from 'evergreen-ui'
+import {Pane, Table, Paragraph} from 'evergreen-ui'
 
 import {getBalAccess, getBalToken, removeBalAccess} from '../../lib/tokens'
 import {sortBalByUpdate} from '../../lib/sort-bal'
@@ -66,55 +66,47 @@ function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
   return (
     <>
       {basesLocales.length > 0 && (
-        <>
-          <Pane borderTop>
+        <Pane borderTop>
 
-            <DeleteWarning
-              isShown={Boolean(toRemove)}
-              content={(
-                <Paragraph>
-                  Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
-                </Paragraph>
-              )}
-              onCancel={() => setToRemove(null)}
-              onConfirm={onRemove}
-            />
+          <DeleteWarning
+            isShown={Boolean(toRemove)}
+            content={(
+              <Paragraph>
+                Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
+              </Paragraph>
+            )}
+            onCancel={() => setToRemove(null)}
+            onConfirm={onRemove}
+          />
 
-            <Table>
-              <Table.Head>
-                <Table.SearchHeaderCell
-                  placeholder='Rechercher une Base Adresse Locale'
-                  onChange={onFilter}
+          <Table>
+            <Table.Head>
+              <Table.SearchHeaderCell
+                placeholder='Rechercher une Base Adresse Locale'
+                onChange={onFilter}
+              />
+            </Table.Head>
+            {filtered.length === 0 && (
+              <Table.Row>
+                <Table.TextCell color='muted' fontStyle='italic'>
+                  Aucun résultat
+                </Table.TextCell>
+              </Table.Row>
+            )}
+            <Table.Body background='tint1'>
+              {sortBal(filtered).map(bal => (
+                <BaseLocaleCard
+                  key={bal._id}
+                  baseLocale={bal}
+                  editable={!isPublicPage}
+                  initialIsOpen={basesLocales.length === 1}
+                  onSelect={() => onBalSelect(bal)}
+                  onRemove={e => handleRemove(e, bal._id)}
                 />
-              </Table.Head>
-              {filtered.length === 0 && (
-                <Table.Row>
-                  <Table.TextCell color='muted' fontStyle='italic'>
-                    Aucun résultat
-                  </Table.TextCell>
-                </Table.Row>
-              )}
-              <Table.Body background='tint1'>
-                {sortBal(filtered).map(bal => (
-                  <BaseLocaleCard
-                    key={bal._id}
-                    baseLocale={bal}
-                    editable={!isPublicPage}
-                    initialIsOpen={basesLocales.length === 1}
-                    onSelect={() => onBalSelect(bal)}
-                    onRemove={e => handleRemove(e, bal._id)}
-                  />
-                ))}
-              </Table.Body>
-            </Table>
-          </Pane>
-          <Pane display='flex' flex={1}>
-            <Pane margin='auto' textAlign='center'>
-              <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-              <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
-            </Pane>
-          </Pane>
-        </>
+              ))}
+            </Table.Body>
+          </Table>
+        </Pane>
       )}
     </>
   )
