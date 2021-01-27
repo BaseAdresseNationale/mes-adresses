@@ -15,11 +15,7 @@ import {recoverBAL} from '../lib/bal-api'
 import {validateEmail} from '../lib/utils/email'
 import {useInput} from '../hooks/input'
 
-const hasBeenSentRecently = (sentAt = null) => {
-  if (!sentAt) {
-    return false
-  }
-
+const hasBeenSentRecently = sentAt => {
   const now = new Date()
 
   const floodLimitTime = new Date(sentAt)
@@ -31,11 +27,7 @@ function RecoverBALAlert() {
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [emailSentAt, setEmailSentAt] = useState(null)
-  const [email, onEmailChange, resetEmail] = useInput()
-
-  const handleClick = () => {
-    setIsShown(true)
-  }
+  const [email, onEmailChange, resetEmail] = useInput('')
 
   const handleComplete = () => {
     setIsShown(false)
@@ -96,12 +88,12 @@ function RecoverBALAlert() {
         />
       </Dialog>
 
-      <Pane padding='22px'>
+      <Pane padding={22}>
         <Alert>
           <Text>
             Vous ne retrouvez pas vos Bases Adresse Locales ? Pour les récupérer par courriel
           </Text>
-          <Button appearance='primary' marginLeft='1em' onClick={() => handleClick()}>Cliquez ici</Button>
+          <Button appearance='primary' marginLeft='1em' onClick={() => setIsShown(true)}>Cliquez ici</Button>
         </Alert>
       </Pane>
     </>
