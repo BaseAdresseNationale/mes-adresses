@@ -42,7 +42,7 @@ function RecoverBALAlert() {
     setIsLoading(false)
   }
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
     const now = new Date()
     const recoveryEmailSent = localStorage.getItem('recovery-email-sent')
 
@@ -54,10 +54,16 @@ function RecoverBALAlert() {
       return toaster.warning('Un email a déjà été envoyé, merci de patienter.')
     }
 
-    recoverBAL(email)
-    setEmailSentAt(now)
-    localStorage.setItem('recovery-email-sent', now)
-    toaster.success(`Un email a été envoyé à l’adresse ${email}`)
+    try {
+      await recoverBAL(email)
+
+      setEmailSentAt(now)
+      localStorage.setItem('recovery-email-sent', now)
+      toaster.success(`Un email a été envoyé à l’adresse ${email}`)
+    } catch (error) {
+      toaster.danger(error.message)
+    }
+
     resetEmail()
 
     setIsLoading(false)
