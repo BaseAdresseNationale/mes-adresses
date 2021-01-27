@@ -68,22 +68,22 @@ function RecoverBALAlert() {
     <>
       <Dialog
         isShown={isShown}
-        title='Récupération de mes Bases Adresse Locales'
+        title='Demande de récupération de mes Bases Adresse Locales'
         cancelLabel='Annuler'
         isConfirmLoading={isLoading}
         isConfirmDisabled={!validateEmail(email)}
-        confirmLabel={isLoading ? 'Chargement...' : 'Confirmer ma demande'}
+        confirmLabel={isLoading ? 'Chargement...' : 'Recevoir le courriel'}
         onCloseComplete={() => handleComplete()}
         onConfirm={() => handleConfirm()}
       >
         <Label display='block' marginBottom={4}>
-          Adresse email
+          Renseignez votre adresse de courrier électronique
         </Label>
         <TextInput
           display='block'
           type='email'
           width='100%'
-          placeholder='Renseignez votre adresse email…'
+          placeholder='adresse@courriel.fr'
           maxWidth={400}
           value={email}
           onChange={onEmailChange}
