@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Table, Paragraph, Button} from 'evergreen-ui'
+import {Pane, Table, Paragraph, Button, Heading} from 'evergreen-ui'
 
 import {getBalAccess, getBalToken, removeBalAccess} from '../../lib/tokens'
 import {sortBalByUpdate} from '../../lib/sort-bal'
@@ -109,7 +109,8 @@ function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
             </Table>
           </Pane>
           <Pane display='flex' flex={1}>
-            <Pane margin='auto'>
+            <Pane margin='auto' textAlign='center'>
+              <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
               <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
             </Pane>
           </Pane>

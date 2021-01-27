@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Router from 'next/router'
-import {Pane, Spinner, Button, PlusIcon} from 'evergreen-ui'
+import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
 import {map} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
@@ -60,6 +60,7 @@ function UserBasesLocales() {
           >
             Créer une Base Adresse Locale
           </Button>
+          <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
           <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
         </Pane>
       )}
