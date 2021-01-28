@@ -7,6 +7,7 @@ import {
   Label,
   Pane,
   Text,
+  Paragraph,
   TextInput,
   toaster
 } from 'evergreen-ui'
@@ -66,7 +67,7 @@ function RecoverBALAlert() {
     <>
       <Dialog
         isShown={isShown}
-        title='Demande de récupération de mes Bases Adresse Locales'
+        title='Récupération de mes Bases Adresse Locales'
         cancelLabel='Annuler'
         isConfirmLoading={isLoading}
         isConfirmDisabled={!validateEmail(email)}
@@ -86,6 +87,13 @@ function RecoverBALAlert() {
           value={email}
           onChange={onEmailChange}
         />
+
+        <Paragraph marginTop={16}>
+          Un courrier électronique va être envoyé à l’adresse que vous avez renseigné.<br />{}
+        </Paragraph>
+        <Paragraph marginTop={8}>
+          Vous y retrouverez la liste de toutes les Bases Adresse Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace.
+        </Paragraph>
       </Dialog>
 
       <Pane padding={22}>
