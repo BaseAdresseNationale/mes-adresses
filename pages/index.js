@@ -7,7 +7,7 @@ import TokenContext from '../contexts/token'
 
 import Header from '../components/header'
 import Footer from '../components/footer'
-import DemoBALAlert from '../components/demo-bal-alert'
+import RecoverBALAlert from '../components/recover-bal-alert'
 
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
@@ -30,7 +30,7 @@ function Index() {
             <Button iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
           </Heading>
           <UserBasesLocales />
-          <DemoBALAlert />
+          <RecoverBALAlert />
           <Footer />
         </>
       ) : (

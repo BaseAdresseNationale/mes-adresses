@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-import {Pane, TabNavigation, Tab, Heading, Paragraph} from 'evergreen-ui'
+import Router from 'next/router'
+import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
 import Header from '../../components/header'
-import DemoBALAlert from '../../components/demo-bal-alert'
 import Footer from '../../components/footer'
+
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
 import DemoForm from './demo-form'
@@ -51,13 +52,17 @@ function Index({defaultCommune, isDemo}) {
             </Pane>
           </>)}
 
-        {!isDemo && (
-          <DemoBALAlert />
-        )}
-        <Pane display='flex' justifyContent='space-between' alignItems='center' flex={1} margin={16} marginTop={32}>
-          <BackToUserBals />
-        </Pane>
+        <BackToUserBals />
       </Pane>
+
+      {!isDemo && (
+        <Pane display='flex' flex={1}>
+          <Pane margin='auto' textAlign='center'>
+            <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
+            <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
+          </Pane>
+        </Pane>
+      )}
       <Footer />
     </Pane>
   )
