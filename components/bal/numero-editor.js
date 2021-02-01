@@ -27,10 +27,10 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   const [voie, setVoie] = useState(initialVoie)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [numero, onNumeroChange] = useInput(initialValue ? initialValue.numero : '')
-  const [suffixe, onSuffixeChange] = useInput(initialValue ? initialValue.suffixe : '')
-  const [type, onTypeChange] = useInput(position ? position.type : 'entrée')
-  const [comment, onCommentChange] = useInput(initialValue ? initialValue.comment : '')
+  const [numero, onNumeroChange, resetNumero] = useInput(initialValue ? initialValue.numero : '')
+  const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue ? initialValue.suffixe : '')
+  const [type, onTypeChange, resetType] = useInput(position ? position.type : 'entrée')
+  const [comment, onCommentChange, resetComment] = useInput(initialValue ? initialValue.comment : '')
   const [error, setError] = useState()
   const focusRef = useFocus()
 
@@ -144,6 +144,15 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   useEffect(() => {
     setOverrideText(numero || numeroSuggestion)
   }, [numeroSuggestion, numero, setOverrideText])
+
+  useEffect(() => {
+    const {numero, suffixe, comment} = initialValue || {}
+    resetNumero(numero)
+    resetSuffixe(suffixe ? suffixe : '')
+    resetType(position ? position.type : 'entrée')
+    resetComment(comment ? comment : '')
+    setError(null)
+  }, [position, resetNumero, resetSuffixe, resetType, resetComment, setError, initialValue])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
