@@ -152,7 +152,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
     resetType(position ? position.type : 'entrée')
     resetComment(comment ? comment : '')
     setError(null)
-  }, [initialValue]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [position, resetNumero, resetSuffixe, resetType, resetComment, setError, initialValue])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
