@@ -15,20 +15,16 @@ import PositionEditor from './position-editor'
 import DrawEditor from './draw-editor'
 
 function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComplement}) {
-  const position = initialValue ? initialValue.positions[0] : null
-
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(checkIsToponyme(initialValue))
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [complement, onComplementChange] = useInput(initialValue ? initialValue.complement : '')
-  const [positionType, onPositionTypeChange] = useInput(position ? position.type : 'entrée')
   const [error, setError] = useState()
   const setRef = useFocus()
 
   const {data, enableDraw, disableDraw, setModeId, setData} = useContext(DrawContext)
   const {
-    enabled,
     markers,
     enableMarkers,
     disableMarkers
@@ -51,16 +47,21 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       trace: data ? data.geometry : null
     }
 
-    if (markers[0]) {
-      body.positions = [
-        {
-          point: {
-            type: 'Point',
-            coordinates: [markers[0].longitude, markers[0].latitude]
-          },
-          type: positionType
-        }
-      ]
+    if (markers) {
+      const positions = []
+      markers.forEach(marker => {
+        positions.push(
+          {
+            point: {
+              type: 'Point',
+              coordinates: [marker.longitude, marker.latitude]
+            },
+            type: marker.type
+          }
+        )
+      })
+
+      body.positions = positions
     } else {
       body.positions = []
     }
@@ -72,7 +73,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, isMetric, complement, data, markers, positionType, onSubmit, onUnmount])
+  }, [nom, isMetric, complement, data, markers, onSubmit, onUnmount])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -97,12 +98,22 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
   }, [onCancel])
 
   useEffect(() => {
-    if (isToponyme) {
-      enableMarkers(position)
+    if (isToponyme && initialValue) {
+      const positions = initialValue.positions.map(position => (
+        {
+          longitude: position.point.coordinates[0],
+          latitude: position.point.coordinates[1],
+          type: position.type
+        }
+      ))
+
+      enableMarkers(positions)
+    } else if (isToponyme) {
+      enableMarkers()
     } else {
       disableMarkers()
     }
-  }, [enabled, initialValue, disableMarkers, enableMarkers, isToponyme, position])
+  }, [initialValue, disableMarkers, enableMarkers, isToponyme])
 
   useEffect(() => {
     if (isMetric) {
@@ -176,18 +187,23 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
         <DrawEditor trace={initialValue ? initialValue.trace : null} />
       )}
 
-      {isToponyme && markers[0] && (
+      {isToponyme && markers.length > 0 && (
         <PositionEditor
-          initialValue={position}
-          alert={
-            initialValue ?
+          isToponyme
+          markers={markers}
+          enableMarkers={enableMarkers}
+        />
+      )}
+
+      {alert && isToponyme && (
+        <Alert marginBottom={16}>
+          {initialValue && markers.length > 1 ?
+            'Deplacez les marqueurs sur la carte pour modifier les positions' :
+            initialValue && markers.length === 1 ?
               'Déplacez le marqueur sur la carte pour déplacer le toponyme.' :
               'Déplacez le marqueur sur la carte pour placer le toponyme.'
           }
-          marker={markers[0]}
-          type={positionType}
-          onTypeChange={onPositionTypeChange}
-        />
+        </Alert>
       )}
 
       {error && (

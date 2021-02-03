@@ -1,80 +1,102 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Pane, TextInputField, SelectField, Alert} from 'evergreen-ui'
+import {Strong, Pane, SelectField, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
 
 import {positionsTypesList} from '../../lib/positions-types-list'
 
-function PositionEditor({type, marker, alert, onTypeChange}) {
+function PositionEditor({markers, enableMarkers, isToponyme}) {
+  const handleAddMarker = () => {
+    enableMarkers([...markers, {type: 'entrée'}])
+  }
+
+  const handleChange = (e, idx) => {
+    e.preventDefault()
+    markers[idx] = {
+      ...markers[idx],
+      type: e.target.value
+    }
+
+    enableMarkers(markers)
+  }
+
+  const deletePosition = (e, idx) => {
+    e.preventDefault()
+    const markersCopy = markers.filter(marker => marker !== markers[idx])
+
+    enableMarkers(markersCopy)
+  }
+
   return (
-    <Pane>
-      <Pane display='flex'>
-        <TextInputField
-          readOnly
-          disabled
-          flex={1}
-          label='Latitude'
-          display='block'
-          type='number'
-          maxWidth={300}
-          value={marker.latitude}
-          marginBottom={16}
-        />
+    <>
+      <Pane display='grid' gridTemplateColumns='1.4fr 32px 1fr 1fr 32px'>
+        <Strong fontWeight={400}>Type</Strong>
+        <Strong />
+        <Strong fontWeight={400}>Latitude</Strong>
+        <Strong fontWeight={400}>Longitude</Strong>
+        <Strong />
 
-        <TextInputField
-          readOnly
-          disabled
-          flex={1}
-          label='Longitude'
-          display='block'
-          type='number'
-          maxWidth={300}
-          value={marker.longitude}
-          marginLeft={8}
-          marginBottom={16}
-        />
-      </Pane>
-
-      <SelectField
-        flex={1}
-        label='Type'
-        display='block'
-        marginBottom={16}
-        value={type}
-        onChange={onTypeChange}
-      >
-        {positionsTypesList.map(positionType => (
-          <option key={positionType.value} value={positionType.value}>{positionType.name}</option>
+        {markers.map((marker, idx) => (
+          <>
+            <SelectField
+              defaultValue={marker.type}
+              marginBottom={8}
+              height={32}
+              onChange={e => handleChange(e, idx)}
+            >
+              {positionsTypesList.map(positionType => (
+                <option key={positionType.value} value={positionType.value} selected={marker.type === positionType.value}>{positionType.name}</option>
+              ))}
+            </SelectField>
+            <Icon icon={MapMarkerIcon} size={22} margin='auto' />
+            <Heading size={100} marginY='auto'>
+              <Small>{marker.latitude}</Small>
+            </Heading>
+            <Heading size={100} marginY='auto'>
+              <Small>{marker.longitude}</Small>
+            </Heading>
+            <IconButton
+              disabled={markers.length === 1}
+              appearance='default'
+              iconSize={15}
+              icon={TrashIcon}
+              intent='danger'
+              onClick={e => deletePosition(e, idx)}
+            />
+          </>
         ))}
-      </SelectField>
 
-      {type === 'inconnue' && (
-        <Alert marginBottom={16} intent='warning'>
-          Veuillez sélectionner un autre type de position.
-        </Alert>
+      </Pane>
+      {!isToponyme && (
+        <Button
+          type='button'
+          iconBefore={AddIcon}
+          appearance='primary'
+          intent='success'
+          width='100%'
+          marginBottom={16}
+          display='flex'
+          justifyContent='center'
+          onClick={handleAddMarker}
+        >
+          Ajouter une position au numéro
+        </Button>
       )}
-
-      {alert && (
-        <Alert marginBottom={16}>
-          {alert}
-        </Alert>
-      )}
-    </Pane>
+    </>
   )
 }
 
 PositionEditor.propTypes = {
-  type: PropTypes.string,
-  marker: PropTypes.shape({
+  markers: PropTypes.arrayOf({
+    _id: PropTypes.number,
     latitude: PropTypes.number,
     longitude: PropTypes.number
   }).isRequired,
-  alert: PropTypes.string,
-  onTypeChange: PropTypes.func.isRequired
+  enableMarkers: PropTypes.func.isRequired,
+  isToponyme: PropTypes.bool
 }
 
 PositionEditor.defaultProps = {
-  type: 'entrée',
-  alert: null
+  isToponyme: false
 }
 
 export default PositionEditor

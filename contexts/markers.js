@@ -26,15 +26,13 @@ export function MarkersContextProvider(props) {
     }
   }, [disableMarkers, editingId])
 
-  const enableMarkers = useCallback(defaultValue => {
-    if (defaultValue) {
-      setMarkers([
-        {
-          _id: uniqueId(),
-          longitude: defaultValue.point.coordinates[0],
-          latitude: defaultValue.point.coordinates[1]
-        }
-      ])
+  const enableMarkers = useCallback(defaultMarkers => {
+    if (defaultMarkers) {
+      const markers = defaultMarkers.map(marker => {
+        return {_id: uniqueId(), ...marker}
+      })
+
+      setMarkers(markers)
     }
 
     setEnabled(true)

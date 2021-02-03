@@ -1,34 +1,47 @@
-import React, {useCallback, useEffect, useContext} from 'react'
+import React, {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
 
 import MarkersContext from '../../contexts/markers'
-import BalDataContext from '../../contexts/bal-data'
 
 function EditableMarker({viewport, size, style}) {
-  const {enabled, markers, overrideText, setMarkers} = useContext(MarkersContext)
-  const {editingItem} = useContext(BalDataContext)
+  const {enabled, markers, setMarkers} = useContext(MarkersContext)
 
   const onDrag = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
     setMarkers(prevMarkers => {
       const newMarkers = [...prevMarkers]
-      newMarkers[idx] = {_id: newMarkers[idx]._id, longitude, latitude}
+      newMarkers[idx] = {
+        _id: newMarkers[idx]._id,
+        longitude,
+        latitude,
+        type: newMarkers[idx].type
+      }
+
       return newMarkers
     })
   }, [setMarkers])
 
-  useEffect(() => {
-    if (enabled && markers.length === 0) {
-      setMarkers([{
-        latitude: viewport.latitude,
-        longitude: viewport.longitude
-      }])
-    }
-  }, [enabled, setMarkers, viewport, markers])
+  const addDefaultPosition = useCallback(() => {
+    setMarkers(markers => {
+      return markers.map(marker => {
+        if (!marker.latitude || !marker.longitude) {
+          const {latitude, longitude} = viewport
+          return {...marker, latitude, longitude}
+        }
+
+        return marker
+      })
+    })
+  }, [setMarkers, viewport])
 
   if (!enabled || markers.length === 0) {
+    return null
+  }
+
+  if (markers.find(({latitude, longitude}) => !longitude || !latitude)) {
+    addDefaultPosition()
     return null
   }
 
@@ -36,25 +49,25 @@ function EditableMarker({viewport, size, style}) {
     markers.map((marker, idx) => (
       <Marker
         key={marker._id}
-        {...markers[idx]}
+        {...marker}
         draggable
         onDrag={e => onDrag(e, idx)}
       >
         <Pane>
-          {((editingItem && editingItem.positions) || overrideText) && (
-            <Text
-              position='absolute'
-              top={-58}
-              transform='translate(-50%)'
-              borderRadius={20}
-              backgroundColor='rgba(0, 0, 0, 0.7)'
-              color='white'
-              paddingX={8}
-              whiteSpace='nowrap'
-            >
-              {overrideText || editingItem.nom || editingItem.numeroComplet}
-            </Text>
-          )}
+          <Text
+            position='absolute'
+            top={-62}
+            transform='translate(-50%)'
+            borderRadius={20}
+            backgroundColor='rgba(0, 0, 0, 0.7)'
+            color='white'
+            paddingX={8}
+            paddingY={1}
+            fontSize={10}
+            whiteSpace='nowrap'
+          >
+            {marker.type}
+          </Text>
 
           <MapMarkerIcon
             filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
