@@ -11,6 +11,7 @@ import SubHeader from '../components/sub-header'
 import IEWarning from '../components/ie-warning'
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
+import WelcomeMessage from '../components/welcome-message'
 
 import Map from '../components/map'
 import Help from '../components/help'
@@ -142,6 +143,7 @@ function App({error, Component, pageProps, query}) {
                   ) : (
                     <>
                       <IEWarning />
+                      {pageProps.baseLocale && <WelcomeMessage />}
                       <Component {...otherPageProps} />
                     </>
                   )}
