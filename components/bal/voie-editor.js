@@ -109,7 +109,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
 
       enableMarkers(positions)
     } else if (isToponyme) {
-      enableMarkers()
+      enableMarkers([{type: 'entrée'}])
     } else {
       disableMarkers()
     }
