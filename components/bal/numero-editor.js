@@ -105,14 +105,16 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   }, [onCancel])
 
   const numeroSuggestion = useMemo(() => {
-    if (markers[0] && voie.trace) {
+    if (markers[0] && markers[0].latitude && markers[0].longitude && voie.trace) {
+      const marker = markers.find(marker => marker.type === 'entrée') || markers[0]
+
       const {trace} = voie
       const point = {
         type: 'Feature',
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: [markers[0].longitude, markers[0].latitude]
+          coordinates: [marker.longitude, marker.latitude]
         }
       }
       const from = {
