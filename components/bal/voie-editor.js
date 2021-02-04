@@ -98,7 +98,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
   }, [onCancel])
 
   useEffect(() => {
-    if (isToponyme && initialValue) {
+    if (isToponyme && initialValue && initialValue.positions.length > 0) {
       const positions = initialValue.positions.map(position => (
         {
           longitude: position.point.coordinates[0],
@@ -108,7 +108,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       ))
 
       enableMarkers(positions)
-    } else if (isToponyme) {
+    } else if (isToponyme || (isToponyme && initialValue && initialValue.positions.length === 0)) {
       enableMarkers([{type: 'entrée'}])
     } else {
       disableMarkers()
