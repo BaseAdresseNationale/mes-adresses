@@ -58,7 +58,9 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
     body.map(r => {
       r.voie = selectedVoieId
-      r.positions[0].type = type === '' ? r.positions[0].type : type
+      r.positions.forEach(position => {
+        position.type = type
+      })
 
       r.comment = commentCondition(r)
 
@@ -112,9 +114,11 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             ))}
 
           </SelectField>
+
           <SelectField
+            disabled={numeros.find(numero => numero.positions.length > 1)}
             flex={1}
-            label='Type'
+            label='Type de position'
             display='block'
             marginBottom={16}
             onChange={onPositionTypeChange}
@@ -126,6 +130,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               <option key={positionType.value} selected={selectedNumerosUniqType.toString() === positionType.value} value={positionType.value}>{positionType.name}</option>
             ))}
           </SelectField>
+
+          {numeros.find(numero => numero.positions.length > 1) && (
+            <Alert intent='none' marginBottom={12}>Certains numéros sont renseignés avec plusieurs positions. La sélection multiple n’est pas possible dans leur cas. Ils doivent être modifiés séparément.</Alert>
+          )}
 
           <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
 
