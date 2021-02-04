@@ -28,7 +28,7 @@ function PositionEditor({markers, enableMarkers, isToponyme}) {
 
   return (
     <>
-      <Pane display='grid' gridTemplateColumns='1.4fr 32px 1fr 1fr 32px'>
+      <Pane display='grid' gridTemplateColumns='2fr .5fr 1fr 1fr .5fr'>
         <Strong fontWeight={400}>Type</Strong>
         <Strong />
         <Strong fontWeight={400}>Latitude</Strong>
@@ -49,10 +49,10 @@ function PositionEditor({markers, enableMarkers, isToponyme}) {
             </SelectField>
             <Icon icon={MapMarkerIcon} size={22} margin='auto' />
             <Heading size={100} marginY='auto'>
-              <Small>{marker.latitude}</Small>
+              <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
             </Heading>
             <Heading size={100} marginY='auto'>
-              <Small>{marker.longitude}</Small>
+              <Small>{marker.longitude && marker.longitude.toFixed(6)}</Small>
             </Heading>
             <IconButton
               disabled={markers.length === 1}
