@@ -227,10 +227,10 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       {alert && (
         <Alert marginBottom={16}>
           {initialValue && markers.length > 1 ?
-            'Deplacez les marqueurs sur la carte pour modifier les positions' :
+            'Déplacer les marqueurs sur la carte pour modifier les positions' :
             initialValue && markers.length === 1 ?
-              'Déplacez le marqueur sur la carte pour déplacer le numéro.' :
-              'Déplacez le marqueur sur la carte pour placer le numéro.'
+              'Déplacer le marqueur sur la carte pour déplacer le numéro.' :
+              'Déplacer le marqueur sur la carte pour placer le numéro.'
           }
         </Alert>
       )}
