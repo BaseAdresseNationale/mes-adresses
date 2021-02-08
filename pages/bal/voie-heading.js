@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext} from 'react'
+import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
@@ -10,10 +10,9 @@ import BalDataContext from '../../contexts/bal-data'
 
 import VoieEditor from '../../components/bal/voie-editor'
 
-const VoieHeading = ({voie}) => {
+const VoieHeading = ({defaultVoie}) => {
+  const [voie, setVoie] = useState(defaultVoie)
   const [hovered, setHovered] = useState(false)
-  const [editedVoie, setEditedVoie] = useState(voie)
-  const currentVoie = editedVoie || voie
   const {token} = useContext(TokenContext)
   const {baseLocale, editingId, setEditingId, reloadVoies, numeros} = useContext(BalDataContext)
 
@@ -34,8 +33,12 @@ const VoieHeading = ({voie}) => {
     setEditingId(null)
     await reloadVoies()
 
-    setEditedVoie(editedVoie)
+    setVoie(editedVoie)
   }, [reloadVoies, setEditingId, token, voie])
+
+  useEffect(() => {
+    setVoie(defaultVoie)
+  }, [defaultVoie])
 
   return (
     <Pane
@@ -47,7 +50,7 @@ const VoieHeading = ({voie}) => {
       {editingId === voie._id ? (
         <VoieEditor
           hasNumeros={numeros.length > 0}
-          initialValue={{...currentVoie}}
+          initialValue={voie}
           isEnabledComplement={Boolean(baseLocale.enableComplement)}
           onSubmit={onEditVoie}
           onCancel={() => setEditingId(null)}
@@ -59,7 +62,7 @@ const VoieHeading = ({voie}) => {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {getFullVoieName(currentVoie, baseLocale.enableComplement)}
+          {getFullVoieName(voie)}
           <EditIcon
             marginBottom={-2}
             marginLeft={8}
@@ -75,7 +78,7 @@ const VoieHeading = ({voie}) => {
 }
 
 VoieHeading.propTypes = {
-  voie: PropTypes.shape({
+  defaultVoie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
     complement: PropTypes.string,
