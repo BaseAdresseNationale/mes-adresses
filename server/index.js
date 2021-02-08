@@ -15,6 +15,7 @@ app.prepare().then(() => {
     server.use(compression())
   }
 
+  server.use(express.static('public')) // Serve favicon.ico
   server.use('/', createRoutes(app))
 
   server.listen(port, err => {
