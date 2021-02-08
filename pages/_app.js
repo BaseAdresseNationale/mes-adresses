@@ -74,6 +74,7 @@ function App({error, Component, pageProps, query}) {
     <>
       <Head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <title>mes-adresses.data.gouv.fr</title>
       </Head>
 
       <Pane>
