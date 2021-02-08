@@ -86,11 +86,12 @@ function PositionEditor({markers, enableMarkers, isToponyme}) {
 }
 
 PositionEditor.propTypes = {
-  markers: PropTypes.arrayOf({
-    _id: PropTypes.number,
+  markers: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string,
     latitude: PropTypes.number,
-    longitude: PropTypes.number
-  }).isRequired,
+    longitude: PropTypes.number,
+    type: PropTypes.string
+  })).isRequired,
   enableMarkers: PropTypes.func.isRequired,
   isToponyme: PropTypes.bool
 }
