@@ -174,7 +174,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   return (
     <>
-      <VoieHeading voie={voie} />
+      <VoieHeading defaultVoie={voie} />
       <Pane
         flexShrink={0}
         elevation={0}
