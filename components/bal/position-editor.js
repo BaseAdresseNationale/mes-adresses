@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Strong, Pane, SelectField, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
+import {Strong, Pane, SelectField, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon, Tooltip} from 'evergreen-ui'
 
 import {positionsTypesList} from '../../lib/positions-types-list'
 
-function PositionEditor({markers, enableMarkers, isToponyme}) {
+function PositionEditor({markers, enableMarkers}) {
   const handleAddMarker = () => {
     enableMarkers([...markers, {type: 'entrée'}])
   }
@@ -66,21 +66,19 @@ function PositionEditor({markers, enableMarkers, isToponyme}) {
         ))}
 
       </Pane>
-      {!isToponyme && (
-        <Button
-          type='button'
-          iconBefore={AddIcon}
-          appearance='primary'
-          intent='success'
-          width='100%'
-          marginBottom={16}
-          display='flex'
-          justifyContent='center'
-          onClick={handleAddMarker}
-        >
-          Ajouter une position au numéro
-        </Button>
-      )}
+      <Button
+        type='button'
+        iconBefore={AddIcon}
+        appearance='primary'
+        intent='success'
+        width='100%'
+        marginBottom={16}
+        display='flex'
+        justifyContent='center'
+        onClick={handleAddMarker}
+      >
+        Ajouter une position au numéro
+      </Button>
     </>
   )
 }
@@ -92,12 +90,7 @@ PositionEditor.propTypes = {
     longitude: PropTypes.number,
     type: PropTypes.string
   })).isRequired,
-  enableMarkers: PropTypes.func.isRequired,
-  isToponyme: PropTypes.bool
-}
-
-PositionEditor.defaultProps = {
-  isToponyme: false
+  enableMarkers: PropTypes.func.isRequired
 }
 
 export default PositionEditor

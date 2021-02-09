@@ -109,7 +109,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
 
       enableMarkers(positions)
     } else if (isToponyme) {
-      enableMarkers([{type: 'entrée'}])
+      enableMarkers([{type: 'segment'}])
     } else {
       disableMarkers()
     }
@@ -189,7 +189,6 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
 
       {isToponyme && markers.length > 0 && (
         <PositionEditor
-          isToponyme
           markers={markers}
           enableMarkers={enableMarkers}
         />

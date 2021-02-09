@@ -28,7 +28,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
     }
   }, [isEditing, toponyme._id, setEditingId])
 
-  const position = toponyme.positions.find(position => position.type === 'entrée') || toponyme.positions[0]
+  const position = toponyme.positions.find(position => position.type === 'segment') || toponyme.positions[0]
 
   const markerStyle = useMemo(() => css({
     borderRadius: 20,
