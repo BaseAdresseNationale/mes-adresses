@@ -20,6 +20,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
+  const hasMultiposition = numeros.find(numero => numero.positions.length > 1)
 
   const selectedNumeros = numeros.filter(({_id}) => selectedNumerosIds.includes(_id))
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
@@ -116,7 +117,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           </SelectField>
 
           <SelectField
-            disabled={numeros.find(numero => numero.positions.length > 1)}
+            disabled={hasMultiposition}
             flex={1}
             label='Type de position'
             display='block'
@@ -131,8 +132,8 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             ))}
           </SelectField>
 
-          {numeros.find(numero => numero.positions.length > 1) && (
-            <Alert intent='none' marginBottom={12}>Certains numéros sont renseignés avec plusieurs positions. La sélection multiple n’est pas possible dans leur cas. Ils doivent être modifiés séparément.</Alert>
+          {hasMultiposition && (
+            <Alert intent='none' marginBottom={12}>Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée du type de position n’est pas possible. Ils doivent être modifiés séparément.</Alert>
           )}
 
           <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
