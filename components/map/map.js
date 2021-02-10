@@ -239,14 +239,14 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   }, [map, bounds])
 
   useEffect(() => {
+    setIsEditing(openForm)
+
     if (openForm) {
-      setIsEditing(true)
-      enableMarkers()
-    } else {
-      setIsEditing(false)
+      enableMarkers([{type: 'entrée'}])
+    } else if (!openForm && !editingId) {
       disableMarkers()
     }
-  }, [openForm, disableMarkers, enableMarkers, setIsEditing])
+  }, [openForm, disableMarkers, editingId, enableMarkers, setIsEditing])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>

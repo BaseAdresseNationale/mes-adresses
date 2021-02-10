@@ -19,7 +19,7 @@ function CreateAddress({onSubmit, onCancel}) {
   const router = useRouter()
 
   const {baseLocale, voie} = useContext(BalDataContext)
-  const {markers, disableMarkers} = useContext(MarkersContext)
+  const {markers, enableMarkers, disableMarkers} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
@@ -27,7 +27,6 @@ function CreateAddress({onSubmit, onCancel}) {
   const [selectedVoie, setSelectedVoie] = useState(voie)
   const [suffixe, onSuffixeChange] = useInput('')
   const [comment, onCommentChange] = useInput('')
-  const [type, onTypeChange] = useInput('entrée')
   const [error, setError] = useState()
   const focusRef = useFocus()
 
@@ -49,15 +48,24 @@ function CreateAddress({onSubmit, onCancel}) {
       body.comment = comment.length > 0 ? comment : null
     }
 
-    body.positions = [
-      {
-        point: {
-          type: 'Point',
-          coordinates: [markers[0].longitude, markers[0].latitude]
-        },
-        type
-      }
-    ]
+    if (markers) {
+      const positions = []
+      markers.forEach(marker => {
+        positions.push(
+          {
+            point: {
+              type: 'Point',
+              coordinates: [marker.longitude, marker.latitude]
+            },
+            type: marker.type
+          }
+        )
+      })
+
+      body.positions = positions
+    } else {
+      body.positions = []
+    }
 
     try {
       await onSubmit(body, selectedVoie ? selectedVoie._id : null)
@@ -73,7 +81,7 @@ function CreateAddress({onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [isToponyme, markers, type, numero, suffixe, comment, onSubmit, selectedVoie, disableMarkers, voie, router, baseLocale])
+  }, [isToponyme, markers, numero, suffixe, comment, onSubmit, selectedVoie, disableMarkers, voie, router, baseLocale])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -152,11 +160,10 @@ function CreateAddress({onSubmit, onCancel}) {
         onChange={onIsToponymeChange}
       />
 
-      {markers[0] && (
+      {markers && (
         <PositionEditor
-          marker={markers[0]}
-          type={type}
-          onTypeChange={onTypeChange}
+          markers={markers}
+          enableMarkers={enableMarkers}
         />
       )}
 
