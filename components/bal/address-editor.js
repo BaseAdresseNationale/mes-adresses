@@ -94,7 +94,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
       return 'En cours…'
     }
 
-    return 'Ajouter'
+    return 'Enregistrer'
   }, [isLoading])
 
   useEffect(() => {

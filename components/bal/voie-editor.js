@@ -87,8 +87,8 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       return 'En cours…'
     }
 
-    return initialValue ? 'Modifier' : 'Ajouter'
-  }, [initialValue, isLoading])
+    return 'Enregistrer'
+  }, [isLoading])
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {

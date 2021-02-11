@@ -87,8 +87,8 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       return 'En cours…'
     }
 
-    return initialValue ? 'Modifier' : 'Ajouter'
-  }, [initialValue, isLoading])
+    return 'Enregistrer'
+  }, [isLoading])
 
   const handleVoieChange = event => {
     const {value} = event.target
