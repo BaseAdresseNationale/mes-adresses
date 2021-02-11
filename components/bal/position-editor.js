@@ -4,7 +4,7 @@ import {Strong, Pane, SelectField, Heading, Icon, Small, TrashIcon, MapMarkerIco
 
 import {positionsTypesList} from '../../lib/positions-types-list'
 
-function PositionEditor({markers, enableMarkers}) {
+function PositionEditor({markers, enableMarkers, isToponyme}) {
   const handleAddMarker = () => {
     enableMarkers([...markers, {type: 'entrée'}])
   }
@@ -77,7 +77,7 @@ function PositionEditor({markers, enableMarkers}) {
         justifyContent='center'
         onClick={handleAddMarker}
       >
-        Ajouter une position au numéro
+        {`Ajouter une position au ${isToponyme ? 'toponyme' : 'numéro'}`}
       </Button>
     </>
   )
@@ -90,7 +90,12 @@ PositionEditor.propTypes = {
     longitude: PropTypes.number,
     type: PropTypes.string
   })).isRequired,
-  enableMarkers: PropTypes.func.isRequired
+  enableMarkers: PropTypes.func.isRequired,
+  isToponyme: PropTypes.bool
+}
+
+PositionEditor.defaultProps = {
+  isToponyme: false
 }
 
 export default PositionEditor

@@ -161,6 +161,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
 
       {markers && (
         <PositionEditor
+          isToponyme={isToponyme}
           markers={markers}
           enableMarkers={enableMarkers}
         />
