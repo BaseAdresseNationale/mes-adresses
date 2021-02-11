@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
-import {Pane, Alert, Button, TextInputField, PlusIcon} from 'evergreen-ui'
+import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
@@ -93,19 +93,9 @@ function UploadForm() {
 
   return (
     <>
-      <Pane is='form' padding={16} flex={1} overflowY='scroll' onSubmit={onSubmit}>
-        <Uploader
-          file={file}
-          height={150}
-          marginBottom={24}
-          placeholder='Sélectionnez ou glissez ici votre fichier BAL au format CSV (maximum 100 Mo)'
-          loadingLabel='Analyse en cours'
-          disabled={isLoading}
-          onDrop={onDrop}
-        />
-
-        {file && (
-          <>
+      <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
+        <Pane display='flex' flexDirection='row'>
+          <Pane flex={1} maxWidth={600}>
             <TextInputField
               ref={focusRef}
               required
@@ -113,7 +103,6 @@ function UploadForm() {
               name='nom'
               id='nom'
               value={nom}
-              maxWidth={600}
               disabled={isLoading}
               label='Nom de la Base Adresse Locale'
               placeholder='Nom'
@@ -126,14 +115,26 @@ function UploadForm() {
               name='email'
               id='email'
               value={email}
-              maxWidth={400}
               disabled={isLoading}
               label='Votre adresse email'
               placeholder='nom@example.com'
               onChange={onEmailChange}
             />
-          </>
-        )}
+          </Pane>
+
+          <Pane flex={1} marginLeft={16}>
+            <FormField label='Fichier CSV' />
+            <Uploader
+              file={file}
+              height={150}
+              marginBottom={24}
+              placeholder='Sélectionnez ou glissez ici votre fichier BAL au format CSV (maximum 100 Mo)'
+              loadingLabel='Analyse en cours'
+              disabled={isLoading}
+              onDrop={onDrop}
+            />
+          </Pane>
+        </Pane>
 
         {error && (
           <Alert marginBottom={16} intent='danger' title='Erreur'>
@@ -141,12 +142,19 @@ function UploadForm() {
           </Alert>
         )}
 
-        {file && (
-          <Button height={40} type='submit' appearance='primary' intent='success' disabled={Boolean(error)} isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
-            {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
-          </Button>
-        )}
+        <Button height={40} type='submit' appearance='primary' intent='success' disabled={Boolean(error) || !file} isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
+          {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
+        </Button>
       </Pane>
+
+      <Alert margin={16} title='Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?' intent='infos' marginY={16}>
+        <Text>
+          Utilisez notre formulaire de dépôt afin de publier vos adresses dans la Base Adresse Nationale.
+        </Text>
+        <Pane marginTop={16}>
+          <Button appearance='primary' iconBefore={InboxIcon} is='a' href='https://adresse.data.gouv.fr/bases-locales/publication'>Accéder au formulaire de dépôt d’une Base Adresse Locale sur adresse.data.gouv.fr</Button>
+        </Pane>
+      </Alert>
     </>
   )
 }
