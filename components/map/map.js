@@ -14,6 +14,8 @@ import {addNumero, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
 
+import {useCheckboxInput} from '../../hooks/input'
+
 import {vector, ortho, vectorCadastre} from './styles'
 
 import NavControl from './nav-control'
@@ -96,6 +98,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [showPopover, setShowPopover] = useState(false)
+  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
 
   const [hoverPos, setHoverPos] = useState(null)
 
@@ -242,11 +245,15 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     setIsEditing(openForm)
 
     if (openForm) {
-      enableMarkers([{type: 'entrée'}])
+      if (isToponyme) {
+        enableMarkers([{type: 'segment'}])
+      } else {
+        enableMarkers([{type: 'entrée'}])
+      }
     } else if (!openForm && !editingId) {
       disableMarkers()
     }
-  }, [openForm, disableMarkers, editingId, enableMarkers, setIsEditing])
+  }, [isToponyme, openForm, disableMarkers, editingId, enableMarkers, setIsEditing])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -360,7 +367,9 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
       {commune && openForm && (
         <Pane padding={20} background='white'>
           <AddressEditor
+            isToponyme={isToponyme}
             onSubmit={onAddAddress}
+            onIsToponymeChange={onIsToponymeChange}
             onCancel={() => setOpenForm(false)}
           />
         </Pane>

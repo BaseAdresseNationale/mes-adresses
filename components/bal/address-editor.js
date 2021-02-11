@@ -6,7 +6,7 @@ import {useRouter} from 'next/router'
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-import {useInput, useCheckboxInput} from '../../hooks/input'
+import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
@@ -15,14 +15,13 @@ import Comment from '../comment'
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
-function CreateAddress({onSubmit, onCancel}) {
+function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   const router = useRouter()
 
   const {baseLocale, voie} = useContext(BalDataContext)
   const {markers, enableMarkers, disableMarkers} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
   const [numero, onNumeroChange] = useInput('')
   const [selectedVoie, setSelectedVoie] = useState(voie)
   const [suffixe, onSuffixeChange] = useInput('')
@@ -199,7 +198,9 @@ function CreateAddress({onSubmit, onCancel}) {
 
 CreateAddress.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
+  isToponyme: PropTypes.bool.isRequired,
+  onIsToponymeChange: PropTypes.func.isRequired
 }
 
 export default CreateAddress
