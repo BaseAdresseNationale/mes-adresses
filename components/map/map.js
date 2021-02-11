@@ -106,7 +106,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
   const sources = useSources(voie, hovered, editingId)
   const bounds = useBounds(commune, voie)
-  const layers = useLayers(voie, sources, style)
+  const layers = useLayers(voie, sources, style, baseLocale.enableComplement)
 
   const mapRef = useCallback(ref => {
     if (ref) {

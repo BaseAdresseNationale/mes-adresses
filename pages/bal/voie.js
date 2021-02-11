@@ -322,7 +322,6 @@ Voie.propTypes = {
   voie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    complement: PropTypes.string,
     positions: PropTypes.array.isRequired
   }).isRequired,
   defaultNumeros: PropTypes.array

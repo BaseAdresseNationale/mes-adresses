@@ -62,7 +62,7 @@ const VoieHeading = ({defaultVoie}) => {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {getFullVoieName(voie)}
+          {getFullVoieName(voie, Boolean(baseLocale.enableComplement))}
           <EditIcon
             marginBottom={-2}
             marginLeft={8}

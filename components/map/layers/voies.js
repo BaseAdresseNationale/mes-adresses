@@ -1,4 +1,4 @@
-export function getVoiesLabelLayer(style) {
+export function getVoiesLabelLayer(style, isComplementEnabled) {
   const layer = {
     id: 'voie-label',
     interactive: true,
@@ -22,12 +22,12 @@ export function getVoiesLabelLayer(style) {
       }
     },
     layout: {
-      'text-field': [
+      'text-field': isComplementEnabled ? [
         'case',
         ['has', 'complement'],
         ['concat', ['get', 'nomVoie'], '\n(', ['get', 'complement'], ')'],
         ['get', 'nomVoie']
-      ],
+      ] : ['get', 'nomVoie'],
       'text-anchor': 'top',
       'text-size': {
         base: 1,
