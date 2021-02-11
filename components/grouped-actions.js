@@ -20,10 +20,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
-  const hasMultiposition = numeros.find(numero => numero.positions.length > 1)
 
   const selectedNumeros = numeros.filter(({_id}) => selectedNumerosIds.includes(_id))
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
+  const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
 
   const handleComplete = () => {
     setIsShown(false)
