@@ -39,8 +39,8 @@ function UploadForm() {
       return onError('Ce type de fichier n’est pas supporté. Vous devez déposer un fichier CSV.')
     }
 
-    if (file.size > 100 * 1024 * 1024) {
-      return onError('Ce fichier est trop volumineux. Vous devez déposer un fichier de moins de 100 Mo.')
+    if (file.size > 10 * 1024 * 1024) {
+      return onError('Ce fichier est trop volumineux. Vous devez déposer un fichier de moins de 10 Mo.')
     }
 
     setFile(file)
