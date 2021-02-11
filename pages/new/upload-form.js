@@ -19,7 +19,7 @@ function getFileExtension(name) {
   return null
 }
 
-function Index() {
+function UploadForm() {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
@@ -151,8 +151,8 @@ function Index() {
   )
 }
 
-Index.getInitialProps = () => ({
+UploadForm.getInitialProps = () => ({
   layout: 'fullscreen'
 })
 
-export default Index
+export default UploadForm
