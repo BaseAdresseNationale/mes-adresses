@@ -30,10 +30,10 @@ function PositionEditor({markers, enableMarkers, isToponyme}) {
     <>
       <Pane display='grid' gridTemplateColumns='2fr .5fr 1fr 1fr .5fr'>
         <Strong fontWeight={400}>Type</Strong>
-        <Strong />
+        <div />
         <Strong fontWeight={400}>Latitude</Strong>
         <Strong fontWeight={400}>Longitude</Strong>
-        <Strong />
+        <div />
 
         {markers.map((marker, idx) => (
           <>

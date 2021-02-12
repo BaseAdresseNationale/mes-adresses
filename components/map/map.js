@@ -245,11 +245,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     setIsEditing(openForm)
 
     if (openForm) {
-      if (isToponyme) {
-        enableMarkers([{type: 'segment'}])
-      } else {
-        enableMarkers([{type: 'entrée'}])
-      }
+      enableMarkers([{type: isToponyme ? 'segment' : 'entrée'}])
     } else if (!openForm && !editingId) {
       disableMarkers()
     }
