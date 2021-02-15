@@ -99,10 +99,19 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
   const [hoverPos, setHoverPos] = useState(null)
 
-  const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId, setEditingId} = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
   const {enableMarker, disableMarker} = useContext(MarkerContext)
   const {token} = useContext(TokenContext)
+  const {
+    baseLocale,
+    numeros,
+    reloadNumeros,
+    toponymes,
+    reloadVoies,
+    editingId,
+    setEditingId,
+    inEdition,
+    setInEdition} = useContext(BalDataContext)
 
   const sources = useSources(voie, hovered, editingId)
   const bounds = useBounds(commune, voie)
@@ -236,11 +245,13 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
   useEffect(() => {
     if (openForm) {
+      setInEdition(true)
       enableMarker()
     } else if (!openForm && !editingId) {
+      setInEdition(false)
       disableMarker()
     }
-  }, [openForm, disableMarker, enableMarker, editingId])
+  }, [openForm, disableMarker, enableMarker, editingId, setInEdition])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -309,7 +320,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
               />
             )}
 
-            {token && commune && (
+            {token && commune && !inEdition && !editingId && (
               <Control
                 icon={MapMarkerIcon}
                 enabled={openForm}

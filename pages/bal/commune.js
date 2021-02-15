@@ -31,7 +31,9 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     voies,
     reloadVoies,
     editingId,
-    setEditingId
+    setEditingId,
+    inEdition,
+    setInEdition
   } = useContext(BalDataContext)
 
   useHelp(2)
@@ -69,11 +71,13 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     await reloadVoies()
 
     setIsAdding(false)
-  }, [baseLocale, commune, reloadVoies, token])
+    setInEdition(false)
+  }, [baseLocale, commune, reloadVoies, token, setInEdition])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
-  }, [])
+    setInEdition(true)
+  }, [setInEdition])
 
   const onEnableEditing = useCallback(async idVoie => {
     const numeros = await getNumeros(idVoie)
@@ -113,7 +117,8 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   const onCancel = useCallback(() => {
     setIsAdding(false)
     setEditingId(null)
-  }, [setEditingId])
+    setInEdition(false)
+  }, [setEditingId, setInEdition])
 
   useEffect(() => {
     if (!editingId) {
@@ -164,7 +169,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isAdding || isPopulating || Boolean(editingId)}
+              disabled={isAdding || isPopulating || Boolean(editingId) || inEdition}
               onClick={onEnableAdding}
             >
               Ajouter une voie

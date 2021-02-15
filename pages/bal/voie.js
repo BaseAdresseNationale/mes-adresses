@@ -32,7 +32,9 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     numeros,
     reloadNumeros,
     editingId,
-    setEditingId
+    setEditingId,
+    inEdition,
+    setInEdition
   } = useContext(BalDataContext)
 
   useHelp(3)
@@ -90,16 +92,19 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     await reloadNumeros()
 
     setIsAdding(false)
-  }, [voie, reloadNumeros, token])
+    setInEdition(false)
+  }, [voie, reloadNumeros, token, setInEdition])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
-  }, [])
+    setInEdition(true)
+  }, [setInEdition])
 
   const onEnableEditing = useCallback(idNumero => {
     setIsAdding(false)
+    setInEdition(false)
     setEditingId(idNumero)
-  }, [setEditingId])
+  }, [setEditingId, setInEdition])
 
   const onEdit = useCallback(async ({numero, voie, suffixe, comment, positions}) => {
     await editNumero(editingId, {
@@ -151,8 +156,9 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
+    setInEdition(false)
     setEditingId(null)
-  }, [setEditingId])
+  }, [setEditingId, setInEdition])
 
   useEffect(() => {
     if (editingId) {
@@ -193,7 +199,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isAdding}
+              disabled={isAdding || inEdition}
               onClick={onEnableAdding}
             >
               Ajouter un numéro
