@@ -16,6 +16,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
   const [voies, setVoies] = useState()
   const [voie, setVoie] = useState()
   const [baseLocale, setBaseLocal] = useState({})
+  const [inEdition, setInEdition] = useState(false)
 
   const {token} = useContext(TokenContext)
 
@@ -115,7 +116,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
         setEditingId,
         reloadNumeros,
         reloadVoies,
-        reloadBaseLocale
+        reloadBaseLocale,
+        inEdition,
+        setInEdition
       }}
       {...props}
     />
