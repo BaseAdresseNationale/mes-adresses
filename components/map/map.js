@@ -304,10 +304,13 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
           <Pane
             position='absolute'
-            className='mapboxgl-ctrl-group mapboxgl-ctrl'
+            display='flex'
+            flexDirection='column'
             top={88}
-            right={16}
+            right={14}
             zIndex={2}
+            background={(inEdition || editingId) ? 'overlay' : null}
+            className='mapboxgl-ctrl-group'
           >
 
             {(voie || (toponymes && toponymes.length > 0)) && (
@@ -320,12 +323,13 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
               />
             )}
 
-            {token && commune && !inEdition && !editingId && (
+            {token && commune && (
               <Control
                 icon={MapMarkerIcon}
                 enabled={openForm}
                 enabledHint='Annuler'
                 disabledHint='Créer une adresse'
+                disabled={inEdition || editingId}
                 onChange={setOpenForm}
               />
             )}
