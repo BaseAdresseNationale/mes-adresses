@@ -24,6 +24,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange] = useInput('')
   const [selectedVoie, setSelectedVoie] = useState(voie)
+  const [nomVoie, setNomVoie] = useInput('')
   const [suffixe, onSuffixeChange] = useInput('')
   const [comment, onCommentChange] = useInput('')
   const [error, setError] = useState()
@@ -33,41 +34,42 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
     setSelectedVoie(selectedVoie)
   }, [])
 
+  const createToponyme = useCallback(body => {
+    body.nom = numero
+  }, [numero])
+
+  const createVoie = useCallback(body => {
+    body.nom = nomVoie
+    body.numero = Number(numero)
+    body.suffixe = suffixe.length > 0 ? suffixe : null
+    body.comment = comment.length > 0 ? comment : null
+  }, [nomVoie, numero, suffixe, comment])
+
   const onFormSubmit = useCallback(async e => {
-    const body = {}
     e.preventDefault()
+    const body = {}
+    const positions = markers.map(marker => {
+      return {
+        point: {
+          type: 'Point',
+          coordinates: [marker.longitude, marker.latitude]
+        },
+        type: marker.type
+      }
+    })
+
+    body.positions = positions
 
     setIsLoading(true)
 
     if (isToponyme) {
-      body.nom = numero
+      createToponyme(body)
     } else {
-      body.numero = Number(numero)
-      body.suffixe = suffixe.length > 0 ? suffixe : null
-      body.comment = comment.length > 0 ? comment : null
-    }
-
-    if (markers) {
-      const positions = []
-      markers.forEach(marker => {
-        positions.push(
-          {
-            point: {
-              type: 'Point',
-              coordinates: [marker.longitude, marker.latitude]
-            },
-            type: marker.type
-          }
-        )
-      })
-
-      body.positions = positions
-    } else {
-      body.positions = []
+      createVoie(body)
     }
 
     try {
-      await onSubmit(body, selectedVoie ? selectedVoie._id : null)
+      await onSubmit(body, selectedVoie, positions)
 
       if (selectedVoie._id !== voie._id) {
         router.push(
@@ -79,7 +81,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [isToponyme, markers, numero, suffixe, comment, onSubmit, selectedVoie, voie, router, baseLocale])
+  }, [createToponyme, createVoie, isToponyme, markers, onSubmit, selectedVoie, voie, router, baseLocale])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -155,7 +157,9 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
 
       {!isToponyme && (
         <VoieSearch
-          defaultVoie={selectedVoie}
+          selectedVoie={selectedVoie}
+          nomVoie={nomVoie}
+          setNomVoie={setNomVoie}
           onSelect={onSelectVoie}
         />
       )}
