@@ -174,12 +174,19 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     }
   }, [map])
 
-  const onAddAddress = useCallback(async (body, idVoie) => {
-    if (idVoie) {
-      await addNumero(idVoie, body, token)
+  const onAddAddress = useCallback(async (body, selectedVoie, positions) => {
+    if (selectedVoie) {
+      const idVoie = selectedVoie._id
+
+      await addNumero(idVoie, {...body, positions}, token)
       await reloadNumeros(idVoie)
+    } else if (!selectedVoie && body.numero) {
+      const addedVoie = await addVoie(baseLocale._id, commune.code, body, token)
+
+      await addNumero(addedVoie._id, {...body, positions}, token)
+      await reloadVoies()
     } else {
-      await addVoie(baseLocale._id, commune.code, body, token)
+      await addVoie(baseLocale._id, commune.code, {...body, positions}, token)
       await reloadVoies()
     }
 
