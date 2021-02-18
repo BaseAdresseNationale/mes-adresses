@@ -232,7 +232,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     if (editingId) {
       setOpenForm(false)
     }
-  }, [editingId, openForm])
+  }, [editingId])
 
   useEffect(() => {
     if (openForm) {
@@ -313,6 +313,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
               <Control
                 icon={MapMarkerIcon}
                 enabled={openForm}
+                isDisabled={editingId}
                 enabledHint='Annuler'
                 disabledHint='Créer une adresse'
                 onChange={setOpenForm}

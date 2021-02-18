@@ -1,41 +1,40 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Tooltip, Position, IconButton} from 'evergreen-ui'
+import {Pane, Tooltip, Position, Icon} from 'evergreen-ui'
 
-function Control({enabled, icon, enabledHint, disabledHint, onChange}) {
+function Control({enabled, isDisabled, icon, enabledHint, disabledHint, onChange}) {
   const onToggle = useCallback(e => {
     e.stopPropagation()
     onChange(enabled => !enabled)
   }, [onChange])
 
-  return (
-    <>
-      <Tooltip
-        position={Position.LEFT}
-        background={enabled ? '#e1e1e1' : null}
-        content={enabled ? enabledHint : disabledHint}
-      >
-        <Pane
-          is='button'
-          className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
-          onClick={onToggle}
-        >
-          <IconButton icon={icon} />
-        </Pane>
+  if (isDisabled) {
+    return (
+      <Pane is='button' className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'>
+        <Icon icon={icon} color='muted' />
+      </Pane>
+    )
+  }
 
-      </Tooltip>
-      {/* Unifying MapboxGL and Evergreen style */}
-      <style jsx global>{`
-        .ub-w_14px.ub-h_14px.ub-box-szg_border-box {
-          fill: black !important;
-        }
-      `}</style>
-    </>
+  return (
+    <Tooltip
+      position={Position.LEFT}
+      content={enabled ? enabledHint : disabledHint}
+    >
+      <Pane
+        is='button'
+        className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
+        onClick={onToggle}
+      >
+        <Icon icon={icon} color={isDisabled ? 'muted' : 'black'} />
+      </Pane>
+    </Tooltip>
   )
 }
 
 Control.propTypes = {
   enabled: PropTypes.bool,
+  isDisabled: PropTypes.bool,
   icon: PropTypes.string.isRequired,
   enabledHint: PropTypes.string.isRequired,
   disabledHint: PropTypes.string.isRequired,
@@ -43,7 +42,8 @@ Control.propTypes = {
 }
 
 Control.defaultProps = {
-  enabled: true
+  enabled: true,
+  isDisabled: false
 }
 
 export default Control
