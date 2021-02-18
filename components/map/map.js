@@ -99,7 +99,17 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
   const [hoverPos, setHoverPos] = useState(null)
 
-  const {baseLocale, numeros, reloadNumeros, toponymes, reloadVoies, editingId, setEditingId} = useContext(BalDataContext)
+  const {
+    baseLocale,
+    numeros,
+    reloadNumeros,
+    toponymes,
+    reloadVoies,
+    editingId,
+    setEditingId,
+    setIsEditing,
+    isEditing
+  } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
   const {enableMarker, disableMarker} = useContext(MarkerContext)
   const {token} = useContext(TokenContext)
@@ -145,7 +155,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const onClick = useCallback(event => {
     const feature = event.features && event.features[0]
 
-    if (feature && feature.properties.idVoie) {
+    if (feature && feature.properties.idVoie && !isEditing) {
       const {idVoie} = feature.properties
       if (feature.layer.id === 'voie-trace-line' && idVoie === voie._id) {
         setEditingId(voie._id)
@@ -158,7 +168,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     }
 
     setShowContextMenu(null)
-  }, [baseLocale, commune, setEditingId, voie])
+  }, [baseLocale, commune, setEditingId, isEditing, voie])
 
   const onHover = useCallback(event => {
     const feature = event.features && event.features[0]
@@ -229,18 +239,14 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   }, [map, bounds])
 
   useEffect(() => {
-    if (editingId) {
-      setOpenForm(false)
-    }
-  }, [editingId])
-
-  useEffect(() => {
     if (openForm) {
+      setIsEditing(true)
       enableMarker()
-    } else if (!openForm && !editingId) {
+    } else {
+      setIsEditing(false)
       disableMarker()
     }
-  }, [openForm, disableMarker, enableMarker, editingId])
+  }, [openForm, disableMarker, enableMarker, setIsEditing])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -313,7 +319,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
               <Control
                 icon={MapMarkerIcon}
                 enabled={openForm}
-                isDisabled={editingId}
+                isDisabled={isEditing}
                 enabledHint='Annuler'
                 disabledHint='Créer une adresse'
                 onChange={setOpenForm}

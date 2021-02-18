@@ -14,12 +14,14 @@ const VoieHeading = ({defaultVoie}) => {
   const [voie, setVoie] = useState(defaultVoie)
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {baseLocale, editingId, setEditingId, reloadVoies, numeros} = useContext(BalDataContext)
+  const {baseLocale, editingId, setEditingId, isEditing, reloadVoies, numeros} = useContext(BalDataContext)
 
   const onEnableVoieEditing = useCallback(() => {
-    setEditingId(voie._id)
-    setHovered(false)
-  }, [setEditingId, voie._id])
+    if (!isEditing) {
+      setEditingId(voie._id)
+      setHovered(false)
+    }
+  }, [setEditingId, isEditing, voie._id])
 
   const onEditVoie = useCallback(async ({nom, typeNumerotation, trace, complement, positions}) => {
     const editedVoie = await editVoie(voie._id, {
@@ -57,17 +59,19 @@ const VoieHeading = ({defaultVoie}) => {
         />
       ) : (
         <Heading
-          style={{cursor: hovered ? 'text' : 'default'}}
+          style={{cursor: hovered && !isEditing ? 'text' : 'default'}}
           onClick={onEnableVoieEditing}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
           {getFullVoieName(voie, Boolean(baseLocale.enableComplement))}
-          <EditIcon
-            marginBottom={-2}
-            marginLeft={8}
-            color={hovered ? 'black' : 'muted'}
-          />
+          {!isEditing && (
+            <EditIcon
+              marginBottom={-2}
+              marginLeft={8}
+              color={hovered ? 'black' : 'muted'}
+            />
+          )}
         </Heading>
       )}
       {numeros && (

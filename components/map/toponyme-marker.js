@@ -18,13 +18,15 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
 
   const {token} = useContext(TokenContext)
   const {marker} = useContext(MarkerContext)
-  const {baseLocale, editingId, setEditingId, reloadVoies} = useContext(BalDataContext)
+  const {baseLocale, editingId, setEditingId, isEditing, reloadVoies} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
 
-    setEditingId(toponyme._id)
-  }, [toponyme._id, setEditingId])
+    if (!isEditing) {
+      setEditingId(toponyme._id)
+    }
+  }, [isEditing, toponyme._id, setEditingId])
 
   const position = toponyme.positions[0]
 

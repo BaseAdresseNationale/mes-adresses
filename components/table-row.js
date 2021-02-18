@@ -8,18 +8,18 @@ import BalDataContext from '../contexts/bal-data'
 const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {numeros} = useContext(BalDataContext)
+  const {numeros, isEditing} = useContext(BalDataContext)
   const {type} = positions[0] || {}
 
   const onClick = useCallback(e => {
-    if (e.target.closest('[data-editable]') && !code) { // Not a commune
+    if (e.target.closest('[data-editable]') && !isEditing && !code) { // Not a commune
       onEdit(id)
     } else if (isSelectable) {
       if (e.target.closest('[data-browsable]')) {
         onSelect(id)
       }
     }
-  }, [code, id, isSelectable, onEdit, onSelect])
+  }, [code, id, isSelectable, isEditing, onEdit, onSelect])
 
   const _onEdit = useCallback(() => {
     onEdit(id)
@@ -45,7 +45,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
 
   return (
     <Table.Row isSelectable={isSelectable} style={{backgroundColor: hovered ? '#f5f6f7' : ''}} onClick={onClick}>
-      {token && numeros && numeros.length > 1 && (
+      {token && !isEditing && numeros && numeros.length > 1 && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
             checked={isSelected}
@@ -60,11 +60,11 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
         <Table.TextCell
           data-editable
           flex='0 1 1'
-          style={{cursor: onEdit ? 'text' : 'default'}}
+          style={{cursor: onEdit && !isEditing ? 'text' : 'default'}}
           onMouseEnter={() => _onMouseEnter(id)}
           onMouseLeave={_onMouseLeave}
         >
-          {label} {hovered && (
+          {label} {hovered && !isEditing && (
             <EditIcon marginBottom={-4} marginLeft={8} />
           )}
         </Table.TextCell>
@@ -104,7 +104,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
                       Consulter
                     </Menu.Item>
                   )}
-                  {onEdit && (
+                  {onEdit && !isEditing && (
                     <Menu.Item icon={EditIcon} onSelect={_onEdit}>
                       Modifier
                     </Menu.Item>

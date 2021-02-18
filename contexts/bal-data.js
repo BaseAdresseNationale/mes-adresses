@@ -10,6 +10,7 @@ import TokenContext from './token'
 const BalDataContext = React.createContext()
 
 export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, ...props}) => {
+  const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState()
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState()
@@ -74,6 +75,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
   const setEditingId = useCallback(editingId => {
     if (token) {
       _setEditingId(editingId)
+      setIsEditing(Boolean(editingId))
     }
   }, [token])
 
@@ -90,20 +92,17 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
   }, [reloadGeojson, voies, numeros, setEditingId])
 
   useEffect(() => {
+    setEditingId(null)
     reloadNumeros()
-  }, [reloadNumeros])
-
-  useEffect(() => {
     reloadVoies()
-  }, [reloadVoies])
-
-  useEffect(() => {
     reloadBaseLocale()
-  }, [reloadBaseLocale])
+  }, [setEditingId, reloadNumeros, reloadVoies, reloadBaseLocale])
 
   return (
     <BalDataContext.Provider
       value={{
+        isEditing,
+        setIsEditing,
         editingId,
         editingItem,
         geojson,
