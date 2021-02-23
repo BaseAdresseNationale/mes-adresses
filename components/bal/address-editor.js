@@ -19,7 +19,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   const router = useRouter()
 
   const {baseLocale, voie} = useContext(BalDataContext)
-  const {markers, enableMarkers, disableMarkers} = useContext(MarkersContext)
+  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange] = useInput('')
@@ -68,7 +68,6 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
 
     try {
       await onSubmit(body, selectedVoie ? selectedVoie._id : null)
-      disableMarkers()
 
       if (selectedVoie._id !== voie._id) {
         router.push(
@@ -80,7 +79,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [isToponyme, markers, numero, suffixe, comment, onSubmit, selectedVoie, disableMarkers, voie, router, baseLocale])
+  }, [isToponyme, markers, numero, suffixe, comment, onSubmit, selectedVoie, voie, router, baseLocale])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -107,6 +106,14 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
       onCancel()
     }
   }, [onCancel])
+
+  useEffect(() => {
+    addMarker({type: isToponyme ? 'segment' : 'entrée'})
+
+    return () => {
+      disableMarkers()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -159,12 +166,8 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
         onChange={onIsToponymeChange}
       />
 
-      {markers && (
-        <PositionEditor
-          isToponyme={isToponyme}
-          markers={markers}
-          enableMarkers={enableMarkers}
-        />
+      {markers.length > 0 && (
+        <PositionEditor isToponyme={isToponyme} />
       )}
 
       {!isToponyme && (

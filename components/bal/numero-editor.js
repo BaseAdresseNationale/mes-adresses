@@ -32,7 +32,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
 
   const {
     markers,
-    enableMarkers,
+    addMarker,
     disableMarkers,
     setOverrideText
   } = useContext(MarkersContext)
@@ -105,7 +105,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   }, [onCancel])
 
   const numeroSuggestion = useMemo(() => {
-    if (markers[0] && markers[0].latitude && markers[0].longitude && voie.trace) {
+    if (markers.length > 0 && voie.trace) {
       const marker = markers.find(marker => marker.type === 'entrée') || markers[0]
 
       const {trace} = voie
@@ -133,22 +133,6 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   }, [markers, voie])
 
   useEffect(() => {
-    if (initialValue) {
-      const positions = initialValue.positions.map(position => (
-        {
-          longitude: position.point.coordinates[0],
-          latitude: position.point.coordinates[1],
-          type: position.type
-        }
-      ))
-
-      enableMarkers(positions)
-    } else {
-      enableMarkers([{type: 'entrée'}])
-    }
-  }, [initialValue, enableMarkers, disableMarkers])
-
-  useEffect(() => {
     setOverrideText(numero || numeroSuggestion)
   }, [numeroSuggestion, numero, setOverrideText])
 
@@ -159,6 +143,22 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
     resetComment(comment ? comment : '')
     setError(null)
   }, [resetNumero, resetSuffixe, resetComment, setError, initialValue])
+
+  useEffect(() => {
+    if (initialValue) {
+      const positions = initialValue.positions.map(position => (
+        {
+          longitude: position.point.coordinates[0],
+          latitude: position.point.coordinates[1],
+          type: position.type
+        }
+      ))
+
+      positions.forEach(position => addMarker(position))
+    } else {
+      addMarker({type: 'entrée'})
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -218,10 +218,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       </Pane>
 
       {markers.length > 0 && (
-        <PositionEditor
-          markers={markers}
-          enableMarkers={enableMarkers}
-        />
+        <PositionEditor />
       )}
 
       {alert && (

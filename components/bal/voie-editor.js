@@ -24,11 +24,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
   const setRef = useFocus()
 
   const {data, enableDraw, disableDraw, setModeId, setData} = useContext(DrawContext)
-  const {
-    markers,
-    enableMarkers,
-    disableMarkers
-  } = useContext(MarkersContext)
+  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const onUnmount = useCallback(() => {
     disableMarkers()
@@ -107,13 +103,13 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
         }
       ))
 
-      enableMarkers(positions)
+      positions.forEach(position => addMarker(position))
     } else if (isToponyme) {
-      enableMarkers([{type: 'segment'}])
+      addMarker({type: 'segment'})
     } else {
       disableMarkers()
     }
-  }, [initialValue, disableMarkers, enableMarkers, isToponyme])
+  }, [initialValue, disableMarkers, addMarker, isToponyme])
 
   useEffect(() => {
     if (isMetric) {
@@ -188,11 +184,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       )}
 
       {isToponyme && markers.length > 0 && (
-        <PositionEditor
-          isToponyme
-          markers={markers}
-          enableMarkers={enableMarkers}
-        />
+        <PositionEditor isToponyme />
       )}
 
       {alert && isToponyme && (

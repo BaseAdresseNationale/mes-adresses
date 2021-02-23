@@ -1,29 +1,25 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Strong, Pane, SelectField, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
 
+import MarkersContext from '../../contexts/markers'
+
 import {positionsTypesList} from '../../lib/positions-types-list'
 
-function PositionEditor({markers, enableMarkers, isToponyme}) {
+function PositionEditor({isToponyme}) {
+  const {markers, addMarker, updateMarker, removeMarker} = useContext(MarkersContext)
+
   const handleAddMarker = () => {
-    enableMarkers([...markers, {type: 'entrée'}])
+    addMarker({type: isToponyme ? 'segment' : 'entrée'})
   }
 
-  const handleChange = (e, idx) => {
-    e.preventDefault()
-    markers[idx] = {
-      ...markers[idx],
-      type: e.target.value
-    }
-
-    enableMarkers(markers)
+  const handleChange = (e, marker) => {
+    updateMarker(marker._id, {...marker, type: e.target.value})
   }
 
-  const deletePosition = (e, idx) => {
+  const deletePosition = (e, marker) => {
     e.preventDefault()
-    const markersCopy = markers.filter(marker => marker !== markers[idx])
-
-    enableMarkers(markersCopy)
+    removeMarker(marker._id)
   }
 
   return (
@@ -35,13 +31,13 @@ function PositionEditor({markers, enableMarkers, isToponyme}) {
         <Strong fontWeight={400}>Longitude</Strong>
         <div />
 
-        {markers.map((marker, idx) => (
+        {markers.map(marker => (
           <>
             <SelectField
               defaultValue={marker.type}
               marginBottom={8}
               height={32}
-              onChange={e => handleChange(e, idx)}
+              onChange={e => handleChange(e, marker)}
             >
               {positionsTypesList.map(positionType => (
                 <option key={positionType.value} value={positionType.value} selected={marker.type === positionType.value}>{positionType.name}</option>
@@ -60,7 +56,7 @@ function PositionEditor({markers, enableMarkers, isToponyme}) {
               iconSize={15}
               icon={TrashIcon}
               intent='danger'
-              onClick={e => deletePosition(e, idx)}
+              onClick={e => deletePosition(e, marker)}
             />
           </>
         ))}
@@ -84,13 +80,6 @@ function PositionEditor({markers, enableMarkers, isToponyme}) {
 }
 
 PositionEditor.propTypes = {
-  markers: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string,
-    latitude: PropTypes.number,
-    longitude: PropTypes.number,
-    type: PropTypes.string
-  })).isRequired,
-  enableMarkers: PropTypes.func.isRequired,
   isToponyme: PropTypes.bool
 }
 

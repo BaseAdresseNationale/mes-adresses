@@ -5,43 +5,17 @@ import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
 
 import MarkersContext from '../../contexts/markers'
 
-function EditableMarker({viewport, size, style}) {
-  const {enabled, markers, setMarkers} = useContext(MarkersContext)
+function EditableMarker({size, style}) {
+  const {markers, updateMarker} = useContext(MarkersContext)
 
   const onDrag = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
-    setMarkers(prevMarkers => {
-      const newMarkers = [...prevMarkers]
-      newMarkers[idx] = {
-        _id: newMarkers[idx]._id,
-        longitude,
-        latitude,
-        type: newMarkers[idx].type
-      }
+    const {_id, type} = markers[idx]
 
-      return newMarkers
-    })
-  }, [setMarkers])
+    updateMarker(_id, {longitude, latitude, type})
+  }, [markers, updateMarker])
 
-  const addDefaultPosition = useCallback(() => {
-    setMarkers(markers => {
-      return markers.map(marker => {
-        if (!marker.latitude || !marker.longitude) {
-          const {latitude, longitude} = viewport
-          return {...marker, latitude, longitude}
-        }
-
-        return marker
-      })
-    })
-  }, [setMarkers, viewport])
-
-  if (!enabled || markers.length === 0) {
-    return null
-  }
-
-  if (markers.find(({latitude, longitude}) => !longitude || !latitude)) {
-    addDefaultPosition()
+  if (markers.length === 0) {
     return null
   }
 
@@ -82,10 +56,6 @@ function EditableMarker({viewport, size, style}) {
 }
 
 EditableMarker.propTypes = {
-  viewport: PropTypes.shape({
-    latitude: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired
-  }).isRequired,
   size: PropTypes.number,
   style: PropTypes.string
 }

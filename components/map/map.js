@@ -9,7 +9,6 @@ import MapContext from '../../contexts/map'
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
-import MarkersContext from '../../contexts/markers'
 
 import {addNumero, addVoie} from '../../lib/bal-api'
 
@@ -109,7 +108,6 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     isEditing
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
-  const {enableMarkers, disableMarkers} = useContext(MarkersContext)
   const {token} = useContext(TokenContext)
 
   const sources = useSources(voie, hovered, editingId)
@@ -231,13 +229,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
   useEffect(() => {
     setIsEditing(openForm)
-
-    if (openForm) {
-      enableMarkers([{type: isToponyme ? 'segment' : 'entrée'}])
-    } else if (!openForm && !editingId) {
-      disableMarkers()
-    }
-  }, [isToponyme, openForm, disableMarkers, editingId, enableMarkers, setIsEditing])
+  }, [setIsEditing, openForm])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -339,10 +331,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             />
           ))}
 
-          <EditableMarker
-            viewport={viewport}
-            style={style || defaultStyle}
-          />
+          <EditableMarker style={style || defaultStyle} />
 
           <Draw hoverPos={hoverPos} />
         </MapGl>

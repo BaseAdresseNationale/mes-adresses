@@ -2,50 +2,68 @@ import {uniqueId} from 'lodash'
 import React, {useState, useEffect, useCallback, useContext} from 'react'
 
 import BalDataContext from './bal-data'
+import MapContext from './map'
 
 const MarkersContext = React.createContext()
 
 export function MarkersContextProvider(props) {
-  const [enabled, setEnabled] = useState(false)
   const [markers, setMarkers] = useState([])
   const [overrideText, setOverrideText] = useState(null)
 
+  const {viewport} = useContext(MapContext)
   const {editingId} = useContext(BalDataContext)
 
   const disableMarkers = useCallback(() => {
-    setEnabled(false)
     setMarkers([])
     setOverrideText(null)
   }, [])
 
   useEffect(() => {
-    if (editingId) {
-      setEnabled(true)
-    } else {
+    if (!editingId) {
       disableMarkers()
     }
   }, [disableMarkers, editingId])
 
-  const enableMarkers = useCallback(defaultMarkers => {
-    if (defaultMarkers) {
-      const markers = defaultMarkers.map(marker => {
-        return {_id: uniqueId(), ...marker}
+  const addMarker = useCallback(data => {
+    let marker = {...data}
+    setMarkers(prevMarkers => {
+      if (!marker.latitude || !marker.longitude) {
+        const {latitude, longitude} = viewport
+        marker = {...marker, longitude, latitude}
+      }
+
+      return [...prevMarkers, {_id: uniqueId(), ...marker}]
+    })
+  }, [viewport])
+
+  const removeMarker = useCallback(markerId => {
+    setMarkers(prevMarkers => {
+      const filtre = prevMarkers.filter(marker => marker._id !== markerId)
+      return filtre
+    })
+  }, [])
+
+  const updateMarker = useCallback((markerId, data) => {
+    setMarkers(markers => {
+      return markers.map(marker => {
+        if (marker._id === markerId) {
+          return {_id: markerId, ...data}
+        }
+
+        return marker
       })
-
-      setMarkers(markers)
-    }
-
-    setEnabled(true)
+    })
   }, [])
 
   return (
     <MarkersContext.Provider
       value={{
-        enabled,
         markers,
         overrideText,
         setMarkers,
-        enableMarkers,
+        addMarker,
+        removeMarker,
+        updateMarker,
         setOverrideText,
         disableMarkers
       }}
