@@ -8,7 +8,7 @@ import MarkersContext from '../../contexts/markers'
 function EditableMarker({size, style}) {
   const {markers, updateMarker} = useContext(MarkersContext)
 
-  const onDrag = useCallback((event, idx) => {
+  const onDragEnd = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
     const {_id, type} = markers[idx]
 
@@ -25,7 +25,7 @@ function EditableMarker({size, style}) {
         key={marker._id}
         {...marker}
         draggable
-        onDrag={e => onDrag(e, idx)}
+        onDragEnd={e => onDragEnd(e, idx)}
       >
         <Pane>
           <Text
