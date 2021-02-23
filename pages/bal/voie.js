@@ -32,7 +32,9 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     numeros,
     reloadNumeros,
     editingId,
-    setEditingId
+    setEditingId,
+    isEditing,
+    setIsEditing
   } = useContext(BalDataContext)
 
   useHelp(3)
@@ -172,6 +174,10 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     }
   }, [voie])
 
+  useEffect(() => {
+    setIsEditing(isAdding)
+  }, [isAdding, setIsEditing])
+
   return (
     <>
       <VoieHeading defaultVoie={voie} />
@@ -193,7 +199,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isAdding}
+              disabled={isAdding || isEditing}
               onClick={onEnableAdding}
             >
               Ajouter un numéro
@@ -283,7 +289,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                   key={numero._id}
                   id={numero._id}
                   comment={numero.comment}
-                  isSelectable={!isAdding && !editingId && numero.positions.length > 1}
+                  isSelectable={!isEditing && numero.positions.length > 1}
                   label={numero.numeroComplet}
                   secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
                   handleSelect={handleSelect}

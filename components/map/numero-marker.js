@@ -19,13 +19,15 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
   const {token} = useContext(TokenContext)
   const {marker} = useContext(MarkerContext)
-  const {editingId, setEditingId, reloadNumeros} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
 
-    setEditingId(numero._id)
-  }, [setEditingId, numero])
+    if (!isEditing) {
+      setEditingId(numero._id)
+    }
+  }, [setEditingId, isEditing, numero])
 
   const position = numero.positions[0]
 

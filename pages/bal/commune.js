@@ -31,7 +31,9 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     voies,
     reloadVoies,
     editingId,
-    setEditingId
+    setEditingId,
+    isEditing,
+    setIsEditing
   } = useContext(BalDataContext)
 
   useHelp(2)
@@ -121,6 +123,10 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     }
   }, [editingId])
 
+  useEffect(() => {
+    setIsEditing(isAdding)
+  }, [isAdding, setIsEditing])
+
   return (
     <>
       <DeleteWarning
@@ -164,7 +170,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isAdding || isPopulating || Boolean(editingId)}
+              disabled={isAdding || isPopulating || Boolean(editingId) || isEditing}
               onClick={onEnableAdding}
             >
               Ajouter une voie
@@ -216,7 +222,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
               <TableRow
                 key={voie._id}
                 id={voie._id}
-                isSelectable={!isAdding && !isPopulating && !editingId && voie.positions.length === 0}
+                isSelectable={!isEditing && !isPopulating && voie.positions.length === 0}
                 label={getFullVoieName(voie, baseLocale.enableComplement)}
                 secondary={voie.positions.length === 1 ? 'Toponyme' : null}
                 onSelect={onSelect}
