@@ -71,7 +71,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
       </Table.Cell>
       <Table.Cell data-browsable />
       {secondary && (
-        <Table.TextCell data-browsable flex='0 1 1'>
+        <Table.TextCell flex='0 1 1'>
           {secondary}
         </Table.TextCell>
       )}

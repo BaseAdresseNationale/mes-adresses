@@ -8,7 +8,7 @@ import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
 
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
 import {useInput} from '../../hooks/input'
@@ -16,12 +16,9 @@ import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
 import Comment from '../comment'
-
 import PositionEditor from './position-editor'
 
 function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
-  const position = initialValue ? initialValue.positions[0] : null
-
   const {voies} = useContext(BalDataContext)
 
   const [voie, setVoie] = useState(initialVoie)
@@ -29,17 +26,16 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue ? initialValue.numero : '')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue ? initialValue.suffixe : '')
-  const [type, onTypeChange, resetType] = useInput(position ? position.type : 'entrée')
   const [comment, onCommentChange, resetComment] = useInput(initialValue ? initialValue.comment : '')
   const [error, setError] = useState()
   const focusRef = useFocus()
 
   const {
-    marker,
-    enableMarker,
-    disableMarker,
+    markers,
+    addMarker,
+    disableMarkers,
     setOverrideText
-  } = useContext(MarkerContext)
+  } = useContext(MarkersContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -53,41 +49,46 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       comment: comment.length > 0 ? comment : null
     }
 
-    if (marker) {
-      body.positions = [
-        {
-          point: {
-            type: 'Point',
-            coordinates: [marker.longitude, marker.latitude]
-          },
-          type
-        }
-      ]
+    if (markers.length > 0) {
+      const positions = []
+      markers.forEach(marker => {
+        positions.push(
+          {
+            point: {
+              type: 'Point',
+              coordinates: [marker.longitude, marker.latitude]
+            },
+            type: marker.type
+          }
+        )
+      })
+
+      body.positions = positions
     }
 
     try {
       await onSubmit(body)
-      disableMarker()
+      disableMarkers()
     } catch (error) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voie, suffixe, comment, marker, type, onSubmit, disableMarker])
+  }, [numero, voie, suffixe, comment, markers, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
-    disableMarker()
+    disableMarkers()
     onCancel()
-  }, [disableMarker, onCancel])
+  }, [disableMarkers, onCancel])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
       return 'En cours…'
     }
 
-    return initialValue ? 'Modifier' : 'Ajouter'
-  }, [initialValue, isLoading])
+    return 'Enregistrer'
+  }, [isLoading])
 
   const handleVoieChange = event => {
     const {value} = event.target
@@ -98,17 +99,15 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
-      disableMarker()
+      disableMarkers()
       onCancel()
     }
   }, [onCancel])
 
-  const hasPositionEditor = useMemo(() => {
-    return initialValue ? initialValue.positions.length < 2 : true
-  }, [initialValue])
-
   const numeroSuggestion = useMemo(() => {
-    if (marker && voie.trace) {
+    if (markers.length > 0 && voie.trace) {
+      const marker = markers.find(marker => marker.type === 'entrée') || markers[0]
+
       const {trace} = voie
       const point = {
         type: 'Feature',
@@ -131,15 +130,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       const slicedLine = length(lineSlice(from, to, trace)) * 1000
       return slicedLine.toFixed(0)
     }
-  }, [marker, voie])
-
-  useEffect(() => {
-    if (hasPositionEditor) {
-      enableMarker(position)
-    } else {
-      disableMarker()
-    }
-  }, [initialValue, hasPositionEditor, enableMarker, position, disableMarker])
+  }, [markers, voie])
 
   useEffect(() => {
     setOverrideText(numero || numeroSuggestion)
@@ -149,10 +140,25 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
     const {numero, suffixe, comment} = initialValue || {}
     resetNumero(numero)
     resetSuffixe(suffixe ? suffixe : '')
-    resetType(position ? position.type : 'entrée')
     resetComment(comment ? comment : '')
     setError(null)
-  }, [position, resetNumero, resetSuffixe, resetType, resetComment, setError, initialValue])
+  }, [resetNumero, resetSuffixe, resetComment, setError, initialValue])
+
+  useEffect(() => {
+    if (initialValue) {
+      const positions = initialValue.positions.map(position => (
+        {
+          longitude: position.point.coordinates[0],
+          latitude: position.point.coordinates[1],
+          type: position.type
+        }
+      ))
+
+      positions.forEach(position => addMarker(position))
+    } else {
+      addMarker({type: 'entrée'})
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -174,7 +180,8 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
               </option>
             ))}
           </SelectField>
-        </Pane>)}
+        </Pane>
+      )}
 
       <Pane display='flex'>
         <TextInput
@@ -185,10 +192,11 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
           disabled={isLoading}
           width='100%'
           maxWidth={300}
+          flex={2}
           min={0}
           max={9999}
           value={numero}
-          marginBottom={16}
+          marginBottom={8}
           placeholder={`Numéro${numeroSuggestion ? ` recommandé : ${numeroSuggestion}` : ''}`}
           onChange={onNumeroChange}
         />
@@ -203,24 +211,25 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
           minWidth={59}
           value={suffixe}
           maxLength={10}
-          marginBottom={16}
+          marginBottom={8}
           placeholder='Suffixe'
           onChange={onSuffixeChange}
         />
       </Pane>
 
-      {marker && (
-        <PositionEditor
-          initialValue={position}
-          alert={
-            initialValue ?
-              'Déplacez le marqueur sur la carte pour déplacer le numéro.' :
-              'Déplacez le marqueur sur la carte pour placer le numéro.'
+      {markers.length > 0 && (
+        <PositionEditor />
+      )}
+
+      {alert && (
+        <Alert marginBottom={16}>
+          {initialValue && markers.length > 1 ?
+            'Déplacer les marqueurs sur la carte pour modifier les positions' :
+            initialValue && markers.length === 1 ?
+              'Déplacer le marqueur sur la carte pour déplacer le numéro.' :
+              'Déplacer le marqueur sur la carte pour placer le numéro.'
           }
-          marker={marker}
-          type={type}
-          onTypeChange={onTypeChange}
-        />
+        </Alert>
       )}
 
       <Comment input={comment} onChange={onCommentChange} />

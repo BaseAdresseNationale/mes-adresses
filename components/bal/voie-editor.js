@@ -5,7 +5,7 @@ import {Pane, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
 import {checkIsToponyme} from '../../lib/voie'
 
 import DrawContext from '../../contexts/draw'
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 
 import {useInput, useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
@@ -15,29 +15,21 @@ import PositionEditor from './position-editor'
 import DrawEditor from './draw-editor'
 
 function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComplement}) {
-  const position = initialValue ? initialValue.positions[0] : null
-
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(checkIsToponyme(initialValue))
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [complement, onComplementChange] = useInput(initialValue ? initialValue.complement : '')
-  const [positionType, onPositionTypeChange] = useInput(position ? position.type : 'entrée')
   const [error, setError] = useState()
   const setRef = useFocus()
 
   const {data, enableDraw, disableDraw, setModeId, setData} = useContext(DrawContext)
-  const {
-    enabled,
-    marker,
-    enableMarker,
-    disableMarker
-  } = useContext(MarkerContext)
+  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const onUnmount = useCallback(() => {
-    disableMarker()
+    disableMarkers()
     disableDraw()
-  }, [disableDraw, disableMarker])
+  }, [disableDraw, disableMarkers])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -51,16 +43,21 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       trace: data ? data.geometry : null
     }
 
-    if (marker) {
-      body.positions = [
-        {
-          point: {
-            type: 'Point',
-            coordinates: [marker.longitude, marker.latitude]
-          },
-          type: positionType
-        }
-      ]
+    if (markers) {
+      const positions = []
+      markers.forEach(marker => {
+        positions.push(
+          {
+            point: {
+              type: 'Point',
+              coordinates: [marker.longitude, marker.latitude]
+            },
+            type: marker.type
+          }
+        )
+      })
+
+      body.positions = positions
     } else {
       body.positions = []
     }
@@ -72,7 +69,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, isMetric, complement, data, marker, positionType, onSubmit, onUnmount])
+  }, [nom, isMetric, complement, data, markers, onSubmit, onUnmount])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -86,23 +83,33 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       return 'En cours…'
     }
 
-    return initialValue ? 'Modifier' : 'Ajouter'
-  }, [initialValue, isLoading])
+    return 'Enregistrer'
+  }, [isLoading])
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
-      disableMarker()
+      disableMarkers()
       onCancel()
     }
   }, [onCancel])
 
   useEffect(() => {
-    if (isToponyme) {
-      enableMarker(position)
+    if (isToponyme && initialValue && initialValue.positions.length > 0) {
+      const positions = initialValue.positions.map(position => (
+        {
+          longitude: position.point.coordinates[0],
+          latitude: position.point.coordinates[1],
+          type: position.type
+        }
+      ))
+
+      positions.forEach(position => addMarker(position))
+    } else if (isToponyme) {
+      addMarker({type: 'segment'})
     } else {
-      disableMarker()
+      disableMarkers()
     }
-  }, [enabled, initialValue, disableMarker, enableMarker, isToponyme, position])
+  }, [initialValue, disableMarkers, addMarker, isToponyme])
 
   useEffect(() => {
     if (isMetric) {
@@ -176,18 +183,17 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
         <DrawEditor trace={initialValue ? initialValue.trace : null} />
       )}
 
-      {isToponyme && marker && (
-        <PositionEditor
-          initialValue={position}
-          alert={
-            initialValue ?
-              'Déplacez le marqueur sur la carte pour déplacer le toponyme.' :
-              'Déplacez le marqueur sur la carte pour placer le toponyme.'
+      {isToponyme && markers.length > 0 && (
+        <PositionEditor isToponyme />
+      )}
+
+      {alert && isToponyme && (
+        <Alert marginBottom={16}>
+          {initialValue ?
+            'Déplacer le marqueur sur la carte pour déplacer le toponyme.' :
+            'Déplacer le marqueur sur la carte pour placer le toponyme.'
           }
-          marker={marker}
-          type={positionType}
-          onTypeChange={onPositionTypeChange}
-        />
+        </Alert>
       )}
 
       {error && (

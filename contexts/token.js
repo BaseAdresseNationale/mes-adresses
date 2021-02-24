@@ -72,6 +72,6 @@ TokenContextProvider.defaultProps = {
   _token: null
 }
 
-export const MarkerContextConsumer = TokenContext.Consumer
+export const MarkersContextConsumer = TokenContext.Consumer
 
 export default TokenContext

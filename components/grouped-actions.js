@@ -23,6 +23,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const selectedNumeros = numeros.filter(({_id}) => selectedNumerosIds.includes(_id))
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
+  const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
 
   const handleComplete = () => {
     setIsShown(false)
@@ -56,9 +57,11 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
       return comment
     }
 
-    body.map(r => {
+    body.map((r, idx) => {
       r.voie = selectedVoieId
-      r.positions[0].type = type === '' ? r.positions[0].type : type
+      r.positions.forEach(position => {
+        position.type = type ? type : selectedNumeros[idx].positions[0].type
+      })
 
       r.comment = commentCondition(r)
 
@@ -112,9 +115,11 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             ))}
 
           </SelectField>
+
           <SelectField
+            disabled={hasMultiposition}
             flex={1}
-            label='Type'
+            label='Type de position'
             display='block'
             marginBottom={16}
             onChange={onPositionTypeChange}
@@ -126,6 +131,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               <option key={positionType.value} selected={selectedNumerosUniqType.toString() === positionType.value} value={positionType.value}>{positionType.name}</option>
             ))}
           </SelectField>
+
+          {hasMultiposition && (
+            <Alert intent='none' marginBottom={12}>Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée du type de position n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+          )}
 
           <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
 

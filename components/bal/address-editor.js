@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import {Pane, Heading, TextInput, Button, Alert, Checkbox} from 'evergreen-ui'
 import {useRouter} from 'next/router'
 
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-import {useInput, useCheckboxInput} from '../../hooks/input'
+import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
@@ -15,19 +15,17 @@ import Comment from '../comment'
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
-function CreateAddress({onSubmit, onCancel}) {
+function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   const router = useRouter()
 
   const {baseLocale, voie} = useContext(BalDataContext)
-  const {marker, disableMarker} = useContext(MarkerContext)
+  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
   const [numero, onNumeroChange] = useInput('')
   const [selectedVoie, setSelectedVoie] = useState(voie)
   const [suffixe, onSuffixeChange] = useInput('')
   const [comment, onCommentChange] = useInput('')
-  const [type, onTypeChange] = useInput('entrée')
   const [error, setError] = useState()
   const focusRef = useFocus()
 
@@ -49,19 +47,27 @@ function CreateAddress({onSubmit, onCancel}) {
       body.comment = comment.length > 0 ? comment : null
     }
 
-    body.positions = [
-      {
-        point: {
-          type: 'Point',
-          coordinates: [marker.longitude, marker.latitude]
-        },
-        type
-      }
-    ]
+    if (markers) {
+      const positions = []
+      markers.forEach(marker => {
+        positions.push(
+          {
+            point: {
+              type: 'Point',
+              coordinates: [marker.longitude, marker.latitude]
+            },
+            type: marker.type
+          }
+        )
+      })
+
+      body.positions = positions
+    } else {
+      body.positions = []
+    }
 
     try {
       await onSubmit(body, selectedVoie ? selectedVoie._id : null)
-      disableMarker()
 
       if (selectedVoie._id !== voie._id) {
         router.push(
@@ -73,21 +79,21 @@ function CreateAddress({onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [isToponyme, marker, type, numero, suffixe, comment, onSubmit, selectedVoie, disableMarker, voie, router, baseLocale])
+  }, [isToponyme, markers, numero, suffixe, comment, onSubmit, selectedVoie, voie, router, baseLocale])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
-    disableMarker()
+    disableMarkers()
     onCancel()
-  }, [disableMarker, onCancel])
+  }, [disableMarkers, onCancel])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
       return 'En cours…'
     }
 
-    return 'Ajouter'
+    return 'Enregistrer'
   }, [isLoading])
 
   useEffect(() => {
@@ -96,10 +102,18 @@ function CreateAddress({onSubmit, onCancel}) {
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
-      disableMarker()
+      disableMarkers()
       onCancel()
     }
   }, [onCancel])
+
+  useEffect(() => {
+    addMarker({type: isToponyme ? 'segment' : 'entrée'})
+
+    return () => {
+      disableMarkers()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -152,12 +166,8 @@ function CreateAddress({onSubmit, onCancel}) {
         onChange={onIsToponymeChange}
       />
 
-      {marker && (
-        <PositionEditor
-          marker={marker}
-          type={type}
-          onTypeChange={onTypeChange}
-        />
+      {markers.length > 0 && (
+        <PositionEditor isToponyme={isToponyme} />
       )}
 
       {!isToponyme && (
@@ -192,7 +202,9 @@ function CreateAddress({onSubmit, onCancel}) {
 
 CreateAddress.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
+  isToponyme: PropTypes.bool.isRequired,
+  onIsToponymeChange: PropTypes.func.isRequired
 }
 
 export default CreateAddress

@@ -10,14 +10,14 @@ import {getFullVoieName} from '../../lib/voie'
 import useError from '../../hooks/error'
 
 import TokenContext from '../../contexts/token'
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
 function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {marker} = useContext(MarkerContext)
+  const {markers} = useContext(MarkersContext)
   const {baseLocale, editingId, setEditingId, isEditing, reloadVoies} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
@@ -28,7 +28,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
     }
   }, [isEditing, toponyme._id, setEditingId])
 
-  const position = toponyme.positions[0]
+  const position = toponyme.positions.find(position => position.type === 'segment') || toponyme.positions[0]
 
   const markerStyle = useMemo(() => css({
     borderRadius: 20,
@@ -61,7 +61,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
     return null
   }
 
-  if (marker && editingId === toponyme._id) {
+  if (markers.length > 0 && editingId === toponyme._id) {
     return null
   }
 

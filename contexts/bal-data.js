@@ -44,7 +44,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
     }
 
     if (voies) {
-      return voies.filter(voie => voie.positions.length === 1)
+      return voies.filter(voie => voie.positions.length >= 1)
     }
   }, [voies, numeros])
 

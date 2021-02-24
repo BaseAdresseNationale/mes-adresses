@@ -289,7 +289,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                   key={numero._id}
                   id={numero._id}
                   comment={numero.comment}
-                  isSelectable={!isEditing && numero.positions.length > 1}
+                  isSelectable={!isEditing && !numero}
                   label={numero.numeroComplet}
                   secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
                   handleSelect={handleSelect}

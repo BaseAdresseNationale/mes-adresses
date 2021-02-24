@@ -5,14 +5,16 @@ import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
 import {Pane, SelectMenu, Button, Position, MapIcon, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
+import MapContext from '../../contexts/map'
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
-import MarkerContext from '../../contexts/marker'
 
 import {addNumero, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
+
+import {useCheckboxInput} from '../../hooks/input'
 
 import {vector, ortho, vectorCadastre} from './styles'
 
@@ -29,13 +31,6 @@ import useLayers from './hooks/layers'
 
 const settings = {
   maxZoom: 19
-}
-
-const defaultViewport = {
-  latitude: 46.5693,
-  longitude: 1.1771,
-  zoom: 6,
-  transitionDuration: 0
 }
 
 function getInteractionProps(enabled) {
@@ -86,16 +81,18 @@ function generateNewStyle(style, sources, layers) {
 }
 
 function Map({interactive, style: defaultStyle, commune, voie}) {
+  const {viewport, setViewport} = useContext(MapContext)
+
   const [map, setMap] = useState(null)
   const [showNumeros, setShowNumeros] = useState(true)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
   const [hovered, setHovered] = useState(null)
-  const [viewport, setViewport] = useState(defaultViewport)
   const [style, setStyle] = useState(defaultStyle)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [showPopover, setShowPopover] = useState(false)
+  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
 
   const [hoverPos, setHoverPos] = useState(null)
 
@@ -111,7 +108,6 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     isEditing
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
-  const {enableMarker, disableMarker} = useContext(MarkerContext)
   const {token} = useContext(TokenContext)
 
   const sources = useSources(voie, hovered, editingId)
@@ -143,10 +139,6 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
     return layers
   }, [editingId, sources, voie])
-
-  const onViewportChange = useCallback(viewport => {
-    setViewport(viewport)
-  }, [])
 
   const onShowNumeroChange = useCallback(value => {
     setShowNumeros(value)
@@ -216,10 +208,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   useEffect(() => {
     if (map) {
       if (bounds === null) {
-        setViewport(viewport => ({
-          ...viewport,
-          ...defaultViewport
-        }))
+        setViewport(viewport => ({...viewport}))
       } else if (bounds !== false) {
         const camera = map.cameraForBounds(bounds, {
           padding: 100
@@ -236,17 +225,11 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
         }
       }
     }
-  }, [map, bounds])
+  }, [map, bounds, setViewport])
 
   useEffect(() => {
-    if (openForm) {
-      setIsEditing(true)
-      enableMarker()
-    } else {
-      setIsEditing(false)
-      disableMarker()
-    }
-  }, [openForm, disableMarker, enableMarker, setIsEditing])
+    setIsEditing(openForm)
+  }, [setIsEditing, openForm])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -265,12 +248,12 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           onClick={onClick}
           onHover={onHover}
           onMouseLeave={() => setHovered(null)}
-          onViewportChange={onViewportChange}
+          onViewportChange={setViewport}
         >
 
           {interactive && (
             <>
-              <NavControl onViewportChange={onViewportChange} />
+              <NavControl onViewportChange={setViewport} />
               <Pane
                 position='absolute'
                 display='flex'
@@ -348,10 +331,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             />
           ))}
 
-          <EditableMarker
-            viewport={viewport}
-            style={style || defaultStyle}
-          />
+          <EditableMarker style={style || defaultStyle} />
 
           <Draw hoverPos={hoverPos} />
         </MapGl>
@@ -360,7 +340,9 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
       {commune && openForm && (
         <Pane padding={20} background='white'>
           <AddressEditor
+            isToponyme={isToponyme}
             onSubmit={onAddAddress}
+            onIsToponymeChange={onIsToponymeChange}
             onCancel={() => setOpenForm(false)}
           />
         </Pane>

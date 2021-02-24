@@ -11,14 +11,14 @@ import {removeNumero} from '../../lib/bal-api'
 import useError from '../../hooks/error'
 
 import TokenContext from '../../contexts/token'
-import MarkerContext from '../../contexts/marker'
+import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
 function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {marker} = useContext(MarkerContext)
+  const {markers} = useContext(MarkersContext)
   const {editingId, setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
@@ -29,7 +29,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     }
   }, [setEditingId, isEditing, numero])
 
-  const position = numero.positions[0]
+  const position = numero.positions.find(position => position.type === 'entrée') || numero.positions[0]
 
   const markerStyle = useMemo(() => css({
     borderRadius: 20,
@@ -84,7 +84,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     return null
   }
 
-  if (marker && editingId === numero._id) {
+  if (markers.length > 0 && editingId === numero._id) {
     return null
   }
 
@@ -94,7 +94,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     <>
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
 
-        {numero.positions[0].type === 'inconnue' ? (
+        {numero.positions.find(position => position.type === 'inconnue') ? (
           <Tooltip content='Le type de la position est inconnu' position={Position.RIGHT}>
             <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
               <Text color='white' paddingLeft={8} paddingRight={5}>

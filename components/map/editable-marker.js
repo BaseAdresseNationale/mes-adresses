@@ -1,74 +1,61 @@
-import React, {useCallback, useEffect, useContext} from 'react'
+import React, {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
 
-import MarkerContext from '../../contexts/marker'
-import BalDataContext from '../../contexts/bal-data'
+import MarkersContext from '../../contexts/markers'
 
-function EditableMarker({viewport, size, style}) {
-  const {enabled, marker, overrideText, setMarker} = useContext(MarkerContext)
-  const {editingItem} = useContext(BalDataContext)
+function EditableMarker({size, style}) {
+  const {markers, updateMarker} = useContext(MarkersContext)
 
-  const onDrag = useCallback(event => {
-    setMarker(marker => ({
-      ...marker,
-      longitude: event.lngLat[0],
-      latitude: event.lngLat[1]
-    }))
-  }, [setMarker])
+  const onDragEnd = useCallback((event, idx) => {
+    const [longitude, latitude] = event.lngLat
+    const {_id, type} = markers[idx]
 
-  useEffect(() => {
-    if (enabled) {
-      setMarker(marker => marker || {
-        latitude: viewport.latitude,
-        longitude: viewport.longitude
-      })
-    }
-  }, [enabled, setMarker, viewport])
+    updateMarker(_id, {longitude, latitude, type})
+  }, [markers, updateMarker])
 
-  if (!enabled || !marker) {
+  if (markers.length === 0) {
     return null
   }
 
   return (
-    <Marker
-      {...marker}
-      draggable
-      onDrag={onDrag}
-    >
-      <Pane>
-        {((editingItem && editingItem.positions) || overrideText) && (
+    markers.map((marker, idx) => (
+      <Marker
+        key={marker._id}
+        {...marker}
+        draggable
+        onDragEnd={e => onDragEnd(e, idx)}
+      >
+        <Pane>
           <Text
             position='absolute'
-            top={-58}
+            top={-62}
             transform='translate(-50%)'
             borderRadius={20}
             backgroundColor='rgba(0, 0, 0, 0.7)'
             color='white'
             paddingX={8}
+            paddingY={1}
+            fontSize={10}
             whiteSpace='nowrap'
           >
-            {overrideText || editingItem.nom || editingItem.numeroComplet}
+            {marker.type}
           </Text>
-        )}
 
-        <MapMarkerIcon
-          filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
-          color={style === 'vector' ? 'info' : 'success'}
-          transform='translate(-50%, -100%)'
-          size={size}
-        />
-      </Pane>
-    </Marker>
+          <MapMarkerIcon
+            filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
+            color={style === 'vector' ? 'info' : 'success'}
+            transform='translate(-50%, -100%)'
+            size={size}
+          />
+        </Pane>
+      </Marker>
+    ))
   )
 }
 
 EditableMarker.propTypes = {
-  viewport: PropTypes.shape({
-    latitude: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired
-  }).isRequired,
   size: PropTypes.number,
   style: PropTypes.string
 }
