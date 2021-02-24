@@ -22,7 +22,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [numero, onNumeroChange] = useInput('')
+  const [input, onInputChange] = useInput('')
   const [selectedVoie, setSelectedVoie] = useState(voie)
   const [nomVoie, setNomVoie] = useInput('')
   const [suffixe, onSuffixeChange] = useInput('')
@@ -35,15 +35,15 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   }, [])
 
   const createToponyme = useCallback(body => {
-    body.nom = numero
-  }, [numero])
+    body.nom = input
+  }, [input])
 
   const createVoie = useCallback(body => {
     body.nom = nomVoie
-    body.numero = Number(numero)
+    body.numero = Number(input)
     body.suffixe = suffixe.length > 0 ? suffixe : null
     body.comment = comment.length > 0 ? comment : null
-  }, [nomVoie, numero, suffixe, comment])
+  }, [nomVoie, input, suffixe, comment])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -132,10 +132,10 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
           maxWidth={300}
           min={0}
           max={9999}
-          value={numero}
+          value={input}
           marginBottom={16}
           placeholder={isToponyme ? 'Nom du toponyme…' : 'Numéro'}
-          onChange={onNumeroChange}
+          onChange={onInputChange}
         />
 
         {!isToponyme && (
