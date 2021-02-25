@@ -6,7 +6,7 @@ import {Pane, Heading, TextInput, Button, Alert, Checkbox} from 'evergreen-ui'
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-import {useInput} from '../../hooks/input'
+import {useInput, useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
@@ -15,7 +15,7 @@ import Comment from '../comment'
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
-function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
+function CreateAddress({onSubmit, onCancel}) {
   const {voie} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
@@ -25,6 +25,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   const [nomVoie, setNomVoie] = useState(voie ? voie.nom : '')
   const [suffixe, onSuffixeChange] = useInput('')
   const [comment, onCommentChange] = useInput('')
+  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
   const [error, setError] = useState()
   const focusRef = useFocus()
 
@@ -200,9 +201,7 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
 
 CreateAddress.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  isToponyme: PropTypes.bool.isRequired,
-  onIsToponymeChange: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired
 }
 
 export default CreateAddress
