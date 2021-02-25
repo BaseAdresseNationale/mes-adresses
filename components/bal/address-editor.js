@@ -36,6 +36,8 @@ function CreateAddress({onSubmit, onCancel}) {
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
+    setIsLoading(true)
+
     const positions = markers.map(marker => {
       return {
         point: {
@@ -45,8 +47,6 @@ function CreateAddress({onSubmit, onCancel}) {
         type: marker.type
       }
     })
-
-    setIsLoading(true)
 
     let voie
     let numero = null
@@ -68,8 +68,9 @@ function CreateAddress({onSubmit, onCancel}) {
       await onSubmit(voie, numero)
     } catch (error) {
       setError(error.message)
-      setIsLoading(false)
     }
+
+    setIsLoading(false)
   }, [input, nomVoie, comment, suffixe, markers, isToponyme, selectedVoie, onSubmit])
 
   const onFormCancel = useCallback(e => {
