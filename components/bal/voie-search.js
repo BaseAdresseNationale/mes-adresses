@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Autocomplete, TextInput} from 'evergreen-ui'
 
@@ -6,7 +6,7 @@ import useFuse from '../../hooks/fuse'
 
 import BalDataContext from '../../contexts/bal-data'
 
-function VoieSearch({defaultVoie, onSelect}) {
+function VoieSearch({selectedVoie, nomVoie, setNomVoie, onSelect}) {
   const {voies} = useContext(BalDataContext)
   const [filtered, onFilter] = useFuse(voies, 200, {
     keys: [
@@ -14,12 +14,17 @@ function VoieSearch({defaultVoie, onSelect}) {
     ]
   })
 
+  const handleChange = useCallback(e => {
+    onFilter(e.target.value)
+    setNomVoie(e)
+  }, [onFilter, setNomVoie])
+
   return (
     <Autocomplete
       isFilterDisabled
-      selectedItem={defaultVoie}
+      selectedItem={selectedVoie}
       items={filtered}
-      itemToString={item => item ? item.nom : ''}
+      itemToString={item => item ? item.nom : nomVoie}
       onChange={onSelect}
     >
       {({getInputProps, getRef, inputValue}) => {
@@ -28,9 +33,9 @@ function VoieSearch({defaultVoie, onSelect}) {
             ref={getRef}
             required
             placeholder='Voie'
-            value={defaultVoie ? defaultVoie.nom : inputValue}
+            value={nomVoie || inputValue}
             {...getInputProps({
-              onChange: e => onFilter(e.target.value)
+              onChange: e => handleChange(e)
             })}
           />
         )
@@ -40,12 +45,16 @@ function VoieSearch({defaultVoie, onSelect}) {
 }
 
 VoieSearch.propTypes = {
-  defaultVoie: PropTypes.object,
+  selectedVoie: PropTypes.object,
+  nomVoie: PropTypes.string,
+  setNomVoie: PropTypes.string,
   onSelect: PropTypes.func.isRequired
 }
 
 VoieSearch.defaultProps = {
-  defaultVoie: null
+  selectedVoie: null,
+  nomVoie: null,
+  setNomVoie: null
 }
 
 export default VoieSearch

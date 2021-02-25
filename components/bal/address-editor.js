@@ -1,12 +1,12 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {trimStart, trimEnd} from 'lodash'
 import {Pane, Heading, TextInput, Button, Alert, Checkbox} from 'evergreen-ui'
-import {useRouter} from 'next/router'
 
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-import {useInput} from '../../hooks/input'
+import {useInput, useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
@@ -15,71 +15,63 @@ import Comment from '../comment'
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
-function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
-  const router = useRouter()
-
-  const {baseLocale, voie} = useContext(BalDataContext)
+function AddressEditor({onSubmit, onCancel}) {
+  const {voie} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [numero, onNumeroChange] = useInput('')
+  const [input, onInputChange] = useInput('')
   const [selectedVoie, setSelectedVoie] = useState(voie)
+  const [nomVoie, setNomVoie] = useState(voie ? voie.nom : '')
   const [suffixe, onSuffixeChange] = useInput('')
   const [comment, onCommentChange] = useInput('')
+  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
   const [error, setError] = useState()
   const focusRef = useFocus()
 
-  const onSelectVoie = useCallback(selectedVoie => {
+  const onSelectVoie = selectedVoie => {
     setSelectedVoie(selectedVoie)
-  }, [])
+    setNomVoie(selectedVoie.nom)
+  }
 
   const onFormSubmit = useCallback(async e => {
-    const body = {}
     e.preventDefault()
-
     setIsLoading(true)
 
+    const positions = markers.map(marker => {
+      return {
+        point: {
+          type: 'Point',
+          coordinates: [marker.longitude, marker.latitude]
+        },
+        type: marker.type
+      }
+    })
+
+    let voie
+    let numero = null
     if (isToponyme) {
-      body.nom = numero
+      voie = {nom: input, positions}
     } else {
-      body.numero = Number(numero)
-      body.suffixe = suffixe.length > 0 ? suffixe : null
-      body.comment = comment.length > 0 ? comment : null
-    }
-
-    if (markers) {
-      const positions = []
-      markers.forEach(marker => {
-        positions.push(
-          {
-            point: {
-              type: 'Point',
-              coordinates: [marker.longitude, marker.latitude]
-            },
-            type: marker.type
-          }
-        )
-      })
-
-      body.positions = positions
-    } else {
-      body.positions = []
+      voie = selectedVoie || {
+        nom: nomVoie
+      }
+      numero = {
+        numero: Number(input),
+        suffixe: suffixe.length > 0 ? suffixe : null,
+        comment: comment.length > 0 ? comment : null,
+        positions
+      }
     }
 
     try {
-      await onSubmit(body, selectedVoie ? selectedVoie._id : null)
-
-      if (selectedVoie._id !== voie._id) {
-        router.push(
-          `/bal/voie?balId=${baseLocale._id}&codeCommune=${selectedVoie.commune}&idVoie=${selectedVoie._id}`,
-          `/bal/${baseLocale._id}/communes/${selectedVoie.commune}/voies/${selectedVoie._id}`
-        )
-      }
+      await onSubmit(voie, numero)
     } catch (error) {
       setError(error.message)
-      setIsLoading(false)
     }
-  }, [isToponyme, markers, numero, suffixe, comment, onSubmit, selectedVoie, voie, router, baseLocale])
+
+    setIsLoading(false)
+  }, [input, nomVoie, comment, suffixe, markers, isToponyme, selectedVoie, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -99,6 +91,12 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   useEffect(() => {
     setSelectedVoie(isToponyme ? null : voie)
   }, [isToponyme, voie])
+
+  useEffect(() => {
+    if (selectedVoie && selectedVoie.nom !== nomVoie) {
+      setSelectedVoie(null)
+    }
+  }, [nomVoie, selectedVoie])
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
@@ -130,10 +128,10 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
           maxWidth={300}
           min={0}
           max={9999}
-          value={numero}
+          value={input}
           marginBottom={16}
           placeholder={isToponyme ? 'Nom du toponyme…' : 'Numéro'}
-          onChange={onNumeroChange}
+          onChange={onInputChange}
         />
 
         {!isToponyme && (
@@ -155,7 +153,9 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
 
       {!isToponyme && (
         <VoieSearch
-          defaultVoie={selectedVoie}
+          selectedVoie={selectedVoie}
+          nomVoie={nomVoie}
+          setNomVoie={e => setNomVoie(trimStart(trimEnd(e.target.value)))}
           onSelect={onSelectVoie}
         />
       )}
@@ -200,11 +200,9 @@ function CreateAddress({onSubmit, onCancel, onIsToponymeChange, isToponyme}) {
   )
 }
 
-CreateAddress.propTypes = {
+AddressEditor.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  isToponyme: PropTypes.bool.isRequired,
-  onIsToponymeChange: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired
 }
 
-export default CreateAddress
+export default AddressEditor

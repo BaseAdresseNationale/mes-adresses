@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
-import Router from 'next/router'
+import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
 import {Pane, SelectMenu, Button, Position, MapIcon, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
@@ -13,8 +13,6 @@ import DrawContext from '../../contexts/draw'
 import {addNumero, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
-
-import {useCheckboxInput} from '../../hooks/input'
 
 import {vector, ortho, vectorCadastre} from './styles'
 
@@ -81,6 +79,7 @@ function generateNewStyle(style, sources, layers) {
 }
 
 function Map({interactive, style: defaultStyle, commune, voie}) {
+  const router = useRouter()
   const {viewport, setViewport} = useContext(MapContext)
 
   const [map, setMap] = useState(null)
@@ -92,19 +91,18 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [showPopover, setShowPopover] = useState(false)
-  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
 
   const [hoverPos, setHoverPos] = useState(null)
 
   const {
     baseLocale,
     numeros,
-    reloadNumeros,
     toponymes,
-    reloadVoies,
     editingId,
     setEditingId,
     setIsEditing,
+    reloadVoies,
+    reloadNumeros,
     isEditing
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
@@ -152,7 +150,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
       if (feature.layer.id === 'voie-trace-line' && idVoie === voie._id) {
         setEditingId(voie._id)
       } else {
-        Router.push(
+        router.push(
           `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
           `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
         )
@@ -160,7 +158,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     }
 
     setShowContextMenu(null)
-  }, [baseLocale, commune, setEditingId, isEditing, voie])
+  }, [router, baseLocale, commune, setEditingId, isEditing, voie])
 
   const onHover = useCallback(event => {
     const feature = event.features && event.features[0]
@@ -174,17 +172,38 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     }
   }, [map])
 
-  const onAddAddress = useCallback(async (body, idVoie) => {
-    if (idVoie) {
-      await addNumero(idVoie, body, token)
-      await reloadNumeros(idVoie)
-    } else {
-      await addVoie(baseLocale._id, commune.code, body, token)
-      await reloadVoies()
+  const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
+    if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
+      reloadNumeros()
+    } else if (isNumeroCreated) { // Numéro créé depuis la vue commune ou une autre voie
+      router.push(
+        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+      )
+    } else if (isVoiesList) { // Toponyme créé depuis la vue commune
+      reloadVoies()
+    } else { // Toponyme créé depuis la vue voie
+      router.push(
+        `/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}`
+      )
+    }
+  }, [router, baseLocale._id, commune, voie, reloadNumeros, reloadVoies])
+
+  const onAddAddress = useCallback(async (voieData, numero) => {
+    let editedVoie = voieData
+
+    if (!editedVoie._id) {
+      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
+    }
+
+    if (numero) {
+      await addNumero(editedVoie._id, numero, token)
     }
 
     setOpenForm(false)
-  }, [baseLocale, commune, reloadNumeros, reloadVoies, token])
+    reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
+  }, [baseLocale._id, commune, voie, token, reloadView])
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -339,12 +358,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
       {commune && openForm && (
         <Pane padding={20} background='white'>
-          <AddressEditor
-            isToponyme={isToponyme}
-            onSubmit={onAddAddress}
-            onIsToponymeChange={onIsToponymeChange}
-            onCancel={() => setOpenForm(false)}
-          />
+          <AddressEditor onSubmit={onAddAddress} onCancel={() => setOpenForm(false)} />
         </Pane>
       )}
     </Pane>
