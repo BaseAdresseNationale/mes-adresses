@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
-import Router from 'next/router'
+import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
 import {Pane, SelectMenu, Button, Position, MapIcon, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
@@ -81,6 +81,7 @@ function generateNewStyle(style, sources, layers) {
 }
 
 function Map({interactive, style: defaultStyle, commune, voie}) {
+  const router = useRouter()
   const {viewport, setViewport} = useContext(MapContext)
 
   const [map, setMap] = useState(null)
@@ -101,7 +102,6 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     numeros,
     reloadNumeros,
     toponymes,
-    reloadVoies,
     editingId,
     setEditingId,
     setIsEditing,
@@ -152,7 +152,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
       if (feature.layer.id === 'voie-trace-line' && idVoie === voie._id) {
         setEditingId(voie._id)
       } else {
-        Router.push(
+        router.push(
           `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
           `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
         )
@@ -160,7 +160,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     }
 
     setShowContextMenu(null)
-  }, [baseLocale, commune, setEditingId, isEditing, voie])
+  }, [router, baseLocale, commune, setEditingId, isEditing, voie])
 
   const onHover = useCallback(event => {
     const feature = event.features && event.features[0]
@@ -174,24 +174,24 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     }
   }, [map])
 
-  const onAddAddress = useCallback(async (body, selectedVoie, positions) => {
-    if (selectedVoie) {
-      const idVoie = selectedVoie._id
-
-      await addNumero(idVoie, {...body, positions}, token)
-      await reloadNumeros(idVoie)
-    } else if (!selectedVoie && body.numero) {
-      const addedVoie = await addVoie(baseLocale._id, commune.code, body, token)
-
-      await addNumero(addedVoie._id, {...body, positions}, token)
-      await reloadVoies()
-    } else {
-      await addVoie(baseLocale._id, commune.code, {...body, positions}, token)
-      await reloadVoies()
+  const onAddAddress = useCallback(async (voie, numero) => {
+    let editedVoie = voie
+    if (!voie._id) {
+      editedVoie = await addVoie(baseLocale._id, commune.code, voie, token)
     }
 
+    if (numero) {
+      await addNumero(editedVoie._id, numero, token)
+      await reloadNumeros(editedVoie._id)
+    }
+
+    router.push(
+      `/bal/voie?balId=${baseLocale._id}&codeCommune=${editedVoie.commune}&idVoie=${editedVoie._id}`,
+      `/bal/${baseLocale._id}/communes/${editedVoie.commune}/voies/${editedVoie._id}`
+    )
+
     setOpenForm(false)
-  }, [baseLocale, commune, reloadNumeros, reloadVoies, token])
+  }, [router, reloadNumeros, baseLocale._id, commune, token])
 
   useEffect(() => {
     if (sources.length > 0) {
