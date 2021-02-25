@@ -15,7 +15,7 @@ import Comment from '../comment'
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
-function CreateAddress({onSubmit, onCancel}) {
+function AddressEditor({onSubmit, onCancel}) {
   const {voie} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
@@ -200,9 +200,9 @@ function CreateAddress({onSubmit, onCancel}) {
   )
 }
 
-CreateAddress.propTypes = {
+AddressEditor.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired
 }
 
-export default CreateAddress
+export default AddressEditor
