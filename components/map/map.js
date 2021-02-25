@@ -97,11 +97,12 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const {
     baseLocale,
     numeros,
-    reloadNumeros,
     toponymes,
     editingId,
     setEditingId,
     setIsEditing,
+    reloadVoies,
+    reloadNumeros,
     isEditing
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
@@ -171,24 +172,38 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     }
   }, [map])
 
-  const onAddAddress = useCallback(async (voie, numero) => {
-    let editedVoie = voie
-    if (!voie._id) {
-      editedVoie = await addVoie(baseLocale._id, commune.code, voie, token)
+  const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
+    if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
+      reloadNumeros()
+    } else if (isNumeroCreated) { // Numéro créé depuis la vue commune ou une autre voie
+      router.push(
+        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+      )
+    } else if (isVoiesList) { // Toponyme créé depuis la vue commune
+      reloadVoies()
+    } else { // Toponyme créé depuis la vue voie
+      router.push(
+        `/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}`
+      )
+    }
+  }, [router, baseLocale._id, commune, voie, reloadNumeros, reloadVoies])
+
+  const onAddAddress = useCallback(async (voieData, numero) => {
+    let editedVoie = voieData
+
+    if (!editedVoie._id) {
+      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
     }
 
     if (numero) {
       await addNumero(editedVoie._id, numero, token)
-      await reloadNumeros(editedVoie._id)
     }
 
-    router.push(
-      `/bal/voie?balId=${baseLocale._id}&codeCommune=${editedVoie.commune}&idVoie=${editedVoie._id}`,
-      `/bal/${baseLocale._id}/communes/${editedVoie.commune}/voies/${editedVoie._id}`
-    )
-
     setOpenForm(false)
-  }, [router, reloadNumeros, baseLocale._id, commune, token])
+    reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
+  }, [baseLocale._id, commune, voie, token, reloadView])
 
   useEffect(() => {
     if (sources.length > 0) {
