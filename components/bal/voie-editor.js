@@ -1,5 +1,6 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {useRouter} from 'next/router'
 import {Pane, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
 
 import {checkIsToponyme} from '../../lib/voie'
@@ -15,6 +16,8 @@ import PositionEditor from './position-editor'
 import DrawEditor from './draw-editor'
 
 function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComplement}) {
+  const router = useRouter()
+
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(checkIsToponyme(initialValue))
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
@@ -40,13 +43,13 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       nom,
       typeNumerotation: isMetric ? 'metrique' : 'numerique',
       complement: complement.length > 1 ? complement : null,
-      trace: data ? data.geometry : null
+      trace: data ? data.geometry : null,
+      positions: []
     }
 
     if (markers) {
-      const positions = []
       markers.forEach(marker => {
-        positions.push(
+        body.positions.push(
           {
             point: {
               type: 'Point',
@@ -56,20 +59,24 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
           }
         )
       })
-
-      body.positions = positions
-    } else {
-      body.positions = []
     }
 
     try {
       await onSubmit(body)
       onUnmount()
+
+      if (body.positions.length > 0) {
+        const {balId, codeCommune} = router.query
+        router.push(
+          `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
+          `/bal/${balId}/communes/${codeCommune}`
+        )
+      }
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, isMetric, complement, data, markers, onSubmit, onUnmount])
+  }, [router, nom, isMetric, complement, data, markers, onSubmit, onUnmount])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
