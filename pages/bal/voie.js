@@ -26,8 +26,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   const {token} = useContext(TokenContext)
 
-  const currentVoie = editedVoie || voie
-
   const {
     numeros,
     reloadNumeros,
@@ -169,18 +167,12 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   }, [isEdited, setEditingId])
 
   useEffect(() => {
-    if (voie) {
-      setEditedVoie(null)
-    }
-  }, [voie])
-
-  useEffect(() => {
     setIsEditing(isAdding)
   }, [isAdding, setIsEditing])
 
   return (
     <>
-      <VoieHeading defaultVoie={voie} />
+      <VoieHeading defaultVoie={editedVoie} updateVoie={setEditedVoie} />
       <Pane
         flexShrink={0}
         elevation={0}
@@ -193,7 +185,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         <Pane>
           <Heading>Liste des numéros</Heading>
         </Pane>
-        {currentVoie.positions.length === 0 && token && (
+        {editedVoie.positions.length === 0 && token && (
           <Pane marginLeft='auto'>
             <Button
               iconBefore={AddIcon}
@@ -237,7 +229,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       )}
 
       <Pane flex={1} overflowY='scroll'>
-        {currentVoie.positions.length === 0 ? (
+        {editedVoie.positions.length === 0 ? (
           <Table>
             <Table.Head>
               {!editingId && numeros && token && filtered.length > 1 && (
@@ -257,7 +249,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               <Table.Row height='auto'>
                 <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
-                    initialVoie={voie}
+                    initialVoie={editedVoie}
                     onSubmit={onAdd}
                     onCancel={onCancel}
                   />
@@ -275,7 +267,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               <Table.Row height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <NumeroEditor
-                    initialVoie={voie}
+                    initialVoie={editedVoie}
                     initialValue={editedNumero}
                     onSubmit={onEdit}
                     onCancel={onCancel}
@@ -303,7 +295,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         ) : (
           <Pane padding={16}>
             <Paragraph>
-              La voie « {currentVoie.nom} » est un toponyme et ne peut pas contenir de numéro.
+              La voie « {editedVoie.nom} » est un toponyme et ne peut pas contenir de numéro.
             </Paragraph>
           </Pane>
         )}

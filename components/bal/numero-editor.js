@@ -104,6 +104,10 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
     }
   }, [onCancel])
 
+  useEffect(() => {
+    setVoie(initialVoie)
+  }, [initialVoie])
+
   const numeroSuggestion = useMemo(() => {
     if (markers.length > 0 && voie.trace) {
       const marker = markers.find(marker => marker.type === 'entrée') || markers[0]

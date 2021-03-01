@@ -10,7 +10,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 import VoieEditor from '../../components/bal/voie-editor'
 
-const VoieHeading = ({defaultVoie}) => {
+const VoieHeading = ({defaultVoie, updateVoie}) => {
   const [voie, setVoie] = useState(defaultVoie)
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
@@ -34,9 +34,8 @@ const VoieHeading = ({defaultVoie}) => {
 
     setEditingId(null)
     await reloadVoies()
-
-    setVoie(editedVoie)
-  }, [reloadVoies, setEditingId, token, voie])
+    updateVoie(editedVoie)
+  }, [reloadVoies, setEditingId, token, voie, updateVoie])
 
   useEffect(() => {
     setVoie(defaultVoie)
@@ -87,7 +86,8 @@ VoieHeading.propTypes = {
     nom: PropTypes.string.isRequired,
     complement: PropTypes.string,
     positions: PropTypes.array.isRequired
-  }).isRequired
+  }).isRequired,
+  updateVoie: PropTypes.func.isRequired
 }
 
 export default VoieHeading
