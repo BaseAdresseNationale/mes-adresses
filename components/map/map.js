@@ -350,7 +350,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             />
           ))}
 
-          <EditableMarker style={style || defaultStyle} />
+          <EditableMarker style={style || defaultStyle} voie={voie} />
 
           <Draw hoverPos={hoverPos} />
         </MapGl>

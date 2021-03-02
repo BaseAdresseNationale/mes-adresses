@@ -1,9 +1,6 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectField, TextInput, Button, Alert} from 'evergreen-ui'
-import nearestPointOnLine from '@turf/nearest-point-on-line'
-import length from '@turf/length'
-import lineSlice from '@turf/line-slice'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
@@ -34,7 +31,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
     markers,
     addMarker,
     disableMarkers,
-    setOverrideText
+    overrideText
   } = useContext(MarkersContext)
 
   const onFormSubmit = useCallback(async e => {
@@ -104,38 +101,6 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
     }
   }, [onCancel])
 
-  const numeroSuggestion = useMemo(() => {
-    if (markers.length > 0 && voie.trace) {
-      const marker = markers.find(marker => marker.type === 'entrée') || markers[0]
-
-      const {trace} = voie
-      const point = {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'Point',
-          coordinates: [marker.longitude, marker.latitude]
-        }
-      }
-      const from = {
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'Point',
-          coordinates: trace.coordinates[0]
-        }
-      }
-
-      const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
-      const slicedLine = length(lineSlice(from, to, trace)) * 1000
-      return slicedLine.toFixed(0)
-    }
-  }, [markers, voie])
-
-  useEffect(() => {
-    setOverrideText(numero || numeroSuggestion)
-  }, [numeroSuggestion, numero, setOverrideText])
-
   useEffect(() => {
     const {numero, suffixe, comment} = initialValue || {}
     resetNumero(numero)
@@ -197,7 +162,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
           max={9999}
           value={numero}
           marginBottom={8}
-          placeholder={`Numéro${numeroSuggestion ? ` recommandé : ${numeroSuggestion}` : ''}`}
+          placeholder={`Numéro${overrideText ? ` recommandé : ${overrideText}` : ''}`}
           onChange={onNumeroChange}
         />
 
