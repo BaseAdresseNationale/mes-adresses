@@ -7,9 +7,11 @@ import length from '@turf/length'
 import lineSlice from '@turf/line-slice'
 
 import MarkersContext from '../../contexts/markers'
+import BalDataContext from '../../contexts/bal-data'
 
 function EditableMarker({size, style, voie}) {
   const {markers, updateMarker, setOverrideText} = useContext(MarkersContext)
+  const {editingItem} = useContext(BalDataContext)
   const [suggestedNumero, setSuggestedNumero] = useState(null)
 
   const onDragEnd = useCallback((event, idx) => {
@@ -78,7 +80,7 @@ function EditableMarker({size, style, voie}) {
             fontSize={10}
             whiteSpace='nowrap'
           >
-            {suggestedNumero && `${suggestedNumero} - `}{marker.type}
+            {editingItem ? `${editingItem.numero} - ` : suggestedNumero && `${suggestedNumero} - `}{marker.type}
           </Text>
 
           <MapMarkerIcon
