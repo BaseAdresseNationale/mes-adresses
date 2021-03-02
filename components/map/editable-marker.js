@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react'
+import React, {useCallback, useContext, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
@@ -54,9 +54,12 @@ function EditableMarker({size, style, voie}) {
     setSuggestedNumero(numeroSuggestion)
   }, [voie])
 
-  if (markers.length === 0) {
-    return null
-  }
+  useEffect(() => {
+    if (markers.length === 0) {
+      setSuggestedNumero(null)
+      return null
+    }
+  }, [markers])
 
   return (
     markers.map((marker, idx) => (
