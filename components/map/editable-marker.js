@@ -22,7 +22,7 @@ function EditableMarker({size, style, voie}) {
     updateMarker(_id, {longitude, latitude, type})
   }, [markers, updateMarker, setOverrideText, suggestedNumero])
 
-  const onDrag = useCallback(event => {
+  const onDrag = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
 
     const numeroSuggestion = () => {
@@ -51,7 +51,9 @@ function EditableMarker({size, style, voie}) {
       }
     }
 
-    setSuggestedNumero(numeroSuggestion)
+    if (idx === 0) {
+      setSuggestedNumero(numeroSuggestion)
+    }
   }, [voie])
 
   useEffect(() => {
@@ -67,7 +69,7 @@ function EditableMarker({size, style, voie}) {
         key={marker._id}
         {...marker}
         draggable
-        onDrag={e => onDrag(e)}
+        onDrag={e => onDrag(e, idx)}
         onDragEnd={e => onDragEnd(e, idx)}
       >
         <Pane>
