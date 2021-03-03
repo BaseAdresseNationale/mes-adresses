@@ -51,7 +51,7 @@ function EditableMarker({size, style, voie}) {
       }
     }
 
-    if (idx === 0) {
+    if (idx === 0 && voie) {
       setSuggestedNumero(numeroSuggestion)
     }
   }, [voie])
@@ -85,7 +85,7 @@ function EditableMarker({size, style, voie}) {
             fontSize={10}
             whiteSpace='nowrap'
           >
-            {editingItem ? `${editingItem.numero} - ` : suggestedNumero && `${suggestedNumero} - `}{marker.type}
+            {editingItem && editingItem.numero ? `${editingItem.numero} - ` : suggestedNumero && `${suggestedNumero} - `}{marker.type}
           </Text>
 
           <MapMarkerIcon
