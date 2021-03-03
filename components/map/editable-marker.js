@@ -9,7 +9,7 @@ import lineSlice from '@turf/line-slice'
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-function EditableMarker({size, style, voie}) {
+function EditableMarker({size, style, voie, isToponyme}) {
   const {markers, updateMarker, setOverrideText} = useContext(MarkersContext)
   const {editingItem} = useContext(BalDataContext)
   const [suggestedNumero, setSuggestedNumero] = useState(null)
@@ -85,7 +85,7 @@ function EditableMarker({size, style, voie}) {
             fontSize={10}
             whiteSpace='nowrap'
           >
-            {editingItem && editingItem.numero ? `${editingItem.numero} - ` : suggestedNumero && `${suggestedNumero} - `}{marker.type}
+            {!isToponyme && (editingItem && editingItem.numero ? `${editingItem.numero} - ` : suggestedNumero && `${suggestedNumero} - `)}{marker.type}
           </Text>
 
           <MapMarkerIcon

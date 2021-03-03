@@ -14,6 +14,8 @@ import {addNumero, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
 
+import {useCheckboxInput} from '../../hooks/input'
+
 import {vector, ortho, vectorCadastre} from './styles'
 
 import NavControl from './nav-control'
@@ -91,6 +93,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [showPopover, setShowPopover] = useState(false)
+  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
 
   const [hoverPos, setHoverPos] = useState(null)
 
@@ -350,7 +353,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             />
           ))}
 
-          <EditableMarker style={style || defaultStyle} voie={voie} />
+          <EditableMarker style={style || defaultStyle} voie={voie} isToponyme={isToponyme} />
 
           <Draw hoverPos={hoverPos} />
         </MapGl>
@@ -358,7 +361,12 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
       {commune && openForm && (
         <Pane padding={20} background='white'>
-          <AddressEditor onSubmit={onAddAddress} onCancel={() => setOpenForm(false)} />
+          <AddressEditor
+            isToponyme={isToponyme}
+            onIsToponymeChange={onIsToponymeChange}
+            onSubmit={onAddAddress}
+            onCancel={() => setOpenForm(false)}
+          />
         </Pane>
       )}
     </Pane>
