@@ -101,24 +101,6 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
   }, [onCancel])
 
   useEffect(() => {
-    if (isToponyme && initialValue && initialValue.positions.length > 0) {
-      const positions = initialValue.positions.map(position => (
-        {
-          longitude: position.point.coordinates[0],
-          latitude: position.point.coordinates[1],
-          type: position.type
-        }
-      ))
-
-      positions.forEach(position => addMarker(position))
-    } else if (isToponyme) {
-      addMarker({type: 'segment'})
-    } else {
-      disableMarkers()
-    }
-  }, [initialValue, disableMarkers, addMarker, isToponyme])
-
-  useEffect(() => {
     if (isMetric) {
       onIsToponymeChange({target: {checked: false}})
 
@@ -132,8 +114,26 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
   useEffect(() => {
     if (isToponyme) {
       onIsMetricChange({target: {checked: false}})
+
+      if (markers.length === 0) {
+        if (initialValue && initialValue.positions.length > 0) {
+          const positions = initialValue.positions.map(position => (
+            {
+              longitude: position.point.coordinates[0],
+              latitude: position.point.coordinates[1],
+              type: position.type
+            }
+          ))
+
+          positions.forEach(position => addMarker(position))
+        } else {
+          addMarker({type: 'segment'})
+        }
+      }
+    } else {
+      disableMarkers()
     }
-  }, [isToponyme, onIsMetricChange])
+  }, [initialValue, isToponyme, markers, addMarker, disableMarkers, onIsMetricChange])
 
   useEffect(() => {
     return () => {
