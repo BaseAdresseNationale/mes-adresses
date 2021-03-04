@@ -9,10 +9,37 @@ import lineSlice from '@turf/line-slice'
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-function EditableMarker({size, style, voie, isToponyme}) {
-  const {markers, updateMarker, setOverrideText} = useContext(MarkersContext)
-  const {editingItem} = useContext(BalDataContext)
+function EditableMarker({size, style, voie, isToponyme, viewport}) {
+  const {markers, updateMarker, overrideText, setOverrideText} = useContext(MarkersContext)
+  const {editingItem, isEditing} = useContext(BalDataContext)
   const [suggestedNumero, setSuggestedNumero] = useState(null)
+  const {latitude, longitude} = viewport
+
+  const numeroSuggestion = useCallback((longitude, latitude) => {
+    if (voie.trace) {
+      const {trace} = voie
+      const point = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: [longitude, latitude]
+        }
+      }
+      const from = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: trace.coordinates[0]
+        }
+      }
+
+      const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
+      const slicedLine = length(lineSlice(from, to, trace)) * 1000
+      return slicedLine.toFixed(0)
+    }
+  }, [voie])
 
   const onDragEnd = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
@@ -22,39 +49,13 @@ function EditableMarker({size, style, voie, isToponyme}) {
     updateMarker(_id, {longitude, latitude, type})
   }, [markers, updateMarker, setOverrideText, suggestedNumero])
 
-  const onDrag = useCallback((event, idx) => {
+  const onDrag = (event, idx) => {
     const [longitude, latitude] = event.lngLat
 
-    const numeroSuggestion = () => {
-      if (voie.trace) {
-        const {trace} = voie
-        const point = {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'Point',
-            coordinates: [longitude, latitude]
-          }
-        }
-        const from = {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'Point',
-            coordinates: trace.coordinates[0]
-          }
-        }
-
-        const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
-        const slicedLine = length(lineSlice(from, to, trace)) * 1000
-        return slicedLine.toFixed(0)
-      }
-    }
-
     if (idx === 0 && voie) {
-      setSuggestedNumero(numeroSuggestion)
+      setSuggestedNumero(numeroSuggestion(longitude, latitude))
     }
-  }, [voie])
+  }
 
   useEffect(() => {
     if (markers.length === 0) {
@@ -62,6 +63,13 @@ function EditableMarker({size, style, voie, isToponyme}) {
       return null
     }
   }, [markers])
+
+  useEffect(() => {
+    if (isEditing && !overrideText) {
+      setSuggestedNumero(numeroSuggestion(longitude, latitude))
+      setOverrideText(suggestedNumero)
+    }
+  }, [isEditing, latitude, longitude, numeroSuggestion, setOverrideText, suggestedNumero, overrideText])
 
   return (
     markers.map((marker, idx) => (

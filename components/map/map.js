@@ -353,7 +353,12 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             />
           ))}
 
-          <EditableMarker style={style || defaultStyle} voie={voie} isToponyme={isToponyme} />
+          <EditableMarker
+            style={style || defaultStyle}
+            voie={voie}
+            isToponyme={isToponyme}
+            viewport={viewport}
+          />
 
           <Draw hoverPos={hoverPos} />
         </MapGl>
