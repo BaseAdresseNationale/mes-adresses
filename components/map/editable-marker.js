@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react'
+import React, {useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
@@ -7,23 +7,20 @@ import length from '@turf/length'
 import lineSlice from '@turf/line-slice'
 
 import MarkersContext from '../../contexts/markers'
-import BalDataContext from '../../contexts/bal-data'
 
 function EditableMarker({size, style, voie, isToponyme, viewport}) {
-  const {markers, updateMarker, overrideText, setOverrideText} = useContext(MarkersContext)
-  const {editingItem, isEditing} = useContext(BalDataContext)
-  const [suggestedNumero, setSuggestedNumero] = useState(null)
-  const {latitude, longitude} = viewport
+  const {markers, updateMarker, overrideText, suggestedNumero, setSuggestedNumero} = useContext(MarkersContext)
+  const {longitude, latitude} = viewport
 
-  const numeroSuggestion = useCallback((longitude, latitude) => {
-    if (voie.trace) {
+  const numeroSuggestion = useCallback((long, lat) => {
+    if (voie && voie.trace) {
       const {trace} = voie
       const point = {
         type: 'Feature',
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: [longitude, latitude]
+          coordinates: [long, lat]
         }
       }
       const from = {
@@ -37,39 +34,34 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
 
       const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
       const slicedLine = length(lineSlice(from, to, trace)) * 1000
-      return slicedLine.toFixed(0)
+      setSuggestedNumero(slicedLine.toFixed())
     }
-  }, [voie])
+  }, [voie, setSuggestedNumero])
 
   const onDragEnd = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
     const {_id, type} = markers[idx]
 
-    setOverrideText(suggestedNumero)
     updateMarker(_id, {longitude, latitude, type})
-  }, [markers, updateMarker, setOverrideText, suggestedNumero])
+  }, [markers, updateMarker])
 
   const onDrag = (event, idx) => {
     const [longitude, latitude] = event.lngLat
 
     if (idx === 0 && voie) {
-      setSuggestedNumero(numeroSuggestion(longitude, latitude))
+      numeroSuggestion(longitude, latitude)
     }
   }
 
   useEffect(() => {
     if (markers.length === 0) {
-      setSuggestedNumero(null)
       return null
     }
   }, [markers])
 
   useEffect(() => {
-    if (isEditing && !overrideText) {
-      setSuggestedNumero(numeroSuggestion(longitude, latitude))
-      setOverrideText(suggestedNumero)
-    }
-  }, [isEditing, latitude, longitude, numeroSuggestion, setOverrideText, suggestedNumero, overrideText])
+    numeroSuggestion(longitude, latitude)
+  }, [numeroSuggestion, longitude, latitude])
 
   return (
     markers.map((marker, idx) => (
@@ -93,7 +85,7 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
             fontSize={10}
             whiteSpace='nowrap'
           >
-            {!isToponyme && (editingItem && editingItem.numero ? `${editingItem.numero} - ` : suggestedNumero && `${suggestedNumero} - `)}{marker.type}
+            {!isToponyme && (overrideText || suggestedNumero) + ' - '}{marker.type}
           </Text>
 
           <MapMarkerIcon

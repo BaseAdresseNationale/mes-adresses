@@ -31,7 +31,8 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
     markers,
     addMarker,
     disableMarkers,
-    overrideText
+    suggestedNumero,
+    setOverrideText
   } = useContext(MarkersContext)
 
   const onFormSubmit = useCallback(async e => {
@@ -125,6 +126,14 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (numero) {
+      setOverrideText(numero)
+    } else {
+      setOverrideText(null)
+    }
+  }, [setOverrideText, numero])
+
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
       {initialValue && (
@@ -162,7 +171,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
           max={9999}
           value={numero}
           marginBottom={8}
-          placeholder={`Numéro${overrideText ? ` recommandé : ${overrideText}` : ''}`}
+          placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
           onChange={onNumeroChange}
         />
 
