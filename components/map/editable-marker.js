@@ -60,8 +60,11 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
   }, [markers])
 
   useEffect(() => {
-    numeroSuggestion(longitude, latitude)
-  }, [numeroSuggestion, longitude, latitude])
+    if (voie && voie.typeNumerotation === 'metrique') {
+      numeroSuggestion(longitude, latitude)
+    }
+  }, [numeroSuggestion, longitude, latitude, voie])
+
 
   return (
     markers.map((marker, idx) => (
