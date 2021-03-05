@@ -17,6 +17,7 @@ export function MarkersContextProvider(props) {
   const disableMarkers = useCallback(() => {
     setMarkers([])
     setOverrideText(null)
+    setSuggestedNumero(null)
   }, [])
 
   useEffect(() => {

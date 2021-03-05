@@ -113,11 +113,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, onIsToponymeChange}) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (input) {
-      setOverrideText(input)
-    } else {
-      setOverrideText(null)
-    }
+    setOverrideText(input)
   }, [setOverrideText, input])
 
   return (

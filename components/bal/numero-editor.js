@@ -127,11 +127,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (numero) {
-      setOverrideText(numero)
-    } else {
-      setOverrideText(null)
-    }
+    setOverrideText(numero || null)
   }, [setOverrideText, numero])
 
   return (

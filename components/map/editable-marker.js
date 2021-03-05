@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect} from 'react'
+import React, {useCallback, useContext, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
@@ -7,24 +7,24 @@ import length from '@turf/length'
 import lineSlice from '@turf/line-slice'
 
 import MarkersContext from '../../contexts/markers'
-import BalDataContext from '../../contexts/bal-data'
 
 function EditableMarker({size, style, voie, isToponyme, viewport}) {
   const {markers, updateMarker, overrideText, suggestedNumero, setSuggestedNumero} = useContext(MarkersContext)
-  const {isEditing} = useContext(BalDataContext)
-  const {longitude, latitude} = viewport
 
   const numberToDisplay = !isToponyme && (overrideText || suggestedNumero)
+  const isSuggestionNeeded = useMemo(() => {
+    return !isToponyme && !overrideText && voie && voie.typeNumerotation === 'metrique' && voie.trace
+  }, [isToponyme, overrideText, voie])
 
-  const numeroSuggestion = useCallback((long, lat) => {
-    if (voie && voie.trace) {
+  const computeSuggestedNumero = useCallback(coordinates => {
+    if (isSuggestionNeeded) {
       const {trace} = voie
       const point = {
         type: 'Feature',
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: [long, lat]
+          coordinates
         }
       }
       const from = {
@@ -38,22 +38,22 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
 
       const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
       const slicedLine = length(lineSlice(from, to, trace)) * 1000
+
       setSuggestedNumero(slicedLine.toFixed())
     }
-  }, [voie, setSuggestedNumero])
+  }, [isSuggestionNeeded, voie, setSuggestedNumero])
 
   const onDragEnd = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
     const {_id, type} = markers[idx]
 
+    computeSuggestedNumero(event.lngLat)
     updateMarker(_id, {longitude, latitude, type})
-  }, [markers, updateMarker])
+  }, [markers, updateMarker, computeSuggestedNumero])
 
   const onDrag = (event, idx) => {
-    const [longitude, latitude] = event.lngLat
-
-    if (idx === 0 && voie) {
-      numeroSuggestion(longitude, latitude)
+    if (idx === 0) {
+      computeSuggestedNumero(event.lngLat)
     }
   }
 
@@ -64,12 +64,11 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
   }, [markers])
 
   useEffect(() => {
-    if (voie && voie.typeNumerotation === 'metrique' && isEditing) {
-      numeroSuggestion(longitude, latitude)
-    } else {
-      setSuggestedNumero(null)
+    const {longitude, latitude} = viewport
+    if (markers.length === 1 && !suggestedNumero) {
+      computeSuggestedNumero([longitude, latitude])
     }
-  }, [numeroSuggestion, longitude, latitude, voie, isEditing, setSuggestedNumero])
+  }, [markers, computeSuggestedNumero, suggestedNumero, viewport])
 
   return (
     markers.map((marker, idx) => (
