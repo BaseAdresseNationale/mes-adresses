@@ -7,9 +7,11 @@ import length from '@turf/length'
 import lineSlice from '@turf/line-slice'
 
 import MarkersContext from '../../contexts/markers'
+import BalDataContext from '../../contexts/bal-data'
 
 function EditableMarker({size, style, voie, isToponyme, viewport}) {
   const {markers, updateMarker, overrideText, suggestedNumero, setSuggestedNumero} = useContext(MarkersContext)
+  const {isEditing} = useContext(BalDataContext)
   const {longitude, latitude} = viewport
 
   const numeroSuggestion = useCallback((long, lat) => {
@@ -60,11 +62,12 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
   }, [markers])
 
   useEffect(() => {
-    if (voie && voie.typeNumerotation === 'metrique') {
+    if (voie && voie.typeNumerotation === 'metrique' && isEditing) {
       numeroSuggestion(longitude, latitude)
+    } else {
+      setSuggestedNumero(null)
     }
-  }, [numeroSuggestion, longitude, latitude, voie])
-
+  }, [numeroSuggestion, longitude, latitude, voie, isEditing, setSuggestedNumero])
 
   return (
     markers.map((marker, idx) => (
