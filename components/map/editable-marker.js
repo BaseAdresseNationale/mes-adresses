@@ -14,6 +14,8 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
   const {isEditing} = useContext(BalDataContext)
   const {longitude, latitude} = viewport
 
+  const numberToDisplay = !isToponyme && (overrideText || suggestedNumero)
+
   const numeroSuggestion = useCallback((long, lat) => {
     if (voie && voie.trace) {
       const {trace} = voie
@@ -91,7 +93,7 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
             fontSize={10}
             whiteSpace='nowrap'
           >
-            {!isToponyme && (overrideText || suggestedNumero) + ' - '}{marker.type}
+            {numberToDisplay ? `${numberToDisplay} - ${marker.type}` : `${marker.type}`}
           </Text>
 
           <MapMarkerIcon
