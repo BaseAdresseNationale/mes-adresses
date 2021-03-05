@@ -65,10 +65,10 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
 
   useEffect(() => {
     const {longitude, latitude} = viewport
-    if (markers.length === 1 && !suggestedNumero) {
+    if (!suggestedNumero) {
       computeSuggestedNumero([longitude, latitude])
     }
-  }, [markers, computeSuggestedNumero, suggestedNumero, viewport])
+  }, [computeSuggestedNumero, suggestedNumero, viewport])
 
   return (
     markers.map((marker, idx) => (
