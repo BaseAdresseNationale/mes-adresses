@@ -17,7 +17,7 @@ import VoieSearch from './voie-search'
 
 function AddressEditor({onSubmit, onCancel, isToponyme, onIsToponymeChange}) {
   const {voie} = useContext(BalDataContext)
-  const {markers, addMarker, disableMarkers, overrideText} = useContext(MarkersContext)
+  const {markers, addMarker, disableMarkers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [input, onInputChange] = useInput('')
@@ -112,6 +112,14 @@ function AddressEditor({onSubmit, onCancel, isToponyme, onIsToponymeChange}) {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (input) {
+      setOverrideText(input)
+    } else {
+      setOverrideText(null)
+    }
+  }, [setOverrideText, input])
+
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
       <Heading is='h4'>Nouvelle adresse</Heading>
@@ -129,7 +137,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, onIsToponymeChange}) {
           max={9999}
           value={input}
           marginBottom={16}
-          placeholder={isToponyme ? 'Nom du toponyme…' : overrideText ? overrideText : 'Numéro'}
+          placeholder={isToponyme ? 'Nom du toponyme…' : suggestedNumero ? `Numéro recommandé : ${suggestedNumero}` : 'Numéro'}
           onChange={onInputChange}
         />
 
