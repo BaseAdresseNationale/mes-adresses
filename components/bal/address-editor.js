@@ -15,7 +15,7 @@ import Comment from '../comment'
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
-function AddressEditor({onSubmit, onCancel, isToponyme, onIsToponymeChange}) {
+function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
   const {voie} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
@@ -109,6 +109,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, onIsToponymeChange}) {
 
     return () => {
       disableMarkers()
+      setIsToponyme(false)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -166,7 +167,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, onIsToponymeChange}) {
       <Checkbox
         checked={isToponyme}
         label='Cette adresse est un toponyme'
-        onChange={onIsToponymeChange}
+        onChange={e => setIsToponyme(e.target.checked)}
       />
 
       {markers.length > 0 && (
@@ -207,7 +208,7 @@ AddressEditor.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   isToponyme: PropTypes.bool.isRequired,
-  onIsToponymeChange: PropTypes.func.isRequired
+  setIsToponyme: PropTypes.func.isRequired
 }
 
 export default AddressEditor
