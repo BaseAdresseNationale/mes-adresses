@@ -1,23 +1,78 @@
-import React, {useCallback, useContext} from 'react'
+import React, {useState, useCallback, useContext, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
+import nearestPointOnLine from '@turf/nearest-point-on-line'
+import length from '@turf/length'
+import lineSlice from '@turf/line-slice'
 
 import MarkersContext from '../../contexts/markers'
+import BalDataContext from '../../contexts/bal-data'
 
-function EditableMarker({size, style}) {
-  const {markers, updateMarker} = useContext(MarkersContext)
+function EditableMarker({size, style, voie, isToponyme, viewport}) {
+  const {markers, updateMarker, overrideText, suggestedNumero, setSuggestedNumero} = useContext(MarkersContext)
+  const {isEditing} = useContext(BalDataContext)
+
+  const [suggestedMarkerNumero, setSuggestedMarkerNumero] = useState(suggestedNumero)
+
+  const numberToDisplay = !isToponyme && (overrideText || suggestedMarkerNumero)
+  const isSuggestionNeeded = useMemo(() => {
+    return !isToponyme && !overrideText && voie && voie.typeNumerotation === 'metrique' && voie.trace
+  }, [isToponyme, overrideText, voie])
+
+  const computeSuggestedNumero = useCallback(coordinates => {
+    if (isSuggestionNeeded) {
+      const {trace} = voie
+      const point = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates
+        }
+      }
+      const from = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: trace.coordinates[0]
+        }
+      }
+
+      const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
+      const slicedLine = length(lineSlice(from, to, trace)) * 1000
+
+      return slicedLine.toFixed()
+    }
+  }, [isSuggestionNeeded, voie])
 
   const onDragEnd = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
     const {_id, type} = markers[idx]
 
+    setSuggestedNumero(suggestedMarkerNumero)
     updateMarker(_id, {longitude, latitude, type})
-  }, [markers, updateMarker])
+  }, [markers, updateMarker, suggestedMarkerNumero, setSuggestedNumero])
 
-  if (markers.length === 0) {
-    return null
-  }
+  const onDrag = useCallback((event, idx) => {
+    if (idx === 0) {
+      const suggestion = computeSuggestedNumero(event.lngLat)
+      setSuggestedMarkerNumero(suggestion)
+    }
+  }, [setSuggestedMarkerNumero, computeSuggestedNumero])
+
+  useEffect(() => {
+    if (isEditing && !overrideText) {
+      const {longitude, latitude} = viewport
+      const coordinates = markers.length > 0 ?
+        [markers[0].longitude, markers[0].latitude] :
+        [longitude, latitude]
+      const suggestion = computeSuggestedNumero(coordinates)
+      setSuggestedMarkerNumero(suggestion)
+      setSuggestedNumero(suggestion)
+    }
+  }, [isEditing, markers, overrideText, viewport, setSuggestedNumero, computeSuggestedNumero])
 
   return (
     markers.map((marker, idx) => (
@@ -25,6 +80,7 @@ function EditableMarker({size, style}) {
         key={marker._id}
         {...marker}
         draggable
+        onDrag={e => onDrag(e, idx)}
         onDragEnd={e => onDragEnd(e, idx)}
       >
         <Pane>
@@ -40,7 +96,7 @@ function EditableMarker({size, style}) {
             fontSize={10}
             whiteSpace='nowrap'
           >
-            {marker.type}
+            {numberToDisplay ? `${numberToDisplay} - ${marker.type}` : `${marker.type}`}
           </Text>
 
           <MapMarkerIcon

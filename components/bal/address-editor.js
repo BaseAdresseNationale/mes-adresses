@@ -6,7 +6,7 @@ import {Pane, Heading, TextInput, Button, Alert, Checkbox} from 'evergreen-ui'
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-import {useInput, useCheckboxInput} from '../../hooks/input'
+import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
@@ -15,9 +15,9 @@ import Comment from '../comment'
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
-function AddressEditor({onSubmit, onCancel}) {
+function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
   const {voie} = useContext(BalDataContext)
-  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
+  const {markers, addMarker, disableMarkers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [input, onInputChange] = useInput('')
@@ -25,7 +25,6 @@ function AddressEditor({onSubmit, onCancel}) {
   const [nomVoie, setNomVoie] = useState(voie ? voie.nom : '')
   const [suffixe, onSuffixeChange] = useInput('')
   const [comment, onCommentChange] = useInput('')
-  const [isToponyme, onIsToponymeChange] = useCheckboxInput(false)
   const [error, setError] = useState()
   const focusRef = useFocus()
 
@@ -110,8 +109,13 @@ function AddressEditor({onSubmit, onCancel}) {
 
     return () => {
       disableMarkers()
+      setIsToponyme(false)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setOverrideText(input)
+  }, [setOverrideText, input])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -130,7 +134,7 @@ function AddressEditor({onSubmit, onCancel}) {
           max={9999}
           value={input}
           marginBottom={16}
-          placeholder={isToponyme ? 'Nom du toponyme…' : 'Numéro'}
+          placeholder={isToponyme ? 'Nom du toponyme…' : suggestedNumero ? `Numéro recommandé : ${suggestedNumero}` : 'Numéro'}
           onChange={onInputChange}
         />
 
@@ -163,7 +167,7 @@ function AddressEditor({onSubmit, onCancel}) {
       <Checkbox
         checked={isToponyme}
         label='Cette adresse est un toponyme'
-        onChange={onIsToponymeChange}
+        onChange={e => setIsToponyme(e.target.checked)}
       />
 
       {markers.length > 0 && (
@@ -202,7 +206,9 @@ function AddressEditor({onSubmit, onCancel}) {
 
 AddressEditor.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
+  isToponyme: PropTypes.bool.isRequired,
+  setIsToponyme: PropTypes.func.isRequired
 }
 
 export default AddressEditor

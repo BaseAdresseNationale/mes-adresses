@@ -9,6 +9,7 @@ const MarkersContext = React.createContext()
 export function MarkersContextProvider(props) {
   const [markers, setMarkers] = useState([])
   const [overrideText, setOverrideText] = useState(null)
+  const [suggestedNumero, setSuggestedNumero] = useState(null)
 
   const {viewport} = useContext(MapContext)
   const {editingId} = useContext(BalDataContext)
@@ -16,6 +17,7 @@ export function MarkersContextProvider(props) {
   const disableMarkers = useCallback(() => {
     setMarkers([])
     setOverrideText(null)
+    setSuggestedNumero(null)
   }, [])
 
   useEffect(() => {
@@ -65,7 +67,9 @@ export function MarkersContextProvider(props) {
         removeMarker,
         updateMarker,
         setOverrideText,
-        disableMarkers
+        disableMarkers,
+        suggestedNumero,
+        setSuggestedNumero
       }}
       {...props}
     />
