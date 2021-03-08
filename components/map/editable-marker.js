@@ -63,12 +63,6 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
   }, [setSuggestedMarkerNumero, computeSuggestedNumero])
 
   useEffect(() => {
-    if (markers.length === 0) {
-      return null
-    }
-  }, [markers])
-
-  useEffect(() => {
     if (isEditing && !overrideText) {
       const {longitude, latitude} = viewport
       const coordinates = markers.length > 0 ?
