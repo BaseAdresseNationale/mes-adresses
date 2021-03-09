@@ -63,16 +63,18 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
                   onSelect={() => onBalSelect(bal)}
                 />
               ))}
-              <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
-                <Button
-                  appearance='minimal'
-                  marginBottom='1em'
-                  iconAfter={PlusIcon}
-                  onClick={() => setLimit(limit => limit + 50)}
-                >
-                  Afficher les 50 Bases Locales suivantes
-                </Button>
-              </Pane>
+              {limit < basesLocales.length && (
+                <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
+                  <Button
+                    appearance='minimal'
+                    marginBottom='1em'
+                    iconAfter={PlusIcon}
+                    onClick={() => setLimit(limit => limit + 50)}
+                  >
+                    Afficher les 50 Bases Locales suivantes
+                  </Button>
+                </Pane>
+              )}
             </Table.Body>
           </Table>
         </Pane>
