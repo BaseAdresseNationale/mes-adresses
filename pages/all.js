@@ -6,9 +6,9 @@ import {Pane, Heading, Paragraph, Button} from 'evergreen-ui'
 import {expandWithPublished} from '../helpers/bases-locales'
 
 import {listBasesLocales} from '../lib/bal-api'
-import {sortBalByName} from '../lib/sort-bal'
+import {sortBalByUpdate} from '../lib/sort-bal'
 
-import BasesLocalesList from '../components/bases-locales-list'
+import PublicBasesLocalesList from '../components/bases-locales-list/public-bases-locales-list'
 
 function All({basesLocales}) {
   const onCreate = useCallback(() => {
@@ -25,7 +25,7 @@ function All({basesLocales}) {
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
-        <BasesLocalesList basesLocales={basesLocales} sortBal={sortBalByName} />
+        <PublicBasesLocalesList basesLocales={basesLocales} sortBal={sortBalByUpdate} />
       </Pane>
 
       <Pane borderTop marginTop='auto' padding={16}>
