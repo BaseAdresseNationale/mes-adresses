@@ -37,11 +37,6 @@ function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
     ]
   })
 
-  // Actuellement cette variable est inférée par la présence ou non de cette fonction, injectée plus haut.
-  // La page public est la page /all
-  // À améliorer !!
-  const isPublicPage = !updateBasesLocales
-
   const onRemove = useCallback(async () => {
     try {
       const token = getBalToken(toRemove)
@@ -97,8 +92,8 @@ function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
               {sortBal(filtered).map(bal => (
                 <BaseLocaleCard
                   key={bal._id}
+                  editable
                   baseLocale={bal}
-                  editable={!isPublicPage}
                   initialIsOpen={basesLocales.length === 1}
                   onSelect={() => onBalSelect(bal)}
                   onRemove={e => handleRemove(e, bal._id)}
