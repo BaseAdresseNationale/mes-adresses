@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Table} from 'evergreen-ui'
@@ -12,6 +12,8 @@ import {listBasesLocales} from '../../lib/bal-api'
 import BaseLocaleCard from './base-locale-card'
 
 function PublicBasesLocalesList({basesLocales, sortBal}) {
+  const [limit, setLimit] = useState(50)
+
   const onBalSelect = useCallback(bal => {
     if (bal.communes.length === 1) {
       Router.push(
@@ -23,7 +25,11 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
     }
   }, [])
 
-  const [filtered, onFilter] = useFuse(basesLocales, 200, {
+  const slicedBasesLocalesList = useMemo(() => {
+    return sortBal(basesLocales).slice(0, limit)
+  }, [basesLocales, sortBal, limit])
+
+  const [filtered, onFilter] = useFuse(slicedBasesLocalesList, 200, {
     keys: [
       'nom',
       'commune'
@@ -32,9 +38,8 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
 
   return (
     <>
-      {basesLocales.length > 0 && (
+      {slicedBasesLocalesList.length > 0 && (
         <Pane borderTop>
-
           <Table>
             <Table.Head>
               <Table.SearchHeaderCell
@@ -50,7 +55,7 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
               </Table.Row>
             )}
             <Table.Body background='tint1'>
-              {sortBal(filtered).map(bal => (
+              {filtered.map(bal => (
                 <BaseLocaleCard
                   key={bal._id}
                   baseLocale={bal}
