@@ -68,7 +68,7 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
                   appearance='minimal'
                   marginBottom='1em'
                   iconAfter={PlusIcon}
-                  onClick={() => setLimit(limit + 50)}
+                  onClick={() => setLimit(limit => limit + 50)}
                 >
                   Afficher les 50 Bases Locales suivantes
                 </Button>
