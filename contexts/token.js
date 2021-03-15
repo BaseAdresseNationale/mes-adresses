@@ -3,16 +3,13 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 
 import {getBaseLocale} from '../lib/bal-api'
-import {getBalToken, getHasRecovered, saveRecoveryLocation, storeHasRecovered, storeBalAccess} from '../lib/tokens'
-
-const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
+import {getBalToken, storeBalAccess} from '../lib/tokens'
 
 const TokenContext = React.createContext()
 
 export function TokenContextProvider({balId, _token, ...props}) {
   const [token, setToken] = useState(null)
   const [emails, setEmails] = useState(null)
-  const [hasRecovered, setHasRecovered] = useState(null)
 
   const verify = useCallback(async token => {
     const baseLocale = await getBaseLocale(balId, token)
@@ -40,25 +37,12 @@ export function TokenContextProvider({balId, _token, ...props}) {
     }
   }, [verify, balId, _token])
 
-  useEffect(() => {
-    if (hasRecovered === null) {
-      const hasRecovered = getHasRecovered()
-      if (hasRecovered) {
-        setHasRecovered(true)
-      } else {
-        storeHasRecovered(true)
-        saveRecoveryLocation()
-        window.location = `${EDITEUR_URL}/recovery`
-      }
-    }
-  }, [hasRecovered])
-
   const reloadEmails = useCallback(async () => {
     verify(getBalToken(balId))
   }, [verify, balId])
 
   return (
-    <TokenContext.Provider value={{token, emails, hasRecovered, reloadEmails}} {...props} />
+    <TokenContext.Provider value={{token, emails, reloadEmails}} {...props} />
   )
 }
 

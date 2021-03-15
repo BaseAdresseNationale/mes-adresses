@@ -5,7 +5,6 @@ import {
   Button,
   Dialog,
   Label,
-  Pane,
   Text,
   Paragraph,
   TextInput,
@@ -96,14 +95,12 @@ function RecoverBALAlert() {
         </Paragraph>
       </Dialog>
 
-      <Pane padding={22}>
-        <Alert>
-          <Text>
-            Vous ne retrouvez pas vos Bases Adresse Locales ? Pour les récupérer par courriel
-          </Text>
-          <Button appearance='primary' marginLeft='1em' onClick={() => setIsShown(true)}>Cliquez ici</Button>
-        </Alert>
-      </Pane>
+      <Alert>
+        <Text>
+          Vous ne retrouvez pas vos Bases Adresse Locales ? Pour les récupérer par courriel
+        </Text>
+        <Button appearance='primary' marginLeft='1em' onClick={() => setIsShown(true)}>Cliquez ici</Button>
+      </Alert>
     </>
   )
 }
