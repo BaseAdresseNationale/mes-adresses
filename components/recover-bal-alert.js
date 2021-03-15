@@ -1,6 +1,7 @@
 import React, {useCallback, useState} from 'react'
 
 import {
+  Pane,
   Alert,
   Button,
   Dialog,
@@ -14,6 +15,8 @@ import {
 import {recoverBAL} from '../lib/bal-api'
 import {validateEmail} from '../lib/utils/email'
 import {useInput} from '../hooks/input'
+
+import IncidentOvhNotFound from './incident-ovh/not-found'
 
 const hasBeenSentRecently = sentAt => {
   const now = new Date()
@@ -74,6 +77,10 @@ function RecoverBALAlert() {
         onCloseComplete={() => handleComplete()}
         onConfirm={() => handleConfirm()}
       >
+        <Pane marginBottom={8}>
+          <IncidentOvhNotFound />
+        </Pane>
+
         <Label display='block' marginBottom={4}>
           Renseignez votre adresse de courrier électronique
         </Label>
@@ -88,10 +95,10 @@ function RecoverBALAlert() {
         />
 
         <Paragraph marginTop={16}>
-          Un courrier électronique va être envoyé à l’adresse que vous avez renseigné.<br />{}
+          Un courrier électronique va être envoyé à l’adresse que vous avez renseignée.<br />{}
         </Paragraph>
         <Paragraph marginTop={8}>
-          Vous y retrouverez la liste de toutes les Bases Adresse Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace.
+          Vous y retrouverez la liste de toutes les Bases Adresses Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace.
         </Paragraph>
       </Dialog>
 

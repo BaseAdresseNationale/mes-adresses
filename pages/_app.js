@@ -1,7 +1,6 @@
 import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
-import ErrorPage from 'next/error'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import {getBaseLocale, getVoie} from '../lib/bal-api'
@@ -28,6 +27,8 @@ import useWindowSize from '../hooks/window-size'
 import Settings from '../components/settings'
 
 import Header from '../components/header'
+
+import ErrorPage from './error'
 
 const layoutMap = {
   fullscreen: Fullscreen,
