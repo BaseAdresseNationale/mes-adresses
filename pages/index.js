@@ -1,13 +1,12 @@
-import React, {useContext} from 'react'
+import React from 'react'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
 
-import TokenContext from '../contexts/token'
-
 import Header from '../components/header'
 import Footer from '../components/footer'
 import RecoverBALAlert from '../components/recover-bal-alert'
+import IncidentOvhAlert from '../components/incident-ovh/incident-ovh-alert'
 
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
@@ -19,25 +18,21 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
 })
 
 function Index() {
-  const {hasRecovered} = useContext(TokenContext)
   return (
     <Pane height='100vh' display='flex' flexDirection='column'>
       <Header />
-      {hasRecovered ? (
-        <>
-          <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
-            Mes Bases Adresse Locales
-            <Button iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
-          </Heading>
-          <UserBasesLocales />
-          <RecoverBALAlert />
-          <Footer />
-        </>
-      ) : (
-        <Pane height='100%' display='flex' flexDirection='column' flex={1} alignItems='center' justifyContent='center'>
-          <Spinner />
-        </Pane>
-      )}
+      <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
+        Mes Bases Adresse Locales
+        <Button iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
+      </Heading>
+      <IncidentOvhAlert />
+
+      <UserBasesLocales />
+
+      <Pane padding={22}>
+        <RecoverBALAlert />
+      </Pane>
+      <Footer />
     </Pane>
   )
 }

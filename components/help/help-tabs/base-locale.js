@@ -1,12 +1,12 @@
 import React from 'react'
 import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tablist, Tab, CogIcon, PlusIcon} from 'evergreen-ui'
 
+import RecoverBALAlert from '../../recover-bal-alert'
+
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
 
 import Problems from './problems'
-
-const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://editeur.adresse.data.gouv.fr'
 
 const BaseLocale = () => {
   return (
@@ -55,15 +55,6 @@ const BaseLocale = () => {
         </Paragraph>
       </Tuto>
 
-      <Tuto title='Récupérer vos Bases Adresses Locales'>
-        <Paragraph marginTop='default'>
-          Si toutes vos Bases Adresse Locales n’apparaissent pas dans votre liste, il est possible que leur récupération ait échouée.
-        </Paragraph>
-        <OrderedList margin={8}>
-          <ListItem>Vous pouvez tenter de les récupérer de nous en cliquant <a href={`${EDITEUR_URL}/recovery`}>ici</a>.</ListItem>
-        </OrderedList>
-      </Tuto>
-
       <Problems>
         <Unauthorized title='Je n’arrive pas à éditer ma BAL' />
 
@@ -73,6 +64,7 @@ const BaseLocale = () => {
             Si c’est votre cas, vous pouvez nous contacter sur <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>
           </Paragraph>
         </Tuto>
+        <RecoverBALAlert />
       </Problems>
     </Pane>
   )
