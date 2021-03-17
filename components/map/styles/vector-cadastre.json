@@ -5428,7 +5428,7 @@
       "layout": {
         "text-field": "{code}",
         "text-font": [
-          "Lato Bold"
+          "Noto Sans Bold"
         ],
         "visibility": "visible"
       },
@@ -5449,7 +5449,7 @@
       "layout": {
         "text-field": "{numero}",
         "text-font": [
-          "Lato Bold"
+          "Noto Sans Bold"
         ],
         "text-allow-overlap": false,
         "visibility": "visible",
