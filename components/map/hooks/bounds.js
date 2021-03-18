@@ -36,7 +36,7 @@ function useBounds(commune, voie) {
     }
 
     return null
-  }, [geojson, commune, voie])
+  }, [commune, voie]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return useMemo(() => data ? bbox(data) : data, [data])
 }
