@@ -93,8 +93,6 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [showPopover, setShowPopover] = useState(false)
   const [isToponyme, setIsToponyme] = useState(false)
 
-  const [hoverPos, setHoverPos] = useState(null)
-
   const {
     baseLocale,
     numeros,
@@ -164,14 +162,11 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const onHover = useCallback(event => {
     const feature = event.features && event.features[0]
 
-    const {lng, lat} = map.unproject(event.point)
-    setHoverPos({longitude: lng, latitude: lat})
-
     if (feature) {
       const {idVoie} = feature.properties
       setHovered(idVoie)
     }
-  }, [map])
+  }, [])
 
   const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
     if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
@@ -360,7 +355,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             />
           )}
 
-          <Draw hoverPos={hoverPos} />
+          <Draw />
         </MapGl>
       </Pane>
 
