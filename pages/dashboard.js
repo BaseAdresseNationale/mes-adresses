@@ -11,6 +11,7 @@ import DashboardLayout from '../components/layout/dashboard'
 import BALCreationChart from '../components/dashboard/bal-creation-chart'
 import BALCounterChart from '../components/dashboard/bal-counter-chart'
 import Counter from '../components/dashboard/counter'
+import Redirection from './dashboard/redirection'
 
 const Index = ({basesLocales, contoursCommunes}) => {
   const communeCount = uniq(flattenDeep(
@@ -20,11 +21,12 @@ const Index = ({basesLocales, contoursCommunes}) => {
   )).length
 
   return (
-    <DashboardLayout title={'Tableau de bord de l\'éditeur Mes Adresses'} mapData={{basesLocales, contours: contoursCommunes}}>
-      <Pane display='grid' gridGap='2em' padding={8}>
+    <DashboardLayout title='Tableau de bord de l&apos;éditeur Mes Adresses' mapData={{basesLocales, contours: contoursCommunes}}>
+      <Pane display='grid' gridGap='2em' padding={5}>
         <Counter label='Communes couvertes par une Base Adresse Locale' value={communeCount} />
         <BALCounterChart basesLocales={basesLocales} />
         <BALCreationChart basesLocales={basesLocales} />
+        <Redirection />
       </Pane>
     </DashboardLayout>
   )
