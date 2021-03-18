@@ -1,30 +1,25 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
-import {Pane, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
+import {Pane, Button, Alert, TextInputField} from 'evergreen-ui'
 
-import {checkIsToponyme} from '../../lib/voie'
+import MarkersContext from '../../contexts/markers'
 
-import DrawContext from '../../contexts/draw'
-
-import {useInput, useCheckboxInput} from '../../hooks/input'
+import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
-import DrawEditor from './draw-editor'
+import PositionEditor from './position-editor'
 
-function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
+function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const router = useRouter()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [isToponyme, onIsToponymeChange] = useCheckboxInput(checkIsToponyme(initialValue))
-  const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
-  const [complement, onComplementChange] = useInput(initialValue ? initialValue.complement : '')
   const [error, setError] = useState()
   const setRef = useFocus()
 
-  const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
+  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -33,14 +28,29 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
 
     const body = {
       nom,
-      typeNumerotation: isMetric ? 'metrique' : 'numerique',
-      complement: complement.length > 1 ? complement : null,
-      trace: data ? data.geometry : null,
+      typeNumerotation: 'numerique',
+      complement: null,
+      trace: null,
       positions: []
+    }
+
+    if (markers) {
+      markers.forEach(marker => {
+        body.positions.push(
+          {
+            point: {
+              type: 'Point',
+              coordinates: [marker.longitude, marker.latitude]
+            },
+            type: marker.type
+          }
+        )
+      })
     }
 
     try {
       await onSubmit(body)
+      disableMarkers()
 
       if (body.positions.length > 0) {
         const {balId, codeCommune} = router.query
@@ -53,13 +63,14 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, isMetric, complement, data, onSubmit])
+  }, [router, nom, markers, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
+    disableMarkers()
     onCancel()
-  }, [onCancel])
+  }, [onCancel, disableMarkers])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -71,31 +82,35 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
+      disableMarkers()
       onCancel()
     }
   }, [onCancel])
 
   useEffect(() => {
-    if (isMetric) {
-      setModeId(data ? 'editing' : 'drawLineString')
-      enableDraw()
-    } else if (!isMetric && drawEnabled) {
-      disableDraw()
-    }
-  }, [data, disableDraw, drawEnabled, enableDraw, isMetric, onIsToponymeChange, setModeId])
+    if (markers.length === 0) {
+      if (initialValue && initialValue.positions.length > 0) {
+        const positions = initialValue.positions.map(position => (
+          {
+            longitude: position.point.coordinates[0],
+            latitude: position.point.coordinates[1],
+            type: position.type
+          }
+        ))
 
-  useEffect(() => {
-    return () => {
-      disableDraw()
+        positions.forEach(position => addMarker(position))
+      } else {
+        addMarker({type: 'segment'})
+      }
     }
-  }, [disableDraw])
+  }, [initialValue, markers, addMarker, disableMarkers])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
       <TextInputField
         ref={setRef}
         required
-        label='Nom de la voie'
+        label='Nom du toponyme'
         display='block'
         disabled={isLoading}
         width='100%'
@@ -103,32 +118,19 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
         value={nom}
         maxLength={200}
         marginBottom={16}
-        placeholder={isToponyme ? 'Nom du toponyme…' : 'Nom de la voie…'}
+        placeholder='Nom du toponyme…'
         onChange={onNomChange}
       />
-      {isEnabledComplement && (
-        <TextInputField
-          display='block'
-          disabled={isLoading}
-          width='100%'
-          maxWidth={500}
-          label='Complément d’adresse'
-          value={complement}
-          maxLength={200}
-          marginBottom={16}
-          placeholder='Complément du nom de voie (lieu-dit, hameau, …)'
-          onChange={onComplementChange}
-        />
-      )}
 
-      <Checkbox
-        checked={isMetric}
-        label='Cette voie utilise la numérotation métrique'
-        onChange={onIsMetricChange}
-      />
+      <PositionEditor isToponyme />
 
-      {isMetric && (
-        <DrawEditor trace={initialValue ? initialValue.trace : null} />
+      {alert && (
+        <Alert marginBottom={16}>
+          {initialValue ?
+            'Déplacer le marqueur sur la carte pour déplacer le toponyme.' :
+            'Déplacer le marqueur sur la carte pour placer le toponyme.'
+          }
+        </Alert>
       )}
 
       {error && (
@@ -156,7 +158,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
   )
 }
 
-VoieEditor.propTypes = {
+ToponymeEditor.propTypes = {
   initialValue: PropTypes.shape({
     nom: PropTypes.string,
     complement: PropTypes.string,
@@ -165,14 +167,12 @@ VoieEditor.propTypes = {
     positions: PropTypes.array.isRequired
   }),
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func,
-  isEnabledComplement: PropTypes.bool
+  onCancel: PropTypes.func
 }
 
-VoieEditor.defaultProps = {
+ToponymeEditor.defaultProps = {
   initialValue: null,
-  onCancel: null,
-  isEnabledComplement: false
+  onCancel: null
 }
 
-export default VoieEditor
+export default ToponymeEditor
