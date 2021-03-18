@@ -29,11 +29,6 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
   const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
-  const onUnmount = useCallback(() => {
-    disableMarkers()
-    disableDraw()
-  }, [disableDraw, disableMarkers])
-
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
 
@@ -63,7 +58,6 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
 
     try {
       await onSubmit(body)
-      onUnmount()
 
       if (body.positions.length > 0) {
         const {balId, codeCommune} = router.query
@@ -76,14 +70,13 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, isMetric, complement, data, markers, onSubmit, onUnmount])
+  }, [router, nom, isMetric, complement, data, markers, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
-    onUnmount()
     onCancel()
-  }, [onCancel, onUnmount])
+  }, [onCancel])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -137,9 +130,10 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
 
   useEffect(() => {
     return () => {
+      disableMarkers()
       disableDraw()
     }
-  }, [disableDraw])
+  }, [disableMarkers, disableDraw])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
