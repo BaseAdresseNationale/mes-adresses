@@ -26,13 +26,8 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
   const [error, setError] = useState()
   const setRef = useFocus()
 
-  const {data, enableDraw, disableDraw, setModeId, setData} = useContext(DrawContext)
+  const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
   const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
-
-  const onUnmount = useCallback(() => {
-    disableMarkers()
-    disableDraw()
-  }, [disableDraw, disableMarkers])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -63,7 +58,6 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
 
     try {
       await onSubmit(body)
-      onUnmount()
 
       if (body.positions.length > 0) {
         const {balId, codeCommune} = router.query
@@ -76,14 +70,13 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, isMetric, complement, data, markers, onSubmit, onUnmount])
+  }, [router, nom, isMetric, complement, data, markers, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
-    onUnmount()
     onCancel()
-  }, [onCancel, onUnmount])
+  }, [onCancel])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -106,10 +99,10 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
 
       setModeId(data ? 'editing' : 'drawLineString')
       enableDraw()
-    } else {
+    } else if (!isMetric && drawEnabled) {
       disableDraw()
     }
-  }, [data, disableDraw, enableDraw, isMetric, onIsToponymeChange, setData, setModeId])
+  }, [data, disableDraw, drawEnabled, enableDraw, isMetric, onIsToponymeChange, setModeId])
 
   useEffect(() => {
     if (isToponyme) {
@@ -130,16 +123,17 @@ function VoieEditor({initialValue, onSubmit, onCancel, hasNumeros, isEnabledComp
           addMarker({type: 'segment'})
         }
       }
-    } else {
+    } else if (!isToponyme && markers.lenght > 0) {
       disableMarkers()
     }
   }, [initialValue, isToponyme, markers, addMarker, disableMarkers, onIsMetricChange])
 
   useEffect(() => {
     return () => {
+      disableMarkers()
       disableDraw()
     }
-  }, [disableDraw])
+  }, [disableMarkers, disableDraw])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>

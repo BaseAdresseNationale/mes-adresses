@@ -9,20 +9,28 @@ import lineSlice from '@turf/line-slice'
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-function EditableMarker({size, style, voie, isToponyme, viewport}) {
+function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
   const {markers, updateMarker, overrideText, suggestedNumero, setSuggestedNumero} = useContext(MarkersContext)
-  const {isEditing} = useContext(BalDataContext)
+  const {geojson, isEditing} = useContext(BalDataContext)
 
   const [suggestedMarkerNumero, setSuggestedMarkerNumero] = useState(suggestedNumero)
 
   const numberToDisplay = !isToponyme && (overrideText || suggestedMarkerNumero)
+  const voie = useMemo(() => {
+    if (idVoie) {
+      return geojson.features
+        .filter(({geometry}) => geometry.type === 'LineString')
+        .find(({properties}) => properties.idVoie === idVoie)
+    }
+  }, [idVoie, geojson])
+
   const isSuggestionNeeded = useMemo(() => {
-    return !isToponyme && !overrideText && voie && voie.typeNumerotation === 'metrique' && voie.trace
+    return !isToponyme && !overrideText && voie
   }, [isToponyme, overrideText, voie])
 
   const computeSuggestedNumero = useCallback(coordinates => {
     if (isSuggestionNeeded) {
-      const {trace} = voie
+      const {geometry} = voie
       const point = {
         type: 'Feature',
         properties: {},
@@ -36,12 +44,12 @@ function EditableMarker({size, style, voie, isToponyme, viewport}) {
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: trace.coordinates[0]
+          coordinates: geometry.coordinates[0]
         }
       }
 
-      const to = nearestPointOnLine({type: 'Feature', geometry: trace}, point, {units: 'kilometers'})
-      const slicedLine = length(lineSlice(from, to, trace)) * 1000
+      const to = nearestPointOnLine({type: 'Feature', geometry}, point, {units: 'kilometers'})
+      const slicedLine = length(lineSlice(from, to, geometry)) * 1000
 
       return slicedLine.toFixed()
     }

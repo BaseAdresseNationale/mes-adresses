@@ -1,8 +1,6 @@
-import React, {useCallback, useMemo, useContext} from 'react'
-import PropTypes from 'prop-types'
-import {Popup} from 'react-map-gl'
+import React, {useState, useCallback, useMemo, useContext} from 'react'
 import {Editor, EditingMode, DrawLineStringMode} from 'react-map-gl-draw'
-import {Text} from 'evergreen-ui'
+import {Portal, Pane, Alert} from 'evergreen-ui'
 
 import DrawContext from '../../contexts/draw'
 
@@ -11,8 +9,15 @@ const MODES = {
   drawLineString: DrawLineStringMode
 }
 
-const Draw = ({hoverPos}) => {
-  const {drawEnabled, modeId, data, hint, setHint, setData} = useContext(DrawContext)
+const Draw = () => {
+  const [editor, setEditor] = useState(null)
+  const {drawEnabled, modeId, hint, data, setHint, setData} = useContext(DrawContext)
+
+  const editorRef = useCallback(ref => {
+    if (ref) {
+      setEditor(ref)
+    }
+  }, [])
 
   const _onUpdate = useCallback(({data, editType}) => {
     if (editType === 'addTentativePosition') {
@@ -33,32 +38,39 @@ const Draw = ({hoverPos}) => {
     return null
   }
 
+  if (!data && editor) {
+    editor.deleteFeatures(0)
+  }
+
   return (
     <>
       <Editor
+        ref={editorRef}
         style={{width: '100%', height: '100%'}}
         clickRadius={12}
         mode={mode}
-        features={data ? [data] : null}
+        features={data ? [data] : undefined}
         editHandleShape='circle'
         onUpdate={_onUpdate}
       />
 
-      {hoverPos && hint && (
-        <Popup {...hoverPos} closeButton={false}>
-          <Text>{hint}</Text>
-        </Popup>
+      {hint && (
+        <Portal>
+          <Pane
+            zIndex={999}
+            position='fixed'
+            width='100%'
+            top={116}
+            marginTop='0.2em'
+          >
+            <Pane marginLeft='50%' width='400px'>
+              <Alert title={hint} />
+            </Pane>
+          </Pane>
+        </Portal>
       )}
     </>
   )
-}
-
-Draw.defaultProps = {
-  hoverPos: null
-}
-
-Draw.propTypes = {
-  hoverPos: PropTypes.object
 }
 
 export default Draw

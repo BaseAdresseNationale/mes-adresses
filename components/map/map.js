@@ -93,8 +93,6 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const [showPopover, setShowPopover] = useState(false)
   const [isToponyme, setIsToponyme] = useState(false)
 
-  const [hoverPos, setHoverPos] = useState(null)
-
   const {
     baseLocale,
     numeros,
@@ -148,7 +146,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
     if (feature && feature.properties.idVoie && !isEditing) {
       const {idVoie} = feature.properties
-      if (feature.layer.id === 'voie-trace-line' && idVoie === voie._id) {
+      if (feature.layer.id === 'voie-trace-line' && voie && idVoie === voie._id) {
         setEditingId(voie._id)
       } else {
         router.push(
@@ -164,14 +162,11 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const onHover = useCallback(event => {
     const feature = event.features && event.features[0]
 
-    const {lng, lat} = map.unproject(event.point)
-    setHoverPos({longitude: lng, latitude: lat})
-
     if (feature) {
       const {idVoie} = feature.properties
       setHovered(idVoie)
     }
-  }, [map])
+  }, [])
 
   const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
     if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
@@ -354,13 +349,13 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           {isEditing && (
             <EditableMarker
               style={style || defaultStyle}
-              voie={voie}
+              idVoie={voie ? voie._id : null}
               isToponyme={isToponyme}
               viewport={viewport}
             />
           )}
 
-          <Draw hoverPos={hoverPos} />
+          <Draw />
         </MapGl>
       </Pane>
 
