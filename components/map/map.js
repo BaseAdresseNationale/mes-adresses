@@ -146,7 +146,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
 
     if (feature && feature.properties.idVoie && !isEditing) {
       const {idVoie} = feature.properties
-      if (feature.layer.id === 'voie-trace-line' && idVoie === voie._id) {
+      if (feature.layer.id === 'voie-trace-line' && voie && idVoie === voie._id) {
         setEditingId(voie._id)
       } else {
         router.push(
