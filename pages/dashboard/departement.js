@@ -29,7 +29,7 @@ const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartemen
   }
 
   return (
-    <DashboardLayout backButton title={`Tableau de bord des Bases Adresse Locales - ${nom} (${code})`} mapData={mapData}>
+    <DashboardLayout backButton title={`Tableau de bord de l'éditeur Mes Adresses - ${nom} (${code})`} mapData={mapData}>
       {basesLocalesDepartementWithoutDemo.length >= 1 ? (
         <Pane display='grid' gridGap='2em' padding={8}>
           {countCommunesActuelles > 0 && (
