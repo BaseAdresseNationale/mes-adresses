@@ -349,7 +349,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           {isEditing && (
             <EditableMarker
               style={style || defaultStyle}
-              voie={voie}
+              idVoie={voie ? voie._id : null}
               isToponyme={isToponyme}
               viewport={viewport}
             />
