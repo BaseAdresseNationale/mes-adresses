@@ -20,7 +20,7 @@ const Index = ({basesLocales, contoursCommunes}) => {
   )).length
 
   return (
-    <DashboardLayout title='Tableau de bord des Bases Adresse Locales' mapData={{basesLocales, contours: contoursCommunes}}>
+    <DashboardLayout title={'Tableau de bord de l\'éditeur Mes Adresses'} mapData={{basesLocales, contours: contoursCommunes}}>
       <Pane display='grid' gridGap='2em' padding={8}>
         <Counter label='Communes couvertes par une Base Adresse Locale' value={communeCount} />
         <BALCounterChart basesLocales={basesLocales} />
