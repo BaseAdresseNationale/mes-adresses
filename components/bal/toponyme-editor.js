@@ -28,9 +28,6 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
     const body = {
       nom,
-      typeNumerotation: 'numerique',
-      complement: null,
-      trace: null,
       positions: []
     }
 
@@ -88,22 +85,20 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   }, [onCancel])
 
   useEffect(() => {
-    if (markers.length === 0) {
-      if (initialValue && initialValue.positions.length > 0) {
-        const positions = initialValue.positions.map(position => (
-          {
-            longitude: position.point.coordinates[0],
-            latitude: position.point.coordinates[1],
-            type: position.type
-          }
-        ))
+    if (initialValue) {
+      const positions = initialValue.positions.map(position => (
+        {
+          longitude: position.point.coordinates[0],
+          latitude: position.point.coordinates[1],
+          type: position.type
+        }
+      ))
 
-        positions.forEach(position => addMarker(position))
-      } else {
-        addMarker({type: 'segment'})
-      }
+      positions.forEach(position => addMarker(position))
+    } else {
+      addMarker({type: 'segment'})
     }
-  }, [initialValue, markers, addMarker, disableMarkers])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>

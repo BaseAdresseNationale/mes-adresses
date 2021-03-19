@@ -4,7 +4,7 @@ import Router from 'next/router'
 import {sortBy} from 'lodash'
 import {Pane, Heading, Text, Paragraph, Table, Button, AddIcon, Tab} from 'evergreen-ui'
 
-import {getVoies, addVoie, populateCommune, editVoie, removeVoie, getNumeros} from '../../lib/bal-api'
+import {getVoies, addVoie, populateCommune, editVoie, removeVoie, getNumeros, addToponyme, editToponyme, removeToponyme} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -31,7 +31,9 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   const {
     baseLocale,
     voies,
+    toponymes,
     reloadVoies,
+    reloadToponymes,
     editingId,
     setEditingId,
     isEditing,
@@ -44,8 +46,6 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       'nom'
     ]
   })
-
-  const toponymes = voies && voies.filter(voie => voie && voie.positions.length > 0)
 
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)
@@ -77,6 +77,22 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsAdding(false)
   }, [baseLocale, commune, reloadVoies, token])
 
+  const onAddToponyme = useCallback(async ({nom, positions}) => {
+    const toponyme = await addToponyme(baseLocale._id, commune.code, {
+      nom,
+      positions
+    }, token)
+
+    Router.push(
+      `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${toponyme._id}`,
+      `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${toponyme._id}`
+    )
+
+    await reloadToponymes()
+
+    setIsAdding(false)
+  }, [baseLocale, commune, token, reloadToponymes])
+
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
   }, [])
@@ -88,6 +104,11 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsAdding(false)
     setEditingId(idVoie)
   }, [setEditingId, setSelectedVoieHasNumeros])
+
+  const onEnableEditingToponyme = useCallback(async idToponyme => {
+    setIsAdding(false)
+    setEditingId(idToponyme)
+  }, [setEditingId])
 
   const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions, complement}) => {
     await editVoie(editingId, {
@@ -103,16 +124,39 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setEditingId(null)
   }, [editingId, setEditingId, reloadVoies, token])
 
+  const onEditToponyme = useCallback(async ({nom, positions}) => {
+    await editToponyme(editingId, {
+      nom,
+      positions
+    }, token)
+
+    await reloadToponymes()
+    setEditingId(null)
+  }, [editingId, setEditingId, reloadToponymes, token])
+
   const onRemove = useCallback(async () => {
     await removeVoie(toRemove, token)
     await reloadVoies()
     setToRemove(null)
   }, [reloadVoies, toRemove, token])
 
+  const onRemoveToponyme = useCallback(async () => {
+    await removeToponyme(toRemove, token)
+    await reloadToponymes()
+    setToRemove(null)
+  }, [reloadToponymes, toRemove, token])
+
   const onSelect = useCallback(idVoie => {
     Router.push(
       `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
       `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+    )
+  }, [baseLocale, commune])
+
+  const onSelectToponyme = useCallback(idToponyme => {
+    Router.push(
+      `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${idToponyme}`,
+      `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${idToponyme}`
     )
   }, [baseLocale, commune])
 
@@ -137,11 +181,11 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         isShown={Boolean(toRemove)}
         content={(
           <Paragraph>
-            Êtes vous bien sûr de vouloir supprimer cette voie ainsi que tous ses numéros ?
+            {`Êtes vous bien sûr de vouloir supprimer ${selectedTab === 'voie' ? 'cette voie ainsi que tous ses numéros' : 'ce toponyme'} ?`}
           </Paragraph>
         )}
         onCancel={() => setToRemove(null)}
-        onConfirm={onRemove}
+        onConfirm={selectedTab === 'voie' ? onRemove : onRemoveToponyme}
       />
 
       <Pane
@@ -222,7 +266,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
                 <ToponymeEditor
                   isEnabledComplement={Boolean(baseLocale.enableComplement)}
-                  onSubmit={onAdd}
+                  onSubmit={onAddToponyme}
                   onCancel={onCancel}
                 />
               </Table.Cell>
@@ -262,26 +306,24 @@ const Commune = React.memo(({commune, defaultVoies}) => {
                     onRemove={id => setToRemove(id)}
                   />)
               ))) : (
-            toponymes.map(topo => topo._id === editingId ? (
-              <Table.Row key={topo._id} height='auto'>
+            toponymes.map(toponyme => toponyme._id === editingId ? (
+              <Table.Row key={toponyme._id} height='auto'>
                 <Table.Cell display='block' paddingY={12} background='tint1'>
                   <ToponymeEditor
-                    hasNumeros={selectedVoieHasNumeros}
-                    isEnabledComplement={Boolean(baseLocale.enableComplement)}
-                    initialValue={topo}
-                    onSubmit={onEdit}
+                    initialValue={toponyme}
+                    onSubmit={onEditToponyme}
                     onCancel={onCancel}
                   />
                 </Table.Cell>
               </Table.Row>
             ) : (
               <TableRow
-                key={topo._id}
-                id={topo._id}
-                isSelectable={false}
-                label={topo.nom}
-                onSelect={onSelect}
-                onEdit={onEnableEditing}
+                key={toponyme._id}
+                id={toponyme._id}
+                isSelectable={!isEditing && !isPopulating}
+                label={toponyme.nom}
+                onSelect={onSelectToponyme}
+                onEdit={onEnableEditingToponyme}
                 onRemove={id => setToRemove(id)}
               />
             )))}

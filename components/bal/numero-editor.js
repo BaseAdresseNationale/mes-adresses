@@ -15,10 +15,10 @@ import useKeyEvent from '../../hooks/key-event'
 import Comment from '../comment'
 import PositionEditor from './position-editor'
 
-function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
-  const {voies} = useContext(BalDataContext)
+function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onCancel}) {
+  const {voies, toponymes} = useContext(BalDataContext)
 
-  const [voie, setVoie] = useState(initialVoie)
+  const [voie, setVoie] = useState(initialVoie || (initialValue && initialValue.voie[0]) || null)
 
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue ? initialValue.numero : '')
@@ -42,7 +42,8 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
 
     const body = {
       numero: Number(numero),
-      voie: voie._id,
+      voie: voie._id || null,
+      toponyme: initialToponyme ? initialToponyme._id : null,
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null
     }
@@ -71,7 +72,7 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voie, suffixe, comment, markers, onSubmit, disableMarkers])
+  }, [numero, voie, initialToponyme, suffixe, comment, markers, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -132,26 +133,46 @@ function NumeroEditor({initialVoie, initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      {initialValue && (
-        <Pane display='flex'>
-          <SelectField
-            label='Voie'
-            flex={1}
-            marginBottom={16}
-            onChange={handleVoieChange}
-          >
-            {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
-              <option
-                key={_id}
-                selected={_id === initialValue.voie}
-                value={_id}
-              >
-                {nom}
-              </option>
-            ))}
-          </SelectField>
-        </Pane>
-      )}
+      <Pane display='flex'>
+        <SelectField
+          required
+          label='Voie'
+          flex={1}
+          marginBottom={16}
+          onChange={handleVoieChange}
+        >
+          <option />
+          {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
+            <option
+              key={_id}
+              selected={(initialVoie && _id === initialVoie._id) || (initialValue && _id === initialValue.voie[0]._id)}
+              value={_id}
+            >
+              {nom}
+            </option>
+          ))}
+        </SelectField>
+      </Pane>
+
+      <Pane display='flex'>
+        <SelectField
+          label='Toponyme'
+          flex={1}
+          marginBottom={16}
+          onChange={handleVoieChange}
+        >
+          <option />
+          {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
+            <option
+              key={_id}
+              selected={(initialToponyme && _id === initialToponyme._id) || (initialValue && _id === initialValue.toponyme)}
+              value={_id}
+            >
+              {nom}
+            </option>
+          ))}
+        </SelectField>
+      </Pane>
 
       <Pane display='flex'>
         <TextInput
@@ -234,13 +255,20 @@ NumeroEditor.propTypes = {
   initialVoie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     trace: PropTypes.object
-  }).isRequired,
+  }),
+  initialToponyme: PropTypes.shape({
+    _id: PropTypes.string,
+    commune: PropTypes.string,
+    nom: PropTypes.string,
+    positions: PropTypes.array
+  }),
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,
     voie: PropTypes.string.isRequired,
     suffixe: PropTypes.string,
     comment: PropTypes.string,
-    positions: PropTypes.array
+    positions: PropTypes.array,
+    toponyme: PropTypes.string
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
@@ -248,6 +276,8 @@ NumeroEditor.propTypes = {
 
 NumeroEditor.defaultProps = {
   initialValue: null,
+  initialVoie: null,
+  initialToponyme: null,
   onCancel: null
 }
 

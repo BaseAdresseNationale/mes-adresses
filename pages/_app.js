@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
-import {getBaseLocale, getVoie} from '../lib/bal-api'
+import {getBaseLocale, getVoie, getToponyme} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
 import SubHeader from '../components/sub-header'
@@ -100,7 +100,7 @@ function App({error, Component, pageProps, query}) {
       </Pane>
 
       <TokenContextProvider balId={query.balId} _token={query.token}>
-        <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie}>
+        <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie} idToponyme={query.idToponyme}>
           <MapContextProvider>
             <DrawContextProvider>
               <MarkersContextProvider>
@@ -172,6 +172,7 @@ App.getInitialProps = async ({Component, ctx}) => {
   let baseLocale
   let commune
   let voie
+  let toponyme
 
   if (query.balId) {
     try {
@@ -202,12 +203,17 @@ App.getInitialProps = async ({Component, ctx}) => {
     voie = await getVoie(query.idVoie)
   }
 
+  if (query.idToponyme) {
+    toponyme = await getToponyme(query.idToponyme)
+  }
+
   if (Component.getInitialProps) {
     pageProps = await Component.getInitialProps({
       ...ctx,
       baseLocale,
       commune,
-      voie
+      voie,
+      toponyme
     })
   }
 
