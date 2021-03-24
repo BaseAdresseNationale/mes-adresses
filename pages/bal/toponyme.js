@@ -1,8 +1,9 @@
 import React, {useState, useCallback, useEffect, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
+import {groupBy} from 'lodash'
 import {Pane, Paragraph, Heading, Table, Button, Checkbox, Alert, AddIcon} from 'evergreen-ui'
 
-import {addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
+import {addNumero, editNumero, removeNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -15,18 +16,17 @@ import NumeroEditor from '../../components/bal/numero-editor'
 import DeleteWarning from '../../components/delete-warning'
 import GroupedActions from '../../components/grouped-actions'
 
-import VoieHeading from './voie-heading'
+import ToponymeHeading from './toponyme-heading'
 
-const Voie = React.memo(({voie, defaultNumeros}) => {
-  const [editedVoie, setEditedVoie] = useState(voie)
+const Toponyme = (({toponyme, defaultNumeros}) => {
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
+  const [numerosToponyme, setNumerosToponyme] = useState()
+  const [updatedToponyme, setUpdatedToponyme] = useState(toponyme)
 
   const {token} = useContext(TokenContext)
-
-  const currentVoie = editedVoie || voie
 
   const {
     numeros,
@@ -38,11 +38,13 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   } = useContext(BalDataContext)
 
   useHelp(3)
-  const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
+  const [filtered, setFilter] = useFuse(numerosToponyme || defaultNumeros, 200, {
     keys: [
-      'numeroComplet'
+      'numero'
     ]
   })
+
+  const numerosByVoie = groupBy(filtered.sort((a, b) => a.numero - b.numero), d => d.voie[0].nom)
 
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
@@ -81,19 +83,19 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
-  const onAdd = useCallback(async ({numero, toponyme, suffixe, comment, positions}) => {
-    await addNumero(voie._id, {
+  const onAdd = useCallback(async ({numero, suffixe, comment, positions, voie}) => {
+    await addNumero(voie, {
       numero,
       suffixe,
-      toponyme: toponyme || null,
       comment,
-      positions
+      positions,
+      toponyme: toponyme._id
     }, token)
 
-    await reloadNumeros()
+    setNumerosToponyme(await getNumerosToponyme(toponyme._id))
 
     setIsAdding(false)
-  }, [voie, reloadNumeros, token])
+  }, [toponyme, token])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -104,20 +106,22 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(idNumero)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({numero, voie, toponyme, suffixe, comment, positions}) => {
+  const onEdit = useCallback(async ({numero, toponyme, voie, suffixe, comment, positions}) => {
     await editNumero(editingId, {
       numero,
+      toponyme: toponyme ? toponyme._id || toponyme : null,
       voie,
-      toponyme,
       suffixe,
       comment,
       positions
     }, token)
 
     await reloadNumeros()
+    setNumerosToponyme(await getNumerosToponyme(toponyme ? toponyme || toponyme._id : updatedToponyme._id))
+    setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
 
     setEditingId(null)
-  }, [editingId, setEditingId, reloadNumeros, token])
+  }, [editingId, setEditingId, reloadNumeros, token, updatedToponyme])
 
   const onMultipleEdit = useCallback(async body => {
     await Promise.all(body.map(async numero => {
@@ -135,8 +139,8 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   const onRemove = useCallback(async idNumero => {
     await removeNumero(idNumero, token)
-    await reloadNumeros()
-  }, [reloadNumeros, token])
+    setNumerosToponyme(await getNumerosToponyme(toponyme._id))
+  }, [toponyme, token])
 
   const onMultipleRemove = useCallback(async numeros => {
     await Promise.all(numeros.map(async numero => {
@@ -171,18 +175,12 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   }, [isEdited, setEditingId])
 
   useEffect(() => {
-    if (voie) {
-      setEditedVoie(null)
-    }
-  }, [voie])
-
-  useEffect(() => {
     setIsEditing(isAdding)
   }, [isAdding, setIsEditing])
 
   return (
     <>
-      <VoieHeading defaultVoie={voie} />
+      <ToponymeHeading defaultToponyme={updatedToponyme} />
       <Pane
         flexShrink={0}
         elevation={0}
@@ -195,7 +193,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         <Pane>
           <Heading>Liste des numéros</Heading>
         </Pane>
-        {currentVoie.positions.length === 0 && token && (
+        {token && (
           <Pane marginLeft='auto'>
             <Button
               iconBefore={AddIcon}
@@ -212,7 +210,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
       {isGroupedActionsShown && (
         <GroupedActions
-          idVoie={voie._id}
+          idVoie={toponyme._id}
           numeros={numeros}
           selectedNumerosIds={toEdit}
           resetSelectedNumerosIds={() => setSelectedNumerosIds([])}
@@ -239,95 +237,98 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       )}
 
       <Pane flex={1} overflowY='scroll'>
-        {currentVoie.positions.length === 0 ? (
-          <Table>
-            <Table.Head>
-              {!editingId && numeros && token && filtered.length > 1 && (
-                <Table.Cell flex='0 1 1'>
-                  <Checkbox
-                    checked={isAllSelected}
-                    onChange={handleSelectAll}
-                  />
-                </Table.Cell>
-              )}
-              <Table.SearchHeaderCell
-                placeholder='Rechercher un numéro'
-                onChange={setFilter}
-              />
-            </Table.Head>
-            {isAdding && (
-              <Table.Row height='auto'>
-                <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                  <NumeroEditor
-                    initialVoie={voie}
-                    onSubmit={onAdd}
-                    onCancel={onCancel}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            )}
-            {filtered.length === 0 && (
-              <Table.Row>
-                <Table.TextCell color='muted' fontStyle='italic'>
-                  Aucun numéro
-                </Table.TextCell>
-              </Table.Row>
-            )}
-            {editingId && editingId !== voie._id ? (
-              <Table.Row height='auto'>
-                <Table.Cell display='block' paddingY={12} background='tint1'>
-                  <NumeroEditor
-                    initialVoie={voie}
-                    initialValue={editedNumero}
-                    onSubmit={onEdit}
-                    onCancel={onCancel}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            ) : (
-              filtered.map(numero => (
-                <TableRow
-                  {...numero}
-                  key={numero._id}
-                  id={numero._id}
-                  comment={numero.comment}
-                  isSelectable={!isEditing && !numero}
-                  label={numero.numeroComplet}
-                  secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-                  handleSelect={handleSelect}
-                  isSelected={selectedNumerosIds.includes(numero._id)}
-                  onEdit={onEnableEditing}
-                  onRemove={onRemove}
+        <Table>
+          <Table.Head>
+            {!editingId && numeros && token && filtered.length > 1 && (
+              <Table.Cell flex='0 1 1'>
+                <Checkbox
+                  checked={isAllSelected}
+                  onChange={handleSelectAll}
                 />
-              ))
+              </Table.Cell>
             )}
-          </Table>
-        ) : (
-          <Pane padding={16}>
-            <Paragraph>
-              La voie « {currentVoie.nom} » est un toponyme et ne peut pas contenir de numéro.
-            </Paragraph>
-          </Pane>
-        )}
+            <Table.SearchHeaderCell
+              placeholder='Rechercher un numéro'
+              onChange={setFilter}
+            />
+          </Table.Head>
+          {isAdding && (
+            <Table.Row height='auto'>
+              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+                <NumeroEditor
+                  initialToponyme={toponyme}
+                  onSubmit={onAdd}
+                  onCancel={onCancel}
+                />
+              </Table.Cell>
+            </Table.Row>
+          )}
+          {filtered.length === 0 && (
+            <Table.Row>
+              <Table.TextCell color='muted' fontStyle='italic'>
+                  Aucun numéro
+              </Table.TextCell>
+            </Table.Row>
+          )}
+          {editingId && editingId !== toponyme._id ? (
+            <Table.Row height='auto'>
+              <Table.Cell display='block' paddingY={12} background='tint1'>
+                <NumeroEditor
+                  initialToponyme={toponyme}
+                  initialValue={editedNumero}
+                  onSubmit={onEdit}
+                  onCancel={onCancel}
+                />
+              </Table.Cell>
+            </Table.Row>
+          ) : (
+            Object.keys(numerosByVoie).map(n => {
+              return (
+                <>
+                  <Table.Cell>
+                    <Heading padding='.5em' backgroundColor='white' width='100%'>
+                      {n}
+                    </Heading>
+                  </Table.Cell>
+                  {numerosByVoie[n].map(numero => (
+                    <TableRow
+                      {...numero}
+                      key={numero._id}
+                      id={numero._id}
+                      comment={numero.comment}
+                      isSelectable={!isEditing && !numero}
+                      label={numero.numero}
+                      secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+                      handleSelect={handleSelect}
+                      isSelected={selectedNumerosIds.includes(numero._id)}
+                      onEdit={onEnableEditing}
+                      onRemove={onRemove}
+                    />
+                  ))}
+                </>
+              )
+            })
+          )}
+        </Table>
       </Pane>
     </>
   )
 })
 
-Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
-  const defaultNumeros = await getNumeros(voie._id)
+Toponyme.getInitialProps = async ({baseLocale, commune, toponyme}) => {
+  const defaultNumeros = await getNumerosToponyme(toponyme._id)
 
   return {
     layout: 'sidebar',
-    voie,
+    toponyme,
     baseLocale,
     commune,
     defaultNumeros
   }
 }
 
-Voie.propTypes = {
-  voie: PropTypes.shape({
+Toponyme.propTypes = {
+  toponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
     positions: PropTypes.array.isRequired
@@ -335,8 +336,8 @@ Voie.propTypes = {
   defaultNumeros: PropTypes.array
 }
 
-Voie.defaultProps = {
+Toponyme.defaultProps = {
   defaultNumeros: null
 }
 
-export default Voie
+export default Toponyme
