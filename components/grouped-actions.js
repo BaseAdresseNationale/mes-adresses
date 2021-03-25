@@ -11,12 +11,13 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 import Comment from './comment'
 
 const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, onSubmit}) => {
-  const {voies} = useContext(BalDataContext)
+  const {voies, toponymes} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [positionType, onPositionTypeChange] = useInput('')
   const [selectedVoieId, setSelectedVoieId] = useState(idVoie)
+  const [selectedToponymeId, setSelectedToponymeId] = useState()
   const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
@@ -24,6 +25,8 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const selectedNumeros = numeros.filter(({_id}) => selectedNumerosIds.includes(_id))
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
   const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
+  const selectedNumerosUniqToponyme = uniq(selectedNumeros.map(numero => numero.toponyme))
+  const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
   const handleComplete = () => {
     setIsShown(false)
@@ -35,7 +38,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   }
 
   const handleConfirm = useCallback(async () => {
-    const data = {selectedVoieId, numeros: selectedNumeros, positionType}
+    const data = {selectedVoieId, selectedToponymeId, numeros: selectedNumeros, positionType}
     const body = data.numeros
     const type = data.positionType
 
@@ -59,6 +62,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
     body.map((r, idx) => {
       r.voie = selectedVoieId
+      r.toponyme = selectedToponymeId
       r.positions.forEach(position => {
         position.type = type ? type : selectedNumeros[idx].positions[0].type
       })
@@ -77,7 +81,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     setIsLoading(false)
     setIsShown(false)
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
+  }, [comment, selectedVoieId, selectedToponymeId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
 
   return (
     <Pane padding={16}>
@@ -101,6 +105,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           <SelectField
             label='Voie'
             flex={1}
+            disabled={selectedNumerosUniqVoie.length > 1}
             marginBottom={16}
             onChange={event => setSelectedVoieId(event.target.value)}
           >
@@ -115,6 +120,35 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             ))}
 
           </SelectField>
+
+          {selectedNumerosUniqVoie.length > 1 && (
+            <Alert intent='none' marginBottom={12}>Les numéros sélectionnés ne sont pas situés sur la même voie. La modification groupée de la voie n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+          )}
+
+          <Pane display='flex'>
+            <SelectField
+              label='Toponyme'
+              flex={1}
+              disabled={selectedNumerosUniqToponyme.length > 1}
+              marginBottom={16}
+              onChange={event => setSelectedToponymeId(event.target.value)}
+            >
+              <option />
+              {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
+                <option
+                  key={_id}
+                  value={_id}
+                  selected={_id === selectedNumerosUniqToponyme[0]}
+                >
+                  {nom}
+                </option>
+              ))}
+            </SelectField>
+          </Pane>
+
+          {selectedNumerosUniqToponyme.length > 1 && (
+            <Alert intent='none' marginBottom={12}>Les numéros sélectionnés ne possèdent pas le même toponyme. La modification groupée du toponyme n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+          )}
 
           <SelectField
             disabled={hasMultiposition}

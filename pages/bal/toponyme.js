@@ -23,14 +23,13 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
-  const [numerosToponyme, setNumerosToponyme] = useState()
   const [updatedToponyme, setUpdatedToponyme] = useState(toponyme)
 
   const {token} = useContext(TokenContext)
 
   const {
-    numeros,
-    reloadNumeros,
+    numerosToponyme,
+    reloadNumerosToponyme,
     editingId,
     setEditingId,
     isEditing,
@@ -49,19 +48,19 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
   const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
-  const noFilter = numeros && filtered.length === numeros.length
-  const allNumerosSelected = noFilter && (selectedNumerosIds.length === numeros.length)
+  const noFilter = numerosToponyme && filtered.length === numerosToponyme.length
+  const allNumerosSelected = noFilter && (selectedNumerosIds.length === numerosToponyme.length)
   const allFilteredNumerosSelected = !noFilter && (filtered.length === selectedNumerosIds.length)
 
   const isAllSelected = useMemo(() => allNumerosSelected || allFilteredNumerosSelected, [allFilteredNumerosSelected, allNumerosSelected])
 
   const toEdit = useMemo(() => {
-    if (numeros && noFilter) {
+    if (numerosToponyme && noFilter) {
       return selectedNumerosIds
     }
 
     return selectedNumerosIds.map(({_id}) => _id)
-  }, [numeros, selectedNumerosIds, noFilter])
+  }, [numerosToponyme, selectedNumerosIds, noFilter])
 
   const handleSelect = id => {
     setSelectedNumerosIds(selectedNumero => {
@@ -92,10 +91,10 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       toponyme: toponyme._id
     }, token)
 
-    setNumerosToponyme(await getNumerosToponyme(toponyme._id))
+    reloadNumerosToponyme(toponyme._id)
 
     setIsAdding(false)
-  }, [toponyme, token])
+  }, [toponyme, token, reloadNumerosToponyme])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -116,12 +115,11 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       positions
     }, token)
 
-    await reloadNumeros()
-    setNumerosToponyme(await getNumerosToponyme(toponyme ? toponyme || toponyme._id : updatedToponyme._id))
+    await reloadNumerosToponyme(updatedToponyme._id || toponyme)
     setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
 
     setEditingId(null)
-  }, [editingId, setEditingId, reloadNumeros, token, updatedToponyme])
+  }, [editingId, setEditingId, reloadNumerosToponyme, token, updatedToponyme])
 
   const onMultipleEdit = useCallback(async body => {
     await Promise.all(body.map(async numero => {
@@ -134,13 +132,13 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       }
     }))
 
-    await reloadNumeros()
-  }, [reloadNumeros, token])
+    await reloadNumerosToponyme()
+  }, [reloadNumerosToponyme, token])
 
   const onRemove = useCallback(async idNumero => {
     await removeNumero(idNumero, token)
-    setNumerosToponyme(await getNumerosToponyme(toponyme._id))
-  }, [toponyme, token])
+    reloadNumerosToponyme(toponyme._id)
+  }, [reloadNumerosToponyme, toponyme, token])
 
   const onMultipleRemove = useCallback(async numeros => {
     await Promise.all(numeros.map(async numero => {
@@ -151,11 +149,11 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       }
     }))
 
-    await reloadNumeros()
+    await reloadNumerosToponyme()
 
     setSelectedNumerosIds([])
     setIsRemoveWarningShown(false)
-  }, [reloadNumeros, onRemove, setSelectedNumerosIds])
+  }, [reloadNumerosToponyme, onRemove, setSelectedNumerosIds])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -180,7 +178,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
   return (
     <>
-      <ToponymeHeading defaultToponyme={updatedToponyme} />
+      <ToponymeHeading defaultToponyme={toponyme} />
       <Pane
         flexShrink={0}
         elevation={0}
@@ -211,7 +209,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       {isGroupedActionsShown && (
         <GroupedActions
           idVoie={toponyme._id}
-          numeros={numeros}
+          numeros={numerosToponyme}
           selectedNumerosIds={toEdit}
           resetSelectedNumerosIds={() => setSelectedNumerosIds([])}
           setIsRemoveWarningShown={setIsRemoveWarningShown}
@@ -239,7 +237,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            {!editingId && numeros && token && filtered.length > 1 && (
+            {!editingId && numerosToponyme && token && filtered.length > 1 && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
@@ -266,7 +264,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
           {filtered.length === 0 && (
             <Table.Row>
               <Table.TextCell color='muted' fontStyle='italic'>
-                  Aucun numéro
+                Aucun numéro
               </Table.TextCell>
             </Table.Row>
           )}
@@ -282,32 +280,30 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
               </Table.Cell>
             </Table.Row>
           ) : (
-            Object.keys(numerosByVoie).map(n => {
-              return (
-                <>
-                  <Table.Cell>
-                    <Heading padding='.5em' backgroundColor='white' width='100%'>
-                      {n}
-                    </Heading>
-                  </Table.Cell>
-                  {numerosByVoie[n].map(numero => (
-                    <TableRow
-                      {...numero}
-                      key={numero._id}
-                      id={numero._id}
-                      comment={numero.comment}
-                      isSelectable={!isEditing && !numero}
-                      label={numero.numero}
-                      secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-                      handleSelect={handleSelect}
-                      isSelected={selectedNumerosIds.includes(numero._id)}
-                      onEdit={onEnableEditing}
-                      onRemove={onRemove}
-                    />
-                  ))}
-                </>
-              )
-            })
+            Object.keys(numerosByVoie).map(nomVoie => (
+              <>
+                <Table.Cell>
+                  <Heading padding='.5em' backgroundColor='white' width='100%'>
+                    {nomVoie}
+                  </Heading>
+                </Table.Cell>
+                {numerosByVoie[nomVoie].map(numero => (
+                  <TableRow
+                    {...numero}
+                    key={numero._id}
+                    id={numero._id}
+                    comment={numero.comment}
+                    isSelectable={!isEditing && !numero}
+                    label={numero.numero}
+                    secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+                    handleSelect={handleSelect}
+                    isSelected={selectedNumerosIds.includes(numero._id)}
+                    onEdit={onEnableEditing}
+                    onRemove={onRemove}
+                  />
+                ))}
+              </>
+            ))
           )}
         </Table>
       </Pane>

@@ -1,7 +1,7 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 
-import {getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes} from '../lib/bal-api'
+import {getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme} from '../lib/bal-api'
 
 import {getPublishedBasesLocales} from '../lib/adresse-backend'
 
@@ -9,14 +9,16 @@ import TokenContext from './token'
 
 const BalDataContext = React.createContext()
 
-export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, ...props}) => {
+export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, idToponyme, ...props}) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState()
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState()
+  const [numerosToponyme, setNumerosToponyme] = useState()
   const [voies, setVoies] = useState()
   const [toponymes, setToponymes] = useState()
   const [voie, setVoie] = useState()
+  const [toponyme, setToponyme] = useState()
   const [baseLocale, setBaseLocal] = useState({})
 
   const {token} = useContext(TokenContext)
@@ -62,6 +64,20 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
     }
   }, [idVoie])
 
+  const reloadNumerosToponyme = useCallback(async _idEdited => {
+    const id = _idEdited || idToponyme
+
+    if (id) {
+      const toponyme = await getToponyme(id)
+      const numerosToponyme = await getNumerosToponyme(id)
+      setToponyme(toponyme)
+      setNumerosToponyme(numerosToponyme)
+    } else {
+      setToponyme(null)
+      setNumerosToponyme(null)
+    }
+  }, [idToponyme])
+
   const reloadBaseLocale = useCallback(async () => {
     if (balId) {
       const baseLocale = await getBaseLocale(balId)
@@ -96,10 +112,11 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
   useEffect(() => {
     setEditingId(null)
     reloadNumeros()
+    reloadNumerosToponyme()
     reloadVoies()
     reloadToponymes()
     reloadBaseLocale()
-  }, [setEditingId, reloadNumeros, reloadVoies, reloadToponymes, reloadBaseLocale])
+  }, [setEditingId, reloadNumeros, reloadVoies, reloadToponymes, reloadNumerosToponyme, reloadBaseLocale])
 
   return (
     <BalDataContext.Provider
@@ -118,7 +135,10 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
         reloadNumeros,
         reloadVoies,
         reloadToponymes,
-        reloadBaseLocale
+        reloadBaseLocale,
+        reloadNumerosToponyme,
+        toponyme,
+        numerosToponyme
       }}
       {...props}
     />
@@ -128,13 +148,15 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, .
 BalDataContextProvider.propTypes = {
   balId: PropTypes.string,
   codeCommune: PropTypes.string,
-  idVoie: PropTypes.string
+  idVoie: PropTypes.string,
+  idToponyme: PropTypes.string
 }
 
 BalDataContextProvider.defaultProps = {
   balId: null,
   codeCommune: null,
-  idVoie: null
+  idVoie: null,
+  idToponyme: null
 }
 
 export default BalDataContext
