@@ -19,6 +19,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
   const {voies, toponymes} = useContext(BalDataContext)
 
   const [voie, setVoie] = useState(initialVoie || (initialValue && initialValue.voie[0]) || null)
+  const [toponyme, setToponyme] = useState(initialToponyme || (initialValue && initialValue.toponyme) || null)
 
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue ? initialValue.numero : '')
@@ -43,7 +44,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
     const body = {
       numero: Number(numero),
       voie: voie._id || null,
-      toponyme: initialToponyme ? initialToponyme._id : null,
+      toponyme: toponyme ? toponyme._id : null,
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null
     }
@@ -72,7 +73,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voie, initialToponyme, suffixe, comment, markers, onSubmit, disableMarkers])
+  }, [numero, voie, toponyme, suffixe, comment, markers, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -89,11 +90,17 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
     return 'Enregistrer'
   }, [isLoading])
 
-  const handleVoieChange = event => {
+  const handleChange = event => {
     const {value} = event.target
     const voie = voies.find(({_id}) => _id === value)
 
     setVoie(voie)
+  }
+
+  const handleToponymeChange = e => {
+    const {value} = e.target
+
+    setToponyme(toponymes.find(({_id}) => _id === value))
   }
 
   useKeyEvent('keyup', ({key}) => {
@@ -139,7 +146,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           label='Voie'
           flex={1}
           marginBottom={16}
-          onChange={handleVoieChange}
+          onChange={handleChange}
         >
           <option />
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
@@ -159,7 +166,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           label='Toponyme'
           flex={1}
           marginBottom={16}
-          onChange={handleVoieChange}
+          onChange={handleToponymeChange}
         >
           <option />
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
