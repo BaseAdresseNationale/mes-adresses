@@ -10,7 +10,7 @@ import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
 
-import {addNumero, addVoie} from '../../lib/bal-api'
+import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
 
@@ -201,6 +201,16 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
   }, [baseLocale._id, commune, voie, token, reloadView])
 
+  const onAddToponyme = useCallback(async toponymeData => {
+    const editedToponyme = await addToponyme(baseLocale._id, commune.code, toponymeData, token)
+
+    setOpenForm(false)
+    router.push(
+      `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${editedToponyme._id}`,
+      `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${editedToponyme._id}`
+    )
+  }, [baseLocale._id, commune, token, router])
+
   useEffect(() => {
     if (sources.length > 0) {
       setMapStyle(generateNewStyle(style, sources, layers))
@@ -364,7 +374,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           <AddressEditor
             isToponyme={isToponyme}
             setIsToponyme={setIsToponyme}
-            onSubmit={onAddAddress}
+            onSubmit={isToponyme ? onAddToponyme : onAddAddress}
             onCancel={() => setOpenForm(false)}
           />
         </Pane>
