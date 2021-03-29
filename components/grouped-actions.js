@@ -133,7 +133,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               marginBottom={16}
               onChange={event => setSelectedToponymeId(event.target.value)}
             >
-              <option />
+              <option value={null}>Pas de Toponyme</option>
               {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
                 <option
                   key={_id}

@@ -148,7 +148,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           marginBottom={16}
           onChange={handleChange}
         >
-          <option />
+          <option value={null}>Pas de voie sélectionnée</option>
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
             <option
               key={_id}
@@ -168,7 +168,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           marginBottom={16}
           onChange={handleToponymeChange}
         >
-          <option />
+          <option value={null}>Pas de Toponyme</option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
             <option
               key={_id}
