@@ -295,6 +295,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
                     comment={numero.comment}
                     isSelectable={!isEditing && !numero}
                     label={numero.numero}
+                    toponyme={null}
                     secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
                     handleSelect={handleSelect}
                     isSelected={selectedNumerosIds.includes(numero._id)}

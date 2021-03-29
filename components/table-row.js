@@ -5,10 +5,10 @@ import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, 
 import TokenContext from '../contexts/token'
 import BalDataContext from '../contexts/bal-data'
 
-const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected}) => {
+const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponyme}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {numeros, numerosToponyme, isEditing} = useContext(BalDataContext)
+  const {numeros, numerosToponyme, isEditing, toponymes} = useContext(BalDataContext)
   const {type} = positions[0] || {}
   const hasNumero = (numeros && numeros.length > 1) || (numerosToponyme && numerosToponyme.length > 1)
 
@@ -65,12 +65,11 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           onMouseEnter={() => _onMouseEnter(id)}
           onMouseLeave={_onMouseLeave}
         >
-          {label} {hovered && !isEditing && (
+          {label} <i>{toponyme && toponymes && ' - ' + toponymes.find(t => t._id === toponyme).nom + ' '}</i> {hovered && !isEditing && (
             <EditIcon marginBottom={-4} marginLeft={8} />
           )}
         </Table.TextCell>
       </Table.Cell>
-      <Table.Cell data-browsable />
       {secondary && (
         <Table.TextCell flex='0 1 1'>
           {secondary}
@@ -133,6 +132,7 @@ TableRow.propTypes = {
   positions: PropTypes.array,
   label: PropTypes.string.isRequired,
   comment: PropTypes.string,
+  toponyme: PropTypes.string,
   secondary: PropTypes.string,
   isSelectable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
@@ -146,6 +146,7 @@ TableRow.defaultProps = {
   code: null,
   positions: [],
   comment: null,
+  toponyme: null,
   secondary: null,
   isSelectable: true,
   onEdit: null,

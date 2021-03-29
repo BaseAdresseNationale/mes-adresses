@@ -294,6 +294,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                   isSelectable={!isEditing && !numero}
                   label={numero.numeroComplet}
                   secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+                  toponyme={numero.toponyme || null}
                   handleSelect={handleSelect}
                   isSelected={selectedNumerosIds.includes(numero._id)}
                   onEdit={onEnableEditing}
