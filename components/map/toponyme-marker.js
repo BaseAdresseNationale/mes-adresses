@@ -1,6 +1,7 @@
 import React, {useMemo, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
+import {useRouter} from 'next/router'
 import {Pane, Text, Menu, TrashIcon} from 'evergreen-ui'
 import {css} from 'glamor'
 
@@ -15,18 +16,26 @@ import BalDataContext from '../../contexts/bal-data'
 
 function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
+  const router = useRouter()
 
   const {token} = useContext(TokenContext)
   const {markers} = useContext(MarkersContext)
-  const {baseLocale, editingId, setEditingId, isEditing, reloadVoies} = useContext(BalDataContext)
+  const {baseLocale, editingId, setEditingId, isEditing, reloadVoies, voie} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
 
-    if (!isEditing) {
+    if (voie) {
+      router.push(
+        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${toponyme.commune}&idToponyme=${toponyme._id}`,
+        `/bal/${baseLocale._id}/communes/${toponyme.commune}/toponymes/${toponyme._id}`
+      )
+    }
+
+    if (!isEditing && !voie) {
       setEditingId(toponyme._id)
     }
-  }, [isEditing, toponyme._id, setEditingId])
+  }, [isEditing, toponyme._id, setEditingId, voie, baseLocale._id, toponyme.commune, router])
 
   const position = toponyme.positions.find(position => position.type === 'segment') || toponyme.positions[0]
 
@@ -98,8 +107,9 @@ ToponymeMarker.propTypes = {
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
         coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
-      }).isRequired
-    }))
+      })
+    })),
+    commune: PropTypes.string
   }).isRequired,
   showLabel: PropTypes.bool,
   showContextMenu: PropTypes.bool,

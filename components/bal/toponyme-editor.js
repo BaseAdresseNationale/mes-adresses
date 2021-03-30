@@ -1,6 +1,5 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
 import {Pane, Button, Alert, TextInputField} from 'evergreen-ui'
 
 import MarkersContext from '../../contexts/markers'
@@ -12,8 +11,6 @@ import useKeyEvent from '../../hooks/key-event'
 import PositionEditor from './position-editor'
 
 function ToponymeEditor({initialValue, onSubmit, onCancel}) {
-  const router = useRouter()
-
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
