@@ -25,60 +25,58 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
     }
   }, [])
 
-  const slicedBasesLocalesList = useMemo(() => {
-    return sortBal(basesLocales).slice(0, limit)
-  }, [basesLocales, sortBal, limit])
-
-  const [filtered, onFilter] = useFuse(slicedBasesLocalesList, 200, {
+  const [filtered, onFilter] = useFuse(basesLocales, 200, {
     keys: [
       'nom',
-      'commune'
+      'communes'
     ]
   })
 
+  const slicedBasesLocalesList = useMemo(() => {
+    return sortBal(filtered).slice(0, limit)
+  }, [filtered, sortBal, limit])
+
   return (
     <>
-      {slicedBasesLocalesList.length > 0 && (
-        <Pane borderTop>
-          <Table>
-            <Table.Head>
-              <Table.SearchHeaderCell
-                placeholder='Rechercher une Base Adresse Locale'
-                onChange={onFilter}
+      <Pane borderTop>
+        <Table>
+          <Table.Head>
+            <Table.SearchHeaderCell
+              placeholder='Rechercher une Base Adresse Locale'
+              onChange={onFilter}
+            />
+          </Table.Head>
+          {slicedBasesLocalesList.length === 0 && (
+            <Table.Row>
+              <Table.TextCell color='muted' fontStyle='italic'>
+                Aucun résultat
+              </Table.TextCell>
+            </Table.Row>
+          )}
+          <Table.Body background='tint1'>
+            {slicedBasesLocalesList.map(bal => (
+              <BaseLocaleCard
+                key={bal._id}
+                baseLocale={bal}
+                initialIsOpen={basesLocales.length === 1}
+                onSelect={() => onBalSelect(bal)}
               />
-            </Table.Head>
-            {filtered.length === 0 && (
-              <Table.Row>
-                <Table.TextCell color='muted' fontStyle='italic'>
-                  Aucun résultat
-                </Table.TextCell>
-              </Table.Row>
+            ))}
+            {limit < basesLocales.length && (
+              <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
+                <Button
+                  appearance='minimal'
+                  marginBottom='1em'
+                  iconAfter={PlusIcon}
+                  onClick={() => setLimit(limit => limit + 50)}
+                >
+                  Afficher les 50 Bases Locales suivantes
+                </Button>
+              </Pane>
             )}
-            <Table.Body background='tint1'>
-              {filtered.map(bal => (
-                <BaseLocaleCard
-                  key={bal._id}
-                  baseLocale={bal}
-                  initialIsOpen={basesLocales.length === 1}
-                  onSelect={() => onBalSelect(bal)}
-                />
-              ))}
-              {limit < basesLocales.length && (
-                <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
-                  <Button
-                    appearance='minimal'
-                    marginBottom='1em'
-                    iconAfter={PlusIcon}
-                    onClick={() => setLimit(limit => limit + 50)}
-                  >
-                    Afficher les 50 Bases Locales suivantes
-                  </Button>
-                </Pane>
-              )}
-            </Table.Body>
-          </Table>
-        </Pane>
-      )}
+          </Table.Body>
+        </Table>
+      </Pane>
     </>
   )
 }
