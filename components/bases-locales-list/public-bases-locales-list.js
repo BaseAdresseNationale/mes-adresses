@@ -62,7 +62,7 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
                 onSelect={() => onBalSelect(bal)}
               />
             ))}
-            {limit < basesLocales.length && (
+            {limit < filtered.length && (
               <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
                 <Button
                   appearance='minimal'
