@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import NextLink from 'next/link'
 import {Pane, Link, Text} from 'evergreen-ui'
 
-function Breadcrumbs({baseLocale, commune, voie, ...props}) {
+function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
   if (!commune) {
     return (
       <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
@@ -16,7 +16,7 @@ function Breadcrumbs({baseLocale, commune, voie, ...props}) {
     )
   }
 
-  if (!voie) {
+  if (!voie && !toponyme) {
     return (
       <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
         <NextLink prefetch href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
@@ -57,7 +57,7 @@ function Breadcrumbs({baseLocale, commune, voie, ...props}) {
       </NextLink>
 
       <Text color='muted'>{' > '}</Text>
-      <Text>{voie.nom}</Text>
+      <Text>{voie?.nom || toponyme.nom}</Text>
     </Pane>
   )
 }
@@ -73,12 +73,16 @@ Breadcrumbs.propTypes = {
   }),
   voie: PropTypes.shape({
     nom: PropTypes.string.isRequired
+  }),
+  toponyme: PropTypes.shape({
+    nom: PropTypes.string.isRequired
   })
 }
 
 Breadcrumbs.defaultProps = {
   commune: null,
-  voie: null
+  voie: null,
+  toponyme: null
 }
 
 export default React.memo(Breadcrumbs)
