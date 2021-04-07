@@ -45,19 +45,11 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     try {
       await onSubmit(body)
       disableMarkers()
-
-      if (body.positions.length > 0) {
-        const {balId, codeCommune} = router.query
-        router.push(
-          `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-          `/bal/${balId}/communes/${codeCommune}`
-        )
-      }
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, markers, onSubmit, disableMarkers])
+  }, [nom, markers, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
