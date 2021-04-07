@@ -14,30 +14,30 @@ import TokenContext from '../../contexts/token'
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMenu}) {
+function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
   const router = useRouter()
 
   const {token} = useContext(TokenContext)
   const {markers} = useContext(MarkersContext)
-  const {baseLocale, editingId, setEditingId, isEditing, reloadVoies, voie} = useContext(BalDataContext)
+  const {baseLocale, editingId, setEditingId, isEditing, reloadVoies, voie, toponyme} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
 
-    if (voie) {
+    if (voie || initialToponyme !== toponyme) {
       router.push(
-        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${toponyme.commune}&idToponyme=${toponyme._id}`,
-        `/bal/${baseLocale._id}/communes/${toponyme.commune}/toponymes/${toponyme._id}`
+        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${initialToponyme.commune}&idToponyme=${initialToponyme._id}`,
+        `/bal/${baseLocale._id}/communes/${initialToponyme.commune}/toponymes/${initialToponyme._id}`
       )
     }
 
-    if (!isEditing && !voie) {
+    if (!isEditing && !voie && initialToponyme._id === toponyme?._id) {
       setEditingId(toponyme._id)
     }
-  }, [isEditing, toponyme._id, setEditingId, voie, baseLocale._id, toponyme.commune, router])
+  }, [isEditing, setEditingId, voie, baseLocale._id, initialToponyme, router, toponyme])
 
-  const position = toponyme.positions.find(position => position.type === 'segment') || toponyme.positions[0]
+  const position = initialToponyme.positions.find(position => position.type === 'segment') || initialToponyme.positions[0]
 
   const markerStyle = useMemo(() => css({
     borderRadius: 20,
@@ -54,7 +54,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
   }), [showLabel])
 
   const removeAddress = (async () => {
-    const {_id} = toponyme
+    const {_id} = initialToponyme
 
     try {
       await removeVoie(_id, token)
@@ -70,7 +70,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
     return null
   }
 
-  if (markers.length > 0 && editingId === toponyme._id) {
+  if (markers.length > 0 && editingId === initialToponyme._id) {
     return null
   }
 
@@ -79,9 +79,9 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
   return (
     <>
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(toponyme._id)}>
+        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(initialToponyme._id)}>
           <Text color='white' paddingLeft={8} paddingRight={10}>
-            {getFullVoieName(toponyme, baseLocale.enableComplement)}
+            {getFullVoieName(initialToponyme, baseLocale.enableComplement)}
           </Text>
         </Pane>
 
@@ -102,7 +102,7 @@ function ToponymeMarker({toponyme, showLabel, showContextMenu, setShowContextMen
 }
 
 ToponymeMarker.propTypes = {
-  toponyme: PropTypes.shape({
+  initialToponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
