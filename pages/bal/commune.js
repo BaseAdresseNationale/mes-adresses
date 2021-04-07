@@ -46,6 +46,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       'nom'
     ]
   })
+  const [filteredToponymes, setFilteredToponymes] = useFuse(toponymes, 200, {keys: ['nom']})
 
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)
@@ -252,8 +253,8 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         <Table>
           <Table.Head>
             <Table.SearchHeaderCell
-              placeholder='Rechercher une voie'
-              onChange={setFilter}
+              placeholder={`Rechercher ${selectedTab === 'voie' ? 'une voie' : 'un toponyme'}`}
+              onChange={selectedTab === 'voie' ? setFilter : setFilteredToponymes}
             />
           </Table.Head>
           {isAdding && selectedTab === 'voie' && (
@@ -312,27 +313,28 @@ const Commune = React.memo(({commune, defaultVoies}) => {
                     onRemove={id => setToRemove(id)}
                   />)
               ))) : (
-            toponymes.map(toponyme => toponyme._id === editingId ? (
-              <Table.Row key={toponyme._id} height='auto'>
-                <Table.Cell display='block' paddingY={12} background='tint1'>
-                  <ToponymeEditor
-                    initialValue={toponyme}
-                    onSubmit={onEditToponyme}
-                    onCancel={onCancel}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            ) : (
-              <TableRow
-                key={toponyme._id}
-                id={toponyme._id}
-                isSelectable={!isEditing && !isPopulating}
-                label={toponyme.nom}
-                onSelect={onSelectToponyme}
-                onEdit={onEnableEditingToponyme}
-                onRemove={id => setToRemove(id)}
-              />
-            )))}
+            sortBy(filteredToponymes, t => normalizeSort(t.nom))
+              .map(toponyme => toponyme._id === editingId ? (
+                <Table.Row key={toponyme._id} height='auto'>
+                  <Table.Cell display='block' paddingY={12} background='tint1'>
+                    <ToponymeEditor
+                      initialValue={toponyme}
+                      onSubmit={onEditToponyme}
+                      onCancel={onCancel}
+                    />
+                  </Table.Cell>
+                </Table.Row>
+              ) : (
+                <TableRow
+                  key={toponyme._id}
+                  id={toponyme._id}
+                  isSelectable={!isEditing && !isPopulating}
+                  label={toponyme.nom}
+                  onSelect={onSelectToponyme}
+                  onEdit={onEnableEditingToponyme}
+                  onRemove={id => setToRemove(id)}
+                />
+              )))}
         </Table>
       </Pane>
       {token && voies && voies.length === 0 && (
