@@ -2,7 +2,7 @@ import React, {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
 
-import {addNumero, editNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
+import {editNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -12,14 +12,16 @@ import useFuse from '../../hooks/fuse'
 
 import NumeroEditor from '../../components/bal/numero-editor'
 import ToponymeNumeros from '../../components/toponyme/toponyme-numeros'
+import AddNumeros from '../../components/toponyme/add-numeros'
 
 import ToponymeHeading from './toponyme-heading'
 
 const Toponyme = (({toponyme, defaultNumeros}) => {
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
-  const [error, setError] = useState()
   const [updatedToponyme, setUpdatedToponyme] = useState(toponyme)
+  const [error, setError] = useState()
+  const [isLoading, setIsLoading] = useState(false)
 
   const {token} = useContext(TokenContext)
 
@@ -41,21 +43,22 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
-  const onAdd = useCallback(async ({numero, suffixe, comment, positions, voie}) => {
-    try {
-      await addNumero(voie, {
-        numero,
-        suffixe,
-        comment,
-        positions,
-        toponyme: toponyme._id
-      }, token)
+  const onAdd = useCallback(async numeros => {
+    setIsLoading(true)
 
-      reloadNumerosToponyme(toponyme._id)
+    try {
+      await Promise.all(numeros.map(id => {
+        return editNumero(id, {
+          toponyme: toponyme._id
+        }, token)
+      }))
     } catch (error) {
-      setError(error)
+      setError(error.message)
     }
 
+    await reloadNumerosToponyme()
+
+    setIsLoading(false)
     setIsAdding(false)
   }, [toponyme, token, reloadNumerosToponyme])
 
@@ -67,7 +70,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
     try {
       await editNumero(editingId, {
         numero,
-        toponyme: toponyme ? toponyme._id || toponyme : null,
+        toponyme,
         voie,
         suffixe,
         comment,
@@ -77,7 +80,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       await reloadNumerosToponyme(updatedToponyme._id || toponyme)
       setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
     } catch (error) {
-      setError(error)
+      setError(error.message)
     }
 
     setEditingId(null)
@@ -86,6 +89,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
   const onCancel = useCallback(() => {
     setIsAdding(false)
     setEditingId(null)
+    setError(null)
   }, [setEditingId])
 
   useEffect(() => {
@@ -96,6 +100,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
   useEffect(() => {
     if (isEdited) {
+      setError(null)
       setEditingId(null)
     }
   }, [isEdited, setEditingId])
@@ -128,7 +133,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
               disabled={isAdding || isEditing}
               onClick={onEnableAdding}
             >
-              Ajouter un numéro
+              Ajouter des numéros
             </Button>
           </Pane>
         )}
@@ -151,11 +156,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
           {isAdding && (
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                <NumeroEditor
-                  initialToponyme={toponyme}
-                  onSubmit={onAdd}
-                  onCancel={onCancel}
-                />
+                <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
               </Table.Cell>
             </Table.Row>
           )}
