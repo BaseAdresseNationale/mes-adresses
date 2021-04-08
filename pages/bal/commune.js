@@ -1,23 +1,18 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {sortBy} from 'lodash'
-import {Pane, Heading, Text, Paragraph, Table, Button, AddIcon, Tab} from 'evergreen-ui'
+import {Pane, Heading, Text, Paragraph, Button, AddIcon, Tab} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
 
-import useFuse from '../../hooks/fuse'
 import useHelp from '../../hooks/help'
 
 import DeleteWarning from '../../components/delete-warning'
-import TableRow from '../../components/table-row'
-import VoieEditor from '../../components/bal/voie-editor'
-import ToponymeEditor from '../../components/bal/toponyme-editor'
-import {normalizeSort} from '../../lib/normalize'
-import {getFullVoieName} from '../../lib/voie'
+import VoiesList from '../../components/bal/voies-list'
+import ToponymesList from '../../components/bal/toponymes-list'
 
 const Commune = React.memo(({commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
@@ -40,12 +35,6 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   } = useContext(BalDataContext)
 
   useHelp(2)
-  const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
-    keys: [
-      'nom'
-    ]
-  })
-  const [filteredToponymes, setFilteredToponymes] = useFuse(toponymes, 200, {keys: ['nom']})
 
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)
@@ -230,93 +219,30 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         )}
       </Pane>
 
-      <Pane flex={1} overflowY='scroll'>
-        <Table>
-          <Table.Head>
-            <Table.SearchHeaderCell
-              placeholder={`Rechercher ${selectedTab === 'voie' ? 'une voie' : 'un toponyme'}`}
-              onChange={selectedTab === 'voie' ? setFilter : setFilteredToponymes}
-            />
-          </Table.Head>
-          {isAdding && selectedTab === 'voie' && (
-            <Table.Row height='auto'>
-              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                <VoieEditor
-                  isEnabledComplement={Boolean(baseLocale.enableComplement)}
-                  onSubmit={onAdd}
-                  onCancel={onCancel}
-                />
-              </Table.Cell>
-            </Table.Row>
-          )}
-          {isAdding && selectedTab === 'toponyme' && (
-            <Table.Row height='auto'>
-              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                <ToponymeEditor
-                  isEnabledComplement={Boolean(baseLocale.enableComplement)}
-                  onSubmit={onAdd}
-                  onCancel={onCancel}
-                />
-              </Table.Cell>
-            </Table.Row>
-          )}
-          {filtered.length === 0 && (
-            <Table.Row>
-              <Table.TextCell color='muted' fontStyle='italic'>
-                Aucun résultat
-              </Table.TextCell>
-            </Table.Row>
-          )}
-          {selectedTab === 'voie' ? (
-            sortBy(filtered, v => normalizeSort(v.nom))
-              .map(voie => voie._id === editingId ? (
-                <Table.Row key={voie._id} height='auto'>
-                  <Table.Cell display='block' paddingY={12} background='tint1'>
-                    <VoieEditor
-                      isEnabledComplement={Boolean(baseLocale.enableComplement)}
-                      initialValue={voie}
-                      onSubmit={onEdit}
-                      onCancel={onCancel}
-                    />
-                  </Table.Cell>
-                </Table.Row>
-              ) : (
-                voie.positions.length === 0 && (
-                  <TableRow
-                    key={voie._id}
-                    id={voie._id}
-                    isSelectable={!isEditing && !isPopulating && voie.positions.length === 0}
-                    label={getFullVoieName(voie, baseLocale.enableComplement)}
-                    secondary={voie.positions.length >= 1 ? 'Toponyme' : null}
-                    onSelect={onSelect}
-                    onEdit={onEnableEditing}
-                    onRemove={id => setToRemove(id)}
-                  />)
-              ))) : (
-            sortBy(filteredToponymes, t => normalizeSort(t.nom))
-              .map(toponyme => toponyme._id === editingId ? (
-                <Table.Row key={toponyme._id} height='auto'>
-                  <Table.Cell display='block' paddingY={12} background='tint1'>
-                    <ToponymeEditor
-                      initialValue={toponyme}
-                      onSubmit={onEdit}
-                      onCancel={onCancel}
-                    />
-                  </Table.Cell>
-                </Table.Row>
-              ) : (
-                <TableRow
-                  key={toponyme._id}
-                  id={toponyme._id}
-                  isSelectable={!isEditing && !isPopulating}
-                  label={toponyme.nom}
-                  onSelect={onSelect}
-                  onEdit={onEnableEditing}
-                  onRemove={id => setToRemove(id)}
-                />
-              )))}
-        </Table>
-      </Pane>
+      {selectedTab === 'voie' ? (
+        <VoiesList
+          defaultVoies={defaultVoies}
+          isPopulating={isPopulating}
+          isAdding={isAdding}
+          setToRemove={setToRemove}
+          onEnableEditing={onEnableEditing}
+          onSelect={onSelect}
+          onCancel={onCancel}
+          onAdd={onAdd}
+          onEdit={onEdit}
+        />
+      ) : (
+        <ToponymesList
+          isPopulating={isPopulating}
+          isAdding={isAdding}
+          setToRemove={setToRemove}
+          onEnableEditing={onEnableEditing}
+          onSelect={onSelect}
+          onCancel={onCancel}
+          onAdd={onAdd}
+          onEdit={onEdit}
+        />
+      )}
 
       {token && voies && voies.length === 0 && (
         <Pane borderTop marginTop='auto' padding={16}>
