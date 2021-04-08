@@ -45,8 +45,8 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
   }, [])
 
   return (
-    <Table.Row isSelectable={isSelectable} style={{backgroundColor: hovered ? '#f5f6f7' : ''}} onClick={onClick}>
-      {token && !isEditing && hasNumero && (
+    <Table.Row style={{backgroundColor: hovered ? '#f5f6f7' : ''}} onClick={onClick}>
+      {token && !isEditing && hasNumero && isSelectable && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
             checked={isSelected}
@@ -65,7 +65,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           onMouseEnter={() => _onMouseEnter(id)}
           onMouseLeave={_onMouseLeave}
         >
-          {label} <i>{toponyme && toponymes && ' - ' + toponymes.find(t => t._id === toponyme).nom + ' '}</i> {hovered && !isEditing && (
+          {label} <i>{toponyme && toponymes && ` - ${toponymes.find(t => t._id === toponyme).nom} `}</i> {hovered && !isEditing && (
             <EditIcon marginBottom={-4} marginLeft={8} />
           )}
         </Table.TextCell>
@@ -148,7 +148,7 @@ TableRow.defaultProps = {
   comment: null,
   toponyme: null,
   secondary: null,
-  isSelectable: true,
+  isSelectable: false,
   onEdit: null,
   handleSelect: null,
   isSelected: false
