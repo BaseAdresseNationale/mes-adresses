@@ -4,7 +4,7 @@ import Router from 'next/router'
 import {sortBy} from 'lodash'
 import {Pane, Heading, Text, Paragraph, Table, Button, AddIcon, Tab} from 'evergreen-ui'
 
-import {getVoies, addVoie, populateCommune, editVoie, removeVoie, getNumeros, addToponyme, editToponyme, removeToponyme} from '../../lib/bal-api'
+import {getVoies, addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -23,7 +23,6 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
   const [toRemove, setToRemove] = useState(null)
-  const [selectedVoieHasNumeros, setSelectedVoieHasNumeros] = useState(false)
   const [selectedTab, setSelectedTab] = useState('voie')
 
   const {token} = useContext(TokenContext)
@@ -99,12 +98,9 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   }, [])
 
   const onEnableEditing = useCallback(async idVoie => {
-    const numeros = await getNumeros(idVoie)
-
-    setSelectedVoieHasNumeros(numeros.length > 0)
     setIsAdding(false)
     setEditingId(idVoie)
-  }, [setEditingId, setSelectedVoieHasNumeros])
+  }, [setEditingId])
 
   const onEnableEditingToponyme = useCallback(async idToponyme => {
     setIsAdding(false)
@@ -165,12 +161,6 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsAdding(false)
     setEditingId(null)
   }, [setEditingId])
-
-  useEffect(() => {
-    if (!editingId) {
-      setSelectedVoieHasNumeros(false)
-    }
-  }, [editingId])
 
   useEffect(() => {
     setIsEditing(isAdding)
@@ -292,7 +282,6 @@ const Commune = React.memo(({commune, defaultVoies}) => {
                 <Table.Row key={voie._id} height='auto'>
                   <Table.Cell display='block' paddingY={12} background='tint1'>
                     <VoieEditor
-                      hasNumeros={selectedVoieHasNumeros}
                       isEnabledComplement={Boolean(baseLocale.enableComplement)}
                       initialValue={voie}
                       onSubmit={onEdit}

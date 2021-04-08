@@ -51,7 +51,6 @@ const VoieHeading = ({defaultVoie}) => {
     >
       {editingId === voie._id ? (
         <VoieEditor
-          hasNumeros={numeros.length > 0}
           initialValue={voie}
           isEnabledComplement={Boolean(baseLocale.enableComplement)}
           onSubmit={onEditVoie}
