@@ -85,7 +85,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     await addNumero(voie._id, {
       numero,
       suffixe,
-      toponyme: toponyme || null,
+      toponyme,
       comment,
       positions
     }, token)
@@ -294,7 +294,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                   isSelectable={!isEditing && !numero}
                   label={numero.numeroComplet}
                   secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-                  toponyme={numero.toponyme || null}
+                  toponyme={numero.toponyme}
                   handleSelect={handleSelect}
                   isSelected={selectedNumerosIds.includes(numero._id)}
                   onEdit={onEnableEditing}
