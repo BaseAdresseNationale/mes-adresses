@@ -28,7 +28,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
   const {token} = useContext(TokenContext)
 
   const {
-    numerosToponyme,
+    numeros,
     reloadNumerosToponyme,
     editingId,
     setEditingId,
@@ -37,7 +37,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
   } = useContext(BalDataContext)
 
   useHelp(3)
-  const [filtered, setFilter] = useFuse(numerosToponyme || defaultNumeros, 200, {
+  const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
       'numero'
     ]
@@ -48,19 +48,19 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
   const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
-  const noFilter = numerosToponyme && filtered.length === numerosToponyme.length
-  const allNumerosSelected = noFilter && (selectedNumerosIds.length === numerosToponyme.length)
+  const noFilter = numeros && filtered.length === numeros.length
+  const allNumerosSelected = noFilter && (selectedNumerosIds.length === numeros.length)
   const allFilteredNumerosSelected = !noFilter && (filtered.length === selectedNumerosIds.length)
 
   const isAllSelected = useMemo(() => allNumerosSelected || allFilteredNumerosSelected, [allFilteredNumerosSelected, allNumerosSelected])
 
   const toEdit = useMemo(() => {
-    if (numerosToponyme && noFilter) {
+    if (numeros && noFilter) {
       return selectedNumerosIds
     }
 
     return selectedNumerosIds.map(({_id}) => _id)
-  }, [numerosToponyme, selectedNumerosIds, noFilter])
+  }, [numeros, selectedNumerosIds, noFilter])
 
   const handleSelect = id => {
     setSelectedNumerosIds(selectedNumero => {
@@ -137,8 +137,8 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
   const onRemove = useCallback(async idNumero => {
     await removeNumero(idNumero, token)
-    reloadNumerosToponyme(toponyme._id)
-  }, [reloadNumerosToponyme, toponyme, token])
+    reloadNumerosToponyme()
+  }, [reloadNumerosToponyme, token])
 
   const onMultipleRemove = useCallback(async numeros => {
     await Promise.all(numeros.map(async numero => {
@@ -209,7 +209,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       {isGroupedActionsShown && (
         <GroupedActions
           idVoie={toponyme._id}
-          numeros={numerosToponyme}
+          numeros={numeros}
           selectedNumerosIds={toEdit}
           resetSelectedNumerosIds={() => setSelectedNumerosIds([])}
           setIsRemoveWarningShown={setIsRemoveWarningShown}
@@ -237,7 +237,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            {!editingId && numerosToponyme && token && filtered.length > 1 && (
+            {!editingId && numeros && token && filtered.length > 1 && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}

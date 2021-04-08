@@ -8,9 +8,9 @@ import BalDataContext from '../contexts/bal-data'
 const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponyme}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {numeros, numerosToponyme, isEditing, toponymes} = useContext(BalDataContext)
+  const {numeros, isEditing, toponymes} = useContext(BalDataContext)
   const {type} = positions[0] || {}
-  const hasNumero = (numeros && numeros.length > 1) || (numerosToponyme && numerosToponyme.length > 1)
+  const hasNumero = numeros && numeros.length > 1
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && !isEditing && !code) { // Not a commune
