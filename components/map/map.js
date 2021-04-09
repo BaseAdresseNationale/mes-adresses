@@ -339,7 +339,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
             <NumeroMarker
               key={numero._id}
               numero={numero}
-              colorSeed={numero.voie}
+              colorSeed={voie._id}
               showLabel={showNumeros}
               showContextMenu={numero._id === showContextMenu}
               setShowContextMenu={setShowContextMenu}
