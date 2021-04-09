@@ -129,6 +129,7 @@ function App({error, Component, pageProps, query}) {
                       interactive={layout === 'sidebar'}
                       commune={pageProps.commune}
                       voie={pageProps.voie}
+                      toponyme={pageProps.toponyme}
                     />
                   )}
 

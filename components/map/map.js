@@ -78,7 +78,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, style: defaultStyle, commune, voie}) {
+function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
   const router = useRouter()
   const {viewport, setViewport} = useContext(MapContext)
 
@@ -108,7 +108,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const {token} = useContext(TokenContext)
 
   const sources = useSources(voie, hovered, editingId)
-  const bounds = useBounds(commune, voie)
+  const bounds = useBounds(commune, voie, toponyme)
   const layers = useLayers(voie, sources, style, baseLocale.enableComplement)
 
   const mapRef = useCallback(ref => {
@@ -391,14 +391,16 @@ Map.propTypes = {
     'vector-cadastre'
   ]),
   commune: PropTypes.object,
-  voie: PropTypes.object
+  voie: PropTypes.object,
+  toponyme: PropTypes.object
 }
 
 Map.defaultProps = {
   interactive: true,
   style: 'vector',
   commune: null,
-  voie: null
+  voie: null,
+  toponyme: null
 }
 
 export default Map

@@ -6,7 +6,7 @@ import BalDataContext from '../../../contexts/bal-data'
 
 const BUFFER_RADIUS = 100
 
-function useBounds(commune, voie) {
+function useBounds(commune, voie, toponyme) {
   const {geojson} = useContext(BalDataContext)
 
   const data = useMemo(() => {
@@ -17,6 +17,13 @@ function useBounds(commune, voie) {
         data = {
           type: 'FeatureCollection',
           features: data.features.filter(feature => feature.properties.idVoie === voie._id)
+        }
+      }
+
+      if (toponyme) {
+        data = {
+          type: 'FeatureCollection',
+          features: data.features.filter(feature => feature.properties.idToponyme === toponyme._id)
         }
       }
 
