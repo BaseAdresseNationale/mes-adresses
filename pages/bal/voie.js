@@ -81,8 +81,8 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
-  const onAdd = useCallback(async ({numero, toponyme, suffixe, comment, positions}) => {
-    await addNumero(voie._id, {
+  const onAdd = useCallback(async ({voie, numero, toponyme, suffixe, comment, positions}) => {
+    await addNumero(voie, {
       numero,
       suffixe,
       toponyme,
@@ -93,7 +93,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     await reloadNumeros()
 
     setIsAdding(false)
-  }, [voie, reloadNumeros, token])
+  }, [reloadNumeros, token])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
