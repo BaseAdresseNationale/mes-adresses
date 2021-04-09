@@ -180,17 +180,15 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         flexShrink={0}
         elevation={0}
         backgroundColor='white'
-        padding={16}
         width='100%'
-        margin='auto'
         display='flex'
         justifyContent='space-around'
-        minHeight={64}
+        height={38}
       >
-        <Tab isSelected={selectedTab === 'voie'} onClick={() => setSelectedTab('voie')}>
+        <Tab width='100%' height='100%' margin='0' isSelected={selectedTab === 'voie'} onClick={() => setSelectedTab('voie')}>
           <Heading>Liste des voies</Heading>
         </Tab>
-        <Tab isSelected={selectedTab === 'toponyme'} onClick={() => setSelectedTab('toponyme')}>
+        <Tab width='100%' height='100%' margin='0' isSelected={selectedTab === 'toponyme'} onClick={() => setSelectedTab('toponyme')}>
           <Heading>Liste des toponymes</Heading>
         </Tab>
       </Pane>
