@@ -5,8 +5,7 @@ import {useRouter} from 'next/router'
 import {Pane, Text, Menu, TrashIcon} from 'evergreen-ui'
 import {css} from 'glamor'
 
-import {removeVoie} from '../../lib/bal-api'
-import {getFullVoieName} from '../../lib/voie'
+import {removeToponyme} from '../../lib/bal-api'
 
 import useError from '../../hooks/error'
 
@@ -20,7 +19,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
 
   const {token} = useContext(TokenContext)
   const {markers} = useContext(MarkersContext)
-  const {baseLocale, editingId, setEditingId, isEditing, reloadVoies, voie, toponyme} = useContext(BalDataContext)
+  const {baseLocale, editingId, setEditingId, isEditing, reloadToponymes, voie, toponyme} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
@@ -53,12 +52,12 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
     }
   }), [showLabel])
 
-  const removeAddress = (async () => {
+  const deleteToponyme = (async () => {
     const {_id} = initialToponyme
 
     try {
-      await removeVoie(_id, token)
-      await reloadVoies()
+      await removeToponyme(_id, token)
+      await reloadToponymes()
     } catch (error) {
       setError(error.message)
     }
@@ -81,7 +80,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
         <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(initialToponyme._id)}>
           <Text color='white' paddingLeft={8} paddingRight={10}>
-            {getFullVoieName(initialToponyme, baseLocale.enableComplement)}
+            {initialToponyme.nom}
           </Text>
         </Pane>
 
@@ -89,7 +88,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
           <Pane background='tint1' position='absolute' margin={10}>
             <Menu>
               <Menu.Group>
-                <Menu.Item icon={TrashIcon} intent='danger' onSelect={removeAddress}>
+                <Menu.Item icon={TrashIcon} intent='danger' onSelect={deleteToponyme}>
                   Supprimer…
                 </Menu.Item>
               </Menu.Group>
@@ -104,6 +103,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
 ToponymeMarker.propTypes = {
   initialToponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired,
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
         coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
