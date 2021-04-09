@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import BaseLocale from './base-locale'
 import Communes from './communes'
 import Voies from './voies'
+import Toponymes from './toponymes'
 import Numeros from './numeros'
 import Publication from './publication'
 
@@ -11,6 +12,7 @@ export const TABS = [
   'Base locale',
   'Communes',
   'Voies',
+  'Toponymes',
   'Numéros',
   'Publication'
 ]
@@ -24,8 +26,10 @@ const HelpTabs = ({tab}) => {
     case 2:
       return <Voies />
     case 3:
-      return <Numeros />
+      return <Toponymes />
     case 4:
+      return <Numeros />
+    case 5:
       return <Publication />
     default:
       return <BaseLocale />

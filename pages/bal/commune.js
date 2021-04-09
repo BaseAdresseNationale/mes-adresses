@@ -34,7 +34,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsEditing
   } = useContext(BalDataContext)
 
-  useHelp(2)
+  useHelp(selectedTab === 'voie' ? 2 : 3)
 
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)

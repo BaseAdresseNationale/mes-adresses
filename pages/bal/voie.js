@@ -37,7 +37,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setIsEditing
   } = useContext(BalDataContext)
 
-  useHelp(3)
+  useHelp(4)
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
       'numeroComplet'

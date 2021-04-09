@@ -34,53 +34,6 @@ const Voies = () => {
           </OrderedList>
         </Tuto>
 
-        <Tuto title='Ajouter un toponyme'>
-          <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
-            {before}
-
-            <OrderedList margin={8}>
-              <ListItem>
-                Cliquez sur le bouton
-                <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
-              </ListItem>
-              <ListItem>
-                Cochez la case <Strong size={500} fontStyle='italic'>Cette voie est un toponyme</Strong>
-              </ListItem>
-              <ListItem>
-                Entrez le nom du toponyme que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom du toponyme…</Strong>
-              </ListItem>
-              <ListItem>
-                Un <MapMarkerIcon color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
-              </ListItem>
-              <ListItem>
-                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
-              </ListItem>
-            </OrderedList>
-          </SubTuto>
-
-          <SubTuto title='Depuis la carte' icon={MapIcon}>
-            <OrderedList margin={8}>
-              <ListItem>
-                <Pane display='flex' alignItems='center'>
-                  Cliquez sur le bouton <IconButton marginLeft={8} icon={MapMarkerIcon} />
-                </Pane>
-              </ListItem>
-              <ListItem>
-                Un <MapMarkerIcon color='info' /> est apparu au centre de la carte, déplacez le à l’endroit souhaité à l’aide de votre souris
-              </ListItem>
-              <ListItem>
-                Dans le nouveau menu qui est apparu, cochez la case <Strong size={500} fontStyle='italic'>Cette voie est un toponyme</Strong>
-              </ListItem>
-              <ListItem>
-                Entrez le nom du toponyme que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom du toponyme…</Strong>
-              </ListItem>
-              <ListItem>
-                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
-              </ListItem>
-            </OrderedList>
-          </SubTuto>
-        </Tuto>
-
         <Tuto title='Renommer une voie'>
           {before}
 
@@ -137,22 +90,6 @@ const Voies = () => {
             </ListItem>
             <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
           </OrderedList>
-        </Tuto>
-
-        <Tuto title='Supprimer un toponyme'>
-          <SubTuto title='Depuis la carte' icon={MapIcon}>
-            <OrderedList margin={8}>
-              <ListItem>Faites un clique droit sur le toponyme</ListItem>
-              <ListItem>
-                <Pane display='flex' alignItems='center'>
-                  Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
-                    Supprimer…
-                  </Menu.Item>
-                </Pane>
-              </ListItem>
-            </OrderedList>
-          </SubTuto>
         </Tuto>
 
         <Problems>
