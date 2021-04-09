@@ -15,12 +15,12 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && !isEditing && !code) { // Not a commune
       onEdit(id)
-    } else if (isSelectable) {
+    } else if (onSelect) {
       if (e.target.closest('[data-browsable]')) {
         onSelect(id)
       }
     }
-  }, [code, id, isSelectable, isEditing, onEdit, onSelect])
+  }, [code, id, isEditing, onEdit, onSelect])
 
   const _onEdit = useCallback(() => {
     onEdit(id)
@@ -45,7 +45,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
   }, [])
 
   return (
-    <Table.Row style={{backgroundColor: hovered ? '#f5f6f7' : ''}} onClick={onClick}>
+    <Table.Row onClick={onClick}>
       {token && !isEditing && hasNumero && isSelectable && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
@@ -57,16 +57,24 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
       {code && (
         <Table.TextCell data-browsable isNumber flex='0 1 1'>{code}</Table.TextCell>
       )}
-      <Table.Cell data-browsable>
+      <Table.Cell
+        data-browsable
+        style={onSelect ? {cursor: 'pointer', backgroundColor: hovered ? '#E4E7EB' : '#f5f6f7'} : null}
+        onMouseEnter={() => _onMouseEnter(id)}
+        onMouseLeave={_onMouseLeave}
+      >
         <Table.TextCell
           data-editable
           flex='0 1 1'
           style={{cursor: onEdit && !isEditing ? 'text' : 'default'}}
-          onMouseEnter={() => _onMouseEnter(id)}
-          onMouseLeave={_onMouseLeave}
+          className='edit-cell'
         >
-          {label} <i>{toponyme && toponymes && ` - ${toponymes.find(t => t._id === toponyme).nom} `}</i> {hovered && !isEditing && (
-            <EditIcon marginBottom={-4} marginLeft={8} />
+          {label} <i>{toponyme && ` - ${toponymes.find(t => t._id === toponyme).nom} `}</i>
+          {!isEditing && onEdit && (
+            <span className='pencil-icon'>
+              <EditIcon marginBottom={-4} marginLeft={8} />
+            </span>
+
           )}
         </Table.TextCell>
       </Table.Cell>
@@ -99,7 +107,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
             content={
               <Menu>
                 <Menu.Group>
-                  {isSelectable && (
+                  {onSelect && (
                     <Menu.Item icon={SendToMapIcon} onSelect={() => onSelect(id)}>
                       Consulter
                     </Menu.Item>
@@ -122,6 +130,16 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           </Popover>
         </Table.TextCell>
       )}
+
+      <style global jsx>{`
+        .edit-cell .pencil-icon {
+          display: none;
+        }
+
+        .edit-cell:hover .pencil-icon {
+          display: inline-block;
+        }
+        `}</style>
     </Table.Row>
   )
 })
