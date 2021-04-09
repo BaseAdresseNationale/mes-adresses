@@ -11,6 +11,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
   const {numeros, isEditing, toponymes} = useContext(BalDataContext)
   const {type} = positions[0] || {}
   const hasNumero = numeros && numeros.length > 1
+  const toponymeName = toponyme ? toponymes.find(({_id}) => _id === toponyme).nom : null
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && !isEditing && !code) { // Not a commune
@@ -69,7 +70,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           style={{cursor: onEdit && !isEditing ? 'text' : 'default'}}
           className='edit-cell'
         >
-          {label} <i>{toponyme && ` - ${toponymes.find(t => t._id === toponyme).nom} `}</i>
+          {label} <i>{toponymeName && ` - ${toponymeName}`}</i>
           {!isEditing && onEdit && (
             <span className='pencil-icon'>
               <EditIcon marginBottom={-4} marginLeft={8} />
