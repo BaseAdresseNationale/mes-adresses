@@ -50,6 +50,7 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
     const numeros = selectedVoieNumeros.length > 0 ?
       selectedVoieNumeros :
       voieNumeros.map(({_id}) => _id)
+
     onSubmit(numeros)
   }, [selectedVoieNumeros, voieNumeros, onSubmit])
 
@@ -84,7 +85,7 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
                 isMultiSelect
                 hasFilter={false}
                 title='Sélection des numéros'
-                options={voieNumeros.map(({_id, numero}) => ({label: `${numero}`, value: _id}))}
+                options={voieNumeros.map(({_id, numero, suffixe}) => ({label: `${numero}${suffixe ? suffixe : ''}`, value: _id}))}
                 selected={selectedVoieNumeros}
                 emptyView={(
                   <Pane height='100%' paddingX='1em' display='flex' alignItems='center' justifyContent='center' textAlign='center'>
