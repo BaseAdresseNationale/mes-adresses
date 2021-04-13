@@ -27,8 +27,7 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
 
   const [filtered, onFilter] = useFuse(basesLocales, 200, {
     keys: [
-      'nom',
-      'communes'
+      'nom'
     ]
   })
 
