@@ -1,17 +1,23 @@
-import React, {useState, useContext, useCallback} from 'react'
+import React, {useState, useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 import BalDataContext from '../contexts/bal-data'
 
-const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponyme}) => {
+const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
   const {numeros, isEditing, toponymes} = useContext(BalDataContext)
   const {type} = positions[0] || {}
   const hasNumero = numeros && numeros.length > 1
-  const toponymeName = toponyme ? toponymes.find(({_id}) => _id === toponyme).nom : null
+
+  const toponymeName = useMemo(() => {
+    if (toponymeId && toponymes) {
+      const toponyme = toponymes.find(({_id}) => _id === toponymeId)
+      return toponyme?.nom
+    }
+  }, [toponymeId, toponymes])
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && !isEditing && !code) { // Not a commune
@@ -151,7 +157,7 @@ TableRow.propTypes = {
   positions: PropTypes.array,
   label: PropTypes.string.isRequired,
   comment: PropTypes.string,
-  toponyme: PropTypes.string,
+  toponymeId: PropTypes.string,
   secondary: PropTypes.string,
   isSelectable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
@@ -165,7 +171,7 @@ TableRow.defaultProps = {
   code: null,
   positions: [],
   comment: null,
-  toponyme: null,
+  toponymeId: null,
   secondary: null,
   isSelectable: false,
   onEdit: null,

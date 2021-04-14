@@ -58,6 +58,13 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
     try {
       await removeToponyme(_id, token)
       await reloadToponymes()
+
+      if (_id === toponyme._id) {
+        router.push(
+          `/bal/&codeCommune=${initialToponyme.commune}`,
+          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}`
+        )
+      }
     } catch (error) {
       setError(error.message)
     }
