@@ -59,7 +59,7 @@ const ToponymeHeading = ({defaultToponyme}) => {
           onMouseLeave={() => setHovered(false)}
         >
           {toponyme.nom}
-          {!isEditing && (
+          {!isEditing && token && (
             <EditIcon
               marginBottom={-2}
               marginLeft={8}

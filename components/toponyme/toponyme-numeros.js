@@ -1,10 +1,13 @@
-import React, {useState, useMemo} from 'react'
+import React, {useState, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {groupBy} from 'lodash'
 import {Heading, Table, EditIcon} from 'evergreen-ui'
 
+import TokenContext from '../../contexts/token'
+
 function ToponymeNumeros({numeros, handleSelect}) {
   const [hovered, setHovered] = useState(null)
+  const {token} = useContext(TokenContext)
 
   const numerosByVoie = useMemo(() => {
     return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie[0].nom)
@@ -28,7 +31,7 @@ function ToponymeNumeros({numeros, handleSelect}) {
           >
             <Table.Cell data-browsable>
               <Table.TextCell data-editable flex='0 1 1'>
-                {numero}{suffixe} {hovered === _id && <EditIcon marginBottom={-4} marginLeft={8} />}
+                {numero}{suffixe} {hovered === _id && token && <EditIcon marginBottom={-4} marginLeft={8} />}
               </Table.TextCell>
             </Table.Cell>
           </Table.Row>

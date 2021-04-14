@@ -60,7 +60,7 @@ const VoieHeading = ({defaultVoie}) => {
           onMouseLeave={() => setHovered(false)}
         >
           {voie.nom}
-          {!isEditing && (
+          {!isEditing && token && (
             <EditIcon
               marginBottom={-2}
               marginLeft={8}

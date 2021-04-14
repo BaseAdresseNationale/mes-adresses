@@ -71,7 +71,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           className='edit-cell'
         >
           {label} <i>{toponymeName && ` - ${toponymeName}`}</i>
-          {!isEditing && onEdit && (
+          {!isEditing && onEdit && token && (
             <span className='pencil-icon'>
               <EditIcon marginBottom={-4} marginLeft={8} />
             </span>
