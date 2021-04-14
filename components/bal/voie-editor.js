@@ -13,14 +13,13 @@ import useKeyEvent from '../../hooks/key-event'
 
 import DrawEditor from './draw-editor'
 
-function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
+function VoieEditor({initialValue, onSubmit, onCancel}) {
   const router = useRouter()
 
   const [isLoading, setIsLoading] = useState(false)
   const [isToponyme, onIsToponymeChange] = useCheckboxInput(checkIsToponyme(initialValue))
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
-  const [complement, onComplementChange] = useInput(initialValue ? initialValue.complement : '')
   const [error, setError] = useState()
   const setRef = useFocus()
 
@@ -34,7 +33,6 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
     const body = {
       nom,
       typeNumerotation: isMetric ? 'metrique' : 'numerique',
-      complement: complement.length > 1 ? complement : null,
       trace: data ? data.geometry : null,
       positions: []
     }
@@ -53,7 +51,7 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, isMetric, complement, data, onSubmit])
+  }, [router, nom, isMetric, data, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -106,20 +104,6 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
         placeholder={isToponyme ? 'Nom du toponyme…' : 'Nom de la voie…'}
         onChange={onNomChange}
       />
-      {isEnabledComplement && (
-        <TextInputField
-          display='block'
-          disabled={isLoading}
-          width='100%'
-          maxWidth={500}
-          label='Complément d’adresse'
-          value={complement}
-          maxLength={200}
-          marginBottom={16}
-          placeholder='Complément du nom de voie (lieu-dit, hameau, …)'
-          onChange={onComplementChange}
-        />
-      )}
 
       <Checkbox
         checked={isMetric}
@@ -159,20 +143,17 @@ function VoieEditor({initialValue, onSubmit, onCancel, isEnabledComplement}) {
 VoieEditor.propTypes = {
   initialValue: PropTypes.shape({
     nom: PropTypes.string,
-    complement: PropTypes.string,
     typeNumerotation: PropTypes.string,
     trace: PropTypes.object,
     positions: PropTypes.array.isRequired
   }),
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func,
-  isEnabledComplement: PropTypes.bool
+  onCancel: PropTypes.func
 }
 
 VoieEditor.defaultProps = {
   initialValue: null,
-  onCancel: null,
-  isEnabledComplement: false
+  onCancel: null
 }
 
 export default VoieEditor

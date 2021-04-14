@@ -45,14 +45,13 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsPopulating(false)
   }, [baseLocale, commune, reloadVoies, token])
 
-  const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace, complement}) => {
+  const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace}) => {
     if (selectedTab === 'voie') {
       const voie = await addVoie(baseLocale._id, commune.code, {
         nom,
         typeNumerotation,
         positions,
-        trace,
-        complement
+        trace
       }, token)
 
       Router.push(
@@ -87,14 +86,13 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setEditingId(id)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions, complement}) => {
+  const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions}) => {
     if (selectedTab === 'voie') {
       await editVoie(editingId, {
         nom,
         typeNumerotation,
         trace,
-        positions,
-        complement
+        positions
       }, token)
 
       await reloadVoies()

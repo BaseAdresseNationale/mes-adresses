@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
 import {editVoie} from '../../lib/bal-api'
-import {getFullVoieName} from '../../lib/voie'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -14,7 +13,7 @@ const VoieHeading = ({defaultVoie}) => {
   const [voie, setVoie] = useState(defaultVoie)
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {baseLocale, editingId, setEditingId, isEditing, reloadVoies, numeros} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing, reloadVoies, numeros} = useContext(BalDataContext)
 
   const onEnableVoieEditing = useCallback(() => {
     if (!isEditing) {
@@ -23,12 +22,11 @@ const VoieHeading = ({defaultVoie}) => {
     }
   }, [setEditingId, isEditing, voie._id])
 
-  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace, complement, positions}) => {
+  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace, positions}) => {
     const editedVoie = await editVoie(voie._id, {
       nom,
       typeNumerotation,
       trace,
-      complement,
       positions
     }, token)
 
@@ -52,7 +50,6 @@ const VoieHeading = ({defaultVoie}) => {
       {editingId === voie._id ? (
         <VoieEditor
           initialValue={voie}
-          isEnabledComplement={Boolean(baseLocale.enableComplement)}
           onSubmit={onEditVoie}
           onCancel={() => setEditingId(null)}
         />
@@ -63,7 +60,7 @@ const VoieHeading = ({defaultVoie}) => {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {getFullVoieName(voie, Boolean(baseLocale.enableComplement))}
+          {voie.nom}
           {!isEditing && (
             <EditIcon
               marginBottom={-2}
@@ -84,7 +81,6 @@ VoieHeading.propTypes = {
   defaultVoie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    complement: PropTypes.string,
     positions: PropTypes.array.isRequired
   }).isRequired
 }

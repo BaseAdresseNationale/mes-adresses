@@ -109,7 +109,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
 
   const sources = useSources(voie, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
-  const layers = useLayers(voie, sources, style, baseLocale.enableComplement)
+  const layers = useLayers(voie, sources, style)
 
   const mapRef = useCallback(ref => {
     if (ref) {

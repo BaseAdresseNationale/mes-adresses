@@ -145,7 +145,6 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 ToponymeEditor.propTypes = {
   initialValue: PropTypes.shape({
     nom: PropTypes.string,
-    complement: PropTypes.string,
     typeNumerotation: PropTypes.string,
     trace: PropTypes.object,
     positions: PropTypes.array.isRequired

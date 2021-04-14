@@ -9,13 +9,11 @@ import BalDataContext from '../../contexts/bal-data'
 import useFuse from '../../hooks/fuse'
 
 import {normalizeSort} from '../../lib/normalize'
-import {getFullVoieName} from '../../lib/voie'
 import TableRow from '../table-row'
 import VoieEditor from './voie-editor'
 
 const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) => {
   const {
-    baseLocale,
     isEditing,
     editingId,
     voies
@@ -40,7 +38,6 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
           <Table.Row height='auto'>
             <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
               <VoieEditor
-                isEnabledComplement={Boolean(baseLocale.enableComplement)}
                 onSubmit={onAdd}
                 onCancel={onCancel}
               />
@@ -59,7 +56,6 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
             <Table.Row key={voie._id} height='auto'>
               <Table.Cell display='block' paddingY={12} background='tint1'>
                 <VoieEditor
-                  isEnabledComplement={Boolean(baseLocale.enableComplement)}
                   initialValue={voie}
                   onSubmit={onEdit}
                   onCancel={onCancel}
@@ -72,7 +68,7 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
                 key={voie._id}
                 id={voie._id}
                 isSelectable={!isEditing && !isPopulating && voie.positions.length === 0}
-                label={getFullVoieName(voie, baseLocale.enableComplement)}
+                label={voie.nom}
                 onSelect={onSelect}
                 onEdit={onEnableEditing}
                 onRemove={id => setToRemove(id)}

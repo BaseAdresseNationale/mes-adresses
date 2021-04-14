@@ -14,7 +14,6 @@ import ToponymeEditor from './toponyme-editor'
 
 const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) => {
   const {
-    baseLocale,
     isEditing,
     editingId,
     toponymes
@@ -39,7 +38,6 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
           <Table.Row height='auto'>
             <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
               <ToponymeEditor
-                isEnabledComplement={Boolean(baseLocale.enableComplement)}
                 onSubmit={onAdd}
                 onCancel={onCancel}
               />
