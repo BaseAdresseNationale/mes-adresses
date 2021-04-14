@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
 
-import {checkIsToponyme} from '../../lib/voie'
-
 import DrawContext from '../../contexts/draw'
 
 import {useInput, useCheckboxInput} from '../../hooks/input'
@@ -17,7 +15,6 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   const router = useRouter()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [isToponyme, onIsToponymeChange] = useCheckboxInput(checkIsToponyme(initialValue))
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
@@ -80,7 +77,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     } else if (!isMetric && drawEnabled) {
       disableDraw()
     }
-  }, [data, disableDraw, drawEnabled, enableDraw, isMetric, onIsToponymeChange, setModeId])
+  }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
 
   useEffect(() => {
     return () => {
@@ -101,7 +98,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
         value={nom}
         maxLength={200}
         marginBottom={16}
-        placeholder={isToponyme ? 'Nom du toponyme…' : 'Nom de la voie…'}
+        placeholder='Nom de la voie…'
         onChange={onNomChange}
       />
 
