@@ -26,6 +26,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
   const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
   const selectedNumerosUniqToponyme = uniq(selectedNumeros.map(numero => numero.toponyme))
+  const hasUniqToponyme = selectedNumerosUniqToponyme.filter(Boolean).length === 1
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
   const handleComplete = () => {
@@ -131,9 +132,9 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               flex={1}
               disabled={selectedNumerosUniqToponyme.length > 1}
               marginBottom={16}
-              onChange={event => setSelectedToponymeId(event.target.value)}
+              onChange={event => setSelectedToponymeId(event.target.value === '' ? null : event.target.value)}
             >
-              <option value={null}>- Choisir un toponyme -</option>
+              <option value=''>{selectedToponymeId || hasUniqToponyme ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
               {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
                 <option
                   key={_id}
