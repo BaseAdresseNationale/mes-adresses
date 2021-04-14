@@ -1,7 +1,7 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {trimStart, trimEnd, sortBy} from 'lodash'
-import {Pane, Heading, TextInput, Button, Alert, Checkbox, Select, Text} from 'evergreen-ui'
+import {Pane, Heading, TextInput, Button, Alert, Checkbox, Select} from 'evergreen-ui'
 
 import {normalizeSort} from '../../lib/normalize'
 
@@ -198,7 +198,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
         onChange={e => setIsToponyme(e.target.checked)}
       />
 
-      <PositionEditor isToponyme={isToponyme} />
+      <PositionEditor />
 
       {!isToponyme && (
         <Comment input={comment} onChange={onCommentChange} />
