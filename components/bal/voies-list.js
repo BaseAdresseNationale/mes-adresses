@@ -63,16 +63,15 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
               </Table.Cell>
             </Table.Row>
           ) : (
-            voie.positions.length === 0 && (
-              <TableRow
-                key={voie._id}
-                id={voie._id}
-                isSelectable={!isEditing && !isPopulating && voie.positions.length === 0}
-                label={voie.nom}
-                onSelect={onSelect}
-                onEdit={onEnableEditing}
-                onRemove={id => setToRemove(id)}
-              />)
+            <TableRow
+              key={voie._id}
+              id={voie._id}
+              isSelectable={!isEditing && !isPopulating}
+              label={voie.nom}
+              onSelect={onSelect}
+              onEdit={onEnableEditing}
+              onRemove={id => setToRemove(id)}
+            />
           ))}
       </Table>
     </Pane>

@@ -22,12 +22,11 @@ const VoieHeading = ({defaultVoie}) => {
     }
   }, [setEditingId, isEditing, voie._id])
 
-  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace, positions}) => {
+  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace}) => {
     const editedVoie = await editVoie(voie._id, {
       nom,
       typeNumerotation,
-      trace,
-      positions
+      trace
     }, token)
 
     setEditingId(null)
@@ -80,8 +79,7 @@ const VoieHeading = ({defaultVoie}) => {
 VoieHeading.propTypes = {
   defaultVoie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired,
-    positions: PropTypes.array.isRequired
+    nom: PropTypes.string.isRequired
   }).isRequired
 }
 

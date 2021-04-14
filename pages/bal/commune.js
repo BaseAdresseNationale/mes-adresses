@@ -50,7 +50,6 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       const voie = await addVoie(baseLocale._id, commune.code, {
         nom,
         typeNumerotation,
-        positions,
         trace
       }, token)
 
@@ -91,8 +90,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       await editVoie(editingId, {
         nom,
         typeNumerotation,
-        trace,
-        positions
+        trace
       }, token)
 
       await reloadVoies()

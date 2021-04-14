@@ -30,20 +30,17 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     const body = {
       nom,
       typeNumerotation: isMetric ? 'metrique' : 'numerique',
-      trace: data ? data.geometry : null,
-      positions: []
+      trace: data ? data.geometry : null
     }
 
     try {
       await onSubmit(body)
 
-      if (body.positions.length > 0) {
-        const {balId, codeCommune} = router.query
-        router.push(
-          `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-          `/bal/${balId}/communes/${codeCommune}`
-        )
-      }
+      const {balId, codeCommune} = router.query
+      router.push(
+        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
+        `/bal/${balId}/communes/${codeCommune}`
+      )
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
@@ -141,8 +138,7 @@ VoieEditor.propTypes = {
   initialValue: PropTypes.shape({
     nom: PropTypes.string,
     typeNumerotation: PropTypes.string,
-    trace: PropTypes.object,
-    positions: PropTypes.array.isRequired
+    trace: PropTypes.object
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
