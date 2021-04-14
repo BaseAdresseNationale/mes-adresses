@@ -179,7 +179,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
             marginLeft='1em'
             onChange={handleToponymeChange}
           >
-            <option value={null}>Pas de Toponyme</option>
+            <option value={null}>- Choisir un toponyme -</option>
             {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
               <option
                 key={_id}
