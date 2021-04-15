@@ -41,7 +41,7 @@ const Voies = () => {
             <ListItem>Cliquez sur le du nom de la voie</ListItem>
             <ListItem>Éditer le nom de la voie</ListItem>
             <ListItem>
-              Pour terminer, cliquez sur <Button marginX={4} appearance='primary' intent='success'>Modifier</Button>
+              Pour terminer, cliquez sur <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
             </ListItem>
           </OrderedList>
 
