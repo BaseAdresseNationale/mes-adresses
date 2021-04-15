@@ -168,7 +168,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           marginBottom={16}
           onChange={handleToponymeChange}
         >
-          <option value={null}>{initialToponyme ? 'Aucun toponyme' : '- Choisir un toponyme -'}</option>
+          <option value={null}>{(initialToponyme || initialValue?.toponyme) ? 'Aucun toponyme' : '- Choisir un toponyme -'}</option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
             <option
               key={_id}
