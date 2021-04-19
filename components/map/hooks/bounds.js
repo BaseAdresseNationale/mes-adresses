@@ -21,9 +21,16 @@ function useBounds(commune, voie, toponyme) {
       }
 
       if (toponyme) {
+        const numeroToponyme = data.features.filter(feature => feature.properties.idToponyme === toponyme._id)
         data = {
           type: 'FeatureCollection',
-          features: data.features.filter(feature => feature.properties.idToponyme === toponyme._id)
+          features: numeroToponyme.length === 0 && toponyme.positions.length === 1 ?
+            [{
+              type: 'Feature',
+              geometry: toponyme.positions[0].point,
+              properties: {id: toponyme._id}
+            }] :
+            numeroToponyme
         }
       }
 
