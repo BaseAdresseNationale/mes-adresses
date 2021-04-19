@@ -50,7 +50,7 @@ function useBounds(commune, voie, toponyme) {
     }
 
     return null
-  }, [commune, voie]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [commune, voie, toponyme]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return useMemo(() => data ? bbox(data) : data, [data])
 }
