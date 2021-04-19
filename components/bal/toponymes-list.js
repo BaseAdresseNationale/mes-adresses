@@ -66,6 +66,7 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
             <TableRow
               key={toponyme._id}
               id={toponyme._id}
+              warning={toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null}
               isSelectable={!isEditing && !isPopulating}
               label={toponyme.nom}
               onSelect={onSelect}

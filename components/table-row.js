@@ -5,11 +5,10 @@ import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, 
 import TokenContext from '../contexts/token'
 import BalDataContext from '../contexts/bal-data'
 
-const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId}) => {
+const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
   const {numeros, isEditing, toponymes} = useContext(BalDataContext)
-  const {type} = positions[0] || {}
   const hasNumero = numeros && numeros.length > 1
 
   const toponymeName = useMemo(() => {
@@ -100,9 +99,9 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           </Tooltip>
         </Table.Cell>
       )}
-      {type === 'inconnue' && (
+      {warning && (
         <Table.TextCell flex='0 1 1'>
-          <Tooltip content='Le type de la position est inconnu' position={Position.BOTTOM}>
+          <Tooltip content={warning} position={Position.BOTTOM}>
             <WarningSignIcon color='warning' style={{verticalAlign: 'bottom'}} />
           </Tooltip>
         </Table.TextCell>
@@ -154,7 +153,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
 TableRow.propTypes = {
   id: PropTypes.string.isRequired,
   code: PropTypes.string,
-  positions: PropTypes.array,
+  warning: PropTypes.array,
   label: PropTypes.string.isRequired,
   comment: PropTypes.string,
   toponymeId: PropTypes.string,
@@ -169,7 +168,7 @@ TableRow.propTypes = {
 
 TableRow.defaultProps = {
   code: null,
-  positions: [],
+  warning: null,
   comment: null,
   toponymeId: null,
   secondary: null,
