@@ -1,4 +1,4 @@
-import {useMemo, useContext} from 'react'
+import {useMemo, useContext, useState, useEffect} from 'react'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 
@@ -8,9 +8,14 @@ const BUFFER_RADIUS = 100
 
 function useBounds(commune, voie, toponyme) {
   const {geojson} = useContext(BalDataContext)
+  const [hasBound, setHasBound] = useState(false)
+
+  useEffect(() => {
+    setHasBound(Boolean(geojson))
+  }, [geojson])
 
   const data = useMemo(() => {
-    if (geojson) {
+    if (hasBound) {
       let data = geojson
 
       if (voie) {
@@ -50,7 +55,8 @@ function useBounds(commune, voie, toponyme) {
     }
 
     return null
-  }, [commune, voie, toponyme]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [commune, voie, toponyme, hasBound]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Use hasBound as hook instead of geojson to prevent fitBounds on numero update
 
   return useMemo(() => data ? bbox(data) : data, [data])
 }
