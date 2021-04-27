@@ -83,7 +83,7 @@ function UploadForm() {
       setIsLoading(true)
       upload()
     }
-  }, [bal, error, file])
+  }, [bal, file])
 
   useEffect(() => {
     if (file || error) {
