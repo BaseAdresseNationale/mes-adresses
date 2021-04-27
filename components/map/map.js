@@ -10,7 +10,7 @@ import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
 
-import {addNumero, addVoie} from '../../lib/bal-api'
+import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
 
@@ -78,7 +78,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, style: defaultStyle, commune, voie}) {
+function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
   const router = useRouter()
   const {viewport, setViewport} = useContext(MapContext)
 
@@ -108,8 +108,8 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
   const {token} = useContext(TokenContext)
 
   const sources = useSources(voie, hovered, editingId)
-  const bounds = useBounds(commune, voie)
-  const layers = useLayers(voie, sources, style, baseLocale.enableComplement)
+  const bounds = useBounds(commune, voie, toponyme)
+  const layers = useLayers(voie, sources, style)
 
   const mapRef = useCallback(ref => {
     if (ref) {
@@ -200,6 +200,16 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
     setOpenForm(false)
     reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
   }, [baseLocale._id, commune, voie, token, reloadView])
+
+  const onAddToponyme = useCallback(async toponymeData => {
+    const editedToponyme = await addToponyme(baseLocale._id, commune.code, toponymeData, token)
+
+    setOpenForm(false)
+    router.push(
+      `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${editedToponyme._id}`,
+      `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${editedToponyme._id}`
+    )
+  }, [baseLocale._id, commune, token, router])
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -329,7 +339,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
             <NumeroMarker
               key={numero._id}
               numero={numero}
-              colorSeed={numero.voie}
+              colorSeed={voie._id}
               showLabel={showNumeros}
               showContextMenu={numero._id === showContextMenu}
               setShowContextMenu={setShowContextMenu}
@@ -339,7 +349,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           {toponymes && toponymes.map(toponyme => (
             <ToponymeMarker
               key={toponyme._id}
-              toponyme={toponyme}
+              initialToponyme={toponyme}
               showLabel={showNumeros}
               showContextMenu={toponyme._id === showContextMenu}
               setShowContextMenu={setShowContextMenu}
@@ -364,7 +374,7 @@ function Map({interactive, style: defaultStyle, commune, voie}) {
           <AddressEditor
             isToponyme={isToponyme}
             setIsToponyme={setIsToponyme}
-            onSubmit={onAddAddress}
+            onSubmit={isToponyme ? onAddToponyme : onAddAddress}
             onCancel={() => setOpenForm(false)}
           />
         </Pane>
@@ -381,14 +391,16 @@ Map.propTypes = {
     'vector-cadastre'
   ]),
   commune: PropTypes.object,
-  voie: PropTypes.object
+  voie: PropTypes.object,
+  toponyme: PropTypes.object
 }
 
 Map.defaultProps = {
   interactive: true,
   style: 'vector',
   commune: null,
-  voie: null
+  voie: null,
+  toponyme: null
 }
 
 export default Map

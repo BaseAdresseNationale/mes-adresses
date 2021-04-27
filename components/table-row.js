@@ -1,25 +1,32 @@
-import React, {useState, useContext, useCallback} from 'react'
+import React, {useState, useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 import BalDataContext from '../contexts/bal-data'
 
-const TableRow = React.memo(({id, code, positions, label, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected}) => {
+const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {numeros, isEditing} = useContext(BalDataContext)
-  const {type} = positions[0] || {}
+  const {numeros, isEditing, toponymes} = useContext(BalDataContext)
+  const hasNumero = numeros && numeros.length > 1
+
+  const toponymeName = useMemo(() => {
+    if (toponymeId && toponymes) {
+      const toponyme = toponymes.find(({_id}) => _id === toponymeId)
+      return toponyme?.nom
+    }
+  }, [toponymeId, toponymes])
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && !isEditing && !code) { // Not a commune
       onEdit(id)
-    } else if (isSelectable) {
+    } else if (onSelect) {
       if (e.target.closest('[data-browsable]')) {
         onSelect(id)
       }
     }
-  }, [code, id, isSelectable, isEditing, onEdit, onSelect])
+  }, [code, id, isEditing, onEdit, onSelect])
 
   const _onEdit = useCallback(() => {
     onEdit(id)
@@ -44,8 +51,8 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
   }, [])
 
   return (
-    <Table.Row isSelectable={isSelectable} style={{backgroundColor: hovered ? '#f5f6f7' : ''}} onClick={onClick}>
-      {token && !isEditing && numeros && numeros.length > 1 && (
+    <Table.Row onClick={onClick}>
+      {token && !isEditing && hasNumero && isSelectable && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
             checked={isSelected}
@@ -56,20 +63,27 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
       {code && (
         <Table.TextCell data-browsable isNumber flex='0 1 1'>{code}</Table.TextCell>
       )}
-      <Table.Cell data-browsable>
+      <Table.Cell
+        data-browsable
+        style={onSelect ? {cursor: 'pointer', backgroundColor: hovered ? '#E4E7EB' : '#f5f6f7'} : null}
+        onMouseEnter={() => _onMouseEnter(id)}
+        onMouseLeave={_onMouseLeave}
+      >
         <Table.TextCell
           data-editable
           flex='0 1 1'
           style={{cursor: onEdit && !isEditing ? 'text' : 'default'}}
-          onMouseEnter={() => _onMouseEnter(id)}
-          onMouseLeave={_onMouseLeave}
+          className='edit-cell'
         >
-          {label} {hovered && !isEditing && (
-            <EditIcon marginBottom={-4} marginLeft={8} />
+          {label} <i>{toponymeName && ` - ${toponymeName}`}</i>
+          {!isEditing && onEdit && token && (
+            <span className='pencil-icon'>
+              <EditIcon marginBottom={-4} marginLeft={8} />
+            </span>
+
           )}
         </Table.TextCell>
       </Table.Cell>
-      <Table.Cell data-browsable />
       {secondary && (
         <Table.TextCell flex='0 1 1'>
           {secondary}
@@ -85,9 +99,9 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           </Tooltip>
         </Table.Cell>
       )}
-      {type === 'inconnue' && (
+      {warning && (
         <Table.TextCell flex='0 1 1'>
-          <Tooltip content='Le type de la position est inconnu' position={Position.BOTTOM}>
+          <Tooltip content={warning} position={Position.BOTTOM}>
             <WarningSignIcon color='warning' style={{verticalAlign: 'bottom'}} />
           </Tooltip>
         </Table.TextCell>
@@ -99,7 +113,7 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
             content={
               <Menu>
                 <Menu.Group>
-                  {isSelectable && (
+                  {onSelect && (
                     <Menu.Item icon={SendToMapIcon} onSelect={() => onSelect(id)}>
                       Consulter
                     </Menu.Item>
@@ -122,6 +136,16 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
           </Popover>
         </Table.TextCell>
       )}
+
+      <style global jsx>{`
+        .edit-cell .pencil-icon {
+          display: none;
+        }
+
+        .edit-cell:hover .pencil-icon {
+          display: inline-block;
+        }
+        `}</style>
     </Table.Row>
   )
 })
@@ -129,9 +153,10 @@ const TableRow = React.memo(({id, code, positions, label, comment, secondary, is
 TableRow.propTypes = {
   id: PropTypes.string.isRequired,
   code: PropTypes.string,
-  positions: PropTypes.array,
+  warning: PropTypes.array,
   label: PropTypes.string.isRequired,
   comment: PropTypes.string,
+  toponymeId: PropTypes.string,
   secondary: PropTypes.string,
   isSelectable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
@@ -143,10 +168,11 @@ TableRow.propTypes = {
 
 TableRow.defaultProps = {
   code: null,
-  positions: [],
+  warning: null,
   comment: null,
+  toponymeId: null,
   secondary: null,
-  isSelectable: true,
+  isSelectable: false,
   onEdit: null,
   handleSelect: null,
   isSelected: false
