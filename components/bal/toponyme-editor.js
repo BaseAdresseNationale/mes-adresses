@@ -1,26 +1,22 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
-import {Pane, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
+import {Pane, Button, Alert, TextInputField} from 'evergreen-ui'
 
-import DrawContext from '../../contexts/draw'
+import MarkersContext from '../../contexts/markers'
 
-import {useInput, useCheckboxInput} from '../../hooks/input'
+import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
-import DrawEditor from './draw-editor'
+import PositionEditor from './position-editor'
 
-function VoieEditor({initialValue, onSubmit, onCancel}) {
-  const router = useRouter()
-
+function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const [isLoading, setIsLoading] = useState(false)
-  const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
   const setRef = useFocus()
 
-  const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
+  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -29,29 +25,38 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
     const body = {
       nom,
-      typeNumerotation: isMetric ? 'metrique' : 'numerique',
-      trace: data ? data.geometry : null
+      positions: []
+    }
+
+    if (markers) {
+      markers.forEach(marker => {
+        body.positions.push(
+          {
+            point: {
+              type: 'Point',
+              coordinates: [marker.longitude, marker.latitude]
+            },
+            type: marker.type
+          }
+        )
+      })
     }
 
     try {
       await onSubmit(body)
-
-      const {balId, codeCommune} = router.query
-      router.push(
-        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
-      )
+      disableMarkers()
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, isMetric, data, onSubmit])
+  }, [nom, markers, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
 
+    disableMarkers()
     onCancel()
-  }, [onCancel])
+  }, [onCancel, disableMarkers])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -63,31 +68,33 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
+      disableMarkers()
       onCancel()
     }
   }, [onCancel])
 
   useEffect(() => {
-    if (isMetric) {
-      setModeId(data ? 'editing' : 'drawLineString')
-      enableDraw()
-    } else if (!isMetric && drawEnabled) {
-      disableDraw()
-    }
-  }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
+    if (initialValue) {
+      const positions = initialValue.positions.map(position => (
+        {
+          longitude: position.point.coordinates[0],
+          latitude: position.point.coordinates[1],
+          type: position.type
+        }
+      ))
 
-  useEffect(() => {
-    return () => {
-      disableDraw()
+      positions.forEach(position => addMarker(position))
+    } else {
+      addMarker({type: 'segment'})
     }
-  }, [disableDraw])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
       <TextInputField
         ref={setRef}
         required
-        label='Nom de la voie'
+        label='Nom du toponyme'
         display='block'
         disabled={isLoading}
         width='100%'
@@ -95,18 +102,19 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
         value={nom}
         maxLength={200}
         marginBottom={16}
-        placeholder='Nom de la voie…'
+        placeholder='Nom du toponyme…'
         onChange={onNomChange}
       />
 
-      <Checkbox
-        checked={isMetric}
-        label='Cette voie utilise la numérotation métrique'
-        onChange={onIsMetricChange}
-      />
+      <PositionEditor isToponyme />
 
-      {isMetric && (
-        <DrawEditor trace={initialValue ? initialValue.trace : null} />
+      {alert && (
+        <Alert marginBottom={16}>
+          {initialValue ?
+            'Déplacer le marqueur sur la carte pour déplacer le toponyme.' :
+            'Déplacer le marqueur sur la carte pour placer le toponyme.'
+          }
+        </Alert>
       )}
 
       {error && (
@@ -134,19 +142,20 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   )
 }
 
-VoieEditor.propTypes = {
+ToponymeEditor.propTypes = {
   initialValue: PropTypes.shape({
     nom: PropTypes.string,
     typeNumerotation: PropTypes.string,
-    trace: PropTypes.object
+    trace: PropTypes.object,
+    positions: PropTypes.array.isRequired
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
 }
 
-VoieEditor.defaultProps = {
+ToponymeEditor.defaultProps = {
   initialValue: null,
   onCancel: null
 }
 
-export default VoieEditor
+export default ToponymeEditor

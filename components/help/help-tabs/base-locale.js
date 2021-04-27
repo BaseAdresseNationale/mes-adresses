@@ -47,7 +47,6 @@ const BaseLocale = () => {
         <OrderedList margin={8}>
           <ListItem>Changer le nom de votre Base Adresse Locale</ListItem>
           <ListItem>Ajouter ou supprimer des collaborateurs</ListItem>
-          <ListItem>Activer ou désactiver la saisie du complément du nom de voie</ListItem>
         </OrderedList>
 
         <Paragraph marginTop='default'>

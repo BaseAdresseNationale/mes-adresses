@@ -24,44 +24,50 @@ function PositionEditor({isToponyme}) {
 
   return (
     <>
-      <Pane display='grid' gridTemplateColumns='2fr .5fr 1fr 1fr .5fr'>
-        <Strong fontWeight={400}>Type</Strong>
-        <div />
-        <Strong fontWeight={400}>Latitude</Strong>
-        <Strong fontWeight={400}>Longitude</Strong>
-        <div />
+      {markers.length > 0 ? (
+        <Pane display='grid' gridTemplateColumns='2fr .5fr 1fr 1fr .5fr'>
+          <Strong fontWeight={400}>Type</Strong>
+          <div />
+          <Strong fontWeight={400}>Latitude</Strong>
+          <Strong fontWeight={400}>Longitude</Strong>
+          <div />
 
-        {markers.map(marker => (
-          <>
-            <SelectField
-              defaultValue={marker.type}
-              marginBottom={8}
-              height={32}
-              onChange={e => handleChange(e, marker)}
-            >
-              {positionsTypesList.map(positionType => (
-                <option key={positionType.value} value={positionType.value} selected={marker.type === positionType.value}>{positionType.name}</option>
-              ))}
-            </SelectField>
-            <Icon icon={MapMarkerIcon} size={22} margin='auto' />
-            <Heading size={100} marginY='auto'>
-              <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
-            </Heading>
-            <Heading size={100} marginY='auto'>
-              <Small>{marker.longitude && marker.longitude.toFixed(6)}</Small>
-            </Heading>
-            <IconButton
-              disabled={markers.length === 1}
-              appearance='default'
-              iconSize={15}
-              icon={TrashIcon}
-              intent='danger'
-              onClick={e => deletePosition(e, marker)}
-            />
-          </>
-        ))}
+          {markers.map(marker => (
+            <>
+              <SelectField
+                defaultValue={marker.type}
+                marginBottom={8}
+                height={32}
+                onChange={e => handleChange(e, marker)}
+              >
+                {positionsTypesList.map(positionType => (
+                  <option key={positionType.value} value={positionType.value} selected={marker.type === positionType.value}>{positionType.name}</option>
+                ))}
+              </SelectField>
+              <Icon icon={MapMarkerIcon} size={22} margin='auto' />
+              <Heading size={100} marginY='auto'>
+                <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
+              </Heading>
+              <Heading size={100} marginY='auto'>
+                <Small>{marker.longitude && marker.longitude.toFixed(6)}</Small>
+              </Heading>
+              <IconButton
+                disabled={isToponyme ? false : markers.length === 1}
+                appearance='default'
+                iconSize={15}
+                icon={TrashIcon}
+                intent='danger'
+                onClick={e => deletePosition(e, marker)}
+              />
+            </>
+          ))}
+        </Pane>
+      ) : (
+        <Pane paddingBottom='.5em' textAlign='center'>
+          <Heading size={400}>Ce toponyme n’a pas de position</Heading>
+        </Pane>
+      )}
 
-      </Pane>
       <Button
         type='button'
         iconBefore={AddIcon}

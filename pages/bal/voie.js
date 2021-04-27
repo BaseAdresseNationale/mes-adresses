@@ -18,15 +18,12 @@ import GroupedActions from '../../components/grouped-actions'
 import VoieHeading from './voie-heading'
 
 const Voie = React.memo(({voie, defaultNumeros}) => {
-  const [editedVoie, setEditedVoie] = useState(voie)
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
 
   const {token} = useContext(TokenContext)
-
-  const currentVoie = editedVoie || voie
 
   const {
     numeros,
@@ -37,7 +34,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setIsEditing
   } = useContext(BalDataContext)
 
-  useHelp(3)
+  useHelp(4)
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
       'numeroComplet'
@@ -81,10 +78,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
-  const onAdd = useCallback(async ({numero, suffixe, comment, positions}) => {
-    await addNumero(voie._id, {
+  const onAdd = useCallback(async ({voie, numero, toponyme, suffixe, comment, positions}) => {
+    await addNumero(voie, {
       numero,
       suffixe,
+      toponyme,
       comment,
       positions
     }, token)
@@ -92,7 +90,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     await reloadNumeros()
 
     setIsAdding(false)
-  }, [voie, reloadNumeros, token])
+  }, [reloadNumeros, token])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -103,10 +101,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(idNumero)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({numero, voie, suffixe, comment, positions}) => {
+  const onEdit = useCallback(async ({numero, voie, toponyme, suffixe, comment, positions}) => {
     await editNumero(editingId, {
       numero,
       voie,
+      toponyme,
       suffixe,
       comment,
       positions
@@ -169,12 +168,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   }, [isEdited, setEditingId])
 
   useEffect(() => {
-    if (voie) {
-      setEditedVoie(null)
-    }
-  }, [voie])
-
-  useEffect(() => {
     setIsEditing(isAdding)
   }, [isAdding, setIsEditing])
 
@@ -193,7 +186,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         <Pane>
           <Heading>Liste des numéros</Heading>
         </Pane>
-        {currentVoie.positions.length === 0 && token && (
+        {token && (
           <Pane marginLeft='auto'>
             <Button
               iconBefore={AddIcon}
@@ -237,76 +230,70 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       )}
 
       <Pane flex={1} overflowY='scroll'>
-        {currentVoie.positions.length === 0 ? (
-          <Table>
-            <Table.Head>
-              {!editingId && numeros && token && filtered.length > 1 && (
-                <Table.Cell flex='0 1 1'>
-                  <Checkbox
-                    checked={isAllSelected}
-                    onChange={handleSelectAll}
-                  />
-                </Table.Cell>
-              )}
-              <Table.SearchHeaderCell
-                placeholder='Rechercher un numéro'
-                onChange={setFilter}
-              />
-            </Table.Head>
-            {isAdding && (
-              <Table.Row height='auto'>
-                <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                  <NumeroEditor
-                    initialVoie={voie}
-                    onSubmit={onAdd}
-                    onCancel={onCancel}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            )}
-            {filtered.length === 0 && (
-              <Table.Row>
-                <Table.TextCell color='muted' fontStyle='italic'>
-                  Aucun numéro
-                </Table.TextCell>
-              </Table.Row>
-            )}
-            {editingId && editingId !== voie._id ? (
-              <Table.Row height='auto'>
-                <Table.Cell display='block' paddingY={12} background='tint1'>
-                  <NumeroEditor
-                    initialVoie={voie}
-                    initialValue={editedNumero}
-                    onSubmit={onEdit}
-                    onCancel={onCancel}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            ) : (
-              filtered.map(numero => (
-                <TableRow
-                  {...numero}
-                  key={numero._id}
-                  id={numero._id}
-                  comment={numero.comment}
-                  isSelectable={!isEditing && !numero}
-                  label={numero.numeroComplet}
-                  secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-                  handleSelect={handleSelect}
-                  isSelected={selectedNumerosIds.includes(numero._id)}
-                  onEdit={onEnableEditing}
-                  onRemove={onRemove}
+        <Table>
+          <Table.Head>
+            {!editingId && numeros && token && filtered.length > 1 && (
+              <Table.Cell flex='0 1 1'>
+                <Checkbox
+                  checked={isAllSelected}
+                  onChange={handleSelectAll}
                 />
-              ))
+              </Table.Cell>
             )}
-          </Table>
-        ) : (
-          <Pane padding={16}>
-            <Paragraph>
-              La voie « {currentVoie.nom} » est un toponyme et ne peut pas contenir de numéro.
-            </Paragraph>
-          </Pane>
-        )}
+            <Table.SearchHeaderCell
+              placeholder='Rechercher un numéro'
+              onChange={setFilter}
+            />
+          </Table.Head>
+          {isAdding && (
+            <Table.Row height='auto'>
+              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+                <NumeroEditor
+                  initialVoie={voie}
+                  onSubmit={onAdd}
+                  onCancel={onCancel}
+                />
+              </Table.Cell>
+            </Table.Row>
+          )}
+          {filtered.length === 0 && (
+            <Table.Row>
+              <Table.TextCell color='muted' fontStyle='italic'>
+                Aucun numéro
+              </Table.TextCell>
+            </Table.Row>
+          )}
+          {editingId && editingId !== voie._id ? (
+            <Table.Row height='auto'>
+              <Table.Cell display='block' paddingY={12} background='tint1'>
+                <NumeroEditor
+                  initialVoie={voie}
+                  initialValue={editedNumero}
+                  onSubmit={onEdit}
+                  onCancel={onCancel}
+                />
+              </Table.Cell>
+            </Table.Row>
+          ) : (
+            filtered.map(numero => (
+              <TableRow
+                {...numero}
+                key={numero._id}
+                id={numero._id}
+                comment={numero.comment}
+                warning={numero.positions.find(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
+                isSelectable={!isEditing}
+                label={numero.numeroComplet}
+                secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+                toponymeId={numero.toponyme}
+                handleSelect={handleSelect}
+                isSelected={selectedNumerosIds.includes(numero._id)}
+                onEdit={onEnableEditing}
+                onRemove={onRemove}
+              />
+            ))
+          )}
+        </Table>
       </Pane>
     </>
   )
@@ -327,8 +314,7 @@ Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
 Voie.propTypes = {
   voie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired,
-    positions: PropTypes.array.isRequired
+    nom: PropTypes.string.isRequired
   }).isRequired,
   defaultNumeros: PropTypes.array
 }

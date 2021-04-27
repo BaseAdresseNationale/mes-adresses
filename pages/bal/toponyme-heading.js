@@ -2,42 +2,41 @@ import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
-import {editVoie} from '../../lib/bal-api'
+import {editToponyme} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
 
-import VoieEditor from '../../components/bal/voie-editor'
+import ToponymeEditor from '../../components/bal/toponyme-editor'
 
-const VoieHeading = ({defaultVoie}) => {
-  const [voie, setVoie] = useState(defaultVoie)
+const ToponymeHeading = ({defaultToponyme}) => {
+  const [toponyme, setToponyme] = useState(defaultToponyme)
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {editingId, setEditingId, isEditing, reloadVoies, numeros} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing, reloadToponymes, numeros} = useContext(BalDataContext)
 
-  const onEnableVoieEditing = useCallback(() => {
+  const onEnableToponymeEditing = useCallback(() => {
     if (!isEditing) {
-      setEditingId(voie._id)
+      setEditingId(toponyme._id)
       setHovered(false)
     }
-  }, [setEditingId, isEditing, voie._id])
+  }, [setEditingId, isEditing, toponyme._id])
 
-  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace}) => {
-    const editedVoie = await editVoie(voie._id, {
+  const onEditToponyme = useCallback(async ({nom, positions}) => {
+    const editedToponyme = await editToponyme(toponyme._id, {
       nom,
-      typeNumerotation,
-      trace
+      positions
     }, token)
 
     setEditingId(null)
-    await reloadVoies()
+    await reloadToponymes()
 
-    setVoie(editedVoie)
-  }, [reloadVoies, setEditingId, token, voie])
+    setToponyme(editedToponyme)
+  }, [reloadToponymes, setEditingId, token, toponyme])
 
   useEffect(() => {
-    setVoie(defaultVoie)
-  }, [defaultVoie])
+    setToponyme(defaultToponyme)
+  }, [defaultToponyme])
 
   return (
     <Pane
@@ -46,20 +45,20 @@ const VoieHeading = ({defaultVoie}) => {
       background='tint1'
       padding={16}
     >
-      {editingId === voie._id ? (
-        <VoieEditor
-          initialValue={voie}
-          onSubmit={onEditVoie}
+      {editingId === toponyme._id ? (
+        <ToponymeEditor
+          initialValue={toponyme}
+          onSubmit={onEditToponyme}
           onCancel={() => setEditingId(null)}
         />
       ) : (
         <Heading
           style={{cursor: hovered && !isEditing ? 'text' : 'default'}}
-          onClick={onEnableVoieEditing}
+          onClick={onEnableToponymeEditing}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {voie.nom}
+          {toponyme.nom}
           {!isEditing && token && (
             <EditIcon
               marginBottom={-2}
@@ -76,11 +75,12 @@ const VoieHeading = ({defaultVoie}) => {
   )
 }
 
-VoieHeading.propTypes = {
-  defaultVoie: PropTypes.shape({
+ToponymeHeading.propTypes = {
+  defaultToponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired,
+    positions: PropTypes.array.isRequired
   }).isRequired
 }
 
-export default VoieHeading
+export default ToponymeHeading

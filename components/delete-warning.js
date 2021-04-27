@@ -10,7 +10,7 @@ function DeleteWarning({isShown, content, onCancel, onConfirm}) {
           isShown={isShown}
           title='Attention'
           intent='danger'
-          cancelLabelstring='Annuler'
+          cancelLabel='Annuler'
           confirmLabel='Supprimer'
           onCloseComplete={onCancel}
           onCancel={onCancel}

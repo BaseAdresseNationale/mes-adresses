@@ -20,7 +20,7 @@ import DemoWarning from './demo-warning'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
-const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}) => {
+const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden, onToggle}) => {
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
   const {showHelp, setShowHelp} = useContext(HelpContext)
   const {showSettings, setShowSettings} = useContext(SettingsContext)
@@ -80,6 +80,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
           baseLocale={baseLocale}
           commune={commune}
           voie={voie}
+          toponyme={toponyme}
           marginLeft={8}
         />
 
@@ -150,6 +151,7 @@ const SubHeader = React.memo(({commune, voie, layout, isSidebarHidden, onToggle}
 SubHeader.propTypes = {
   commune: PropTypes.object,
   voie: PropTypes.object,
+  toponyme: PropTypes.object,
   layout: PropTypes.oneOf(['fullscreen', 'sidebar']).isRequired,
   isSidebarHidden: PropTypes.bool,
   onToggle: PropTypes.func.isRequired
@@ -158,6 +160,7 @@ SubHeader.propTypes = {
 SubHeader.defaultProps = {
   commune: null,
   voie: null,
+  toponyme: null,
   isSidebarHidden: false
 }
 
