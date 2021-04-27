@@ -3,7 +3,7 @@ import {useMemo} from 'react'
 import {getVoiesLabelLayer, getVoieTraceLayer} from '../layers/voies'
 import {getNumerosPointLayer, getNumerosLabelLayer} from '../layers/numeros'
 
-function useLayers(voie, sources, style, isComplementEnabled) {
+function useLayers(voie, sources, style) {
   return useMemo(() => {
     const hasNumeros = sources.find(({name}) => name === 'positions')
     const hasVoies = sources.find(({name}) => name === 'voies')
@@ -21,12 +21,12 @@ function useLayers(voie, sources, style, isComplementEnabled) {
 
     if (!voie && hasVoies) {
       layers.push(
-        getVoiesLabelLayer(style, isComplementEnabled)
+        getVoiesLabelLayer(style)
       )
     }
 
     return layers
-  }, [voie, sources, style, isComplementEnabled])
+  }, [voie, sources, style])
 }
 
 export default useLayers

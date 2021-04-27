@@ -13,6 +13,15 @@ module.exports = app => {
     })
   })
 
+  router.get('/bal/:balId/communes/:codeCommune/toponymes/:idToponyme', (req, res) => {
+    app.render(req, res, '/bal/toponyme', {
+      ...req.query,
+      balId: req.params.balId,
+      codeCommune: req.params.codeCommune,
+      idToponyme: req.params.idToponyme
+    })
+  })
+
   router.get('/bal/:balId/communes/:codeCommune', (req, res) => {
     app.render(req, res, '/bal/commune', {
       ...req.query,

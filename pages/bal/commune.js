@@ -1,47 +1,40 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {sortBy} from 'lodash'
-import {Pane, Heading, Text, Paragraph, Table, Button, AddIcon} from 'evergreen-ui'
+import {Pane, Heading, Text, Paragraph, Button, AddIcon, Tab} from 'evergreen-ui'
 
-import {getVoies, addVoie, populateCommune, editVoie, removeVoie, getNumeros} from '../../lib/bal-api'
+import {getVoies, addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
 
-import useFuse from '../../hooks/fuse'
 import useHelp from '../../hooks/help'
 
 import DeleteWarning from '../../components/delete-warning'
-import TableRow from '../../components/table-row'
-import VoieEditor from '../../components/bal/voie-editor'
-import {normalizeSort} from '../../lib/normalize'
-import {getFullVoieName} from '../../lib/voie'
+import VoiesList from '../../components/bal/voies-list'
+import ToponymesList from '../../components/bal/toponymes-list'
 
 const Commune = React.memo(({commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
   const [toRemove, setToRemove] = useState(null)
-  const [selectedVoieHasNumeros, setSelectedVoieHasNumeros] = useState(false)
+  const [selectedTab, setSelectedTab] = useState('voie')
 
   const {token} = useContext(TokenContext)
 
   const {
     baseLocale,
     voies,
+    toponymes,
     reloadVoies,
+    reloadToponymes,
     editingId,
     setEditingId,
     isEditing,
     setIsEditing
   } = useContext(BalDataContext)
 
-  useHelp(2)
-  const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
-    keys: [
-      'nom'
-    ]
-  })
+  useHelp(selectedTab === 'voie' ? 2 : 3)
 
   const onPopulate = useCallback(async () => {
     setIsPopulating(true)
@@ -52,65 +45,92 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     setIsPopulating(false)
   }, [baseLocale, commune, reloadVoies, token])
 
-  const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace, complement}) => {
-    const voie = await addVoie(baseLocale._id, commune.code, {
-      nom,
-      typeNumerotation,
-      positions,
-      trace,
-      complement
-    }, token)
+  const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace}) => {
+    if (selectedTab === 'voie') {
+      const voie = await addVoie(baseLocale._id, commune.code, {
+        nom,
+        typeNumerotation,
+        trace
+      }, token)
 
-    if (trace) {
       Router.push(
         `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${voie._id}`,
         `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voie._id}`
       )
+
+      await reloadVoies()
+    } else {
+      const toponyme = await addToponyme(baseLocale._id, commune.code, {
+        nom,
+        positions
+      }, token)
+
+      Router.push(
+        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${toponyme._id}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${toponyme._id}`
+      )
+
+      await reloadToponymes()
     }
 
-    await reloadVoies()
-
     setIsAdding(false)
-  }, [baseLocale, commune, reloadVoies, token])
+  }, [baseLocale, commune, reloadVoies, token, selectedTab, reloadToponymes])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
   }, [])
 
-  const onEnableEditing = useCallback(async idVoie => {
-    const numeros = await getNumeros(idVoie)
-
-    setSelectedVoieHasNumeros(numeros.length > 0)
+  const onEnableEditing = useCallback(async id => {
     setIsAdding(false)
-    setEditingId(idVoie)
-  }, [setEditingId, setSelectedVoieHasNumeros])
+    setEditingId(id)
+  }, [setEditingId])
 
-  const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions, complement}) => {
-    await editVoie(editingId, {
-      nom,
-      typeNumerotation,
-      trace,
-      positions,
-      complement
-    }, token)
+  const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions}) => {
+    if (selectedTab === 'voie') {
+      await editVoie(editingId, {
+        nom,
+        typeNumerotation,
+        trace
+      }, token)
 
-    await reloadVoies()
+      await reloadVoies()
+    } else {
+      await editToponyme(editingId, {
+        nom,
+        positions
+      }, token)
+
+      await reloadToponymes()
+    }
 
     setEditingId(null)
-  }, [editingId, setEditingId, reloadVoies, token])
+  }, [editingId, setEditingId, reloadVoies, reloadToponymes, selectedTab, token])
 
   const onRemove = useCallback(async () => {
-    await removeVoie(toRemove, token)
-    await reloadVoies()
-    setToRemove(null)
-  }, [reloadVoies, toRemove, token])
+    if (selectedTab === 'voie') {
+      await removeVoie(toRemove, token)
+      await reloadVoies()
+    } else {
+      await removeToponyme(toRemove, token)
+      await reloadToponymes()
+    }
 
-  const onSelect = useCallback(idVoie => {
-    Router.push(
-      `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-      `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
-    )
-  }, [baseLocale, commune])
+    setToRemove(null)
+  }, [reloadVoies, reloadToponymes, selectedTab, toRemove, token])
+
+  const onSelect = useCallback(id => {
+    if (selectedTab === 'voie') {
+      Router.push(
+        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${id}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${id}`
+      )
+    } else {
+      Router.push(
+        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${id}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${id}`
+      )
+    }
+  }, [baseLocale, commune, selectedTab])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -118,14 +138,14 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   }, [setEditingId])
 
   useEffect(() => {
-    if (!editingId) {
-      setSelectedVoieHasNumeros(false)
-    }
-  }, [editingId])
-
-  useEffect(() => {
     setIsEditing(isAdding)
   }, [isAdding, setIsEditing])
+
+  useEffect(() => {
+    if (editingId && toponymes.find(toponyme => toponyme._id === editingId)) {
+      setSelectedTab('toponyme')
+    }
+  }, [toponymes, editingId])
 
   return (
     <>
@@ -133,7 +153,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         isShown={Boolean(toRemove)}
         content={(
           <Paragraph>
-            Êtes vous bien sûr de vouloir supprimer cette voie ainsi que tous ses numéros ?
+            {`Êtes vous bien sûr de vouloir supprimer ${selectedTab === 'voie' ? 'cette voie ainsi que tous ses numéros' : 'ce toponyme'} ?`}
           </Paragraph>
         )}
         onCancel={() => setToRemove(null)}
@@ -156,14 +176,28 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         flexShrink={0}
         elevation={0}
         backgroundColor='white'
-        padding={16}
+        width='100%'
+        display='flex'
+        justifyContent='space-around'
+        height={38}
+      >
+        <Tab width='100%' height='100%' margin='0' isSelected={selectedTab === 'voie'} onClick={() => setSelectedTab('voie')}>
+          <Heading>Liste des voies</Heading>
+        </Tab>
+        <Tab width='100%' height='100%' margin='0' isSelected={selectedTab === 'toponyme'} onClick={() => setSelectedTab('toponyme')}>
+          <Heading>Liste des toponymes</Heading>
+        </Tab>
+      </Pane>
+
+      <Pane
+        flexShrink={0}
+        elevation={0}
+        backgroundColor='white'
+        paddingX={16}
         display='flex'
         alignItems='center'
-        minHeight={64}
+        minHeight={50}
       >
-        <Pane>
-          <Heading>Liste des voies</Heading>
-        </Pane>
         {token && (
           <Pane marginLeft='auto'>
             <Button
@@ -173,65 +207,37 @@ const Commune = React.memo(({commune, defaultVoies}) => {
               disabled={isAdding || isPopulating || Boolean(editingId) || isEditing}
               onClick={onEnableAdding}
             >
-              Ajouter une voie
+              Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
             </Button>
           </Pane>
         )}
       </Pane>
 
-      <Pane flex={1} overflowY='scroll'>
-        <Table>
-          <Table.Head>
-            <Table.SearchHeaderCell
-              placeholder='Rechercher une voie'
-              onChange={setFilter}
-            />
-          </Table.Head>
-          {isAdding && (
-            <Table.Row height='auto'>
-              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                <VoieEditor
-                  isEnabledComplement={Boolean(baseLocale.enableComplement)}
-                  onSubmit={onAdd}
-                  onCancel={onCancel}
-                />
-              </Table.Cell>
-            </Table.Row>
-          )}
-          {filtered.length === 0 && (
-            <Table.Row>
-              <Table.TextCell color='muted' fontStyle='italic'>
-                Aucun résultat
-              </Table.TextCell>
-            </Table.Row>
-          )}
-          {sortBy(filtered, v => normalizeSort(v.nom))
-            .map(voie => voie._id === editingId ? (
-              <Table.Row key={voie._id} height='auto'>
-                <Table.Cell display='block' paddingY={12} background='tint1'>
-                  <VoieEditor
-                    hasNumeros={selectedVoieHasNumeros}
-                    isEnabledComplement={Boolean(baseLocale.enableComplement)}
-                    initialValue={voie}
-                    onSubmit={onEdit}
-                    onCancel={onCancel}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            ) : (
-              <TableRow
-                key={voie._id}
-                id={voie._id}
-                isSelectable={!isEditing && !isPopulating && voie.positions.length === 0}
-                label={getFullVoieName(voie, baseLocale.enableComplement)}
-                secondary={voie.positions.length >= 1 ? 'Toponyme' : null}
-                onSelect={onSelect}
-                onEdit={onEnableEditing}
-                onRemove={id => setToRemove(id)}
-              />
-            ))}
-        </Table>
-      </Pane>
+      {selectedTab === 'voie' ? (
+        <VoiesList
+          defaultVoies={defaultVoies}
+          isPopulating={isPopulating}
+          isAdding={isAdding}
+          setToRemove={setToRemove}
+          onEnableEditing={onEnableEditing}
+          onSelect={onSelect}
+          onCancel={onCancel}
+          onAdd={onAdd}
+          onEdit={onEdit}
+        />
+      ) : (
+        <ToponymesList
+          isPopulating={isPopulating}
+          isAdding={isAdding}
+          setToRemove={setToRemove}
+          onEnableEditing={onEnableEditing}
+          onSelect={onSelect}
+          onCancel={onCancel}
+          onAdd={onAdd}
+          onEdit={onEdit}
+        />
+      )}
+
       {token && voies && voies.length === 0 && (
         <Pane borderTop marginTop='auto' padding={16}>
           <Paragraph size={300} color='muted'>

@@ -1,7 +1,9 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {trimStart, trimEnd} from 'lodash'
-import {Pane, Heading, TextInput, Button, Alert, Checkbox} from 'evergreen-ui'
+import {trimStart, trimEnd, sortBy} from 'lodash'
+import {Pane, Heading, TextInput, Button, Alert, Checkbox, Select} from 'evergreen-ui'
+
+import {normalizeSort} from '../../lib/normalize'
 
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
@@ -16,13 +18,14 @@ import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 
 function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
-  const {voie} = useContext(BalDataContext)
+  const {voie, toponymes} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [input, onInputChange] = useInput('')
   const [selectedVoie, setSelectedVoie] = useState(voie)
   const [nomVoie, setNomVoie] = useState(voie ? voie.nom : '')
+  const [toponyme, setToponyme] = useState()
   const [suffixe, onSuffixeChange] = useInput('')
   const [comment, onCommentChange] = useInput('')
   const [error, setError] = useState()
@@ -49,14 +52,17 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
 
     let voie
     let numero = null
+    let editedToponyme
+
     if (isToponyme) {
-      voie = {nom: input, positions}
+      editedToponyme = {nom: input, positions}
     } else {
       voie = selectedVoie || {
         nom: nomVoie
       }
       numero = {
         numero: Number(input),
+        toponyme: toponyme?._id,
         suffixe: suffixe.length > 0 ? suffixe : null,
         comment: comment.length > 0 ? comment : null,
         positions
@@ -64,13 +70,13 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
     }
 
     try {
-      await onSubmit(voie, numero)
+      await onSubmit((isToponyme ? editedToponyme : voie), numero)
     } catch (error) {
       setError(error.message)
     }
 
     setIsLoading(false)
-  }, [input, nomVoie, comment, suffixe, markers, isToponyme, selectedVoie, onSubmit])
+  }, [input, nomVoie, comment, suffixe, markers, isToponyme, selectedVoie, onSubmit, toponyme])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -86,6 +92,12 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
 
     return 'Enregistrer'
   }, [isLoading])
+
+  const handleToponymeChange = e => {
+    const {value} = e.target
+
+    setToponyme(toponymes.find(({_id}) => _id === value))
+  }
 
   useEffect(() => {
     setSelectedVoie(isToponyme ? null : voie)
@@ -156,12 +168,28 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
       </Pane>
 
       {!isToponyme && (
-        <VoieSearch
-          selectedVoie={selectedVoie}
-          nomVoie={nomVoie}
-          setNomVoie={e => setNomVoie(trimStart(trimEnd(e.target.value)))}
-          onSelect={onSelectVoie}
-        />
+        <Pane display='grid' gridTemplateColumns='1fr 3fr'>
+          <VoieSearch
+            selectedVoie={selectedVoie}
+            nomVoie={nomVoie}
+            setNomVoie={e => setNomVoie(trimStart(trimEnd(e.target.value)))}
+            onSelect={onSelectVoie}
+          />
+          <Select
+            marginLeft='1em'
+            onChange={handleToponymeChange}
+          >
+            <option value={null}>- Choisir un toponyme -</option>
+            {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
+              <option
+                key={_id}
+                value={_id}
+              >
+                {nom}
+              </option>
+            ))}
+          </Select>
+        </Pane>
       )}
 
       <Checkbox
@@ -170,9 +198,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
         onChange={e => setIsToponyme(e.target.checked)}
       />
 
-      {markers.length > 0 && (
-        <PositionEditor isToponyme={isToponyme} />
-      )}
+      <PositionEditor />
 
       {!isToponyme && (
         <Comment input={comment} onChange={onCommentChange} />
