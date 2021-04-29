@@ -14,7 +14,7 @@ function ToponymeNumeros({numeros, handleSelect}) {
   }, [numeros])
 
   return (
-    Object.keys(numerosByVoie).map(nomVoie => (
+    Object.keys(numerosByVoie).sort((a, b) => a > b).map(nomVoie => (
       <>
         <Table.Cell style={{padding: 0}}>
           <Heading padding='1em' backgroundColor='white' width='100%'>
