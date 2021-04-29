@@ -10,7 +10,7 @@ function ToponymeNumeros({numeros, handleSelect}) {
   const {token} = useContext(TokenContext)
 
   const numerosByVoie = useMemo(() => {
-    return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie[0].nom)
+    return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
   }, [numeros])
 
   return (

@@ -107,7 +107,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
 
-  const sources = useSources(voie, hovered, editingId)
+  const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
   const layers = useLayers(voie, sources, style)
 
@@ -335,11 +335,11 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
             )}
           </Pane>
 
-          {voie && !modeId && numeros && numeros.map(numero => (
+          {(voie || toponyme) && !modeId && numeros && numeros.map(numero => (
             <NumeroMarker
               key={numero._id}
-              numero={numero}
-              colorSeed={voie._id}
+              numero={toponyme ? {...numero, numeroComplet: `${numero.numero}${numero.suffixe || ''}`} : numero}
+              colorSeed={toponyme ? numero.voie._id : voie._id}
               showLabel={showNumeros}
               showContextMenu={numero._id === showContextMenu}
               setShowContextMenu={setShowContextMenu}
