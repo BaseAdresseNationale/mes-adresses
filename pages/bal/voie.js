@@ -201,7 +201,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         )}
       </Pane>
 
-      {isGroupedActionsShown && (
+      {isGroupedActionsShown && numeros && (
         <GroupedActions
           idVoie={voie._id}
           numeros={numeros}
