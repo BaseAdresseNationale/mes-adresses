@@ -209,15 +209,11 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
 GroupedActions.propTypes = {
   idVoie: PropTypes.string.isRequired,
-  numeros: PropTypes.array,
+  numeros: PropTypes.array.isRequired,
   selectedNumerosIds: PropTypes.array.isRequired,
   resetSelectedNumerosIds: PropTypes.func.isRequired,
   setIsRemoveWarningShown: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
-}
-
-GroupedActions.defaultProps = {
-  numeros: []
 }
 
 export default GroupedActions
