@@ -10,17 +10,21 @@ function ToponymeNumeros({numeros, handleSelect}) {
   const {token} = useContext(TokenContext)
 
   const numerosByVoie = useMemo(() => {
-    return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie[0].nom)
+    return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
   }, [numeros])
 
   return (
-    Object.keys(numerosByVoie).map(nomVoie => (
+    Object.keys(numerosByVoie).sort((a, b) => a > b).map(nomVoie => (
       <>
-        <Table.Cell style={{padding: 0}}>
-          <Heading padding='1em' backgroundColor='white' width='100%'>
+        <Table.Cell style={{padding: 0}} backgroundColor='white'>
+          <Heading padding='1em' width='100%'>
             {nomVoie}
           </Heading>
+          <Table.TextCell flex='0 1 1'>
+            {numerosByVoie[nomVoie].length} numéro{numerosByVoie[nomVoie].length > 1 ? 's' : ''}
+          </Table.TextCell>
         </Table.Cell>
+
         {numerosByVoie[nomVoie].map(({_id, numero, suffixe, positions, comment}) => (
           <Table.Row
             key={_id}

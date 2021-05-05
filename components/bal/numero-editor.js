@@ -18,7 +18,7 @@ import PositionEditor from './position-editor'
 function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onCancel}) {
   const {voies, toponymes} = useContext(BalDataContext)
 
-  const [voie, setVoie] = useState(initialVoie || (initialValue && initialValue.voie[0]) || null)
+  const [voie, setVoie] = useState(initialVoie || (initialValue && initialValue.voie) || null)
   const [toponyme, setToponyme] = useState(initialToponyme || (initialValue && initialValue.toponyme) || null)
 
   const [isLoading, setIsLoading] = useState(false)
@@ -152,7 +152,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
             <option
               key={_id}
-              selected={(initialVoie && _id === initialVoie._id) || (initialValue && _id === initialValue.voie[0]._id)}
+              selected={(initialVoie && _id === initialVoie._id) || (initialValue && _id === initialValue.voie._id)}
               value={_id}
             >
               {nom}

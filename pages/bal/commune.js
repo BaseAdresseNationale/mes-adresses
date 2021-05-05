@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Heading, Text, Paragraph, Button, AddIcon, Tab} from 'evergreen-ui'
+import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '../../lib/bal-api'
 
@@ -181,12 +181,12 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         justifyContent='space-around'
         height={38}
       >
-        <Tab width='100%' height='100%' margin='0' isSelected={selectedTab === 'voie'} onClick={() => setSelectedTab('voie')}>
+        <div className={`tab ${selectedTab === 'voie' ? 'selected' : ''}`} onClick={() => setSelectedTab('voie')}>
           <Heading>Liste des voies</Heading>
-        </Tab>
-        <Tab width='100%' height='100%' margin='0' isSelected={selectedTab === 'toponyme'} onClick={() => setSelectedTab('toponyme')}>
+        </div>
+        <div className={`tab ${selectedTab === 'toponyme' ? 'selected' : ''}`} onClick={() => setSelectedTab('toponyme')}>
           <Heading>Liste des toponymes</Heading>
-        </Tab>
+        </div>
       </Pane>
 
       <Pane
@@ -248,6 +248,30 @@ const Commune = React.memo(({commune, defaultVoies}) => {
           </Button>
         </Pane>
       )}
+
+      <style jsx>{`
+        .tab {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: whitesmoke;
+        }
+
+        .tab:hover {
+          cursor: pointer;
+          background: #E4E7EB;
+        }
+
+        .tab.selected {
+          background: #fff;
+        }
+
+        .tab .selected:hover {
+          background: #E4E7EB;
+        }
+        `}</style>
     </>
   )
 })
