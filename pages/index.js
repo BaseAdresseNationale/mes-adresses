@@ -6,7 +6,6 @@ import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import RecoverBALAlert from '../components/recover-bal-alert'
-import IncidentOvhAlert from '../components/incident-ovh/incident-ovh-alert'
 
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
@@ -25,7 +24,6 @@ function Index() {
         Mes Bases Adresse Locales
         <Button iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
       </Heading>
-      <IncidentOvhAlert />
 
       <UserBasesLocales />
 
