@@ -33,12 +33,12 @@ function useSources(voie, toponyme, hovered, editingId) {
     let features = geojson.features.filter(feature => feature.properties.type !== 'toponyme')
 
     if (voie) {
-      // Filter current voie’s numeros out
+      // Exlude current voie’s numeros, replace by <NumeroMarker />
       features = features.filter(({properties}) => (properties.idVoie !== voie._id) || (properties.idVoie === voie._id && properties.type === 'voie-trace'))
     }
 
     if (toponyme) {
-      // Filter current toponyme’s numeros out
+      // Exclude current toponyme’s numeros, replace by <NumeroMarker /
       features = features.filter(({properties}) => properties.idToponyme !== toponyme._id)
     }
 
