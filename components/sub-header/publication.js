@@ -72,7 +72,6 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
             }
           >
             <Button
-              intent='info'
               appearance='primary'
               marginRight={8}
               height={24}
