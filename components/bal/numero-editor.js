@@ -23,9 +23,9 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const [toponyme, setToponyme] = useState(initialValue?.toponyme)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [numero, onNumeroChange, resetNumero] = useInput(initialValue ? initialValue.numero : '')
-  const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue ? initialValue.suffixe : '')
-  const [comment, onCommentChange, resetComment] = useInput(initialValue ? initialValue.comment : '')
+  const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
+  const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
+  const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
   const [error, setError] = useState()
   const focusRef = useFocus()
 
@@ -101,8 +101,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   useEffect(() => {
     const {numero, suffixe, comment} = initialValue || {}
     resetNumero(numero)
-    resetSuffixe(suffixe ? suffixe : '')
-    resetComment(comment ? comment : '')
+    resetSuffixe(suffixe || '')
+    resetComment(comment || '')
     setError(null)
   }, [resetNumero, resetSuffixe, resetComment, setError, initialValue])
 
