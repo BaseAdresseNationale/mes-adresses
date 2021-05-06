@@ -134,14 +134,11 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           label='Voie'
           flex={1}
           marginBottom={16}
+          value={voieId}
           onChange={e => setVoieId(e.target.value)}
         >
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
-            <option
-              key={_id}
-              selected={(initialVoieId === _id) || (initialValue && _id === initialValue.voie._id)}
-              value={_id}
-            >
+            <option key={_id} value={_id}>
               {nom}
             </option>
           ))}
@@ -153,15 +150,12 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           label='Toponyme'
           flex={1}
           marginBottom={16}
+          value={toponymeId}
           onChange={({target}) => setToponymeId(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
         >
           <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
-            <option
-              key={_id}
-              selected={_id === toponymeId}
-              value={_id}
-            >
+            <option key={_id} value={_id}>
               {nom}
             </option>
           ))}
