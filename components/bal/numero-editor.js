@@ -19,8 +19,8 @@ const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
 function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const {voies, toponymes} = useContext(BalDataContext)
-  const [voie, setVoie] = useState(initialVoieId || initialValue?.voie._id)
-  const [toponyme, setToponyme] = useState(initialValue?.toponyme)
+  const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
+  const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
 
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
@@ -43,8 +43,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     setIsLoading(true)
 
     const body = {
-      voie,
-      toponyme,
+      voie: voieId,
+      toponyme: toponymeId,
       numero: Number(numero),
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null
@@ -74,7 +74,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voie, toponyme, suffixe, comment, markers, onSubmit, disableMarkers])
+  }, [numero, voieId, toponymeId, suffixe, comment, markers, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -134,7 +134,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           label='Voie'
           flex={1}
           marginBottom={16}
-          onChange={e => setVoie(e.target.value)}
+          onChange={e => setVoieId(e.target.value)}
         >
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
             <option
@@ -153,13 +153,13 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           label='Toponyme'
           flex={1}
           marginBottom={16}
-          onChange={({target}) => setToponyme(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
+          onChange={({target}) => setToponymeId(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
         >
           <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
             <option
               key={_id}
-              selected={_id === toponyme}
+              selected={_id === toponymeId}
               value={_id}
             >
               {nom}
