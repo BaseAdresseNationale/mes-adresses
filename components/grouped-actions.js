@@ -17,7 +17,6 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [isLoading, setIsLoading] = useState(false)
   const [positionType, onPositionTypeChange] = useInput('')
   const [selectedVoieId, setSelectedVoieId] = useState(idVoie)
-  const [selectedToponymeId, setSelectedToponymeId] = useState()
   const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
@@ -28,6 +27,8 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const selectedNumerosUniqToponyme = uniq(selectedNumeros.map(numero => numero.toponyme))
   const hasUniqToponyme = selectedNumerosUniqToponyme.filter(Boolean).length === 1
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
+
+  const [selectedToponymeId, setSelectedToponymeId] = useState(hasUniqToponyme ? selectedNumerosUniqToponyme[0] : null)
 
   const handleComplete = () => {
     setIsShown(false)
@@ -104,6 +105,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           <Paragraph marginBottom={8} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
 
           <SelectField
+            value={selectedVoieId}
             label='Voie'
             flex={1}
             disabled={selectedNumerosUniqVoie.length > 1}
@@ -111,11 +113,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             onChange={event => setSelectedVoieId(event.target.value)}
           >
             {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
-              <option
-                key={_id}
-                selected={_id === selectedVoieId}
-                value={_id}
-              >
+              <option key={_id} value={_id}>
                 {nom}
               </option>
             ))}
@@ -128,6 +126,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
           <Pane display='flex'>
             <SelectField
+              value={selectedToponymeId}
               label='Toponyme'
               flex={1}
               disabled={selectedNumerosUniqToponyme.length > 1}
@@ -136,11 +135,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             >
               <option value=''>{selectedToponymeId || hasUniqToponyme ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
               {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
-                <option
-                  key={_id}
-                  value={_id}
-                  selected={_id === selectedNumerosUniqToponyme[0]}
-                >
+                <option key={_id} value={_id}>
                   {nom}
                 </option>
               ))}
@@ -152,6 +147,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           )}
 
           <SelectField
+            value={positionType}
             disabled={hasMultiposition}
             flex={1}
             label='Type de position'
@@ -160,10 +156,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             onChange={onPositionTypeChange}
           >
             {selectedNumerosUniqType.length !== 1 && (
-              <option selected value='' >-- Veuillez choisir un type de position --</option>
+              <option value='' >-- Veuillez choisir un type de position --</option>
             )}
             {positionsTypesList.map(positionType => (
-              <option key={positionType.value} selected={selectedNumerosUniqType.toString() === positionType.value} value={positionType.value}>{positionType.name}</option>
+              <option key={positionType.value} value={positionType.value}>{positionType.name}</option>
             ))}
           </SelectField>
 
