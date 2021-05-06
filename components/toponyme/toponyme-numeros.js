@@ -15,7 +15,7 @@ function ToponymeNumeros({numeros, handleSelect}) {
 
   return (
     Object.keys(numerosByVoie).sort((a, b) => a > b).map(nomVoie => (
-      <>
+      <React.Fragment key={nomVoie}>
         <Table.Cell style={{padding: 0}} backgroundColor='white'>
           <Heading padding='1em' width='100%'>
             {nomVoie}
@@ -65,7 +65,7 @@ function ToponymeNumeros({numeros, handleSelect}) {
             )}
           </Table.Row>
         ))}
-      </>
+      </React.Fragment>
     ))
   )
 }
