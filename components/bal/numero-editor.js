@@ -15,11 +15,12 @@ import useKeyEvent from '../../hooks/key-event'
 import Comment from '../comment'
 import PositionEditor from './position-editor'
 
-function NumeroEditor({initialVoieId, initialToponyme, initialValue, onSubmit, onCancel}) {
-  const {voies, toponymes} = useContext(BalDataContext)
+const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
+function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
+  const {voies, toponymes} = useContext(BalDataContext)
   const [voie, setVoie] = useState(initialVoieId || initialValue?.voie._id)
-  const [toponyme, setToponyme] = useState(initialToponyme || (initialValue && initialValue.toponyme) || null)
+  const [toponyme, setToponyme] = useState(initialValue?.toponyme)
 
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue ? initialValue.numero : '')
@@ -43,8 +44,8 @@ function NumeroEditor({initialVoieId, initialToponyme, initialValue, onSubmit, o
 
     const body = {
       voie,
+      toponyme,
       numero: Number(numero),
-      toponyme: toponyme ? toponyme._id : null,
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null
     }
@@ -89,12 +90,6 @@ function NumeroEditor({initialVoieId, initialToponyme, initialValue, onSubmit, o
 
     return 'Enregistrer'
   }, [isLoading])
-
-  const handleToponymeChange = e => {
-    const {value} = e.target
-
-    setToponyme(toponymes.find(({_id}) => _id === value))
-  }
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
@@ -158,13 +153,13 @@ function NumeroEditor({initialVoieId, initialToponyme, initialValue, onSubmit, o
           label='Toponyme'
           flex={1}
           marginBottom={16}
-          onChange={handleToponymeChange}
+          onChange={({target}) => setToponyme(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
         >
-          <option value={null}>{(initialToponyme || initialValue?.toponyme) ? 'Aucun toponyme' : '- Choisir un toponyme -'}</option>
+          <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
             <option
               key={_id}
-              selected={(initialToponyme && _id === initialToponyme._id) || (initialValue && _id === initialValue.toponyme)}
+              selected={_id === toponyme}
               value={_id}
             >
               {nom}
@@ -252,12 +247,6 @@ function NumeroEditor({initialVoieId, initialToponyme, initialValue, onSubmit, o
 
 NumeroEditor.propTypes = {
   initialVoieId: PropTypes.string,
-  initialToponyme: PropTypes.shape({
-    _id: PropTypes.string,
-    commune: PropTypes.string,
-    nom: PropTypes.string,
-    positions: PropTypes.array
-  }),
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,
     voie: PropTypes.string.isRequired,
@@ -273,7 +262,6 @@ NumeroEditor.propTypes = {
 NumeroEditor.defaultProps = {
   initialValue: null,
   initialVoieId: null,
-  initialToponyme: null,
   onCancel: null
 }
 
