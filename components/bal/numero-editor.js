@@ -15,16 +15,17 @@ import useKeyEvent from '../../hooks/key-event'
 import Comment from '../comment'
 import PositionEditor from './position-editor'
 
-function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onCancel}) {
-  const {voies, toponymes} = useContext(BalDataContext)
+const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-  const [voie, setVoie] = useState(initialVoie || (initialValue && initialValue.voie) || null)
-  const [toponyme, setToponyme] = useState(initialToponyme || (initialValue && initialValue.toponyme) || null)
+function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
+  const {voies, toponymes} = useContext(BalDataContext)
+  const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
+  const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [numero, onNumeroChange, resetNumero] = useInput(initialValue ? initialValue.numero : '')
-  const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue ? initialValue.suffixe : '')
-  const [comment, onCommentChange, resetComment] = useInput(initialValue ? initialValue.comment : '')
+  const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
+  const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
+  const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
   const [error, setError] = useState()
   const focusRef = useFocus()
 
@@ -42,9 +43,9 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
     setIsLoading(true)
 
     const body = {
+      voie: voieId,
+      toponyme: toponymeId,
       numero: Number(numero),
-      voie: voie._id || null,
-      toponyme: toponyme ? toponyme._id : null,
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null
     }
@@ -73,7 +74,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voie, toponyme, suffixe, comment, markers, onSubmit, disableMarkers])
+  }, [numero, voieId, toponymeId, suffixe, comment, markers, onSubmit, disableMarkers])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -90,19 +91,6 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
     return 'Enregistrer'
   }, [isLoading])
 
-  const handleChange = event => {
-    const {value} = event.target
-    const voie = voies.find(({_id}) => _id === value)
-
-    setVoie(voie)
-  }
-
-  const handleToponymeChange = e => {
-    const {value} = e.target
-
-    setToponyme(toponymes.find(({_id}) => _id === value))
-  }
-
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
       disableMarkers()
@@ -113,8 +101,8 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
   useEffect(() => {
     const {numero, suffixe, comment} = initialValue || {}
     resetNumero(numero)
-    resetSuffixe(suffixe ? suffixe : '')
-    resetComment(comment ? comment : '')
+    resetSuffixe(suffixe || '')
+    resetComment(comment || '')
     setError(null)
   }, [resetNumero, resetSuffixe, resetComment, setError, initialValue])
 
@@ -146,15 +134,11 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           label='Voie'
           flex={1}
           marginBottom={16}
-          onChange={handleChange}
+          value={voieId}
+          onChange={e => setVoieId(e.target.value)}
         >
-          <option value={null}>- Choisir une voie -</option>
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
-            <option
-              key={_id}
-              selected={(initialVoie && _id === initialVoie._id) || (initialValue && _id === initialValue.voie._id)}
-              value={_id}
-            >
+            <option key={_id} value={_id}>
               {nom}
             </option>
           ))}
@@ -166,15 +150,12 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           label='Toponyme'
           flex={1}
           marginBottom={16}
-          onChange={handleToponymeChange}
+          value={toponymeId}
+          onChange={({target}) => setToponymeId(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
         >
-          <option value={null}>{(initialToponyme || initialValue?.toponyme) ? 'Aucun toponyme' : '- Choisir un toponyme -'}</option>
+          <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
-            <option
-              key={_id}
-              selected={(initialToponyme && _id === initialToponyme._id) || (initialValue && _id === initialValue.toponyme)}
-              value={_id}
-            >
+            <option key={_id} value={_id}>
               {nom}
             </option>
           ))}
@@ -259,16 +240,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
 }
 
 NumeroEditor.propTypes = {
-  initialVoie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    trace: PropTypes.object
-  }),
-  initialToponyme: PropTypes.shape({
-    _id: PropTypes.string,
-    commune: PropTypes.string,
-    nom: PropTypes.string,
-    positions: PropTypes.array
-  }),
+  initialVoieId: PropTypes.string,
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,
     voie: PropTypes.string.isRequired,
@@ -283,8 +255,7 @@ NumeroEditor.propTypes = {
 
 NumeroEditor.defaultProps = {
   initialValue: null,
-  initialVoie: null,
-  initialToponyme: null,
+  initialVoieId: null,
   onCancel: null
 }
 

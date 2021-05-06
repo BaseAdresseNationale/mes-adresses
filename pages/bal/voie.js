@@ -249,7 +249,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
                 <NumeroEditor
-                  initialVoie={voie}
+                  initialVoieId={voie._id}
                   onSubmit={onAdd}
                   onCancel={onCancel}
                 />
@@ -267,7 +267,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
             <Table.Row height='auto'>
               <Table.Cell display='block' paddingY={12} background='tint1'>
                 <NumeroEditor
-                  initialVoie={voie}
+                  initialVoieId={voie._id}
                   initialValue={editedNumero}
                   onSubmit={onEdit}
                   onCancel={onCancel}
