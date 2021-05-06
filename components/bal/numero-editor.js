@@ -15,10 +15,10 @@ import useKeyEvent from '../../hooks/key-event'
 import Comment from '../comment'
 import PositionEditor from './position-editor'
 
-function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onCancel}) {
+function NumeroEditor({initialVoieId, initialToponyme, initialValue, onSubmit, onCancel}) {
   const {voies, toponymes} = useContext(BalDataContext)
 
-  const [voie, setVoie] = useState(initialVoie || (initialValue && initialValue.voie) || null)
+  const [voie, setVoie] = useState(initialVoieId || initialValue?.voie._id)
   const [toponyme, setToponyme] = useState(initialToponyme || (initialValue && initialValue.toponyme) || null)
 
   const [isLoading, setIsLoading] = useState(false)
@@ -42,8 +42,8 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
     setIsLoading(true)
 
     const body = {
+      voie,
       numero: Number(numero),
-      voie: voie._id || null,
       toponyme: toponyme ? toponyme._id : null,
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null
@@ -89,13 +89,6 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
 
     return 'Enregistrer'
   }, [isLoading])
-
-  const handleChange = event => {
-    const {value} = event.target
-    const voie = voies.find(({_id}) => _id === value)
-
-    setVoie(voie)
-  }
 
   const handleToponymeChange = e => {
     const {value} = e.target
@@ -146,13 +139,12 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
           label='Voie'
           flex={1}
           marginBottom={16}
-          onChange={handleChange}
+          onChange={e => setVoie(e.target.value)}
         >
-          <option value={null}>- Choisir une voie -</option>
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
             <option
               key={_id}
-              selected={(initialVoie && _id === initialVoie._id) || (initialValue && _id === initialValue.voie._id)}
+              selected={(initialVoieId === _id) || (initialValue && _id === initialValue.voie._id)}
               value={_id}
             >
               {nom}
@@ -259,10 +251,7 @@ function NumeroEditor({initialVoie, initialToponyme, initialValue, onSubmit, onC
 }
 
 NumeroEditor.propTypes = {
-  initialVoie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    trace: PropTypes.object
-  }),
+  initialVoieId: PropTypes.string,
   initialToponyme: PropTypes.shape({
     _id: PropTypes.string,
     commune: PropTypes.string,
@@ -283,7 +272,7 @@ NumeroEditor.propTypes = {
 
 NumeroEditor.defaultProps = {
   initialValue: null,
-  initialVoie: null,
+  initialVoieId: null,
   initialToponyme: null,
   onCancel: null
 }
