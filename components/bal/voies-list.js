@@ -68,6 +68,7 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
               id={voie._id}
               isSelectable={!isEditing && !isPopulating}
               label={voie.nom}
+              isSelected={false}
               onSelect={onSelect}
               onEdit={onEnableEditing}
               onRemove={id => setToRemove(id)}
@@ -81,7 +82,7 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
 VoiesList.propTypes = {
   defaultVoies: PropTypes.array,
   isPopulating: PropTypes.bool,
-  isAdding: PropTypes.func.isRequired,
+  isAdding: PropTypes.bool.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,

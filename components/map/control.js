@@ -35,7 +35,7 @@ function Control({enabled, isDisabled, icon, enabledHint, disabledHint, onChange
 Control.propTypes = {
   enabled: PropTypes.bool,
   isDisabled: PropTypes.bool,
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.object.isRequired,
   enabledHint: PropTypes.string.isRequired,
   disabledHint: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired

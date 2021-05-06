@@ -19,7 +19,7 @@ SubTuto.defaultProps = {
 
 SubTuto.propTypes = {
   title: PropTypes.string.isRequired,
-  icon: PropTypes.string,
+  icon: PropTypes.object,
   children: PropTypes.node.isRequired
 }
 

@@ -69,6 +69,7 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
               warning={toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null}
               isSelectable={!isEditing && !isPopulating}
               label={toponyme.nom}
+              isSelected={false}
               onSelect={onSelect}
               onEdit={onEnableEditing}
               onRemove={id => setToRemove(id)}
@@ -81,7 +82,7 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
 
 ToponymesList.propTypes = {
   isPopulating: PropTypes.bool,
-  isAdding: PropTypes.func.isRequired,
+  isAdding: PropTypes.bool.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,

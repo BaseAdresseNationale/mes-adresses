@@ -47,7 +47,7 @@ function VoieSearch({selectedVoie, nomVoie, setNomVoie, onSelect}) {
 VoieSearch.propTypes = {
   selectedVoie: PropTypes.object,
   nomVoie: PropTypes.string,
-  setNomVoie: PropTypes.string,
+  setNomVoie: PropTypes.func,
   onSelect: PropTypes.func.isRequired
 }
 
