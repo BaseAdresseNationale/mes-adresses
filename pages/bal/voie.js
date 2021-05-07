@@ -287,7 +287,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
                 toponymeId={numero.toponyme}
                 handleSelect={handleSelect}
-                isSelected={Boolean(selectedNumerosIds.includes(numero._id))}
+                isSelected={selectedNumerosIds.includes(numero._id)}
                 onEdit={onEnableEditing}
                 onRemove={onRemove}
               />
