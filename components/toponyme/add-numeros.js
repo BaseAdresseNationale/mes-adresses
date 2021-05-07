@@ -9,14 +9,14 @@ import {getNumeros} from '../../lib/bal-api'
 import BalDataContext from '../../contexts/bal-data'
 
 function AddNumeros({onSubmit, onCancel, isLoading}) {
-  const [selectedVoie, setSelectedVoie] = useState(null)
+  const [selectedVoieId, setSelectedVoieId] = useState()
   const [voieNumeros, setVoieNumeros] = useState([])
   const [selectedVoieNumeros, setSelectedVoieNumeros] = useState([])
 
   const {voies} = useContext(BalDataContext)
 
   const handleSelectVoie = async idVoie => {
-    setSelectedVoie(idVoie)
+    setSelectedVoieId(idVoie)
     if (idVoie) {
       const numeros = await getNumeros(idVoie)
       setVoieNumeros(numeros)
@@ -39,12 +39,12 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
 
     if (selectedNumeroCount === 1) {
       const numero = voieNumeros.find(({_id}) => _id === selectedVoieNumeros[0])
-      const voie = voies.find(({_id}) => _id === selectedVoie)
+      const voie = voies.find(({_id}) => _id === selectedVoieId)
       return `le ${numero.numero} ${voie.nom}`
     }
 
     return `${selectedNumeroCount} numéros sélectionnés`
-  }, [selectedVoie, voieNumeros, selectedVoieNumeros, voies])
+  }, [selectedVoieId, voieNumeros, selectedVoieNumeros, voies])
 
   const handleSubmit = useCallback(() => {
     const numeros = selectedVoieNumeros.length > 0 ?
@@ -58,50 +58,48 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
     <Pane>
       <Pane display='flex'>
         <SelectField
+          value={selectedVoieId}
           label='Voie'
           flex={1}
           marginBottom={16}
           onChange={e => handleSelectVoie(e.target.value)}
         >
-          <option value={null}>- Sélectionnez une voie -</option>
+          {!selectedVoieId && <option>- Sélectionnez une voie -</option>}
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
-            <option key={_id} value={_id} selected={_id === selectedVoie}>
+            <option key={_id} value={_id}>
               {nom}
             </option>
           ))}
         </SelectField>
       </Pane>
 
-      {selectedVoie && (
-        <>
+      {selectedVoieId && (
+        <Alert marginY={8} title='Préciser les numéros à ajouter au toponyme'>
+          <Text>
+            Sélectionnez les numéros que vous souhaitez ajouter au toponyme. Si aucun numéro n’est spécifié, alors tous les numéros de la voie seront ajoutés.
+          </Text>
 
-          <Alert marginY={8} title='Préciser les numéros à ajouter au toponyme'>
-            <Text>
-              Sélectionnez les numéros que vous souhaitez ajouter au toponyme. Si aucun numéro n’est spécifié, alors tous les numéros de la voie seront ajoutés.
-            </Text>
-
-            <Pane diplay='flex'>
-              <SelectMenu
-                isMultiSelect
-                hasFilter={false}
-                title='Sélection des numéros'
-                options={voieNumeros.map(({_id, numero, suffixe}) => ({label: `${numero}${suffixe ? suffixe : ''}`, value: _id}))}
-                selected={selectedVoieNumeros}
-                emptyView={(
-                  <Pane height='100%' paddingX='1em' display='flex' alignItems='center' justifyContent='center' textAlign='center'>
-                    <Text size={300}>Aucun numéro n’est disponible pour cette voie</Text>
-                  </Pane>
-                )}
-                onSelect={handleSelectNumero}
-                onDeselect={handleSelectNumero}
-              >
-                <Button marginTop={8} type='div'>
-                  {numerosLabel}
-                </Button>
-              </SelectMenu>
-            </Pane>
-          </Alert>
-        </>
+          <Pane diplay='flex'>
+            <SelectMenu
+              isMultiSelect
+              hasFilter={false}
+              title='Sélection des numéros'
+              options={voieNumeros.map(({_id, numero, suffixe}) => ({label: `${numero}${suffixe ? suffixe : ''}`, value: _id}))}
+              selected={selectedVoieNumeros}
+              emptyView={(
+                <Pane height='100%' paddingX='1em' display='flex' alignItems='center' justifyContent='center' textAlign='center'>
+                  <Text size={300}>Aucun numéro n’est disponible pour cette voie</Text>
+                </Pane>
+              )}
+              onSelect={handleSelectNumero}
+              onDeselect={handleSelectNumero}
+            >
+              <Button marginTop={8} type='div'>
+                {numerosLabel}
+              </Button>
+            </SelectMenu>
+          </Pane>
+        </Alert>
       )}
 
       <Button
@@ -109,7 +107,7 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
         type='submit'
         appearance='primary'
         intent='success'
-        disabled={!(selectedVoie && voieNumeros.length > 0)}
+        disabled={!(selectedVoieId && voieNumeros.length > 0)}
         marginTop={16}
         onClick={handleSubmit}
       >

@@ -35,13 +35,15 @@ function PositionEditor({isToponyme}) {
           {markers.map(marker => (
             <React.Fragment key={marker._id}>
               <Select
-                defaultValue={marker.type}
+                value={marker.type}
                 marginBottom={8}
                 height={32}
                 onChange={e => handleChange(e, marker)}
               >
                 {positionsTypesList.map(positionType => (
-                  <option key={positionType.value} value={positionType.value} selected={marker.type === positionType.value}>{positionType.name}</option>
+                  <option key={positionType.value} value={positionType.value}>
+                    {positionType.name}
+                  </option>
                 ))}
               </Select>
               <Icon icon={MapMarkerIcon} size={22} margin='auto' />
