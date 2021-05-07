@@ -69,7 +69,6 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
               warning={toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null}
               isSelectable={!isEditing && !isPopulating}
               label={toponyme.nom}
-              isSelected={false}
               onSelect={onSelect}
               onEdit={onEnableEditing}
               onRemove={id => setToRemove(id)}

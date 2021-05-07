@@ -149,7 +149,6 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
                 id={commune.code}
                 code={commune.code}
                 label={commune.nom}
-                isSelected={false}
                 onSelect={onSelect}
                 onRemove={id => setToRemove(id)}
               />

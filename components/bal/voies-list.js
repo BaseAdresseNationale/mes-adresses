@@ -68,7 +68,6 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
               id={voie._id}
               isSelectable={!isEditing && !isPopulating}
               label={voie.nom}
-              isSelected={false}
               onSelect={onSelect}
               onEdit={onEnableEditing}
               onRemove={id => setToRemove(id)}
