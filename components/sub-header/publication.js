@@ -165,13 +165,14 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
 }
 
 Publication.defaultProps = {
-  token: null,
-  status: null
+  token: null
 }
 
 Publication.propTypes = {
   token: PropTypes.string,
-  status: PropTypes.string,
+  status: PropTypes.oneOf([
+    'draft', 'ready-to-publish', 'published', 'demo'
+  ]).isRequired,
   onChangeStatus: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   baseLocale: PropTypes.object.isRequired
