@@ -173,7 +173,6 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
             <Table.Row height='auto'>
               <Table.Cell display='block' paddingY={12} background='tint1'>
                 <NumeroEditor
-                  initialToponyme={toponyme}
                   initialValue={editedNumero}
                   onSubmit={onEdit}
                   onCancel={onCancel}
