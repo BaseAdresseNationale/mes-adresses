@@ -153,17 +153,17 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
 TableRow.propTypes = {
   id: PropTypes.string.isRequired,
   code: PropTypes.string,
-  warning: PropTypes.array,
+  warning: PropTypes.string,
   label: PropTypes.string.isRequired,
   comment: PropTypes.string,
   toponymeId: PropTypes.string,
   secondary: PropTypes.string,
   isSelectable: PropTypes.bool,
-  onSelect: PropTypes.func.isRequired,
+  onSelect: PropTypes.func,
   onEdit: PropTypes.func,
   onRemove: PropTypes.func.isRequired,
   handleSelect: PropTypes.func,
-  isSelected: PropTypes.boolean
+  isSelected: PropTypes.bool
 }
 
 TableRow.defaultProps = {
@@ -175,6 +175,7 @@ TableRow.defaultProps = {
   isSelectable: false,
   onEdit: null,
   handleSelect: null,
+  onSelect: null,
   isSelected: false
 }
 

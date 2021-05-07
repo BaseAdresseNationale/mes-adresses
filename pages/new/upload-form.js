@@ -147,7 +147,7 @@ function UploadForm() {
         </Button>
       </Pane>
 
-      <Alert margin={16} title='Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?' intent='infos' marginY={16}>
+      <Alert margin={16} title='Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?' marginY={16}>
         <Text>
           Utilisez notre formulaire de dépôt afin de publier vos adresses dans la Base Adresse Nationale.
         </Text>

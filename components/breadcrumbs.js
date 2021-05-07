@@ -7,7 +7,7 @@ function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
   if (!commune) {
     return (
       <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
-        <NextLink prefetch href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
+        <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
           <Link href={`/bal/${baseLocale._id}`}>
             {baseLocale.nom || 'Base Adresse Locale'}
           </Link>
@@ -19,7 +19,7 @@ function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
   if (!voie && !toponyme) {
     return (
       <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
-        <NextLink prefetch href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
+        <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
           <Link href={`/bal/${baseLocale._id}`}>
             {baseLocale.nom || 'Base Adresse Locale'}
           </Link>
@@ -37,14 +37,14 @@ function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
 
   return (
     <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
-      <NextLink prefetch href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
+      <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
         <Link display='inline-block' href={`/bal/${baseLocale._id}`}>
           {baseLocale.nom || 'Base Adresse Locale'}
         </Link>
       </NextLink>
 
       <Text color='muted'>{' > '}</Text>
-      <NextLink prefetch href={`/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+      <NextLink href={`/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
         {commune.nom ? (
           <Link href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
             {commune.nom}

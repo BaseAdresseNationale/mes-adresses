@@ -118,19 +118,21 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
   }, [])
 
   const interactiveLayerIds = useMemo(() => {
+    const layers = []
+
     if (editingId) {
       return null
     }
 
-    const layers = [
-      'voie-trace-line'
-    ]
+    if (sources.find(({name}) => name === 'voies')) {
+      layers.push('voie-trace-line')
+    }
 
     if (sources.find(({name}) => name === 'positions')) {
       layers.push('numeros-point', 'numeros-label')
     }
 
-    if (!voie) {
+    if (!voie && sources.find(({name}) => name === 'voies')) {
       layers.push('voie-label')
     }
 

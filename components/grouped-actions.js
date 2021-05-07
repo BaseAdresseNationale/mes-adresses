@@ -185,7 +185,6 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
         <Button
           iconBefore={EditIcon}
           appearance='primary'
-          intent='infos'
           onClick={() => handleClick()}
         >
           Modifier les numéros

@@ -33,7 +33,7 @@ function PositionEditor({isToponyme}) {
           <div />
 
           {markers.map(marker => (
-            <>
+            <React.Fragment key={marker._id}>
               <Select
                 value={marker.type}
                 marginBottom={8}
@@ -61,7 +61,7 @@ function PositionEditor({isToponyme}) {
                 intent='danger'
                 onClick={e => deletePosition(e, marker)}
               />
-            </>
+            </React.Fragment>
           ))}
         </Pane>
       ) : (

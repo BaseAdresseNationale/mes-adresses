@@ -12,7 +12,9 @@ const Header = () => {
     <Pane borderBottom padding={16} backgroundColor='white' display='flex' justifyContent='space-between' alignItems='center' flexShrink='0' width='100%' maxHeight={76}>
       <Pane cursor='pointer'>
         <NextLink href='/'>
-          <Image className='img' height='34' width='304' src='/static/images/mes-adresses.svg' alt='Page d’accueil du site mes-adresses.data.gouv.fr' />
+          <a>
+            <Image className='img' height='34' width='304' src='/static/images/mes-adresses.svg' alt='Page d’accueil du site mes-adresses.data.gouv.fr' />
+          </a>
         </NextLink>
       </Pane>
       <Pane display='flex' justifyContent='space-around' alignItems='center'>
