@@ -126,7 +126,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
           <Pane display='flex'>
             <SelectField
-              value={selectedToponymeId}
+              value={selectedToponymeId || ''}
               label='Toponyme'
               flex={1}
               disabled={selectedNumerosUniqToponyme.length > 1}
