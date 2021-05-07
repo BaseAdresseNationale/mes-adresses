@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
-import {Badge, Button, Dialog, Menu, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
+import {Badge, Button, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl} from '../../lib/bal-api'
 
@@ -109,7 +109,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
               onChangeStatus()
             }}
           >
-            <Paragraph marginTop='default'>
+            <Pane marginTop={4}>
               <Strong>Votre Base Adresse Locale est maintenant &nbsp;</Strong>
               <Badge
                 color='blue'
@@ -121,7 +121,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
               </Badge>
               <Paragraph>Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.</Paragraph>
               <Paragraph>Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.</Paragraph>
-            </Paragraph>
+            </Pane>
             <Link href={csvUrl} display='flex' marginTop='1em'>
               Télécharger vos adresses au format CSV
               <DownloadIcon marginLeft='.5em' marginTop='3px' />
