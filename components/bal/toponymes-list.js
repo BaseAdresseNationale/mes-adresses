@@ -81,7 +81,7 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
 
 ToponymesList.propTypes = {
   isPopulating: PropTypes.bool,
-  isAdding: PropTypes.func.isRequired,
+  isAdding: PropTypes.bool.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,

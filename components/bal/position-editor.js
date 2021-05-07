@@ -1,6 +1,6 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Strong, Pane, SelectField, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
+import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
 
 import MarkersContext from '../../contexts/markers'
 
@@ -33,8 +33,8 @@ function PositionEditor({isToponyme}) {
           <div />
 
           {markers.map(marker => (
-            <>
-              <SelectField
+            <React.Fragment key={marker._id}>
+              <Select
                 defaultValue={marker.type}
                 marginBottom={8}
                 height={32}
@@ -43,7 +43,7 @@ function PositionEditor({isToponyme}) {
                 {positionsTypesList.map(positionType => (
                   <option key={positionType.value} value={positionType.value} selected={marker.type === positionType.value}>{positionType.name}</option>
                 ))}
-              </SelectField>
+              </Select>
               <Icon icon={MapMarkerIcon} size={22} margin='auto' />
               <Heading size={100} marginY='auto'>
                 <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
@@ -59,7 +59,7 @@ function PositionEditor({isToponyme}) {
                 intent='danger'
                 onClick={e => deletePosition(e, marker)}
               />
-            </>
+            </React.Fragment>
           ))}
         </Pane>
       ) : (
