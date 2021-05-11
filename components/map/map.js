@@ -26,6 +26,7 @@ import Draw from './draw'
 import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
 import useLayers from './hooks/layers'
+import useHovered from './hooks/hovered'
 
 const settings = {
   maxZoom: 19
@@ -107,6 +108,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
 
+  const [hovered, setHovered, handleHover] = useHovered(map)
   const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
   const layers = useLayers(voie, sources, style)
@@ -161,14 +163,6 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
     setShowContextMenu(null)
   }, [router, baseLocale, commune, setEditingId, isEditing, voie])
 
-  const onHover = useCallback(event => {
-    const feature = event.features && event.features[0]
-
-    if (feature) {
-      const {idVoie} = feature.properties
-      setHovered(idVoie)
-    }
-  }, [])
 
   const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
     if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
@@ -273,7 +267,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
           interactiveLayerIds={interactiveLayerIds}
           getCursor={() => modeId === 'drawLineString' ? 'crosshair' : 'default'}
           onClick={onClick}
-          onHover={onHover}
+          onHover={handleHover}
           onMouseLeave={() => setHovered(null)}
           onViewportChange={setViewport}
         >
