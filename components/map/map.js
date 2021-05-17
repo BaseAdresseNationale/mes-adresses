@@ -3,18 +3,19 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import {Pane, SelectMenu, Button, Position, MapIcon, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
+import {Pane, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
 import MapContext from '../../contexts/map'
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
+import ParcellesContext from '../../contexts/parcelles'
 
 import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
 
-import {vector, ortho, vectorCadastre} from './styles'
+import {vector, ortho} from './styles'
 
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
@@ -22,6 +23,7 @@ import Control from './control'
 import NumeroMarker from './numero-marker'
 import ToponymeMarker from './toponyme-marker'
 import Draw from './draw'
+import StyleSelector from './style-selector'
 
 import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
@@ -44,12 +46,6 @@ function getInteractionProps(enabled) {
   }
 }
 
-const mapStyles = [
-  {label: 'Plan OpenMapTiles', value: 'vector'},
-  {label: 'Photographie aérienne', value: 'ortho'},
-  {label: 'Plan cadastral', value: 'vector-cadastre'}
-]
-
 function getBaseStyle(style) {
   switch (style) {
     case 'ortho':
@@ -57,9 +53,6 @@ function getBaseStyle(style) {
 
     case 'vector':
       return vector
-
-    case 'vector-cadastre':
-      return vectorCadastre
 
     default:
       return vector
@@ -83,7 +76,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
   const router = useRouter()
   const {viewport, setViewport} = useContext(MapContext)
 
-  const [map, setMap] = useState(null)
+  const [showCadastre, setShowCadastre] = useState(false)
   const [showNumeros, setShowNumeros] = useState(true)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
@@ -111,7 +104,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
   const [hovered, setHovered, handleHover] = useHovered(map)
   const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
-  const layers = useLayers(voie, sources, style)
+  const layers = useLayers(voie, sources, showCadastre, style)
 
   const mapRef = useCallback(ref => {
     if (ref) {
@@ -275,29 +268,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
           {interactive && (
             <>
               <NavControl onViewportChange={setViewport} />
-              <Pane
-                position='absolute'
-                display='flex'
-                left={16}
-                bottom={16}
-                border='none'
-                elevation={2}
-                zIndex={2}
-                cursor='pointer'
-                onClick={() => setShowPopover(!showPopover)}
-              >
-                <SelectMenu
-                  position={Position.TOP_LEFT}
-                  title='Choix du fond de carte'
-                  hasFilter={false}
-                  height={150}
-                  options={mapStyles}
-                  selected={style}
-                  onSelect={style => setStyle(style.value)}
-                >
-                  <Button><MapIcon /></Button>
-                </SelectMenu>
-              </Pane>
+              <StyleSelector style={style} showCadastre={showCadastre} handleStyle={setStyle} handleShowCadastre={setShowCadastre} />
             </>
           )}
 
