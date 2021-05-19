@@ -1,6 +1,8 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} from 'evergreen-ui'
+
+import ParcellesContext from '../../contexts/parcelles'
 
 const STYLES = [
   {label: 'Plan OpenMapTiles', value: 'vector'},
@@ -8,7 +10,24 @@ const STYLES = [
 ]
 
 function StyleSelector({style, showCadastre, handleStyle, handleShowCadastre}) {
+  const {isParcelleSelectionEnable} = useContext(ParcellesContext)
+
   const [showPopover, setShowPopover] = useState(false)
+  const [resetShowCadastre, setResetShowCadastre] = useState(false)
+
+  // Show cadastre when parcelles selection is enable
+  // and resets cadastre visibility to the previous value when the selection is disabled
+  useEffect(() => {
+    if (isParcelleSelectionEnable && !showCadastre) {
+      handleShowCadastre(true)
+      setResetShowCadastre(true)
+    }
+
+    if (!isParcelleSelectionEnable && resetShowCadastre) {
+      handleShowCadastre(false)
+      setResetShowCadastre(false)
+    }
+  }, [showCadastre, handleShowCadastre, isParcelleSelectionEnable, resetShowCadastre])
 
   return (
     <Pane

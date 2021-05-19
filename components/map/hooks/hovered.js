@@ -1,33 +1,31 @@
-import {useEffect, useState} from 'react'
+import {useCallback, useEffect, useState, useContext} from 'react'
 
-let PARCELLE
+import ParcellesContext from '../../../contexts/parcelles'
 
-function useHovered(map) {
+function useHovered() {
+  const {handleHoveredParcelle} = useContext(ParcellesContext)
+
   const [hovered, setHovered] = useState(null)
 
-  const handleHover = event => {
+  const handleHover = useCallback(event => {
     const feature = event && event.features && event.features[0]
 
-    if (PARCELLE) {
-      map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: PARCELLE}, {hover: false})
-      PARCELLE = null
-    }
-
     if (feature && feature.source === 'cadastre') {
-      PARCELLE = feature.id
-      map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: PARCELLE}, {hover: true})
+      handleHoveredParcelle({featureId: feature.id, id: feature.properties.id})
+    } else {
+      handleHoveredParcelle(null)
     }
 
     if (feature && feature.source !== 'cadastre') {
       setHovered(feature.properties.idVoie)
     }
-  }
+  }, [handleHoveredParcelle])
 
   useEffect(() => {
     if (!hovered) {
-      PARCELLE = null
+      handleHoveredParcelle(null)
     }
-  }, [hovered])
+  }, [hovered, handleHoveredParcelle])
 
   return [hovered, setHovered, handleHover]
 }

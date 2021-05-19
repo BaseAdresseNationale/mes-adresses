@@ -75,12 +75,12 @@ function generateNewStyle(style, sources, layers) {
 function Map({interactive, commune, voie, toponyme}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport} = useContext(MapContext)
+  const {handleParcelle} = useContext(ParcellesContext)
 
   const [showCadastre, setShowCadastre] = useState(false)
   const [showNumeros, setShowNumeros] = useState(true)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
-  const [hovered, setHovered] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [isToponyme, setIsToponyme] = useState(false)
@@ -99,7 +99,7 @@ function Map({interactive, commune, voie, toponyme}) {
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
 
-  const [hovered, setHovered, handleHover] = useHovered(map)
+  const [hovered, setHovered, handleHover] = useHovered()
   const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
   const layers = useLayers(voie, sources, showCadastre, style)
@@ -139,6 +139,10 @@ function Map({interactive, commune, voie, toponyme}) {
   const onClick = useCallback(event => {
     const feature = event.features && event.features[0]
 
+    if (feature && feature.source === 'cadastre') {
+      handleParcelle(feature.properties.id)
+    }
+
     if (feature && feature.properties.idVoie && !isEditing) {
       const {idVoie} = feature.properties
       if (feature.layer.id === 'voie-trace-line' && voie && idVoie === voie._id) {
@@ -152,8 +156,7 @@ function Map({interactive, commune, voie, toponyme}) {
     }
 
     setShowContextMenu(null)
-  }, [router, baseLocale, commune, setEditingId, isEditing, voie])
-
+  }, [router, baseLocale, commune, setEditingId, isEditing, voie, handleParcelle])
 
   const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
     if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
@@ -256,7 +259,7 @@ function Map({interactive, commune, voie, toponyme}) {
           {...settings}
           {...getInteractionProps(interactive)}
           interactiveLayerIds={interactiveLayerIds}
-          getCursor={() => modeId === 'drawLineString' ? 'crosshair' : 'default'}
+          getCursor={({isHovering}) => modeId === 'drawLineString' ? 'crosshair' : (isHovering ? 'pointer' : 'default')}
           onClick={onClick}
           onHover={handleHover}
           onMouseLeave={() => setHovered(null)}
