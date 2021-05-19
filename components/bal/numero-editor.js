@@ -7,6 +7,7 @@ import {normalizeSort} from '../../lib/normalize'
 
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
+import ParcellesContext from '../../contexts/parcelles'
 
 import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
@@ -14,14 +15,16 @@ import useKeyEvent from '../../hooks/key-event'
 
 import Comment from '../comment'
 import PositionEditor from './position-editor'
+import SelectParcelles from './numero-editor/select-parcelles'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
 function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
-  const {voies, toponymes} = useContext(BalDataContext)
+  const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
+  const {selectedParcelles, setSelectedParcelles, setIsParcelleSeletionEnable} = useContext(ParcellesContext)
+
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
-
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
@@ -47,7 +50,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       toponyme: toponymeId,
       numero: Number(numero),
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
-      comment: comment.length > 0 ? comment : null
+      comment: comment.length > 0 ? comment : null,
+      parcelles: selectedParcelles
     }
 
     if (markers.length > 0) {
@@ -69,12 +73,11 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
 
     try {
       await onSubmit(body)
-      disableMarkers()
     } catch (error) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voieId, toponymeId, suffixe, comment, markers, onSubmit, disableMarkers])
+  }, [numero, voieId, toponymeId, suffixe, comment, markers, selectedParcelles, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -99,12 +102,13 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   }, [onCancel])
 
   useEffect(() => {
-    const {numero, suffixe, comment} = initialValue || {}
+    const {numero, suffixe, parcelles, comment} = initialValue || {}
     resetNumero(numero)
     resetSuffixe(suffixe || '')
     resetComment(comment || '')
+    setSelectedParcelles(parcelles || [])
     setError(null)
-  }, [resetNumero, resetSuffixe, resetComment, setError, initialValue])
+  }, [resetNumero, resetSuffixe, resetComment, setError, setSelectedParcelles, initialValue])
 
   useEffect(() => {
     if (initialValue) {
@@ -125,6 +129,16 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   useEffect(() => {
     setOverrideText(numero || null)
   }, [setOverrideText, numero])
+
+  useEffect(() => {
+    setIsEditing(true)
+    setIsParcelleSeletionEnable(true)
+    return () => {
+      disableMarkers()
+      setIsEditing(false)
+      setIsParcelleSeletionEnable(false)
+    }
+  }, [setIsEditing, disableMarkers, setIsParcelleSeletionEnable])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -211,6 +225,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         </Alert>
       )}
 
+      <SelectParcelles />
+
       <Comment input={comment} onChange={onCommentChange} />
 
       {error && (
@@ -245,6 +261,7 @@ NumeroEditor.propTypes = {
     numero: PropTypes.number.isRequired,
     voie: PropTypes.string.isRequired,
     suffixe: PropTypes.string,
+    parcelles: PropTypes.array,
     comment: PropTypes.string,
     positions: PropTypes.array,
     toponyme: PropTypes.string
