@@ -72,19 +72,17 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
+function Map({interactive, commune, voie, toponyme}) {
   const router = useRouter()
-  const {viewport, setViewport} = useContext(MapContext)
+  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport} = useContext(MapContext)
 
   const [showCadastre, setShowCadastre] = useState(false)
   const [showNumeros, setShowNumeros] = useState(true)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
   const [hovered, setHovered] = useState(null)
-  const [style, setStyle] = useState(defaultStyle)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
-  const [showPopover, setShowPopover] = useState(false)
   const [isToponyme, setIsToponyme] = useState(false)
 
   const {
@@ -110,7 +108,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
     if (ref) {
       setMap(ref.getMap())
     }
-  }, [])
+  }, [setMap])
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -352,11 +350,6 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
 
 Map.propTypes = {
   interactive: PropTypes.bool,
-  style: PropTypes.oneOf([
-    'ortho',
-    'vector',
-    'vector-cadastre'
-  ]),
   commune: PropTypes.object,
   voie: PropTypes.object,
   toponyme: PropTypes.object
@@ -364,7 +357,6 @@ Map.propTypes = {
 
 Map.defaultProps = {
   interactive: true,
-  style: 'vector',
   commune: null,
   voie: null,
   toponyme: null
