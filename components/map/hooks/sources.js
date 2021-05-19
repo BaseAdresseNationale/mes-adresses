@@ -13,9 +13,9 @@ function useSources(voie, toponyme, hovered, editingId) {
     const setPaintProperties = feature => {
       return {
         ...feature,
-        id: feature.properties.idNumero || feature.properties.idVoie,
         properties: {
           ...feature.properties,
+          id: feature.properties.idNumero || feature.properties.idVoie,
           opacity: feature.properties.idVoie === hovered ? 1 : 0.4,
           color: randomColor({
             luminosity: 'dark',
