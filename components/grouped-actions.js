@@ -33,7 +33,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
   const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
   const selectedNumerosUniqToponyme = uniq(selectedNumeros.map(numero => numero.toponyme))
-  const hasUniqToponyme = selectedNumerosUniqToponyme.filter(Boolean).length === 1
+  const hasUniqToponyme = selectedNumerosUniqToponyme.length === 1
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(hasUniqToponyme ? selectedNumerosUniqToponyme[0] : null)
@@ -74,7 +74,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
     body.map(r => {
       r.voie = selectedVoieId
-      r.toponyme = selectedToponymeId
+      r.toponyme = selectedToponymeId || r.toponyme
       r.positions.forEach(position => {
         if (type) {
           position.type = type
