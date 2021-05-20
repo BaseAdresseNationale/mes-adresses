@@ -311,7 +311,7 @@ function Map({interactive, commune, voie, toponyme}) {
             )}
           </Pane>
 
-          {(voie || toponyme) && !modeId && numeros && numeros.map(numero => (
+          {(voie || toponyme) && !modeId && numeros && numeros.filter(({_id}) => _id !== editingId).map(numero => (
             <NumeroMarker
               key={numero._id}
               numero={toponyme ? {...numero, numeroComplet: `${numero.numero}${numero.suffixe || ''}`} : numero}

@@ -15,15 +15,17 @@ export function ParcellesContextProvider(props) {
   const [hoveredParcelle, setHoveredParcelle] = useState(null)
   const [isLayerLoaded, setIsLayerLoaded] = useState(false)
 
-  const handleParcelle = parcelle => {
-    setSelectedParcelles(parcelles => {
-      if (selectedParcelles.includes(parcelle)) {
-        return selectedParcelles.filter(id => id !== parcelle)
-      }
+  const handleParcelle = useCallback(parcelle => {
+    if (isParcelleSelectionEnable) {
+      setSelectedParcelles(parcelles => {
+        if (selectedParcelles.includes(parcelle)) {
+          return selectedParcelles.filter(id => id !== parcelle)
+        }
 
-      return [...parcelles, parcelle]
-    })
-  }
+        return [...parcelles, parcelle]
+      })
+    }
+  }, [selectedParcelles, isParcelleSelectionEnable])
 
   const handleHoveredParcelle = useCallback(hovered => {
     if (map) {

@@ -19,7 +19,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
   const {token} = useContext(TokenContext)
   const {markers} = useContext(MarkersContext)
-  const {editingId, setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
@@ -84,7 +84,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     return null
   }
 
-  if (markers.length > 0 && editingId === numero._id) {
+  if (markers.length > 0) {
     return null
   }
 
