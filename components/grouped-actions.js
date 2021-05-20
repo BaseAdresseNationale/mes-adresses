@@ -157,7 +157,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             marginBottom={16}
             onChange={onPositionTypeChange}
           >
-            {selectedNumerosUniqType.length !== 1 && (
+            {(selectedNumerosUniqType.length !== 1 || hasMultiposition) && (
               <option value='' >-- Veuillez choisir un type de position --</option>
             )}
             {positionsTypesList.map(positionType => (
