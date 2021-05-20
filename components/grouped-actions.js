@@ -62,11 +62,13 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
       return comment
     }
 
-    body.map((r, idx) => {
+    body.map(r => {
       r.voie = selectedVoieId
       r.toponyme = selectedToponymeId
       r.positions.forEach(position => {
-        position.type = type ? type : selectedNumeros[idx].positions[0].type
+        if (type) {
+          position.type = type
+        }
       })
 
       r.comment = commentCondition(r)
