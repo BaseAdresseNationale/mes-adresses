@@ -114,7 +114,7 @@ function Map({interactive, commune, voie, toponyme}) {
     const layers = []
 
     if (editingId) {
-      return null
+      return showCadastre ? ['parcelles-fill'] : null
     }
 
     if (sources.find(({name}) => name === 'voies')) {
@@ -130,7 +130,7 @@ function Map({interactive, commune, voie, toponyme}) {
     }
 
     return layers
-  }, [editingId, sources, voie])
+  }, [editingId, sources, voie, showCadastre])
 
   const onShowNumeroChange = useCallback(value => {
     setShowNumeros(value)
@@ -201,6 +201,14 @@ function Map({interactive, commune, voie, toponyme}) {
     )
   }, [baseLocale._id, commune, token, router])
 
+  const handleCursor = useCallback(({isHovering}) => {
+    if (modeId === 'drawLineString') {
+      return 'crosshair'
+    }
+
+    return isHovering ? 'pointer' : 'default'
+  }, [modeId])
+
   useEffect(() => {
     if (sources.length > 0) {
       setMapStyle(generateNewStyle(style, sources, layers))
@@ -259,7 +267,7 @@ function Map({interactive, commune, voie, toponyme}) {
           {...settings}
           {...getInteractionProps(interactive)}
           interactiveLayerIds={interactiveLayerIds}
-          getCursor={({isHovering}) => modeId === 'drawLineString' ? 'crosshair' : (isHovering ? 'pointer' : 'default')}
+          getCursor={handleCursor}
           onClick={onClick}
           onHover={handleHover}
           onMouseLeave={() => setHovered(null)}
