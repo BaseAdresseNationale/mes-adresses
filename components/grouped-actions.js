@@ -10,12 +10,20 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
 
+// Returns a unique position type, if selected numeros have only one and the same position type
+const getDefaultPositionType = (hasMultiposition, selectedNumerosUniqType) => {
+  if (!hasMultiposition && selectedNumerosUniqType.length === 1) {
+    return selectedNumerosUniqType[0]
+  }
+
+  return ''
+}
+
 const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, onSubmit}) => {
   const {voies, toponymes} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [positionType, onPositionTypeChange] = useInput('')
   const [selectedVoieId, setSelectedVoieId] = useState(idVoie)
   const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
@@ -29,6 +37,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(hasUniqToponyme ? selectedNumerosUniqToponyme[0] : null)
+  const [positionType, onPositionTypeChange, resetPositionType] = useInput(getDefaultPositionType(hasMultiposition, selectedNumerosUniqType))
 
   const handleComplete = () => {
     setIsShown(false)
@@ -37,6 +46,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const handleClick = () => {
     setIsShown(true)
+    resetPositionType()
   }
 
   const handleConfirm = useCallback(async () => {
@@ -62,11 +72,13 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
       return comment
     }
 
-    body.map((r, idx) => {
+    body.map(r => {
       r.voie = selectedVoieId
       r.toponyme = selectedToponymeId
       r.positions.forEach(position => {
-        position.type = type ? type : selectedNumeros[idx].positions[0].type
+        if (type) {
+          position.type = type
+        }
       })
 
       r.comment = commentCondition(r)
@@ -155,7 +167,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             marginBottom={16}
             onChange={onPositionTypeChange}
           >
-            {selectedNumerosUniqType.length !== 1 && (
+            {(selectedNumerosUniqType.length !== 1 || hasMultiposition) && (
               <option value='' >-- Veuillez choisir un type de position --</option>
             )}
             {positionsTypesList.map(positionType => (
