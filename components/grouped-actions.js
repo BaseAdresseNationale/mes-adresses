@@ -10,6 +10,15 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
 
+// Returns a unique position type, if selected numeros have only one and the same position type
+const getDefaultPositionType = (hasMultiposition, selectedNumerosUniqType) => {
+  if (!hasMultiposition && selectedNumerosUniqType.length === 1) {
+    return selectedNumerosUniqType[0]
+  }
+
+  return ''
+}
+
 const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, onSubmit}) => {
   const {voies, toponymes} = useContext(BalDataContext)
 
@@ -28,7 +37,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(hasUniqToponyme ? selectedNumerosUniqToponyme[0] : null)
-  const [positionType, onPositionTypeChange, resetPositionType] = useInput(!hasMultiposition && selectedNumerosUniqType.length === 1 ? selectedNumerosUniqType[0] : '')
+  const [positionType, onPositionTypeChange, resetPositionType] = useInput(getDefaultPositionType(hasMultiposition, selectedNumerosUniqType))
 
   const handleComplete = () => {
     setIsShown(false)
