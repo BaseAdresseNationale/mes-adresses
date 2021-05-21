@@ -15,7 +15,6 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [positionType, onPositionTypeChange] = useInput('')
   const [selectedVoieId, setSelectedVoieId] = useState(idVoie)
   const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
@@ -29,6 +28,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(hasUniqToponyme ? selectedNumerosUniqToponyme[0] : null)
+  const [positionType, onPositionTypeChange, resetPositionType] = useInput(!hasMultiposition && selectedNumerosUniqType.length === 1 ? selectedNumerosUniqType[0] : '')
 
   const handleComplete = () => {
     setIsShown(false)
@@ -37,6 +37,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const handleClick = () => {
     setIsShown(true)
+    resetPositionType()
   }
 
   const handleConfirm = useCallback(async () => {
