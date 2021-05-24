@@ -103,6 +103,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     if (!isShown && hasUniqToponyme) {
       setSelectedToponymeId(selectedNumerosUniqToponyme[0])
     }
+
+    if (!isShown && !hasUniqToponyme) {
+      setSelectedToponymeId(null)
+    }
   }, [hasUniqToponyme, isShown, selectedNumerosUniqToponyme])
 
   return (
