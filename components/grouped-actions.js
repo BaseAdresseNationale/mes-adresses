@@ -28,13 +28,13 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
   // Returns a unique position type, if selected numeros have only one and the same position type
-  const getDefaultPositionType = () => {
+  const getDefaultPositionType = useCallback(() => {
     if (!hasMultiposition && selectedNumerosUniqType.length === 1) {
       return selectedNumerosUniqType[0]
     }
 
     return ''
-  }
+  }, [hasMultiposition, selectedNumerosUniqType])
 
   const [positionType, onPositionTypeChange, resetPositionType] = useInput(getDefaultPositionType)
   const selectedNumerosUniqToponyme = uniq(selectedNumeros.map(numero => numero.toponyme))
