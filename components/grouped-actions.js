@@ -39,7 +39,16 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [positionType, onPositionTypeChange, resetPositionType] = useInput(getDefaultPositionType(hasMultiposition, selectedNumerosUniqType))
   const selectedNumerosUniqToponyme = uniq(selectedNumeros.map(numero => numero.toponyme))
   const hasUniqToponyme = selectedNumerosUniqToponyme.length === 1
-  const [selectedToponymeId, setSelectedToponymeId] = useState()
+
+  const getDefaultToponyme = useCallback(() => {
+    if (hasUniqToponyme) {
+      return selectedNumerosUniqToponyme[0]
+    }
+
+    return null
+  }, [hasUniqToponyme, selectedNumerosUniqToponyme])
+
+  const [selectedToponymeId, setSelectedToponymeId] = useState(getDefaultToponyme)
 
   const handleComplete = () => {
     setIsShown(false)
@@ -100,14 +109,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   }, [comment, selectedVoieId, selectedToponymeId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
 
   useEffect(() => {
-    if (!isShown && hasUniqToponyme) {
-      setSelectedToponymeId(selectedNumerosUniqToponyme[0])
+    if (!isShown) {
+      setSelectedToponymeId(getDefaultToponyme)
     }
-
-    if (!isShown && !hasUniqToponyme) {
-      setSelectedToponymeId(null)
-    }
-  }, [hasUniqToponyme, isShown, selectedNumerosUniqToponyme])
+  }, [isShown, getDefaultToponyme])
 
   return (
     <Pane padding={16}>
