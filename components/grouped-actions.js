@@ -162,7 +162,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               marginBottom={16}
               onChange={event => setSelectedToponymeId(event.target.value)}
             >
-              <option value=''>{selectedToponymeId ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
+              <option value=''>{selectedToponymeId || selectedToponymeId === '' ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
               {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
                 <option key={_id} value={_id}>
                   {nom}
