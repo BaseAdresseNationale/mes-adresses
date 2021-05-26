@@ -106,13 +106,10 @@ export function ParcellesContextProvider(props) {
   return (
     <ParcellesContext.Provider
       value={{
-        selectedParcelles,
-        setSelectedParcelles,
-        isParcelleSelectionEnable,
-        setIsParcelleSeletionEnable,
+        selectedParcelles, setSelectedParcelles,
+        isParcelleSelectionEnable, setIsParcelleSeletionEnable,
         handleParcelle,
-        hoveredParcelle,
-        handleHoveredParcelle
+        hoveredParcelle, handleHoveredParcelle
       }}
       {...props}
     />

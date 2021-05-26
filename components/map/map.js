@@ -77,8 +77,8 @@ function Map({interactive, commune, voie, toponyme}) {
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
-  const [showCadastre, setShowCadastre] = useState(false)
   const [showNumeros, setShowNumeros] = useState(true)
+  const [showCadastre, setShowCadastre] = useState(false)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
@@ -277,7 +277,7 @@ function Map({interactive, commune, voie, toponyme}) {
           {interactive && (
             <>
               <NavControl onViewportChange={setViewport} />
-              <StyleSelector style={style} showCadastre={showCadastre} handleStyle={setStyle} handleShowCadastre={setShowCadastre} />
+              <StyleSelector style={style} handleStyle={setStyle} showCadastre={showCadastre} handleCadastre={setShowCadastre} />
             </>
           )}
 

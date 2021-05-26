@@ -9,7 +9,7 @@ const STYLES = [
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
-function StyleSelector({style, showCadastre, handleStyle, handleShowCadastre}) {
+function StyleSelector({style, handleStyle, showCadastre, handleCadastre}) {
   const {isParcelleSelectionEnable} = useContext(ParcellesContext)
 
   const [showPopover, setShowPopover] = useState(false)
@@ -19,15 +19,15 @@ function StyleSelector({style, showCadastre, handleStyle, handleShowCadastre}) {
   // and resets cadastre visibility to the previous value when the selection is disabled
   useEffect(() => {
     if (isParcelleSelectionEnable && !showCadastre) {
-      handleShowCadastre(true)
+      handleCadastre(true)
       setResetShowCadastre(true)
     }
 
     if (!isParcelleSelectionEnable && resetShowCadastre) {
-      handleShowCadastre(false)
+      handleCadastre(false)
       setResetShowCadastre(false)
     }
-  }, [showCadastre, handleShowCadastre, isParcelleSelectionEnable, resetShowCadastre])
+  }, [showCadastre, handleCadastre, isParcelleSelectionEnable, resetShowCadastre])
 
   return (
     <Pane
@@ -58,7 +58,7 @@ function StyleSelector({style, showCadastre, handleStyle, handleShowCadastre}) {
 
       </SelectMenu>
       <Tooltip content={showCadastre ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
-        <Button style={{padding: '.8em'}} onClick={() => handleShowCadastre(show => !show)}>
+        <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>
           <ControlIcon color={showCadastre ? 'selected' : 'muted'} />
         </Button>
       </Tooltip>
@@ -68,9 +68,9 @@ function StyleSelector({style, showCadastre, handleStyle, handleShowCadastre}) {
 
 StyleSelector.propTypes = {
   style: PropTypes.string.isRequired,
-  showCadastre: PropTypes.bool.isRequired,
   handleStyle: PropTypes.func.isRequired,
-  handleShowCadastre: PropTypes.func.isRequired
+  showCadastre: PropTypes.bool.isRequired,
+  handleCadastre: PropTypes.func.isRequired
 }
 
 export default StyleSelector

@@ -1,4 +1,4 @@
-export const cadastreLayers = [{
+export const cadastreLayers = parcelles => [{
   id: 'batiments-fill',
   type: 'fill',
   source: 'cadastre',
@@ -15,9 +15,6 @@ export const cadastreLayers = [{
   'source-layer': 'batiments',
   minzoom: 16,
   maxzoom: 22,
-  layout: {
-    visibility: 'visible'
-  },
   paint: {
     'line-opacity': 1,
     'line-color': 'rgba(0, 0, 0, 1)'
@@ -31,7 +28,6 @@ export const cadastreLayers = [{
   minzoom: 16,
   maxzoom: 24,
   layout: {
-    visibility: 'visible',
     'line-cap': 'butt'
   },
   paint: {
@@ -56,9 +52,6 @@ export const cadastreLayers = [{
   type: 'fill',
   source: 'cadastre',
   'source-layer': 'parcelles',
-  layout: {
-    visibility: 'visible'
-  },
   paint: {
     'fill-color': 'rgba(129, 123, 0, 1)',
     'fill-opacity': [
@@ -74,6 +67,17 @@ export const cadastreLayers = [{
       0.7,
       0.1
     ]
+  }
+},
+{
+  id: 'parcelles-selected',
+  type: 'fill',
+  source: 'cadastre',
+  'source-layer': 'parcelles',
+  filter: ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])],
+  paint: {
+    'fill-color': '#0053b3',
+    'fill-opacity': 0.2
   }
 },
 {
@@ -98,9 +102,6 @@ export const cadastreLayers = [{
   'source-layer': 'sections',
   minzoom: 12,
   maxzoom: 24,
-  layout: {
-    visibility: 'visible'
-  },
   paint: {
     'line-color': 'rgba(116, 134, 241, 1)',
     'line-opacity': 0.9,
@@ -118,8 +119,7 @@ export const cadastreLayers = [{
     'text-field': '{code}',
     'text-font': [
       'Noto Sans Bold'
-    ],
-    visibility: 'visible'
+    ]
   },
   paint: {
     'text-halo-color': 'rgba(255, 246, 241, 1)',
@@ -141,7 +141,6 @@ export const cadastreLayers = [{
       'Noto Sans Bold'
     ],
     'text-allow-overlap': false,
-    visibility: 'visible',
     'text-size': 16
   },
   paint: {
