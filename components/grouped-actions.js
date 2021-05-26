@@ -1,4 +1,4 @@
-import React, {useContext, useState, useCallback} from 'react'
+import React, {useContext, useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon} from 'evergreen-ui'
 import {sortBy, uniq} from 'lodash'
@@ -9,15 +9,6 @@ import BalDataContext from '../contexts/bal-data'
 import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
-
-// Returns a unique position type, if selected numeros have only one and the same position type
-const getDefaultPositionType = (hasMultiposition, selectedNumerosUniqType) => {
-  if (!hasMultiposition && selectedNumerosUniqType.length === 1) {
-    return selectedNumerosUniqType[0]
-  }
-
-  return ''
-}
 
 const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, onSubmit}) => {
   const {voies, toponymes} = useContext(BalDataContext)
@@ -30,14 +21,34 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
 
   const selectedNumeros = numeros.filter(({_id}) => selectedNumerosIds.includes(_id))
+
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
   const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
-  const selectedNumerosUniqToponyme = uniq(selectedNumeros.map(numero => numero.toponyme))
-  const hasUniqToponyme = selectedNumerosUniqToponyme.filter(Boolean).length === 1
+
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
-  const [selectedToponymeId, setSelectedToponymeId] = useState(hasUniqToponyme ? selectedNumerosUniqToponyme[0] : null)
-  const [positionType, onPositionTypeChange, resetPositionType] = useInput(getDefaultPositionType(hasMultiposition, selectedNumerosUniqType))
+  // Returns a unique position type, if selected numeros have only one and the same position type
+  const getDefaultPositionType = useCallback(() => {
+    if (!hasMultiposition && selectedNumerosUniqType.length === 1) {
+      return selectedNumerosUniqType[0]
+    }
+
+    return ''
+  }, [hasMultiposition, selectedNumerosUniqType])
+
+  const [positionType, onPositionTypeChange, resetPositionType] = useInput(getDefaultPositionType)
+  const selectedNumerosUniqToponyme = uniq(selectedNumeros.map(numero => numero.toponyme))
+  const hasUniqToponyme = selectedNumerosUniqToponyme.length === 1
+
+  const getDefaultToponyme = useCallback(() => {
+    if (hasUniqToponyme) {
+      return selectedNumerosUniqToponyme[0]
+    }
+
+    return null
+  }, [hasUniqToponyme, selectedNumerosUniqToponyme])
+
+  const [selectedToponymeId, setSelectedToponymeId] = useState(getDefaultToponyme)
 
   const handleComplete = () => {
     setIsShown(false)
@@ -74,7 +85,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
     body.map(r => {
       r.voie = selectedVoieId
-      r.toponyme = selectedToponymeId
+      r.toponyme = selectedToponymeId === '' ? null : selectedToponymeId || r.toponyme
       r.positions.forEach(position => {
         if (type) {
           position.type = type
@@ -96,6 +107,12 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     setIsShown(false)
     resetSelectedNumerosIds()
   }, [comment, selectedVoieId, selectedToponymeId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
+
+  useEffect(() => {
+    if (!isShown) {
+      setSelectedToponymeId(getDefaultToponyme)
+    }
+  }, [isShown, getDefaultToponyme])
 
   return (
     <Pane padding={16}>
@@ -143,9 +160,9 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               flex={1}
               disabled={selectedNumerosUniqToponyme.length > 1}
               marginBottom={16}
-              onChange={event => setSelectedToponymeId(event.target.value === '' ? null : event.target.value)}
+              onChange={event => setSelectedToponymeId(event.target.value)}
             >
-              <option value=''>{selectedToponymeId || hasUniqToponyme ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
+              <option value=''>{selectedToponymeId || selectedToponymeId === '' ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
               {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
                 <option key={_id} value={_id}>
                   {nom}
