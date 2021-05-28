@@ -35,7 +35,7 @@ function UploadForm() {
   }
 
   const onDrop = useCallback(([file]) => {
-    if (getFileExtension(file.name) !== 'csv') {
+    if (getFileExtension(file.name).toLowerCase() !== 'csv') {
       return onError('Ce type de fichier n’est pas supporté. Vous devez déposer un fichier CSV.')
     }
 
