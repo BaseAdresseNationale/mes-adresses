@@ -10,13 +10,13 @@ let LOAD = false
 export function ParcellesContextProvider(props) {
   const {map} = useContext(MapContext)
 
-  const [isParcelleSelectionEnable, setIsParcelleSeletionEnable] = useState(false)
+  const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] = useState(false)
   const [selectedParcelles, setSelectedParcelles] = useState([])
   const [hoveredParcelle, setHoveredParcelle] = useState(null)
   const [isLayerLoaded, setIsLayerLoaded] = useState(false)
 
   const handleParcelle = useCallback(parcelle => {
-    if (isParcelleSelectionEnable) {
+    if (isParcelleSelectionEnabled) {
       setSelectedParcelles(parcelles => {
         if (selectedParcelles.includes(parcelle)) {
           return selectedParcelles.filter(id => id !== parcelle)
@@ -25,7 +25,7 @@ export function ParcellesContextProvider(props) {
         return [...parcelles, parcelle]
       })
     }
-  }, [selectedParcelles, isParcelleSelectionEnable])
+  }, [selectedParcelles, isParcelleSelectionEnabled])
 
   const handleHoveredParcelle = useCallback(hovered => {
     if (map) {
@@ -50,12 +50,12 @@ export function ParcellesContextProvider(props) {
 
   const highlightParcelles = useCallback(parcelles => {
     if (map && isLayerLoaded) {
-      const filters = isParcelleSelectionEnable ?
+      const filters = isParcelleSelectionEnabled ?
         ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])] :
         ['==', ['get', 'id'], '']
       map.setFilter('parcelle-highlighted', filters)
     }
-  }, [map, isLayerLoaded, isParcelleSelectionEnable])
+  }, [map, isLayerLoaded, isParcelleSelectionEnabled])
 
   // Use state to know when parcelle-highlighted layer is loaded
   const handleLoad = useCallback(() => {
@@ -65,7 +65,7 @@ export function ParcellesContextProvider(props) {
 
   // Clean hovered parcelle when selection is disabled
   useEffect(() => {
-    if (!isParcelleSelectionEnable && map) {
+    if (!isParcelleSelectionEnabled && map) {
       setHoveredParcelle(prev => {
         if (prev) {
           map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prev.featureId}, {hover: false})
@@ -73,20 +73,20 @@ export function ParcellesContextProvider(props) {
         }
       })
     }
-  }, [map, isParcelleSelectionEnable, hoveredParcelle])
+  }, [map, isParcelleSelectionEnabled, hoveredParcelle])
 
   // Reset IsLayerLoaded when selection is disabled
   useEffect(() => {
-    if (!isParcelleSelectionEnable) {
+    if (!isParcelleSelectionEnabled) {
       setIsLayerLoaded(false)
     }
-  }, [isParcelleSelectionEnable])
+  }, [isParcelleSelectionEnabled])
 
   // Updates highlighted parcelles when parcelles changes
   // or when selection is enabled/disabled
   useEffect(() => {
     highlightParcelles(selectedParcelles)
-  }, [isParcelleSelectionEnable, selectedParcelles, highlightParcelles])
+  }, [isParcelleSelectionEnabled, selectedParcelles, highlightParcelles])
 
   // Look styledata event
   // to know if parcelle-highlighted layer is loaded or not
@@ -107,7 +107,7 @@ export function ParcellesContextProvider(props) {
     <ParcellesContext.Provider
       value={{
         selectedParcelles, setSelectedParcelles,
-        isParcelleSelectionEnable, setIsParcelleSeletionEnable,
+        isParcelleSelectionEnabled, setIsParcelleSelectionEnabled,
         handleParcelle,
         hoveredParcelle, handleHoveredParcelle
       }}

@@ -10,7 +10,7 @@ const STYLES = [
 ]
 
 function StyleSelector({style, handleStyle, showCadastre, handleCadastre}) {
-  const {isParcelleSelectionEnable} = useContext(ParcellesContext)
+  const {isParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [showPopover, setShowPopover] = useState(false)
   const [resetShowCadastre, setResetShowCadastre] = useState(false)
@@ -18,16 +18,16 @@ function StyleSelector({style, handleStyle, showCadastre, handleCadastre}) {
   // Show cadastre when parcelles selection is enable
   // and resets cadastre visibility to the previous value when the selection is disabled
   useEffect(() => {
-    if (isParcelleSelectionEnable && !showCadastre) {
+    if (isParcelleSelectionEnabled && !showCadastre) {
       handleCadastre(true)
       setResetShowCadastre(true)
     }
 
-    if (!isParcelleSelectionEnable && resetShowCadastre) {
+    if (!isParcelleSelectionEnabled && resetShowCadastre) {
       handleCadastre(false)
       setResetShowCadastre(false)
     }
-  }, [showCadastre, handleCadastre, isParcelleSelectionEnable, resetShowCadastre])
+  }, [showCadastre, handleCadastre, isParcelleSelectionEnabled, resetShowCadastre])
 
   return (
     <Pane

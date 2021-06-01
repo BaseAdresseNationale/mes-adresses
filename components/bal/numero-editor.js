@@ -21,7 +21,7 @@ const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
 function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
-  const {selectedParcelles, setSelectedParcelles, setIsParcelleSeletionEnable} = useContext(ParcellesContext)
+  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
@@ -132,13 +132,13 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
 
   useEffect(() => {
     setIsEditing(true)
-    setIsParcelleSeletionEnable(true)
+    setIsParcelleSelectionEnabled(true)
     return () => {
       disableMarkers()
       setIsEditing(false)
-      setIsParcelleSeletionEnable(false)
+      setIsParcelleSelectionEnabled(false)
     }
-  }, [setIsEditing, disableMarkers, setIsParcelleSeletionEnable])
+  }, [setIsEditing, disableMarkers, setIsParcelleSelectionEnabled])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
