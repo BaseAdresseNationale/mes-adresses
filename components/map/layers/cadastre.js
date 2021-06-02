@@ -91,7 +91,19 @@ export const cadastreLayers = parcelles => [{
     ''
   ],
   paint: {
-    'fill-color': 'rgba(1, 129, 0, 1)',
+    'fill-color': [
+      'case',
+      [
+        'boolean',
+        [
+          'feature-state',
+          'hover'
+        ],
+        false
+      ],
+      'rgba(209, 67, 67, 1)',
+      'rgba(1, 129, 0, 1)'
+    ],
     'fill-opacity': 0.7
   }
 },

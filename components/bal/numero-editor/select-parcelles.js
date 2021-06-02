@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import {Pane, Label, Badge, Alert} from 'evergreen-ui'
+import {Pane, Label, Badge, Alert, TrashIcon} from 'evergreen-ui'
 
 import ParcellesContext from '../../../contexts/parcelles'
 
@@ -13,19 +13,23 @@ function SelectParcelles() {
       </Label>
       <Pane>
         {selectedParcelles.length > 0 ?
-          selectedParcelles.map(parcelle => (
-            <Badge
-              key={parcelle}
-              isInteractive
-              color={parcelle === hoveredParcelle?.id ? 'yellow' : 'green'}
-              margin={4}
-              onClick={() => handleParcelle(parcelle)}
-              onMouseEnter={() => handleHoveredParcelle({id: parcelle})}
-              onMouseLeave={() => handleHoveredParcelle(null)}
-            >
-              {parcelle}
-            </Badge>
-          )) : (
+          selectedParcelles.map(parcelle => {
+            const isHovered = parcelle === hoveredParcelle?.id
+
+            return (
+              <Badge
+                key={parcelle}
+                isInteractive
+                color={parcelle === hoveredParcelle?.id ? 'red' : 'green'}
+                margin={4}
+                onClick={() => handleParcelle(parcelle)}
+                onMouseEnter={() => handleHoveredParcelle({id: parcelle})}
+                onMouseLeave={() => handleHoveredParcelle(null)}
+              >
+                {parcelle}{isHovered && <TrashIcon marginLeft={4} color='danger' verticalAlign='middle' />}
+              </Badge>
+            )
+          }) : (
             <Alert marginBottom={16}>
               Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au numéro.
             </Alert>
