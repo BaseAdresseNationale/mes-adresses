@@ -1,15 +1,16 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
-import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
+import {createBaseLocale, addCommune, populateCommune, isBalAlreadyPublished} from '../../lib/bal-api'
 
 import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
 
 import {CommuneSearchField} from '../../components/commune-search'
+import AlertPubishedBAL from './alert-published-bal'
 
 function CreateForm({defaultCommune}) {
   const [isLoading, setIsLoading] = useState(false)
@@ -19,16 +20,15 @@ function CreateForm({defaultCommune}) {
   const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
+  const [isShown, setIsShown] = useState(false)
+  const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState()
   const focusRef = useFocus()
 
   const onSelect = useCallback(commune => {
     setCommune(commune.code)
   }, [])
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
 
-    setIsLoading(true)
-
+  const createNewBal = useCallback(async () => {
     const bal = await createBaseLocale({
       nom,
       emails: [
@@ -36,22 +36,60 @@ function CreateForm({defaultCommune}) {
       ]
     })
 
-    storeBalAccess(bal._id, bal.token)
+    if (commune) {
+      storeBalAccess(bal._id, bal.token)
+      await addCommune(bal._id, commune, bal.token)
 
-    await addCommune(bal._id, commune, bal.token)
+      if (populate) {
+        await populateCommune(bal._id, commune, bal.token)
+      }
 
-    if (populate) {
-      await populateCommune(bal._id, commune, bal.token)
+      Router.push(
+        `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
+        `/bal/${bal._id}/communes/${commune}`
+      )
+    }
+  }, [email, nom, populate, commune])
+
+  const onSubmit = useCallback(async e => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    if (alreadyPublishedBAL) {
+      setIsShown(true)
+    } else {
+      createNewBal()
+    }
+  }, [alreadyPublishedBAL, createNewBal])
+
+  const onCancel = () => {
+    setIsShown(false)
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    const checkIfPublished = async (codeCommune, userEmail) => {
+      if (codeCommune && userEmail) {
+        setAlreadyPublishedBAL(await isBalAlreadyPublished(codeCommune, userEmail))
+      }
     }
 
-    Router.push(
-      `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
-      `/bal/${bal._id}/communes/${commune}`
-    )
-  }, [commune, nom, email, populate])
+    if (commune && email) {
+      checkIfPublished(commune, email.toLowerCase())
+    }
+  }, [commune, email])
 
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
+      {alreadyPublishedBAL && (
+        <AlertPubishedBAL
+          isShown={isShown}
+          alreadyPublishedBAL={alreadyPublishedBAL}
+          createNewBal={createNewBal}
+          onClose={() => onCancel()}
+        />
+      )}
+
       <TextInputField
         ref={focusRef}
         required
