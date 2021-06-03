@@ -1,14 +1,17 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
+import {validate} from '@etalab/bal'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv} from '../../lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, isBalAlreadyPublished} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
 
 import useFocus from '../../hooks/focus'
 import {useInput} from '../../hooks/input'
 
 import Uploader from '../../components/uploader'
+
+import AlertPubishedBAL from './alert-published-bal'
 
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')
@@ -26,7 +29,10 @@ function UploadForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
+  const [codeCommune, setCodeCommune] = useState()
   const focusRef = useFocus()
+  const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState()
+  const [isShown, setIsShown] = useState(false)
 
   const onError = error => {
     setFile(null)
@@ -34,7 +40,7 @@ function UploadForm() {
     setError(error)
   }
 
-  const onDrop = useCallback(([file]) => {
+  const onDrop = useCallback(async ([file]) => {
     if (getFileExtension(file.name).toLowerCase() !== 'csv') {
       return onError('Ce type de fichier n’est pas supporté. Vous devez déposer un fichier CSV.')
     }
@@ -45,13 +51,11 @@ function UploadForm() {
 
     setFile(file)
     setError(null)
+    const validateResponse = await validate(file)
+    setCodeCommune(validateResponse?.rows[0].parsedValues.cle_interop.slice(0, 5))
   }, [])
 
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
-
-    setIsLoading(true)
-
+  const createNewBal = useCallback(async () => {
     if (!bal) {
       const baseLocale = await createBaseLocale({
         nom,
@@ -63,7 +67,28 @@ function UploadForm() {
       storeBalAccess(baseLocale._id, baseLocale.token)
       setBal(baseLocale)
     }
-  }, [bal, nom, email])
+  }, [bal, email, nom])
+
+  const onCancel = () => {
+    setIsShown(false)
+    setIsLoading(false)
+  }
+
+  const onSubmit = useCallback(async e => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    if (file) {
+      const validateResponse = await validate(file)
+      setCodeCommune(validateResponse?.rows[0].parsedValues.cle_interop.slice(0, 5))
+
+      if (alreadyPublishedBAL) {
+        setIsShown(true)
+      } else {
+        createNewBal()
+      }
+    }
+  }, [alreadyPublishedBAL, createNewBal, file])
 
   useEffect(() => {
     async function upload() {
@@ -86,6 +111,18 @@ function UploadForm() {
   }, [bal, file])
 
   useEffect(() => {
+    const checkIfPublished = async (codeCommune, userEmail) => {
+      if (codeCommune && userEmail) {
+        setAlreadyPublishedBAL(await isBalAlreadyPublished(codeCommune, userEmail))
+      }
+    }
+
+    if (codeCommune && email) {
+      checkIfPublished(codeCommune, email.toLowerCase())
+    }
+  }, [codeCommune, email])
+
+  useEffect(() => {
     if (file || error) {
       setIsLoading(false)
     }
@@ -94,6 +131,14 @@ function UploadForm() {
   return (
     <>
       <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
+        {alreadyPublishedBAL && (
+          <AlertPubishedBAL
+            isShown={isShown}
+            alreadyPublishedBAL={alreadyPublishedBAL}
+            createNewBal={createNewBal}
+            onClose={() => onCancel()}
+          />
+        )}
         <Pane display='flex' flexDirection='row'>
           <Pane flex={1} maxWidth={600}>
             <TextInputField
