@@ -29,9 +29,9 @@ function UploadForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
-  const [codeCommune, setCodeCommune] = useState()
+  const [codeCommune, setCodeCommune] = useState(null)
   const focusRef = useFocus()
-  const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState()
+  const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState(null)
   const [isShown, setIsShown] = useState(false)
 
   const onError = error => {
@@ -80,15 +80,18 @@ function UploadForm() {
 
     if (file) {
       const validateResponse = await validate(file)
+      // Get cle_interop and slice it to get the commune's code
       setCodeCommune(validateResponse?.rows[0].parsedValues.cle_interop.slice(0, 5))
+      const isPublished = await isBalAlreadyPublished(codeCommune, email.toLowerCase())
 
-      if (alreadyPublishedBAL) {
+      if (isPublished.length > 0) {
+        setAlreadyPublishedBAL(isPublished[0])
         setIsShown(true)
       } else {
         createNewBal()
       }
     }
-  }, [alreadyPublishedBAL, createNewBal, file])
+  }, [createNewBal, file, codeCommune, email])
 
   useEffect(() => {
     async function upload() {
@@ -111,18 +114,6 @@ function UploadForm() {
   }, [bal, file])
 
   useEffect(() => {
-    const checkIfPublished = async (codeCommune, userEmail) => {
-      if (codeCommune && userEmail) {
-        setAlreadyPublishedBAL(await isBalAlreadyPublished(codeCommune, userEmail))
-      }
-    }
-
-    if (codeCommune && email) {
-      checkIfPublished(codeCommune, email.toLowerCase())
-    }
-  }, [codeCommune, email])
-
-  useEffect(() => {
     if (file || error) {
       setIsLoading(false)
     }
@@ -135,7 +126,7 @@ function UploadForm() {
           <AlertPublishedBAL
             isShown={isShown}
             alreadyPublishedBAL={alreadyPublishedBAL}
-            createNewBal={createNewBal}
+            onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
         )}

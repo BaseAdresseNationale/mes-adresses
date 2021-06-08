@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
@@ -21,7 +21,7 @@ function CreateForm({defaultCommune}) {
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
-  const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState()
+  const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState(null)
   const focusRef = useFocus()
 
   const onSelect = useCallback(commune => {
@@ -55,29 +55,20 @@ function CreateForm({defaultCommune}) {
     e.preventDefault()
     setIsLoading(true)
 
-    if (alreadyPublishedBAL) {
+    const isPublished = await isBalAlreadyPublished(commune, email.toLowerCase())
+
+    if (isPublished.length > 0) {
+      setAlreadyPublishedBAL(isPublished[0])
       setIsShown(true)
     } else {
       createNewBal()
     }
-  }, [alreadyPublishedBAL, createNewBal])
+  }, [createNewBal, email, commune])
 
   const onCancel = () => {
     setIsShown(false)
     setIsLoading(false)
   }
-
-  useEffect(() => {
-    const checkIfPublished = async (codeCommune, userEmail) => {
-      if (codeCommune && userEmail) {
-        setAlreadyPublishedBAL(await isBalAlreadyPublished(codeCommune, userEmail))
-      }
-    }
-
-    if (commune && email) {
-      checkIfPublished(commune, email.toLowerCase())
-    }
-  }, [commune, email])
 
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
@@ -85,7 +76,7 @@ function CreateForm({defaultCommune}) {
         <AlertPublishedBAL
           isShown={isShown}
           alreadyPublishedBAL={alreadyPublishedBAL}
-          createNewBal={createNewBal}
+          onConfirm={createNewBal}
           onClose={() => onCancel()}
         />
       )}
