@@ -11,7 +11,7 @@ import {useInput} from '../../hooks/input'
 
 import Uploader from '../../components/uploader'
 
-import AlertPubishedBAL from './alert-published-bal'
+import AlertPublishedBAL from './alert-published-bal'
 
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')
@@ -132,7 +132,7 @@ function UploadForm() {
     <>
       <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
         {alreadyPublishedBAL && (
-          <AlertPubishedBAL
+          <AlertPublishedBAL
             isShown={isShown}
             alreadyPublishedBAL={alreadyPublishedBAL}
             createNewBal={createNewBal}

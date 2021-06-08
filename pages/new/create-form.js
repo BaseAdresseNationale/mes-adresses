@@ -10,7 +10,7 @@ import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
 
 import {CommuneSearchField} from '../../components/commune-search'
-import AlertPubishedBAL from './alert-published-bal'
+import AlertPublishedBAL from './alert-published-bal'
 
 function CreateForm({defaultCommune}) {
   const [isLoading, setIsLoading] = useState(false)
@@ -82,7 +82,7 @@ function CreateForm({defaultCommune}) {
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
       {alreadyPublishedBAL && (
-        <AlertPubishedBAL
+        <AlertPublishedBAL
           isShown={isShown}
           alreadyPublishedBAL={alreadyPublishedBAL}
           createNewBal={createNewBal}
