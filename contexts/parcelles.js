@@ -7,6 +7,14 @@ const ParcellesContext = React.createContext()
 
 let LOAD = false
 
+function getHoveredFeatureId(map, id) {
+  const features = map.querySourceFeatures('cadastre', {
+    sourceLayer: 'parcelles', filter: ['==', ['get', 'id'], id]
+  })
+  const [feature] = features
+  return feature?.id
+}
+
 export function ParcellesContextProvider(props) {
   const {map} = useContext(MapContext)
 
@@ -35,11 +43,12 @@ export function ParcellesContextProvider(props) {
         }
 
         if (hovered) {
-          const featureId = hovered.featureId || map.querySourceFeatures('cadastre', {
-            sourceLayer: 'parcelles', filter: ['==', ['get', 'id'], hovered.id]
-          })[0].id
+          const featureId = hovered.featureId || getHoveredFeatureId(map, hovered.id)
 
-          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: true})
+          if (featureId) {
+            map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: true})
+          }
+
           return {id: hovered.id, featureId}
         }
 
