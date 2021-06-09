@@ -30,9 +30,14 @@ function SelectParcelles() {
               </Badge>
             )
           }) : (
-            <Alert marginBottom={16}>
-              Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au numéro.
-            </Alert>
+            <>
+              <Alert marginBottom={16}>
+                Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au numéro.
+              </Alert>
+              <Alert marginBottom={16}>
+                En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.
+              </Alert>
+            </>
           )}
       </Pane>
     </Pane>
