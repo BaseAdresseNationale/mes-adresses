@@ -1,6 +1,7 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
+import {uniq} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv, isBalAlreadyPublished} from '../../lib/bal-api'
@@ -22,6 +23,13 @@ function getFileExtension(name) {
   return null
 }
 
+function extractCodeCommuneFromCSV(response) {
+  // Get cle_interop and slice it to get the commune's code
+  const codes = response.rows.map(r => r.parsedValues.cle_interop.slice(0, 5))
+
+  return uniq(codes)
+}
+
 function UploadForm() {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
@@ -29,7 +37,6 @@ function UploadForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
-  const [codeCommune, setCodeCommune] = useState(null)
   const focusRef = useFocus()
   const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState(null)
   const [isShown, setIsShown] = useState(false)
@@ -51,8 +58,6 @@ function UploadForm() {
 
     setFile(file)
     setError(null)
-    const validateResponse = await validate(file)
-    setCodeCommune(validateResponse?.rows[0].parsedValues.cle_interop.slice(0, 5))
   }, [])
 
   const createNewBal = useCallback(async () => {
@@ -78,11 +83,11 @@ function UploadForm() {
     e.preventDefault()
     setIsLoading(true)
 
-    if (file) {
-      const validateResponse = await validate(file)
-      // Get cle_interop and slice it to get the commune's code
-      setCodeCommune(validateResponse?.rows[0].parsedValues.cle_interop.slice(0, 5))
-      const isPublished = await isBalAlreadyPublished(codeCommune, email.toLowerCase())
+    const validateResponse = await validate(file)
+
+    if (validateResponse) {
+      const code = extractCodeCommuneFromCSV(validateResponse)
+      const isPublished = await isBalAlreadyPublished(code, email)
 
       if (isPublished.length > 0) {
         setAlreadyPublishedBAL(isPublished[0])
@@ -91,7 +96,7 @@ function UploadForm() {
         createNewBal()
       }
     }
-  }, [createNewBal, file, codeCommune, email])
+  }, [createNewBal, file, email])
 
   useEffect(() => {
     async function upload() {
