@@ -6,7 +6,6 @@ import {Pane, Dialog, Paragraph, Link} from 'evergreen-ui'
 import {getCommune} from '../../lib/geo-api'
 
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
-import RecoverBALAlert from '../../components/recover-bal-alert'
 
 const AlertPublishedBAL = ({isShown, onClose, onConfirm, alreadyPublishedBAL}) => {
   const [commune, setCommune] = useState(null)
@@ -59,11 +58,6 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, alreadyPublishedBAL}) =
           baseLocale={alreadyPublishedBAL}
           onSelect={() => onBalSelect(alreadyPublishedBAL)}
         />
-        {alreadyPublishedBAL?.isOwner && (
-          <Pane paddingTop='1em'>
-            <RecoverBALAlert />
-          </Pane>
-        )}
         <Pane paddingY='3em' textAlign='center'>
           <Paragraph>Je veux <Link cursor='pointer' onClick={onConfirm} ><u>créer une nouvelle Base Adresse Locale</u><br /></Link> pour la commune de <b>{commune?.nom}</b></Paragraph>
         </Pane>
