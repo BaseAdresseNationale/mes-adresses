@@ -87,6 +87,7 @@ export function ParcellesContextProvider(props) {
   // Reset IsLayerLoaded when selection is disabled
   useEffect(() => {
     if (!isParcelleSelectionEnabled) {
+      setSelectedParcelles([])
       setIsLayerLoaded(false)
     }
   }, [isParcelleSelectionEnabled])
