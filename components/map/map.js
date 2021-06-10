@@ -256,6 +256,46 @@ function Map({interactive, commune, voie, toponyme}) {
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
+      {interactive && (
+        <StyleSelector
+          isFormOpen={openForm}
+          style={style}
+          handleStyle={setStyle}
+          showCadastre={showCadastre}
+          handleCadastre={setShowCadastre}
+        />
+      )}
+
+      <Pane
+        position='absolute'
+        className='mapboxgl-ctrl-group mapboxgl-ctrl'
+        top={88}
+        right={16}
+        zIndex={2}
+      >
+
+        {(voie || (toponymes && toponymes.length > 0)) && (
+          <Control
+            icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
+            enabled={showNumeros}
+            enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
+            disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
+            onChange={onShowNumeroChange}
+          />
+        )}
+
+        {token && commune && (
+          <Control
+            icon={MapMarkerIcon}
+            enabled={openForm}
+            isDisabled={isEditing}
+            enabledHint='Annuler'
+            disabledHint='Créer une adresse'
+            onChange={setOpenForm}
+          />
+        )}
+      </Pane>
+
       <Pane display='flex' flex={1}>
         <MapGl
           ref={mapRef}
@@ -275,41 +315,8 @@ function Map({interactive, commune, voie, toponyme}) {
         >
 
           {interactive && (
-            <>
-              <NavControl onViewportChange={setViewport} />
-              <StyleSelector style={style} handleStyle={setStyle} showCadastre={showCadastre} handleCadastre={setShowCadastre} />
-            </>
+            <NavControl onViewportChange={setViewport} />
           )}
-
-          <Pane
-            position='absolute'
-            className='mapboxgl-ctrl-group mapboxgl-ctrl'
-            top={88}
-            right={16}
-            zIndex={2}
-          >
-
-            {(voie || (toponymes && toponymes.length > 0)) && (
-              <Control
-                icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
-                enabled={showNumeros}
-                enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
-                disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
-                onChange={onShowNumeroChange}
-              />
-            )}
-
-            {token && commune && (
-              <Control
-                icon={MapMarkerIcon}
-                enabled={openForm}
-                isDisabled={isEditing}
-                enabledHint='Annuler'
-                disabledHint='Créer une adresse'
-                onChange={setOpenForm}
-              />
-            )}
-          </Pane>
 
           {(voie || toponyme) && !modeId && numeros && numeros.filter(({_id}) => _id !== editingId).map(numero => (
             <NumeroMarker
@@ -346,7 +353,7 @@ function Map({interactive, commune, voie, toponyme}) {
       </Pane>
 
       {commune && openForm && (
-        <Pane padding={20} background='white'>
+        <Pane padding={20} background='white' height={400} overflowY='auto'>
           <AddressEditor
             isToponyme={isToponyme}
             setIsToponyme={setIsToponyme}

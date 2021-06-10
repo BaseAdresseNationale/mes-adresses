@@ -9,7 +9,7 @@ const STYLES = [
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
-function StyleSelector({style, handleStyle, showCadastre, handleCadastre}) {
+function StyleSelector({style, isFormOpen, handleStyle, showCadastre, handleCadastre}) {
   const {isParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [showPopover, setShowPopover] = useState(false)
@@ -34,7 +34,7 @@ function StyleSelector({style, handleStyle, showCadastre, handleCadastre}) {
       position='absolute'
       display='flex'
       left={16}
-      bottom={16}
+      bottom={isFormOpen ? 410 : 16}
       border='none'
       elevation={2}
       zIndex={2}
@@ -68,6 +68,7 @@ function StyleSelector({style, handleStyle, showCadastre, handleCadastre}) {
 
 StyleSelector.propTypes = {
   style: PropTypes.string.isRequired,
+  isFormOpen: PropTypes.bool.isRequired,
   handleStyle: PropTypes.func.isRequired,
   showCadastre: PropTypes.bool.isRequired,
   handleCadastre: PropTypes.func.isRequired
