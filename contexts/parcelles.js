@@ -96,7 +96,7 @@ export function ParcellesContextProvider(props) {
   // or when selection is enabled/disabled
   useEffect(() => {
     highlightParcelles(selectedParcelles)
-  }, [isParcelleSelectionEnabled, selectedParcelles, highlightParcelles])
+  }, [isParcelleSelectionEnabled, isLayerLoaded, selectedParcelles, highlightParcelles])
 
   // Look styledata event
   // to know if parcelle-highlighted layer is loaded or not
@@ -104,11 +104,13 @@ export function ParcellesContextProvider(props) {
     if (map && !LOAD) {
       LOAD = true
       map.on('styledata', handleLoad)
+      map.on('styledataloading', handleLoad)
     }
 
     return () => {
       if (map) {
         map.off('styledata', handleLoad)
+        map.off('styledataloading', handleLoad)
       }
     }
   }, [map, handleLoad])
