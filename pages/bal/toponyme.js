@@ -66,16 +66,10 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
     setIsAdding(true)
   }, [])
 
-  const onEdit = useCallback(async ({numero, toponyme, voie, suffixe, comment, positions}) => {
+  const onEdit = useCallback(async body => {
     try {
-      await editNumero(editingId, {
-        numero,
-        toponyme,
-        voie,
-        suffixe,
-        comment,
-        positions
-      }, token)
+      const {toponyme} = body
+      await editNumero(editingId, body, token)
 
       await reloadNumerosToponyme(updatedToponyme._id || toponyme)
       setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
