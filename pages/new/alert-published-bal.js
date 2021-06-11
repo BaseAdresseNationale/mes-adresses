@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Dialog, Paragraph, Link} from 'evergreen-ui'
+import {Pane, Dialog, Text, Alert} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
@@ -37,30 +37,35 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, alreadyPublishedBAL}) =
       title={alreadyPublishedBAL.isOwner ? (
         'Vous avez déjà publié une Base Adresse Locale pour cette commune'
       ) : (
-        'Une Base Adresse Locale de cette commune a déjà été publiée'
+        'Une Base Adresse Locale a déjà été publiée pour cette commune'
       )}
       width='800px'
-      hasFooter={false}
+      intent='success'
+      confirmLabel='Créer une nouvelle Base Adresse Locale'
+      cancelLabel='Annuler'
       onConfirm={onConfirm}
       onCloseComplete={onClose}
     >
       <Pane>
-        <Paragraph paddingY='2em' textAlign='center'>
-          {alreadyPublishedBAL.isOwner ? (
-            'Souhaitez-vous poursuivre votre travail sur cette Base Adresse Locale ?'
-          ) : (
-            'Souhaitez-vous vraiment en créer une nouvelle ?'
-          )}
-        </Paragraph>
+        <Alert margin='1em'>
+          <Text>
+            Une Base Adresse Locale de la commune de <b>{commune?.nom} </b>a déjà été publiée.
+          </Text>
+          <br />
+          <Text>
+            Vous pouvez reprendre votre travail sur cette Base Adresse Locale en cliquant sur &quot;Gérer mes adresses&quot; ou choisir d’en créer une nouvelle.
+          </Text>
+          <br />
+          <Text>
+            Nous vous <u>recommandons</u> toutefois de continuer l’adressage sur la Base Adresse Locale déjà publiée.
+          </Text>
+        </Alert>
         <BaseLocaleCard
           initialIsOpen
           editable={alreadyPublishedBAL?.isOwner}
           baseLocale={alreadyPublishedBAL}
           onSelect={() => onBalSelect(alreadyPublishedBAL)}
         />
-        <Pane paddingY='3em' textAlign='center'>
-          <Paragraph>Je veux <Link cursor='pointer' onClick={onConfirm} ><u>créer une nouvelle Base Adresse Locale</u><br /></Link> pour la commune de <b>{commune?.nom}</b></Paragraph>
-        </Pane>
       </Pane>
     </Dialog>
   )
