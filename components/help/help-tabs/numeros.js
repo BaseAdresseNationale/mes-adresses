@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu, IconButton, MapMarkerIcon, CommentIcon, ColumnLayoutIcon, AddIcon, MapIcon, MoreIcon, EditIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu, IconButton, MapMarkerIcon, CommentIcon, ColumnLayoutIcon, Badge, AddIcon, MapIcon, MoreIcon, EditIcon, TrashIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import SubTuto from '../tuto/sub-tuto'
@@ -148,6 +148,39 @@ const Numeros = () => {
           </SubTuto>
         </Tuto>
 
+        <Tuto title='Associer des parcelles'>
+          {before}
+
+          <OrderedList margin={8}>
+            <ListItem>
+              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
+            </ListItem>
+            <ListItem>
+              <Pane display='flex' alignItems='center'>
+                Dans le menu qui vient d’apparaître, choisissez
+                <Menu.Item background='tint1' marginLeft={8} icon={EditIcon}>
+                  Modifier
+                </Menu.Item>
+              </Pane>
+            </ListItem>
+            <ListItem>
+              Depuis la carte, cliquez sur la ou les parcelles que vous souhaitez associer au numéro
+            </ListItem>
+            <ListItem>
+              Pour enregistrer les parcelles, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
+            </ListItem>
+          </OrderedList>
+
+          <Paragraph>
+            <Strong>Code couleur des parcelles :</Strong>
+            <Paragraph display='flex'>
+              <Badge margin={4} height='100%' color='green'>parcelle associée</Badge>
+              <Badge margin={4} height='100%' color='yellow'>parcelle pouvant être associée</Badge>
+              <Badge margin={4} height='100%' color='red'>parcelle pouvant être dissociée</Badge>
+            </Paragraph>
+          </Paragraph>
+        </Tuto>
+
         <Tuto title='Ajouter une note ou un commentaire'>
           {before}
 
@@ -167,7 +200,7 @@ const Numeros = () => {
               Remplissez le champ de texte <Strong size={500}>Commentaire</Strong> afin de laisser une note concernant le numéro
             </ListItem>
             <ListItem>
-              Pour enregistrer votre commentaire, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Modifier</Button>
+              Pour enregistrer votre commentaire, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
             </ListItem>
           </OrderedList>
 
