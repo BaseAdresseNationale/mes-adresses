@@ -7,6 +7,7 @@ import {normalizeSort} from '../../lib/normalize'
 
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
+import ParcellesContext from '../../contexts/parcelles'
 
 import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
@@ -16,10 +17,12 @@ import Comment from '../comment'
 
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
+import SelectParcelles from './numero-editor/select-parcelles'
 
 function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
-  const {voie, toponymes} = useContext(BalDataContext)
+  const {voie, toponymes, setIsEditing} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
+  const {selectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [input, onInputChange] = useInput('')
@@ -65,6 +68,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
         toponyme: toponyme?._id,
         suffixe: suffixe.length > 0 ? suffixe : null,
         comment: comment.length > 0 ? comment : null,
+        parcelles: selectedParcelles,
         positions
       }
     }
@@ -76,7 +80,7 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
     }
 
     setIsLoading(false)
-  }, [input, nomVoie, comment, suffixe, markers, isToponyme, selectedVoie, onSubmit, toponyme])
+  }, [input, nomVoie, comment, suffixe, markers, selectedParcelles, isToponyme, selectedVoie, onSubmit, toponyme])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -128,6 +132,16 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
   useEffect(() => {
     setOverrideText(input)
   }, [setOverrideText, input])
+
+  useEffect(() => {
+    setIsEditing(true)
+    setIsParcelleSelectionEnabled(true)
+    return () => {
+      disableMarkers()
+      setIsEditing(false)
+      setIsParcelleSelectionEnabled(false)
+    }
+  }, [setIsEditing, disableMarkers, setIsParcelleSelectionEnabled])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
@@ -199,6 +213,8 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
       />
 
       <PositionEditor />
+
+      <SelectParcelles />
 
       {!isToponyme && (
         <Comment input={comment} onChange={onCommentChange} />

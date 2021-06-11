@@ -24,15 +24,17 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
 
-    if (voie || initialToponyme !== toponyme) {
-      router.push(
-        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${initialToponyme.commune}&idToponyme=${initialToponyme._id}`,
-        `/bal/${baseLocale._id}/communes/${initialToponyme.commune}/toponymes/${initialToponyme._id}`
-      )
-    }
+    if (!isEditing) {
+      if (voie || initialToponyme !== toponyme) {
+        router.push(
+          `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${initialToponyme.commune}&idToponyme=${initialToponyme._id}`,
+          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}/toponymes/${initialToponyme._id}`
+        )
+      }
 
-    if (!isEditing && !voie && initialToponyme._id === toponyme?._id) {
-      setEditingId(toponyme._id)
+      if (!voie && initialToponyme._id === toponyme?._id) {
+        setEditingId(toponyme._id)
+      }
     }
   }, [isEditing, setEditingId, voie, baseLocale._id, initialToponyme, router, toponyme])
 

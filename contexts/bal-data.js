@@ -1,7 +1,7 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 
-import {getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme} from '../lib/bal-api'
+import {getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme} from '../lib/bal-api'
 
 import {getPublishedBasesLocales} from '../lib/adresse-backend'
 
@@ -12,6 +12,7 @@ const BalDataContext = React.createContext()
 export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, idToponyme, ...props}) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState()
+  const [parcelles, setParcelles] = useState([])
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
@@ -21,6 +22,15 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const [baseLocale, setBaseLocal] = useState({})
 
   const {token} = useContext(TokenContext)
+
+  const reloadParcelles = useCallback(async () => {
+    if (balId && codeCommune) {
+      const parcelles = await getParcelles(balId, codeCommune)
+      setParcelles(parcelles)
+    } else {
+      setParcelles([])
+    }
+  }, [balId, codeCommune])
 
   const reloadGeojson = useCallback(async () => {
     if (balId && codeCommune) {
@@ -105,8 +115,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
 
   useEffect(() => {
     reloadGeojson()
+    reloadParcelles()
     setEditingId(null)
-  }, [reloadGeojson, voies, numeros, setEditingId])
+  }, [reloadGeojson, reloadParcelles, voies, numeros, setEditingId])
 
   useEffect(() => {
     setEditingId(null)
@@ -124,6 +135,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
         setIsEditing,
         editingId,
         editingItem,
+        parcelles,
         geojson,
         baseLocale,
         voie,
