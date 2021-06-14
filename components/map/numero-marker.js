@@ -11,15 +11,13 @@ import {removeNumero} from '../../lib/bal-api'
 import useError from '../../hooks/error'
 
 import TokenContext from '../../contexts/token'
-import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
 function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {markers} = useContext(MarkersContext)
-  const {editingId, setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
@@ -84,45 +82,39 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     return null
   }
 
-  if (markers.length > 0 && editingId === numero._id) {
-    return null
-  }
-
   const {coordinates} = position.point
 
   return (
-    <>
-      <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-        {numero.positions.find(position => position.type === 'inconnue') ? (
-          <Tooltip content='Le type d’une position est inconnu' position={Position.RIGHT}>
-            <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-              <Text color='white' paddingLeft={8} paddingRight={5}>
-                {numero.numeroComplet}
-              </Text>
-              <WarningSignIcon color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
-            </Pane>
-          </Tooltip>
-        ) : (
+    <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
+      {numero.positions.find(position => position.type === 'inconnue') ? (
+        <Tooltip content='Le type d’une position est inconnu' position={Position.RIGHT}>
           <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-            <Text color='white' paddingLeft={8} paddingRight={10}>
+            <Text color='white' paddingLeft={8} paddingRight={5}>
               {numero.numeroComplet}
             </Text>
+            <WarningSignIcon color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
           </Pane>
-        )}
+        </Tooltip>
+      ) : (
+        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+          <Text color='white' paddingLeft={8} paddingRight={10}>
+            {numero.numeroComplet}
+          </Text>
+        </Pane>
+      )}
 
-        {showContextMenu && (
-          <Pane background='tint1' position='absolute' margin={10}>
-            <Menu>
-              <Menu.Group>
-                <Menu.Item icon={TrashIcon} intent='danger' onSelect={removeAddress}>
-                  Supprimer…
-                </Menu.Item>
-              </Menu.Group>
-            </Menu>
-          </Pane>
-        )}
-      </Marker>
-    </>
+      {showContextMenu && (
+        <Pane background='tint1' position='absolute' margin={10}>
+          <Menu>
+            <Menu.Group>
+              <Menu.Item icon={TrashIcon} intent='danger' onSelect={removeAddress}>
+                Supprimer…
+              </Menu.Item>
+            </Menu.Group>
+          </Menu>
+        </Pane>
+      )}
+    </Marker>
   )
 }
 

@@ -9,7 +9,11 @@ const defaultViewport = {
   transitionDuration: 0
 }
 
+const defaultStyle = 'vector'
+
 export function MapContextProvider(props) {
+  const [map, setMap] = useState()
+  const [style, setStyle] = useState(defaultStyle)
   const [viewport, setViewport] = useState(defaultViewport)
 
   useEffect(() => {
@@ -20,7 +24,15 @@ export function MapContextProvider(props) {
 
   return (
     <MapContext.Provider
-      value={{viewport, setViewport}}
+      value={{
+        map,
+        setMap,
+        style,
+        setStyle,
+        defaultStyle,
+        viewport,
+        setViewport
+      }}
       {...props}
     />
   )

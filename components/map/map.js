@@ -3,18 +3,19 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import {Pane, SelectMenu, Button, Position, MapIcon, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
+import {Pane, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
 import MapContext from '../../contexts/map'
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
+import ParcellesContext from '../../contexts/parcelles'
 
 import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
 
 import AddressEditor from '../bal/address-editor'
 
-import {vector, ortho, vectorCadastre} from './styles'
+import {vector, ortho} from './styles'
 
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
@@ -22,10 +23,12 @@ import Control from './control'
 import NumeroMarker from './numero-marker'
 import ToponymeMarker from './toponyme-marker'
 import Draw from './draw'
+import StyleSelector from './style-selector'
 
 import useBounds from './hooks/bounds'
 import useSources from './hooks/sources'
 import useLayers from './hooks/layers'
+import useHovered from './hooks/hovered'
 
 const settings = {
   maxZoom: 19
@@ -43,12 +46,6 @@ function getInteractionProps(enabled) {
   }
 }
 
-const mapStyles = [
-  {label: 'Plan OpenMapTiles', value: 'vector'},
-  {label: 'Photographie aérienne', value: 'ortho'},
-  {label: 'Plan cadastral', value: 'vector-cadastre'}
-]
-
 function getBaseStyle(style) {
   switch (style) {
     case 'ortho':
@@ -56,9 +53,6 @@ function getBaseStyle(style) {
 
     case 'vector':
       return vector
-
-    case 'vector-cadastre':
-      return vectorCadastre
 
     default:
       return vector
@@ -78,19 +72,17 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
+function Map({interactive, commune, voie, toponyme}) {
   const router = useRouter()
-  const {viewport, setViewport} = useContext(MapContext)
+  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport} = useContext(MapContext)
+  const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
-  const [map, setMap] = useState(null)
   const [showNumeros, setShowNumeros] = useState(true)
+  const [showCadastre, setShowCadastre] = useState(false)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
-  const [hovered, setHovered] = useState(null)
-  const [style, setStyle] = useState(defaultStyle)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
-  const [showPopover, setShowPopover] = useState(false)
   const [isToponyme, setIsToponyme] = useState(false)
 
   const {
@@ -107,21 +99,22 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
 
+  const [hovered, setHovered, handleHover] = useHovered()
   const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
-  const layers = useLayers(voie, sources, style)
+  const layers = useLayers(voie, sources, showCadastre, style)
 
   const mapRef = useCallback(ref => {
     if (ref) {
       setMap(ref.getMap())
     }
-  }, [])
+  }, [setMap])
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
 
-    if (editingId) {
-      return null
+    if (isParcelleSelectionEnabled) {
+      return ['parcelles-fill']
     }
 
     if (sources.find(({name}) => name === 'voies')) {
@@ -137,7 +130,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
     }
 
     return layers
-  }, [editingId, sources, voie])
+  }, [isParcelleSelectionEnabled, sources, voie])
 
   const onShowNumeroChange = useCallback(value => {
     setShowNumeros(value)
@@ -145,6 +138,10 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
 
   const onClick = useCallback(event => {
     const feature = event.features && event.features[0]
+
+    if (feature && feature.source === 'cadastre') {
+      handleParcelle(feature.properties.id)
+    }
 
     if (feature && feature.properties.idVoie && !isEditing) {
       const {idVoie} = feature.properties
@@ -159,16 +156,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
     }
 
     setShowContextMenu(null)
-  }, [router, baseLocale, commune, setEditingId, isEditing, voie])
-
-  const onHover = useCallback(event => {
-    const feature = event.features && event.features[0]
-
-    if (feature) {
-      const {idVoie} = feature.properties
-      setHovered(idVoie)
-    }
-  }, [])
+  }, [router, baseLocale, commune, setEditingId, isEditing, voie, handleParcelle])
 
   const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
     if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
@@ -212,6 +200,14 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
       `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${editedToponyme._id}`
     )
   }, [baseLocale._id, commune, token, router])
+
+  const handleCursor = useCallback(({isHovering}) => {
+    if (modeId === 'drawLineString') {
+      return 'crosshair'
+    }
+
+    return isHovering ? 'pointer' : 'default'
+  }, [modeId])
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -260,6 +256,46 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
+      {interactive && (
+        <StyleSelector
+          isFormOpen={openForm}
+          style={style}
+          handleStyle={setStyle}
+          showCadastre={showCadastre}
+          handleCadastre={setShowCadastre}
+        />
+      )}
+
+      <Pane
+        position='absolute'
+        className='mapboxgl-ctrl-group mapboxgl-ctrl'
+        top={88}
+        right={16}
+        zIndex={2}
+      >
+
+        {(voie || (toponymes && toponymes.length > 0)) && (
+          <Control
+            icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
+            enabled={showNumeros}
+            enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
+            disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
+            onChange={onShowNumeroChange}
+          />
+        )}
+
+        {token && commune && (
+          <Control
+            icon={MapMarkerIcon}
+            enabled={openForm}
+            isDisabled={isEditing}
+            enabledHint='Annuler'
+            disabledHint='Créer une adresse'
+            onChange={setOpenForm}
+          />
+        )}
+      </Pane>
+
       <Pane display='flex' flex={1}>
         <MapGl
           ref={mapRef}
@@ -271,73 +307,18 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
           {...settings}
           {...getInteractionProps(interactive)}
           interactiveLayerIds={interactiveLayerIds}
-          getCursor={() => modeId === 'drawLineString' ? 'crosshair' : 'default'}
+          getCursor={handleCursor}
           onClick={onClick}
-          onHover={onHover}
+          onHover={handleHover}
           onMouseLeave={() => setHovered(null)}
           onViewportChange={setViewport}
         >
 
           {interactive && (
-            <>
-              <NavControl onViewportChange={setViewport} />
-              <Pane
-                position='absolute'
-                display='flex'
-                left={16}
-                bottom={16}
-                border='none'
-                elevation={2}
-                zIndex={2}
-                cursor='pointer'
-                onClick={() => setShowPopover(!showPopover)}
-              >
-                <SelectMenu
-                  position={Position.TOP_LEFT}
-                  title='Choix du fond de carte'
-                  hasFilter={false}
-                  height={150}
-                  options={mapStyles}
-                  selected={style}
-                  onSelect={style => setStyle(style.value)}
-                >
-                  <Button><MapIcon /></Button>
-                </SelectMenu>
-              </Pane>
-            </>
+            <NavControl onViewportChange={setViewport} />
           )}
 
-          <Pane
-            position='absolute'
-            className='mapboxgl-ctrl-group mapboxgl-ctrl'
-            top={88}
-            right={16}
-            zIndex={2}
-          >
-
-            {(voie || (toponymes && toponymes.length > 0)) && (
-              <Control
-                icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
-                enabled={showNumeros}
-                enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
-                disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
-                onChange={onShowNumeroChange}
-              />
-            )}
-
-            {token && commune && (
-              <Control
-                icon={MapMarkerIcon}
-                enabled={openForm}
-                isDisabled={isEditing}
-                enabledHint='Annuler'
-                disabledHint='Créer une adresse'
-                onChange={setOpenForm}
-              />
-            )}
-          </Pane>
-
-          {(voie || toponyme) && !modeId && numeros && numeros.map(numero => (
+          {(voie || toponyme) && !modeId && numeros && numeros.filter(({_id}) => _id !== editingId).map(numero => (
             <NumeroMarker
               key={numero._id}
               numero={toponyme ? {...numero, numeroComplet: `${numero.numero}${numero.suffixe || ''}`} : numero}
@@ -372,7 +353,7 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
       </Pane>
 
       {commune && openForm && (
-        <Pane padding={20} background='white'>
+        <Pane padding={20} background='white' height={400} overflowY='auto'>
           <AddressEditor
             isToponyme={isToponyme}
             setIsToponyme={setIsToponyme}
@@ -387,11 +368,6 @@ function Map({interactive, style: defaultStyle, commune, voie, toponyme}) {
 
 Map.propTypes = {
   interactive: PropTypes.bool,
-  style: PropTypes.oneOf([
-    'ortho',
-    'vector',
-    'vector-cadastre'
-  ]),
   commune: PropTypes.object,
   voie: PropTypes.object,
   toponyme: PropTypes.object
@@ -399,7 +375,6 @@ Map.propTypes = {
 
 Map.defaultProps = {
   interactive: true,
-  style: 'vector',
   commune: null,
   voie: null,
   toponyme: null

@@ -1,5 +1,5 @@
 import React from 'react'
-import {OrderedList, Pane, ListItem, Button, AddIcon, MapMarkerIcon, Menu, MoreIcon, Paragraph, Tab, Heading, Text, TrashIcon, Select} from 'evergreen-ui'
+import {OrderedList, Pane, ListItem, Button, AddIcon, MapMarkerIcon, Menu, MoreIcon, Paragraph, Tab, Heading, Badge, Strong, EditIcon, Text, TrashIcon, Select} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
@@ -91,6 +91,39 @@ const Toponymes = () => {
             </ListItem>
             <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
           </OrderedList>
+        </Tuto>
+
+        <Tuto title='Associer des parcelles'>
+          {before}
+
+          <OrderedList margin={8}>
+            <ListItem>
+              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du toponyme
+            </ListItem>
+            <ListItem>
+              <Pane display='flex' alignItems='center'>
+                Dans le menu qui vient d’apparaître, choisissez
+                <Menu.Item background='tint1' marginLeft={8} icon={EditIcon}>
+                  Modifier
+                </Menu.Item>
+              </Pane>
+            </ListItem>
+            <ListItem>
+              Depuis la carte, cliquez sur la ou les parcelles que vous souhaitez associer au toponyme
+            </ListItem>
+            <ListItem>
+              Pour enregistrer les parcelles, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
+            </ListItem>
+          </OrderedList>
+
+          <Paragraph>
+            <Strong>Code couleur des parcelles :</Strong>
+            <Paragraph display='flex'>
+              <Badge margin={4} height='100%' color='green'>parcelle associée</Badge>
+              <Badge margin={4} height='100%' color='yellow'>parcelle pouvant être associée</Badge>
+              <Badge margin={4} height='100%' color='red'>parcelle pouvant être dissociée</Badge>
+            </Paragraph>
+          </Paragraph>
         </Tuto>
 
         <Problems>

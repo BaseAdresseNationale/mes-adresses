@@ -2,21 +2,26 @@ import React, {useState, useMemo, useContext, useCallback, useEffect} from 'reac
 import PropTypes from 'prop-types'
 import {Pane, Button, Alert, TextInputField} from 'evergreen-ui'
 
+import BalDataContext from '../../contexts/bal-data'
 import MarkersContext from '../../contexts/markers'
+import ParcellesContext from '../../contexts/parcelles'
 
 import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
 import PositionEditor from './position-editor'
+import SelectParcelles from './numero-editor/select-parcelles'
 
 function ToponymeEditor({initialValue, onSubmit, onCancel}) {
+  const {setIsEditing} = useContext(BalDataContext)
+  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
+  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
+
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
+  const [nom, onNomChange, resetNom] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
   const setRef = useFocus()
-
-  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -25,7 +30,8 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
     const body = {
       nom,
-      positions: []
+      positions: [],
+      parcelles: selectedParcelles
     }
 
     if (markers) {
@@ -44,12 +50,11 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
     try {
       await onSubmit(body)
-      disableMarkers()
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [nom, markers, onSubmit, disableMarkers])
+  }, [nom, markers, onSubmit, selectedParcelles])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -72,6 +77,24 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
       onCancel()
     }
   }, [onCancel])
+
+  useEffect(() => {
+    const {nom, parcelles} = initialValue || {}
+    resetNom(nom || '')
+    setSelectedParcelles(parcelles || [])
+    setError(null)
+  }, [resetNom, setError, setSelectedParcelles, initialValue])
+
+  useEffect(() => {
+    setIsEditing(true)
+    setIsParcelleSelectionEnabled(true)
+
+    return () => {
+      setIsEditing(false)
+      setIsParcelleSelectionEnabled(false)
+      disableMarkers()
+    }
+  }, [setIsEditing, disableMarkers, setIsParcelleSelectionEnabled])
 
   useEffect(() => {
     if (initialValue) {
@@ -117,6 +140,8 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
         </Alert>
       )}
 
+      <SelectParcelles />
+
       {error && (
         <Alert marginBottom={16} intent='danger' title='Erreur'>
           {error}
@@ -146,7 +171,7 @@ ToponymeEditor.propTypes = {
   initialValue: PropTypes.shape({
     nom: PropTypes.string,
     typeNumerotation: PropTypes.string,
-    trace: PropTypes.object,
+    parcelles: PropTypes.array.isRequired,
     positions: PropTypes.array.isRequired
   }),
   onSubmit: PropTypes.func.isRequired,

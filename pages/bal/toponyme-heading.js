@@ -22,10 +22,11 @@ const ToponymeHeading = ({defaultToponyme}) => {
     }
   }, [setEditingId, isEditing, toponyme._id])
 
-  const onEditToponyme = useCallback(async ({nom, positions}) => {
+  const onEditToponyme = useCallback(async ({nom, positions, parcelles}) => {
     const editedToponyme = await editToponyme(toponyme._id, {
       nom,
-      positions
+      positions,
+      parcelles
     }, token)
 
     setEditingId(null)
