@@ -212,9 +212,9 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
         onChange={e => setIsToponyme(e.target.checked)}
       />
 
-      <PositionEditor />
+      <PositionEditor isToponyme={isToponyme} />
 
-      <SelectParcelles />
+      <SelectParcelles isToponyme={isToponyme} />
 
       {!isToponyme && (
         <Comment input={comment} onChange={onCommentChange} />

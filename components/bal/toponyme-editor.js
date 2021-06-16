@@ -131,7 +131,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
       <PositionEditor isToponyme />
 
-      <SelectParcelles />
+      <SelectParcelles isToponyme />
 
       {error && (
         <Alert marginBottom={16} intent='danger' title='Erreur'>

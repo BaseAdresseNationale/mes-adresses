@@ -1,4 +1,5 @@
 import React, {useContext} from 'react'
+import PropTypes from 'prop-types'
 import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Paragraph} from 'evergreen-ui'
 
 import ParcellesContext from '../../../contexts/parcelles'
@@ -6,15 +7,16 @@ import ParcellesContext from '../../../contexts/parcelles'
 import InputLabel from '../../input-label'
 import MapContext from '../../../contexts/map'
 
-function SelectParcelles() {
+function SelectParcelles({isToponyme}) {
   const {showCadastre, setShowCadastre} = useContext(MapContext)
   const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
+  const addressType = isToponyme ? 'toponyme' : 'numéro'
 
   return (
     <Pane display='flex' flexDirection='column' marginY='1em'>
       <InputLabel
         title='Parcelles cadastre'
-        help='Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au numéro. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.'
+        help={`Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au ${addressType}. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.`}
       />
       <Pane>
         {selectedParcelles.length > 0 ?
@@ -37,7 +39,7 @@ function SelectParcelles() {
           }) : (
             <Alert marginBottom={16}>
               <Paragraph>
-                Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au numéro.
+                Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au {addressType}.
               </Paragraph>
 
               {!showCadastre && (
@@ -48,6 +50,14 @@ function SelectParcelles() {
       </Pane>
     </Pane>
   )
+}
+
+SelectParcelles.defaultProps = {
+  isToponyme: false
+}
+
+SelectParcelles.propTypes = {
+  isToponyme: PropTypes.bool
 }
 
 export default SelectParcelles
