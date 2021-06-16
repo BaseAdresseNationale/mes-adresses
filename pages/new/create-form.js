@@ -55,7 +55,7 @@ function CreateForm({defaultCommune}) {
     e.preventDefault()
     setIsLoading(true)
 
-    const isPublished = await isBalAlreadyPublished([commune], email)
+    const isPublished = await isBalAlreadyPublished(commune, email)
 
     if (isPublished.length > 0) {
       setAlreadyPublishedBAL(isPublished[0])
