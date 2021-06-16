@@ -31,6 +31,7 @@ const DrawEditor = ({trace}) => {
       </Heading>
 
       <Alert
+        marginTop={8}
         intent='none'
         title='Utilisez la carte pour dessiner le tracer de la voie'
       >

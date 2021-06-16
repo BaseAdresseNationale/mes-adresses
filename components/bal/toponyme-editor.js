@@ -131,15 +131,6 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
       <PositionEditor isToponyme />
 
-      {alert && (
-        <Alert marginBottom={16}>
-          {initialValue ?
-            'Déplacer le marqueur sur la carte pour déplacer le toponyme.' :
-            'Déplacer le marqueur sur la carte pour placer le toponyme.'
-          }
-        </Alert>
-      )}
-
       <SelectParcelles />
 
       {error && (

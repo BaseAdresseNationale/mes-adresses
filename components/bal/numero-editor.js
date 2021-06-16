@@ -214,17 +214,6 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         <PositionEditor />
       )}
 
-      {alert && (
-        <Alert marginBottom={16}>
-          {initialValue && markers.length > 1 ?
-            'Déplacer les marqueurs sur la carte pour modifier les positions' :
-            initialValue && markers.length === 1 ?
-              'Déplacer le marqueur sur la carte pour déplacer le numéro.' :
-              'Déplacer le marqueur sur la carte pour placer le numéro.'
-          }
-        </Alert>
-      )}
-
       <SelectParcelles />
 
       <Comment input={comment} onChange={onCommentChange} />
