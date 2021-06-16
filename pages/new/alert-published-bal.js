@@ -12,12 +12,14 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, alreadyPublishedBAL}) =
 
   useEffect(() => {
     const fetchCommune = async code => {
-      if (alreadyPublishedBAL.communes.length > 0) {
-        setCommune(await getCommune(code))
-      }
+      setCommune(await getCommune(code))
     }
 
-    fetchCommune(alreadyPublishedBAL.communes[0])
+    if (alreadyPublishedBAL.length > 1) {
+      fetchCommune(alreadyPublishedBAL[0].communes[0])
+    } else {
+      fetchCommune(alreadyPublishedBAL.communes[0])
+    }
   }, [alreadyPublishedBAL])
 
   const onBalSelect = bal => {
@@ -32,42 +34,46 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, alreadyPublishedBAL}) =
   }
 
   return (
-    <Dialog
-      isShown={isShown}
-      title={alreadyPublishedBAL.isOwner ? (
-        'Vous avez déjà publié une Base Adresse Locale pour cette commune'
-      ) : (
-        'Une Base Adresse Locale a déjà été publiée pour cette commune'
-      )}
-      width='800px'
-      intent='success'
-      confirmLabel='Créer une nouvelle Base Adresse Locale'
-      cancelLabel='Annuler'
-      onConfirm={onConfirm}
-      onCloseComplete={onClose}
-    >
-      <Pane>
-        <Alert margin='1em'>
-          <Text>
-            Une Base Adresse Locale de la commune de <b>{commune?.nom} </b>a déjà été publiée.
-          </Text>
-          <br />
-          <Text>
-            Vous pouvez reprendre votre travail sur cette Base Adresse Locale en cliquant sur &quot;Gérer mes adresses&quot; ou choisir d’en créer une nouvelle.
-          </Text>
-          <br />
-          <Text>
-            Nous vous <u>recommandons</u> toutefois de continuer l’adressage sur la Base Adresse Locale déjà publiée.
-          </Text>
-        </Alert>
-        <BaseLocaleCard
-          initialIsOpen
-          editable={alreadyPublishedBAL?.isOwner}
-          baseLocale={alreadyPublishedBAL}
-          onSelect={() => onBalSelect(alreadyPublishedBAL)}
-        />
-      </Pane>
-    </Dialog>
+    <>
+      <Dialog
+        isShown={isShown}
+        title={alreadyPublishedBAL.isOwner ? (
+          'Vous avez déjà publié une Base Adresse Locale pour cette commune'
+        ) : (
+          'Une Base Adresse Locale a déjà été publiée pour cette commune'
+        )}
+        width='800px'
+        intent='success'
+        confirmLabel='Créer une nouvelle Base Adresse Locale'
+        cancelLabel='Annuler'
+        onConfirm={onConfirm}
+        onCloseComplete={onClose}
+      >
+        <Pane>
+          <Alert margin='1em'>
+            <Text>
+              Une Base Adresse Locale de la commune de <b>{commune?.nom} </b>a déjà été publiée.
+            </Text>
+            <br />
+            <Text>
+              Vous pouvez reprendre votre travail sur cette Base Adresse Locale en cliquant sur &quot;Gérer mes adresses&quot; ou choisir d’en créer une nouvelle.
+            </Text>
+            <br />
+            <Text>
+              Nous vous <u>recommandons</u> toutefois de continuer l’adressage sur la Base Adresse Locale déjà publiée.
+            </Text>
+          </Alert>
+          {!alreadyPublishedBAL.length && (
+            <BaseLocaleCard
+              initialIsOpen
+              editable={alreadyPublishedBAL?.isOwner}
+              baseLocale={alreadyPublishedBAL}
+              onSelect={() => onBalSelect(alreadyPublishedBAL)}
+            />
+          )}
+        </Pane>
+      </Dialog>
+    </>
   )
 }
 
