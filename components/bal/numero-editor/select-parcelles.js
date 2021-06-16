@@ -1,10 +1,13 @@
 import React, {useContext} from 'react'
-import {Pane, Label, Badge, Alert, TrashIcon} from 'evergreen-ui'
+import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Paragraph} from 'evergreen-ui'
 
 import ParcellesContext from '../../../contexts/parcelles'
 
 import InputLabel from '../../input-label'
+import MapContext from '../../../contexts/map'
+
 function SelectParcelles() {
+  const {showCadastre, setShowCadastre} = useContext(MapContext)
   const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
 
   return (
@@ -32,14 +35,15 @@ function SelectParcelles() {
               </Badge>
             )
           }) : (
-            <>
-              <Alert marginBottom={16}>
+            <Alert marginBottom={16}>
+              <Paragraph>
                 Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au numéro.
-              </Alert>
-              <Alert marginBottom={16}>
-                En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.
-              </Alert>
-            </>
+              </Paragraph>
+
+              {!showCadastre && (
+                <Button marginTop={8} iconAfter={ControlIcon} onClick={() => setShowCadastre(true)}>Afficher le cadastre</Button>
+              )}
+            </Alert>
           )}
       </Pane>
     </Pane>
