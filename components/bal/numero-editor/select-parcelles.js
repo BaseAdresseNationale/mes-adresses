@@ -3,14 +3,16 @@ import {Pane, Label, Badge, Alert, TrashIcon} from 'evergreen-ui'
 
 import ParcellesContext from '../../../contexts/parcelles'
 
+import InputLabel from '../../input-label'
 function SelectParcelles() {
   const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
 
   return (
     <Pane display='flex' flexDirection='column' marginY='1em'>
-      <Label marginBottom={4} display='block'>
-        Parcelles cadastre
-      </Label>
+      <InputLabel
+        title='Parcelles cadastre'
+        help='Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au numéro. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.'
+      />
       <Pane>
         {selectedParcelles.length > 0 ?
           selectedParcelles.map(parcelle => {
