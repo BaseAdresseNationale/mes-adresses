@@ -86,14 +86,27 @@ function UploadForm() {
     const validateResponse = await validate(file)
 
     if (validateResponse) {
-      const code = extractCodeCommuneFromCSV(validateResponse)
-      const isPublished = await isBalAlreadyPublished(code, email)
+      const codes = extractCodeCommuneFromCSV(validateResponse)
 
-      if (isPublished.length > 0) {
-        setAlreadyPublishedBAL(isPublished[0])
-        setIsShown(true)
+      if (codes.length > 1) {
+        const publishedBALs = []
+
+        Promise.all(codes.map(code => {
+          return isBalAlreadyPublished(code, email)
+        })).then(data => {
+          data.forEach(d => publishedBALs.push(d[0]))
+          setAlreadyPublishedBAL(publishedBALs)
+          setIsShown(true)
+        })
       } else {
-        createNewBal()
+        const isPublished = await isBalAlreadyPublished(codes, email)
+
+        if (isPublished.length > 0) {
+          setAlreadyPublishedBAL(isPublished[0])
+          setIsShown(true)
+        } else {
+          createNewBal()
+        }
       }
     }
   }, [createNewBal, file, email])
