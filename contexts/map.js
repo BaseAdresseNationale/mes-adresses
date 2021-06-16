@@ -15,6 +15,7 @@ export function MapContextProvider(props) {
   const [map, setMap] = useState()
   const [style, setStyle] = useState(defaultStyle)
   const [viewport, setViewport] = useState(defaultViewport)
+  const [showCadastre, setShowCadastre] = useState(false)
 
   useEffect(() => {
     if (!viewport) {
@@ -25,13 +26,10 @@ export function MapContextProvider(props) {
   return (
     <MapContext.Provider
       value={{
-        map,
-        setMap,
-        style,
-        setStyle,
-        defaultStyle,
-        viewport,
-        setViewport
+        map, setMap,
+        style, setStyle, defaultStyle,
+        viewport, setViewport,
+        showCadastre, setShowCadastre
       }}
       {...props}
     />
