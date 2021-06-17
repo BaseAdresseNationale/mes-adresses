@@ -112,7 +112,7 @@ function Map({interactive, commune, voie, toponyme}) {
   const interactiveLayerIds = useMemo(() => {
     const layers = []
 
-    if (isParcelleSelectionEnabled) {
+    if (isParcelleSelectionEnabled && showCadastre) {
       return ['parcelles-fill']
     }
 
@@ -129,7 +129,7 @@ function Map({interactive, commune, voie, toponyme}) {
     }
 
     return layers
-  }, [isParcelleSelectionEnabled, sources, voie])
+  }, [isParcelleSelectionEnabled, sources, voie, showCadastre])
 
   const onShowNumeroChange = useCallback(value => {
     setShowNumeros(value)
