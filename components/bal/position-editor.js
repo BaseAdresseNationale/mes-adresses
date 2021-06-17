@@ -5,6 +5,7 @@ import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, Ic
 import MarkersContext from '../../contexts/markers'
 
 import {positionsTypesList} from '../../lib/positions-types-list'
+import InputLabel from '../input-label'
 
 function PositionEditor({isToponyme}) {
   const {markers, addMarker, updateMarker, removeMarker} = useContext(MarkersContext)
@@ -24,6 +25,16 @@ function PositionEditor({isToponyme}) {
 
   return (
     <>
+      <InputLabel
+        title='Positions'
+        help={markers.length > 1 ?
+          'Déplacer les marqueurs sur la carte pour modifier les positions' :
+          markers.length === 1 ?
+            `Déplacer le marqueur sur la carte pour déplacer le ${isToponyme ? 'toponyme' : 'numéro'}.` :
+            `Déplacer le marqueur sur la carte pour placer le ${isToponyme ? 'toponyme' : 'numéro'}.`
+        }
+      />
+
       {markers.length > 0 ? (
         <Pane display='grid' gridTemplateColumns='2fr .5fr 1fr 1fr .5fr'>
           <Strong fontWeight={400}>Type</Strong>
