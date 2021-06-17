@@ -1,6 +1,6 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Paragraph} from 'evergreen-ui'
+import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Text} from 'evergreen-ui'
 
 import ParcellesContext from '../../../contexts/parcelles'
 
@@ -37,17 +37,24 @@ function SelectParcelles({isToponyme}) {
               </Badge>
             )
           }) : (
-            <Alert marginBottom={16}>
-              <Paragraph>
+            <Alert marginTop={8}>
+              <Text>
                 Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au {addressType}.
-              </Paragraph>
-
-              {!showCadastre && (
-                <Button marginTop={8} iconAfter={ControlIcon} onClick={() => setShowCadastre(true)}>Afficher le cadastre</Button>
-              )}
+              </Text>
             </Alert>
           )}
       </Pane>
+
+      <Button
+        type='button'
+        display='flex'
+        justifyContent='center'
+        marginTop={8}
+        iconAfter={ControlIcon}
+        onClick={() => setShowCadastre(!showCadastre)}
+      >
+        {showCadastre ? 'Masquer' : 'Afficher'} le cadastre
+      </Button>
     </Pane>
   )
 }
