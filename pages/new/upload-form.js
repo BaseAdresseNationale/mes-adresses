@@ -4,7 +4,7 @@ import {validate} from '@etalab/bal'
 import {uniq, uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv, isBalExists} from '../../lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, foundBALbyCommuneAndEmail} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
 
 import useFocus from '../../hooks/focus'
@@ -90,7 +90,7 @@ function UploadForm() {
       const existingBALs = []
 
       await Promise.all(codes.map(async code => {
-        const existing = await isBalExists(code, email)
+        const existing = await foundBALbyCommuneAndEmail(code, email)
         if (existing.length > 0) {
           existingBALs.push(...existing)
         }
