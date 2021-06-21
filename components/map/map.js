@@ -74,11 +74,10 @@ function generateNewStyle(style, sources, layers) {
 
 function Map({interactive, commune, voie, toponyme}) {
   const router = useRouter()
-  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport} = useContext(MapContext)
+  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, showCadastre, setShowCadastre} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [showNumeros, setShowNumeros] = useState(true)
-  const [showCadastre, setShowCadastre] = useState(false)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
@@ -113,7 +112,7 @@ function Map({interactive, commune, voie, toponyme}) {
   const interactiveLayerIds = useMemo(() => {
     const layers = []
 
-    if (isParcelleSelectionEnabled) {
+    if (isParcelleSelectionEnabled && showCadastre) {
       return ['parcelles-fill']
     }
 
@@ -130,7 +129,7 @@ function Map({interactive, commune, voie, toponyme}) {
     }
 
     return layers
-  }, [isParcelleSelectionEnabled, sources, voie])
+  }, [isParcelleSelectionEnabled, sources, voie, showCadastre])
 
   const onShowNumeroChange = useCallback(value => {
     setShowNumeros(value)

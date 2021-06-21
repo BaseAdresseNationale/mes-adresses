@@ -1,16 +1,23 @@
 import React, {useContext} from 'react'
-import {Pane, Label, Badge, Alert, TrashIcon} from 'evergreen-ui'
+import PropTypes from 'prop-types'
+import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Text} from 'evergreen-ui'
 
 import ParcellesContext from '../../../contexts/parcelles'
 
-function SelectParcelles() {
+import InputLabel from '../../input-label'
+import MapContext from '../../../contexts/map'
+
+function SelectParcelles({isToponyme}) {
+  const {showCadastre, setShowCadastre} = useContext(MapContext)
   const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
+  const addressType = isToponyme ? 'toponyme' : 'numéro'
 
   return (
     <Pane display='flex' flexDirection='column' marginY='1em'>
-      <Label marginBottom={4} display='block'>
-        Parcelles cadastre
-      </Label>
+      <InputLabel
+        title='Parcelles cadastre'
+        help={`Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au ${addressType}. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.`}
+      />
       <Pane>
         {selectedParcelles.length > 0 ?
           selectedParcelles.map(parcelle => {
@@ -30,18 +37,34 @@ function SelectParcelles() {
               </Badge>
             )
           }) : (
-            <>
-              <Alert marginBottom={16}>
-                Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au numéro.
-              </Alert>
-              <Alert marginBottom={16}>
-                En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.
-              </Alert>
-            </>
+            <Alert marginTop={8}>
+              <Text>
+                Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au {addressType}.
+              </Text>
+            </Alert>
           )}
       </Pane>
+
+      <Button
+        type='button'
+        display='flex'
+        justifyContent='center'
+        marginTop={8}
+        iconAfter={ControlIcon}
+        onClick={() => setShowCadastre(!showCadastre)}
+      >
+        {showCadastre ? 'Masquer' : 'Afficher'} le cadastre
+      </Button>
     </Pane>
   )
+}
+
+SelectParcelles.defaultProps = {
+  isToponyme: false
+}
+
+SelectParcelles.propTypes = {
+  isToponyme: PropTypes.bool
 }
 
 export default SelectParcelles
