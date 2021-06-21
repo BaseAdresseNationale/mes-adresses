@@ -21,7 +21,7 @@ function CreateForm({defaultCommune}) {
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
-  const [existingBALs, setExistingBALs] = useState(null)
+  const [userBALs, setUserBALs] = useState(null)
   const focusRef = useFocus()
 
   const onSelect = useCallback(commune => {
@@ -55,10 +55,10 @@ function CreateForm({defaultCommune}) {
     e.preventDefault()
     setIsLoading(true)
 
-    const existing = await foundBALbyCommuneAndEmail(commune, email)
+    const foundUserBALs = await foundBALbyCommuneAndEmail(commune, email)
 
-    if (existing.length > 0) {
-      setExistingBALs(existing)
+    if (foundUserBALs.length > 0) {
+      setUserBALs(foundUserBALs)
       setIsShown(true)
     } else {
       createNewBal()
@@ -72,10 +72,10 @@ function CreateForm({defaultCommune}) {
 
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
-      {existingBALs?.length > 0 && (
+      {userBALs?.length > 0 && (
         <AlertPublishedBAL
           isShown={isShown}
-          existingBALs={existingBALs}
+          userBALs={userBALs}
           onConfirm={createNewBal}
           onClose={() => onCancel()}
         />

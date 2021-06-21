@@ -7,7 +7,7 @@ import {getCommune} from '../../lib/geo-api'
 
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
 
-const AlertPublishedBAL = ({isShown, onClose, onConfirm, existingBALs}) => {
+const AlertPublishedBAL = ({isShown, onClose, onConfirm, userBALs}) => {
   const [commune, setCommune] = useState(null)
 
   useEffect(() => {
@@ -15,8 +15,8 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, existingBALs}) => {
       setCommune(await getCommune(code))
     }
 
-    fetchCommune(existingBALs[0].communes[0])
-  }, [existingBALs])
+    fetchCommune(userBALs[0].communes[0])
+  }, [userBALs])
 
   const onBalSelect = bal => {
     if (bal.communes.length === 1) {
@@ -33,7 +33,7 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, existingBALs}) => {
     <>
       <Dialog
         isShown={isShown}
-        title={existingBALs.length > 1 ? (
+        title={userBALs.length > 1 ? (
           'Vous avez déjà des Bases Adresses Locales existantes'
         ) : (
           'Vous avez déjà publié une Base Adresse Locale pour cette commune'
@@ -47,7 +47,7 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, existingBALs}) => {
       >
         <Pane>
           <Alert margin='1em'>
-            {existingBALs.length > 1 ? (
+            {userBALs.length > 1 ? (
               <>
                 <Text>
                   Des Bases Adresses Locales correpondantes existent dans notre base de données.
@@ -77,13 +77,13 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, existingBALs}) => {
               </>
             )}
           </Alert>
-          {existingBALs.length > 0 && (
-            existingBALs.map(bal => {
+          {userBALs.length > 0 && (
+            userBALs.map(bal => {
               return (
                 <BaseLocaleCard
                   key={bal._id}
                   initialIsOpen
-                  editable={existingBALs.length > 0}
+                  editable={userBALs.length > 0}
                   baseLocale={bal}
                   onSelect={() => onBalSelect(bal)}
                 />
@@ -99,7 +99,7 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, existingBALs}) => {
 AlertPublishedBAL.propTypes = {
   isShown: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  existingBALs: PropTypes.object.isRequired,
+  userBALs: PropTypes.object.isRequired,
   onConfirm: PropTypes.func.isRequired
 }
 

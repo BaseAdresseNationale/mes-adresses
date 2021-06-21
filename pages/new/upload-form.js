@@ -38,7 +38,7 @@ function UploadForm() {
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const focusRef = useFocus()
-  const [existingBALs, setExistingBALs] = useState(null)
+  const [userBALs, setUserBALs] = useState(null)
   const [isShown, setIsShown] = useState(false)
 
   const onError = error => {
@@ -87,18 +87,18 @@ function UploadForm() {
 
     if (validateResponse) {
       const codes = extractCodeCommuneFromCSV(validateResponse)
-      const existingBALs = []
+      const userBALs = []
 
       await Promise.all(codes.map(async code => {
-        const existing = await foundBALbyCommuneAndEmail(code, email)
-        if (existing.length > 0) {
-          existingBALs.push(...existing)
+        const foundUserBALs = await foundBALbyCommuneAndEmail(code, email)
+        if (foundUserBALs.length > 0) {
+          userBALs.push(...foundUserBALs)
         }
       }))
 
-      if (existingBALs.length > 0) {
-        const uniqExistingBALs = uniqBy(existingBALs, '_id')
-        setExistingBALs(uniqExistingBALs)
+      if (userBALs.length > 0) {
+        const uniqUserBALs = uniqBy(userBALs, '_id')
+        setUserBALs(uniqUserBALs)
         setIsShown(true)
       } else {
         createNewBal()
@@ -135,10 +135,10 @@ function UploadForm() {
   return (
     <>
       <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
-        {existingBALs?.length > 0 && (
+        {userBALs?.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
-            existingBALs={existingBALs}
+            userBALs={userBALs}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
