@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
-import {isEqual, uniq, uniqWith} from 'lodash'
+import {uniq, uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv, isBalExists} from '../../lib/bal-api'
@@ -97,7 +97,8 @@ function UploadForm() {
       }))
 
       if (existingBALs.length > 0) {
-        setExistingBALs(uniqWith(existingBALs, isEqual))
+        const uniqExistingBALs = uniqBy(existingBALs, '_id')
+        setExistingBALs(uniqExistingBALs)
         setIsShown(true)
       } else {
         createNewBal()
