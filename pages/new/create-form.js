@@ -4,7 +4,7 @@ import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
-import {createBaseLocale, addCommune, populateCommune, isBalAlreadyPublished} from '../../lib/bal-api'
+import {createBaseLocale, addCommune, populateCommune, isBalExists} from '../../lib/bal-api'
 
 import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
@@ -21,7 +21,7 @@ function CreateForm({defaultCommune}) {
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
-  const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState(null)
+  const [existingBALs, setExistingBALs] = useState(null)
   const focusRef = useFocus()
 
   const onSelect = useCallback(commune => {
@@ -55,10 +55,10 @@ function CreateForm({defaultCommune}) {
     e.preventDefault()
     setIsLoading(true)
 
-    const isPublished = await isBalAlreadyPublished(commune, email)
+    const existing = await isBalExists(commune, email)
 
-    if (isPublished.length > 0) {
-      setAlreadyPublishedBAL(isPublished[0])
+    if (existing.length > 0) {
+      setExistingBALs(existing)
       setIsShown(true)
     } else {
       createNewBal()
@@ -72,10 +72,10 @@ function CreateForm({defaultCommune}) {
 
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
-      {alreadyPublishedBAL && (
+      {existingBALs?.length > 0 && (
         <AlertPublishedBAL
           isShown={isShown}
-          alreadyPublishedBAL={alreadyPublishedBAL}
+          existingBALs={existingBALs}
           onConfirm={createNewBal}
           onClose={() => onCancel()}
         />

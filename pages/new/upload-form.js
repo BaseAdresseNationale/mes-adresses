@@ -1,10 +1,10 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
-import {uniq} from 'lodash'
+import {isEqual, uniq, uniqWith} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv, isBalAlreadyPublished} from '../../lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, isBalExists} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
 
 import useFocus from '../../hooks/focus'
@@ -38,7 +38,7 @@ function UploadForm() {
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const focusRef = useFocus()
-  const [alreadyPublishedBAL, setAlreadyPublishedBAL] = useState(null)
+  const [existingBALs, setExistingBALs] = useState(null)
   const [isShown, setIsShown] = useState(false)
 
   const onError = error => {
@@ -87,26 +87,20 @@ function UploadForm() {
 
     if (validateResponse) {
       const codes = extractCodeCommuneFromCSV(validateResponse)
+      const existingBALs = []
 
-      if (codes.length > 1) {
-        const publishedBALs = []
-
-        Promise.all(codes.map(code => {
-          return isBalAlreadyPublished(code, email)
-        })).then(data => {
-          data.forEach(d => publishedBALs.push(d[0]))
-          setAlreadyPublishedBAL(publishedBALs)
-          setIsShown(true)
-        })
-      } else {
-        const isPublished = await isBalAlreadyPublished(codes, email)
-
-        if (isPublished.length > 0) {
-          setAlreadyPublishedBAL(isPublished[0])
-          setIsShown(true)
-        } else {
-          createNewBal()
+      await Promise.all(codes.map(async code => {
+        const existing = await isBalExists(code, email)
+        if (existing.length > 0) {
+          existingBALs.push(...existing)
         }
+      }))
+
+      if (existingBALs.length > 0) {
+        setExistingBALs(uniqWith(existingBALs, isEqual))
+        setIsShown(true)
+      } else {
+        createNewBal()
       }
     }
   }, [createNewBal, file, email])
@@ -140,10 +134,10 @@ function UploadForm() {
   return (
     <>
       <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
-        {alreadyPublishedBAL && (
+        {existingBALs?.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
-            alreadyPublishedBAL={alreadyPublishedBAL}
+            existingBALs={existingBALs}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
