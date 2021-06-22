@@ -4,12 +4,13 @@ import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
-import {createBaseLocale, addCommune, populateCommune} from '../../lib/bal-api'
+import {createBaseLocale, addCommune, populateCommune, foundBALbyCommuneAndEmail} from '../../lib/bal-api'
 
 import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
 
 import {CommuneSearchField} from '../../components/commune-search'
+import AlertPublishedBAL from './alert-published-bal'
 
 function CreateForm({defaultCommune}) {
   const [isLoading, setIsLoading] = useState(false)
@@ -19,16 +20,15 @@ function CreateForm({defaultCommune}) {
   const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
+  const [isShown, setIsShown] = useState(false)
+  const [userBALs, setUserBALs] = useState(null)
   const focusRef = useFocus()
 
   const onSelect = useCallback(commune => {
     setCommune(commune.code)
   }, [])
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
 
-    setIsLoading(true)
-
+  const createNewBal = useCallback(async () => {
     const bal = await createBaseLocale({
       nom,
       emails: [
@@ -36,22 +36,51 @@ function CreateForm({defaultCommune}) {
       ]
     })
 
-    storeBalAccess(bal._id, bal.token)
+    if (commune) {
+      storeBalAccess(bal._id, bal.token)
+      await addCommune(bal._id, commune, bal.token)
 
-    await addCommune(bal._id, commune, bal.token)
+      if (populate) {
+        await populateCommune(bal._id, commune, bal.token)
+      }
 
-    if (populate) {
-      await populateCommune(bal._id, commune, bal.token)
+      Router.push(
+        `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
+        `/bal/${bal._id}/communes/${commune}`
+      )
     }
+  }, [email, nom, populate, commune])
 
-    Router.push(
-      `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
-      `/bal/${bal._id}/communes/${commune}`
-    )
-  }, [commune, nom, email, populate])
+  const onSubmit = useCallback(async e => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    const foundUserBALs = await foundBALbyCommuneAndEmail(commune, email)
+
+    if (foundUserBALs.length > 0) {
+      setUserBALs(foundUserBALs)
+      setIsShown(true)
+    } else {
+      createNewBal()
+    }
+  }, [createNewBal, email, commune])
+
+  const onCancel = () => {
+    setIsShown(false)
+    setIsLoading(false)
+  }
 
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
+      {userBALs?.length > 0 && (
+        <AlertPublishedBAL
+          isShown={isShown}
+          userBALs={userBALs}
+          onConfirm={createNewBal}
+          onClose={() => onCancel()}
+        />
+      )}
+
       <TextInputField
         ref={focusRef}
         required

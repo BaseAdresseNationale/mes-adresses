@@ -17,7 +17,7 @@ function getBadge(status) {
   }
 }
 
-const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen}) => {
+const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen, hideAdmin}) => {
   const {nom, communes, status, _updated, _created, emails} = baseLocale
   const [commune, setCommune] = useState()
   const [isOpen, setIsOpen] = useState(editable ? initialIsOpen : false)
@@ -103,7 +103,7 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
                 </Tooltip>
               </Pane>
             )}
-            {!emails && editable && (
+            {!emails && editable && !hideAdmin && (
               <Pane flex={1} display='flex' flexDirection='row' justifyContent='center' marginY='auto' textAlign='center'>
                 <Text><small><i>Pas d’administrateur<br /> pour les BAL de démonstration</i></small></Text>
               </Pane>
@@ -137,7 +137,8 @@ const BaseLocaleCard = ({baseLocale, editable, onSelect, onRemove, initialIsOpen
 BaseLocaleCard.defaultProps = {
   editable: false,
   onRemove: null,
-  initialIsOpen: false
+  initialIsOpen: false,
+  hideAdmin: false
 }
 
 BaseLocaleCard.propTypes = {
@@ -154,6 +155,7 @@ BaseLocaleCard.propTypes = {
     ])
   }).isRequired,
   initialIsOpen: PropTypes.bool,
+  hideAdmin: PropTypes.bool,
   editable: PropTypes.bool,
   onSelect: PropTypes.func.isRequired,
   onRemove: PropTypes.func

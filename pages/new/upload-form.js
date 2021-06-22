@@ -1,14 +1,18 @@
 import React, {useState, useCallback, useEffect} from 'react'
 import Router from 'next/router'
+import {validate} from '@etalab/bal'
+import {uniq, uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv} from '../../lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, foundBALbyCommuneAndEmail} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
 
 import useFocus from '../../hooks/focus'
 import {useInput} from '../../hooks/input'
 
 import Uploader from '../../components/uploader'
+
+import AlertPublishedBAL from './alert-published-bal'
 
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')
@@ -19,6 +23,13 @@ function getFileExtension(name) {
   return null
 }
 
+function extractCodeCommuneFromCSV(response) {
+  // Get cle_interop and slice it to get the commune's code
+  const codes = response.rows.map(r => r.parsedValues.cle_interop.slice(0, 5))
+
+  return uniq(codes)
+}
+
 function UploadForm() {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
@@ -27,6 +38,8 @@ function UploadForm() {
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const focusRef = useFocus()
+  const [userBALs, setUserBALs] = useState(null)
+  const [isShown, setIsShown] = useState(false)
 
   const onError = error => {
     setFile(null)
@@ -34,7 +47,7 @@ function UploadForm() {
     setError(error)
   }
 
-  const onDrop = useCallback(([file]) => {
+  const onDrop = useCallback(async ([file]) => {
     if (getFileExtension(file.name).toLowerCase() !== 'csv') {
       return onError('Ce type de fichier n’est pas supporté. Vous devez déposer un fichier CSV.')
     }
@@ -47,11 +60,7 @@ function UploadForm() {
     setError(null)
   }, [])
 
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
-
-    setIsLoading(true)
-
+  const createNewBal = useCallback(async () => {
     if (!bal) {
       const baseLocale = await createBaseLocale({
         nom,
@@ -63,7 +72,39 @@ function UploadForm() {
       storeBalAccess(baseLocale._id, baseLocale.token)
       setBal(baseLocale)
     }
-  }, [bal, nom, email])
+  }, [bal, email, nom])
+
+  const onCancel = () => {
+    setIsShown(false)
+    setIsLoading(false)
+  }
+
+  const onSubmit = useCallback(async e => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    const validateResponse = await validate(file)
+
+    if (validateResponse) {
+      const codes = extractCodeCommuneFromCSV(validateResponse)
+      const userBALs = []
+
+      await Promise.all(codes.map(async code => {
+        const foundUserBALs = await foundBALbyCommuneAndEmail(code, email)
+        if (foundUserBALs.length > 0) {
+          userBALs.push(...foundUserBALs)
+        }
+      }))
+
+      if (userBALs.length > 0) {
+        const uniqUserBALs = uniqBy(userBALs, '_id')
+        setUserBALs(uniqUserBALs)
+        setIsShown(true)
+      } else {
+        createNewBal()
+      }
+    }
+  }, [createNewBal, file, email])
 
   useEffect(() => {
     async function upload() {
@@ -94,6 +135,14 @@ function UploadForm() {
   return (
     <>
       <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
+        {userBALs?.length > 0 && (
+          <AlertPublishedBAL
+            isShown={isShown}
+            userBALs={userBALs}
+            onConfirm={createNewBal}
+            onClose={() => onCancel()}
+          />
+        )}
         <Pane display='flex' flexDirection='row'>
           <Pane flex={1} maxWidth={600}>
             <TextInputField
