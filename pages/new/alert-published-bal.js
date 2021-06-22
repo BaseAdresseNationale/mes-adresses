@@ -82,8 +82,8 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, userBALs}) => {
               return (
                 <BaseLocaleCard
                   key={bal._id}
-                  initialIsOpen
                   editable={userBALs.length > 0}
+                  initialIsOpen={userBALs.length === 1}
                   baseLocale={bal}
                   onSelect={() => onBalSelect(bal)}
                 />
