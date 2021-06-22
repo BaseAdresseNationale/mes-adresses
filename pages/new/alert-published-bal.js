@@ -82,6 +82,7 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, userBALs}) => {
               return (
                 <BaseLocaleCard
                   key={bal._id}
+                  hideAdmin
                   editable={userBALs.length > 0}
                   initialIsOpen={userBALs.length === 1}
                   baseLocale={bal}
