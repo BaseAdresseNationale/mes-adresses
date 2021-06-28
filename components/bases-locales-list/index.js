@@ -92,7 +92,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
               {sortBal(filtered).map(bal => (
                 <BaseLocaleCard
                   key={bal._id}
-                  editable
+                  isAdmin
                   baseLocale={bal}
                   initialIsOpen={basesLocales.length === 1}
                   onSelect={() => onBalSelect(bal)}

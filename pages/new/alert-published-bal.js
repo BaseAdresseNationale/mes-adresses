@@ -77,20 +77,16 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, userBALs}) => {
               </>
             )}
           </Alert>
-          {userBALs.length > 0 && (
-            userBALs.map(bal => {
-              return (
-                <BaseLocaleCard
-                  key={bal._id}
-                  hideAdmin
-                  editable={userBALs.length > 0}
-                  initialIsOpen={userBALs.length === 1}
-                  baseLocale={bal}
-                  onSelect={() => onBalSelect(bal)}
-                />
-              )
-            })
-          )}
+
+          {userBALs.map(bal => (
+            <BaseLocaleCard
+              key={bal._id}
+              isAdmin
+              initialIsOpen={userBALs.length === 1}
+              baseLocale={bal}
+              onSelect={() => onBalSelect(bal)}
+            />
+          ))}
         </Pane>
       </Dialog>
     </>
