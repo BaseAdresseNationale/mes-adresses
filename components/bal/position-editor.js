@@ -37,7 +37,7 @@ function PositionEditor({isToponyme}) {
 
       {markers.length > 0 ? (
         <Pane display='grid' gridTemplateColumns='2fr .5fr 1fr 1fr .5fr'>
-          <Strong fontWeight={400}>Type</Strong>
+          <Strong fontWeight={400} paddingBottom='.5em'>Type</Strong>
           <div />
           <Strong fontWeight={400}>Latitude</Strong>
           <Strong fontWeight={400}>Longitude</Strong>
