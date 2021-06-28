@@ -66,7 +66,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, initialIsOpen, onSelect, onRemove}
         </Pane>
         <Pane display='flex' flexDirection='row' justifyContent='space-between'>
           {baseLocale.status === 'demo' ? (
-            <Badge isSolid color='neutral' margin='auto'>DÉMO</Badge>
+            <Badge color='#474d66' margin='auto'>DÉMO</Badge>
           ) : (
             <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
           )}
