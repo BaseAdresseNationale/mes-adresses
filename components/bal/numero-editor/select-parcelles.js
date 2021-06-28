@@ -33,7 +33,7 @@ function SelectParcelles({isToponyme}) {
                 onMouseEnter={() => handleHoveredParcelle({id: parcelle})}
                 onMouseLeave={() => handleHoveredParcelle(null)}
               >
-                {parcelle}{isHovered && <TrashIcon marginLeft={4} color='danger' verticalAlign='middle' />}
+                {parcelle}{isHovered && <TrashIcon marginLeft={4} size={14} color='danger' verticalAlign='text-bottom' />}
               </Badge>
             )
           }) : (
