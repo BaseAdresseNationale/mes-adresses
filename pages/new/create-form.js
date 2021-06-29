@@ -21,7 +21,7 @@ function CreateForm({defaultCommune}) {
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
-  const [userBALs, setUserBALs] = useState(null)
+  const [userBALs, setUserBALs] = useState([])
   const focusRef = useFocus()
 
   const onSelect = useCallback(commune => {
@@ -72,10 +72,10 @@ function CreateForm({defaultCommune}) {
 
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
-      {userBALs?.length > 0 && (
+      {userBALs.length > 0 && (
         <AlertPublishedBAL
           isShown={isShown}
-          userBALs={userBALs}
+          basesLocales={userBALs}
           onConfirm={createNewBal}
           onClose={() => onCancel()}
         />

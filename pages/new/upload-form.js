@@ -38,7 +38,7 @@ function UploadForm() {
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const focusRef = useFocus()
-  const [userBALs, setUserBALs] = useState(null)
+  const [userBALs, setUserBALs] = useState([])
   const [isShown, setIsShown] = useState(false)
 
   const onError = error => {
@@ -135,10 +135,10 @@ function UploadForm() {
   return (
     <>
       <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
-        {userBALs?.length > 0 && (
+        {userBALs.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
-            userBALs={userBALs}
+            basesLocales={userBALs}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
