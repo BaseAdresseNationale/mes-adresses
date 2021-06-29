@@ -4,7 +4,7 @@ import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
 import {storeBalAccess} from '../../lib/tokens'
-import {createBaseLocale, addCommune, populateCommune, foundBALbyCommuneAndEmail} from '../../lib/bal-api'
+import {createBaseLocale, addCommune, populateCommune, searchBAL} from '../../lib/bal-api'
 
 import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
@@ -55,7 +55,7 @@ function CreateForm({defaultCommune}) {
     e.preventDefault()
     setIsLoading(true)
 
-    const foundUserBALs = await foundBALbyCommuneAndEmail(commune, email)
+    const foundUserBALs = await searchBAL(commune, email)
 
     if (foundUserBALs.length > 0) {
       setUserBALs(foundUserBALs)
