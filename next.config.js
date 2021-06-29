@@ -4,10 +4,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 module.exports = withBundleAnalyzer({
   webpack(config, {webpack}) {
-    config.node = {
-      ...config.node,
-      fs: 'empty'
-    }
+    config.resolve.fallback = {fs: false}
 
     config.plugins.push(new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /fr/))
 
