@@ -55,10 +55,10 @@ function CreateForm({defaultCommune}) {
     e.preventDefault()
     setIsLoading(true)
 
-    const foundUserBALs = await searchBAL(commune, email)
+    const userBALs = await searchBAL(commune, email)
 
-    if (foundUserBALs.length > 0) {
-      setUserBALs(foundUserBALs)
+    if (userBALs.length > 0) {
+      setUserBALs(userBALs)
       setIsShown(true)
     } else {
       createNewBal()

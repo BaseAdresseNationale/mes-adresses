@@ -90,9 +90,9 @@ function UploadForm() {
       const userBALs = []
 
       await Promise.all(codes.map(async code => {
-        const foundUserBALs = await searchBAL(code, email)
-        if (foundUserBALs.length > 0) {
-          userBALs.push(...foundUserBALs)
+        const basesLocales = await searchBAL(code, email)
+        if (basesLocales.length > 0) {
+          userBALs.push(...basesLocales)
         }
       }))
 
