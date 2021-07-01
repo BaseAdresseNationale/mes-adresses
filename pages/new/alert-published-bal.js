@@ -1,22 +1,27 @@
 import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Dialog, Text, Alert} from 'evergreen-ui'
+import {uniq} from 'lodash'
+import {Pane, Dialog, Alert, Paragraph, Strong} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
 
-const AlertPublishedBAL = ({isShown, onClose, onConfirm, userBALs}) => {
-  const [commune, setCommune] = useState(null)
+const AlertPublishedBAL = ({isShown, onClose, onConfirm, basesLocales}) => {
+  const [communeLabel, setCommuneLabel] = useState('cette commune')
+  const uniqCommunes = uniq(...basesLocales.map(({communes}) => communes))
 
   useEffect(() => {
     const fetchCommune = async code => {
-      setCommune(await getCommune(code))
+      const commune = await getCommune(code)
+      if (commune) {
+        setCommuneLabel(commune.nom)
+      }
     }
 
-    fetchCommune(userBALs[0].communes[0])
-  }, [userBALs])
+    fetchCommune(basesLocales[0].communes[0])
+  }, [basesLocales])
 
   const onBalSelect = bal => {
     if (bal.communes.length === 1) {
@@ -33,13 +38,12 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, userBALs}) => {
     <>
       <Dialog
         isShown={isShown}
-        title={userBALs.length > 1 ? (
-          'Vous avez déjà des Bases Adresses Locales existantes'
+        title={uniqCommunes.length > 1 ? (
+          'Vous avez déjà des Bases Adresses Locales pour ces communes'
         ) : (
-          'Vous avez déjà publié une Base Adresse Locale pour cette commune'
+          `Vous avez déjà créé une Base Adresse Locale pour ${communeLabel}`
         )}
         width='800px'
-        intent='success'
         confirmLabel='Créer une nouvelle Base Adresse Locale'
         cancelLabel='Annuler'
         onConfirm={onConfirm}
@@ -47,50 +51,37 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, userBALs}) => {
       >
         <Pane>
           <Alert margin='1em'>
-            {userBALs.length > 1 ? (
-              <>
-                <Text>
-                  Des Bases Adresses Locales correpondantes existent dans notre base de données.
-                </Text>
-                <br />
-                <Text>
-                  Vous pouvez reprendre votre travail sur une de ces Bases Adresses Locales en cliquant sur &quot;Gérer mes adresses&quot; ou choisir d’en créer une nouvelle.
-                </Text>
-                <br />
-                <Text>
-                  Nous vous <u>recommandons</u> toutefois de continuer l’adressage sur une de vos Bases Adresses Locales déjà existantes.
-                </Text>
-              </>
-            ) : (
-              <>
-                <Text>
-                  Une Base Adresse Locale de la commune de <b>{commune?.nom} </b>a déjà été crée.
-                </Text>
-                <br />
-                <Text>
-                  Vous pouvez reprendre votre travail sur cette Base Adresse Locale en cliquant sur &quot;Gérer mes adresses&quot; ou choisir d’en créer une nouvelle.
-                </Text>
-                <br />
-                <Text>
-                  Nous vous <u>recommandons</u> toutefois de continuer l’adressage sur la Base Adresse Locale déjà existante.
-                </Text>
-              </>
-            )}
+            <Paragraph marginTop={8}>
+              {uniqCommunes.length > 1 ? (
+                <>Il semblerait que vous ayez <Strong>déjà créé</Strong> des Bases Adresses Locales pour ces communes.</>
+              ) : (
+                <>Une Base Adresse Locale a déjà été créée pour <Strong>{communeLabel}</Strong>.</>
+              )}
+            </Paragraph>
+            <Paragraph marginTop={8}>
+              {basesLocales.length > 1 ? (
+                <>Nous vous <Strong>recommandons de continuer l’adressage</Strong> sur une de vos Bases Adresses Locales <Strong>déjà existantes</Strong> parmi la liste ci-dessous.</>
+              ) : (
+                <>Nous vous <Strong>recommandons de continuer l’adressage</Strong> sur votre Base Adresses Locales <Strong>déjà existante</Strong> ci-dessous.</>
+              )}
+            </Paragraph>
+            <Paragraph marginTop={8}>
+              Pour reprendre votre travail, {basesLocales.length > 1 && <><Strong>sélectionnez une Base Adresse Locale</Strong> puis</>} <Strong>cliquez sur &quot;Gérer&nbsp;mes&nbsp;adresses&quot;</Strong>.
+            </Paragraph>
+            <Paragraph marginTop={8}>
+              Vous pouvez toutefois cliquer sur <Strong>&quot;Créer&nbsp;une&nbsp;nouvelle&nbsp;Base&nbsp;Adresses&nbsp;Locales&quot;</Strong> si vous souhaitez <Strong>recommencer l’adressage</Strong>.
+            </Paragraph>
           </Alert>
-          {userBALs.length > 0 && (
-            userBALs.map(bal => {
-              return (
-                <BaseLocaleCard
-                  key={bal._id}
-                  hideAdmin
-                  editable={userBALs.length > 0}
-                  initialIsOpen={userBALs.length === 1}
-                  baseLocale={bal}
-                  onSelect={() => onBalSelect(bal)}
-                />
-              )
-            })
-          )}
+
+          {basesLocales.map(bal => (
+            <BaseLocaleCard
+              key={bal._id}
+              isAdmin
+              initialIsOpen={basesLocales.length === 1}
+              baseLocale={bal}
+              onSelect={() => onBalSelect(bal)}
+            />
+          ))}
         </Pane>
       </Dialog>
     </>
@@ -100,7 +91,7 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, userBALs}) => {
 AlertPublishedBAL.propTypes = {
   isShown: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
-  userBALs: PropTypes.object.isRequired,
+  basesLocales: PropTypes.object.isRequired,
   onConfirm: PropTypes.func.isRequired
 }
 
