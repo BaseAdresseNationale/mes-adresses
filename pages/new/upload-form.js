@@ -4,7 +4,7 @@ import {validate} from '@etalab/bal'
 import {uniq, uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv, foundBALbyCommuneAndEmail} from '../../lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '../../lib/bal-api'
 import {storeBalAccess} from '../../lib/tokens'
 
 import useFocus from '../../hooks/focus'
@@ -38,7 +38,7 @@ function UploadForm() {
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const focusRef = useFocus()
-  const [userBALs, setUserBALs] = useState(null)
+  const [userBALs, setUserBALs] = useState([])
   const [isShown, setIsShown] = useState(false)
 
   const onError = error => {
@@ -90,9 +90,9 @@ function UploadForm() {
       const userBALs = []
 
       await Promise.all(codes.map(async code => {
-        const foundUserBALs = await foundBALbyCommuneAndEmail(code, email)
-        if (foundUserBALs.length > 0) {
-          userBALs.push(...foundUserBALs)
+        const basesLocales = await searchBAL(code, email)
+        if (basesLocales.length > 0) {
+          userBALs.push(...basesLocales)
         }
       }))
 
@@ -135,10 +135,10 @@ function UploadForm() {
   return (
     <>
       <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
-        {userBALs?.length > 0 && (
+        {userBALs.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
-            userBALs={userBALs}
+            basesLocales={userBALs}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
