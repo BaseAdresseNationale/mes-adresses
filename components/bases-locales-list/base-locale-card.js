@@ -6,6 +6,8 @@ import {fr} from 'date-fns/locale'
 
 import {getCommune} from '../../lib/geo-api'
 
+import {colors} from '../../lib/colors'
+
 function getBadge(status) {
   switch (status) {
     case 'published':
@@ -66,7 +68,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, initialIsOpen, onSelect, onRemove}
         </Pane>
         <Pane display='flex' flexDirection='row' justifyContent='space-between'>
           {baseLocale.status === 'demo' ? (
-            <Badge color='#474d66' margin='auto'>DÉMO</Badge>
+            <Badge color={colors.neutral} margin='auto'>DÉMO</Badge>
           ) : (
             <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
           )}
