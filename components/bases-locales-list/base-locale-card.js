@@ -6,7 +6,11 @@ import {fr} from 'date-fns/locale'
 
 import {getCommune} from '../../lib/geo-api'
 
-function getBadge(status) {
+function getBadge({status, published}) {
+  if (published) {
+    return {color: 'green', label: 'Publiée'}
+  }
+
   switch (status) {
     case 'published':
       return {color: 'green', label: 'Publiée'}
@@ -23,7 +27,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, initialIsOpen, onSelect, onRemove}
   const [isOpen, setIsOpen] = useState(isAdmin ? initialIsOpen : false)
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
-  const badge = getBadge(status)
+  const badge = getBadge(baseLocale)
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen)
