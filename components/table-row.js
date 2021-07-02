@@ -75,7 +75,7 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
           style={{cursor: onEdit && !isEditing ? 'text' : 'default'}}
           className='edit-cell'
         >
-          <Pane padding='.5em'>
+          <Pane padding={1}>
             {label} <i>{toponymeName && ` - ${toponymeName}`}</i>
             {!isEditing && onEdit && token && (
               <span className='pencil-icon'>
