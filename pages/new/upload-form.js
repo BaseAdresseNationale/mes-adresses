@@ -81,10 +81,14 @@ function UploadForm() {
     setIsLoading(false)
   }
 
-  const onSubmit = useCallback(async e => {
+  const onSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
 
+    checkUserBALs(email)
+  }
+
+  const checkUserBALs = async email => {
     const validateResponse = await validate(file)
 
     if (validateResponse) {
@@ -108,7 +112,7 @@ function UploadForm() {
         createNewBal()
       }
     }
-  }, [createNewBal, file, email])
+  }
 
   useEffect(() => {
     async function upload() {
@@ -143,6 +147,7 @@ function UploadForm() {
           <AlertPublishedBAL
             isShown={isShown}
             basesLocales={userBALs}
+            updateBAL={() => checkUserBALs(email)}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />

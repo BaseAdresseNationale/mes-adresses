@@ -53,10 +53,19 @@ function CreateForm({defaultCommune}) {
     }
   }, [email, nom, populate, commune])
 
-  const onSubmit = useCallback(async e => {
+  const onSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
 
+    checkUserBALs(commune, email)
+  }
+
+  const onCancel = () => {
+    setIsShown(false)
+    setIsLoading(false)
+  }
+
+  const checkUserBALs = async (commune, email) => {
     const userBALs = await searchBAL(commune, email)
     await expandWithPublished(userBALs)
 
@@ -66,11 +75,6 @@ function CreateForm({defaultCommune}) {
     } else {
       createNewBal()
     }
-  }, [createNewBal, email, commune])
-
-  const onCancel = () => {
-    setIsShown(false)
-    setIsLoading(false)
   }
 
   return (
@@ -79,6 +83,7 @@ function CreateForm({defaultCommune}) {
         <AlertPublishedBAL
           isShown={isShown}
           basesLocales={userBALs}
+          updateBAL={() => checkUserBALs(commune, email)}
           onConfirm={createNewBal}
           onClose={() => onCancel()}
         />
