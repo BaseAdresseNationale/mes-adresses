@@ -65,7 +65,7 @@ function CreateForm({defaultCommune}) {
     setIsLoading(false)
   }
 
-  const checkUserBALs = async (commune, email) => {
+  const checkUserBALs = async () => {
     const userBALs = await searchBAL(commune, email)
     await expandWithPublished(userBALs)
 
