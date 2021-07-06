@@ -88,7 +88,7 @@ function UploadForm() {
     checkUserBALs(email)
   }
 
-  const checkUserBALs = async email => {
+  const checkUserBALs = useCallback(async email => {
     const validateResponse = await validate(file)
 
     if (validateResponse) {
@@ -112,7 +112,7 @@ function UploadForm() {
         createNewBal()
       }
     }
-  }
+  }, [createNewBal, file])
 
   useEffect(() => {
     async function upload() {
