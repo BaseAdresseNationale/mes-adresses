@@ -5,7 +5,7 @@ import {uniq} from 'lodash'
 import {Pane, Dialog, Alert, Paragraph, Strong} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
-import {removeBAL} from '../../lib/remove-bal'
+import {removeBAL} from '../../lib/user-bal'
 
 import useError from '../../hooks/error'
 

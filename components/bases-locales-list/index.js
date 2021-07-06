@@ -10,7 +10,7 @@ import useFuse from '../../hooks/fuse'
 import useError from '../../hooks/error'
 
 import {listBasesLocales} from '../../lib/bal-api'
-import {removeBAL} from '../../lib/remove-bal'
+import {removeBAL} from '../../lib/user-bal'
 
 import DeleteWarning from '../delete-warning'
 import BaseLocaleCard from './base-locale-card'
