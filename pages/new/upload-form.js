@@ -81,11 +81,11 @@ function UploadForm() {
     setIsLoading(false)
   }
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
 
-    checkUserBALs(email)
+    await checkUserBALs(email)
   }
 
   const checkUserBALs = useCallback(async email => {
