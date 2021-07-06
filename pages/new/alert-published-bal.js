@@ -1,16 +1,23 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {uniq} from 'lodash'
 import {Pane, Dialog, Alert, Paragraph, Strong} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
+import {removeBAL} from '../../lib/remove-bal'
+
+import useError from '../../hooks/error'
 
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
+import DeleteWarning from '../../components/delete-warning'
 
-const AlertPublishedBAL = ({isShown, onClose, onConfirm, basesLocales}) => {
+const AlertPublishedBAL = ({isShown, onClose, onConfirm, basesLocales, updateBAL}) => {
   const [communeLabel, setCommuneLabel] = useState('cette commune')
   const uniqCommunes = uniq(...basesLocales.map(({communes}) => communes))
+  const [toRemove, setToRemove] = useState(null)
+
+  const [setError] = useError(null)
 
   useEffect(() => {
     const fetchCommune = async code => {
@@ -34,8 +41,33 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, basesLocales}) => {
     }
   }
 
+  const onRemove = useCallback(async () => {
+    try {
+      await removeBAL(toRemove)
+      setToRemove(null)
+      updateBAL()
+    } catch (error) {
+      setError(error.message)
+    }
+  }, [toRemove, updateBAL, setError])
+
+  const handleRemove = useCallback((e, balId) => {
+    e.stopPropagation()
+    setToRemove(balId)
+  }, [])
+
   return (
     <>
+      <DeleteWarning
+        isShown={Boolean(toRemove)}
+        content={(
+          <Paragraph>
+            Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
+          </Paragraph>
+        )}
+        onCancel={() => setToRemove(null)}
+        onConfirm={onRemove}
+      />
       <Dialog
         isShown={isShown}
         title={uniqCommunes.length > 1 ? (
@@ -80,6 +112,7 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, basesLocales}) => {
               initialIsOpen={basesLocales.length === 1}
               baseLocale={bal}
               onSelect={() => onBalSelect(bal)}
+              onRemove={e => handleRemove(e, bal._id)}
             />
           ))}
         </Pane>
