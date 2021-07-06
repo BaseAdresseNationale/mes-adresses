@@ -81,7 +81,7 @@ function UploadForm() {
     setIsLoading(false)
   }
 
-  const onSubmit = async e => {
+  const onSubmit = e => {
     e.preventDefault()
     setIsLoading(true)
 
