@@ -125,11 +125,13 @@ AlertPublishedBAL.propTypes = {
   isShown: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   basesLocales: PropTypes.object.isRequired,
-  onConfirm: PropTypes.func.isRequired
+  onConfirm: PropTypes.func.isRequired,
+  updateBAL: PropTypes.func
 }
 
 AlertPublishedBAL.defaultProps = {
-  isShown: false
+  isShown: false,
+  updateBAL: null
 }
 
 export default AlertPublishedBAL
