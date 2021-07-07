@@ -35,7 +35,6 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
           top={15}
         >
           <Button
-            border='muted'
             height={50}
             paddingX={8}
             elevation={0}

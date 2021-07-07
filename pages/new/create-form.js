@@ -116,6 +116,7 @@ function CreateForm({defaultCommune}) {
         id='commune'
         initialSelectedItem={defaultCommune}
         label='Commune'
+        appearance='default'
         maxWidth={500}
         disabled={isLoading}
         onSelect={onSelect}
