@@ -4,6 +4,8 @@ import {Heading, Badge, Card, Pane, Button, Tooltip, Text, GlobeIcon, ChevronRig
 import {formatDistanceToNow, format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 
+import {colors} from '../../lib/colors'
+
 import {getCommune} from '../../lib/geo-api'
 import {getBalToken} from '../../lib/tokens'
 
@@ -79,7 +81,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
         </Pane>
         <Pane display='flex' flexDirection='row' justifyContent='space-between'>
           {baseLocale.status === 'demo' ? (
-            <Badge isSolid color='neutral' margin='auto'>DÉMO</Badge>
+            <Badge color={colors.neutral} margin='auto'>DÉMO</Badge>
           ) : (
             <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
           )}

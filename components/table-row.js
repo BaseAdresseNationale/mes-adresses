@@ -1,6 +1,6 @@
 import React, {useState, useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 import BalDataContext from '../contexts/bal-data'
@@ -75,13 +75,15 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
           style={{cursor: onEdit && !isEditing ? 'text' : 'default'}}
           className='edit-cell'
         >
-          {label} <i>{toponymeName && ` - ${toponymeName}`}</i>
-          {!isEditing && onEdit && token && (
-            <span className='pencil-icon'>
-              <EditIcon marginBottom={-4} marginLeft={8} />
-            </span>
+          <Pane padding={1}>
+            {label} <i>{toponymeName && ` - ${toponymeName}`}</i>
+            {!isEditing && onEdit && token && (
+              <span className='pencil-icon'>
+                <EditIcon marginBottom={-4} marginLeft={8} />
+              </span>
 
-          )}
+            )}
+          </Pane>
         </Table.TextCell>
       </Table.Cell>
       {secondary && (
