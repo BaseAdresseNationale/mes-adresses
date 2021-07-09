@@ -146,6 +146,7 @@ function UploadForm() {
         {userBALs.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
+            userEmail={email}
             basesLocales={userBALs}
             updateBAL={() => checkUserBALs(email)}
             onConfirm={createNewBal}

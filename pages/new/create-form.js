@@ -82,6 +82,7 @@ function CreateForm({defaultCommune}) {
       {userBALs.length > 0 && (
         <AlertPublishedBAL
           isShown={isShown}
+          userEmail={email}
           basesLocales={userBALs}
           updateBAL={() => checkUserBALs(commune, email)}
           onConfirm={createNewBal}

@@ -12,7 +12,7 @@ import useError from '../../hooks/error'
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
 import DeleteWarning from '../../components/delete-warning'
 
-const AlertPublishedBAL = ({isShown, onClose, onConfirm, basesLocales, updateBAL}) => {
+const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) => {
   const [communeLabel, setCommuneLabel] = useState('cette commune')
   const uniqCommunes = uniq(...basesLocales.map(({communes}) => communes))
   const [toRemove, setToRemove] = useState(null)
@@ -109,6 +109,7 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, basesLocales, updateBAL
             <BaseLocaleCard
               key={bal._id}
               isAdmin
+              userEmail={userEmail}
               initialIsOpen={basesLocales.length === 1}
               baseLocale={bal}
               onSelect={() => onBalSelect(bal)}
@@ -123,6 +124,7 @@ const AlertPublishedBAL = ({isShown, onClose, onConfirm, basesLocales, updateBAL
 
 AlertPublishedBAL.propTypes = {
   isShown: PropTypes.bool,
+  userEmail: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   basesLocales: PropTypes.object.isRequired,
   onConfirm: PropTypes.func.isRequired,
