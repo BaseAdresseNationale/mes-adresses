@@ -134,7 +134,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
                   <Button isActive iconAfter={TrashIcon}>Supprimer</Button>
                 </Tooltip>
               )}
-              {hasToken && !userEmail ? (
+              {hasToken ? (
                 <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
               ) : (
                 <>
