@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Table, Paragraph} from 'evergreen-ui'
 
-import {getBalAccess, getBalToken, removeBalAccess} from '../../lib/tokens'
+import {getBalAccess} from '../../lib/tokens'
 import {sortBalByUpdate} from '../../lib/sort-bal'
 
 import useFuse from '../../hooks/fuse'
 import useError from '../../hooks/error'
 
-import {listBasesLocales, removeBaseLocale} from '../../lib/bal-api'
+import {listBasesLocales} from '../../lib/bal-api'
+import {removeBAL} from '../../lib/user-bal'
 
 import DeleteWarning from '../delete-warning'
 import BaseLocaleCard from './base-locale-card'
@@ -39,9 +40,7 @@ function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
 
   const onRemove = useCallback(async () => {
     try {
-      const token = getBalToken(toRemove)
-      await removeBaseLocale(toRemove, token)
-      removeBalAccess(toRemove)
+      await removeBAL(toRemove)
       const balAccess = getBalAccess()
       updateBasesLocales(balAccess)
     } catch (error) {

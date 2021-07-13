@@ -1,11 +1,15 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Heading, Badge, Card, Pane, Button, Tooltip, Text, GlobeIcon, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon} from 'evergreen-ui'
+import {Heading, Badge, Card, Pane, Button, Tooltip, Text, GlobeIcon, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 
-import {getCommune} from '../../lib/geo-api'
 import {colors} from '../../lib/colors'
+
+import {getCommune} from '../../lib/geo-api'
+import {getBalToken} from '../../lib/tokens'
+
+import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 
 function getBadge({status, published}) {
   if (published) {
@@ -22,10 +26,12 @@ function getBadge({status, published}) {
   }
 }
 
-const BaseLocaleCard = ({baseLocale, isAdmin, initialIsOpen, onSelect, onRemove}) => {
+const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) => {
   const {nom, communes, status, _updated, _created, emails} = baseLocale
   const [commune, setCommune] = useState()
   const [isOpen, setIsOpen] = useState(isAdmin ? initialIsOpen : false)
+  const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
+
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
   const badge = getBadge(baseLocale)
@@ -33,6 +39,10 @@ const BaseLocaleCard = ({baseLocale, isAdmin, initialIsOpen, onSelect, onRemove}
   const handleIsOpen = () => {
     setIsOpen(!isOpen)
   }
+
+  const hasToken = useMemo(() => {
+    return Boolean(getBalToken(baseLocale._id))
+  }, [baseLocale])
 
   useEffect(() => {
     const fetchCommune = async code => {
@@ -124,7 +134,18 @@ const BaseLocaleCard = ({baseLocale, isAdmin, initialIsOpen, onSelect, onRemove}
                   <Button isActive iconAfter={TrashIcon}>Supprimer</Button>
                 </Tooltip>
               )}
-              <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
+              {hasToken ? (
+                <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
+              ) : (
+                <>
+                  <RecoverBALAlert
+                    isShown={isBALRecoveryShown}
+                    defaultEmail={userEmail}
+                    baseLocaleId={baseLocale._id}
+                    onClose={() => setIsBALRecoveryShown(false)} />
+                  <Button iconAfter={KeyIcon} marginRight='8px' onClick={() => setIsBALRecoveryShown(true)}>Récupérer l’accès</Button>
+                </>
+              )}
             </Pane>
           ) : (
             <Pane borderTop display='flex' justifyContent='flex-end' paddingTop='1em' marginTop='1em'>
@@ -140,6 +161,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, initialIsOpen, onSelect, onRemove}
 
 BaseLocaleCard.defaultProps = {
   isAdmin: false,
+  userEmail: null,
   onRemove: null,
   initialIsOpen: false
 }
@@ -159,6 +181,7 @@ BaseLocaleCard.propTypes = {
   }).isRequired,
   initialIsOpen: PropTypes.bool,
   isAdmin: PropTypes.bool,
+  userEmail: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
   onRemove: PropTypes.func
 

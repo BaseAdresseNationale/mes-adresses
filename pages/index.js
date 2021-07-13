@@ -5,7 +5,7 @@ import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
 
 import Header from '../components/header'
 import Footer from '../components/footer'
-import RecoverBALAlert from '../components/recover-bal-alert'
+import BALRecovery from '../components/bal-recovery/bal-recovery'
 
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
@@ -28,7 +28,7 @@ function Index() {
       <UserBasesLocales />
 
       <Pane padding={22}>
-        <RecoverBALAlert />
+        <BALRecovery />
       </Pane>
       <Footer />
     </Pane>

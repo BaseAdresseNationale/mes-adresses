@@ -1,7 +1,7 @@
 import React from 'react'
 import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tablist, Tab, CogIcon, PlusIcon} from 'evergreen-ui'
 
-import RecoverBALAlert from '../../recover-bal-alert'
+import BALRecovery from '../../bal-recovery/bal-recovery'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
@@ -63,7 +63,8 @@ const BaseLocale = () => {
             Si c’est votre cas, vous pouvez nous contacter sur <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>
           </Paragraph>
         </Tuto>
-        <RecoverBALAlert />
+
+        <BALRecovery />
       </Problems>
     </Pane>
   )

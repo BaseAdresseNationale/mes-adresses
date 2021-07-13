@@ -81,10 +81,14 @@ function UploadForm() {
     setIsLoading(false)
   }
 
-  const onSubmit = useCallback(async e => {
+  const onSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
 
+    await checkUserBALs()
+  }
+
+  const checkUserBALs = useCallback(async () => {
     const validateResponse = await validate(file)
 
     if (validateResponse) {
@@ -142,7 +146,9 @@ function UploadForm() {
         {userBALs.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
+            userEmail={email}
             basesLocales={userBALs}
+            updateBAL={() => checkUserBALs(email)}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
