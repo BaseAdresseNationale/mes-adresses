@@ -13,14 +13,16 @@ import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
+import PreviewAdresse from '../preview-adresse'
 import Comment from '../comment'
+
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
 function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
-  const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
+  const {voies, toponymes, codeCommune, setIsEditing} = useContext(BalDataContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
@@ -223,6 +225,14 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           {error}
         </Alert>
       )}
+
+      <PreviewAdresse
+        numero={numero}
+        suffixe={suffixe}
+        voie={voies.find(({_id}) => _id === voieId).nom}
+        toponyme={toponymes.find(({_id}) => _id === toponymeId)?.nom}
+        codeCommune={codeCommune}
+      />
 
       <Button isLoading={isLoading} type='submit' appearance='primary' intent='success' marginTop={16}>
         {submitLabel}

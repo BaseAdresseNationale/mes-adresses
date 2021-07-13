@@ -14,13 +14,14 @@ import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
 import Comment from '../comment'
+import PreviewAdresse from '../preview-adresse'
 
 import PositionEditor from './position-editor'
 import VoieSearch from './voie-search'
 import SelectParcelles from './numero-editor/select-parcelles'
 
 function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
-  const {voie, toponymes, setIsEditing} = useContext(BalDataContext)
+  const {codeCommune, voie, toponymes, setIsEditing} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
   const {selectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
@@ -224,6 +225,16 @@ function AddressEditor({onSubmit, onCancel, isToponyme, setIsToponyme}) {
         <Alert marginBottom={16} intent='danger' title='Erreur'>
           {error}
         </Alert>
+      )}
+
+      {!isToponyme && (
+        <PreviewAdresse
+          numero={input}
+          suffixe={suffixe}
+          voie={nomVoie}
+          toponyme={toponyme?.nom}
+          codeCommune={codeCommune}
+        />
       )}
 
       <Button isLoading={isLoading} type='submit' appearance='primary' intent='success' marginTop={16}>
