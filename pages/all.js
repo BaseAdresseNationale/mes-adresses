@@ -1,14 +1,22 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
+import dynamic from 'next/dynamic'
 import Router from 'next/router'
-import {Pane, Heading, Paragraph, Button} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Spinner, Button} from 'evergreen-ui'
 
 import {expandWithPublished} from '../helpers/bases-locales'
 
 import {listBasesLocales} from '../lib/bal-api'
 import {sortBalByUpdate} from '../lib/sort-bal'
 
-import PublicBasesLocalesList from '../components/bases-locales-list/public-bases-locales-list'
+const PublicBasesLocalesList = dynamic(() => import('../components/bases-locales-list/public-bases-locales-list'), {
+  ssr: false,
+  loading: () => (
+    <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
+      <Spinner />
+    </Pane>
+  )
+})
 
 function All({basesLocales}) {
   const onCreate = useCallback(() => {
