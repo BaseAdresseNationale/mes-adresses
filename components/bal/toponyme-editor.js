@@ -10,6 +10,8 @@ import {useInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
+import AccentTool from '../accent-tool'
+
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
 
@@ -114,20 +116,26 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <TextInputField
-        ref={setRef}
-        required
-        label='Nom du toponyme'
-        display='block'
-        disabled={isLoading}
-        width='100%'
-        maxWidth={500}
-        value={nom}
-        maxLength={200}
-        marginBottom={16}
-        placeholder='Nom du toponyme…'
-        onChange={onNomChange}
-      />
+      <Pane display='flex' flexDirection='row' alignItems='center'>
+        <TextInputField
+          ref={setRef}
+          required
+          label='Nom du toponyme'
+          display='block'
+          disabled={isLoading}
+          width='100%'
+          maxWidth={500}
+          value={nom}
+          maxLength={200}
+          marginBottom={16}
+          placeholder='Nom du toponyme…'
+          onChange={onNomChange}
+        />
+
+        <Pane marginTop={10} marginLeft={4}>
+          <AccentTool input={nom} handleAccent={onNomChange} />
+        </Pane>
+      </Pane>
 
       <PositionEditor isToponyme />
 

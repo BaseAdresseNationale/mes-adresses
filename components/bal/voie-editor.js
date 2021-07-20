@@ -9,6 +9,8 @@ import {useInput, useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
+import AccentTool from '../accent-tool'
+
 import DrawEditor from './draw-editor'
 
 function VoieEditor({initialValue, onSubmit, onCancel}) {
@@ -84,20 +86,26 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <TextInputField
-        ref={setRef}
-        required
-        label='Nom de la voie'
-        display='block'
-        disabled={isLoading}
-        width='100%'
-        maxWidth={500}
-        value={nom}
-        maxLength={200}
-        marginBottom={16}
-        placeholder='Nom de la voie…'
-        onChange={onNomChange}
-      />
+      <Pane display='flex' flexDirection='row' alignItems='center'>
+        <TextInputField
+          ref={setRef}
+          required
+          label='Nom de la voie'
+          display='block'
+          disabled={isLoading}
+          width='100%'
+          maxWidth={500}
+          value={nom}
+          maxLength={200}
+          marginBottom={16}
+          placeholder='Nom de la voie…'
+          onChange={onNomChange}
+        />
+
+        <Pane marginTop={10} marginLeft={4}>
+          <AccentTool input={nom} handleAccent={onNomChange} />
+        </Pane>
+      </Pane>
 
       <Checkbox
         checked={isMetric}
