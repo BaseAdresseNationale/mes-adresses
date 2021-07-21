@@ -279,6 +279,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 {...numero}
                 key={numero._id}
                 id={numero._id}
+                isCertified={numero.certifie}
                 comment={numero.comment}
                 warning={numero.positions.find(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
                 isSelectable={!isEditing}

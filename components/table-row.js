@@ -1,11 +1,11 @@
 import React, {useState, useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, EndorsedIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
 import BalDataContext from '../contexts/bal-data'
 
-const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId}) => {
+const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId, isCertified}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
   const {numeros, isEditing, toponymes} = useContext(BalDataContext)
@@ -101,6 +101,13 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
           </Tooltip>
         </Table.Cell>
       )}
+      {isCertified && (
+        <Table.TextCell flex='0 1 1'>
+          <Tooltip content='Cette adresse est certifiée par la commune' position={Position.BOTTOM}>
+            <EndorsedIcon color='success' style={{verticalAlign: 'bottom'}} />
+          </Tooltip>
+        </Table.TextCell>
+      )}
       {warning && (
         <Table.TextCell flex='0 1 1'>
           <Tooltip content={warning} position={Position.BOTTOM}>
@@ -165,7 +172,8 @@ TableRow.propTypes = {
   onEdit: PropTypes.func,
   onRemove: PropTypes.func.isRequired,
   handleSelect: PropTypes.func,
-  isSelected: PropTypes.bool
+  isSelected: PropTypes.bool,
+  isCertified: PropTypes.bool
 }
 
 TableRow.defaultProps = {
@@ -178,7 +186,8 @@ TableRow.defaultProps = {
   onEdit: null,
   handleSelect: null,
   onSelect: null,
-  isSelected: false
+  isSelected: false,
+  isCertified: false
 }
 
 export default TableRow
