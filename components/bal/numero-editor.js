@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, SelectField, TextInput, Button, Alert} from 'evergreen-ui'
+import {Pane, SelectField, TextInput, Button, Alert, EndorsedIcon} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
@@ -27,6 +27,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
+  const [certifie, setCertifie] = useState(initialValue?.certifie || false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
   const [nomVoie, onNomVoieChange] = useState('')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
@@ -53,7 +54,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       numero: Number(numero),
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
-      parcelles: selectedParcelles
+      parcelles: selectedParcelles,
+      certifie
     }
 
     if (markers.length > 0) {
@@ -79,7 +81,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voieId, nomVoie, toponymeId, suffixe, comment, markers, selectedParcelles, onSubmit])
+  }, [numero, nomVoie, voieId, toponymeId, suffixe, comment, markers, selectedParcelles, certifie, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -88,13 +90,21 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     onCancel()
   }, [disableMarkers, onCancel])
 
+  const submitCertificationLabel = useMemo(() => {
+    if (isLoading) {
+      return 'En cours…'
+    }
+
+    return initialValue?.certifie ? 'Enregistrer' : 'Certifier et enregistrer'
+  }, [isLoading, initialValue])
+
   const submitLabel = useMemo(() => {
     if (isLoading) {
       return 'En cours…'
     }
 
-    return 'Enregistrer'
-  }, [isLoading])
+    return initialValue?.certifie ? 'Ne plus certifier et enregistrer' : 'Enregistrer'
+  }, [isLoading, initialValue])
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
@@ -218,7 +228,28 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         </Alert>
       )}
 
-      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success' marginTop={16}>
+      <Button
+        isLoading={isLoading}
+        type='submit'
+        appearance='primary'
+        intent='success'
+        marginTop={16}
+        marginLeft={8}
+        iconAfter={EndorsedIcon}
+        onClick={() => setCertifie(true)}
+      >
+        {submitCertificationLabel}
+      </Button>
+
+      <Button
+        isLoading={isLoading}
+        type='submit'
+        appearance='default'
+        intent={initialValue?.certifie ? 'danger' : 'success'}
+        marginTop={16}
+        marginLeft={8}
+        onClick={() => setCertifie(false)}
+      >
         {submitLabel}
       </Button>
 
@@ -247,7 +278,8 @@ NumeroEditor.propTypes = {
     parcelles: PropTypes.array,
     comment: PropTypes.string,
     positions: PropTypes.array,
-    toponyme: PropTypes.string
+    toponyme: PropTypes.string,
+    certifie: PropTypes.bool
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
