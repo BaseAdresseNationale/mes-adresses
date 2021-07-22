@@ -1,6 +1,6 @@
-import React, {useContext, useState, useCallback, useEffect} from 'react'
+import React, {useContext, useState, useCallback, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon, EndorsedIcon} from 'evergreen-ui'
 import {sortBy, uniq} from 'lodash'
 
 import {normalizeSort} from '../lib/normalize'
@@ -10,7 +10,7 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
 
-const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, onSubmit}) => {
+const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllCertifie, onSubmit}) => {
   const {voies, toponymes} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)
@@ -50,6 +50,22 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(getDefaultToponyme)
 
+  const submitCertificationLabel = useMemo(() => {
+    if (isLoading) {
+      return 'En cours…'
+    }
+
+    return isAllCertifie ? 'Enregistrer' : 'Certifier et enregistrer'
+  }, [isLoading, isAllCertifie])
+
+  const submitLabel = useMemo(() => {
+    if (isLoading) {
+      return 'En cours…'
+    }
+
+    return isAllCertifie ? 'Ne plus certifier et enregistrer' : 'Enregistrer'
+  }, [isLoading, isAllCertifie])
+
   const handleComplete = () => {
     setIsShown(false)
     setIsLoading(false)
@@ -60,7 +76,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     resetPositionType()
   }
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = useCallback(async certifie => {
     const data = {selectedVoieId, selectedToponymeId, numeros: selectedNumeros, positionType}
     const body = data.numeros
     const type = data.positionType
@@ -94,6 +110,8 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
       r.comment = commentCondition(r)
 
+      r.certifie = certifie
+
       return r
     })
 
@@ -126,9 +144,8 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           title='Modification multiple'
           isConfirmLoading={isLoading}
           cancelLabel='Annuler'
-          confirmLabel={isLoading ? 'Chargement...' : 'Enregistrer'}
+          hasFooter={false}
           onCloseComplete={() => handleComplete()}
-          onConfirm={() => handleConfirm()}
         >
 
           <Paragraph marginBottom={8} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
@@ -204,6 +221,43 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             onChange={onRemoveAllCommentsChange}
           />
 
+          <Pane display='flex' justifyContent='end' paddingBottom={16}>
+            <Button
+              disabled={isLoading}
+              appearance='minimal'
+              marginLeft={8}
+              marginTop={16}
+              display='inline-flex'
+              onClick={() => setIsShown(false)}
+            >
+              Annuler
+            </Button>
+
+            <Button
+              isLoading={isLoading}
+              type='submit'
+              appearance='default'
+              intent={isAllCertifie ? 'danger' : 'success'}
+              marginTop={16}
+              marginLeft={8}
+              onClick={() => handleConfirm(false)}
+            >
+              {submitLabel}
+            </Button>
+
+            <Button
+              isLoading={isLoading}
+              type='submit'
+              appearance='primary'
+              intent='success'
+              marginTop={16}
+              marginLeft={8}
+              iconAfter={EndorsedIcon}
+              onClick={() => handleConfirm(true)}
+            >
+              {submitCertificationLabel}
+            </Button>
+          </Pane>
         </Dialog>
 
         {error && (
@@ -237,6 +291,7 @@ GroupedActions.propTypes = {
   selectedNumerosIds: PropTypes.array.isRequired,
   resetSelectedNumerosIds: PropTypes.func.isRequired,
   setIsRemoveWarningShown: PropTypes.func.isRequired,
+  isAllCertifie: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired
 }
 

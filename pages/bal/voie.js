@@ -44,6 +44,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   })
 
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
+  const [isAllCertifie, setIsAllCertifie] = useState(false)
 
   const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
   const noFilter = numeros && filtered.length === numeros.length
@@ -170,6 +171,12 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setIsEditing(isAdding)
   }, [isAdding, setIsEditing])
 
+  useEffect(() => {
+    const filteredNumeros = numeros?.filter(numero => selectedNumerosIds.includes(numero._id))
+    const filteredCertifieNumeros = filteredNumeros?.filter(numero => numero.certifie)
+    setIsAllCertifie(filteredCertifieNumeros?.length === selectedNumerosIds.length)
+  }, [numeros, selectedNumerosIds])
+
   return (
     <>
       <VoieHeading defaultVoie={voie} />
@@ -207,6 +214,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
           selectedNumerosIds={toEdit}
           resetSelectedNumerosIds={() => setSelectedNumerosIds([])}
           setIsRemoveWarningShown={setIsRemoveWarningShown}
+          isAllCertifie={isAllCertifie}
           onSubmit={onMultipleEdit}
         />
       )}
