@@ -2,7 +2,7 @@ import React, {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
 
-import {editNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
+import {addVoie, editNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -26,6 +26,8 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
   const {token} = useContext(TokenContext)
 
   const {
+    baseLocale,
+    codeCommune,
     numeros,
     reloadNumerosToponyme,
     editingId,
@@ -66,10 +68,16 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
     setIsAdding(true)
   }, [])
 
-  const onEdit = useCallback(async body => {
+  const onEdit = useCallback(async (voieData, body) => {
+    let editedVoie = voieData
+
     try {
+      if (!editedVoie._id) {
+        editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+      }
+
       const {toponyme} = body
-      await editNumero(editingId, body, token)
+      await editNumero(editingId, {...body, voie: editedVoie._id}, token)
 
       await reloadNumerosToponyme(updatedToponyme._id || toponyme)
       setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
@@ -78,7 +86,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
     }
 
     setEditingId(null)
-  }, [editingId, setEditingId, reloadNumerosToponyme, token, updatedToponyme])
+  }, [editingId, setEditingId, baseLocale, codeCommune, reloadNumerosToponyme, token, updatedToponyme])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
