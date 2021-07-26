@@ -231,7 +231,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            {!editingId && numeros && token && filtered.length > 1 && (
+            {!isEditing && numeros && token && filtered.length > 1 && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
