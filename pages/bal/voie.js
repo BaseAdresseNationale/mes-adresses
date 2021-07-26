@@ -2,7 +2,7 @@ import React, {useState, useCallback, useEffect, useContext, useMemo} from 'reac
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Table, Button, Checkbox, Alert, AddIcon} from 'evergreen-ui'
 
-import {addNumero, editNumero, removeNumero, getNumeros} from '../../lib/bal-api'
+import {addNumero, editNumero, removeNumero, getNumeros, addVoie} from '../../lib/bal-api'
 
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
@@ -26,6 +26,8 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const {token} = useContext(TokenContext)
 
   const {
+    baseLocale,
+    codeCommune,
     numeros,
     reloadNumeros,
     editingId,
@@ -78,13 +80,18 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
-  const onAdd = useCallback(async body => {
-    await addNumero(body.voie, body, token)
+  const onAdd = useCallback(async (voieData, body) => {
+    let editedVoie = voieData
+    if (!editedVoie._id) {
+      editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+    }
+
+    await addNumero(editedVoie._id, body, token)
 
     await reloadNumeros()
 
     setIsAdding(false)
-  }, [reloadNumeros, token])
+  }, [baseLocale, codeCommune, reloadNumeros, token])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -95,13 +102,18 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     setEditingId(idNumero)
   }, [setEditingId])
 
-  const onEdit = useCallback(async body => {
-    await editNumero(editingId, body, token)
+  const onEdit = useCallback(async (voieData, body) => {
+    let editedVoie = voieData
+    if (!editedVoie._id) {
+      editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+    }
+
+    await editNumero(editingId, {...body, voie: editedVoie._id}, token)
 
     await reloadNumeros()
 
     setEditingId(null)
-  }, [editingId, setEditingId, reloadNumeros, token])
+  }, [editingId, baseLocale, codeCommune, setEditingId, reloadNumeros, token])
 
   const onMultipleEdit = useCallback(async body => {
     await Promise.all(body.map(async numero => {
@@ -219,7 +231,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            {!editingId && numeros && token && filtered.length > 1 && (
+            {!isEditing && numeros && token && filtered.length > 1 && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
