@@ -22,19 +22,22 @@ const CertificationMessage = ({voies}) => {
     const checkCertifiateAdresses = async () => {
       const wasInformed = JSON.parse(localStorage.getItem(CERTIF_AUTO_KEY) || false)
       const wasWelcomed = JSON.parse(localStorage.getItem('was-welcomed') || false)
-      const allNumeros = []
 
-      await Promise.all(voies.map(async voie => {
-        const numeros = await getNumeros(voie._id)
-        const certifiedNumeros = numeros.filter(n => n.certifie)
+      if (!wasInformed && wasWelcomed) {
+        const allNumeros = []
 
-        certifiedNumeros.forEach(numero => {
-          allNumeros.push(numero)
-        })
-      }))
+        await Promise.all(voies.map(async voie => {
+          const numeros = await getNumeros(voie._id)
+          const certifiedNumeros = numeros.filter(n => n.certifie)
 
-      if (allNumeros.length === 0 && !wasInformed && wasWelcomed) {
-        setIsShown(true)
+          certifiedNumeros.forEach(numero => {
+            allNumeros.push(numero)
+          })
+        }))
+
+        if (allNumeros.length === 0) {
+          setIsShown(true)
+        }
       }
     }
 
