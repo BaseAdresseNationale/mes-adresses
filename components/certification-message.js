@@ -24,18 +24,18 @@ const CertificationMessage = ({voies}) => {
       const wasWelcomed = JSON.parse(localStorage.getItem('was-welcomed') || false)
 
       if (!wasInformed && wasWelcomed) {
-        const allNumeros = []
+        const allCertifiedNumeros = []
 
         await Promise.all(voies.map(async voie => {
           const numeros = await getNumeros(voie._id)
           const certifiedNumeros = numeros.filter(n => n.certifie)
 
           certifiedNumeros.forEach(numero => {
-            allNumeros.push(numero)
+            allCertifiedNumeros.push(numero)
           })
         }))
 
-        if (allNumeros.length === 0) {
+        if (allCertifiedNumeros.length === 0) {
           setIsShown(true)
         }
       }
