@@ -1,23 +1,23 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
 
+import LocalStorageContext from '../../contexts/local-storage'
+
 import Header from '../../components/header'
 import Footer from '../../components/footer'
+import BackButton from '../../components/back-button'
 
 import CreateForm from './create-form'
 import UploadForm from './upload-form'
 import DemoForm from './demo-form'
 
-const BackToUserBals = dynamic(import('./back-to-user-bals'), {
-  ssr: false
-})
-
 function Index({defaultCommune, isDemo}) {
+  const {balAccess} = useContext(LocalStorageContext)
+
   const [index, setIndex] = useState(0)
 
   return (
@@ -52,7 +52,11 @@ function Index({defaultCommune, isDemo}) {
             </Pane>
           </>)}
 
-        <BackToUserBals />
+        {balAccess && (
+          <Pane marginLeft={16} marginY={8}>
+            <BackButton is='a' href='/'>Retour à la liste de mes Bases Adresses Locales</BackButton>
+          </Pane>
+        )}
       </Pane>
 
       {!isDemo && (

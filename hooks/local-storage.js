@@ -15,7 +15,7 @@ export function useLocalStorage(key, value) {
   const getIndex = index => {
     const data = getData()
 
-    return data[index]
+    return data ? data[index] : null
   }
 
   const addIndex = (index, value) => {
