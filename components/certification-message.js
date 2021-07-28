@@ -2,11 +2,11 @@ import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Dialog, Pane, Paragraph} from 'evergreen-ui'
 
-import {getNumeros} from '../lib/bal-api'
+import {getCommuneWithCount} from '../lib/bal-api'
 
 const CERTIF_AUTO_KEY = 'certificationAutoAlert'
 
-const CertificationMessage = ({voies}) => {
+const CertificationMessage = ({balId, codeCommune}) => {
   const [isShown, setIsShown] = useState(false)
 
   const handleConfirmation = certifAuto => {
@@ -23,26 +23,17 @@ const CertificationMessage = ({voies}) => {
       const wasInformed = JSON.parse(localStorage.getItem(CERTIF_AUTO_KEY) || false)
       const wasWelcomed = JSON.parse(localStorage.getItem('was-welcomed') || false)
 
-      if (!wasInformed && wasWelcomed) {
-        const allCertifiedNumeros = []
+      if (!wasInformed && wasWelcomed && balId && codeCommune) {
+        const {nbNumerosCertifies} = await getCommuneWithCount(balId, codeCommune)
 
-        await Promise.all(voies.map(async voie => {
-          const numeros = await getNumeros(voie._id)
-          const certifiedNumeros = numeros.filter(n => n.certifie)
-
-          certifiedNumeros.forEach(numero => {
-            allCertifiedNumeros.push(numero)
-          })
-        }))
-
-        if (allCertifiedNumeros.length === 0) {
+        if (nbNumerosCertifies === 0) {
           setIsShown(true)
         }
       }
     }
 
     checkCertifiateAdresses()
-  }, [voies])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Dialog
@@ -87,11 +78,8 @@ const CertificationMessage = ({voies}) => {
 }
 
 CertificationMessage.propTypes = {
-  voies: PropTypes.array
-}
-
-CertificationMessage.defaultProps = {
-  voies: null
+  balId: PropTypes.string.isRequired,
+  codeCommune: PropTypes.string.isRequired
 }
 
 export default CertificationMessage

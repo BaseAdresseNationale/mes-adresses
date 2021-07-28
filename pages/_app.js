@@ -152,8 +152,8 @@ function App({error, Component, pageProps, query}) {
                         <>
                           <IEWarning />
                           {pageProps.baseLocale && <WelcomeMessage />}
-                          {pageProps.defaultVoies && pageProps.baseLocale?.published && (
-                            <CertificationMessage voies={pageProps.defaultVoies} />
+                          {pageProps.baseLocale?.published && (
+                            <CertificationMessage balId={pageProps.baseLocale?._id} codeCommune={pageProps.commune?.code} />
                           )}
                           <Component {...otherPageProps} />
                         </>
