@@ -7,9 +7,11 @@ import {useLocalStorage} from '../hooks/local-storage'
 const LocalStorageContext = React.createContext()
 
 const STORAGE_KEY = 'bal-access'
+const WELCOMED_KEY = 'was-welcomed'
 
 export function LocalStorageContextProvider(props) {
   const [balAccess, , getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY)
+  const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY)
 
   const removeBAL = async balId => {
     const token = getBalToken(balId)
@@ -20,10 +22,8 @@ export function LocalStorageContextProvider(props) {
   return (
     <LocalStorageContext.Provider
       value={{
-        balAccess,
-        getBalToken,
-        addBalAccess,
-        removeBAL
+        balAccess, getBalToken, addBalAccess, removeBAL,
+        wasWelcomed, setWasWelcomed
       }}
       {...props}
     />
