@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react'
+import PropTypes from 'prop-types'
 import {Button, Dialog, Pane, Paragraph} from 'evergreen-ui'
 
 import {getNumeros} from '../lib/bal-api'
 
 const CERTIF_AUTO_KEY = 'certificationAutoAlert'
 
-const CertificationMessage = voies => {
+const CertificationMessage = ({voies}) => {
   const [isShown, setIsShown] = useState(false)
 
   const handleConfirmation = certifAuto => {
@@ -23,7 +24,7 @@ const CertificationMessage = voies => {
       const wasWelcomed = JSON.parse(localStorage.getItem('was-welcomed') || false)
       const allNumeros = []
 
-      await Promise.all(voies.voies.map(async voie => {
+      await Promise.all(voies.map(async voie => {
         const numeros = await getNumeros(voie._id)
         const certifiedNumeros = numeros.filter(n => n.certifie)
 
@@ -81,6 +82,14 @@ const CertificationMessage = voies => {
 
     </Dialog>
   )
+}
+
+CertificationMessage.propTypes = {
+  voies: PropTypes.array
+}
+
+CertificationMessage.defaultProps = {
+  voies: null
 }
 
 export default CertificationMessage
