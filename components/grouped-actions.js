@@ -1,6 +1,6 @@
-import React, {useContext, useState, useCallback, useEffect, useMemo} from 'react'
+import React, {useContext, useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon, EndorsedIcon} from 'evergreen-ui'
+import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon} from 'evergreen-ui'
 import {sortBy, uniq} from 'lodash'
 
 import {normalizeSort} from '../lib/normalize'
@@ -9,6 +9,7 @@ import BalDataContext from '../contexts/bal-data'
 import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
+import CertificationButton from './certification-button'
 
 const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) => {
   const {voies, toponymes} = useContext(BalDataContext)
@@ -49,22 +50,6 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   }, [hasUniqToponyme, selectedNumerosUniqToponyme])
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(getDefaultToponyme)
-
-  const submitCertificationLabel = useMemo(() => {
-    if (isLoading) {
-      return 'En cours…'
-    }
-
-    return isAllSelectedCertifie ? 'Enregistrer' : 'Certifier et enregistrer'
-  }, [isLoading, isAllSelectedCertifie])
-
-  const submitLabel = useMemo(() => {
-    if (isLoading) {
-      return 'En cours…'
-    }
-
-    return isAllSelectedCertifie ? 'Ne plus certifier et enregistrer' : 'Enregistrer'
-  }, [isLoading, isAllSelectedCertifie])
 
   const handleComplete = () => {
     setIsShown(false)
@@ -222,41 +207,12 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           />
 
           <Pane display='flex' justifyContent='end' paddingBottom={16}>
-            <Button
-              disabled={isLoading}
-              appearance='minimal'
-              marginLeft={8}
-              marginTop={16}
-              display='inline-flex'
-              onClick={() => setIsShown(false)}
-            >
-              Annuler
-            </Button>
-
-            <Button
+            <CertificationButton
               isLoading={isLoading}
-              type='submit'
-              appearance='default'
-              intent={isAllSelectedCertifie ? 'danger' : 'success'}
-              marginTop={16}
-              marginLeft={8}
-              onClick={() => handleConfirm(false)}
-            >
-              {submitLabel}
-            </Button>
-
-            <Button
-              isLoading={isLoading}
-              type='submit'
-              appearance='primary'
-              intent='success'
-              marginTop={16}
-              marginLeft={8}
-              iconAfter={EndorsedIcon}
-              onClick={() => handleConfirm(true)}
-            >
-              {submitCertificationLabel}
-            </Button>
+              isCertified={isAllSelectedCertifie}
+              onConfirm={handleConfirm}
+              onCancel={() => setIsShown(false)}
+            />
           </Pane>
         </Dialog>
 

@@ -1,6 +1,6 @@
-import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
+import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, SelectField, TextInput, Button, Alert, EndorsedIcon} from 'evergreen-ui'
+import {Pane, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
@@ -14,6 +14,7 @@ import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
 import Comment from '../comment'
+import CertificationButton from '../certification-button'
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
 import NumeroVoieSelector from './numero-editor/numero-voie-selector'
@@ -89,22 +90,6 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     disableMarkers()
     onCancel()
   }, [disableMarkers, onCancel])
-
-  const submitCertificationLabel = useMemo(() => {
-    if (isLoading) {
-      return 'En cours…'
-    }
-
-    return initialValue?.certifie ? 'Enregistrer' : 'Certifier et enregistrer'
-  }, [isLoading, initialValue])
-
-  const submitLabel = useMemo(() => {
-    if (isLoading) {
-      return 'En cours…'
-    }
-
-    return initialValue?.certifie ? 'Ne plus certifier et enregistrer' : 'Enregistrer'
-  }, [isLoading, initialValue])
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
@@ -228,43 +213,13 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         </Alert>
       )}
 
-      <Button
+      <CertificationButton
+        isCertified={initialValue?.certifie}
         isLoading={isLoading}
-        type='submit'
-        appearance='primary'
-        intent='success'
-        marginTop={16}
-        marginLeft={8}
-        iconAfter={EndorsedIcon}
-        onClick={() => setCertifie(true)}
-      >
-        {submitCertificationLabel}
-      </Button>
+        onConfirm={setCertifie}
+        onCancel={onFormCancel}
+      />
 
-      <Button
-        isLoading={isLoading}
-        type='submit'
-        appearance='default'
-        intent={initialValue?.certifie ? 'danger' : 'success'}
-        marginTop={16}
-        marginLeft={8}
-        onClick={() => setCertifie(false)}
-      >
-        {submitLabel}
-      </Button>
-
-      {onCancel && (
-        <Button
-          disabled={isLoading}
-          appearance='minimal'
-          marginLeft={8}
-          marginTop={16}
-          display='inline-flex'
-          onClick={onFormCancel}
-        >
-          Annuler
-        </Button>
-      )}
     </Pane>
   )
 }
