@@ -44,7 +44,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   })
 
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
-  const [isAllCertifie, setIsAllCertifie] = useState(false)
+  const [isAllSelectedCertifie, setIsAllSelectedCertifie] = useState(false)
 
   const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
   const noFilter = numeros && filtered.length === numeros.length
@@ -174,7 +174,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   useEffect(() => {
     const filteredNumeros = numeros?.filter(numero => selectedNumerosIds.includes(numero._id))
     const filteredCertifieNumeros = filteredNumeros?.filter(numero => numero.certifie)
-    setIsAllCertifie(filteredCertifieNumeros?.length === selectedNumerosIds.length)
+    setIsAllSelectedCertifie(filteredCertifieNumeros?.length === selectedNumerosIds.length)
   }, [numeros, selectedNumerosIds])
 
   return (
@@ -214,7 +214,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
           selectedNumerosIds={toEdit}
           resetSelectedNumerosIds={() => setSelectedNumerosIds([])}
           setIsRemoveWarningShown={setIsRemoveWarningShown}
-          isAllCertifie={isAllCertifie}
+          isAllSelectedCertifie={isAllSelectedCertifie}
           onSubmit={onMultipleEdit}
         />
       )}

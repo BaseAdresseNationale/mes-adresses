@@ -10,7 +10,7 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
 
-const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllCertifie, onSubmit}) => {
+const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) => {
   const {voies, toponymes} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)
@@ -55,16 +55,16 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
       return 'En cours…'
     }
 
-    return isAllCertifie ? 'Enregistrer' : 'Certifier et enregistrer'
-  }, [isLoading, isAllCertifie])
+    return isAllSelectedCertifie ? 'Enregistrer' : 'Certifier et enregistrer'
+  }, [isLoading, isAllSelectedCertifie])
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
       return 'En cours…'
     }
 
-    return isAllCertifie ? 'Ne plus certifier et enregistrer' : 'Enregistrer'
-  }, [isLoading, isAllCertifie])
+    return isAllSelectedCertifie ? 'Ne plus certifier et enregistrer' : 'Enregistrer'
+  }, [isLoading, isAllSelectedCertifie])
 
   const handleComplete = () => {
     setIsShown(false)
@@ -237,7 +237,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               isLoading={isLoading}
               type='submit'
               appearance='default'
-              intent={isAllCertifie ? 'danger' : 'success'}
+              intent={isAllSelectedCertifie ? 'danger' : 'success'}
               marginTop={16}
               marginLeft={8}
               onClick={() => handleConfirm(false)}
@@ -291,7 +291,7 @@ GroupedActions.propTypes = {
   selectedNumerosIds: PropTypes.array.isRequired,
   resetSelectedNumerosIds: PropTypes.func.isRequired,
   setIsRemoveWarningShown: PropTypes.func.isRequired,
-  isAllCertifie: PropTypes.bool.isRequired,
+  isAllSelectedCertifie: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired
 }
 
