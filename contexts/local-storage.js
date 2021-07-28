@@ -9,7 +9,7 @@ const LocalStorageContext = React.createContext()
 const STORAGE_KEY = 'bal-access'
 
 export function LocalStorageContextProvider(props) {
-  const [balAccess, setBalAccess, getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY)
+  const [balAccess, , getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY)
 
   const removeBAL = async balId => {
     const token = getBalToken(balId)
