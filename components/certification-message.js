@@ -74,7 +74,6 @@ const CertificationMessage = ({voies}) => {
         <Button
           type='button'
           appearance='default'
-          intent='success'
           marginY={16}
           marginX={8}
           onClick={() => handleConfirmation(false)}
