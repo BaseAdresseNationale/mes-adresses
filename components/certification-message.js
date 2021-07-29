@@ -1,17 +1,20 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Dialog, Pane, Paragraph} from 'evergreen-ui'
 
-import {getCommuneWithCount} from '../lib/bal-api'
+import TokenContext from '../contexts/token'
+
+import {getCommuneWithCount, certifyBAL} from '../lib/bal-api'
 
 const CERTIF_AUTO_KEY = 'certificationAutoAlert'
 
 const CertificationMessage = ({balId, codeCommune}) => {
   const [isShown, setIsShown] = useState(false)
+  const {token} = useContext(TokenContext)
 
-  const handleConfirmation = certifAuto => {
+  const handleConfirmation = async certifAuto => {
     if (certifAuto) {
-      console.log('let’s batch !')
+      await certifyBAL(balId, codeCommune, token, {certifie: certifAuto})
     }
 
     localStorage.setItem(CERTIF_AUTO_KEY, true)
