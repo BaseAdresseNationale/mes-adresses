@@ -74,11 +74,12 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           <Text fontSize='12px' fontStyle='italic'>{_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} - </Text>
           {communes.length === 0 ? (
             <Text fontSize='12px' fontStyle='italic'>Vide</Text>
-          ) : communes.length < 2 ? (
-            commune && <Text fontSize='12px' fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
           ) : (
-            <Text fontSize='12px' fontStyle='italic'>{communes.length} Communes</Text>
-          )}
+            communes.length < 2 ? (
+              commune && <Text fontSize='12px' fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
+            ) : (
+              <Text fontSize='12px' fontStyle='italic'>{communes.length} Communes</Text>
+            ))}
         </Pane>
         <Pane display='flex' flexDirection='row' justifyContent='space-between'>
           {baseLocale.status === 'demo' ? (

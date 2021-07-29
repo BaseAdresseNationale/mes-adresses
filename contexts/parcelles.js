@@ -59,9 +59,9 @@ export function ParcellesContextProvider(props) {
 
   const highlightParcelles = useCallback(parcelles => {
     if (map && isLayerLoaded) {
-      const filters = isParcelleSelectionEnabled ?
-        ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])] :
-        ['==', ['get', 'id'], '']
+      const filters = isParcelleSelectionEnabled
+        ? ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])]
+        : ['==', ['get', 'id'], '']
       map.setFilter('parcelle-highlighted', filters)
     }
   }, [map, isLayerLoaded, isParcelleSelectionEnabled])

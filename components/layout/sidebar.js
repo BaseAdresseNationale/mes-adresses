@@ -43,11 +43,12 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
           >
             {isHidden ? (
               <ChevronRightIcon />
-            ) : editingId ? (
-              <CrossIcon />
             ) : (
-              <ChevronLeftIcon />
-            )}
+              editingId ? (
+                <CrossIcon />
+              ) : (
+                <ChevronLeftIcon />
+              ))}
           </Button>
         </Pane>
       )}

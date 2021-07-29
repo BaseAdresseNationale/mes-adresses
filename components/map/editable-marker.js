@@ -73,9 +73,9 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
   useEffect(() => {
     if (isEditing && !overrideText) {
       const {longitude, latitude} = viewport
-      const coordinates = markers.length > 0 ?
-        [markers[0].longitude, markers[0].latitude] :
-        [longitude, latitude]
+      const coordinates = markers.length > 0
+        ? [markers[0].longitude, markers[0].latitude]
+        : [longitude, latitude]
       const suggestion = computeSuggestedNumero(coordinates)
       setSuggestedMarkerNumero(suggestion)
       setSuggestedNumero(suggestion)

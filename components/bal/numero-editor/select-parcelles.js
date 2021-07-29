@@ -19,8 +19,8 @@ function SelectParcelles({isToponyme}) {
         help={`Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au ${addressType}. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.`}
       />
       <Pane>
-        {selectedParcelles.length > 0 ?
-          selectedParcelles.map(parcelle => {
+        {selectedParcelles.length > 0
+          ? selectedParcelles.map(parcelle => {
             const isHovered = parcelle === hoveredParcelle?.id
 
             return (

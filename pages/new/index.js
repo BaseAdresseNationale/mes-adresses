@@ -33,8 +33,8 @@ function Index({defaultCommune, isDemo}) {
       <Pane paddingTop={16} flex={1}>
         {isDemo ? (
           <DemoForm defaultCommune={defaultCommune} />
-        ) :
-          (<>
+        ) : (
+          <>
             <TabNavigation display='flex' marginLeft={16}>
               {['Créer', 'Importer un fichier CSV'].map((tab, idx) => (
                 <Tab key={tab} id={tab} isSelected={index === idx} onSelect={() => setIndex(idx)}>

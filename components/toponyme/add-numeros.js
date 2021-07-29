@@ -24,11 +24,9 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
   }
 
   const handleSelectNumero = ({value}) => {
-    setSelectedVoieNumeros(selectedNumeros => {
-      return selectedNumeros.includes(value) ?
-        selectedNumeros.filter(id => id !== value) :
-        [...selectedNumeros, value]
-    })
+    setSelectedVoieNumeros(selectedNumeros => selectedNumeros.includes(value)
+      ? selectedNumeros.filter(id => id !== value)
+      : [...selectedNumeros, value])
   }
 
   const numerosLabel = useMemo(() => {
@@ -47,9 +45,9 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
   }, [selectedVoieId, voieNumeros, selectedVoieNumeros, voies])
 
   const handleSubmit = useCallback(() => {
-    const numeros = selectedVoieNumeros.length > 0 ?
-      selectedVoieNumeros :
-      voieNumeros.map(({_id}) => _id)
+    const numeros = selectedVoieNumeros.length > 0
+      ? selectedVoieNumeros
+      : voieNumeros.map(({_id}) => _id)
 
     onSubmit(numeros)
   }, [selectedVoieNumeros, voieNumeros, onSubmit])
