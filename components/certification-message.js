@@ -21,9 +21,8 @@ const CertificationMessage = ({balId, codeCommune}) => {
   useEffect(() => {
     const checkCertifiateAdresses = async () => {
       const wasInformed = JSON.parse(localStorage.getItem(CERTIF_AUTO_KEY) || false)
-      const wasWelcomed = JSON.parse(localStorage.getItem('was-welcomed') || false)
 
-      if (!wasInformed && wasWelcomed && balId && codeCommune) {
+      if (!wasInformed && balId && codeCommune) {
         const {nbNumerosCertifies} = await getCommuneWithCount(balId, codeCommune)
 
         if (nbNumerosCertifies === 0) {
