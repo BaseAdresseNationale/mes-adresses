@@ -85,27 +85,25 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
   const {coordinates} = position.point
 
   return (
-    <>
-      <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(initialToponyme._id)}>
-          <Text color='white' paddingLeft={8} paddingRight={10}>
-            {initialToponyme.nom}
-          </Text>
-        </Pane>
+    <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
+      <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(initialToponyme._id)}>
+        <Text color='white' paddingLeft={8} paddingRight={10}>
+          {initialToponyme.nom}
+        </Text>
+      </Pane>
 
-        {showContextMenu && (
-          <Pane background='tint1' position='absolute' margin={10}>
-            <Menu>
-              <Menu.Group>
-                <Menu.Item icon={TrashIcon} intent='danger' onSelect={deleteToponyme}>
-                  Supprimer…
-                </Menu.Item>
-              </Menu.Group>
-            </Menu>
-          </Pane>
-        )}
-      </Marker>
-    </>
+      {showContextMenu && (
+        <Pane background='tint1' position='absolute' margin={10}>
+          <Menu>
+            <Menu.Group>
+              <Menu.Item icon={TrashIcon} intent='danger' onSelect={deleteToponyme}>
+                Supprimer…
+              </Menu.Item>
+            </Menu.Group>
+          </Menu>
+        </Pane>
+      )}
+    </Marker>
   )
 }
 

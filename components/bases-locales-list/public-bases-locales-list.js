@@ -36,47 +36,45 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
   [filtered, sortBal, limit])
 
   return (
-    <>
-      <Pane borderTop>
-        <Table>
-          <Table.Head>
-            <Table.SearchHeaderCell
-              placeholder='Rechercher une Base Adresse Locale'
-              onChange={onFilter}
+    <Pane borderTop>
+      <Table>
+        <Table.Head>
+          <Table.SearchHeaderCell
+            placeholder='Rechercher une Base Adresse Locale'
+            onChange={onFilter}
+          />
+        </Table.Head>
+        {slicedBasesLocalesList.length === 0 && (
+          <Table.Row>
+            <Table.TextCell color='muted' fontStyle='italic'>
+              Aucun résultat
+            </Table.TextCell>
+          </Table.Row>
+        )}
+        <Table.Body background='tint1'>
+          {slicedBasesLocalesList.map(bal => (
+            <BaseLocaleCard
+              key={bal._id}
+              baseLocale={bal}
+              initialIsOpen={basesLocales.length === 1}
+              onSelect={() => onBalSelect(bal)}
             />
-          </Table.Head>
-          {slicedBasesLocalesList.length === 0 && (
-            <Table.Row>
-              <Table.TextCell color='muted' fontStyle='italic'>
-                Aucun résultat
-              </Table.TextCell>
-            </Table.Row>
+          ))}
+          {limit < filtered.length && (
+            <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
+              <Button
+                appearance='minimal'
+                marginBottom='1em'
+                iconAfter={PlusIcon}
+                onClick={() => setLimit(limit => limit + 50)}
+              >
+                Afficher les 50 Bases Locales suivantes
+              </Button>
+            </Pane>
           )}
-          <Table.Body background='tint1'>
-            {slicedBasesLocalesList.map(bal => (
-              <BaseLocaleCard
-                key={bal._id}
-                baseLocale={bal}
-                initialIsOpen={basesLocales.length === 1}
-                onSelect={() => onBalSelect(bal)}
-              />
-            ))}
-            {limit < filtered.length && (
-              <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
-                <Button
-                  appearance='minimal'
-                  marginBottom='1em'
-                  iconAfter={PlusIcon}
-                  onClick={() => setLimit(limit => limit + 50)}
-                >
-                  Afficher les 50 Bases Locales suivantes
-                </Button>
-              </Pane>
-            )}
-          </Table.Body>
-        </Table>
-      </Pane>
-    </>
+        </Table.Body>
+      </Table>
+    </Pane>
   )
 }
 
