@@ -76,10 +76,8 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     }
   }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
 
-  useEffect(() => {
-    return () => {
-      disableDraw()
-    }
+  useEffect(() => () => {
+    disableDraw()
   }, [disableDraw])
 
   return (

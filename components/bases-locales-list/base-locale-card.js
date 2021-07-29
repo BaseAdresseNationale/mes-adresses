@@ -43,9 +43,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
     setIsOpen(!isOpen)
   }
 
-  const hasToken = useMemo(() => {
-    return Boolean(getBalToken(baseLocale._id))
-  }, [baseLocale, getBalToken])
+  const hasToken = useMemo(() => Boolean(getBalToken(baseLocale._id)), [baseLocale, getBalToken])
 
   useEffect(() => {
     const fetchCommune = async code => {

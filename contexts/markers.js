@@ -46,15 +46,13 @@ export function MarkersContextProvider(props) {
   }, [])
 
   const updateMarker = useCallback((markerId, data) => {
-    setMarkers(markers => {
-      return markers.map(marker => {
-        if (marker._id === markerId) {
-          return {_id: markerId, ...data}
-        }
+    setMarkers(markers => markers.map(marker => {
+      if (marker._id === markerId) {
+        return {_id: markerId, ...data}
+      }
 
-        return marker
-      })
-    })
+      return marker
+    }))
   }, [])
 
   return (

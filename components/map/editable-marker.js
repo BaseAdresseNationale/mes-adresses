@@ -24,9 +24,9 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
     }
   }, [idVoie, geojson])
 
-  const isSuggestionNeeded = useMemo(() => {
-    return !isToponyme && !overrideText && voie
-  }, [isToponyme, overrideText, voie])
+  const isSuggestionNeeded = useMemo(() =>
+    !isToponyme && !overrideText && voie,
+  [isToponyme, overrideText, voie])
 
   const computeSuggestedNumero = useCallback(coordinates => {
     if (isSuggestionNeeded) {

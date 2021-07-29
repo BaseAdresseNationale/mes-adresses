@@ -9,9 +9,9 @@ function ToponymeNumeros({numeros, handleSelect}) {
   const [hovered, setHovered] = useState(null)
   const {token} = useContext(TokenContext)
 
-  const numerosByVoie = useMemo(() => {
-    return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
-  }, [numeros])
+  const numerosByVoie = useMemo(() =>
+    groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom),
+  [numeros])
 
   return (
     Object.keys(numerosByVoie).sort((a, b) => a > b).map(nomVoie => (

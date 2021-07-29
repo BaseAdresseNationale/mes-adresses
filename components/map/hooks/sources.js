@@ -10,19 +10,18 @@ function useSources(voie, toponyme, hovered, editingId) {
 
   return useMemo(() => {
     const sources = []
-    const setPaintProperties = feature => {
-      return {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          id: feature.properties.idNumero || feature.properties.idVoie,
-          opacity: feature.properties.idVoie === hovered ? 1 : 0.4,
-          color: randomColor({
-            luminosity: 'dark',
+    const setPaintProperties = feature => ({
+      ...feature,
+      properties: {
+        ...feature.properties,
+        id: feature.properties.idNumero || feature.properties.idVoie,
+        opacity: feature.properties.idVoie === hovered ? 1 : 0.4,
+        color: randomColor({
+          luminosity: 'dark',
           seed: feature.properties.idVoie,
-        }
-      }
-    }
+        }),
+      },
+    })
 
     if (!geojson) {
       return sources

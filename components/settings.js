@@ -28,9 +28,7 @@ import BalDataContext from '../contexts/bal-data'
 
 import RenewTokenDialog from './renew-token-dialog'
 
-const mailHasChanged = (listA, listB) => {
-  return !isEqual([...listA].sort(), [...listB].sort())
-}
+const mailHasChanged = (listA, listB) => !isEqual([...listA].sort(), [...listB].sort())
 
 const Settings = React.memo(({nomBaseLocale}) => {
   const {showSettings, setShowSettings} = useContext(SettingsContext)
@@ -45,10 +43,10 @@ const Settings = React.memo(({nomBaseLocale}) => {
   const [error, setError] = useState()
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] = useState(false)
 
-  const formHasChanged = useCallback(() => {
-    return nomInput !== baseLocale.nom ||
-    mailHasChanged(emails || [], balEmails)
-  }, [nomInput, baseLocale, emails, balEmails])
+  const formHasChanged = useCallback(() =>
+    nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails),
+  [nomInput, baseLocale, emails, balEmails],
+  )
 
   useEffect(() => {
     setBalEmails(emails || [])

@@ -47,10 +47,8 @@ function BALCreationChart({basesLocales}) {
   ]
 
   const data = {
-    labels: groupedByMonth.map(data => {
-      return formatISO(new Date(data[0]._created), {representation: 'date'})
-    }),
-    datasets
+    labels: groupedByMonth.map(data => formatISO(new Date(data[0]._created), {representation: 'date'})),
+    datasets,
   }
 
   return (

@@ -6,12 +6,10 @@ import {useDebouncedCallback} from 'use-debounce'
 function useFuse(source, delay, options) {
   const [filtered, setFiltered] = useState(source || [])
 
-  const fuse = useMemo(() => {
-    return new Fuse(source, {
-      threshold: 0.4,
-      ...options,
-    })
-  }, [options, source])
+  const fuse = useMemo(() => new Fuse(source, {
+    threshold: 0.4,
+    ...options,
+  }), [options, source])
 
   useEffect(() => {
     setFiltered(source)

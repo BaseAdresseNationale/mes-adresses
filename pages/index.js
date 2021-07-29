@@ -35,10 +35,8 @@ function Index() {
   )
 }
 
-Index.getInitialProps = async () => {
-  return {
-    layout: 'fullscreen',
-  }
-}
+Index.getInitialProps = async () => ({
+  layout: 'fullscreen',
+})
 
 export default Index

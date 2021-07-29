@@ -43,22 +43,18 @@ async function main() {
       bbox: [-5.317, 41.277, 9.689, 51.234],
       center: [-5.317, 51.234],
     },
-    ...regionsFeatures.map(feature => {
-      return {
-        center: getCenter(feature),
-        bbox: getBbox(feature),
-        code: `REG-${feature.properties.code}`,
-        nom: feature.properties.nom,
-      }
-    }),
-    ...departementsFeatures.map(feature => {
-      return {
-        center: getCenter(feature),
-        bbox: getBbox(feature),
-        code: `DEP-${feature.properties.code}`,
-        nom: feature.properties.nom,
-      }
-    })
+    ...regionsFeatures.map(feature => ({
+      center: getCenter(feature),
+      bbox: getBbox(feature),
+      code: `REG-${feature.properties.code}`,
+      nom: feature.properties.nom,
+    })),
+    ...departementsFeatures.map(feature => ({
+      center: getCenter(feature),
+      bbox: getBbox(feature),
+      code: `DEP-${feature.properties.code}`,
+      nom: feature.properties.nom,
+    })),
   ]
 
   const index = dataset.reduce((acc, data) => {

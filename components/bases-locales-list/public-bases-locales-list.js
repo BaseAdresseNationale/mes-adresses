@@ -31,9 +31,9 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
     ],
   })
 
-  const slicedBasesLocalesList = useMemo(() => {
-    return sortBal(filtered).slice(0, limit)
-  }, [filtered, sortBal, limit])
+  const slicedBasesLocalesList = useMemo(() =>
+    sortBal(filtered).slice(0, limit),
+  [filtered, sortBal, limit])
 
   return (
     <>

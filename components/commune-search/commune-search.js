@@ -28,26 +28,24 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
       itemToString={item => item ? `${item.nom} (${item.departement.nom} - ${item.departement.code})` : ''}
       onChange={onSelect}
     >
-      {({getInputProps, getRef, inputValue}) => {
-        return (
-          <SearchInput
-            ref={ref => {
-              if (innerRef) {
-                innerRef(ref)
-              }
+      {({getInputProps, getRef, inputValue}) => (
+        <SearchInput
+          ref={ref => {
+            if (innerRef) {
+              innerRef(ref)
+            }
 
-              return getRef(ref)
-            }}
-            autocomplete='chrome-off'
-            placeholder={placeholder}
-            value={inputValue}
-            {...getInputProps({
-              onChange: e => onSearch(e.target.value)
-            })}
-            {...props}
-          />
-        )
-      }}
+            return getRef(ref)
+          }}
+          autocomplete='chrome-off'
+          placeholder={placeholder}
+          value={inputValue}
+          {...getInputProps({
+            onChange: e => onSearch(e.target.value),
+          })}
+          {...props}
+        />
+      )}
     </Autocomplete>
   )
 }

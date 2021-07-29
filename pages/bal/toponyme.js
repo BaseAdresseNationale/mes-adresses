@@ -49,11 +49,9 @@ function Toponyme({toponyme, defaultNumeros}) {
     setIsLoading(true)
 
     try {
-      await Promise.all(numeros.map(id => {
-        return editNumero(id, {
-          toponyme: toponyme._id,
-        }, token)
-      }))
+      await Promise.all(numeros.map(id => editNumero(id, {
+        toponyme: toponyme._id,
+      }, token)))
     } catch (error) {
       setError(error.message)
     }
