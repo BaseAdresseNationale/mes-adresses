@@ -35,7 +35,7 @@ function DemoForm({defaultCommune}) {
 
     Router.push(
       `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
-      `/bal/${bal._id}/communes/${commune}`
+      `/bal/${bal._id}/communes/${commune}`,
     )
   }, [commune, populate, addBalAccess])
 
@@ -76,11 +76,11 @@ function DemoForm({defaultCommune}) {
 }
 
 DemoForm.propTypes = {
-  defaultCommune: PropTypes.object
+  defaultCommune: PropTypes.object,
 }
 
 DemoForm.defaultProps = {
-  defaultCommune: null
+  defaultCommune: null,
 }
 
 export default DemoForm

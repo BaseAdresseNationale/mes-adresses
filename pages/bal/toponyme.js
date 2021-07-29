@@ -33,14 +33,14 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
     editingId,
     setEditingId,
     isEditing,
-    setIsEditing
+    setIsEditing,
   } = useContext(BalDataContext)
 
   useHelp(3)
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
-      'numero'
-    ]
+      'numero',
+    ],
   })
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
@@ -51,7 +51,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
     try {
       await Promise.all(numeros.map(id => {
         return editNumero(id, {
-          toponyme: toponyme._id
+          toponyme: toponyme._id,
         }, token)
       }))
     } catch (error) {
@@ -198,7 +198,7 @@ Toponyme.getInitialProps = async ({baseLocale, commune, toponyme}) => {
     toponyme,
     baseLocale,
     commune,
-    defaultNumeros
+    defaultNumeros,
   }
 }
 
@@ -206,13 +206,13 @@ Toponyme.propTypes = {
   toponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    positions: PropTypes.array.isRequired
+    positions: PropTypes.array.isRequired,
   }).isRequired,
-  defaultNumeros: PropTypes.array
+  defaultNumeros: PropTypes.array,
 }
 
 Toponyme.defaultProps = {
-  defaultNumeros: null
+  defaultNumeros: null,
 }
 
 export default Toponyme

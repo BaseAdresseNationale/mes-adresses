@@ -78,7 +78,7 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
 NumeroVoieSelector.defaultProps = {
   voieId: null,
   nomVoie: '',
-  mode: 'selection'
+  mode: 'selection',
 }
 
 NumeroVoieSelector.propTypes = {
@@ -87,7 +87,7 @@ NumeroVoieSelector.propTypes = {
   voies: PropTypes.array.isRequired,
   mode: PropTypes.oneOf(['creation', 'selection']),
   handleVoie: PropTypes.func.isRequired,
-  handleNomVoie: PropTypes.func.isRequired
+  handleNomVoie: PropTypes.func.isRequired,
 }
 
 export default NumeroVoieSelector

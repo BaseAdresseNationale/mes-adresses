@@ -4,7 +4,7 @@ import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} fr
 
 const STYLES = [
   {label: 'Plan OpenMapTiles', value: 'vector'},
-  {label: 'Photographie aérienne', value: 'ortho'}
+  {label: 'Photographie aérienne', value: 'ortho'},
 ]
 
 function StyleSelector({style, isFormOpen, handleStyle, showCadastre, handleCadastre}) {
@@ -52,7 +52,7 @@ StyleSelector.propTypes = {
   isFormOpen: PropTypes.bool.isRequired,
   handleStyle: PropTypes.func.isRequired,
   showCadastre: PropTypes.bool.isRequired,
-  handleCadastre: PropTypes.func.isRequired
+  handleCadastre: PropTypes.func.isRequired,
 }
 
 export default StyleSelector

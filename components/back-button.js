@@ -12,7 +12,7 @@ const BackButton = memo(
 )
 
 BackButton.propTypes = {
-  ...Button.propTypes
+  ...Button.propTypes,
 }
 
 export default BackButton

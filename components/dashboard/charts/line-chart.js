@@ -6,27 +6,27 @@ import {Line} from 'react-chartjs-2'
 const LineChart = ({title, data}) => {
   const options = {
     tooltips: {
-      mode: 'index'
+      mode: 'index',
     },
     hover: {
       mode: 'nearest',
-      intersect: true
+      intersect: true,
     },
     scales: {
       xAxes: [{
         type: 'time',
         time: {
-          unit: 'month'
-        }
+          unit: 'month',
+        },
       }],
       yAxes: [{
         display: true,
         scaleLabel: {
           display: true,
-          labelString: 'Nombre de BAL'
-        }
-      }]
-    }
+          labelString: 'Nombre de BAL',
+        },
+      }],
+    },
   }
 
   return (
@@ -43,11 +43,11 @@ const LineChart = ({title, data}) => {
 
 LineChart.propTypes = {
   title: PropTypes.string,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
 }
 
 LineChart.defaultProps = {
-  title: null
+  title: null,
 }
 
 export default LineChart

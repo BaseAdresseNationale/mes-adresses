@@ -12,7 +12,7 @@ const DrawEditor = ({trace}) => {
     setData({
       type: 'Feature',
       properties: {},
-      geometry: trace
+      geometry: trace,
     })
   }, [setData, trace])
 
@@ -70,11 +70,11 @@ const DrawEditor = ({trace}) => {
 }
 
 DrawEditor.defaultProps = {
-  trace: null
+  trace: null,
 }
 
 DrawEditor.propTypes = {
-  trace: PropTypes.object
+  trace: PropTypes.object,
 }
 
 export default DrawEditor

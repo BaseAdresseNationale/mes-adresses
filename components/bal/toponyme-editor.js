@@ -31,7 +31,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     const body = {
       nom,
       positions: [],
-      parcelles: selectedParcelles
+      parcelles: selectedParcelles,
     }
 
     if (markers) {
@@ -42,8 +42,8 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
               type: 'Point',
               coordinates: [marker.longitude, marker.latitude]
             },
-            type: marker.type
-          }
+            type: marker.type,
+          },
         )
       })
     }
@@ -102,7 +102,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
         {
           longitude: position.point.coordinates[0],
           latitude: position.point.coordinates[1],
-          type: position.type
+          type: position.type,
         }
       ))
 
@@ -163,15 +163,15 @@ ToponymeEditor.propTypes = {
     nom: PropTypes.string,
     typeNumerotation: PropTypes.string,
     parcelles: PropTypes.array.isRequired,
-    positions: PropTypes.array.isRequired
+    positions: PropTypes.array.isRequired,
   }),
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
 }
 
 ToponymeEditor.defaultProps = {
   initialValue: null,
-  onCancel: null
+  onCancel: null,
 }
 
 export default ToponymeEditor

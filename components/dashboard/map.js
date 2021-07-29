@@ -9,11 +9,11 @@ import {colors} from '../../lib/colors'
 const defaultViewport = {
   latitude: 46.9,
   longitude: 1.7,
-  zoom: 4
+  zoom: 4,
 }
 
 const defaultGeoData = {
-  bbox: [-5.317, 41.277, 9.689, 51.234]
+  bbox: [-5.317, 41.277, 9.689, 51.234],
 }
 
 const Map = ({departement, basesLocales, contours}) => {
@@ -42,16 +42,16 @@ const Map = ({departement, basesLocales, contours}) => {
         colors.blue,
         'published',
         colors.green,
-        'white'
+        'white',
       ],
       'fill-opacity': [
         'case',
         ['==', ['get', 'code'], hoveredId ? hoveredId : null],
         0.8,
-        1
+        1,
       ],
-      'fill-outline-color': '#ffffff'
-    }
+      'fill-outline-color': '#ffffff',
+    },
   }
 
   const departementsLayer = {
@@ -66,10 +66,10 @@ const Map = ({departement, basesLocales, contours}) => {
         0.5,
         ['==', ['get', 'code'], hoveredId ? hoveredId : null],
         0.8,
-        0.3
+        0.3,
       ],
-      'fill-outline-color': '#000'
-    }
+      'fill-outline-color': '#000',
+    },
   }
 
   const handleResize = useCallback(() => {
@@ -93,7 +93,7 @@ const Map = ({departement, basesLocales, contours}) => {
       const hoverInfo = {
         longitude,
         latitude,
-        feature
+        feature,
       }
       const communeBALNumber = basesLocales.filter(({communes}) => communes.includes(hoveredId)).length
 
@@ -126,7 +126,7 @@ const Map = ({departement, basesLocales, contours}) => {
 
     Router.push({
       pathname: '/dashboard/departement',
-      query: {codeDepartement}
+      query: {codeDepartement},
     }, as)
   }, [])
 
@@ -307,13 +307,13 @@ const Map = ({departement, basesLocales, contours}) => {
 Map.defaultProps = {
   departement: null,
   basesLocales: null,
-  contours: null
+  contours: null,
 }
 
 Map.propTypes = {
   departement: PropTypes.string,
   basesLocales: PropTypes.array,
-  contours: PropTypes.object
+  contours: PropTypes.object,
 }
 
 export default Map

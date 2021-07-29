@@ -10,14 +10,14 @@ const PieChart = ({title, data, height}) => {
     labels: data.map(({label}) => label),
     datasets: [{
       data: data.map(({values}) => values),
-      backgroundColor: data.map(({color}) => color)
-    }]
+      backgroundColor: data.map(({color}) => color),
+    }],
   }
 
   const options = {
     legend: {
-      display: true
-    }
+      display: true,
+    },
   }
 
   return (
@@ -36,12 +36,12 @@ const PieChart = ({title, data, height}) => {
 PieChart.propTypes = {
   title: PropTypes.string,
   height: PropTypes.number,
-  data: PropTypes.array.isRequired
+  data: PropTypes.array.isRequired,
 }
 
 PieChart.defaultProps = {
   title: null,
-  height: null
+  height: null,
 }
 
 export default PieChart

@@ -70,8 +70,8 @@ function UploadForm() {
       const baseLocale = await createBaseLocale({
         nom,
         emails: [
-          email
-        ]
+          email,
+        ],
       })
 
       addBalAccess(baseLocale._id, baseLocale.token)
@@ -222,7 +222,7 @@ function UploadForm() {
 }
 
 UploadForm.getInitialProps = () => ({
-  layout: 'fullscreen'
+  layout: 'fullscreen',
 })
 
 export default UploadForm

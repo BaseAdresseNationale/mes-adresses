@@ -22,11 +22,11 @@ Fullscreen.propTypes = {
   isHidden: PropTypes.bool.isRequired,
   size: PropTypes.number.isRequired,
   top: PropTypes.number.isRequired,
-  onToggle: PropTypes.func.isRequired
+  onToggle: PropTypes.func.isRequired,
 }
 
 Fullscreen.defaultProps = {
-  isOpen: false
+  isOpen: false,
 }
 
 export default Fullscreen

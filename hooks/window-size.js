@@ -4,7 +4,7 @@ const initialValue = {
   innerHeight: null,
   innerWidth: null,
   outerWidth: null,
-  outerHeight: null
+  outerHeight: null,
 }
 
 function getSize() {
@@ -12,7 +12,7 @@ function getSize() {
     innerHeight: window.innerHeight,
     innerWidth: window.innerWidth,
     outerHeight: window.outerHeight,
-    outerWidth: window.outerWidth
+    outerWidth: window.outerWidth,
   }
 }
 

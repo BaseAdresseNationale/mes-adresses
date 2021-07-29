@@ -15,7 +15,7 @@ const PublicBasesLocalesList = dynamic(() => import('../components/bases-locales
     <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
       <Spinner />
     </Pane>
-  )
+  ),
 })
 
 function All({basesLocales}) {
@@ -54,12 +54,12 @@ All.getInitialProps = async () => {
 
   return {
     basesLocales,
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   }
 }
 
 All.propTypes = {
-  basesLocales: PropTypes.array.isRequired
+  basesLocales: PropTypes.array.isRequired,
 }
 
 export default All

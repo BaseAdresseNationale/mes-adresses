@@ -19,8 +19,7 @@ function useSources(voie, toponyme, hovered, editingId) {
           opacity: feature.properties.idVoie === hovered ? 1 : 0.4,
           color: randomColor({
             luminosity: 'dark',
-            seed: feature.properties.idVoie
-          })
+          seed: feature.properties.idVoie,
         }
       }
     }
@@ -50,8 +49,8 @@ function useSources(voie, toponyme, hovered, editingId) {
       name: 'voie-trace',
       data: {
         type: 'FeatureCollection',
-        features: lines
-      }
+        features: lines,
+      },
     })
 
     if (features.length > 0) {
@@ -59,8 +58,8 @@ function useSources(voie, toponyme, hovered, editingId) {
         name: 'positions',
         data: {
           type: 'FeatureCollection',
-          features: features.filter(({properties}) => properties.type !== 'voie-trace')
-        }
+          features: features.filter(({properties}) => properties.type !== 'voie-trace'),
+        },
       })
 
       const adresses = features.filter(feature => feature.properties.type === 'adresse')
@@ -71,7 +70,7 @@ function useSources(voie, toponyme, hovered, editingId) {
 
         const centroid = computeCentroid({
           type: 'FeatureCollection',
-          features
+          features,
         })
 
         centroid.properties = feature.properties
@@ -83,8 +82,8 @@ function useSources(voie, toponyme, hovered, editingId) {
         name: 'voies',
         data: {
           type: 'FeatureCollection',
-          features: voies
-        }
+          features: voies,
+        },
       })
     }
 

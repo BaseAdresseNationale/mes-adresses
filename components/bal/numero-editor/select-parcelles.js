@@ -60,11 +60,11 @@ function SelectParcelles({isToponyme}) {
 }
 
 SelectParcelles.defaultProps = {
-  isToponyme: false
+  isToponyme: false,
 }
 
 SelectParcelles.propTypes = {
-  isToponyme: PropTypes.bool
+  isToponyme: PropTypes.bool,
 }
 
 export default SelectParcelles

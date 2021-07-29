@@ -30,7 +30,7 @@ function NotFound({statusCode}) {
 }
 
 NotFound.propTypes = {
-  statusCode: PropTypes.number.isRequired
+  statusCode: PropTypes.number.isRequired,
 }
 
 NotFound.getInitialProps = ({res, err}) => {

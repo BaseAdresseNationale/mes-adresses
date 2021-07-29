@@ -7,7 +7,7 @@ export default function useError(error) {
   useEffect(() => {
     if (err) {
       toaster.danger('Une erreur est survenue', {
-        description: err
+        description: err,
       })
     }
   }, [err])

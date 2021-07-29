@@ -27,11 +27,11 @@ DeleteWarning.propTypes = {
   isShown: PropTypes.bool,
   content: PropTypes.node.isRequired,
   onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired
+  onConfirm: PropTypes.func.isRequired,
 }
 
 DeleteWarning.defaultProps = {
-  isShown: false
+  isShown: false,
 }
 
 export default DeleteWarning

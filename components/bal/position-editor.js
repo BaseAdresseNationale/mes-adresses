@@ -99,11 +99,11 @@ function PositionEditor({isToponyme}) {
 }
 
 PositionEditor.propTypes = {
-  isToponyme: PropTypes.bool
+  isToponyme: PropTypes.bool,
 }
 
 PositionEditor.defaultProps = {
-  isToponyme: false
+  isToponyme: false,
 }
 
 export default PositionEditor

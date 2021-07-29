@@ -29,8 +29,8 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   useHelp(1)
   const [filtered, onFilter] = useFuse(communes, 200, {
     keys: [
-      'nom'
-    ]
+      'nom',
+    ],
   })
 
   const onAdd = useCallback(async ({commune, populate}) => {
@@ -41,7 +41,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
     }
 
     const updatedCommunes = await Promise.all(
-      updated.communes.map(commune => getCommune(commune))
+      updated.communes.map(commune => getCommune(commune)),
     )
 
     setIsAdding(false)
@@ -52,7 +52,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
     const updated = await removeCommune(baseLocale._id, toRemove, token)
 
     const updatedCommunes = await Promise.all(
-      updated.communes.map(commune => getCommune(commune))
+      updated.communes.map(commune => getCommune(commune)),
     )
 
     setCommunes(updatedCommunes)
@@ -62,7 +62,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const onSelect = useCallback(codeCommune => {
     Router.push(
       `/bal/commune?balId=${baseLocale._id}&codeCommune=${codeCommune}`,
-      `/bal/${baseLocale._id}/communes/${codeCommune}`
+      `/bal/${baseLocale._id}/communes/${codeCommune}`,
     )
   }, [baseLocale])
 
@@ -166,29 +166,29 @@ Index.getInitialProps = async ({baseLocale}) => {
         return await getCommune(codeCommune)
       } catch (error) {
         return {
-          code: codeCommune
+          code: codeCommune,
         }
       }
-    })
+    }),
   )
 
   return {
     layout: 'sidebar',
     defaultCommunes: communes,
-    baseLocale
+    baseLocale,
   }
 }
 
 Index.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired,
   }).isRequired,
-  defaultCommunes: PropTypes.array
+  defaultCommunes: PropTypes.array,
 }
 
 Index.defaultProps = {
-  defaultCommunes: null
+  defaultCommunes: null,
 }
 
 export default Index

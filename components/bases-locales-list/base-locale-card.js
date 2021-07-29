@@ -166,7 +166,7 @@ BaseLocaleCard.defaultProps = {
   isAdmin: false,
   userEmail: null,
   onRemove: null,
-  initialIsOpen: false
+  initialIsOpen: false,
 }
 
 BaseLocaleCard.propTypes = {
@@ -179,15 +179,14 @@ BaseLocaleCard.propTypes = {
     _created: PropTypes.string,
     description: PropTypes.string,
     status: PropTypes.oneOf([
-      'draft', 'ready-to-publish', 'published', 'demo'
-    ])
+      'draft', 'ready-to-publish', 'published', 'demo',
+    ]),
   }).isRequired,
   initialIsOpen: PropTypes.bool,
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
-  onRemove: PropTypes.func
-
+  onRemove: PropTypes.func,
 }
 
 export default BaseLocaleCard

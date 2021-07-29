@@ -14,7 +14,7 @@ export const TABS = [
   'Voies',
   'Toponymes',
   'Numéros',
-  'Publication'
+  'Publication',
 ]
 
 const HelpTabs = ({tab}) => {
@@ -37,7 +37,7 @@ const HelpTabs = ({tab}) => {
 }
 
 HelpTabs.propTypes = {
-  tab: PropTypes.number.isRequired
+  tab: PropTypes.number.isRequired,
 }
 
 export default HelpTabs

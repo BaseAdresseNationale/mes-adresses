@@ -22,13 +22,13 @@ Comment.propTypes = {
   input: PropTypes.string,
   limit: PropTypes.number,
   onChange: PropTypes.func.isRequired,
-  isDisabled: PropTypes.bool
+  isDisabled: PropTypes.bool,
 }
 
 Comment.defaultProps = {
   input: '',
   limit: 5000,
-  isDisabled: false
+  isDisabled: false,
 }
 
 export default Comment

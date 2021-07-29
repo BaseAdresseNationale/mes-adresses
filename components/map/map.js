@@ -31,7 +31,7 @@ import useLayers from './hooks/layers'
 import useHovered from './hooks/hovered'
 
 const settings = {
-  maxZoom: 19
+  maxZoom: 19,
 }
 
 function getInteractionProps(enabled) {
@@ -42,7 +42,7 @@ function getInteractionProps(enabled) {
     touchZoom: enabled,
     touchRotate: enabled,
     keyboard: enabled,
-    doubleClickZoom: enabled
+    doubleClickZoom: enabled,
   }
 }
 
@@ -65,7 +65,7 @@ function generateNewStyle(style, sources, layers) {
   for (const {name, data} of sources) {
     baseStyle = baseStyle.setIn(['sources', name], fromJS({
       type: 'geojson',
-      data
+      data,
     }))
   }
 
@@ -93,7 +93,7 @@ function Map({interactive, commune, voie, toponyme}) {
     setIsEditing,
     reloadVoies,
     reloadNumeros,
-    isEditing
+    isEditing,
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
@@ -149,7 +149,7 @@ function Map({interactive, commune, voie, toponyme}) {
       } else {
         router.push(
           `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-          `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+          `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`,
         )
       }
     }
@@ -163,14 +163,14 @@ function Map({interactive, commune, voie, toponyme}) {
     } else if (isNumeroCreated) { // Numéro créé depuis la vue commune ou une autre voie
       router.push(
         `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`,
       )
     } else if (isVoiesList) { // Toponyme créé depuis la vue commune
       reloadVoies()
     } else { // Toponyme créé depuis la vue voie
       router.push(
         `/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}`
+        `/bal/${baseLocale._id}/communes/${commune.code}`,
       )
     }
   }, [router, baseLocale._id, commune, voie, reloadNumeros, reloadVoies])
@@ -196,7 +196,7 @@ function Map({interactive, commune, voie, toponyme}) {
     setOpenForm(false)
     router.push(
       `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${editedToponyme._id}`,
-      `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${editedToponyme._id}`
+      `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${editedToponyme._id}`,
     )
   }, [baseLocale._id, commune, token, router])
 
@@ -233,7 +233,7 @@ function Map({interactive, commune, voie, toponyme}) {
         setViewport(viewport => ({...viewport}))
       } else if (bounds !== false) {
         const camera = map.cameraForBounds(bounds, {
-          padding: 100
+          padding: 100,
         })
 
         if (camera) {
@@ -242,7 +242,7 @@ function Map({interactive, commune, voie, toponyme}) {
             bearing: camera.bearing,
             longitude: camera.center.lng,
             latitude: camera.center.lat,
-            zoom: camera.zoom
+            zoom: camera.zoom,
           }))
         }
       }
@@ -370,14 +370,14 @@ Map.propTypes = {
   interactive: PropTypes.bool,
   commune: PropTypes.object,
   voie: PropTypes.object,
-  toponyme: PropTypes.object
+  toponyme: PropTypes.object,
 }
 
 Map.defaultProps = {
   interactive: true,
   commune: null,
   voie: null,
-  toponyme: null
+  toponyme: null,
 }
 
 export default Map

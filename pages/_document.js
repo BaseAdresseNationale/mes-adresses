@@ -12,7 +12,7 @@ class Document extends NextDocument {
     return {
       ...initialProps,
       css,
-      hydrationScript
+      hydrationScript,
     }
   }
 

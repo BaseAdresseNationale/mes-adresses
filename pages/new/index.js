@@ -76,25 +76,25 @@ Index.getInitialProps = async ({query}) => {
   let defaultCommune
   if (query.commune) {
     defaultCommune = await getCommune(query.commune, {
-      fields: 'departement'
+      fields: 'departement',
     })
   }
 
   return {
     defaultCommune,
     isDemo: query.demo === '1',
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   }
 }
 
 Index.propTypes = {
   defaultCommune: PropTypes.string,
-  isDemo: PropTypes.bool
+  isDemo: PropTypes.bool,
 }
 
 Index.defaultProps = {
   defaultCommune: null,
-  isDemo: false
+  isDemo: false,
 }
 
 export default Index

@@ -26,7 +26,7 @@ const ToponymeHeading = ({defaultToponyme}) => {
     const editedToponyme = await editToponyme(toponyme._id, {
       nom,
       positions,
-      parcelles
+      parcelles,
     }, token)
 
     setEditingId(null)
@@ -80,8 +80,8 @@ ToponymeHeading.propTypes = {
   defaultToponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    positions: PropTypes.array.isRequired
-  }).isRequired
+    positions: PropTypes.array.isRequired,
+  }).isRequired,
 }
 
 export default ToponymeHeading

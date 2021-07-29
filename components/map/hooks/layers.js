@@ -25,13 +25,13 @@ function useLayers(voie, sources, showCadastre, style) {
     if (hasNumeros) {
       layers.push(
         getNumerosPointLayer(style),
-        getNumerosLabelLayer()
+        getNumerosLabelLayer(),
       )
     }
 
     if (!voie && hasVoies) {
       layers.push(
-        getVoiesLabelLayer(style)
+        getVoiesLabelLayer(style),
       )
     }
 

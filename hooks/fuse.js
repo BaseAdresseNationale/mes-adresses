@@ -9,7 +9,7 @@ function useFuse(source, delay, options) {
   const fuse = useMemo(() => {
     return new Fuse(source, {
       threshold: 0.4,
-      ...options
+      ...options,
     })
   }, [options, source])
 

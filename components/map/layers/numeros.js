@@ -12,26 +12,26 @@ export function getNumerosPointLayer(style) {
     paint: {
       'circle-color': {
         type: 'identity',
-        property: 'color'
+        property: 'color',
       },
       'circle-opacity': {
         type: 'identity',
-        property: 'opacity'
+        property: 'opacity',
       },
       'circle-radius': {
         stops: [
           [12, 0.8],
-          [17, 6]
-        ]
+          [17, 6],
+        ],
       },
       'circle-stroke-color': '#f8f4f0',
       'circle-stroke-width': {
         stops: [
           [12, 0.3],
-          [17, 0.8]
-        ]
-      }
-    }
+          [17, 0.8],
+        ],
+      },
+    },
   }
 
   if (style === 'ortho') {
@@ -52,18 +52,18 @@ export function getNumerosLabelLayer() {
       'text-color': '#ffffff',
       'text-halo-color': {
         type: 'identity',
-        property: 'color'
+        property: 'color',
       },
       'text-halo-width': {
         stops: [
           [12, 1.5],
-          [18, 2]
-        ]
+          [18, 2],
+        ],
       },
       'text-opacity': {
         type: 'identity',
-        property: 'opacity'
-      }
+        property: 'opacity',
+      },
     },
     layout: {
       'text-font': ['Noto Sans Regular'],
@@ -77,12 +77,12 @@ export function getNumerosLabelLayer() {
           ' ',
           {},
           ['get', 'suffixe'],
-          {}
+          {},
         ],
-        ['get', 'numero']
+        ['get', 'numero'],
       ],
-      'text-ignore-placement': true
-    }
+      'text-ignore-placement': true,
+    },
   }
 
   return layer

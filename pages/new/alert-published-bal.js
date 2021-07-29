@@ -37,7 +37,7 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
     if (bal.communes.length === 1) {
       Router.push(
         `/bal/commune?balId=${bal._id}&codeCommune=${bal.communes[0]}`,
-        `/bal/${bal._id}/communes/${bal.communes[0]}`
+        `/bal/${bal._id}/communes/${bal.communes[0]}`,
       )
     } else {
       Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
@@ -131,11 +131,11 @@ AlertPublishedBAL.propTypes = {
   onClose: PropTypes.func.isRequired,
   basesLocales: PropTypes.object.isRequired,
   onConfirm: PropTypes.func.isRequired,
-  updateBAL: PropTypes.func.isRequired
+  updateBAL: PropTypes.func.isRequired,
 }
 
 AlertPublishedBAL.defaultProps = {
-  isShown: false
+  isShown: false,
 }
 
 export default AlertPublishedBAL

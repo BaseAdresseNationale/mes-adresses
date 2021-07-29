@@ -33,14 +33,14 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     editingId,
     setEditingId,
     isEditing,
-    setIsEditing
+    setIsEditing,
   } = useContext(BalDataContext)
 
   useHelp(4)
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
-      'numeroComplet'
-    ]
+      'numeroComplet',
+    ],
   })
 
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
@@ -119,7 +119,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
     await Promise.all(body.map(async numero => {
       try {
         await editNumero(numero._id, {
-          ...numero
+          ...numero,
         }, token)
       } catch (error) {
         setError(error.message)
@@ -306,20 +306,20 @@ Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
     voie,
     baseLocale,
     commune,
-    defaultNumeros
+    defaultNumeros,
   }
 }
 
 Voie.propTypes = {
   voie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired,
   }).isRequired,
-  defaultNumeros: PropTypes.array
+  defaultNumeros: PropTypes.array,
 }
 
 Voie.defaultProps = {
-  defaultNumeros: null
+  defaultNumeros: null,
 }
 
 export default Voie

@@ -15,12 +15,12 @@ function InputLabel({title, help}) {
 }
 
 InputLabel.defaultProps = {
-  help: null
+  help: null,
 }
 
 InputLabel.propTypes = {
   title: PropTypes.string.isRequired,
-  help: PropTypes.string
+  help: PropTypes.string,
 }
 
 export default InputLabel

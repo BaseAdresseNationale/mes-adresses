@@ -38,12 +38,12 @@ Control.propTypes = {
   icon: PropTypes.object.isRequired,
   enabledHint: PropTypes.string.isRequired,
   disabledHint: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
 }
 
 Control.defaultProps = {
   enabled: true,
-  isDisabled: false
+  isDisabled: false,
 }
 
 export default Control

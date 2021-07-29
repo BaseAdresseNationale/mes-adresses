@@ -33,7 +33,7 @@ function Index() {
 }
 
 Index.getInitialProps = () => ({
-  layout: 'fullscreen'
+  layout: 'fullscreen',
 })
 
 export default Index

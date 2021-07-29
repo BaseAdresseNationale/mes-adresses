@@ -13,7 +13,7 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
     <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
       <Spinner />
     </Pane>
-  )
+  ),
 })
 
 function Index() {
@@ -37,7 +37,7 @@ function Index() {
 
 Index.getInitialProps = async () => {
   return {
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   }
 }
 

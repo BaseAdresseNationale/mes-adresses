@@ -13,7 +13,7 @@ import {
   Label,
   toaster,
   DeleteIcon,
-  AddIcon
+  AddIcon,
 } from 'evergreen-ui'
 import {isEqual, difference} from 'lodash'
 
@@ -78,7 +78,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
     try {
       await updateBaseLocale(baseLocale._id, {
         nom: nomInput.trim(),
-        emails: balEmails
+        emails: balEmails,
       }, token)
 
       await reloadEmails()
@@ -247,7 +247,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
 })
 
 Settings.propTypes = {
-  nomBaseLocale: PropTypes.string.isRequired
+  nomBaseLocale: PropTypes.string.isRequired,
 }
 
 export default Settings

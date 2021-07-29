@@ -70,11 +70,11 @@ Sidebar.propTypes = {
   children: PropTypes.node.isRequired,
   size: PropTypes.number.isRequired,
   onToggle: PropTypes.func.isRequired,
-  top: PropTypes.number.isRequired
+  top: PropTypes.number.isRequired,
 }
 
 Sidebar.defaultProps = {
-  isHidden: false
+  isHidden: false,
 }
 
 export default Sidebar

@@ -17,7 +17,7 @@ const Index = ({basesLocales, contoursCommunes}) => {
   const communeCount = uniq(flattenDeep(
     basesLocales
       .filter(({communes}) => communes.length > 0)
-      .map(({communes}) => communes)
+      .map(({communes}) => communes),
   )).length
 
   return (
@@ -41,13 +41,13 @@ Index.getInitialProps = async () => {
   return {
     basesLocales: basesLocalesWithoutDemo,
     contoursCommunes,
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   }
 }
 
 Index.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  contoursCommunes: PropTypes.object.isRequired
+  contoursCommunes: PropTypes.object.isRequired,
 }
 
 export default Index

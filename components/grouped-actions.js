@@ -237,7 +237,7 @@ GroupedActions.propTypes = {
   selectedNumerosIds: PropTypes.array.isRequired,
   resetSelectedNumerosIds: PropTypes.func.isRequired,
   setIsRemoveWarningShown: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default GroupedActions

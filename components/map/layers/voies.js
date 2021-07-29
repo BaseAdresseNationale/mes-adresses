@@ -10,16 +10,16 @@ export function getVoiesLabelLayer(style) {
         'case',
         ['==', ['get', 'opacity'], 1],
         ['get', 'color'],
-        '#000'
+        '#000',
       ],
       'text-halo-color': '#f8f4f0',
       'text-halo-blur': 0.5,
       'text-halo-width': {
         stops: [
           [12, 1.5],
-          [18, 2]
-        ]
-      }
+          [18, 2],
+        ],
+      },
     },
     layout: {
       'text-field': ['get', 'nomVoie'],
@@ -28,11 +28,11 @@ export function getVoiesLabelLayer(style) {
         base: 1,
         stops: [
           [13, 13],
-          [15, 14]
-        ]
+          [15, 14],
+        ],
       },
-      'text-font': ['Noto Sans Regular']
-    }
+      'text-font': ['Noto Sans Regular'],
+    },
   }
 
   if (style === 'ortho') {
@@ -49,11 +49,11 @@ export function getVoieTraceLayer() {
     source: 'voie-trace',
     paint: {
       'line-color': ['get', 'color'],
-      'line-width': 4
+      'line-width': 4,
     },
     layout: {
-      'line-join': 'round'
-    }
+      'line-join': 'round',
+    },
   }
 
   return layer

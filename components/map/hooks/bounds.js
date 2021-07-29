@@ -21,7 +21,7 @@ function useBounds(commune, voie, toponyme) {
       if (voie) {
         data = {
           type: 'FeatureCollection',
-          features: data.features.filter(feature => feature.properties.idVoie === voie._id)
+          features: data.features.filter(feature => feature.properties.idVoie === voie._id),
         }
       }
 
@@ -33,15 +33,15 @@ function useBounds(commune, voie, toponyme) {
             [{
               type: 'Feature',
               geometry: toponyme.positions[0].point,
-              properties: {id: toponyme._id}
+              properties: {id: toponyme._id},
             }] :
-            numeroToponyme
+            numeroToponyme,
         }
       }
 
       if (data.features.length === 1) {
         return buffer(data.features[0], BUFFER_RADIUS, {
-          units: 'meters'
+          units: 'meters',
         })
       }
 

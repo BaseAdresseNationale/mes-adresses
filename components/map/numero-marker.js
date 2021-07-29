@@ -42,27 +42,27 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
       content: ' ',
       backgroundColor: colorSeed ? randomColor({
         luminosity: 'dark',
-        seed: colorSeed
+        seed: colorSeed,
       }) : '#1070ca',
       border: '1px solid white',
       display: 'inline-block',
       width: 8,
       height: 8,
       borderRadius: '50%',
-      marginLeft: 6
+      marginLeft: 6,
     },
 
     '& > span': {
-      display: showLabel ? 'inline-block' : 'none'
+      display: showLabel ? 'inline-block' : 'none',
     },
 
     '&:hover': showLabel ? null : {
       background: 'rgba(0, 0, 0, 0.7)',
 
       '& > span': {
-        display: 'inline-block'
-      }
-    }
+        display: 'inline-block',
+      },
+    },
   }), [colorSeed, showLabel])
 
   const removeAddress = (async () => {
@@ -124,21 +124,21 @@ NumeroMarker.propTypes = {
     numeroComplet: PropTypes.string.isRequired,
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
-        coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
+        coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
       }).isRequired,
-      type: PropTypes.string
-    }))
+      type: PropTypes.string,
+    })),
   }).isRequired,
   colorSeed: PropTypes.string,
   showLabel: PropTypes.bool,
   showContextMenu: PropTypes.bool,
-  setShowContextMenu: PropTypes.func.isRequired
+  setShowContextMenu: PropTypes.func.isRequired,
 }
 
 NumeroMarker.defaultProps = {
   colorSeed: null,
   showLabel: false,
-  showContextMenu: false
+  showContextMenu: false,
 }
 
 export default React.memo(NumeroMarker)

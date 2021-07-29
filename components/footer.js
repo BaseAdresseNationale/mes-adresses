@@ -25,14 +25,14 @@ const DocumentationLink = ({title, description, link, onClick}) => (
 
 DocumentationLink.defaultProps = {
   link: null,
-  onClick: null
+  onClick: null,
 }
 
 DocumentationLink.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   link: PropTypes.string,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 }
 
 const Footer = () => {

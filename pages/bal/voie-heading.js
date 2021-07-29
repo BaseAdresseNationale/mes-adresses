@@ -26,7 +26,7 @@ const VoieHeading = ({defaultVoie}) => {
     const editedVoie = await editVoie(voie._id, {
       nom,
       typeNumerotation,
-      trace
+      trace,
     }, token)
 
     setEditingId(null)
@@ -79,8 +79,8 @@ const VoieHeading = ({defaultVoie}) => {
 VoieHeading.propTypes = {
   defaultVoie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired
+    nom: PropTypes.string.isRequired,
+  }).isRequired,
 }
 
 export default VoieHeading

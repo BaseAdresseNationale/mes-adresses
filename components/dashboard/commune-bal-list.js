@@ -16,7 +16,7 @@ const CommuneBALList = ({nomCommune, basesLocales}) => {
     if (bal.communes.length === 1) {
       Router.push(
         `/bal/commune?balId=${bal._id}&codeCommune=${bal.communes[0]}`,
-        `/bal/${bal._id}/communes/${bal.communes[0]}`
+        `/bal/${bal._id}/communes/${bal.communes[0]}`,
       )
     } else {
       Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
@@ -66,7 +66,7 @@ const CommuneBALList = ({nomCommune, basesLocales}) => {
 
 CommuneBALList.propTypes = {
   nomCommune: PropTypes.string.isRequired,
-  basesLocales: PropTypes.array.isRequired
+  basesLocales: PropTypes.array.isRequired,
 }
 
 export default CommuneBALList

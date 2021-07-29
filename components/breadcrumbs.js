@@ -65,24 +65,24 @@ function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
 Breadcrumbs.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string
+    nom: PropTypes.string,
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
-    nom: PropTypes.string
+    nom: PropTypes.string,
   }),
   voie: PropTypes.shape({
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired,
   }),
   toponyme: PropTypes.shape({
-    nom: PropTypes.string.isRequired
-  })
+    nom: PropTypes.string.isRequired,
+  }),
 }
 
 Breadcrumbs.defaultProps = {
   commune: null,
   voie: null,
-  toponyme: null
+  toponyme: null,
 }
 
 export default React.memo(Breadcrumbs)

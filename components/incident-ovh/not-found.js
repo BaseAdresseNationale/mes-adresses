@@ -19,11 +19,11 @@ function Error404({hasRedirection}) {
 }
 
 Error404.defaultProps = {
-  hasRedirection: false
+  hasRedirection: false,
 }
 
 Error404.propTypes = {
-  hasRedirection: PropTypes.bool
+  hasRedirection: PropTypes.bool,
 }
 
 export default Error404

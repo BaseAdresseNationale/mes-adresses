@@ -34,18 +34,18 @@ const BALCreationChart = ({basesLocales}) => {
     {
       label: 'Publiées',
       data: sumByStatus('published'),
-      backgroundColor: colors.green
+      backgroundColor: colors.green,
     },
     {
       label: 'Prêtes à être publiées',
       data: sumByStatus('ready-to-publish'),
-      backgroundColor: colors.blue
+      backgroundColor: colors.blue,
     },
     {
       label: 'Brouillons',
       data: sumByStatus('draft'),
-      backgroundColor: colors.neutral
-    }
+      backgroundColor: colors.neutral,
+    },
   ]
 
   const data = {
@@ -61,7 +61,7 @@ const BALCreationChart = ({basesLocales}) => {
 }
 
 BALCreationChart.propTypes = {
-  basesLocales: PropTypes.array.isRequired
+  basesLocales: PropTypes.array.isRequired,
 }
 
 export default BALCreationChart

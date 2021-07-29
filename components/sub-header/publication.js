@@ -16,9 +16,9 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
       marginLeft: -10,
 
       '& > span': {
-        display: 'none'
-      }
-    }
+        display: 'none',
+      },
+    },
   }), [])
 
   const handleDialogs = () => {
@@ -165,17 +165,17 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
 }
 
 Publication.defaultProps = {
-  token: null
+  token: null,
 }
 
 Publication.propTypes = {
   token: PropTypes.string,
   status: PropTypes.oneOf([
-    'draft', 'ready-to-publish', 'published', 'demo'
+    'draft', 'ready-to-publish', 'published', 'demo',
   ]).isRequired,
   onChangeStatus: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
-  baseLocale: PropTypes.object.isRequired
+  baseLocale: PropTypes.object.isRequired,
 }
 
 export default Publication

@@ -32,7 +32,7 @@ export function TokenContextProvider({balId, _token, ...props}) {
 
         Router.replace(
           `/bal?balId=${balId}`,
-          `/bal/${balId}`
+          `/bal/${balId}`,
         )
       } else {
         verify(getBalToken(balId))
@@ -51,12 +51,12 @@ export function TokenContextProvider({balId, _token, ...props}) {
 
 TokenContextProvider.propTypes = {
   balId: PropTypes.string,
-  _token: PropTypes.string
+  _token: PropTypes.string,
 }
 
 TokenContextProvider.defaultProps = {
   balId: null,
-  _token: null
+  _token: null,
 }
 
 export const MarkersContextConsumer = TokenContext.Consumer

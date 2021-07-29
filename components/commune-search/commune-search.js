@@ -11,12 +11,12 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
   const [onSearch] = useDebouncedCallback(async value => {
     const result = await searchCommunes(value, {
       fields: 'departement',
-      limit: 7
+      limit: 7,
     })
 
     setCommunes(result
       .filter(c => c.departement) // Filter communes without departements
-      .filter(c => !exclude.includes(c.code))
+      .filter(c => !exclude.includes(c.code)),
     )
   }, 300, [exclude])
 
@@ -58,13 +58,13 @@ CommuneSearch.propTypes = {
     nom: PropTypes.string.isRequired,
     departement: PropTypes.shape({
       code: PropTypes.string.isRequired,
-      nom: PropTypes.string.isRequired
-    }).isRequired
+      nom: PropTypes.string.isRequired,
+    }).isRequired,
   }),
   placeholder: PropTypes.string,
   exclude: PropTypes.array,
   innerRef: PropTypes.func,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
 }
 
 CommuneSearch.defaultProps = {
@@ -72,7 +72,7 @@ CommuneSearch.defaultProps = {
   placeholder: 'Chercher une commune…',
   exclude: [],
   innerRef: () => {},
-  onSelect: () => {}
+  onSelect: () => {},
 }
 
 export default CommuneSearch

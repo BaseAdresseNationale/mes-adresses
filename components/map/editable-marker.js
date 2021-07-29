@@ -36,16 +36,16 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates
-        }
+          coordinates,
+        },
       }
       const from = {
         type: 'Feature',
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: geometry.coordinates[0]
-        }
+          coordinates: geometry.coordinates[0],
+        },
       }
 
       const to = nearestPointOnLine({type: 'Feature', geometry}, point, {units: 'kilometers'})
@@ -121,12 +121,12 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
 
 EditableMarker.propTypes = {
   size: PropTypes.number,
-  style: PropTypes.string
+  style: PropTypes.string,
 }
 
 EditableMarker.defaultProps = {
   size: 32,
-  style: 'vector'
+  style: 'vector',
 }
 
 export default EditableMarker

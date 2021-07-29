@@ -6,24 +6,24 @@ import {Bar} from 'react-chartjs-2'
 const BarChart = ({title, data}) => {
   const options = {
     tooltips: {
-      mode: 'index'
+      mode: 'index',
     },
     scales: {
       xAxes: [{
         type: 'time',
         time: {
-          unit: 'month'
+          unit: 'month',
         },
         stacked: true,
         gridLines: {
-          offsetGridLines: true
+          offsetGridLines: true,
         },
-        offset: true
+        offset: true,
       }],
       yAxes: [{
-        stacked: true
-      }]
-    }
+        stacked: true,
+      }],
+    },
   }
 
   return (
@@ -41,11 +41,11 @@ const BarChart = ({title, data}) => {
 
 BarChart.propTypes = {
   title: PropTypes.string,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
 }
 
 BarChart.defaultProps = {
-  title: null
+  title: null,
 }
 
 export default BarChart

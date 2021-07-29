@@ -6,7 +6,7 @@ import DrawContext from '../../contexts/draw'
 
 const MODES = {
   editing: EditingMode,
-  drawLineString: DrawLineStringMode
+  drawLineString: DrawLineStringMode,
 }
 
 const Draw = () => {

@@ -31,7 +31,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     editingId,
     setEditingId,
     isEditing,
-    setIsEditing
+    setIsEditing,
   } = useContext(BalDataContext)
 
   useHelp(selectedTab === 'voie' ? 2 : 3)
@@ -50,12 +50,12 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       const voie = await addVoie(baseLocale._id, commune.code, {
         nom,
         typeNumerotation,
-        trace
+        trace,
       }, token)
 
       Router.push(
         `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${voie._id}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voie._id}`
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voie._id}`,
       )
 
       await reloadVoies()
@@ -63,12 +63,12 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       const toponyme = await addToponyme(baseLocale._id, commune.code, {
         nom,
         positions,
-        parcelles
+        parcelles,
       }, token)
 
       Router.push(
         `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${toponyme._id}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${toponyme._id}`
+        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${toponyme._id}`,
       )
 
       await reloadToponymes()
@@ -91,7 +91,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       await editVoie(editingId, {
         nom,
         typeNumerotation,
-        trace
+        trace,
       }, token)
 
       await reloadVoies()
@@ -99,7 +99,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       await editToponyme(editingId, {
         nom,
         positions,
-        parcelles
+        parcelles,
       }, token)
 
       await reloadToponymes()
@@ -124,12 +124,12 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     if (selectedTab === 'voie') {
       Router.push(
         `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${id}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${id}`
+        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${id}`,
       )
     } else {
       Router.push(
         `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${id}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${id}`
+        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${id}`,
       )
     }
   }, [baseLocale, commune, selectedTab])
@@ -285,20 +285,20 @@ Commune.getInitialProps = async ({baseLocale, commune}) => {
     layout: 'sidebar',
     baseLocale,
     commune,
-    defaultVoies
+    defaultVoies,
   }
 }
 
 Commune.propTypes = {
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired,
   }).isRequired,
-  defaultVoies: PropTypes.array
+  defaultVoies: PropTypes.array,
 }
 
 Commune.defaultProps = {
-  defaultVoies: null
+  defaultVoies: null,
 }
 
 export default Commune

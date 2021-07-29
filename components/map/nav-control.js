@@ -21,7 +21,7 @@ function NavControl({onViewportChange, ...props}) {
 }
 
 NavControl.propTypes = {
-  onViewportChange: PropTypes.func.isRequired
+  onViewportChange: PropTypes.func.isRequired,
 }
 
 export default NavControl

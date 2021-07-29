@@ -69,7 +69,7 @@ export function MarkersContextProvider(props) {
         setOverrideText,
         disableMarkers,
         suggestedNumero,
-        setSuggestedNumero
+        setSuggestedNumero,
       }}
       {...props}
     />

@@ -19,7 +19,7 @@ const BALCounterChart = ({basesLocales}) => {
 }
 
 BALCounterChart.propTypes = {
-  basesLocales: PropTypes.array.isRequired
+  basesLocales: PropTypes.array.isRequired,
 }
 
 export default BALCounterChart

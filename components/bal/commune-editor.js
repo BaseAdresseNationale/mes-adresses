@@ -27,7 +27,7 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
     try {
       await onSubmit({
         commune,
-        populate
+        populate,
       })
     } catch (error) {
       setError(error.message)
@@ -92,11 +92,11 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
 
 CommuneEditor.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
 }
 
 CommuneEditor.defaultProps = {
-  onCancel: null
+  onCancel: null,
 }
 
 export default CommuneEditor

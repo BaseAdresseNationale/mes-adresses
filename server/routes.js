@@ -9,7 +9,7 @@ module.exports = app => {
       ...req.query,
       balId: req.params.balId,
       codeCommune: req.params.codeCommune,
-      idVoie: req.params.idVoie
+      idVoie: req.params.idVoie,
     })
   })
 
@@ -18,7 +18,7 @@ module.exports = app => {
       ...req.query,
       balId: req.params.balId,
       codeCommune: req.params.codeCommune,
-      idToponyme: req.params.idToponyme
+      idToponyme: req.params.idToponyme,
     })
   })
 
@@ -26,7 +26,7 @@ module.exports = app => {
     app.render(req, res, '/bal/commune', {
       ...req.query,
       balId: req.params.balId,
-      codeCommune: req.params.codeCommune
+      codeCommune: req.params.codeCommune,
     })
   })
 
@@ -34,21 +34,21 @@ module.exports = app => {
     app.render(req, res, '/bal', {
       ...req.query,
       balId: req.params.balId,
-      token: req.params.token
+      token: req.params.token,
     })
   })
 
   router.get('/bal/:balId', (req, res) => {
     app.render(req, res, '/bal', {
       ...req.query,
-      balId: req.params.balId
+      balId: req.params.balId,
     })
   })
 
   router.get('/dashboard/departement/:codeDepartement', (req, res) => {
     app.render(req, res, '/dashboard/departement', {
       ...req.query,
-      codeDepartement: req.params.codeDepartement
+      codeDepartement: req.params.codeDepartement,
     })
   })
 

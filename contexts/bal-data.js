@@ -149,7 +149,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
         reloadToponymes,
         reloadBaseLocale,
         reloadNumerosToponyme,
-        toponyme
+        toponyme,
       }}
       {...props}
     />
@@ -160,14 +160,14 @@ BalDataContextProvider.propTypes = {
   balId: PropTypes.string,
   codeCommune: PropTypes.string,
   idVoie: PropTypes.string,
-  idToponyme: PropTypes.string
+  idToponyme: PropTypes.string,
 }
 
 BalDataContextProvider.defaultProps = {
   balId: null,
   codeCommune: null,
   idVoie: null,
-  idToponyme: null
+  idToponyme: null,
 }
 
 export default BalDataContext

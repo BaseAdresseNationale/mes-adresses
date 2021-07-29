@@ -129,13 +129,13 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
 }
 
 AddNumeros.defaultProps = {
-  isLoading: false
+  isLoading: false,
 }
 
 AddNumeros.propTypes = {
   isLoading: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
 }
 
 export default AddNumeros

@@ -18,11 +18,11 @@ const Counter = ({label, value, color}) => {
 Counter.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
-  color: PropTypes.string
+  color: PropTypes.string,
 }
 
 Counter.defaultProps = {
-  color: '#222'
+  color: '#222',
 }
 
 export default Counter

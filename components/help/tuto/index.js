@@ -20,7 +20,7 @@ const Tuto = ({title, children}) => {
 
 Tuto.propTypes = {
   title: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 }
 
 export default Tuto

@@ -9,7 +9,7 @@ export function SettingsContextProvider(props) {
     <SettingsContext.Provider
       value={{
         showSettings,
-        setShowSettings
+        setShowSettings,
       }}
       {...props}
     />

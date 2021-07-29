@@ -30,7 +30,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     const body = {
       nom,
       typeNumerotation: isMetric ? 'metrique' : 'numerique',
-      trace: data ? data.geometry : null
+      trace: data ? data.geometry : null,
     }
 
     try {
@@ -39,7 +39,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       const {balId, codeCommune} = router.query
       router.push(
         `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
+        `/bal/${balId}/communes/${codeCommune}`,
       )
     } catch (error) {
       setIsLoading(false)
@@ -138,15 +138,15 @@ VoieEditor.propTypes = {
   initialValue: PropTypes.shape({
     nom: PropTypes.string,
     typeNumerotation: PropTypes.string,
-    trace: PropTypes.object
+    trace: PropTypes.object,
   }),
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
 }
 
 VoieEditor.defaultProps = {
   initialValue: null,
-  onCancel: null
+  onCancel: null,
 }
 
 export default VoieEditor

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import {Pane, Button, Link} from 'evergreen-ui'
 
 const links = [
-  {text: 'Guides de l’adressage', link: 'https://adresse.data.gouv.fr/guides'}
+  {text: 'Guides de l’adressage', link: 'https://adresse.data.gouv.fr/guides'},
 ]
 
 const Header = () => {

@@ -12,7 +12,7 @@ export function HelpContextProvider(props) {
         showHelp,
         setShowHelp,
         selectedIndex,
-        setSelectedIndex
+        setSelectedIndex,
       }}
       {...props}
     />

@@ -37,7 +37,7 @@ AddressEditor.propTypes = {
   onAddToponyme: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   isToponyme: PropTypes.bool.isRequired,
-  setIsToponyme: PropTypes.func.isRequired
+  setIsToponyme: PropTypes.func.isRequired,
 }
 
 export default AddressEditor

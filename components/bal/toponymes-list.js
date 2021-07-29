@@ -16,13 +16,13 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
   const {
     isEditing,
     editingId,
-    toponymes
+    toponymes,
   } = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(toponymes, 200, {
     keys: [
-      'nom'
-    ]
+      'nom',
+    ],
   })
 
   return (
@@ -87,11 +87,11 @@ ToponymesList.propTypes = {
   onSelect: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired
+  onEdit: PropTypes.func.isRequired,
 }
 
 ToponymesList.defaultProps = {
-  isPopulating: false
+  isPopulating: false,
 }
 
 export default ToponymesList

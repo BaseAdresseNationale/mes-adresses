@@ -34,7 +34,7 @@ import ErrorPage from './error'
 
 const layoutMap = {
   fullscreen: Fullscreen,
-  sidebar: Sidebar
+  sidebar: Sidebar,
 }
 
 function App({error, Component, pageProps, query}) {
@@ -173,7 +173,7 @@ App.getInitialProps = async ({Component, ctx}) => {
   const {query} = ctx
 
   let pageProps = {
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   }
 
   let baseLocale
@@ -188,8 +188,8 @@ App.getInitialProps = async ({Component, ctx}) => {
       return {
         pageProps,
         error: {
-          statusCode: 404
-        }
+          statusCode: 404,
+        },
       }
     }
   }
@@ -197,11 +197,11 @@ App.getInitialProps = async ({Component, ctx}) => {
   if (query.codeCommune) {
     try {
       commune = await getCommune(query.codeCommune, {
-        fields: 'contour'
+        fields: 'contour',
       })
-    } catch (error) {
+    } catch {
       commune = {
-        code: query.codeCommune
+        code: query.codeCommune,
       }
     }
   }
@@ -220,30 +220,30 @@ App.getInitialProps = async ({Component, ctx}) => {
       baseLocale,
       commune,
       voie,
-      toponyme
+      toponyme,
     })
   }
 
   return {
     pageProps,
-    query
+    query,
   }
 }
 
 App.propTypes = {
   error: PropTypes.shape({
-    statusCode: PropTypes.number
+    statusCode: PropTypes.number,
   }),
   Component: PropTypes.any.isRequired,
   pageProps: PropTypes.object.isRequired,
   query: PropTypes.object,
-  geojson: PropTypes.object
+  geojson: PropTypes.object,
 }
 
 App.defaultProps = {
   query: {},
   error: null,
-  geojson: null
+  geojson: null,
 }
 
 export default App

@@ -26,7 +26,7 @@ export function LocalStorageContextProvider(props) {
       value={{
         balAccess, getBalToken, addBalAccess, removeBAL,
         wasWelcomed, setWasWelcomed,
-        recoveryEmailSent, setRecoveryEmailSent
+        recoveryEmailSent, setRecoveryEmailSent,
       }}
       {...props}
     />

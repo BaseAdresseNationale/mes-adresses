@@ -12,7 +12,7 @@ const departements = 'http://etalab-datasets.geo.data.gouv.fr/contours-administr
 
 async function getFeatures(url) {
   const buffer = await getStream.buffer(
-    got.stream(url).pipe(createGunzip())
+    got.stream(url).pipe(createGunzip()),
   )
 
   return JSON.parse(buffer.toString()).features
@@ -41,14 +41,14 @@ async function main() {
       code: 'FRA',
       nom: 'France',
       bbox: [-5.317, 41.277, 9.689, 51.234],
-      center: [-5.317, 51.234]
+      center: [-5.317, 51.234],
     },
     ...regionsFeatures.map(feature => {
       return {
         center: getCenter(feature),
         bbox: getBbox(feature),
         code: `REG-${feature.properties.code}`,
-        nom: feature.properties.nom
+        nom: feature.properties.nom,
       }
     }),
     ...departementsFeatures.map(feature => {
@@ -56,7 +56,7 @@ async function main() {
         center: getCenter(feature),
         bbox: getBbox(feature),
         code: `DEP-${feature.properties.code}`,
-        nom: feature.properties.nom
+        nom: feature.properties.nom,
       }
     })
   ]

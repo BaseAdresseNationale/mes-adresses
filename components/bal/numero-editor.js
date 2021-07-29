@@ -39,7 +39,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     addMarker,
     disableMarkers,
     suggestedNumero,
-    setOverrideText
+    setOverrideText,
   } = useContext(MarkersContext)
 
   const onFormSubmit = useCallback(async e => {
@@ -53,7 +53,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       numero: Number(numero),
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
-      parcelles: selectedParcelles
+      parcelles: selectedParcelles,
     }
 
     if (markers.length > 0) {
@@ -65,8 +65,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
               type: 'Point',
               coordinates: [marker.longitude, marker.latitude]
             },
-            type: marker.type
-          }
+            type: marker.type,
+          },
         )
       })
 
@@ -118,7 +118,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         {
           longitude: position.point.coordinates[0],
           latitude: position.point.coordinates[1],
-          type: position.type
+          type: position.type,
         }
       ))
 
@@ -247,16 +247,16 @@ NumeroEditor.propTypes = {
     parcelles: PropTypes.array,
     comment: PropTypes.string,
     positions: PropTypes.array,
-    toponyme: PropTypes.string
+    toponyme: PropTypes.string,
   }),
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func
+  onCancel: PropTypes.func,
 }
 
 NumeroEditor.defaultProps = {
   initialValue: null,
   initialVoieId: null,
-  onCancel: null
+  onCancel: null,
 }
 
 export default NumeroEditor

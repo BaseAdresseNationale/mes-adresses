@@ -25,7 +25,7 @@ const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartemen
   const mapData = {
     departement: code,
     basesLocales: basesLocalesDepartementWithoutDemo,
-    contours: contoursCommunes
+    contours: contoursCommunes,
   }
 
   return (
@@ -93,7 +93,7 @@ Departement.getInitialProps = async ({query}) => {
     contoursCommunes,
     basesLocalesDepartementWithoutDemo,
     BALGroupedByCommune,
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   }
 }
 
@@ -102,7 +102,7 @@ Departement.propTypes = {
   filteredCommunesInBAL: PropTypes.array.isRequired,
   basesLocalesDepartementWithoutDemo: PropTypes.array.isRequired,
   BALGroupedByCommune: PropTypes.object.isRequired,
-  contoursCommunes: PropTypes.object.isRequired
+  contoursCommunes: PropTypes.object.isRequired,
 }
 
 export default Departement

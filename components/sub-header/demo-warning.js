@@ -26,9 +26,9 @@ const DemoWarning = ({baseLocale, token}) => {
       baseLocale._id,
       {
         nom: nom ? nom.trim() : null,
-        email
+        email,
       },
-      token
+      token,
     )
 
     if (baseLocale.communes.length === 1) {
@@ -120,7 +120,7 @@ const DemoWarning = ({baseLocale, token}) => {
 
 DemoWarning.propTypes = {
   baseLocale: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired
+  token: PropTypes.string.isRequired,
 }
 
 export default DemoWarning

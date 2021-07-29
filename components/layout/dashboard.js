@@ -10,14 +10,14 @@ const MOBILE_WIDTH = '820'
 
 const defaultProps = {
   title: null,
-  backButton: false
+  backButton: false,
 }
 
 const propTypes = {
   title: PropTypes.string,
   backButton: PropTypes.bool,
   mapData: PropTypes.object.isRequired,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 }
 
 const BackButton = () => {

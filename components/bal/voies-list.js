@@ -16,13 +16,13 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
   const {
     isEditing,
     editingId,
-    voies
+    voies,
   } = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
     keys: [
-      'nom'
-    ]
+      'nom',
+    ],
   })
 
   return (
@@ -87,12 +87,12 @@ VoiesList.propTypes = {
   onSelect: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired
+  onEdit: PropTypes.func.isRequired,
 }
 
 VoiesList.defaultProps = {
   defaultVoies: null,
-  isPopulating: false
+  isPopulating: false,
 }
 
 export default VoiesList

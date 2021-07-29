@@ -96,14 +96,14 @@ function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
 
 RecoverBALAlert.defaultProps = {
   defaultEmail: '',
-  baseLocaleId: null
+  baseLocaleId: null,
 }
 
 RecoverBALAlert.propTypes = {
   isShown: PropTypes.bool.isRequired,
   defaultEmail: PropTypes.string,
   baseLocaleId: PropTypes.string,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
 }
 
 export default RecoverBALAlert

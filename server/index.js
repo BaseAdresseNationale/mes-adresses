@@ -18,9 +18,9 @@ app.prepare().then(() => {
   server.use(express.static('public')) // Serve favicon.ico
   server.use('/', createRoutes(app))
 
-  server.listen(port, err => {
-    if (err) {
-      throw err
+  server.listen(port, error => {
+    if (error) {
+      throw error
     }
 
     console.log(`> Ready on http://localhost:${port}`)

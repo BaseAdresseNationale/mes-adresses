@@ -9,7 +9,7 @@ let LOAD = false
 
 function getHoveredFeatureId(map, id) {
   const features = map.querySourceFeatures('cadastre', {
-    sourceLayer: 'parcelles', filter: ['==', ['get', 'id'], id]
+    sourceLayer: 'parcelles', filter: ['==', ['get', 'id'], id],
   })
   const [feature] = features
   return feature?.id
@@ -121,7 +121,7 @@ export function ParcellesContextProvider(props) {
         selectedParcelles, setSelectedParcelles,
         isParcelleSelectionEnabled, setIsParcelleSelectionEnabled,
         handleParcelle,
-        hoveredParcelle, handleHoveredParcelle
+        hoveredParcelle, handleHoveredParcelle,
       }}
       {...props}
     />
@@ -129,11 +129,11 @@ export function ParcellesContextProvider(props) {
 }
 
 ParcellesContextProvider.defaultProps = {
-  codeCommune: null
+  codeCommune: null,
 }
 
 ParcellesContextProvider.propTypes = {
-  codeCommune: PropTypes.string
+  codeCommune: PropTypes.string,
 }
 
 export default ParcellesContext

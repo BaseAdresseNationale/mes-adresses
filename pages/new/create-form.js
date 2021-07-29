@@ -20,7 +20,7 @@ function CreateForm({defaultCommune}) {
 
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput(
-    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
+    defaultCommune ? `Adresses de ${defaultCommune.nom}` : '',
   )
   const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
@@ -37,8 +37,8 @@ function CreateForm({defaultCommune}) {
     const bal = await createBaseLocale({
       nom,
       emails: [
-        email
-      ]
+        email,
+      ],
     })
 
     if (commune) {
@@ -51,7 +51,7 @@ function CreateForm({defaultCommune}) {
 
       Router.push(
         `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
-        `/bal/${bal._id}/communes/${commune}`
+        `/bal/${bal._id}/communes/${commune}`,
       )
     }
   }, [email, nom, populate, commune, addBalAccess])
@@ -146,11 +146,11 @@ function CreateForm({defaultCommune}) {
 }
 
 CreateForm.propTypes = {
-  defaultCommune: PropTypes.object
+  defaultCommune: PropTypes.object,
 }
 
 CreateForm.defaultProps = {
-  defaultCommune: null
+  defaultCommune: null,
 }
 
 export default CreateForm

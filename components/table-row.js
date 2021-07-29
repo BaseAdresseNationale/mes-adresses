@@ -165,7 +165,7 @@ TableRow.propTypes = {
   onEdit: PropTypes.func,
   onRemove: PropTypes.func.isRequired,
   handleSelect: PropTypes.func,
-  isSelected: PropTypes.bool
+  isSelected: PropTypes.bool,
 }
 
 TableRow.defaultProps = {
@@ -178,7 +178,7 @@ TableRow.defaultProps = {
   onEdit: null,
   handleSelect: null,
   onSelect: null,
-  isSelected: false
+  isSelected: false,
 }
 
 export default TableRow

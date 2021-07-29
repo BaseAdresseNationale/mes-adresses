@@ -14,13 +14,13 @@ const SubTuto = ({title, icon, children}) => {
 }
 
 SubTuto.defaultProps = {
-  icon: null
+  icon: null,
 }
 
 SubTuto.propTypes = {
   title: PropTypes.string.isRequired,
   icon: PropTypes.object,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 }
 
 export default SubTuto

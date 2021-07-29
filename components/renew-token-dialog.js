@@ -48,7 +48,7 @@ RenewTokenDialog.propTypes = {
   baseLocaleId: PropTypes.string.isRequired,
   isShown: PropTypes.bool.isRequired,
   setIsShown: PropTypes.func.isRequired,
-  setError: PropTypes.func.isRequired
+  setError: PropTypes.func.isRequired,
 }
 
 export default RenewTokenDialog

@@ -28,7 +28,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
       if (voie || initialToponyme !== toponyme) {
         router.push(
           `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${initialToponyme.commune}&idToponyme=${initialToponyme._id}`,
-          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}/toponymes/${initialToponyme._id}`
+          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}/toponymes/${initialToponyme._id}`,
         )
       }
 
@@ -50,8 +50,8 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
     cursor: 'pointer',
 
     '& > span': {
-      display: showLabel ? 'inline-block' : 'none'
-    }
+      display: showLabel ? 'inline-block' : 'none',
+    },
   }), [showLabel])
 
   const deleteToponyme = (async () => {
@@ -64,7 +64,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
       if (_id === toponyme._id) {
         router.push(
           `/bal/&codeCommune=${initialToponyme.commune}`,
-          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}`
+          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}`,
         )
       }
     } catch (error) {
@@ -115,19 +115,19 @@ ToponymeMarker.propTypes = {
     nom: PropTypes.string.isRequired,
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
-        coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
-      })
+        coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
+      }),
     })),
-    commune: PropTypes.string
+    commune: PropTypes.string,
   }).isRequired,
   showLabel: PropTypes.bool,
   showContextMenu: PropTypes.bool,
-  setShowContextMenu: PropTypes.func.isRequired
+  setShowContextMenu: PropTypes.func.isRequired,
 }
 
 ToponymeMarker.defaultProps = {
   showLabel: false,
-  showContextMenu: false
+  showContextMenu: false,
 }
 
 export default React.memo(ToponymeMarker)

@@ -7,7 +7,7 @@ function Uploader({file, placeholder, onDrop, height, disabled, loading, loading
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
     onDrop,
     disabled,
-    multiple: false
+    multiple: false,
   })
 
   if (loading) {
@@ -58,7 +58,7 @@ Uploader.propTypes = {
   height: PropTypes.number,
   loading: PropTypes.bool,
   disabled: PropTypes.bool,
-  loadingLabel: PropTypes.string
+  loadingLabel: PropTypes.string,
 }
 
 Uploader.defaultProps = {
@@ -66,7 +66,7 @@ Uploader.defaultProps = {
   height: 100,
   loading: false,
   disabled: false,
-  loadingLabel: 'Chargement…'
+  loadingLabel: 'Chargement…',
 }
 
 export default Uploader

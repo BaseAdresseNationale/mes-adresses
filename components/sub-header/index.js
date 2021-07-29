@@ -154,14 +154,14 @@ SubHeader.propTypes = {
   toponyme: PropTypes.object,
   layout: PropTypes.oneOf(['fullscreen', 'sidebar']).isRequired,
   isSidebarHidden: PropTypes.bool,
-  onToggle: PropTypes.func.isRequired
+  onToggle: PropTypes.func.isRequired,
 }
 
 SubHeader.defaultProps = {
   commune: null,
   voie: null,
   toponyme: null,
-  isSidebarHidden: false
+  isSidebarHidden: false,
 }
 
 export default SubHeader

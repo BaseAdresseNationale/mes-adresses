@@ -9,7 +9,7 @@ const Map = dynamic(() => import('./map'), {
   ssr: false,
   loading: props => (
     <MapLoader {...props} />
-  )
+  ),
 })
 
 function MapWrapper({animate, left, top, ...props}) {
@@ -32,13 +32,13 @@ function MapWrapper({animate, left, top, ...props}) {
 MapWrapper.propTypes = {
   animate: PropTypes.bool,
   top: PropTypes.number,
-  left: PropTypes.number
+  left: PropTypes.number,
 }
 
 MapWrapper.defaultProps = {
   animate: false,
   top: 0,
-  left: 0
+  left: 0,
 }
 
 export default MapWrapper

@@ -72,7 +72,7 @@ function ToponymeNumeros({numeros, handleSelect}) {
 
 ToponymeNumeros.propTypes = {
   numeros: PropTypes.array.isRequired,
-  handleSelect: PropTypes.func.isRequired
+  handleSelect: PropTypes.func.isRequired,
 }
 
 export default ToponymeNumeros

@@ -32,7 +32,7 @@ export function DrawContextProvider(props) {
           setData({
             type: 'Feature',
             properties: {},
-            geometry: editingItem.trace
+            geometry: editingItem.trace,
           })
           setModeId('editing')
         } else {
@@ -62,7 +62,7 @@ export function DrawContextProvider(props) {
         hint,
         setHint,
         data,
-        setData
+        setData,
       }}
       {...props}
     />

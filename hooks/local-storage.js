@@ -29,7 +29,7 @@ export function useLocalStorage(key, value) {
 
     storeData({
       ...previous,
-      [index]: value
+      [index]: value,
     })
   }
 

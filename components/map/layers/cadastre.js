@@ -5,8 +5,8 @@ export const cadastreLayers = parcelles => [{
   'source-layer': 'batiments',
   minzoom: 16,
   paint: {
-    'fill-opacity': 0.3
-  }
+    'fill-opacity': 0.3,
+  },
 },
 {
   id: 'batiments-line',
@@ -17,8 +17,8 @@ export const cadastreLayers = parcelles => [{
   maxzoom: 22,
   paint: {
     'line-opacity': 1,
-    'line-color': 'rgba(0, 0, 0, 1)'
-  }
+    'line-color': 'rgba(0, 0, 0, 1)',
+  },
 },
 {
   id: 'parcelles',
@@ -28,7 +28,7 @@ export const cadastreLayers = parcelles => [{
   minzoom: 16,
   maxzoom: 24,
   layout: {
-    'line-cap': 'butt'
+    'line-cap': 'butt',
   },
   paint: {
     'line-color': '#0053b3',
@@ -37,15 +37,15 @@ export const cadastreLayers = parcelles => [{
       stops: [
         [
           16,
-          1
+          1,
         ],
         [
           17,
-          2
-        ]
-      ]
-    }
-  }
+          2,
+        ],
+      ],
+    },
+  },
 },
 {
   id: 'parcelles-fill',
@@ -60,14 +60,14 @@ export const cadastreLayers = parcelles => [{
         'boolean',
         [
           'feature-state',
-          'hover'
+          'hover',
         ],
-        false
+        false,
       ],
       0.7,
-      0.1
-    ]
-  }
+      0.1,
+    ],
+  },
 },
 {
   id: 'parcelles-selected',
@@ -77,8 +77,8 @@ export const cadastreLayers = parcelles => [{
   filter: ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])],
   paint: {
     'fill-color': '#0053b3',
-    'fill-opacity': 0.2
-  }
+    'fill-opacity': 0.2,
+  },
 },
 {
   id: 'parcelle-highlighted',
@@ -88,7 +88,7 @@ export const cadastreLayers = parcelles => [{
   filter: [
     '==',
     'id',
-    ''
+    '',
   ],
   paint: {
     'fill-color': [
@@ -97,15 +97,15 @@ export const cadastreLayers = parcelles => [{
         'boolean',
         [
           'feature-state',
-          'hover'
+          'hover',
         ],
-        false
+        false,
       ],
       'rgba(209, 67, 67, 1)',
-      'rgba(1, 129, 0, 1)'
+      'rgba(1, 129, 0, 1)',
     ],
-    'fill-opacity': 0.7
-  }
+    'fill-opacity': 0.7,
+  },
 },
 {
   id: 'sections',
@@ -117,8 +117,8 @@ export const cadastreLayers = parcelles => [{
   paint: {
     'line-color': 'rgba(116, 134, 241, 1)',
     'line-opacity': 0.9,
-    'line-width': 2
-  }
+    'line-width': 2,
+  },
 },
 {
   id: 'code-section',
@@ -130,13 +130,13 @@ export const cadastreLayers = parcelles => [{
   layout: {
     'text-field': '{code}',
     'text-font': [
-      'Noto Sans Bold'
-    ]
+      'Noto Sans Bold',
+    ],
   },
   paint: {
     'text-halo-color': 'rgba(255, 246, 241, 1)',
-    'text-halo-width': 1.5
-  }
+    'text-halo-width': 1.5,
+  },
 },
 {
   id: 'code-parcelles',
@@ -145,19 +145,19 @@ export const cadastreLayers = parcelles => [{
   'source-layer': 'parcelles',
   minzoom: 16,
   filter: [
-    'all'
+    'all',
   ],
   layout: {
     'text-field': '{numero}',
     'text-font': [
-      'Noto Sans Bold'
+      'Noto Sans Bold',
     ],
     'text-allow-overlap': false,
-    'text-size': 16
+    'text-size': 16,
   },
   paint: {
     'text-halo-color': '#fff6f1',
     'text-halo-width': 1.5,
-    'text-translate-anchor': 'map'
-  }
+    'text-translate-anchor': 'map',
+  },
 }]

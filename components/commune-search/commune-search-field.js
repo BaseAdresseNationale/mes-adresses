@@ -74,7 +74,7 @@ CommuneSearchField.propTypes = {
   isInvalid: PropTypes.bool,
   appearance: PropTypes.string,
   placeholder: PropTypes.string,
-  spellCheck: PropTypes.bool
+  spellCheck: PropTypes.bool,
 }
 
 CommuneSearchField.defaultProps = {
@@ -88,7 +88,7 @@ CommuneSearchField.defaultProps = {
   placeholder: null,
   spellCheck: true,
   inputWidth: '100%',
-  inputHeight: 32
+  inputHeight: 32,
 }
 
 export default CommuneSearchField
