@@ -12,7 +12,7 @@ import {normalizeSort} from '../../lib/normalize'
 import TableRow from '../table-row'
 import VoieEditor from './voie-editor'
 
-const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) => {
+function VoiesList({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) {
   const {
     isEditing,
     editingId,

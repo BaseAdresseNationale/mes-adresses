@@ -14,7 +14,7 @@ const before = (
   </Paragraph>
 )
 
-const Numeros = () => {
+function Numeros() {
   return (
     <>
       <Pane>

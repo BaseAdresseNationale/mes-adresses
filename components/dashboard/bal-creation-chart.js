@@ -8,10 +8,8 @@ import {filterByStatus} from '../../lib/bases-locales'
 
 import BarChart from './charts/bar-chart'
 
-const BALCreationChart = ({basesLocales}) => {
-  const groupedByMonth = Object.values(groupBy(basesLocales, ({_created}) => {
-    return format(new Date(_created), 'yyyy-MM')
-  }))
+function BALCreationChart({basesLocales}) {
+  const groupedByMonth = Object.values(groupBy(basesLocales, ({_created}) => format(new Date(_created), 'yyyy-MM')))
 
   const sumByStatus = useCallback(status => {
     const sums = []

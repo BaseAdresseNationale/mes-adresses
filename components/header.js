@@ -7,7 +7,7 @@ const links = [
   {text: 'Guides de l’adressage', link: 'https://adresse.data.gouv.fr/guides'},
 ]
 
-const Header = () => {
+function Header() {
   return (
     <Pane borderBottom padding={16} backgroundColor='white' display='flex' justifyContent='space-between' alignItems='center' flexShrink='0' width='100%' maxHeight={76}>
       <Pane cursor='pointer'>

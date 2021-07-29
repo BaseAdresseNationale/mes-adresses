@@ -13,7 +13,7 @@ import CommuneBALList from '../../components/dashboard/commune-bal-list'
 import {expandWithPublished} from '../../helpers/bases-locales'
 import DashboardLayout from '../../components/layout/dashboard'
 
-const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) => {
+function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) {
   const {nom, code} = departement
 
   const codesCommunes = filteredCommunesInBAL.map(({code}) => code)

@@ -17,7 +17,7 @@ export const TABS = [
   'Publication',
 ]
 
-const HelpTabs = ({tab}) => {
+function HelpTabs({tab}) {
   switch (tab) {
     case 0:
       return <BaseLocale />

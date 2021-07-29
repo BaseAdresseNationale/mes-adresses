@@ -4,7 +4,7 @@ import {Pane, Dialog, Paragraph, Alert, toaster} from 'evergreen-ui'
 
 import {renewToken} from '../lib/bal-api'
 
-const RenewTokenDialog = ({token, baseLocaleId, isShown, setIsShown, setError}) => {
+function RenewTokenDialog({token, baseLocaleId, isShown, setIsShown, setError}) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleConfirm = useCallback(async () => {

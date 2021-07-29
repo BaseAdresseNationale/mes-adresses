@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Heading} from 'evergreen-ui'
 import {Bar} from 'react-chartjs-2'
 
-const BarChart = ({title, data}) => {
+function BarChart({title, data}) {
   const options = {
     tooltips: {
       mode: 'index',

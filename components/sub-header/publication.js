@@ -5,7 +5,7 @@ import {Badge, Button, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position
 
 import {getBaseLocaleCsvUrl} from '../../lib/bal-api'
 
-const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => {
+function Publication({token, status, onChangeStatus, onPublish, baseLocale}) {
   const [isShown, setIsShown] = useState(false)
   const [noBal, setNoBal] = useState(false)
   const [multiBal, setMultiBal] = useState(false)

@@ -13,7 +13,7 @@ import LocalStorageContext from '../../contexts/local-storage'
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
 import DeleteWarning from '../../components/delete-warning'
 
-const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) => {
+function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) {
   const {removeBAL} = useContext(LocalStorageContext)
 
   const [communeLabel, setCommuneLabel] = useState('cette commune')

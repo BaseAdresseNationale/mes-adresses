@@ -9,7 +9,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 import ToponymeEditor from '../../components/bal/toponyme-editor'
 
-const ToponymeHeading = ({defaultToponyme}) => {
+function ToponymeHeading({defaultToponyme}) {
   const [toponyme, setToponyme] = useState(defaultToponyme)
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)

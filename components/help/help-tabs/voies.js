@@ -14,7 +14,7 @@ const before = (
   </Paragraph>
 )
 
-const Voies = () => {
+function Voies() {
   return (
     <>
       <Pane>

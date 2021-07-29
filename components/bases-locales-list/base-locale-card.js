@@ -27,7 +27,7 @@ function getBadge({status, published}) {
   }
 }
 
-const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) => {
+function BaseLocaleCard({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) {
   const {getBalToken} = useContext(LocalStorageContext)
 
   const {nom, communes, status, _updated, _created, emails} = baseLocale

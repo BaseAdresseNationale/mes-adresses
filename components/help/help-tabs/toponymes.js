@@ -13,7 +13,7 @@ const before = (
   </Paragraph>
 )
 
-const Toponymes = () => {
+function Toponymes() {
   return (
     <>
       <Pane>

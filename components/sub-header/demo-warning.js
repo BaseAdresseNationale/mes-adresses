@@ -9,7 +9,7 @@ import useFocus from '../../hooks/focus'
 import {getCommune} from '../../lib/geo-api'
 import {transformToDraft} from '../../lib/bal-api'
 
-const DemoWarning = ({baseLocale, token}) => {
+function DemoWarning({baseLocale, token}) {
   const {communes} = baseLocale
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)

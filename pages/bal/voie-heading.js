@@ -9,7 +9,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 import VoieEditor from '../../components/bal/voie-editor'
 
-const VoieHeading = ({defaultVoie}) => {
+function VoieHeading({defaultVoie}) {
   const [voie, setVoie] = useState(defaultVoie)
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)

@@ -13,7 +13,7 @@ import BALCounterChart from '../components/dashboard/bal-counter-chart'
 import Counter from '../components/dashboard/counter'
 import Redirection from './dashboard/redirection'
 
-const Index = ({basesLocales, contoursCommunes}) => {
+function Index({basesLocales, contoursCommunes}) {
   const communeCount = uniq(flattenDeep(
     basesLocales
       .filter(({communes}) => communes.length > 0)

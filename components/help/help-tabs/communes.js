@@ -13,7 +13,7 @@ const before = (
   </Paragraph>
 )
 
-const Communes = () => {
+function Communes() {
   return (
     <Pane>
       <Tuto title='Ajouter une commune'>

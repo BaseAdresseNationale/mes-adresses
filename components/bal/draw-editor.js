@@ -5,7 +5,7 @@ import {Pane, Heading, Button, Alert, EditIcon, EraserIcon} from 'evergreen-ui'
 
 import DrawContext from '../../contexts/draw'
 
-const DrawEditor = ({trace}) => {
+function DrawEditor({trace}) {
   const {modeId, data, setData} = useContext(DrawContext)
 
   const handleCancel = useCallback(() => {

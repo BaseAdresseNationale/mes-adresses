@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Textarea, Label} from 'evergreen-ui'
 
-const Comment = ({input, limit, onChange, isDisabled}) => {
+function Comment({input, limit, onChange, isDisabled}) {
   return (
     <Pane>
       <Label marginBottom={4} display='block'>

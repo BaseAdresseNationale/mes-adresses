@@ -5,7 +5,7 @@ import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
 import Problems from './problems'
 
-const Publication = () => {
+function Publication() {
   return (
     <Pane>
       <Tuto title='Publier votre Base Adresse Locale'>

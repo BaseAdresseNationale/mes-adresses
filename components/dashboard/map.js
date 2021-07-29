@@ -16,7 +16,7 @@ const defaultGeoData = {
   bbox: [-5.317, 41.277, 9.689, 51.234],
 }
 
-const Map = ({departement, basesLocales, contours}) => {
+function Map({departement, basesLocales, contours}) {
   const [viewport, setViewport] = useState(defaultViewport)
   const [hovered, setHovered] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)

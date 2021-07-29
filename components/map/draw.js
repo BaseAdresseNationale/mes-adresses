@@ -9,7 +9,7 @@ const MODES = {
   drawLineString: DrawLineStringMode,
 }
 
-const Draw = () => {
+function Draw() {
   const [editor, setEditor] = useState(null)
   const {drawEnabled, modeId, hint, data, setHint, setData} = useContext(DrawContext)
 

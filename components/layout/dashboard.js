@@ -20,7 +20,7 @@ const propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-const BackButton = () => {
+function BackButton() {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -41,7 +41,7 @@ const BackButton = () => {
   )
 }
 
-const Mobile = ({title, backButton, mapData, children}) => {
+function Mobile({title, backButton, mapData, children}) {
   return (
     <Pane display='flex' backgroundColor='#fff' flexDirection='column' width='100%'>
       <Header />
@@ -63,7 +63,7 @@ const Mobile = ({title, backButton, mapData, children}) => {
 Mobile.defaultProps = defaultProps
 Mobile.propTypes = propTypes
 
-const Desktop = ({title, mapData, backButton, children}) => {
+function Desktop({title, mapData, backButton, children}) {
   return (
     <Pane height='100vh' display='flex' backgroundColor='#fff' flexDirection='column'>
       <Header />
@@ -94,7 +94,7 @@ const Desktop = ({title, mapData, backButton, children}) => {
 Desktop.defaultProps = defaultProps
 Desktop.propTypes = propTypes
 
-const DashboardLayout = props => {
+function DashboardLayout(props) {
   const [isMobileDevice, setIsMobileDevice] = useState(false)
 
   const handleResize = () => {
