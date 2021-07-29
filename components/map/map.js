@@ -69,7 +69,7 @@ function generateNewStyle(style, sources, layers) {
     }))
   }
 
-  return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
+  return baseStyle.updateIn(['layers'], array => array.push(...layers))
 }
 
 function Map({interactive, commune, voie, toponyme}) {
@@ -80,7 +80,7 @@ function Map({interactive, commune, voie, toponyme}) {
   const [showNumeros, setShowNumeros] = useState(true)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
-  const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
+  const [editPreviousStyle, setEditPreviousSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [isToponyme, setIsToponyme] = useState(false)
 
@@ -217,13 +217,13 @@ function Map({interactive, commune, voie, toponyme}) {
   }, [interactive, sources, layers, style, defaultStyle])
 
   useEffect(() => {
-    setStyle(prevStyle => {
+    setStyle(previousStyle => {
       if (modeId) {
-        setEditPrevSyle(prevStyle)
+        setEditPreviousSyle(previousStyle)
         return 'ortho'
       }
 
-      return editPrevStyle
+      return editPreviousStyle
     })
   }, [modeId]) // eslint-disable-line react-hooks/exhaustive-deps
 

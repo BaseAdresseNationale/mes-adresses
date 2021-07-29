@@ -2,15 +2,15 @@ import {useState, useEffect} from 'react'
 import {toaster} from 'evergreen-ui'
 
 export default function useError(error) {
-  const [err, setError] = useState(error)
+  const [error_, setError] = useState(error)
 
   useEffect(() => {
-    if (err) {
+    if (error_) {
       toaster.danger('Une erreur est survenue', {
-        description: err,
+        description: error_,
       })
     }
-  }, [err])
+  }, [error_])
 
   return [setError]
 }

@@ -4,56 +4,56 @@ const geo = require('../geo.json')
 module.exports = app => {
   const router = new Router()
 
-  router.get('/bal/:balId/communes/:codeCommune/voies/:idVoie', (req, res) => {
-    app.render(req, res, '/bal/voie', {
-      ...req.query,
-      balId: req.params.balId,
-      codeCommune: req.params.codeCommune,
-      idVoie: req.params.idVoie,
+  router.get('/bal/:balId/communes/:codeCommune/voies/:idVoie', (request, res) => {
+    app.render(request, res, '/bal/voie', {
+      ...request.query,
+      balId: request.params.balId,
+      codeCommune: request.params.codeCommune,
+      idVoie: request.params.idVoie,
     })
   })
 
-  router.get('/bal/:balId/communes/:codeCommune/toponymes/:idToponyme', (req, res) => {
-    app.render(req, res, '/bal/toponyme', {
-      ...req.query,
-      balId: req.params.balId,
-      codeCommune: req.params.codeCommune,
-      idToponyme: req.params.idToponyme,
+  router.get('/bal/:balId/communes/:codeCommune/toponymes/:idToponyme', (request, res) => {
+    app.render(request, res, '/bal/toponyme', {
+      ...request.query,
+      balId: request.params.balId,
+      codeCommune: request.params.codeCommune,
+      idToponyme: request.params.idToponyme,
     })
   })
 
-  router.get('/bal/:balId/communes/:codeCommune', (req, res) => {
-    app.render(req, res, '/bal/commune', {
-      ...req.query,
-      balId: req.params.balId,
-      codeCommune: req.params.codeCommune,
+  router.get('/bal/:balId/communes/:codeCommune', (request, res) => {
+    app.render(request, res, '/bal/commune', {
+      ...request.query,
+      balId: request.params.balId,
+      codeCommune: request.params.codeCommune,
     })
   })
 
-  router.get('/bal/:balId/:token', (req, res) => {
-    app.render(req, res, '/bal', {
-      ...req.query,
-      balId: req.params.balId,
-      token: req.params.token,
+  router.get('/bal/:balId/:token', (request, res) => {
+    app.render(request, res, '/bal', {
+      ...request.query,
+      balId: request.params.balId,
+      token: request.params.token,
     })
   })
 
-  router.get('/bal/:balId', (req, res) => {
-    app.render(req, res, '/bal', {
-      ...req.query,
-      balId: req.params.balId,
+  router.get('/bal/:balId', (request, res) => {
+    app.render(request, res, '/bal', {
+      ...request.query,
+      balId: request.params.balId,
     })
   })
 
-  router.get('/dashboard/departement/:codeDepartement', (req, res) => {
-    app.render(req, res, '/dashboard/departement', {
-      ...req.query,
-      codeDepartement: req.params.codeDepartement,
+  router.get('/dashboard/departement/:codeDepartement', (request, res) => {
+    app.render(request, res, '/dashboard/departement', {
+      ...request.query,
+      codeDepartement: request.params.codeDepartement,
     })
   })
 
-  router.get('/geo/:location', (req, res) => {
-    const {location} = req.params
+  router.get('/geo/:location', (request, res) => {
+    const {location} = request.params
 
     if (!(location in geo)) {
       return res.sendStatus(404)
@@ -62,8 +62,8 @@ module.exports = app => {
     return res.send(geo[location])
   })
 
-  router.get('*', (req, res) => {
-    app.render(req, res, req.params[0], req.query)
+  router.get('*', (request, res) => {
+    app.render(request, res, request.params[0], request.query)
   })
 
   return router

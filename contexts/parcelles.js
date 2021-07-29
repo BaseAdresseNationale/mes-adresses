@@ -37,9 +37,9 @@ export function ParcellesContextProvider(props) {
 
   const handleHoveredParcelle = useCallback(hovered => {
     if (map) {
-      setHoveredParcelle(prev => {
-        if (prev) {
-          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prev.featureId}, {hover: false})
+      setHoveredParcelle(previous => {
+        if (previous) {
+          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: previous.featureId}, {hover: false})
         }
 
         if (hovered) {
@@ -75,9 +75,9 @@ export function ParcellesContextProvider(props) {
   // Clean hovered parcelle when selection is disabled
   useEffect(() => {
     if (!isParcelleSelectionEnabled && map) {
-      setHoveredParcelle(prev => {
-        if (prev) {
-          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prev.featureId}, {hover: false})
+      setHoveredParcelle(previous => {
+        if (previous) {
+          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: previous.featureId}, {hover: false})
           return null
         }
       })

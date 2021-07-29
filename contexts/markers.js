@@ -28,19 +28,19 @@ export function MarkersContextProvider(props) {
 
   const addMarker = useCallback(data => {
     let marker = {...data}
-    setMarkers(prevMarkers => {
+    setMarkers(previousMarkers => {
       if (!marker.latitude || !marker.longitude) {
         const {latitude, longitude} = viewport
         marker = {...marker, longitude, latitude}
       }
 
-      return [...prevMarkers, {_id: uniqueId(), ...marker}]
+      return [...previousMarkers, {_id: uniqueId(), ...marker}]
     })
   }, [viewport])
 
   const removeMarker = useCallback(markerId => {
-    setMarkers(prevMarkers => {
-      const filtre = prevMarkers.filter(marker => marker._id !== markerId)
+    setMarkers(previousMarkers => {
+      const filtre = previousMarkers.filter(marker => marker._id !== markerId)
       return filtre
     })
   }, [])
