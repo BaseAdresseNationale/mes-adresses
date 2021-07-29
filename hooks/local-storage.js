@@ -4,7 +4,13 @@ export function useLocalStorage(key, value) {
   const [data, setData] = useState()
 
   const getData = () => {
-    return JSON.parse(localStorage.getItem(key))
+    try {
+      return JSON.parse(localStorage.getItem(key))
+    } catch (error) {
+      // Prevent from corrupt data like discovered with recovery-email-sent
+      storeData(null)
+      return null
+    }
   }
 
   const storeData = value => {
