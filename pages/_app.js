@@ -184,7 +184,7 @@ App.getInitialProps = async ({Component, ctx}) => {
   if (query.balId) {
     try {
       baseLocale = await getBaseLocale(query.balId)
-    } catch (error) {
+    } catch {
       return {
         pageProps,
         error: {

@@ -23,7 +23,7 @@ function UserBasesLocales() {
       map(balAccess, async (token, id) => {
         try {
           return getBaseLocale(id, token)
-        } catch (error) {
+        } catch {
           console.log(`Impossible de récupérer la bal ${id}`)
         }
       }))
