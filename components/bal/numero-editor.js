@@ -58,17 +58,17 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
 
     if (markers.length > 0) {
       const positions = []
-      markers.forEach(marker => {
+      for (const marker of markers) {
         positions.push(
           {
             point: {
               type: 'Point',
-              coordinates: [marker.longitude, marker.latitude]
+              coordinates: [marker.longitude, marker.latitude],
             },
             type: marker.type,
           },
         )
-      })
+      }
 
       body.positions = positions
     }
@@ -122,7 +122,9 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         }
       ))
 
-      positions.forEach(position => addMarker(position))
+      for (const position of positions) {
+        addMarker(position)
+      }
     } else {
       addMarker({type: 'entrée'})
     }

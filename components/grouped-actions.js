@@ -86,11 +86,11 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     body.map(r => {
       r.voie = selectedVoieId
       r.toponyme = selectedToponymeId === '' ? null : selectedToponymeId || r.toponyme
-      r.positions.forEach(position => {
+      for (const position of r.positions) {
         if (type) {
           position.type = type
         }
-      })
+      }
 
       r.comment = commentCondition(r)
 

@@ -35,17 +35,17 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     }
 
     if (markers) {
-      markers.forEach(marker => {
+      for (const marker of markers) {
         body.positions.push(
           {
             point: {
               type: 'Point',
-              coordinates: [marker.longitude, marker.latitude]
+              coordinates: [marker.longitude, marker.latitude],
             },
             type: marker.type,
           },
         )
-      })
+      }
     }
 
     try {
@@ -106,7 +106,9 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
         }
       ))
 
-      positions.forEach(position => addMarker(position))
+      for (const position of positions) {
+        addMarker(position)
+      }
     } else {
       addMarker({type: 'segment'})
     }
