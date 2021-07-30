@@ -17,7 +17,9 @@ const CertificationMessage = ({balId, codeCommune}) => {
       await certifyBAL(balId, codeCommune, token, {certifie: true})
     }
 
-    localStorage.setItem(CERTIF_AUTO_KEY, true)
+    const previous = JSON.parse(localStorage.getItem(CERTIF_AUTO_KEY) || null)
+
+    localStorage.setItem(CERTIF_AUTO_KEY, JSON.stringify({...previous, [balId]: true}))
     setIsShown(false)
   }
 
@@ -25,7 +27,7 @@ const CertificationMessage = ({balId, codeCommune}) => {
     const checkCertifiateAdresses = async () => {
       const wasInformed = JSON.parse(localStorage.getItem(CERTIF_AUTO_KEY) || false)
 
-      if (!wasInformed && balId && codeCommune) {
+      if (!wasInformed[balId] && balId && codeCommune) {
         const {nbNumerosCertifies} = await getCommuneWithCount(balId, codeCommune)
 
         if (nbNumerosCertifies === 0) {
@@ -45,6 +47,7 @@ const CertificationMessage = ({balId, codeCommune}) => {
       title='Nouvelle fonctionnalité de certification'
       hasCancel={false}
       hasFooter={false}
+      onCloseComplete={() => handleConfirmation(false)}
     >
       <Paragraph>
         Il est désormais possible d’indiquer pour chaque adresse si celle-ci est certifiée par la commune.
