@@ -95,7 +95,9 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
       r.comment = commentCondition(r)
 
-      r.certifie = certifie
+      if (certifie !== null) {
+        r.certifie = certifie
+      }
 
       return r
     })

@@ -56,7 +56,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
       parcelles: selectedParcelles,
-      certifie
+      certifie: certifie ?? initialValue.certifie
     }
 
     if (markers.length > 0) {
@@ -82,7 +82,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, nomVoie, voieId, toponymeId, suffixe, comment, markers, selectedParcelles, certifie, onSubmit])
+  }, [numero, nomVoie, voieId, toponymeId, suffixe, comment, markers, selectedParcelles, certifie, initialValue, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()

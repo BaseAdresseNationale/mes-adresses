@@ -29,7 +29,7 @@ const CertificationButton = ({isLoading, onConfirm, onCancel, isCertified}) => {
         marginTop={16}
         marginLeft={8}
         iconAfter={EndorsedIcon}
-        onClick={() => onConfirm(true)}
+        onClick={() => onConfirm(isCertified ? null : true)}
       >
         {submitCertificationLabel}
       </Button>
@@ -41,7 +41,7 @@ const CertificationButton = ({isLoading, onConfirm, onCancel, isCertified}) => {
         intent={isCertified ? 'danger' : 'success'}
         marginTop={16}
         marginLeft={8}
-        onClick={() => onConfirm(false)}
+        onClick={() => onConfirm(isCertified ? false : null)}
       >
         {submitLabel}
       </Button>
