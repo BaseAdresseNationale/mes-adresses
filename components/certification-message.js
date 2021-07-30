@@ -14,7 +14,7 @@ const CertificationMessage = ({balId, codeCommune}) => {
 
   const handleConfirmation = async certifAuto => {
     if (certifAuto) {
-      await certifyBAL(balId, codeCommune, token, {certifie: certifAuto})
+      await certifyBAL(balId, codeCommune, token, {certifie: true})
     }
 
     localStorage.setItem(CERTIF_AUTO_KEY, true)
