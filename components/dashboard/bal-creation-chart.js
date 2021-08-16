@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {groupBy} from 'lodash'
 import {format, formatISO} from 'date-fns'

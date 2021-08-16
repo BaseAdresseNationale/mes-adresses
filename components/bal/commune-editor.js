@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Checkbox, Button, IconButton, Alert, UndoIcon} from 'evergreen-ui'
 

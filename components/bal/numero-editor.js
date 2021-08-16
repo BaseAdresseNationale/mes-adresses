@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
+import {useState, useMemo, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectField, TextInput, Button, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'

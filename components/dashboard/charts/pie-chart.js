@@ -1,4 +1,4 @@
-import React, {useRef} from 'react'
+import {useRef} from 'react'
 import PropTypes from 'prop-types'
 import {Pie} from 'react-chartjs-2'
 import {Pane, Heading} from 'evergreen-ui'

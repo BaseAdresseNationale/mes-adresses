@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import {useDropzone} from 'react-dropzone'
 import {Pane, Spinner, Paragraph} from 'evergreen-ui'

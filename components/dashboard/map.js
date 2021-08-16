@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react'
+import {useState, useRef, useEffect, useCallback} from 'react'
 import Router from 'next/router'
 import PropTypes from 'prop-types'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'

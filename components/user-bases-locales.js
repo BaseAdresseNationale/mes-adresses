@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useCallback} from 'react'
+import {useState, useEffect, useContext, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
 import {map} from 'lodash'

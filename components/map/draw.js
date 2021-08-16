@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo, useContext} from 'react'
+import {useState, useCallback, useMemo, useContext} from 'react'
 import {Editor, EditingMode, DrawLineStringMode} from 'react-map-gl-draw'
 import {Portal, Pane, Alert} from 'evergreen-ui'
 

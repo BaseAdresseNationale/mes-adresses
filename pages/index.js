@@ -1,4 +1,3 @@
-import React from 'react'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'

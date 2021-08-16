@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Text} from 'evergreen-ui'
 

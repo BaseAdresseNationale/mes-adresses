@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import {useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, ChevronRightIcon, CrossIcon, ChevronLeftIcon} from 'evergreen-ui'
 

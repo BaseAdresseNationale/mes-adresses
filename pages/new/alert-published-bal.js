@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react'
+import {useState, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {uniq} from 'lodash'

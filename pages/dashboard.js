@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 import {uniq, flattenDeep} from 'lodash'

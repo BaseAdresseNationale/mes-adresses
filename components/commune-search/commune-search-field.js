@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react'
+import {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {FormField} from 'evergreen-ui'
 import {splitBoxProps} from 'ui-box' // eslint-disable-line import/no-extraneous-dependencies

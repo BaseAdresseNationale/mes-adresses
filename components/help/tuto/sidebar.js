@@ -1,4 +1,3 @@
-import React from 'react'
 import {Paragraph, IconButton, ChevronRightIcon} from 'evergreen-ui'
 
 import Tuto from '.'

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import {useContext} from 'react'
 import {Pane, SideSheet, Paragraph, Heading, Tablist, Tab, Link} from 'evergreen-ui'
 
 import HelpContext from '../../contexts/help'

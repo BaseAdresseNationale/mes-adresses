@@ -1,4 +1,3 @@
-import React from 'react'
 import {Pane, Paragraph, OrderedList, ListItem, Strong, Menu, Button, AddIcon, ColumnLayoutIcon, MapIcon, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'

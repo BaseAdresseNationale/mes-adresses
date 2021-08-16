@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useEffect, useCallback, useContext} from 'react'
+import {useState, useMemo, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'

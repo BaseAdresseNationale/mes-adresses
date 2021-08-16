@@ -1,4 +1,3 @@
-import React from 'react'
 import {Pane, Heading, Button} from 'evergreen-ui'
 
 function Redirection() {

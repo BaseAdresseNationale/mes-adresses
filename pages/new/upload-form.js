@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
 import {uniq, uniqBy} from 'lodash'

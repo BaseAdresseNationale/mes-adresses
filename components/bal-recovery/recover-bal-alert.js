@@ -1,4 +1,4 @@
-import React, {useCallback, useState, useContext} from 'react'
+import {useCallback, useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Dialog, Label, Paragraph, TextInput, toaster} from 'evergreen-ui'
 

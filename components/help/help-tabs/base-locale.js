@@ -1,4 +1,3 @@
-import React from 'react'
 import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tablist, Tab, CogIcon, PlusIcon} from 'evergreen-ui'
 
 import BALRecovery from '../../bal-recovery/bal-recovery'

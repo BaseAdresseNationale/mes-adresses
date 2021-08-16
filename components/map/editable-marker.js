@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, useEffect, useMemo} from 'react'
+import {useState, useCallback, useContext, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'

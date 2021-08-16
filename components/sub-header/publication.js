@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react'
+import {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import {Badge, Button, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'

@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, useEffect} from 'react'
+import {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 

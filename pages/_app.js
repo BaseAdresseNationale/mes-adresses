@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo, useEffect} from 'react'
+import {useState, useCallback, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'

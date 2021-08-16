@@ -1,4 +1,4 @@
-import React, {forwardRef, memo} from 'react'
+import {forwardRef, memo} from 'react'
 import {ArrowLeftIcon, Button} from 'evergreen-ui'
 
 const BackButton = memo(

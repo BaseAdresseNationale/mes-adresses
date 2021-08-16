@@ -1,4 +1,4 @@
-import React, {useContext, useCallback, useMemo} from 'react'
+import {useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {isEqual} from 'lodash'
 import {Pane, Heading, Button, Alert, EditIcon, EraserIcon} from 'evergreen-ui'
