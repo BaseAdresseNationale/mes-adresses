@@ -1,9 +1,10 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Checkbox, Button, Alert, PlusIcon} from 'evergreen-ui'
 
-import {storeBalAccess} from '../../lib/tokens'
+import LocalStorageContext from '../../contexts/local-storage'
+
 import {createBaseLocaleDemo} from '../../lib/bal-api'
 
 import useFocus from '../../hooks/focus'
@@ -12,6 +13,8 @@ import {useCheckboxInput} from '../../hooks/input'
 import {CommuneSearchField} from '../../components/commune-search'
 
 function DemoForm({defaultCommune}) {
+  const {addBalAccess} = useContext(LocalStorageContext)
+
   const [isLoading, setIsLoading] = useState(false)
 
   const [populate, onPopulateChange] = useCheckboxInput(true)
@@ -28,13 +31,13 @@ function DemoForm({defaultCommune}) {
 
     const bal = await createBaseLocaleDemo({commune, populate})
 
-    storeBalAccess(bal._id, bal.token)
+    addBalAccess(bal._id, bal.token)
 
     Router.push(
       `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
       `/bal/${bal._id}/communes/${commune}`
     )
-  }, [commune, populate])
+  }, [commune, populate, addBalAccess])
 
   return (
     <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>

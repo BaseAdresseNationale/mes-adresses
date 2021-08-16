@@ -1,21 +1,23 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Table, Paragraph} from 'evergreen-ui'
 
-import {getBalAccess} from '../../lib/tokens'
 import {sortBalByUpdate} from '../../lib/sort-bal'
+
+import LocalStorageContext from '../../contexts/local-storage'
 
 import useFuse from '../../hooks/fuse'
 import useError from '../../hooks/error'
 
 import {listBasesLocales} from '../../lib/bal-api'
-import {removeBAL} from '../../lib/user-bal'
 
 import DeleteWarning from '../delete-warning'
 import BaseLocaleCard from './base-locale-card'
 
-function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
+function BasesLocalesList({basesLocales, sortBal}) {
+  const {removeBAL} = useContext(LocalStorageContext)
+
   const [toRemove, setToRemove] = useState(null)
 
   const [setError] = useError(null)
@@ -41,15 +43,13 @@ function BasesLocalesList({basesLocales, updateBasesLocales, sortBal}) {
   const onRemove = useCallback(async () => {
     try {
       await removeBAL(toRemove)
-      const balAccess = getBalAccess()
-      updateBasesLocales(balAccess)
     } catch (error) {
       setError(error.message)
     }
 
     setToRemove(null)
     setError(null)
-  }, [setError, toRemove, updateBasesLocales])
+  }, [setError, toRemove, removeBAL])
 
   const handleRemove = useCallback((e, balId) => {
     e.stopPropagation()
@@ -116,13 +116,11 @@ BasesLocalesList.getInitialProps = async () => {
 }
 
 BasesLocalesList.defaultProps = {
-  updateBasesLocales: null,
   sortBal: sortBalByUpdate
 }
 
 BasesLocalesList.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  updateBasesLocales: PropTypes.func,
   sortBal: PropTypes.func
 }
 

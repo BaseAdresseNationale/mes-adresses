@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from 'react'
+import React, {useState, useEffect, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Heading, Badge, Card, Pane, Button, Tooltip, Text, GlobeIcon, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
@@ -7,7 +7,8 @@ import {fr} from 'date-fns/locale'
 import {colors} from '../../lib/colors'
 
 import {getCommune} from '../../lib/geo-api'
-import {getBalToken} from '../../lib/tokens'
+
+import LocalStorageContext from '../../contexts/local-storage'
 
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 
@@ -27,6 +28,8 @@ function getBadge({status, published}) {
 }
 
 const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) => {
+  const {getBalToken} = useContext(LocalStorageContext)
+
   const {nom, communes, status, _updated, _created, emails} = baseLocale
   const [commune, setCommune] = useState()
   const [isOpen, setIsOpen] = useState(isAdmin ? initialIsOpen : false)
@@ -42,7 +45,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
 
   const hasToken = useMemo(() => {
     return Boolean(getBalToken(baseLocale._id))
-  }, [baseLocale])
+  }, [baseLocale, getBalToken])
 
   useEffect(() => {
     const fetchCommune = async code => {

@@ -1,13 +1,16 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 
 import {getBaseLocale} from '../lib/bal-api'
-import {getBalToken, storeBalAccess} from '../lib/tokens'
+
+import LocalStorageContext from './local-storage'
 
 const TokenContext = React.createContext()
 
 export function TokenContextProvider({balId, _token, ...props}) {
+  const {getBalToken, addBalAccess} = useContext(LocalStorageContext)
+
   const [token, setToken] = useState(null)
   const [emails, setEmails] = useState(null)
 
@@ -25,7 +28,7 @@ export function TokenContextProvider({balId, _token, ...props}) {
   useEffect(() => {
     if (balId) {
       if (_token) {
-        storeBalAccess(balId, _token)
+        addBalAccess(balId, _token)
 
         Router.replace(
           `/bal?balId=${balId}`,
@@ -35,11 +38,11 @@ export function TokenContextProvider({balId, _token, ...props}) {
         verify(getBalToken(balId))
       }
     }
-  }, [verify, balId, _token])
+  }, [verify, balId, _token, addBalAccess, getBalToken])
 
   const reloadEmails = useCallback(async () => {
     verify(getBalToken(balId))
-  }, [verify, balId])
+  }, [verify, balId, getBalToken])
 
   return (
     <TokenContext.Provider value={{token, emails, reloadEmails}} {...props} />
