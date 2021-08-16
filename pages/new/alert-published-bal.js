@@ -1,18 +1,21 @@
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {uniq} from 'lodash'
 import {Pane, Dialog, Alert, Paragraph, Strong} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
-import {removeBAL} from '../../lib/user-bal'
 
 import useError from '../../hooks/error'
+
+import LocalStorageContext from '../../contexts/local-storage'
 
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
 import DeleteWarning from '../../components/delete-warning'
 
 const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) => {
+  const {removeBAL} = useContext(LocalStorageContext)
+
   const [communeLabel, setCommuneLabel] = useState('cette commune')
   const uniqCommunes = uniq(...basesLocales.map(({communes}) => communes))
   const [toRemove, setToRemove] = useState(null)
@@ -49,7 +52,7 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
     } catch (error) {
       setError(error.message)
     }
-  }, [toRemove, updateBAL, setError])
+  }, [toRemove, updateBAL, removeBAL, setError])
 
   const handleRemove = useCallback((e, balId) => {
     e.stopPropagation()

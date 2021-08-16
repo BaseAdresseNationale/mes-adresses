@@ -16,6 +16,7 @@ import CertificationMessage from '../components/certification-message'
 import Map from '../components/map'
 import Help from '../components/help'
 
+import {LocalStorageContextProvider} from '../contexts/local-storage'
 import {HelpContextProvider} from '../contexts/help'
 import {SettingsContextProvider} from '../contexts/settings'
 import {DrawContextProvider} from '../contexts/draw'
@@ -101,71 +102,73 @@ function App({error, Component, pageProps, query}) {
         </Dialog>
       </Pane>
 
-      <TokenContextProvider balId={query.balId} _token={query.token}>
-        <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie} idToponyme={query.idToponyme}>
-          <MapContextProvider>
-            <DrawContextProvider>
-              <MarkersContextProvider>
-                <ParcellesContextProvider>
-                  <HelpContextProvider>
+      <LocalStorageContextProvider>
+        <TokenContextProvider balId={query.balId} _token={query.token}>
+          <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie} idToponyme={query.idToponyme}>
+            <MapContextProvider>
+              <DrawContextProvider>
+                <MarkersContextProvider>
+                  <ParcellesContextProvider>
+                    <HelpContextProvider>
 
-                    <Help />
+                      <Help />
 
-                    {pageProps.baseLocale && (
-                      <SettingsContextProvider>
-                        <Settings nomBaseLocale={pageProps.baseLocale.nom} />
-                        <Header />
-                        <SubHeader
-                          {...pageProps}
-                          layout={layout}
-                          isSidebarHidden={isHidden}
-                          onToggle={onToggle}
-                        />
-                      </SettingsContextProvider>
-                    )}
-
-                    {pageProps.baseLocale && (
-                      <Map
-                        top={topOffset}
-                        left={leftOffset}
-                        animate={layout === 'sidebar'}
-                        interactive={layout === 'sidebar'}
-                        commune={pageProps.commune}
-                        voie={pageProps.voie}
-                        toponyme={pageProps.toponyme}
-                      />
-                    )}
-
-                    <Wrapper
-                      top={topOffset}
-                      isHidden={isHidden}
-                      size={500}
-                      elevation={2}
-                      background='tint2'
-                      display='flex'
-                      flexDirection='column'
-                      onToggle={onToggle}
-                    >
-                      {error ? (
-                        <ErrorPage statusCode={error.statusCode} />
-                      ) : (
-                        <>
-                          <IEWarning />
-                          {pageProps.baseLocale && <WelcomeMessage />}
-                          {pageProps.baseLocale && pageProps.baseLocale?.published && (
-                            <CertificationMessage balId={pageProps.baseLocale?._id} codeCommune={pageProps.commune?.code} />
-                          )}
-                          <Component {...otherPageProps} />
-                        </>
+                      {pageProps.baseLocale && (
+                        <SettingsContextProvider>
+                          <Settings nomBaseLocale={pageProps.baseLocale.nom} />
+                          <Header />
+                          <SubHeader
+                            {...pageProps}
+                            layout={layout}
+                            isSidebarHidden={isHidden}
+                            onToggle={onToggle}
+                          />
+                        </SettingsContextProvider>
                       )}
-                    </Wrapper>
-                  </HelpContextProvider>
-                </ParcellesContextProvider>
-              </MarkersContextProvider>
-            </DrawContextProvider>
-          </MapContextProvider>
-        </BalDataContextProvider>
-      </TokenContextProvider>
+
+                      {pageProps.baseLocale && (
+                        <Map
+                          top={topOffset}
+                          left={leftOffset}
+                          animate={layout === 'sidebar'}
+                          interactive={layout === 'sidebar'}
+                          commune={pageProps.commune}
+                          voie={pageProps.voie}
+                          toponyme={pageProps.toponyme}
+                        />
+                      )}
+
+                      <Wrapper
+                        top={topOffset}
+                        isHidden={isHidden}
+                        size={500}
+                        elevation={2}
+                        background='tint2'
+                        display='flex'
+                        flexDirection='column'
+                        onToggle={onToggle}
+                      >
+                        {error ? (
+                          <ErrorPage statusCode={error.statusCode} />
+                        ) : (
+                          <>
+                            <IEWarning />
+                            {pageProps.baseLocale && <WelcomeMessage />}
+                            {pageProps.baseLocale && pageProps.baseLocale?.published && (
+                              <CertificationMessage balId={pageProps.baseLocale?._id} codeCommune={pageProps.commune?.code} />
+                            )}
+                            <Component {...otherPageProps} />
+                          </>
+                        )}
+                      </Wrapper>
+                    </HelpContextProvider>
+                  </ParcellesContextProvider>
+                </MarkersContextProvider>
+              </DrawContextProvider>
+            </MapContextProvider>
+          </BalDataContextProvider>
+        </TokenContextProvider>
+      </LocalStorageContextProvider>
     </>
   )
 }

@@ -1,10 +1,13 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Dialog, Label, Paragraph, TextInput, toaster} from 'evergreen-ui'
 
+import LocalStorageContext from '../../contexts/local-storage'
+
+import {useInput} from '../../hooks/input'
+
 import {recoverBAL} from '../../lib/bal-api'
 import {validateEmail} from '../../lib/utils/email'
-import {useInput} from '../../hooks/input'
 
 const hasBeenSentRecently = sentAt => {
   const now = new Date()
@@ -15,8 +18,9 @@ const hasBeenSentRecently = sentAt => {
 }
 
 function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
+  const {recoveryEmailSent, setRecoveryEmailSent} = useContext(LocalStorageContext)
+
   const [isLoading, setIsLoading] = useState(false)
-  const [emailSentAt, setEmailSentAt] = useState(null)
   const [email, onEmailChange, resetEmail] = useInput(defaultEmail)
 
   const handleComplete = () => {
@@ -26,11 +30,10 @@ function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
 
   const handleConfirm = useCallback(async () => {
     const now = new Date()
-    const recoveryEmailSent = localStorage.getItem('recovery-email-sent')
 
     setIsLoading(true)
 
-    if (hasBeenSentRecently(recoveryEmailSent) || hasBeenSentRecently(emailSentAt)) {
+    if (hasBeenSentRecently(recoveryEmailSent)) {
       setIsLoading(false)
       onClose()
       return toaster.warning('Un email a déjà été envoyé, merci de patienter.')
@@ -39,8 +42,7 @@ function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
     try {
       await recoverBAL(email, baseLocaleId)
 
-      setEmailSentAt(now)
-      localStorage.setItem('recovery-email-sent', now)
+      setRecoveryEmailSent(now)
       toaster.success(`Un email a été envoyé à l’adresse ${email}`)
     } catch (error) {
       toaster.danger(error.message)
@@ -50,7 +52,7 @@ function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
 
     setIsLoading(false)
     onClose()
-  }, [email, baseLocaleId, emailSentAt, resetEmail, onClose])
+  }, [email, baseLocaleId, recoveryEmailSent, resetEmail, onClose, setRecoveryEmailSent])
 
   return (
     <Dialog

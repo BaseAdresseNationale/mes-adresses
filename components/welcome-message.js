@@ -1,20 +1,15 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {Pane, Dialog, Alert, Link, Paragraph, Heading, Strong, HelpIcon} from 'evergreen-ui'
 
-const WELCOMED_KEY = 'was-welcomed'
+import LocalStorageContext from '../contexts/local-storage'
 
 function WelcomeMessage() {
+  const {wasWelcomed, setWasWelcomed} = useContext(LocalStorageContext)
   const [isShown, setIsShown] = useState(false)
 
-  const handleConfirm = () => {
-    localStorage.setItem(WELCOMED_KEY, true)
-    setIsShown(false)
-  }
-
   useEffect(() => {
-    const wasWelcomed = JSON.parse(localStorage.getItem(WELCOMED_KEY) || false)
     setIsShown(!wasWelcomed)
-  }, [])
+  }, [wasWelcomed])
 
   return (
     <Dialog
@@ -23,7 +18,7 @@ function WelcomeMessage() {
       title=' Bienvenue sur votre Base Adresse Locale'
       confirmLabel='Commencer l’adressage'
       hasCancel={false}
-      onConfirm={handleConfirm}
+      onConfirm={() => setWasWelcomed(true)}
     >
       <Paragraph textAlign='center'>
         Vous souhaitez <Strong>mettre à jour les adresses</Strong> de votre commune ? Vous êtes au <Strong>bon endroit</Strong> ! 🎉

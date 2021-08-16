@@ -1,9 +1,10 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
-import {storeBalAccess} from '../../lib/tokens'
+import LocalStorageContext from '../../contexts/local-storage'
+
 import {createBaseLocale, addCommune, populateCommune, searchBAL} from '../../lib/bal-api'
 
 import useFocus from '../../hooks/focus'
@@ -15,6 +16,8 @@ import {CommuneSearchField} from '../../components/commune-search'
 import AlertPublishedBAL from './alert-published-bal'
 
 function CreateForm({defaultCommune}) {
+  const {addBalAccess} = useContext(LocalStorageContext)
+
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput(
     defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
@@ -39,7 +42,7 @@ function CreateForm({defaultCommune}) {
     })
 
     if (commune) {
-      storeBalAccess(bal._id, bal.token)
+      addBalAccess(bal._id, bal.token)
       await addCommune(bal._id, commune, bal.token)
 
       if (populate) {
@@ -51,7 +54,7 @@ function CreateForm({defaultCommune}) {
         `/bal/${bal._id}/communes/${commune}`
       )
     }
-  }, [email, nom, populate, commune])
+  }, [email, nom, populate, commune, addBalAccess])
 
   const onSubmit = async e => {
     e.preventDefault()

@@ -1,11 +1,12 @@
-import React, {useState, useCallback, useEffect} from 'react'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
 import {uniq, uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '../../lib/bal-api'
-import {storeBalAccess} from '../../lib/tokens'
+
+import LocalStorageContext from '../../contexts/local-storage'
 
 import useFocus from '../../hooks/focus'
 import {useInput} from '../../hooks/input'
@@ -43,6 +44,8 @@ function UploadForm() {
   const [userBALs, setUserBALs] = useState([])
   const [isShown, setIsShown] = useState(false)
 
+  const {addBalAccess} = useContext(LocalStorageContext)
+
   const onError = error => {
     setFile(null)
     setIsLoading(false)
@@ -71,10 +74,10 @@ function UploadForm() {
         ]
       })
 
-      storeBalAccess(baseLocale._id, baseLocale.token)
+      addBalAccess(baseLocale._id, baseLocale.token)
       setBal(baseLocale)
     }
-  }, [bal, email, nom])
+  }, [bal, email, nom, addBalAccess])
 
   const onCancel = () => {
     setIsShown(false)
