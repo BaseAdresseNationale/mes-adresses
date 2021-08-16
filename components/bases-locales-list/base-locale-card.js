@@ -128,7 +128,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           {isAdmin ? (
             <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
               {status === 'draft' || status === 'demo' ? (
-                <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer</Button>
+                <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove || !hasToken} onClick={onRemove}>Supprimer</Button>
               ) : (
                 <Tooltip content='Vous ne pouvez pas supprimer une BAL losrqu‘elle est prête à être publiée'>
                   <Button isActive iconAfter={TrashIcon}>Supprimer</Button>
