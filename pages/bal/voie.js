@@ -280,7 +280,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 key={numero._id}
                 id={numero._id}
                 comment={numero.comment}
-                warning={numero.positions.find(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
+                warning={numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
                 isSelectable={!isEditing}
                 label={numero.numeroComplet}
                 secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}

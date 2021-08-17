@@ -116,15 +116,15 @@ function Map({interactive, commune, voie, toponyme}) {
       return ['parcelles-fill']
     }
 
-    if (sources.find(({name}) => name === 'voies')) {
+    if (sources.some(({name}) => name === 'voies')) {
       layers.push('voie-trace-line')
     }
 
-    if (sources.find(({name}) => name === 'positions')) {
+    if (sources.some(({name}) => name === 'positions')) {
       layers.push('numeros-point', 'numeros-label')
     }
 
-    if (!voie && sources.find(({name}) => name === 'voies')) {
+    if (!voie && sources.some(({name}) => name === 'voies')) {
       layers.push('voie-label')
     }
 

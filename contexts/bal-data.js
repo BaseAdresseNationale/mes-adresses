@@ -91,7 +91,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     if (balId) {
       const baseLocale = await getBaseLocale(balId)
       const publishedBasesLocales = await getPublishedBasesLocales()
-      baseLocale.published = Boolean(publishedBasesLocales.find(bal => bal._id === baseLocale._id))
+      baseLocale.published = publishedBasesLocales.some(bal => bal._id === baseLocale._id)
 
       setBaseLocal(baseLocale)
     }

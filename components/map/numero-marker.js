@@ -86,7 +86,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
   return (
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-      {numero.positions.find(position => position.type === 'inconnue') ? (
+      {numero.positions.some(position => position.type === 'inconnue') ? (
         <Tooltip content='Le type d’une position est inconnu' position={Position.RIGHT}>
           <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
             <Text color='white' paddingLeft={8} paddingRight={5}>

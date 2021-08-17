@@ -144,7 +144,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   }, [isAdding, setIsEditing])
 
   useEffect(() => {
-    if (editingId && toponymes.find(toponyme => toponyme._id === editingId)) {
+    if (editingId && toponymes.some(toponyme => toponyme._id === editingId)) {
       setSelectedTab('toponyme')
     }
   }, [toponymes, editingId])
