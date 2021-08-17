@@ -3,35 +3,35 @@ import PropTypes from 'prop-types'
 import {Button, Dialog, Pane, Paragraph} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'
+import LocalStorageContext from '../contexts/local-storage'
 
 import {getCommuneWithCount, certifyBAL} from '../lib/bal-api'
-
-const CERTIF_AUTO_KEY = 'certificationAutoAlert'
 
 const CertificationMessage = ({balId, codeCommune}) => {
   const [isShown, setIsShown] = useState(false)
   const {token} = useContext(TokenContext)
+  const {getInformedAboutCertification, addInformedAboutCertification} = useContext(LocalStorageContext)
 
   const handleConfirmation = async certifAuto => {
     if (certifAuto) {
       await certifyBAL(balId, codeCommune, token, {certifie: true})
     }
 
-    const previous = JSON.parse(localStorage.getItem(CERTIF_AUTO_KEY) || null)
-
-    localStorage.setItem(CERTIF_AUTO_KEY, JSON.stringify({...previous, [balId]: true}))
+    addInformedAboutCertification(balId, true)
     setIsShown(false)
   }
 
   useEffect(() => {
     const checkCertifiateAdresses = async () => {
-      const wasInformed = JSON.parse(localStorage.getItem(CERTIF_AUTO_KEY) || false)
+      const hasBeenAutocertified = getInformedAboutCertification(balId)
 
-      if (!wasInformed[balId] && balId && codeCommune) {
+      if (!hasBeenAutocertified) {
         const {nbNumerosCertifies} = await getCommuneWithCount(balId, codeCommune)
 
         if (nbNumerosCertifies === 0) {
           setIsShown(true)
+        } else {
+          addInformedAboutCertification(balId, true)
         }
       }
     }

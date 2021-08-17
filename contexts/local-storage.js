@@ -9,11 +9,13 @@ const LocalStorageContext = React.createContext()
 const STORAGE_KEY = 'bal-access'
 const WELCOMED_KEY = 'was-welcomed'
 const RECOVERY_EMAIL = 'recovery-email-sent'
+const CERTIFICATION_AUTO_KEY = 'certificationAutoAlert'
 
 export function LocalStorageContextProvider(props) {
   const [balAccess, , getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY)
   const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY)
   const [recoveryEmailSent, setRecoveryEmailSent] = useLocalStorage(RECOVERY_EMAIL)
+  const [informedAboutCertification, , getInformedAboutCertification, addInformedAboutCertification] = useLocalStorage(CERTIFICATION_AUTO_KEY)
 
   const removeBAL = async balId => {
     const token = getBalToken(balId)
@@ -26,7 +28,8 @@ export function LocalStorageContextProvider(props) {
       value={{
         balAccess, getBalToken, addBalAccess, removeBAL,
         wasWelcomed, setWasWelcomed,
-        recoveryEmailSent, setRecoveryEmailSent
+        recoveryEmailSent, setRecoveryEmailSent,
+        informedAboutCertification, getInformedAboutCertification, addInformedAboutCertification
       }}
       {...props}
     />
