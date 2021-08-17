@@ -62,6 +62,16 @@
     "rules": {
       "react/no-danger": "warn",
       "react/require-default-props": "warn"
+    },
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [
+            ".js",
+            ".jsx"
+          ]
+        }
+      }
     }
   }
 }
