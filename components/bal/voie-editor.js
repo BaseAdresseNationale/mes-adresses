@@ -22,8 +22,8 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onFormSubmit = useCallback(async event => {
+    event.preventDefault()
 
     setIsLoading(true)
 
@@ -47,8 +47,8 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     }
   }, [router, nom, isMetric, data, onSubmit])
 
-  const onFormCancel = useCallback(e => {
-    e.preventDefault()
+  const onFormCancel = useCallback(event => {
+    event.preventDefault()
 
     onCancel()
   }, [onCancel])

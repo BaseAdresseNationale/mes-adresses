@@ -23,8 +23,8 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const [error, setError] = useState()
   const setRef = useFocus()
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onFormSubmit = useCallback(async event => {
+    event.preventDefault()
 
     setIsLoading(true)
 
@@ -56,8 +56,8 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     }
   }, [nom, markers, onSubmit, selectedParcelles])
 
-  const onFormCancel = useCallback(e => {
-    e.preventDefault()
+  const onFormCancel = useCallback(event => {
+    event.preventDefault()
 
     disableMarkers()
     onCancel()

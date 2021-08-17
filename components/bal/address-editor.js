@@ -17,7 +17,7 @@ function AddressEditor({onAddNumero, onAddToponyme, onCancel, isToponyme, setIsT
       <SelectField
         label='Créer un nouveau'
         value={isToponyme ? 'toponyme' : 'numero'}
-        onChange={e => setIsToponyme(e.target.value === 'toponyme')}
+        onChange={event => setIsToponyme(event.target.value === 'toponyme')}
       >
         <option value='numero'>Numéro</option>
         <option value='toponyme'>Toponyme</option>

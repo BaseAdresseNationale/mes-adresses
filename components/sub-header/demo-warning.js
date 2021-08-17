@@ -18,8 +18,8 @@ function DemoWarning({baseLocale, token}) {
   const [email, onEmailChange] = useInput()
   const focusRef = useFocus()
 
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onSubmit = useCallback(async event => {
+    event.preventDefault()
     setIsLoading(true)
 
     await transformToDraft(
@@ -95,7 +95,7 @@ function DemoWarning({baseLocale, token}) {
               value={nom}
               label='Nom de la Base Adresse Locale'
               placeholder={placeholder}
-              onChange={e => setNom(e.target.value)}
+              onChange={event => setNom(event.target.value)}
             />
 
             <TextInputField

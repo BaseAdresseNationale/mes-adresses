@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import {Pane, Tooltip, Position, Icon} from 'evergreen-ui'
 
 function Control({enabled, isDisabled, icon, enabledHint, disabledHint, onChange}) {
-  const onToggle = useCallback(e => {
-    e.stopPropagation()
+  const onToggle = useCallback(event => {
+    event.stopPropagation()
     onChange(enabled => !enabled)
   }, [onChange])
 

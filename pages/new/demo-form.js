@@ -24,8 +24,8 @@ function DemoForm({defaultCommune}) {
   const onSelect = useCallback(commune => {
     setCommune(commune.code)
   }, [])
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onSubmit = useCallback(async event => {
+    event.preventDefault()
 
     setIsLoading(true)
 

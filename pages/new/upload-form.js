@@ -84,8 +84,8 @@ function UploadForm() {
     setIsLoading(false)
   }
 
-  const onSubmit = async e => {
-    e.preventDefault()
+  const onSubmit = async event => {
+    event.preventDefault()
     setIsLoading(true)
 
     await checkUserBALs()

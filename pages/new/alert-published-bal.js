@@ -54,8 +54,8 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
     }
   }, [toRemove, updateBAL, removeBAL, setError])
 
-  const handleRemove = useCallback((e, balId) => {
-    e.stopPropagation()
+  const handleRemove = useCallback((event, balId) => {
+    event.stopPropagation()
     setToRemove(balId)
   }, [])
 
@@ -116,7 +116,7 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
               initialIsOpen={basesLocales.length === 1}
               baseLocale={bal}
               onSelect={() => onBalSelect(bal)}
-              onRemove={e => handleRemove(e, bal._id)}
+              onRemove={event => handleRemove(event, bal._id)}
             />
           ))}
         </Pane>

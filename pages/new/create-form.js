@@ -56,8 +56,8 @@ function CreateForm({defaultCommune}) {
     }
   }, [email, nom, populate, commune, addBalAccess])
 
-  const onSubmit = async e => {
-    e.preventDefault()
+  const onSubmit = async event => {
+    event.preventDefault()
     setIsLoading(true)
 
     checkUserBALs(commune, email)

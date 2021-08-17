@@ -51,8 +51,8 @@ function BasesLocalesList({basesLocales, sortBal}) {
     setError(null)
   }, [setError, toRemove, removeBAL])
 
-  const handleRemove = useCallback((e, balId) => {
-    e.stopPropagation()
+  const handleRemove = useCallback((event, balId) => {
+    event.stopPropagation()
 
     setToRemove(balId)
   }, [])
@@ -95,7 +95,7 @@ function BasesLocalesList({basesLocales, sortBal}) {
                   baseLocale={bal}
                   initialIsOpen={basesLocales.length === 1}
                   onSelect={() => onBalSelect(bal)}
-                  onRemove={e => handleRemove(e, bal._id)}
+                  onRemove={event => handleRemove(event, bal._id)}
                 />
               ))}
             </Table.Body>

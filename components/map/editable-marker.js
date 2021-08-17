@@ -88,8 +88,8 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
         key={marker._id}
         {...marker}
         draggable
-        onDrag={e => onDrag(e, idx)}
-        onDragEnd={e => onDragEnd(e, idx)}
+        onDrag={event => onDrag(event, idx)}
+        onDragEnd={event => onDragEnd(event, idx)}
       >
         <Pane>
           <Text

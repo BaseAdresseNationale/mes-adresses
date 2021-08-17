@@ -19,8 +19,8 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
     setCommune(commune.code)
   }, [])
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onFormSubmit = useCallback(async event => {
+    event.preventDefault()
 
     setIsLoading(true)
 
@@ -35,8 +35,8 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
     }
   }, [onSubmit, commune, populate])
 
-  const onFormCancel = useCallback(e => {
-    e.preventDefault()
+  const onFormCancel = useCallback(event => {
+    event.preventDefault()
 
     onCancel()
   }, [onCancel])

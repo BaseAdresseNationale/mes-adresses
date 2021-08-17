@@ -21,8 +21,8 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
   const {markers} = useContext(MarkersContext)
   const {baseLocale, editingId, setEditingId, isEditing, reloadToponymes, voie, toponyme} = useContext(BalDataContext)
 
-  const onEnableEditing = useCallback(e => {
-    e.stopPropagation()
+  const onEnableEditing = useCallback(event => {
+    event.stopPropagation()
 
     if (!isEditing) {
       if (voie || initialToponyme !== toponyme) {

@@ -14,12 +14,12 @@ function PositionEditor({isToponyme}) {
     addMarker({type: isToponyme ? 'segment' : 'entrée'})
   }
 
-  const handleChange = (e, marker) => {
-    updateMarker(marker._id, {...marker, type: e.target.value})
+  const handleChange = (event, marker) => {
+    updateMarker(marker._id, {...marker, type: event.target.value})
   }
 
-  const deletePosition = (e, marker) => {
-    e.preventDefault()
+  const deletePosition = (event, marker) => {
+    event.preventDefault()
     removeMarker(marker._id)
   }
 
@@ -48,7 +48,7 @@ function PositionEditor({isToponyme}) {
                 value={marker.type}
                 marginBottom={8}
                 height={32}
-                onChange={e => handleChange(e, marker)}
+                onChange={event => handleChange(event, marker)}
               >
                 {positionsTypesList.map(positionType => (
                   <option key={positionType.value} value={positionType.value}>
@@ -69,7 +69,7 @@ function PositionEditor({isToponyme}) {
                 iconSize={15}
                 icon={TrashIcon}
                 intent='danger'
-                onClick={e => deletePosition(e, marker)}
+                onClick={event => deletePosition(event, marker)}
               />
             </React.Fragment>
           ))}

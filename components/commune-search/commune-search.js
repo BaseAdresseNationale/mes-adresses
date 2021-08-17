@@ -41,7 +41,7 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
           placeholder={placeholder}
           value={inputValue}
           {...getInputProps({
-            onChange: e => onSearch(e.target.value),
+            onChange: event => onSearch(event.target.value),
           })}
           {...props}
         />

@@ -60,7 +60,7 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
           label='Voie'
           flex={1}
           marginBottom={16}
-          onChange={e => handleSelectVoie(e.target.value)}
+          onChange={event => handleSelectVoie(event.target.value)}
         >
           {!selectedVoieId && <option>- Sélectionnez une voie -</option>}
           {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (

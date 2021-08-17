@@ -19,8 +19,8 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
   const {token} = useContext(TokenContext)
   const {setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
 
-  const onEnableEditing = useCallback(e => {
-    e.stopPropagation()
+  const onEnableEditing = useCallback(event => {
+    event.stopPropagation()
 
     if (!isEditing) {
       setEditingId(numero._id)

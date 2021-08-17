@@ -15,12 +15,12 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
     setIsCreateMode(mode => !mode)
   }
 
-  const handleNomVoieChange = e => {
-    handleNomVoie(e.target.value)
+  const handleNomVoieChange = event => {
+    handleNomVoie(event.target.value)
   }
 
-  const handleVoieChange = e => {
-    const idVoie = e.target.value
+  const handleVoieChange = event => {
+    const idVoie = event.target.value
     handleVoie(idVoie ?? null)
   }
 

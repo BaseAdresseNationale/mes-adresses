@@ -42,8 +42,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     setOverrideText,
   } = useContext(MarkersContext)
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onFormSubmit = useCallback(async event => {
+    event.preventDefault()
 
     setIsLoading(true)
 
@@ -81,8 +81,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     }
   }, [numero, voieId, nomVoie, toponymeId, suffixe, comment, markers, selectedParcelles, onSubmit])
 
-  const onFormCancel = useCallback(e => {
-    e.preventDefault()
+  const onFormCancel = useCallback(event => {
+    event.preventDefault()
 
     disableMarkers()
     onCancel()

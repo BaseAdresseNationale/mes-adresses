@@ -56,8 +56,8 @@ const Settings = React.memo(({nomBaseLocale}) => {
     setBalEmails(emails => emails.filter(e => e !== email))
   }, [])
 
-  const onAddEmail = useCallback(e => {
-    e.preventDefault()
+  const onAddEmail = useCallback(event => {
+    event.preventDefault()
 
     if (validateEmail(email)) {
       setBalEmails(emails => [...emails, email])
@@ -67,8 +67,8 @@ const Settings = React.memo(({nomBaseLocale}) => {
     }
   }, [email, resetEmail])
 
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onSubmit = useCallback(async event => {
+    event.preventDefault()
 
     setError(null)
     setIsLoading(true)
