@@ -128,31 +128,30 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     reloadBaseLocale()
   }, [setEditingId, reloadNumeros, reloadVoies, reloadToponymes, reloadNumerosToponyme, reloadBaseLocale])
 
+  const value = useMemo(() => ({
+    isEditing,
+    setIsEditing,
+    editingId,
+    editingItem,
+    parcelles,
+    geojson,
+    baseLocale,
+    codeCommune,
+    voie,
+    numeros,
+    voies,
+    toponymes,
+    setEditingId,
+    reloadNumeros,
+    reloadVoies,
+    reloadToponymes,
+    reloadBaseLocale,
+    reloadNumerosToponyme,
+    toponyme,
+  }), [isEditing, editingId, editingItem, parcelles, geojson, baseLocale, codeCommune, voie, numeros, voies, toponymes, setEditingId, reloadNumeros, reloadVoies, reloadToponymes, reloadBaseLocale, reloadNumerosToponyme, toponyme])
+
   return (
-    <BalDataContext.Provider
-      value={{
-        isEditing,
-        setIsEditing,
-        editingId,
-        editingItem,
-        parcelles,
-        geojson,
-        baseLocale,
-        codeCommune,
-        voie,
-        numeros,
-        voies,
-        toponymes,
-        setEditingId,
-        reloadNumeros,
-        reloadVoies,
-        reloadToponymes,
-        reloadBaseLocale,
-        reloadNumerosToponyme,
-        toponyme,
-      }}
-      {...props}
-    />
+    <BalDataContext.Provider value={value} {...props} />
   )
 })
 

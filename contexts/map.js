@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useMemo} from 'react'
 
 const MapContext = React.createContext()
 
@@ -23,16 +23,15 @@ export function MapContextProvider(props) {
     }
   }, [viewport])
 
+  const value = useMemo(() => ({
+    map, setMap,
+    style, setStyle, defaultStyle,
+    viewport, setViewport,
+    showCadastre, setShowCadastre,
+  }), [map, style, viewport, showCadastre])
+
   return (
-    <MapContext.Provider
-      value={{
-        map, setMap,
-        style, setStyle, defaultStyle,
-        viewport, setViewport,
-        showCadastre, setShowCadastre,
-      }}
-      {...props}
-    />
+    <MapContext.Provider value={value} {...props} />
   )
 }
 

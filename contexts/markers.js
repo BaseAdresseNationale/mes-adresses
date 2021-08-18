@@ -1,5 +1,5 @@
+import React, {useState, useEffect, useCallback, useContext, useMemo} from 'react'
 import {uniqueId} from 'lodash'
-import React, {useState, useEffect, useCallback, useContext} from 'react'
 
 import BalDataContext from './bal-data'
 import MapContext from './map'
@@ -55,22 +55,21 @@ export function MarkersContextProvider(props) {
     }))
   }, [])
 
+  const value = useMemo(() => ({
+    markers,
+    overrideText,
+    setMarkers,
+    addMarker,
+    removeMarker,
+    updateMarker,
+    setOverrideText,
+    disableMarkers,
+    suggestedNumero,
+    setSuggestedNumero,
+  }), [markers, overrideText, addMarker, removeMarker, updateMarker, disableMarkers, suggestedNumero])
+
   return (
-    <MarkersContext.Provider
-      value={{
-        markers,
-        overrideText,
-        setMarkers,
-        addMarker,
-        removeMarker,
-        updateMarker,
-        setOverrideText,
-        disableMarkers,
-        suggestedNumero,
-        setSuggestedNumero,
-      }}
-      {...props}
-    />
+    <MarkersContext.Provider value={value} {...props} />
   )
 }
 

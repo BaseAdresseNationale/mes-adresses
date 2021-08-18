@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useCallback} from 'react'
+import React, {useState, useContext, useEffect, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 
 import MapContext from './map'
@@ -115,16 +115,15 @@ export function ParcellesContextProvider(props) {
     }
   }, [map, handleLoad])
 
+  const value = useMemo(() => ({
+    selectedParcelles, setSelectedParcelles,
+    isParcelleSelectionEnabled, setIsParcelleSelectionEnabled,
+    handleParcelle,
+    hoveredParcelle, handleHoveredParcelle,
+  }), [selectedParcelles, isParcelleSelectionEnabled, hoveredParcelle, handleParcelle, handleHoveredParcelle])
+
   return (
-    <ParcellesContext.Provider
-      value={{
-        selectedParcelles, setSelectedParcelles,
-        isParcelleSelectionEnabled, setIsParcelleSelectionEnabled,
-        handleParcelle,
-        hoveredParcelle, handleHoveredParcelle,
-      }}
-      {...props}
-    />
+    <ParcellesContext.Provider value={value} {...props} />
   )
 }
 
