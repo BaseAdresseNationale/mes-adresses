@@ -49,32 +49,30 @@ function UserBasesLocales() {
   }
 
   return (
-    <>
-      {basesLocales.length > 0 ? (
-        <>
-          <BasesLocalesList basesLocales={basesLocales} />
+    basesLocales.length > 0 ? (
+      <>
+        <BasesLocalesList basesLocales={basesLocales} />
 
-          <Pane margin='auto' textAlign='center'>
-            <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-            <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
-          </Pane>
-        </>
-      ) : (
-        <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' margin='auto'>
-          <Button
-            marginBottom={12}
-            height={40}
-            appearance='primary'
-            iconBefore={PlusIcon}
-            onClick={() => Router.push('/new')}
-          >
-            Créer une Base Adresse Locale
-          </Button>
+        <Pane margin='auto' textAlign='center'>
           <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
           <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
         </Pane>
-      )}
-    </>
+      </>
+    ) : (
+      <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' margin='auto'>
+        <Button
+          marginBottom={12}
+          height={40}
+          appearance='primary'
+          iconBefore={PlusIcon}
+          onClick={() => Router.push('/new')}
+        >
+          Créer une Base Adresse Locale
+        </Button>
+        <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
+        <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
+      </Pane>
+    )
   )
 }
 
