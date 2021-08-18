@@ -108,14 +108,14 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
                   </NextLink>
                 </Menu.Group>
                 {token && (
-                <>
-                  <Menu.Divider />
-                  <Menu.Group>
-                    <Menu.Item icon={CogIcon} onSelect={() => setShowSettings(!showSettings)}>
-                      Paramètres
-                    </Menu.Item>
-                  </Menu.Group>
-                </>
+                  <>
+                    <Menu.Divider />
+                    <Menu.Group>
+                      <Menu.Item icon={CogIcon} onSelect={() => setShowSettings(!showSettings)}>
+                        Paramètres
+                      </Menu.Item>
+                    </Menu.Group>
+                  </>
                 )}
               </Menu>
             }
