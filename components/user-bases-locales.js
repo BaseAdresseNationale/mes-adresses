@@ -1,43 +1,46 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
 import {map} from 'lodash'
 
 import {expandWithPublished} from '../helpers/bases-locales'
 
-import {getBalAccess} from '../lib/tokens'
 import {getBaseLocale} from '../lib/bal-api'
+
+import LocalStorageContext from '../contexts/local-storage'
 
 import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {
-  const [basesLocales, setBasesLocales] = useState(null)
-  const [balAccess, setBalAccess] = useState(getBalAccess())
+  const {balAccess} = useContext(LocalStorageContext)
 
-  useEffect(() => {
-    const getUserBals = async () => {
-      const basesLocales = await Promise.all(
-        map(balAccess, async (token, id) => {
-          try {
-            return await getBaseLocale(id, token)
-          } catch (error) {
-            console.log(`Impossible de récupérer la bal ${id}`)
-          }
-        }))
+  const [isLoading, setIsLoading] = useState(true)
+  const [basesLocales, setBasesLocales] = useState([])
 
-      const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
+  const getUserBals = useCallback(async () => {
+    setIsLoading(true)
+    const basesLocales = await Promise.all(
+      map(balAccess, async (token, id) => {
+        try {
+          return getBaseLocale(id, token)
+        } catch (error) {
+          console.log(`Impossible de récupérer la bal ${id}`)
+        }
+      }))
 
-      await expandWithPublished(findedBasesLocales)
+    const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
 
-      setBasesLocales(findedBasesLocales)
-    }
+    await expandWithPublished(findedBasesLocales)
 
-    if (balAccess) {
-      getUserBals()
-    }
+    setBasesLocales(findedBasesLocales)
+    setIsLoading(false)
   }, [balAccess])
 
-  if (!basesLocales) {
+  useEffect(() => {
+    getUserBals()
+  }, [balAccess, getUserBals])
+
+  if (balAccess === undefined || isLoading) {
     return (
       <Pane display='flex' alignItems='center' justifyContent='center' flex={1}>
         <Spinner />
@@ -49,7 +52,7 @@ function UserBasesLocales() {
     <>
       {basesLocales.length > 0 ? (
         <>
-          <BasesLocalesList basesLocales={basesLocales} updateBasesLocales={setBalAccess} />
+          <BasesLocalesList basesLocales={basesLocales} />
 
           <Pane margin='auto' textAlign='center'>
             <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>

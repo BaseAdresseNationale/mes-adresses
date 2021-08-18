@@ -16,6 +16,7 @@ import useKeyEvent from '../../hooks/key-event'
 import Comment from '../comment'
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
+import NumeroVoieSelector from './numero-editor/numero-voie-selector'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
@@ -27,6 +28,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
+  const [nomVoie, onNomVoieChange] = useState('')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
   const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
   const [error, setError] = useState()
@@ -45,8 +47,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
 
     setIsLoading(true)
 
+    const voie = nomVoie ? {nom: nomVoie} : {_id: voieId}
     const body = {
-      voie: voieId,
       toponyme: toponymeId,
       numero: Number(numero),
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
@@ -72,12 +74,12 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     }
 
     try {
-      await onSubmit(body)
+      await onSubmit(voie, body)
     } catch (error) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voieId, toponymeId, suffixe, comment, markers, selectedParcelles, onSubmit])
+  }, [numero, voieId, nomVoie, toponymeId, suffixe, comment, markers, selectedParcelles, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -142,22 +144,14 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <Pane display='flex'>
-        <SelectField
-          required
-          label='Voie'
-          flex={1}
-          marginBottom={16}
-          value={voieId}
-          onChange={e => setVoieId(e.target.value)}
-        >
-          {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
-            <option key={_id} value={_id}>
-              {nom}
-            </option>
-          ))}
-        </SelectField>
-      </Pane>
+      <NumeroVoieSelector
+        voieId={voieId}
+        voies={voies}
+        nomVoie={nomVoie}
+        mode={voieId ? 'selection' : 'creation'}
+        handleVoie={setVoieId}
+        handleNomVoie={onNomVoieChange}
+      />
 
       <Pane display='flex'>
         <SelectField

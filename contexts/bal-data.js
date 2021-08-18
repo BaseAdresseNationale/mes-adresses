@@ -138,6 +138,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
         parcelles,
         geojson,
         baseLocale,
+        codeCommune,
         voie,
         numeros,
         voies,

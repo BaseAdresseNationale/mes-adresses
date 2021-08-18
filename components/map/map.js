@@ -175,7 +175,7 @@ function Map({interactive, commune, voie, toponyme}) {
     }
   }, [router, baseLocale._id, commune, voie, reloadNumeros, reloadVoies])
 
-  const onAddAddress = useCallback(async (voieData, numero) => {
+  const onAddNumero = useCallback(async (voieData, numero) => {
     let editedVoie = voieData
 
     if (!editedVoie._id) {
@@ -356,7 +356,8 @@ function Map({interactive, commune, voie, toponyme}) {
           <AddressEditor
             isToponyme={isToponyme}
             setIsToponyme={setIsToponyme}
-            onSubmit={isToponyme ? onAddToponyme : onAddAddress}
+            onAddNumero={onAddNumero}
+            onAddToponyme={onAddToponyme}
             onCancel={() => setOpenForm(false)}
           />
         </Pane>
