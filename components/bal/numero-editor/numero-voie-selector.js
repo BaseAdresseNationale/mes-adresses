@@ -7,6 +7,8 @@ import useFocus from '../../../hooks/focus'
 
 import {normalizeSort} from '../../../lib/normalize'
 
+import AccentTool from '../../accent-tool'
+
 function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)
   const focusRef = useFocus()
@@ -34,14 +36,19 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
     <Pane display='flex' flex={1} alignItems='center'>
       <Pane>
         {isCreateMode ? (
-          <TextInputField
-            ref={focusRef}
-            required
-            label='Nouvelle voie'
-            placeholder='Nom de la voie'
-            value={nomVoie}
-            onChange={handleNomVoieChange}
-          />
+          <Pane display='flex'>
+            <TextInputField
+              ref={focusRef}
+              required
+              label='Nouvelle voie'
+              placeholder='Nom de la voie'
+              value={nomVoie}
+              onChange={handleNomVoieChange}
+            />
+            <Pane display='flex' flexDirection='column' justifyContent='center' marginLeft={8} marginTop={3}>
+              <AccentTool input={nomVoie} handleAccent={handleNomVoieChange} />
+            </Pane>
+          </Pane>
         ) : (
           <SelectField
             required
