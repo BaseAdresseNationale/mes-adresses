@@ -20,6 +20,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
+  const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
   const setRef = useFocus()
 
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
@@ -99,11 +100,12 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
           maxLength={200}
           marginBottom={16}
           placeholder='Nom de la voie…'
+          onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
           onChange={onNomChange}
         />
 
         <Pane marginTop={10} marginLeft={4}>
-          <AccentTool input={nom} handleAccent={onNomChange} />
+          <AccentTool input={nom} handleAccent={onNomChange} cursorPosition={cursorPosition} />
         </Pane>
       </Pane>
 
