@@ -6,7 +6,7 @@ import TokenContext from '../contexts/token'
 import LocalStorageContext from '../contexts/local-storage'
 import BalDataContext from '../contexts/bal-data'
 
-import {getCommuneWithCount, certifyBAL} from '../lib/bal-api'
+import {getCommune, certifyBAL} from '../lib/bal-api'
 
 const CertificationMessage = ({balId, codeCommune}) => {
   const [isShown, setIsShown] = useState(false)
@@ -30,7 +30,7 @@ const CertificationMessage = ({balId, codeCommune}) => {
       const hasBeenAutocertified = getInformedAboutCertification(balId)
 
       if (!hasBeenAutocertified) {
-        const {nbNumerosCertifies} = await getCommuneWithCount(balId, codeCommune)
+        const {nbNumerosCertifies} = await getCommune(balId, codeCommune)
 
         if (nbNumerosCertifies === 0) {
           setIsShown(true)
