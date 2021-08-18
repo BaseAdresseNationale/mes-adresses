@@ -20,7 +20,7 @@ import AlertPublishedBAL from './alert-published-bal'
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')
   if (pos > 0) {
-    return name.substr(pos + 1)
+    return name.slice(pos + 1)
   }
 
   return null
