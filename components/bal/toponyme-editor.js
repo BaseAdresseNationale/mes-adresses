@@ -23,6 +23,8 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
+  const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
+
   const setRef = useFocus()
 
   const onFormSubmit = useCallback(async e => {
@@ -129,11 +131,12 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
           maxLength={200}
           marginBottom={16}
           placeholder='Nom du toponyme…'
+          onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
           onChange={onNomChange}
         />
 
         <Pane marginTop={10} marginLeft={4}>
-          <AccentTool input={nom} handleAccent={onNomChange} />
+          <AccentTool input={nom} handleAccent={onNomChange} cursorPosition={cursorPosition} />
         </Pane>
       </Pane>
 
