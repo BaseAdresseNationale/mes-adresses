@@ -86,32 +86,23 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
   return (
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-      {numero.positions.find(position => position.type === 'inconnue') ? (
-        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-          <Text color='white' paddingLeft={8} paddingRight={5}>
-            {numero.numeroComplet}
-          </Text>
+      <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)} paddingX={4}>
+        <Text color='white' marginLeft={8} marginRight={4}>
+          {numero.numeroComplet}
+        </Text>
+
+        {numero.positions.find(position => position.type === 'inconnue') && (
           <Tooltip content='Le type d’une position est inconnu' position={Position.BOTTOM_RIGHT}>
-            <WarningSignIcon color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
+            <WarningSignIcon color='warning' size={13} marginX={4} marginBottom={2} style={{verticalAlign: 'middle'}} />
           </Tooltip>
-          {numero.certifie && (
-            <Tooltip content='Cette adresse est certifiée par la commune' position={Position.RIGHT}>
-              <EndorsedIcon color='success' size={13} marginRight={7} style={{verticalAlign: 'text-top'}} />
-            </Tooltip>
-          )}
-        </Pane>
-      ) : (
-        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-          <Text color='white' paddingLeft={8} paddingRight={10}>
-            {numero.numeroComplet}
-          </Text>
-          {numero.certifie && (
-            <Tooltip content='Cette adresse est certifiée par la commune' position={Position.RIGHT}>
-              <EndorsedIcon color='success' size={13} marginRight={7} style={{verticalAlign: 'text-top'}} />
-            </Tooltip>
-          )}
-        </Pane>
-      )}
+        )}
+
+        {numero.certifie && (
+          <Tooltip content='Cette adresse est certifiée par la commune' position={Position.RIGHT}>
+            <EndorsedIcon color='success' size={13} marginX={4} style={{verticalAlign: 'text-top'}} />
+          </Tooltip>
+        )}
+      </Pane>
 
       {showContextMenu && (
         <Pane background='tint1' position='absolute' margin={10}>
