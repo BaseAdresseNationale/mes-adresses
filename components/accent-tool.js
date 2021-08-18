@@ -35,9 +35,13 @@ const ACCENTS = [
   'Œ'
 ]
 
-function AccentTool({input, handleAccent}) {
+function AccentTool({input, handleAccent, cursorPosition}) {
+  const stringArray = input.split('')
+  const {start, end} = cursorPosition
+
   const handleClick = event => {
-    event.target.value = `${input}${event.target.value}`
+    stringArray.splice(start, end - start, event.target.value)
+    event.target.value = stringArray.join('')
     handleAccent(event)
   }
 
@@ -63,7 +67,8 @@ function AccentTool({input, handleAccent}) {
 
 AccentTool.propTypes = {
   input: PropTypes.string.isRequired,
-  handleAccent: PropTypes.func.isRequired
+  handleAccent: PropTypes.func.isRequired,
+  cursorPosition: PropTypes.objectOf(PropTypes.number).isRequired
 }
 
 export default AccentTool

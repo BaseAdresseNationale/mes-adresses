@@ -11,6 +11,7 @@ import AccentTool from '../../accent-tool'
 
 function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)
+  const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
   const focusRef = useFocus()
 
   const toggleMode = () => {
@@ -43,10 +44,17 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
               label='Nouvelle voie'
               placeholder='Nom de la voie'
               value={nomVoie}
+              onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
               onChange={handleNomVoieChange}
             />
-            <Pane display='flex' flexDirection='column' justifyContent='center' marginLeft={8} marginTop={3}>
-              <AccentTool input={nomVoie} handleAccent={handleNomVoieChange} />
+            <Pane
+              display='flex'
+              flexDirection='column'
+              justifyContent='center'
+              marginLeft={8}
+              marginTop={3}
+            >
+              <AccentTool input={nomVoie} handleAccent={handleNomVoieChange} cursorPosition={cursorPosition} />
             </Pane>
           </Pane>
         ) : (
