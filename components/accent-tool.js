@@ -41,8 +41,12 @@ function AccentTool({input, handleAccent, cursorPosition}) {
 
   const handleClick = event => {
     stringArray.splice(start, end - start, event.target.value)
-    event.target.value = stringArray.join('')
-    handleAccent(event)
+
+    cursorPosition.start += 1
+    cursorPosition.end += 1
+
+    const valueWithAccent = {target: {value: stringArray.join('')}}
+    handleAccent(valueWithAccent)
   }
 
   return (
@@ -60,7 +64,7 @@ function AccentTool({input, handleAccent, cursorPosition}) {
         </Pane>
       }
     >
-      <Button type='button'>É</Button>
+      <Button type='reset'>É</Button>
     </Popover>
   )
 }
