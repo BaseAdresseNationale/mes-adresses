@@ -36,10 +36,9 @@ const ACCENTS = [
 ]
 
 function AccentTool({input, handleAccent, cursorPosition}) {
-  const stringArray = input.split('')
-  const {start, end} = cursorPosition
-
   const handleClick = event => {
+    const stringArray = input.split('')
+    const {start, end} = cursorPosition
     stringArray.splice(start, end - start, event.target.value)
 
     cursorPosition.start += 1
