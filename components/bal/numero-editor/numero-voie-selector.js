@@ -1,18 +1,14 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Button, Pane, Text, PlusIcon, PropertyIcon, SelectField, TextInputField} from 'evergreen-ui'
-
-import useFocus from '../../../hooks/focus'
+import {Button, Pane, Text, PlusIcon, PropertyIcon, SelectField} from 'evergreen-ui'
 
 import {normalizeSort} from '../../../lib/normalize'
 
-import AccentTool from '../../accent-tool'
+import AssistedTextField from '../../assisted-text-field'
 
 function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)
-  const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
-  const focusRef = useFocus()
 
   const toggleMode = () => {
     setIsCreateMode(mode => !mode)
@@ -37,26 +33,13 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
     <Pane display='flex' flex={1} alignItems='center'>
       <Pane>
         {isCreateMode ? (
-          <Pane display='flex'>
-            <TextInputField
-              ref={focusRef}
-              required
-              label='Nouvelle voie'
-              placeholder='Nom de la voie'
-              value={nomVoie}
-              onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
-              onChange={handleNomVoieChange}
-            />
-            <Pane
-              display='flex'
-              flexDirection='column'
-              justifyContent='center'
-              marginLeft={8}
-              marginTop={3}
-            >
-              <AccentTool input={nomVoie} handleAccent={handleNomVoieChange} cursorPosition={cursorPosition} />
-            </Pane>
-          </Pane>
+          <AssistedTextField
+            focus
+            label='Nouvelle voie'
+            placeholder='Nom de la voie'
+            value={nomVoie}
+            onChange={handleNomVoieChange}
+          />
         ) : (
           <SelectField
             required
