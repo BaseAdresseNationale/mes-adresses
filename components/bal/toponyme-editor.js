@@ -1,16 +1,15 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Alert, TextInputField} from 'evergreen-ui'
+import {Pane, Button, Alert} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 import MarkersContext from '../../contexts/markers'
 import ParcellesContext from '../../contexts/parcelles'
 
 import {useInput} from '../../hooks/input'
-import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
-import AccentTool from '../accent-tool'
+import AssistedTextField from '../assisted-text-field'
 
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
@@ -23,9 +22,6 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
-  const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
-
-  const setRef = useFocus()
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -118,27 +114,14 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <Pane display='flex' flexDirection='row' alignItems='center'>
-        <TextInputField
-          ref={setRef}
-          required
-          label='Nom du toponyme'
-          display='block'
-          disabled={isLoading}
-          width='100%'
-          maxWidth={500}
-          value={nom}
-          maxLength={200}
-          marginBottom={16}
-          placeholder='Nom du toponyme…'
-          onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
-          onChange={onNomChange}
-        />
-
-        <Pane marginTop={10} marginLeft={4}>
-          <AccentTool input={nom} handleAccent={onNomChange} cursorPosition={cursorPosition} />
-        </Pane>
-      </Pane>
+      <AssistedTextField
+        focus
+        dsiabled={isLoading}
+        label='Nom du toponyme'
+        placeholder='Nom du toponyme..'
+        value={nom}
+        onChange={onNomChange}
+      />
 
       <PositionEditor isToponyme />
 
