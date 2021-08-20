@@ -63,7 +63,7 @@ function AccentTool({input, handleAccent, cursorPosition}) {
         </Pane>
       }
     >
-      <Button type='reset'>É</Button>
+      <Button type='button'>É</Button>
     </Popover>
   )
 }
