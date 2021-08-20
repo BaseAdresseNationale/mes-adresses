@@ -2,23 +2,20 @@ import React, {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Dialog, Pane, Paragraph} from 'evergreen-ui'
 
-import TokenContext from '../contexts/token'
 import LocalStorageContext from '../contexts/local-storage'
 import BalDataContext from '../contexts/bal-data'
 
-import {getCommune, certifyBAL} from '../lib/bal-api'
+import {getCommune} from '../lib/bal-api'
 
 const CertificationMessage = ({balId, codeCommune}) => {
   const [isShown, setIsShown] = useState(false)
 
-  const {token} = useContext(TokenContext)
   const {getInformedAboutCertification, addInformedAboutCertification} = useContext(LocalStorageContext)
-  const {reloadNumeros} = useContext(BalDataContext)
+  const {certifyAllNumeros} = useContext(BalDataContext)
 
   const handleConfirmation = async certifAuto => {
     if (certifAuto) {
-      await certifyBAL(balId, codeCommune, token, {certifie: true})
-      await reloadNumeros()
+      await certifyAllNumeros()
     }
 
     addInformedAboutCertification(balId, true)

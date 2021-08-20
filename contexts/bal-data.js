@@ -1,9 +1,8 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 
-import {getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme} from '../lib/bal-api'
-
 import {getPublishedBasesLocales} from '../lib/adresse-backend'
+import {getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, certifyBAL} from '../lib/bal-api'
 
 import TokenContext from './token'
 
@@ -113,6 +112,11 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     }
   }, [editingId, numeros, voies, toponymes])
 
+  const certifyAllNumeros = async () => {
+    await certifyBAL(balId, codeCommune, token, {certifie: true})
+    await reloadNumeros()
+  }
+
   useEffect(() => {
     reloadGeojson()
     reloadParcelles()
@@ -149,7 +153,8 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
         reloadToponymes,
         reloadBaseLocale,
         reloadNumerosToponyme,
-        toponyme
+        toponyme,
+        certifyAllNumeros
       }}
       {...props}
     />
