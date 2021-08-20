@@ -1,16 +1,18 @@
 import React, {useState, useEffect, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Heading, Badge, Card, Pane, Button, Tooltip, Text, GlobeIcon, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
+import {Heading, Badge, Card, Pane, Button, Tooltip, Text, GlobeIcon, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EndorsedIcon} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 
 import {colors} from '../../lib/colors'
 
-import {getCommune} from '../../lib/geo-api'
+import {getCommune} from '../../lib/bal-api'
+import {getCommune as getCommuneGeoData} from '../../lib/geo-api'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
+import CertificationCount from '../certification-count'
 
 function getBadge({status, published}) {
   if (published) {
@@ -50,12 +52,14 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
   useEffect(() => {
     const fetchCommune = async code => {
       if (communes.length > 0) {
-        setCommune(await getCommune(code))
+        const communeBal = await getCommune(baseLocale._id, code)
+        const communeInfo = await getCommuneGeoData(code)
+        setCommune({...communeBal, ...communeInfo})
       }
     }
 
     fetchCommune(communes[0])
-  }, [communes])
+  }, [baseLocale, communes])
 
   return (
     <Card
@@ -67,7 +71,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
       gridTemplateColumns='repeat(1fr)'
       background={baseLocale.status === 'demo' ? '#E4E7EB' : 'tint1'}
     >
-      <Pane padding='.5em' display='flex' justifyContent='space-between' cursor='pointer' onClick={handleIsOpen}>
+      <Pane padding='.5em' display='flex' justifyContent='space-between' alignItems='center' cursor='pointer' onClick={handleIsOpen}>
         <Pane>
           <Pane display='flex' flexDirection='row' justifyContent='start'>
             <GlobeIcon marginRight='.5em' marginY='auto' />
@@ -82,6 +86,11 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
             <Text fontSize='12px' fontStyle='italic'>{communes.length} Communes</Text>
           )}
         </Pane>
+
+        {communes.length === 1 && commune && (
+          <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+        )}
+
         <Pane display='flex' flexDirection='row' justifyContent='space-between'>
           {baseLocale.status === 'demo' ? (
             <Badge color={colors.neutral} margin='auto'>DÉMO</Badge>
