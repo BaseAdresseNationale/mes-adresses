@@ -17,7 +17,7 @@ import {
 } from 'evergreen-ui'
 import {isEqual, difference} from 'lodash'
 
-import {updateBaseLocale} from '../lib/bal-api'
+import {getCommune, updateBaseLocale} from '../lib/bal-api'
 
 import TokenContext from '../contexts/token'
 
@@ -27,6 +27,7 @@ import {validateEmail} from '../lib/utils/email'
 import BalDataContext from '../contexts/bal-data'
 
 import RenewTokenDialog from './renew-token-dialog'
+import Certification from './settings/certification'
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
@@ -35,12 +36,13 @@ const mailHasChanged = (listA, listB) => {
 const Settings = React.memo(({nomBaseLocale}) => {
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails, reloadEmails} = useContext(TokenContext)
-  const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
+  const {baseLocale, codeCommune, reloadBaseLocale} = useContext(BalDataContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [balEmails, setBalEmails] = useState([])
   const [nomInput, onNomInputChange] = useInput(nomBaseLocale)
   const [email, onEmailChange, resetEmail] = useInput()
+  const [commune, setCommune] = useState()
   const [hasChanges, setHasChanges] = useState(false)
   const [error, setError] = useState()
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] = useState(false)
@@ -97,6 +99,15 @@ const Settings = React.memo(({nomBaseLocale}) => {
   }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, emails])
 
   useEffect(() => {
+    async function fetchCommune() {
+      const commune = await getCommune(baseLocale._id, codeCommune)
+      setCommune(commune)
+    }
+
+    fetchCommune()
+  }, [baseLocale, codeCommune, showSettings])
+
+  useEffect(() => {
     if (error) {
       setError(null)
     }
@@ -114,7 +125,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
       <Pane
         flexShrink={0}
         elevation={0}
-        backgroundColor='white'
+        background='white'
         padding={16}
         display='flex'
         alignItems='center'
@@ -219,6 +230,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
             <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanges} isLoading={isLoading}>
               {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
+
           </Pane>
         ) : token === false ? (
           <Pane padding={16}>
@@ -228,6 +240,14 @@ const Settings = React.memo(({nomBaseLocale}) => {
           </Pane>
         ) : (
           <Spinner size={64} margin='auto' />
+        )}
+
+        <Pane borderBottom='1px solid #d8dae5' width='80%' marginY={16} marginX='auto' />
+
+        {commune && (
+          <Pane display='flex' justifyContent='center'>
+            <Certification nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+          </Pane>
         )}
       </Pane>
 
