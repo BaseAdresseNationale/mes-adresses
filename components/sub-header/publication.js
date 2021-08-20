@@ -1,14 +1,16 @@
-import React, {useMemo, useState} from 'react'
+import React, {useMemo, useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
-import {Badge, Button, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
+import {Badge, Button, Alert, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
-import {getBaseLocaleCsvUrl} from '../../lib/bal-api'
+import {getBaseLocaleCsvUrl, getCommune} from '../../lib/bal-api'
 
-const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => {
+const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPublish}) => {
   const [isShown, setIsShown] = useState(false)
   const [noBal, setNoBal] = useState(false)
   const [multiBal, setMultiBal] = useState(false)
+  const [isBALCertified, setIsBALCertified] = useState(false)
+
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
 
   const editTip = useMemo(() => css({
@@ -30,6 +32,16 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
       setIsShown(true)
     }
   }
+
+  useEffect(() => {
+    async function fetchCommune(codeCommune) {
+      const communeBAL = await getCommune(baseLocale._id, codeCommune)
+      const {nbNumeros, nbNumerosCertifies} = communeBAL
+      setIsBALCertified(nbNumeros === nbNumerosCertifies)
+    }
+
+    fetchCommune(commune.code)
+  }, [baseLocale, commune])
 
   if (!token) {
     return (
@@ -121,12 +133,23 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
               </Badge>
               <Paragraph>Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.</Paragraph>
               <Paragraph>Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.</Paragraph>
+              {!isBALCertified && (
+                <Alert
+                  intent='warning'
+                  title='Toutes vos adresses ne sont pas certifiées'
+                  marginY={16}
+                >
+                  Nous vous recommandons de certifier la totalité de vos adresses.
+                  Vous êtes cependant libre de publier maintenant et certifier vos adresses plus tard.
+                </Alert>
+              )}
             </Pane>
             <Link href={csvUrl} display='flex' marginTop='1em'>
               Télécharger vos adresses au format CSV
               <DownloadIcon marginLeft='.5em' marginTop='3px' />
             </Link>
           </Dialog>
+
           <Dialog
             isShown={noBal}
             hasFooter={false}
@@ -135,6 +158,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
           >
             <Paragraph>Merci d’ajouter au moins une commune à votre Base Adresse Locale.</Paragraph>
           </Dialog>
+
           <Dialog
             isShown={multiBal}
             hasFooter={false}
@@ -143,6 +167,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
           >
             <Paragraph>Pour vous authentifier et assurer une publication rapide, adressez-nous le lien de votre Base Adresse Locale à <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a></Paragraph>
           </Dialog>
+
           <Badge
             marginRight={8}
             paddingTop={2}
@@ -170,12 +195,15 @@ Publication.defaultProps = {
 
 Publication.propTypes = {
   token: PropTypes.string,
+  baseLocale: PropTypes.object.isRequired,
+  commune: PropTypes.shape({
+    code: PropTypes.string.isRequired
+  }).isRequired,
   status: PropTypes.oneOf([
     'draft', 'ready-to-publish', 'published', 'demo'
   ]).isRequired,
   onChangeStatus: PropTypes.func.isRequired,
-  onPublish: PropTypes.func.isRequired,
-  baseLocale: PropTypes.object.isRequired
+  onPublish: PropTypes.func.isRequired
 }
 
 export default Publication
