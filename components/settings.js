@@ -104,7 +104,9 @@ const Settings = React.memo(({nomBaseLocale}) => {
       setCommune(commune)
     }
 
-    fetchCommune()
+    if (baseLocale?._id && codeCommune) {
+      fetchCommune()
+    }
   }, [baseLocale, codeCommune, showSettings])
 
   useEffect(() => {

@@ -34,13 +34,15 @@ const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPubl
   }
 
   useEffect(() => {
-    async function fetchCommune(codeCommune) {
-      const communeBAL = await getCommune(baseLocale._id, codeCommune)
+    async function fetchCommune() {
+      const communeBAL = await getCommune(baseLocale._id, commune.code)
       const {nbNumeros, nbNumerosCertifies} = communeBAL
       setIsBALCertified(nbNumeros === nbNumerosCertifies)
     }
 
-    fetchCommune(commune.code)
+    if (baseLocale?._id && commune?.code) {
+      fetchCommune()
+    }
   }, [baseLocale, commune])
 
   if (!token) {
