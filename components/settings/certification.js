@@ -6,7 +6,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 import CertificationCount from '../certification-count'
 
-function Certification({nbNumeros, nbNumerosCertifies}) {
+function Certification({nbNumeros, nbNumerosCertifies, onSubmit}) {
   const {certifyAllNumeros} = useContext(BalDataContext)
 
   const [isLoading, setIsLoading] = useState(false)
@@ -14,6 +14,11 @@ function Certification({nbNumeros, nbNumerosCertifies}) {
   const handleCertification = async () => {
     setIsLoading(true)
     await certifyAllNumeros()
+
+    if (onSubmit) {
+      onSubmit()
+    }
+
     setIsLoading(false)
   }
 
@@ -37,9 +42,14 @@ function Certification({nbNumeros, nbNumerosCertifies}) {
   )
 }
 
+Certification.defaultProps = {
+  onSubmit: null
+}
+
 Certification.propTypes = {
   nbNumeros: PropTypes.number.isRequired,
-  nbNumerosCertifies: PropTypes.number.isRequired
+  nbNumerosCertifies: PropTypes.number.isRequired,
+  onSubmit: PropTypes.func
 }
 
 export default Certification

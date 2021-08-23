@@ -98,16 +98,16 @@ const Settings = React.memo(({nomBaseLocale}) => {
     setIsLoading(false)
   }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, emails])
 
-  useEffect(() => {
-    async function fetchCommune() {
-      const commune = await getCommune(baseLocale._id, codeCommune)
-      setCommune(commune)
-    }
+  const fetchCommune = useCallback(async () => {
+    const commune = await getCommune(baseLocale._id, codeCommune)
+    setCommune(commune)
+  }, [baseLocale, codeCommune])
 
+  useEffect(() => { // Update number of certified numeros when setting is open
     if (baseLocale?._id && codeCommune) {
       fetchCommune()
     }
-  }, [baseLocale, codeCommune, showSettings])
+  }, [baseLocale, codeCommune, showSettings, fetchCommune])
 
   useEffect(() => {
     if (error) {
@@ -248,7 +248,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
 
         {commune && (
           <Pane display='flex' justifyContent='center'>
-            <Certification nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+            <Certification nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} onSubmit={fetchCommune} />
           </Pane>
         )}
       </Pane>
