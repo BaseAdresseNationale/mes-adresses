@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, EndorsedIcon} from 'evergreen-ui'
+import {Pane, Dialog, Button, EndorsedIcon} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 
@@ -9,9 +9,11 @@ import CertificationCount from '../certification-count'
 function Certification({nbNumeros, nbNumerosCertifies, onSubmit}) {
   const {certifyAllNumeros} = useContext(BalDataContext)
 
+  const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleCertification = async () => {
+    setIsShown(false)
     setIsLoading(true)
     await certifyAllNumeros()
 
@@ -24,6 +26,18 @@ function Certification({nbNumeros, nbNumerosCertifies, onSubmit}) {
 
   return (
     <Pane display='flex' alignItems='baseline'>
+      <Dialog
+        isShown={isShown}
+        title='Certifier toutes les adresses'
+        confirmLabel='Certifier toutes les adresses'
+        intent='success'
+        cancelLabel='Annuler'
+        onConfirm={handleCertification}
+        onCloseComplete={() => setIsShown(false)}
+      >
+        Attention, vous vous apprêtez à certifier toutes les adresses de la commune. Nous vous recommandons de ne le faire que si toutes vos adresses sont vérifiées.
+      </Dialog>
+
       <CertificationCount nbNumeros={nbNumeros} nbNumerosCertifies={nbNumerosCertifies} />
 
       <Button
@@ -34,7 +48,7 @@ function Certification({nbNumeros, nbNumerosCertifies, onSubmit}) {
         marginTop={16}
         marginLeft={8}
         iconAfter={EndorsedIcon}
-        onClick={handleCertification}
+        onClick={() => setIsShown(true)}
       >
         Certifier toutes les adresses
       </Button>
