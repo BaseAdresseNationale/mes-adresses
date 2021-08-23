@@ -118,7 +118,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
         focus
         dsiabled={isLoading}
         label='Nom du toponyme'
-        placeholder='Nom du toponyme..'
+        placeholder='Nom du toponyme'
         value={nom}
         onChange={onNomChange}
       />

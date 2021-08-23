@@ -87,7 +87,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       <AssistedTextField
         focus
         label='Nom de la voie'
-        placeholder='Nom de la voie...'
+        placeholder='Nom de la voie'
         value={nom}
         onChange={onNomChange}
       />
