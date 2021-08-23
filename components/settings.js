@@ -82,7 +82,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
       await reloadEmails()
       await reloadBaseLocale()
 
-      if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length !== 0) {
+      if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length > 0) {
         setIsRenewTokenWarningShown(true)
       }
 
