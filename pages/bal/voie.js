@@ -276,8 +276,8 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
           ) : (
             filtered.map(numero => (
               <TableRow
-                {...numero}
                 key={numero._id}
+                {...numero}
                 id={numero._id}
                 comment={numero.comment}
                 warning={numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}

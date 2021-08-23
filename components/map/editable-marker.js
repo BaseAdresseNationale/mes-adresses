@@ -51,7 +51,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
       const to = nearestPointOnLine({type: 'Feature', geometry}, point, {units: 'kilometers'})
       const slicedLine = length(lineSlice(from, to, geometry)) * 1000
 
-      return slicedLine.toFixed()
+      return slicedLine.toFixed(0)
     }
   }, [isSuggestionNeeded, voie])
 

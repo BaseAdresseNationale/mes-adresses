@@ -1,6 +1,6 @@
 import {useEffect} from 'react'
 
-function useKeyEvent(event = 'keypress', handler, dependencies = []) {
+function useKeyEvent(event, handler, dependencies = []) {
   useEffect(() => {
     window.addEventListener(event, handler)
 

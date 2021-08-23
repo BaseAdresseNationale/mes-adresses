@@ -243,7 +243,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
       {token && voies && voies.length === 0 && (
         <Pane borderTop marginTop='auto' padding={16}>
           <Paragraph size={300} color='muted'>
-            Vous souhaitez importer les voies de la commune de {commune.nom} depuis la Base Adresse Nationale ?
+            Vous souhaitez importer les voies de la commune de {commune.nom} depuis la Base Adresse Nationale ?
           </Paragraph>
           <Button marginTop={10} appearance='primary' disabled={isAdding || isPopulating} onClick={onPopulate}>
             Importer les données de la BAN

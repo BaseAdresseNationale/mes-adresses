@@ -52,8 +52,8 @@ const Settings = React.memo(({nomBaseLocale}) => {
     setBalEmails(emails || [])
   }, [emails])
 
-  const onRemoveEmail = useCallback(email => {
-    setBalEmails(emails => emails.filter(e => e !== email))
+  const onRemoveEmail = useCallback(emailToRemove => {
+    setBalEmails(emails => emails.filter(email => email !== emailToRemove))
   }, [])
 
   const onAddEmail = useCallback(event => {

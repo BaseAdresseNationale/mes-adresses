@@ -15,9 +15,9 @@ import DashboardLayout from '../../components/layout/dashboard'
 function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) {
   const {nom, code} = departement
 
-  const codesCommunes = filteredCommunesInBAL.map(({code}) => code)
+  const codesCommunes = new Set(filteredCommunesInBAL.map(({code}) => code))
   const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutDemo.map(({communes}) => communes)))
-  const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.includes(c)).length
+  const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.has(c)).length
 
   const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutDemo)
 

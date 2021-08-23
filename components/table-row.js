@@ -21,10 +21,8 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
   const onClick = useCallback(event => {
     if (event.target.closest('[data-editable]') && !isEditing && !code) { // Not a commune
       onEdit(id)
-    } else if (onSelect) {
-      if (event.target.closest('[data-browsable]')) {
-        onSelect(id)
-      }
+    } else if (onSelect && event.target.closest('[data-browsable]')) {
+      onSelect(id)
     }
   }, [code, id, isEditing, onEdit, onSelect])
 

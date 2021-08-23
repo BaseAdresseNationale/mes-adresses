@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const {createGunzip} = require('zlib')
-const {join} = require('path')
+const path = require('path')
 const got = require('got')
 const center = require('@turf/center').default
 const bbox = require('@turf/bbox').default
@@ -62,7 +62,7 @@ async function main() {
     return acc
   }, {})
 
-  await outputJson(join(__dirname, '..', 'geo.json'), index)
+  await outputJson(path.join(__dirname, '..', 'geo.json'), index)
 }
 
 main().catch(error => {
