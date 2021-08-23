@@ -50,9 +50,8 @@ function AccentTool({input, handleAccent, cursorPosition}) {
 
   return (
     <Popover
-      trigger='hover'
-      content={
-        <Pane width={250} height={242}>
+      content={({close}) => (
+        <Pane width={250} height={242} onClick={close}>
           <Pane display='grid' gridTemplateColumns='repeat(auto-fit, minmax(34px, auto))' gridGap={10}>
             {ACCENTS.map(accent => (
               <Button key={accent} appearance='minimal' value={accent} onClick={handleClick}>
@@ -61,7 +60,7 @@ function AccentTool({input, handleAccent, cursorPosition}) {
             ))}
           </Pane>
         </Pane>
-      }
+      )}
     >
       <Button type='button'>É</Button>
     </Popover>
