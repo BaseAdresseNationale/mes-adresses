@@ -17,6 +17,8 @@ import Uploader from '../../components/uploader'
 
 import AlertPublishedBAL from './alert-published-bal'
 
+const MAX_SIZE = 10 * 1024 * 1024
+
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')
   if (pos > 0) {
@@ -53,17 +55,27 @@ function UploadForm() {
   }
 
   const onDrop = useCallback(async ([file]) => {
-    if (getFileExtension(file.name).toLowerCase() !== 'csv') {
-      return onError('Ce type de fichier n’est pas supporté. Vous devez déposer un fichier CSV.')
-    }
+    if (file) {
+      if (getFileExtension(file.name).toLowerCase() !== 'csv') {
+        return onError('Ce type de fichier n’est pas supporté. Vous devez déposer un fichier CSV.')
+      }
 
-    if (file.size > 10 * 1024 * 1024) {
-      return onError('Ce fichier est trop volumineux. Vous devez déposer un fichier de moins de 10 Mo.')
+      setFile(file)
+      setError(null)
     }
-
-    setFile(file)
-    setError(null)
   }, [])
+
+  const onDropRejected = rejectedFiles => {
+    const [file] = rejectedFiles
+
+    if (rejectedFiles.length > 1) {
+      onError('Vous ne pouvez déposer qu’un seul fichier.')
+    } else if (file.size > MAX_SIZE) {
+      return onError('Ce fichier est trop volumineux. Vous devez déposer un fichier de moins de 10 Mo.')
+    } else {
+      onError('Impossible de déposer ce fichier')
+    }
+  }
 
   const createNewBal = useCallback(async () => {
     if (!bal) {
@@ -188,12 +200,14 @@ function UploadForm() {
             <FormField label='Fichier CSV' />
             <Uploader
               file={file}
+              maxSize={MAX_SIZE}
               height={150}
               marginBottom={24}
-              placeholder='Sélectionnez ou glissez ici votre fichier BAL au format CSV (maximum 100 Mo)'
+              placeholder='Sélectionnez ou glissez ici votre fichier BAL au format CSV (maximum 10 Mo)'
               loadingLabel='Analyse en cours'
               disabled={isLoading}
               onDrop={onDrop}
+              onDropRejected={onDropRejected}
             />
           </Pane>
         </Pane>
