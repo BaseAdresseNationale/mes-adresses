@@ -57,6 +57,7 @@ async function main() {
     })),
   ]
 
+  // eslint-disable-next-line unicorn/no-array-reduce
   const index = dataset.reduce((acc, data) => {
     acc[data.code] = {center: data.center, bbox: data.bbox, nom: data.nom}
     return acc

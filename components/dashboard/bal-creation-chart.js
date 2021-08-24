@@ -17,6 +17,7 @@ function BALCreationChart({basesLocales}) {
     const filteredByStatus = groupedByMonth.map(basesLocales => filterByStatus(basesLocales, status).length)
 
     if (filteredByStatus.length > 0) {
+      // eslint-disable-next-line unicorn/no-array-reduce
       const addedBal = filteredByStatus.reduce((totalValue, currentValue) => {
         sums.push(totalValue)
         const sum = totalValue + currentValue
