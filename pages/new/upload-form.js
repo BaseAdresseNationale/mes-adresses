@@ -108,6 +108,11 @@ function UploadForm() {
 
     if (validateResponse) {
       const codes = extractCodeCommuneFromCSV(validateResponse)
+      if (codes.length > 1) {
+        onError('Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. L’import d’un fichier CSV n’est possible que si ce fichier ne contient les adresses que d’une commune.')
+        return
+      }
+
       const userBALs = []
 
       await Promise.all(codes.map(async code => {
