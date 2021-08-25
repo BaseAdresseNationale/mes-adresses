@@ -10,6 +10,17 @@ function AssistedTextField({label, placeholder, value, onChange, focus, disabled
   const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
   const [focusRef, ref] = useFocus()
 
+  const handleChangeAccent = e => {
+    ref.focus()
+    onChange(e)
+    ref.setSelectionRange(cursorPosition.start, cursorPosition.end) // Put the cursor back to his position
+  }
+
+  const handleChangeInput = e => {
+    ref.focus()
+    onChange(e)
+  }
+
   return (
     <Pane display='flex'>
       <TextInputField
@@ -20,7 +31,7 @@ function AssistedTextField({label, placeholder, value, onChange, focus, disabled
         placeholder={placeholder}
         value={value}
         onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
-        onChange={onChange}
+        onChange={e => handleChangeInput(e)}
       />
       <Pane
         display='flex'
@@ -29,7 +40,7 @@ function AssistedTextField({label, placeholder, value, onChange, focus, disabled
         marginLeft={8}
         marginTop={3}
       >
-        <AccentTool input={value} handleAccent={onChange} cursorPosition={cursorPosition} />
+        <AccentTool input={value} handleAccent={e => handleChangeAccent(e)} cursorPosition={cursorPosition} />
       </Pane>
     </Pane>
   )
