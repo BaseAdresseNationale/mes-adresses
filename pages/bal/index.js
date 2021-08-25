@@ -2,7 +2,7 @@ import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {sortBy} from 'lodash'
-import {Pane, Heading, Paragraph, Button, Table, Text, AddIcon} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Button, Table, Text, AddIcon, Alert} from 'evergreen-ui'
 
 import {addCommune, removeCommune, populateCommune} from '../../lib/bal-api'
 import {getCommune} from '../../lib/geo-api'
@@ -100,7 +100,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
         <Pane>
           <Heading>Liste des communes</Heading>
         </Pane>
-        {token && (
+        {token && communes.length === 0 && (
           <Pane marginLeft='auto'>
             <Button
               iconBefore={AddIcon}
@@ -114,6 +114,17 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
           </Pane>
         )}
       </Pane>
+
+      {communes.length > 1 && (
+        <Pane padding={16}>
+          <Alert
+            intent='warning'
+            title='Gestion de plusieurs communes'
+          >
+            L’éditeur « Mes Adresses » permet la gestion d’une Base Adresse Locale à l’échelle communale. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales.
+          </Alert>
+        </Pane>
+      )}
 
       <Pane flex={1} overflowY='scroll'>
         <Table>
