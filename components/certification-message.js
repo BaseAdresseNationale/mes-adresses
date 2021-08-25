@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Button, Dialog, Pane, Paragraph} from 'evergreen-ui'
+import {Dialog, Paragraph, Strong} from 'evergreen-ui'
 
 import LocalStorageContext from '../contexts/local-storage'
 import BalDataContext from '../contexts/bal-data'
@@ -46,39 +46,17 @@ const CertificationMessage = ({balId, codeCommune}) => {
       width={800}
       intent='success'
       title='Nouvelle fonctionnalité de certification'
-      hasCancel={false}
-      hasFooter={false}
+      confirmLabel='Certifier toutes les adresses de la BAL'
+      cancelLabel='Je souhaite d’abords vérifier mes adresses'
+      onConfirm={() => handleConfirmation(true)}
       onCloseComplete={() => handleConfirmation(false)}
     >
       <Paragraph>
-        Il est désormais possible d’indiquer pour chaque adresse si celle-ci est certifiée par la commune.
+        Pour <Strong>renforcer la qualité des adresses</Strong>, la certification évolue. Sur les Bases Adresses Locales nouvellement créées, la certification <Strong>n’est plus affectée automatiquement à l’ensemble des adresses</Strong>, mais aux seules <Strong>adresses que la commune authentifie</Strong>.
       </Paragraph>
-      <Paragraph paddingTop={5}>
-        Votre Base Adresse Locale étant d’ores et déjà publiée, <br />souhaitez-vous certifier automatiquement toutes les adresses de votre Base Adresse Locale ?
+      <Paragraph paddingTop={16}>
+        Votre Base Adresse Locale étant déjà publiée, nous vous proposons de choisir la méthode à appliquer :
       </Paragraph>
-
-      <Pane display='flex' justifyContent='center'>
-        <Button
-          type='button'
-          appearance='primary'
-          intent='success'
-          marginY={16}
-          marginX={8}
-          onClick={() => handleConfirmation(true)}
-        >
-          Oui, certifier toutes les adresses de la BAL
-        </Button>
-        <Button
-          type='button'
-          appearance='default'
-          marginY={16}
-          marginX={8}
-          onClick={() => handleConfirmation(false)}
-        >
-          Non, je souhaite certifier manuellement
-        </Button>
-      </Pane>
-
     </Dialog>
   )
 }

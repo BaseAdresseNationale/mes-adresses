@@ -142,6 +142,7 @@ const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPubl
                   marginY={16}
                 >
                   Nous vous recommandons de certifier la totalité de vos adresses.
+                  Une adresse certifiée est déclarée authentique par la mairie, ce qui renforce la qualité de la Base Adresse Locale et facilite sa réutilisation.
                   Vous êtes cependant libre de publier maintenant et certifier vos adresses plus tard.
                 </Alert>
               )}
