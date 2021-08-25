@@ -16,7 +16,7 @@ const DemoWarning = ({baseLocale, token}) => {
   const [placeholder, setPlaceholder] = useState('')
   const [nom, setNom] = useState()
   const [email, onEmailChange] = useInput()
-  const focusRef = useFocus()
+  const [focusRef] = useFocus()
 
   const onSubmit = useCallback(async e => {
     e.preventDefault()

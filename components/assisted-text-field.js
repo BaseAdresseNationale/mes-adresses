@@ -8,7 +8,7 @@ import AccentTool from './accent-tool'
 
 function AssistedTextField({label, placeholder, value, onChange, focus, disabled}) {
   const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
-  const focusRef = useFocus()
+  const [focusRef, ref] = useFocus()
 
   return (
     <Pane display='flex'>

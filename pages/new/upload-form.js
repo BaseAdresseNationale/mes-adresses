@@ -40,7 +40,7 @@ function UploadForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
-  const focusRef = useFocus()
+  const [focusRef] = useFocus()
   const [userBALs, setUserBALs] = useState([])
   const [isShown, setIsShown] = useState(false)
 

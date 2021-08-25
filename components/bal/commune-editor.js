@@ -13,7 +13,7 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
   const [commune, setCommune] = useState(null)
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [error, setError] = useState()
-  const setRef = useFocus()
+  const [setRef] = useFocus()
 
   const onSelect = useCallback(commune => {
     setCommune(commune.code)

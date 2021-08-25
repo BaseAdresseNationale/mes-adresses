@@ -32,7 +32,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
   const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
   const [error, setError] = useState()
-  const focusRef = useFocus()
+  const [focusRef] = useFocus()
 
   const {
     markers,

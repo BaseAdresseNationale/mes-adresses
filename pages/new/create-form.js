@@ -27,7 +27,7 @@ function CreateForm({defaultCommune}) {
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
   const [userBALs, setUserBALs] = useState([])
-  const focusRef = useFocus()
+  const [focusRef] = useFocus()
 
   const onSelect = useCallback(commune => {
     setCommune(commune.code)
