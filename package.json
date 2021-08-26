@@ -47,21 +47,29 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "babel-plugin-inline-import": "^3.0.0",
-    "eslint-config-xo-nextjs": "^1.4.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "xo": "^0.24.0"
+    "prettier": "^2.3.2"
   },
-  "xo": {
-    "extends": "xo-nextjs",
-    "semicolon": false,
-    "space": 2,
-    "envs": [
-      "browser"
-    ],
-    "rules": {
-      "react/no-danger": "warn",
-      "react/require-default-props": "warn"
-    }
+  "prettier": {
+    "arrowParens": "avoid",
+    "bracketSpacing": false,
+    "embeddedLanguageFormatting": "auto",
+    "htmlWhitespaceSensitivity": "css",
+    "insertPragma": false,
+    "jsxBracketSameLine": false,
+    "jsxSingleQuote": true,
+    "printWidth": 100,
+    "proseWrap": "preserve",
+    "quoteProps": "as-needed",
+    "requirePragma": false,
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "none",
+    "useTabs": false,
+    "vueIndentScriptAndStyle": false
   }
 }

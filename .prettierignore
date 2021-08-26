@@ -1,0 +1,15 @@
+# Ignore artifacts:
+reports
+yarn.lock
+public
+app.json
+node_modules
+DEVELOPER_NOTES.md
+.github
+
+# Nextjs
+**/.next/**
+**/_next/**
+**/dist/**
+build
+out
