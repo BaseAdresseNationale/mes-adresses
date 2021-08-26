@@ -19,7 +19,7 @@ function DemoForm({defaultCommune}) {
 
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
-  const focusRef = useFocus()
+  const [focusRef] = useFocus()
 
   const onSelect = useCallback(commune => {
     setCommune(commune.code)

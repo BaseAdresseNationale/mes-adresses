@@ -1,13 +1,14 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
-import {Pane, Button, Checkbox, Alert, TextInputField} from 'evergreen-ui'
+import {Pane, Button, Checkbox, Alert} from 'evergreen-ui'
 
 import DrawContext from '../../contexts/draw'
 
 import {useInput, useCheckboxInput} from '../../hooks/input'
-import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
+
+import AssistedTextField from '../assisted-text-field'
 
 import DrawEditor from './draw-editor'
 
@@ -18,7 +19,6 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
-  const setRef = useFocus()
 
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
 
@@ -84,18 +84,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <TextInputField
-        ref={setRef}
-        required
+      <AssistedTextField
+        isFocus
         label='Nom de la voie'
-        display='block'
-        disabled={isLoading}
-        width='100%'
-        maxWidth={500}
+        placeholder='Nom de la voie'
         value={nom}
-        maxLength={200}
-        marginBottom={16}
-        placeholder='Nom de la voie…'
         onChange={onNomChange}
       />
 

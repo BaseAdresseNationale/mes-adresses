@@ -9,7 +9,7 @@ function useFocus() {
     }
   }, [ref])
 
-  return setRef
+  return [setRef, ref]
 }
 
 export default useFocus
