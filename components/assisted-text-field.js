@@ -6,7 +6,7 @@ import useFocus from '../hooks/focus'
 
 import AccentTool from './accent-tool'
 
-function AssistedTextField({label, placeholder, value, onChange, focus, disabled}) {
+function AssistedTextField({label, placeholder, value, onChange, isFocus, disabled}) {
   const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
   const [focusRef, ref] = useFocus()
 
@@ -24,7 +24,7 @@ function AssistedTextField({label, placeholder, value, onChange, focus, disabled
   return (
     <Pane display='flex'>
       <TextInputField
-        ref={focus && focusRef}
+        ref={isFocus && focusRef}
         required
         disabled={disabled}
         label={label}
@@ -48,7 +48,7 @@ function AssistedTextField({label, placeholder, value, onChange, focus, disabled
 
 AssistedTextField.defaultProps = {
   placeholder: '',
-  focus: false,
+  isFocus: false,
   disabled: false
 }
 
@@ -57,7 +57,7 @@ AssistedTextField.propTypes = {
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  focus: PropTypes.bool,
+  isFocus: PropTypes.bool,
   disabled: PropTypes.bool
 }
 

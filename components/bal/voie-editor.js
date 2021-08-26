@@ -85,7 +85,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
       <AssistedTextField
-        focus
+        isFocus
         label='Nom de la voie'
         placeholder='Nom de la voie'
         value={nom}
