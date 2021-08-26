@@ -22,7 +22,8 @@ const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
 function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
-  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
+  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} =
+    useContext(ParcellesContext)
 
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
@@ -34,59 +35,58 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const [error, setError] = useState()
   const focusRef = useFocus()
 
-  const {
-    markers,
-    addMarker,
-    disableMarkers,
-    suggestedNumero,
-    setOverrideText
-  } = useContext(MarkersContext)
+  const {markers, addMarker, disableMarkers, suggestedNumero, setOverrideText} =
+    useContext(MarkersContext)
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onFormSubmit = useCallback(
+    async e => {
+      e.preventDefault()
 
-    setIsLoading(true)
+      setIsLoading(true)
 
-    const voie = nomVoie ? {nom: nomVoie} : {_id: voieId}
-    const body = {
-      toponyme: toponymeId,
-      numero: Number(numero),
-      suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
-      comment: comment.length > 0 ? comment : null,
-      parcelles: selectedParcelles
-    }
+      const voie = nomVoie ? {nom: nomVoie} : {_id: voieId}
+      const body = {
+        toponyme: toponymeId,
+        numero: Number(numero),
+        suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
+        comment: comment.length > 0 ? comment : null,
+        parcelles: selectedParcelles
+      }
 
-    if (markers.length > 0) {
-      const positions = []
-      markers.forEach(marker => {
-        positions.push(
-          {
+      if (markers.length > 0) {
+        const positions = []
+        markers.forEach(marker => {
+          positions.push({
             point: {
               type: 'Point',
               coordinates: [marker.longitude, marker.latitude]
             },
             type: marker.type
-          }
-        )
-      })
+          })
+        })
 
-      body.positions = positions
-    }
+        body.positions = positions
+      }
 
-    try {
-      await onSubmit(voie, body)
-    } catch (error) {
-      setError(error.message)
-      setIsLoading(false)
-    }
-  }, [numero, voieId, nomVoie, toponymeId, suffixe, comment, markers, selectedParcelles, onSubmit])
+      try {
+        await onSubmit(voie, body)
+      } catch (error) {
+        setError(error.message)
+        setIsLoading(false)
+      }
+    },
+    [numero, voieId, nomVoie, toponymeId, suffixe, comment, markers, selectedParcelles, onSubmit]
+  )
 
-  const onFormCancel = useCallback(e => {
-    e.preventDefault()
+  const onFormCancel = useCallback(
+    e => {
+      e.preventDefault()
 
-    disableMarkers()
-    onCancel()
-  }, [disableMarkers, onCancel])
+      disableMarkers()
+      onCancel()
+    },
+    [disableMarkers, onCancel]
+  )
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -96,12 +96,16 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     return 'Enregistrer'
   }, [isLoading])
 
-  useKeyEvent('keyup', ({key}) => {
-    if (key === 'Escape') {
-      disableMarkers()
-      onCancel()
-    }
-  }, [onCancel])
+  useKeyEvent(
+    'keyup',
+    ({key}) => {
+      if (key === 'Escape') {
+        disableMarkers()
+        onCancel()
+      }
+    },
+    [onCancel]
+  )
 
   useEffect(() => {
     const {numero, suffixe, parcelles, comment} = initialValue || {}
@@ -114,13 +118,11 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
 
   useEffect(() => {
     if (initialValue) {
-      const positions = initialValue.positions.map(position => (
-        {
-          longitude: position.point.coordinates[0],
-          latitude: position.point.coordinates[1],
-          type: position.type
-        }
-      ))
+      const positions = initialValue.positions.map(position => ({
+        longitude: position.point.coordinates[0],
+        latitude: position.point.coordinates[1],
+        type: position.type
+      }))
 
       positions.forEach(position => addMarker(position))
     } else {
@@ -159,9 +161,13 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           flex={1}
           marginBottom={16}
           value={toponymeId}
-          onChange={({target}) => setToponymeId(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
+          onChange={({target}) =>
+            setToponymeId(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)
+          }
         >
-          <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
+          <option value={null}>
+            {initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}
+          </option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
             <option key={_id} value={_id}>
               {nom}
@@ -204,9 +210,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         />
       </Pane>
 
-      {markers.length > 0 && (
-        <PositionEditor />
-      )}
+      {markers.length > 0 && <PositionEditor />}
 
       <SelectParcelles />
 
@@ -218,7 +222,13 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         </Alert>
       )}
 
-      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success' marginTop={16}>
+      <Button
+        isLoading={isLoading}
+        type='submit'
+        appearance='primary'
+        intent='success'
+        marginTop={16}
+      >
         {submitLabel}
       </Button>
 

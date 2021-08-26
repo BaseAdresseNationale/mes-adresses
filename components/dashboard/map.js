@@ -44,12 +44,7 @@ const Map = ({departement, basesLocales, contours}) => {
         colors.green,
         'white'
       ],
-      'fill-opacity': [
-        'case',
-        ['==', ['get', 'code'], hoveredId ? hoveredId : null],
-        0.8,
-        1
-      ],
+      'fill-opacity': ['case', ['==', ['get', 'code'], hoveredId ? hoveredId : null], 0.8, 1],
       'fill-outline-color': '#ffffff'
     }
   }
@@ -78,33 +73,43 @@ const Map = ({departement, basesLocales, contours}) => {
 
       const {bbox} = geoData
       const padding = width > 50 && height > 50 ? 20 : 0
-      const viewport = new WebMercatorViewport({width, height})
-        .fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], {padding})
+      const viewport = new WebMercatorViewport({width, height}).fitBounds(
+        [
+          [bbox[0], bbox[1]],
+          [bbox[2], bbox[3]]
+        ],
+        {padding}
+      )
 
       setViewport(viewport)
     }
   }, [geoData])
 
-  const onHover = useCallback(event => {
-    if (event.features && event.features.length > 0) {
-      const feature = event.features[0]
-      const nextHoveredId = feature.properties.code
-      const [longitude, latitude] = event.lngLat
-      const hoverInfo = {
-        longitude,
-        latitude,
-        feature
-      }
-      const communeBALNumber = basesLocales.filter(({communes}) => communes.includes(hoveredId)).length
+  const onHover = useCallback(
+    event => {
+      if (event.features && event.features.length > 0) {
+        const feature = event.features[0]
+        const nextHoveredId = feature.properties.code
+        const [longitude, latitude] = event.lngLat
+        const hoverInfo = {
+          longitude,
+          latitude,
+          feature
+        }
+        const communeBALNumber = basesLocales.filter(({communes}) =>
+          communes.includes(hoveredId)
+        ).length
 
-      setHovered(hoverInfo)
-      setHoveredCommune(communeBALNumber)
+        setHovered(hoverInfo)
+        setHoveredCommune(communeBALNumber)
 
-      if (hoveredId !== nextHoveredId) {
-        setHoveredId(nextHoveredId)
+        if (hoveredId !== nextHoveredId) {
+          setHoveredId(nextHoveredId)
+        }
       }
-    }
-  }, [basesLocales, hoveredId])
+    },
+    [basesLocales, hoveredId]
+  )
 
   const onLeave = useCallback(() => {
     if (hoveredId) {
@@ -112,39 +117,53 @@ const Map = ({departement, basesLocales, contours}) => {
     }
   }, [hoveredId])
 
-  const onWheel = useCallback(event => {
-    event.stopPropagation()
-    if (isZoomActivated) {
-      setWarningZoom(false)
-    } else {
-      setWarningZoom(true)
-    }
-  }, [isZoomActivated])
+  const onWheel = useCallback(
+    event => {
+      event.stopPropagation()
+      if (isZoomActivated) {
+        setWarningZoom(false)
+      } else {
+        setWarningZoom(true)
+      }
+    },
+    [isZoomActivated]
+  )
 
   const onDepartementSelect = useCallback(codeDepartement => {
     const as = `/dashboard/departement/${codeDepartement}`
 
-    Router.push({
-      pathname: '/dashboard/departement',
-      query: {codeDepartement}
-    }, as)
+    Router.push(
+      {
+        pathname: '/dashboard/departement',
+        query: {codeDepartement}
+      },
+      as
+    )
   }, [])
 
-  const handleDoubleClick = useCallback(event => {
-    event.stopPropagation()
-    setIsZoomActivated(!isZoomActivated)
-  }, [isZoomActivated])
+  const handleDoubleClick = useCallback(
+    event => {
+      event.stopPropagation()
+      setIsZoomActivated(!isZoomActivated)
+    },
+    [isZoomActivated]
+  )
 
-  const handleClick = useCallback(event => {
-    event.stopPropagation()
-    const departementsSourceLayer = event.features.find(({sourceLayer}) => sourceLayer === 'departements')
+  const handleClick = useCallback(
+    event => {
+      event.stopPropagation()
+      const departementsSourceLayer = event.features.find(
+        ({sourceLayer}) => sourceLayer === 'departements'
+      )
 
-    if (departementsSourceLayer) {
-      const {code} = departementsSourceLayer.properties
+      if (departementsSourceLayer) {
+        const {code} = departementsSourceLayer.properties
 
-      onDepartementSelect(code)
-    }
-  }, [onDepartementSelect])
+        onDepartementSelect(code)
+      }
+    },
+    [onDepartementSelect]
+  )
 
   const handleMobileTouch = useCallback(event => {
     event.stopPropagation()
@@ -218,7 +237,7 @@ const Map = ({departement, basesLocales, contours}) => {
         doubleClickZoom={false}
         scrollZoom={isZoomActivated}
         mapStyle='https://etalab-tiles.fr/styles/osm-bright/style.json'
-        getCursor={() => hoveredId ? 'pointer' : 'default'}
+        getCursor={() => (hoveredId ? 'pointer' : 'default')}
         onDblClick={handleDoubleClick}
         onClick={handleClick}
         onViewportChange={setViewport}
@@ -228,10 +247,7 @@ const Map = ({departement, basesLocales, contours}) => {
       >
         {warningZoom && !isTouchScreenDevice && (
           <div className='map warning-zoom'>
-            <Alert
-              intent='warning'
-              title='Double-cliquez sur la carte pour activer le zoom'
-            />
+            <Alert intent='warning' title='Double-cliquez sur la carte pour activer le zoom' />
           </div>
         )}
 
@@ -266,12 +282,12 @@ const Map = ({departement, basesLocales, contours}) => {
             anchor='bottom-left'
             onClose={() => setHovered(null)}
           >
-            <Heading>
-              {hovered.feature.properties.nom}
-            </Heading>
+            <Heading>{hovered.feature.properties.nom}</Heading>
             {hoveredCommune > 0 && (
               <Paragraph>
-                {`${hoveredCommune} ${hoveredCommune > 1 ? 'Bases Adresse Locales' : 'Base Adresse Locale'}`}
+                {`${hoveredCommune} ${
+                  hoveredCommune > 1 ? 'Bases Adresse Locales' : 'Base Adresse Locale'
+                }`}
               </Paragraph>
             )}
           </Popup>
@@ -286,20 +302,18 @@ const Map = ({departement, basesLocales, contours}) => {
             anchor='bottom-left'
             onClose={() => setHovered(null)}
           >
-            <Heading>
-              {hovered.feature.properties.nom}
-            </Heading>
+            <Heading>{hovered.feature.properties.nom}</Heading>
           </Popup>
         )}
       </MapGL>
 
       <style jsx>{`
-         .map-container {
-           width: 100%;
-           height: 100%;
-           min-height: 300px;
-         }
-        `}</style>
+        .map-container {
+          width: 100%;
+          height: 100%;
+          min-height: 300px;
+        }
+      `}</style>
     </div>
   )
 }

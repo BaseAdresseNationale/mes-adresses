@@ -7,10 +7,20 @@ function Error404({hasRedirection}) {
   return (
     <Alert title='Votre Base Adresse Locale est introuvable' intent='warning'>
       <Pane display='flex' flexDirection='column'>
-        <Text marginBottom='1em'>Si votre Base Adresse Locale a été créée sans être publiée <strong>avant le 15 mars 2021</strong> celle-ci a malheureusement été <strong>perdue</strong> en raison d’un incendie ayant affecté le centre de données hébergeant notre infrastructure.</Text>
+        <Text marginBottom='1em'>
+          Si votre Base Adresse Locale a été créée sans être publiée{' '}
+          <strong>avant le 15 mars 2021</strong> celle-ci a malheureusement été{' '}
+          <strong>perdue</strong> en raison d’un incendie ayant affecté le centre de données
+          hébergeant notre infrastructure.
+        </Text>
         {hasRedirection && (
           <Text>
-            <Link href='/'><a><Icon icon={ArrowLeftIcon} style={{verticalAlign: 'middle'}} marginRight={4} /> Retour à la page d’accueil</a></Link>
+            <Link href='/'>
+              <a>
+                <Icon icon={ArrowLeftIcon} style={{verticalAlign: 'middle'}} marginRight={4} />{' '}
+                Retour à la page d’accueil
+              </a>
+            </Link>
           </Text>
         )}
       </Pane>

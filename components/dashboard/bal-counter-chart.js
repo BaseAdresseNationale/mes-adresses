@@ -11,7 +11,7 @@ const BALCounterChart = ({basesLocales}) => {
   const BALByStatus = getBALByStatus(basesLocales)
 
   return (
-    <Pane display='flex' flexDirection='column' alignItems='center' >
+    <Pane display='flex' flexDirection='column' alignItems='center'>
       <Counter label='Bases Adresse locales' value={basesLocales.length} />
       <PieChart height={240} data={BALByStatus} />
     </Pane>

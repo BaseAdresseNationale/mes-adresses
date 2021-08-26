@@ -28,26 +28,15 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
       zIndex={2}
     >
       {innerWidth > 800 && (
-        <Pane
-          background='white'
-          position='absolute'
-          left={size}
-          top={15}
-        >
+        <Pane background='white' position='absolute' left={size} top={15}>
           <Button
             height={50}
             paddingX={8}
             elevation={0}
             borderRadius={0}
-            onClick={() => editingId && !isHidden ? setEditingId(false) : onToggle(editingId)}
+            onClick={() => (editingId && !isHidden ? setEditingId(false) : onToggle(editingId))}
           >
-            {isHidden ? (
-              <ChevronRightIcon />
-            ) : editingId ? (
-              <CrossIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {isHidden ? <ChevronRightIcon /> : editingId ? <CrossIcon /> : <ChevronLeftIcon />}
           </Button>
         </Pane>
       )}

@@ -17,11 +17,15 @@ function useFuse(source, delay, options) {
     setFiltered(source)
   }, [source])
 
-  const [debouncedCallback] = useDebouncedCallback(value => {
-    if (fuse) {
-      setFiltered(value ? fuse.search(value) : source)
-    }
-  }, delay, [source, fuse])
+  const [debouncedCallback] = useDebouncedCallback(
+    value => {
+      if (fuse) {
+        setFiltered(value ? fuse.search(value) : source)
+      }
+    },
+    delay,
+    [source, fuse]
+  )
 
   return [filtered, debouncedCallback]
 }

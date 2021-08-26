@@ -9,26 +9,33 @@ import {filterByStatus} from '../../lib/bases-locales'
 import BarChart from './charts/bar-chart'
 
 const BALCreationChart = ({basesLocales}) => {
-  const groupedByMonth = Object.values(groupBy(basesLocales, ({_created}) => {
-    return format(new Date(_created), 'yyyy-MM')
-  }))
+  const groupedByMonth = Object.values(
+    groupBy(basesLocales, ({_created}) => {
+      return format(new Date(_created), 'yyyy-MM')
+    })
+  )
 
-  const sumByStatus = useCallback(status => {
-    const sums = []
+  const sumByStatus = useCallback(
+    status => {
+      const sums = []
 
-    const filteredByStatus = groupedByMonth.map(basesLocales => filterByStatus(basesLocales, status).length)
+      const filteredByStatus = groupedByMonth.map(
+        basesLocales => filterByStatus(basesLocales, status).length
+      )
 
-    if (filteredByStatus.length > 0) {
-      const addedBal = filteredByStatus.reduce((totalValue, currentValue) => {
-        sums.push(totalValue)
-        const sum = totalValue + currentValue
-        return sum
-      })
-      sums.push(addedBal)
-    }
+      if (filteredByStatus.length > 0) {
+        const addedBal = filteredByStatus.reduce((totalValue, currentValue) => {
+          sums.push(totalValue)
+          const sum = totalValue + currentValue
+          return sum
+        })
+        sums.push(addedBal)
+      }
 
-    return sums
-  }, [groupedByMonth])
+      return sums
+    },
+    [groupedByMonth]
+  )
 
   const datasets = [
     {
@@ -55,9 +62,7 @@ const BALCreationChart = ({basesLocales}) => {
     datasets
   }
 
-  return (
-    <BarChart title='Évolution du nombre de Bases Adresses Locales' data={data} />
-  )
+  return <BarChart title='Évolution du nombre de Bases Adresses Locales' data={data} />
 }
 
 BALCreationChart.propTypes = {

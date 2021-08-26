@@ -3,7 +3,18 @@ import PropTypes from 'prop-types'
 import {useDropzone} from 'react-dropzone'
 import {Pane, Spinner, Paragraph} from 'evergreen-ui'
 
-function Uploader({file, maxSize, placeholder, onDrop, onDropRejected, height, disabled, loading, loadingLabel, ...props}) {
+function Uploader({
+  file,
+  maxSize,
+  placeholder,
+  onDrop,
+  onDropRejected,
+  height,
+  disabled,
+  loading,
+  loadingLabel,
+  ...props
+}) {
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
     maxSize,
     onDrop,
@@ -45,9 +56,7 @@ function Uploader({file, maxSize, placeholder, onDrop, onDropRejected, height, d
         {...props}
       >
         <input {...getInputProps()} />
-        <Paragraph color={file ? 'default' : 'muted'}>
-          {file ? file.name : placeholder}
-        </Paragraph>
+        <Paragraph color={file ? 'default' : 'muted'}>{file ? file.name : placeholder}</Paragraph>
       </Pane>
     </div>
   )

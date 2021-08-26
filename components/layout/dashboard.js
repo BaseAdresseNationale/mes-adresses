@@ -36,7 +36,8 @@ const BackButton = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Icon icon='arrow-left' style={{verticalAlign: 'middle'}} marginRight={4} /> Retour France métropolitaine
+      <Icon icon='arrow-left' style={{verticalAlign: 'middle'}} marginRight={4} /> Retour France
+      métropolitaine
     </Heading>
   )
 }
@@ -46,9 +47,7 @@ const Mobile = ({title, backButton, mapData, children}) => {
     <Pane display='flex' backgroundColor='#fff' flexDirection='column' width='100%'>
       <Header />
 
-      {backButton && (
-        <BackButton />
-      )}
+      {backButton && <BackButton />}
       <Heading size={600} margin={0} padding='1em' textAlign='center' backgroundColor='#f9f9fb'>
         {title}
       </Heading>
@@ -70,9 +69,7 @@ const Desktop = ({title, mapData, backButton, children}) => {
 
       <Pane display='flex' width='100%' height='calc(100vh - 77px)'>
         <Pane display='flex' flexDirection='column' minWidth={450} overflowY='auto'>
-          {backButton && (
-            <BackButton />
-          )}
+          {backButton && <BackButton />}
           <Heading size={600} margin={0} padding='1em' textAlign='center' backgroundColor='#f9f9fb'>
             {title}
           </Heading>
@@ -83,10 +80,7 @@ const Desktop = ({title, mapData, backButton, children}) => {
           <Map {...mapData} />
         </Pane>
       </Pane>
-      <style jsx>{`
-
-
-      `}</style>
+      <style jsx>{``}</style>
     </Pane>
   )
 }

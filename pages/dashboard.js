@@ -14,14 +14,17 @@ import Counter from '../components/dashboard/counter'
 import Redirection from './dashboard/redirection'
 
 const Index = ({basesLocales, contoursCommunes}) => {
-  const communeCount = uniq(flattenDeep(
-    basesLocales
-      .filter(({communes}) => communes.length > 0)
-      .map(({communes}) => communes)
-  )).length
+  const communeCount = uniq(
+    flattenDeep(
+      basesLocales.filter(({communes}) => communes.length > 0).map(({communes}) => communes)
+    )
+  ).length
 
   return (
-    <DashboardLayout title='Tableau de bord de l&apos;éditeur Mes Adresses' mapData={{basesLocales, contours: contoursCommunes}}>
+    <DashboardLayout
+      title="Tableau de bord de l'éditeur Mes Adresses"
+      mapData={{basesLocales, contours: contoursCommunes}}
+    >
       <Pane display='grid' gridGap='2em' padding={5}>
         <Counter label='Communes couvertes par une Base Adresse Locale' value={communeCount} />
         <BALCounterChart basesLocales={basesLocales} />
@@ -35,7 +38,7 @@ const Index = ({basesLocales, contoursCommunes}) => {
 Index.getInitialProps = async () => {
   const basesLocales = await listBasesLocales()
   const contoursCommunes = await getContoursCommunes()
-  const basesLocalesWithoutDemo = basesLocales.filter((b => b.status !== 'demo'))
+  const basesLocalesWithoutDemo = basesLocales.filter(b => b.status !== 'demo')
   await expandWithPublished(basesLocalesWithoutDemo)
 
   return {

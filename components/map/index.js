@@ -7,9 +7,7 @@ import MapLoader from './loader'
 
 const Map = dynamic(() => import('./map'), {
   ssr: false,
-  loading: props => (
-    <MapLoader {...props} />
-  )
+  loading: props => <MapLoader {...props} />
 })
 
 function MapWrapper({animate, left, top, ...props}) {

@@ -46,8 +46,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] = useState(false)
 
   const formHasChanged = useCallback(() => {
-    return nomInput !== baseLocale.nom ||
-    mailHasChanged(emails || [], balEmails)
+    return nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails)
   }, [nomInput, baseLocale, emails, balEmails])
 
   useEffect(() => {
@@ -58,43 +57,53 @@ const Settings = React.memo(({nomBaseLocale}) => {
     setBalEmails(emails => emails.filter(e => e !== email))
   }, [])
 
-  const onAddEmail = useCallback(e => {
-    e.preventDefault()
+  const onAddEmail = useCallback(
+    e => {
+      e.preventDefault()
 
-    if (validateEmail(email)) {
-      setBalEmails(emails => [...emails, email])
-      resetEmail()
-    } else {
-      setError('Cet email n’est pas valide')
-    }
-  }, [email, resetEmail])
+      if (validateEmail(email)) {
+        setBalEmails(emails => [...emails, email])
+        resetEmail()
+      } else {
+        setError('Cet email n’est pas valide')
+      }
+    },
+    [email, resetEmail]
+  )
 
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onSubmit = useCallback(
+    async e => {
+      e.preventDefault()
 
-    setError(null)
-    setIsLoading(true)
+      setError(null)
+      setIsLoading(true)
 
-    try {
-      await updateBaseLocale(baseLocale._id, {
-        nom: nomInput.trim(),
-        emails: balEmails
-      }, token)
+      try {
+        await updateBaseLocale(
+          baseLocale._id,
+          {
+            nom: nomInput.trim(),
+            emails: balEmails
+          },
+          token
+        )
 
-      await reloadEmails()
-      await reloadBaseLocale()
+        await reloadEmails()
+        await reloadBaseLocale()
 
-      if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length !== 0) {
-        setIsRenewTokenWarningShown(true)
+        if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length !== 0) {
+          setIsRenewTokenWarningShown(true)
+        }
+
+        toaster.success('La Base Adresse Locale a été modifiée avec succès !')
+      } catch (error) {
+        setError(error.message)
       }
 
-      toaster.success('La Base Adresse Locale a été modifiée avec succès !')
-    } catch (error) {
-      setError(error.message)
-    }
-
-    setIsLoading(false)
-  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, emails])
+      setIsLoading(false)
+    },
+    [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, emails]
+  )
 
   useEffect(() => {
     if (error) {
@@ -107,10 +116,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
   }, [formHasChanged])
 
   return (
-    <SideSheet
-      isShown={showSettings}
-      onCloseComplete={() => setShowSettings(false)}
-    >
+    <SideSheet isShown={showSettings} onCloseComplete={() => setShowSettings(false)}>
       <Pane
         flexShrink={0}
         elevation={0}
@@ -125,12 +131,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
         </Pane>
       </Pane>
 
-      <Pane
-        display='flex'
-        flex={1}
-        flexDirection='column'
-        overflowY='scroll'
-      >
+      <Pane display='flex' flex={1} flexDirection='column' overflowY='scroll'>
         {token ? (
           <Pane padding={16} is='form' onSubmit={onSubmit}>
             <TextInputField
@@ -146,9 +147,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
             />
 
             <Label display='block' marginBottom={4}>
-              Adresses email
-              {' '}
-              <span title='This field is required.'>*</span>
+              Adresses email <span title='This field is required.'>*</span>
             </Label>
             {balEmails.map(email => (
               <Pane key={email} display='flex' marginBottom={8}>
@@ -216,7 +215,14 @@ const Settings = React.memo(({nomBaseLocale}) => {
               />
             )}
 
-            <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanges} isLoading={isLoading}>
+            <Button
+              height={40}
+              marginTop={8}
+              type='submit'
+              appearance='primary'
+              disabled={!hasChanges}
+              isLoading={isLoading}
+            >
               {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
           </Pane>
@@ -238,7 +244,8 @@ const Settings = React.memo(({nomBaseLocale}) => {
             title='Version d’essai de l’éditeur de base adresse locale'
             marginBottom={32}
           >
-            Il est impossible de modifier les paramètres de la base adresse locale en version d’essai.
+            Il est impossible de modifier les paramètres de la base adresse locale en version
+            d’essai.
           </Alert>
         </Pane>
       )}

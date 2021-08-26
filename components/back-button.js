@@ -4,9 +4,9 @@ import {ArrowLeftIcon, Button} from 'evergreen-ui'
 const BackButton = memo(
   forwardRef(({children = 'Retour', ...props}, ref) => {
     return (
-      <Button iconBefore={ArrowLeftIcon} {...props} ref={ref} >
+      <Button iconBefore={ArrowLeftIcon} {...props} ref={ref}>
         {children}
-      </Button >
+      </Button>
     )
   })
 )

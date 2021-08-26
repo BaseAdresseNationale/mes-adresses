@@ -57,9 +57,10 @@ function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
   return (
     <Dialog
       isShown={isShown}
-      title={baseLocaleId ?
-        'Récupération de votre Base Adresse Locale' :
-        'Récupération de mes Bases Adresses Locales'
+      title={
+        baseLocaleId
+          ? 'Récupération de votre Base Adresse Locale'
+          : 'Récupération de mes Bases Adresses Locales'
       }
       cancelLabel='Annuler'
       isConfirmLoading={isLoading}
@@ -82,13 +83,14 @@ function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
       />
 
       <Paragraph marginTop={16}>
-        Un courrier électronique va être envoyé à l’adresse que vous avez renseignée.<br />{}
+        Un courrier électronique va être envoyé à l’adresse que vous avez renseignée.
+        <br />
+        {}
       </Paragraph>
       <Paragraph marginTop={8}>
-        {baseLocaleId ?
-          'Vous y retrouverez un lien d’administration de votre Base Adresse Locale. Il vous suffira alors de cliquer sur le lien afin de pouvoir la retrouver sur votre espace.' :
-          'Vous y retrouverez la liste de toutes les Bases Adresses Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace.'
-        }
+        {baseLocaleId
+          ? 'Vous y retrouverez un lien d’administration de votre Base Adresse Locale. Il vous suffira alors de cliquer sur le lien afin de pouvoir la retrouver sur votre espace.'
+          : 'Vous y retrouverez la liste de toutes les Bases Adresses Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace.'}
       </Paragraph>
     </Dialog>
   )

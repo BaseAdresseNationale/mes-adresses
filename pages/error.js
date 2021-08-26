@@ -18,7 +18,10 @@ function NotFound({statusCode}) {
         border='default'
         height='100%'
       >
-        <Heading size={600} marginBottom='2em'>Erreur {statusCode} - {statusCode === 404 ? 'Page introuvable' : 'Une erreur est survenue'}</Heading>
+        <Heading size={600} marginBottom='2em'>
+          Erreur {statusCode} -{' '}
+          {statusCode === 404 ? 'Page introuvable' : 'Une erreur est survenue'}
+        </Heading>
         {statusCode === 404 && (
           <Pane width='80%'>
             <IncidentOvh404 hasRedirection />

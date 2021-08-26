@@ -24,69 +24,71 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [toRemove, setToRemove] = useState(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale: {nom}} = useContext(BalDataContext)
+  const {
+    baseLocale: {nom}
+  } = useContext(BalDataContext)
 
   useHelp(1)
   const [filtered, onFilter] = useFuse(communes, 200, {
-    keys: [
-      'nom'
-    ]
+    keys: ['nom']
   })
 
-  const onAdd = useCallback(async ({commune, populate}) => {
-    const updated = await addCommune(baseLocale._id, commune, token)
+  const onAdd = useCallback(
+    async ({commune, populate}) => {
+      const updated = await addCommune(baseLocale._id, commune, token)
 
-    if (populate) {
-      await populateCommune(baseLocale._id, commune, token)
-    }
+      if (populate) {
+        await populateCommune(baseLocale._id, commune, token)
+      }
 
-    const updatedCommunes = await Promise.all(
-      updated.communes.map(commune => getCommune(commune))
-    )
+      const updatedCommunes = await Promise.all(
+        updated.communes.map(commune => getCommune(commune))
+      )
 
-    setIsAdding(false)
-    setCommunes(updatedCommunes)
-  }, [baseLocale, token])
+      setIsAdding(false)
+      setCommunes(updatedCommunes)
+    },
+    [baseLocale, token]
+  )
 
   const onRemove = useCallback(async () => {
     const updated = await removeCommune(baseLocale._id, toRemove, token)
 
-    const updatedCommunes = await Promise.all(
-      updated.communes.map(commune => getCommune(commune))
-    )
+    const updatedCommunes = await Promise.all(updated.communes.map(commune => getCommune(commune)))
 
     setCommunes(updatedCommunes)
     setToRemove(null)
   }, [baseLocale._id, toRemove, token])
 
-  const onSelect = useCallback(codeCommune => {
-    Router.push(
-      `/bal/commune?balId=${baseLocale._id}&codeCommune=${codeCommune}`,
-      `/bal/${baseLocale._id}/communes/${codeCommune}`
-    )
-  }, [baseLocale])
+  const onSelect = useCallback(
+    codeCommune => {
+      Router.push(
+        `/bal/commune?balId=${baseLocale._id}&codeCommune=${codeCommune}`,
+        `/bal/${baseLocale._id}/communes/${codeCommune}`
+      )
+    },
+    [baseLocale]
+  )
 
   return (
     <>
       <DeleteWarning
         isShown={Boolean(toRemove)}
-        content={(
+        content={
           <Paragraph>
-            Êtes vous bien sûr de vouloir supprimer cette commune ainsi que toutes ses voies et numéros ?
+            Êtes vous bien sûr de vouloir supprimer cette commune ainsi que toutes ses voies et
+            numéros ?
           </Paragraph>
-        )}
+        }
         onCancel={() => setToRemove(null)}
         onConfirm={onRemove}
       />
 
-      <Pane
-        display='flex'
-        flexDirection='column'
-        background='tint1'
-        padding={16}
-      >
+      <Pane display='flex' flexDirection='column' background='tint1' padding={16}>
         <Heading>{nom || baseLocale.nom}</Heading>
-        <Text>{communes.length} commune{communes.length > 1 ? 's' : ''}</Text>
+        <Text>
+          {communes.length} commune{communes.length > 1 ? 's' : ''}
+        </Text>
       </Pane>
       <Pane
         flexShrink={0}
@@ -117,11 +119,10 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
 
       {communes.length > 1 && (
         <Pane padding={16}>
-          <Alert
-            intent='warning'
-            title='Gestion de plusieurs communes'
-          >
-            L’éditeur « Mes Adresses » permet la gestion d’une Base Adresse Locale à l’échelle communale. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales.
+          <Alert intent='warning' title='Gestion de plusieurs communes'>
+            L’éditeur « Mes Adresses » permet la gestion d’une Base Adresse Locale à l’échelle
+            communale. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses
+            Locales.
           </Alert>
         </Pane>
       )}
@@ -153,17 +154,16 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
               </Table.TextCell>
             </Table.Row>
           )}
-          {sortBy(filtered, v => normalizeSort(v.nom))
-            .map(commune => (
-              <TableRow
-                key={commune.code}
-                id={commune.code}
-                code={commune.code}
-                label={commune.nom}
-                onSelect={onSelect}
-                onRemove={id => setToRemove(id)}
-              />
-            ))}
+          {sortBy(filtered, v => normalizeSort(v.nom)).map(commune => (
+            <TableRow
+              key={commune.code}
+              id={commune.code}
+              code={commune.code}
+              label={commune.nom}
+              onSelect={onSelect}
+              onRemove={id => setToRemove(id)}
+            />
+          ))}
         </Table>
       </Pane>
     </>

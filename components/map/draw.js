@@ -19,15 +19,18 @@ const Draw = () => {
     }
   }, [])
 
-  const _onUpdate = useCallback(({data, editType}) => {
-    if (editType === 'addTentativePosition') {
-      setHint('Cliquez pour ajouter un point ou cliquez sur le dernier pour terminer la voie')
-    }
+  const _onUpdate = useCallback(
+    ({data, editType}) => {
+      if (editType === 'addTentativePosition') {
+        setHint('Cliquez pour ajouter un point ou cliquez sur le dernier pour terminer la voie')
+      }
 
-    if (data) {
-      setData(data[0])
-    }
-  }, [setData, setHint])
+      if (data) {
+        setData(data[0])
+      }
+    },
+    [setData, setHint]
+  )
 
   const mode = useMemo(() => {
     const Mode = MODES[modeId]
@@ -56,13 +59,7 @@ const Draw = () => {
 
       {hint && (
         <Portal>
-          <Pane
-            zIndex={999}
-            position='fixed'
-            width='100%'
-            top={116}
-            marginTop='0.2em'
-          >
+          <Pane zIndex={999} position='fixed' width='100%' top={116} marginTop='0.2em'>
             <Pane marginLeft='50%' width='400px'>
               <Alert title={hint} />
             </Pane>

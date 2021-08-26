@@ -8,10 +8,12 @@ const PieChart = ({title, data, height}) => {
 
   const chart = {
     labels: data.map(({label}) => label),
-    datasets: [{
-      data: data.map(({values}) => values),
-      backgroundColor: data.map(({color}) => color)
-    }]
+    datasets: [
+      {
+        data: data.map(({values}) => values),
+        backgroundColor: data.map(({color}) => color)
+      }
+    ]
   }
 
   const options = {
@@ -22,11 +24,7 @@ const PieChart = ({title, data, height}) => {
 
   return (
     <Pane display='flex' flexDirection='column'>
-      {title && (
-        <Heading textAlign='center'>
-          {title}
-        </Heading>
-      )}
+      {title && <Heading textAlign='center'>{title}</Heading>}
 
       <Pie ref={chartRef} height={height} data={chart} options={options} />
     </Pane>

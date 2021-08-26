@@ -14,7 +14,9 @@ function BALRecovery() {
         <Text>
           Vous ne retrouvez pas vos Bases Adresse Locales ? Pour les récupérer par courriel
         </Text>
-        <Button appearance='primary' marginLeft='1em' onClick={() => setIsDialogOpen(true)}>Cliquez ici</Button>
+        <Button appearance='primary' marginLeft='1em' onClick={() => setIsDialogOpen(true)}>
+          Cliquez ici
+        </Button>
       </Alert>
     </>
   )

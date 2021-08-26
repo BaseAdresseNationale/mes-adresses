@@ -26,17 +26,20 @@ export function MarkersContextProvider(props) {
     }
   }, [disableMarkers, editingId])
 
-  const addMarker = useCallback(data => {
-    let marker = {...data}
-    setMarkers(prevMarkers => {
-      if (!marker.latitude || !marker.longitude) {
-        const {latitude, longitude} = viewport
-        marker = {...marker, longitude, latitude}
-      }
+  const addMarker = useCallback(
+    data => {
+      let marker = {...data}
+      setMarkers(prevMarkers => {
+        if (!marker.latitude || !marker.longitude) {
+          const {latitude, longitude} = viewport
+          marker = {...marker, longitude, latitude}
+        }
 
-      return [...prevMarkers, {_id: uniqueId(), ...marker}]
-    })
-  }, [viewport])
+        return [...prevMarkers, {_id: uniqueId(), ...marker}]
+      })
+    },
+    [viewport]
+  )
 
   const removeMarker = useCallback(markerId => {
     setMarkers(prevMarkers => {

@@ -8,11 +8,25 @@ import useHelp from '../hooks/help'
 const DocumentationLink = ({title, description, link, onClick}) => (
   <Pane display='flex' flexDirection='column' alignItems='center'>
     {link ? (
-      <Button iconBefore={ManualIcon} is='a' appearance='minimal' height={30} href={link} target='_blank' fontSize='0.8em'>
+      <Button
+        iconBefore={ManualIcon}
+        is='a'
+        appearance='minimal'
+        height={30}
+        href={link}
+        target='_blank'
+        fontSize='0.8em'
+      >
         {title}
       </Button>
     ) : (
-      <Button iconBefore={ManualIcon} appearance='minimal' height={30} fontSize='0.8em' onClick={onClick}>
+      <Button
+        iconBefore={ManualIcon}
+        appearance='minimal'
+        height={30}
+        fontSize='0.8em'
+        onClick={onClick}
+      >
         {title}
       </Button>
     )}
@@ -47,16 +61,18 @@ const Footer = () => {
 
   return (
     <div>
-      <Pane
-        bottom={0}
-        background='tint1'
-        padding={16}
-        elevation={1}
-      >
+      <Pane bottom={0} background='tint1' padding={16} elevation={1}>
         <Pane>
-          <Heading textAlign='center' marginBottom={2} size={600}>Besoin d’aide ?</Heading>
+          <Heading textAlign='center' marginBottom={2} size={600}>
+            Besoin d’aide ?
+          </Heading>
         </Pane>
-        <Pane display='grid' gridTemplateColumns='1fr 1fr' justifyContent='space-between' alignItems='center'>
+        <Pane
+          display='grid'
+          gridTemplateColumns='1fr 1fr'
+          justifyContent='space-between'
+          alignItems='center'
+        >
           <DocumentationLink
             title='Guides de l’adressage'
             description='Pour vous accompagner dans la gestion des adresses de votre commune'

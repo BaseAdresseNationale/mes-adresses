@@ -26,7 +26,8 @@ function UserBasesLocales() {
         } catch (error) {
           console.log(`Impossible de récupérer la bal ${id}`)
         }
-      }))
+      })
+    )
 
     const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
 
@@ -55,12 +56,20 @@ function UserBasesLocales() {
           <BasesLocalesList basesLocales={basesLocales} />
 
           <Pane margin='auto' textAlign='center'>
-            <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
+            <Heading marginBottom={8}>
+              Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?
+            </Heading>
             <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
           </Pane>
         </>
       ) : (
-        <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' margin='auto'>
+        <Pane
+          display='flex'
+          flexDirection='column'
+          justifyContent='center'
+          alignItems='center'
+          margin='auto'
+        >
           <Button
             marginBottom={12}
             height={40}
@@ -70,7 +79,9 @@ function UserBasesLocales() {
           >
             Créer une Base Adresse Locale
           </Button>
-          <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
+          <Heading marginBottom={8}>
+            Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?
+          </Heading>
           <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
         </Pane>
       )}

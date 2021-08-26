@@ -13,9 +13,7 @@ const Tuto = ({children}) => {
       flexDirection='column'
     >
       <Heading is='h2'>Vous rencontrez un problème ?</Heading>
-      <Pane margin={8}>
-        {children}
-      </Pane>
+      <Pane margin={8}>{children}</Pane>
     </Pane>
   )
 }

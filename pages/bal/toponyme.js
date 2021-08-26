@@ -16,7 +16,7 @@ import AddNumeros from '../../components/toponyme/add-numeros'
 
 import ToponymeHeading from './toponyme-heading'
 
-const Toponyme = (({toponyme, defaultNumeros}) => {
+const Toponyme = ({toponyme, defaultNumeros}) => {
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [updatedToponyme, setUpdatedToponyme] = useState(toponyme)
@@ -38,55 +38,73 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
   useHelp(3)
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
-    keys: [
-      'numero'
-    ]
+    keys: ['numero']
   })
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
-  const onAdd = useCallback(async numeros => {
-    setIsLoading(true)
+  const onAdd = useCallback(
+    async numeros => {
+      setIsLoading(true)
 
-    try {
-      await Promise.all(numeros.map(id => {
-        return editNumero(id, {
-          toponyme: toponyme._id
-        }, token)
-      }))
-    } catch (error) {
-      setError(error.message)
-    }
+      try {
+        await Promise.all(
+          numeros.map(id => {
+            return editNumero(
+              id,
+              {
+                toponyme: toponyme._id
+              },
+              token
+            )
+          })
+        )
+      } catch (error) {
+        setError(error.message)
+      }
 
-    await reloadNumerosToponyme()
+      await reloadNumerosToponyme()
 
-    setIsLoading(false)
-    setIsAdding(false)
-  }, [toponyme, token, reloadNumerosToponyme])
+      setIsLoading(false)
+      setIsAdding(false)
+    },
+    [toponyme, token, reloadNumerosToponyme]
+  )
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
   }, [])
 
-  const onEdit = useCallback(async (voieData, body) => {
-    let editedVoie = voieData
+  const onEdit = useCallback(
+    async (voieData, body) => {
+      let editedVoie = voieData
 
-    try {
-      if (!editedVoie._id) {
-        editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+      try {
+        if (!editedVoie._id) {
+          editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+        }
+
+        const {toponyme} = body
+        await editNumero(editingId, {...body, voie: editedVoie._id}, token)
+
+        await reloadNumerosToponyme(updatedToponyme._id || toponyme)
+        setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
+      } catch (error) {
+        setError(error.message)
       }
 
-      const {toponyme} = body
-      await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-
-      await reloadNumerosToponyme(updatedToponyme._id || toponyme)
-      setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
-    } catch (error) {
-      setError(error.message)
-    }
-
-    setEditingId(null)
-  }, [editingId, setEditingId, baseLocale, codeCommune, reloadNumerosToponyme, token, updatedToponyme])
+      setEditingId(null)
+    },
+    [
+      editingId,
+      setEditingId,
+      baseLocale,
+      codeCommune,
+      reloadNumerosToponyme,
+      token,
+      updatedToponyme
+    ]
+  )
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -150,10 +168,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            <Table.SearchHeaderCell
-              placeholder='Rechercher un numéro'
-              onChange={setFilter}
-            />
+            <Table.SearchHeaderCell placeholder='Rechercher un numéro' onChange={setFilter} />
           </Table.Head>
           {isAdding && (
             <Table.Row height='auto'>
@@ -174,11 +189,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
           {editingId && editingId !== toponyme._id ? (
             <Table.Row height='auto'>
               <Table.Cell display='block' paddingY={12} background='tint1'>
-                <NumeroEditor
-                  initialValue={editedNumero}
-                  onSubmit={onEdit}
-                  onCancel={onCancel}
-                />
+                <NumeroEditor initialValue={editedNumero} onSubmit={onEdit} onCancel={onCancel} />
               </Table.Cell>
             </Table.Row>
           ) : (
@@ -188,7 +199,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
       </Pane>
     </>
   )
-})
+}
 
 Toponyme.getInitialProps = async ({baseLocale, commune, toponyme}) => {
   const defaultNumeros = await getNumerosToponyme(toponyme._id)

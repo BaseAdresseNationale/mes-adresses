@@ -4,9 +4,7 @@
     [
       "inline-import",
       {
-        "extensions": [
-          ".css"
-        ]
+        "extensions": [".css"]
       }
     ],
     ["lodash"]

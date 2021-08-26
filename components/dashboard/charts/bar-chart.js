@@ -9,20 +9,24 @@ const BarChart = ({title, data}) => {
       mode: 'index'
     },
     scales: {
-      xAxes: [{
-        type: 'time',
-        time: {
-          unit: 'month'
-        },
-        stacked: true,
-        gridLines: {
-          offsetGridLines: true
-        },
-        offset: true
-      }],
-      yAxes: [{
-        stacked: true
-      }]
+      xAxes: [
+        {
+          type: 'time',
+          time: {
+            unit: 'month'
+          },
+          stacked: true,
+          gridLines: {
+            offsetGridLines: true
+          },
+          offset: true
+        }
+      ],
+      yAxes: [
+        {
+          stacked: true
+        }
+      ]
     }
   }
 
@@ -35,7 +39,6 @@ const BarChart = ({title, data}) => {
       )}
       <Bar data={data} options={options} />
     </div>
-
   )
 }
 

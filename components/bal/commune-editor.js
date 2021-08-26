@@ -19,33 +19,43 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
     setCommune(commune.code)
   }, [])
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onFormSubmit = useCallback(
+    async e => {
+      e.preventDefault()
 
-    setIsLoading(true)
+      setIsLoading(true)
 
-    try {
-      await onSubmit({
-        commune,
-        populate
-      })
-    } catch (error) {
-      setError(error.message)
-      setIsLoading(false)
-    }
-  }, [onSubmit, commune, populate])
+      try {
+        await onSubmit({
+          commune,
+          populate
+        })
+      } catch (error) {
+        setError(error.message)
+        setIsLoading(false)
+      }
+    },
+    [onSubmit, commune, populate]
+  )
 
-  const onFormCancel = useCallback(e => {
-    e.preventDefault()
+  const onFormCancel = useCallback(
+    e => {
+      e.preventDefault()
 
-    onCancel()
-  }, [onCancel])
-
-  useKeyEvent('keyup', ({key}) => {
-    if (key === 'Escape') {
       onCancel()
-    }
-  }, [onCancel])
+    },
+    [onCancel]
+  )
+
+  useKeyEvent(
+    'keyup',
+    ({key}) => {
+      if (key === 'Escape') {
+        onCancel()
+      }
+    },
+    [onCancel]
+  )
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>

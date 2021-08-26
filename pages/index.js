@@ -20,9 +20,20 @@ function Index() {
   return (
     <Pane height='100vh' display='flex' flexDirection='column'>
       <Header />
-      <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
+      <Heading
+        padding={16}
+        size={400}
+        color='snow'
+        display='flex'
+        justifyContent='space-between'
+        alignItems='center'
+        backgroundColor='#0053b3'
+        flexShrink='0'
+      >
         Mes Bases Adresse Locales
-        <Button iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
+        <Button iconBefore={PlusIcon} onClick={() => Router.push('/new')}>
+          Créer une Base Adresse Locale
+        </Button>
       </Heading>
 
       <UserBasesLocales />

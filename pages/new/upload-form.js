@@ -2,7 +2,16 @@ import React, {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
 import {uniq, uniqBy} from 'lodash'
-import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
+import {
+  Pane,
+  Alert,
+  Button,
+  TextInputField,
+  Text,
+  FormField,
+  PlusIcon,
+  InboxIcon
+} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '../../lib/bal-api'
 
@@ -71,7 +80,9 @@ function UploadForm() {
     if (rejectedFiles.length > 1) {
       onError('Vous ne pouvez déposer qu’un seul fichier.')
     } else if (file.size > MAX_SIZE) {
-      return onError('Ce fichier est trop volumineux. Vous devez déposer un fichier de moins de 10 Mo.')
+      return onError(
+        'Ce fichier est trop volumineux. Vous devez déposer un fichier de moins de 10 Mo.'
+      )
     } else {
       onError('Impossible de déposer ce fichier')
     }
@@ -81,9 +92,7 @@ function UploadForm() {
     if (!bal) {
       const baseLocale = await createBaseLocale({
         nom,
-        emails: [
-          email
-        ]
+        emails: [email]
       })
 
       addBalAccess(baseLocale._id, baseLocale.token)
@@ -109,18 +118,22 @@ function UploadForm() {
     if (validateResponse) {
       const codes = extractCodeCommuneFromCSV(validateResponse)
       if (codes.length > 1) {
-        onError('Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. L’import d’un fichier CSV n’est possible que si ce fichier ne contient les adresses que d’une commune.')
+        onError(
+          'Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. L’import d’un fichier CSV n’est possible que si ce fichier ne contient les adresses que d’une commune.'
+        )
         return
       }
 
       const userBALs = []
 
-      await Promise.all(codes.map(async code => {
-        const basesLocales = await searchBAL(code, email)
-        if (basesLocales.length > 0) {
-          userBALs.push(...basesLocales)
-        }
-      }))
+      await Promise.all(
+        codes.map(async code => {
+          const basesLocales = await searchBAL(code, email)
+          if (basesLocales.length > 0) {
+            userBALs.push(...basesLocales)
+          }
+        })
+      )
 
       if (userBALs.length > 0) {
         const uniqUserBALs = uniqBy(userBALs, '_id')
@@ -162,7 +175,15 @@ function UploadForm() {
 
   return (
     <>
-      <Pane is='form' margin={16} padding={16} flex={1} overflowY='scroll' backgroundColor='white' onSubmit={onSubmit}>
+      <Pane
+        is='form'
+        margin={16}
+        padding={16}
+        flex={1}
+        overflowY='scroll'
+        backgroundColor='white'
+        onSubmit={onSubmit}
+      >
         {userBALs.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
@@ -223,17 +244,37 @@ function UploadForm() {
           </Alert>
         )}
 
-        <Button height={40} type='submit' appearance='primary' intent='success' disabled={Boolean(error) || !file} isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
+        <Button
+          height={40}
+          type='submit'
+          appearance='primary'
+          intent='success'
+          disabled={Boolean(error) || !file}
+          isLoading={isLoading}
+          iconAfter={isLoading ? null : PlusIcon}
+        >
           {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
         </Button>
       </Pane>
 
-      <Alert margin={16} title='Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?' marginY={16}>
+      <Alert
+        margin={16}
+        title='Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?'
+        marginY={16}
+      >
         <Text>
-          Utilisez notre formulaire de dépôt afin de publier vos adresses dans la Base Adresse Nationale.
+          Utilisez notre formulaire de dépôt afin de publier vos adresses dans la Base Adresse
+          Nationale.
         </Text>
         <Pane marginTop={16}>
-          <Button appearance='primary' iconBefore={InboxIcon} is='a' href='https://adresse.data.gouv.fr/bases-locales/publication'>Accéder au formulaire de dépôt d’une Base Adresse Locale sur adresse.data.gouv.fr</Button>
+          <Button
+            appearance='primary'
+            iconBefore={InboxIcon}
+            is='a'
+            href='https://adresse.data.gouv.fr/bases-locales/publication'
+          >
+            Accéder au formulaire de dépôt d’une Base Adresse Locale sur adresse.data.gouv.fr
+          </Button>
         </Pane>
       </Alert>
     </>

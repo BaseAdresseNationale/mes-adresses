@@ -9,7 +9,8 @@ const Sidebar = () => (
       Ce menu peut-être caché afin de laisser plus d’espace à la cartographie.
     </Paragraph>
     <Paragraph marginTop='default'>
-      Pour le faire réapparaitre, cliquez sur le bouton <IconButton display='inline-block' margin={8} icon={ChevronRightIcon} />
+      Pour le faire réapparaitre, cliquez sur le bouton{' '}
+      <IconButton display='inline-block' margin={8} icon={ChevronRightIcon} />
       en haut à gauche de votre écran.
     </Paragraph>
   </Tuto>

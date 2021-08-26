@@ -19,42 +19,52 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
 
   const {token} = useContext(TokenContext)
   const {markers} = useContext(MarkersContext)
-  const {baseLocale, editingId, setEditingId, isEditing, reloadToponymes, voie, toponyme} = useContext(BalDataContext)
+  const {baseLocale, editingId, setEditingId, isEditing, reloadToponymes, voie, toponyme} =
+    useContext(BalDataContext)
 
-  const onEnableEditing = useCallback(e => {
-    e.stopPropagation()
+  const onEnableEditing = useCallback(
+    e => {
+      e.stopPropagation()
 
-    if (!isEditing) {
-      if (voie || initialToponyme !== toponyme) {
-        router.push(
-          `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${initialToponyme.commune}&idToponyme=${initialToponyme._id}`,
-          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}/toponymes/${initialToponyme._id}`
-        )
+      if (!isEditing) {
+        if (voie || initialToponyme !== toponyme) {
+          router.push(
+            `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${initialToponyme.commune}&idToponyme=${initialToponyme._id}`,
+            `/bal/${baseLocale._id}/communes/${initialToponyme.commune}/toponymes/${initialToponyme._id}`
+          )
+        }
+
+        if (!voie && initialToponyme._id === toponyme?._id) {
+          setEditingId(toponyme._id)
+        }
       }
+    },
+    [isEditing, setEditingId, voie, baseLocale._id, initialToponyme, router, toponyme]
+  )
 
-      if (!voie && initialToponyme._id === toponyme?._id) {
-        setEditingId(toponyme._id)
-      }
-    }
-  }, [isEditing, setEditingId, voie, baseLocale._id, initialToponyme, router, toponyme])
+  const position =
+    initialToponyme.positions.find(position => position.type === 'segment') ||
+    initialToponyme.positions[0]
 
-  const position = initialToponyme.positions.find(position => position.type === 'segment') || initialToponyme.positions[0]
+  const markerStyle = useMemo(
+    () =>
+      css({
+        borderRadius: 20,
+        marginTop: -10,
+        marginLeft: -10,
+        color: 'transparent',
+        whiteSpace: 'nowrap',
+        background: showLabel ? 'rgba(0, 0, 0, 0.5)' : null,
+        cursor: 'pointer',
 
-  const markerStyle = useMemo(() => css({
-    borderRadius: 20,
-    marginTop: -10,
-    marginLeft: -10,
-    color: 'transparent',
-    whiteSpace: 'nowrap',
-    background: showLabel ? 'rgba(0, 0, 0, 0.5)' : null,
-    cursor: 'pointer',
+        '& > span': {
+          display: showLabel ? 'inline-block' : 'none'
+        }
+      }),
+    [showLabel]
+  )
 
-    '& > span': {
-      display: showLabel ? 'inline-block' : 'none'
-    }
-  }), [showLabel])
-
-  const deleteToponyme = (async () => {
+  const deleteToponyme = async () => {
     const {_id} = initialToponyme
 
     try {
@@ -72,7 +82,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
     }
 
     setShowContextMenu(false)
-  })
+  }
 
   if (!position) {
     return null
@@ -87,7 +97,11 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
   return (
     <>
       <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(initialToponyme._id)}>
+        <Pane
+          {...markerStyle}
+          onClick={onEnableEditing}
+          onContextMenu={() => setShowContextMenu(initialToponyme._id)}
+        >
           <Text color='white' paddingLeft={8} paddingRight={10}>
             {initialToponyme.nom}
           </Text>
@@ -113,11 +127,13 @@ ToponymeMarker.propTypes = {
   initialToponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    positions: PropTypes.arrayOf(PropTypes.shape({
-      point: PropTypes.shape({
-        coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
+    positions: PropTypes.arrayOf(
+      PropTypes.shape({
+        point: PropTypes.shape({
+          coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
+        })
       })
-    })),
+    ),
     commune: PropTypes.string
   }).isRequired,
   showLabel: PropTypes.bool,

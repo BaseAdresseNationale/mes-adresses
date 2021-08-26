@@ -24,23 +24,33 @@ function DemoForm({defaultCommune}) {
   const onSelect = useCallback(commune => {
     setCommune(commune.code)
   }, [])
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onSubmit = useCallback(
+    async e => {
+      e.preventDefault()
 
-    setIsLoading(true)
+      setIsLoading(true)
 
-    const bal = await createBaseLocaleDemo({commune, populate})
+      const bal = await createBaseLocaleDemo({commune, populate})
 
-    addBalAccess(bal._id, bal.token)
+      addBalAccess(bal._id, bal.token)
 
-    Router.push(
-      `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
-      `/bal/${bal._id}/communes/${commune}`
-    )
-  }, [commune, populate, addBalAccess])
+      Router.push(
+        `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
+        `/bal/${bal._id}/communes/${commune}`
+      )
+    },
+    [commune, populate, addBalAccess]
+  )
 
   return (
-    <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
+    <Pane
+      is='form'
+      margin={16}
+      padding={16}
+      overflowY='scroll'
+      background='white'
+      onSubmit={onSubmit}
+    >
       <CommuneSearchField
         required
         innerRef={focusRef}
@@ -65,10 +75,19 @@ function DemoForm({defaultCommune}) {
         title='Attention vous vous apprêtez à créer une Base Adresse Locale de démonstration.'
         marginY='1em'
       >
-        Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans la Base Adresse Nationale
+        Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans
+        la Base Adresse Nationale
       </Alert>
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
+      <Button
+        height={40}
+        marginTop={8}
+        type='submit'
+        appearance='primary'
+        intent='success'
+        isLoading={isLoading}
+        iconAfter={isLoading ? null : PlusIcon}
+      >
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
       </Button>
     </Pane>

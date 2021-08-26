@@ -5,17 +5,8 @@ import {Pane} from 'evergreen-ui'
 
 function NavControl({onViewportChange, ...props}) {
   return (
-    <Pane
-      position='absolute'
-      top={16}
-      right={16}
-      zIndex={2}
-    >
-      <NavigationControl
-        showCompass={false}
-        onViewportChange={onViewportChange}
-        {...props}
-      />
+    <Pane position='absolute' top={16} right={16} zIndex={2}>
+      <NavigationControl showCompass={false} onViewportChange={onViewportChange} {...props} />
     </Pane>
   )
 }

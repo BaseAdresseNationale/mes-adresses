@@ -3,15 +3,7 @@ import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
 function Fullscreen({isOpen, isHidden, size, top, onToggle, ...props}) {
-  return (
-    <Pane
-      display='flex'
-      width='100%'
-      height='100%'
-      flex={1}
-      {...props}
-    />
-  )
+  return <Pane display='flex' width='100%' height='100%' flex={1} {...props} />
 }
 
 Fullscreen.propTypes = {

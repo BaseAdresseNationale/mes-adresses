@@ -22,30 +22,32 @@ const ToponymeHeading = ({defaultToponyme}) => {
     }
   }, [setEditingId, isEditing, toponyme._id])
 
-  const onEditToponyme = useCallback(async ({nom, positions, parcelles}) => {
-    const editedToponyme = await editToponyme(toponyme._id, {
-      nom,
-      positions,
-      parcelles
-    }, token)
+  const onEditToponyme = useCallback(
+    async ({nom, positions, parcelles}) => {
+      const editedToponyme = await editToponyme(
+        toponyme._id,
+        {
+          nom,
+          positions,
+          parcelles
+        },
+        token
+      )
 
-    setEditingId(null)
-    await reloadToponymes()
+      setEditingId(null)
+      await reloadToponymes()
 
-    setToponyme(editedToponyme)
-  }, [reloadToponymes, setEditingId, token, toponyme])
+      setToponyme(editedToponyme)
+    },
+    [reloadToponymes, setEditingId, token, toponyme]
+  )
 
   useEffect(() => {
     setToponyme(defaultToponyme)
   }, [defaultToponyme])
 
   return (
-    <Pane
-      display='flex'
-      flexDirection='column'
-      background='tint1'
-      padding={16}
-    >
+    <Pane display='flex' flexDirection='column' background='tint1' padding={16}>
       {editingId === toponyme._id ? (
         <ToponymeEditor
           initialValue={toponyme}
@@ -61,16 +63,14 @@ const ToponymeHeading = ({defaultToponyme}) => {
         >
           {toponyme.nom}
           {!isEditing && token && (
-            <EditIcon
-              marginBottom={-2}
-              marginLeft={8}
-              color={hovered ? 'black' : 'muted'}
-            />
+            <EditIcon marginBottom={-2} marginLeft={8} color={hovered ? 'black' : 'muted'} />
           )}
         </Heading>
       )}
       {numeros && (
-        <Text>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text>
+          {numeros.length} numéro{numeros.length > 1 ? 's' : ''}
+        </Text>
       )}
     </Pane>
   )

@@ -19,53 +19,65 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
   const {token} = useContext(TokenContext)
   const {setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
 
-  const onEnableEditing = useCallback(e => {
-    e.stopPropagation()
+  const onEnableEditing = useCallback(
+    e => {
+      e.stopPropagation()
 
-    if (!isEditing) {
-      setEditingId(numero._id)
-    }
-  }, [setEditingId, isEditing, numero])
-
-  const position = numero.positions.find(position => position.type === 'entrée') || numero.positions[0]
-
-  const markerStyle = useMemo(() => css({
-    borderRadius: 20,
-    marginTop: -10,
-    marginLeft: -10,
-    color: 'transparent',
-    whiteSpace: 'nowrap',
-    background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
-    cursor: 'pointer',
-
-    '&:before': {
-      content: ' ',
-      backgroundColor: colorSeed ? randomColor({
-        luminosity: 'dark',
-        seed: colorSeed
-      }) : '#1070ca',
-      border: '1px solid white',
-      display: 'inline-block',
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      marginLeft: 6
-    },
-
-    '& > span': {
-      display: showLabel ? 'inline-block' : 'none'
-    },
-
-    '&:hover': showLabel ? null : {
-      background: 'rgba(0, 0, 0, 0.7)',
-
-      '& > span': {
-        display: 'inline-block'
+      if (!isEditing) {
+        setEditingId(numero._id)
       }
-    }
-  }), [colorSeed, showLabel])
+    },
+    [setEditingId, isEditing, numero]
+  )
 
-  const removeAddress = (async () => {
+  const position =
+    numero.positions.find(position => position.type === 'entrée') || numero.positions[0]
+
+  const markerStyle = useMemo(
+    () =>
+      css({
+        borderRadius: 20,
+        marginTop: -10,
+        marginLeft: -10,
+        color: 'transparent',
+        whiteSpace: 'nowrap',
+        background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
+        cursor: 'pointer',
+
+        '&:before': {
+          content: ' ',
+          backgroundColor: colorSeed
+            ? randomColor({
+                luminosity: 'dark',
+                seed: colorSeed
+              })
+            : '#1070ca',
+          border: '1px solid white',
+          display: 'inline-block',
+          width: 8,
+          height: 8,
+          borderRadius: '50%',
+          marginLeft: 6
+        },
+
+        '& > span': {
+          display: showLabel ? 'inline-block' : 'none'
+        },
+
+        '&:hover': showLabel
+          ? null
+          : {
+              background: 'rgba(0, 0, 0, 0.7)',
+
+              '& > span': {
+                display: 'inline-block'
+              }
+            }
+      }),
+    [colorSeed, showLabel]
+  )
+
+  const removeAddress = async () => {
     const {_id} = numero
 
     try {
@@ -76,7 +88,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     }
 
     setShowContextMenu(false)
-  })
+  }
 
   if (!position) {
     return null
@@ -88,15 +100,30 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
       {numero.positions.find(position => position.type === 'inconnue') ? (
         <Tooltip content='Le type d’une position est inconnu' position={Position.RIGHT}>
-          <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+          <Pane
+            {...markerStyle}
+            onClick={onEnableEditing}
+            onContextMenu={() => setShowContextMenu(numero._id)}
+          >
             <Text color='white' paddingLeft={8} paddingRight={5}>
               {numero.numeroComplet}
             </Text>
-            <WarningSignIcon color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
+            <WarningSignIcon
+              color='warning'
+              size={13}
+              marginLeft={2}
+              marginRight={7}
+              marginBottom={2}
+              style={{verticalAlign: 'middle'}}
+            />
           </Pane>
         </Tooltip>
       ) : (
-        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+        <Pane
+          {...markerStyle}
+          onClick={onEnableEditing}
+          onContextMenu={() => setShowContextMenu(numero._id)}
+        >
           <Text color='white' paddingLeft={8} paddingRight={10}>
             {numero.numeroComplet}
           </Text>
@@ -122,12 +149,14 @@ NumeroMarker.propTypes = {
   numero: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     numeroComplet: PropTypes.string.isRequired,
-    positions: PropTypes.arrayOf(PropTypes.shape({
-      point: PropTypes.shape({
-        coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
-      }).isRequired,
-      type: PropTypes.string
-    }))
+    positions: PropTypes.arrayOf(
+      PropTypes.shape({
+        point: PropTypes.shape({
+          coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
+        }).isRequired,
+        type: PropTypes.string
+      })
+    )
   }).isRequired,
   colorSeed: PropTypes.string,
   showLabel: PropTypes.bool,

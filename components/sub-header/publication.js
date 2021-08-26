@@ -1,7 +1,23 @@
 import React, {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
-import {Badge, Button, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
+import {
+  Badge,
+  Button,
+  Dialog,
+  Menu,
+  Pane,
+  Popover,
+  Tooltip,
+  Paragraph,
+  Position,
+  Strong,
+  Link,
+  DownloadIcon,
+  EditIcon,
+  UploadIcon,
+  CaretDownIcon
+} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl} from '../../lib/bal-api'
 
@@ -11,15 +27,19 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
   const [multiBal, setMultiBal] = useState(false)
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
 
-  const editTip = useMemo(() => css({
-    '@media (max-width: 700px)': {
-      marginLeft: -10,
+  const editTip = useMemo(
+    () =>
+      css({
+        '@media (max-width: 700px)': {
+          marginLeft: -10,
 
-      '& > span': {
-        display: 'none'
-      }
-    }
-  }), [])
+          '& > span': {
+            display: 'none'
+          }
+        }
+      }),
+    []
+  )
 
   const handleDialogs = () => {
     if (baseLocale.communes.length === 0) {
@@ -37,8 +57,16 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
         content='Vous n’êtes pas identifié comme administrateur de cette base adresse locale, vous ne pouvez donc pas l’éditer.'
         position={Position.BOTTOM_RIGHT}
       >
-        <Button height={24} marginRight={8} appearance='primary' intent='danger' iconBefore={EditIcon}>
-          <div className={editTip}><span>Édition impossible</span></div>
+        <Button
+          height={24}
+          marginRight={8}
+          appearance='primary'
+          intent='danger'
+          iconBefore={EditIcon}
+        >
+          <div className={editTip}>
+            <span>Édition impossible</span>
+          </div>
         </Button>
       </Tooltip>
     )
@@ -48,12 +76,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
     <>
       {status === 'ready-to-publish' ? (
         <div>
-          <Badge
-            color='blue'
-            marginRight={8}
-            paddingTop={2}
-            height={20}
-          >
+          <Badge color='blue' marginRight={8} paddingTop={2} height={20}>
             Prête à être publiée
           </Badge>
           <Popover
@@ -71,12 +94,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
               </Menu>
             }
           >
-            <Button
-              appearance='primary'
-              marginRight={8}
-              height={24}
-              iconAfter={CaretDownIcon}
-            >
+            <Button appearance='primary' marginRight={8} height={24} iconAfter={CaretDownIcon}>
               Publication
             </Button>
           </Popover>
@@ -86,12 +104,7 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
           position={Position.BOTTOM_LEFT}
           content="Votre BAL est désormais publiée ! Pour la mettre à jour, il vous suffit de l'éditer ici et les changements seront appliqués d'ici quelques jours"
         >
-          <Badge
-            color='green'
-            marginRight={8}
-            paddingTop={2}
-            height={20}
-          >
+          <Badge color='green' marginRight={8} paddingTop={2} height={20}>
             Publiée
           </Badge>
         </Tooltip>
@@ -111,16 +124,17 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
           >
             <Pane marginTop={4}>
               <Strong>Votre Base Adresse Locale est maintenant &nbsp;</Strong>
-              <Badge
-                color='blue'
-                marginRight={8}
-                paddingTop={2}
-                height={20}
-              >
+              <Badge color='blue' marginRight={8} paddingTop={2} height={20}>
                 Prête à être publiée
               </Badge>
-              <Paragraph>Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.</Paragraph>
-              <Paragraph>Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.</Paragraph>
+              <Paragraph>
+                Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base
+                Adresse Nationale.
+              </Paragraph>
+              <Paragraph>
+                Une fois la publication effective, il vous sera toujours possible de modifier vos
+                adresses afin de les mettre à jour.
+              </Paragraph>
             </Pane>
             <Link href={csvUrl} display='flex' marginTop='1em'>
               Télécharger vos adresses au format CSV
@@ -141,21 +155,16 @@ const Publication = ({token, status, onChangeStatus, onPublish, baseLocale}) => 
             title='Votre Base Adresse Locale contient plusieurs communes'
             onCloseComplete={() => setMultiBal(false)}
           >
-            <Paragraph>Pour vous authentifier et assurer une publication rapide, adressez-nous le lien de votre Base Adresse Locale à <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a></Paragraph>
+            <Paragraph>
+              Pour vous authentifier et assurer une publication rapide, adressez-nous le lien de
+              votre Base Adresse Locale à{' '}
+              <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>
+            </Paragraph>
           </Dialog>
-          <Badge
-            marginRight={8}
-            paddingTop={2}
-            height={20}
-          >
+          <Badge marginRight={8} paddingTop={2} height={20}>
             Brouillon
           </Badge>
-          <Button
-            marginRight={8}
-            height={24}
-            appearance='primary'
-            onClick={handleDialogs}
-          >
+          <Button marginRight={8} height={24} appearance='primary' onClick={handleDialogs}>
             Publier
           </Button>
         </div>
@@ -170,9 +179,7 @@ Publication.defaultProps = {
 
 Publication.propTypes = {
   token: PropTypes.string,
-  status: PropTypes.oneOf([
-    'draft', 'ready-to-publish', 'published', 'demo'
-  ]).isRequired,
+  status: PropTypes.oneOf(['draft', 'ready-to-publish', 'published', 'demo']).isRequired,
   onChangeStatus: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   baseLocale: PropTypes.object.isRequired

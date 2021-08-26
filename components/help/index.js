@@ -25,17 +25,15 @@ const Help = () => {
           </Pane>
           <Pane display='flex' padding={8}>
             <Tablist>
-              {TABS.map(
-                (tab, index) => (
-                  <Tab
-                    key={tab}
-                    isSelected={selectedIndex === index}
-                    onSelect={() => setSelectedIndex(index)}
-                  >
-                    {tab}
-                  </Tab>
-                )
-              )}
+              {TABS.map((tab, index) => (
+                <Tab
+                  key={tab}
+                  isSelected={selectedIndex === index}
+                  onSelect={() => setSelectedIndex(index)}
+                >
+                  {tab}
+                </Tab>
+              ))}
             </Tablist>
           </Pane>
         </Pane>
@@ -47,14 +45,15 @@ const Help = () => {
         <Pane padding={16} background='tint2' elevation={1}>
           <Heading>Vous n’avez pas trouvé la solution à votre problème ?</Heading>
           <Paragraph>
-            <Link target='_blank' href='https://adresse.data.gouv.fr/guides'>Consultez les guides de l’adressage</Link>
+            <Link target='_blank' href='https://adresse.data.gouv.fr/guides'>
+              Consultez les guides de l’adressage
+            </Link>
           </Paragraph>
           <Paragraph>ou</Paragraph>
           <Paragraph>
             Contactez nous sur <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>
           </Paragraph>
         </Pane>
-
       </SideSheet>
     </>
   )

@@ -24,17 +24,21 @@ function Index({defaultCommune, isDemo}) {
     <Pane height='100%' display='flex' flexDirection='column'>
       <Header />
       <Pane padding={12}>
-        <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${isDemo ? 'de démonstration' : ''}`}</Heading>
+        <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${
+          isDemo ? 'de démonstration' : ''
+        }`}</Heading>
         <Paragraph>
-          {`Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale ${isDemo ? ' de démonstration' : ''}.`}
+          {`Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale ${
+            isDemo ? ' de démonstration' : ''
+          }.`}
         </Paragraph>
       </Pane>
 
       <Pane paddingTop={16} flex={1}>
         {isDemo ? (
           <DemoForm defaultCommune={defaultCommune} />
-        ) :
-          (<>
+        ) : (
+          <>
             <TabNavigation display='flex' marginLeft={16}>
               {['Créer', 'Importer un fichier CSV'].map((tab, idx) => (
                 <Tab key={tab} id={tab} isSelected={index === idx} onSelect={() => setIndex(idx)}>
@@ -44,17 +48,16 @@ function Index({defaultCommune, isDemo}) {
             </TabNavigation>
 
             <Pane flex={1} overflowY='scroll'>
-              {index === 0 ? (
-                <CreateForm defaultCommune={defaultCommune} />
-              ) : (
-                <UploadForm />
-              )}
+              {index === 0 ? <CreateForm defaultCommune={defaultCommune} /> : <UploadForm />}
             </Pane>
-          </>)}
+          </>
+        )}
 
         {balAccess && (
           <Pane marginLeft={16} marginY={8}>
-            <BackButton is='a' href='/'>Retour à la liste de mes Bases Adresses Locales</BackButton>
+            <BackButton is='a' href='/'>
+              Retour à la liste de mes Bases Adresses Locales
+            </BackButton>
           </Pane>
         )}
       </Pane>
@@ -62,7 +65,9 @@ function Index({defaultCommune, isDemo}) {
       {!isDemo && (
         <Pane display='flex' flex={1}>
           <Pane margin='auto' textAlign='center'>
-            <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
+            <Heading marginBottom={8}>
+              Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?
+            </Heading>
             <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
           </Pane>
         </Pane>

@@ -12,35 +12,32 @@ import {normalizeSort} from '../../lib/normalize'
 import TableRow from '../table-row'
 import ToponymeEditor from './toponyme-editor'
 
-const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) => {
-  const {
-    isEditing,
-    editingId,
-    toponymes
-  } = useContext(BalDataContext)
+const ToponymesList = ({
+  isAdding,
+  onAdd,
+  onEdit,
+  onCancel,
+  onSelect,
+  onEnableEditing,
+  isPopulating,
+  setToRemove
+}) => {
+  const {isEditing, editingId, toponymes} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(toponymes, 200, {
-    keys: [
-      'nom'
-    ]
+    keys: ['nom']
   })
 
   return (
     <Pane flex={1} overflowY='scroll'>
       <Table>
         <Table.Head>
-          <Table.SearchHeaderCell
-            placeholder='Rechercher un toponyme'
-            onChange={setFilter}
-          />
+          <Table.SearchHeaderCell placeholder='Rechercher un toponyme' onChange={setFilter} />
         </Table.Head>
         {isAdding && (
           <Table.Row height='auto'>
             <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-              <ToponymeEditor
-                onSubmit={onAdd}
-                onCancel={onCancel}
-              />
+              <ToponymeEditor onSubmit={onAdd} onCancel={onCancel} />
             </Table.Cell>
           </Table.Row>
         )}
@@ -51,15 +48,11 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
             </Table.TextCell>
           </Table.Row>
         )}
-        {sortBy(filtered, t => normalizeSort(t.nom))
-          .map(toponyme => toponyme._id === editingId ? (
+        {sortBy(filtered, t => normalizeSort(t.nom)).map(toponyme =>
+          toponyme._id === editingId ? (
             <Table.Row key={toponyme._id} height='auto'>
               <Table.Cell display='block' paddingY={12} background='tint1'>
-                <ToponymeEditor
-                  initialValue={toponyme}
-                  onSubmit={onEdit}
-                  onCancel={onCancel}
-                />
+                <ToponymeEditor initialValue={toponyme} onSubmit={onEdit} onCancel={onCancel} />
               </Table.Cell>
             </Table.Row>
           ) : (
@@ -73,7 +66,8 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
               onEdit={onEnableEditing}
               onRemove={id => setToRemove(id)}
             />
-          ))}
+          )
+        )}
       </Table>
     </Pane>
   )

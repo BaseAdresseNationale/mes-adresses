@@ -12,9 +12,12 @@ function Index() {
   return (
     <>
       <Pane borderBottom padding={16} backgroundColor='white'>
-        <Heading size={600} marginBottom={8}>Nouvelle Base Adresse Locale</Heading>
+        <Heading size={600} marginBottom={8}>
+          Nouvelle Base Adresse Locale
+        </Heading>
         <Paragraph>
-          Pour être éditable à l’aide de cet outil, votre fichier doit être conforme au modèle BAL 1.1 de l’AITF.
+          Pour être éditable à l’aide de cet outil, votre fichier doit être conforme au modèle BAL
+          1.1 de l’AITF.
         </Paragraph>
       </Pane>
 

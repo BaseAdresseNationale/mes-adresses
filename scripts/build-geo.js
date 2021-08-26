@@ -7,13 +7,13 @@ const bbox = require('@turf/bbox').default
 const getStream = require('get-stream')
 const {outputJson} = require('fs-extra')
 
-const regions = 'http://etalab-datasets.geo.data.gouv.fr/contours-administratifs/latest/geojson/regions-100m.geojson.gz'
-const departements = 'http://etalab-datasets.geo.data.gouv.fr/contours-administratifs/latest/geojson/departements-100m.geojson.gz'
+const regions =
+  'http://etalab-datasets.geo.data.gouv.fr/contours-administratifs/latest/geojson/regions-100m.geojson.gz'
+const departements =
+  'http://etalab-datasets.geo.data.gouv.fr/contours-administratifs/latest/geojson/departements-100m.geojson.gz'
 
 async function getFeatures(url) {
-  const buffer = await getStream.buffer(
-    got.stream(url).pipe(createGunzip())
-  )
+  const buffer = await getStream.buffer(got.stream(url).pipe(createGunzip()))
 
   return JSON.parse(buffer.toString()).features
 }

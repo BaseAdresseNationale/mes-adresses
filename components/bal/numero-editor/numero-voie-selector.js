@@ -43,16 +43,8 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
             onChange={handleNomVoieChange}
           />
         ) : (
-          <SelectField
-            required
-            label='Voie'
-            flex={1}
-            value={voieId}
-            onChange={handleVoieChange}
-          >
-            {!voieId && (
-              <option value=''>- Choisir une voie-</option>
-            )}
+          <SelectField required label='Voie' flex={1} value={voieId} onChange={handleVoieChange}>
+            {!voieId && <option value=''>- Choisir une voie-</option>}
             {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
               <option key={_id} value={_id}>
                 {nom}

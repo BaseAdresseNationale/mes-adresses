@@ -70,15 +70,7 @@ export function getNumerosLabelLayer() {
       'text-field': [
         'case',
         ['has', 'suffixe'],
-        [
-          'format',
-          ['get', 'numero'],
-          {},
-          ' ',
-          {},
-          ['get', 'suffixe'],
-          {}
-        ],
+        ['format', ['get', 'numero'], {}, ' ', {}, ['get', 'suffixe'], {}],
         ['get', 'numero']
       ],
       'text-ignore-placement': true

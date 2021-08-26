@@ -25,9 +25,9 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
 
   const handleSelectNumero = ({value}) => {
     setSelectedVoieNumeros(selectedNumeros => {
-      return selectedNumeros.includes(value) ?
-        selectedNumeros.filter(id => id !== value) :
-        [...selectedNumeros, value]
+      return selectedNumeros.includes(value)
+        ? selectedNumeros.filter(id => id !== value)
+        : [...selectedNumeros, value]
     })
   }
 
@@ -47,9 +47,8 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
   }, [selectedVoieId, voieNumeros, selectedVoieNumeros, voies])
 
   const handleSubmit = useCallback(() => {
-    const numeros = selectedVoieNumeros.length > 0 ?
-      selectedVoieNumeros :
-      voieNumeros.map(({_id}) => _id)
+    const numeros =
+      selectedVoieNumeros.length > 0 ? selectedVoieNumeros : voieNumeros.map(({_id}) => _id)
 
     onSubmit(numeros)
   }, [selectedVoieNumeros, voieNumeros, onSubmit])
@@ -76,7 +75,8 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
       {selectedVoieId && (
         <Alert marginY={8} title='Préciser les numéros à ajouter au toponyme'>
           <Text>
-            Sélectionnez les numéros que vous souhaitez ajouter au toponyme. Si aucun numéro n’est spécifié, alors tous les numéros de la voie seront ajoutés.
+            Sélectionnez les numéros que vous souhaitez ajouter au toponyme. Si aucun numéro n’est
+            spécifié, alors tous les numéros de la voie seront ajoutés.
           </Text>
 
           <Pane diplay='flex'>
@@ -84,13 +84,23 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
               isMultiSelect
               hasFilter={false}
               title='Sélection des numéros'
-              options={voieNumeros.map(({_id, numero, suffixe}) => ({label: `${numero}${suffixe ? suffixe : ''}`, value: _id}))}
+              options={voieNumeros.map(({_id, numero, suffixe}) => ({
+                label: `${numero}${suffixe ? suffixe : ''}`,
+                value: _id
+              }))}
               selected={selectedVoieNumeros}
-              emptyView={(
-                <Pane height='100%' paddingX='1em' display='flex' alignItems='center' justifyContent='center' textAlign='center'>
+              emptyView={
+                <Pane
+                  height='100%'
+                  paddingX='1em'
+                  display='flex'
+                  alignItems='center'
+                  justifyContent='center'
+                  textAlign='center'
+                >
                   <Text size={300}>Aucun numéro n’est disponible pour cette voie</Text>
                 </Pane>
-              )}
+              }
               onSelect={handleSelectNumero}
               onDeselect={handleSelectNumero}
             >

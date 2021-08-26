@@ -8,24 +8,31 @@ import {searchCommunes} from '../../lib/geo-api'
 function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onSelect, ...props}) {
   const [communes, setCommunes] = useState([])
 
-  const [onSearch] = useDebouncedCallback(async value => {
-    const result = await searchCommunes(value, {
-      fields: 'departement',
-      limit: 7
-    })
+  const [onSearch] = useDebouncedCallback(
+    async value => {
+      const result = await searchCommunes(value, {
+        fields: 'departement',
+        limit: 7
+      })
 
-    setCommunes(result
-      .filter(c => c.departement) // Filter communes without departements
-      .filter(c => !exclude.includes(c.code))
-    )
-  }, 300, [exclude])
+      setCommunes(
+        result
+          .filter(c => c.departement) // Filter communes without departements
+          .filter(c => !exclude.includes(c.code))
+      )
+    },
+    300,
+    [exclude]
+  )
 
   return (
     <Autocomplete
       isFilterDisabled
       initialSelectedItem={initialSelectedItem}
       items={communes}
-      itemToString={item => item ? `${item.nom} (${item.departement.nom} - ${item.departement.code})` : ''}
+      itemToString={item =>
+        item ? `${item.nom} (${item.departement.nom} - ${item.departement.code})` : ''
+      }
       onChange={onSelect}
     >
       {({getInputProps, getRef, inputValue}) => {

@@ -38,19 +38,23 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   useHelp(4)
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
-    keys: [
-      'numeroComplet'
-    ]
+    keys: ['numeroComplet']
   })
 
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
-  const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
+  const isGroupedActionsShown = useMemo(
+    () => token && selectedNumerosIds.length > 1,
+    [token, selectedNumerosIds]
+  )
   const noFilter = numeros && filtered.length === numeros.length
-  const allNumerosSelected = noFilter && (selectedNumerosIds.length === numeros.length)
-  const allFilteredNumerosSelected = !noFilter && (filtered.length === selectedNumerosIds.length)
+  const allNumerosSelected = noFilter && selectedNumerosIds.length === numeros.length
+  const allFilteredNumerosSelected = !noFilter && filtered.length === selectedNumerosIds.length
 
-  const isAllSelected = useMemo(() => allNumerosSelected || allFilteredNumerosSelected, [allFilteredNumerosSelected, allNumerosSelected])
+  const isAllSelected = useMemo(
+    () => allNumerosSelected || allFilteredNumerosSelected,
+    [allFilteredNumerosSelected, allNumerosSelected]
+  )
 
   const toEdit = useMemo(() => {
     if (numeros && noFilter) {
@@ -80,74 +84,100 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
-  const onAdd = useCallback(async (voieData, body) => {
-    let editedVoie = voieData
-    if (!editedVoie._id) {
-      editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
-    }
+  const onAdd = useCallback(
+    async (voieData, body) => {
+      let editedVoie = voieData
+      if (!editedVoie._id) {
+        editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+      }
 
-    await addNumero(editedVoie._id, body, token)
+      await addNumero(editedVoie._id, body, token)
 
-    await reloadNumeros()
+      await reloadNumeros()
 
-    setIsAdding(false)
-  }, [baseLocale, codeCommune, reloadNumeros, token])
+      setIsAdding(false)
+    },
+    [baseLocale, codeCommune, reloadNumeros, token]
+  )
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
   }, [])
 
-  const onEnableEditing = useCallback(idNumero => {
-    setIsAdding(false)
-    setEditingId(idNumero)
-  }, [setEditingId])
+  const onEnableEditing = useCallback(
+    idNumero => {
+      setIsAdding(false)
+      setEditingId(idNumero)
+    },
+    [setEditingId]
+  )
 
-  const onEdit = useCallback(async (voieData, body) => {
-    let editedVoie = voieData
-    if (!editedVoie._id) {
-      editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
-    }
-
-    await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-
-    await reloadNumeros()
-
-    setEditingId(null)
-  }, [editingId, baseLocale, codeCommune, setEditingId, reloadNumeros, token])
-
-  const onMultipleEdit = useCallback(async body => {
-    await Promise.all(body.map(async numero => {
-      try {
-        await editNumero(numero._id, {
-          ...numero
-        }, token)
-      } catch (error) {
-        setError(error.message)
+  const onEdit = useCallback(
+    async (voieData, body) => {
+      let editedVoie = voieData
+      if (!editedVoie._id) {
+        editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
       }
-    }))
 
-    await reloadNumeros()
-  }, [reloadNumeros, token])
+      await editNumero(editingId, {...body, voie: editedVoie._id}, token)
 
-  const onRemove = useCallback(async idNumero => {
-    await removeNumero(idNumero, token)
-    await reloadNumeros()
-  }, [reloadNumeros, token])
+      await reloadNumeros()
 
-  const onMultipleRemove = useCallback(async numeros => {
-    await Promise.all(numeros.map(async numero => {
-      try {
-        await onRemove(numero)
-      } catch (error) {
-        setError(error.message)
-      }
-    }))
+      setEditingId(null)
+    },
+    [editingId, baseLocale, codeCommune, setEditingId, reloadNumeros, token]
+  )
 
-    await reloadNumeros()
+  const onMultipleEdit = useCallback(
+    async body => {
+      await Promise.all(
+        body.map(async numero => {
+          try {
+            await editNumero(
+              numero._id,
+              {
+                ...numero
+              },
+              token
+            )
+          } catch (error) {
+            setError(error.message)
+          }
+        })
+      )
 
-    setSelectedNumerosIds([])
-    setIsRemoveWarningShown(false)
-  }, [reloadNumeros, onRemove, setSelectedNumerosIds])
+      await reloadNumeros()
+    },
+    [reloadNumeros, token]
+  )
+
+  const onRemove = useCallback(
+    async idNumero => {
+      await removeNumero(idNumero, token)
+      await reloadNumeros()
+    },
+    [reloadNumeros, token]
+  )
+
+  const onMultipleRemove = useCallback(
+    async numeros => {
+      await Promise.all(
+        numeros.map(async numero => {
+          try {
+            await onRemove(numero)
+          } catch (error) {
+            setError(error.message)
+          }
+        })
+      )
+
+      await reloadNumeros()
+
+      setSelectedNumerosIds([])
+      setIsRemoveWarningShown(false)
+    },
+    [reloadNumeros, onRemove, setSelectedNumerosIds]
+  )
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -213,11 +243,11 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
       <DeleteWarning
         isShown={isRemoveWarningShown}
-        content={(
+        content={
           <Paragraph>
             Êtes vous bien sûr de vouloir supprimer tous les numéros sélectionnés ?
           </Paragraph>
-        )}
+        }
         onCancel={() => setIsRemoveWarningShown(false)}
         onConfirm={() => onMultipleRemove(toEdit)}
       />
@@ -233,25 +263,15 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
           <Table.Head>
             {!isEditing && numeros && token && filtered.length > 1 && (
               <Table.Cell flex='0 1 1'>
-                <Checkbox
-                  checked={isAllSelected}
-                  onChange={handleSelectAll}
-                />
+                <Checkbox checked={isAllSelected} onChange={handleSelectAll} />
               </Table.Cell>
             )}
-            <Table.SearchHeaderCell
-              placeholder='Rechercher un numéro'
-              onChange={setFilter}
-            />
+            <Table.SearchHeaderCell placeholder='Rechercher un numéro' onChange={setFilter} />
           </Table.Head>
           {isAdding && (
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-                <NumeroEditor
-                  initialVoieId={voie._id}
-                  onSubmit={onAdd}
-                  onCancel={onCancel}
-                />
+                <NumeroEditor initialVoieId={voie._id} onSubmit={onAdd} onCancel={onCancel} />
               </Table.Cell>
             </Table.Row>
           )}
@@ -280,10 +300,16 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 key={numero._id}
                 id={numero._id}
                 comment={numero.comment}
-                warning={numero.positions.find(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
+                warning={
+                  numero.positions.find(p => p.type === 'inconnue')
+                    ? 'Le type d’une position est inconnu'
+                    : null
+                }
                 isSelectable={!isEditing}
                 label={numero.numeroComplet}
-                secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+                secondary={
+                  numero.positions.length > 1 ? `${numero.positions.length} positions` : null
+                }
                 toponymeId={numero.toponyme}
                 handleSelect={handleSelect}
                 isSelected={selectedNumerosIds.includes(numero._id)}

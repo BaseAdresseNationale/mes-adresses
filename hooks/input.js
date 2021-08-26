@@ -7,9 +7,12 @@ export function useInput(initialValue) {
     setValue(e.target.value)
   }, [])
 
-  const resetInput = useCallback(forcedValue => {
-    setValue(forcedValue || initialValue || '')
-  }, [initialValue])
+  const resetInput = useCallback(
+    forcedValue => {
+      setValue(forcedValue || initialValue || '')
+    },
+    [initialValue]
+  )
 
   return [value, onChange, resetInput]
 }

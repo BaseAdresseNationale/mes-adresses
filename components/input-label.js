@@ -5,7 +5,8 @@ import {Label, Tooltip, HelpIcon} from 'evergreen-ui'
 function InputLabel({title, help}) {
   return (
     <Label marginTop={8} marginBottom={4}>
-      {title} {help && (
+      {title}{' '}
+      {help && (
         <Tooltip content={help}>
           <HelpIcon marginLeft={4} verticalAlign='middle' />
         </Tooltip>

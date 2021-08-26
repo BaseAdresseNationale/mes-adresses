@@ -18,26 +18,31 @@ const DemoWarning = ({baseLocale, token}) => {
   const [email, onEmailChange] = useInput()
   const focusRef = useFocus()
 
-  const onSubmit = useCallback(async e => {
-    e.preventDefault()
-    setIsLoading(true)
+  const onSubmit = useCallback(
+    async e => {
+      e.preventDefault()
+      setIsLoading(true)
 
-    await transformToDraft(
-      baseLocale._id,
-      {
-        nom: nom ? nom.trim() : null,
-        email
-      },
-      token
-    )
+      await transformToDraft(
+        baseLocale._id,
+        {
+          nom: nom ? nom.trim() : null,
+          email
+        },
+        token
+      )
 
-    if (baseLocale.communes.length === 1) {
-      Router.push(`/bal/communes?balId=${baseLocale._id}&codeCommune=${baseLocale.communes[0]}`,
-        `/bal/${baseLocale._id}/communes/${baseLocale.communes[0]}`)
-    } else {
-      Router.push(`/bal/${baseLocale._id}`)
-    }
-  }, [baseLocale, token, email, nom])
+      if (baseLocale.communes.length === 1) {
+        Router.push(
+          `/bal/communes?balId=${baseLocale._id}&codeCommune=${baseLocale.communes[0]}`,
+          `/bal/${baseLocale._id}/communes/${baseLocale.communes[0]}`
+        )
+      } else {
+        Router.push(`/bal/${baseLocale._id}`)
+      }
+    },
+    [baseLocale, token, email, nom]
+  )
 
   useEffect(() => {
     const fetchCommune = async code => {
@@ -66,12 +71,11 @@ const DemoWarning = ({baseLocale, token}) => {
       flexDirection='column'
       justifyContent='center'
     >
-      <div
-        style={{margin: 'auto', textAlign: 'center'}}
-      >
+      <div style={{margin: 'auto', textAlign: 'center'}}>
         <WarningSignIcon size={20} marginX='.5em' style={{verticalAlign: 'sub'}} />
         <Text>
-          Cette Base Adresse Locale de démonstration sera supprimée d’ici 24 heures sans modifications
+          Cette Base Adresse Locale de démonstration sera supprimée d’ici 24 heures sans
+          modifications
         </Text>
         <Dialog
           isShown={isShown}
@@ -84,7 +88,6 @@ const DemoWarning = ({baseLocale, token}) => {
           onCloseComplete={() => setIsShown(false)}
         >
           <form onSubmit={onSubmit}>
-
             <TextInputField
               ref={focusRef}
               required
@@ -109,10 +112,14 @@ const DemoWarning = ({baseLocale, token}) => {
               placeholder='nom@example.com'
               onChange={onEmailChange}
             />
-            <Button appearance='primary' intent='success' isLoading={isLoading} type='submit' >Sauvegarder</Button>
+            <Button appearance='primary' intent='success' isLoading={isLoading} type='submit'>
+              Sauvegarder
+            </Button>
           </form>
         </Dialog>
-        <Button height={24} marginX='.5em' onClick={() => setIsShown(true)}>Je souhaite la conserver</Button>
+        <Button height={24} marginX='.5em' onClick={() => setIsShown(true)}>
+          Je souhaite la conserver
+        </Button>
       </div>
     </Pane>
   )

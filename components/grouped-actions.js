@@ -1,6 +1,17 @@
 import React, {useContext, useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon} from 'evergreen-ui'
+import {
+  Pane,
+  Button,
+  Heading,
+  Dialog,
+  Paragraph,
+  SelectField,
+  Checkbox,
+  Alert,
+  EditIcon,
+  TrashIcon
+} from 'evergreen-ui'
 import {sortBy, uniq} from 'lodash'
 
 import {normalizeSort} from '../lib/normalize'
@@ -10,7 +21,14 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
 
-const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, onSubmit}) => {
+const GroupedActions = ({
+  idVoie,
+  numeros,
+  selectedNumerosIds,
+  resetSelectedNumerosIds,
+  setIsRemoveWarningShown,
+  onSubmit
+}) => {
   const {voies, toponymes} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)
@@ -22,7 +40,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const selectedNumeros = numeros.filter(({_id}) => selectedNumerosIds.includes(_id))
 
-  const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
+  const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => numero.positions[0].type))
   const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
 
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
@@ -61,7 +79,12 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   }
 
   const handleConfirm = useCallback(async () => {
-    const data = {selectedVoieId, selectedToponymeId, numeros: selectedNumeros, positionType}
+    const data = {
+      selectedVoieId,
+      selectedToponymeId,
+      numeros: selectedNumeros,
+      positionType
+    }
     const body = data.numeros
     const type = data.positionType
 
@@ -106,7 +129,16 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     setIsLoading(false)
     setIsShown(false)
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, selectedToponymeId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
+  }, [
+    comment,
+    selectedVoieId,
+    selectedToponymeId,
+    onSubmit,
+    positionType,
+    removeAllComments,
+    selectedNumeros,
+    resetSelectedNumerosIds
+  ])
 
   useEffect(() => {
     if (!isShown) {
@@ -130,8 +162,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           onCloseComplete={() => handleComplete()}
           onConfirm={() => handleConfirm()}
         >
-
-          <Paragraph marginBottom={8} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
+          <Paragraph
+            marginBottom={8}
+            color='muted'
+          >{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
 
           <SelectField
             value={selectedVoieId}
@@ -146,11 +180,13 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                 {nom}
               </option>
             ))}
-
           </SelectField>
 
           {selectedNumerosUniqVoie.length > 1 && (
-            <Alert intent='none' marginBottom={12}>Les numéros sélectionnés ne sont pas situés sur la même voie. La modification groupée de la voie n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+            <Alert intent='none' marginBottom={12}>
+              Les numéros sélectionnés ne sont pas situés sur la même voie. La modification groupée
+              de la voie n’est pas possible. Ils doivent être modifiés séparément.
+            </Alert>
           )}
 
           <Pane display='flex'>
@@ -162,7 +198,11 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               marginBottom={16}
               onChange={event => setSelectedToponymeId(event.target.value)}
             >
-              <option value=''>{selectedToponymeId || selectedToponymeId === '' ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
+              <option value=''>
+                {selectedToponymeId || selectedToponymeId === ''
+                  ? 'Ne pas associer de toponyme'
+                  : '- Choisir un toponyme -'}
+              </option>
               {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
                 <option key={_id} value={_id}>
                   {nom}
@@ -172,7 +212,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           </Pane>
 
           {selectedNumerosUniqToponyme.length > 1 && (
-            <Alert intent='none' marginBottom={12}>Les numéros sélectionnés ne possèdent pas le même toponyme. La modification groupée du toponyme n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+            <Alert intent='none' marginBottom={12}>
+              Les numéros sélectionnés ne possèdent pas le même toponyme. La modification groupée du
+              toponyme n’est pas possible. Ils doivent être modifiés séparément.
+            </Alert>
           )}
 
           <SelectField
@@ -185,15 +228,20 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             onChange={onPositionTypeChange}
           >
             {(selectedNumerosUniqType.length !== 1 || hasMultiposition) && (
-              <option value='' >-- Veuillez choisir un type de position --</option>
+              <option value=''>-- Veuillez choisir un type de position --</option>
             )}
             {positionsTypesList.map(positionType => (
-              <option key={positionType.value} value={positionType.value}>{positionType.name}</option>
+              <option key={positionType.value} value={positionType.value}>
+                {positionType.name}
+              </option>
             ))}
           </SelectField>
 
           {hasMultiposition && (
-            <Alert intent='none' marginBottom={12}>Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée du type de position n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+            <Alert intent='none' marginBottom={12}>
+              Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée
+              du type de position n’est pas possible. Ils doivent être modifiés séparément.
+            </Alert>
           )}
 
           <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
@@ -203,7 +251,6 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             checked={removeAllComments}
             onChange={onRemoveAllCommentsChange}
           />
-
         </Dialog>
 
         {error && (
@@ -211,11 +258,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             {error}
           </Alert>
         )}
-        <Button
-          iconBefore={EditIcon}
-          appearance='primary'
-          onClick={() => handleClick()}
-        >
+        <Button iconBefore={EditIcon} appearance='primary' onClick={() => handleClick()}>
           Modifier les numéros
         </Button>
         <Button

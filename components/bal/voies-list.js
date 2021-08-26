@@ -12,35 +12,33 @@ import {normalizeSort} from '../../lib/normalize'
 import TableRow from '../table-row'
 import VoieEditor from './voie-editor'
 
-const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) => {
-  const {
-    isEditing,
-    editingId,
-    voies
-  } = useContext(BalDataContext)
+const VoiesList = ({
+  defaultVoies,
+  onEnableEditing,
+  isAdding,
+  onSelect,
+  isPopulating,
+  onAdd,
+  onEdit,
+  onCancel,
+  setToRemove
+}) => {
+  const {isEditing, editingId, voies} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
-    keys: [
-      'nom'
-    ]
+    keys: ['nom']
   })
 
   return (
     <Pane flex={1} overflowY='scroll'>
       <Table>
         <Table.Head>
-          <Table.SearchHeaderCell
-            placeholder='Rechercher une voie'
-            onChange={setFilter}
-          />
+          <Table.SearchHeaderCell placeholder='Rechercher une voie' onChange={setFilter} />
         </Table.Head>
         {isAdding && (
           <Table.Row height='auto'>
             <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
-              <VoieEditor
-                onSubmit={onAdd}
-                onCancel={onCancel}
-              />
+              <VoieEditor onSubmit={onAdd} onCancel={onCancel} />
             </Table.Cell>
           </Table.Row>
         )}
@@ -51,15 +49,11 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
             </Table.TextCell>
           </Table.Row>
         )}
-        {sortBy(filtered, v => normalizeSort(v.nom))
-          .map(voie => voie._id === editingId ? (
+        {sortBy(filtered, v => normalizeSort(v.nom)).map(voie =>
+          voie._id === editingId ? (
             <Table.Row key={voie._id} height='auto'>
               <Table.Cell display='block' paddingY={12} background='tint1'>
-                <VoieEditor
-                  initialValue={voie}
-                  onSubmit={onEdit}
-                  onCancel={onCancel}
-                />
+                <VoieEditor initialValue={voie} onSubmit={onEdit} onCancel={onCancel} />
               </Table.Cell>
             </Table.Row>
           ) : (
@@ -72,7 +66,8 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
               onEdit={onEnableEditing}
               onRemove={id => setToRemove(id)}
             />
-          ))}
+          )
+        )}
       </Table>
     </Pane>
   )

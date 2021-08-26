@@ -9,7 +9,8 @@ import MapContext from '../../../contexts/map'
 
 function SelectParcelles({isToponyme}) {
   const {showCadastre, setShowCadastre} = useContext(MapContext)
-  const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
+  const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} =
+    useContext(ParcellesContext)
   const addressType = isToponyme ? 'toponyme' : 'numéro'
 
   return (
@@ -19,7 +20,7 @@ function SelectParcelles({isToponyme}) {
         help={`Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au ${addressType}. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.`}
       />
       <Pane>
-        {selectedParcelles.length > 0 ?
+        {selectedParcelles.length > 0 ? (
           selectedParcelles.map(parcelle => {
             const isHovered = parcelle === hoveredParcelle?.id
 
@@ -33,16 +34,21 @@ function SelectParcelles({isToponyme}) {
                 onMouseEnter={() => handleHoveredParcelle({id: parcelle})}
                 onMouseLeave={() => handleHoveredParcelle(null)}
               >
-                {parcelle}{isHovered && <TrashIcon marginLeft={4} size={14} color='danger' verticalAlign='text-bottom' />}
+                {parcelle}
+                {isHovered && (
+                  <TrashIcon marginLeft={4} size={14} color='danger' verticalAlign='text-bottom' />
+                )}
               </Badge>
             )
-          }) : (
-            <Alert marginTop={8}>
-              <Text>
-                Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au {addressType}.
-              </Text>
-            </Alert>
-          )}
+          })
+        ) : (
+          <Alert marginTop={8}>
+            <Text>
+              Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au {addressType}
+              .
+            </Text>
+          </Alert>
+        )}
       </Pane>
 
       <Button

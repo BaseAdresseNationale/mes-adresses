@@ -63,10 +63,13 @@ function generateNewStyle(style, sources, layers) {
   let baseStyle = getBaseStyle(style)
 
   for (const {name, data} of sources) {
-    baseStyle = baseStyle.setIn(['sources', name], fromJS({
-      type: 'geojson',
-      data
-    }))
+    baseStyle = baseStyle.setIn(
+      ['sources', name],
+      fromJS({
+        type: 'geojson',
+        data
+      })
+    )
   }
 
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
@@ -74,7 +77,17 @@ function generateNewStyle(style, sources, layers) {
 
 function Map({interactive, commune, voie, toponyme}) {
   const router = useRouter()
-  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, showCadastre, setShowCadastre} = useContext(MapContext)
+  const {
+    map,
+    setMap,
+    style,
+    setStyle,
+    defaultStyle,
+    viewport,
+    setViewport,
+    showCadastre,
+    setShowCadastre
+  } = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [showNumeros, setShowNumeros] = useState(true)
@@ -103,11 +116,14 @@ function Map({interactive, commune, voie, toponyme}) {
   const bounds = useBounds(commune, voie, toponyme)
   const layers = useLayers(voie, sources, showCadastre, style)
 
-  const mapRef = useCallback(ref => {
-    if (ref) {
-      setMap(ref.getMap())
-    }
-  }, [setMap])
+  const mapRef = useCallback(
+    ref => {
+      if (ref) {
+        setMap(ref.getMap())
+      }
+    },
+    [setMap]
+  )
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -135,78 +151,97 @@ function Map({interactive, commune, voie, toponyme}) {
     setShowNumeros(value)
   }, [])
 
-  const onClick = useCallback(event => {
-    const feature = event.features && event.features[0]
+  const onClick = useCallback(
+    event => {
+      const feature = event.features && event.features[0]
 
-    if (feature && feature.source === 'cadastre') {
-      handleParcelle(feature.properties.id)
-    }
+      if (feature && feature.source === 'cadastre') {
+        handleParcelle(feature.properties.id)
+      }
 
-    if (feature && feature.properties.idVoie && !isEditing) {
-      const {idVoie} = feature.properties
-      if (feature.layer.id === 'voie-trace-line' && voie && idVoie === voie._id) {
-        setEditingId(voie._id)
-      } else {
+      if (feature && feature.properties.idVoie && !isEditing) {
+        const {idVoie} = feature.properties
+        if (feature.layer.id === 'voie-trace-line' && voie && idVoie === voie._id) {
+          setEditingId(voie._id)
+        } else {
+          router.push(
+            `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+            `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+          )
+        }
+      }
+
+      setShowContextMenu(null)
+    },
+    [router, baseLocale, commune, setEditingId, isEditing, voie, handleParcelle]
+  )
+
+  const reloadView = useCallback(
+    (idVoie, isVoiesList, isNumeroCreated) => {
+      if (voie && voie._id === idVoie) {
+        // Numéro créé sur la voie en cours
+        reloadNumeros()
+      } else if (isNumeroCreated) {
+        // Numéro créé depuis la vue commune ou une autre voie
         router.push(
           `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
           `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
         )
+      } else if (isVoiesList) {
+        // Toponyme créé depuis la vue commune
+        reloadVoies()
+      } else {
+        // Toponyme créé depuis la vue voie
+        router.push(
+          `/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`,
+          `/bal/${baseLocale._id}/communes/${commune.code}`
+        )
       }
-    }
+    },
+    [router, baseLocale._id, commune, voie, reloadNumeros, reloadVoies]
+  )
 
-    setShowContextMenu(null)
-  }, [router, baseLocale, commune, setEditingId, isEditing, voie, handleParcelle])
+  const onAddNumero = useCallback(
+    async (voieData, numero) => {
+      let editedVoie = voieData
 
-  const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
-    if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
-      reloadNumeros()
-    } else if (isNumeroCreated) { // Numéro créé depuis la vue commune ou une autre voie
+      if (!editedVoie._id) {
+        editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
+      }
+
+      if (numero) {
+        await addNumero(editedVoie._id, numero, token)
+      }
+
+      setOpenForm(false)
+      reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
+    },
+    [baseLocale._id, commune, voie, token, reloadView]
+  )
+
+  const onAddToponyme = useCallback(
+    async toponymeData => {
+      const editedToponyme = await addToponyme(baseLocale._id, commune.code, toponymeData, token)
+
+      setOpenForm(false)
       router.push(
-        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${editedToponyme._id}`,
+        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${editedToponyme._id}`
       )
-    } else if (isVoiesList) { // Toponyme créé depuis la vue commune
-      reloadVoies()
-    } else { // Toponyme créé depuis la vue voie
-      router.push(
-        `/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}`
-      )
-    }
-  }, [router, baseLocale._id, commune, voie, reloadNumeros, reloadVoies])
+    },
+    [baseLocale._id, commune, token, router]
+  )
 
-  const onAddNumero = useCallback(async (voieData, numero) => {
-    let editedVoie = voieData
+  const handleCursor = useCallback(
+    ({isHovering}) => {
+      if (modeId === 'drawLineString') {
+        return 'crosshair'
+      }
 
-    if (!editedVoie._id) {
-      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
-    }
-
-    if (numero) {
-      await addNumero(editedVoie._id, numero, token)
-    }
-
-    setOpenForm(false)
-    reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
-  }, [baseLocale._id, commune, voie, token, reloadView])
-
-  const onAddToponyme = useCallback(async toponymeData => {
-    const editedToponyme = await addToponyme(baseLocale._id, commune.code, toponymeData, token)
-
-    setOpenForm(false)
-    router.push(
-      `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${editedToponyme._id}`,
-      `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${editedToponyme._id}`
-    )
-  }, [baseLocale._id, commune, token, router])
-
-  const handleCursor = useCallback(({isHovering}) => {
-    if (modeId === 'drawLineString') {
-      return 'crosshair'
-    }
-
-    return isHovering ? 'pointer' : 'default'
-  }, [modeId])
+      return isHovering ? 'pointer' : 'default'
+    },
+    [modeId]
+  )
 
   useEffect(() => {
     if (sources.length > 0) {
@@ -272,7 +307,6 @@ function Map({interactive, commune, voie, toponyme}) {
         right={16}
         zIndex={2}
       >
-
         {(voie || (toponymes && toponymes.length > 0)) && (
           <Control
             icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
@@ -312,31 +346,41 @@ function Map({interactive, commune, voie, toponyme}) {
           onMouseLeave={() => setHovered(null)}
           onViewportChange={setViewport}
         >
+          {interactive && <NavControl onViewportChange={setViewport} />}
 
-          {interactive && (
-            <NavControl onViewportChange={setViewport} />
-          )}
+          {(voie || toponyme) &&
+            !modeId &&
+            numeros &&
+            numeros
+              .filter(({_id}) => _id !== editingId)
+              .map(numero => (
+                <NumeroMarker
+                  key={numero._id}
+                  numero={
+                    toponyme
+                      ? {
+                          ...numero,
+                          numeroComplet: `${numero.numero}${numero.suffixe || ''}`
+                        }
+                      : numero
+                  }
+                  colorSeed={toponyme ? numero.voie._id : voie._id}
+                  showLabel={showNumeros}
+                  showContextMenu={numero._id === showContextMenu}
+                  setShowContextMenu={setShowContextMenu}
+                />
+              ))}
 
-          {(voie || toponyme) && !modeId && numeros && numeros.filter(({_id}) => _id !== editingId).map(numero => (
-            <NumeroMarker
-              key={numero._id}
-              numero={toponyme ? {...numero, numeroComplet: `${numero.numero}${numero.suffixe || ''}`} : numero}
-              colorSeed={toponyme ? numero.voie._id : voie._id}
-              showLabel={showNumeros}
-              showContextMenu={numero._id === showContextMenu}
-              setShowContextMenu={setShowContextMenu}
-            />
-          ))}
-
-          {toponymes && toponymes.map(toponyme => (
-            <ToponymeMarker
-              key={toponyme._id}
-              initialToponyme={toponyme}
-              showLabel={showNumeros}
-              showContextMenu={toponyme._id === showContextMenu}
-              setShowContextMenu={setShowContextMenu}
-            />
-          ))}
+          {toponymes &&
+            toponymes.map(toponyme => (
+              <ToponymeMarker
+                key={toponyme._id}
+                initialToponyme={toponyme}
+                showLabel={showNumeros}
+                showContextMenu={toponyme._id === showContextMenu}
+                setShowContextMenu={setShowContextMenu}
+              />
+            ))}
 
           {isEditing && (
             <EditableMarker

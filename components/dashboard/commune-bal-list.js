@@ -32,31 +32,25 @@ const CommuneBALList = ({nomCommune, basesLocales}) => {
         cursor='pointer'
         onClick={handleIsOpen}
       >
-        <Pane
-          display='flex'
-          alignItems='center'
-        >
+        <Pane display='flex' alignItems='center'>
           <Icon icon={isOpen ? 'chevron-down' : 'chevron-right'} size={30} marginY='auto' />
-          <Heading size={600}>
-            {nomCommune}
-          </Heading>
+          <Heading size={600}>{nomCommune}</Heading>
         </Pane>
 
         {!isOpen && (
           <Heading size={600}>
-            {`${basesLocales.length > 1 ? `${basesLocales.length} Bases Adresses Locales` : `${basesLocales.length} Base Adresse Locale`}`}
+            {`${
+              basesLocales.length > 1
+                ? `${basesLocales.length} Bases Adresses Locales`
+                : `${basesLocales.length} Base Adresse Locale`
+            }`}
           </Heading>
         )}
-
       </Pane>
       {isOpen && (
         <Pane>
           {basesLocales.map(bal => (
-            <BaseLocaleCard
-              key={bal._id}
-              baseLocale={bal}
-              onSelect={() => onBalSelect(bal)}
-            />
+            <BaseLocaleCard key={bal._id} baseLocale={bal} onSelect={() => onBalSelect(bal)} />
           ))}
         </Pane>
       )}

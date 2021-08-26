@@ -9,7 +9,8 @@ let LOAD = false
 
 function getHoveredFeatureId(map, id) {
   const features = map.querySourceFeatures('cadastre', {
-    sourceLayer: 'parcelles', filter: ['==', ['get', 'id'], id]
+    sourceLayer: 'parcelles',
+    filter: ['==', ['get', 'id'], id]
   })
   const [feature] = features
   return feature?.id
@@ -23,48 +24,67 @@ export function ParcellesContextProvider(props) {
   const [hoveredParcelle, setHoveredParcelle] = useState(null)
   const [isLayerLoaded, setIsLayerLoaded] = useState(false)
 
-  const handleParcelle = useCallback(parcelle => {
-    if (isParcelleSelectionEnabled) {
-      setSelectedParcelles(parcelles => {
-        if (selectedParcelles.includes(parcelle)) {
-          return selectedParcelles.filter(id => id !== parcelle)
-        }
-
-        return [...parcelles, parcelle]
-      })
-    }
-  }, [selectedParcelles, isParcelleSelectionEnabled])
-
-  const handleHoveredParcelle = useCallback(hovered => {
-    if (map) {
-      setHoveredParcelle(prev => {
-        if (prev) {
-          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prev.featureId}, {hover: false})
-        }
-
-        if (hovered) {
-          const featureId = hovered.featureId || getHoveredFeatureId(map, hovered.id)
-
-          if (featureId) {
-            map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: true})
+  const handleParcelle = useCallback(
+    parcelle => {
+      if (isParcelleSelectionEnabled) {
+        setSelectedParcelles(parcelles => {
+          if (selectedParcelles.includes(parcelle)) {
+            return selectedParcelles.filter(id => id !== parcelle)
           }
 
-          return {id: hovered.id, featureId}
-        }
+          return [...parcelles, parcelle]
+        })
+      }
+    },
+    [selectedParcelles, isParcelleSelectionEnabled]
+  )
 
-        return null
-      })
-    }
-  }, [map])
+  const handleHoveredParcelle = useCallback(
+    hovered => {
+      if (map) {
+        setHoveredParcelle(prev => {
+          if (prev) {
+            map.setFeatureState(
+              {
+                source: 'cadastre',
+                sourceLayer: 'parcelles',
+                id: prev.featureId
+              },
+              {hover: false}
+            )
+          }
 
-  const highlightParcelles = useCallback(parcelles => {
-    if (map && isLayerLoaded) {
-      const filters = isParcelleSelectionEnabled ?
-        ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])] :
-        ['==', ['get', 'id'], '']
-      map.setFilter('parcelle-highlighted', filters)
-    }
-  }, [map, isLayerLoaded, isParcelleSelectionEnabled])
+          if (hovered) {
+            const featureId = hovered.featureId || getHoveredFeatureId(map, hovered.id)
+
+            if (featureId) {
+              map.setFeatureState(
+                {source: 'cadastre', sourceLayer: 'parcelles', id: featureId},
+                {hover: true}
+              )
+            }
+
+            return {id: hovered.id, featureId}
+          }
+
+          return null
+        })
+      }
+    },
+    [map]
+  )
+
+  const highlightParcelles = useCallback(
+    parcelles => {
+      if (map && isLayerLoaded) {
+        const filters = isParcelleSelectionEnabled
+          ? ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])]
+          : ['==', ['get', 'id'], '']
+        map.setFilter('parcelle-highlighted', filters)
+      }
+    },
+    [map, isLayerLoaded, isParcelleSelectionEnabled]
+  )
 
   // Use state to know when parcelle-highlighted layer is loaded
   const handleLoad = useCallback(() => {
@@ -77,7 +97,14 @@ export function ParcellesContextProvider(props) {
     if (!isParcelleSelectionEnabled && map) {
       setHoveredParcelle(prev => {
         if (prev) {
-          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prev.featureId}, {hover: false})
+          map.setFeatureState(
+            {
+              source: 'cadastre',
+              sourceLayer: 'parcelles',
+              id: prev.featureId
+            },
+            {hover: false}
+          )
           return null
         }
       })
@@ -118,10 +145,13 @@ export function ParcellesContextProvider(props) {
   return (
     <ParcellesContext.Provider
       value={{
-        selectedParcelles, setSelectedParcelles,
-        isParcelleSelectionEnabled, setIsParcelleSelectionEnabled,
+        selectedParcelles,
+        setSelectedParcelles,
+        isParcelleSelectionEnabled,
+        setIsParcelleSelectionEnabled,
         handleParcelle,
-        hoveredParcelle, handleHoveredParcelle
+        hoveredParcelle,
+        handleHoveredParcelle
       }}
       {...props}
     />

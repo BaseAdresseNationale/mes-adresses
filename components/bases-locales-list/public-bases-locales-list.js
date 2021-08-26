@@ -26,9 +26,7 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
   }, [])
 
   const [filtered, onFilter] = useFuse(basesLocales, 200, {
-    keys: [
-      'nom'
-    ]
+    keys: ['nom']
   })
 
   const slicedBasesLocalesList = useMemo(() => {
@@ -62,7 +60,13 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
               />
             ))}
             {limit < filtered.length && (
-              <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
+              <Pane
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'space-around'
+                }}
+              >
                 <Button
                   appearance='minimal'
                   marginBottom='1em'

@@ -22,36 +22,34 @@ const VoieHeading = ({defaultVoie}) => {
     }
   }, [setEditingId, isEditing, voie._id])
 
-  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace}) => {
-    const editedVoie = await editVoie(voie._id, {
-      nom,
-      typeNumerotation,
-      trace
-    }, token)
+  const onEditVoie = useCallback(
+    async ({nom, typeNumerotation, trace}) => {
+      const editedVoie = await editVoie(
+        voie._id,
+        {
+          nom,
+          typeNumerotation,
+          trace
+        },
+        token
+      )
 
-    setEditingId(null)
-    await reloadVoies()
+      setEditingId(null)
+      await reloadVoies()
 
-    setVoie(editedVoie)
-  }, [reloadVoies, setEditingId, token, voie])
+      setVoie(editedVoie)
+    },
+    [reloadVoies, setEditingId, token, voie]
+  )
 
   useEffect(() => {
     setVoie(defaultVoie)
   }, [defaultVoie])
 
   return (
-    <Pane
-      display='flex'
-      flexDirection='column'
-      background='tint1'
-      padding={16}
-    >
+    <Pane display='flex' flexDirection='column' background='tint1' padding={16}>
       {editingId === voie._id ? (
-        <VoieEditor
-          initialValue={voie}
-          onSubmit={onEditVoie}
-          onCancel={() => setEditingId(null)}
-        />
+        <VoieEditor initialValue={voie} onSubmit={onEditVoie} onCancel={() => setEditingId(null)} />
       ) : (
         <Heading
           style={{cursor: hovered && !isEditing ? 'text' : 'default'}}
@@ -61,16 +59,14 @@ const VoieHeading = ({defaultVoie}) => {
         >
           {voie.nom}
           {!isEditing && token && (
-            <EditIcon
-              marginBottom={-2}
-              marginLeft={8}
-              color={hovered ? 'black' : 'muted'}
-            />
+            <EditIcon marginBottom={-2} marginLeft={8} color={hovered ? 'black' : 'muted'} />
           )}
         </Heading>
       )}
       {numeros && (
-        <Text>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text>
+          {numeros.length} numéro{numeros.length > 1 ? 's' : ''}
+        </Text>
       )}
     </Pane>
   )

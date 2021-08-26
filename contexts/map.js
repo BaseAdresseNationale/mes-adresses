@@ -26,10 +26,15 @@ export function MapContextProvider(props) {
   return (
     <MapContext.Provider
       value={{
-        map, setMap,
-        style, setStyle, defaultStyle,
-        viewport, setViewport,
-        showCadastre, setShowCadastre
+        map,
+        setMap,
+        style,
+        setStyle,
+        defaultStyle,
+        viewport,
+        setViewport,
+        showCadastre,
+        setShowCadastre
       }}
       {...props}
     />

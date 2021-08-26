@@ -1,5 +1,19 @@
 import React from 'react'
-import {Pane, Paragraph, OrderedList, ListItem, Strong, Menu, Button, AddIcon, ColumnLayoutIcon, MapIcon, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
+import {
+  Pane,
+  Paragraph,
+  OrderedList,
+  ListItem,
+  Strong,
+  Menu,
+  Button,
+  AddIcon,
+  ColumnLayoutIcon,
+  MapIcon,
+  MoreIcon,
+  SendToMapIcon,
+  TrashIcon
+} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import SubTuto from '../tuto/sub-tuto'
@@ -10,7 +24,8 @@ import Problems from './problems'
 
 const before = (
   <Paragraph marginTop='default'>
-    Affichez la liste des voies d’une commune en cliquant sur le nom de celle-ci se trouvant en haut à gauche de votre écran.
+    Affichez la liste des voies d’une commune en cliquant sur le nom de celle-ci se trouvant en haut
+    à gauche de votre écran.
   </Paragraph>
 )
 
@@ -23,13 +38,21 @@ const Voies = () => {
           <OrderedList margin={8}>
             <ListItem>
               Cliquez sur le bouton
-              <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
+              <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>
+                Ajouter une voie
+              </Button>
             </ListItem>
             <ListItem>
-              Entrez le nom de la voie que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom de la voie…</Strong>
+              Entrez le nom de la voie que vous souhaitez créer dans le champ{' '}
+              <Strong size={500} fontStyle='italic'>
+                Nom de la voie…
+              </Strong>
             </ListItem>
             <ListItem>
-              Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
+              Pour terminer, cliquez sur le bouton{' '}
+              <Button marginX={4} appearance='primary' intent='success'>
+                Ajouter
+              </Button>
             </ListItem>
           </OrderedList>
         </Tuto>
@@ -41,10 +64,12 @@ const Voies = () => {
             <ListItem>Cliquez sur le du nom de la voie</ListItem>
             <ListItem>Éditer le nom de la voie</ListItem>
             <ListItem>
-              Pour terminer, cliquez sur <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
+              Pour terminer, cliquez sur{' '}
+              <Button marginX={4} appearance='primary' intent='success'>
+                Enregistrer
+              </Button>
             </ListItem>
           </OrderedList>
-
         </Tuto>
 
         <Tuto title='Consulter une voie'>
@@ -53,7 +78,9 @@ const Voies = () => {
           <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             <OrderedList margin={8}>
               <ListItem>
-                Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
+                Cliquez sur le bouton{' '}
+                <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant
+                à droite du nom de la voie
               </ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
@@ -78,7 +105,9 @@ const Voies = () => {
 
           <OrderedList margin={8}>
             <ListItem>
-              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
+              Cliquez sur le bouton{' '}
+              <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à
+              droite du nom de la voie
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
@@ -88,7 +117,12 @@ const Voies = () => {
                 </Menu.Item>
               </Pane>
             </ListItem>
-            <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
+            <ListItem>
+              Pour terminer, confirmez votre choix en cliquant sur{' '}
+              <Button marginX={4} intent='danger' appearance='primary'>
+                Supprimer
+              </Button>
+            </ListItem>
           </OrderedList>
         </Tuto>
 

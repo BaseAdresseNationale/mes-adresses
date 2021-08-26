@@ -63,21 +63,22 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
     <>
       <DeleteWarning
         isShown={Boolean(toRemove)}
-        content={(
+        content={
           <Paragraph>
-            Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
+            Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est
+            définitive.
           </Paragraph>
-        )}
+        }
         onCancel={() => setToRemove(null)}
         onConfirm={onRemove}
       />
       <Dialog
         isShown={isShown}
-        title={uniqCommunes.length > 1 ? (
-          'Vous avez déjà des Bases Adresses Locales pour ces communes'
-        ) : (
-          `Vous avez déjà créé une Base Adresse Locale pour ${communeLabel}`
-        )}
+        title={
+          uniqCommunes.length > 1
+            ? 'Vous avez déjà des Bases Adresses Locales pour ces communes'
+            : `Vous avez déjà créé une Base Adresse Locale pour ${communeLabel}`
+        }
         width='800px'
         confirmLabel='Créer une nouvelle Base Adresse Locale'
         cancelLabel='Annuler'
@@ -88,23 +89,44 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
           <Alert margin='1em'>
             <Paragraph marginTop={8}>
               {uniqCommunes.length > 1 ? (
-                <>Il semblerait que vous ayez <Strong>déjà créé</Strong> des Bases Adresses Locales pour ces communes.</>
+                <>
+                  Il semblerait que vous ayez <Strong>déjà créé</Strong> des Bases Adresses Locales
+                  pour ces communes.
+                </>
               ) : (
-                <>Une Base Adresse Locale a déjà été créée pour <Strong>{communeLabel}</Strong>.</>
+                <>
+                  Une Base Adresse Locale a déjà été créée pour <Strong>{communeLabel}</Strong>.
+                </>
               )}
             </Paragraph>
             <Paragraph marginTop={8}>
               {basesLocales.length > 1 ? (
-                <>Nous vous <Strong>recommandons de continuer l’adressage</Strong> sur une de vos Bases Adresses Locales <Strong>déjà existantes</Strong> parmi la liste ci-dessous.</>
+                <>
+                  Nous vous <Strong>recommandons de continuer l’adressage</Strong> sur une de vos
+                  Bases Adresses Locales <Strong>déjà existantes</Strong> parmi la liste ci-dessous.
+                </>
               ) : (
-                <>Nous vous <Strong>recommandons de continuer l’adressage</Strong> sur votre Base Adresses Locales <Strong>déjà existante</Strong> ci-dessous.</>
+                <>
+                  Nous vous <Strong>recommandons de continuer l’adressage</Strong> sur votre Base
+                  Adresses Locales <Strong>déjà existante</Strong> ci-dessous.
+                </>
               )}
             </Paragraph>
             <Paragraph marginTop={8}>
-              Pour reprendre votre travail, {basesLocales.length > 1 && <><Strong>sélectionnez une Base Adresse Locale</Strong> puis</>} <Strong>cliquez sur &quot;Gérer&nbsp;mes&nbsp;adresses&quot;</Strong>.
+              Pour reprendre votre travail,{' '}
+              {basesLocales.length > 1 && (
+                <>
+                  <Strong>sélectionnez une Base Adresse Locale</Strong> puis
+                </>
+              )}{' '}
+              <Strong>cliquez sur &quot;Gérer&nbsp;mes&nbsp;adresses&quot;</Strong>.
             </Paragraph>
             <Paragraph marginTop={8}>
-              Vous pouvez toutefois cliquer sur <Strong>&quot;Créer&nbsp;une&nbsp;nouvelle&nbsp;Base&nbsp;Adresses&nbsp;Locales&quot;</Strong> si vous souhaitez <Strong>recommencer l’adressage</Strong>.
+              Vous pouvez toutefois cliquer sur{' '}
+              <Strong>
+                &quot;Créer&nbsp;une&nbsp;nouvelle&nbsp;Base&nbsp;Adresses&nbsp;Locales&quot;
+              </Strong>{' '}
+              si vous souhaitez <Strong>recommencer l’adressage</Strong>.
             </Paragraph>
           </Alert>
 

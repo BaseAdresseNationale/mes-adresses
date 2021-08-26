@@ -19,9 +19,7 @@ function CreateForm({defaultCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput(
-    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
-  )
+  const [nom, onNomChange] = useInput(defaultCommune ? `Adresses de ${defaultCommune.nom}` : '')
   const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
@@ -36,9 +34,7 @@ function CreateForm({defaultCommune}) {
   const createNewBal = useCallback(async () => {
     const bal = await createBaseLocale({
       nom,
-      emails: [
-        email
-      ]
+      emails: [email]
     })
 
     if (commune) {
@@ -81,7 +77,14 @@ function CreateForm({defaultCommune}) {
   }
 
   return (
-    <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
+    <Pane
+      is='form'
+      margin={16}
+      padding={16}
+      overflowY='scroll'
+      background='white'
+      onSubmit={onSubmit}
+    >
       {userBALs.length > 0 && (
         <AlertPublishedBAL
           isShown={isShown}
@@ -138,7 +141,15 @@ function CreateForm({defaultCommune}) {
         onChange={onPopulateChange}
       />
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
+      <Button
+        height={40}
+        marginTop={8}
+        type='submit'
+        appearance='primary'
+        intent='success'
+        isLoading={isLoading}
+        iconAfter={isLoading ? null : PlusIcon}
+      >
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
       </Button>
     </Pane>

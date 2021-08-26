@@ -8,14 +8,7 @@ import Toponymes from './toponymes'
 import Numeros from './numeros'
 import Publication from './publication'
 
-export const TABS = [
-  'Base locale',
-  'Communes',
-  'Voies',
-  'Toponymes',
-  'Numéros',
-  'Publication'
-]
+export const TABS = ['Base locale', 'Communes', 'Voies', 'Toponymes', 'Numéros', 'Publication']
 
 const HelpTabs = ({tab}) => {
   switch (tab) {

@@ -3,10 +3,13 @@ import PropTypes from 'prop-types'
 import {Pane, Tooltip, Position, Icon} from 'evergreen-ui'
 
 function Control({enabled, isDisabled, icon, enabledHint, disabledHint, onChange}) {
-  const onToggle = useCallback(e => {
-    e.stopPropagation()
-    onChange(enabled => !enabled)
-  }, [onChange])
+  const onToggle = useCallback(
+    e => {
+      e.stopPropagation()
+      onChange(enabled => !enabled)
+    },
+    [onChange]
+  )
 
   if (isDisabled) {
     return (
@@ -17,15 +20,8 @@ function Control({enabled, isDisabled, icon, enabledHint, disabledHint, onChange
   }
 
   return (
-    <Tooltip
-      position={Position.LEFT}
-      content={enabled ? enabledHint : disabledHint}
-    >
-      <Pane
-        is='button'
-        className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
-        onClick={onToggle}
-      >
+    <Tooltip position={Position.LEFT} content={enabled ? enabledHint : disabledHint}>
+      <Pane is='button' className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled' onClick={onToggle}>
         <Icon icon={icon} color={isDisabled ? 'muted' : 'black'} />
       </Pane>
     </Tooltip>

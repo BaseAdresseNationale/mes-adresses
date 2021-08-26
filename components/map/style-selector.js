@@ -36,7 +36,6 @@ function StyleSelector({style, isFormOpen, handleStyle, showCadastre, handleCada
           <LayersIcon style={{marginRight: '.5em', borderRadius: '0 3px 3px 0'}} />
           <div className='map-style-label'>{STYLES.find(({value}) => value === style).label}</div>
         </Button>
-
       </SelectMenu>
       <Tooltip content={showCadastre ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
         <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>

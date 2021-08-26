@@ -34,10 +34,7 @@ function BasesLocalesList({basesLocales, sortBal}) {
   }, [])
 
   const [filtered, onFilter] = useFuse(basesLocales, 200, {
-    keys: [
-      'nom',
-      'commune'
-    ]
+    keys: ['nom', 'commune']
   })
 
   const onRemove = useCallback(async () => {
@@ -61,14 +58,14 @@ function BasesLocalesList({basesLocales, sortBal}) {
     <>
       {basesLocales.length > 0 && (
         <Pane borderTop>
-
           <DeleteWarning
             isShown={Boolean(toRemove)}
-            content={(
+            content={
               <Paragraph>
-                Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
+                Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est
+                définitive.
               </Paragraph>
-            )}
+            }
             onCancel={() => setToRemove(null)}
             onConfirm={onRemove}
           />

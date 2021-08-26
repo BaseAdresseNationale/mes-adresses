@@ -24,9 +24,14 @@ export function LocalStorageContextProvider(props) {
   return (
     <LocalStorageContext.Provider
       value={{
-        balAccess, getBalToken, addBalAccess, removeBAL,
-        wasWelcomed, setWasWelcomed,
-        recoveryEmailSent, setRecoveryEmailSent
+        balAccess,
+        getBalToken,
+        addBalAccess,
+        removeBAL,
+        wasWelcomed,
+        setWasWelcomed,
+        recoveryEmailSent,
+        setRecoveryEmailSent
       }}
       {...props}
     />

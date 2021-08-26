@@ -1,7 +1,18 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Popover, Menu, IconButton, Position, Button, MenuIcon, HelpIcon, CogIcon, DownloadIcon} from 'evergreen-ui'
+import {
+  Pane,
+  Popover,
+  Menu,
+  IconButton,
+  Position,
+  Button,
+  MenuIcon,
+  HelpIcon,
+  CogIcon,
+  DownloadIcon
+} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
@@ -45,7 +56,9 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
   const handlePublication = async () => {
     try {
       await updateBaseLocale(baseLocale._id, {status: 'ready-to-publish'}, token)
-      window.location.href = `${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`
+      window.location.href = `${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(
+        csvUrl
+      )}`
     } catch (error) {
       setError(error.message)
     }
@@ -85,7 +98,6 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
         />
 
         <Pane marginLeft='auto' display='flex'>
-
           <Button
             height={24}
             iconAfter={HelpIcon}
@@ -102,30 +114,31 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
               <Menu>
                 <Menu.Group>
                   <NextLink href={csvUrl}>
-                    <Menu.Item icon={DownloadIcon} is='a' href={csvUrl} color='inherit' textDecoration='none'>
+                    <Menu.Item
+                      icon={DownloadIcon}
+                      is='a'
+                      href={csvUrl}
+                      color='inherit'
+                      textDecoration='none'
+                    >
                       Télécharger au format CSV
                     </Menu.Item>
                   </NextLink>
                 </Menu.Group>
                 {token && (
-                <>
-                  <Menu.Divider />
-                  <Menu.Group>
-                    <Menu.Item icon={CogIcon} onSelect={() => setShowSettings(!showSettings)}>
-                      Paramètres
-                    </Menu.Item>
-                  </Menu.Group>
-                </>
+                  <>
+                    <Menu.Divider />
+                    <Menu.Group>
+                      <Menu.Item icon={CogIcon} onSelect={() => setShowSettings(!showSettings)}>
+                        Paramètres
+                      </Menu.Item>
+                    </Menu.Group>
+                  </>
                 )}
               </Menu>
             }
           >
-            <Button
-              height={24}
-              iconAfter={CogIcon}
-              appearance='minimal'
-              marginRight={16}
-            >
+            <Button height={24} iconAfter={CogIcon} appearance='minimal' marginRight={16}>
               Paramètres
             </Button>
           </Popover>
@@ -138,12 +151,11 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
               status={baseLocale.published ? 'published' : baseLocale.status}
               onChangeStatus={handleChangeStatus}
               onPublish={handlePublication}
-            />)}
+            />
+          )}
         </Pane>
       </Pane>
-      {baseLocale.status === 'demo' && (
-        <DemoWarning baseLocale={baseLocale} token={token} />
-      )}
+      {baseLocale.status === 'demo' && <DemoWarning baseLocale={baseLocale} token={token} />}
     </>
   )
 })

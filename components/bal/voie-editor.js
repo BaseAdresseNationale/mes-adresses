@@ -15,43 +15,51 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   const router = useRouter()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
+  const [isMetric, onIsMetricChange] = useCheckboxInput(
+    initialValue ? initialValue.typeNumerotation === 'metrique' : false
+  )
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
   const setRef = useFocus()
 
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onFormSubmit = useCallback(
+    async e => {
+      e.preventDefault()
 
-    setIsLoading(true)
+      setIsLoading(true)
 
-    const body = {
-      nom,
-      typeNumerotation: isMetric ? 'metrique' : 'numerique',
-      trace: data ? data.geometry : null
-    }
+      const body = {
+        nom,
+        typeNumerotation: isMetric ? 'metrique' : 'numerique',
+        trace: data ? data.geometry : null
+      }
 
-    try {
-      await onSubmit(body)
+      try {
+        await onSubmit(body)
 
-      const {balId, codeCommune} = router.query
-      router.push(
-        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
-      )
-    } catch (error) {
-      setIsLoading(false)
-      setError(error.message)
-    }
-  }, [router, nom, isMetric, data, onSubmit])
+        const {balId, codeCommune} = router.query
+        router.push(
+          `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
+          `/bal/${balId}/communes/${codeCommune}`
+        )
+      } catch (error) {
+        setIsLoading(false)
+        setError(error.message)
+      }
+    },
+    [router, nom, isMetric, data, onSubmit]
+  )
 
-  const onFormCancel = useCallback(e => {
-    e.preventDefault()
+  const onFormCancel = useCallback(
+    e => {
+      e.preventDefault()
 
-    onCancel()
-  }, [onCancel])
+      onCancel()
+    },
+    [onCancel]
+  )
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -61,11 +69,15 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     return 'Enregistrer'
   }, [isLoading])
 
-  useKeyEvent('keyup', ({key}) => {
-    if (key === 'Escape') {
-      onCancel()
-    }
-  }, [onCancel])
+  useKeyEvent(
+    'keyup',
+    ({key}) => {
+      if (key === 'Escape') {
+        onCancel()
+      }
+    },
+    [onCancel]
+  )
 
   useEffect(() => {
     if (isMetric) {
@@ -105,9 +117,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
         onChange={onIsMetricChange}
       />
 
-      {isMetric && (
-        <DrawEditor trace={initialValue ? initialValue.trace : null} />
-      )}
+      {isMetric && <DrawEditor trace={initialValue ? initialValue.trace : null} />}
 
       {error && (
         <Alert marginBottom={16} intent='danger' title='Erreur'>

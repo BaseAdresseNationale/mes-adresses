@@ -1,6 +1,18 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
+import {
+  Strong,
+  Pane,
+  Select,
+  Heading,
+  Icon,
+  Small,
+  TrashIcon,
+  MapMarkerIcon,
+  IconButton,
+  Button,
+  AddIcon
+} from 'evergreen-ui'
 
 import MarkersContext from '../../contexts/markers'
 
@@ -27,17 +39,24 @@ function PositionEditor({isToponyme}) {
     <>
       <InputLabel
         title='Positions'
-        help={markers.length > 1 ?
-          'Déplacer les marqueurs sur la carte pour modifier les positions' :
-          markers.length === 1 ?
-            `Déplacer le marqueur sur la carte pour déplacer le ${isToponyme ? 'toponyme' : 'numéro'}.` :
-            `Déplacer le marqueur sur la carte pour placer le ${isToponyme ? 'toponyme' : 'numéro'}.`
+        help={
+          markers.length > 1
+            ? 'Déplacer les marqueurs sur la carte pour modifier les positions'
+            : markers.length === 1
+            ? `Déplacer le marqueur sur la carte pour déplacer le ${
+                isToponyme ? 'toponyme' : 'numéro'
+              }.`
+            : `Déplacer le marqueur sur la carte pour placer le ${
+                isToponyme ? 'toponyme' : 'numéro'
+              }.`
         }
       />
 
       {markers.length > 0 ? (
         <Pane display='grid' gridTemplateColumns='2fr .5fr 1fr 1fr .5fr'>
-          <Strong fontWeight={400} paddingBottom='.5em'>Type</Strong>
+          <Strong fontWeight={400} paddingBottom='.5em'>
+            Type
+          </Strong>
           <div />
           <Strong fontWeight={400}>Latitude</Strong>
           <Strong fontWeight={400}>Longitude</Strong>

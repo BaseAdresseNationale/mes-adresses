@@ -26,16 +26,21 @@ function useBounds(commune, voie, toponyme) {
       }
 
       if (toponyme) {
-        const numeroToponyme = data.features.filter(feature => feature.properties.idToponyme === toponyme._id)
+        const numeroToponyme = data.features.filter(
+          feature => feature.properties.idToponyme === toponyme._id
+        )
         data = {
           type: 'FeatureCollection',
-          features: numeroToponyme.length === 0 && toponyme.positions.length === 1 ?
-            [{
-              type: 'Feature',
-              geometry: toponyme.positions[0].point,
-              properties: {id: toponyme._id}
-            }] :
-            numeroToponyme
+          features:
+            numeroToponyme.length === 0 && toponyme.positions.length === 1
+              ? [
+                  {
+                    type: 'Feature',
+                    geometry: toponyme.positions[0].point,
+                    properties: {id: toponyme._id}
+                  }
+                ]
+              : numeroToponyme
         }
       }
 
@@ -58,7 +63,7 @@ function useBounds(commune, voie, toponyme) {
   }, [commune, voie, toponyme, hasBound]) // eslint-disable-line react-hooks/exhaustive-deps
   // Use hasBound as hook instead of geojson to prevent fitBounds on numero update
 
-  return useMemo(() => data ? bbox(data) : data, [data])
+  return useMemo(() => (data ? bbox(data) : data), [data])
 }
 
 export default useBounds

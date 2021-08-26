@@ -23,16 +23,11 @@ function useLayers(voie, sources, showCadastre, style) {
     }
 
     if (hasNumeros) {
-      layers.push(
-        getNumerosPointLayer(style),
-        getNumerosLabelLayer()
-      )
+      layers.push(getNumerosPointLayer(style), getNumerosLabelLayer())
     }
 
     if (!voie && hasVoies) {
-      layers.push(
-        getVoiesLabelLayer(style)
-      )
+      layers.push(getVoiesLabelLayer(style))
     }
 
     return layers

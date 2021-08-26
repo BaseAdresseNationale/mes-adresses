@@ -16,52 +16,57 @@ import SelectParcelles from './numero-editor/select-parcelles'
 function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const {setIsEditing} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
-  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
+  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} =
+    useContext(ParcellesContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
   const setRef = useFocus()
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const onFormSubmit = useCallback(
+    async e => {
+      e.preventDefault()
 
-    setIsLoading(true)
+      setIsLoading(true)
 
-    const body = {
-      nom,
-      positions: [],
-      parcelles: selectedParcelles
-    }
+      const body = {
+        nom,
+        positions: [],
+        parcelles: selectedParcelles
+      }
 
-    if (markers) {
-      markers.forEach(marker => {
-        body.positions.push(
-          {
+      if (markers) {
+        markers.forEach(marker => {
+          body.positions.push({
             point: {
               type: 'Point',
               coordinates: [marker.longitude, marker.latitude]
             },
             type: marker.type
-          }
-        )
-      })
-    }
+          })
+        })
+      }
 
-    try {
-      await onSubmit(body)
-    } catch (error) {
-      setIsLoading(false)
-      setError(error.message)
-    }
-  }, [nom, markers, onSubmit, selectedParcelles])
+      try {
+        await onSubmit(body)
+      } catch (error) {
+        setIsLoading(false)
+        setError(error.message)
+      }
+    },
+    [nom, markers, onSubmit, selectedParcelles]
+  )
 
-  const onFormCancel = useCallback(e => {
-    e.preventDefault()
+  const onFormCancel = useCallback(
+    e => {
+      e.preventDefault()
 
-    disableMarkers()
-    onCancel()
-  }, [onCancel, disableMarkers])
+      disableMarkers()
+      onCancel()
+    },
+    [onCancel, disableMarkers]
+  )
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
@@ -71,12 +76,16 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     return 'Enregistrer'
   }, [isLoading])
 
-  useKeyEvent('keyup', ({key}) => {
-    if (key === 'Escape') {
-      disableMarkers()
-      onCancel()
-    }
-  }, [onCancel])
+  useKeyEvent(
+    'keyup',
+    ({key}) => {
+      if (key === 'Escape') {
+        disableMarkers()
+        onCancel()
+      }
+    },
+    [onCancel]
+  )
 
   useEffect(() => {
     const {nom, parcelles} = initialValue || {}
@@ -98,13 +107,11 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
   useEffect(() => {
     if (initialValue) {
-      const positions = initialValue.positions.map(position => (
-        {
-          longitude: position.point.coordinates[0],
-          latitude: position.point.coordinates[1],
-          type: position.type
-        }
-      ))
+      const positions = initialValue.positions.map(position => ({
+        longitude: position.point.coordinates[0],
+        latitude: position.point.coordinates[1],
+        type: position.type
+      }))
 
       positions.forEach(position => addMarker(position))
     } else {

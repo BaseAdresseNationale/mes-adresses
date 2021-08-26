@@ -14,26 +14,26 @@ export function TokenContextProvider({balId, _token, ...props}) {
   const [token, setToken] = useState(null)
   const [emails, setEmails] = useState(null)
 
-  const verify = useCallback(async token => {
-    const baseLocale = await getBaseLocale(balId, token)
+  const verify = useCallback(
+    async token => {
+      const baseLocale = await getBaseLocale(balId, token)
 
-    if (baseLocale.token) {
-      setToken(baseLocale.token)
-      setEmails(baseLocale.emails)
-    } else {
-      setToken(false)
-    }
-  }, [balId])
+      if (baseLocale.token) {
+        setToken(baseLocale.token)
+        setEmails(baseLocale.emails)
+      } else {
+        setToken(false)
+      }
+    },
+    [balId]
+  )
 
   useEffect(() => {
     if (balId) {
       if (_token) {
         addBalAccess(balId, _token)
 
-        Router.replace(
-          `/bal?balId=${balId}`,
-          `/bal/${balId}`
-        )
+        Router.replace(`/bal?balId=${balId}`, `/bal/${balId}`)
       } else {
         verify(getBalToken(balId))
       }
@@ -44,9 +44,7 @@ export function TokenContextProvider({balId, _token, ...props}) {
     verify(getBalToken(balId))
   }, [verify, balId, getBalToken])
 
-  return (
-    <TokenContext.Provider value={{token, emails, reloadEmails}} {...props} />
-  )
+  return <TokenContext.Provider value={{token, emails, reloadEmails}} {...props} />
 }
 
 TokenContextProvider.propTypes = {

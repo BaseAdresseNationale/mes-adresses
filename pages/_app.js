@@ -44,13 +44,17 @@ function App({error, Component, pageProps, query}) {
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
 
-  const onToggle = useCallback(isEditing => {
-    if (isEditing && isHidden) { // Force opening sidebar when numero is edited:
-      setIsHidden(false)
-    } else {
-      setIsHidden(isHidden => !isHidden)
-    }
-  }, [isHidden])
+  const onToggle = useCallback(
+    isEditing => {
+      if (isEditing && isHidden) {
+        // Force opening sidebar when numero is edited:
+        setIsHidden(false)
+      } else {
+        setIsHidden(isHidden => !isHidden)
+      }
+    },
+    [isHidden]
+  )
 
   const leftOffset = useMemo(() => {
     if (layout === 'sidebar' && !isHidden) {
@@ -90,26 +94,30 @@ function App({error, Component, pageProps, query}) {
           onCloseComplete={() => setIsShown(false)}
         >
           <Paragraph marginTop='default'>
-            Afin de profiter d’une meilleure expérience, il est recommandé d’utiliser cet outil sur un écran plus grand 🖥
+            Afin de profiter d’une meilleure expérience, il est recommandé d’utiliser cet outil sur
+            un écran plus grand 🖥
           </Paragraph>
           <Paragraph marginTop='default'>
-            Une version mobile est en cours de développement pour toujours avoir sa Base Adresse Locale à portée de main 💪🏻
+            Une version mobile est en cours de développement pour toujours avoir sa Base Adresse
+            Locale à portée de main 💪🏻
           </Paragraph>
-          <Paragraph marginTop='default'>
-            Merci de votre patience 🙏
-          </Paragraph>
+          <Paragraph marginTop='default'>Merci de votre patience 🙏</Paragraph>
         </Dialog>
       </Pane>
 
       <LocalStorageContextProvider>
         <TokenContextProvider balId={query.balId} _token={query.token}>
-          <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie} idToponyme={query.idToponyme}>
+          <BalDataContextProvider
+            balId={query.balId}
+            codeCommune={query.codeCommune}
+            idVoie={query.idVoie}
+            idToponyme={query.idToponyme}
+          >
             <MapContextProvider>
               <DrawContextProvider>
                 <MarkersContextProvider>
                   <ParcellesContextProvider>
                     <HelpContextProvider>
-
                       <Help />
 
                       {pageProps.baseLocale && (

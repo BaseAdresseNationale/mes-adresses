@@ -34,7 +34,11 @@ function useSources(voie, toponyme, hovered, editingId) {
 
     if (voie) {
       // Exlude current voie’s numeros, replace by <NumeroMarker />
-      features = features.filter(({properties}) => (properties.idVoie !== voie._id) || (properties.idVoie === voie._id && properties.type === 'voie-trace'))
+      features = features.filter(
+        ({properties}) =>
+          properties.idVoie !== voie._id ||
+          (properties.idVoie === voie._id && properties.type === 'voie-trace')
+      )
     }
 
     if (toponyme) {
@@ -44,7 +48,9 @@ function useSources(voie, toponyme, hovered, editingId) {
 
     features = features.map(feature => setPaintProperties(feature))
 
-    const lines = features.filter(({properties, id}) => properties.type === 'voie-trace' && id !== editingId)
+    const lines = features.filter(
+      ({properties, id}) => properties.type === 'voie-trace' && id !== editingId
+    )
 
     sources.push({
       name: 'voie-trace',

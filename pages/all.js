@@ -9,14 +9,17 @@ import {expandWithPublished} from '../helpers/bases-locales'
 import {listBasesLocales} from '../lib/bal-api'
 import {sortBalByUpdate} from '../lib/sort-bal'
 
-const PublicBasesLocalesList = dynamic(() => import('../components/bases-locales-list/public-bases-locales-list'), {
-  ssr: false,
-  loading: () => (
-    <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
-      <Spinner />
-    </Pane>
-  )
-})
+const PublicBasesLocalesList = dynamic(
+  () => import('../components/bases-locales-list/public-bases-locales-list'),
+  {
+    ssr: false,
+    loading: () => (
+      <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
+        <Spinner />
+      </Pane>
+    )
+  }
+)
 
 function All({basesLocales}) {
   const onCreate = useCallback(() => {
@@ -26,7 +29,9 @@ function All({basesLocales}) {
   return (
     <>
       <Pane padding={16} backgroundColor='white'>
-        <Heading size={600} marginBottom={8}>Rechercher une Base Adresse Locale</Heading>
+        <Heading size={600} marginBottom={8}>
+          Rechercher une Base Adresse Locale
+        </Heading>
         <Paragraph>
           Sélectionnez une Base Adresse Locale que vous souhaitez visualiser, créer ou modifier.
         </Paragraph>
