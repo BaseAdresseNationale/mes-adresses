@@ -47,7 +47,7 @@ const CertificationMessage = ({balId, codeCommune}) => {
       intent='success'
       title='Nouvelle fonctionnalité de certification'
       confirmLabel='Certifier toutes les adresses de la BAL'
-      cancelLabel='Je souhaite d’abords vérifier mes adresses'
+      cancelLabel='Je souhaite d’abord vérifier mes adresses'
       onConfirm={() => handleConfirmation(true)}
       onCloseComplete={() => handleConfirmation(false)}
     >
