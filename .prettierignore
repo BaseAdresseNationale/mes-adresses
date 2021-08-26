@@ -1,11 +1,9 @@
 # Ignore artifacts:
 reports
-yarn.lock
 public
-app.json
 node_modules
-DEVELOPER_NOTES.md
 .github
+yarn.lock
 
 # Nextjs
 **/.next/**
@@ -13,3 +11,7 @@ DEVELOPER_NOTES.md
 **/dist/**
 build
 out
+
+# Others
+geo.json
+DEVELOPER_NOTES.md
