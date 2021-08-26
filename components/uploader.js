@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import {useDropzone} from 'react-dropzone'
 import {Pane, Spinner, Paragraph} from 'evergreen-ui'
 
-function Uploader({file, placeholder, onDrop, height, disabled, loading, loadingLabel, ...props}) {
+function Uploader({file, maxSize, placeholder, onDrop, onDropRejected, height, disabled, loading, loadingLabel, ...props}) {
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
+    maxSize,
     onDrop,
+    onDropRejected,
     disabled,
     multiple: false
   })
@@ -53,8 +55,10 @@ function Uploader({file, placeholder, onDrop, height, disabled, loading, loading
 
 Uploader.propTypes = {
   file: PropTypes.object,
+  maxSize: PropTypes.number,
   placeholder: PropTypes.string.isRequired,
   onDrop: PropTypes.func.isRequired,
+  onDropRejected: PropTypes.func.isRequired,
   height: PropTypes.number,
   loading: PropTypes.bool,
   disabled: PropTypes.bool,
@@ -63,6 +67,7 @@ Uploader.propTypes = {
 
 Uploader.defaultProps = {
   file: null,
+  maxSize: null,
   height: 100,
   loading: false,
   disabled: false,

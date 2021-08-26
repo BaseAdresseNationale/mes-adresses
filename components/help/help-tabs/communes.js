@@ -27,6 +27,12 @@ const Communes = () => {
           <ListItem>Si vous souhaitez partir de zéro, décochez la case <Strong size={500} fontStyle='italic'>Importer les voies et numéros depuis la BAN</Strong>.</ListItem>
           <ListItem>Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button></ListItem>
         </OrderedList>
+
+        <Tuto title='Bon à savoir'>
+          <ListItem listStyleType='none'>
+            L’éditeur « Mes Adresses » permet la gestion d’une Base Adresse Locale à l’échelle communale. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. L’ajout d’une commune n’est possible que si aucune commune n’est renseignée.
+          </ListItem>
+        </Tuto>
       </Tuto>
 
       <Tuto title='Consulter une commune'>
