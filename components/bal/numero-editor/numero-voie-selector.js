@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Button, Pane, Text, PlusIcon, PropertyIcon, SelectField, TextInputField} from 'evergreen-ui'
-
-import useFocus from '../../../hooks/focus'
+import {Button, Pane, Text, PlusIcon, PropertyIcon, SelectField} from 'evergreen-ui'
 
 import {normalizeSort} from '../../../lib/normalize'
 
+import AssistedTextField from '../../assisted-text-field'
+
 function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)
-  const focusRef = useFocus()
 
   const toggleMode = () => {
     setIsCreateMode(mode => !mode)
@@ -34,9 +33,8 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
     <Pane display='flex' flex={1} alignItems='center'>
       <Pane>
         {isCreateMode ? (
-          <TextInputField
-            ref={focusRef}
-            required
+          <AssistedTextField
+            isFocus
             label='Nouvelle voie'
             placeholder='Nom de la voie'
             value={nomVoie}

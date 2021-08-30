@@ -1,14 +1,15 @@
 import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Alert, TextInputField} from 'evergreen-ui'
+import {Pane, Button, Alert} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 import MarkersContext from '../../contexts/markers'
 import ParcellesContext from '../../contexts/parcelles'
 
 import {useInput} from '../../hooks/input'
-import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
+
+import AssistedTextField from '../assisted-text-field'
 
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
@@ -21,7 +22,6 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue ? initialValue.nom : '')
   const [error, setError] = useState()
-  const setRef = useFocus()
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -114,18 +114,12 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <TextInputField
-        ref={setRef}
-        required
+      <AssistedTextField
+        isFocus
+        dsiabled={isLoading}
         label='Nom du toponyme'
-        display='block'
-        disabled={isLoading}
-        width='100%'
-        maxWidth={500}
+        placeholder='Nom du toponyme'
         value={nom}
-        maxLength={200}
-        marginBottom={16}
-        placeholder='Nom du toponyme…'
         onChange={onNomChange}
       />
 

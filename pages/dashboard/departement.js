@@ -10,7 +10,6 @@ import {getBALByStatus} from '../../lib/bases-locales'
 import Counter from '../../components/dashboard/counter'
 import PieChart from '../../components/dashboard/charts/pie-chart'
 import CommuneBALList from '../../components/dashboard/commune-bal-list'
-import {expandWithPublished} from '../../helpers/bases-locales'
 import DashboardLayout from '../../components/layout/dashboard'
 
 const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) => {
@@ -74,8 +73,6 @@ Departement.getInitialProps = async ({query}) => {
   const departement = await getDepartement(codeDepartement)
   const basesLocalesDepartement = await listBALByCodeDepartement(codeDepartement)
   const basesLocalesDepartementWithoutDemo = basesLocalesDepartement.filter(b => b.status !== 'demo')
-
-  await expandWithPublished(basesLocalesDepartementWithoutDemo)
 
   const BALAddedOneCodeCommune = flatten(basesLocalesDepartementWithoutDemo.map(b => b.communes.map(c => ({...b, commune: c}))))
   const BALGroupedByCommune = groupBy(BALAddedOneCodeCommune, 'commune')

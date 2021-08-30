@@ -14,11 +14,7 @@ import LocalStorageContext from '../../contexts/local-storage'
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 import CertificationCount from '../certification-count'
 
-function getBadge({status, published}) {
-  if (published) {
-    return {color: 'green', label: 'Publiée'}
-  }
-
+function getBadge({status}) {
   switch (status) {
     case 'published':
       return {color: 'green', label: 'Publiée'}

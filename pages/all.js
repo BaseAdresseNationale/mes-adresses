@@ -4,8 +4,6 @@ import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Spinner, Button} from 'evergreen-ui'
 
-import {expandWithPublished} from '../helpers/bases-locales'
-
 import {listBasesLocales} from '../lib/bal-api'
 import {sortBalByUpdate} from '../lib/sort-bal'
 
@@ -50,7 +48,6 @@ function All({basesLocales}) {
 
 All.getInitialProps = async () => {
   const basesLocales = await listBasesLocales()
-  await expandWithPublished(basesLocales)
 
   return {
     basesLocales,

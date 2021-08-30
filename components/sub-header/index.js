@@ -135,8 +135,7 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
               border
               token={token}
               baseLocale={baseLocale}
-              commune={commune}
-              status={baseLocale.published ? 'published' : baseLocale.status}
+              status={baseLocale.status}
               onChangeStatus={handleChangeStatus}
               onPublish={handlePublication}
             />)}
