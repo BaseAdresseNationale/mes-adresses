@@ -3,14 +3,13 @@ import PropTypes from 'prop-types'
 import {Heading, Pane} from 'evergreen-ui'
 import {flatten, groupBy, uniq} from 'lodash'
 
-import {getContoursCommunes, listBALByCodeDepartement} from '../../lib/bal-api'
+import {getContoursCommunes, getPublishedIds, listBALByCodeDepartement, setIfPublished} from '../../lib/bal-api'
 import {getDepartement, searchCommunesByCode} from '../../lib/geo-api'
 import {getBALByStatus} from '../../lib/bases-locales'
 
 import Counter from '../../components/dashboard/counter'
 import PieChart from '../../components/dashboard/charts/pie-chart'
 import CommuneBALList from '../../components/dashboard/commune-bal-list'
-import {expandWithPublished} from '../../helpers/bases-locales'
 import DashboardLayout from '../../components/layout/dashboard'
 
 const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) => {
@@ -75,7 +74,11 @@ Departement.getInitialProps = async ({query}) => {
   const basesLocalesDepartement = await listBALByCodeDepartement(codeDepartement)
   const basesLocalesDepartementWithoutDemo = basesLocalesDepartement.filter(b => b.status !== 'demo')
 
-  await expandWithPublished(basesLocalesDepartementWithoutDemo)
+  const publishedBalIds = await getPublishedIds()
+
+  for (const bal of basesLocalesDepartementWithoutDemo) {
+    setIfPublished(bal, publishedBalIds)
+  }
 
   const BALAddedOneCodeCommune = flatten(basesLocalesDepartementWithoutDemo.map(b => b.communes.map(c => ({...b, commune: c}))))
   const BALGroupedByCommune = groupBy(BALAddedOneCodeCommune, 'commune')
