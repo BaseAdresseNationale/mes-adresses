@@ -1,9 +1,7 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 
-import {getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, setIfPublished} from '../lib/bal-api'
-
-import {getPublishedBasesLocales} from '../lib/adresse-backend'
+import {getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme} from '../lib/bal-api'
 
 import TokenContext from './token'
 
@@ -90,8 +88,6 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const reloadBaseLocale = useCallback(async () => {
     if (balId) {
       const baseLocale = await getBaseLocale(balId)
-      const publishedBasesLocales = await getPublishedBasesLocales()
-      setIfPublished(baseLocale, publishedBasesLocales)
 
       setBaseLocal(baseLocale)
     }

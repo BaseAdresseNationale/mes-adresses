@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 import {uniq, flattenDeep} from 'lodash'
 
-import {getContoursCommunes, getPublishedIds, listBasesLocales, setIfPublished} from '../lib/bal-api'
+import {getContoursCommunes, listBasesLocales} from '../lib/bal-api'
 
 import DashboardLayout from '../components/layout/dashboard'
 
@@ -35,11 +35,6 @@ Index.getInitialProps = async () => {
   const basesLocales = await listBasesLocales()
   const contoursCommunes = await getContoursCommunes()
   const basesLocalesWithoutDemo = basesLocales.filter((b => b.status !== 'demo'))
-  const publishedBalIds = await getPublishedIds()
-
-  for (const bal of basesLocalesWithoutDemo) {
-    setIfPublished(bal, publishedBalIds)
-  }
 
   return {
     basesLocales: basesLocalesWithoutDemo,

@@ -5,7 +5,7 @@ import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
-import {createBaseLocale, addCommune, populateCommune, searchBAL, getPublishedIds, setIfPublished} from '../../lib/bal-api'
+import {createBaseLocale, addCommune, populateCommune, searchBAL} from '../../lib/bal-api'
 
 import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
@@ -68,11 +68,6 @@ function CreateForm({defaultCommune}) {
 
   const checkUserBALs = async () => {
     const userBALs = await searchBAL(commune, email)
-    const publishedBalIds = await getPublishedIds()
-
-    for (const bal of userBALs) {
-      setIfPublished(bal, publishedBalIds)
-    }
 
     if (userBALs.length > 0) {
       setUserBALs(userBALs)

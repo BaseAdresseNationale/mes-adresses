@@ -3,7 +3,7 @@ import Router from 'next/router'
 import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
 import {map} from 'lodash'
 
-import {getPublishedIds, setIfPublished, getBaseLocale} from '../lib/bal-api'
+import {getBaseLocale} from '../lib/bal-api'
 
 import LocalStorageContext from '../contexts/local-storage'
 
@@ -27,11 +27,6 @@ function UserBasesLocales() {
       }))
 
     const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
-    const publishedBalIds = await getPublishedIds()
-
-    for (const bal of findedBasesLocales) {
-      setIfPublished(bal, publishedBalIds)
-    }
 
     setBasesLocales(findedBasesLocales)
     setIsLoading(false)

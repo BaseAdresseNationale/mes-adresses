@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Heading, Pane} from 'evergreen-ui'
 import {flatten, groupBy, uniq} from 'lodash'
 
-import {getContoursCommunes, getPublishedIds, listBALByCodeDepartement, setIfPublished} from '../../lib/bal-api'
+import {getContoursCommunes, listBALByCodeDepartement} from '../../lib/bal-api'
 import {getDepartement, searchCommunesByCode} from '../../lib/geo-api'
 import {getBALByStatus} from '../../lib/bases-locales'
 
@@ -73,12 +73,6 @@ Departement.getInitialProps = async ({query}) => {
   const departement = await getDepartement(codeDepartement)
   const basesLocalesDepartement = await listBALByCodeDepartement(codeDepartement)
   const basesLocalesDepartementWithoutDemo = basesLocalesDepartement.filter(b => b.status !== 'demo')
-
-  const publishedBalIds = await getPublishedIds()
-
-  for (const bal of basesLocalesDepartementWithoutDemo) {
-    setIfPublished(bal, publishedBalIds)
-  }
 
   const BALAddedOneCodeCommune = flatten(basesLocalesDepartementWithoutDemo.map(b => b.communes.map(c => ({...b, commune: c}))))
   const BALGroupedByCommune = groupBy(BALAddedOneCodeCommune, 'commune')

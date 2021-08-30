@@ -4,7 +4,7 @@ import {validate} from '@etalab/bal'
 import {uniq, uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv, searchBAL, getPublishedIds, setIfPublished} from '../../lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '../../lib/bal-api'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
@@ -122,12 +122,6 @@ function UploadForm() {
 
       if (userBALs.length > 0) {
         const uniqUserBALs = uniqBy(userBALs, '_id')
-
-        const publishedBalIds = await getPublishedIds()
-
-        for (const bal of uniqUserBALs) {
-          setIfPublished(bal, publishedBalIds)
-        }
 
         setUserBALs(uniqUserBALs)
         setIsShown(true)
