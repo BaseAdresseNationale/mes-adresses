@@ -11,8 +11,6 @@ import LocalStorageContext from '../../contexts/local-storage'
 import useFocus from '../../hooks/focus'
 import {useInput} from '../../hooks/input'
 
-import {expandWithPublished} from '../../helpers/bases-locales'
-
 import Uploader from '../../components/uploader'
 
 import AlertPublishedBAL from './alert-published-bal'
@@ -124,7 +122,6 @@ function UploadForm() {
 
       if (userBALs.length > 0) {
         const uniqUserBALs = uniqBy(userBALs, '_id')
-        await expandWithPublished(uniqUserBALs)
 
         setUserBALs(uniqUserBALs)
         setIsShown(true)

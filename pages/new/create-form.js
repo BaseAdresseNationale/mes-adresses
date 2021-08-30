@@ -10,8 +10,6 @@ import {createBaseLocale, addCommune, populateCommune, searchBAL} from '../../li
 import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
 
-import {expandWithPublished} from '../../helpers/bases-locales'
-
 import {CommuneSearchField} from '../../components/commune-search'
 import AlertPublishedBAL from './alert-published-bal'
 
@@ -70,7 +68,6 @@ function CreateForm({defaultCommune}) {
 
   const checkUserBALs = async () => {
     const userBALs = await searchBAL(commune, email)
-    await expandWithPublished(userBALs)
 
     if (userBALs.length > 0) {
       setUserBALs(userBALs)
