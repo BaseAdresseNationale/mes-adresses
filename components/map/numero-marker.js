@@ -86,7 +86,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
   return (
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-      <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)} paddingX={4}>
+      <Pane {...markerStyle} paddingX={4} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
         <Text color='white' marginLeft={8} marginRight={4}>
           {numero.numeroComplet}
         </Text>
