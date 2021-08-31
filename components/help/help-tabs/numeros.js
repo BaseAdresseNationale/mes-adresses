@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu, IconButton, MapMarkerIcon, CommentIcon, ColumnLayoutIcon, Badge, AddIcon, MapIcon, MoreIcon, EditIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu, IconButton, MapMarkerIcon, CommentIcon, ColumnLayoutIcon, Badge, AddIcon, MapIcon, MoreIcon, EditIcon, TrashIcon, EndorsedIcon, PlusIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
 import SubTuto from '../tuto/sub-tuto'
@@ -18,6 +18,11 @@ const Numeros = () => {
   return (
     <>
       <Pane>
+        <Tuto title='Bon à savoir'>
+          <ListItem listStyleType='none'>
+            Pour renforcer la qualité des adresses, nous vous recommandons de certifier la totalité de vos adresses. <b>Une adresse certifiée est déclarée authentique par la mairie</b>, ce qui renforce la qualité de la Base Adresse Locale et facilite sa réutilisation.
+          </ListItem>
+        </Tuto>
         <Tuto title='Ajouter un numéro'>
           {before}
 
@@ -39,12 +44,14 @@ const Numeros = () => {
               <ListItem>
                 Recherchez la voie à laquelle le numéro appartient et sélectionnez la.
                 À noter que si une voie est déjà sélectionnée alors elle vous sera proposée par défaut.
+                Vous pouvez également créer une nouvelle voie directement en cliquant sur <Button marginX={4} iconBefore={PlusIcon}>Créer une voie</Button>.
+                Vous serez automatiquement redirigé vers cette voie.
               </ListItem>
               <ListItem>
                 Sélectionnez le type d’adresse grâce au menu déroulant <Strong size={500}>Type</Strong>
               </ListItem>
               <ListItem>
-                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
+                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success' iconAfter={EndorsedIcon}>Certifier et enregister</Button> ou <Button marginX={4} intent='success'>Enregister</Button> si vous ne souhaitez pas certifier cette adresse pour le moment.
               </ListItem>
             </OrderedList>
           </SubTuto>
@@ -68,12 +75,14 @@ const Numeros = () => {
               <ListItem>
                 Recherchez la voie à laquelle le numéro appartient et sélectionnez la.
                 À noter que si une voie est déjà sélectionnée alors elle vous sera proposée par défaut.
+                Vous pouvez également créer une nouvelle voie directement en cliquant sur <Button marginX={4} iconBefore={PlusIcon}>Créer une voie</Button>.
+                Vous serez automatiquement redirigé vers cette voie.
               </ListItem>
               <ListItem>
                 Sélectionnez le type d’adresse grâce au menu déroulant <Strong size={500}>Type</Strong>
               </ListItem>
               <ListItem>
-                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
+                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success' iconAfter={EndorsedIcon}>Certifier et enregister</Button> ou <Button marginX={4} intent='success'>Enregister</Button> si vous ne souhaitez pas certifier cette adresse pour le moment.
               </ListItem>
             </OrderedList>
           </SubTuto>
@@ -148,6 +157,19 @@ const Numeros = () => {
           </SubTuto>
         </Tuto>
 
+        <Tuto title='Ne plus certifier une adresse'>
+          <OrderedList margin={8}>
+            <ListItem>
+              <Pane display='flex' alignItems='center'>
+                Affichez la liste des numéros d’une voie en la sélectionnant depuis le menu latéral ou en cliquant sur son nom ou sur un de ses numéros directement depuis la carte.
+              </Pane>
+            </ListItem>
+            <ListItem>
+              En bas de page, cliquez sur le bouton <Button marginX={4} intent='danger'>Ne plus certifier et enregistrer</Button>
+            </ListItem>
+          </OrderedList>
+        </Tuto>
+
         <Tuto title='Associer des parcelles'>
           {before}
 
@@ -167,7 +189,7 @@ const Numeros = () => {
               Depuis la carte, cliquez sur la ou les parcelles que vous souhaitez associer au numéro
             </ListItem>
             <ListItem>
-              Pour enregistrer les parcelles, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
+              Pour enregistrer les parcelles, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success' iconAfter={EndorsedIcon}>Certifier et enregister</Button> ou <Button marginX={4} intent='success'>Enregister</Button> si vous ne souhaitez pas certifier cette adresse pour le moment.
             </ListItem>
           </OrderedList>
 
@@ -200,7 +222,7 @@ const Numeros = () => {
               Remplissez le champ de texte <Strong size={500}>Commentaire</Strong> afin de laisser une note concernant le numéro
             </ListItem>
             <ListItem>
-              Pour enregistrer votre commentaire, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
+              Pour enregistrer votre commentaire, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success' iconAfter={EndorsedIcon}>Certifier et enregister</Button> ou <Button marginX={4} intent='success'>Enregister</Button> si vous ne souhaitez pas certifier cette adresse pour le moment.
             </ListItem>
           </OrderedList>
 
