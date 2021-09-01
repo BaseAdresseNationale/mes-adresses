@@ -47,6 +47,7 @@ const BaseLocale = () => {
         <OrderedList margin={8}>
           <ListItem>Changer le nom de votre Base Adresse Locale</ListItem>
           <ListItem>Ajouter ou supprimer des collaborateurs</ListItem>
+          <ListItem>Télécharger vos adresses au format .csv</ListItem>
         </OrderedList>
 
         <Paragraph marginTop='default'>

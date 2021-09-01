@@ -9,7 +9,7 @@ import Problems from './problems'
 
 const before = (
   <Paragraph marginTop='default'>
-    Affichez la liste des communes de votre BAL en cliquant sur le nom de celle-ci se trouvant en haut à gauche de votre écran.
+    Affichez la liste des communes en cliquant sur le nom de votre BAL se trouvant en haut à gauche de votre écran.
   </Paragraph>
 )
 

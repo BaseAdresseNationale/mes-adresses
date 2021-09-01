@@ -42,10 +42,10 @@ const Toponymes = () => {
               <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter un numéro</Button>
             </ListItem>
             <ListItem>
-              Sélectionnez le voie du numéro que vous souhaitez assigner
+              Sélectionnez la voie du numéro que vous souhaitez assigner
             </ListItem>
             <ListItem>
-              Un menu déroulant va s’afficher. Vous pouvez sélectionner un ou plusieurs numéros de la liste. Tous les numéros de la liste seront assigné au toponyme si aucuns numéro n’est sélectionné.
+              Un menu déroulant va s’afficher. Vous pouvez sélectionner un ou plusieurs numéros de la liste. Tous les numéros de la liste seront assignés au toponyme si aucun numéro n’est sélectionné.
             </ListItem>
             <ListItem>
               Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>

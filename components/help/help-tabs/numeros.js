@@ -48,10 +48,10 @@ const Numeros = () => {
                 Vous serez automatiquement redirigé vers cette voie.
               </ListItem>
               <ListItem>
-                Sélectionnez le type d’adresse grâce au menu déroulant <Strong size={500}>Type</Strong>
+                Sélectionnez la position grâce au menu déroulant <Strong size={500}>Type</Strong>
               </ListItem>
               <ListItem>
-                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success' iconAfter={EndorsedIcon}>Certifier et enregister</Button> ou <Button marginX={4} intent='success'>Enregister</Button> si vous ne souhaitez pas certifier cette adresse pour le moment.
+                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success' iconAfter={EndorsedIcon}>Certifier et enregister</Button> si vous validez cette adresse ou <Button marginX={4} intent='success'>Enregister</Button> pour vous laisser le temps de vérifier avant de certifier.
               </ListItem>
             </OrderedList>
           </SubTuto>
@@ -79,10 +79,10 @@ const Numeros = () => {
                 Vous serez automatiquement redirigé vers cette voie.
               </ListItem>
               <ListItem>
-                Sélectionnez le type d’adresse grâce au menu déroulant <Strong size={500}>Type</Strong>
+                Sélectionnez la position grâce au menu déroulant <Strong size={500}>Type</Strong>
               </ListItem>
               <ListItem>
-                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success' iconAfter={EndorsedIcon}>Certifier et enregister</Button> ou <Button marginX={4} intent='success'>Enregister</Button> si vous ne souhaitez pas certifier cette adresse pour le moment.
+                Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success' iconAfter={EndorsedIcon}>Certifier et enregister</Button> si vous validez cette adresse ou <Button marginX={4} intent='success'>Enregister</Button> pour vous laisser le temps de vérifier avant de certifier.
               </ListItem>
             </OrderedList>
           </SubTuto>
@@ -106,7 +106,7 @@ const Numeros = () => {
                 </Pane>
               </ListItem>
               <ListItem>
-                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <MapMarkerIcon icon={MapMarkerIcon} color='info' /> sur la carte
+                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <MapMarkerIcon icon={MapMarkerIcon} color='info' /> sur la carte et de certifier votre adresse.
               </ListItem>
             </OrderedList>
           </SubTuto>
@@ -117,7 +117,7 @@ const Numeros = () => {
                 Cliquez sur le numéro
               </ListItem>
               <ListItem>
-                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <MapMarkerIcon icon={MapMarkerIcon} color='info' /> sur la carte
+                Il vous est désormais possible de modifier le numéro, le suffixe, le type d’adresse ou encore sa position en déplaçant le <MapMarkerIcon icon={MapMarkerIcon} color='info' /> sur la carte et de certifier votre adresse.
               </ListItem>
             </OrderedList>
           </SubTuto>
