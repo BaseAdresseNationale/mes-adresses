@@ -56,7 +56,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
       parcelles: selectedParcelles,
-      certifie: certifie ?? initialValue.certifie
+      certifie: certifie ?? (initialValue?.certifie || false)
     }
 
     if (markers.length > 0) {
