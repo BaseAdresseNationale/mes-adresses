@@ -1,7 +1,7 @@
 import React, {useMemo, useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
-import {Badge, Button, Alert, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon, CogIcon} from 'evergreen-ui'
+import {Badge, Button, Alert, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, getCommune} from '../../lib/bal-api'
 
