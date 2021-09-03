@@ -20,7 +20,7 @@ function UserBasesLocales() {
     const basesLocales = await Promise.all(
       map(balAccess, async (token, id) => {
         try {
-          return getBaseLocale(id, token)
+          return await getBaseLocale(id, token)
         } catch (error) {
           console.log(`Impossible de récupérer la bal ${id}`)
         }
@@ -75,3 +75,4 @@ function UserBasesLocales() {
 }
 
 export default UserBasesLocales
+
