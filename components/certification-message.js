@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Dialog, Paragraph, Strong} from 'evergreen-ui'
+import {Pane, Menu, CogIcon, Dialog, Paragraph, Strong} from 'evergreen-ui'
 
 import LocalStorageContext from '../contexts/local-storage'
 import BalDataContext from '../contexts/bal-data'
@@ -54,8 +54,19 @@ const CertificationMessage = ({balId, codeCommune}) => {
       <Paragraph>
         Pour <Strong>renforcer la qualité des adresses</Strong>, la certification évolue. Sur les Bases Adresses Locales nouvellement créées, la certification <Strong>n’est plus affectée automatiquement à l’ensemble des adresses</Strong>, mais aux seules <Strong>adresses que la commune authentifie</Strong>.
       </Paragraph>
+
       <Paragraph paddingTop={16}>
-        Votre Base Adresse Locale étant déjà publiée, nous vous proposons de choisir la méthode à appliquer :
+        Si la totalité de vos adresses <Strong>ont déjà été vérifiées</Strong> lors de votre précédente publication, vous pouvez <Strong>certifier dès maitenant vos adresses</Strong>.
+      </Paragraph>
+
+      <Paragraph paddingTop={16}>
+        Dans le cas contraire, il vous est possible de <Strong>vérifier vos adresses</Strong> et de les certifier à votre rythme.
+        <Pane display='flex' alignItems='center'>
+          Notez qu’il est possible de <Strong marginX={4}>certifier la totalité</Strong> de vos adresses depuis le menu
+          <Menu.Item icon={CogIcon} paddingX={0}>
+            Paramètres
+          </Menu.Item>
+        </Pane>
       </Paragraph>
     </Dialog>
   )

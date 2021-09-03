@@ -1,7 +1,7 @@
 import React, {useMemo, useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
-import {Badge, Button, Alert, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
+import {Badge, Button, Alert, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon, CogIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, getCommune} from '../../lib/bal-api'
 
@@ -144,6 +144,7 @@ const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPubl
                   Nous vous recommandons de certifier la totalité de vos adresses.
                   Une adresse certifiée est déclarée authentique par la mairie, ce qui renforce la qualité de la Base Adresse Locale et facilite sa réutilisation.
                   Vous êtes cependant libre de publier maintenant et certifier vos adresses plus tard.
+                  Notez qu’il est possible de certifier la totalité de vos adresses depuis le menu « Paramètres ».
                 </Alert>
               )}
             </Pane>
