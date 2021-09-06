@@ -55,7 +55,6 @@ Elles peuvent être définies classiquement ou en créant un fichier `.env` sur 
 | `NEXT_PUBLIC_BAL_API_URL` | URL de base de l’API BAL             |
 | `NEXT_PUBLIC_GEO_API_URL` | URL de base de l’API Géo             |
 | `NEXT_PUBLIC_ADRESSE_URL` | URL de base du site adresse.data.gouv.fr |
-| `NEXT_PUBLIC_ADRESSE_BACKEND_URL` | URL de base vers l’API adresse-backend |
 
 Toutes ces variables ont des valeurs par défaut que vous trouverez dans le fichier `.env.sample`.
 
