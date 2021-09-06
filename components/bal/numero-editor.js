@@ -1,6 +1,6 @@
-import React, {useState, useMemo, useCallback, useContext, useEffect} from 'react'
+import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, SelectField, TextInput, Button, Alert} from 'evergreen-ui'
+import {Pane, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
@@ -14,6 +14,7 @@ import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
 import Comment from '../comment'
+import CertificationButton from '../certification-button'
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
 import NumeroVoieSelector from './numero-editor/numero-voie-selector'
@@ -27,6 +28,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
+  const [certifie, setCertifie] = useState(initialValue?.certifie || false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
   const [nomVoie, onNomVoieChange] = useState('')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
@@ -53,7 +55,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       numero: Number(numero),
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
-      parcelles: selectedParcelles
+      parcelles: selectedParcelles,
+      certifie: certifie ?? (initialValue?.certifie || false)
     }
 
     if (markers.length > 0) {
@@ -79,7 +82,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       setError(error.message)
       setIsLoading(false)
     }
-  }, [numero, voieId, nomVoie, toponymeId, suffixe, comment, markers, selectedParcelles, onSubmit])
+  }, [numero, nomVoie, voieId, toponymeId, suffixe, comment, markers, selectedParcelles, certifie, initialValue, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -87,14 +90,6 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     disableMarkers()
     onCancel()
   }, [disableMarkers, onCancel])
-
-  const submitLabel = useMemo(() => {
-    if (isLoading) {
-      return 'En cours…'
-    }
-
-    return 'Enregistrer'
-  }, [isLoading])
 
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
@@ -218,22 +213,13 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         </Alert>
       )}
 
-      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success' marginTop={16}>
-        {submitLabel}
-      </Button>
+      <CertificationButton
+        isCertified={initialValue?.certifie}
+        isLoading={isLoading}
+        onConfirm={setCertifie}
+        onCancel={onFormCancel}
+      />
 
-      {onCancel && (
-        <Button
-          disabled={isLoading}
-          appearance='minimal'
-          marginLeft={8}
-          marginTop={16}
-          display='inline-flex'
-          onClick={onFormCancel}
-        >
-          Annuler
-        </Button>
-      )}
     </Pane>
   )
 }
@@ -247,7 +233,8 @@ NumeroEditor.propTypes = {
     parcelles: PropTypes.array,
     comment: PropTypes.string,
     positions: PropTypes.array,
-    toponyme: PropTypes.string
+    toponyme: PropTypes.string,
+    certifie: PropTypes.bool
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func

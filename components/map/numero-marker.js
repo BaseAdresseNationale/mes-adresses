@@ -1,7 +1,7 @@
 import React, {useMemo, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
-import {Pane, Text, Menu, Position, WarningSignIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Text, Menu, Position, WarningSignIcon, TrashIcon, EndorsedIcon} from 'evergreen-ui'
 import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
 import randomColor from 'randomcolor'
 import {css} from 'glamor'
@@ -86,22 +86,23 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
   return (
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-      {numero.positions.find(position => position.type === 'inconnue') ? (
-        <Tooltip content='Le type d’une position est inconnu' position={Position.RIGHT}>
-          <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-            <Text color='white' paddingLeft={8} paddingRight={5}>
-              {numero.numeroComplet}
-            </Text>
-            <WarningSignIcon color='warning' size={13} marginLeft={2} marginRight={7} marginBottom={2} style={{verticalAlign: 'middle'}} />
-          </Pane>
-        </Tooltip>
-      ) : (
-        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
-          <Text color='white' paddingLeft={8} paddingRight={10}>
-            {numero.numeroComplet}
-          </Text>
-        </Pane>
-      )}
+      <Pane {...markerStyle} paddingX={4} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+        <Text color='white' marginLeft={8} marginRight={4}>
+          {numero.numeroComplet}
+        </Text>
+
+        {numero.positions.find(position => position.type === 'inconnue') && (
+          <Tooltip content='Le type d’une position est inconnu' position={Position.BOTTOM_RIGHT}>
+            <WarningSignIcon color='warning' size={13} marginX={4} marginBottom={2} style={{verticalAlign: 'middle'}} />
+          </Tooltip>
+        )}
+
+        {numero.certifie && (
+          <Tooltip content='Cette adresse est certifiée par la commune' position={Position.RIGHT}>
+            <EndorsedIcon color='success' size={13} marginX={4} style={{verticalAlign: 'text-top'}} />
+          </Tooltip>
+        )}
+      </Pane>
 
       {showContextMenu && (
         <Pane background='tint1' position='absolute' margin={10}>
@@ -121,6 +122,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 NumeroMarker.propTypes = {
   numero: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    certifie: PropTypes.bool.isRequired,
     numeroComplet: PropTypes.string.isRequired,
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({

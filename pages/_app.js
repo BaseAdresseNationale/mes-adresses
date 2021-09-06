@@ -11,6 +11,7 @@ import IEWarning from '../components/ie-warning'
 import Fullscreen from '../components/layout/fullscreen'
 import Sidebar from '../components/layout/sidebar'
 import WelcomeMessage from '../components/welcome-message'
+import CertificationMessage from '../components/certification-message'
 
 import Map from '../components/map'
 import Help from '../components/help'
@@ -153,6 +154,9 @@ function App({error, Component, pageProps, query}) {
                           <>
                             <IEWarning />
                             {pageProps.baseLocale && <WelcomeMessage />}
+                            {pageProps.baseLocale && pageProps.baseLocale.status === 'published' && (
+                              <CertificationMessage balId={query.balId} codeCommune={query.codeCommune} />
+                            )}
                             <Component {...otherPageProps} />
                           </>
                         )}

@@ -9,8 +9,9 @@ import BalDataContext from '../contexts/bal-data'
 import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
+import CertificationButton from './certification-button'
 
-const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, onSubmit}) => {
+const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) => {
   const {voies, toponymes} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)
@@ -60,7 +61,7 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     resetPositionType()
   }
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = useCallback(async certifie => {
     const data = {selectedVoieId, selectedToponymeId, numeros: selectedNumeros, positionType}
     const body = data.numeros
     const type = data.positionType
@@ -94,6 +95,10 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
       r.comment = commentCondition(r)
 
+      if (certifie !== null) {
+        r.certifie = certifie
+      }
+
       return r
     })
 
@@ -126,9 +131,8 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           title='Modification multiple'
           isConfirmLoading={isLoading}
           cancelLabel='Annuler'
-          confirmLabel={isLoading ? 'Chargement...' : 'Enregistrer'}
+          hasFooter={false}
           onCloseComplete={() => handleComplete()}
-          onConfirm={() => handleConfirm()}
         >
 
           <Paragraph marginBottom={8} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
@@ -204,6 +208,14 @@ const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
             onChange={onRemoveAllCommentsChange}
           />
 
+          <Pane display='flex' justifyContent='end' paddingBottom={16}>
+            <CertificationButton
+              isLoading={isLoading}
+              isCertified={isAllSelectedCertifie}
+              onConfirm={handleConfirm}
+              onCancel={() => setIsShown(false)}
+            />
+          </Pane>
         </Dialog>
 
         {error && (
@@ -237,6 +249,7 @@ GroupedActions.propTypes = {
   selectedNumerosIds: PropTypes.array.isRequired,
   resetSelectedNumerosIds: PropTypes.func.isRequired,
   setIsRemoveWarningShown: PropTypes.func.isRequired,
+  isAllSelectedCertifie: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired
 }
 

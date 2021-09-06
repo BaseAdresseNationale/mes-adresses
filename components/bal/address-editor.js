@@ -13,7 +13,6 @@ function AddressEditor({onAddNumero, onAddToponyme, onCancel, isToponyme, setIsT
   return (
     <Pane>
       <Heading is='h4'>Nouvelle adresse</Heading>
-
       <SelectField
         label='Créer un nouveau'
         value={isToponyme ? 'toponyme' : 'numero'}
