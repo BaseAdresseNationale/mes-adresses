@@ -99,7 +99,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
         {numero.certifie && (
           <Tooltip content='Cette adresse est certifiée par la commune' position={Position.RIGHT}>
-            <EndorsedIcon color='success' size={13} marginX={4} style={{verticalAlign: 'text-top'}} />
+            <EndorsedIcon color='success' size={13} marginX={4} marginBottom={2} style={{verticalAlign: 'middle'}} />
           </Tooltip>
         )}
       </Pane>
