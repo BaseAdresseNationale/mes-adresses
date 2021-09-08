@@ -29,7 +29,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
   const [certifie, setCertifie] = useState(initialValue?.certifie || false)
-  const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
+  const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero.toString() || '')
   const [nomVoie, onNomVoieChange] = useState('')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
   const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
@@ -153,8 +153,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           label='Toponyme'
           flex={1}
           marginBottom={16}
-          value={toponymeId}
-          onChange={({target}) => setToponymeId(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
+          value={toponymeId || ''}
+          onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
         >
           <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
