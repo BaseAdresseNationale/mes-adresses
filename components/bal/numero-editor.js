@@ -29,7 +29,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
   const [certifie, setCertifie] = useState(initialValue?.certifie || false)
-  const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero || '')
+  const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero.toString() || '')
   const [nomVoie, onNomVoieChange] = useState('')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
   const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
