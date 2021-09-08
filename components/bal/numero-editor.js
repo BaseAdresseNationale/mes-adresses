@@ -153,8 +153,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           label='Toponyme'
           flex={1}
           marginBottom={16}
-          value={toponymeId || undefined}
-          onChange={({target}) => setToponymeId(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
+          value={toponymeId || ''}
+          onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
         >
           <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
           {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
