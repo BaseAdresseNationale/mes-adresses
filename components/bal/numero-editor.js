@@ -153,7 +153,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
           label='Toponyme'
           flex={1}
           marginBottom={16}
-          value={toponymeId}
+          value={toponymeId || undefined}
           onChange={({target}) => setToponymeId(target.value === REMOVE_TOPONYME_LABEL ? null : target.value)}
         >
           <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
