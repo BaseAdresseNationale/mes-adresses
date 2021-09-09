@@ -4,6 +4,7 @@ import {Pane, Menu, CogIcon, Dialog, Paragraph, Strong} from 'evergreen-ui'
 
 import LocalStorageContext from '../contexts/local-storage'
 import BalDataContext from '../contexts/bal-data'
+import TokenContext from '../contexts/token'
 
 import {getCommune} from '../lib/bal-api'
 
@@ -12,6 +13,7 @@ const CertificationMessage = ({balId, codeCommune}) => {
 
   const {getInformedAboutCertification, addInformedAboutCertification} = useContext(LocalStorageContext)
   const {certifyAllNumeros} = useContext(BalDataContext)
+  const {token} = useContext(TokenContext)
 
   const handleConfirmation = async certifAuto => {
     if (certifAuto) {
@@ -42,7 +44,7 @@ const CertificationMessage = ({balId, codeCommune}) => {
 
   return (
     <Dialog
-      isShown={isShown}
+      isShown={isShown && token}
       width={800}
       intent='success'
       title='Nouvelle fonctionnalité de certification'

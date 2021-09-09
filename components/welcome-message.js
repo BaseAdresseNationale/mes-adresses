@@ -1,9 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {Pane, Dialog, Alert, Link, Paragraph, Heading, Strong, HelpIcon} from 'evergreen-ui'
 
+import TokenContext from '../contexts/token'
 import LocalStorageContext from '../contexts/local-storage'
 
 function WelcomeMessage() {
+  const {token} = useContext(TokenContext)
   const {wasWelcomed, setWasWelcomed} = useContext(LocalStorageContext)
   const [isShown, setIsShown] = useState(false)
 
@@ -13,7 +15,7 @@ function WelcomeMessage() {
 
   return (
     <Dialog
-      isShown={isShown}
+      isShown={isShown && token}
       intent='success'
       title=' Bienvenue sur votre Base Adresse Locale'
       confirmLabel='Commencer l’adressage'
