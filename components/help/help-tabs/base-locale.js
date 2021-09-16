@@ -1,5 +1,5 @@
 import React from 'react'
-import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tablist, Tab, CogIcon, PlusIcon} from 'evergreen-ui'
+import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tab, CogIcon, PlusIcon} from 'evergreen-ui'
 
 import BALRecovery from '../../bal-recovery/bal-recovery'
 
@@ -13,7 +13,7 @@ const BaseLocale = () => {
     <Pane>
       <Tuto title='Créer une nouvelle Base Adresse Locale'>
         <Paragraph marginTop='default'>
-          Sur la page <b>Nouvelle Base Adresse Locale</b>, sélectionnez l’onglet <Tablist><Tab isSelected>Créer</Tab></Tablist>
+          Sur la page <b>Nouvelle Base Adresse Locale</b>, sélectionnez l’onglet <Tab isSelected>Créer</Tab>
         </Paragraph>
         <OrderedList margin={8}>
           <ListItem>Indiquez le nom de votre Base Adresse Locale dans le champ <Strong size={500} fontStyle='italic'>Nom</Strong>. Il vous permettra de pouvoir identifier votre Base Adresse Locale.</ListItem>
@@ -26,7 +26,7 @@ const BaseLocale = () => {
 
       <Tuto title='Importer une Base Adresse Locale'>
         <Paragraph marginTop='default'>
-          Sur la page <b>Nouvelle Base Adresse Locale</b>, sélectionnez l’onglet <Tablist><Tab isSelected>Importer un fichier CSV</Tab></Tablist>
+          Sur la page <b>Nouvelle Base Adresse Locale</b>, sélectionnez l’onglet <Tab isSelected>Importer un fichier CSV</Tab>
         </Paragraph>
         <OrderedList margin={8}>
           <ListItem>Sélectionnez ou déposez votre fichier au format <b>csv</b>. Attention ce fichier ne doit pas dépasser 10 Mo.</ListItem>
