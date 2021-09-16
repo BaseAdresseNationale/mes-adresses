@@ -214,7 +214,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       )}
 
       <CertificationButton
-        isCertified={initialValue?.certifie}
+        isCertified={initialValue?.certifie || false}
         isLoading={isLoading}
         onConfirm={setCertifie}
         onCancel={onFormCancel}
