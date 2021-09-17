@@ -228,7 +228,10 @@ NumeroEditor.propTypes = {
   initialVoieId: PropTypes.string,
   initialValue: PropTypes.shape({
     numero: PropTypes.number.isRequired,
-    voie: PropTypes.string.isRequired,
+    voie: PropTypes.oneOfType([
+      PropTypes.object, // When "voie" comes from getNumerosToponyme() -> it's an Object with "nomVoie", needed to sort numeros by voie and display nomVoie
+      PropTypes.string // When "voie" comes from getNumeros() -> it's a String (only the id of "voie" is return)
+    ]).isRequired,
     suffixe: PropTypes.string,
     parcelles: PropTypes.array,
     comment: PropTypes.string,
