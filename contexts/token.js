@@ -21,7 +21,7 @@ export function TokenContextProvider({balId, _token, ...props}) {
       setToken(baseLocale.token)
       setEmails(baseLocale.emails)
     } else {
-      setToken(false)
+      setToken(null)
     }
   }, [balId])
 

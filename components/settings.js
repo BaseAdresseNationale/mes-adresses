@@ -234,12 +234,6 @@ const Settings = React.memo(({nomBaseLocale}) => {
             </Button>
 
           </Pane>
-        ) : token === false ? (
-          <Pane padding={16}>
-            <Alert intent='danger' title='Jeton de sécurité invalide ou non renseigné'>
-              Vous n’avez pas accès aux paramètres de cette Base Adresse Locale.
-            </Alert>
-          </Pane>
         ) : (
           <Spinner size={64} margin='auto' />
         )}
