@@ -193,14 +193,14 @@ const Numeros = () => {
             </ListItem>
           </OrderedList>
 
-          <Paragraph>
+          <Pane>
             <Strong>Code couleur des parcelles :</Strong>
             <Paragraph display='flex'>
               <Badge margin={4} height='100%' color='green'>parcelle associée</Badge>
               <Badge margin={4} height='100%' color='yellow'>parcelle pouvant être associée</Badge>
               <Badge margin={4} height='100%' color='red'>parcelle pouvant être dissociée</Badge>
             </Paragraph>
-          </Paragraph>
+          </Pane>
         </Tuto>
 
         <Tuto title='Ajouter une note ou un commentaire'>
