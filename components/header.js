@@ -1,13 +1,13 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import NextLink from 'next/link'
 import Image from 'next/image'
-import {Pane, Button, Link} from 'evergreen-ui'
+import {Pane, Button, Link, HelpIcon, BookIcon} from 'evergreen-ui'
 
-const links = [
-  {text: 'Guides de l’adressage', link: 'https://adresse.data.gouv.fr/guides'}
-]
+import HelpContext from '../contexts/help'
 
 const Header = () => {
+  const {showHelp, setShowHelp} = useContext(HelpContext)
+
   return (
     <Pane borderBottom padding={16} backgroundColor='white' display='flex' justifyContent='space-between' alignItems='center' flexShrink='0' width='100%' maxHeight={76}>
       <Pane cursor='pointer'>
@@ -18,13 +18,19 @@ const Header = () => {
         </NextLink>
       </Pane>
       <Pane display='flex' justifyContent='space-around' alignItems='center'>
-        {links.map(link => (
-          <Button key={link.text} appearance='minimal' marginRight='12px' minHeight='55px'>
-            <Link href={link.link} textDecoration='none' color='neutral' target='_blank'>
-              {link.text}
-            </Link>
-          </Button>
-        ))}
+        <Button
+          appearance='minimal' marginRight='12px' minHeight='55px'
+          iconAfter={HelpIcon}
+          onClick={() => setShowHelp(!showHelp)}
+        >
+          Besoin d’aide
+        </Button>
+
+        <Button appearance='minimal' marginRight='12px' minHeight='55px' iconAfter={BookIcon}>
+          <Link href='https://adresse.data.gouv.fr/guides' textDecoration='none' color='neutral' target='_blank'>
+            Guides de l’adressage
+          </Link>
+        </Button>
       </Pane>
     </Pane>
   )
