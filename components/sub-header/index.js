@@ -1,13 +1,12 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Popover, Menu, IconButton, Position, Button, MenuIcon, HelpIcon, CogIcon, DownloadIcon} from 'evergreen-ui'
+import {Pane, Popover, Menu, IconButton, Position, Button, MenuIcon, CogIcon, DownloadIcon, Heading} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
-import HelpContext from '../../contexts/help'
 import SettingsContext from '../../contexts/settings'
 
 import useError from '../../hooks/error'
@@ -22,7 +21,6 @@ const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data
 
 const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden, onToggle}) => {
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
-  const {showHelp, setShowHelp} = useContext(HelpContext)
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token} = useContext(TokenContext)
 
@@ -85,17 +83,6 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
         />
 
         <Pane marginLeft='auto' display='flex'>
-
-          <Button
-            height={24}
-            iconAfter={HelpIcon}
-            appearance='minimal'
-            marginRight={16}
-            onClick={() => setShowHelp(!showHelp)}
-          >
-            Besoin d’aide
-          </Button>
-
           <Popover
             position={Position.BOTTOM_RIGHT}
             content={
