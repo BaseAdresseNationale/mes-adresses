@@ -1,7 +1,7 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Popover, Menu, IconButton, Position, Button, MenuIcon, CogIcon, DownloadIcon, Heading} from 'evergreen-ui'
+import {Pane, Popover, Menu, IconButton, Position, Button, MenuIcon, CogIcon, DownloadIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
