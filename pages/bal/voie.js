@@ -311,7 +311,6 @@ Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
   const defaultNumeros = await getNumeros(voie._id)
 
   return {
-    layout: 'sidebar',
     voie,
     baseLocale,
     commune,
