@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
 import {Pane, Popover, Menu, Position, Button, CogIcon, DownloadIcon} from 'evergreen-ui'
@@ -7,7 +7,6 @@ import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
-import SettingsContext from '../../contexts/settings'
 
 import useError from '../../hooks/error'
 
@@ -15,17 +14,22 @@ import Breadcrumbs from '../breadcrumbs'
 
 import Publication from './publication'
 import DemoWarning from './demo-warning'
+import Settings from './settings'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
 const SubHeader = React.memo(({commune, voie, toponyme}) => {
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
-  const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token} = useContext(TokenContext)
 
+  const [isSettingDislayed, setIsSettingDislayed] = useState(false)
   const [setError] = useError(null)
 
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
+
+  const toggleSettings = () => {
+    setIsSettingDislayed(!isSettingDislayed)
+  }
 
   const handleChangeStatus = async () => {
     try {
@@ -86,7 +90,7 @@ const SubHeader = React.memo(({commune, voie, toponyme}) => {
                 <>
                   <Menu.Divider />
                   <Menu.Group>
-                    <Menu.Item icon={CogIcon} onSelect={() => setShowSettings(!showSettings)}>
+                    <Menu.Item icon={CogIcon} onSelect={toggleSettings}>
                       Paramètres
                     </Menu.Item>
                   </Menu.Group>
@@ -116,6 +120,12 @@ const SubHeader = React.memo(({commune, voie, toponyme}) => {
             />)}
         </Pane>
       </Pane>
+
+      <Settings
+        isShow={isSettingDislayed}
+        handleClose={() => setIsSettingDislayed(false)}
+      />
+
       {baseLocale.status === 'demo' && (
         <DemoWarning baseLocale={baseLocale} token={token} />
       )}
