@@ -8,14 +8,12 @@ import CertificationMessage from '../components/certification-message'
 
 import Map from '../components/map'
 
-import {SettingsContextProvider} from '../contexts/settings'
 import {DrawContextProvider} from '../contexts/draw'
 import {MarkersContextProvider} from '../contexts/markers'
 import {MapContextProvider} from '../contexts/map'
 import {ParcellesContextProvider} from '../contexts/parcelles'
 import BalDataContext from '../contexts/bal-data'
 
-import Settings from '../components/settings'
 import Sidebar from '../components/layout/sidebar'
 
 function Editor({children, pageProps}) {
@@ -61,10 +59,7 @@ function Editor({children, pageProps}) {
 
             {baseLocale ? (
               <>
-                <SettingsContextProvider>
-                  <Settings nomBaseLocale={baseLocale.nom} />
-                  <SubHeader {...pageProps} />
-                </SettingsContextProvider>
+                <SubHeader {...pageProps} />
 
                 <Map
                   top={topOffset}
