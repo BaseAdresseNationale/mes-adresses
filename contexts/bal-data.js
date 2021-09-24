@@ -1,7 +1,7 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 
-import {getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, certifyBAL} from '../lib/bal-api'
+import {getParcelles, getCommuneGeoJson, getCommune, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, certifyBAL} from '../lib/bal-api'
 
 import TokenContext from './token'
 
@@ -17,7 +17,8 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const [toponymes, setToponymes] = useState()
   const [voie, setVoie] = useState()
   const [toponyme, setToponyme] = useState()
-  const [baseLocale, setBaseLocal] = useState({})
+  const [commune, setCommune] = useState()
+  const [baseLocale, setBaseLocal] = useState()
 
   const {token} = useContext(TokenContext)
 
@@ -36,6 +37,15 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
       setGeojson(geojson)
     } else {
       setGeojson(null)
+    }
+  }, [balId, codeCommune])
+
+  const reloadCommune = useCallback(async () => {
+    if (balId && codeCommune) {
+      const commune = await getCommune(balId, codeCommune)
+      setCommune(commune)
+    } else {
+      setCommune(null)
     }
   }, [balId, codeCommune])
 
@@ -124,10 +134,11 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     setEditingId(null)
     reloadNumeros()
     reloadNumerosToponyme()
+    reloadCommune()
     reloadVoies()
     reloadToponymes()
     reloadBaseLocale()
-  }, [setEditingId, reloadNumeros, reloadVoies, reloadToponymes, reloadNumerosToponyme, reloadBaseLocale])
+  }, [setEditingId, reloadNumeros, reloadCommune, reloadVoies, reloadToponymes, reloadNumerosToponyme, reloadBaseLocale])
 
   return (
     <BalDataContext.Provider
@@ -140,12 +151,14 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
         geojson,
         baseLocale,
         codeCommune,
+        commune,
         voie,
         numeros,
         voies,
         toponymes,
         setEditingId,
         reloadNumeros,
+        reloadCommune,
         reloadVoies,
         reloadToponymes,
         reloadBaseLocale,
