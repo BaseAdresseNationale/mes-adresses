@@ -21,23 +21,23 @@ import Sidebar from '../components/layout/sidebar'
 function Editor({children, pageProps}) {
   const {baseLocale, commune} = useContext(BalDataContext)
 
-  const [isHidden, setIsHidden] = useState(false)
+  const [isSidebarHidden, setIsSidebarHidden] = useState(false)
 
   const onToggle = useCallback(isEditing => {
-    if (isEditing && isHidden) { // Force opening sidebar when numero is edited:
-      setIsHidden(false)
+    if (isEditing && isSidebarHidden) { // Force opening sidebar when numero is edited:
+      setIsSidebarHidden(false)
     } else {
-      setIsHidden(isHidden => !isHidden)
+      setIsSidebarHidden(isSidebarHidden => !isSidebarHidden)
     }
-  }, [isHidden])
+  }, [isSidebarHidden])
 
   const leftOffset = useMemo(() => {
-    if (!isHidden) {
+    if (!isSidebarHidden) {
       return 500
     }
 
     return 0
-  }, [isHidden])
+  }, [isSidebarHidden])
 
   const topOffset = useMemo(() => {
     if (baseLocale?.status === 'demo') {
@@ -74,7 +74,7 @@ function Editor({children, pageProps}) {
 
                 <Sidebar
                   top={topOffset}
-                  isHidden={isHidden}
+                  isHidden={isSidebarHidden}
                   size={500}
                   elevation={2}
                   background='tint2'
