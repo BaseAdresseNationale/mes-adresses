@@ -18,8 +18,8 @@ import Settings from './settings'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
-const SubHeader = React.memo(({commune, voie, toponyme}) => {
-  const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
+const SubHeader = React.memo(({nomCommune, voie, toponyme}) => {
+  const {baseLocale, commune, reloadBaseLocale} = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
 
   const [isSettingDislayed, setIsSettingDislayed] = useState(false)
@@ -68,7 +68,7 @@ const SubHeader = React.memo(({commune, voie, toponyme}) => {
 
         <Breadcrumbs
           baseLocale={baseLocale}
-          commune={commune}
+          commune={{...commune, nom: nomCommune}}
           voie={voie}
           toponyme={toponyme}
           marginLeft={8}
@@ -114,6 +114,7 @@ const SubHeader = React.memo(({commune, voie, toponyme}) => {
               border
               token={token}
               baseLocale={baseLocale}
+              isBALCertified={commune.nbNumeros === commune.nbNumerosCertifies}
               status={baseLocale.status}
               onChangeStatus={handleChangeStatus}
               onPublish={handlePublication}
@@ -134,13 +135,12 @@ const SubHeader = React.memo(({commune, voie, toponyme}) => {
 })
 
 SubHeader.propTypes = {
-  commune: PropTypes.object,
+  nomCommune: PropTypes.string.isRequired,
   voie: PropTypes.object,
   toponyme: PropTypes.object
 }
 
 SubHeader.defaultProps = {
-  commune: null,
   voie: null,
   toponyme: null
 }

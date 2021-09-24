@@ -53,13 +53,13 @@ function Editor({children, pageProps}) {
 
             <WelcomeMessage />
 
-            {baseLocale.status === 'published' && (
-              <CertificationMessage balId={baseLocale._id} codeCommune={commune.code} />
-            )}
-
-            {baseLocale ? (
+            {baseLocale && commune ? (
               <>
-                <SubHeader {...pageProps} />
+                <SubHeader nomCommune={pageProps.commune.nom} {...pageProps} />
+
+                {baseLocale.status === 'published' && (
+                  <CertificationMessage balId={baseLocale._id} codeCommune={commune.code} />
+                )}
 
                 <Map
                   top={topOffset}
