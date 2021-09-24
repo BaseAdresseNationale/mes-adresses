@@ -50,8 +50,7 @@ All.getInitialProps = async () => {
   const basesLocales = await listBasesLocales()
 
   return {
-    basesLocales,
-    layout: 'fullscreen'
+    basesLocales
   }
 }
 

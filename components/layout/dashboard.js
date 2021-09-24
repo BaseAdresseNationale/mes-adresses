@@ -44,8 +44,6 @@ const BackButton = () => {
 const Mobile = ({title, backButton, mapData, children}) => {
   return (
     <Pane display='flex' backgroundColor='#fff' flexDirection='column' width='100%'>
-      <Header />
-
       {backButton && (
         <BackButton />
       )}
@@ -65,28 +63,20 @@ Mobile.propTypes = propTypes
 
 const Desktop = ({title, mapData, backButton, children}) => {
   return (
-    <Pane height='100vh' display='flex' backgroundColor='#fff' flexDirection='column'>
-      <Header />
-
-      <Pane display='flex' width='100%' height='calc(100vh - 77px)'>
-        <Pane display='flex' flexDirection='column' minWidth={450} overflowY='auto'>
-          {backButton && (
-            <BackButton />
-          )}
-          <Heading size={600} margin={0} padding='1em' textAlign='center' backgroundColor='#f9f9fb'>
-            {title}
-          </Heading>
-          {children}
-        </Pane>
-
-        <Pane flex={1}>
-          <Map {...mapData} />
-        </Pane>
+    <Pane display='flex' width='100%' height='calc(100vh - 77px)'>
+      <Pane display='flex' flexDirection='column' minWidth={450} overflowY='auto'>
+        {backButton && (
+          <BackButton />
+        )}
+        <Heading size={600} margin={0} padding='1em' textAlign='center' backgroundColor='#f9f9fb'>
+          {title}
+        </Heading>
+        {children}
       </Pane>
-      <style jsx>{`
 
-
-      `}</style>
+      <Pane flex={1}>
+        <Map {...mapData} />
+      </Pane>
     </Pane>
   )
 }

@@ -1,7 +1,7 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Popover, Menu, IconButton, Position, Button, MenuIcon, CogIcon, DownloadIcon} from 'evergreen-ui'
+import {Pane, Popover, Menu, Position, Button, CogIcon, DownloadIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
@@ -10,7 +10,6 @@ import TokenContext from '../../contexts/token'
 import SettingsContext from '../../contexts/settings'
 
 import useError from '../../hooks/error'
-import useWindowSize from '../../hooks/window-size'
 
 import Breadcrumbs from '../breadcrumbs'
 
@@ -19,13 +18,12 @@ import DemoWarning from './demo-warning'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
-const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden, onToggle}) => {
+const SubHeader = React.memo(({commune, voie, toponyme}) => {
   const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token} = useContext(TokenContext)
 
   const [setError] = useError(null)
-  const {innerWidth} = useWindowSize()
 
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
 
@@ -63,16 +61,6 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
         display='flex'
         padding={8}
       >
-        {layout !== 'fullscreen' && innerWidth && innerWidth < 800 && (
-          <IconButton
-            height={24}
-            marginRight={8}
-            icon={MenuIcon}
-            isActive={!isSidebarHidden}
-            appearance='minimal'
-            onClick={onToggle}
-          />
-        )}
 
         <Breadcrumbs
           baseLocale={baseLocale}
@@ -138,17 +126,13 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
 SubHeader.propTypes = {
   commune: PropTypes.object,
   voie: PropTypes.object,
-  toponyme: PropTypes.object,
-  layout: PropTypes.oneOf(['fullscreen', 'sidebar']).isRequired,
-  isSidebarHidden: PropTypes.bool,
-  onToggle: PropTypes.func.isRequired
+  toponyme: PropTypes.object
 }
 
 SubHeader.defaultProps = {
   commune: null,
   voie: null,
-  toponyme: null,
-  isSidebarHidden: false
+  toponyme: null
 }
 
 export default SubHeader
