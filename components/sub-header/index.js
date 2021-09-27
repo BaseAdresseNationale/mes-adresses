@@ -68,7 +68,7 @@ const SubHeader = React.memo(({nomCommune, voie, toponyme}) => {
 
         <Breadcrumbs
           baseLocale={baseLocale}
-          commune={{...commune, nom: nomCommune}}
+          commune={commune ? {...commune, nom: nomCommune} : null}
           voie={voie}
           toponyme={toponyme}
           marginLeft={8}
@@ -109,7 +109,7 @@ const SubHeader = React.memo(({nomCommune, voie, toponyme}) => {
             </Button>
           </Popover>
 
-          {baseLocale.status !== 'demo' && (
+          {baseLocale.status !== 'demo' && commune && (
             <Publication
               border
               token={token}
@@ -135,12 +135,13 @@ const SubHeader = React.memo(({nomCommune, voie, toponyme}) => {
 })
 
 SubHeader.propTypes = {
-  nomCommune: PropTypes.string.isRequired,
+  nomCommune: PropTypes.string,
   voie: PropTypes.object,
   toponyme: PropTypes.object
 }
 
 SubHeader.defaultProps = {
+  nomCommune: null,
   voie: null,
   toponyme: null
 }
