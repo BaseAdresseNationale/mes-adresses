@@ -81,7 +81,7 @@ function Editor({children, pageProps}) {
                 </Sidebar>
               </>
             ) : (
-              <Pane display='flex' alignItems='center' justifyContent='center' height={400}>
+              <Pane display='flex' alignItems='center' justifyContent='center' height='100%'>
                 <Spinner />
               </Pane>
             )}
