@@ -4,7 +4,6 @@ import Router from 'next/router'
 import {Heading, Pane, Icon} from 'evergreen-ui'
 
 import Map from '../dashboard/map'
-import Header from '../header'
 
 const MOBILE_WIDTH = '820'
 
