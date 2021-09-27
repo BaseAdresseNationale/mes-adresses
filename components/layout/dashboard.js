@@ -4,6 +4,7 @@ import Router from 'next/router'
 import {Heading, Pane, Icon} from 'evergreen-ui'
 
 import Map from '../dashboard/map'
+import Header from '../header'
 
 const MOBILE_WIDTH = '820'
 
@@ -43,6 +44,8 @@ const BackButton = () => {
 const Mobile = ({title, backButton, mapData, children}) => {
   return (
     <Pane display='flex' backgroundColor='#fff' flexDirection='column' width='100%'>
+      <Header />
+
       {backButton && (
         <BackButton />
       )}
@@ -62,20 +65,28 @@ Mobile.propTypes = propTypes
 
 const Desktop = ({title, mapData, backButton, children}) => {
   return (
-    <Pane display='flex' width='100%' height='calc(100vh - 77px)'>
-      <Pane display='flex' flexDirection='column' minWidth={450} overflowY='auto'>
-        {backButton && (
-          <BackButton />
-        )}
-        <Heading size={600} margin={0} padding='1em' textAlign='center' backgroundColor='#f9f9fb'>
-          {title}
-        </Heading>
-        {children}
-      </Pane>
+    <Pane height='100vh' display='flex' backgroundColor='#fff' flexDirection='column'>
+      <Header />
 
-      <Pane flex={1}>
-        <Map {...mapData} />
+      <Pane display='flex' width='100%' height='calc(100vh - 77px)'>
+        <Pane display='flex' flexDirection='column' minWidth={450} overflowY='auto'>
+          {backButton && (
+            <BackButton />
+          )}
+          <Heading size={600} margin={0} padding='1em' textAlign='center' backgroundColor='#f9f9fb'>
+            {title}
+          </Heading>
+          {children}
+        </Pane>
+
+        <Pane flex={1}>
+          <Map {...mapData} />
+        </Pane>
       </Pane>
+      <style jsx>{`
+
+
+      `}</style>
     </Pane>
   )
 }

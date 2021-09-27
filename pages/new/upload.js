@@ -32,4 +32,8 @@ function Index() {
   )
 }
 
+Index.getInitialProps = () => ({
+  layout: 'fullscreen'
+})
+
 export default Index

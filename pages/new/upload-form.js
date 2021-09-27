@@ -237,4 +237,8 @@ function UploadForm() {
   )
 }
 
+UploadForm.getInitialProps = () => ({
+  layout: 'fullscreen'
+})
+
 export default UploadForm

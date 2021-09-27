@@ -89,7 +89,8 @@ Departement.getInitialProps = async ({query}) => {
     filteredCommunesInBAL,
     contoursCommunes,
     basesLocalesDepartementWithoutDemo,
-    BALGroupedByCommune
+    BALGroupedByCommune,
+    layout: 'fullscreen'
   }
 }
 
