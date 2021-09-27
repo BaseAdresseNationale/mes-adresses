@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
 
-import Header from '../components/header'
 import Footer from '../components/footer'
 import BALRecovery from '../components/bal-recovery/bal-recovery'
 
@@ -18,8 +17,7 @@ const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'
 
 function Index() {
   return (
-    <Pane height='100vh' display='flex' flexDirection='column'>
-      <Header />
+    <Pane display='flex' flexDirection='column' flex={1}>
       <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
         Mes Bases Adresse Locales
         <Button iconBefore={PlusIcon} onClick={() => Router.push('/new')}>Créer une Base Adresse Locale</Button>
@@ -33,12 +31,6 @@ function Index() {
       <Footer />
     </Pane>
   )
-}
-
-Index.getInitialProps = async () => {
-  return {
-    layout: 'fullscreen'
-  }
 }
 
 export default Index

@@ -184,7 +184,6 @@ Index.getInitialProps = async ({baseLocale}) => {
   )
 
   return {
-    layout: 'sidebar',
     defaultCommunes: communes,
     baseLocale
   }
