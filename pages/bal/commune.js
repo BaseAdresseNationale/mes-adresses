@@ -282,6 +282,7 @@ Commune.getInitialProps = async ({baseLocale, commune}) => {
   const defaultVoies = await getVoies(baseLocale._id, commune.code)
 
   return {
+    layout: 'sidebar',
     baseLocale,
     commune,
     defaultVoies

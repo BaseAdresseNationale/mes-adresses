@@ -1,14 +1,15 @@
-import React, {useMemo, useState} from 'react'
+import React, {useMemo, useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import {Badge, Button, Alert, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
-import {getBaseLocaleCsvUrl} from '../../lib/bal-api'
+import {getBaseLocaleCsvUrl, getCommune} from '../../lib/bal-api'
 
-const Publication = ({token, baseLocale, status, isBALCertified, onChangeStatus, onPublish}) => {
+const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPublish}) => {
   const [isShown, setIsShown] = useState(false)
   const [noBal, setNoBal] = useState(false)
   const [multiBal, setMultiBal] = useState(false)
+  const [isBALCertified, setIsBALCertified] = useState(false)
 
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
 
@@ -31,6 +32,18 @@ const Publication = ({token, baseLocale, status, isBALCertified, onChangeStatus,
       setIsShown(true)
     }
   }
+
+  useEffect(() => {
+    async function fetchCommune() {
+      const communeBAL = await getCommune(baseLocale._id, commune.code)
+      const {nbNumeros, nbNumerosCertifies} = communeBAL
+      setIsBALCertified(nbNumeros === nbNumerosCertifies)
+    }
+
+    if (baseLocale?._id && commune?.code) {
+      fetchCommune()
+    }
+  }, [baseLocale, commune])
 
   if (!token) {
     return (
@@ -187,7 +200,9 @@ Publication.defaultProps = {
 Publication.propTypes = {
   token: PropTypes.string,
   baseLocale: PropTypes.object.isRequired,
-  isBALCertified: PropTypes.bool.isRequired,
+  commune: PropTypes.shape({
+    code: PropTypes.string.isRequired
+  }).isRequired,
   status: PropTypes.oneOf([
     'draft', 'ready-to-publish', 'published', 'demo'
   ]).isRequired,
