@@ -180,32 +180,35 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   return (
     <>
       <VoieHeading defaultVoie={voie} />
-      <Pane
-        flexShrink={0}
-        elevation={0}
-        backgroundColor='white'
-        padding={16}
-        display='flex'
-        alignItems='center'
-        minHeight={64}
-      >
-        <Pane>
-          <Heading>Liste des numéros</Heading>
-        </Pane>
-        {token && (
-          <Pane marginLeft='auto'>
-            <Button
-              iconBefore={AddIcon}
-              appearance='primary'
-              intent='success'
-              disabled={isAdding || isEditing}
-              onClick={onEnableAdding}
-            >
-              Ajouter un numéro
-            </Button>
+
+      {!isEditing && (
+        <Pane
+          flexShrink={0}
+          elevation={0}
+          backgroundColor='white'
+          padding={16}
+          display='flex'
+          alignItems='center'
+          minHeight={64}
+        >
+          <Pane>
+            <Heading>Liste des numéros</Heading>
           </Pane>
-        )}
-      </Pane>
+          {token && (
+            <Pane marginLeft='auto'>
+              <Button
+                iconBefore={AddIcon}
+                appearance='primary'
+                intent='success'
+                disabled={isAdding || isEditing}
+                onClick={onEnableAdding}
+              >
+                Ajouter un numéro
+              </Button>
+            </Pane>
+          )}
+        </Pane>
+      )}
 
       {isGroupedActionsShown && numeros && (
         <GroupedActions
@@ -238,20 +241,23 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
 
       <Pane flex={1} overflowY='scroll'>
         <Table>
-          <Table.Head>
-            {!isEditing && numeros && token && filtered.length > 1 && (
-              <Table.Cell flex='0 1 1'>
-                <Checkbox
-                  checked={isAllSelected}
-                  onChange={handleSelectAll}
-                />
-              </Table.Cell>
-            )}
-            <Table.SearchHeaderCell
-              placeholder='Rechercher un numéro'
-              onChange={setFilter}
-            />
-          </Table.Head>
+          {!isEditing && (
+            <Table.Head>
+              {numeros && token && filtered.length > 1 && (
+                <Table.Cell flex='0 1 1'>
+                  <Checkbox
+                    checked={isAllSelected}
+                    onChange={handleSelectAll}
+                  />
+                </Table.Cell>
+              )}
+              <Table.SearchHeaderCell
+                placeholder='Rechercher un numéro'
+                onChange={setFilter}
+              />
+            </Table.Head>
+          )}
+
           {isAdding && (
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
@@ -270,6 +276,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               </Table.TextCell>
             </Table.Row>
           )}
+
           {editingId && editingId !== voie._id ? (
             <Table.Row height='auto'>
               <Table.Cell display='block' paddingY={12} background='tint1'>
@@ -282,24 +289,26 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
               </Table.Cell>
             </Table.Row>
           ) : (
-            filtered.map(numero => (
-              <TableRow
-                {...numero}
-                key={numero._id}
-                id={numero._id}
-                isCertified={numero.certifie}
-                comment={numero.comment}
-                warning={numero.positions.find(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
-                isSelectable={!isEditing}
-                label={numero.numeroComplet}
-                secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-                toponymeId={numero.toponyme}
-                handleSelect={handleSelect}
-                isSelected={selectedNumerosIds.includes(numero._id)}
-                onEdit={onEnableEditing}
-                onRemove={onRemove}
-              />
-            ))
+            !isEditing && (
+              filtered.map(numero => (
+                <TableRow
+                  {...numero}
+                  key={numero._id}
+                  id={numero._id}
+                  isCertified={numero.certifie}
+                  comment={numero.comment}
+                  warning={numero.positions.find(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
+                  isSelectable={!isEditing}
+                  label={numero.numeroComplet}
+                  secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+                  toponymeId={numero.toponyme}
+                  handleSelect={handleSelect}
+                  isSelected={selectedNumerosIds.includes(numero._id)}
+                  onEdit={onEnableEditing}
+                  onRemove={onRemove}
+                />
+              ))
+            )
           )}
         </Table>
       </Pane>
