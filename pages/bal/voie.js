@@ -210,7 +210,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         </Pane>
       )}
 
-      {isGroupedActionsShown && numeros && (
+      {isGroupedActionsShown && numeros && !isEditing && (
         <GroupedActions
           idVoie={voie._id}
           numeros={numeros}
