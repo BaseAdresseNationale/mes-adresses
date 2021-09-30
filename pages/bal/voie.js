@@ -200,7 +200,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
                 iconBefore={AddIcon}
                 appearance='primary'
                 intent='success'
-                disabled={isAdding || isEditing}
                 onClick={onEnableAdding}
               >
                 Ajouter un numéro
