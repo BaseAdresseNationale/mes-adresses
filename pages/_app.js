@@ -113,47 +113,41 @@ App.getInitialProps = async ({Component, ctx}) => {
   let voie
   let toponyme
 
-  if (query.balId) {
-    try {
+  try {
+    if (query.balId) {
       baseLocale = await getBaseLocale(query.balId)
-    } catch (error) {
-      return {
-        pageProps,
-        error: {
-          statusCode: 404
-        }
-      }
     }
-  }
 
-  if (query.codeCommune) {
-    try {
+    if (query.codeCommune) {
       commune = await getCommune(query.codeCommune, {
         fields: 'contour'
       })
-    } catch (error) {
-      commune = {
-        code: query.codeCommune
+    }
+
+    if (query.idVoie) {
+      voie = await getVoie(query.idVoie)
+    }
+
+    if (query.idToponyme) {
+      toponyme = await getToponyme(query.idToponyme)
+    }
+
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps({
+        ...ctx,
+        baseLocale,
+        commune,
+        voie,
+        toponyme
+      })
+    }
+  } catch (error) {
+    return {
+      pageProps,
+      error: {
+        statusCode: 404
       }
     }
-  }
-
-  if (query.idVoie) {
-    voie = await getVoie(query.idVoie)
-  }
-
-  if (query.idToponyme) {
-    toponyme = await getToponyme(query.idToponyme)
-  }
-
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps({
-      ...ctx,
-      baseLocale,
-      commune,
-      voie,
-      toponyme
-    })
   }
 
   return {
