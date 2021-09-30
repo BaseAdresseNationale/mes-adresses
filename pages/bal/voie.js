@@ -46,7 +46,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [isAllSelectedCertifie, setIsAllSelectedCertifie] = useState(false)
 
-  const isGroupedActionsShown = useMemo(() => token && selectedNumerosIds.length > 1, [token, selectedNumerosIds])
+  const isGroupedActionsShown = useMemo(() => token && !isEditing && selectedNumerosIds.length > 1, [token, selectedNumerosIds, isEditing])
   const noFilter = numeros && filtered.length === numeros.length
   const allNumerosSelected = noFilter && (selectedNumerosIds.length === numeros.length)
   const allFilteredNumerosSelected = !noFilter && (filtered.length === selectedNumerosIds.length)
@@ -210,7 +210,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
         </Pane>
       )}
 
-      {isGroupedActionsShown && numeros && !isEditing && (
+      {isGroupedActionsShown && numeros && (
         <GroupedActions
           idVoie={voie._id}
           numeros={numeros}
