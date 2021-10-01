@@ -63,5 +63,8 @@
       "react/no-danger": "warn",
       "react/require-default-props": "warn"
     }
+  },
+  "engines": {
+    "node": ">= 14"
   }
 }
