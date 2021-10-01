@@ -17,28 +17,30 @@ import {
 } from 'evergreen-ui'
 import {isEqual, difference} from 'lodash'
 
-import {getCommune, updateBaseLocale} from '../../lib/bal-api'
+import {getCommune, updateBaseLocale} from '../lib/bal-api'
 
-import TokenContext from '../../contexts/token'
+import TokenContext from '../contexts/token'
 
-import {useInput} from '../../hooks/input'
-import {validateEmail} from '../../lib/utils/email'
-import BalDataContext from '../../contexts/bal-data'
+import {useInput} from '../hooks/input'
+import SettingsContext from '../contexts/settings'
+import {validateEmail} from '../lib/utils/email'
+import BalDataContext from '../contexts/bal-data'
 
-import RenewTokenDialog from '../renew-token-dialog'
-import Certification from '../settings/certification'
+import RenewTokenDialog from './renew-token-dialog'
+import Certification from './settings/certification'
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const Settings = React.memo(({isShow, handleClose}) => {
+const Settings = React.memo(({nomBaseLocale}) => {
+  const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails, reloadEmails} = useContext(TokenContext)
   const {baseLocale, codeCommune, reloadBaseLocale} = useContext(BalDataContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [balEmails, setBalEmails] = useState([])
-  const [nomInput, onNomInputChange] = useInput(baseLocale.nom)
+  const [nomInput, onNomInputChange] = useInput(nomBaseLocale)
   const [email, onEmailChange, resetEmail] = useInput()
   const [commune, setCommune] = useState()
   const [hasChanges, setHasChanges] = useState(false)
@@ -102,10 +104,10 @@ const Settings = React.memo(({isShow, handleClose}) => {
   }, [baseLocale, codeCommune])
 
   useEffect(() => { // Update number of certified numeros when setting is open
-    if (baseLocale._id && codeCommune) {
+    if (baseLocale?._id && codeCommune) {
       fetchCommune()
     }
-  }, [baseLocale, codeCommune, isShow, fetchCommune])
+  }, [baseLocale, codeCommune, showSettings, fetchCommune])
 
   useEffect(() => {
     if (error) {
@@ -119,8 +121,8 @@ const Settings = React.memo(({isShow, handleClose}) => {
 
   return (
     <SideSheet
-      isShown={isShow}
-      onCloseComplete={handleClose}
+      isShown={showSettings}
+      onCloseComplete={() => setShowSettings(false)}
     >
       <Pane
         flexShrink={0}
@@ -261,8 +263,7 @@ const Settings = React.memo(({isShow, handleClose}) => {
 })
 
 Settings.propTypes = {
-  isShow: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired
+  nomBaseLocale: PropTypes.string.isRequired
 }
 
 export default Settings

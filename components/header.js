@@ -5,7 +5,7 @@ import {Pane, Button, Link, HelpIcon, BookIcon} from 'evergreen-ui'
 
 import HelpContext from '../contexts/help'
 
-const Header = React.memo(() => {
+const Header = () => {
   const {showHelp, setShowHelp} = useContext(HelpContext)
 
   return (
@@ -34,6 +34,6 @@ const Header = React.memo(() => {
       </Pane>
     </Pane>
   )
-})
+}
 
 export default Header
