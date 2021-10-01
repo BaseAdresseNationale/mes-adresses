@@ -7,6 +7,7 @@ import {getCommune} from '../../lib/geo-api'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
+import Header from '../../components/header'
 import Footer from '../../components/footer'
 import BackButton from '../../components/back-button'
 
@@ -21,6 +22,7 @@ function Index({defaultCommune, isDemo}) {
 
   return (
     <Pane height='100%' display='flex' flexDirection='column'>
+      <Header />
       <Pane padding={12}>
         <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${isDemo ? 'de démonstration' : ''}`}</Heading>
         <Paragraph>
@@ -80,7 +82,8 @@ Index.getInitialProps = async ({query}) => {
 
   return {
     defaultCommune,
-    isDemo: query.demo === '1'
+    isDemo: query.demo === '1',
+    layout: 'fullscreen'
   }
 }
 

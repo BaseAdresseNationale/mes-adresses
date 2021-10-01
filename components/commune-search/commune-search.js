@@ -38,7 +38,7 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
 
               return getRef(ref)
             }}
-            autoComplete='chrome-off'
+            autocomplete='chrome-off'
             placeholder={placeholder}
             value={inputValue}
             {...getInputProps({
