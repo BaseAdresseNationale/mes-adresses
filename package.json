@@ -10,7 +10,7 @@
     "build:geo": "node scripts/build-geo"
   },
   "dependencies": {
-    "@etalab/bal": "^1.2.0",
+    "@etalab/bal": "^1.5.1",
     "@next/bundle-analyzer": "^10.0.2",
     "@turf/bbox": "^6.0.1",
     "@turf/buffer": "^5.1.5",
