@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Heading} from 'evergreen-ui'
 import {Bar} from 'react-chartjs-2'
+import 'chartjs-adapter-date-fns'
 
 const BarChart = ({title, data}) => {
   const options = {
@@ -9,7 +10,7 @@ const BarChart = ({title, data}) => {
       mode: 'index'
     },
     scales: {
-      xAxes: [{
+      x: {
         type: 'time',
         time: {
           unit: 'month'
@@ -19,10 +20,10 @@ const BarChart = ({title, data}) => {
           offsetGridLines: true
         },
         offset: true
-      }],
-      yAxes: [{
+      },
+      y: {
         stacked: true
-      }]
+      }
     }
   }
 
