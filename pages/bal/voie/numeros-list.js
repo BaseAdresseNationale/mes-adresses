@@ -157,10 +157,10 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            {numeros && token && filtered.length > 1 && (
+            {numeros && token && filtered.length > 1 && !disabledEdition && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
-                  checked={isAllSelected && !disabledEdition}
+                  checked={isAllSelected}
                   onChange={handleSelectAll}
                 />
               </Table.Cell>
