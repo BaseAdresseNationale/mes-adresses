@@ -26,8 +26,8 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
   })
 
   const isGroupedActionsShown = useMemo(() => (
-    token && numeros && selectedNumerosIds.length > 1
-  ), [token, numeros, selectedNumerosIds])
+    token && !disabledEdition && numeros && selectedNumerosIds.length > 1
+  ), [token, disabledEdition, numeros, selectedNumerosIds])
 
   const noFilter = numeros && filtered.length === numeros.length
 
@@ -160,7 +160,7 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
             {numeros && token && filtered.length > 1 && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
-                  checked={isAllSelected}
+                  checked={isAllSelected && !disabledEdition}
                   onChange={handleSelectAll}
                 />
               </Table.Cell>
