@@ -41,7 +41,7 @@
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
     "react-map-gl": "^5.3.17",
-    "react-map-gl-draw": "^0.23.8",
+    "react-map-gl-draw": "^0.21.1",
     "use-debounce": "^1.1.1"
   },
   "devDependencies": {
