@@ -12,7 +12,7 @@ https://adresse.data.gouv.fr/data/docs/guide-mes-adresses-v4.0.pdf
 
 ## Pré-requis
 
-- [Node.js](https://nodejs.org) 12+
+- [Node.js](https://nodejs.org) 14+
 - [yarn](https://www.yarnpkg.com)
 
 ## Installation
