@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@etalab/bal": "^1.5.1",
-    "@next/bundle-analyzer": "^10.0.2",
+    "@next/bundle-analyzer": "^11.1.2",
     "@turf/bbox": "^6.0.1",
     "@turf/buffer": "^5.1.5",
     "@turf/center": "^6.0.1",
@@ -33,7 +33,7 @@
     "got": "^11.8.2",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.21",
-    "next": "^11.0.1",
+    "next": "^11.1.2",
     "prop-types": "^15.7.2",
     "randomcolor": "^0.6.2",
     "react": "^17.0.2",
