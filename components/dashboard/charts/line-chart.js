@@ -13,19 +13,19 @@ const LineChart = ({title, data}) => {
       intersect: true
     },
     scales: {
-      xAxes: [{
+      x: {
         type: 'time',
         time: {
           unit: 'month'
         }
-      }],
-      yAxes: [{
+      },
+      y: {
         display: true,
         scaleLabel: {
           display: true,
           labelString: 'Nombre de BAL'
         }
-      }]
+      }
     }
   }
 
