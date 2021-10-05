@@ -8,7 +8,7 @@ function NavControl({onViewportChange, ...props}) {
     <Pane
       position='absolute'
       top={16}
-      right={16}
+      right={46}
       zIndex={2}
     >
       <NavigationControl
