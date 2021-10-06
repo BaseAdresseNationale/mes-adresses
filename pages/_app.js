@@ -191,9 +191,13 @@ App.getInitialProps = async ({Component, ctx}) => {
     }
 
     if (query.codeCommune) {
-      commune = await getCommune(query.codeCommune, {
-        fields: 'contour'
-      })
+      if (baseLocale.communes.includes(query.codeCommune)) {
+        commune = await getCommune(query.codeCommune, {
+          fields: 'contour'
+        })
+      } else {
+        throw new Error('La commune demandée ne fais pas partie de la Base Adresse Locale')
+      }
     }
 
     if (query.idVoie) {
