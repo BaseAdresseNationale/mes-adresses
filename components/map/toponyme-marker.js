@@ -17,9 +17,11 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
   const [setError] = useError()
   const router = useRouter()
 
+  const {balId, codeCommune} = router.query
+
   const {token} = useContext(TokenContext)
   const {markers} = useContext(MarkersContext)
-  const {baseLocale, editingId, setEditingId, isEditing, reloadToponymes, voie, toponyme} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing, reloadToponymes, voie, toponyme} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
@@ -27,8 +29,8 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
     if (!isEditing) {
       if (voie || initialToponyme !== toponyme) {
         router.push(
-          `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${initialToponyme.commune}&idToponyme=${initialToponyme._id}`,
-          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}/toponymes/${initialToponyme._id}`
+          `/bal/toponyme?balId=${balId}&codeCommune=${codeCommune}&idToponyme=${initialToponyme._id}`,
+          `/bal/${balId}/communes/${codeCommune}/toponymes/${initialToponyme._id}`
         )
       }
 
@@ -36,7 +38,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
         setEditingId(toponyme._id)
       }
     }
-  }, [isEditing, setEditingId, voie, baseLocale._id, initialToponyme, router, toponyme])
+  }, [isEditing, setEditingId, voie, balId, codeCommune, initialToponyme, router, toponyme])
 
   const position = initialToponyme.positions.find(position => position.type === 'segment') || initialToponyme.positions[0]
 
@@ -63,8 +65,8 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
 
       if (_id === toponyme._id) {
         router.push(
-          `/bal/&codeCommune=${initialToponyme.commune}`,
-          `/bal/${baseLocale._id}/communes/${initialToponyme.commune}`
+          `/bal/&codeCommune=${codeCommune}`,
+          `/bal/${balId}/communes/${codeCommune}`
         )
       }
     } catch (error) {
@@ -117,8 +119,7 @@ ToponymeMarker.propTypes = {
       point: PropTypes.shape({
         coordinates: PropTypes.arrayOf(PropTypes.number).isRequired
       })
-    })),
-    commune: PropTypes.string
+    }))
   }).isRequired,
   showLabel: PropTypes.bool,
   showContextMenu: PropTypes.bool,

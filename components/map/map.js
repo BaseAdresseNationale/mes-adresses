@@ -84,8 +84,9 @@ function Map({interactive, commune, voie, toponyme}) {
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
   const [isToponyme, setIsToponyme] = useState(false)
 
+  const {balId, codeCommune} = router.query
+
   const {
-    baseLocale,
     numeros,
     toponymes,
     editingId,
@@ -148,38 +149,38 @@ function Map({interactive, commune, voie, toponyme}) {
         setEditingId(voie._id)
       } else {
         router.push(
-          `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-          `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+          `/bal/voie?balId=${balId}&codeCommune=${codeCommune}&idVoie=${idVoie}`,
+          `/bal/${balId}/communes/${codeCommune}/voies/${idVoie}`
         )
       }
     }
 
     setShowContextMenu(null)
-  }, [router, baseLocale, commune, setEditingId, isEditing, voie, handleParcelle])
+  }, [router, balId, codeCommune, setEditingId, isEditing, voie, handleParcelle])
 
   const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
     if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
       reloadNumeros()
     } else if (isNumeroCreated) { // Numéro créé depuis la vue commune ou une autre voie
       router.push(
-        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${idVoie}`
+        `/bal/voie?balId=${balId}&codeCommune=${codeCommune}&idVoie=${idVoie}`,
+        `/bal/${balId}/communes/${codeCommune}/voies/${idVoie}`
       )
     } else if (isVoiesList) { // Toponyme créé depuis la vue commune
       reloadVoies()
     } else { // Toponyme créé depuis la vue voie
       router.push(
-        `/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}`
+        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
+        `/bal/${balId}/communes/${codeCommune}`
       )
     }
-  }, [router, baseLocale._id, commune, voie, reloadNumeros, reloadVoies])
+  }, [router, balId, codeCommune, voie, reloadNumeros, reloadVoies])
 
   const onAddNumero = useCallback(async (voieData, numero) => {
     let editedVoie = voieData
 
     if (!editedVoie._id) {
-      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
+      editedVoie = await addVoie(balId, codeCommune, editedVoie, token)
     }
 
     if (numero) {
@@ -188,17 +189,17 @@ function Map({interactive, commune, voie, toponyme}) {
 
     setOpenForm(false)
     reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
-  }, [baseLocale._id, commune, voie, token, reloadView])
+  }, [balId, codeCommune, voie, token, reloadView])
 
   const onAddToponyme = useCallback(async toponymeData => {
-    const editedToponyme = await addToponyme(baseLocale._id, commune.code, toponymeData, token)
+    const editedToponyme = await addToponyme(balId, codeCommune, toponymeData, token)
 
     setOpenForm(false)
     router.push(
-      `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${editedToponyme._id}`,
-      `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${editedToponyme._id}`
+      `/bal/toponyme?balId=${balId}&codeCommune=${codeCommune}&idToponyme=${editedToponyme._id}`,
+      `/bal/${balId}/communes/${codeCommune}/toponymes/${editedToponyme._id}`
     )
-  }, [baseLocale._id, commune, token, router])
+  }, [balId, codeCommune, token, router])
 
   const handleCursor = useCallback(({isHovering}) => {
     if (modeId === 'drawLineString') {

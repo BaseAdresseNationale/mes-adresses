@@ -31,7 +31,7 @@ import Settings from '../components/settings'
 
 import Header from '../components/header'
 
-import ErrorPage from './error'
+import ErrorPage from './_error'
 
 const layoutMap = {
   fullscreen: Fullscreen,
@@ -185,47 +185,45 @@ App.getInitialProps = async ({Component, ctx}) => {
   let voie
   let toponyme
 
-  if (query.balId) {
-    try {
+  try {
+    if (query.balId) {
       baseLocale = await getBaseLocale(query.balId)
-    } catch (error) {
-      return {
-        pageProps,
-        error: {
-          statusCode: 404
-        }
+    }
+
+    if (query.codeCommune) {
+      if (baseLocale.communes.includes(query.codeCommune)) {
+        commune = await getCommune(query.codeCommune, {
+          fields: 'contour'
+        })
+      } else {
+        throw new Error('La commune demandée ne fais pas partie de la Base Adresse Locale')
       }
     }
-  }
 
-  if (query.codeCommune) {
-    try {
-      commune = await getCommune(query.codeCommune, {
-        fields: 'contour'
+    if (query.idVoie) {
+      voie = await getVoie(query.idVoie)
+    }
+
+    if (query.idToponyme) {
+      toponyme = await getToponyme(query.idToponyme)
+    }
+
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps({
+        ...ctx,
+        baseLocale,
+        commune,
+        voie,
+        toponyme
       })
-    } catch (error) {
-      commune = {
-        code: query.codeCommune
+    }
+  } catch (error) {
+    return {
+      pageProps,
+      error: {
+        statusCode: 404
       }
     }
-  }
-
-  if (query.idVoie) {
-    voie = await getVoie(query.idVoie)
-  }
-
-  if (query.idToponyme) {
-    toponyme = await getToponyme(query.idToponyme)
-  }
-
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps({
-      ...ctx,
-      baseLocale,
-      commune,
-      voie,
-      toponyme
-    })
   }
 
   return {
