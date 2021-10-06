@@ -31,7 +31,7 @@ import Settings from '../components/settings'
 
 import Header from '../components/header'
 
-import ErrorPage from './error'
+import ErrorPage from './_error'
 
 const layoutMap = {
   fullscreen: Fullscreen,
