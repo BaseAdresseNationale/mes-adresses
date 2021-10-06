@@ -10,7 +10,7 @@ import {getCommune} from '../../lib/geo-api'
 import {transformToDraft} from '../../lib/bal-api'
 
 const DemoWarning = ({baseLocale, token}) => {
-  const {communes} = baseLocale
+  const {_id, communes} = baseLocale
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
@@ -23,7 +23,7 @@ const DemoWarning = ({baseLocale, token}) => {
     setIsLoading(true)
 
     await transformToDraft(
-      baseLocale._id,
+      _id,
       {
         nom: nom ? nom.trim() : null,
         email
@@ -31,13 +31,13 @@ const DemoWarning = ({baseLocale, token}) => {
       token
     )
 
-    if (baseLocale.communes.length === 1) {
-      Router.push(`/bal/communes?balId=${baseLocale._id}&codeCommune=${baseLocale.communes[0]}`,
-        `/bal/${baseLocale._id}/communes/${baseLocale.communes[0]}`)
+    if (communes.length === 1) {
+      Router.push(`/bal/communes?balId=${_id}&codeCommune=${communes[0]}`,
+        `/bal/${_id}/communes/${communes[0]}`)
     } else {
-      Router.push(`/bal/${baseLocale._id}`)
+      Router.push(`/bal/${_id}`)
     }
-  }, [baseLocale, token, email, nom])
+  }, [_id, communes, token, email, nom])
 
   useEffect(() => {
     const fetchCommune = async code => {
@@ -119,7 +119,10 @@ const DemoWarning = ({baseLocale, token}) => {
 }
 
 DemoWarning.propTypes = {
-  baseLocale: PropTypes.object.isRequired,
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    communes: PropTypes.array.isRequired
+  }).isRequired,
   token: PropTypes.string.isRequired
 }
 

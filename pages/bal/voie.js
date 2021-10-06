@@ -14,7 +14,7 @@ import NumeroEditor from '../../components/bal/numero-editor'
 import VoieHeading from './voie-heading'
 import NumerosList from './voie/numeros-list'
 
-const Voie = React.memo(({voie, defaultNumeros}) => {
+const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   useHelp(4)
@@ -22,8 +22,6 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const {token} = useContext(TokenContext)
 
   const {
-    baseLocale,
-    codeCommune,
     numeros,
     reloadNumeros,
     isEditing,
@@ -52,7 +50,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const onAdd = async (voieData, body) => {
     let editedVoie = voieData
     if (!editedVoie._id) {
-      editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
     }
 
     await addNumero(editedVoie._id, body, token)
@@ -64,7 +62,7 @@ const Voie = React.memo(({voie, defaultNumeros}) => {
   const onEdit = async (voieData, body) => {
     let editedVoie = voieData
     if (!editedVoie._id) {
-      editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
     }
 
     await editNumero(editingId, {...body, voie: editedVoie._id}, token)
@@ -121,6 +119,12 @@ Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
 }
 
 Voie.propTypes = {
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired
+  }).isRequired,
+  commune: PropTypes.shape({
+    code: PropTypes.string.isRequired
+  }).isRequired,
   voie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired

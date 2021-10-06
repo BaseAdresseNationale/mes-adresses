@@ -14,7 +14,7 @@ import DeleteWarning from '../../components/delete-warning'
 import VoiesList from '../../components/bal/voies-list'
 import ToponymesList from '../../components/bal/toponymes-list'
 
-const Commune = React.memo(({commune, defaultVoies}) => {
+const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
   const [toRemove, setToRemove] = useState(null)
@@ -23,7 +23,6 @@ const Commune = React.memo(({commune, defaultVoies}) => {
   const {token} = useContext(TokenContext)
 
   const {
-    baseLocale,
     voies,
     toponymes,
     reloadVoies,
@@ -43,7 +42,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     await reloadVoies()
 
     setIsPopulating(false)
-  }, [baseLocale, commune, reloadVoies, token])
+  }, [baseLocale._id, commune, reloadVoies, token])
 
   const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace, parcelles}) => {
     if (selectedTab === 'voie') {
@@ -75,7 +74,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
     }
 
     setIsAdding(false)
-  }, [baseLocale, commune, reloadVoies, token, selectedTab, reloadToponymes])
+  }, [baseLocale._id, commune, reloadVoies, token, selectedTab, reloadToponymes])
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)
@@ -132,7 +131,7 @@ const Commune = React.memo(({commune, defaultVoies}) => {
         `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${id}`
       )
     }
-  }, [baseLocale, commune, selectedTab])
+  }, [baseLocale._id, commune, selectedTab])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -290,6 +289,9 @@ Commune.getInitialProps = async ({baseLocale, commune}) => {
 }
 
 Commune.propTypes = {
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired
+  }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
