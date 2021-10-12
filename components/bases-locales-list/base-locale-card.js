@@ -33,7 +33,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
   const [isOpen, setIsOpen] = useState(isAdmin ? initialIsOpen : false)
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
 
-  const isDeletable = Boolean(status === 'draft' || status === 'demo')
+  const isDeletable = status === 'draft' || status === 'demo'
   const tooltipContent = status === 'ready-to-publish' ? 'Vous ne pouvez pas supprimer une BAL lorsqu‘elle est prête à être publiée' : 'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
