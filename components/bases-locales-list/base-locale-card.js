@@ -137,12 +137,17 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
 
           {isAdmin ? (
             <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
-              {isDeletable ? (
-                <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove || !hasToken} onClick={onRemove}>Supprimer</Button>
-              ) : (
-                <Tooltip content={tooltipContent}>
-                  <Button isActive iconAfter={TrashIcon}>Supprimer</Button>
-                </Tooltip>
+              {hasToken && (
+                isDeletable ? (
+                  <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer</Button>
+                ) : (
+                  <Tooltip content={tooltipContent}>
+                    {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
+                    <Pane>
+                      <Button disabled iconAfter={TrashIcon}>Supprimer</Button>
+                    </Pane>
+                  </Tooltip>
+                )
               )}
 
               {hasToken ? (
@@ -165,7 +170,6 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           )}
         </>
       )}
-
     </Card>
   )
 }
