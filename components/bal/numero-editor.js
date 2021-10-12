@@ -1,6 +1,6 @@
-import React, {useState, useCallback, useContext, useEffect} from 'react'
+import React, {useState, useCallback, useContext, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, SelectField, TextInput, Alert} from 'evergreen-ui'
+import {Pane, Text, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
@@ -21,7 +21,7 @@ import NumeroVoieSelector from './numero-editor/numero-voie-selector'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
+function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}) {
   const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
@@ -43,6 +43,10 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     suggestedNumero,
     setOverrideText
   } = useContext(MarkersContext)
+
+  const selectedVoieNom = useMemo(() => {
+    return voies.find(voie => voie._id === voieId).nom
+  }, [voies, voieId])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -139,6 +143,12 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
+      <Pane position='fixed' left={0} width={500} zIndex={3} background='blue500' padding={12}>
+        <Text color='blue25'>
+          {`${numero ? numero : '-'} ${suffixe} ${nomVoie || selectedVoieNom} ${commune.code} ${commune.nom}`}
+        </Text>
+      </Pane>
+
       <NumeroVoieSelector
         voieId={voieId}
         voies={voies}
@@ -239,6 +249,7 @@ NumeroEditor.propTypes = {
     toponyme: PropTypes.string,
     certifie: PropTypes.bool
   }),
+  commune: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
 }
