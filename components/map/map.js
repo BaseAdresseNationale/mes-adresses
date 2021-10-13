@@ -20,7 +20,7 @@ import {vector, ortho} from './styles'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
 import Control from './control'
-import NumeroMarker from './numero-marker'
+import NumerosMarkers from './numeros-markers'
 import ToponymeMarker from './toponyme-marker'
 import Draw from './draw'
 import StyleSelector from './style-selector'
@@ -318,16 +318,16 @@ function Map({interactive, commune, voie, toponyme}) {
             <NavControl onViewportChange={setViewport} />
           )}
 
-          {(voie || toponyme) && !modeId && numeros && numeros.filter(({_id}) => _id !== editingId).map(numero => (
-            <NumeroMarker
-              key={numero._id}
-              numero={toponyme ? {...numero, numeroComplet: `${numero.numero}${numero.suffixe || ''}`} : numero}
-              colorSeed={toponyme ? numero.voie._id : voie._id}
+          {(voie || toponyme) && !modeId && numeros && (
+            <NumerosMarkers
+              numeros={numeros.filter(({_id}) => _id !== editingId)}
+              voie={voie}
+              isToponymeNumero={Boolean(toponyme)}
               showLabel={showNumeros}
-              showContextMenu={numero._id === showContextMenu}
+              showContextMenu={showContextMenu}
               setShowContextMenu={setShowContextMenu}
             />
-          ))}
+          )}
 
           {toponymes && toponymes.map(toponyme => (
             <ToponymeMarker
