@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useContext} from 'react'
+import React, {useState, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon} from 'evergreen-ui'
 
@@ -45,7 +45,7 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
     return filteredCertifieNumeros?.length === selectedNumerosIds.length
   }, [numeros, selectedNumerosIds])
 
-  const handleSelect = id => {
+  const handleSelect = useCallback(id => {
     setSelectedNumerosIds(selectedNumero => {
       if (selectedNumero.includes(id)) {
         return selectedNumerosIds.filter(f => f !== id)
@@ -53,7 +53,7 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
 
       return [...selectedNumerosIds, id]
     })
-  }
+  }, [selectedNumerosIds])
 
   const handleSelectAll = () => {
     if (isAllSelected) {
@@ -63,10 +63,10 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
     }
   }
 
-  const onRemove = async idNumero => {
+  const onRemove = useCallback(async idNumero => {
     await removeNumero(idNumero, token)
     await reloadNumeros()
-  }
+  }, [reloadNumeros, token])
 
   const onMultipleRemove = async () => {
     await Promise.all(selectedNumerosIds.map(async id => {

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo, useContext} from 'react'
+import React, {useState, useCallback, useEffect, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Table} from 'evergreen-ui'
 
@@ -34,13 +34,13 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     numeros?.find(numero => numero._id === editingId)
   ), [numeros, editingId])
 
-  const handleEditing = numeroId => {
+  const handleEditing = useCallback(numeroId => {
     setIsEditing(true)
     setIsFormOpen(true)
     if (numeroId) {
       setEditingId(numeroId)
     }
-  }
+  }, [setIsEditing, setEditingId])
 
   const resetEditing = () => {
     setIsFormOpen(false)
