@@ -17,7 +17,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const [toponymes, setToponymes] = useState()
   const [voie, setVoie] = useState()
   const [toponyme, setToponyme] = useState()
-  const [baseLocale, setBaseLocal] = useState({})
+  const [baseLocale, setBaseLocal] = useState(null)
 
   const {token} = useContext(TokenContext)
 

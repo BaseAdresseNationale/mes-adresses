@@ -115,10 +115,11 @@ function App({error, Component, pageProps, query}) {
 
                       {pageProps.baseLocale && (
                         <SettingsContextProvider>
-                          <Settings nomBaseLocale={pageProps.baseLocale.nom} />
+                          <Settings initialBaseLocale={pageProps.baseLocale} codeCommune={pageProps.commune?.code} />
                           <Header />
                           <SubHeader
                             {...pageProps}
+                            initialBaseLocale={pageProps.baseLocale}
                             layout={layout}
                             isSidebarHidden={isHidden}
                             onToggle={onToggle}

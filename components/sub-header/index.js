@@ -19,22 +19,23 @@ import DemoWarning from './demo-warning'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
-const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden, onToggle}) => {
-  const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
+const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, layout, isSidebarHidden, onToggle}) => {
+  const balDataContext = useContext(BalDataContext)
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token} = useContext(TokenContext)
 
   const [setError] = useError(null)
   const {innerWidth} = useWindowSize()
 
-  const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
+  const csvUrl = getBaseLocaleCsvUrl(initialBaseLocale._id)
+  const baseLocale = balDataContext.baseLocale || initialBaseLocale
 
   const handleChangeStatus = async () => {
     try {
       const newStatus = baseLocale.status === 'draft' ? 'ready-to-publish' : 'draft'
-      await updateBaseLocale(baseLocale._id, {status: newStatus}, token)
+      await updateBaseLocale(initialBaseLocale._id, {status: newStatus}, token)
 
-      await reloadBaseLocale()
+      await balDataContext.reloadBaseLocale()
     } catch (error) {
       setError(error.message)
     }
@@ -42,7 +43,7 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
 
   const handlePublication = async () => {
     try {
-      await updateBaseLocale(baseLocale._id, {status: 'ready-to-publish'}, token)
+      await updateBaseLocale(initialBaseLocale._id, {status: 'ready-to-publish'}, token)
       window.location.href = `${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`
     } catch (error) {
       setError(error.message)
@@ -117,11 +118,12 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
             </Button>
           </Popover>
 
-          {baseLocale.status !== 'demo' && (
+          {baseLocale.status !== 'demo' && commune && (
             <Publication
               border
               token={token}
               baseLocale={baseLocale}
+              commune={commune}
               status={baseLocale.status}
               onChangeStatus={handleChangeStatus}
               onPublish={handlePublication}
@@ -136,6 +138,10 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
 })
 
 SubHeader.propTypes = {
+  initialBaseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    status: PropTypes.oneOf(['demo', 'draft', 'ready-to-publish', 'published'])
+  }).isRequired,
   commune: PropTypes.object,
   voie: PropTypes.object,
   toponyme: PropTypes.object,
