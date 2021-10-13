@@ -33,6 +33,8 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
   const [isOpen, setIsOpen] = useState(isAdmin ? initialIsOpen : false)
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
 
+  const isDeletable = status === 'draft' || status === 'demo'
+  const tooltipContent = status === 'ready-to-publish' ? 'Vous ne pouvez pas supprimer une BAL lorsqu‘elle est prête à être publiée' : 'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
   const badge = getBadge(baseLocale)
@@ -135,13 +137,19 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
 
           {isAdmin ? (
             <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
-              {status === 'draft' || status === 'demo' ? (
-                <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove || !hasToken} onClick={onRemove}>Supprimer</Button>
-              ) : (
-                <Tooltip content='Vous ne pouvez pas supprimer une BAL losrqu‘elle est prête à être publiée'>
-                  <Button isActive iconAfter={TrashIcon}>Supprimer</Button>
-                </Tooltip>
+              {hasToken && (
+                isDeletable ? (
+                  <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer</Button>
+                ) : (
+                  <Tooltip content={tooltipContent}>
+                    {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
+                    <Pane>
+                      <Button disabled iconAfter={TrashIcon}>Supprimer</Button>
+                    </Pane>
+                  </Tooltip>
+                )
               )}
+
               {hasToken ? (
                 <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
               ) : (
@@ -162,7 +170,6 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           )}
         </>
       )}
-
     </Card>
   )
 }
