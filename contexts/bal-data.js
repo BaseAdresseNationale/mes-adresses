@@ -117,17 +117,17 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   useEffect(() => {
     reloadGeojson()
     reloadParcelles()
-    setEditingId(null)
-  }, [reloadGeojson, reloadParcelles, voies, numeros, setEditingId])
-
-  useEffect(() => {
-    setEditingId(null)
-    reloadNumeros()
-    reloadNumerosToponyme()
     reloadVoies()
     reloadToponymes()
-    reloadBaseLocale()
-  }, [setEditingId, reloadNumeros, reloadVoies, reloadToponymes, reloadNumerosToponyme, reloadBaseLocale])
+  }, [codeCommune, reloadGeojson, reloadParcelles, reloadVoies, reloadToponymes])
+
+  useEffect(() => {
+    reloadNumeros()
+  }, [idVoie, reloadNumeros])
+
+  useEffect(() => {
+    reloadNumerosToponyme()
+  }, [idToponyme, reloadNumerosToponyme])
 
   return (
     <BalDataContext.Provider
