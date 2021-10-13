@@ -143,9 +143,8 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <Pane position='fixed' left={0} width={500} zIndex={3} background='blue500' padding={12}>
-        <Text color='blue25'>
-          {`${numero ? numero : '-'} ${suffixe} ${nomVoie || selectedVoieNom} ${commune.code} ${commune.nom}`}
+      <Pane position='fixed' left={0} width={500} zIndex={3} background='blue100' paddingY={8} paddingX={12}>
+        <Text fontSize={13}>
         </Text>
       </Pane>
 
