@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, useEffect, useMemo} from 'react'
+import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
@@ -40,11 +40,13 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
+  const [toponymeNom, setToponymeNom] = useState(null)
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
   const [certifie, setCertifie] = useState(initialValue?.certifie || false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero.toString() || '')
   const [nomVoie, onNomVoieChange] = useState('')
+  const [selectedVoieNom, setSelectedVoieNom] = useState(null)
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
   const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
   const [error, setError] = useState()
@@ -58,9 +60,13 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
     setOverrideText
   } = useContext(MarkersContext)
 
-  const selectedVoieNom = useMemo(() => {
-    return voies.find(voie => voie._id === voieId).nom
-  }, [voies, voieId])
+  useEffect(() => {
+    const findVoieNom = voies.find(voie => voie._id === voieId).nom
+    const findToponymeId = toponymes.find(toponyme => toponyme._id === toponymeId)
+    setSelectedVoieNom(findVoieNom)
+
+    setToponymeNom(findToponymeId ? findToponymeId.nom : null)
+  }, [toponymeId, toponymes, voieId, voies])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
