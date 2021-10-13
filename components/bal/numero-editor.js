@@ -165,7 +165,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
     <Pane is='form' onSubmit={onFormSubmit}>
       <Pane position='fixed' left={0} width={500} zIndex={3} background='blue100' paddingY={8} paddingX={12}>
         <Text fontSize={13}>
-          {`${handleNumero(numero, suffixe)} ${nomVoie || selectedVoieNom}, ${toponymeName ? toponymeName + ' -' : ' '} ${commune.nom} (${commune.code})`}
+          {`${handleNumero(numero, suffixe)} ${nomVoie || selectedVoieNom}, ${toponymeNom ? toponymeNom + ' -' : ' '} ${commune.nom} (${commune.code})`}
         </Text>
       </Pane>
 
