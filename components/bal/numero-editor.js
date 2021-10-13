@@ -21,6 +21,20 @@ import NumeroVoieSelector from './numero-editor/numero-voie-selector'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
+const handleNumero = (numero, suffixe) => {
+  const isNumber = !isNaN(suffixe)
+
+  if (numero) {
+    if (isNumber) {
+      return `${numero} ${suffixe}`
+    }
+
+    return `${numero}${suffixe}`
+  }
+
+  return `- ${suffixe}`
+}
+
 function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}) {
   const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
@@ -145,6 +159,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
     <Pane is='form' onSubmit={onFormSubmit}>
       <Pane position='fixed' left={0} width={500} zIndex={3} background='blue100' paddingY={8} paddingX={12}>
         <Text fontSize={13}>
+          {`${handleNumero(numero, suffixe)} ${nomVoie || selectedVoieNom}, ${toponymeName ? toponymeName + ' -' : ' '} ${commune.nom} (${commune.code})`}
         </Text>
       </Pane>
 
