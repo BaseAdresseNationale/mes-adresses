@@ -26,6 +26,13 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
     }
   }, [setEditingId, isEditing])
 
+  const colorSeed = useCallback(id => {
+    return id ? randomColor({
+      luminosity: 'dark',
+      seed: id
+    }) : '#1070ca'
+  }, [])
+
   const markerStyle = useCallback(colorSeed => css({
     borderRadius: 20,
     marginTop: -10,
@@ -37,10 +44,7 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
 
     '&:before': {
       content: ' ',
-      backgroundColor: colorSeed ? randomColor({
-        luminosity: 'dark',
-        seed: colorSeed
-      }) : '#1070ca',
+      backgroundColor: colorSeed,
       border: '1px solid white',
       display: 'inline-block',
       width: 8,
@@ -78,7 +82,7 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
       <NumeroMarker
         key={numero._id}
         numero={isToponymeNumero ? {...numero, numeroComplet: `${numero.numero}${numero.suffixe || ''}`} : numero}
-        style={markerStyle(numero.voie?._id || voie._id)}
+        style={markerStyle(colorSeed(numero.voie?._id || voie?._id))}
         showContextMenu={numero._id === showContextMenu}
         setShowContextMenu={setShowContextMenu}
         removeAddress={removeAddress}
