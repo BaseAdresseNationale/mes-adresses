@@ -11,8 +11,6 @@ import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
 import ParcellesContext from '../../contexts/parcelles'
 
-import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
-
 import AddressEditor from '../bal/address-editor'
 
 import {vector, ortho} from './styles'
@@ -92,8 +90,6 @@ function Map({interactive, commune, voie, toponyme}) {
     editingId,
     setEditingId,
     setIsEditing,
-    reloadVoies,
-    reloadNumeros,
     isEditing
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
@@ -157,49 +153,6 @@ function Map({interactive, commune, voie, toponyme}) {
 
     setShowContextMenu(null)
   }, [router, balId, codeCommune, setEditingId, isEditing, voie, handleParcelle])
-
-  const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
-    if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
-      reloadNumeros()
-    } else if (isNumeroCreated) { // Numéro créé depuis la vue commune ou une autre voie
-      router.push(
-        `/bal/voie?balId=${balId}&codeCommune=${codeCommune}&idVoie=${idVoie}`,
-        `/bal/${balId}/communes/${codeCommune}/voies/${idVoie}`
-      )
-    } else if (isVoiesList) { // Toponyme créé depuis la vue commune
-      reloadVoies()
-    } else { // Toponyme créé depuis la vue voie
-      router.push(
-        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
-      )
-    }
-  }, [router, balId, codeCommune, voie, reloadNumeros, reloadVoies])
-
-  const onAddNumero = useCallback(async (voieData, numero) => {
-    let editedVoie = voieData
-
-    if (!editedVoie._id) {
-      editedVoie = await addVoie(balId, codeCommune, editedVoie, token)
-    }
-
-    if (numero) {
-      await addNumero(editedVoie._id, numero, token)
-    }
-
-    setOpenForm(false)
-    reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
-  }, [balId, codeCommune, voie, token, reloadView])
-
-  const onAddToponyme = useCallback(async toponymeData => {
-    const editedToponyme = await addToponyme(balId, codeCommune, toponymeData, token)
-
-    setOpenForm(false)
-    router.push(
-      `/bal/toponyme?balId=${balId}&codeCommune=${codeCommune}&idToponyme=${editedToponyme._id}`,
-      `/bal/${balId}/communes/${codeCommune}/toponymes/${editedToponyme._id}`
-    )
-  }, [balId, codeCommune, token, router])
 
   const handleCursor = useCallback(({isHovering}) => {
     if (modeId === 'drawLineString') {
@@ -355,11 +308,9 @@ function Map({interactive, commune, voie, toponyme}) {
       {commune && openForm && (
         <Pane padding={20} background='white' height={400} overflowY='auto'>
           <AddressEditor
-            isToponyme={isToponyme}
-            setIsToponyme={setIsToponyme}
-            onAddNumero={onAddNumero}
-            onAddToponyme={onAddToponyme}
-            onCancel={() => setOpenForm(false)}
+            balId={balId}
+            codeCommune={codeCommune}
+            closeForm={() => setOpenForm(false)}
           />
         </Pane>
       )}
