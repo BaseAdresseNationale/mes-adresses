@@ -83,7 +83,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
       {isFormOpen ? (
         <Pane flex={1} overflowY='scroll'>
           <Table.Row height='auto'>
-            <Table.Cell display='block' paddingY={12} paddingTop={0} background='tint1'>
+            <Table.Cell display='block' paddingY={12} background='tint1'>
               <NumeroEditor
                 initialVoieId={voie._id}
                 initialValue={editedNumero}

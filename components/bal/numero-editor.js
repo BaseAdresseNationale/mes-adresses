@@ -166,88 +166,88 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
           {`${handleSuffixe(numero, suffixe)} ${nomVoie || selectedVoieNom}, ${toponymeNom ? toponymeNom + ' -' : ' '} ${commune.nom} (${commune.code})`}
         </Text>
       </Pane>
-
-      <NumeroVoieSelector
-        voieId={voieId}
-        voies={voies}
-        nomVoie={nomVoie}
-        mode={voieId ? 'selection' : 'creation'}
-        handleVoie={setVoieId}
-        handleNomVoie={onNomVoieChange}
-      />
-
-      <Pane display='flex'>
-        <SelectField
-          label='Toponyme'
-          flex={1}
-          marginBottom={16}
-          value={toponymeId || ''}
-          onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
-        >
-          <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
-          {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
-            <option key={_id} value={_id}>
-              {nom}
-            </option>
-          ))}
-        </SelectField>
-      </Pane>
-
-      <Pane display='flex'>
-        <TextInput
-          ref={focusRef}
-          required
-          display='block'
-          type='number'
-          disabled={isLoading}
-          width='100%'
-          maxWidth={300}
-          flex={2}
-          min={0}
-          max={9999}
-          value={numero}
-          marginBottom={8}
-          placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
-          onChange={onNumeroChange}
+      <Pane paddingTop={64}>
+        <NumeroVoieSelector
+          voieId={voieId}
+          voies={voies}
+          nomVoie={nomVoie}
+          mode={voieId ? 'selection' : 'creation'}
+          handleVoie={setVoieId}
+          handleNomVoie={onNomVoieChange}
         />
 
-        <TextInput
-          style={{textTransform: 'lowercase'}}
-          display='block'
-          marginLeft={8}
-          disabled={isLoading}
-          width='100%'
-          flex={1}
-          minWidth={59}
-          value={suffixe}
-          maxLength={10}
-          marginBottom={8}
-          placeholder='Suffixe'
-          onChange={onSuffixeChange}
+        <Pane display='flex'>
+          <SelectField
+            label='Toponyme'
+            flex={1}
+            marginBottom={16}
+            value={toponymeId || ''}
+            onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
+          >
+            <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
+            {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
+              <option key={_id} value={_id}>
+                {nom}
+              </option>
+            ))}
+          </SelectField>
+        </Pane>
+
+        <Pane display='flex'>
+          <TextInput
+            ref={focusRef}
+            required
+            display='block'
+            type='number'
+            disabled={isLoading}
+            width='100%'
+            maxWidth={300}
+            flex={2}
+            min={0}
+            max={9999}
+            value={numero}
+            marginBottom={8}
+            placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
+            onChange={onNumeroChange}
+          />
+
+          <TextInput
+            style={{textTransform: 'lowercase'}}
+            display='block'
+            marginLeft={8}
+            disabled={isLoading}
+            width='100%'
+            flex={1}
+            minWidth={59}
+            value={suffixe}
+            maxLength={10}
+            marginBottom={8}
+            placeholder='Suffixe'
+            onChange={onSuffixeChange}
+          />
+        </Pane>
+
+        {markers.length > 0 && (
+          <PositionEditor />
+        )}
+
+        <SelectParcelles />
+
+        <Comment input={comment} onChange={onCommentChange} />
+
+        {error && (
+          <Alert marginBottom={16} intent='danger' title='Erreur'>
+            {error}
+          </Alert>
+        )}
+
+        <CertificationButton
+          isCertified={initialValue?.certifie || false}
+          isLoading={isLoading}
+          onConfirm={setCertifie}
+          onCancel={onFormCancel}
         />
       </Pane>
-
-      {markers.length > 0 && (
-        <PositionEditor />
-      )}
-
-      <SelectParcelles />
-
-      <Comment input={comment} onChange={onCommentChange} />
-
-      {error && (
-        <Alert marginBottom={16} intent='danger' title='Erreur'>
-          {error}
-        </Alert>
-      )}
-
-      <CertificationButton
-        isCertified={initialValue?.certifie || false}
-        isLoading={isLoading}
-        onConfirm={setCertifie}
-        onCancel={onFormCancel}
-      />
-
     </Pane>
   )
 }
