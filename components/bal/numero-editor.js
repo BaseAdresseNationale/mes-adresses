@@ -23,7 +23,7 @@ const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
 const handleSuffixe = (numero, suffixe) => {
   if (numero) {
-    if (isNumber) {
+    if (!isNaN(suffixe)) {
       return `${numero} ${suffixe}`
     }
 
