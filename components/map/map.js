@@ -80,7 +80,6 @@ function Map({interactive, commune, voie, toponyme}) {
   const [showContextMenu, setShowContextMenu] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
-  const [isToponyme, setIsToponyme] = useState(false)
 
   const {balId, codeCommune} = router.query
 
@@ -296,7 +295,7 @@ function Map({interactive, commune, voie, toponyme}) {
             <EditableMarker
               style={style || defaultStyle}
               idVoie={voie ? voie._id : null}
-              isToponyme={isToponyme}
+              isToponyme={Boolean(toponyme)}
               viewport={viewport}
             />
           )}
