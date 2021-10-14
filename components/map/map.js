@@ -32,16 +32,14 @@ const settings = {
   maxZoom: 19
 }
 
-function getInteractionProps(enabled) {
-  return {
-    dragPan: enabled,
-    dragRotate: enabled,
-    scrollZoom: enabled,
-    touchZoom: enabled,
-    touchRotate: enabled,
-    keyboard: enabled,
-    doubleClickZoom: enabled
-  }
+const interactionProps = {
+  dragPan: true,
+  dragRotate: true,
+  scrollZoom: true,
+  touchZoom: true,
+  touchRotate: true,
+  keyboard: true,
+  doubleClickZoom: true
 }
 
 function getBaseStyle(style) {
@@ -70,7 +68,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, commune, voie, toponyme}) {
+function Map({commune, voie, toponyme}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, showCadastre, setShowCadastre} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -165,9 +163,9 @@ function Map({interactive, commune, voie, toponyme}) {
     if (sources.length > 0) {
       setMapStyle(generateNewStyle(style, sources, layers))
     } else {
-      setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
+      setMapStyle(getBaseStyle(style))
     }
-  }, [interactive, sources, layers, style, defaultStyle])
+  }, [sources, layers, style, defaultStyle])
 
   useEffect(() => {
     setStyle(prevStyle => {
@@ -208,15 +206,13 @@ function Map({interactive, commune, voie, toponyme}) {
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
-      {interactive && (
-        <StyleSelector
-          isFormOpen={openForm}
-          style={style}
-          handleStyle={setStyle}
-          showCadastre={showCadastre}
-          handleCadastre={setShowCadastre}
-        />
-      )}
+      <StyleSelector
+        isFormOpen={openForm}
+        style={style}
+        handleStyle={setStyle}
+        showCadastre={showCadastre}
+        handleCadastre={setShowCadastre}
+      />
 
       <Pane
         position='absolute'
@@ -257,7 +253,7 @@ function Map({interactive, commune, voie, toponyme}) {
           width='100%'
           height='100%'
           {...settings}
-          {...getInteractionProps(interactive)}
+          {...interactionProps}
           interactiveLayerIds={interactiveLayerIds}
           getCursor={handleCursor}
           onClick={onClick}
@@ -266,9 +262,7 @@ function Map({interactive, commune, voie, toponyme}) {
           onViewportChange={setViewport}
         >
 
-          {interactive && (
-            <NavControl onViewportChange={setViewport} />
-          )}
+          <NavControl onViewportChange={setViewport} />
 
           {(voie || toponyme) && !modeId && numeros && (
             <NumerosMarkers
@@ -318,14 +312,12 @@ function Map({interactive, commune, voie, toponyme}) {
 }
 
 Map.propTypes = {
-  interactive: PropTypes.bool,
   commune: PropTypes.object,
   voie: PropTypes.object,
   toponyme: PropTypes.object
 }
 
 Map.defaultProps = {
-  interactive: true,
   commune: null,
   voie: null,
   toponyme: null

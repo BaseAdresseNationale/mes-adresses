@@ -131,8 +131,6 @@ function App({error, Component, pageProps, query}) {
                         <Map
                           top={topOffset}
                           left={leftOffset}
-                          animate={layout === 'sidebar'}
-                          interactive={layout === 'sidebar'}
                           commune={pageProps.commune}
                           voie={pageProps.voie}
                           toponyme={pageProps.toponyme}
