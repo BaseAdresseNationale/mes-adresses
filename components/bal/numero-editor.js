@@ -21,9 +21,7 @@ import NumeroVoieSelector from './numero-editor/numero-voie-selector'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-const handleNumero = (numero, suffixe) => {
-  const isNumber = !isNaN(suffixe)
-
+const handleSuffixe = (numero, suffixe) => {
   if (numero) {
     if (isNumber) {
       return `${numero} ${suffixe}`
@@ -61,11 +59,11 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
   } = useContext(MarkersContext)
 
   useEffect(() => {
-    const findVoieNom = voies.find(voie => voie._id === voieId).nom
-    const findToponymeId = toponymes.find(toponyme => toponyme._id === toponymeId)
-    setSelectedVoieNom(findVoieNom)
+    const foundVoieName = voies.find(voie => voie._id === voieId).nom
+    const foundToponyme = toponymes.find(toponyme => toponyme._id === toponymeId)
+    setSelectedVoieNom(foundVoieName)
 
-    setToponymeNom(findToponymeId ? findToponymeId.nom : null)
+    setToponymeNom(foundToponyme ? foundToponyme.nom : null)
   }, [toponymeId, toponymes, voieId, voies])
 
   const onFormSubmit = useCallback(async e => {
@@ -165,7 +163,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
     <Pane is='form' onSubmit={onFormSubmit}>
       <Pane position='fixed' left={0} width={500} zIndex={3} background='blue100' paddingY={8} paddingX={12}>
         <Text fontSize={13}>
-          {`${handleNumero(numero, suffixe)} ${nomVoie || selectedVoieNom}, ${toponymeNom ? toponymeNom + ' -' : ' '} ${commune.nom} (${commune.code})`}
+          {`${handleSuffixe(numero, suffixe)} ${nomVoie || selectedVoieNom}, ${toponymeNom ? toponymeNom + ' -' : ' '} ${commune.nom} (${commune.code})`}
         </Text>
       </Pane>
 
