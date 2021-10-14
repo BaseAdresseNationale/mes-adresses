@@ -4,6 +4,7 @@ import {Pane, Text, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
+import {computeCompletNumero} from '../../lib/utils/numero'
 
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
@@ -21,16 +22,9 @@ import NumeroVoieSelector from './numero-editor/numero-voie-selector'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-const handleSuffixe = (numero, suffixe) => {
-  if (numero) {
-    if (!isNaN(suffixe)) {
-      return `${numero} ${suffixe}`
-    }
-
-    return `${numero}${suffixe}`
-  }
-
-  return `- ${suffixe}`
+const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
+  const completNumero = computeCompletNumero(numero, suffixe)
+  return `${completNumero} ${toponyme ? toponyme + ',' : ''} ${voie} - ${commune.nom} (${commune.code})`
 }
 
 function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}) {
@@ -173,7 +167,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
     <Pane is='form' onSubmit={onFormSubmit}>
       <Pane position='fixed' left={0} width={500} zIndex={3} background='blue100' paddingY={8} paddingX={12}>
         <Text fontSize={13}>
-          {`${handleSuffixe(numero, suffixe)} ${nomVoie || selectedNomVoie}, ${selectedNomToponyme ? selectedNomToponyme + ' -' : ' '} ${commune.nom} (${commune.code})`}
+          {getAddressPreview(numero, suffixe, selectedNomToponyme, nomVoie || selectedNomVoie, commune)}
         </Text>
       </Pane>
       <Pane paddingTop={64}>
