@@ -38,13 +38,13 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
-  const [toponymeNom, setToponymeNom] = useState(null)
+  const [selectedNomToponyme, setSelectedNomToponyme] = useState('')
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
   const [certifie, setCertifie] = useState(initialValue?.certifie || false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero.toString() || '')
   const [nomVoie, onNomVoieChange] = useState('')
-  const [selectedVoieNom, setSelectedVoieNom] = useState(null)
+  const [selectedNomVoie, setSelectedNomVoie] = useState('')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
   const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
   const [error, setError] = useState()
@@ -57,14 +57,6 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
     suggestedNumero,
     setOverrideText
   } = useContext(MarkersContext)
-
-  useEffect(() => {
-    const foundVoieName = voies.find(voie => voie._id === voieId).nom
-    const foundToponyme = toponymes.find(toponyme => toponyme._id === toponymeId)
-    setSelectedVoieNom(foundVoieName)
-
-    setToponymeNom(foundToponyme ? foundToponyme.nom : null)
-  }, [toponymeId, toponymes, voieId, voies])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -159,11 +151,29 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
     }
   }, [setIsEditing, disableMarkers, setIsParcelleSelectionEnabled])
 
+  useEffect(() => {
+    let nom = null
+    if (voieId) {
+      nom = voies.find(voie => voie._id === voieId).nom
+    }
+
+    setSelectedNomVoie(nom)
+  }, [voieId, voies])
+
+  useEffect(() => {
+    let nom = null
+    if (toponymeId && toponymeId !== '- Choisir un toponyme -') {
+      nom = toponymes.find(toponyme => toponyme._id === toponymeId).nom
+    }
+
+    setSelectedNomToponyme(nom)
+  }, [toponymeId, toponymes])
+
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
       <Pane position='fixed' left={0} width={500} zIndex={3} background='blue100' paddingY={8} paddingX={12}>
         <Text fontSize={13}>
-          {`${handleSuffixe(numero, suffixe)} ${nomVoie || selectedVoieNom}, ${toponymeNom ? toponymeNom + ' -' : ' '} ${commune.nom} (${commune.code})`}
+          {`${handleSuffixe(numero, suffixe)} ${nomVoie || selectedNomVoie}, ${selectedNomToponyme ? selectedNomToponyme + ' -' : ' '} ${commune.nom} (${commune.code})`}
         </Text>
       </Pane>
       <Pane paddingTop={64}>
