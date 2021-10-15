@@ -44,14 +44,6 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     onCancel()
   }, [onCancel])
 
-  const submitLabel = useMemo(() => {
-    if (isLoading) {
-      return 'En cours…'
-    }
-
-    return 'Enregistrer'
-  }, [isLoading])
-
   useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
       onCancel()
@@ -100,7 +92,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       )}
 
       <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
-        {submitLabel}
+        {isLoading ? 'En cours…' : 'Enregistrer'}
       </Button>
 
       {onCancel && (
