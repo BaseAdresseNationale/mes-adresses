@@ -24,7 +24,7 @@ const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
 const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
   const completNumero = computeCompletNumero(numero, suffixe)
-  return `${completNumero} ${toponyme ? toponyme + ',' : ''} ${voie} - ${commune.nom} (${commune.code})`
+  return `${completNumero} ${voie}, ${toponyme ? toponyme + ' - ' : ''} ${commune.nom} (${commune.code})`
 }
 
 function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}) {
