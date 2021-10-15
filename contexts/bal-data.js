@@ -15,7 +15,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
   const [toponymes, setToponymes] = useState()
-  const [voie, setVoie] = useState()
+  const [voie, setVoie] = useState(null)
   const [toponyme, setToponyme] = useState()
   const [baseLocale, setBaseLocal] = useState(null)
 
@@ -138,9 +138,11 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
         editingItem,
         parcelles,
         geojson,
+        reloadGeojson,
         baseLocale,
         codeCommune,
         voie,
+        setVoie,
         numeros,
         voies,
         toponymes,

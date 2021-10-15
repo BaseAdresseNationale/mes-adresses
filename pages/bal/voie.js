@@ -24,6 +24,8 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const {
     numeros,
     reloadNumeros,
+    reloadVoies,
+    reloadGeojson,
     isEditing,
     editingId,
     setEditingId,
@@ -49,25 +51,37 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
 
   const onAdd = async (voieData, body) => {
     let editedVoie = voieData
-    if (!editedVoie._id) {
+    const isNewVoie = !editedVoie._id
+
+    if (isNewVoie) {
       editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
+      await reloadVoies()
     }
 
     await addNumero(editedVoie._id, body, token)
     await reloadNumeros()
+
+    if (editedVoie._id !== voie._id || isNewVoie) {
+      await reloadGeojson()
+    }
 
     resetEditing()
   }
 
   const onEdit = async (voieData, body) => {
     let editedVoie = voieData
-    if (!editedVoie._id) {
+    const isNewVoie = !editedVoie._id
+
+    if (isNewVoie) {
       editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
     }
 
     await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-
     await reloadNumeros()
+
+    if (editedVoie._id !== voie._id || isNewVoie) {
+      await reloadGeojson()
+    }
 
     resetEditing()
   }

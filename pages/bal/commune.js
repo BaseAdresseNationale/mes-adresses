@@ -27,6 +27,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     toponymes,
     reloadVoies,
     reloadToponymes,
+    reloadGeojson,
     editingId,
     setEditingId,
     isEditing,
@@ -76,10 +77,6 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     setIsAdding(false)
   }, [baseLocale._id, commune, reloadVoies, token, selectedTab, reloadToponymes])
 
-  const onEnableAdding = useCallback(() => {
-    setIsAdding(true)
-  }, [])
-
   const onEnableEditing = useCallback(async id => {
     setIsAdding(false)
     setEditingId(id)
@@ -94,6 +91,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       }, token)
 
       await reloadVoies()
+      await reloadGeojson()
     } else {
       await editToponyme(editingId, {
         nom,
@@ -105,7 +103,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     }
 
     setEditingId(null)
-  }, [editingId, setEditingId, reloadVoies, reloadToponymes, selectedTab, token])
+  }, [editingId, setEditingId, reloadVoies, reloadToponymes, reloadGeojson, selectedTab, token])
 
   const onRemove = useCallback(async () => {
     if (selectedTab === 'voie') {
@@ -116,10 +114,15 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       await reloadToponymes()
     }
 
+    await reloadGeojson()
     setToRemove(null)
   }, [reloadVoies, reloadToponymes, selectedTab, toRemove, token])
 
   const onSelect = useCallback(id => {
+    if (editingId || isAdding) {
+      onCancel()
+    }
+
     if (selectedTab === 'voie') {
       Router.push(
         `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${id}`,
@@ -131,7 +134,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
         `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${id}`
       )
     }
-  }, [baseLocale._id, commune, selectedTab])
+  }, [baseLocale._id, editingId, isAdding, commune, selectedTab, onCancel])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -206,7 +209,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
               appearance='primary'
               intent='success'
               disabled={isAdding || isPopulating || Boolean(editingId) || isEditing}
-              onClick={onEnableAdding}
+              onClick={() => setIsAdding(true)}
             >
               Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
             </Button>

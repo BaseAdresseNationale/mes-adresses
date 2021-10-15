@@ -1,6 +1,5 @@
-import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
+import React, {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
 import {Pane, Button, Checkbox, Alert} from 'evergreen-ui'
 
 import DrawContext from '../../contexts/draw'
@@ -13,8 +12,6 @@ import AssistedTextField from '../assisted-text-field'
 import DrawEditor from './draw-editor'
 
 function VoieEditor({initialValue, onSubmit, onCancel}) {
-  const router = useRouter()
-
   const [isLoading, setIsLoading] = useState(false)
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
@@ -35,17 +32,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
     try {
       await onSubmit(body)
-
-      const {balId, codeCommune} = router.query
-      router.push(
-        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
-      )
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, isMetric, data, onSubmit])
+  }, [nom, isMetric, data, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()

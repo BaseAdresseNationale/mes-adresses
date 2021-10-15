@@ -78,8 +78,8 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, layou
         <Breadcrumbs
           baseLocale={baseLocale}
           commune={commune}
-          voie={voie}
-          toponyme={toponyme}
+          voie={balDataContext.voie || voie}
+          toponyme={balDataContext.toponyme || toponyme}
           marginLeft={8}
         />
 
