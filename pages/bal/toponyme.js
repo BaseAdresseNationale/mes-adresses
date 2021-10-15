@@ -45,7 +45,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
   const editedNumero = filtered.find(numero => numero._id === editingId)
 
-  const onAdd = useCallback(async numeros => {
+  const onAdd = async numeros => {
     setIsLoading(true)
 
     try {
@@ -62,7 +62,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
     setIsLoading(false)
     setIsAdding(false)
-  }, [toponyme, token, reloadNumerosToponyme])
+  }
 
   const onEnableAdding = useCallback(() => {
     setIsAdding(true)

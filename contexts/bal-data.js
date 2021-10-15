@@ -63,13 +63,14 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     if (id) {
       const voie = await getVoie(id)
       const numeros = await getNumeros(id, token)
+      await reloadParcelles()
       setVoie(voie)
       setNumeros(numeros)
     } else {
       setVoie(null)
       setNumeros(null)
     }
-  }, [idVoie, token])
+  }, [idVoie, token, reloadParcelles])
 
   const reloadNumerosToponyme = useCallback(async _idEdited => {
     const id = _idEdited || idToponyme
@@ -77,13 +78,14 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     if (id) {
       const toponyme = await getToponyme(id)
       const numeros = await getNumerosToponyme(id, token)
+      await reloadParcelles()
       setToponyme(toponyme)
       setNumeros(numeros)
     } else {
       setToponyme(null)
       setNumeros(null)
     }
-  }, [idToponyme, token])
+  }, [idToponyme, token, reloadParcelles])
 
   const reloadBaseLocale = useCallback(async () => {
     if (balId) {
