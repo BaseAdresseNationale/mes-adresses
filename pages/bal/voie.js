@@ -14,7 +14,7 @@ import NumeroEditor from '../../components/bal/numero-editor'
 import VoieHeading from './voie-heading'
 import NumerosList from './voie/numeros-list'
 
-const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
+const Voie = React.memo(({isHidden, baseLocale, commune, voie, defaultNumeros}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   useHelp(4)
@@ -85,9 +85,11 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
           <Table.Row height='auto'>
             <Table.Cell display='block' paddingY={12} background='tint1'>
               <NumeroEditor
+                isSidebar
                 initialVoieId={voie._id}
                 initialValue={editedNumero}
                 commune={commune}
+                isHidden={isHidden}
                 onSubmit={editedNumero ? onEdit : onAdd}
                 onCancel={resetEditing}
               />
@@ -130,6 +132,7 @@ Voie.propTypes = {
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
   }).isRequired,
+  isHidden: PropTypes.bool.isRequired,
   defaultNumeros: PropTypes.array
 }
 

@@ -7,7 +7,7 @@ import BalDataContext from '../../contexts/bal-data'
 import NumeroEditor from './numero-editor'
 import ToponymeEditor from './toponyme-editor'
 
-function AddressEditor({onAddNumero, onAddToponyme, onCancel, isToponyme, setIsToponyme}) {
+function AddressEditor({commune, onAddNumero, onAddToponyme, onCancel, isToponyme, setIsToponyme}) {
   const {voie} = useContext(BalDataContext)
 
   return (
@@ -25,13 +25,14 @@ function AddressEditor({onAddNumero, onAddToponyme, onCancel, isToponyme, setIsT
       {isToponyme ? (
         <ToponymeEditor onSubmit={onAddToponyme} onCancel={onCancel} />
       ) : (
-        <NumeroEditor initialVoieId={voie?._id} onSubmit={onAddNumero} onCancel={onCancel} />
+        <NumeroEditor commune={commune} initialVoieId={voie?._id} onSubmit={onAddNumero} onCancel={onCancel} />
       )}
     </Pane>
   )
 }
 
 AddressEditor.propTypes = {
+  commune: PropTypes.object.isRequired,
   onAddNumero: PropTypes.func.isRequired,
   onAddToponyme: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,

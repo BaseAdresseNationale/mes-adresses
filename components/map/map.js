@@ -355,6 +355,7 @@ function Map({interactive, commune, voie, toponyme}) {
       {commune && openForm && (
         <Pane padding={20} background='white' height={400} overflowY='auto'>
           <AddressEditor
+            commune={commune}
             isToponyme={isToponyme}
             setIsToponyme={setIsToponyme}
             onAddNumero={onAddNumero}

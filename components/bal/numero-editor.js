@@ -1,10 +1,9 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Text, SelectField, TextInput, Alert} from 'evergreen-ui'
+import {Pane, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
-import {computeCompletNumero} from '../../lib/utils/numero'
 
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
@@ -19,19 +18,11 @@ import CertificationButton from '../certification-button'
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
 import NumeroVoieSelector from './numero-editor/numero-voie-selector'
+import AddressPreview from './address-preview'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
-  const completNumero = computeCompletNumero(numero, suffixe)
-  if (toponyme) {
-    return `${completNumero} ${voie}, ${toponyme} - ${commune.nom} (${commune.code})`
-  }
-
-  return `${completNumero} ${voie} - ${commune.nom} (${commune.code})`
-}
-
-function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}) {
+function NumeroEditor({initialVoieId, initialValue, commune, isSidebar, isHidden, onSubmit, onCancel}) {
   const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
@@ -169,11 +160,16 @@ function NumeroEditor({initialVoieId, initialValue, commune, onSubmit, onCancel}
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <Pane position='fixed' left={0} width={500} zIndex={3} background='blue100' paddingY={8} paddingX={12}>
-        <Text fontSize={13}>
-          {getAddressPreview(numero, suffixe, selectedNomToponyme, nomVoie || selectedNomVoie, commune)}
-        </Text>
-      </Pane>
+      <AddressPreview
+        isSidebar={isSidebar}
+        isHidden={isHidden}
+        numero={numero}
+        suffixe={suffixe}
+        selectedNomToponyme={selectedNomToponyme}
+        voie={nomVoie || selectedNomVoie}
+        commune={commune}
+      />
+
       <Pane paddingTop={64}>
         <NumeroVoieSelector
           voieId={voieId}
@@ -276,6 +272,8 @@ NumeroEditor.propTypes = {
     certifie: PropTypes.bool
   }),
   commune: PropTypes.object.isRequired,
+  isHidden: PropTypes.bool.isRequired,
+  isSidebar: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
 }
@@ -283,6 +281,7 @@ NumeroEditor.propTypes = {
 NumeroEditor.defaultProps = {
   initialValue: null,
   initialVoieId: null,
+  isSidebar: false,
   onCancel: null
 }
 
