@@ -36,16 +36,18 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     try {
       await onSubmit(body)
 
-      const {balId, codeCommune} = router.query
-      router.push(
-        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
-      )
+      if (!drawEnabled) {
+        const {balId, codeCommune} = router.query
+        router.push(
+          `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
+          `/bal/${balId}/communes/${codeCommune}`
+        )
+      }
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, isMetric, data, onSubmit])
+  }, [router, nom, isMetric, data, drawEnabled, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
