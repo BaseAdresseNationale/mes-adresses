@@ -28,7 +28,7 @@ function AddressPreview({isSidebar, isHidden, numero, suffixe, selectedNomTopony
       </Text>
     </Pane>
   ) : (
-    <Pane position='fixed' width='100%' boxSizing='border-box' bottom={0} zIndex={3} background='blue100' paddingY={8} paddingX={12} marginLeft={-20}>
+    <Pane position='fixed' transition='left 0.3s' left={isHidden ? 0 : 500} right={0} bottom={0} zIndex={3} background='blue100' paddingY={8} paddingX={12}>
       <Text fontSize={13}>
         {getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)}
       </Text>
