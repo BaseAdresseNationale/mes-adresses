@@ -116,7 +116,12 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
     await reloadGeojson()
     setToRemove(null)
-  }, [reloadVoies, reloadToponymes, selectedTab, toRemove, token])
+  }, [reloadVoies, reloadToponymes, reloadGeojson, selectedTab, toRemove, token])
+
+  const onCancel = useCallback(() => {
+    setIsAdding(false)
+    setEditingId(null)
+  }, [setEditingId])
 
   const onSelect = useCallback(id => {
     if (editingId || isAdding) {
@@ -135,11 +140,6 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       )
     }
   }, [baseLocale._id, editingId, isAdding, commune, selectedTab, onCancel])
-
-  const onCancel = useCallback(() => {
-    setIsAdding(false)
-    setEditingId(null)
-  }, [setEditingId])
 
   useEffect(() => {
     setIsEditing(isAdding)
