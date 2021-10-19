@@ -1,6 +1,5 @@
 import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
 import {Pane, Heading, SelectField} from 'evergreen-ui'
 
 import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
@@ -12,54 +11,37 @@ import NumeroEditor from './numero-editor'
 import ToponymeEditor from './toponyme-editor'
 
 function AddressEditor({balId, codeCommune, closeForm}) {
-  const router = useRouter()
-
   const {token} = useContext(TokenContext)
-  const {voie, reloadVoies, reloadNumeros} = useContext(BalDataContext)
+  const {voie, reloadVoies, reloadNumeros, reloadToponymes, reloadGeojson} = useContext(BalDataContext)
 
   const [isToponyme, setIsToponyme] = useState(false)
 
-  const reloadView = (idVoie, isVoiesList, isNumeroCreated) => {
-    if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
-      reloadNumeros()
-    } else if (isNumeroCreated) { // Numéro créé depuis la vue commune ou une autre voie
-      router.push(
-        `/bal/voie?balId=${balId}&codeCommune=${codeCommune}&idVoie=${idVoie}`,
-        `/bal/${balId}/communes/${codeCommune}/voies/${idVoie}`
-      )
-    } else if (isVoiesList) { // Toponyme créé depuis la vue commune
-      reloadVoies()
-    } else { // Toponyme créé depuis la vue voie
-      router.push(
-        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
-      )
-    }
-  }
-
   const onAddToponyme = async toponymeData => {
-    const editedToponyme = await addToponyme(balId, codeCommune, toponymeData, token)
+    await addToponyme(balId, codeCommune, toponymeData, token)
+    await reloadToponymes()
+    await reloadGeojson()
 
     closeForm()
-    router.push(
-      `/bal/toponyme?balId=${balId}&codeCommune=${codeCommune}&idToponyme=${editedToponyme._id}`,
-      `/bal/${balId}/communes/${codeCommune}/toponymes/${editedToponyme._id}`
-    )
   }
 
   const onAddNumero = async (voieData, numero) => {
     let editedVoie = voieData
+    const isNewVoie = !editedVoie._id
+    console.log('isNewVoie', isNewVoie)
 
-    if (!editedVoie._id) {
+    if (isNewVoie) {
       editedVoie = await addVoie(balId, codeCommune, editedVoie, token)
     }
 
-    if (numero) {
-      await addNumero(editedVoie._id, numero, token)
+    await addNumero(editedVoie._id, numero, token)
+    await reloadNumeros()
+    await reloadVoies()
+
+    if (!voie || voie._id !== editedVoie._id || isNewVoie) {
+      await reloadGeojson()
     }
 
     closeForm()
-    reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
   }
 
   return (
