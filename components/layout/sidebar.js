@@ -7,7 +7,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 function Sidebar({isHidden, size, onToggle, top, ...props}) {
   const {innerWidth} = useWindowSize()
-  const {editingId, setEditingId} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing} = useContext(BalDataContext)
 
   useEffect(() => {
     if (editingId && isHidden) {
@@ -39,11 +39,14 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
             paddingX={8}
             elevation={0}
             borderRadius={0}
-            onClick={() => editingId && !isHidden ? setEditingId(false) : onToggle(editingId)}
+            onClick={
+              () => (editingId && !isHidden) || (isEditing && !isHidden) ?
+                setEditingId(false) :
+                onToggle(editingId)}
           >
             {isHidden ? (
               <ChevronRightIcon />
-            ) : editingId ? (
+            ) : editingId || isEditing ? (
               <CrossIcon />
             ) : (
               <ChevronLeftIcon />

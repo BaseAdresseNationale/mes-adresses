@@ -251,8 +251,16 @@ function Map({interactive, commune, voie, toponyme}) {
   }, [map, bounds, setViewport])
 
   useEffect(() => {
-    setIsEditing(openForm)
+    if (openForm) {
+      setIsEditing(true)
+    }
   }, [setIsEditing, openForm])
+
+  useEffect(() => {
+    if (!isEditing) {
+      setOpenForm(false) // Force closing editing form when isEditing is false
+    }
+  }, [isEditing, setOpenForm])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>

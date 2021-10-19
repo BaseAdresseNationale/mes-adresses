@@ -139,8 +139,16 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   }, [setEditingId])
 
   useEffect(() => {
-    setIsEditing(isAdding)
+    if (isAdding) {
+      setIsEditing(true)
+    }
   }, [isAdding, setIsEditing])
+
+  useEffect(() => {
+    if (!isEditing) {
+      setIsAdding(false) // Force closing editing form when isEditing is false
+    }
+  }, [isEditing, setIsAdding])
 
   useEffect(() => {
     if (editingId && toponymes.find(toponyme => toponyme._id === editingId)) {
