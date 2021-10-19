@@ -39,7 +39,10 @@ function AddressPreview({isSidebar, isHidden, numero, suffixe, selectedNomTopony
 AddressPreview.propTypes = {
   isSidebar: PropTypes.bool,
   isHidden: PropTypes.bool.isRequired,
-  numero: PropTypes.number,
+  numero: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   suffixe: PropTypes.string,
   selectedNomToponyme: PropTypes.string,
   voie: PropTypes.string,
