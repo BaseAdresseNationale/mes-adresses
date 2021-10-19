@@ -74,7 +74,7 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
       setError(error.message)
     }
 
-    setShowContextMenu(false)
+    setShowContextMenu(null)
   }, [token, reloadNumeros, setError, setShowContextMenu])
 
   return (
