@@ -157,7 +157,7 @@ function App({error, Component, pageProps, query}) {
                             {pageProps.baseLocale && pageProps.baseLocale.status === 'published' && (
                               <CertificationMessage balId={query.balId} codeCommune={query.codeCommune} />
                             )}
-                            <Component isHidden={isHidden} {...otherPageProps} />
+                            <Component {...otherPageProps} />
                           </>
                         )}
                       </Wrapper>

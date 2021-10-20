@@ -20,9 +20,9 @@ const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
   return `${completNumero} ${voie} - ${commune.nom} (${commune.code})`
 }
 
-function AddressPreview({isSidebar, isHidden, numero, suffixe, selectedNomToponyme, voie, commune}) {
+function AddressPreview({isSidebar, numero, suffixe, selectedNomToponyme, voie, commune}) {
   return isSidebar ? (
-    <Pane position='fixed' width={500} left={isHidden ? -500 : 0} transition='left 0.3s' zIndex={3} background='blue100' paddingY={8} paddingX={12} marginTop={-12}>
+    <Pane position='fixed' width={500} left={0} transition='left 0.3s' zIndex={3} background='blue100' paddingY={8} paddingX={12} marginTop={-12}>
       <Text fontSize={13}>
         {getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)}
       </Text>
@@ -38,7 +38,6 @@ function AddressPreview({isSidebar, isHidden, numero, suffixe, selectedNomTopony
 
 AddressPreview.propTypes = {
   isSidebar: PropTypes.bool,
-  isHidden: PropTypes.bool.isRequired,
   numero: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number

@@ -22,7 +22,7 @@ import AddressPreview from './address-preview'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, commune, isSidebar, isHidden, onSubmit, onCancel}) {
+function NumeroEditor({initialVoieId, initialValue, commune, isSidebar, onSubmit, onCancel}) {
   const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
@@ -162,7 +162,6 @@ function NumeroEditor({initialVoieId, initialValue, commune, isSidebar, isHidden
     <Pane is='form' onSubmit={onFormSubmit}>
       <AddressPreview
         isSidebar={isSidebar}
-        isHidden={isHidden}
         numero={numero}
         suffixe={suffixe}
         selectedNomToponyme={selectedNomToponyme}
@@ -272,7 +271,6 @@ NumeroEditor.propTypes = {
     certifie: PropTypes.bool
   }),
   commune: PropTypes.object.isRequired,
-  isHidden: PropTypes.bool.isRequired,
   isSidebar: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
