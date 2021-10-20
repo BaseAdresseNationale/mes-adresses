@@ -16,7 +16,7 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros, reloadNumerosToponyme} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback((e, numeroId) => {
     e.stopPropagation()
@@ -69,7 +69,11 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
   const removeAddress = useCallback(async numeroId => {
     try {
       await removeNumero(numeroId, token)
-      await reloadNumeros()
+      if (voie) {
+        await reloadNumeros()
+      } else {
+        await reloadNumerosToponyme()
+      }
     } catch (error) {
       setError(error.message)
     }
@@ -104,4 +108,3 @@ NumerosMarkers.propTypes = {
 }
 
 export default NumerosMarkers
-
