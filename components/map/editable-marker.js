@@ -24,12 +24,8 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
     }
   }, [idVoie, geojson])
 
-  const isSuggestionNeeded = useMemo(() => {
-    return !isToponyme && !overrideText && voie
-  }, [isToponyme, overrideText, voie])
-
   const computeSuggestedNumero = useCallback(coordinates => {
-    if (isSuggestionNeeded) {
+    if (!isToponyme && !overrideText && voie) { // Is suggestion needed
       const {geometry} = voie
       const point = {
         type: 'Feature',
@@ -53,7 +49,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
 
       return slicedLine.toFixed()
     }
-  }, [isSuggestionNeeded, voie])
+  }, [isToponyme, overrideText, voie])
 
   const onDragEnd = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
@@ -119,14 +115,22 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
   )
 }
 
-EditableMarker.propTypes = {
-  size: PropTypes.number,
-  style: PropTypes.string
-}
-
 EditableMarker.defaultProps = {
+  idVoie: null,
   size: 32,
   style: 'vector'
 }
 
+EditableMarker.propTypes = {
+  idVoie: PropTypes.string,
+  isToponyme: PropTypes.bool.isRequired,
+  viewport: PropTypes.shape({
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired
+  }).isRequired,
+  size: PropTypes.number,
+  style: PropTypes.string
+}
+
 export default EditableMarker
+
