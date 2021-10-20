@@ -47,7 +47,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
   const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace, parcelles}) => {
     if (selectedTab === 'voie') {
-      const voie = await addVoie(baseLocale._id, commune.code, {
+      await addVoie(baseLocale._id, commune.code, {
         nom,
         typeNumerotation,
         trace
@@ -59,7 +59,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
         await reloadGeojson()
       }
     } else {
-      const toponyme = await addToponyme(baseLocale._id, commune.code, {
+      await addToponyme(baseLocale._id, commune.code, {
         nom,
         positions,
         parcelles
@@ -69,7 +69,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     }
 
     setIsAdding(false)
-  }, [baseLocale._id, commune, reloadVoies, token, selectedTab, reloadToponymes])
+  }, [baseLocale._id, commune, reloadVoies, token, selectedTab, reloadToponymes, reloadGeojson])
 
   const onEnableEditing = useCallback(async id => {
     setIsAdding(false)
