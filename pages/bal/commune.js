@@ -53,23 +53,17 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
         trace
       }, token)
 
-      Router.push(
-        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${voie._id}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${voie._id}`
-      )
-
       await reloadVoies()
+
+      if (trace) {
+        await reloadGeojson()
+      }
     } else {
       const toponyme = await addToponyme(baseLocale._id, commune.code, {
         nom,
         positions,
         parcelles
       }, token)
-
-      Router.push(
-        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${toponyme._id}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${toponyme._id}`
-      )
 
       await reloadToponymes()
     }
