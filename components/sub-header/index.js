@@ -18,6 +18,7 @@ import Publication from './publication'
 import DemoWarning from './demo-warning'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
+const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://mes-adresses.data.gouv.fr'
 
 const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, layout, isSidebarHidden, onToggle}) => {
   const balDataContext = useContext(BalDataContext)
@@ -44,7 +45,8 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, layou
   const handlePublication = async () => {
     try {
       await updateBaseLocale(initialBaseLocale._id, {status: 'ready-to-publish'}, token)
-      window.location.href = `${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}`
+      const redirectUrl = `${EDITEUR_URL}/bal/${baseLocale._id}/communes/${commune.code}`
+      window.location.href = `${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}&redirectUrl=${encodeURIComponent(redirectUrl)}`
     } catch (error) {
       setError(error.message)
     }
