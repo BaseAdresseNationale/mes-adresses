@@ -69,36 +69,57 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
       gridTemplateColumns='repeat(1fr)'
       background={baseLocale.status === 'demo' ? '#E4E7EB' : 'tint1'}
     >
-      <Pane padding='.5em' display='flex' justifyContent='space-between' alignItems='center' cursor='pointer' onClick={handleIsOpen}>
-        <Pane>
-          <Pane display='flex' flexDirection='row' justifyContent='start'>
-            <GlobeIcon marginRight='.5em' marginY='auto' />
-            <Heading fontSize='18px'>{nom}</Heading>
+      <Pane
+        padding='.5em'
+        display='grid'
+        gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))'
+        justifyContent='space-between'
+        alignItems='center'
+        cursor='pointer'
+        gap='3em'
+        onClick={handleIsOpen}
+      >
+        <Pane display='flex' flexDirection='column' gap='.5em' >
+          <Pane display='flex' flexDirection='row' justifyContent='space-between'>
+            <Pane display='flex'>
+              <GlobeIcon marginRight='.5em' marginY='auto' />
+              <Heading fontSize='18px'>{nom}</Heading>
+            </Pane>
+
+            {communes.length === 1 && commune && (
+              <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+            )}
           </Pane>
-          <Text fontSize='12px' fontStyle='italic'>{_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} - </Text>
-          {communes.length === 0 ? (
-            <Text fontSize='12px' fontStyle='italic'>Vide</Text>
-          ) : communes.length < 2 ? (
-            commune && <Text fontSize='12px' fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
-          ) : (
-            <Text fontSize='12px' fontStyle='italic'>{communes.length} Communes</Text>
-          )}
+
+          <Pane>
+            <Text
+              fontSize={12}
+              fontStyle='italic'
+            >
+              {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
+            </Text>
+
+            {communes.length === 0 ? (
+              <Text fontSize={12} fontStyle='italic'>Vide</Text>
+            ) : communes.length < 2 ? (
+              commune && <Text fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
+            ) : (
+              <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
+            )}
+          </Pane>
         </Pane>
 
-        {communes.length === 1 && commune && (
-          <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
-        )}
-
-        <Pane display='flex' flexDirection='row' justifyContent='space-between'>
+        <Pane display='grid' gridTemplateColumns='255px auto' justifyContent='space-between' alignItems='center' boxSizing='border-box'>
           {baseLocale.status === 'demo' ? (
-            <Badge color={colors.neutral} margin='auto'>DÉMO</Badge>
+            <Badge color={colors.neutral} paddingY={8} height='fit-content'>DÉMO</Badge>
           ) : (
-            <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
+            <Badge color={badge.color} paddingY={8} height='fit-content'>{badge.label} </Badge>
           )}
+
           {isOpen ? (
-            <ChevronDownIcon size={25} marginX='1em' marginY='auto' />
+            <ChevronDownIcon size={25} />
           ) : (
-            <ChevronRightIcon size={25} marginX='1em' marginY='auto' />
+            <ChevronRightIcon size={25} />
           )}
         </Pane>
       </Pane>
