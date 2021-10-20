@@ -10,8 +10,12 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
   const {setEditingId, isEditing, setIsEditing} = useContext(BalDataContext)
 
   const handleClick = () => {
-    setEditingId(null)
-    setIsEditing(false)
+    if (isEditing && !isHidden) {
+      setEditingId(null)
+      setIsEditing(false)
+    } else {
+      onToggle(false)
+    }
   }
 
   useEffect(() => {
@@ -44,10 +48,7 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
             paddingX={8}
             elevation={0}
             borderRadius={0}
-            onClick={
-              () => isEditing && !isHidden ?
-                handleClick() :
-                onToggle(false)}
+            onClick={handleClick}
           >
             {isHidden ? (
               <ChevronRightIcon />
