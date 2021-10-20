@@ -72,7 +72,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, commune, voie, toponyme, isHidden}) {
+function Map({interactive, commune, voie, toponyme}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, showCadastre, setShowCadastre} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -358,7 +358,6 @@ function Map({interactive, commune, voie, toponyme, isHidden}) {
             commune={commune}
             isToponyme={isToponyme}
             setIsToponyme={setIsToponyme}
-            isHidden={isHidden}
             onAddNumero={onAddNumero}
             onAddToponyme={onAddToponyme}
             onCancel={() => setOpenForm(false)}
@@ -373,8 +372,7 @@ Map.propTypes = {
   interactive: PropTypes.bool,
   commune: PropTypes.object,
   voie: PropTypes.object,
-  toponyme: PropTypes.object,
-  isHidden: PropTypes.bool.isRequired
+  toponyme: PropTypes.object
 }
 
 Map.defaultProps = {

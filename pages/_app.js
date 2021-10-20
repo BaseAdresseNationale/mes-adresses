@@ -135,7 +135,6 @@ function App({error, Component, pageProps, query}) {
                           commune={pageProps.commune}
                           voie={pageProps.voie}
                           toponyme={pageProps.toponyme}
-                          isHidden={isHidden}
                         />
                       )}
 
