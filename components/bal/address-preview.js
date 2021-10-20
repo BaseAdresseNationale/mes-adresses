@@ -21,14 +21,20 @@ const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
 }
 
 function AddressPreview({isSidebar, numero, suffixe, selectedNomToponyme, voie, commune}) {
-  return isSidebar ? (
-    <Pane position='fixed' width={500} left={0} transition='left 0.3s' zIndex={3} background='blue100' paddingY={8} paddingX={12} marginTop={-12}>
-      <Text fontSize={13}>
-        {getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)}
-      </Text>
-    </Pane>
-  ) : (
-    <Pane position='fixed' width='100%' boxSizing='border-box' bottom={0} zIndex={3} background='blue100' paddingY={8} paddingX={12} marginLeft={-20}>
+  return (
+    <Pane
+      position={isSidebar ? 'fixed' : 'absolute'}
+      width={isSidebar ? 500 : '100%'}
+      transition='left 0.3s'
+      boxSizing='border-box'
+      left={0}
+      bottom={isSidebar ? '' : 0}
+      zIndex={3}
+      background='blue100'
+      paddingY={8}
+      paddingX={12}
+      marginTop={isSidebar ? -12 : 0}
+    >
       <Text fontSize={13}>
         {getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)}
       </Text>

@@ -169,7 +169,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, isSidebar, onSubmit
         commune={commune}
       />
 
-      <Pane paddingTop={64} paddingBottom={50}>
+      <Pane paddingTop={isSidebar ? 64 : 0} paddingBottom={50}>
         <NumeroVoieSelector
           voieId={voieId}
           voies={voies}
