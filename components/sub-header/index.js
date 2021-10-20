@@ -45,7 +45,7 @@ const SubHeader = React.memo(({commune, voie, toponyme, layout, isSidebarHidden,
     try {
       await updateBaseLocale(baseLocale._id, {status: 'ready-to-publish'}, token)
       const redirectUrl = `${EDITEUR_URL}/bal/${baseLocale._id}/communes/${commune.code}`
-      window.location.href = encodeURIComponent(`${ADRESSE_URL}/bases-locales/publication?url=${csvUrl}&redirectUrl=${redirectUrl}`)
+      window.location.href = `${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}&redirectUrl=${encodeURIComponent(redirectUrl)}`
     } catch (error) {
       setError(error.message)
     }
