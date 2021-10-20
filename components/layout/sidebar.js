@@ -7,13 +7,18 @@ import BalDataContext from '../../contexts/bal-data'
 
 function Sidebar({isHidden, size, onToggle, top, ...props}) {
   const {innerWidth} = useWindowSize()
-  const {editingId, setEditingId, isEditing} = useContext(BalDataContext)
+  const {setEditingId, isEditing, setIsEditing} = useContext(BalDataContext)
+
+  const handleClick = () => {
+    setEditingId(null)
+    setIsEditing(false)
+  }
 
   useEffect(() => {
-    if (editingId && isHidden) {
+    if (isEditing && isHidden) {
       onToggle()
     }
-  }, [editingId, isHidden, onToggle])
+  }, [isEditing, isHidden, onToggle])
 
   return (
     <Pane
@@ -40,13 +45,13 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
             elevation={0}
             borderRadius={0}
             onClick={
-              () => (editingId && !isHidden) || (isEditing && !isHidden) ?
-                setEditingId(false) :
-                onToggle(editingId)}
+              () => isEditing && !isHidden ?
+                handleClick() :
+                onToggle(false)}
           >
             {isHidden ? (
               <ChevronRightIcon />
-            ) : editingId || isEditing ? (
+            ) : isEditing ? (
               <CrossIcon />
             ) : (
               <ChevronLeftIcon />
