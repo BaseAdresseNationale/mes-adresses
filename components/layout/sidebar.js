@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, ChevronRightIcon, CrossIcon, ChevronLeftIcon} from 'evergreen-ui'
 
@@ -14,15 +14,9 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
       setEditingId(null)
       setIsEditing(false)
     } else {
-      onToggle(false)
+      onToggle(isEditing)
     }
   }
-
-  useEffect(() => {
-    if (isEditing && isHidden) {
-      onToggle()
-    }
-  }, [isEditing, isHidden, onToggle])
 
   return (
     <Pane
