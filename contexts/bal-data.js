@@ -123,6 +123,13 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     reloadToponymes()
   }, [codeCommune, reloadGeojson, reloadParcelles, reloadVoies, reloadToponymes])
 
+  // Reload geojson when go back to commune view
+  useEffect(() => {
+    if (codeCommune && !idVoie) {
+      reloadGeojson()
+    }
+  }, [codeCommune, idVoie, reloadGeojson])
+
   useEffect(() => {
     reloadNumeros()
   }, [idVoie, reloadNumeros])

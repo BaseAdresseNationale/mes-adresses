@@ -27,7 +27,6 @@ function AddressEditor({balId, codeCommune, closeForm}) {
   const onAddNumero = async (voieData, numero) => {
     let editedVoie = voieData
     const isNewVoie = !editedVoie._id
-    console.log('isNewVoie', isNewVoie)
 
     if (isNewVoie) {
       editedVoie = await addVoie(balId, codeCommune, editedVoie, token)

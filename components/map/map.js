@@ -180,9 +180,7 @@ function Map({commune, voie, toponyme}) {
 
   useEffect(() => {
     if (map) {
-      if (bounds === null) {
-        setViewport(viewport => ({...viewport}))
-      } else if (bounds !== false) {
+      if (bounds) {
         const camera = map.cameraForBounds(bounds, {
           padding: 100
         })
@@ -196,6 +194,8 @@ function Map({commune, voie, toponyme}) {
             zoom: camera.zoom
           }))
         }
+      } else {
+        setViewport(viewport => ({...viewport}))
       }
     }
   }, [map, bounds, setViewport])
@@ -324,3 +324,4 @@ Map.defaultProps = {
 }
 
 export default Map
+
