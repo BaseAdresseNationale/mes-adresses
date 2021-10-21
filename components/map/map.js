@@ -11,8 +11,6 @@ import TokenContext from '../../contexts/token'
 import DrawContext from '../../contexts/draw'
 import ParcellesContext from '../../contexts/parcelles'
 
-import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
-
 import AddressEditor from '../bal/address-editor'
 
 import {vector, ortho} from './styles'
@@ -20,7 +18,7 @@ import {vector, ortho} from './styles'
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
 import Control from './control'
-import NumeroMarker from './numero-marker'
+import NumerosMarkers from './numeros-markers'
 import ToponymeMarker from './toponyme-marker'
 import Draw from './draw'
 import StyleSelector from './style-selector'
@@ -34,16 +32,14 @@ const settings = {
   maxZoom: 19
 }
 
-function getInteractionProps(enabled) {
-  return {
-    dragPan: enabled,
-    dragRotate: enabled,
-    scrollZoom: enabled,
-    touchZoom: enabled,
-    touchRotate: enabled,
-    keyboard: enabled,
-    doubleClickZoom: enabled
-  }
+const interactionProps = {
+  dragPan: true,
+  dragRotate: true,
+  scrollZoom: true,
+  touchZoom: true,
+  touchRotate: true,
+  keyboard: true,
+  doubleClickZoom: true
 }
 
 function getBaseStyle(style) {
@@ -72,7 +68,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({interactive, commune, voie, toponyme}) {
+function Map({commune, voie, toponyme}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, showCadastre, setShowCadastre} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -82,7 +78,6 @@ function Map({interactive, commune, voie, toponyme}) {
   const [showContextMenu, setShowContextMenu] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
-  const [isToponyme, setIsToponyme] = useState(false)
 
   const {balId, codeCommune} = router.query
 
@@ -92,8 +87,6 @@ function Map({interactive, commune, voie, toponyme}) {
     editingId,
     setEditingId,
     setIsEditing,
-    reloadVoies,
-    reloadNumeros,
     isEditing
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
@@ -158,49 +151,6 @@ function Map({interactive, commune, voie, toponyme}) {
     setShowContextMenu(null)
   }, [router, balId, codeCommune, setEditingId, isEditing, voie, handleParcelle])
 
-  const reloadView = useCallback((idVoie, isVoiesList, isNumeroCreated) => {
-    if (voie && voie._id === idVoie) { // Numéro créé sur la voie en cours
-      reloadNumeros()
-    } else if (isNumeroCreated) { // Numéro créé depuis la vue commune ou une autre voie
-      router.push(
-        `/bal/voie?balId=${balId}&codeCommune=${codeCommune}&idVoie=${idVoie}`,
-        `/bal/${balId}/communes/${codeCommune}/voies/${idVoie}`
-      )
-    } else if (isVoiesList) { // Toponyme créé depuis la vue commune
-      reloadVoies()
-    } else { // Toponyme créé depuis la vue voie
-      router.push(
-        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
-      )
-    }
-  }, [router, balId, codeCommune, voie, reloadNumeros, reloadVoies])
-
-  const onAddNumero = useCallback(async (voieData, numero) => {
-    let editedVoie = voieData
-
-    if (!editedVoie._id) {
-      editedVoie = await addVoie(balId, codeCommune, editedVoie, token)
-    }
-
-    if (numero) {
-      await addNumero(editedVoie._id, numero, token)
-    }
-
-    setOpenForm(false)
-    reloadView(editedVoie._id, Boolean(!voie), Boolean(numero))
-  }, [balId, codeCommune, voie, token, reloadView])
-
-  const onAddToponyme = useCallback(async toponymeData => {
-    const editedToponyme = await addToponyme(balId, codeCommune, toponymeData, token)
-
-    setOpenForm(false)
-    router.push(
-      `/bal/toponyme?balId=${balId}&codeCommune=${codeCommune}&idToponyme=${editedToponyme._id}`,
-      `/bal/${balId}/communes/${codeCommune}/toponymes/${editedToponyme._id}`
-    )
-  }, [balId, codeCommune, token, router])
-
   const handleCursor = useCallback(({isHovering}) => {
     if (modeId === 'drawLineString') {
       return 'crosshair'
@@ -213,9 +163,9 @@ function Map({interactive, commune, voie, toponyme}) {
     if (sources.length > 0) {
       setMapStyle(generateNewStyle(style, sources, layers))
     } else {
-      setMapStyle(getBaseStyle(interactive ? style : defaultStyle))
+      setMapStyle(getBaseStyle(style))
     }
-  }, [interactive, sources, layers, style, defaultStyle])
+  }, [sources, layers, style, defaultStyle])
 
   useEffect(() => {
     setStyle(prevStyle => {
@@ -230,9 +180,7 @@ function Map({interactive, commune, voie, toponyme}) {
 
   useEffect(() => {
     if (map) {
-      if (bounds === null) {
-        setViewport(viewport => ({...viewport}))
-      } else if (bounds !== false) {
+      if (bounds) {
         const camera = map.cameraForBounds(bounds, {
           padding: 100
         })
@@ -246,6 +194,8 @@ function Map({interactive, commune, voie, toponyme}) {
             zoom: camera.zoom
           }))
         }
+      } else {
+        setViewport(viewport => ({...viewport}))
       }
     }
   }, [map, bounds, setViewport])
@@ -264,15 +214,13 @@ function Map({interactive, commune, voie, toponyme}) {
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
-      {interactive && (
-        <StyleSelector
-          isFormOpen={openForm}
-          style={style}
-          handleStyle={setStyle}
-          showCadastre={showCadastre}
-          handleCadastre={setShowCadastre}
-        />
-      )}
+      <StyleSelector
+        isFormOpen={openForm}
+        style={style}
+        handleStyle={setStyle}
+        showCadastre={showCadastre}
+        handleCadastre={setShowCadastre}
+      />
 
       <Pane
         position='absolute'
@@ -313,7 +261,7 @@ function Map({interactive, commune, voie, toponyme}) {
           width='100%'
           height='100%'
           {...settings}
-          {...getInteractionProps(interactive)}
+          {...interactionProps}
           interactiveLayerIds={interactiveLayerIds}
           getCursor={handleCursor}
           onClick={onClick}
@@ -322,20 +270,18 @@ function Map({interactive, commune, voie, toponyme}) {
           onViewportChange={setViewport}
         >
 
-          {interactive && (
-            <NavControl onViewportChange={setViewport} />
-          )}
+          <NavControl onViewportChange={setViewport} />
 
-          {(voie || toponyme) && !modeId && numeros && numeros.filter(({_id}) => _id !== editingId).map(numero => (
-            <NumeroMarker
-              key={numero._id}
-              numero={toponyme ? {...numero, numeroComplet: `${numero.numero}${numero.suffixe || ''}`} : numero}
-              colorSeed={toponyme ? numero.voie._id : voie._id}
+          {(voie || toponyme) && !modeId && numeros && (
+            <NumerosMarkers
+              numeros={numeros.filter(({_id}) => _id !== editingId)}
+              voie={voie}
+              isToponymeNumero={Boolean(toponyme)}
               showLabel={showNumeros}
-              showContextMenu={numero._id === showContextMenu}
+              showContextMenu={showContextMenu}
               setShowContextMenu={setShowContextMenu}
             />
-          ))}
+          )}
 
           {toponymes && toponymes.map(toponyme => (
             <ToponymeMarker
@@ -351,7 +297,7 @@ function Map({interactive, commune, voie, toponyme}) {
             <EditableMarker
               style={style || defaultStyle}
               idVoie={voie ? voie._id : null}
-              isToponyme={isToponyme}
+              isToponyme={Boolean(toponyme)}
               viewport={viewport}
             />
           )}
@@ -363,11 +309,9 @@ function Map({interactive, commune, voie, toponyme}) {
       {commune && openForm && (
         <Pane padding={20} background='white' height={400} overflowY='auto'>
           <AddressEditor
-            isToponyme={isToponyme}
-            setIsToponyme={setIsToponyme}
-            onAddNumero={onAddNumero}
-            onAddToponyme={onAddToponyme}
-            onCancel={() => setOpenForm(false)}
+            balId={balId}
+            codeCommune={codeCommune}
+            closeForm={() => setOpenForm(false)}
           />
         </Pane>
       )}
@@ -376,17 +320,16 @@ function Map({interactive, commune, voie, toponyme}) {
 }
 
 Map.propTypes = {
-  interactive: PropTypes.bool,
   commune: PropTypes.object,
   voie: PropTypes.object,
   toponyme: PropTypes.object
 }
 
 Map.defaultProps = {
-  interactive: true,
   commune: null,
   voie: null,
   toponyme: null
 }
 
 export default Map
+
