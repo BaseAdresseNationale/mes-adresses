@@ -83,31 +83,31 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
         gap='3em'
         onClick={handleIsOpen}
       >
-        <Pane display='flex' flexDirection='column' gap='.5em' width='100%'>
-          <Pane display='flex' flexDirection='row' justifyContent='space-between' width='100%'>
+        <Pane display='flex' flexDirection='row' gap='.5em' width='100%' alignItems={breakPoint ? '' : 'center'} >
+          <Pane flex={1} display='flex' flexDirection='column' justifyContent='space-between' width='100%'>
             <Pane display='flex'>
               <GlobeIcon marginRight='.5em' marginY='auto' />
               <Heading fontSize='18px'>{nom}</Heading>
             </Pane>
 
-            {communes.length === 1 && commune && (
-              <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
-            )}
+            <Pane>
+              <Text fontSize={12} fontStyle='italic'>
+                {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
+              </Text>
+
+              {communes.length === 0 ? (
+                <Text fontSize={12} fontStyle='italic'>Vide</Text>
+              ) : communes.length < 2 ? (
+                commune && <Text fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
+              ) : (
+                <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
+              )}
+            </Pane>
           </Pane>
 
-          <Pane>
-            <Text fontSize={12} fontStyle='italic'>
-              {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
-            </Text>
-
-            {communes.length === 0 ? (
-              <Text fontSize={12} fontStyle='italic'>Vide</Text>
-            ) : communes.length < 2 ? (
-              commune && <Text fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
-            ) : (
-              <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
-            )}
-          </Pane>
+          {communes.length === 1 && commune && (
+            <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+          )}
         </Pane>
 
         <Pane display='flex' alignItems='center' gap='1em' width='100%'>
