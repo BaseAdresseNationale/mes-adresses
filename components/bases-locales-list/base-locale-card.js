@@ -11,6 +11,8 @@ import {getCommune as getCommuneGeoData} from '../../lib/geo-api'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
+import useWindowSize from '../../hooks/window-size'
+
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 import CertificationCount from '../certification-count'
 
@@ -27,6 +29,7 @@ function getBadge({status}) {
 
 const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) => {
   const {getBalToken} = useContext(LocalStorageContext)
+  const {innerWidth} = useWindowSize()
 
   const {nom, communes, status, _updated, _created, emails} = baseLocale
   const [commune, setCommune] = useState()
@@ -38,6 +41,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
   const badge = getBadge(baseLocale)
+  const breakPoint = innerWidth < 768
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen)
@@ -71,16 +75,16 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
     >
       <Pane
         padding='.5em'
-        display='grid'
-        gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))'
+        display='flex'
+        flexDirection={breakPoint ? 'column' : 'row'}
         justifyContent='space-between'
         alignItems='center'
         cursor='pointer'
         gap='3em'
         onClick={handleIsOpen}
       >
-        <Pane display='flex' flexDirection='column' gap='.5em' >
-          <Pane display='flex' flexDirection='row' justifyContent='space-between'>
+        <Pane display='flex' flexDirection='column' gap='.5em' width='100%'>
+          <Pane display='flex' flexDirection='row' justifyContent='space-between' width='100%'>
             <Pane display='flex'>
               <GlobeIcon marginRight='.5em' marginY='auto' />
               <Heading fontSize='18px'>{nom}</Heading>
@@ -92,10 +96,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           </Pane>
 
           <Pane>
-            <Text
-              fontSize={12}
-              fontStyle='italic'
-            >
+            <Text fontSize={12} fontStyle='italic'>
               {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
             </Text>
 
@@ -109,13 +110,14 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           </Pane>
         </Pane>
 
-        <Pane display='grid' gridTemplateColumns='255px auto' justifyContent='space-between' alignItems='center' boxSizing='border-box'>
-          {baseLocale.status === 'demo' ? (
-            <Badge color={colors.neutral} paddingY={8} height='fit-content'>DÉMO</Badge>
-          ) : (
-            <Badge color={badge.color} paddingY={8} height='fit-content'>{badge.label} </Badge>
-          )}
-
+        <Pane display='flex' alignItems='center' gap='1em' width='100%'>
+          <Pane flex={1} display='flex' justifyContent='center'>
+            {baseLocale.status === 'demo' ? (
+              <Badge color={colors.neutral} width={breakPoint ? '100%' : 250} paddingY={8} height='fit-content'>DÉMO</Badge>
+            ) : (
+              <Badge color={badge.color} width={breakPoint ? '100%' : 250} paddingY={8} height='fit-content'>{badge.label} </Badge>
+            )}
+          </Pane>
           {isOpen ? (
             <ChevronDownIcon size={25} />
           ) : (
