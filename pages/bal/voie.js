@@ -87,10 +87,8 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   }
 
   useEffect(() => {
-    if (!isEditing) {
-      setIsFormOpen(false)
-    }
-  }, [isEditing])
+    setIsFormOpen(Boolean(editedNumero))
+  }, [editedNumero])
 
   return (
     <>
