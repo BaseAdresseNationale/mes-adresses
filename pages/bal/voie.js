@@ -92,6 +92,12 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     }
   }, [editingId, isEditing])
 
+  useEffect(() => {
+    if (editedNumero) {
+      setIsFormOpen(true)
+    }
+  }, [editingId, setIsFormOpen])
+
   return (
     <>
       <VoieHeading defaultVoie={voie} />
