@@ -111,6 +111,12 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
     setIsEditing(isAdding)
   }, [isAdding, setIsEditing])
 
+  useEffect(() => {
+    if (!isEditing) {
+      setIsAdding(false)
+    }
+  }, [isEditing, setIsAdding])
+
   return (
     <>
       <ToponymeHeading defaultToponyme={toponyme} />
