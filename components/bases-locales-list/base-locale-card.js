@@ -83,25 +83,28 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
         gap='3em'
         onClick={handleIsOpen}
       >
-        <Pane display='flex' flexDirection='row' gap='.5em' width='100%' alignItems={breakPoint ? '' : 'center'} >
-          <Pane flex={1} display='flex' flexDirection='column' justifyContent='space-between' width='100%'>
-            <Pane display='flex'>
-              <GlobeIcon marginRight='.5em' marginY='auto' />
-              <Heading fontSize='18px'>{nom}</Heading>
-            </Pane>
-
+        <Pane display='grid' gridTemplateColumns='20px 1fr 0.5fr' justifyItems='flex-end' width='100%' alignItems={breakPoint ? '' : 'center'} >
+          {isOpen ? (
+            <ChevronDownIcon size={25} />
+          ) : (
+            <ChevronRightIcon size={25} />
+          )}
+          <Pane width='100%'>
             <Pane>
-              <Text fontSize={12} fontStyle='italic'>
-                {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
-              </Text>
+              <Heading fontSize='18px'>{nom}</Heading>
+              <Pane>
+                <Text fontSize={12} fontStyle='italic'>
+                  {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
+                </Text>
 
-              {communes.length === 0 ? (
-                <Text fontSize={12} fontStyle='italic'>Vide</Text>
-              ) : communes.length < 2 ? (
-                commune && <Text fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
-              ) : (
-                <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
-              )}
+                {communes.length === 0 ? (
+                  <Text fontSize={12} fontStyle='italic'>Vide</Text>
+                ) : communes.length < 2 ? (
+                  commune && <Text fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
+                ) : (
+                  <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
+                )}
+              </Pane>
             </Pane>
           </Pane>
 
@@ -110,20 +113,14 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           )}
         </Pane>
 
-        <Pane display='flex' alignItems='center' gap='1em' width='100%'>
-          <Pane flex={1} display='flex' justifyContent='center'>
-            {baseLocale.status === 'demo' ? (
-              <Badge color={colors.neutral} width={breakPoint ? '100%' : 250} paddingY={8} height='fit-content'>DÉMO</Badge>
-            ) : (
-              <Badge color={badge.color} width={breakPoint ? '100%' : 250} paddingY={8} height='fit-content'>{badge.label} </Badge>
-            )}
-          </Pane>
-          {isOpen ? (
-            <ChevronDownIcon size={25} />
+        <Pane display='flex' justifyContent='center' width='100%'>
+          {baseLocale.status === 'demo' ? (
+            <Badge color={colors.neutral} width={breakPoint ? '100%' : 250} paddingY={8} height='fit-content'>DÉMO</Badge>
           ) : (
-            <ChevronRightIcon size={25} />
+            <Badge color={badge.color} width={breakPoint ? '100%' : 250} paddingY={8} height='fit-content'>{badge.label} </Badge>
           )}
         </Pane>
+
       </Pane>
 
       {isOpen && (
