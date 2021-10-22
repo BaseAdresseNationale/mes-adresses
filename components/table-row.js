@@ -51,7 +51,7 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
   }, [])
 
   return (
-    <Table.Row onClick={onClick}>
+    <Table.Row onClick={token ? onClick : null}>
       {token && !isEditing && hasNumero && isSelectable && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
