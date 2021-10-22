@@ -24,7 +24,7 @@ function PositionEditor({isToponyme}) {
   }
 
   return (
-    <>
+    <Pane background='white' padding={8} borderRadius={5} marginY={8}>
       <InputLabel
         title='Positions'
         help={markers.length > 1 ?
@@ -87,14 +87,14 @@ function PositionEditor({isToponyme}) {
         appearance='primary'
         intent='success'
         width='100%'
-        marginBottom={16}
+        marginTop={16}
         display='flex'
         justifyContent='center'
         onClick={handleAddMarker}
       >
         {`Ajouter une position au ${isToponyme ? 'toponyme' : 'numéro'}`}
       </Button>
-    </>
+    </Pane>
   )
 }
 

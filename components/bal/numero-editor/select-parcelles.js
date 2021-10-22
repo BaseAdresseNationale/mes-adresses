@@ -13,7 +13,7 @@ function SelectParcelles({isToponyme}) {
   const addressType = isToponyme ? 'toponyme' : 'numéro'
 
   return (
-    <Pane display='flex' flexDirection='column' marginY='1em'>
+    <Pane display='flex' flexDirection='column' background='white' padding={8} borderRadius={5} marginY={8}>
       <InputLabel
         title='Parcelles cadastre'
         help={`Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au ${addressType}. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.`}

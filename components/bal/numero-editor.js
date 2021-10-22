@@ -148,7 +148,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         handleNomVoie={onNomVoieChange}
       />
 
-      <Pane display='flex'>
+      <Pane display='flex' background='white' padding={8} borderRadius={5} marginY={8}>
         <SelectField
           label='Toponyme'
           flex={1}
@@ -165,7 +165,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
         </SelectField>
       </Pane>
 
-      <Pane display='flex'>
+      <Pane display='flex' background='white' padding={8} borderRadius={5} marginY={8}>
         <TextInput
           ref={focusRef}
           required
@@ -200,7 +200,7 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
       </Pane>
 
       {markers.length > 0 && (
-        <PositionEditor />
+        <PositionEditor background='white' padding={8} borderRadius={5} marginY={8} />
       )}
 
       <SelectParcelles />

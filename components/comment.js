@@ -4,7 +4,7 @@ import {Pane, Textarea, Label} from 'evergreen-ui'
 
 const Comment = ({input, limit, onChange, isDisabled}) => {
   return (
-    <Pane>
+    <Pane background='white' padding={8} borderRadius={5} marginY={8}>
       <Label marginBottom={4} display='block'>
         Commentaire
       </Label>
