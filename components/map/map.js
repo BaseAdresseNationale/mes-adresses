@@ -130,9 +130,9 @@ function Map({commune, voie, toponyme}) {
   }, [])
 
   const onClick = useCallback(event => {
-    const feature = event.features && event.features[0]
+    const feature = event?.features[0]
 
-    if (feature && feature.source === 'cadastre') {
+    if (feature?.source === 'cadastre' && feature?.state.hover) {
       handleParcelle(feature.properties.id)
     }
 
