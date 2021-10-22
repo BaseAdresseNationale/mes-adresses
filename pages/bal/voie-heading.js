@@ -51,7 +51,7 @@ const VoieHeading = ({defaultVoie}) => {
     <Pane
       display='flex'
       flexDirection='column'
-      background='tint1'
+      background='gray100'
       padding={16}
     >
       {editingId === editedVoie._id ? (

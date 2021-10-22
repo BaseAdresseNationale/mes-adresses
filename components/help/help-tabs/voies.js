@@ -53,12 +53,12 @@ const Voies = () => {
           <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             <OrderedList margin={8}>
               <ListItem>
-                Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
+                Cliquez sur le bouton <Button background='gray100' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
               </ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon={SendToMapIcon}>
+                  <Menu.Item background='gray100' marginLeft={8} icon={SendToMapIcon}>
                     Consulter
                   </Menu.Item>
                 </Pane>
@@ -78,12 +78,12 @@ const Voies = () => {
 
           <OrderedList margin={8}>
             <ListItem>
-              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
+              Cliquez sur le bouton <Button background='gray100' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
                 Dans le menu qui vient d’apparaître, choisissez
-                <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
+                <Menu.Item background='gray100' marginLeft={8} icon={TrashIcon} intent='danger'>
                   Supprimer…
                 </Menu.Item>
               </Pane>

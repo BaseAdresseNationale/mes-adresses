@@ -95,12 +95,12 @@ const Numeros = () => {
           <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             <OrderedList margin={8}>
               <ListItem>
-                Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
+                Cliquez sur le bouton <Button background='gray100' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
               </ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon={EditIcon}>
+                  <Menu.Item background='gray100' marginLeft={8} icon={EditIcon}>
                     Modifier
                   </Menu.Item>
                 </Pane>
@@ -129,12 +129,12 @@ const Numeros = () => {
           <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
             <OrderedList margin={8}>
               <ListItem>
-                Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
+                Cliquez sur le bouton <Button background='gray100' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
               </ListItem>
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
+                  <Menu.Item background='gray100' marginLeft={8} icon={TrashIcon} intent='danger'>
                     Supprimer…
                   </Menu.Item>
                 </Pane>
@@ -148,7 +148,7 @@ const Numeros = () => {
               <ListItem>
                 <Pane display='flex' alignItems='center'>
                   Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
+                  <Menu.Item background='gray100' marginLeft={8} icon={TrashIcon} intent='danger'>
                     Supprimer…
                   </Menu.Item>
                 </Pane>
@@ -175,12 +175,12 @@ const Numeros = () => {
 
           <OrderedList margin={8}>
             <ListItem>
-              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
+              Cliquez sur le bouton <Button background='gray100' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
                 Dans le menu qui vient d’apparaître, choisissez
-                <Menu.Item background='tint1' marginLeft={8} icon={EditIcon}>
+                <Menu.Item background='gray100' marginLeft={8} icon={EditIcon}>
                   Modifier
                 </Menu.Item>
               </Pane>
@@ -208,12 +208,12 @@ const Numeros = () => {
 
           <OrderedList margin={8}>
             <ListItem>
-              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
+              Cliquez sur le bouton <Button background='gray100' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du numéro
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
                 Dans le menu qui vient d’apparaître, choisissez
-                <Menu.Item background='tint1' marginLeft={8} icon={EditIcon}>
+                <Menu.Item background='gray100' marginLeft={8} icon={EditIcon}>
                   Modifier
                 </Menu.Item>
               </Pane>

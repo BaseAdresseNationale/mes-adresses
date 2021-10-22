@@ -34,7 +34,7 @@ function NumeroMarker({numero, style, showContextMenu, setShowContextMenu, onEna
       </Pane>
 
       {showContextMenu && (
-        <Pane background='tint1' position='absolute' margin={10}>
+        <Pane background='gray100' position='absolute' margin={10}>
           <Menu>
             <Menu.Group>
               <Menu.Item icon={TrashIcon} intent='danger' onSelect={() => removeAddress(numero._id)}>

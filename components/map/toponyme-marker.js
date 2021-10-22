@@ -96,7 +96,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
         </Pane>
 
         {showContextMenu && (
-          <Pane background='tint1' position='absolute' margin={10}>
+          <Pane background='gray100' position='absolute' margin={10}>
             <Menu>
               <Menu.Group>
                 <Menu.Item icon={TrashIcon} intent='danger' onSelect={deleteToponyme}>

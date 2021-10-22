@@ -17,7 +17,7 @@ function Uploader({file, maxSize, placeholder, onDrop, onDropRejected, height, d
       <Pane
         border
         height={150}
-        background='tint1'
+        background='gray100'
         display='flex'
         alignItems='center'
         justifyContent='center'
@@ -34,7 +34,7 @@ function Uploader({file, maxSize, placeholder, onDrop, onDropRejected, height, d
       <Pane
         border
         height={height}
-        background='tint1'
+        background='gray100'
         display='flex'
         alignItems='center'
         justifyContent='center'

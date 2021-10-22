@@ -161,7 +161,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       <Pane
         display='flex'
         flexDirection='column'
-        background='tint1'
+        background='gray100'
         padding={16}
       >
         <Heading>{commune.nom} - {commune.code}</Heading>

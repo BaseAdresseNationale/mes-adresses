@@ -44,7 +44,7 @@ const Communes = () => {
           <ListItem>
             <Pane display='flex' alignItems='center'>
               Dans le menu qui vient d’apparaître, choisissez
-              <Menu.Item background='tint1' marginLeft={8} icon={SendToMapIcon}>
+              <Menu.Item background='gray100' marginLeft={8} icon={SendToMapIcon}>
                 Consulter
               </Menu.Item>
             </Pane>
@@ -61,7 +61,7 @@ const Communes = () => {
           <ListItem>
             <Pane display='flex' alignItems='center'>
               Dans le menu qui vient d’apparaître, choisissez
-              <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
+              <Menu.Item background='gray100' marginLeft={8} icon={TrashIcon} intent='danger'>
                 Supprimer…
               </Menu.Item>
             </Pane>

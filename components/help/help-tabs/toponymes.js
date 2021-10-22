@@ -79,12 +79,12 @@ const Toponymes = () => {
           {before}
           <OrderedList margin={8}>
             <ListItem>
-              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom du toponyme
+              Cliquez sur le bouton <Button background='gray100' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom du toponyme
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
                 Dans le menu qui vient d’apparaître, choisissez
-                <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
+                <Menu.Item background='gray100' marginLeft={8} icon={TrashIcon} intent='danger'>
                   Supprimer…
                 </Menu.Item>
               </Pane>
@@ -98,12 +98,12 @@ const Toponymes = () => {
 
           <OrderedList margin={8}>
             <ListItem>
-              Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du toponyme
+              Cliquez sur le bouton <Button background='gray100' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du toponyme
             </ListItem>
             <ListItem>
               <Pane display='flex' alignItems='center'>
                 Dans le menu qui vient d’apparaître, choisissez
-                <Menu.Item background='tint1' marginLeft={8} icon={EditIcon}>
+                <Menu.Item background='gray100' marginLeft={8} icon={EditIcon}>
                   Modifier
                 </Menu.Item>
               </Pane>

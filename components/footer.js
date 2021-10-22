@@ -49,7 +49,7 @@ const Footer = () => {
     <div>
       <Pane
         bottom={0}
-        background='tint1'
+        background='gray100'
         padding={16}
         elevation={1}
       >

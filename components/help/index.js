@@ -39,7 +39,7 @@ const Help = () => {
         </Pane>
       </Pane>
 
-      <Pane flex='1' overflowY='scroll' background='tint1' padding={16}>
+      <Pane flex='1' overflowY='scroll' background='gray100' padding={16}>
         <HelpTabs tab={selectedIndex} />
       </Pane>
 

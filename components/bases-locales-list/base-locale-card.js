@@ -67,7 +67,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
       padding={12}
       display='grid'
       gridTemplateColumns='repeat(1fr)'
-      background={baseLocale.status === 'demo' ? '#E4E7EB' : 'tint1'}
+      background={baseLocale.status === 'demo' ? '#E4E7EB' : 'gray100'}
     >
       <Pane padding='.5em' display='flex' justifyContent='space-between' alignItems='center' cursor='pointer' onClick={handleIsOpen}>
         <Pane>

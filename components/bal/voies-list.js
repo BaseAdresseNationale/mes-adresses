@@ -36,7 +36,7 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
         </Table.Head>
         {isAdding && (
           <Table.Row height='auto'>
-            <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+            <Table.Cell borderBottom display='block' paddingY={12} background='gray100'>
               <VoieEditor
                 onSubmit={onAdd}
                 onCancel={onCancel}
@@ -54,7 +54,7 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
         {sortBy(filtered, v => normalizeSort(v.nom))
           .map(voie => voie._id === editingId ? (
             <Table.Row key={voie._id} height='auto'>
-              <Table.Cell display='block' paddingY={12} background='tint1'>
+              <Table.Cell display='block' paddingY={12} background='gray100'>
                 <VoieEditor
                   initialValue={voie}
                   onSubmit={onEdit}

@@ -82,7 +82,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
       <Pane
         display='flex'
         flexDirection='column'
-        background='tint1'
+        background='gray100'
         padding={16}
       >
         <Heading>{balDataContext.baseLocale?.nom || baseLocale.nom}</Heading>
@@ -137,7 +137,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
           </Table.Head>
           {isAdding && (
             <Table.Row height='auto'>
-              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+              <Table.Cell borderBottom display='block' paddingY={12} background='gray100'>
                 <CommuneEditor
                   exclude={communes.map(c => c.code)}
                   onSubmit={onAdd}

@@ -157,7 +157,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
           </Table.Head>
           {isAdding && (
             <Table.Row height='auto'>
-              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+              <Table.Cell borderBottom display='block' paddingY={12} background='gray100'>
                 <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
               </Table.Cell>
             </Table.Row>
@@ -173,7 +173,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
           {editingId && editingId !== toponyme._id ? (
             <Table.Row height='auto'>
-              <Table.Cell display='block' paddingY={12} background='tint1'>
+              <Table.Cell display='block' paddingY={12} background='gray100'>
                 <NumeroEditor
                   initialValue={editedNumero}
                   onSubmit={onEdit}

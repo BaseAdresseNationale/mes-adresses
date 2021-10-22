@@ -87,7 +87,7 @@ function BasesLocalesList({basesLocales, sortBal}) {
                 </Table.TextCell>
               </Table.Row>
             )}
-            <Table.Body background='tint1'>
+            <Table.Body background='gray100'>
               {sortBal(filtered).map(bal => (
                 <BaseLocaleCard
                   key={bal._id}
