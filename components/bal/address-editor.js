@@ -49,6 +49,8 @@ function AddressEditor({balId, codeCommune, closeForm}) {
       <SelectField
         marginY={8}
         padding={8}
+        background='white'
+        borderRadius={8}
         label='Créer un nouveau'
         value={isToponyme ? 'toponyme' : 'numero'}
         onChange={e => setIsToponyme(e.target.value === 'toponyme')}

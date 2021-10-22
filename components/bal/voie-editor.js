@@ -66,7 +66,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   }, [disableDraw])
 
   return (
-    <Pane is='form' onSubmit={onFormSubmit}>
+    <Pane is='form' marginY={8} padding={8} background='white' borderRadius={8} onSubmit={onFormSubmit}>
       <AssistedTextField
         isFocus
         label='Nom de la voie'

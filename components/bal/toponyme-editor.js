@@ -116,7 +116,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     <Pane is='form' onSubmit={onFormSubmit}>
       <AssistedTextField
         isFocus
-        dsiabled={isLoading}
+        disabled={isLoading}
         label='Nom du toponyme'
         placeholder='Nom du toponyme'
         value={nom}
