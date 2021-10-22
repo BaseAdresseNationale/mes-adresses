@@ -47,6 +47,8 @@ function AddressEditor({balId, codeCommune, closeForm}) {
     <Pane>
       <Heading is='h4'>Nouvelle adresse</Heading>
       <SelectField
+        marginY={8}
+        padding={8}
         label='Créer un nouveau'
         value={isToponyme ? 'toponyme' : 'numero'}
         onChange={e => setIsToponyme(e.target.value === 'toponyme')}
