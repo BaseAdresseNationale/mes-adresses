@@ -22,7 +22,7 @@ import AddressPreview from './address-preview'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, commune, isSidebar, onSubmit, onCancel}) {
+function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmit, onCancel}) {
   const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
@@ -160,16 +160,17 @@ function NumeroEditor({initialVoieId, initialValue, commune, isSidebar, onSubmit
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <AddressPreview
-        isSidebar={isSidebar}
-        numero={numero}
-        suffixe={suffixe}
-        selectedNomToponyme={selectedNomToponyme}
-        voie={nomVoie || selectedNomVoie}
-        commune={commune}
-      />
+      {hasPreview && (
+        <AddressPreview
+          numero={numero}
+          suffixe={suffixe}
+          selectedNomToponyme={selectedNomToponyme}
+          voie={nomVoie || selectedNomVoie}
+          commune={commune}
+        />
+      )}
 
-      <Pane paddingTop={isSidebar ? 64 : 0} paddingBottom={50}>
+      <Pane paddingTop={hasPreview ? 56 : 0}>
         <NumeroVoieSelector
           voieId={voieId}
           voies={voies}
@@ -271,7 +272,7 @@ NumeroEditor.propTypes = {
     certifie: PropTypes.bool
   }),
   commune: PropTypes.object.isRequired,
-  isSidebar: PropTypes.bool,
+  hasPreview: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
 }
@@ -279,7 +280,7 @@ NumeroEditor.propTypes = {
 NumeroEditor.defaultProps = {
   initialValue: null,
   initialVoieId: null,
-  isSidebar: false,
+  hasPreview: false,
   onCancel: null
 }
 
