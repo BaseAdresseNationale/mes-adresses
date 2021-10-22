@@ -24,7 +24,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [toRemove, setToRemove] = useState(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale: {nom}} = useContext(BalDataContext)
+  const balDataContext = useContext(BalDataContext)
 
   useHelp(1)
   const [filtered, onFilter] = useFuse(communes, 200, {
@@ -46,7 +46,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
 
     setIsAdding(false)
     setCommunes(updatedCommunes)
-  }, [baseLocale, token])
+  }, [baseLocale._id, token])
 
   const onRemove = useCallback(async () => {
     const updated = await removeCommune(baseLocale._id, toRemove, token)
@@ -64,7 +64,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
       `/bal/commune?balId=${baseLocale._id}&codeCommune=${codeCommune}`,
       `/bal/${baseLocale._id}/communes/${codeCommune}`
     )
-  }, [baseLocale])
+  }, [baseLocale._id])
 
   return (
     <>
@@ -85,7 +85,7 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
         background='tint1'
         padding={16}
       >
-        <Heading>{nom || baseLocale.nom}</Heading>
+        <Heading>{balDataContext.baseLocale?.nom || baseLocale.nom}</Heading>
         <Text>{communes.length} commune{communes.length > 1 ? 's' : ''}</Text>
       </Pane>
       <Pane

@@ -33,14 +33,16 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const Settings = React.memo(({nomBaseLocale}) => {
+const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails, reloadEmails} = useContext(TokenContext)
-  const {baseLocale, codeCommune, reloadBaseLocale} = useContext(BalDataContext)
+  const balDataContext = useContext(BalDataContext)
+
+  const baseLocale = balDataContext.baseLocale || initialBaseLocale
 
   const [isLoading, setIsLoading] = useState(false)
   const [balEmails, setBalEmails] = useState([])
-  const [nomInput, onNomInputChange] = useInput(nomBaseLocale)
+  const [nomInput, onNomInputChange] = useInput(baseLocale.nom)
   const [email, onEmailChange, resetEmail] = useInput()
   const [commune, setCommune] = useState()
   const [hasChanges, setHasChanges] = useState(false)
@@ -50,7 +52,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
   const formHasChanged = useCallback(() => {
     return nomInput !== baseLocale.nom ||
     mailHasChanged(emails || [], balEmails)
-  }, [nomInput, baseLocale, emails, balEmails])
+  }, [nomInput, baseLocale.nom, emails, balEmails])
 
   useEffect(() => {
     setBalEmails(emails || [])
@@ -78,13 +80,13 @@ const Settings = React.memo(({nomBaseLocale}) => {
     setIsLoading(true)
 
     try {
-      await updateBaseLocale(baseLocale._id, {
+      await updateBaseLocale(initialBaseLocale._id, {
         nom: nomInput.trim(),
         emails: balEmails
       }, token)
 
       await reloadEmails()
-      await reloadBaseLocale()
+      await balDataContext.reloadBaseLocale()
 
       if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length !== 0) {
         setIsRenewTokenWarningShown(true)
@@ -96,18 +98,18 @@ const Settings = React.memo(({nomBaseLocale}) => {
     }
 
     setIsLoading(false)
-  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, emails])
+  }, [initialBaseLocale._id, nomInput, balEmails, token, reloadEmails, balDataContext, emails])
 
   const fetchCommune = useCallback(async () => {
-    const commune = await getCommune(baseLocale._id, codeCommune)
+    const commune = await getCommune(initialBaseLocale._id, codeCommune)
     setCommune(commune)
-  }, [baseLocale, codeCommune])
+  }, [initialBaseLocale._id, codeCommune])
 
   useEffect(() => { // Update number of certified numeros when setting is open
-    if (baseLocale?._id && codeCommune) {
+    if (codeCommune) {
       fetchCommune()
     }
-  }, [baseLocale, codeCommune, showSettings, fetchCommune])
+  }, [initialBaseLocale._id, codeCommune, showSettings, fetchCommune])
 
   useEffect(() => {
     if (error) {
@@ -222,7 +224,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
               <RenewTokenDialog
                 token={token}
                 emails={emails}
-                baseLocaleId={baseLocale._id}
+                baseLocaleId={initialBaseLocale._id}
                 isShown={isRenewTokenWarningShown}
                 setIsShown={setIsRenewTokenWarningShown}
                 setError={setError}
@@ -262,8 +264,17 @@ const Settings = React.memo(({nomBaseLocale}) => {
   )
 })
 
+Settings.defaultProps = {
+  codeCommune: null
+}
+
 Settings.propTypes = {
-  nomBaseLocale: PropTypes.string.isRequired
+  initialBaseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired
+  }).isRequired,
+  codeCommune: PropTypes.string
 }
 
 export default Settings
