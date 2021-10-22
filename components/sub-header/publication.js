@@ -40,10 +40,8 @@ const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPubl
       setIsBALCertified(nbNumeros === nbNumerosCertifies)
     }
 
-    if (baseLocale?._id && commune?.code) {
-      fetchCommune()
-    }
-  }, [baseLocale, commune])
+    fetchCommune()
+  }, [baseLocale._id, commune.code])
 
   if (!token) {
     return (

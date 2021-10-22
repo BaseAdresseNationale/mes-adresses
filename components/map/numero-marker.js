@@ -1,82 +1,11 @@
-import React, {useMemo, useCallback, useContext} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, Text, Menu, Position, WarningSignIcon, TrashIcon, EndorsedIcon} from 'evergreen-ui'
 import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
-import randomColor from 'randomcolor'
-import {css} from 'glamor'
 
-import {removeNumero} from '../../lib/bal-api'
-
-import useError from '../../hooks/error'
-
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
-
-function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowContextMenu}) {
-  const [setError] = useError()
-
-  const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
-
-  const onEnableEditing = useCallback(e => {
-    e.stopPropagation()
-
-    if (!isEditing) {
-      setEditingId(numero._id)
-    }
-  }, [setEditingId, isEditing, numero])
-
+function NumeroMarker({numero, style, showContextMenu, setShowContextMenu, onEnableEditing, removeAddress}) {
   const position = numero.positions.find(position => position.type === 'entrée') || numero.positions[0]
-
-  const markerStyle = useMemo(() => css({
-    borderRadius: 20,
-    marginTop: -10,
-    marginLeft: -10,
-    color: 'transparent',
-    whiteSpace: 'nowrap',
-    background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
-    cursor: 'pointer',
-
-    '&:before': {
-      content: ' ',
-      backgroundColor: colorSeed ? randomColor({
-        luminosity: 'dark',
-        seed: colorSeed
-      }) : '#1070ca',
-      border: '1px solid white',
-      display: 'inline-block',
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      marginLeft: 6
-    },
-
-    '& > span': {
-      display: showLabel ? 'inline-block' : 'none'
-    },
-
-    '&:hover': showLabel ? null : {
-      background: 'rgba(0, 0, 0, 0.7)',
-
-      '& > span': {
-        display: 'inline-block'
-      }
-    }
-  }), [colorSeed, showLabel])
-
-  const removeAddress = (async () => {
-    const {_id} = numero
-
-    try {
-      await removeNumero(_id, token)
-      await reloadNumeros()
-    } catch (error) {
-      setError(error.message)
-    }
-
-    setShowContextMenu(false)
-  })
 
   if (!position) {
     return null
@@ -86,7 +15,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
 
   return (
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-      <Pane {...markerStyle} paddingX={4} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(numero._id)}>
+      <Pane {...style} paddingX={4} onClick={e => onEnableEditing(e, numero._id)} onContextMenu={() => setShowContextMenu(numero._id)}>
         <Text color='white' marginLeft={8} marginRight={4}>
           {numero.numeroComplet}
         </Text>
@@ -108,7 +37,7 @@ function NumeroMarker({numero, colorSeed, showLabel, showContextMenu, setShowCon
         <Pane background='tint1' position='absolute' margin={10}>
           <Menu>
             <Menu.Group>
-              <Menu.Item icon={TrashIcon} intent='danger' onSelect={removeAddress}>
+              <Menu.Item icon={TrashIcon} intent='danger' onSelect={() => removeAddress(numero._id)}>
                 Supprimer…
               </Menu.Item>
             </Menu.Group>
@@ -131,15 +60,14 @@ NumeroMarker.propTypes = {
       type: PropTypes.string
     }))
   }).isRequired,
-  colorSeed: PropTypes.string,
-  showLabel: PropTypes.bool,
+  style: PropTypes.object.isRequired,
   showContextMenu: PropTypes.bool,
-  setShowContextMenu: PropTypes.func.isRequired
+  setShowContextMenu: PropTypes.func.isRequired,
+  onEnableEditing: PropTypes.func.isRequired,
+  removeAddress: PropTypes.func.isRequired
 }
 
 NumeroMarker.defaultProps = {
-  colorSeed: null,
-  showLabel: false,
   showContextMenu: false
 }
 

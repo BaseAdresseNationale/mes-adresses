@@ -16,17 +16,17 @@ function useBounds(commune, voie, toponyme) {
 
   const data = useMemo(() => {
     if (hasBound) {
-      let data = geojson
+      let data = null
 
       if (voie) {
         data = {
           type: 'FeatureCollection',
-          features: data.features.filter(feature => feature.properties.idVoie === voie._id)
+          features: geojson.features.filter(feature => feature.properties.idVoie === voie._id)
         }
       }
 
       if (toponyme) {
-        const numeroToponyme = data.features.filter(feature => feature.properties.idToponyme === toponyme._id)
+        const numeroToponyme = geojson.features.filter(feature => feature.properties.idToponyme === toponyme._id)
         data = {
           type: 'FeatureCollection',
           features: numeroToponyme.length === 0 && toponyme.positions.length === 1 ?
@@ -39,19 +39,17 @@ function useBounds(commune, voie, toponyme) {
         }
       }
 
-      if (data.features.length === 1) {
-        return buffer(data.features[0], BUFFER_RADIUS, {
-          units: 'meters'
-        })
-      }
+      if (data && data.features.length > 0) {
+        if (data.features.length === 1) {
+          return buffer(data.features[0], BUFFER_RADIUS, {
+            units: 'meters'
+          })
+        }
 
-      if (data.features.length > 0) {
         return data
       }
-    }
 
-    if (commune) {
-      return commune.contour
+      return commune?.contour
     }
 
     return null
@@ -62,3 +60,4 @@ function useBounds(commune, voie, toponyme) {
 }
 
 export default useBounds
+

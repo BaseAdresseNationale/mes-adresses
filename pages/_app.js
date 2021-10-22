@@ -115,10 +115,11 @@ function App({error, Component, pageProps, query}) {
 
                       {pageProps.baseLocale && (
                         <SettingsContextProvider>
-                          <Settings nomBaseLocale={pageProps.baseLocale.nom} />
+                          <Settings initialBaseLocale={pageProps.baseLocale} codeCommune={pageProps.commune?.code} />
                           <Header />
                           <SubHeader
                             {...pageProps}
+                            initialBaseLocale={pageProps.baseLocale}
                             layout={layout}
                             isSidebarHidden={isHidden}
                             onToggle={onToggle}
@@ -130,8 +131,6 @@ function App({error, Component, pageProps, query}) {
                         <Map
                           top={topOffset}
                           left={leftOffset}
-                          animate={layout === 'sidebar'}
-                          interactive={layout === 'sidebar'}
                           commune={pageProps.commune}
                           voie={pageProps.voie}
                           toponyme={pageProps.toponyme}

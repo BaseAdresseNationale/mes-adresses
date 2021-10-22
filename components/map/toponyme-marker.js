@@ -56,7 +56,7 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
     }
   }), [showLabel])
 
-  const deleteToponyme = (async () => {
+  const deleteToponyme = async () => {
     const {_id} = initialToponyme
 
     try {
@@ -64,8 +64,8 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
       await reloadToponymes()
 
       if (_id === toponyme._id) {
-        router.push(
-          `/bal/&codeCommune=${codeCommune}`,
+        return router.push(
+          `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
           `/bal/${balId}/communes/${codeCommune}`
         )
       }
@@ -73,8 +73,8 @@ function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowCon
       setError(error.message)
     }
 
-    setShowContextMenu(false)
-  })
+    setShowContextMenu(null)
+  }
 
   if (!position) {
     return null

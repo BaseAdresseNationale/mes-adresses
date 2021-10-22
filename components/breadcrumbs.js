@@ -1,59 +1,48 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
 import {Pane, Link, Text} from 'evergreen-ui'
 
-function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
-  if (!commune) {
-    return (
-      <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
+function BaseLocalLink({baseLocale}) {
+  return useMemo(() => {
+    if (baseLocale.communes.length > 1) {
+      return (
         <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
           <Link href={`/bal/${baseLocale._id}`}>
             {baseLocale.nom || 'Base Adresse Locale'}
           </Link>
         </NextLink>
-      </Pane>
-    )
+      )
+    }
+
+    return <Text>{baseLocale.nom || 'Base Adresse Locale'}</Text>
+  }, [baseLocale])
+}
+
+function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
+  if (!commune) {
+    return <BaseLocalLink baseLocale={baseLocale} />
   }
 
   if (!voie && !toponyme) {
     return (
       <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
-        <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
-          <Link href={`/bal/${baseLocale._id}`}>
-            {baseLocale.nom || 'Base Adresse Locale'}
-          </Link>
-        </NextLink>
-
+        <BaseLocalLink baseLocale={baseLocale} />
         <Text color='muted'>{' > '}</Text>
-        {commune.nom ? (
-          <Text>{commune.nom}</Text>
-        ) : (
-          <Text fontStyle='italic'>Commune {commune.code}</Text>
-        )}
+        <Text>{commune.nom}</Text>
       </Pane>
     )
   }
 
   return (
     <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
-      <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
-        <Link display='inline-block' href={`/bal/${baseLocale._id}`}>
-          {baseLocale.nom || 'Base Adresse Locale'}
-        </Link>
-      </NextLink>
-
+      <BaseLocalLink baseLocale={baseLocale} />
       <Text color='muted'>{' > '}</Text>
+
       <NextLink href={`/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
-        {commune.nom ? (
-          <Link href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
-            {commune.nom}
-          </Link>
-        ) : (
-          <Link fontStyle='italic' href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
-            Commune {commune.code}
-          </Link>
-        )}
+        <Link href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+          {commune.nom}
+        </Link>
       </NextLink>
 
       <Text color='muted'>{' > '}</Text>
@@ -69,7 +58,7 @@ Breadcrumbs.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
-    nom: PropTypes.string
+    nom: PropTypes.string.isRequired
   }),
   voie: PropTypes.shape({
     nom: PropTypes.string.isRequired
