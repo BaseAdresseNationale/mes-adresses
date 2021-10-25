@@ -11,8 +11,6 @@ import {getCommune as getCommuneGeoData} from '../../lib/geo-api'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
-import useWindowSize from '../../hooks/window-size'
-
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 import CertificationCount from '../certification-count'
 
@@ -29,7 +27,6 @@ function getBadge({status}) {
 
 const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) => {
   const {getBalToken} = useContext(LocalStorageContext)
-  const {innerWidth} = useWindowSize()
 
   const {nom, communes, status, _updated, _created, emails} = baseLocale
   const [commune, setCommune] = useState()
@@ -41,7 +38,6 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
   const badge = getBadge(baseLocale)
-  const breakPoint = innerWidth < 768
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen)
@@ -76,14 +72,12 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
       <Pane
         padding='.5em'
         display='flex'
-        flexDirection={breakPoint ? 'column' : 'row'}
-        justifyContent='space-between'
-        alignItems='center'
+        flexWrap='wrap'
         cursor='pointer'
         gap='3em'
         onClick={handleIsOpen}
       >
-        <Pane display='grid' gridTemplateColumns='20px 1fr 0.5fr' justifyItems='flex-end' width='100%' alignItems={breakPoint ? '' : 'center'} >
+        <Pane display='grid' gridTemplateColumns='20px 1fr 0.5fr' justifyItems='flex-end' minWidth={250} flex={999} >
           {isOpen ? (
             <ChevronDownIcon size={25} />
           ) : (
@@ -109,15 +103,24 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           </Pane>
 
           {communes.length === 1 && commune && (
-            <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+            <Pane justifySelf='center'>
+              <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+            </Pane>
           )}
         </Pane>
 
-        <Pane display='flex' justifyContent='center' width='100%'>
+        <Pane
+          display='flex'
+          justifyContent='center'
+          flexGrow={1}
+          height='fit-content'
+          borderRadius={5}
+          background={badge.color === 'green' ? '#DCF2EA' : badge.color === 'blue' ? '#D6E0FF' : '#edeff5'}
+        >
           {baseLocale.status === 'demo' ? (
-            <Badge color={colors.neutral} width={breakPoint ? '100%' : 250} paddingY={8} height='fit-content'>DÉMO</Badge>
+            <Badge color={colors.neutral} width={250} paddingY={8} height='fit-content'>DÉMO</Badge>
           ) : (
-            <Badge color={badge.color} width={breakPoint ? '100%' : 250} paddingY={8} height='fit-content'>{badge.label} </Badge>
+            <Badge color={badge.color} width={250} paddingY={8} height='fit-content'>{badge.label} </Badge>
           )}
         </Pane>
 
