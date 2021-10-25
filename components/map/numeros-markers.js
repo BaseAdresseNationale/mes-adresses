@@ -53,14 +53,14 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
       marginLeft: 6
     },
 
-    '& > span': {
+    '& > span, & > svg': {
       display: showLabel ? 'inline-block' : 'none'
     },
 
     '&:hover': showLabel ? null : {
       background: 'rgba(0, 0, 0, 0.7)',
 
-      '& > span': {
+      '& > span, & > svg': {
         display: 'inline-block'
       }
     }
