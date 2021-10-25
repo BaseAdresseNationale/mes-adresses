@@ -226,8 +226,8 @@ function Map({commune, voie, toponyme}) {
           <Control
             icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
             enabled={showNumeros}
-            enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
-            disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
+            enabledHint='Masquer les détails'
+            disabledHint='Afficher les détails'
             onChange={onShowNumeroChange}
           />
         )}
