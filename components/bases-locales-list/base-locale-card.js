@@ -115,12 +115,14 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           flexGrow={1}
           height='fit-content'
           borderRadius={5}
+          paddingY={8}
+          alignItems='center'
           background={badge.color === 'green' ? '#DCF2EA' : badge.color === 'blue' ? '#D6E0FF' : '#edeff5'}
         >
           {baseLocale.status === 'demo' ? (
-            <Badge color={colors.neutral} width={250} paddingY={8} height='fit-content'>DÉMO</Badge>
+            <Badge color={colors.neutral} width={250}>DÉMO</Badge>
           ) : (
-            <Badge color={badge.color} width={250} paddingY={8} height='fit-content'>{badge.label} </Badge>
+            <Badge color={badge.color} width={250}>{badge.label} </Badge>
           )}
         </Pane>
 
