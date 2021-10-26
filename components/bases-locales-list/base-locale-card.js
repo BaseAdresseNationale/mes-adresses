@@ -77,11 +77,11 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
         gap='3em'
         onClick={handleIsOpen}
       >
-        <Pane display='grid' gridTemplateColumns='20px 1fr 0.5fr' justifyItems='flex-end' minWidth={250} flex={999} >
+        <Pane display='grid' gridTemplateColumns='20px 1fr 0.5fr' justifyItems='flex-end' minWidth={250} flex={999} alignItems='start'>
           {isOpen ? (
-            <ChevronDownIcon size={25} />
+            <ChevronDownIcon size={20} />
           ) : (
-            <ChevronRightIcon size={25} />
+            <ChevronRightIcon size={20} />
           )}
           <Pane width='100%'>
             <Pane>
