@@ -16,7 +16,7 @@ import AddNumeros from '../../components/toponyme/add-numeros'
 
 import ToponymeHeading from './toponyme-heading'
 
-const Toponyme = (({toponyme, defaultNumeros}) => {
+const Toponyme = (({commune, toponyme, defaultNumeros}) => {
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [updatedToponyme, setUpdatedToponyme] = useState(toponyme)
@@ -27,7 +27,6 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
   const {
     baseLocale,
-    codeCommune,
     numeros,
     reloadNumerosToponyme,
     editingId,
@@ -73,7 +72,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
     try {
       if (!editedVoie._id) {
-        editedVoie = await addVoie(baseLocale._id, codeCommune, editedVoie, token)
+        editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
       }
 
       const {toponyme} = body
@@ -86,7 +85,7 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
     }
 
     setEditingId(null)
-  }, [editingId, setEditingId, baseLocale, codeCommune, reloadNumerosToponyme, token, updatedToponyme])
+  }, [editingId, setEditingId, baseLocale, commune.code, reloadNumerosToponyme, token, updatedToponyme])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
@@ -149,12 +148,15 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
 
       <Pane flex={1} overflowY='scroll'>
         <Table>
-          <Table.Head>
-            <Table.SearchHeaderCell
-              placeholder='Rechercher un numéro'
-              onChange={setFilter}
-            />
-          </Table.Head>
+          {!isEditing && (
+            <Table.Head>
+              <Table.SearchHeaderCell
+                placeholder='Rechercher un numéro'
+                onChange={setFilter}
+              />
+            </Table.Head>
+          )}
+
           {isAdding && (
             <Table.Row height='auto'>
               <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
@@ -175,7 +177,9 @@ const Toponyme = (({toponyme, defaultNumeros}) => {
             <Table.Row height='auto'>
               <Table.Cell display='block' paddingY={12} background='tint1'>
                 <NumeroEditor
+                  hasPreview
                   initialValue={editedNumero}
+                  commune={commune}
                   onSubmit={onEdit}
                   onCancel={onCancel}
                 />
@@ -203,6 +207,9 @@ Toponyme.getInitialProps = async ({baseLocale, commune, toponyme}) => {
 }
 
 Toponyme.propTypes = {
+  commune: PropTypes.shape({
+    code: PropTypes.string.isRequired
+  }).isRequired,
   toponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,

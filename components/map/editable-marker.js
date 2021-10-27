@@ -15,7 +15,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
 
   const [suggestedMarkerNumero, setSuggestedMarkerNumero] = useState(suggestedNumero)
 
-  const numberToDisplay = !isToponyme && (overrideText || suggestedMarkerNumero)
+  const numberToDisplay = overrideText || suggestedMarkerNumero
   const voie = useMemo(() => {
     if (idVoie) {
       return geojson.features
