@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Heading, Badge, Card, Pane, Button, Tooltip, Text, GlobeIcon, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
+import {Heading, Badge, Card, Pane, Button, Tooltip, Text, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 
@@ -14,15 +14,11 @@ import LocalStorageContext from '../../contexts/local-storage'
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 import CertificationCount from '../certification-count'
 
-function getBadge({status}) {
-  switch (status) {
-    case 'published':
-      return {color: 'green', label: 'Publiée'}
-    case 'ready-to-publish':
-      return {color: 'blue', label: 'Prête à être publiée'}
-    default:
-      return {color: 'neutral', label: 'Brouillon'}
-  }
+const statusBadges = {
+  published: {color: 'green', background: '#DCF2EA', label: 'Publiée'},
+  'ready-to-publish': {color: 'blue', background: '#D6E0FF', label: 'Prête à être publiée'},
+  draft: {color: 'neutral', background: '#edeff5', label: 'Brouillon'},
+  demo: {color: colors.neutral, background: colors.neutral, label: 'Démonstration'}
 }
 
 const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) => {
@@ -37,7 +33,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
   const tooltipContent = status === 'ready-to-publish' ? 'Vous ne pouvez pas supprimer une BAL lorsqu‘elle est prête à être publiée' : 'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
-  const badge = getBadge(baseLocale)
+  const badge = statusBadges[baseLocale.status]
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen)
@@ -63,44 +59,62 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
     <Card
       border
       elevation={2}
-      margin={10}
-      padding={12}
-      display='grid'
-      gridTemplateColumns='repeat(1fr)'
+      margin={12}
       background={baseLocale.status === 'demo' ? '#E4E7EB' : 'tint1'}
     >
-      <Pane padding='.5em' display='flex' justifyContent='space-between' alignItems='center' cursor='pointer' onClick={handleIsOpen}>
-        <Pane>
-          <Pane display='flex' flexDirection='row' justifyContent='start'>
-            <GlobeIcon marginRight='.5em' marginY='auto' />
-            <Heading fontSize='18px'>{nom}</Heading>
+      <Pane
+        padding={12}
+        display='grid'
+        gridAutoFlow='row'
+        cursor='pointer'
+        alignItems='center'
+        onClick={handleIsOpen}
+      >
+        <Pane display='flex' flexFlow='wrap' justifyContent='space-between' alignItems='center' gap='1em 4em'>
+          <Pane display='grid' flex={3} gridTemplateColumns='20px 0.8fr 0.4fr' minWidth='400px'>
+            {isOpen ? (
+              <ChevronDownIcon size={20} />
+            ) : (
+              <ChevronRightIcon size={20} />
+            )}
+
+            <Pane>
+              <Heading fontSize='18px'>{nom}</Heading>
+              <Pane>
+                <Text fontSize={12} fontStyle='italic'>
+                  {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
+                </Text>
+
+                {communes.length === 0 ? (
+                  <Text fontSize={12} fontStyle='italic'>Vide</Text>
+                ) : communes.length < 2 ? (
+                  commune && <Text fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
+                ) : (
+                  <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
+                )}
+              </Pane>
+            </Pane>
+
+            {communes.length === 1 && commune && (
+              <Pane justifySelf='end' alignSelf='center'>
+                <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+              </Pane>
+            )}
           </Pane>
-          <Text fontSize='12px' fontStyle='italic'>{_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} - </Text>
-          {communes.length === 0 ? (
-            <Text fontSize='12px' fontStyle='italic'>Vide</Text>
-          ) : communes.length < 2 ? (
-            commune && <Text fontSize='12px' fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
-          ) : (
-            <Text fontSize='12px' fontStyle='italic'>{communes.length} Communes</Text>
-          )}
+
+          <Pane
+            display='flex'
+            flex={1}
+            justifyContent='center'
+            height='40px'
+            borderRadius={5}
+            alignItems='center'
+            background={badge.background}
+          >
+            <Badge color={badge.color} width='250px'>{badge.label}</Badge>
+          </Pane>
         </Pane>
 
-        {communes.length === 1 && commune && (
-          <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
-        )}
-
-        <Pane display='flex' flexDirection='row' justifyContent='space-between'>
-          {baseLocale.status === 'demo' ? (
-            <Badge color={colors.neutral} margin='auto'>DÉMO</Badge>
-          ) : (
-            <Badge color={badge.color} margin='auto'>{badge.label}</Badge>
-          )}
-          {isOpen ? (
-            <ChevronDownIcon size={25} marginX='1em' marginY='auto' />
-          ) : (
-            <ChevronRightIcon size={25} marginX='1em' marginY='auto' />
-          )}
-        </Pane>
       </Pane>
 
       {isOpen && (
