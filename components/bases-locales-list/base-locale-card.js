@@ -60,10 +60,11 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
       border
       elevation={2}
       margin={12}
-      padding={12}
+      padding={6}
       background={baseLocale.status === 'demo' ? '#E4E7EB' : 'tint1'}
     >
       <Pane
+        padding={6}
         display='grid'
         gridAutoFlow='row'
         cursor='pointer'
