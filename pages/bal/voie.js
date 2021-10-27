@@ -105,8 +105,10 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
           <Table.Row height='auto'>
             <Table.Cell display='block' paddingY={12} background='tint1'>
               <NumeroEditor
+                hasPreview
                 initialVoieId={voie._id}
                 initialValue={editedNumero}
+                commune={commune}
                 onSubmit={editedNumero ? onEdit : onAdd}
                 onCancel={resetEditing}
               />
