@@ -85,7 +85,7 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
           `Vous avez déjà créé une Base Adresse Locale pour ${communeLabel}`
         )}
         width='800px'
-        confirmLabel='Créer une nouvelle Base Adresse Locale'
+        confirmLabel={isLoading ? 'En cours de création…' : 'Créer une nouvelle Base Adresse Locale'}
         cancelLabel='Annuler'
         isConfirmLoading={isLoading}
         onConfirm={handleConfirmation}
