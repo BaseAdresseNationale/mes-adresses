@@ -268,7 +268,6 @@ function Map({commune, voie, toponyme}) {
             <NumerosMarkers
               numeros={numeros.filter(({_id}) => _id !== editingId)}
               voie={voie}
-              isToponymeNumero={Boolean(toponyme)}
               showLabel={showNumeros}
               showContextMenu={showContextMenu}
               setShowContextMenu={setShowContextMenu}
@@ -301,6 +300,7 @@ function Map({commune, voie, toponyme}) {
       {commune && openForm && (
         <Pane padding={20} background='white' height={400} overflowY='auto'>
           <AddressEditor
+            commune={commune}
             balId={balId}
             codeCommune={codeCommune}
             closeForm={() => setOpenForm(false)}

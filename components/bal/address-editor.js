@@ -10,7 +10,7 @@ import BalDataContext from '../../contexts/bal-data'
 import NumeroEditor from './numero-editor'
 import ToponymeEditor from './toponyme-editor'
 
-function AddressEditor({balId, codeCommune, closeForm}) {
+function AddressEditor({commune, balId, codeCommune, closeForm}) {
   const {token} = useContext(TokenContext)
   const {voie, reloadVoies, reloadNumeros, reloadToponymes, reloadGeojson} = useContext(BalDataContext)
 
@@ -58,13 +58,14 @@ function AddressEditor({balId, codeCommune, closeForm}) {
       {isToponyme ? (
         <ToponymeEditor onSubmit={onAddToponyme} onCancel={closeForm} />
       ) : (
-        <NumeroEditor initialVoieId={voie?._id} onSubmit={onAddNumero} onCancel={closeForm} />
+        <NumeroEditor commune={commune} initialVoieId={voie?._id} onSubmit={onAddNumero} onCancel={closeForm} />
       )}
     </Pane>
   )
 }
 
 AddressEditor.propTypes = {
+  commune: PropTypes.object.isRequired,
   balId: PropTypes.string.isRequired,
   codeCommune: PropTypes.string.isRequired,
   closeForm: PropTypes.func.isRequired
