@@ -59,27 +59,25 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
     <Card
       border
       elevation={2}
-      margin={10}
-      padding={12}
-      display='grid'
-      gridTemplateColumns='repeat(1fr)'
+      margin={12}
       background={baseLocale.status === 'demo' ? '#E4E7EB' : 'tint1'}
     >
       <Pane
-        padding='.5em'
-        display='flex'
-        flexWrap='wrap'
+        padding={12}
+        display='grid'
+        gridAutoFlow='row'
         cursor='pointer'
-        gap='3em'
+        alignItems='center'
         onClick={handleIsOpen}
       >
-        <Pane display='grid' gridTemplateColumns='20px 1fr 0.5fr' justifyItems='flex-end' minWidth={250} flex={999} alignItems='start'>
-          {isOpen ? (
-            <ChevronDownIcon size={20} />
-          ) : (
-            <ChevronRightIcon size={20} />
-          )}
-          <Pane width='100%'>
+        <Pane display='flex' flexFlow='wrap' justifyContent='space-between' alignItems='center' gap='1em 4em'>
+          <Pane display='grid' flex={3} gridTemplateColumns='20px 0.8fr 0.4fr' minWidth='400px'>
+            {isOpen ? (
+              <ChevronDownIcon size={20} />
+            ) : (
+              <ChevronRightIcon size={20} />
+            )}
+
             <Pane>
               <Heading fontSize='18px'>{nom}</Heading>
               <Pane>
@@ -96,26 +94,25 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
                 )}
               </Pane>
             </Pane>
+
+            {communes.length === 1 && commune && (
+              <Pane justifySelf='end' alignSelf='center'>
+                <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+              </Pane>
+            )}
           </Pane>
 
-          {communes.length === 1 && commune && (
-            <Pane justifySelf='center'>
-              <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
-            </Pane>
-          )}
-        </Pane>
-
-        <Pane
-          display='flex'
-          justifyContent='center'
-          flexGrow={1}
-          height='fit-content'
-          borderRadius={5}
-          paddingY={8}
-          alignItems='center'
-          background={badge.background}
-        >
-          <Badge color={badge.color} width={250}>{badge.label}</Badge>
+          <Pane
+            display='flex'
+            flex={1}
+            justifyContent='center'
+            height='40px'
+            borderRadius={5}
+            alignItems='center'
+            background={badge.background}
+          >
+            <Badge color={badge.color} width='250px'>{badge.label}</Badge>
+          </Pane>
         </Pane>
 
       </Pane>
