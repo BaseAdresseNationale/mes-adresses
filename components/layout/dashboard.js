@@ -69,7 +69,7 @@ const Desktop = ({title, mapData, backButton, children}) => {
       <Header />
 
       <Pane display='flex' width='100%' height='calc(100vh - 77px)'>
-        <Pane display='flex' flexDirection='column' minWidth={450} overflowY='auto'>
+        <Pane display='flex' flexDirection='column' width={600} overflowY='auto'>
           {backButton && (
             <BackButton />
           )}
