@@ -61,11 +61,13 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
 
     setIsLoading(false)
     setIsAdding(false)
+    setIsEditing(false)
   }
 
-  const onEnableAdding = useCallback(() => {
+  const onEnableAdding = () => {
     setIsAdding(true)
-  }, [])
+    setIsEditing(true)
+  }
 
   const onEdit = useCallback(async (voieData, body) => {
     let editedVoie = voieData
@@ -107,8 +109,10 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
   }, [isEdited, setEditingId])
 
   useEffect(() => {
-    setIsEditing(isAdding)
-  }, [isAdding, setIsEditing])
+    if (!isEditing) {
+      setIsAdding(false) // Force closing editing form when isEditing is false
+    }
+  }, [isEditing, setIsAdding])
 
   return (
     <>

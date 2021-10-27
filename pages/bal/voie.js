@@ -90,6 +90,12 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     setIsFormOpen(Boolean(editedNumero))
   }, [editedNumero])
 
+  useEffect(() => {
+    if (!isEditing) {
+      setIsFormOpen(false) // Force closing editing form when isEditing is false
+    }
+  }, [isEditing])
+
   return (
     <>
       <VoieHeading defaultVoie={voie} />
