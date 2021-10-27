@@ -73,7 +73,7 @@ function Map({commune, voie, toponyme}) {
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, showCadastre, setShowCadastre} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
-  const [showNumeros, setShowNumeros] = useState(true)
+  const [showLabels, setShowLabels] = useState(true)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
@@ -124,10 +124,6 @@ function Map({commune, voie, toponyme}) {
 
     return layers
   }, [isParcelleSelectionEnabled, sources, voie, showCadastre])
-
-  const onShowNumeroChange = useCallback(value => {
-    setShowNumeros(value)
-  }, [])
 
   const onClick = useCallback(event => {
     const feature = event?.features[0]
@@ -232,11 +228,11 @@ function Map({commune, voie, toponyme}) {
 
         {(voie || (toponymes && toponymes.length > 0)) && (
           <Control
-            icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
-            enabled={showNumeros}
-            enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
-            disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
-            onChange={onShowNumeroChange}
+            icon={showLabels ? EyeOffIcon : EyeOpenIcon}
+            enabled={showLabels}
+            enabledHint={numeros ? 'Masquer les détails' : 'Masquer les toponymes'}
+            disabledHint={numeros ? 'Afficher les détails' : 'Afficher les toponymes'}
+            onChange={setShowLabels}
           />
         )}
 
@@ -276,7 +272,7 @@ function Map({commune, voie, toponyme}) {
             <NumerosMarkers
               numeros={numeros.filter(({_id}) => _id !== editingId)}
               voie={voie}
-              showLabel={showNumeros}
+              showLabel={showLabels}
               showContextMenu={showContextMenu}
               setShowContextMenu={setShowContextMenu}
             />
@@ -286,7 +282,7 @@ function Map({commune, voie, toponyme}) {
             <ToponymeMarker
               key={toponyme._id}
               initialToponyme={toponyme}
-              showLabel={showNumeros}
+              showLabel={showLabels}
               showContextMenu={toponyme._id === showContextMenu}
               setShowContextMenu={setShowContextMenu}
             />
