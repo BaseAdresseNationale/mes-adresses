@@ -17,6 +17,7 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
   const {removeBAL} = useContext(LocalStorageContext)
 
   const [communeLabel, setCommuneLabel] = useState('cette commune')
+  const [isLoading, setIsLoading] = useState(false)
   const uniqCommunes = uniq(...basesLocales.map(({communes}) => communes))
   const [toRemove, setToRemove] = useState(null)
 
@@ -54,6 +55,11 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
     }
   }, [toRemove, updateBAL, removeBAL, setError])
 
+  const handleConfirmation = () => {
+    setIsLoading(true)
+    onConfirm()
+  }
+
   const handleRemove = useCallback((e, balId) => {
     e.stopPropagation()
     setToRemove(balId)
@@ -79,9 +85,10 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
           `Vous avez déjà créé une Base Adresse Locale pour ${communeLabel}`
         )}
         width='800px'
-        confirmLabel='Créer une nouvelle Base Adresse Locale'
+        confirmLabel={isLoading ? 'En cours de création…' : 'Créer une nouvelle Base Adresse Locale'}
         cancelLabel='Annuler'
-        onConfirm={onConfirm}
+        isConfirmLoading={isLoading}
+        onConfirm={handleConfirmation}
         onCloseComplete={onClose}
       >
         <Pane>
