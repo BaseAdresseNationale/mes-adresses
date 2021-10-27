@@ -268,7 +268,6 @@ function Map({commune, voie, toponyme}) {
             <NumerosMarkers
               numeros={numeros.filter(({_id}) => _id !== editingId)}
               voie={voie}
-              isToponymeNumero={Boolean(toponyme)}
               showLabel={showNumeros}
               showContextMenu={showContextMenu}
               setShowContextMenu={setShowContextMenu}

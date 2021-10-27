@@ -4,6 +4,7 @@ import {Pane, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
+import {computeCompletNumero} from '../../lib/utils/numero'
 
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
@@ -127,8 +128,8 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setOverrideText(numero || null)
-  }, [setOverrideText, numero])
+    setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
+  }, [setOverrideText, numero, suffixe])
 
   useEffect(() => {
     setIsEditing(true)
