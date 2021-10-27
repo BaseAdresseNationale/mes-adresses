@@ -4,6 +4,7 @@ import {Pane, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
+import {computeCompletNumero} from '../../lib/utils/numero'
 
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
@@ -18,19 +19,22 @@ import CertificationButton from '../certification-button'
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
 import NumeroVoieSelector from './numero-editor/numero-voie-selector'
+import AddressPreview from './address-preview'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
+function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmit, onCancel}) {
   const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
+  const [selectedNomToponyme, setSelectedNomToponyme] = useState('')
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
   const [certifie, setCertifie] = useState(initialValue?.certifie || false)
   const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero.toString() || '')
   const [nomVoie, onNomVoieChange] = useState('')
+  const [selectedNomVoie, setSelectedNomVoie] = useState('')
   const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
   const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
   const [error, setError] = useState()
@@ -124,8 +128,8 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setOverrideText(numero || null)
-  }, [setOverrideText, numero])
+    setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
+  }, [setOverrideText, numero, suffixe])
 
   useEffect(() => {
     setIsEditing(true)
@@ -137,89 +141,118 @@ function NumeroEditor({initialVoieId, initialValue, onSubmit, onCancel}) {
     }
   }, [setIsEditing, disableMarkers, setIsParcelleSelectionEnabled])
 
+  useEffect(() => {
+    let nom = null
+    if (voieId) {
+      nom = voies.find(voie => voie._id === voieId).nom
+    }
+
+    setSelectedNomVoie(nom)
+  }, [voieId, voies])
+
+  useEffect(() => {
+    let nom = null
+    if (toponymeId && toponymeId !== '- Choisir un toponyme -') {
+      nom = toponymes.find(toponyme => toponyme._id === toponymeId).nom
+    }
+
+    setSelectedNomToponyme(nom)
+  }, [toponymeId, toponymes])
+
   return (
     <Pane is='form' onSubmit={onFormSubmit}>
-      <NumeroVoieSelector
-        voieId={voieId}
-        voies={voies}
-        nomVoie={nomVoie}
-        mode={voieId ? 'selection' : 'creation'}
-        handleVoie={setVoieId}
-        handleNomVoie={onNomVoieChange}
-      />
-
-      <Pane display='flex'>
-        <SelectField
-          label='Toponyme'
-          flex={1}
-          marginBottom={16}
-          value={toponymeId || ''}
-          onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
-        >
-          <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
-          {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
-            <option key={_id} value={_id}>
-              {nom}
-            </option>
-          ))}
-        </SelectField>
-      </Pane>
-
-      <Pane display='flex'>
-        <TextInput
-          ref={focusRef}
-          required
-          display='block'
-          type='number'
-          disabled={isLoading}
-          width='100%'
-          maxWidth={300}
-          flex={2}
-          min={0}
-          max={9999}
-          value={numero}
-          marginBottom={8}
-          placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
-          onChange={onNumeroChange}
+      {hasPreview && (
+        <AddressPreview
+          numero={numero}
+          suffixe={suffixe}
+          selectedNomToponyme={selectedNomToponyme}
+          voie={nomVoie || selectedNomVoie}
+          commune={commune}
         />
-
-        <TextInput
-          style={{textTransform: 'lowercase'}}
-          display='block'
-          marginLeft={8}
-          disabled={isLoading}
-          width='100%'
-          flex={1}
-          minWidth={59}
-          value={suffixe}
-          maxLength={10}
-          marginBottom={8}
-          placeholder='Suffixe'
-          onChange={onSuffixeChange}
-        />
-      </Pane>
-
-      {markers.length > 0 && (
-        <PositionEditor />
       )}
 
-      <SelectParcelles />
+      <Pane paddingTop={hasPreview ? 56 : 0}>
+        <NumeroVoieSelector
+          voieId={voieId}
+          voies={voies}
+          nomVoie={nomVoie}
+          mode={voieId ? 'selection' : 'creation'}
+          handleVoie={setVoieId}
+          handleNomVoie={onNomVoieChange}
+        />
 
-      <Comment input={comment} onChange={onCommentChange} />
+        <Pane display='flex'>
+          <SelectField
+            label='Toponyme'
+            flex={1}
+            marginBottom={16}
+            value={toponymeId || ''}
+            onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
+          >
+            <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
+            {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
+              <option key={_id} value={_id}>
+                {nom}
+              </option>
+            ))}
+          </SelectField>
+        </Pane>
 
-      {error && (
-        <Alert marginBottom={16} intent='danger' title='Erreur'>
-          {error}
-        </Alert>
-      )}
+        <Pane display='flex'>
+          <TextInput
+            ref={focusRef}
+            required
+            display='block'
+            type='number'
+            disabled={isLoading}
+            width='100%'
+            maxWidth={300}
+            flex={2}
+            min={0}
+            max={9999}
+            value={numero}
+            marginBottom={8}
+            placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
+            onChange={onNumeroChange}
+          />
 
-      <CertificationButton
-        isCertified={initialValue?.certifie || false}
-        isLoading={isLoading}
-        onConfirm={setCertifie}
-        onCancel={onFormCancel}
-      />
+          <TextInput
+            style={{textTransform: 'lowercase'}}
+            display='block'
+            marginLeft={8}
+            disabled={isLoading}
+            width='100%'
+            flex={1}
+            minWidth={59}
+            value={suffixe}
+            maxLength={10}
+            marginBottom={8}
+            placeholder='Suffixe'
+            onChange={onSuffixeChange}
+          />
+        </Pane>
 
+        {markers.length > 0 && (
+          <PositionEditor />
+        )}
+
+        <SelectParcelles />
+
+        <Comment input={comment} onChange={onCommentChange} />
+
+        {error && (
+          <Alert marginBottom={16} intent='danger' title='Erreur'>
+            {error}
+          </Alert>
+        )}
+
+        <CertificationButton
+          isCertified={initialValue?.certifie || false}
+          isLoading={isLoading}
+          onConfirm={setCertifie}
+          onCancel={onFormCancel}
+        />
+      </Pane>
     </Pane>
   )
 }
@@ -239,6 +272,8 @@ NumeroEditor.propTypes = {
     toponyme: PropTypes.string,
     certifie: PropTypes.bool
   }),
+  commune: PropTypes.object.isRequired,
+  hasPreview: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func
 }
@@ -246,6 +281,7 @@ NumeroEditor.propTypes = {
 NumeroEditor.defaultProps = {
   initialValue: null,
   initialVoieId: null,
+  hasPreview: false,
   onCancel: null
 }
 

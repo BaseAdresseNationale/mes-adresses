@@ -130,9 +130,9 @@ function Map({commune, voie, toponyme}) {
   }, [])
 
   const onClick = useCallback(event => {
-    const feature = event.features && event.features[0]
+    const feature = event?.features[0]
 
-    if (feature && feature.source === 'cadastre') {
+    if (feature?.source === 'cadastre' && feature?.state.hover) {
       handleParcelle(feature.properties.id)
     }
 
@@ -201,8 +201,16 @@ function Map({commune, voie, toponyme}) {
   }, [map, bounds, setViewport])
 
   useEffect(() => {
-    setIsEditing(openForm)
+    if (openForm) {
+      setIsEditing(true)
+    }
   }, [setIsEditing, openForm])
+
+  useEffect(() => {
+    if (!isEditing) {
+      setOpenForm(false) // Force closing editing form when isEditing is false
+    }
+  }, [isEditing, setOpenForm])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -268,7 +276,6 @@ function Map({commune, voie, toponyme}) {
             <NumerosMarkers
               numeros={numeros.filter(({_id}) => _id !== editingId)}
               voie={voie}
-              isToponymeNumero={Boolean(toponyme)}
               showLabel={showNumeros}
               showContextMenu={showContextMenu}
               setShowContextMenu={setShowContextMenu}
@@ -301,6 +308,7 @@ function Map({commune, voie, toponyme}) {
       {commune && openForm && (
         <Pane padding={20} background='white' height={400} overflowY='auto'>
           <AddressEditor
+            commune={commune}
             balId={balId}
             codeCommune={codeCommune}
             closeForm={() => setOpenForm(false)}
