@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo, useEffect} from 'react'
+import React, {useState, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
@@ -44,14 +44,6 @@ function App({error, Component, pageProps, query}) {
   const [isHidden, setIsHidden] = useState(false)
   const {layout, ...otherPageProps} = pageProps
   const Wrapper = layoutMap[layout] || Fullscreen
-
-  const onToggle = useCallback(isEditing => {
-    if (isEditing && isHidden) { // Force opening sidebar when numero is edited:
-      setIsHidden(false)
-    } else {
-      setIsHidden(isHidden => !isHidden)
-    }
-  }, [isHidden])
 
   const leftOffset = useMemo(() => {
     if (layout === 'sidebar' && !isHidden) {
@@ -117,13 +109,7 @@ function App({error, Component, pageProps, query}) {
                         <SettingsContextProvider>
                           <Settings initialBaseLocale={pageProps.baseLocale} codeCommune={pageProps.commune?.code} />
                           <Header />
-                          <SubHeader
-                            {...pageProps}
-                            initialBaseLocale={pageProps.baseLocale}
-                            layout={layout}
-                            isSidebarHidden={isHidden}
-                            onToggle={onToggle}
-                          />
+                          <SubHeader {...pageProps} initialBaseLocale={pageProps.baseLocale} />
                         </SettingsContextProvider>
                       )}
 
@@ -145,7 +131,7 @@ function App({error, Component, pageProps, query}) {
                         background='tint2'
                         display='flex'
                         flexDirection='column'
-                        onToggle={onToggle}
+                        onToggle={setIsHidden}
                       >
                         {error ? (
                           <ErrorPage statusCode={error.statusCode} />

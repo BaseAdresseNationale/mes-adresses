@@ -4,6 +4,8 @@ import {Marker} from 'react-map-gl'
 import {Pane, Text, Menu, Position, WarningSignIcon, TrashIcon, EndorsedIcon} from 'evergreen-ui'
 import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
 
+import {computeCompletNumero} from '../../lib/utils/numero'
+
 function NumeroMarker({numero, style, showContextMenu, setShowContextMenu, onEnableEditing, removeAddress}) {
   const position = numero.positions.find(position => position.type === 'entrée') || numero.positions[0]
 
@@ -12,12 +14,13 @@ function NumeroMarker({numero, style, showContextMenu, setShowContextMenu, onEna
   }
 
   const {coordinates} = position.point
+  const completNumero = numero.numeroComplet || computeCompletNumero(numero.numero, numero.suffixe)
 
   return (
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
       <Pane {...style} paddingX={4} onClick={e => onEnableEditing(e, numero._id)} onContextMenu={() => setShowContextMenu(numero._id)}>
         <Text color='white' marginLeft={8} marginRight={4}>
-          {numero.numeroComplet}
+          {completNumero}
         </Text>
 
         {numero.positions.find(position => position.type === 'inconnue') && (
@@ -52,7 +55,9 @@ NumeroMarker.propTypes = {
   numero: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     certifie: PropTypes.bool.isRequired,
-    numeroComplet: PropTypes.string.isRequired,
+    numeroComplet: PropTypes.string,
+    numero: PropTypes.number.isRequired,
+    suffixe: PropTypes.string,
     positions: PropTypes.arrayOf(PropTypes.shape({
       point: PropTypes.shape({
         coordinates: PropTypes.arrayOf(PropTypes.number).isRequired

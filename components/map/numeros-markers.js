@@ -12,7 +12,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 import NumeroMarker from './numero-marker'
 
-function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContextMenu, setShowContextMenu}) {
+function NumerosMarkers({numeros, voie, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
@@ -53,14 +53,14 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
       marginLeft: 6
     },
 
-    '& > span': {
+    '& > span, & > svg': {
       display: showLabel ? 'inline-block' : 'none'
     },
 
     '&:hover': showLabel ? null : {
       background: 'rgba(0, 0, 0, 0.7)',
 
-      '& > span': {
+      '& > span, & > svg': {
         display: 'inline-block'
       }
     }
@@ -85,7 +85,7 @@ function NumerosMarkers({numeros, voie, isToponymeNumero, showLabel, showContext
     numeros.map(numero => (
       <NumeroMarker
         key={numero._id}
-        numero={isToponymeNumero ? {...numero, numeroComplet: `${numero.numero}${numero.suffixe || ''}`} : numero}
+        numero={numero}
         style={markerStyle(colorSeed(numero.voie?._id || voie?._id))}
         showContextMenu={numero._id === showContextMenu}
         setShowContextMenu={setShowContextMenu}
@@ -101,7 +101,6 @@ NumerosMarkers.propTypes = {
   voie: PropTypes.shape({
     _id: PropTypes.string.isRequired
   }),
-  isToponymeNumero: PropTypes.bool.isRequired,
   showLabel: PropTypes.bool.isRequired,
   showContextMenu: PropTypes.string,
   setShowContextMenu: PropTypes.func.isRequired

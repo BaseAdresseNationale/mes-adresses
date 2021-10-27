@@ -73,7 +73,7 @@ function Map({commune, voie, toponyme}) {
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, showCadastre, setShowCadastre} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
-  const [showNumeros, setShowNumeros] = useState(true)
+  const [showLabels, setShowLabels] = useState(true)
   const [openForm, setOpenForm] = useState(false)
   const [showContextMenu, setShowContextMenu] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
@@ -125,14 +125,10 @@ function Map({commune, voie, toponyme}) {
     return layers
   }, [isParcelleSelectionEnabled, sources, voie, showCadastre])
 
-  const onShowNumeroChange = useCallback(value => {
-    setShowNumeros(value)
-  }, [])
-
   const onClick = useCallback(event => {
-    const feature = event.features && event.features[0]
+    const feature = event?.features[0]
 
-    if (feature && feature.source === 'cadastre') {
+    if (feature?.source === 'cadastre' && feature?.state.hover) {
       handleParcelle(feature.properties.id)
     }
 
@@ -201,8 +197,16 @@ function Map({commune, voie, toponyme}) {
   }, [map, bounds, setViewport])
 
   useEffect(() => {
-    setIsEditing(openForm)
+    if (openForm) {
+      setIsEditing(true)
+    }
   }, [setIsEditing, openForm])
+
+  useEffect(() => {
+    if (!isEditing) {
+      setOpenForm(false) // Force closing editing form when isEditing is false
+    }
+  }, [isEditing, setOpenForm])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -224,11 +228,11 @@ function Map({commune, voie, toponyme}) {
 
         {(voie || (toponymes && toponymes.length > 0)) && (
           <Control
-            icon={showNumeros ? EyeOffIcon : EyeOpenIcon}
-            enabled={showNumeros}
-            enabledHint={toponymes ? 'Masquer les toponymes' : 'Masquer les numéros'}
-            disabledHint={toponymes ? 'Afficher les toponymes' : 'Afficher les numéros'}
-            onChange={onShowNumeroChange}
+            icon={showLabels ? EyeOffIcon : EyeOpenIcon}
+            enabled={showLabels}
+            enabledHint={numeros ? 'Masquer les détails' : 'Masquer les toponymes'}
+            disabledHint={numeros ? 'Afficher les détails' : 'Afficher les toponymes'}
+            onChange={setShowLabels}
           />
         )}
 
@@ -268,8 +272,7 @@ function Map({commune, voie, toponyme}) {
             <NumerosMarkers
               numeros={numeros.filter(({_id}) => _id !== editingId)}
               voie={voie}
-              isToponymeNumero={Boolean(toponyme)}
-              showLabel={showNumeros}
+              showLabel={showLabels}
               showContextMenu={showContextMenu}
               setShowContextMenu={setShowContextMenu}
             />
@@ -279,7 +282,7 @@ function Map({commune, voie, toponyme}) {
             <ToponymeMarker
               key={toponyme._id}
               initialToponyme={toponyme}
-              showLabel={showNumeros}
+              showLabel={showLabels}
               showContextMenu={toponyme._id === showContextMenu}
               setShowContextMenu={setShowContextMenu}
             />
@@ -301,6 +304,7 @@ function Map({commune, voie, toponyme}) {
       {commune && openForm && (
         <Pane padding={20} background='white' height={400} overflowY='auto'>
           <AddressEditor
+            commune={commune}
             balId={balId}
             codeCommune={codeCommune}
             closeForm={() => setOpenForm(false)}
