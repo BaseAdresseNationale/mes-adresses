@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, ChevronRightIcon, CrossIcon, ChevronLeftIcon} from 'evergreen-ui'
 
@@ -10,13 +10,19 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
   const {setEditingId, isEditing, setIsEditing} = useContext(BalDataContext)
 
   const handleClick = () => {
-    if (isEditing && !isHidden) {
+    if (isEditing) {
       setEditingId(null)
       setIsEditing(false)
     } else {
-      onToggle(isEditing)
+      onToggle(!isHidden)
     }
   }
+
+  useEffect(() => {
+    if (isEditing && isHidden) { // Force opening sidebar when editing
+      onToggle(false)
+    }
+  }, [isEditing, isHidden, onToggle])
 
   return (
     <Pane
