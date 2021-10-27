@@ -14,15 +14,11 @@ import LocalStorageContext from '../../contexts/local-storage'
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 import CertificationCount from '../certification-count'
 
-function getBadge({status}) {
-  switch (status) {
-    case 'published':
-      return {color: 'green', label: 'Publiée'}
-    case 'ready-to-publish':
-      return {color: 'blue', label: 'Prête à être publiée'}
-    default:
-      return {color: 'neutral', label: 'Brouillon'}
-  }
+const statusBadges = {
+  published: {color: 'green', background: '#DCF2EA', label: 'Publiée'},
+  'ready-to-publish': {color: 'blue', background: '#D6E0FF', label: 'Prête à être publiée'},
+  draft: {color: 'neutral', background: '#edeff5', label: 'Brouillon'},
+  demo: {color: colors.neutral, background: colors.neutral, label: 'Démonstration'}
 }
 
 const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) => {
@@ -37,7 +33,7 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
   const tooltipContent = status === 'ready-to-publish' ? 'Vous ne pouvez pas supprimer une BAL lorsqu‘elle est prête à être publiée' : 'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
-  const badge = getBadge(baseLocale)
+  const badge = statusBadges[baseLocale.status]
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen)
@@ -117,13 +113,9 @@ const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect
           borderRadius={5}
           paddingY={8}
           alignItems='center'
-          background={badge.color === 'green' ? '#DCF2EA' : badge.color === 'blue' ? '#D6E0FF' : '#edeff5'}
+          background={badge.background}
         >
-          {baseLocale.status === 'demo' ? (
-            <Badge color={colors.neutral} width={250}>DÉMO</Badge>
-          ) : (
-            <Badge color={badge.color} width={250}>{badge.label} </Badge>
-          )}
+          <Badge color={badge.color} width={250}>{badge.label}</Badge>
         </Pane>
 
       </Pane>
