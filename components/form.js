@@ -4,7 +4,7 @@ import {Pane} from 'evergreen-ui'
 
 function Form({children, onFormSubmit}) {
   return (
-    <Pane is='form' background='gray400' flex={1} padding={12} height='100%' onSubmit={onFormSubmit}>
+    <Pane is='form' background='gray300' flex={1} padding={12} height='100%' onSubmit={onFormSubmit}>
       {children}
     </Pane>
   )
