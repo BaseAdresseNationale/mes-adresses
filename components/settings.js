@@ -149,7 +149,7 @@ const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
         overflowY='scroll'
       >
         {token ? (
-          <Form onSubmit={onSubmit}>
+          <Form onFormSubmit={onSubmit}>
             <FormInput>
               <TextInputField
                 required

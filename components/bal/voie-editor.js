@@ -68,7 +68,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   }, [disableDraw])
 
   return (
-    <Form onSubmit={onFormSubmit}>
+    <Form onFormSubmit={onFormSubmit}>
       <FormInput>
         <AssistedTextField
           isFocus

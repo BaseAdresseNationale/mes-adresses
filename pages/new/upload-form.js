@@ -162,7 +162,7 @@ function UploadForm() {
   return (
     <>
       <Pane marginY={32} flex={1} overflowY='scroll'>
-        <Form onSubmit={onSubmit}>
+        <Form onFormSubmit={onSubmit}>
           {userBALs.length > 0 && (
             <AlertPublishedBAL
               isShown={isShown}

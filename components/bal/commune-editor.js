@@ -50,7 +50,7 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
   }, [onCancel])
 
   return (
-    <Form onSubmit={onFormSubmit}>
+    <Form onFormSubmit={onFormSubmit}>
       <FormInput>
         <CommuneSearch
           required

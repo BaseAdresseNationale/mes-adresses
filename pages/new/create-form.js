@@ -82,7 +82,7 @@ function CreateForm({defaultCommune}) {
   return (
 
     <Pane overflowY='scroll' marginY={32}>
-      <Form onSubmit={onSubmit}>
+      <Form onFormSubmit={onSubmit}>
         {userBALs.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}

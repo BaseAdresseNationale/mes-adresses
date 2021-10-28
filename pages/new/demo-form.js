@@ -44,7 +44,7 @@ function DemoForm({defaultCommune}) {
   return (
 
     <Pane overflowY='scroll'>
-      <Form onSubmit={onSubmit}>
+      <Form onFormSubmit={onSubmit}>
         <FormInput>
           <CommuneSearchField
             required
