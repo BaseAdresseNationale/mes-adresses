@@ -15,6 +15,8 @@ import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
 import Comment from '../comment'
+import Form from '../form'
+import FormInput from '../form-input'
 import CertificationButton from '../certification-button'
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
@@ -160,7 +162,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
   }, [toponymeId, toponymes])
 
   return (
-    <Pane is='form' onSubmit={onFormSubmit}>
+    <Form onFormSubmit={onFormSubmit}>
       {hasPreview && (
         <AddressPreview
           numero={numero}
@@ -172,71 +174,81 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
       )}
 
       <Pane paddingTop={hasPreview ? 56 : 0}>
-        <NumeroVoieSelector
-          voieId={voieId}
-          voies={voies}
-          nomVoie={nomVoie}
-          mode={voieId ? 'selection' : 'creation'}
-          handleVoie={setVoieId}
-          handleNomVoie={onNomVoieChange}
-        />
+        <FormInput>
+          <NumeroVoieSelector
+            voieId={voieId}
+            voies={voies}
+            nomVoie={nomVoie}
+            mode={voieId ? 'selection' : 'creation'}
+            handleVoie={setVoieId}
+            handleNomVoie={onNomVoieChange}
+          />
+        </FormInput>
 
         <Pane display='flex'>
-          <SelectField
-            label='Toponyme'
-            flex={1}
-            marginBottom={16}
-            value={toponymeId || ''}
-            onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
-          >
-            <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
-            {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
-              <option key={_id} value={_id}>
-                {nom}
-              </option>
-            ))}
-          </SelectField>
+          <FormInput>
+            <SelectField
+              label='Toponyme'
+              flex={1}
+              marginBottom={16}
+              value={toponymeId || ''}
+              onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
+            >
+              <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
+              {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
+                <option key={_id} value={_id}>
+                  {nom}
+                </option>
+              ))}
+            </SelectField>
+          </FormInput>
         </Pane>
 
-        <Pane display='flex'>
-          <TextInput
-            ref={focusRef}
-            required
-            display='block'
-            type='number'
-            disabled={isLoading}
-            width='100%'
-            maxWidth={300}
-            flex={2}
-            min={0}
-            max={9999}
-            value={numero}
-            marginBottom={8}
-            placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
-            onChange={onNumeroChange}
-          />
+        <FormInput>
+          <Pane display='flex'>
+            <TextInput
+              ref={focusRef}
+              required
+              display='block'
+              type='number'
+              disabled={isLoading}
+              width='100%'
+              maxWidth={300}
+              flex={2}
+              min={0}
+              max={9999}
+              value={numero}
+              marginBottom={8}
+              placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
+              onChange={onNumeroChange}
+            />
 
-          <TextInput
-            style={{textTransform: 'lowercase'}}
-            display='block'
-            marginLeft={8}
-            disabled={isLoading}
-            width='100%'
-            flex={1}
-            minWidth={59}
-            value={suffixe}
-            maxLength={10}
-            marginBottom={8}
-            placeholder='Suffixe'
-            onChange={onSuffixeChange}
-          />
-        </Pane>
+            <TextInput
+              style={{textTransform: 'lowercase'}}
+              display='block'
+              marginLeft={8}
+              disabled={isLoading}
+              width='100%'
+              flex={1}
+              minWidth={59}
+              value={suffixe}
+              maxLength={10}
+              marginBottom={8}
+              placeholder='Suffixe'
+              onChange={onSuffixeChange}
+            />
+          </Pane>
+        </FormInput>
 
         {markers.length > 0 && (
-          <PositionEditor />
+          <FormInput>
+            <PositionEditor />
+          </FormInput>
         )}
 
-        <SelectParcelles />
+        <FormInput>
+          <SelectParcelles />
+        </FormInput>
 
         <Comment input={comment} onChange={onCommentChange} />
 
@@ -253,7 +265,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
           onCancel={onFormCancel}
         />
       </Pane>
-    </Pane>
+    </Form>
   )
 }
 

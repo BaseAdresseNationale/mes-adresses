@@ -45,15 +45,17 @@ function AddressEditor({commune, balId, codeCommune, closeForm}) {
 
   return (
     <Pane>
-      <Heading is='h4'>Nouvelle adresse</Heading>
-      <SelectField
-        label='Créer un nouveau'
-        value={isToponyme ? 'toponyme' : 'numero'}
-        onChange={e => setIsToponyme(e.target.value === 'toponyme')}
-      >
-        <option value='numero'>Numéro</option>
-        <option value='toponyme'>Toponyme</option>
-      </SelectField>
+      <Pane padding={12}>
+        <Heading is='h4' >Nouvelle adresse</Heading>
+        <SelectField
+          label='Créer un nouveau'
+          value={isToponyme ? 'toponyme' : 'numero'}
+          onChange={e => setIsToponyme(e.target.value === 'toponyme')}
+        >
+          <option value='numero'>Numéro</option>
+          <option value='toponyme'>Toponyme</option>
+        </SelectField>
+      </Pane>
 
       {isToponyme ? (
         <ToponymeEditor onSubmit={onAddToponyme} onCancel={closeForm} />

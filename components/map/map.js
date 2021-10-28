@@ -302,7 +302,7 @@ function Map({commune, voie, toponyme}) {
       </Pane>
 
       {commune && openForm && (
-        <Pane padding={20} background='white' height={400} overflowY='auto'>
+        <Pane background='white' height={400} overflowY='auto'>
           <AddressEditor
             commune={commune}
             balId={balId}
