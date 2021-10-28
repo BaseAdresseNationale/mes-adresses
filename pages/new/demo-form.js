@@ -10,6 +10,8 @@ import {createBaseLocaleDemo} from '../../lib/bal-api'
 import useFocus from '../../hooks/focus'
 import {useCheckboxInput} from '../../hooks/input'
 
+import Form from '../../components/form'
+import FormInput from '../../components/form-input'
 import {CommuneSearchField} from '../../components/commune-search'
 
 function DemoForm({defaultCommune}) {
@@ -40,38 +42,44 @@ function DemoForm({defaultCommune}) {
   }, [commune, populate, addBalAccess])
 
   return (
-    <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
-      <CommuneSearchField
-        required
-        innerRef={focusRef}
-        id='commune'
-        initialSelectedItem={defaultCommune}
-        label='Commune'
-        appearance='default'
-        maxWidth={500}
-        disabled={isLoading}
-        onSelect={onSelect}
-      />
 
-      <Checkbox
-        label='Importer les voies et numéros depuis la BAN'
-        checked={populate}
-        disabled={isLoading}
-        onChange={onPopulateChange}
-      />
+    <Pane overflowY='scroll'>
+      <Form onSubmit={onSubmit}>
+        <FormInput>
+          <CommuneSearchField
+            required
+            innerRef={focusRef}
+            id='commune'
+            initialSelectedItem={defaultCommune}
+            label='Commune'
+            appearance='default'
+            maxWidth={500}
+            disabled={isLoading}
+            onSelect={onSelect}
+          />
 
-      <Alert
-        intent='warning'
-        title='Attention vous vous apprêtez à créer une Base Adresse Locale de démonstration.'
-        marginY='1em'
-      >
-        Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans la Base Adresse Nationale
-      </Alert>
+          <Checkbox
+            label='Importer les voies et numéros depuis la BAN'
+            checked={populate}
+            disabled={isLoading}
+            onChange={onPopulateChange}
+          />
+        </FormInput>
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
+        <Alert
+          intent='warning'
+          title='Attention vous vous apprêtez à créer une Base Adresse Locale de démonstration.'
+          marginY='1em'
+        >
+          Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans la Base Adresse Nationale
+        </Alert>
+      </Form>
+
+      <Button height={40} marginTop={32} marginLeft={12} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
         {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
       </Button>
     </Pane>
+
   )
 }
 
