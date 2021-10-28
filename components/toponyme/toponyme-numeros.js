@@ -5,7 +5,7 @@ import {Heading, Table, EditIcon, Tooltip, CommentIcon, WarningSignIcon, Positio
 
 import TokenContext from '../../contexts/token'
 
-function ToponymeNumeros({numeros, handleSelect}) {
+function ToponymeNumeros({numeros, handleSelect, isEditing}) {
   const [hovered, setHovered] = useState(null)
   const {token} = useContext(TokenContext)
 
@@ -35,7 +35,7 @@ function ToponymeNumeros({numeros, handleSelect}) {
           >
             <Table.Cell data-browsable>
               <Table.TextCell data-editable flex='0 1 1'>
-                {numero}{suffixe} {hovered === _id && token && <EditIcon marginBottom={-4} marginLeft={8} />}
+                {numero}{suffixe} {hovered === _id && token && !isEditing && <EditIcon marginBottom={-4} marginLeft={8} />}
               </Table.TextCell>
             </Table.Cell>
 

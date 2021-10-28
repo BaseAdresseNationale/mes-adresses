@@ -89,6 +89,12 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
     setEditingId(null)
   }, [editingId, setEditingId, baseLocale, commune.code, reloadNumerosToponyme, token, updatedToponyme])
 
+  const handleSelection = id => {
+    if (!isEditing) {
+      setEditingId(id)
+    }
+  }
+
   const onCancel = useCallback(() => {
     setIsAdding(false)
     setEditingId(null)
@@ -190,7 +196,7 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
               </Table.Cell>
             </Table.Row>
           ) : (
-            <ToponymeNumeros numeros={filtered} handleSelect={setEditingId} />
+            <ToponymeNumeros numeros={filtered} handleSelect={handleSelection} isEditing={isEditing} />
           )}
         </Table>
       </Pane>
