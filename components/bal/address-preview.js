@@ -29,12 +29,12 @@ function AddressPreview({numero, suffixe, selectedNomToponyme, voie, commune}) {
       boxSizing='border-box'
       left={0}
       zIndex={3}
-      background='blue100'
+      background='blue300'
       paddingY={8}
       paddingX={12}
       marginTop={-12}
     >
-      <Text fontSize={13}>
+      <Text fontSize={13} color='white'>
         {getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)}
       </Text>
     </Pane>
