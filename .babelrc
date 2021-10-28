@@ -1,6 +1,9 @@
 {
-  "presets": ["next/babel"],
+  "presets": [
+    "next/babel"
+  ],
   "plugins": [
-    "lodash"
+    "lodash",
+    "@babel/plugin-proposal-class-properties"
   ]
 }
