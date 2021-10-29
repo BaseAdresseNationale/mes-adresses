@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, SelectField, TextInput, Alert} from 'evergreen-ui'
+import {Pane, SelectField, TextInput, Alert, TextInputField} from 'evergreen-ui'
 import {sortBy} from 'lodash'
 
 import {normalizeSort} from '../../lib/normalize'
@@ -206,10 +206,10 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
 
         <FormInput>
           <Pane display='flex' alignItems='end'>
-          <Pane display='flex'>
-            <TextInput
+            <TextInputField
               ref={focusRef}
               required
+              label='Numéro'
               display='block'
               type='number'
               disabled={isLoading}
