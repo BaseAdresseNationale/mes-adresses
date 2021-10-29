@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext} from 'react'
+import {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'

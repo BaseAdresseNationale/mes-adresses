@@ -1,4 +1,3 @@
-import React from 'react'
 import {useRouter} from 'next/router'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, RouteIcon} from 'evergreen-ui'
 

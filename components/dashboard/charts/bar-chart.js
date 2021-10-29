@@ -1,11 +1,10 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import {Heading} from 'evergreen-ui'
 import {Bar} from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns' // eslint-disable-line import/no-unassigned-import
 import {fr} from 'date-fns/locale'
 
-const BarChart = ({title, data}) => {
+function BarChart({title, data}) {
   const options = {
     interaction: {
       mode: 'index'

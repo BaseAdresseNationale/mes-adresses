@@ -1,7 +1,9 @@
-import React, {useState, useMemo, useEffect} from 'react'
+import {useState, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
+
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 import {getBaseLocale, getVoie, getToponyme} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
@@ -72,6 +74,26 @@ function App({error, Component, pageProps, query}) {
       <Head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
         <title>mes-adresses.data.gouv.fr</title>
+
+        <style>{`
+            html {
+              height: 100%;
+            }
+
+            body {
+              height: 100%;
+              margin: 0;
+            }
+
+            #__next {
+              height: 100%;
+              display: -webkit-box;
+              display: -moz-box;
+              display: -ms-flexbox;
+              display: -webkit-flex;
+              display: flex;
+            }
+          `}</style>
       </Head>
 
       <Pane>
@@ -202,7 +224,7 @@ App.getInitialProps = async ({Component, ctx}) => {
         toponyme
       })
     }
-  } catch (error) {
+  } catch {
     return {
       pageProps,
       error: {

@@ -175,7 +175,7 @@ Index.getInitialProps = async ({baseLocale}) => {
     baseLocale.communes.map(async codeCommune => {
       try {
         return await getCommune(codeCommune)
-      } catch (error) {
+      } catch {
         return {
           code: codeCommune
         }

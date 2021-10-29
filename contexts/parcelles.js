@@ -1,5 +1,4 @@
-import React, {useState, useContext, useEffect, useCallback} from 'react'
-import PropTypes from 'prop-types'
+import React, {useState, useContext, useEffect, useCallback, useMemo} from 'react'
 
 import MapContext from './map'
 
@@ -16,7 +15,7 @@ function getHoveredFeatureId(map, id) {
 }
 
 export function ParcellesContextProvider(props) {
-  const {map, showCadastre} = useContext(MapContext)
+  const {map, isCadastreDisplayed} = useContext(MapContext)
 
   const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] = useState(false)
   const [selectedParcelles, setSelectedParcelles] = useState([])
@@ -38,14 +37,14 @@ export function ParcellesContextProvider(props) {
   const handleHoveredParcelle = useCallback(hovered => {
     if (map) {
       setHoveredParcelle(prev => {
-        if (prev && showCadastre) {
+        if (prev && isCadastreDisplayed) {
           map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prev.featureId}, {hover: false})
         }
 
         if (hovered) {
           const featureId = hovered.featureId || getHoveredFeatureId(map, hovered.id)
 
-          if (featureId && showCadastre) {
+          if (featureId && isCadastreDisplayed) {
             map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: true})
           }
 
@@ -55,16 +54,16 @@ export function ParcellesContextProvider(props) {
         return null
       })
     }
-  }, [map, showCadastre])
+  }, [map, isCadastreDisplayed])
 
   const highlightParcelles = useCallback(parcelles => {
-    if (map && isLayerLoaded && showCadastre) {
+    if (map && isLayerLoaded && isCadastreDisplayed) {
       const filters = isParcelleSelectionEnabled ?
         ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])] :
         ['==', ['get', 'id'], '']
       map.setFilter('parcelle-highlighted', filters)
     }
-  }, [map, isLayerLoaded, isParcelleSelectionEnabled, showCadastre])
+  }, [map, isLayerLoaded, isParcelleSelectionEnabled, isCadastreDisplayed])
 
   // Use state to know when parcelle-highlighted layer is loaded
   const handleLoad = useCallback(() => {
@@ -115,25 +114,22 @@ export function ParcellesContextProvider(props) {
     }
   }, [map, handleLoad])
 
+  const value = useMemo(() => ({
+    selectedParcelles, setSelectedParcelles,
+    isParcelleSelectionEnabled, setIsParcelleSelectionEnabled,
+    handleParcelle,
+    hoveredParcelle, handleHoveredParcelle
+  }), [
+    selectedParcelles,
+    isParcelleSelectionEnabled,
+    handleParcelle,
+    hoveredParcelle,
+    handleHoveredParcelle
+  ])
+
   return (
-    <ParcellesContext.Provider
-      value={{
-        selectedParcelles, setSelectedParcelles,
-        isParcelleSelectionEnabled, setIsParcelleSelectionEnabled,
-        handleParcelle,
-        hoveredParcelle, handleHoveredParcelle
-      }}
-      {...props}
-    />
+    <ParcellesContext.Provider value={value} {...props} />
   )
-}
-
-ParcellesContextProvider.defaultProps = {
-  codeCommune: null
-}
-
-ParcellesContextProvider.propTypes = {
-  codeCommune: PropTypes.string
 }
 
 export default ParcellesContext
