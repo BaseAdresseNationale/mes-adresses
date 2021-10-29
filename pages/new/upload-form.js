@@ -183,6 +183,7 @@ function UploadForm() {
                   autoComplete='new-password' // Hack to bypass chrome autocomplete
                   name='nom'
                   id='nom'
+                  marginBottom={0}
                   value={nom}
                   disabled={isLoading}
                   label='Nom de la Base Adresse Locale'
@@ -197,6 +198,7 @@ function UploadForm() {
                   type='email'
                   name='email'
                   id='email'
+                  marginBottom={0}
                   value={email}
                   disabled={isLoading}
                   label='Votre adresse email'

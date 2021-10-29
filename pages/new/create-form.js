@@ -103,6 +103,7 @@ function CreateForm({defaultCommune}) {
             id='nom'
             value={nom}
             maxWidth={600}
+            marginBottom={0}
             disabled={isLoading}
             label='Nom de la Base Adresse Locale'
             placeholder='Nom'
@@ -118,6 +119,7 @@ function CreateForm({defaultCommune}) {
             id='email'
             value={email}
             maxWidth={400}
+            marginBottom={0}
             disabled={isLoading}
             label='Votre adresse email'
             placeholder='nom@example.com'
@@ -141,6 +143,7 @@ function CreateForm({defaultCommune}) {
             label='Importer les voies et numéros depuis la BAN'
             checked={populate}
             disabled={isLoading}
+            marginBottom={0}
             onChange={onPopulateChange}
           />
         </FormInput>

@@ -190,7 +190,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
             <SelectField
               label='Toponyme'
               flex={1}
-              marginBottom={16}
+              marginBottom={0}
               value={toponymeId || ''}
               onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
             >
@@ -205,6 +205,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
         </Pane>
 
         <FormInput>
+          <Pane display='flex' alignItems='end'>
           <Pane display='flex'>
             <TextInput
               ref={focusRef}
@@ -218,7 +219,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
               min={0}
               max={9999}
               value={numero}
-              marginBottom={8}
+              marginBottom={0}
               placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
               onChange={onNumeroChange}
             />
@@ -233,7 +234,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
               minWidth={59}
               value={suffixe}
               maxLength={10}
-              marginBottom={8}
+              marginBottom={0}
               placeholder='Suffixe'
               onChange={onSuffixeChange}
             />

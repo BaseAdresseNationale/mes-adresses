@@ -157,6 +157,7 @@ const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
                 id='nom'
                 value={nomInput}
                 maxWidth={600}
+                marginBottom={0}
                 disabled={isLoading || baseLocale.status === 'demo'}
                 label='Nom'
                 placeholder='Nom'
@@ -191,13 +192,11 @@ const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
                       onClick={() => onRemoveEmail(email)}
                     />
                   )}
-
                 </Pane>
 
               ))}
 
-              <Pane display='flex' marginBottom={16}>
-
+              <Pane display='flex' marginBottom={0}>
                 <TextInput
                   display='block'
                   type='email'
@@ -209,6 +208,7 @@ const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
                   disabled={baseLocale.status === 'demo'}
                   onChange={onEmailChange}
                 />
+
                 {email && !balEmails.includes(email) && (
                   <IconButton
                     type='submit'

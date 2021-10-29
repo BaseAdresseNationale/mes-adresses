@@ -79,6 +79,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
         />
 
         <Checkbox
+          marginBottom={0}
           checked={isMetric}
           label='Cette voie utilise la numérotation métrique'
           onChange={onIsMetricChange}

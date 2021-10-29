@@ -62,6 +62,7 @@ function DemoForm({defaultCommune}) {
             label='Importer les voies et numéros depuis la BAN'
             checked={populate}
             disabled={isLoading}
+            marginBottom={0}
             onChange={onPopulateChange}
           />
         </FormInput>
