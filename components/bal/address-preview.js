@@ -21,6 +21,8 @@ const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
 }
 
 function AddressPreview({numero, suffixe, selectedNomToponyme, voie, commune}) {
+  const address = getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)
+
   return (
     <Pane
       position='fixed'
@@ -34,8 +36,8 @@ function AddressPreview({numero, suffixe, selectedNomToponyme, voie, commune}) {
       paddingX={12}
       marginTop={-12}
     >
-      <Text fontSize={13} color='white'>
-        {getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)}
+      <Text fontSize={address.length > 110 ? '12px' : '13px'} color='white'>
+        {address}
       </Text>
     </Pane>
   )

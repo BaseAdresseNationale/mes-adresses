@@ -173,7 +173,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
         />
       )}
 
-      <Pane paddingTop={hasPreview ? 56 : 0}>
+      <Pane paddingTop={hasPreview ? 36 : 0}>
         <FormInput>
           <NumeroVoieSelector
             voieId={voieId}
