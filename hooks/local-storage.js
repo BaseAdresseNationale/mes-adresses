@@ -6,7 +6,7 @@ export function useLocalStorage(key, value) {
   const getData = () => {
     try {
       return JSON.parse(localStorage.getItem(key))
-    } catch (error) {
+    } catch {
       // Prevent from corrupt data like discovered with recovery-email-sent
       storeData(null)
       return null

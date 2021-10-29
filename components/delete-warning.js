@@ -1,25 +1,22 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Dialog} from 'evergreen-ui'
 
 function DeleteWarning({isShown, content, onCancel, onConfirm}) {
   return (
-    <>
-      <Pane>
-        <Dialog
-          isShown={isShown}
-          title='Attention'
-          intent='danger'
-          cancelLabel='Annuler'
-          confirmLabel='Supprimer'
-          onCloseComplete={onCancel}
-          onCancel={onCancel}
-          onConfirm={onConfirm}
-        >
-          {content}
-        </Dialog>
-      </Pane>
-    </>
+    <Pane>
+      <Dialog
+        isShown={isShown}
+        title='Attention'
+        intent='danger'
+        cancelLabel='Annuler'
+        confirmLabel='Supprimer'
+        onCloseComplete={onCancel}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+      >
+        {content}
+      </Dialog>
+    </Pane>
   )
 }
 

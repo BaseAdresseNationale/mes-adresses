@@ -1,4 +1,4 @@
-import React, {useState, useContext, useCallback, useEffect} from 'react'
+import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Checkbox, Alert} from 'evergreen-ui'
 
@@ -44,11 +44,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     onCancel()
   }, [onCancel])
 
-  useKeyEvent('keyup', ({key}) => {
+  useKeyEvent(({key}) => {
     if (key === 'Escape') {
       onCancel()
     }
-  }, [onCancel])
+  }, [onCancel], 'keyup')
 
   useEffect(() => {
     if (isMetric) {

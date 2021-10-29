@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInputField} from 'evergreen-ui'
 
@@ -6,7 +6,7 @@ import useFocus from '../hooks/focus'
 
 import AccentTool from './accent-tool'
 
-function AssistedTextField({label, placeholder, value, onChange, isFocus, disabled}) {
+function AssistedTextField({label, placeholder, value, onChange, isFocus, isDisabled}) {
   const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
   const [focusRef, ref] = useFocus()
 
@@ -26,7 +26,7 @@ function AssistedTextField({label, placeholder, value, onChange, isFocus, disabl
       <TextInputField
         ref={isFocus && focusRef}
         required
-        disabled={disabled}
+        disabled={isDisabled}
         label={label}
         placeholder={placeholder}
         value={value}
@@ -49,7 +49,7 @@ function AssistedTextField({label, placeholder, value, onChange, isFocus, disabl
 AssistedTextField.defaultProps = {
   placeholder: '',
   isFocus: false,
-  disabled: false
+  isDisabled: false
 }
 
 AssistedTextField.propTypes = {
@@ -58,7 +58,7 @@ AssistedTextField.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   isFocus: PropTypes.bool,
-  disabled: PropTypes.bool
+  isDisabled: PropTypes.bool
 }
 
 export default AssistedTextField

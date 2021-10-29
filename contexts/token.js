@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import React, {useState, useCallback, useEffect, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 
@@ -44,8 +44,12 @@ export function TokenContextProvider({balId, _token, ...props}) {
     verify(getBalToken(balId))
   }, [verify, balId, getBalToken])
 
+  const value = useMemo(() => ({
+    token, emails, reloadEmails
+  }), [token, emails, reloadEmails])
+
   return (
-    <TokenContext.Provider value={{token, emails, reloadEmails}} {...props} />
+    <TokenContext.Provider value={value} {...props} />
   )
 }
 

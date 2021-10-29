@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {groupBy} from 'lodash'
 import {format, formatISO} from 'date-fns'
@@ -8,7 +8,7 @@ import {filterByStatus} from '../../lib/bases-locales'
 
 import BarChart from './charts/bar-chart'
 
-const BALCreationChart = ({basesLocales}) => {
+function BALCreationChart({basesLocales}) {
   const groupedByMonth = Object.values(groupBy(basesLocales, ({_created}) => {
     return format(new Date(_created), 'yyyy-MM')
   }))
@@ -19,6 +19,7 @@ const BALCreationChart = ({basesLocales}) => {
     const filteredByStatus = groupedByMonth.map(basesLocales => filterByStatus(basesLocales, status).length)
 
     if (filteredByStatus.length > 0) {
+      // eslint-disable-next-line unicorn/no-array-reduce
       const addedBal = filteredByStatus.reduce((totalValue, currentValue) => {
         sums.push(totalValue)
         const sum = totalValue + currentValue

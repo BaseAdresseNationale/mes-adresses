@@ -1,11 +1,10 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import {Pane} from 'evergreen-ui'
 
 import MapLoader from './loader'
 
-const Map = dynamic(() => import('./map'), {
+const Map = dynamic(() => import('./map'), { // eslint-disable-line node/no-unsupported-features/es-syntax
   ssr: false,
   loading: props => (
     <MapLoader {...props} />

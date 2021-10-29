@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useMemo, useContext} from 'react'
+import {useState, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon} from 'evergreen-ui'
 
@@ -12,7 +12,7 @@ import BalDataContext from '../../../contexts/bal-data'
 
 import useFuse from '../../../hooks/fuse'
 
-function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEditing}) {
+function NumerosList({token, voieId, defaultNumeros, isEditiondisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
@@ -26,8 +26,8 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
   })
 
   const isGroupedActionsShown = useMemo(() => (
-    token && !disabledEdition && numeros && selectedNumerosIds.length > 1
-  ), [token, disabledEdition, numeros, selectedNumerosIds])
+    token && !isEditiondisabled && numeros && selectedNumerosIds.length > 1
+  ), [token, isEditiondisabled, numeros, selectedNumerosIds])
 
   const noFilter = numeros && filtered.length === numeros.length
 
@@ -118,7 +118,7 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={disabledEdition}
+              disabled={isEditiondisabled}
               onClick={handleEditing}
             >Ajouter un numéro</Button>
           </Pane>
@@ -157,7 +157,7 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            {numeros && token && filtered.length > 1 && !disabledEdition && (
+            {numeros && token && filtered.length > 1 && !isEditiondisabled && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
@@ -182,13 +182,13 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
 
         {filtered.map(numero => (
           <TableRow
-            {...numero}
             key={numero._id}
+            {...numero}
             id={numero._id}
             isCertified={numero.certifie}
             comment={numero.comment}
-            warning={numero.positions.find(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
-            isSelectable={!disabledEdition}
+            warning={numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
+            isSelectable={!isEditiondisabled}
             label={numero.numeroComplet}
             secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
             toponymeId={numero.toponyme}
@@ -217,7 +217,7 @@ NumerosList.propTypes = {
   token: PropTypes.string,
   voieId: PropTypes.string.isRequired,
   defaultNumeros: PropTypes.array.isRequired,
-  disabledEdition: PropTypes.bool.isRequired,
+  isEditiondisabled: PropTypes.bool.isRequired,
   handleEditing: PropTypes.func.isRequired
 }
 

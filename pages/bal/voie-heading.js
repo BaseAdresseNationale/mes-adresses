@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react'
+import {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
@@ -9,7 +9,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 import VoieEditor from '../../components/bal/voie-editor'
 
-const VoieHeading = ({defaultVoie}) => {
+function VoieHeading({defaultVoie}) {
   const [editedVoie, setEditedVoie] = useState(defaultVoie)
   const [hovered, setHovered] = useState(false)
 
