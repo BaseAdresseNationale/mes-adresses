@@ -10,17 +10,16 @@
     "build:geo": "node scripts/build-geo"
   },
   "dependencies": {
-    "@babel/runtime": "^7.15.4",
     "@etalab/bal": "^1.5.1",
-    "@next/bundle-analyzer": "^12.0.1",
-    "@turf/bbox": "^6.5.0",
-    "@turf/buffer": "^6.5.0",
-    "@turf/center": "^6.5.0",
-    "@turf/centroid": "^6.5.0",
-    "@turf/difference": "6.5.0",
-    "@turf/length": "^6.5.0",
-    "@turf/line-slice": "^6.5.0",
-    "@turf/nearest-point-on-line": "^6.5.0",
+    "@next/bundle-analyzer": "^11.1.2",
+    "@turf/bbox": "^6.0.1",
+    "@turf/buffer": "^5.1.5",
+    "@turf/center": "^6.0.1",
+    "@turf/centroid": "^6.0.2",
+    "@turf/difference": "6.0.1",
+    "@turf/length": "^6.0.2",
+    "@turf/line-slice": "^5.1.5",
+    "@turf/nearest-point-on-line": "^6.0.2",
     "babel-plugin-lodash": "^3.3.4",
     "chart.js": "^3.5.1",
     "chartjs-adapter-date-fns": "^2.0.0",
@@ -47,33 +46,23 @@
     "use-debounce": "^1.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.8",
-    "@babel/eslint-parser": "^7.15.8",
-    "@babel/plugin-proposal-class-properties": "^7.14.5",
-    "eslint": "^7.32.0",
-    "eslint-config-xo-nextjs": "^3.2.0",
-    "xo": "^0.39.1"
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-inline-import": "^3.0.0",
+    "eslint-config-xo-nextjs": "^1.4.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "xo": "^0.24.0"
   },
   "xo": {
     "extends": "xo-nextjs",
-    "parser": "@babel/eslint-parser",
     "semicolon": false,
     "space": 2,
     "envs": [
-      "browser",
-      "es2021"
+      "browser"
     ],
     "rules": {
-      "camelcase": "warn",
-      "unicorn/catch-error-name": "off",
-      "react/jsx-sort-props": "off",
-      "import/no-anonymous-default-export": "off",
-      "unicorn/prevent-abbreviations": "off",
-      "comma-dangle": "off",
-      "import/extensions": "off",
-      "node/prefer-global/process": "off",
-      "unicorn/no-array-for-each": "off",
-      "unicorn/prefer-switch": "off"
+      "react/no-danger": "warn",
+      "react/require-default-props": "warn"
     }
   },
   "engines": {

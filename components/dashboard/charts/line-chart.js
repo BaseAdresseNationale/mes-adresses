@@ -1,8 +1,9 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Heading} from 'evergreen-ui'
 import {Line} from 'react-chartjs-2'
 
-function LineChart({title, data}) {
+const LineChart = ({title, data}) => {
   const options = {
     tooltips: {
       mode: 'index'

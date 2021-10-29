@@ -1,9 +1,9 @@
-import {useRef} from 'react'
+import React, {useRef} from 'react'
 import PropTypes from 'prop-types'
 import {Pie} from 'react-chartjs-2'
 import {Pane, Heading} from 'evergreen-ui'
 
-function PieChart({title, data, height}) {
+const PieChart = ({title, data, height}) => {
   const chartRef = useRef(null)
 
   const chart = {

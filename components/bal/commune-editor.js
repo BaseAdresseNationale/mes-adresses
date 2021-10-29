@@ -1,4 +1,4 @@
-import {useState, useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Checkbox, Button, IconButton, Alert, UndoIcon} from 'evergreen-ui'
 
@@ -41,11 +41,11 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
     onCancel()
   }, [onCancel])
 
-  useKeyEvent(({key}) => {
+  useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
       onCancel()
     }
-  }, [onCancel], 'keyup')
+  }, [onCancel])
 
   return (
     <Pane is='form' onSubmit={onFormSubmit}>

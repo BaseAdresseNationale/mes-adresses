@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback, useContext} from 'react'
+import React, {useState, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {uniq} from 'lodash'
@@ -13,7 +13,7 @@ import LocalStorageContext from '../../contexts/local-storage'
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
 import DeleteWarning from '../../components/delete-warning'
 
-function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) {
+const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) => {
   const {removeBAL} = useContext(LocalStorageContext)
 
   const [communeLabel, setCommuneLabel] = useState('cette commune')
@@ -120,7 +120,7 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
               key={bal._id}
               isAdmin
               userEmail={userEmail}
-              isDefaultOpen={basesLocales.length === 1}
+              initialIsOpen={basesLocales.length === 1}
               baseLocale={bal}
               onSelect={() => onBalSelect(bal)}
               onRemove={e => handleRemove(e, bal._id)}

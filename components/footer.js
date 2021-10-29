@@ -1,29 +1,27 @@
-import {useContext, useCallback} from 'react'
+import React, {useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Button, Paragraph, ManualIcon} from 'evergreen-ui'
 
 import HelpContext from '../contexts/help'
 import useHelp from '../hooks/help'
 
-function DocumentationLink({title, description, link, onClick}) {
-  return (
-    <Pane display='flex' flexDirection='column' alignItems='center'>
-      {link ? (
-        <Button iconBefore={ManualIcon} is='a' appearance='minimal' height={30} href={link} target='_blank' fontSize='0.8em'>
-          {title}
-        </Button>
-      ) : (
-        <Button iconBefore={ManualIcon} appearance='minimal' height={30} fontSize='0.8em' onClick={onClick}>
-          {title}
-        </Button>
-      )}
+const DocumentationLink = ({title, description, link, onClick}) => (
+  <Pane display='flex' flexDirection='column' alignItems='center'>
+    {link ? (
+      <Button iconBefore={ManualIcon} is='a' appearance='minimal' height={30} href={link} target='_blank' fontSize='0.8em'>
+        {title}
+      </Button>
+    ) : (
+      <Button iconBefore={ManualIcon} appearance='minimal' height={30} fontSize='0.8em' onClick={onClick}>
+        {title}
+      </Button>
+    )}
 
-      <Paragraph marginTop={4} textAlign='center' fontStyle='italic'>
-        <small>{description}</small>
-      </Paragraph>
-    </Pane>
-  )
-}
+    <Paragraph marginTop={4} textAlign='center' fontStyle='italic'>
+      <small>{description}</small>
+    </Paragraph>
+  </Pane>
+)
 
 DocumentationLink.defaultProps = {
   link: null,
@@ -37,7 +35,7 @@ DocumentationLink.propTypes = {
   onClick: PropTypes.func
 }
 
-function Footer() {
+const Footer = () => {
   const {showHelp, setShowHelp, setSelectedIndex} = useContext(HelpContext)
 
   useHelp(0)

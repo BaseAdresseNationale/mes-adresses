@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
@@ -6,7 +7,7 @@ import {getBALByStatus} from '../../lib/bases-locales'
 import Counter from './counter'
 import PieChart from './charts/pie-chart'
 
-function BALCounterChart({basesLocales}) {
+const BALCounterChart = ({basesLocales}) => {
   const BALByStatus = getBALByStatus(basesLocales)
 
   return (

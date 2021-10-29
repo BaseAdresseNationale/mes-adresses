@@ -6,7 +6,7 @@ import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
 
 import {computeCompletNumero} from '../../lib/utils/numero'
 
-function NumeroMarker({numero, style, isContextMenuDisplayed, setIsContextMenuDisplayed, onEnableEditing, removeAddress}) {
+function NumeroMarker({numero, style, showContextMenu, setShowContextMenu, onEnableEditing, removeAddress}) {
   const position = numero.positions.find(position => position.type === 'entrée') || numero.positions[0]
 
   if (!position) {
@@ -18,7 +18,7 @@ function NumeroMarker({numero, style, isContextMenuDisplayed, setIsContextMenuDi
 
   return (
     <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-      <Pane {...style} paddingX={4} onClick={e => onEnableEditing(e, numero._id)} onContextMenu={() => setIsContextMenuDisplayed(numero._id)}>
+      <Pane {...style} paddingX={4} onClick={e => onEnableEditing(e, numero._id)} onContextMenu={() => setShowContextMenu(numero._id)}>
         <Text color='white' marginLeft={8} marginRight={4}>
           {completNumero}
         </Text>
@@ -36,7 +36,7 @@ function NumeroMarker({numero, style, isContextMenuDisplayed, setIsContextMenuDi
         )}
       </Pane>
 
-      {isContextMenuDisplayed && (
+      {showContextMenu && (
         <Pane background='tint1' position='absolute' margin={10}>
           <Menu>
             <Menu.Group>
@@ -66,14 +66,14 @@ NumeroMarker.propTypes = {
     }))
   }).isRequired,
   style: PropTypes.object.isRequired,
-  isContextMenuDisplayed: PropTypes.bool,
-  setIsContextMenuDisplayed: PropTypes.func.isRequired,
+  showContextMenu: PropTypes.bool,
+  setShowContextMenu: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
   removeAddress: PropTypes.func.isRequired
 }
 
 NumeroMarker.defaultProps = {
-  isContextMenuDisplayed: false
+  showContextMenu: false
 }
 
 export default React.memo(NumeroMarker)

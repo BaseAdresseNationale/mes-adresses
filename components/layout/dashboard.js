@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Heading, Pane, Icon} from 'evergreen-ui'
@@ -20,7 +20,7 @@ const propTypes = {
   children: PropTypes.node.isRequired
 }
 
-function BackButton() {
+const BackButton = () => {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -41,7 +41,7 @@ function BackButton() {
   )
 }
 
-function Mobile({title, backButton, mapData, children}) {
+const Mobile = ({title, backButton, mapData, children}) => {
   return (
     <Pane display='flex' backgroundColor='#fff' flexDirection='column' width='100%'>
       <Header />
@@ -63,7 +63,7 @@ function Mobile({title, backButton, mapData, children}) {
 Mobile.defaultProps = defaultProps
 Mobile.propTypes = propTypes
 
-function Desktop({title, mapData, backButton, children}) {
+const Desktop = ({title, mapData, backButton, children}) => {
   return (
     <Pane height='100vh' display='flex' backgroundColor='#fff' flexDirection='column'>
       <Header />
@@ -94,7 +94,7 @@ function Desktop({title, mapData, backButton, children}) {
 Desktop.defaultProps = defaultProps
 Desktop.propTypes = propTypes
 
-function DashboardLayout(props) {
+const DashboardLayout = props => {
   const [isMobileDevice, setIsMobileDevice] = useState(false)
 
   const handleResize = () => {

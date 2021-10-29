@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const {createGunzip} = require('zlib')
-const path = require('path')
+const {join} = require('path')
 const got = require('got')
 const center = require('@turf/center').default
 const bbox = require('@turf/bbox').default
@@ -61,13 +61,12 @@ async function main() {
     })
   ]
 
-  // eslint-disable-next-line unicorn/no-array-reduce
   const index = dataset.reduce((acc, data) => {
     acc[data.code] = {center: data.center, bbox: data.bbox, nom: data.nom}
     return acc
   }, {})
 
-  await outputJson(path.join(__dirname, '..', 'geo.json'), index)
+  await outputJson(join(__dirname, '..', 'geo.json'), index)
 }
 
 main().catch(error => {

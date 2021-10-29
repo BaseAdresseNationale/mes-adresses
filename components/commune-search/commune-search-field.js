@@ -1,8 +1,7 @@
-/* eslint react/boolean-prop-naming: off */
-import {useMemo} from 'react'
+import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {FormField} from 'evergreen-ui'
-import {splitBoxProps} from 'ui-box'
+import {splitBoxProps} from 'ui-box' // eslint-disable-line import/no-extraneous-dependencies
 
 import CommuneSearch from './commune-search'
 

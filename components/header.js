@@ -1,11 +1,11 @@
-import {useContext} from 'react'
+import React, {useContext} from 'react'
 import NextLink from 'next/link'
 import Image from 'next/image'
 import {Pane, Button, Link, HelpIcon, BookIcon} from 'evergreen-ui'
 
 import HelpContext from '../contexts/help'
 
-function Header() {
+const Header = () => {
   const {showHelp, setShowHelp} = useContext(HelpContext)
 
   return (

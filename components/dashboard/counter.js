@@ -1,7 +1,8 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading} from 'evergreen-ui'
 
-function Counter({label, value, color}) {
+const Counter = ({label, value, color}) => {
   return (
     <Pane marginY={16} marginX='auto' textAlign='center'>
       <Heading size={700} color={color}>

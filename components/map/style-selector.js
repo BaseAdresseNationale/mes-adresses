@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} from 'evergreen-ui'
 
@@ -7,7 +7,7 @@ const STYLES = [
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
-function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, handleCadastre}) {
+function StyleSelector({style, isFormOpen, handleStyle, showCadastre, handleCadastre}) {
   const [showPopover, setShowPopover] = useState(false)
 
   return (
@@ -38,9 +38,9 @@ function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, han
         </Button>
 
       </SelectMenu>
-      <Tooltip content={isCadastreDisplayed ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
+      <Tooltip content={showCadastre ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
         <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>
-          <ControlIcon color={isCadastreDisplayed ? 'selected' : 'muted'} />
+          <ControlIcon color={showCadastre ? 'selected' : 'muted'} />
         </Button>
       </Tooltip>
     </Pane>
@@ -51,7 +51,7 @@ StyleSelector.propTypes = {
   style: PropTypes.string.isRequired,
   isFormOpen: PropTypes.bool.isRequired,
   handleStyle: PropTypes.func.isRequired,
-  isCadastreDisplayed: PropTypes.bool.isRequired,
+  showCadastre: PropTypes.bool.isRequired,
   handleCadastre: PropTypes.func.isRequired
 }
 

@@ -89,7 +89,7 @@ function useSources(voie, toponyme, hovered, editingId) {
     }
 
     return sources
-  }, [geojson, voie, toponyme, hovered, editingId])
+  }, [geojson, voie, hovered, editingId])
 }
 
 export default useSources

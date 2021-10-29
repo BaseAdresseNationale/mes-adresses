@@ -1,3 +1,4 @@
+import React from 'react'
 import {Pane, Paragraph, OrderedList, Strong, ListItem, Button, Menu, AddIcon, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
@@ -12,7 +13,7 @@ const before = (
   </Paragraph>
 )
 
-function Communes() {
+const Communes = () => {
   return (
     <Pane>
       <Tuto title='Ajouter une commune'>

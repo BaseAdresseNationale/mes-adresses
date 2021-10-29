@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import {NavigationControl} from 'react-map-gl'
 import {Pane} from 'evergreen-ui'

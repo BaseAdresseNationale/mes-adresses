@@ -1,4 +1,4 @@
-import {useState, useCallback, useContext, useEffect} from 'react'
+import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectField, TextInput, Alert} from 'evergreen-ui'
 import {sortBy} from 'lodash'
@@ -95,12 +95,12 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
     onCancel()
   }, [disableMarkers, onCancel])
 
-  useKeyEvent(({key}) => {
+  useKeyEvent('keyup', ({key}) => {
     if (key === 'Escape') {
       disableMarkers()
       onCancel()
     }
-  }, [onCancel], 'keyup')
+  }, [onCancel])
 
   useEffect(() => {
     const {numero, suffixe, parcelles, comment} = initialValue || {}
@@ -270,7 +270,7 @@ NumeroEditor.propTypes = {
     comment: PropTypes.string,
     positions: PropTypes.array,
     toponyme: PropTypes.string,
-    certifie: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
+    certifie: PropTypes.bool
   }),
   commune: PropTypes.object.isRequired,
   hasPreview: PropTypes.bool,

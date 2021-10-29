@@ -1,3 +1,4 @@
+import React from 'react'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
@@ -6,7 +7,7 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import BALRecovery from '../components/bal-recovery/bal-recovery'
 
-const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), { // eslint-disable-line node/no-unsupported-features/es-syntax
+const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), {
   ssr: false,
   loading: () => (
     <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>

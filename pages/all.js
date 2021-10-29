@@ -1,4 +1,4 @@
-import {useCallback} from 'react'
+import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
@@ -7,7 +7,7 @@ import {Pane, Heading, Paragraph, Spinner, Button} from 'evergreen-ui'
 import {listBasesLocales} from '../lib/bal-api'
 import {sortBalByUpdate} from '../lib/sort-bal'
 
-const PublicBasesLocalesList = dynamic(() => import('../components/bases-locales-list/public-bases-locales-list'), { // eslint-disable-line node/no-unsupported-features/es-syntax
+const PublicBasesLocalesList = dynamic(() => import('../components/bases-locales-list/public-bases-locales-list'), {
   ssr: false,
   loading: () => (
     <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
