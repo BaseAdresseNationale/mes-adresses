@@ -26,6 +26,7 @@ function DemoForm({defaultCommune}) {
   const onSelect = useCallback(commune => {
     setCommune(commune.code)
   }, [])
+
   const onSubmit = useCallback(async e => {
     e.preventDefault()
 
@@ -74,11 +75,11 @@ function DemoForm({defaultCommune}) {
         >
           Les adresses et voies créées depuis cette démonstration ne pourront pas être publiées dans la Base Adresse Nationale
         </Alert>
-      </Form>
 
-      <Button height={40} marginTop={32} marginLeft={12} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
-        {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
-      </Button>
+        <Button height={40} marginTop={32} marginLeft={12} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
+          {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
+        </Button>
+      </Form>
     </Pane>
 
   )
