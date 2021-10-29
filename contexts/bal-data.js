@@ -111,10 +111,10 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     }
   }, [editingId, numeros, voies, toponymes])
 
-  const certifyAllNumeros = async () => {
+  const certifyAllNumeros = useCallback(async () => {
     await certifyBAL(balId, codeCommune, token, {certifie: true})
     await reloadNumeros()
-  }
+  }, [balId, codeCommune, token, reloadNumeros])
 
   useEffect(() => {
     reloadGeojson()
@@ -138,34 +138,54 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     reloadNumerosToponyme()
   }, [idToponyme, reloadNumerosToponyme])
 
+  const value = useMemo(() => ({
+    isEditing,
+    setIsEditing,
+    editingId,
+    editingItem,
+    parcelles,
+    geojson,
+    reloadGeojson,
+    baseLocale,
+    codeCommune,
+    voie,
+    setVoie,
+    numeros,
+    voies,
+    toponymes,
+    setEditingId,
+    reloadNumeros,
+    reloadVoies,
+    reloadToponymes,
+    reloadBaseLocale,
+    reloadNumerosToponyme,
+    toponyme,
+    certifyAllNumeros
+  }), [
+    isEditing,
+    editingId,
+    setEditingId,
+    editingItem,
+    parcelles,
+    geojson,
+    reloadGeojson,
+    baseLocale,
+    reloadBaseLocale,
+    codeCommune,
+    voie,
+    numeros,
+    voies,
+    toponymes,
+    reloadNumeros,
+    reloadVoies,
+    reloadToponymes,
+    reloadNumerosToponyme,
+    toponyme,
+    certifyAllNumeros
+  ])
+
   return (
-    <BalDataContext.Provider
-      value={{
-        isEditing,
-        setIsEditing,
-        editingId,
-        editingItem,
-        parcelles,
-        geojson,
-        reloadGeojson,
-        baseLocale,
-        codeCommune,
-        voie,
-        setVoie,
-        numeros,
-        voies,
-        toponymes,
-        setEditingId,
-        reloadNumeros,
-        reloadVoies,
-        reloadToponymes,
-        reloadBaseLocale,
-        reloadNumerosToponyme,
-        toponyme,
-        certifyAllNumeros
-      }}
-      {...props}
-    />
+    <BalDataContext.Provider value={value} {...props} />
   )
 })
 

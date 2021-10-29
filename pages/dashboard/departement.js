@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import {Heading, Pane} from 'evergreen-ui'
 import {flatten, groupBy, uniq} from 'lodash'
@@ -12,12 +11,12 @@ import PieChart from '../../components/dashboard/charts/pie-chart'
 import CommuneBALList from '../../components/dashboard/commune-bal-list'
 import DashboardLayout from '../../components/layout/dashboard'
 
-const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) => {
+function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) {
   const {nom, code} = departement
 
-  const codesCommunes = filteredCommunesInBAL.map(({code}) => code)
+  const codesCommunes = new Set(filteredCommunesInBAL.map(({code}) => code))
   const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutDemo.map(({communes}) => communes)))
-  const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.includes(c)).length
+  const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.has(c)).length
 
   const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutDemo)
 
@@ -29,7 +28,7 @@ const Departement = ({departement, filteredCommunesInBAL, basesLocalesDepartemen
 
   return (
     <DashboardLayout backButton title={`Tableau de bord de l'éditeur Mes Adresses - ${nom} (${code})`} mapData={mapData}>
-      {basesLocalesDepartementWithoutDemo.length >= 1 ? (
+      {basesLocalesDepartementWithoutDemo.length > 0 ? (
         <Pane display='grid' gridGap='2em' padding={8}>
           {countCommunesActuelles > 0 && (
             <Counter

@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useEffect} from 'react'
+import {useState, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
@@ -204,7 +204,7 @@ App.getInitialProps = async ({Component, ctx}) => {
         toponyme
       })
     }
-  } catch (error) {
+  } catch {
     return {
       pageProps,
       error: {

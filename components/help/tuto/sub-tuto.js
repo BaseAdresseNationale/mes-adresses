@@ -1,8 +1,7 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import {Heading, Pane, IconButton} from 'evergreen-ui'
 
-const SubTuto = ({title, icon, children}) => {
+function SubTuto({title, icon, children}) {
   return (
     <Pane marginTop={16}>
       <Heading display='flex' alignItems='center'>
