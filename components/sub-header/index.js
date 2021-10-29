@@ -1,19 +1,18 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
-import NextLink from 'next/link'
-import {Pane, Popover, Menu, Position, Button, CogIcon, DownloadIcon} from 'evergreen-ui'
+import {Pane} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
-import SettingsContext from '../../contexts/settings'
 
 import useError from '../../hooks/error'
 
 import Breadcrumbs from '../breadcrumbs'
 import HabilitationTag from '../habilitation-tag'
 
+import SettingsMenu from './settings-menu'
 import Publication from './publication'
 import DemoWarning from './demo-warning'
 
@@ -22,7 +21,6 @@ const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://mes-adresses
 
 const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
   const balDataContext = useContext(BalDataContext)
-  const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token} = useContext(TokenContext)
 
   const [setError] = useError(null)
@@ -64,8 +62,11 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
         elevation={0}
         zIndex={3}
         display='flex'
+        alignItems='center'
         padding={8}
       >
+        {isEntitled && <HabilitationTag communeName={commune.nom} />}
+
         <Breadcrumbs
           baseLocale={baseLocale}
           commune={commune}
@@ -74,41 +75,8 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
           marginLeft={8}
         />
 
-        <Pane marginLeft='auto' display='flex' gap={16}>
-          <Popover
-            position={Position.BOTTOM_RIGHT}
-            content={
-              <Menu>
-                <Menu.Group>
-                  <NextLink href={csvUrl}>
-                    <Menu.Item icon={DownloadIcon} is='a' href={csvUrl} color='inherit' textDecoration='none'>
-                      Télécharger au format CSV
-                    </Menu.Item>
-                  </NextLink>
-                </Menu.Group>
-                {token && (
-                  <>
-                    <Menu.Divider />
-                    <Menu.Group>
-                      <Menu.Item icon={CogIcon} onSelect={() => setShowSettings(!showSettings)}>
-                        Paramètres
-                      </Menu.Item>
-                    </Menu.Group>
-                  </>
-                )}
-              </Menu>
-            }
-          >
-            <Button
-              height={24}
-              iconAfter={CogIcon}
-              appearance='minimal'
-            >
-              Paramètres
-            </Button>
-          </Popover>
-
-          {isEntitled && <HabilitationTag communeName={commune.nom} />}
+        <Pane marginLeft='auto' display='flex' alignItems='center'>
+          <SettingsMenu isAdmin={Boolean(token)} csvUrl={csvUrl} />
 
           {baseLocale.status !== 'demo' && commune && (
             <Publication
@@ -122,6 +90,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
             />)}
         </Pane>
       </Pane>
+
       {baseLocale.status === 'demo' && (
         <DemoWarning baseLocale={baseLocale} token={token} />
       )}
