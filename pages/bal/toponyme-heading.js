@@ -44,7 +44,7 @@ const ToponymeHeading = ({defaultToponyme}) => {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={16}
+      padding={0}
     >
       {editingId === toponyme._id ? (
         <ToponymeEditor
@@ -70,7 +70,7 @@ const ToponymeHeading = ({defaultToponyme}) => {
         </Heading>
       )}
       {numeros && (
-        <Text>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text padding={editingId === toponyme._id && 16}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
       )}
     </Pane>
   )

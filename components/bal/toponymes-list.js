@@ -54,7 +54,7 @@ const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
         {sortBy(filtered, t => normalizeSort(t.nom))
           .map(toponyme => toponyme._id === editingId ? (
             <Table.Row key={toponyme._id} height='auto'>
-              <Table.Cell display='block' paddingY={12} background='tint1'>
+              <Table.Cell display='block' padding={0} background='tint1'>
                 <ToponymeEditor
                   initialValue={toponyme}
                   onSubmit={onEdit}
