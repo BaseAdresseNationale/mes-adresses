@@ -12,7 +12,7 @@ import BalDataContext from '../../../contexts/bal-data'
 
 import useFuse from '../../../hooks/fuse'
 
-function NumerosList({token, voieId, defaultNumeros, isEditiondisabled, handleEditing}) {
+function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
@@ -26,8 +26,8 @@ function NumerosList({token, voieId, defaultNumeros, isEditiondisabled, handleEd
   })
 
   const isGroupedActionsShown = useMemo(() => (
-    token && !isEditiondisabled && numeros && selectedNumerosIds.length > 1
-  ), [token, isEditiondisabled, numeros, selectedNumerosIds])
+    token && !isEditionDisabled && numeros && selectedNumerosIds.length > 1
+  ), [token, isEditionDisabled, numeros, selectedNumerosIds])
 
   const noFilter = numeros && filtered.length === numeros.length
 
@@ -118,7 +118,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditiondisabled, handleEd
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isEditiondisabled}
+              disabled={isEditionDisabled}
               onClick={handleEditing}
             >Ajouter un numéro</Button>
           </Pane>
@@ -157,7 +157,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditiondisabled, handleEd
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            {numeros && token && filtered.length > 1 && !isEditiondisabled && (
+            {numeros && token && filtered.length > 1 && !isEditionDisabled && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
@@ -188,7 +188,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditiondisabled, handleEd
             isCertified={numero.certifie}
             comment={numero.comment}
             warning={numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
-            isSelectable={!isEditiondisabled}
+            isSelectable={!isEditionDisabled}
             label={numero.numeroComplet}
             secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
             toponymeId={numero.toponyme}
@@ -217,7 +217,7 @@ NumerosList.propTypes = {
   token: PropTypes.string,
   voieId: PropTypes.string.isRequired,
   defaultNumeros: PropTypes.array.isRequired,
-  isEditiondisabled: PropTypes.bool.isRequired,
+  isEditionDisabled: PropTypes.bool.isRequired,
   handleEditing: PropTypes.func.isRequired
 }
 

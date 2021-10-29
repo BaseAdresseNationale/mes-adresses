@@ -120,7 +120,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
           token={token}
           voieId={voie._id}
           defaultNumeros={defaultNumeros}
-          isEditiondisabled={isEditing}
+          isEditionDisabled={isEditing}
           handleEditing={handleEditing}
         />
       )}
