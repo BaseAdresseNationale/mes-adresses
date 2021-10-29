@@ -1,4 +1,4 @@
-import {useState, useEffect, useMemo, useContext} from 'react'
+import React, {useState, useEffect, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Heading, Badge, Card, Pane, Button, Tooltip, Text, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
@@ -21,12 +21,12 @@ const statusBadges = {
   demo: {color: colors.neutral, background: colors.neutral, label: 'Démonstration'}
 }
 
-function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove}) {
+const BaseLocaleCard = ({baseLocale, isAdmin, userEmail, initialIsOpen, onSelect, onRemove}) => {
   const {getBalToken} = useContext(LocalStorageContext)
 
   const {nom, communes, status, _updated, _created, emails} = baseLocale
   const [commune, setCommune] = useState()
-  const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
+  const [isOpen, setIsOpen] = useState(isAdmin ? initialIsOpen : false)
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
 
   const isDeletable = status === 'draft' || status === 'demo'
@@ -88,11 +88,11 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
 
                 {communes.length === 0 ? (
                   <Text fontSize={12} fontStyle='italic'>Vide</Text>
-                ) : (communes.length < 2 ? (
+                ) : communes.length < 2 ? (
                   commune && <Text fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
                 ) : (
                   <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
-                ))}
+                )}
               </Pane>
             </Pane>
 
@@ -193,7 +193,7 @@ BaseLocaleCard.defaultProps = {
   isAdmin: false,
   userEmail: null,
   onRemove: null,
-  isDefaultOpen: false
+  initialIsOpen: false
 }
 
 BaseLocaleCard.propTypes = {
@@ -209,7 +209,7 @@ BaseLocaleCard.propTypes = {
       'draft', 'ready-to-publish', 'published', 'demo'
     ])
   }).isRequired,
-  isDefaultOpen: PropTypes.bool,
+  initialIsOpen: PropTypes.bool,
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
   onSelect: PropTypes.func.isRequired,

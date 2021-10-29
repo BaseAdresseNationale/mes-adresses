@@ -1,11 +1,11 @@
-import {useCallback, useState} from 'react'
+import React, {useCallback, useState} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Heading, Icon, Pane} from 'evergreen-ui'
 
 import BaseLocaleCard from '../bases-locales-list/base-locale-card'
 
-function CommuneBALList({nomCommune, basesLocales}) {
+const CommuneBALList = ({nomCommune, basesLocales}) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleIsOpen = () => {

@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo, useContext} from 'react'
+import React, {useState, useCallback, useMemo, useContext} from 'react'
 import {Editor, EditingMode, DrawLineStringMode} from 'react-map-gl-draw'
 import {Portal, Pane, Alert} from 'evergreen-ui'
 
@@ -9,7 +9,7 @@ const MODES = {
   drawLineString: DrawLineStringMode
 }
 
-function Draw() {
+const Draw = () => {
   const [editor, setEditor] = useState(null)
   const {drawEnabled, modeId, hint, data, setHint, setData} = useContext(DrawContext)
 

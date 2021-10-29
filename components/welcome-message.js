@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {Pane, Dialog, Alert, Link, Paragraph, Heading, Strong, HelpIcon} from 'evergreen-ui'
 
 import TokenContext from '../contexts/token'

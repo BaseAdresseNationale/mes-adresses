@@ -1,3 +1,4 @@
+import React from 'react'
 import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tab, CogIcon, PlusIcon} from 'evergreen-ui'
 
 import BALRecovery from '../../bal-recovery/bal-recovery'
@@ -7,7 +8,7 @@ import Unauthorized from '../tuto/unauthorized'
 
 import Problems from './problems'
 
-function BaseLocale() {
+const BaseLocale = () => {
   return (
     <Pane>
       <Tuto title='Créer une nouvelle Base Adresse Locale'>

@@ -1,7 +1,8 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Heading, Card} from 'evergreen-ui'
 
-function Tuto({title, children}) {
+const Tuto = ({title, children}) => {
   return (
     <Card
       backgroundColor='white'

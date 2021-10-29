@@ -1,16 +1,18 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import {useDropzone} from 'react-dropzone'
 import {Pane, Spinner, Paragraph} from 'evergreen-ui'
 
-function Uploader({file, maxSize, placeholder, onDrop, onDropRejected, height, isLoading, loadingLabel, ...props}) {
+function Uploader({file, maxSize, placeholder, onDrop, onDropRejected, height, disabled, loading, loadingLabel, ...props}) {
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
     maxSize,
     onDrop,
     onDropRejected,
+    disabled,
     multiple: false
   })
 
-  if (isLoading) {
+  if (loading) {
     return (
       <Pane
         border
@@ -58,7 +60,8 @@ Uploader.propTypes = {
   onDrop: PropTypes.func.isRequired,
   onDropRejected: PropTypes.func.isRequired,
   height: PropTypes.number,
-  isLoading: PropTypes.bool,
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool,
   loadingLabel: PropTypes.string
 }
 
@@ -66,7 +69,8 @@ Uploader.defaultProps = {
   file: null,
   maxSize: null,
   height: 100,
-  isLoading: false,
+  loading: false,
+  disabled: false,
   loadingLabel: 'Chargement…'
 }
 

@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect, useCallback} from 'react'
+import React, {useState, useRef, useEffect, useCallback} from 'react'
 import Router from 'next/router'
 import PropTypes from 'prop-types'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
@@ -16,7 +16,7 @@ const defaultGeoData = {
   bbox: [-5.317, 41.277, 9.689, 51.234]
 }
 
-function Map({departement, basesLocales, contours}) {
+const Map = ({departement, basesLocales, contours}) => {
   const [viewport, setViewport] = useState(defaultViewport)
   const [hovered, setHovered] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)

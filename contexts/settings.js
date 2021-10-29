@@ -1,17 +1,18 @@
-import React, {useState, useMemo} from 'react'
+import React, {useState} from 'react'
 
 const SettingsContext = React.createContext()
 
 export function SettingsContextProvider(props) {
   const [showSettings, setShowSettings] = useState(false)
 
-  const value = useMemo(() => ({
-    showSettings,
-    setShowSettings
-  }), [showSettings])
-
   return (
-    <SettingsContext.Provider value={value} {...props} />
+    <SettingsContext.Provider
+      value={{
+        showSettings,
+        setShowSettings
+      }}
+      {...props}
+    />
   )
 }
 

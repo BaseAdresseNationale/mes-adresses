@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 
 import BalDataContext from './bal-data'
 
@@ -51,25 +51,21 @@ export function DrawContextProvider(props) {
     }
   }, [drawEnabled])
 
-  const value = useMemo(() => ({
-    drawEnabled,
-    enableDraw: () => setDrawEnabled(true),
-    disableDraw: () => setDrawEnabled(false),
-    modeId,
-    setModeId,
-    hint,
-    setHint,
-    data,
-    setData
-  }), [
-    drawEnabled,
-    modeId,
-    hint,
-    data
-  ])
-
   return (
-    <DrawContext.Provider value={value} {...props} />
+    <DrawContext.Provider
+      value={{
+        drawEnabled,
+        enableDraw: () => setDrawEnabled(true),
+        disableDraw: () => setDrawEnabled(false),
+        modeId,
+        setModeId,
+        hint,
+        setHint,
+        data,
+        setData
+      }}
+      {...props}
+    />
   )
 }
 

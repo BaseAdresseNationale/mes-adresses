@@ -13,7 +13,7 @@ import TokenContext from '../../contexts/token'
 import MarkersContext from '../../contexts/markers'
 import BalDataContext from '../../contexts/bal-data'
 
-function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplayed, setIsContextMenuDisplayed}) {
+function ToponymeMarker({initialToponyme, showLabel, showContextMenu, setShowContextMenu}) {
   const [setError] = useError()
   const router = useRouter()
 
@@ -48,13 +48,13 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
     marginLeft: -10,
     color: 'transparent',
     whiteSpace: 'nowrap',
-    background: isLabelDisplayed ? 'rgba(0, 0, 0, 0.5)' : null,
+    background: showLabel ? 'rgba(0, 0, 0, 0.5)' : null,
     cursor: 'pointer',
 
     '& > span': {
-      display: isLabelDisplayed ? 'inline-block' : 'none'
+      display: showLabel ? 'inline-block' : 'none'
     }
-  }), [isLabelDisplayed])
+  }), [showLabel])
 
   const deleteToponyme = async () => {
     const {_id} = initialToponyme
@@ -73,7 +73,7 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
       setError(error.message)
     }
 
-    setIsContextMenuDisplayed(null)
+    setShowContextMenu(null)
   }
 
   if (!position) {
@@ -87,25 +87,27 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
   const {coordinates} = position.point
 
   return (
-    <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
-      <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setIsContextMenuDisplayed(initialToponyme._id)}>
-        <Text color='white' paddingLeft={8} paddingRight={10}>
-          {initialToponyme.nom}
-        </Text>
-      </Pane>
-
-      {isContextMenuDisplayed && (
-        <Pane background='tint1' position='absolute' margin={10}>
-          <Menu>
-            <Menu.Group>
-              <Menu.Item icon={TrashIcon} intent='danger' onSelect={deleteToponyme}>
-                Supprimer…
-              </Menu.Item>
-            </Menu.Group>
-          </Menu>
+    <>
+      <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false}>
+        <Pane {...markerStyle} onClick={onEnableEditing} onContextMenu={() => setShowContextMenu(initialToponyme._id)}>
+          <Text color='white' paddingLeft={8} paddingRight={10}>
+            {initialToponyme.nom}
+          </Text>
         </Pane>
-      )}
-    </Marker>
+
+        {showContextMenu && (
+          <Pane background='tint1' position='absolute' margin={10}>
+            <Menu>
+              <Menu.Group>
+                <Menu.Item icon={TrashIcon} intent='danger' onSelect={deleteToponyme}>
+                  Supprimer…
+                </Menu.Item>
+              </Menu.Group>
+            </Menu>
+          </Pane>
+        )}
+      </Marker>
+    </>
   )
 }
 
@@ -119,14 +121,14 @@ ToponymeMarker.propTypes = {
       })
     }))
   }).isRequired,
-  isLabelDisplayed: PropTypes.bool,
-  isContextMenuDisplayed: PropTypes.bool,
-  setIsContextMenuDisplayed: PropTypes.func.isRequired
+  showLabel: PropTypes.bool,
+  showContextMenu: PropTypes.bool,
+  setShowContextMenu: PropTypes.func.isRequired
 }
 
 ToponymeMarker.defaultProps = {
-  isLabelDisplayed: false,
-  isContextMenuDisplayed: false
+  showLabel: false,
+  showContextMenu: false
 }
 
 export default React.memo(ToponymeMarker)

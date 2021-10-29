@@ -1,10 +1,11 @@
-function IEWarning() {
-  return (
-    <div className='ie-warning'>
-      <p>Votre navigateur <b>Internet Explorer</b> n‘est plus supporté par notre service.</p>
-      <p><b>Nous vous recommandons d‘utiliser un autre navigateur</b></p>
+import React from 'react'
 
-      <style jsx>{`
+const IEWarning = () => (
+  <div className='ie-warning'>
+    <p>Votre navigateur <b>Internet Explorer</b> n‘est plus supporté par notre service.</p>
+    <p><b>Nous vous recommandons d‘utiliser un autre navigateur</b></p>
+
+    <style jsx>{`
         .ie-warning {
           display: none;
           padding: 10px;
@@ -20,8 +21,7 @@ function IEWarning() {
           }
         }
       `}</style>
-    </div>
-  )
-}
+  </div>
+)
 
 export default IEWarning

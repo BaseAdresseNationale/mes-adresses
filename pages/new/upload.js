@@ -1,4 +1,4 @@
-import {useCallback} from 'react'
+import React, {useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Heading, Paragraph, Button} from 'evergreen-ui'
 

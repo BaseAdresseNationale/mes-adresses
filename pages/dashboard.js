@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 import {uniq, flattenDeep} from 'lodash'
@@ -11,7 +12,7 @@ import BALCounterChart from '../components/dashboard/bal-counter-chart'
 import Counter from '../components/dashboard/counter'
 import Redirection from './dashboard/redirection'
 
-function Index({basesLocales, contoursCommunes}) {
+const Index = ({basesLocales, contoursCommunes}) => {
   const communeCount = uniq(flattenDeep(
     basesLocales
       .filter(({communes}) => communes.length > 0)

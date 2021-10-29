@@ -1,4 +1,4 @@
-import {useContext, useState, useCallback, useEffect} from 'react'
+import React, {useContext, useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon} from 'evergreen-ui'
 import {sortBy, uniq} from 'lodash'
@@ -11,7 +11,7 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 import Comment from './comment'
 import CertificationButton from './certification-button'
 
-function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) {
+const GroupedActions = ({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) => {
   const {voies, toponymes} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)

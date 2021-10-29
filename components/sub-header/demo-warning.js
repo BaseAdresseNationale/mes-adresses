@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
 
@@ -9,7 +9,7 @@ import useFocus from '../../hooks/focus'
 import {getCommune} from '../../lib/geo-api'
 import {transformToDraft} from '../../lib/bal-api'
 
-function DemoWarning({baseLocale, token}) {
+const DemoWarning = ({baseLocale, token}) => {
   const {_id, communes} = baseLocale
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)

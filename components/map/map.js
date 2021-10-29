@@ -1,4 +1,4 @@
-import {useState, useMemo, useEffect, useCallback, useContext} from 'react'
+import React, {useState, useMemo, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
@@ -70,12 +70,12 @@ function generateNewStyle(style, sources, layers) {
 
 function Map({commune, voie, toponyme}) {
   const router = useRouter()
-  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
+  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, showCadastre, setShowCadastre} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
-  const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
+  const [showLabels, setShowLabels] = useState(true)
   const [openForm, setOpenForm] = useState(false)
-  const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null)
+  const [showContextMenu, setShowContextMenu] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
@@ -95,7 +95,7 @@ function Map({commune, voie, toponyme}) {
   const [hovered, setHovered, handleHover] = useHovered()
   const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
-  const layers = useLayers(voie, sources, isCadastreDisplayed, style)
+  const layers = useLayers(voie, sources, showCadastre, style)
 
   const mapRef = useCallback(ref => {
     if (ref) {
@@ -106,24 +106,24 @@ function Map({commune, voie, toponyme}) {
   const interactiveLayerIds = useMemo(() => {
     const layers = []
 
-    if (isParcelleSelectionEnabled && isCadastreDisplayed) {
+    if (isParcelleSelectionEnabled && showCadastre) {
       return ['parcelles-fill']
     }
 
-    if (sources.some(({name}) => name === 'voies')) {
+    if (sources.find(({name}) => name === 'voies')) {
       layers.push('voie-trace-line')
     }
 
-    if (sources.some(({name}) => name === 'positions')) {
+    if (sources.find(({name}) => name === 'positions')) {
       layers.push('numeros-point', 'numeros-label')
     }
 
-    if (!voie && sources.some(({name}) => name === 'voies')) {
+    if (!voie && sources.find(({name}) => name === 'voies')) {
       layers.push('voie-label')
     }
 
     return layers
-  }, [isParcelleSelectionEnabled, sources, voie, isCadastreDisplayed])
+  }, [isParcelleSelectionEnabled, sources, voie, showCadastre])
 
   const onClick = useCallback(event => {
     const feature = event?.features[0]
@@ -144,7 +144,7 @@ function Map({commune, voie, toponyme}) {
       }
     }
 
-    setIsContextMenuDisplayed(null)
+    setShowContextMenu(null)
   }, [router, balId, codeCommune, setEditingId, isEditing, voie, handleParcelle])
 
   const handleCursor = useCallback(({isHovering}) => {
@@ -214,8 +214,8 @@ function Map({commune, voie, toponyme}) {
         isFormOpen={openForm}
         style={style}
         handleStyle={setStyle}
-        isCadastreDisplayed={isCadastreDisplayed}
-        handleCadastre={setIsCadastreDisplayed}
+        showCadastre={showCadastre}
+        handleCadastre={setShowCadastre}
       />
 
       <Pane
@@ -228,18 +228,18 @@ function Map({commune, voie, toponyme}) {
 
         {(voie || (toponymes && toponymes.length > 0)) && (
           <Control
-            icon={isLabelsDisplayed ? EyeOffIcon : EyeOpenIcon}
-            isEnabled={isLabelsDisplayed}
+            icon={showLabels ? EyeOffIcon : EyeOpenIcon}
+            enabled={showLabels}
             enabledHint={numeros ? 'Masquer les détails' : 'Masquer les toponymes'}
             disabledHint={numeros ? 'Afficher les détails' : 'Afficher les toponymes'}
-            onChange={setIsLabelsDisplayed}
+            onChange={setShowLabels}
           />
         )}
 
         {token && commune && (
           <Control
             icon={MapMarkerIcon}
-            isEnabled={openForm}
+            enabled={openForm}
             isDisabled={isEditing}
             enabledHint='Annuler'
             disabledHint='Créer une adresse'
@@ -272,9 +272,9 @@ function Map({commune, voie, toponyme}) {
             <NumerosMarkers
               numeros={numeros.filter(({_id}) => _id !== editingId)}
               voie={voie}
-              isLabelDisplayed={isLabelsDisplayed}
-              isContextMenuDisplayed={isContextMenuDisplayed}
-              setIsContextMenuDisplayed={setIsContextMenuDisplayed}
+              showLabel={showLabels}
+              showContextMenu={showContextMenu}
+              setShowContextMenu={setShowContextMenu}
             />
           )}
 
@@ -282,9 +282,9 @@ function Map({commune, voie, toponyme}) {
             <ToponymeMarker
               key={toponyme._id}
               initialToponyme={toponyme}
-              isLabelDisplayed={isLabelsDisplayed}
-              isContextMenuDisplayed={toponyme._id === isContextMenuDisplayed}
-              setIsContextMenuDisplayed={setIsContextMenuDisplayed}
+              showLabel={showLabels}
+              showContextMenu={toponyme._id === showContextMenu}
+              setShowContextMenu={setShowContextMenu}
             />
           ))}
 

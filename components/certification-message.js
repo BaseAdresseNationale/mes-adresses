@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Menu, CogIcon, Dialog, Paragraph, Strong} from 'evergreen-ui'
 
@@ -8,7 +8,7 @@ import TokenContext from '../contexts/token'
 
 import {getCommune} from '../lib/bal-api'
 
-function CertificationMessage({balId, codeCommune}) {
+const CertificationMessage = ({balId, codeCommune}) => {
   const [isShown, setIsShown] = useState(false)
 
   const {getInformedAboutCertification, addInformedAboutCertification} = useContext(LocalStorageContext)

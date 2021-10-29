@@ -1,4 +1,4 @@
-import {useContext} from 'react'
+import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 
@@ -12,7 +12,7 @@ import {normalizeSort} from '../../lib/normalize'
 import TableRow from '../table-row'
 import VoieEditor from './voie-editor'
 
-function VoiesList({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) {
+const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) => {
   const {
     isEditing,
     editingId,

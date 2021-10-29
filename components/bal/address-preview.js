@@ -1,8 +1,9 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text} from 'evergreen-ui'
 import {computeCompletNumero} from '../../lib/utils/numero'
 
-const getAddressPreview = ({numero, suffixe, toponyme, voie, commune}) => {
+const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
   const completNumero = computeCompletNumero(numero, suffixe)
   if (toponyme) {
     return `${completNumero} ${voie}, ${toponyme} - ${commune.nom} (${commune.code})`
@@ -34,7 +35,7 @@ function AddressPreview({numero, suffixe, selectedNomToponyme, voie, commune}) {
       marginTop={-12}
     >
       <Text fontSize={13}>
-        {getAddressPreview({numero, suffixe, selectedNomToponyme, voie, commune})}
+        {getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)}
       </Text>
     </Pane>
   )

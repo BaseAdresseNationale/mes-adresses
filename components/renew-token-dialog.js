@@ -1,10 +1,10 @@
-import {useState, useCallback} from 'react'
+import React, {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Dialog, Paragraph, Alert, toaster} from 'evergreen-ui'
 
 import {renewToken} from '../lib/bal-api'
 
-function RenewTokenDialog({token, baseLocaleId, isShown, setIsShown, setError}) {
+const RenewTokenDialog = ({token, baseLocaleId, isShown, setIsShown, setError}) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleConfirm = useCallback(async () => {

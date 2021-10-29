@@ -6,7 +6,7 @@ import {getVoiesLabelLayer, getVoieTraceLayer} from '../layers/voies'
 import {getNumerosPointLayer, getNumerosLabelLayer} from '../layers/numeros'
 import {cadastreLayers} from '../layers/cadastre'
 
-function useLayers(voie, sources, isCadastreDisplayed, style) {
+function useLayers(voie, sources, showCadastre, style) {
   const {parcelles} = useContext(BalDataContext)
 
   return useMemo(() => {
@@ -14,7 +14,7 @@ function useLayers(voie, sources, isCadastreDisplayed, style) {
     const hasVoies = sources.find(({name}) => name === 'voies')
     let layers = []
 
-    if (isCadastreDisplayed) {
+    if (showCadastre) {
       layers = [...cadastreLayers(parcelles)]
     }
 
@@ -36,7 +36,7 @@ function useLayers(voie, sources, isCadastreDisplayed, style) {
     }
 
     return layers
-  }, [voie, sources, isCadastreDisplayed, parcelles, style])
+  }, [voie, sources, showCadastre, parcelles, style])
 }
 
 export default useLayers
