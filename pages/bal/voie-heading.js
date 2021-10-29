@@ -52,7 +52,7 @@ const VoieHeading = ({defaultVoie}) => {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={16}
+      padding={editingId === editedVoie._id ? 0 : 16}
     >
       {editingId === editedVoie._id ? (
         <VoieEditor
@@ -78,7 +78,7 @@ const VoieHeading = ({defaultVoie}) => {
         </Heading>
       )}
       {numeros && (
-        <Text>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text padding={editingId === editedVoie._id && 16}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
       )}
     </Pane>
   )
