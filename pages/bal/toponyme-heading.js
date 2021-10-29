@@ -70,7 +70,7 @@ const ToponymeHeading = ({defaultToponyme}) => {
         </Heading>
       )}
       {numeros && (
-        <Text padding={editingId === toponyme._id && 16}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text padding={editingId === toponyme._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
       )}
     </Pane>
   )
