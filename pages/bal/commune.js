@@ -70,7 +70,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
     setIsEditing(false)
     setIsAdding(false)
-  }, [baseLocale._id, commune, reloadVoies, token, selectedTab, reloadToponymes, reloadGeojson])
+  }, [baseLocale._id, commune, reloadVoies, token, selectedTab, reloadToponymes, reloadGeojson, setIsEditing])
 
   const onEnableEditing = useCallback(async id => {
     setIsAdding(false)
