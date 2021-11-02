@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon} from 'evergreen-ui'
+import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
 
 import {editNumero, removeNumero} from '../../../lib/bal-api'
 
@@ -63,19 +63,31 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
     }
   }
 
-  const onRemove = useCallback(async idNumero => {
-    await removeNumero(idNumero, token)
-    await reloadNumeros()
+  const onRemove = useCallback(async (idNumero, isMultiple) => {
+    try {
+      await removeNumero(idNumero, token)
+      await reloadNumeros()
+
+      if (!isMultiple) {
+        toaster.success('Le numéro a bien été supprimé')
+      }
+    } catch (error) {
+      toaster.danger('Le numéro n’a pas été supprimé : ', {
+        description: error.message
+      })
+    }
   }, [reloadNumeros, token])
 
   const onMultipleRemove = async () => {
-    await Promise.all(selectedNumerosIds.map(async id => {
-      try {
-        await onRemove(id)
-      } catch (error) {
-        setError(error.message)
-      }
-    }))
+    try {
+      await Promise.all(selectedNumerosIds.map(async id => {
+        await onRemove(id, true)
+      }))
+
+      toaster.success('Les numéros ont bien été supprimés')
+    } catch (error) {
+      setError(error.message)
+    }
 
     await reloadNumeros()
 
@@ -84,15 +96,17 @@ function NumerosList({token, voieId, defaultNumeros, disabledEdition, handleEdit
   }
 
   const onMultipleEdit = async body => {
-    await Promise.all(body.map(async numero => {
-      try {
+    try {
+      await Promise.all(body.map(async numero => {
         await editNumero(numero._id, {
           ...numero
         }, token)
-      } catch (error) {
-        setError(error.message)
-      }
-    }))
+      }))
+
+      toaster.success('Les numéros ont bien été modifiés')
+    } catch (error) {
+      setError(error.message)
+    }
 
     await reloadNumeros()
   }
