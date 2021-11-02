@@ -39,6 +39,7 @@ class Document extends NextDocument {
               display: flex;
             }
           `}</style>
+          {/* eslint-disable-next-line react/no-danger */}
           <style dangerouslySetInnerHTML={{__html: css}} />
         </Head>
         <body>
