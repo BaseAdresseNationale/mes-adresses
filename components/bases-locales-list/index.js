@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Table, Paragraph} from 'evergreen-ui'
+import {Pane, Table, Paragraph, toaster} from 'evergreen-ui'
 
 import {sortBalByUpdate} from '../../lib/sort-bal'
 
@@ -43,6 +43,7 @@ function BasesLocalesList({basesLocales, sortBal}) {
   const onRemove = useCallback(async () => {
     try {
       await removeBAL(toRemove)
+      toaster.success('La Base Adresse Locale a bien été supprimée')
     } catch (error) {
       setError(error.message)
     }
