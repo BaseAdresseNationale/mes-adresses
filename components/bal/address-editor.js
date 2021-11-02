@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, SelectField} from 'evergreen-ui'
+import {Pane, Heading, SelectField, toaster} from 'evergreen-ui'
 
 import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
 
@@ -17,30 +17,44 @@ function AddressEditor({commune, balId, codeCommune, closeForm}) {
   const [isToponyme, setIsToponyme] = useState(false)
 
   const onAddToponyme = async toponymeData => {
-    await addToponyme(balId, codeCommune, toponymeData, token)
-    await reloadToponymes()
-    await reloadGeojson()
+    try {
+      await addToponyme(balId, codeCommune, toponymeData, token)
+      await reloadToponymes()
+      await reloadGeojson()
+      toaster.success('Le toponyme a bien été ajouté')
+    } catch (error) {
+      toaster.danger('Le toponyme n’a pas pu être ajouté', {
+        description: error.message
+      })
+    }
 
     closeForm()
   }
 
   const onAddNumero = async (voieData, numero) => {
-    let editedVoie = voieData
-    const isNewVoie = !editedVoie._id
+    try {
+      let editedVoie = voieData
+      const isNewVoie = !editedVoie._id
 
-    if (isNewVoie) {
-      editedVoie = await addVoie(balId, codeCommune, editedVoie, token)
+      if (isNewVoie) {
+        editedVoie = await addVoie(balId, codeCommune, editedVoie, token)
+      }
+
+      await addNumero(editedVoie._id, numero, token)
+      await reloadNumeros()
+      await reloadVoies()
+
+      if (!voie || voie._id !== editedVoie._id || isNewVoie) {
+        await reloadGeojson()
+      }
+
+      closeForm()
+      toaster.success('Le numéro a bien été ajouté')
+    } catch (error) {
+      toaster.danger('Le numéro n’a pas pu être ajouté', {
+        description: error.message
+      })
     }
-
-    await addNumero(editedVoie._id, numero, token)
-    await reloadNumeros()
-    await reloadVoies()
-
-    if (!voie || voie._id !== editedVoie._id || isNewVoie) {
-      await reloadGeojson()
-    }
-
-    closeForm()
   }
 
   return (
