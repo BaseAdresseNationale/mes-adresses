@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useEffect, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Table} from 'evergreen-ui'
+import {Pane, Table, toaster} from 'evergreen-ui'
 
 import {editNumero, getNumeros, addVoie, addNumero} from '../../lib/bal-api'
 
@@ -53,37 +53,51 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     let editedVoie = voieData
     const isNewVoie = !editedVoie._id
 
-    if (isNewVoie) {
-      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
-      await reloadVoies()
+    try {
+      if (isNewVoie) {
+        editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
+        await reloadVoies()
+      }
+
+      await addNumero(editedVoie._id, body, token)
+      await reloadNumeros()
+
+      if (editedVoie._id !== voie._id || isNewVoie) {
+        await reloadGeojson()
+      }
+
+      resetEditing()
+      toaster.success('Le numéro a bien été ajouté')
+    } catch (error) {
+      toaster.danger('Le numéro n’a pas pu être ajouté', {
+        description: error.message
+      })
     }
-
-    await addNumero(editedVoie._id, body, token)
-    await reloadNumeros()
-
-    if (editedVoie._id !== voie._id || isNewVoie) {
-      await reloadGeojson()
-    }
-
-    resetEditing()
   }
 
   const onEdit = async (voieData, body) => {
     let editedVoie = voieData
     const isNewVoie = !editedVoie._id
 
-    if (isNewVoie) {
-      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
+    try {
+      if (isNewVoie) {
+        editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
+      }
+
+      await editNumero(editingId, {...body, voie: editedVoie._id}, token)
+      await reloadNumeros()
+
+      if (editedVoie._id !== voie._id || isNewVoie) {
+        await reloadGeojson()
+      }
+
+      resetEditing()
+      toaster.success('Le numéro a bien été modifié')
+    } catch (error) {
+      toaster.danger('Le numéro n’a pas été modifié', {
+        description: error.message
+      })
     }
-
-    await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-    await reloadNumeros()
-
-    if (editedVoie._id !== voie._id || isNewVoie) {
-      await reloadGeojson()
-    }
-
-    resetEditing()
   }
 
   useEffect(() => {

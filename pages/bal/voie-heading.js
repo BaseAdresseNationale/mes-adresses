@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
+import {Pane, Heading, EditIcon, Text, toaster} from 'evergreen-ui'
 
 import {editVoie} from '../../lib/bal-api'
 
@@ -24,22 +24,30 @@ const VoieHeading = ({defaultVoie}) => {
   }
 
   const onEditVoie = async ({nom, typeNumerotation, trace}) => {
-    const voie = await editVoie(editedVoie._id, {
-      nom,
-      typeNumerotation,
-      trace
-    }, token)
+    try {
+      const voie = await editVoie(editedVoie._id, {
+        nom,
+        typeNumerotation,
+        trace
+      }, token)
 
-    setEditingId(null)
+      setEditingId(null)
 
-    await reloadVoies()
-    await reloadGeojson()
+      await reloadVoies()
+      await reloadGeojson()
 
-    setEditedVoie(voie)
+      setEditedVoie(voie)
 
-    // Update voie name in breadcrum
-    if (editingId === editedVoie._id) {
-      setVoie(voie)
+      // Update voie name in breadcrum
+      if (editingId === editedVoie._id) {
+        setVoie(voie)
+      }
+
+      toaster.success('La voie a bien été modifiée')
+    } catch (error) {
+      toaster.danger('La voie n’a pas été modifiée', {
+        description: error.message
+      })
     }
   }
 
