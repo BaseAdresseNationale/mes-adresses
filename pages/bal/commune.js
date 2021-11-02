@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
+import {Pane, Heading, Text, Paragraph, Button, AddIcon, toaster} from 'evergreen-ui'
 
 import {getVoies, addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '../../lib/bal-api'
 
@@ -47,25 +47,40 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
   const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace, parcelles}) => {
     if (selectedTab === 'voie') {
-      await addVoie(baseLocale._id, commune.code, {
-        nom,
-        typeNumerotation,
-        trace
-      }, token)
+      try {
+        await addVoie(baseLocale._id, commune.code, {
+          nom,
+          typeNumerotation,
+          trace
+        }, token)
 
-      await reloadVoies()
+        await reloadVoies()
 
-      if (trace) {
-        await reloadGeojson()
+        if (trace) {
+          await reloadGeojson()
+        }
+
+        toaster.success('La voie a bien été ajoutée')
+      } catch (error) {
+        toaster.danger('La voie n’a pas pu être ajoutée : ', {
+          description: error.message
+        })
       }
     } else {
-      await addToponyme(baseLocale._id, commune.code, {
-        nom,
-        positions,
-        parcelles
-      }, token)
+      try {
+        await addToponyme(baseLocale._id, commune.code, {
+          nom,
+          positions,
+          parcelles
+        }, token)
 
-      await reloadToponymes()
+        await reloadToponymes()
+        toaster.success('Le Toponyme a bien été ajouté')
+      } catch (error) {
+        toaster.danger('Le toponyme n’a pas pu être ajouté : ', {
+          description: error.message
+        })
+      }
     }
 
     setIsAdding(false)
@@ -78,22 +93,36 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
   const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions, parcelles}) => {
     if (selectedTab === 'voie') {
-      await editVoie(editingId, {
-        nom,
-        typeNumerotation,
-        trace
-      }, token)
+      try {
+        await editVoie(editingId, {
+          nom,
+          typeNumerotation,
+          trace
+        }, token)
 
-      await reloadVoies()
-      await reloadGeojson()
+        await reloadVoies()
+        await reloadGeojson()
+        toaster.success('La voie a bien été modifiée')
+      } catch (error) {
+        toaster.danger('La voie n’a pas pu être modifiée : ', {
+          description: error.message
+        })
+      }
     } else {
-      await editToponyme(editingId, {
-        nom,
-        positions,
-        parcelles
-      }, token)
+      try {
+        await editToponyme(editingId, {
+          nom,
+          positions,
+          parcelles
+        }, token)
 
-      await reloadToponymes()
+        await reloadToponymes()
+        toaster.success('Le toponyme a bien été modifié')
+      } catch (error) {
+        toaster.danger('Le toponyme n’a pas pu être modifié : ', {
+          description: error.message
+        })
+      }
     }
 
     setEditingId(null)
@@ -101,11 +130,25 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
   const onRemove = useCallback(async () => {
     if (selectedTab === 'voie') {
-      await removeVoie(toRemove, token)
-      await reloadVoies()
+      try {
+        await removeVoie(toRemove, token)
+        await reloadVoies()
+        toaster.success('La voie a bien été supprimée')
+      } catch (error) {
+        toaster.danger('La voie n’a pas pu être supprimée', {
+          description: error.message
+        })
+      }
     } else {
-      await removeToponyme(toRemove, token)
-      await reloadToponymes()
+      try {
+        await removeToponyme(toRemove, token)
+        await reloadToponymes()
+        toaster.success('Le toponyme a bien été supprimé')
+      } catch (error) {
+        toaster.danger('Le toponyme n’a pas pu être supprimé', {
+          description: error.message
+        })
+      }
     }
 
     await reloadGeojson()
