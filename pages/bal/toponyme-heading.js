@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
+import {Pane, Heading, EditIcon, Text, toaster} from 'evergreen-ui'
 
 import {editToponyme} from '../../lib/bal-api'
 
@@ -23,16 +23,23 @@ const ToponymeHeading = ({defaultToponyme}) => {
   }, [setEditingId, isEditing, toponyme._id])
 
   const onEditToponyme = useCallback(async ({nom, positions, parcelles}) => {
-    const editedToponyme = await editToponyme(toponyme._id, {
-      nom,
-      positions,
-      parcelles
-    }, token)
+    try {
+      const editedToponyme = await editToponyme(toponyme._id, {
+        nom,
+        positions,
+        parcelles
+      }, token)
 
-    setEditingId(null)
-    await reloadToponymes()
+      setEditingId(null)
+      await reloadToponymes()
 
-    setToponyme(editedToponyme)
+      setToponyme(editedToponyme)
+      toaster.success('Le toponyme à bien été mis à jour')
+    } catch (error) {
+      toaster.danger('Le toponyme n’a pas pu être modifié', {
+        description: error.message
+      })
+    }
   }, [reloadToponymes, setEditingId, token, toponyme])
 
   useEffect(() => {

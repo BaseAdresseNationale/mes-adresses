@@ -1,6 +1,6 @@
 import React, {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
+import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
 
 import {addVoie, editNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
 
@@ -53,6 +53,11 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
           toponyme: toponyme._id
         }, token)
       }))
+
+      toaster.success(numeros.length > 1 ?
+        'Les numéros ont bien été ajoutés' :
+        'Le numéro a bien été ajouté'
+      )
     } catch (error) {
       setError(error.message)
     }
@@ -75,6 +80,7 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
     try {
       if (!editedVoie._id) {
         editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
+        toaster.success('La voie a bien été crée')
       }
 
       const {toponyme} = body
@@ -82,6 +88,8 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
 
       await reloadNumerosToponyme(updatedToponyme._id || toponyme)
       setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
+
+      toaster.success('Le numéro a bien été modifié')
     } catch (error) {
       setError(error.message)
     }
