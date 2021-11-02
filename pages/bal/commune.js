@@ -68,6 +68,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       await reloadToponymes()
     }
 
+    setIsEditing(false)
     setIsAdding(false)
   }, [baseLocale._id, commune, reloadVoies, token, selectedTab, reloadToponymes, reloadGeojson])
 
