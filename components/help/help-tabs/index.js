@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 
 import BaseLocale from './base-locale'
@@ -17,7 +16,7 @@ export const TABS = [
   'Publication'
 ]
 
-const HelpTabs = ({tab}) => {
+function HelpTabs({tab}) {
   switch (tab) {
     case 0:
       return <BaseLocale />

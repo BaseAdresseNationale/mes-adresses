@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, ErrorIcon, Alert, Text} from 'evergreen-ui'
@@ -45,7 +44,7 @@ CustomError.propTypes = {
 }
 
 CustomError.getInitialProps = ({res, err}) => {
-  const statusCode = res ? res.statusCode : err ? err.statusCode : 404
+  const statusCode = res ? res.statusCode : (err ? err.statusCode : 404)
   return {statusCode}
 }
 

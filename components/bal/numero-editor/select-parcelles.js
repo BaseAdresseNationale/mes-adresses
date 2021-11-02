@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Text} from 'evergreen-ui'
 
@@ -8,7 +8,7 @@ import InputLabel from '../../input-label'
 import MapContext from '../../../contexts/map'
 
 function SelectParcelles({isToponyme}) {
-  const {showCadastre, setShowCadastre} = useContext(MapContext)
+  const {isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
   const addressType = isToponyme ? 'toponyme' : 'numéro'
 
@@ -51,9 +51,9 @@ function SelectParcelles({isToponyme}) {
         justifyContent='center'
         marginTop={8}
         iconAfter={ControlIcon}
-        onClick={() => setShowCadastre(!showCadastre)}
+        onClick={() => setIsCadastreDisplayed(!isCadastreDisplayed)}
       >
-        {showCadastre ? 'Masquer' : 'Afficher'} le cadastre
+        {isCadastreDisplayed ? 'Masquer' : 'Afficher'} le cadastre
       </Button>
     </Pane>
   )
