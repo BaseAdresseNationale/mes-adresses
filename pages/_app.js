@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
+import 'mapbox-gl/dist/mapbox-gl.css'
+
 import {getBaseLocale, getVoie, getToponyme} from '../lib/bal-api'
 import {getCommune} from '../lib/geo-api'
 
