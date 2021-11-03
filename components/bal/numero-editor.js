@@ -205,7 +205,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
         </Pane>
 
         <FormInput>
-          <Pane display='flex' alignItems='end'>
+          <Pane display='flex' alignItems='flex-end'>
             <TextInputField
               ref={focusRef}
               required

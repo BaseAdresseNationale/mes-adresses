@@ -22,7 +22,7 @@ function AssistedTextField({label, placeholder, value, onChange, isFocus, isDisa
   }
 
   return (
-    <Pane display='flex' alignItems='end'>
+    <Pane display='flex' alignItems='flex-end'>
       <TextInputField
         ref={isFocus && focusRef}
         required
