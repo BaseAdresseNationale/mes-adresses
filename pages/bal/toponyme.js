@@ -89,11 +89,11 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
     setEditingId(null)
   }, [editingId, setEditingId, baseLocale, commune.code, reloadNumerosToponyme, token, updatedToponyme])
 
-  const handleSelection = id => {
+  const handleSelection = useCallback(id => {
     if (!isEditing) {
       setEditingId(id)
     }
-  }
+  }, [isEditing, setEditingId])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)
