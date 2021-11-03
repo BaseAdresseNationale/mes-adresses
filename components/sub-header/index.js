@@ -28,6 +28,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
   const csvUrl = getBaseLocaleCsvUrl(initialBaseLocale._id)
   const baseLocale = balDataContext.baseLocale || initialBaseLocale
   const isEntitled = baseLocale.habilitation && baseLocale.habilitation.status === 'accepted'
+  const isAdmin = Boolean(token)
 
   const handleChangeStatus = async () => {
     try {
@@ -76,12 +77,12 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
         />
 
         <Pane marginLeft='auto' display='flex' alignItems='center'>
-          <SettingsMenu isAdmin={Boolean(token)} csvUrl={csvUrl} />
+          <SettingsMenu isAdmin={isAdmin} csvUrl={csvUrl} />
 
           {baseLocale.status !== 'demo' && commune && (
             <Publication
               border
-              token={token}
+              isAdmin={isAdmin}
               baseLocale={baseLocale}
               commune={commune}
               status={baseLocale.status}

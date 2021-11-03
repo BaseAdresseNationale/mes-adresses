@@ -60,12 +60,8 @@ function SettingsMenu({isAdmin, csvUrl}) {
   )
 }
 
-SettingsMenu.defaultProps = {
-  isAdmin: false
-}
-
 SettingsMenu.propTypes = {
-  isAdmin: PropTypes.string,
+  isAdmin: PropTypes.bool.isRequired,
   csvUrl: PropTypes.string.isRequired
 }
 
