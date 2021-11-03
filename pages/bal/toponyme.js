@@ -1,6 +1,6 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
+import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
 
 import {addVoie, editNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
 
@@ -46,18 +46,25 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
 
   const onAdd = async numeros => {
     setIsLoading(true)
+    const isMultiple = numeros.length > 1
 
     try {
       await Promise.all(numeros.map(id => {
         return editNumero(id, {
           toponyme: toponyme._id
-        }, token)
+        }, token, true)
       }))
+
+      await reloadNumerosToponyme()
+
+      if (isMultiple) {
+        toaster.success('Les numéros ont bien été ajoutés')
+      } else {
+        toaster.success('Le numéro a bien été ajouté')
+      }
     } catch (error) {
       setError(error.message)
     }
-
-    await reloadNumerosToponyme()
 
     setIsLoading(false)
     setIsAdding(false)
