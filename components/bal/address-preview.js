@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {Pane, Text} from 'evergreen-ui'
 import {computeCompletNumero} from '../../lib/utils/numero'
 
-const getAddressPreview = ({numero, suffixe, toponyme, voie, commune}) => {
+const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
   const completNumero = computeCompletNumero(numero, suffixe)
   if (toponyme) {
     return `${completNumero} ${voie}, ${toponyme} - ${commune.nom} (${commune.code})`
