@@ -11,7 +11,7 @@ import Certification from './settings/certification'
 import SettingsForm from './settings/settings-form'
 
 const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
-  const {showSettings, setShowSettings} = useContext(SettingsContext)
+  const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)
   const balDataContext = useContext(BalDataContext)
 
   const baseLocale = balDataContext.baseLocale || initialBaseLocale
@@ -27,12 +27,12 @@ const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
     if (codeCommune) {
       fetchCommune()
     }
-  }, [initialBaseLocale._id, codeCommune, showSettings, fetchCommune])
+  }, [initialBaseLocale._id, codeCommune, isSettingsDisplayed, fetchCommune])
 
   return (
     <SideSheet
-      isShown={showSettings}
-      onCloseComplete={() => setShowSettings(false)}
+      isShown={isSettingsDisplayed}
+      onCloseComplete={() => setIsSettingsDisplayed(false)}
     >
       <SettingsForm initialBaseLocale={initialBaseLocale} />
 
