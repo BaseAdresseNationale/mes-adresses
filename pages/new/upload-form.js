@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
 import {uniq, uniqBy} from 'lodash'
@@ -22,7 +22,7 @@ const MAX_SIZE = 10 * 1024 * 1024
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')
   if (pos > 0) {
-    return name.substr(pos + 1)
+    return name.slice(pos + 1)
   }
 
   return null
@@ -224,7 +224,6 @@ function UploadForm() {
                 />
               </FormInput>
             </Pane>
-
           </Pane>
 
           {error && (

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 
@@ -12,7 +12,7 @@ import {normalizeSort} from '../../lib/normalize'
 import TableRow from '../table-row'
 import ToponymeEditor from './toponyme-editor'
 
-const ToponymesList = ({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) => {
+function ToponymesList({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) {
   const {
     isEditing,
     editingId,

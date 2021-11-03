@@ -1,14 +1,9 @@
 {
-  "presets": ["next/babel"],
+  "presets": [
+    "next/babel"
+  ],
   "plugins": [
-    [
-      "inline-import",
-      {
-        "extensions": [
-          ".css"
-        ]
-      }
-    ],
-    ["lodash"]
+    "lodash",
+    "@babel/plugin-proposal-class-properties"
   ]
 }

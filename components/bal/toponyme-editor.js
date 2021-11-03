@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
+import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Alert} from 'evergreen-ui'
 
@@ -73,12 +73,12 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     return 'Enregistrer'
   }, [isLoading])
 
-  useKeyEvent('keyup', ({key}) => {
+  useKeyEvent(({key}) => {
     if (key === 'Escape') {
       disableMarkers()
       onCancel()
     }
-  }, [onCancel])
+  }, [onCancel], 'keyup')
 
   useEffect(() => {
     const {nom, parcelles} = initialValue || {}

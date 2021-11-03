@@ -1,8 +1,7 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import {Heading, Pane} from 'evergreen-ui'
 
-const Tuto = ({children}) => {
+function Tuto({children}) {
   return (
     <Pane
       borderLeft='default'

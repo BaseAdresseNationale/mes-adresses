@@ -29,10 +29,9 @@ function PositionEditor({isToponyme}) {
         title='Positions'
         help={markers.length > 1 ?
           'Déplacer les marqueurs sur la carte pour modifier les positions' :
-          markers.length === 1 ?
+          (markers.length === 1 ?
             `Déplacer le marqueur sur la carte pour déplacer le ${isToponyme ? 'toponyme' : 'numéro'}.` :
-            `Déplacer le marqueur sur la carte pour placer le ${isToponyme ? 'toponyme' : 'numéro'}.`
-        }
+            `Déplacer le marqueur sur la carte pour placer le ${isToponyme ? 'toponyme' : 'numéro'}.`)}
       />
 
       {markers.length > 0 ? (
