@@ -196,7 +196,7 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
               </Table.Cell>
             </Table.Row>
           ) : (
-            <ToponymeNumeros numeros={filtered} handleSelect={handleSelection} isEditing={isEditing} />
+            <ToponymeNumeros numeros={filtered} handleSelect={handleSelection} isEditable={token && !isEditing} />
           )}
         </Table>
       </Pane>
