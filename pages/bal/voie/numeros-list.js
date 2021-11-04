@@ -63,8 +63,8 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
     }
   }
 
-  const onRemove = useCallback(async (idNumero, isMultiple) => {
-    await removeNumero(idNumero, token, isMultiple)
+  const onRemove = useCallback(async (idNumero, isToasterDisabled) => {
+    await removeNumero(idNumero, token, isToasterDisabled)
     await reloadNumeros()
   }, [reloadNumeros, token])
 

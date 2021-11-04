@@ -46,7 +46,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
 
   const onAdd = async numeros => {
     setIsLoading(true)
-    const isMultiple = numeros.length > 1
+    const isMultiNumeros = numeros.length > 1
 
     try {
       await Promise.all(numeros.map(id => {
@@ -57,7 +57,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
 
       await reloadNumerosToponyme()
 
-      if (isMultiple) {
+      if (isMultiNumeros) {
         toaster.success('Les numéros ont bien été ajoutés')
       } else {
         toaster.success('Le numéro a bien été ajouté')
