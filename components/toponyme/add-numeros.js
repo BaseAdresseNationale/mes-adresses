@@ -48,7 +48,9 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
     return `${selectedNumeroCount} numéros sélectionnés`
   }, [selectedVoieId, voieNumeros, selectedVoieNumeros, voies])
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(event => {
+    event.preventDefault()
+
     const numeros = selectedVoieNumeros.length > 0 ?
       selectedVoieNumeros :
       voieNumeros.map(({_id}) => _id)
