@@ -11,7 +11,7 @@ function Form({children, onFormSubmit}) {
 
 Form.propTypes = {
   children: PropTypes.node.isRequired,
-  onFormSubmit: PropTypes.func.isRequired
+  onFormSubmit: PropTypes.func
 }
 
 export default Form

@@ -10,6 +10,8 @@ import {useInput, useCheckboxInput} from '../hooks/input'
 
 import Comment from './comment'
 import CertificationButton from './certification-button'
+import Form from './form'
+import FormInput from './form-input'
 
 function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) {
   const {voies, toponymes} = useContext(BalDataContext)
@@ -134,87 +136,94 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           hasFooter={false}
           onCloseComplete={() => handleComplete()}
         >
+          <Pane marginLeft='-32px' marginRight='-32px' marginBottom='-8px'>
+            <Paragraph marginBottom={8} marginLeft={32} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
+            <Form>
+              <FormInput>
+                <SelectField
+                  value={selectedVoieId}
+                  label='Voie'
+                  margin={0}
+                  flex={1}
+                  disabled={selectedNumerosUniqVoie.length > 1}
+                  onChange={event => setSelectedVoieId(event.target.value)}
+                >
+                  {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
+                    <option key={_id} value={_id}>
+                      {nom}
+                    </option>
+                  ))}
+                </SelectField>
+              </FormInput>
 
-          <Paragraph marginBottom={8} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
+              {selectedNumerosUniqVoie.length > 1 && (
+                <Alert intent='none' marginBottom={8}>Les numéros sélectionnés ne sont pas situés sur la même voie. La modification groupée de la voie n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+              )}
 
-          <SelectField
-            value={selectedVoieId}
-            label='Voie'
-            flex={1}
-            disabled={selectedNumerosUniqVoie.length > 1}
-            marginBottom={16}
-            onChange={event => setSelectedVoieId(event.target.value)}
-          >
-            {sortBy(voies, v => normalizeSort(v.nom)).map(({_id, nom}) => (
-              <option key={_id} value={_id}>
-                {nom}
-              </option>
-            ))}
+              <Pane display='flex'>
+                <FormInput>
+                  <SelectField
+                    value={selectedToponymeId || ''}
+                    label='Toponyme'
+                    margin={0}
+                    flex={1}
+                    disabled={selectedNumerosUniqToponyme.length > 1}
+                    onChange={event => setSelectedToponymeId(event.target.value)}
+                  >
+                    <option value=''>{selectedToponymeId || selectedToponymeId === '' ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
+                    {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
+                      <option key={_id} value={_id}>
+                        {nom}
+                      </option>
+                    ))}
+                  </SelectField>
+                </FormInput>
+              </Pane>
 
-          </SelectField>
+              {selectedNumerosUniqToponyme.length > 1 && (
+                <Alert intent='none' marginBottom={8}>Les numéros sélectionnés ne possèdent pas le même toponyme. La modification groupée du toponyme n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+              )}
 
-          {selectedNumerosUniqVoie.length > 1 && (
-            <Alert intent='none' marginBottom={12}>Les numéros sélectionnés ne sont pas situés sur la même voie. La modification groupée de la voie n’est pas possible. Ils doivent être modifiés séparément.</Alert>
-          )}
+              <FormInput>
+                <SelectField
+                  value={positionType}
+                  disabled={hasMultiposition}
+                  flex={1}
+                  label='Type de position'
+                  margin={0}
+                  display='block'
+                  onChange={onPositionTypeChange}
+                >
+                  {(selectedNumerosUniqType.length !== 1 || hasMultiposition) && (
+                    <option value='' >-- Veuillez choisir un type de position --</option>
+                  )}
+                  {positionsTypesList.map(positionType => (
+                    <option key={positionType.value} value={positionType.value}>{positionType.name}</option>
+                  ))}
+                </SelectField>
+              </FormInput>
 
-          <Pane display='flex'>
-            <SelectField
-              value={selectedToponymeId || ''}
-              label='Toponyme'
-              flex={1}
-              disabled={selectedNumerosUniqToponyme.length > 1}
-              marginBottom={16}
-              onChange={event => setSelectedToponymeId(event.target.value)}
-            >
-              <option value=''>{selectedToponymeId || selectedToponymeId === '' ? 'Ne pas associer de toponyme' : '- Choisir un toponyme -'}</option>
-              {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
-                <option key={_id} value={_id}>
-                  {nom}
-                </option>
-              ))}
-            </SelectField>
-          </Pane>
+              {hasMultiposition && (
+                <Alert intent='none' marginBottom={8}>Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée du type de position n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+              )}
 
-          {selectedNumerosUniqToponyme.length > 1 && (
-            <Alert intent='none' marginBottom={12}>Les numéros sélectionnés ne possèdent pas le même toponyme. La modification groupée du toponyme n’est pas possible. Ils doivent être modifiés séparément.</Alert>
-          )}
+              <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
 
-          <SelectField
-            value={positionType}
-            disabled={hasMultiposition}
-            flex={1}
-            label='Type de position'
-            display='block'
-            marginBottom={16}
-            onChange={onPositionTypeChange}
-          >
-            {(selectedNumerosUniqType.length !== 1 || hasMultiposition) && (
-              <option value='' >-- Veuillez choisir un type de position --</option>
-            )}
-            {positionsTypesList.map(positionType => (
-              <option key={positionType.value} value={positionType.value}>{positionType.name}</option>
-            ))}
-          </SelectField>
+              <Checkbox
+                label='Effacer tous les commentaires'
+                checked={removeAllComments}
+                onChange={onRemoveAllCommentsChange}
+              />
 
-          {hasMultiposition && (
-            <Alert intent='none' marginBottom={12}>Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée du type de position n’est pas possible. Ils doivent être modifiés séparément.</Alert>
-          )}
-
-          <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
-
-          <Checkbox
-            label='Effacer tous les commentaires'
-            checked={removeAllComments}
-            onChange={onRemoveAllCommentsChange}
-          />
-
-          <Pane display='flex' justifyContent='end' paddingBottom={16}>
-            <CertificationButton
-              isLoading={isLoading}
-              isCertified={isAllSelectedCertifie}
-              onConfirm={handleConfirm}
-              onCancel={() => setIsShown(false)}
-            />
+              <Pane display='flex' justifyContent='end' paddingBottom={16}>
+                <CertificationButton
+                  isLoading={isLoading}
+                  isCertified={isAllSelectedCertifie}
+                  onConfirm={handleConfirm}
+                  onCancel={() => setIsShown(false)}
+                />
+              </Pane>
+            </Form>
           </Pane>
         </Dialog>
 
