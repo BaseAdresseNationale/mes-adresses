@@ -136,7 +136,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           hasFooter={false}
           onCloseComplete={() => handleComplete()}
         >
-          <Pane marginLeft='-32px' marginRight='-32px' marginBottom='-8px'>
+          <Pane marginX='-32px' marginBottom='-8px'>
             <Paragraph marginBottom={8} marginLeft={32} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
             <Form>
               <FormInput>
