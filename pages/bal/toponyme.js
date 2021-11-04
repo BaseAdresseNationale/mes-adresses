@@ -162,8 +162,8 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
           )}
 
           {isAdding && (
-            <Table.Row height='auto'>
-              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+            <Table.Row height='auto' >
+              <Table.Cell borderBottom display='block' padding={0} background='tint1'>
                 <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
               </Table.Cell>
             </Table.Row>
