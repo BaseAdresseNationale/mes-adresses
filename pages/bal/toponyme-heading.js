@@ -44,7 +44,7 @@ function ToponymeHeading({defaultToponyme}) {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={0}
+      padding={16}
     >
       {editingId === toponyme._id ? (
         <ToponymeEditor
