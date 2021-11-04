@@ -22,6 +22,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
+  const [certifie, setCertifie] = useState(null)
 
   const selectedNumeros = numeros.filter(({_id}) => selectedNumerosIds.includes(_id))
 
@@ -63,7 +64,9 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     resetPositionType()
   }
 
-  const handleConfirm = useCallback(async certifie => {
+  const handleConfirm = useCallback(async event => {
+    event.preventDefault()
+
     const data = {selectedVoieId, selectedToponymeId, numeros: selectedNumeros, positionType}
     const body = data.numeros
     const type = data.positionType
@@ -113,7 +116,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     setIsLoading(false)
     setIsShown(false)
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, selectedToponymeId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
+  }, [comment, selectedVoieId, certifie, selectedToponymeId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
 
   useEffect(() => {
     if (!isShown) {
@@ -138,7 +141,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
         >
           <Pane marginX='-32px' marginBottom='-8px'>
             <Paragraph marginBottom={8} marginLeft={32} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
-            <Form>
+            <Form onFormSubmit={handleConfirm}>
               <FormInput>
                 <SelectField
                   value={selectedVoieId}
@@ -219,7 +222,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                 <CertificationButton
                   isLoading={isLoading}
                   isCertified={isAllSelectedCertifie}
-                  onConfirm={handleConfirm}
+                  onConfirm={setCertifie}
                   onCancel={() => setIsShown(false)}
                 />
               </Pane>
