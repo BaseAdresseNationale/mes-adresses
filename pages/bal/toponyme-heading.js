@@ -44,7 +44,7 @@ function ToponymeHeading({defaultToponyme}) {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={16}
+      padding={0}
     >
       {editingId === toponyme._id ? (
         <ToponymeEditor
@@ -58,6 +58,7 @@ function ToponymeHeading({defaultToponyme}) {
           onClick={onEnableToponymeEditing}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
+          padding={16}
         >
           {toponyme.nom}
           {!isEditing && token && (
@@ -70,7 +71,7 @@ function ToponymeHeading({defaultToponyme}) {
         </Heading>
       )}
       {numeros && (
-        <Text padding={editingId === toponyme._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text padding={16}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
       )}
     </Pane>
   )
