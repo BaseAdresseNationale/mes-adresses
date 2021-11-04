@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
 
@@ -16,7 +16,7 @@ import AddNumeros from '../../components/toponyme/add-numeros'
 
 import ToponymeHeading from './toponyme-heading'
 
-const Toponyme = (({commune, toponyme, defaultNumeros}) => {
+function Toponyme({commune, toponyme, defaultNumeros}) {
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [updatedToponyme, setUpdatedToponyme] = useState(toponyme)
@@ -202,7 +202,7 @@ const Toponyme = (({commune, toponyme, defaultNumeros}) => {
       </Pane>
     </>
   )
-})
+}
 
 Toponyme.getInitialProps = async ({baseLocale, commune, toponyme}) => {
   const defaultNumeros = await getNumerosToponyme(toponyme._id)

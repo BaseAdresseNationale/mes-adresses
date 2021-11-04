@@ -1,4 +1,4 @@
-import React, {useCallback, useContext} from 'react'
+import {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import randomColor from 'randomcolor'
@@ -12,7 +12,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 import NumeroMarker from './numero-marker'
 
-function NumerosMarkers({numeros, voie, showLabel, showContextMenu, setShowContextMenu}) {
+function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed, setIsContextMenuDisplayed}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
@@ -39,7 +39,7 @@ function NumerosMarkers({numeros, voie, showLabel, showContextMenu, setShowConte
     marginLeft: -10,
     color: 'transparent',
     whiteSpace: 'nowrap',
-    background: showLabel ? 'rgba(0, 0, 0, 0.7)' : null,
+    background: isLabelDisplayed ? 'rgba(0, 0, 0, 0.7)' : null,
     cursor: 'pointer',
 
     '&:before': {
@@ -54,32 +54,28 @@ function NumerosMarkers({numeros, voie, showLabel, showContextMenu, setShowConte
     },
 
     '& > span, & > svg': {
-      display: showLabel ? 'inline-block' : 'none'
+      display: isLabelDisplayed ? 'inline-block' : 'none'
     },
 
-    '&:hover': showLabel ? null : {
+    '&:hover': isLabelDisplayed ? null : {
       background: 'rgba(0, 0, 0, 0.7)',
 
       '& > span, & > svg': {
         display: 'inline-block'
       }
     }
-  }), [showLabel])
+  }), [isLabelDisplayed])
 
   const removeAddress = useCallback(async numeroId => {
     try {
       await removeNumero(numeroId, token)
-      if (voie) {
-        await reloadNumeros()
-      } else {
-        await reloadNumerosToponyme()
-      }
+      await (voie ? reloadNumeros() : reloadNumerosToponyme())
     } catch (error) {
       setError(error.message)
     }
 
-    setShowContextMenu(null)
-  }, [token, reloadNumeros, setError, setShowContextMenu])
+    setIsContextMenuDisplayed(null)
+  }, [token, voie, reloadNumeros, reloadNumerosToponyme, setError, setIsContextMenuDisplayed])
 
   return (
     numeros.map(numero => (
@@ -87,8 +83,8 @@ function NumerosMarkers({numeros, voie, showLabel, showContextMenu, setShowConte
         key={numero._id}
         numero={numero}
         style={markerStyle(colorSeed(numero.voie?._id || voie?._id))}
-        showContextMenu={numero._id === showContextMenu}
-        setShowContextMenu={setShowContextMenu}
+        isContextMenuDisplayed={numero._id === isContextMenuDisplayed}
+        setIsContextMenuDisplayed={setIsContextMenuDisplayed}
         removeAddress={removeAddress}
         onEnableEditing={onEnableEditing}
       />
@@ -101,9 +97,9 @@ NumerosMarkers.propTypes = {
   voie: PropTypes.shape({
     _id: PropTypes.string.isRequired
   }),
-  showLabel: PropTypes.bool.isRequired,
-  showContextMenu: PropTypes.string,
-  setShowContextMenu: PropTypes.func.isRequired
+  isLabelDisplayed: PropTypes.bool.isRequired,
+  isContextMenuDisplayed: PropTypes.string,
+  setIsContextMenuDisplayed: PropTypes.func.isRequired
 }
 
 export default NumerosMarkers

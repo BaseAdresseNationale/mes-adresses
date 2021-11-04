@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext} from 'react'
+import {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Table, Paragraph} from 'evergreen-ui'
@@ -58,51 +58,49 @@ function BasesLocalesList({basesLocales, sortBal}) {
   }, [])
 
   return (
-    <>
-      {basesLocales.length > 0 && (
-        <Pane borderTop>
+    basesLocales.length > 0 && (
+      <Pane borderTop>
 
-          <DeleteWarning
-            isShown={Boolean(toRemove)}
-            content={(
-              <Paragraph>
-                Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
-              </Paragraph>
-            )}
-            onCancel={() => setToRemove(null)}
-            onConfirm={onRemove}
-          />
+        <DeleteWarning
+          isShown={Boolean(toRemove)}
+          content={(
+            <Paragraph>
+              Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale ? Cette action est définitive.
+            </Paragraph>
+          )}
+          onCancel={() => setToRemove(null)}
+          onConfirm={onRemove}
+        />
 
-          <Table>
-            <Table.Head>
-              <Table.SearchHeaderCell
-                placeholder='Rechercher une Base Adresse Locale'
-                onChange={onFilter}
+        <Table>
+          <Table.Head>
+            <Table.SearchHeaderCell
+              placeholder='Rechercher une Base Adresse Locale'
+              onChange={onFilter}
+            />
+          </Table.Head>
+          {filtered.length === 0 && (
+            <Table.Row>
+              <Table.TextCell color='muted' fontStyle='italic'>
+                Aucun résultat
+              </Table.TextCell>
+            </Table.Row>
+          )}
+          <Table.Body background='tint1'>
+            {sortBal(filtered).map(bal => (
+              <BaseLocaleCard
+                key={bal._id}
+                isAdmin
+                baseLocale={bal}
+                isDefaultOpen={basesLocales.length === 1}
+                onSelect={() => onBalSelect(bal)}
+                onRemove={e => handleRemove(e, bal._id)}
               />
-            </Table.Head>
-            {filtered.length === 0 && (
-              <Table.Row>
-                <Table.TextCell color='muted' fontStyle='italic'>
-                  Aucun résultat
-                </Table.TextCell>
-              </Table.Row>
-            )}
-            <Table.Body background='tint1'>
-              {sortBal(filtered).map(bal => (
-                <BaseLocaleCard
-                  key={bal._id}
-                  isAdmin
-                  baseLocale={bal}
-                  initialIsOpen={basesLocales.length === 1}
-                  onSelect={() => onBalSelect(bal)}
-                  onRemove={e => handleRemove(e, bal._id)}
-                />
-              ))}
-            </Table.Body>
-          </Table>
-        </Pane>
-      )}
-    </>
+            ))}
+          </Table.Body>
+        </Table>
+      </Pane>
+    )
   )
 }
 

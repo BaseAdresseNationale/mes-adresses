@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
+import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Alert} from 'evergreen-ui'
 
@@ -71,12 +71,12 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     return 'Enregistrer'
   }, [isLoading])
 
-  useKeyEvent('keyup', ({key}) => {
+  useKeyEvent(({key}) => {
     if (key === 'Escape') {
       disableMarkers()
       onCancel()
     }
-  }, [onCancel])
+  }, [onCancel], 'keyup')
 
   useEffect(() => {
     const {nom, parcelles} = initialValue || {}
@@ -116,7 +116,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
     <Pane is='form' onSubmit={onFormSubmit}>
       <AssistedTextField
         isFocus
-        dsiabled={isLoading}
+        isDisabled={isLoading}
         label='Nom du toponyme'
         placeholder='Nom du toponyme'
         value={nom}

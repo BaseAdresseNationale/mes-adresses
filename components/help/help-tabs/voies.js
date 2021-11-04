@@ -1,4 +1,3 @@
-import React from 'react'
 import {Pane, Paragraph, OrderedList, ListItem, Strong, Menu, Button, AddIcon, ColumnLayoutIcon, MapIcon, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
 import Tuto from '../tuto'
@@ -14,68 +13,42 @@ const before = (
   </Paragraph>
 )
 
-const Voies = () => {
+function Voies() {
   return (
-    <>
-      <Pane>
-        <Tuto title='Ajouter une voie'>
-          {before}
-          <OrderedList margin={8}>
-            <ListItem>
-              Cliquez sur le bouton
-              <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
-            </ListItem>
-            <ListItem>
-              Entrez le nom de la voie que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom de la voie…</Strong>
-            </ListItem>
-            <ListItem>
-              Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
-            </ListItem>
-          </OrderedList>
-        </Tuto>
+    <Pane>
+      <Tuto title='Ajouter une voie'>
+        {before}
+        <OrderedList margin={8}>
+          <ListItem>
+            Cliquez sur le bouton
+            <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter une voie</Button>
+          </ListItem>
+          <ListItem>
+            Entrez le nom de la voie que vous souhaitez créer dans le champ <Strong size={500} fontStyle='italic'>Nom de la voie…</Strong>
+          </ListItem>
+          <ListItem>
+            Pour terminer, cliquez sur le bouton <Button marginX={4} appearance='primary' intent='success'>Ajouter</Button>
+          </ListItem>
+        </OrderedList>
+      </Tuto>
 
-        <Tuto title='Renommer une voie'>
-          {before}
+      <Tuto title='Renommer une voie'>
+        {before}
 
-          <OrderedList margin={8}>
-            <ListItem>Cliquez sur le du nom de la voie</ListItem>
-            <ListItem>Éditer le nom de la voie</ListItem>
-            <ListItem>
-              Pour terminer, cliquez sur <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
-            </ListItem>
-          </OrderedList>
+        <OrderedList margin={8}>
+          <ListItem>Cliquez sur le du nom de la voie</ListItem>
+          <ListItem>Éditer le nom de la voie</ListItem>
+          <ListItem>
+            Pour terminer, cliquez sur <Button marginX={4} appearance='primary' intent='success'>Enregistrer</Button>
+          </ListItem>
+        </OrderedList>
 
-        </Tuto>
+      </Tuto>
 
-        <Tuto title='Consulter une voie'>
-          {before}
+      <Tuto title='Consulter une voie'>
+        {before}
 
-          <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
-            <OrderedList margin={8}>
-              <ListItem>
-                Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
-              </ListItem>
-              <ListItem>
-                <Pane display='flex' alignItems='center'>
-                  Dans le menu qui vient d’apparaître, choisissez
-                  <Menu.Item background='tint1' marginLeft={8} icon={SendToMapIcon}>
-                    Consulter
-                  </Menu.Item>
-                </Pane>
-              </ListItem>
-            </OrderedList>
-          </SubTuto>
-
-          <SubTuto title='Depuis la carte' icon={MapIcon}>
-            <OrderedList margin={8}>
-              <ListItem>Cliquez sur le nom de la voie ou sur l’un de ses numéros</ListItem>
-            </OrderedList>
-          </SubTuto>
-        </Tuto>
-
-        <Tuto title='Supprimer une voie'>
-          {before}
-
+        <SubTuto title='Depuis le menu latéral' icon={ColumnLayoutIcon}>
           <OrderedList margin={8}>
             <ListItem>
               Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
@@ -83,21 +56,45 @@ const Voies = () => {
             <ListItem>
               <Pane display='flex' alignItems='center'>
                 Dans le menu qui vient d’apparaître, choisissez
-                <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
-                  Supprimer…
+                <Menu.Item background='tint1' marginLeft={8} icon={SendToMapIcon}>
+                  Consulter
                 </Menu.Item>
               </Pane>
             </ListItem>
-            <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
           </OrderedList>
-        </Tuto>
+        </SubTuto>
 
-        <Problems>
-          <Unauthorized title='Je n’arrive pas à ajouter/supprimer une voie' />
-          <Sidebar />
-        </Problems>
-      </Pane>
-    </>
+        <SubTuto title='Depuis la carte' icon={MapIcon}>
+          <OrderedList margin={8}>
+            <ListItem>Cliquez sur le nom de la voie ou sur l’un de ses numéros</ListItem>
+          </OrderedList>
+        </SubTuto>
+      </Tuto>
+
+      <Tuto title='Supprimer une voie'>
+        {before}
+
+        <OrderedList margin={8}>
+          <ListItem>
+            Cliquez sur le bouton <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' /> se situant à droite du nom de la voie
+          </ListItem>
+          <ListItem>
+            <Pane display='flex' alignItems='center'>
+              Dans le menu qui vient d’apparaître, choisissez
+              <Menu.Item background='tint1' marginLeft={8} icon={TrashIcon} intent='danger'>
+                Supprimer…
+              </Menu.Item>
+            </Pane>
+          </ListItem>
+          <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
+        </OrderedList>
+      </Tuto>
+
+      <Problems>
+        <Unauthorized title='Je n’arrive pas à ajouter/supprimer une voie' />
+        <Sidebar />
+      </Problems>
+    </Pane>
   )
 }
 

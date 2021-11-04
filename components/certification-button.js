@@ -1,8 +1,8 @@
-import React, {useMemo} from 'react'
+import {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Button, EndorsedIcon} from 'evergreen-ui'
 
-const CertificationButton = ({isLoading, onConfirm, onCancel, isCertified}) => {
+function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
   const submitCertificationLabel = useMemo(() => {
     if (isLoading) {
       return 'En cours…'
