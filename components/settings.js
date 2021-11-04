@@ -26,6 +26,8 @@ import SettingsContext from '../contexts/settings'
 import {validateEmail} from '../lib/utils/email'
 import BalDataContext from '../contexts/bal-data'
 
+import Form from './form'
+import FormInput from './form-input'
 import RenewTokenDialog from './renew-token-dialog'
 import Certification from './settings/certification'
 
@@ -147,73 +149,80 @@ const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
         overflowY='scroll'
       >
         {token ? (
-          <Pane padding={16} is='form' onSubmit={onSubmit}>
-            <TextInputField
-              required
-              name='nom'
-              id='nom'
-              value={nomInput}
-              maxWidth={600}
-              disabled={isLoading || baseLocale.status === 'demo'}
-              label='Nom'
-              placeholder='Nom'
-              onChange={onNomInputChange}
-            />
+          <Form onFormSubmit={onSubmit}>
+            <FormInput>
+              <TextInputField
+                required
+                name='nom'
+                id='nom'
+                value={nomInput}
+                maxWidth={600}
+                marginBottom={0}
+                disabled={isLoading || baseLocale.status === 'demo'}
+                label='Nom'
+                placeholder='Nom'
+                onChange={onNomInputChange}
+              />
+            </FormInput>
 
-            <Label display='block' marginBottom={4}>
-              Adresses email
-              {' '}
-              <span title='This field is required.'>*</span>
-            </Label>
-            {balEmails.map(email => (
-              <Pane key={email} display='flex' marginBottom={8}>
+            <FormInput>
+              <Label display='block' marginBottom={4}>
+                Adresses email
+                {' '}
+                <span title='This field is required.'>*</span>
+              </Label>
+              {balEmails.map(email => (
+                <Pane key={email} display='flex' marginBottom={8}>
+                  <TextInput
+                    readOnly
+                    disabled
+                    type='email'
+                    display='block'
+                    width='100%'
+                    maxWidth={400}
+                    value={email}
+                  />
+                  {balEmails.length > 1 && (
+                    <IconButton
+                      type='button'
+                      icon={DeleteIcon}
+                      marginLeft={4}
+                      appearance='minimal'
+                      intent='danger'
+                      onClick={() => onRemoveEmail(email)}
+                    />
+                  )}
+                </Pane>
+
+              ))}
+
+              <Pane display='flex' marginBottom={0}>
                 <TextInput
-                  readOnly
-                  disabled
-                  type='email'
                   display='block'
+                  type='email'
                   width='100%'
+                  placeholder='Ajouter une adresse email…'
                   maxWidth={400}
+                  isInvalid={Boolean(error && error.includes('mail'))}
                   value={email}
+                  disabled={baseLocale.status === 'demo'}
+                  onChange={onEmailChange}
                 />
-                {balEmails.length > 1 && (
+
+                {email && !balEmails.includes(email) && (
                   <IconButton
-                    type='button'
-                    icon={DeleteIcon}
+                    type='submit'
+                    icon={AddIcon}
                     marginLeft={4}
+                    disabled={!email}
                     appearance='minimal'
-                    intent='danger'
-                    onClick={() => onRemoveEmail(email)}
+                    intent='default'
+                    onClick={onAddEmail}
                   />
                 )}
+
               </Pane>
-            ))}
-
-            <Pane display='flex' marginBottom={16}>
-              <TextInput
-                display='block'
-                type='email'
-                width='100%'
-                placeholder='Ajouter une adresse email…'
-                maxWidth={400}
-                isInvalid={Boolean(error && error.includes('mail'))}
-                value={email}
-                disabled={baseLocale.status === 'demo'}
-                onChange={onEmailChange}
-              />
-              {email && !balEmails.includes(email) && (
-                <IconButton
-                  type='submit'
-                  icon={AddIcon}
-                  marginLeft={4}
-                  disabled={!email}
-                  appearance='minimal'
-                  intent='default'
-                  onClick={onAddEmail}
-                />
-              )}
-            </Pane>
-
+            </FormInput>
             {error && (
               <Alert marginBottom={16} intent='danger' title='Erreur'>
                 {error}
@@ -235,7 +244,7 @@ const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
               {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
 
-          </Pane>
+          </Form>
         ) : (
           <Spinner size={64} margin='auto' />
         )}

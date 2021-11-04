@@ -1,6 +1,6 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Alert} from 'evergreen-ui'
+import {Button, Alert} from 'evergreen-ui'
 
 import BalDataContext from '../../contexts/bal-data'
 import MarkersContext from '../../contexts/markers'
@@ -11,6 +11,8 @@ import useKeyEvent from '../../hooks/key-event'
 
 import AssistedTextField from '../assisted-text-field'
 
+import Form from '../form'
+import FormInput from '../form-input'
 import PositionEditor from './position-editor'
 import SelectParcelles from './numero-editor/select-parcelles'
 
@@ -113,19 +115,25 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Pane is='form' onSubmit={onFormSubmit}>
-      <AssistedTextField
-        isFocus
-        isDisabled={isLoading}
-        label='Nom du toponyme'
-        placeholder='Nom du toponyme'
-        value={nom}
-        onChange={onNomChange}
-      />
+    <Form onFormSubmit={onFormSubmit}>
+      <FormInput>
+        <AssistedTextField
+          isFocus
+          dsiabled={isLoading}
+          label='Nom du toponyme'
+          placeholder='Nom du toponyme'
+          value={nom}
+          onChange={onNomChange}
+        />
+      </FormInput>
 
-      <PositionEditor isToponyme />
+      <FormInput>
+        <PositionEditor isToponyme />
+      </FormInput>
 
-      <SelectParcelles isToponyme />
+      <FormInput>
+        <SelectParcelles isToponyme />
+      </FormInput>
 
       {error && (
         <Alert marginBottom={16} intent='danger' title='Erreur'>
@@ -148,7 +156,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
           Annuler
         </Button>
       )}
-    </Pane>
+    </Form>
   )
 }
 

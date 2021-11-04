@@ -86,7 +86,7 @@ function PositionEditor({isToponyme}) {
         appearance='primary'
         intent='success'
         width='100%'
-        marginBottom={16}
+        marginBottom={0}
         display='flex'
         justifyContent='center'
         onClick={handleAddMarker}

@@ -175,8 +175,8 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
           )}
 
           {isAdding && (
-            <Table.Row height='auto'>
-              <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+            <Table.Row height='auto' >
+              <Table.Cell borderBottom display='block' padding={0} background='tint1'>
                 <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
               </Table.Cell>
             </Table.Row>
@@ -192,7 +192,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
 
           {editingId && editingId !== toponyme._id ? (
             <Table.Row height='auto'>
-              <Table.Cell display='block' paddingY={12} background='tint1'>
+              <Table.Cell display='block' padding={0} background='tint1'>
                 <NumeroEditor
                   hasPreview
                   initialValue={editedNumero}

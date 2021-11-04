@@ -30,7 +30,7 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
   }, [isCreateMode, handleNomVoie])
 
   return (
-    <Pane display='flex' flex={1} alignItems='center'>
+    <Pane display='flex' flex={1} alignItems='flex-end'>
       <Pane>
         {isCreateMode ? (
           <AssistedTextField
@@ -46,6 +46,7 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
             label='Voie'
             flex={1}
             value={voieId}
+            margin={0}
             onChange={handleVoieChange}
           >
             {!voieId && (

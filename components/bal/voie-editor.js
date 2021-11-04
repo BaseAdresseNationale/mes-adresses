@@ -1,12 +1,14 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Checkbox, Alert} from 'evergreen-ui'
+import {Button, Checkbox, Alert} from 'evergreen-ui'
 
 import DrawContext from '../../contexts/draw'
 
 import {useInput, useCheckboxInput} from '../../hooks/input'
 import useKeyEvent from '../../hooks/key-event'
 
+import Form from '../form'
+import FormInput from '../form-input'
 import AssistedTextField from '../assisted-text-field'
 
 import DrawEditor from './draw-editor'
@@ -66,20 +68,23 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   }, [disableDraw])
 
   return (
-    <Pane is='form' onSubmit={onFormSubmit}>
-      <AssistedTextField
-        isFocus
-        label='Nom de la voie'
-        placeholder='Nom de la voie'
-        value={nom}
-        onChange={onNomChange}
-      />
+    <Form onFormSubmit={onFormSubmit}>
+      <FormInput>
+        <AssistedTextField
+          isFocus
+          label='Nom de la voie'
+          placeholder='Nom de la voie'
+          value={nom}
+          onChange={onNomChange}
+        />
 
-      <Checkbox
-        checked={isMetric}
-        label='Cette voie utilise la numérotation métrique'
-        onChange={onIsMetricChange}
-      />
+        <Checkbox
+          marginBottom={0}
+          checked={isMetric}
+          label='Cette voie utilise la numérotation métrique'
+          onChange={onIsMetricChange}
+        />
+      </FormInput>
 
       {isMetric && (
         <DrawEditor trace={initialValue ? initialValue.trace : null} />
@@ -106,7 +111,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
           Annuler
         </Button>
       )}
-    </Pane>
+    </Form>
   )
 }
 

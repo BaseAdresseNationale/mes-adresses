@@ -10,6 +10,8 @@ import {createBaseLocale, addCommune, populateCommune, searchBAL} from '../../li
 import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
 
+import Form from '../../components/form'
+import FormInput from '../../components/form-input'
 import {CommuneSearchField} from '../../components/commune-search'
 import AlertPublishedBAL from './alert-published-bal'
 
@@ -78,67 +80,80 @@ function CreateForm({defaultCommune}) {
   }
 
   return (
-    <Pane is='form' margin={16} padding={16} overflowY='scroll' background='white' onSubmit={onSubmit}>
-      {userBALs.length > 0 && (
-        <AlertPublishedBAL
-          isShown={isShown}
-          userEmail={email}
-          basesLocales={userBALs}
-          updateBAL={() => checkUserBALs(commune, email)}
-          onConfirm={createNewBal}
-          onClose={() => onCancel()}
-        />
-      )}
 
-      <TextInputField
-        ref={focusRef}
-        required
-        autoComplete='new-password' // Hack to bypass chrome autocomplete
-        name='nom'
-        id='nom'
-        value={nom}
-        maxWidth={600}
-        disabled={isLoading}
-        label='Nom de la Base Adresse Locale'
-        placeholder='Nom'
-        onChange={onNomChange}
-      />
+    <Pane overflowY='scroll' marginY={32}>
+      <Form onFormSubmit={onSubmit}>
+        {userBALs.length > 0 && (
+          <AlertPublishedBAL
+            isShown={isShown}
+            userEmail={email}
+            basesLocales={userBALs}
+            updateBAL={() => checkUserBALs(commune, email)}
+            onConfirm={createNewBal}
+            onClose={() => onCancel()}
+          />
+        )}
 
-      <TextInputField
-        required
-        type='email'
-        name='email'
-        id='email'
-        value={email}
-        maxWidth={400}
-        disabled={isLoading}
-        label='Votre adresse email'
-        placeholder='nom@example.com'
-        onChange={onEmailChange}
-      />
+        <FormInput>
+          <TextInputField
+            ref={focusRef}
+            required
+            autoComplete='new-password' // Hack to bypass chrome autocomplete
+            name='nom'
+            id='nom'
+            value={nom}
+            maxWidth={600}
+            marginBottom={0}
+            disabled={isLoading}
+            label='Nom de la Base Adresse Locale'
+            placeholder='Nom'
+            onChange={onNomChange}
+          />
+        </FormInput>
 
-      <CommuneSearchField
-        required
-        id='commune'
-        initialSelectedItem={defaultCommune}
-        label='Commune'
-        appearance='default'
-        maxWidth={500}
-        disabled={isLoading}
-        onSelect={onSelect}
-      />
+        <FormInput>
+          <TextInputField
+            required
+            type='email'
+            name='email'
+            id='email'
+            value={email}
+            maxWidth={400}
+            marginBottom={0}
+            disabled={isLoading}
+            label='Votre adresse email'
+            placeholder='nom@example.com'
+            onChange={onEmailChange}
+          />
+        </FormInput>
 
-      <Checkbox
-        label='Importer les voies et numéros depuis la BAN'
-        checked={populate}
-        disabled={isLoading}
-        onChange={onPopulateChange}
-      />
+        <FormInput>
+          <CommuneSearchField
+            required
+            id='commune'
+            initialSelectedItem={defaultCommune}
+            label='Commune'
+            appearance='default'
+            maxWidth={500}
+            disabled={isLoading}
+            onSelect={onSelect}
+          />
 
-      <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
-        {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
-      </Button>
+          <Checkbox
+            label='Importer les voies et numéros depuis la BAN'
+            checked={populate}
+            disabled={isLoading}
+            marginBottom={0}
+            onChange={onPopulateChange}
+          />
+        </FormInput>
+
+        <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
+          {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
+        </Button>
+      </Form>
     </Pane>
+
   )
 }
 

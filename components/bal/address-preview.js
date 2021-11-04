@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {Pane, Text} from 'evergreen-ui'
 import {computeCompletNumero} from '../../lib/utils/numero'
 
-const getAddressPreview = ({numero, suffixe, toponyme, voie, commune}) => {
+const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
   const completNumero = computeCompletNumero(numero, suffixe)
   if (toponyme) {
     return `${completNumero} ${voie}, ${toponyme} - ${commune.nom} (${commune.code})`
@@ -20,6 +20,8 @@ const getAddressPreview = ({numero, suffixe, toponyme, voie, commune}) => {
 }
 
 function AddressPreview({numero, suffixe, selectedNomToponyme, voie, commune}) {
+  const address = getAddressPreview(numero, suffixe, selectedNomToponyme, voie, commune)
+
   return (
     <Pane
       position='fixed'
@@ -28,13 +30,13 @@ function AddressPreview({numero, suffixe, selectedNomToponyme, voie, commune}) {
       boxSizing='border-box'
       left={0}
       zIndex={3}
-      background='blue100'
+      background='blue300'
       paddingY={8}
       paddingX={12}
       marginTop={-12}
     >
-      <Text fontSize={13}>
-        {getAddressPreview({numero, suffixe, selectedNomToponyme, voie, commune})}
+      <Text fontSize={address.length > 110 ? '12px' : '13px'} color='white'>
+        {address}
       </Text>
     </Pane>
   )
