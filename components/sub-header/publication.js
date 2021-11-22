@@ -28,7 +28,8 @@ function Publication({isAdmin, baseLocale, commune, status, onChangeStatus, onPu
     } else if (baseLocale.communes.length > 1) {
       setMultiBal(true)
     } else {
-      setIsPublicationDialogDisplayed(true)
+      // setIsPublicationDialogDisplayed(true)
+      onPublish()
     }
   }
 

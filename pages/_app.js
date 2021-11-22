@@ -111,7 +111,11 @@ function App({error, Component, pageProps, query}) {
                         <SettingsContextProvider>
                           <Settings initialBaseLocale={pageProps.baseLocale} codeCommune={pageProps.commune?.code} />
                           <Header />
-                          <SubHeader {...pageProps} initialBaseLocale={pageProps.baseLocale} />
+                          <SubHeader
+                            {...pageProps}
+                            initialBaseLocale={pageProps.baseLocale}
+                            isFranceConnectAuthentication={query['france-connect'] === '1'}
+                          />
                         </SettingsContextProvider>
                       )}
 

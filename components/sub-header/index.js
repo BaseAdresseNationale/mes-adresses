@@ -1,25 +1,28 @@
-import React, {useContext} from 'react'
+import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane} from 'evergreen-ui'
+import {Dialog, Pane, toaster} from 'evergreen-ui'
 
-import {getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
+import {createHabilitation, getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
 
 import useError from '../../hooks/error'
 
+import HabilitationProcess from '../habilitation-process/index'
+
 import Breadcrumbs from '../breadcrumbs'
 import HabilitationTag from '../habilitation-tag'
+import ReadyToPublishDialog from '../ready-to-publish-dialog'
 
 import SettingsMenu from './settings-menu'
 import Publication from './publication'
 import DemoWarning from './demo-warning'
 
-const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
-const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://mes-adresses.data.gouv.fr'
+const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFranceConnectAuthentication}) => {
+  const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(isFranceConnectAuthentication)
+  const [isReadyToPublish, setIsReadyToPublish] = useState(false)
 
-const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
   const balDataContext = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
 
@@ -27,7 +30,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
 
   const csvUrl = getBaseLocaleCsvUrl(initialBaseLocale._id)
   const baseLocale = balDataContext.baseLocale || initialBaseLocale
-  const isEntitled = baseLocale.habilitation && baseLocale.habilitation.status === 'accepted'
+  const isEntitled = balDataContext.habilitation && balDataContext.habilitation.status === 'accepted'
   const isAdmin = Boolean(token)
 
   const handleChangeStatus = async () => {
@@ -41,14 +44,31 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
     }
   }
 
-  const handlePublication = async () => {
-    try {
-      await updateBaseLocale(initialBaseLocale._id, {status: 'ready-to-publish'}, token)
-      const redirectUrl = `${EDITEUR_URL}/bal/${baseLocale._id}/communes/${commune.code}`
-      window.location.href = `${ADRESSE_URL}/bases-locales/publication?url=${encodeURIComponent(csvUrl)}&redirectUrl=${encodeURIComponent(redirectUrl)}`
-    } catch (error) {
-      setError(error.message)
+  const startHabilitation = async () => {
+    if (!balDataContext.habilitation || balDataContext.habilitation.status === 'rejected') {
+      await createHabilitation(token, initialBaseLocale._id)
+      await balDataContext.reloadHabilitation()
     }
+
+    setIsHabilitationDisplayed(true)
+  }
+
+  const handlePublication = async () => {
+    if (isEntitled) {
+      setIsReadyToPublish(true)
+    } else {
+      await startHabilitation()
+    }
+  }
+
+  const handleCloseHabilitation = () => {
+    setIsHabilitationDisplayed(false)
+    setIsReadyToPublish(balDataContext.habilitation.status === 'accepted')
+  }
+
+  const handlePublish = () => {
+    setIsReadyToPublish(false)
+    toaster.success('Votre Base Adresses Locale est publiée !')
   }
 
   return (
@@ -95,6 +115,31 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
       {baseLocale.status === 'demo' && (
         <DemoWarning baseLocale={baseLocale} token={token} />
       )}
+
+      {isAdmin && balDataContext.habilitation && (
+        <HabilitationProcess
+          token={token}
+          isShown={isHabilitationDisplayed}
+          baseLocale={baseLocale}
+          commune={commune}
+          habilitation={balDataContext.habilitation}
+          resetHabilitationProcess={startHabilitation}
+          handleClose={handleCloseHabilitation}
+        />
+      )}
+
+      {balDataContext.habilitation && (
+        <Dialog
+          isShown={isReadyToPublish}
+          title='Publier vos adresses'
+          confirmLabel='Publier'
+          cancelLabel='Annuler'
+          onConfirm={handlePublish}
+          onCloseComplete={() => setIsReadyToPublish(false)}
+        >
+          <ReadyToPublishDialog baseLocaleId={baseLocale._id} codeCommune={commune.code} />
+        </Dialog>
+      )}
     </>
   )
 })
@@ -106,13 +151,15 @@ SubHeader.propTypes = {
   }).isRequired,
   commune: PropTypes.object,
   voie: PropTypes.object,
-  toponyme: PropTypes.object
+  toponyme: PropTypes.object,
+  isFranceConnectAuthentication: PropTypes.bool
 }
 
 SubHeader.defaultProps = {
   commune: null,
   voie: null,
-  toponyme: null
+  toponyme: null,
+  isFranceConnectAuthentication: false
 }
 
 export default SubHeader
