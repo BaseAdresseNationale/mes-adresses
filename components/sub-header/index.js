@@ -12,6 +12,7 @@ import SettingsContext from '../../contexts/settings'
 import useError from '../../hooks/error'
 
 import Breadcrumbs from '../breadcrumbs'
+import HabilitationTag from '../habilitation-tag'
 
 import Publication from './publication'
 import DemoWarning from './demo-warning'
@@ -28,6 +29,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
 
   const csvUrl = getBaseLocaleCsvUrl(initialBaseLocale._id)
   const baseLocale = balDataContext.baseLocale || initialBaseLocale
+  const isEntitled = baseLocale.habilitation && baseLocale.habilitation.status === 'accepted'
 
   const handleChangeStatus = async () => {
     try {
@@ -72,7 +74,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
           marginLeft={8}
         />
 
-        <Pane marginLeft='auto' display='flex'>
+        <Pane marginLeft='auto' display='flex' gap={16}>
           <Popover
             position={Position.BOTTOM_RIGHT}
             content={
@@ -101,11 +103,12 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
               height={24}
               iconAfter={CogIcon}
               appearance='minimal'
-              marginRight={16}
             >
               Paramètres
             </Button>
           </Popover>
+
+          {isEntitled && <HabilitationTag communeName={commune.nom} />}
 
           {baseLocale.status !== 'demo' && commune && (
             <Publication

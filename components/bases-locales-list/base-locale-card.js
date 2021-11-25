@@ -1,6 +1,6 @@
 import {useState, useEffect, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Heading, Badge, Card, Pane, Button, Tooltip, Text, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
+import {Heading, Badge, Card, Pane, Button, Tooltip, Spinner, Text, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 
@@ -13,6 +13,7 @@ import LocalStorageContext from '../../contexts/local-storage'
 
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 import CertificationCount from '../certification-count'
+import HabilitationTag from '../habilitation-tag'
 
 const statusBadges = {
   published: {color: 'green', background: '#DCF2EA', label: 'Publiée'},
@@ -34,6 +35,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
   const badge = statusBadges[baseLocale.status]
+  const isEntitled = baseLocale.habilitation && baseLocale.habilitation.status === 'accepted'
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen)
@@ -96,11 +98,15 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
               </Pane>
             </Pane>
 
-            {communes.length === 1 && commune && (
-              <Pane justifySelf='end' alignSelf='center'>
+            <Pane display='grid' justifySelf='end' alignSelf='center' gridTemplateColumns='1fr 24px' gap='1em'>
+              {communes.length === 1 && commune && (
                 <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
-              </Pane>
-            )}
+              )}
+
+              {isEntitled && (
+                commune ? <HabilitationTag communeName={commune.nom} /> : <Spinner size={24} />
+              )}
+            </Pane>
           </Pane>
 
           <Pane
@@ -202,6 +208,9 @@ BaseLocaleCard.propTypes = {
     nom: PropTypes.string.isRequired,
     communes: PropTypes.array.isRequired,
     emails: PropTypes.array,
+    habilitation: PropTypes.shape({
+      status: PropTypes.oneOf(['pending', 'accepted', 'rejected'])
+    }),
     _updated: PropTypes.string,
     _created: PropTypes.string,
     description: PropTypes.string,
