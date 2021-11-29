@@ -66,7 +66,7 @@ export function getNumerosLabelLayer() {
       }
     },
     layout: {
-      'text-font': ['Noto Sans Regular'],
+      'text-font': ['Source Sans Pro Regular'],
       'text-field': [
         'case',
         ['has', 'suffixe'],

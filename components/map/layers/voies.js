@@ -31,7 +31,7 @@ export function getVoiesLabelLayer(style) {
           [15, 14]
         ]
       },
-      'text-font': ['Noto Sans Regular']
+      'text-font': ['Source Sans Pro Regular']
     }
   }
 

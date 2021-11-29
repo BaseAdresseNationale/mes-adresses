@@ -11,12 +11,8 @@
       "cadastre": {
         "type": "vector",
         "url": 
-			"https://wxs.ign.fr/parcellaire/geoportail/wmts?layer=CADASTRALPARCELS.PARCELLAIRE_EXPRESS&style=PCI vecteur&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image/png&TileMatrix={z}&TileCol={x}&TileRow={y}"
-        },
-		"decoupage-administratif": {
-			"type": "vector",
-			"url": "https://openmaptiles.geo.data.gouv.fr/data/decoupage-administratif.json"
-		  }
+			"https://wxs.ign.fr/parcellaire/geoportail/wmts?layer=&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image/png&TileMatrix={z}&TileCol={x}&TileRow={y}"
+        }
     },
 
 	"transition": {
