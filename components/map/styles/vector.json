@@ -7,12 +7,15 @@
       "plan_ign": {
         "type": "vector",
         "url": "https://wxs.ign.fr/essentiels/geoportail/tms/1.0.0/PLAN.IGN/metadata.json/"
-      },
-      "cadastre": {
-        "type": "vector",
-        "url": 
-			"https://wxs.ign.fr/parcellaire/geoportail/wmts?layer=&style=normal&tilematrixset=PM&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image/png&TileMatrix={z}&TileCol={x}&TileRow={y}"
-        }
+		},
+		"cadastre": {
+			"type": "vector",
+			"url": "https://openmaptiles.geo.data.gouv.fr/data/cadastre.json"
+		  },
+		  "decoupage-administratif": {
+			"type": "vector",
+			"url": "https://openmaptiles.geo.data.gouv.fr/data/decoupage-administratif.json"
+		  }
     },
 
 	"transition": {

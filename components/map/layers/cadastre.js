@@ -130,7 +130,7 @@ export const cadastreLayers = parcelles => [{
   layout: {
     'text-field': '{code}',
     'text-font': [
-      'Noto Sans Bold'
+      'Source Sans Pro Regular'
     ]
   },
   paint: {
@@ -150,7 +150,7 @@ export const cadastreLayers = parcelles => [{
   layout: {
     'text-field': '{numero}',
     'text-font': [
-      'Noto Sans Bold'
+      'Source Sans Pro Regular'
     ],
     'text-allow-overlap': false,
     'text-size': 16
