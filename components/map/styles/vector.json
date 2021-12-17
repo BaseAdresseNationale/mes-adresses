@@ -37,7 +37,7 @@
 		 },
 		 "paint": {
 		  "fill-color": "#FFFFFF",
-		  "fill-opacity": 1
+		  "fill-opacity": 0.1
 		 }
 		},
 		{
@@ -1620,7 +1620,7 @@
 		  "ESCALIER_SOU"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -2589,7 +2589,7 @@
 		   "stops": [
 			[
 			 12,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 13,
@@ -2705,7 +2705,7 @@
 		   "stops": [
 			[
 			 9,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 10,
@@ -2951,7 +2951,7 @@
 		  "AUTOROU_LIBRE_SOU"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -4272,7 +4272,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -4374,7 +4374,7 @@
 		  "ESCALIER"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -4485,7 +4485,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -4544,7 +4544,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -4645,7 +4645,7 @@
 		  "NON_REVETUE_CARRO"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -4706,7 +4706,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -4760,7 +4760,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -4811,7 +4811,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -4874,7 +4874,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -4986,7 +4986,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -5098,7 +5098,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -5211,7 +5211,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -5413,7 +5413,7 @@
 		  "NON_CLASSEE"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -5465,11 +5465,11 @@
 			],
 			[
 			 7,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 12,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 13,
@@ -5528,7 +5528,7 @@
 		   "stops": [
 			[
 			 12,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 13,
@@ -5603,11 +5603,11 @@
 			],
 			[
 			 7,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 9,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 10,
@@ -5674,7 +5674,7 @@
 		   "stops": [
 			[
 			 9,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 10,
@@ -5957,7 +5957,7 @@
 		  "AUTOROU_LIBRE"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -6500,7 +6500,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -6603,7 +6603,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -6648,7 +6648,7 @@
 		  "PONT_MOBILE_LIN"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -6688,7 +6688,7 @@
 		  "SURF_ROUT_NON_CLA"
 		 ],
 		 "paint": {
-		  "fill-color": "#FFFFFF",
+		  "fill-color": "#EDF1FF",
 		  "fill-outline-color": "#000000"
 		 }
 		},
@@ -6932,7 +6932,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7204,7 +7204,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7323,7 +7323,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7377,7 +7377,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7428,7 +7428,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7490,7 +7490,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7602,7 +7602,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7714,7 +7714,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7827,7 +7827,7 @@
 			],
 			[
 			 18,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			]
 		   ]
 		  },
@@ -7926,7 +7926,7 @@
 		  "NON_REVETUE_CARRO_SUP"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -8072,7 +8072,7 @@
 		  "NON_CLASSEE_SUP"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -8120,7 +8120,7 @@
 		   "stops": [
 			[
 			 12,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 13,
@@ -8180,7 +8180,7 @@
 		   "stops": [
 			[
 			 12,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 13,
@@ -8247,7 +8247,7 @@
 		   "stops": [
 			[
 			 9,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 10,
@@ -8311,7 +8311,7 @@
 		   "stops": [
 			[
 			 9,
-			 "#FFFFFF"
+			 "#EDF1FF"
 			],
 			[
 			 10,
@@ -8571,7 +8571,7 @@
 		  "AUTOROU_LIBRE_SUP"
 		 ],
 		 "paint": {
-		  "line-color": "#FFFFFF",
+		  "line-color": "#EDF1FF",
 		  "line-width": {
 		   "stops": [
 			[
@@ -9522,38 +9522,7 @@
 		  "text-halo-color": "#FFFFFF"
 		 }
 		},
-		{
-		 "id": "toponyme - parcellaire - adresse",
-		 "type": "symbol",
-		 "source": "plan_ign",
-		 "source-layer": "toponyme_parcellaire_adresse_ponc",
-		 "filter": [
-		  "==",
-		  "txt_typo",
-		  "ADRESSE"
-		 ],
-		 "layout": {
-		  "symbol-placement": "point",
-		  "text-field": [
-		   "concat",
-		   "{numero}",
-		   "{indice_de_repetition}"
-		  ],
-		  "text-size": 11,
-		  "text-anchor": "center",
-		  "text-keep-upright": true,
-		  "text-max-angle": 45,
-		  "text-font": [
-		   "Source Sans Pro Bold"
-		  ],
-		  "visibility": "none"
-		 },
-		 "paint": {
-		  "text-color": "#695744",
-		  "text-halo-width": 1,
-		  "text-halo-color": "#FFFFFF"
-		 }
-		},
+		
 		{
 		 "id": "limite admin - limite de commune",
 		 "type": "line",
@@ -12359,7 +12328,7 @@
 		  ]
 		 ],
 		 "layout": {
-		  "visibility": "visible",
+		  "visibility": "none",
 		  "symbol-placement": "point",
 		  "text-field": "{texte}",
 		  "text-size": 13,
@@ -12618,7 +12587,7 @@
 		  ]
 		 ],
 		 "layout": {
-		  "visibility": "visible",
+		  "visibility": "none",
 		  "symbol-placement": "point",
 		  "text-field": "{texte}",
 		  "text-size": 16,
@@ -12812,7 +12781,7 @@
 		  ]
 		 ],
 		 "layout": {
-		  "visibility": "visible",
+		  "visibility": "none",
 		  "symbol-placement": "point",
 		  "text-field": "{texte}",
 		  "text-size": 19,
@@ -12848,7 +12817,7 @@
 		  ]
 		 ],
 		 "layout": {
-		  "visibility": "visible",
+		  "visibility": "none",
 		  "symbol-placement": "point",
 		  "text-field": "{texte}",
 		  "text-size": 22,

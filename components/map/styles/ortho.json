@@ -1,6 +1,7 @@
 {
   "version": 8,
-  "glyphs": "https://openmaptiles.geo.data.gouv.fr/fonts/{fontstack}/{range}.pbf",
+  "glyphs":"https://wxs.ign.fr/static/vectorTiles/fonts/{fontstack}/{range}.pbf",
+	"sprite": "https://wxs.ign.fr/static/vectorTiles/styles/PLAN.IGN/sprite/PlanIgn",
   "sources": {
     "raster-tiles": {
       "type": "raster",
