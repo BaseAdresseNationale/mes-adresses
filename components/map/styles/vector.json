@@ -3336,24 +3336,7 @@
 		  }
 		 }
 		},
-		{
-		 "id": "parcellaire - parcelle surface",
-		 "type": "fill",
-		 "source": "plan_ign",
-		 "source-layer": "parcellaire_parcelle",
-		 "layout": {
-		  "visibility": "none"
-		 },
-		 "filter": [
-		  "==",
-		  "symbo",
-		  "PARCELLE"
-		 ],
-		 "paint": {
-		  "fill-color": "#FFFFD1",
-		  "fill-opacity": 0.7
-		 }
-		},
+		
 		{
 		 "id": "bati surfacique mairie - Zoom 14",
 		 "type": "fill",
@@ -9419,109 +9402,6 @@
 		  ]
 		 }
 		},
-		{
-		 "id": "parcellaire - parcelle bordure",
-		 "type": "line",
-		 "source": "plan_ign",
-		 "source-layer": "parcellaire_parcelle",
-		 "layout": {
-		  "visibility": "none",
-		  "line-cap": "round",
-		  "line-join": "round"
-		 },
-		 "filter": [
-		  "==",
-		  "symbo",
-		  "PARCELLE"
-		 ],
-		 "paint": {
-		  "line-color": "#9933FF",
-		  "line-width": 1
-		 }
-		},
-		{
-		 "id": "parcellaire - section",
-		 "type": "line",
-		 "source": "plan_ign",
-		 "source-layer": "parcellaire_section",
-		 "layout": {
-		  "visibility": "none",
-		  "line-cap": "butt",
-		  "line-join": "round"
-		 },
-		 "filter": [
-		  "==",
-		  "symbo",
-		  "SECTION"
-		 ],
-		 "paint": {
-		  "line-color": "#287B00",
-		  "line-width": 1.9,
-		  "line-dasharray": [
-		   2,
-		   4,
-		   2
-		  ]
-		 }
-		},
-		{
-		 "id": "toponyme - parcellaire - section",
-		 "type": "symbol",
-		 "source": "plan_ign",
-		 "source-layer": "toponyme_parcellaire_section",
-		 "filter": [
-		  "==",
-		  "txt_typo",
-		  "SECTION"
-		 ],
-		 "layout": {
-		  "symbol-placement": "line",
-		  "text-offset": [
-		   0,
-		   0
-		  ],
-		  "text-field": "{texte}",
-		  "text-size": 15,
-		  "text-anchor": "center",
-		  "text-keep-upright": true,
-		  "text-max-angle": 45,
-		  "text-font": [
-		   "Source Sans Pro Regular"
-		  ],
-		  "visibility": "none"
-		 },
-		 "paint": {
-		  "text-color": "#287B00"
-		 }
-		},
-		{
-		 "id": "toponyme - parcellaire - parcelle",
-		 "type": "symbol",
-		 "source": "plan_ign",
-		 "source-layer": "toponyme_parcellaire_parcelle",
-		 "filter": [
-		  "==",
-		  "txt_typo",
-		  "PARCELLE"
-		 ],
-		 "layout": {
-		  "symbol-placement": "point",
-		  "text-field": "{texte}",
-		  "text-size": 11,
-		  "text-anchor": "center",
-		  "text-keep-upright": true,
-		  "text-max-angle": 45,
-		  "text-font": [
-		   "Source Sans Pro Bold"
-		  ],
-		  "visibility": "none"
-		 },
-		 "paint": {
-		  "text-color": "#9933FF",
-		  "text-halo-width": 1,
-		  "text-halo-color": "#FFFFFF"
-		 }
-		},
 		
 		{
 		 "id": "limite admin - limite de commune",
@@ -12462,74 +12342,6 @@
 		 }
 		},
 		{
-		 "id": "toponyme quartier ",
-		 "type": "symbol",
-		 "source": "plan_ign",
-		 "source-layer": "toponyme_localite_ponc",
-		 "filter": [
-		  "in",
-		  "txt_typo",
-		  "BAT_QUARTIER",
-		  "BAT_QUARTIER_T"
-		 ],
-		 "layout": {
-		  "visibility": "visible",
-		  "symbol-placement": "point",
-		  "text-field": "{texte}",
-		  "text-size": 11,
-		  "text-allow-overlap": false,
-		  "text-padding": 1,
-		  "text-font": [
-		   "Source Sans Pro Italic"
-		  ]
-		 },
-		 "paint": {
-		  "text-color": "#000000",
-		  "text-halo-color": "rgba(255, 255, 255, 0.5)",
-		  "text-halo-width": 2
-		 }
-		},
-		{
-		 "id": "toponyme localite n0 typoA10",
-		 "type": "symbol",
-		 "source": "plan_ign",
-		 "source-layer": "toponyme_localite_ponc",
-		 "maxzoom": 21,
-		 "filter": [
-		  "==",
-		  "txt_typo",
-		  "TYPO_A_10"
-		 ],
-		 "layout": {
-		  "visibility": "visible",
-		  "symbol-placement": "point",
-		  "text-field": "{texte}",
-		  "text-size": {
-		   "stops": [
-			[
-			 15,
-			 11
-			],
-			[
-			 17,
-			 13.5
-			]
-		   ]
-		  },
-		  "text-allow-overlap": true,
-		  "text-anchor": "center",
-		  "text-padding": 1,
-		  "text-font": [
-		   "Source Sans Pro Regular"
-		  ]
-		 },
-		 "paint": {
-		  "text-color": "#000000",
-		  "text-halo-color": "rgba(255, 255, 255, 0.5)",
-		  "text-halo-width": 2
-		 }
-		},
-		{
 		 "id": "toponyme - lieu dit non habité",
 		 "type": "symbol",
 		 "source": "plan_ign",
@@ -12599,43 +12411,6 @@
 		 },
 		 "paint": {
 		  "text-color": "#287B00",
-		  "text-halo-color": "rgba(255, 255, 255, 0.5)",
-		  "text-halo-width": 2
-		 }
-		},
-		{
-		 "id": "toponyme localite hameau ",
-		 "type": "symbol",
-		 "source": "plan_ign",
-		 "source-layer": "toponyme_localite_ponc",
-		 "minzoom": 11,
-		 "maxzoom": 21,
-		 "filter": [
-		  "in",
-		  "txt_typo",
-		  "BAT_HAMEAU",
-		  "BAT_HAMEAU_T"
-		 ],
-		 "layout": {
-		  "visibility": "visible",
-		  "symbol-placement": "point",
-		  "icon-image": "Localite",
-		  "icon-size": 0.17,
-		  "text-field": "{texte}",
-		  "text-size": 11,
-		  "text-allow-overlap": false,
-		  "text-anchor": "bottom-left",
-		  "text-offset": [
-		   0.3,
-		   0.1
-		  ],
-		  "text-padding": 1,
-		  "text-font": [
-		   "Source Sans Pro Regular"
-		  ]
-		 },
-		 "paint": {
-		  "text-color": "#000000",
 		  "text-halo-color": "rgba(255, 255, 255, 0.5)",
 		  "text-halo-width": 2
 		 }
@@ -13179,86 +12954,6 @@
 		   0.3,
 		   0.1
 		  ],
-		  "text-padding": 1,
-		  "text-font": [
-		   "Source Sans Pro Regular"
-		  ]
-		 },
-		 "paint": {
-		  "text-color": "#000000",
-		  "text-halo-color": "rgba(255, 255, 255, 0.5)",
-		  "text-halo-width": 2
-		 }
-		},
-		{
-		 "id": "toponyme localite n0 typoA9",
-		 "type": "symbol",
-		 "source": "plan_ign",
-		 "source-layer": "toponyme_localite_ponc",
-		 "maxzoom": 21,
-		 "filter": [
-		  "==",
-		  "txt_typo",
-		  "TYPO_A_9"
-		 ],
-		 "layout": {
-		  "visibility": "visible",
-		  "symbol-placement": "point",
-		  "text-field": "{texte}",
-		  "text-size": {
-		   "stops": [
-			[
-			 15,
-			 11.5
-			],
-			[
-			 17,
-			 14
-			]
-		   ]
-		  },
-		  "text-allow-overlap": true,
-		  "text-anchor": "center",
-		  "text-padding": 1,
-		  "text-font": [
-		   "Source Sans Pro Regular"
-		  ]
-		 },
-		 "paint": {
-		  "text-color": "#000000",
-		  "text-halo-color": "rgba(255, 255, 255, 0.5)",
-		  "text-halo-width": 2
-		 }
-		},
-		{
-		 "id": "toponyme localite n0 typoA8",
-		 "type": "symbol",
-		 "source": "plan_ign",
-		 "source-layer": "toponyme_localite_ponc",
-		 "maxzoom": 21,
-		 "filter": [
-		  "==",
-		  "txt_typo",
-		  "TYPO_A_8"
-		 ],
-		 "layout": {
-		  "visibility": "visible",
-		  "symbol-placement": "point",
-		  "text-field": "{texte}",
-		  "text-size": {
-		   "stops": [
-			[
-			 15,
-			 12
-			],
-			[
-			 17,
-			 15
-			]
-		   ]
-		  },
-		  "text-allow-overlap": true,
-		  "text-anchor": "center",
 		  "text-padding": 1,
 		  "text-font": [
 		   "Source Sans Pro Regular"
