@@ -1,7 +1,7 @@
 import {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Dialog, Pane, toaster} from 'evergreen-ui'
+import {Dialog, Pane, Text, Spinner, toaster} from 'evergreen-ui'
 
 const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://mes-adresses.data.gouv.fr'
 
@@ -26,8 +26,9 @@ function getStep(habilitation) {
   return 0
 }
 
-function HabilitationProcess({isShown, token, baseLocale, commune, habilitation, resetHabilitationProcess, handleClose}) {
+function HabilitationProcess({isShown, token, baseLocale, commune, habilitation, handleSync, resetHabilitationProcess, handleClose}) {
   const [step, setStep] = useState(getStep(habilitation))
+  const [isLoading, setIsLoading] = useState(false)
 
   const {reloadHabilitation} = useContext(BalDataContext)
 
@@ -41,6 +42,7 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
   }
 
   const handleStrategy = async selectedStrategy => {
+    setIsLoading(true)
     if (selectedStrategy === 'email') {
       try {
         await sendCode()
@@ -55,9 +57,12 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
     if (selectedStrategy === 'france-connect' && habilitation.franceconnectAuthenticationUrl) {
       redirectToFranceConnect()
     }
+
+    setIsLoading(false)
   }
 
   const handleValidationCode = async code => {
+    setIsLoading(true)
     const {status, validated, remainingAttempts} = await validateAuthenticationCode(token, baseLocale._id, code)
 
     if (!remainingAttempts) {
@@ -73,12 +78,22 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
 
       await reloadHabilitation()
     }
+
+    setIsLoading(false)
   }
 
   // Restart habilitation process, create new habilitation
   const handleReset = () => {
     setStep(0)
     resetHabilitationProcess()
+  }
+
+  const handleConfirm = () => {
+    if (habilitation.status === 'accepted') {
+      handleSync()
+    }
+
+    handleClose()
   }
 
   useEffect(() => {
@@ -90,10 +105,13 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
       isShown={isShown}
       preventBodyScrolling
       hasHeader={false}
+      intent='success'
       hasFooter={step === 2}
-      hasCancel={false}
+      hasCancel={step === 2 && habilitation.status === 'accepted'}
       width={1000}
-      confirmLabel={habilitation.status === 'rejected' ? 'Fermer' : 'Continuer'}
+      confirmLabel={habilitation.status === 'rejected' ? 'Fermer' : 'Publier'}
+      cancelLabel='Attendre'
+      onConfirm={handleConfirm}
       onCloseComplete={handleClose}
     >
       <Pane marginY={16}>
@@ -117,6 +135,7 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
         {step === 2 && habilitation.status === 'accepted' && (
           <AcceptedDialog
             {...habilitation}
+            baseLocaleId={baseLocale._id}
             commune={commune}
           />
         )}
@@ -125,6 +144,13 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
           <RejectedDialog communeName={commune.nom} strategyType={habilitation.strategy.type} />
         )}
       </Pane>
+
+      {isLoading && (
+        <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+          <Spinner size={42} />
+          <Text fontStyle='italic'>Chargement…</Text>
+        </Pane>
+      )}
     </Dialog>
 
   )
@@ -148,6 +174,7 @@ HabilitationProcess.propTypes = {
       type: PropTypes.oneOf(['email', 'franceconnect'])
     }),
   }).isRequired,
+  handleSync: PropTypes.func.isRequired,
   resetHabilitationProcess: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired
 }

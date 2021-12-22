@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import NextImage from 'next/image'
 import {Pane, Heading, Button, Text, Icon, HistoryIcon, StatusIndicator, Spinner} from 'evergreen-ui'
 
-import {getRevisions} from '../../../lib/ban-api'
+import {getRevisions} from '../../../../lib/ban-api'
 
 function BANHistory({codeCommune}) {
   const [revisions, setRevisions] = useState()
@@ -26,7 +26,7 @@ function BANHistory({codeCommune}) {
   }, [codeCommune])
 
   return (
-    <Pane>
+    <Pane marginY={8}>
       <Heading is='h3' display='flex' alignItems='center' marginY={8}>
         Historique de mise à jour <Icon icon={HistoryIcon} marginLeft={4} />
       </Heading>
@@ -59,11 +59,13 @@ function BANHistory({codeCommune}) {
             <Text color='muted'>Aucune Base Adresses Locales trouvée</Text>
           )}
 
-          <Pane display='flex' justifyContent='center' >
-            <Button appearance='minimal' marginTop={8} onClick={() => setIsLimited(isLimited => !isLimited)}>
-              {isLimited ? 'Afficher tout l’historique' : 'Réduire'}
-            </Button>
-          </Pane>
+          {revisions.length > 0 && (
+            <Pane display='flex' justifyContent='center' >
+              <Button appearance='minimal' marginTop={8} onClick={() => setIsLimited(isLimited => !isLimited)}>
+                {isLimited ? 'Afficher tout l’historique' : 'Réduire'}
+              </Button>
+            </Pane>
+          )}
         </>
       )}
     </Pane>

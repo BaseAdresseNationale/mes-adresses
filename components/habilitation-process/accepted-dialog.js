@@ -1,10 +1,32 @@
+import {useState, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, Alert, Text, Strong} from 'evergreen-ui'
+import {Pane, Heading, Alert, Text, Link, Strong, DownloadIcon} from 'evergreen-ui'
+
+import {getBaseLocaleCsvUrl, getCommune} from '../../lib/bal-api'
+
+import StatusBadge from '../status-badge'
 
 import AuthenticatedUser from './authenticated-user'
 
-function AcceptedDialog({commune, strategy, expiresAt}) {
+function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt}) {
+  const [isBALCertified, setIsBALCertified] = useState(false)
+
   const {nomNaissance, nomMarital, prenom, typeMandat} = strategy.mandat || {}
+
+  const csvUrl = useMemo(() => {
+    return getBaseLocaleCsvUrl(baseLocaleId)
+  }, [baseLocaleId])
+
+  useEffect(() => {
+    async function fectCommune() {
+      const communeBAL = await getCommune(baseLocaleId, commune.code)
+      const {nbNumeros, nbNumerosCertifies} = communeBAL
+
+      setIsBALCertified(nbNumeros === nbNumerosCertifies)
+    }
+
+    fectCommune()
+  }, [baseLocaleId, commune.code, setIsBALCertified])
 
   return (
     <Pane>
@@ -29,11 +51,59 @@ function AcceptedDialog({commune, strategy, expiresAt}) {
           </Pane>
         </Alert>
       </Pane>
+
+      <Pane marginTop={32}>
+        <Pane display='flex' marginBottom={16}>
+          <Heading is='h3' marginBottom={4}>Votre Base Adresse Locale est maintenant &nbsp;</Heading>
+          <Pane
+            marginRight={8}
+            paddingTop={2}
+            height={20}
+          >
+            <StatusBadge status='ready-to-publish' sync={null} />
+          </Pane>
+        </Pane>
+
+        <Text is='div'>
+          Vous pouvez dès maintenant publier vos adresses afin de <Strong>mettre à jour la Base Adresse Nationale</Strong>.
+        </Text>
+        <Text is='div' marginTop={4}>
+          Une fois la publication effective, <Strong>il vous sera toujours possible de modifier vos adresses</Strong> afin de les mettre à jour.
+        </Text>
+
+        {!isBALCertified && (
+          <Alert
+            intent='warning'
+            title='Toutes vos adresses ne sont pas certifiées'
+            marginY={16}
+          >
+            <Text is='div' color='muted' marginTop={4}>
+              Nous vous recommandons de certifier la <Strong>totalité de vos adresses</Strong>.
+            </Text>
+            <Text is='div' color='muted' marginTop={4}>
+              Une adresse certifiée est déclarée <Strong>authentique par la mairie</Strong>, ce qui <Strong>renforce la qualité de la Base Adresse Locale et facilite sa réutilisation</Strong>.
+            </Text>
+            <Text is='div' color='muted' marginTop={4}>
+              Vous êtes cependant libre de <Strong>publier maintenant et certifier vos adresses plus tard</Strong>.
+            </Text>
+            <Text is='div' color='muted' marginTop={4}>
+              Notez qu’il est possible de certifier la totalité de vos adresses depuis le menu « Paramètres ».
+            </Text>
+          </Alert>
+        )}
+
+        <Link href={csvUrl} display='flex' marginTop='1em'>
+          Télécharger vos adresses au format CSV
+          <DownloadIcon marginLeft='.5em' marginTop='3px' />
+        </Link>
+      </Pane>
+
     </Pane>
   )
 }
 
 AcceptedDialog.propTypes = {
+  baseLocaleId: PropTypes.string.isRequired,
   commune: PropTypes.shape({
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired

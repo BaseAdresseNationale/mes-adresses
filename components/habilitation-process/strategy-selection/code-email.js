@@ -58,7 +58,8 @@ function CodeEmail({emailCommune, handleStrategy}) {
             </Text>
             <AnnuaireServicePublic />
           </Alert>
-        )) : (
+        )
+      ) : (
         <Alert intent='danger' title='Aucune adresse email connue pour cette commune' marginTop={16} textAlign='left'>
           <AnnuaireServicePublic />
         </Alert>

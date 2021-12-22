@@ -1,8 +1,8 @@
 import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Dialog, Pane, toaster} from 'evergreen-ui'
+import {Pane} from 'evergreen-ui'
 
-import {createHabilitation, getBaseLocaleCsvUrl, updateBaseLocale} from '../../lib/bal-api'
+import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '../../lib/bal-api'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
@@ -13,15 +13,13 @@ import HabilitationProcess from '../habilitation-process/index'
 
 import Breadcrumbs from '../breadcrumbs'
 import HabilitationTag from '../habilitation-tag'
-import ReadyToPublishDialog from '../ready-to-publish-dialog'
 
 import SettingsMenu from './settings-menu'
-import Publication from './publication'
 import DemoWarning from './demo-warning'
+import BALStatus from './bal-status'
 
 const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFranceConnectAuthentication}) => {
   const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(isFranceConnectAuthentication)
-  const [isReadyToPublish, setIsReadyToPublish] = useState(false)
 
   const balDataContext = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
@@ -33,10 +31,9 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
   const isEntitled = balDataContext.habilitation && balDataContext.habilitation.status === 'accepted'
   const isAdmin = Boolean(token)
 
-  const handleChangeStatus = async () => {
+  const handleChangeStatus = async status => {
     try {
-      const newStatus = baseLocale.status === 'draft' ? 'ready-to-publish' : 'draft'
-      await updateBaseLocale(initialBaseLocale._id, {status: newStatus}, token)
+      await updateBaseLocale(initialBaseLocale._id, {status}, token)
 
       await balDataContext.reloadBaseLocale()
     } catch (error) {
@@ -44,7 +41,9 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
     }
   }
 
-  const startHabilitation = async () => {
+  const handleHabilitation = async () => {
+    await handleChangeStatus('ready-to-publish')
+
     if (!balDataContext.habilitation || balDataContext.habilitation.status === 'rejected') {
       await createHabilitation(token, initialBaseLocale._id)
       await balDataContext.reloadHabilitation()
@@ -53,22 +52,13 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
     setIsHabilitationDisplayed(true)
   }
 
-  const handlePublication = async () => {
-    if (isEntitled) {
-      setIsReadyToPublish(true)
-    } else {
-      await startHabilitation()
-    }
-  }
-
   const handleCloseHabilitation = () => {
     setIsHabilitationDisplayed(false)
-    setIsReadyToPublish(balDataContext.habilitation.status === 'accepted')
   }
 
-  const handlePublish = () => {
-    setIsReadyToPublish(false)
-    toaster.success('Votre Base Adresses Locale est publiée !')
+  const handleSync = async () => {
+    await sync(baseLocale._id, token)
+    await balDataContext.reloadBaseLocale()
   }
 
   return (
@@ -86,7 +76,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
         alignItems='center'
         padding={8}
       >
-        {isEntitled && <HabilitationTag communeName={commune.nom} />}
+        {isEntitled && commune && <HabilitationTag communeName={commune.nom} />}
 
         <Breadcrumbs
           baseLocale={baseLocale}
@@ -98,17 +88,16 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
 
         <Pane marginLeft='auto' display='flex' alignItems='center'>
           <SettingsMenu isAdmin={isAdmin} csvUrl={csvUrl} />
-
-          {baseLocale.status !== 'demo' && commune && (
-            <Publication
-              border
-              isAdmin={isAdmin}
+          {commune && (
+            <BALStatus
               baseLocale={baseLocale}
-              commune={commune}
-              status={baseLocale.status}
-              onChangeStatus={handleChangeStatus}
-              onPublish={handlePublication}
-            />)}
+              codeCommune={commune.code}
+              token={token}
+              handleChangeStatus={handleChangeStatus}
+              handleHabilitation={handleHabilitation}
+              reloadBaseLocale={async () => balDataContext.reloadBaseLocale()}
+            />
+          )}
         </Pane>
       </Pane>
 
@@ -116,29 +105,17 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
         <DemoWarning baseLocale={baseLocale} token={token} />
       )}
 
-      {isAdmin && balDataContext.habilitation && (
+      {isAdmin && commune && balDataContext.habilitation && (
         <HabilitationProcess
           token={token}
           isShown={isHabilitationDisplayed}
           baseLocale={baseLocale}
           commune={commune}
           habilitation={balDataContext.habilitation}
-          resetHabilitationProcess={startHabilitation}
+          resetHabilitationProcess={handleHabilitation}
           handleClose={handleCloseHabilitation}
+          handleSync={handleSync}
         />
-      )}
-
-      {balDataContext.habilitation && (
-        <Dialog
-          isShown={isReadyToPublish}
-          title='Publier vos adresses'
-          confirmLabel='Publier'
-          cancelLabel='Annuler'
-          onConfirm={handlePublish}
-          onCloseComplete={() => setIsReadyToPublish(false)}
-        >
-          <ReadyToPublishDialog baseLocaleId={baseLocale._id} codeCommune={commune.code} />
-        </Dialog>
       )}
     </>
   )
