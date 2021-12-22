@@ -1,10 +1,11 @@
-import {useState, useContext, useEffect} from 'react'
+import {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Dialog, Pane, Text, Spinner, toaster} from 'evergreen-ui'
 
 const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://mes-adresses.data.gouv.fr'
 
+import {getRevisions} from '../../lib/ban-api'
 import {sendAuthenticationCode, validateAuthenticationCode} from '../../lib/bal-api'
 
 import BalDataContext from '../../contexts/bal-data'
@@ -29,6 +30,7 @@ function getStep(habilitation) {
 function HabilitationProcess({isShown, token, baseLocale, commune, habilitation, handleSync, resetHabilitationProcess, handleClose}) {
   const [step, setStep] = useState(getStep(habilitation))
   const [isLoading, setIsLoading] = useState(false)
+  const [isConflicted, setIsConflicted] = useState(false)
 
   const {reloadHabilitation} = useContext(BalDataContext)
 
@@ -61,6 +63,16 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
     setIsLoading(false)
   }
 
+  // Checks revisions to warn of a conflict
+  const checkConflictingRevision = useCallback(async () => {
+    try {
+      const revisions = await getRevisions(commune.code)
+      setIsConflicted(revisions.length > 0)
+    } catch (error) {
+      console.log('Impossible de récupérer les révisions pour cette commune. Error :', error)
+    }
+  }, [commune.code])
+
   const handleValidationCode = async code => {
     setIsLoading(true)
     const {status, validated, remainingAttempts} = await validateAuthenticationCode(token, baseLocale._id, code)
@@ -73,6 +85,7 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
 
       // Habilitation accepted
       if (status === 'accepted') {
+        checkConflictingRevision()
         setStep(2)
       }
 
@@ -97,19 +110,24 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
   }
 
   useEffect(() => {
-    setStep(getStep(habilitation))
-  }, [isShown, habilitation])
+    const step = getStep(habilitation)
+    if (step === 2) {
+      checkConflictingRevision()
+    }
+
+    setStep(step)
+  }, [isShown, habilitation, checkConflictingRevision])
 
   return (
     <Dialog
       isShown={isShown}
       preventBodyScrolling
       hasHeader={false}
-      intent='success'
+      intent={isConflicted ? 'danger' : 'success'}
       hasFooter={step === 2}
       hasCancel={step === 2 && habilitation.status === 'accepted'}
       width={1000}
-      confirmLabel={habilitation.status === 'rejected' ? 'Fermer' : 'Publier'}
+      confirmLabel={habilitation.status === 'accepted' ? (isConflicted ? 'Forcer la publication' : 'Publier') : 'Fermer'}
       cancelLabel='Attendre'
       onConfirm={handleConfirm}
       onCloseComplete={handleClose}
@@ -137,6 +155,7 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
             {...habilitation}
             baseLocaleId={baseLocale._id}
             commune={commune}
+            isConflicted={isConflicted}
           />
         )}
 

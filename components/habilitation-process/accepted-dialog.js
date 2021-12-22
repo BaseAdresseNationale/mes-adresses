@@ -1,21 +1,17 @@
-import {useState, useEffect, useMemo} from 'react'
+import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, Alert, Text, Link, Strong, DownloadIcon} from 'evergreen-ui'
+import {Pane, Heading, Alert, Text, Link, Strong} from 'evergreen-ui'
 
-import {getBaseLocaleCsvUrl, getCommune} from '../../lib/bal-api'
+import {getCommune} from '../../lib/bal-api'
 
 import StatusBadge from '../status-badge'
 
 import AuthenticatedUser from './authenticated-user'
 
-function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt}) {
+function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicted}) {
   const [isBALCertified, setIsBALCertified] = useState(false)
 
   const {nomNaissance, nomMarital, prenom, typeMandat} = strategy.mandat || {}
-
-  const csvUrl = useMemo(() => {
-    return getBaseLocaleCsvUrl(baseLocaleId)
-  }, [baseLocaleId])
 
   useEffect(() => {
     async function fectCommune() {
@@ -91,13 +87,21 @@ function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt}) {
             </Text>
           </Alert>
         )}
-
-        <Link href={csvUrl} display='flex' marginTop='1em'>
-          Télécharger vos adresses au format CSV
-          <DownloadIcon marginLeft='.5em' marginTop='3px' />
-        </Link>
       </Pane>
 
+      {isConflicted && (
+        <Alert intent='danger' title='Cette commune possède déjà une Base Adresse Locale' marginTop={16}>
+          <Text is='div' color='muted' marginTop={4}>
+            Une autre Base Adresses Locale est <Strong>déjà synchronisée avec la Base Adresses Nationale</Strong>.
+          </Text>
+          <Text is='div' color='muted' marginTop={4}>
+            En choisissant de publier, cette Base Adresse Locale <Strong>remplacera celle actuellement en place</Strong>.
+          </Text>
+          <Text is='div' color='muted' marginTop={4}>
+            Nous vous recommandons <Strong>d’entrer en contact avec les administrateurs de l’autre Base Adresses Locale</Strong> ou notre support: <Link href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</Link>
+          </Text>
+        </Alert>
+      )}
     </Pane>
   )
 }
@@ -122,7 +126,8 @@ AcceptedDialog.propTypes = {
         'administrateur'
       ])
     }),
-  })
+  }),
+  isConflicted: PropTypes.bool.isRequired
 }
 
 export default AcceptedDialog
