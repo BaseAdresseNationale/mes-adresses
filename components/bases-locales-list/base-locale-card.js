@@ -1,10 +1,8 @@
 import {useState, useEffect, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Heading, Badge, Card, Pane, Button, Tooltip, Spinner, Text, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
+import {Heading, Card, Pane, Button, Tooltip, Spinner, Text, ChevronRightIcon, ChevronDownIcon, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
 import {formatDistanceToNow, format} from 'date-fns'
 import {fr} from 'date-fns/locale'
-
-import {colors} from '../../lib/colors'
 
 import {getCommune} from '../../lib/bal-api'
 import {getCommune as getCommuneGeoData} from '../../lib/geo-api'
@@ -14,13 +12,7 @@ import LocalStorageContext from '../../contexts/local-storage'
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 import CertificationCount from '../certification-count'
 import HabilitationTag from '../habilitation-tag'
-
-const statusBadges = {
-  published: {color: 'green', background: '#DCF2EA', label: 'Publiée'},
-  'ready-to-publish': {color: 'blue', background: '#D6E0FF', label: 'Prête à être publiée'},
-  draft: {color: 'neutral', background: '#edeff5', label: 'Brouillon'},
-  demo: {color: colors.neutral, background: colors.neutral, label: 'Démonstration'}
-}
+import StatusBadge from '../status-badge'
 
 function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove}) {
   const {getBalToken} = useContext(LocalStorageContext)
@@ -34,7 +26,6 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
   const tooltipContent = status === 'ready-to-publish' ? 'Vous ne pouvez pas supprimer une BAL lorsqu‘elle est prête à être publiée' : 'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
-  const badge = statusBadges[baseLocale.status]
   const isEntitled = baseLocale.habilitation && baseLocale.habilitation.status === 'accepted'
 
   const handleIsOpen = () => {
@@ -116,9 +107,8 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
             height='40px'
             borderRadius={5}
             alignItems='center'
-            background={badge.background}
           >
-            <Badge color={badge.color} width='250px'>{badge.label}</Badge>
+            <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
           </Pane>
         </Pane>
 
