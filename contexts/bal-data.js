@@ -1,5 +1,6 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
+import {toaster} from 'evergreen-ui'
 
 import {getHabilitation, getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, certifyBAL} from '../lib/bal-api'
 
@@ -19,6 +20,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const [toponyme, setToponyme] = useState()
   const [baseLocale, setBaseLocal] = useState(null)
   const [habilitation, setHabilitation] = useState(null)
+  const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
 
   const {token} = useContext(TokenContext)
 
@@ -107,6 +109,23 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     }
   }, [balId])
 
+  const refreshBALSync = useCallback(async () => {
+    if (baseLocale) {
+      const {sync} = baseLocale
+      if (sync && sync.status === 'synced' && !sync.isPaused && !isRefrehSyncStat) {
+        setIsRefrehSyncStat(true)
+        setTimeout(() => {
+          reloadBaseLocale()
+          setIsRefrehSyncStat(false)
+          toaster.notify('De nouvelles modifications ont étaient détectées', {
+            description: 'Elles seront automatiquement transmise dans la Base Adresses Nationale d’ici quelques heures.',
+            duration: 10
+          })
+        }, 30000) // Maximum interval between CRON job
+      }
+    }
+  }, [baseLocale, isRefrehSyncStat, reloadBaseLocale])
+
   const setEditingId = useCallback(editingId => {
     if (token) {
       _setEditingId(editingId)
@@ -170,7 +189,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     numeros,
     voies,
     toponymes,
+    isRefrehSyncStat,
     setEditingId,
+    refreshBALSync,
     reloadHabilitation,
     reloadNumeros,
     reloadVoies,
@@ -201,7 +222,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     reloadToponymes,
     reloadNumerosToponyme,
     toponyme,
-    certifyAllNumeros
+    certifyAllNumeros,
+    isRefrehSyncStat,
+    refreshBALSync
   ])
 
   return (

@@ -26,6 +26,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     reloadNumeros,
     reloadVoies,
     reloadGeojson,
+    refreshBALSync,
     isEditing,
     editingId,
     setEditingId,
@@ -60,6 +61,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
 
     await addNumero(editedVoie._id, body, token)
     await reloadNumeros()
+    refreshBALSync()
 
     if (editedVoie._id !== voie._id || isNewVoie) {
       await reloadGeojson()
@@ -78,6 +80,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
 
     await editNumero(editingId, {...body, voie: editedVoie._id}, token)
     await reloadNumeros()
+    refreshBALSync()
 
     if (editedVoie._id !== voie._id || isNewVoie) {
       await reloadGeojson()

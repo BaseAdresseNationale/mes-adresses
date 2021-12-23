@@ -93,6 +93,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
               baseLocale={baseLocale}
               commune={commune}
               token={token}
+              isRefrehSyncStat={balDataContext.isRefrehSyncStat}
               handleChangeStatus={handleChangeStatus}
               handleHabilitation={handleHabilitation}
               reloadBaseLocale={async () => balDataContext.reloadBaseLocale()}

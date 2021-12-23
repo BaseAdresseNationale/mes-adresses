@@ -12,7 +12,7 @@ import ToponymeEditor from './toponyme-editor'
 
 function AddressEditor({commune, balId, codeCommune, closeForm}) {
   const {token} = useContext(TokenContext)
-  const {voie, reloadVoies, reloadNumeros, reloadToponymes, reloadGeojson} = useContext(BalDataContext)
+  const {voie, reloadVoies, reloadNumeros, reloadToponymes, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
 
   const [isToponyme, setIsToponyme] = useState(false)
 
@@ -20,6 +20,7 @@ function AddressEditor({commune, balId, codeCommune, closeForm}) {
     await addToponyme(balId, codeCommune, toponymeData, token)
     await reloadToponymes()
     await reloadGeojson()
+    refreshBALSync()
 
     closeForm()
   }
@@ -35,6 +36,7 @@ function AddressEditor({commune, balId, codeCommune, closeForm}) {
     await addNumero(editedVoie._id, numero, token)
     await reloadNumeros()
     await reloadVoies()
+    refreshBALSync()
 
     if (!voie || voie._id !== editedVoie._id || isNewVoie) {
       await reloadGeojson()

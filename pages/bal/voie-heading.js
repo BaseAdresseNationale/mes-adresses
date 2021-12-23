@@ -14,7 +14,7 @@ function VoieHeading({defaultVoie}) {
   const [hovered, setHovered] = useState(false)
 
   const {token} = useContext(TokenContext)
-  const {editingId, setEditingId, isEditing, reloadVoies, reloadGeojson, numeros, setVoie} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing, refreshBALSync, reloadVoies, reloadGeojson, numeros, setVoie} = useContext(BalDataContext)
 
   const onEnableVoieEditing = () => {
     if (!isEditing) {
@@ -34,6 +34,7 @@ function VoieHeading({defaultVoie}) {
 
     await reloadVoies()
     await reloadGeojson()
+    refreshBALSync()
 
     setEditedVoie(voie)
 

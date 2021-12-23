@@ -25,6 +25,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const {
     voies,
     toponymes,
+    refreshBALSync,
     reloadVoies,
     reloadToponymes,
     reloadGeojson,
@@ -68,9 +69,10 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       await reloadToponymes()
     }
 
+    refreshBALSync()
     setIsEditing(false)
     setIsAdding(false)
-  }, [baseLocale._id, commune, reloadVoies, token, selectedTab, reloadToponymes, reloadGeojson, setIsEditing])
+  }, [baseLocale._id, commune, reloadVoies, token, selectedTab, refreshBALSync, reloadToponymes, reloadGeojson, setIsEditing])
 
   const onEnableEditing = useCallback(async id => {
     setIsAdding(false)
@@ -97,8 +99,9 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
       await reloadToponymes()
     }
 
+    refreshBALSync()
     setEditingId(null)
-  }, [editingId, setEditingId, reloadVoies, reloadToponymes, reloadGeojson, selectedTab, token])
+  }, [editingId, setEditingId, refreshBALSync, reloadVoies, reloadToponymes, reloadGeojson, selectedTab, token])
 
   const onRemove = useCallback(async () => {
     if (selectedTab === 'voie') {
@@ -110,8 +113,9 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     }
 
     await reloadGeojson()
+    refreshBALSync()
     setToRemove(null)
-  }, [reloadVoies, reloadToponymes, reloadGeojson, selectedTab, toRemove, token])
+  }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, selectedTab, toRemove, token])
 
   const onCancel = useCallback(() => {
     setIsAdding(false)

@@ -7,8 +7,9 @@ import StatusBadge from '../../status-badge'
 
 import BANSync from './ban-sync'
 import Publication from './publication'
+import RefreshSyncBadge from './refresh-sync-badge'
 
-function BALStatus({baseLocale, commune, token, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
+function BALStatus({baseLocale, commune, token, isRefrehSyncStat, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
   const handleSync = async () => {
     await sync(baseLocale._id, token)
     await reloadBaseLocale()
@@ -27,7 +28,11 @@ function BALStatus({baseLocale, commune, token, handleChangeStatus, handleHabili
   return (
     <>
       <Pane height={28} marginRight={8}>
-        <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
+        {isRefrehSyncStat ? (
+          <RefreshSyncBadge />
+        ) : (
+          <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
+        )}
       </Pane>
 
       {token ? (
@@ -78,6 +83,7 @@ BALStatus.propTypes = {
   }).isRequired,
   commune: PropTypes.object.isRequired,
   token: PropTypes.string,
+  isRefrehSyncStat: PropTypes.bool.isRequired,
   handleChangeStatus: PropTypes.func.isRequired,
   handleHabilitation: PropTypes.func.isRequired,
   reloadBaseLocale: PropTypes.func.isRequired
