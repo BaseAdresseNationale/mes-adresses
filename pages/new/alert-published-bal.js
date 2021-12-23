@@ -10,7 +10,7 @@ import useError from '../../hooks/error'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
-import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
+import BaseLocaleCard from '../../components/base-locale-card'
 import DeleteWarning from '../../components/delete-warning'
 
 function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) {
