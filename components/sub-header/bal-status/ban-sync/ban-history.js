@@ -1,18 +1,19 @@
 import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import NextImage from 'next/image'
-import {Pane, Heading, Button, Text, Icon, HistoryIcon, StatusIndicator, Spinner} from 'evergreen-ui'
+import {Pane, Heading, Button, Text, Icon, HistoryIcon, Spinner} from 'evergreen-ui'
 
 import {getRevisions} from '../../../../lib/ban-api'
 
-function BANHistory({codeCommune}) {
+import Revision from './ban-history/revision'
+
+function BANHistory({baseLocaleId, syncStatus, commune}) {
   const [revisions, setRevisions] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [isLimited, setIsLimited] = useState(true)
 
   useEffect(() => {
     async function fetchRevision() {
-      const revisions = await getRevisions(codeCommune)
+      const revisions = await getRevisions(commune.code)
       const publishedRevisions = revisions
         .filter(r => r.status === 'published')
         .reverse() // Sort by date
@@ -23,13 +24,14 @@ function BANHistory({codeCommune}) {
 
     setIsLoading(true)
     fetchRevision()
-  }, [codeCommune])
+  }, [commune.code, syncStatus])
 
   return (
     <Pane marginY={8}>
       <Heading is='h3' display='flex' alignItems='center' marginY={8}>
         Historique de mise à jour <Icon icon={HistoryIcon} marginLeft={4} />
       </Heading>
+
       {isLoading ? (
         <Pane display='flex'>
           <Spinner marginRight={8} size={22} />
@@ -37,27 +39,22 @@ function BANHistory({codeCommune}) {
         </Pane>
       ) : (
         <>
-          {revisions.length > 0 ? (
-            <Pane display='flex' flexDirection='column' justifyContent='center' gap={4}>
-              {revisions.slice(0, isLimited ? 3 : -1).map(revision => (
-                <Pane is='li' key={revision._id} display='flex' alignItems='center' gap={8}>
-                  <StatusIndicator color={revision.current ? 'success' : 'disabled'} />
-                  <Text>{new Date(revision.publishedAt).toLocaleDateString()}</Text>
-                  <Text>Mise à jour par : {revision.client.nom}</Text>
-                  <Pane>{revision.current && (
-                    <NextImage
-                      src='/static/images/ban-logo.png'
-                      alt='Logo Base Adresses Nationale'
-                      width={24}
-                      height={24}
-                    />
-                  )}</Pane>
-                </Pane>
-              ))}
-            </Pane>
-          ) : (
-            <Text color='muted'>Aucune Base Adresses Locales trouvée</Text>
-          )}
+          <Pane overflowY='scroll' maxHeight={500}>
+            {revisions.length > 0 ? (
+              <Pane display='flex' flexDirection='column' justifyContent='center' gap={4}>
+                {revisions.slice(0, isLimited ? 3 : -1).map(revision => (
+                  <Revision
+                    key={revision._id}
+                    commune={commune}
+                    baseLocaleId={baseLocaleId}
+                    revision={revision}
+                  />
+                ))}
+              </Pane>
+            ) : (
+              <Text color='muted'>Aucune Base Adresses Locales trouvée</Text>
+            )}
+          </Pane>
 
           {revisions.length > 0 && (
             <Pane display='flex' justifyContent='center' >
@@ -73,7 +70,11 @@ function BANHistory({codeCommune}) {
 }
 
 BANHistory.propTypes = {
-  codeCommune: PropTypes.string.isRequired
+  baseLocaleId: PropTypes.string.isRequired,
+  syncStatus: PropTypes.string.isRequired,
+  commune: PropTypes.shape({
+    code: PropTypes.string.isRequired
+  }).isRequired
 }
 
 export default React.memo(BANHistory)

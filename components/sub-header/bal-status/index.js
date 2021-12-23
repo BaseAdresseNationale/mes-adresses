@@ -8,7 +8,7 @@ import StatusBadge from '../../status-badge'
 import BANSync from './ban-sync'
 import Publication from './publication'
 
-function BALStatus({baseLocale, codeCommune, token, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
+function BALStatus({baseLocale, commune, token, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
   const handleSync = async () => {
     await sync(baseLocale._id, token)
     await reloadBaseLocale()
@@ -34,7 +34,7 @@ function BALStatus({baseLocale, codeCommune, token, handleChangeStatus, handleHa
         baseLocale.sync ? (
           <BANSync
             baseLocale={baseLocale}
-            codeCommune={codeCommune}
+            commune={commune}
             handleSync={handleSync}
             togglePause={baseLocale.sync.isPaused ? handleResumeSync : handlePause}
           />
@@ -76,7 +76,7 @@ BALStatus.propTypes = {
     status: PropTypes.string.isRequired,
     sync: PropTypes.object
   }).isRequired,
-  codeCommune: PropTypes.string.isRequired,
+  commune: PropTypes.object.isRequired,
   token: PropTypes.string,
   handleChangeStatus: PropTypes.func.isRequired,
   handleHabilitation: PropTypes.func.isRequired,

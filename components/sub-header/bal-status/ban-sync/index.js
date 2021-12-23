@@ -6,7 +6,7 @@ import {computeStatus} from '../../../../lib/statutes'
 import BANHistory from './ban-history'
 import SyncButton from './sync-button'
 
-function BANSync({baseLocale, codeCommune, handleSync, togglePause}) {
+function BANSync({baseLocale, commune, handleSync, togglePause}) {
   const {status, sync} = baseLocale
   const {intent, title, content} = computeStatus(status, sync)
 
@@ -25,7 +25,11 @@ function BANSync({baseLocale, codeCommune, handleSync, togglePause}) {
               {content}
             </Alert>
 
-            <BANHistory codeCommune={codeCommune} />
+            <BANHistory
+              baseLocaleId={baseLocale._id}
+              syncStatus={sync.status}
+              commune={commune}
+            />
 
             <SyncButton
               isSync={sync.status === 'synced'}
@@ -56,13 +60,10 @@ BANSync.propTypes = {
     status: PropTypes.oneOf(['replaced', 'published']).isRequired,
     sync: PropTypes.shape({
       status: PropTypes.oneOf(['synced', 'conflict', 'outdated']).isRequired,
-      isPaused: PropTypes.bool.isRequired,
-      lastUploadedRevisionId: PropTypes.string.isRequired,
-      lastUploadedRevisionHash: PropTypes.string.isRequired,
-      currentTimestamp: PropTypes.string.isRequired
+      isPaused: PropTypes.bool.isRequired
     }).isRequired
   }).isRequired,
-  codeCommune: PropTypes.string.isRequired,
+  commune: PropTypes.object.isRequired,
   handleSync: PropTypes.func.isRequired,
   togglePause: PropTypes.func.isRequired
 }

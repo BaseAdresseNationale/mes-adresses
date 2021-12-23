@@ -136,7 +136,7 @@ AlertPublishedBAL.propTypes = {
   isShown: PropTypes.bool,
   userEmail: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  basesLocales: PropTypes.object.isRequired,
+  basesLocales: PropTypes.array.isRequired,
   onConfirm: PropTypes.func.isRequired,
   updateBAL: PropTypes.func.isRequired
 }

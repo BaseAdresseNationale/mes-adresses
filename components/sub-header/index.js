@@ -91,7 +91,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
           {commune && (
             <BALStatus
               baseLocale={baseLocale}
-              codeCommune={commune.code}
+              commune={commune}
               token={token}
               handleChangeStatus={handleChangeStatus}
               handleHabilitation={handleHabilitation}
@@ -124,7 +124,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
 SubHeader.propTypes = {
   initialBaseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    status: PropTypes.oneOf(['demo', 'draft', 'ready-to-publish', 'published'])
+    status: PropTypes.oneOf(['demo', 'replaced', 'draft', 'ready-to-publish', 'published'])
   }).isRequired,
   commune: PropTypes.object,
   voie: PropTypes.object,
