@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import NextImage from 'next/image'
-import {Pane, Heading, Tooltip, Strong, Text, HelpIcon} from 'evergreen-ui'
+import {Pane, Heading, Strong, Text, UnorderedList, ListItem} from 'evergreen-ui'
 
 function FranceConnect({isDisabled, handleStrategy}) {
   return (
@@ -20,23 +20,23 @@ function FranceConnect({isDisabled, handleStrategy}) {
 
       {!isDisabled && (
         <>
-          <Text marginTop={8} size={400}>
-            Cette méthode permet de <Strong>vous identifer de façon simple et sécurisé</Strong> en comparant automatiquement votre
-            <Pane display='inline-flex' alignItems='center' marginX={4}>
-              <Text size={400} borderBottom='1px dashed #474d66'>identitée pivot</Text><Tooltip content='L’ensemble des informations nécessaires pour identifier une personne unique'>
-                <HelpIcon marginLeft={4} />
-              </Tooltip>
-            </Pane>
-            avec le <Strong>Registre Nationale des Élus</Strong>.
-          </Text>
-          <Text marginTop={8} size={400}>
-            Vous serez alors reconnue comme élu (maire, adjoint ou conseiller) de cette commune.
-          </Text>
-          <Text marginTop={8} size={400}>
-            Pour ce faire, FranceConnect vous invitera à <Strong>vous identifiez via le service de votre choix</Strong> (impots.gouv.fr, ameli.fr, etc…).
-          </Text>
-          <Text marginTop={8} size={400}>
-            <Strong textDecoration='underline'>Aucune donnée personnelle ne nous sera transmise durant ce processus.</Strong>
+          <Pane>
+            <Heading textAlign='center' color='#225DF5'>Pourquoi utiliser FranceConnect ?</Heading>
+            <UnorderedList textAlign='left'>
+              <ListItem>
+                Permet de s’authentifier de façon <Strong>simple</Strong> et <Strong>sécurisée</Strong>.
+              </ListItem>
+              <ListItem>
+                Vous serez automatiquement reconnu(e) comme <Strong>élu(e)</Strong> (maire, adjoint(e) ou conseiller(e)) de <Strong>votre commune</Strong>.
+              </ListItem>
+              <ListItem>
+                Vous aurez la possibilité de vous identifier via <Strong>le service de votre choix</Strong> (impots.gouv.fr, ameli.fr etc...).
+              </ListItem>
+            </UnorderedList>
+          </Pane>
+
+          <Text textDecoration='underline'>
+            <Strong>Aucune donnée personnelle ne nous sera transmise durant ce processus d’authentification</Strong>
           </Text>
         </>
       )}

@@ -120,19 +120,19 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
 
   return (
     <Dialog
+      width={1200}
       isShown={isShown}
       preventBodyScrolling
       hasHeader={false}
       intent={isConflicted ? 'danger' : 'success'}
       hasFooter={step === 2}
       hasCancel={step === 2 && habilitation.status === 'accepted'}
-      width={1000}
       confirmLabel={habilitation.status === 'accepted' ? (isConflicted ? 'Forcer la publication' : 'Publier') : 'Fermer'}
       cancelLabel='Attendre'
       onConfirm={handleConfirm}
       onCloseComplete={handleClose}
     >
-      <Pane marginY={16}>
+      <Pane>
         {step === 0 && (
           <StrategySelection
             franceconnectAuthenticationUrl={habilitation.franceconnectAuthenticationUrl}
