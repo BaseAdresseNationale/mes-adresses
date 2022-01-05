@@ -17,7 +17,7 @@ import NumerosList from './voie/numeros-list'
 const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
-  useHelp(4)
+  useHelp(3)
 
   const {token} = useContext(TokenContext)
 
