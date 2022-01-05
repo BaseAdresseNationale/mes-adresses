@@ -1,4 +1,6 @@
-import {Badge, Button, ListItem, OrderedList, Pane, Paragraph, Strong, CaretDownIcon, UploadIcon, EditIcon} from 'evergreen-ui'
+import {Alert, Button, ListItem, OrderedList, UnorderedList, Pane, Paragraph, Text, Strong, CaretDownIcon, UploadIcon, EditIcon} from 'evergreen-ui'
+
+import StatusBadge from '../../status-badge'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'
@@ -7,86 +9,158 @@ import Problems from './problems'
 function Publication() {
   return (
     <Pane>
-      <Tuto title='Publier votre Base Adresse Locale'>
+      <Tuto title='Obtenir une habilitation'>
+        <Paragraph>
+          Avant de pouvoir publier vos adresses, votre Base Adresses Locale doit être habilitée.
+        </Paragraph>
+
         <OrderedList margin={8}>
           <ListItem>
             <Paragraph>
-              L‘édition de votre Base Adresse Locale est terminée: <br /> vous pouvez cliquer sur le bouton
-              <Button margin={5} height={24} appearance='primary'>
+              Cliquez sur le bouton
+              <Button marginX={4} height={24} appearance='primary'>
                 Publier
               </Button>
             </Paragraph>
-            <Paragraph>
-              <i>(Cela vous permettra de différencier les BAL prêtes à être publiées de celles dont l‘édition n‘est pas terminée.)</i>
-            </Paragraph>
           </ListItem>
+
           <ListItem>
-            Le bouton change alors d‘apparence, il devient
+            Vous serez alors invité à choisir un mode d’authentification.
+            <UnorderedList margin={8}>
+              <ListItem>Comme élu avec FranceConnect</ListItem>
+              <ListItem>Comme mairie avec l’envoi d’un code par email</ListItem>
+            </UnorderedList>
+          </ListItem>
+
+          <ListItem>
+            Une fois votre authentification confirmée, votre Base Adresse Locale obtiendra une habilitation valable 6 mois.
+          </ListItem>
+        </OrderedList>
+      </Tuto>
+
+      <Tuto title='Publier sa Base Adresse Locale'>
+        <OrderedList margin={8}>
+          <Strong>Si votre Base Adresses Locale n’est pas encore habilitée</Strong>
+          <ListItem>
+            Obtenir une habilitation (voir section précédente).
+          </ListItem>
+
+          <ListItem>
+            Une fois l’habilitation obtenue, vous serez automatiquement invité à publier votre Base Adresse Locale en cliquant sur
+            <Button marginX={4} height={24} appearance='primary' intent='success'>
+              Publier
+            </Button>
+          </ListItem>
+        </OrderedList>
+
+        <OrderedList margin={8}>
+          <Strong>Si votre Base Adresses Locale est habilitée</Strong>
+          <ListItem>
+            Cliquez sur le bouton
             <Button
-              margin={5}
               height={24}
+              marginX={4}
               appearance='primary'
               iconAfter={CaretDownIcon}
             >
               Publication
             </Button>
           </ListItem>
+
           <ListItem>
             <Paragraph>
-              Cliquez sur &nbsp;
-              <Button appearance='default' iconBefore={UploadIcon}>
+              Cliquez sur
+              <Button appearance='default' marginX={4} height={24} iconBefore={UploadIcon}>
                 Publier
               </Button>
-              &nbsp; pour publier votre Base Adresse Locale.
             </Paragraph>
           </ListItem>
+
           <ListItem>
-            <div>
-              <Paragraph>Vous serez ensuite redirigé vers un formulaire d‘authentification, qui vous permettra de vous identifier, puis de publier votre BAL.</Paragraph>
-              <Paragraph>
-                Une fois votre BAL publiée, le bouton est remplacé par &nbsp;
-                <Badge
-                  color='green'
-                  marginRight='8'
-                  paddingTop={2}
-                  height={20}
-                >
-                  Publiée
-                </Badge>
-              </Paragraph>
-              <Paragraph margin='10'>
-                <Strong><i>Pour la mettre à jour, il vous suffit de l‘éditer ici et les changements seront appliqués automatiquement d‘ici quelques jours.</i></Strong>
-              </Paragraph>
-            </div>
+            Une fenêtre de confirmation s’affichera, cliquez sur le bouton
+            <Button marginX={4} height={24} appearance='primary' intent='success'>
+              Publier
+            </Button>
+            pour publier vos adresses dans la Base Adresse Nationale.
           </ListItem>
-          <Tuto title='Bon à savoir'>
-            <ListItem listStyleType='none'>
-              En mode &nbsp;
-              <Badge
-                color='blue'
-                marginRight='8'
-                paddingTop={2}
-                height={20}
-              >
-                Prête à être publiée
-              </Badge>
-              il vous est possible de revenir au mode brouillon en cliquant sur
-              <Button
-                margin={5}
-                height={24}
-                appearance='primary'
-                iconAfter={CaretDownIcon}
-              >
-                Publication
+
+          <Alert title='En cas de conflit'>
+            <Text display='block' color='muted'>
+              Il peut arriver qu’une autre Base Adresse Locale soit déjà synchronisée avec la Base Adresse Nationale. Dans ce cas, votre Base Adresse Locale va rentrer en conflit avec celle-ci.
+            </Text>
+            <Text display='block' marginTop={8} color='muted'>
+              En cliquant sur
+              <Button appearance='primary' intent='danger' height={24} marginX={4}>
+                Forcer la publication
               </Button>
-              puis &nbsp;
-              <Button appearance='default' iconBefore={EditIcon}>
-                Revenir au brouillon
-              </Button>
-            </ListItem>
-          </Tuto>
+              votre Base Adresse Locale sera publiée et remplacera celle actuellement en place.
+            </Text>
+          </Alert>
         </OrderedList>
       </Tuto>
+
+      <Tuto title='Statuts de synchronisation'>
+        <Pane display='flex' flexDirection='column' gap={16} marginTop={8}>
+          <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
+            <Pane height={32} marginTop={4}>
+              <StatusBadge status='published' sync={{isPaused: false, status: 'synced'}} />
+            </Pane>
+            <Text>
+              Votre Base Adresse Locale est à jour avec la Base Adresse Nationale. Toutes ses adresses sont prises en compte.
+            </Text>
+          </Pane>
+
+          <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
+            <Pane height={38}>
+              <StatusBadge status='published' sync={{isPaused: false, status: 'outdated'}} />
+            </Pane>
+            <Text>
+              Des modifications ont étaient détectées, la Base Adresse Locale Nationale sera automatiquement mise à jour d’ici quelques heures.
+            </Text>
+          </Pane>
+
+          <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
+            <Pane height={32} marginTop={4}>
+              <StatusBadge status='published' sync={{isPaused: true, status: 'synced'}} />
+            </Pane>
+            <Text>
+              Vous avez suspendues les mises à jour de votre Base Adresse Locale. Aucune modification ne sera transmise à la Base Adresse Nationale. Vous pouvez relancer à tout moment les mises à jours.
+            </Text>
+          </Pane>
+
+          <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
+            <Pane height={32} marginTop={4}>
+              <StatusBadge status='replaced' sync={{isPaused: true, status: 'conflit'}} />
+            </Pane>
+            <Text>
+              Une autre Base Adresse Locale a remplacé la votre, impossible de mettre à jour automatiquement vos adresses. Vous pouvez forcer la mise à jour afin de remplacer la Base Adresse Locale actuellement en place.
+            </Text>
+          </Pane>
+        </Pane>
+      </Tuto>
+
+      <Tuto title='Bon à savoir'>
+        <ListItem listStyleType='none'>
+          En mode
+          <Pane display='inline-flex' width={172} height={28} margin={4}>
+            <StatusBadge status='ready-to-publish' />
+          </Pane>
+          il vous est possible de revenir au mode brouillon en cliquant sur
+          <Button
+            marginX={4}
+            height={24}
+            appearance='primary'
+            iconAfter={CaretDownIcon}
+          >
+            Publication
+          </Button>
+          puis &nbsp;
+          <Button appearance='default' height={24} iconBefore={EditIcon}>
+            Revenir au brouillon
+          </Button>
+        </ListItem>
+      </Tuto>
+
       <Problems>
         <Unauthorized title='Je n’arrive pas à éditer ma BAL' />
       </Problems>

@@ -19,7 +19,7 @@ function Communes() {
         {before}
         <OrderedList margin={8}>
           <ListItem>
-            Cliquer sur le bouton
+            Cliquez sur le bouton
             <Button iconBefore={AddIcon} marginX={4} appearance='primary' intent='success'>Ajouter une commune</Button>
           </ListItem>
           <ListItem>Recherchez votre commune puis sélectionnez la dans la liste des suggestions.</ListItem>
