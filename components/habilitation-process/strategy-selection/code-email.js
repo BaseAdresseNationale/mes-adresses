@@ -1,6 +1,8 @@
-import React, {useState} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Strong, Button, Alert, Text, OrderedList, Link, EnvelopeIcon, ListItem} from 'evergreen-ui'
+
+import TextWrapper from '../../text-wrapper'
 
 function isEmail(email) {
   const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([a-zA-Z\-\d]+\.)+[a-zA-Z]{2,}))$/
@@ -17,11 +19,6 @@ const AnnuaireServicePublic = React.memo(() => (
 
 function CodeEmail({emailCommune, handleStrategy}) {
   const isValidEmail = isEmail(emailCommune)
-  const [isAlertOpen, setIsAlertOpen] = useState(false)
-
-  const handleAlertOpening = () => {
-    setIsAlertOpen(!isAlertOpen)
-  }
 
   return (
     <>
@@ -55,32 +52,26 @@ function CodeEmail({emailCommune, handleStrategy}) {
             </Text>
 
             <Alert title='Cette adresse email est incorrecte ou obsolète ?' width='100%' marginTop={16} textAlign='left' overflow='auto'>
-              <Text is='div' textAlign='center' textDecoration='underline' cursor='pointer' marginTop={8} onClick={handleAlertOpening}><Strong>Découvrez la marche à suivre</Strong></Text>
-
-              {isAlertOpen && (
+              <TextWrapper placeholder='Mettre à jour l’adresse email'>
                 <AnnuaireServicePublic />
-              )}
+              </TextWrapper>
             </Alert>
           </>
         ) : (
           <Alert intent='danger' title='Adresse email invalide' marginTop={16} textAlign='left'>
-            <Text is='div' marginTop={8} size={400}>
+            <Text is='div' marginY={8} size={400}>
               L’adresse email renseignée : <Strong>{emailCommune}</Strong>, ne peut pas être utilisée afin d’envoyer un code d’authentification.
             </Text>
-            <Text is='div' textAlign='center' textDecoration='underline' cursor='pointer' onClick={handleAlertOpening}><Strong>Découvrez la marche à suivre</Strong></Text>
-
-            {isAlertOpen && (
+            <TextWrapper placeholder='Mettre à jour l’adresse email'>
               <AnnuaireServicePublic />
-            )}
+            </TextWrapper>
           </Alert>
         )
       ) : (
         <Alert intent='danger' title='Aucune adresse email connue pour cette commune' marginTop={16} textAlign='left' overflow='auto'>
-          <Text is='div' textAlign='center' textDecoration='underline' cursor='pointer' onClick={handleAlertOpening}><Strong fontSize={12}>Découvrez la marche à suivre</Strong></Text>
-
-          {isAlertOpen && (
+          <TextWrapper placeholder='Mettre à jour l’adresse email' isOpenDefault>
             <AnnuaireServicePublic />
-          )}
+          </TextWrapper>
         </Alert>
       )}
     </>

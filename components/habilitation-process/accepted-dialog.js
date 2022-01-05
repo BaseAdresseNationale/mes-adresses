@@ -5,16 +5,12 @@ import {Pane, Heading, Alert, Text, Link, Strong, UnorderedList, ListItem, Uploa
 import {getCommune} from '../../lib/bal-api'
 
 import StatusBadge from '../status-badge'
+import TextWrapper from '../text-wrapper'
 
 import AuthenticatedUser from './authenticated-user'
 
 function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicted}) {
   const [isBALCertified, setIsBALCertified] = useState(false)
-  const [isAlertOpen, setIsAlertOpen] = useState(false)
-
-  const handleAlertOpening = () => {
-    setIsAlertOpen(!isAlertOpen)
-  }
 
   const {nomNaissance, nomMarital, prenom, typeMandat} = strategy.mandat || {}
 
@@ -74,13 +70,12 @@ function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicte
             title='Toutes vos adresses ne sont pas certifiées'
             marginY={16}
           >
-            <Text is='div' textDecoration='underline' cursor='pointer' onClick={handleAlertOpening}><Strong fontSize={12}>Découvrez la marche à suivre</Strong></Text>
+            <Text is='div' color='muted' marginTop={4}>
+              Nous vous recommandons de certifier la <Strong>totalité de vos adresses</Strong>.
+            </Text>
 
-            {isAlertOpen && (
+            <TextWrapper>
               <Pane>
-                <Text is='div' color='muted' marginTop={4}>
-                  Nous vous recommandons de certifier la <Strong>totalité de vos adresses</Strong>.
-                </Text>
                 <Text is='div' color='muted' marginTop={4}>
                   Une adresse certifiée est déclarée <Strong>authentique par la mairie</Strong>, ce qui <Strong>renforce la qualité de la Base Adresse Locale et facilite sa réutilisation</Strong>.
                 </Text>
@@ -91,7 +86,8 @@ function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicte
                   Notez qu’il est possible de certifier la totalité de vos adresses depuis le menu « Paramètres ».
                 </Text>
               </Pane>
-            )}
+            </TextWrapper>
+
           </Alert>
         )}
       </Pane>
