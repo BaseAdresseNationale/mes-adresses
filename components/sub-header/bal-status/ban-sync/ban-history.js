@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Button, Text, Icon, HistoryIcon, Spinner} from 'evergreen-ui'
 
@@ -42,7 +42,7 @@ function BANHistory({baseLocaleId, syncStatus, commune}) {
           <Pane overflowY='scroll' maxHeight={500}>
             {revisions.length > 0 ? (
               <Pane display='flex' flexDirection='column' justifyContent='center' gap={4}>
-                {revisions.slice(0, isLimited ? 3 : -1).map(revision => (
+                {revisions.slice(0, isLimited ? 3 : revisions.length).map(revision => (
                   <Revision
                     key={revision._id}
                     commune={commune}
@@ -56,7 +56,7 @@ function BANHistory({baseLocaleId, syncStatus, commune}) {
             )}
           </Pane>
 
-          {revisions.length > 0 && (
+          {revisions.length > 3 && (
             <Pane display='flex' justifyContent='center' >
               <Button appearance='minimal' marginTop={8} onClick={() => setIsLimited(isLimited => !isLimited)}>
                 {isLimited ? 'Afficher tout l’historique' : 'Réduire'}
@@ -77,4 +77,4 @@ BANHistory.propTypes = {
   }).isRequired
 }
 
-export default React.memo(BANHistory)
+export default BANHistory
