@@ -18,7 +18,7 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const [toponymes, setToponymes] = useState()
   const [voie, setVoie] = useState(null)
   const [toponyme, setToponyme] = useState()
-  const [baseLocale, setBaseLocal] = useState(null)
+  const [baseLocale, setBaseLocale] = useState(null)
   const [habilitation, setHabilitation] = useState(null)
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
 
@@ -105,7 +105,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     if (balId) {
       const baseLocale = await getBaseLocale(balId)
 
-      setBaseLocal(baseLocale)
+      setBaseLocale(baseLocale)
+    } else {
+      setBaseLocale(null)
     }
   }, [balId])
 
@@ -172,6 +174,10 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   useEffect(() => {
     reloadHabilitation()
   }, [balId, token, reloadHabilitation])
+
+  useEffect(() => {
+    reloadBaseLocale()
+  }, [balId, reloadBaseLocale])
 
   const value = useMemo(() => ({
     isEditing,
