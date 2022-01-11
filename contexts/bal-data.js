@@ -147,7 +147,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const certifyAllNumeros = useCallback(async () => {
     await certifyBAL(balId, codeCommune, token, {certifie: true})
     await reloadNumeros()
-  }, [balId, codeCommune, token, reloadNumeros])
+
+    refreshBALSync()
+  }, [balId, codeCommune, token, reloadNumeros, refreshBALSync])
 
   useEffect(() => {
     reloadGeojson()
