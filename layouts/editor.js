@@ -28,7 +28,7 @@ function Editor({baseLocale, commune, voie, toponyme, children}) {
   }, [baseLocale])
 
   return (
-    <BalDataContextProvider initialBaseLocale={baseLocale} initialCommune={commune} initialVoie={voie} idToponyme={toponyme?._id}>
+    <BalDataContextProvider initialBaseLocale={baseLocale} initialCommune={commune} initialVoie={voie} initialToponyme={toponyme}>
       <MapContextProvider>
         <DrawContextProvider>
           <MarkersContextProvider>
@@ -36,10 +36,10 @@ function Editor({baseLocale, commune, voie, toponyme, children}) {
 
               <SettingsContextProvider>
                 <Settings />
-                <SubHeader initialToponyme={toponyme} />
+                <SubHeader />
               </SettingsContextProvider>
 
-              <Map top={116} left={leftOffset} toponyme={toponyme} />
+              <Map top={116} left={leftOffset} />
 
               <Sidebar
                 top={topOffset}

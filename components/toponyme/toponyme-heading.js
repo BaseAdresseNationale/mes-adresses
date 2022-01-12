@@ -1,4 +1,4 @@
-import {useState, useCallback, useContext, useEffect} from 'react'
+import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
@@ -9,20 +9,19 @@ import BalDataContext from '@/contexts/bal-data'
 
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function ToponymeHeading({defaultToponyme}) {
-  const [toponyme, setToponyme] = useState(defaultToponyme)
+function ToponymeHeading({toponyme}) {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {editingId, setEditingId, isEditing, refreshBALSync, reloadToponymes, numeros} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing, setToponyme, refreshBALSync, reloadToponymes, numeros} = useContext(BalDataContext)
 
-  const onEnableToponymeEditing = useCallback(() => {
+  const onEnableToponymeEditing = () => {
     if (!isEditing) {
       setEditingId(toponyme._id)
       setHovered(false)
     }
-  }, [setEditingId, isEditing, toponyme._id])
+  }
 
-  const onEditToponyme = useCallback(async ({nom, positions, parcelles}) => {
+  const onEditToponyme = async ({nom, positions, parcelles}) => {
     const editedToponyme = await editToponyme(toponyme._id, {
       nom,
       positions,
@@ -30,15 +29,12 @@ function ToponymeHeading({defaultToponyme}) {
     }, token)
 
     setEditingId(null)
+
     await reloadToponymes()
     refreshBALSync()
 
     setToponyme(editedToponyme)
-  }, [reloadToponymes, refreshBALSync, setEditingId, token, toponyme])
-
-  useEffect(() => {
-    setToponyme(defaultToponyme)
-  }, [defaultToponyme])
+  }
 
   return (
     <Pane
@@ -79,7 +75,7 @@ function ToponymeHeading({defaultToponyme}) {
 }
 
 ToponymeHeading.propTypes = {
-  defaultToponyme: PropTypes.shape({
+  toponyme: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
     positions: PropTypes.array.isRequired

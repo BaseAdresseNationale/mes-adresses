@@ -2,7 +2,7 @@ import {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
 
-import {addVoie, editNumero, getNumerosToponyme, getToponyme} from '@/lib/bal-api'
+import {addVoie, editNumero, getNumerosToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -15,10 +15,9 @@ import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
 import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
-function Toponyme({commune, toponyme, defaultNumeros}) {
+function Toponyme({commune, defaultNumeros, ...props}) {
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
-  const [updatedToponyme, setUpdatedToponyme] = useState(toponyme)
   const [error, setError] = useState()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -26,6 +25,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
 
   const {
     baseLocale,
+    toponyme,
     numeros,
     reloadNumerosToponyme,
     editingId,
@@ -50,7 +50,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
     try {
       await Promise.all(numeros.map(id => {
         return editNumero(id, {
-          toponyme: toponyme._id
+          toponyme: props.toponyme._id
         }, token, true)
       }))
 
@@ -83,17 +83,14 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
         editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
       }
 
-      const {toponyme} = body
       await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-
-      await reloadNumerosToponyme(updatedToponyme._id || toponyme)
-      setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
+      await reloadNumerosToponyme()
     } catch (error) {
       setError(error.message)
     }
 
     setEditingId(null)
-  }, [editingId, setEditingId, baseLocale, commune.code, reloadNumerosToponyme, token, updatedToponyme])
+  }, [editingId, setEditingId, baseLocale, commune.code, reloadNumerosToponyme, token])
 
   const handleSelection = useCallback(id => {
     if (!isEditing) {
@@ -128,7 +125,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
 
   return (
     <>
-      <ToponymeHeading defaultToponyme={toponyme} />
+      <ToponymeHeading toponyme={toponyme || props.toponyme} />
       <Pane
         flexShrink={0}
         elevation={0}
@@ -189,7 +186,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
             </Table.Row>
           )}
 
-          {editingId && editingId !== toponyme._id ? (
+          {editingId && editingId !== props.toponyme._id ? (
             <Table.Row height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
                 <NumeroEditor

@@ -1,5 +1,4 @@
 import {useState, useMemo, useEffect, useCallback, useContext} from 'react'
-import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
@@ -67,7 +66,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({toponyme}) {
+function Map() {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -83,6 +82,7 @@ function Map({toponyme}) {
   const {
     commune,
     voie,
+    toponyme,
     numeros,
     toponymes,
     editingId,
@@ -313,14 +313,6 @@ function Map({toponyme}) {
       )}
     </Pane>
   )
-}
-
-Map.propTypes = {
-  toponyme: PropTypes.object
-}
-
-Map.defaultProps = {
-  toponyme: null
 }
 
 export default Map

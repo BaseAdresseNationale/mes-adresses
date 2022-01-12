@@ -12,7 +12,6 @@ import {
   getBaseLocale,
   getToponymes,
   getNumerosToponyme,
-  getToponyme,
   certifyBAL
 } from '../lib/bal-api'
 
@@ -20,7 +19,7 @@ import TokenContext from '@/contexts/token'
 
 const BalDataContext = React.createContext()
 
-export const BalDataContextProvider = React.memo(({initialBaseLocale, initialCommune, initialVoie, idToponyme, ...props}) => {
+export const BalDataContextProvider = React.memo(({initialBaseLocale, initialCommune, initialVoie, initialToponyme, ...props}) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState()
   const [parcelles, setParcelles] = useState([])
@@ -29,7 +28,7 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, initialCom
   const [voies, setVoies] = useState()
   const [toponymes, setToponymes] = useState()
   const [voie, setVoie] = useState(initialVoie)
-  const [toponyme, setToponyme] = useState()
+  const [toponyme, setToponyme] = useState(initialToponyme)
   const [commune, setCommune] = useState(initialCommune)
   const [baseLocale, setBaseLocale] = useState(initialBaseLocale)
   const [habilitation, setHabilitation] = useState(null)
@@ -90,20 +89,11 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, initialCom
     setNumeros(numeros)
   }, [initialVoie, token, reloadParcelles])
 
-  const reloadNumerosToponyme = useCallback(async _idEdited => {
-    const id = _idEdited || idToponyme
-
-    if (id) {
-      const toponyme = await getToponyme(id)
-      const numeros = await getNumerosToponyme(id, token)
-      await reloadParcelles()
-      setToponyme(toponyme)
-      setNumeros(numeros)
-    } else {
-      setToponyme(null)
-      setNumeros(null)
-    }
-  }, [idToponyme, token, reloadParcelles])
+  const reloadNumerosToponyme = useCallback(async () => {
+    const numeros = await getNumerosToponyme(initialToponyme._id, token)
+    await reloadParcelles()
+    setNumeros(numeros)
+  }, [initialToponyme, token, reloadParcelles])
 
   const reloadCommune = useCallback(async () => {
     const baseLocaleCommune = await getCommune(baseLocale._id, initialCommune.code)
@@ -159,22 +149,32 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, initialCom
     if (initialVoie) {
       setVoie(initialVoie)
       reloadNumeros()
-    } else {
-      reloadGeojson() // Reload geojson when go back to commune view
-      reloadVoies()
-      reloadToponymes()
-      setVoie(null)
-      setNumeros(null)
     }
-  }, [initialVoie, reloadNumeros, reloadGeojson, reloadParcelles, reloadVoies, reloadToponymes])
+  }, [initialVoie, reloadNumeros])
+
+  useEffect(() => {
+    if (initialToponyme) {
+      setToponyme(initialToponyme)
+      reloadNumerosToponyme()
+    }
+  }, [initialToponyme, reloadNumerosToponyme])
 
   useEffect(() => {
     reloadParcelles()
   }, [commune, reloadParcelles])
 
   useEffect(() => {
-    reloadNumerosToponyme()
-  }, [idToponyme, reloadNumerosToponyme])
+    reloadGeojson()
+    if (!initialVoie && !initialToponyme) {
+      reloadVoies()
+      reloadToponymes()
+
+      // Reset Voie/Toponyme
+      setVoie(null)
+      setToponyme(null)
+      setNumeros(null)
+    }
+  }, [initialVoie, initialToponyme, reloadGeojson, reloadParcelles, reloadVoies, reloadToponymes])
 
   useEffect(() => {
     reloadHabilitation()
@@ -207,6 +207,7 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, initialCom
     reloadBaseLocale,
     reloadNumerosToponyme,
     toponyme,
+    setToponyme,
     certifyAllNumeros
   }), [
     isEditing,
@@ -249,13 +250,13 @@ BalDataContextProvider.propTypes = {
     code: PropTypes.string.isRequired
   }),
   initialVoie: PropTypes.object,
-  idToponyme: PropTypes.string
+  initialToponyme: PropTypes.object
 }
 
 BalDataContextProvider.defaultProps = {
   initialCommune: null,
   initialVoie: null,
-  idToponyme: null
+  initialToponyme: null
 }
 
 export default BalDataContext

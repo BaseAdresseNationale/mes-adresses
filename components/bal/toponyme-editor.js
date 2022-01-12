@@ -21,7 +21,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange, resetNom] = useInput(initialValue ? initialValue.nom : '')
+  const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [error, setError] = useState()
 
   const onFormSubmit = useCallback(async e => {

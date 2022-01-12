@@ -17,7 +17,7 @@ import SettingsMenu from '@/components/sub-header/settings-menu'
 import DemoWarning from '@/components/sub-header/demo-warning'
 import BALStatus from '@/components/sub-header/bal-status'
 
-const SubHeader = React.memo(({initialToponyme}) => {
+const SubHeader = React.memo(() => {
   const {query} = useRouter()
   const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(query['france-connect'] === '1')
 
@@ -90,7 +90,7 @@ const SubHeader = React.memo(({initialToponyme}) => {
           baseLocale={baseLocale}
           commune={commune}
           voie={voie}
-          toponyme={toponyme || initialToponyme}
+          toponyme={toponyme}
           marginLeft={8}
         />
 
@@ -129,13 +129,5 @@ const SubHeader = React.memo(({initialToponyme}) => {
     </>
   )
 })
-
-SubHeader.propTypes = {
-  initialToponyme: PropTypes.object
-}
-
-SubHeader.defaultProps = {
-  initialToponyme: null
-}
 
 export default SubHeader
