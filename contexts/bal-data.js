@@ -119,8 +119,8 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
         setTimeout(() => {
           reloadBaseLocale()
           setIsRefrehSyncStat(false)
-          toaster.notify('De nouvelles modifications ont étaient détectées', {
-            description: 'Elles seront automatiquement transmise dans la Base Adresses Nationale d’ici quelques heures.',
+          toaster.notify('De nouvelles modifications ont été détectées', {
+            description: 'Elles seront automatiquement transmises dans la Base Adresses Nationale d’ici quelques heures.',
             duration: 10
           })
         }, 30000) // Maximum interval between CRON job

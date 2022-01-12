@@ -8,7 +8,7 @@ function RejectedDialog({communeName, strategyType}) {
     >
       <Text>
         {strategyType === 'email' && (
-          'Vous avez dépasser le nombre de tentative maximum autorisée.'
+          'Vous avez dépassé le nombre maximum de tentatives autorisé.'
         )}
 
         {strategyType === 'franceconnect' && (

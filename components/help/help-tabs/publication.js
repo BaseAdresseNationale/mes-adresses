@@ -86,7 +86,7 @@ function Publication() {
 
           <Alert title='En cas de conflit'>
             <Text display='block' color='muted'>
-              Il peut arriver qu’une autre Base Adresse Locale soit déjà synchronisée avec la Base Adresse Nationale. Dans ce cas, votre Base Adresse Locale va rentrer en conflit avec celle-ci.
+              Il peut arriver qu’une autre Base Adresse Locale soit déjà synchronisée avec la Base Adresse Nationale. Dans ce cas, votre Base Adresse Locale va entrer en conflit avec celle-ci.
             </Text>
             <Text display='block' marginTop={8} color='muted'>
               En cliquant sur
@@ -115,7 +115,7 @@ function Publication() {
               <StatusBadge status='published' sync={{isPaused: false, status: 'outdated'}} />
             </Pane>
             <Text>
-              Des modifications ont étaient détectées, la Base Adresse Locale Nationale sera automatiquement mise à jour d’ici quelques heures.
+              Des modifications ont été détectées, la Base Adresse Nationale sera automatiquement mise à jour d’ici quelques heures.
             </Text>
           </Pane>
 
@@ -124,7 +124,7 @@ function Publication() {
               <StatusBadge status='published' sync={{isPaused: true, status: 'synced'}} />
             </Pane>
             <Text>
-              Vous avez suspendues les mises à jour de votre Base Adresse Locale. Aucune modification ne sera transmise à la Base Adresse Nationale. Vous pouvez relancer à tout moment les mises à jours.
+              Vous avez suspendus les mises à jour de votre Base Adresse Locale. Aucune modification ne sera transmise à la Base Adresse Nationale. Vous pouvez relancer les mises à jours à tout moment.
             </Text>
           </Pane>
 
