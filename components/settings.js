@@ -10,31 +10,29 @@ import BalDataContext from '@/contexts/bal-data'
 import Certification from '@/components/settings/certification'
 import SettingsForm from '@/components/settings/settings-form'
 
-const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
+const Settings = React.memo(({codeCommune}) => {
   const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)
-  const balDataContext = useContext(BalDataContext)
-
-  const baseLocale = balDataContext.baseLocale || initialBaseLocale
+  const {baseLocale} = useContext(BalDataContext)
 
   const [commune, setCommune] = useState()
 
   const fetchCommune = useCallback(async () => {
-    const commune = await getCommune(initialBaseLocale._id, codeCommune)
+    const commune = await getCommune(baseLocale._id, codeCommune)
     setCommune(commune)
-  }, [initialBaseLocale._id, codeCommune])
+  }, [baseLocale._id, codeCommune])
 
   useEffect(() => { // Update number of certified numeros when setting is open
     if (codeCommune) {
       fetchCommune()
     }
-  }, [initialBaseLocale._id, codeCommune, isSettingsDisplayed, fetchCommune])
+  }, [baseLocale._id, codeCommune, isSettingsDisplayed, fetchCommune])
 
   return (
     <SideSheet
       isShown={isSettingsDisplayed}
       onCloseComplete={() => setIsSettingsDisplayed(false)}
     >
-      <SettingsForm initialBaseLocale={initialBaseLocale} />
+      <SettingsForm baseLocale={baseLocale} />
 
       <Pane borderBottom='1px solid #d8dae5' width='80%' marginY={16} marginX='auto' />
 
@@ -66,11 +64,6 @@ Settings.defaultProps = {
 }
 
 Settings.propTypes = {
-  initialBaseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired,
   codeCommune: PropTypes.string
 }
 

@@ -31,11 +31,9 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const Settings = React.memo(({initialBaseLocale}) => {
+const Settings = React.memo(({baseLocale}) => {
   const {token, emails, reloadEmails} = useContext(TokenContext)
-  const balDataContext = useContext(BalDataContext)
-
-  const baseLocale = balDataContext.baseLocale || initialBaseLocale
+  const {reloadBaseLocale} = useContext(BalDataContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [balEmails, setBalEmails] = useState([])
@@ -76,13 +74,13 @@ const Settings = React.memo(({initialBaseLocale}) => {
     setIsLoading(true)
 
     try {
-      await updateBaseLocale(initialBaseLocale._id, {
+      await updateBaseLocale(baseLocale._id, {
         nom: nomInput.trim(),
         emails: balEmails
       }, token)
 
       await reloadEmails()
-      await balDataContext.reloadBaseLocale()
+      await reloadBaseLocale()
 
       if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length > 0) {
         setIsRenewTokenWarningShown(true)
@@ -94,7 +92,7 @@ const Settings = React.memo(({initialBaseLocale}) => {
     }
 
     setIsLoading(false)
-  }, [initialBaseLocale._id, nomInput, balEmails, token, reloadEmails, balDataContext, emails])
+  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, emails])
 
   useEffect(() => {
     if (error) {
@@ -212,7 +210,7 @@ const Settings = React.memo(({initialBaseLocale}) => {
             <RenewTokenDialog
               token={token}
               emails={emails}
-              baseLocaleId={initialBaseLocale._id}
+              baseLocaleId={baseLocale._id}
               isShown={isRenewTokenWarningShown}
               setIsShown={setIsRenewTokenWarningShown}
               setError={setError}
@@ -230,7 +228,7 @@ const Settings = React.memo(({initialBaseLocale}) => {
 })
 
 Settings.propTypes = {
-  initialBaseLocale: PropTypes.shape({
+  baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
