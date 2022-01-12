@@ -2,13 +2,26 @@ import React, {useState, useMemo, useCallback, useEffect, useContext} from 'reac
 import PropTypes from 'prop-types'
 import {toaster} from 'evergreen-ui'
 
-import {getHabilitation, getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, certifyBAL} from '../lib/bal-api'
+import {
+  getHabilitation,
+  getParcelles,
+  getCommuneGeoJson,
+  getCommune,
+  getNumeros,
+  getVoies,
+  getVoie,
+  getBaseLocale,
+  getToponymes,
+  getNumerosToponyme,
+  getToponyme,
+  certifyBAL
+} from '../lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 
 const BalDataContext = React.createContext()
 
-export const BalDataContextProvider = React.memo(({initialBaseLocale, codeCommune, idVoie, idToponyme, ...props}) => {
+export const BalDataContextProvider = React.memo(({initialBaseLocale, initialCommune, idVoie, idToponyme, ...props}) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState()
   const [parcelles, setParcelles] = useState([])
@@ -18,6 +31,7 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, codeCommun
   const [toponymes, setToponymes] = useState()
   const [voie, setVoie] = useState(null)
   const [toponyme, setToponyme] = useState()
+  const [commune, setCommune] = useState(initialCommune)
   const [baseLocale, setBaseLocale] = useState(initialBaseLocale)
   const [habilitation, setHabilitation] = useState(null)
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
@@ -36,40 +50,40 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, codeCommun
   }, [baseLocale._id, token])
 
   const reloadParcelles = useCallback(async () => {
-    if (codeCommune) {
-      const parcelles = await getParcelles(baseLocale._id, codeCommune)
+    if (commune?.code) {
+      const parcelles = await getParcelles(baseLocale._id, commune?.code)
       setParcelles(parcelles)
     } else {
       setParcelles([])
     }
-  }, [baseLocale._id, codeCommune])
+  }, [baseLocale._id, commune])
 
   const reloadGeojson = useCallback(async () => {
-    if (codeCommune) {
-      const geojson = await getCommuneGeoJson(baseLocale._id, codeCommune)
+    if (commune?.code) {
+      const geojson = await getCommuneGeoJson(baseLocale._id, commune?.code)
       setGeojson(geojson)
     } else {
       setGeojson(null)
     }
-  }, [baseLocale._id, codeCommune])
+  }, [baseLocale._id, commune])
 
   const reloadVoies = useCallback(async () => {
-    if (codeCommune) {
-      const voies = await getVoies(baseLocale._id, codeCommune)
+    if (commune?.code) {
+      const voies = await getVoies(baseLocale._id, commune?.code)
       setVoies(voies)
     } else {
       setVoies(null)
     }
-  }, [baseLocale._id, codeCommune])
+  }, [baseLocale._id, commune])
 
   const reloadToponymes = useCallback(async () => {
-    if (codeCommune) {
-      const toponymes = await getToponymes(baseLocale._id, codeCommune)
+    if (commune?.code) {
+      const toponymes = await getToponymes(baseLocale._id, commune?.code)
       setToponymes(toponymes)
     } else {
       setToponymes(null)
     }
-  }, [baseLocale._id, codeCommune])
+  }, [baseLocale._id, commune])
 
   const reloadNumeros = useCallback(async _idEdited => {
     const id = _idEdited || idVoie
@@ -100,6 +114,11 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, codeCommun
       setNumeros(null)
     }
   }, [idToponyme, token, reloadParcelles])
+
+  const reloadCommune = useCallback(async () => {
+    const baseLocaleCommune = await getCommune(baseLocale._id, initialCommune.code)
+    setCommune({...initialCommune, ...baseLocaleCommune})
+  }, [baseLocale._id, initialCommune])
 
   const reloadBaseLocale = useCallback(async () => {
     const bal = await getBaseLocale(baseLocale._id)
@@ -140,25 +159,25 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, codeCommun
   }, [editingId, numeros, voies, toponymes])
 
   const certifyAllNumeros = useCallback(async () => {
-    await certifyBAL(baseLocale._id, codeCommune, token, {certifie: true})
+    await certifyBAL(baseLocale._id, commune?.code, token, {certifie: true})
     await reloadNumeros()
 
     refreshBALSync()
-  }, [baseLocale._id, codeCommune, token, reloadNumeros, refreshBALSync])
+  }, [baseLocale._id, commune, token, reloadNumeros, refreshBALSync])
 
   useEffect(() => {
     reloadGeojson()
     reloadParcelles()
     reloadVoies()
     reloadToponymes()
-  }, [codeCommune, reloadGeojson, reloadParcelles, reloadVoies, reloadToponymes])
+  }, [commune, reloadGeojson, reloadParcelles, reloadVoies, reloadToponymes])
 
   // Reload geojson when go back to commune view
   useEffect(() => {
-    if (codeCommune && !idVoie) {
+    if (commune?.code && !idVoie) {
       reloadGeojson()
     }
-  }, [codeCommune, idVoie, reloadGeojson])
+  }, [commune, idVoie, reloadGeojson])
 
   useEffect(() => {
     reloadNumeros()
@@ -182,7 +201,7 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, codeCommun
     reloadGeojson,
     baseLocale,
     habilitation,
-    codeCommune,
+    commune,
     voie,
     setVoie,
     numeros,
@@ -195,6 +214,7 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, codeCommun
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
+    reloadCommune,
     reloadBaseLocale,
     reloadNumerosToponyme,
     toponyme,
@@ -211,7 +231,8 @@ export const BalDataContextProvider = React.memo(({initialBaseLocale, codeCommun
     reloadBaseLocale,
     habilitation,
     reloadHabilitation,
-    codeCommune,
+    reloadCommune,
+    commune,
     voie,
     numeros,
     voies,
@@ -235,13 +256,15 @@ BalDataContextProvider.propTypes = {
   initialBaseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
   }).isRequired,
-  codeCommune: PropTypes.string,
+  initialCommune: PropTypes.shape({
+    code: PropTypes.string.isRequired
+  }),
   idVoie: PropTypes.string,
   idToponyme: PropTypes.string
 }
 
 BalDataContextProvider.defaultProps = {
-  codeCommune: null,
+  initialCommune: null,
   idVoie: null,
   idToponyme: null
 }

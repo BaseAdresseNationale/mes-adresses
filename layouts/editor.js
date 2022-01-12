@@ -28,25 +28,20 @@ function Editor({baseLocale, commune, voie, toponyme, children}) {
   }, [baseLocale])
 
   return (
-    <BalDataContextProvider initialBaseLocale={baseLocale} codeCommune={commune?.code} idVoie={voie?._id} idToponyme={toponyme?._id}>
+    <BalDataContextProvider initialBaseLocale={baseLocale} initialCommune={commune} idVoie={voie?._id} idToponyme={toponyme?._id}>
       <MapContextProvider>
         <DrawContextProvider>
           <MarkersContextProvider>
             <ParcellesContextProvider>
 
               <SettingsContextProvider>
-                <Settings codeCommune={commune?.code} />
-                <SubHeader
-                  commune={commune}
-                  initialeVoie={voie}
-                  initialToponyme={toponyme}
-                />
+                <Settings />
+                <SubHeader initialeVoie={voie} initialToponyme={toponyme} />
               </SettingsContextProvider>
 
               <Map
                 top={116}
                 left={leftOffset}
-                commune={commune}
                 voie={voie}
                 toponyme={toponyme}
               />

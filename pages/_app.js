@@ -5,8 +5,8 @@ import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import {getBaseLocale, getVoie, getToponyme} from '@/lib/bal-api'
-import {getCommune} from '@/lib/geo-api'
+import {getCommune as getGeoCommune} from '@/lib/geo-api'
+import {getBaseLocale, getCommune, getVoie, getToponyme} from '@/lib/bal-api'
 
 import {LocalStorageContextProvider} from '@/contexts/local-storage'
 import {HelpContextProvider} from '@/contexts/help'
@@ -102,9 +102,12 @@ App.getInitialProps = async ({Component, ctx}) => {
 
     if (query.codeCommune) {
       if (baseLocale.communes.includes(query.codeCommune)) {
-        commune = await getCommune(query.codeCommune, {
+        const baseLocaleCommune = await getCommune(query.balId, query.codeCommune)
+        const geoCommune = await getGeoCommune(query.codeCommune, {
           fields: 'contour'
         })
+
+        commune = {...baseLocaleCommune, ...geoCommune}
       } else {
         throw new Error('La commune demandée ne fais pas partie de la Base Adresse Locale')
       }

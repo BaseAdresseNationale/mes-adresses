@@ -67,7 +67,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({commune, voie, toponyme}) {
+function Map({voie, toponyme}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -78,9 +78,10 @@ function Map({commune, voie, toponyme}) {
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const {balId, codeCommune} = router.query
+  const {balId} = router.query
 
   const {
+    commune,
     numeros,
     toponymes,
     editingId,
@@ -137,14 +138,14 @@ function Map({commune, voie, toponyme}) {
         setEditingId(voie._id)
       } else {
         router.push(
-          `/bal/voie?balId=${balId}&codeCommune=${codeCommune}&idVoie=${idVoie}`,
-          `/bal/${balId}/communes/${codeCommune}/voies/${idVoie}`
+          `/bal/voie?balId=${balId}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+          `/bal/${balId}/communes/${commune.code}/voies/${idVoie}`
         )
       }
     }
 
     setIsContextMenuDisplayed(null)
-  }, [router, balId, codeCommune, setEditingId, isEditing, voie, handleParcelle])
+  }, [router, balId, commune, setEditingId, isEditing, voie, handleParcelle])
 
   const handleCursor = useCallback(({isHovering}) => {
     if (modeId === 'drawLineString') {
@@ -303,9 +304,8 @@ function Map({commune, voie, toponyme}) {
       {commune && openForm && (
         <Pane background='white' height={400} overflowY='auto'>
           <AddressEditor
-            commune={commune}
             balId={balId}
-            codeCommune={codeCommune}
+            commune={commune}
             closeForm={() => setOpenForm(false)}
           />
         </Pane>
@@ -315,13 +315,11 @@ function Map({commune, voie, toponyme}) {
 }
 
 Map.propTypes = {
-  commune: PropTypes.object,
   voie: PropTypes.object,
   toponyme: PropTypes.object
 }
 
 Map.defaultProps = {
-  commune: null,
   voie: null,
   toponyme: null
 }

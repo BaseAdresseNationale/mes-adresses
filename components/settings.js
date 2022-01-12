@@ -1,8 +1,5 @@
-import React, {useState, useContext, useEffect, useCallback} from 'react'
-import PropTypes from 'prop-types'
+import React, {useContext, useEffect} from 'react'
 import {SideSheet, Pane, Alert} from 'evergreen-ui'
-
-import {getCommune} from '@/lib/bal-api'
 
 import SettingsContext from '@/contexts/settings'
 import BalDataContext from '@/contexts/bal-data'
@@ -10,22 +7,15 @@ import BalDataContext from '@/contexts/bal-data'
 import Certification from '@/components/settings/certification'
 import SettingsForm from '@/components/settings/settings-form'
 
-const Settings = React.memo(({codeCommune}) => {
+const Settings = React.memo(() => {
   const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)
-  const {baseLocale} = useContext(BalDataContext)
-
-  const [commune, setCommune] = useState()
-
-  const fetchCommune = useCallback(async () => {
-    const commune = await getCommune(baseLocale._id, codeCommune)
-    setCommune(commune)
-  }, [baseLocale._id, codeCommune])
+  const {baseLocale, commune, reloadCommune} = useContext(BalDataContext)
 
   useEffect(() => { // Update number of certified numeros when setting is open
-    if (codeCommune) {
-      fetchCommune()
+    if (isSettingsDisplayed) {
+      reloadCommune()
     }
-  }, [baseLocale._id, codeCommune, isSettingsDisplayed, fetchCommune])
+  }, [isSettingsDisplayed, reloadCommune])
 
   return (
     <SideSheet
@@ -39,7 +29,7 @@ const Settings = React.memo(({codeCommune}) => {
       <Pane padding={16}>
         {commune && (
           <Pane display='flex' justifyContent='center'>
-            <Certification nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} onSubmit={fetchCommune} />
+            <Certification nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} onSubmit={() => reloadCommune()} />
           </Pane>
         )}
       </Pane>
@@ -58,13 +48,5 @@ const Settings = React.memo(({codeCommune}) => {
     </SideSheet>
   )
 })
-
-Settings.defaultProps = {
-  codeCommune: null
-}
-
-Settings.propTypes = {
-  codeCommune: PropTypes.string
-}
 
 export default Settings
