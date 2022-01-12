@@ -13,7 +13,7 @@ import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
 
-const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
+const Voie = React.memo(({baseLocale, commune, defaultNumeros, ...props}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   useHelp(3)
@@ -21,6 +21,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const {token} = useContext(TokenContext)
 
   const {
+    voie,
     numeros,
     reloadNumeros,
     reloadVoies,
@@ -62,7 +63,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
     await reloadNumeros()
     refreshBALSync()
 
-    if (editedVoie._id !== voie._id || isNewVoie) {
+    if (editedVoie._id !== props.voie._id || isNewVoie) {
       await reloadGeojson()
     }
 
@@ -100,7 +101,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
 
   return (
     <>
-      <VoieHeading defaultVoie={voie} />
+      <VoieHeading voie={voie || props.voie} />
 
       {isFormOpen ? (
         <Pane flex={1} overflowY='scroll'>
@@ -108,7 +109,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
             <Table.Cell display='block' padding={0} background='tint1'>
               <NumeroEditor
                 hasPreview
-                initialVoieId={voie._id}
+                initialVoieId={props.voie._id}
                 initialValue={editedNumero}
                 commune={commune}
                 onSubmit={editedNumero ? onEdit : onAdd}
@@ -120,7 +121,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
       ) : (
         <NumerosList
           token={token}
-          voieId={voie._id}
+          voieId={props.voie._id}
           defaultNumeros={defaultNumeros}
           isEditionDisabled={isEditing}
           handleEditing={handleEditing}

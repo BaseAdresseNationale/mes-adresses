@@ -67,7 +67,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({voie, toponyme}) {
+function Map({toponyme}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -82,6 +82,7 @@ function Map({voie, toponyme}) {
 
   const {
     commune,
+    voie,
     numeros,
     toponymes,
     editingId,
@@ -291,7 +292,7 @@ function Map({voie, toponyme}) {
           {isEditing && (
             <EditableMarker
               style={style || defaultStyle}
-              idVoie={voie ? voie._id : null}
+              idVoie={voie?._id}
               isToponyme={Boolean(toponyme)}
               viewport={viewport}
             />
@@ -315,12 +316,10 @@ function Map({voie, toponyme}) {
 }
 
 Map.propTypes = {
-  voie: PropTypes.object,
   toponyme: PropTypes.object
 }
 
 Map.defaultProps = {
-  voie: null,
   toponyme: null
 }
 

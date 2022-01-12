@@ -34,7 +34,11 @@ function AddressEditor({balId, commune, closeForm}) {
     }
 
     await addNumero(editedVoie._id, numero, token)
-    await reloadNumeros()
+
+    if (voie?._id === editedVoie._id) {
+      await reloadNumeros()
+    }
+
     await reloadVoies()
     refreshBALSync()
 

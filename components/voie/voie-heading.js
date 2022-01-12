@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect} from 'react'
+import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
@@ -9,8 +9,7 @@ import BalDataContext from '@/contexts/bal-data'
 
 import VoieEditor from '@/components/bal/voie-editor'
 
-function VoieHeading({defaultVoie}) {
-  const [editedVoie, setEditedVoie] = useState(defaultVoie)
+function VoieHeading({voie}) {
   const [hovered, setHovered] = useState(false)
 
   const {token} = useContext(TokenContext)
@@ -18,13 +17,13 @@ function VoieHeading({defaultVoie}) {
 
   const onEnableVoieEditing = () => {
     if (!isEditing) {
-      setEditingId(editedVoie._id)
+      setEditingId(voie._id)
       setHovered(false)
     }
   }
 
   const onEditVoie = async ({nom, typeNumerotation, trace}) => {
-    const voie = await editVoie(editedVoie._id, {
+    const updatedVoie = await editVoie(voie._id, {
       nom,
       typeNumerotation,
       trace
@@ -36,28 +35,19 @@ function VoieHeading({defaultVoie}) {
     await reloadGeojson()
     refreshBALSync()
 
-    setEditedVoie(voie)
-
-    // Update voie name in breadcrum
-    if (editingId === editedVoie._id) {
-      setVoie(voie)
-    }
+    setVoie(updatedVoie)
   }
-
-  useEffect(() => {
-    setEditedVoie(defaultVoie)
-  }, [defaultVoie])
 
   return (
     <Pane
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={editingId === editedVoie._id ? 0 : 16}
+      padding={editingId === voie._id ? 0 : 16}
     >
-      {editingId === editedVoie._id ? (
+      {editingId === voie._id ? (
         <VoieEditor
-          initialValue={editedVoie}
+          initialValue={voie}
           onSubmit={onEditVoie}
           onCancel={() => setEditingId(null)}
         />
@@ -68,7 +58,7 @@ function VoieHeading({defaultVoie}) {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {editedVoie.nom}
+          {voie.nom}
           {!isEditing && token && (
             <EditIcon
               marginBottom={-2}
@@ -79,14 +69,14 @@ function VoieHeading({defaultVoie}) {
         </Heading>
       )}
       {numeros && (
-        <Text padding={editingId === editedVoie._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text padding={editingId === voie._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
       )}
     </Pane>
   )
 }
 
 VoieHeading.propTypes = {
-  defaultVoie: PropTypes.shape({
+  voie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
   }).isRequired
