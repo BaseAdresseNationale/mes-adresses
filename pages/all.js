@@ -17,7 +17,7 @@ const PublicBasesLocalesList = dynamic(() => import('@/components/bases-locales-
 
 function All({basesLocales}) {
   return (
-    <>
+    <Main>
       <Pane padding={16} backgroundColor='white'>
         <Heading size={600} marginBottom={8}>Rechercher une Base Adresse Locale</Heading>
         <Paragraph>
@@ -39,16 +39,13 @@ function All({basesLocales}) {
           </Button>
         </Link>
       </Pane>
-    </>
+    </Main>
   )
 }
 
 All.getInitialProps = async () => {
-  const basesLocales = await listBasesLocales()
-
   return {
-    basesLocales,
-    layout: 'fullscreen'
+    basesLocales: await listBasesLocales()
   }
 }
 

@@ -214,7 +214,6 @@ Toponyme.getInitialProps = async ({baseLocale, commune, toponyme}) => {
   const defaultNumeros = await getNumerosToponyme(toponyme._id)
 
   return {
-    layout: 'sidebar',
     toponyme,
     baseLocale,
     commune,

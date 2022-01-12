@@ -1,5 +1,6 @@
 import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
+import {useRouter} from 'next/router'
 import {Pane} from 'evergreen-ui'
 
 import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@/lib/bal-api'
@@ -16,8 +17,9 @@ import SettingsMenu from '@/components/sub-header/settings-menu'
 import DemoWarning from '@/components/sub-header/demo-warning'
 import BALStatus from '@/components/sub-header/bal-status'
 
-const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFranceConnectAuthentication}) => {
-  const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(isFranceConnectAuthentication)
+const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme}) => {
+  const {query} = useRouter()
+  const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(query['france-connect'] === '1')
 
   const balDataContext = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
@@ -127,15 +129,13 @@ SubHeader.propTypes = {
   }).isRequired,
   commune: PropTypes.object,
   voie: PropTypes.object,
-  toponyme: PropTypes.object,
-  isFranceConnectAuthentication: PropTypes.bool
+  toponyme: PropTypes.object
 }
 
 SubHeader.defaultProps = {
   commune: null,
   voie: null,
-  toponyme: null,
-  isFranceConnectAuthentication: false
+  toponyme: null
 }
 
 export default SubHeader

@@ -1,14 +1,17 @@
 import Link from 'next/link'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, RouteIcon} from 'evergreen-ui'
 
+import Main from '@/layouts/main'
+
 import Header from '@/components/header'
 
 function Custom404() {
   return (
-    <Pane display='flex' backgroundColor='#fff' flexDirection='column' width='100%' height='100%'>
+    <Main>
       <Header />
       <Pane
         display='flex'
+        flex={1}
         alignItems='center'
         flexDirection='column'
         justifyContent='center'
@@ -22,7 +25,7 @@ function Custom404() {
           </Button>
         </Link>
       </Pane>
-    </Pane>
+    </Main>
   )
 }
 

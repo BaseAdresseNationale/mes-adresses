@@ -37,7 +37,6 @@ const Index = React.memo(({baseLocale}) => {
 
 Index.getInitialProps = async ({baseLocale}) => {
   return {
-    layout: 'sidebar',
     baseLocale
   }
 }

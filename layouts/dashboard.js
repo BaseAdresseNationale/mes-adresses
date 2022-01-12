@@ -4,7 +4,7 @@ import Link from 'next/link'
 import {Heading, Pane, Icon} from 'evergreen-ui'
 
 import Map from '@/components/dashboard/map'
-import Header from '@/components/header'
+import Fullscreen from '@/layouts/fullscreen'
 
 const MOBILE_WIDTH = '820'
 
@@ -46,8 +46,6 @@ function BackButton() {
 function Mobile({title, backButton, mapData, children}) {
   return (
     <Pane display='flex' backgroundColor='#fff' flexDirection='column' width='100%'>
-      <Header />
-
       {backButton && (
         <BackButton />
       )}
@@ -67,9 +65,7 @@ Mobile.propTypes = propTypes
 
 function Desktop({title, mapData, backButton, children}) {
   return (
-    <Pane height='100vh' display='flex' backgroundColor='#fff' flexDirection='column'>
-      <Header />
-
+    <Fullscreen>
       <Pane display='flex' width='100%' height='calc(100vh - 77px)'>
         <Pane display='flex' flexDirection='column' width={600} overflowY='auto'>
           {backButton && (
@@ -85,11 +81,7 @@ function Desktop({title, mapData, backButton, children}) {
           <Map {...mapData} />
         </Pane>
       </Pane>
-      <style jsx>{`
-
-
-      `}</style>
-    </Pane>
+    </Fullscreen>
   )
 }
 

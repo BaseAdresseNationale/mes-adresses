@@ -95,7 +95,6 @@ Departement.getInitialProps = async ({query}) => {
     basesLocalesDepartementWithoutDemo,
     BALGroupedByCommune,
     stats: basesLocalesDepartement.stats,
-    layout: 'fullscreen'
   }
 }
 
