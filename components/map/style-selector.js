@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} from 'evergreen-ui'
 
 const STYLES = [
-  {label: 'Plan IGN', value: 'vector'},
+  {label: 'Plan', value: 'vector'},
+  {label: 'Plan IGN(Version Bêta)', value: 'planIGN'},
   {label: 'Photographie aérienne', value: 'ortho'}
+  
 ]
 
 function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, handleCadastre}) {
