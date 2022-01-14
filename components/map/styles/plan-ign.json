@@ -10,7 +10,7 @@
 		  "https://wxs.ign.fr/essentiels/geoportail/tms/1.0.0/PLAN.IGN/{z}/{x}/{y}.pbf"
 		],
 		"scheme": "xyz",
-		"attribution": "<a target='_blank' href='https://geoservices.ign.fr/'>© IGN</a>"
+		"attribution": "<a target='_blank' href='https://geoservices.ign.fr/documentation/donnees/cartes/planign'>© IGN</a>"
 	  },
 	  "cadastre": {
 		"type": "vector",
@@ -956,7 +956,7 @@
 		  "text-max-angle": 20,
 		  "text-max-width": 100,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -1014,7 +1014,7 @@
 		  "text-max-angle": 20,
 		  "text-max-width": 100,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -1072,7 +1072,7 @@
 		  "text-max-angle": 20,
 		  "text-max-width": 100,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -10028,7 +10028,7 @@
 		  ],
 		  "text-padding": 2,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -10780,7 +10780,7 @@
 		   -1
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -10821,7 +10821,7 @@
 		   -1.3
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -10867,7 +10867,7 @@
 		   -1.4
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -10911,7 +10911,7 @@
 		   -1.5
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -10956,7 +10956,7 @@
 		   -1.6
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -11002,7 +11002,7 @@
 		   1
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -11043,7 +11043,7 @@
 		   1.3
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -11089,7 +11089,7 @@
 		   1.4
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -11133,7 +11133,7 @@
 		   1.5
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -11178,7 +11178,7 @@
 		   1.6
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -11210,7 +11210,7 @@
 		   "property": "rotation"
 		  },
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11241,7 +11241,7 @@
 		   "property": "rotation"
 		  },
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11272,7 +11272,7 @@
 		   "property": "rotation"
 		  },
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11302,7 +11302,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -11344,7 +11344,7 @@
 		  "text-padding": 3,
 		  "text-anchor": "bottom-left",
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ],
 		  "icon-image": "Metro",
 		  "icon-size": {
@@ -11387,7 +11387,7 @@
 		   -1
 		  ],
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -11421,7 +11421,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11447,7 +11447,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11478,7 +11478,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11505,7 +11505,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11558,7 +11558,7 @@
 		  ],
 		  "text-padding": 3,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11587,7 +11587,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11634,7 +11634,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11668,7 +11668,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11702,7 +11702,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11751,7 +11751,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11785,7 +11785,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11819,7 +11819,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11868,7 +11868,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11908,7 +11908,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 5,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11935,7 +11935,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -11964,7 +11964,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 2,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -11993,7 +11993,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 2,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12023,7 +12023,7 @@
 		  "text-padding": 2,
 		  "text-anchor": "center",
 		  "text-font": [
-		   "Source Sans Pro Semibold"
+		   "Open Sans Regular"
 		  ],
 		  "text-rotation-alignment": "viewport"
 		 },
@@ -12054,7 +12054,7 @@
 		  "text-padding": 0,
 		  "text-anchor": "center",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "icon-image": "Ecluse",
 		  "icon-rotation-alignment": "viewport",
@@ -12090,7 +12090,7 @@
 		  "text-padding": 0,
 		  "text-anchor": "center",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "icon-image": "Ecluse",
 		  "icon-rotation-alignment": "viewport",
@@ -12119,7 +12119,7 @@
 		  "text-anchor": "center",
 		  "text-max-angle": 30,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -12142,7 +12142,7 @@
 		  "text-anchor": "center",
 		  "text-max-angle": 30,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "none"
 		 },
@@ -12179,7 +12179,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12215,7 +12215,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12244,7 +12244,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -12288,7 +12288,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12332,7 +12332,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 5,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12369,7 +12369,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12406,7 +12406,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12451,7 +12451,7 @@
 		  ],
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12490,7 +12490,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -12527,7 +12527,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12563,7 +12563,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12599,7 +12599,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12638,7 +12638,7 @@
 		  "text-padding": 1,
 		  "text-anchor": "center",
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12676,7 +12676,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -12727,7 +12727,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12777,7 +12777,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -12821,7 +12821,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -12866,7 +12866,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12895,7 +12895,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12921,7 +12921,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12956,7 +12956,7 @@
 		  ],
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -12984,7 +12984,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 5,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13013,7 +13013,7 @@
 		  "text-padding": 10,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13044,7 +13044,7 @@
 		  "text-padding": 10,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13083,7 +13083,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -13123,7 +13123,7 @@
 		  "text-padding": 1,
 		  "text-anchor": "center",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13155,7 +13155,7 @@
 		  "text-padding": 10,
 		  "text-max-angle": 45,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -13211,7 +13211,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13240,7 +13240,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13283,7 +13283,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -13336,7 +13336,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13384,7 +13384,7 @@
 		  ],
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13437,7 +13437,7 @@
 		  "text-anchor": "center",
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13490,7 +13490,7 @@
 		  "text-anchor": "center",
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13520,7 +13520,7 @@
 		  "text-padding": 5,
 		  "text-max-angle": 45,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -13564,7 +13564,7 @@
 		  "text-allow-overlap": false,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13606,7 +13606,7 @@
 		  "text-anchor": "center",
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13645,7 +13645,7 @@
 		  "text-padding": 1,
 		  "text-max-angle": 45,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -13684,7 +13684,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13718,7 +13718,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13746,7 +13746,7 @@
 		  "text-keep-upright": true,
 		  "text-max-angle": 45,
 		  "text-font": [
-		   "Source Sans Pro Italic"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -13781,7 +13781,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -13810,7 +13810,7 @@
 		  "text-max-angle": 45,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ],
 		  "visibility": "visible"
 		 },
@@ -13858,7 +13858,7 @@
 		  "text-allow-overlap": true,
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -13912,19 +13912,19 @@
 			[
 			 1,
 			 [
-			  "Source Sans Pro Regular"
+			  "Open Sans Regular"
 			 ]
 			],
 			[
 			 7,
 			 [
-			  "Source Sans Pro Bold"
+			  "Open Sans Regular"
 			 ]
 			],
 			[
 			 10,
 			 [
-			  "Source Sans Pro Regular"
+			  "Open Sans Regular"
 			 ]
 			]
 		   ]
@@ -13969,7 +13969,7 @@
 		  "text-anchor": "center",
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14011,7 +14011,7 @@
 		  "text-anchor": "center",
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14061,7 +14061,7 @@
 		  "text-padding": 1,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14111,7 +14111,7 @@
 		  "text-padding": 1,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14153,7 +14153,7 @@
 		  "text-anchor": "center",
 		  "text-padding": 1,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14192,7 +14192,7 @@
 		  "text-padding": 1,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14231,7 +14231,7 @@
 		  "text-padding": 1,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14270,7 +14270,7 @@
 		  "text-padding": 1,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14323,19 +14323,19 @@
 			[
 			 1,
 			 [
-			  "Source Sans Pro Regular"
+			  "Open Sans Regular"
 			 ]
 			],
 			[
 			 7,
 			 [
-			  "Source Sans Pro Bold"
+			  "Open Sans Regular"
 			 ]
 			],
 			[
 			 10,
 			 [
-			  "Source Sans Pro Regular"
+			  "Open Sans Regular"
 			 ]
 			]
 		   ]
@@ -14377,7 +14377,7 @@
 		  "text-padding": 1,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14417,7 +14417,7 @@
 		  "text-anchor": "center",
 		  "text-padding": 10,
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14447,7 +14447,7 @@
 		  "text-padding": 1,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14477,7 +14477,7 @@
 		  "text-padding": 2,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14507,7 +14507,7 @@
 		  "text-padding": 2,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Regular"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {
@@ -14536,7 +14536,7 @@
 		  "text-padding": 1,
 		  "text-transform": "uppercase",
 		  "text-font": [
-		   "Source Sans Pro Bold"
+		   "Open Sans Regular"
 		  ]
 		 },
 		 "paint": {

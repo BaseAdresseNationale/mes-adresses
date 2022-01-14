@@ -6,7 +6,6 @@ const STYLES = [
   {label: 'Plan', value: 'vector'},
   {label: 'Plan IGN(Version Bêta)', value: 'planIGN'},
   {label: 'Photographie aérienne', value: 'ortho'}
-  
 ]
 
 function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, handleCadastre}) {
@@ -29,7 +28,7 @@ function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, han
         position={Position.TOP_LEFT}
         title='Choix du fond de carte'
         hasFilter={false}
-        height={110}
+        height={140}
         options={STYLES}
         selected={style}
         onSelect={style => handleStyle(style.value)}

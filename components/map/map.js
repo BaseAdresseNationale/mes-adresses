@@ -49,10 +49,9 @@ function getBaseStyle(style) {
 
     case 'vector':
       return vector
-    
+
     case 'planIGN':
       return planIGN
-
     default:
       return vector
   }

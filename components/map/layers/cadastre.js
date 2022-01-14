@@ -129,9 +129,7 @@ export const cadastreLayers = parcelles => [{
   maxzoom: 16,
   layout: {
     'text-field': '{code}',
-    'text-font': [
-      'Source Sans Pro Regular'
-    ]
+    'text-font': ['Open Sans Regular']
   },
   paint: {
     'text-halo-color': 'rgba(255, 246, 241, 1)',
@@ -149,9 +147,7 @@ export const cadastreLayers = parcelles => [{
   ],
   layout: {
     'text-field': '{numero}',
-    'text-font': [
-      'Source Sans Pro Regular'
-    ],
+    'text-font': ['Open Sans Regular'],
     'text-allow-overlap': false,
     'text-size': 16
   },

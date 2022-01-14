@@ -3751,6 +3751,9 @@
 		  "symbol-placement": "line",
 		  "symbol-spacing": 350,
 		  "text-field": "{name:latin} {name:nonlatin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-letter-spacing": 0.2,
 		  "text-max-width": 5,
 		  "text-rotation-alignment": "map",
@@ -3777,6 +3780,9 @@
 		  "symbol-placement": "line",
 		  "symbol-spacing": 350,
 		  "text-field": "{name:latin}\n{name:nonlatin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-letter-spacing": 0.2,
 		  "text-max-width": 5,
 		  "text-rotation-alignment": "map",
@@ -3810,6 +3816,9 @@
 		  "symbol-placement": "point",
 		  "symbol-spacing": 350,
 		  "text-field": "{name:latin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-letter-spacing": 0.2,
 		  "text-max-width": 5,
 		  "text-rotation-alignment": "map",
@@ -3843,6 +3852,9 @@
 		  "symbol-placement": "point",
 		  "symbol-spacing": 350,
 		  "text-field": "{name:latin}\n{name:nonlatin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-letter-spacing": 0.2,
 		  "text-max-width": 5,
 		  "text-rotation-alignment": "map",
@@ -3900,6 +3912,9 @@
 		  "icon-image": "{class}_11",
 		  "text-anchor": "top",
 		  "text-field": "{name:latin}\n{name:nonlatin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-max-width": 9,
 		  "text-offset": [
 			0,
@@ -3955,6 +3970,9 @@
 		  "icon-image": "{class}_11",
 		  "text-anchor": "top",
 		  "text-field": "{name:latin}\n{name:nonlatin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-max-width": 9,
 		  "text-offset": [
 			0,
@@ -4009,6 +4027,9 @@
 		  "icon-image": "{class}_11",
 		  "text-anchor": "top",
 		  "text-field": "{name:latin}\n{name:nonlatin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-max-width": 9,
 		  "text-offset": [
 			0,
@@ -4060,6 +4081,9 @@
 		  "text-allow-overlap": false,
 		  "text-anchor": "top",
 		  "text-field": "{name:latin}\n{name:nonlatin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-ignore-placement": false,
 		  "text-max-width": 9,
 		  "text-offset": [
@@ -4193,6 +4217,9 @@
 		  "icon-size": 1,
 		  "text-anchor": "top",
 		  "text-field": "{name:latin}\n{name:nonlatin}",
+		  "text-font": [
+			"Open Sans Regular"
+		  ],
 		  "text-max-width": 9,
 		  "text-offset": [
 			0,
