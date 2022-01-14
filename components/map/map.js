@@ -50,7 +50,7 @@ function getBaseStyle(style) {
     case 'vector':
       return vector
 
-    case 'planIGN':
+    case 'plan-ign':
       return planIGN
     default:
       return vector
