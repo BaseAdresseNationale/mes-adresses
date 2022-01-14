@@ -4,7 +4,7 @@ import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} fr
 
 const STYLES = [
   {label: 'Plan', value: 'vector'},
-  {label: 'Plan IGN(Version Bêta)', value: 'planIGN'},
+  {label: 'Plan IGN(Version Bêta)', value: 'plan-ign'},
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
