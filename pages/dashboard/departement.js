@@ -13,12 +13,16 @@ import DashboardLayout from '../../components/layout/dashboard'
 
 function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) {
   const {nom, code} = departement
+  let nbNumerosCertifies = 0
 
   const codesCommunes = new Set(filteredCommunesInBAL.map(({code}) => code))
   const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutDemo.map(({communes}) => communes)))
   const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.has(c)).length
 
   const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutDemo)
+  basesLocalesDepartementWithoutDemo.forEach(bal => {
+    nbNumerosCertifies += bal.nbNumerosCertifies
+  })
 
   const mapData = {
     departement: code,
@@ -34,6 +38,12 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
             <Counter
               label={`${countCommunesActuelles > 1 ? 'Communes couvertes' : 'Commune couverte'} par une Base Adresse Locale`}
               value={countCommunesActuelles}
+            />
+          )}
+          {nbNumerosCertifies > 0 && (
+            <Counter
+              label={`${nbNumerosCertifies > 1 ? 'Numéros certifiés' : 'Numéro certifié'}`}
+              value={nbNumerosCertifies}
             />
           )}
 
