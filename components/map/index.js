@@ -1,23 +1,22 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import {Pane} from 'evergreen-ui'
 
 import MapLoader from './loader'
 
-const Map = dynamic(() => import('./map'), {
+const Map = dynamic(() => import('./map'), { // eslint-disable-line node/no-unsupported-features/es-syntax
   ssr: false,
   loading: props => (
     <MapLoader {...props} />
   )
 })
 
-function MapWrapper({animate, left, top, ...props}) {
+function MapWrapper({left, top, ...props}) {
   return (
     <Pane
       position='fixed'
       display='flex'
-      transition={animate ? 'left 0.3s' : null}
+      transition='left 0.3s'
       top={top}
       right={0}
       bottom={0}
@@ -30,13 +29,11 @@ function MapWrapper({animate, left, top, ...props}) {
 }
 
 MapWrapper.propTypes = {
-  animate: PropTypes.bool,
   top: PropTypes.number,
   left: PropTypes.number
 }
 
 MapWrapper.defaultProps = {
-  animate: false,
   top: 0,
   left: 0
 }

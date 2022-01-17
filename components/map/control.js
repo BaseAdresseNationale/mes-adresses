@@ -1,8 +1,8 @@
-import React, {useCallback} from 'react'
+import {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Tooltip, Position, Icon} from 'evergreen-ui'
 
-function Control({enabled, isDisabled, icon, enabledHint, disabledHint, onChange}) {
+function Control({isEnabled, isDisabled, icon, enabledHint, disabledHint, onChange}) {
   const onToggle = useCallback(e => {
     e.stopPropagation()
     onChange(enabled => !enabled)
@@ -19,7 +19,7 @@ function Control({enabled, isDisabled, icon, enabledHint, disabledHint, onChange
   return (
     <Tooltip
       position={Position.LEFT}
-      content={enabled ? enabledHint : disabledHint}
+      content={isEnabled ? enabledHint : disabledHint}
     >
       <Pane
         is='button'
@@ -33,7 +33,7 @@ function Control({enabled, isDisabled, icon, enabledHint, disabledHint, onChange
 }
 
 Control.propTypes = {
-  enabled: PropTypes.bool,
+  isEnabled: PropTypes.bool,
   isDisabled: PropTypes.bool,
   icon: PropTypes.object.isRequired,
   enabledHint: PropTypes.string.isRequired,
@@ -42,7 +42,7 @@ Control.propTypes = {
 }
 
 Control.defaultProps = {
-  enabled: true,
+  isEnabled: true,
   isDisabled: false
 }
 

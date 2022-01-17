@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 
@@ -12,7 +12,7 @@ import {normalizeSort} from '../../lib/normalize'
 import TableRow from '../table-row'
 import VoieEditor from './voie-editor'
 
-const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) => {
+function VoiesList({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) {
   const {
     isEditing,
     editingId,
@@ -36,7 +36,7 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
         </Table.Head>
         {isAdding && (
           <Table.Row height='auto'>
-            <Table.Cell borderBottom display='block' paddingY={12} background='tint1'>
+            <Table.Cell borderBottom display='block' padding={0} background='tint1'>
               <VoieEditor
                 onSubmit={onAdd}
                 onCancel={onCancel}
@@ -54,7 +54,7 @@ const VoiesList = ({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
         {sortBy(filtered, v => normalizeSort(v.nom))
           .map(voie => voie._id === editingId ? (
             <Table.Row key={voie._id} height='auto'>
-              <Table.Cell display='block' paddingY={12} background='tint1'>
+              <Table.Cell display='block' padding={0} background='tint1'>
                 <VoieEditor
                   initialValue={voie}
                   onSubmit={onEdit}

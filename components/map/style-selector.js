@@ -1,13 +1,14 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} from 'evergreen-ui'
 
 const STYLES = [
   {label: 'Plan OpenMapTiles', value: 'vector'},
+  {label: 'Plan IGN (Bêta)', value: 'plan-ign'},
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
-function StyleSelector({style, isFormOpen, handleStyle, showCadastre, handleCadastre}) {
+function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, handleCadastre}) {
   const [showPopover, setShowPopover] = useState(false)
 
   return (
@@ -27,7 +28,7 @@ function StyleSelector({style, isFormOpen, handleStyle, showCadastre, handleCada
         position={Position.TOP_LEFT}
         title='Choix du fond de carte'
         hasFilter={false}
-        height={110}
+        height={140}
         options={STYLES}
         selected={style}
         onSelect={style => handleStyle(style.value)}
@@ -38,9 +39,9 @@ function StyleSelector({style, isFormOpen, handleStyle, showCadastre, handleCada
         </Button>
 
       </SelectMenu>
-      <Tooltip content={showCadastre ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
+      <Tooltip content={isCadastreDisplayed ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
         <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>
-          <ControlIcon color={showCadastre ? 'selected' : 'muted'} />
+          <ControlIcon color={isCadastreDisplayed ? 'selected' : 'muted'} />
         </Button>
       </Tooltip>
     </Pane>
@@ -51,7 +52,7 @@ StyleSelector.propTypes = {
   style: PropTypes.string.isRequired,
   isFormOpen: PropTypes.bool.isRequired,
   handleStyle: PropTypes.func.isRequired,
-  showCadastre: PropTypes.bool.isRequired,
+  isCadastreDisplayed: PropTypes.bool.isRequired,
   handleCadastre: PropTypes.func.isRequired
 }
 

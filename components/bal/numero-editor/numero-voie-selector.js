@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 import {Button, Pane, Text, PlusIcon, PropertyIcon, SelectField} from 'evergreen-ui'
@@ -30,7 +30,7 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
   }, [isCreateMode, handleNomVoie])
 
   return (
-    <Pane display='flex' flex={1} alignItems='center'>
+    <Pane display='flex' flex={1} alignItems='flex-end'>
       <Pane>
         {isCreateMode ? (
           <AssistedTextField
@@ -46,6 +46,7 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
             label='Voie'
             flex={1}
             value={voieId}
+            margin={0}
             onChange={handleVoieChange}
           >
             {!voieId && (

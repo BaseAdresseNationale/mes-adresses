@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, useEffect, useMemo} from 'react'
+import {useState, useCallback, useContext, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Marker} from 'react-map-gl'
 import {Pane, MapMarkerIcon, Text} from 'evergreen-ui'
@@ -15,7 +15,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
 
   const [suggestedMarkerNumero, setSuggestedMarkerNumero] = useState(suggestedNumero)
 
-  const numberToDisplay = !isToponyme && (overrideText || suggestedMarkerNumero)
+  const numberToDisplay = overrideText || suggestedMarkerNumero
   const voie = useMemo(() => {
     if (idVoie) {
       return geojson.features
@@ -24,12 +24,8 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
     }
   }, [idVoie, geojson])
 
-  const isSuggestionNeeded = useMemo(() => {
-    return !isToponyme && !overrideText && voie
-  }, [isToponyme, overrideText, voie])
-
   const computeSuggestedNumero = useCallback(coordinates => {
-    if (isSuggestionNeeded) {
+    if (!isToponyme && !overrideText && voie) { // Is suggestion needed
       const {geometry} = voie
       const point = {
         type: 'Feature',
@@ -53,7 +49,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
 
       return slicedLine.toFixed()
     }
-  }, [isSuggestionNeeded, voie])
+  }, [isToponyme, overrideText, voie])
 
   const onDragEnd = useCallback((event, idx) => {
     const [longitude, latitude] = event.lngLat
@@ -119,14 +115,22 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
   )
 }
 
-EditableMarker.propTypes = {
-  size: PropTypes.number,
-  style: PropTypes.string
-}
-
 EditableMarker.defaultProps = {
+  idVoie: null,
   size: 32,
   style: 'vector'
 }
 
+EditableMarker.propTypes = {
+  idVoie: PropTypes.string,
+  isToponyme: PropTypes.bool.isRequired,
+  viewport: PropTypes.shape({
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired
+  }).isRequired,
+  size: PropTypes.number,
+  style: PropTypes.string
+}
+
 export default EditableMarker
+

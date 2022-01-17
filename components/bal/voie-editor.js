@@ -1,20 +1,19 @@
-import React, {useState, useMemo, useContext, useCallback, useEffect} from 'react'
+import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
-import {Pane, Button, Checkbox, Alert} from 'evergreen-ui'
+import {Button, Checkbox, Alert} from 'evergreen-ui'
 
 import DrawContext from '../../contexts/draw'
 
 import {useInput, useCheckboxInput} from '../../hooks/input'
 import useKeyEvent from '../../hooks/key-event'
 
+import Form from '../form'
+import FormInput from '../form-input'
 import AssistedTextField from '../assisted-text-field'
 
 import DrawEditor from './draw-editor'
 
 function VoieEditor({initialValue, onSubmit, onCancel}) {
-  const router = useRouter()
-
   const [isLoading, setIsLoading] = useState(false)
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
@@ -35,17 +34,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
 
     try {
       await onSubmit(body)
-
-      const {balId, codeCommune} = router.query
-      router.push(
-        `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-        `/bal/${balId}/communes/${codeCommune}`
-      )
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
     }
-  }, [router, nom, isMetric, data, onSubmit])
+  }, [nom, isMetric, data, onSubmit])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -53,19 +46,11 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     onCancel()
   }, [onCancel])
 
-  const submitLabel = useMemo(() => {
-    if (isLoading) {
-      return 'En cours…'
-    }
-
-    return 'Enregistrer'
-  }, [isLoading])
-
-  useKeyEvent('keyup', ({key}) => {
+  useKeyEvent(({key}) => {
     if (key === 'Escape') {
       onCancel()
     }
-  }, [onCancel])
+  }, [onCancel], 'keyup')
 
   useEffect(() => {
     if (isMetric) {
@@ -83,20 +68,23 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
   }, [disableDraw])
 
   return (
-    <Pane is='form' onSubmit={onFormSubmit}>
-      <AssistedTextField
-        isFocus
-        label='Nom de la voie'
-        placeholder='Nom de la voie'
-        value={nom}
-        onChange={onNomChange}
-      />
+    <Form onFormSubmit={onFormSubmit}>
+      <FormInput>
+        <AssistedTextField
+          isFocus
+          label='Nom de la voie'
+          placeholder='Nom de la voie'
+          value={nom}
+          onChange={onNomChange}
+        />
 
-      <Checkbox
-        checked={isMetric}
-        label='Cette voie utilise la numérotation métrique'
-        onChange={onIsMetricChange}
-      />
+        <Checkbox
+          marginBottom={0}
+          checked={isMetric}
+          label='Cette voie utilise la numérotation métrique'
+          onChange={onIsMetricChange}
+        />
+      </FormInput>
 
       {isMetric && (
         <DrawEditor trace={initialValue ? initialValue.trace : null} />
@@ -109,7 +97,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       )}
 
       <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
-        {submitLabel}
+        {isLoading ? 'En cours…' : 'Enregistrer'}
       </Button>
 
       {onCancel && (
@@ -123,7 +111,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
           Annuler
         </Button>
       )}
-    </Pane>
+    </Form>
   )
 }
 

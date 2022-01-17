@@ -1,7 +1,6 @@
-import React from 'react'
 import {Pane, Heading, Button} from 'evergreen-ui'
 
-const Redirection = () => {
+function Redirection() {
   return (
     <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' padding={20} >
       <Heading marginBottom={15}>Vous voulez avoir une vue d&apos;ensemble de toutes les BAL publiées, y compris sur d&apos;autres outils ?</Heading>

@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, useEffect} from 'react'
+import {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
@@ -9,7 +9,7 @@ import BalDataContext from '../../contexts/bal-data'
 
 import ToponymeEditor from '../../components/bal/toponyme-editor'
 
-const ToponymeHeading = ({defaultToponyme}) => {
+function ToponymeHeading({defaultToponyme}) {
   const [toponyme, setToponyme] = useState(defaultToponyme)
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
@@ -44,7 +44,7 @@ const ToponymeHeading = ({defaultToponyme}) => {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={16}
+      padding={0}
     >
       {editingId === toponyme._id ? (
         <ToponymeEditor
@@ -58,6 +58,7 @@ const ToponymeHeading = ({defaultToponyme}) => {
           onClick={onEnableToponymeEditing}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
+          padding={16}
         >
           {toponyme.nom}
           {!isEditing && token && (
@@ -70,7 +71,7 @@ const ToponymeHeading = ({defaultToponyme}) => {
         </Heading>
       )}
       {numeros && (
-        <Text>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text padding={16}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
       )}
     </Pane>
   )

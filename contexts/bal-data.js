@@ -15,9 +15,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const [numeros, setNumeros] = useState()
   const [voies, setVoies] = useState()
   const [toponymes, setToponymes] = useState()
-  const [voie, setVoie] = useState()
+  const [voie, setVoie] = useState(null)
   const [toponyme, setToponyme] = useState()
-  const [baseLocale, setBaseLocal] = useState({})
+  const [baseLocale, setBaseLocal] = useState(null)
 
   const {token} = useContext(TokenContext)
 
@@ -63,13 +63,14 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     if (id) {
       const voie = await getVoie(id)
       const numeros = await getNumeros(id, token)
+      await reloadParcelles()
       setVoie(voie)
       setNumeros(numeros)
     } else {
       setVoie(null)
       setNumeros(null)
     }
-  }, [idVoie, token])
+  }, [idVoie, token, reloadParcelles])
 
   const reloadNumerosToponyme = useCallback(async _idEdited => {
     const id = _idEdited || idToponyme
@@ -77,13 +78,14 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     if (id) {
       const toponyme = await getToponyme(id)
       const numeros = await getNumerosToponyme(id, token)
+      await reloadParcelles()
       setToponyme(toponyme)
       setNumeros(numeros)
     } else {
       setToponyme(null)
       setNumeros(null)
     }
-  }, [idToponyme, token])
+  }, [idToponyme, token, reloadParcelles])
 
   const reloadBaseLocale = useCallback(async () => {
     if (balId) {
@@ -109,52 +111,81 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     }
   }, [editingId, numeros, voies, toponymes])
 
-  const certifyAllNumeros = async () => {
+  const certifyAllNumeros = useCallback(async () => {
     await certifyBAL(balId, codeCommune, token, {certifie: true})
     await reloadNumeros()
-  }
+  }, [balId, codeCommune, token, reloadNumeros])
 
   useEffect(() => {
     reloadGeojson()
     reloadParcelles()
-    setEditingId(null)
-  }, [reloadGeojson, reloadParcelles, voies, numeros, setEditingId])
-
-  useEffect(() => {
-    setEditingId(null)
-    reloadNumeros()
-    reloadNumerosToponyme()
     reloadVoies()
     reloadToponymes()
-    reloadBaseLocale()
-  }, [setEditingId, reloadNumeros, reloadVoies, reloadToponymes, reloadNumerosToponyme, reloadBaseLocale])
+  }, [codeCommune, reloadGeojson, reloadParcelles, reloadVoies, reloadToponymes])
+
+  // Reload geojson when go back to commune view
+  useEffect(() => {
+    if (codeCommune && !idVoie) {
+      reloadGeojson()
+    }
+  }, [codeCommune, idVoie, reloadGeojson])
+
+  useEffect(() => {
+    reloadNumeros()
+  }, [idVoie, reloadNumeros])
+
+  useEffect(() => {
+    reloadNumerosToponyme()
+  }, [idToponyme, reloadNumerosToponyme])
+
+  const value = useMemo(() => ({
+    isEditing,
+    setIsEditing,
+    editingId,
+    editingItem,
+    parcelles,
+    geojson,
+    reloadGeojson,
+    baseLocale,
+    codeCommune,
+    voie,
+    setVoie,
+    numeros,
+    voies,
+    toponymes,
+    setEditingId,
+    reloadNumeros,
+    reloadVoies,
+    reloadToponymes,
+    reloadBaseLocale,
+    reloadNumerosToponyme,
+    toponyme,
+    certifyAllNumeros
+  }), [
+    isEditing,
+    editingId,
+    setEditingId,
+    editingItem,
+    parcelles,
+    geojson,
+    reloadGeojson,
+    baseLocale,
+    reloadBaseLocale,
+    codeCommune,
+    voie,
+    numeros,
+    voies,
+    toponymes,
+    reloadNumeros,
+    reloadVoies,
+    reloadToponymes,
+    reloadNumerosToponyme,
+    toponyme,
+    certifyAllNumeros
+  ])
 
   return (
-    <BalDataContext.Provider
-      value={{
-        isEditing,
-        setIsEditing,
-        editingId,
-        editingItem,
-        parcelles,
-        geojson,
-        baseLocale,
-        codeCommune,
-        voie,
-        numeros,
-        voies,
-        toponymes,
-        setEditingId,
-        reloadNumeros,
-        reloadVoies,
-        reloadToponymes,
-        reloadBaseLocale,
-        reloadNumerosToponyme,
-        toponyme,
-        certifyAllNumeros
-      }}
-      {...props}
-    />
+    <BalDataContext.Provider value={value} {...props} />
   )
 })
 

@@ -19,14 +19,12 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
   }, [toponymeId, toponymes])
 
   const onClick = useCallback(e => {
-    if (e.target.closest('[data-editable]') && !isEditing && !code) { // Not a commune
+    if (e.target.closest('[data-editable]') && !isEditing && !code && token) { // Not a commune
       onEdit(id)
-    } else if (onSelect) {
-      if (e.target.closest('[data-browsable]')) {
-        onSelect(id)
-      }
+    } else if (onSelect && e.target.closest('[data-browsable]')) {
+      onSelect(id)
     }
-  }, [code, id, isEditing, onEdit, onSelect])
+  }, [code, id, isEditing, token, onEdit, onSelect])
 
   const _onEdit = useCallback(() => {
     onEdit(id)

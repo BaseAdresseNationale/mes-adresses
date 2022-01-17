@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react'
+import {useState, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {uniq} from 'lodash'
@@ -13,10 +13,11 @@ import LocalStorageContext from '../../contexts/local-storage'
 import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
 import DeleteWarning from '../../components/delete-warning'
 
-const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) => {
+function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) {
   const {removeBAL} = useContext(LocalStorageContext)
 
   const [communeLabel, setCommuneLabel] = useState('cette commune')
+  const [isLoading, setIsLoading] = useState(false)
   const uniqCommunes = uniq(...basesLocales.map(({communes}) => communes))
   const [toRemove, setToRemove] = useState(null)
 
@@ -54,6 +55,11 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
     }
   }, [toRemove, updateBAL, removeBAL, setError])
 
+  const handleConfirmation = () => {
+    setIsLoading(true)
+    onConfirm()
+  }
+
   const handleRemove = useCallback((e, balId) => {
     e.stopPropagation()
     setToRemove(balId)
@@ -79,9 +85,10 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
           `Vous avez déjà créé une Base Adresse Locale pour ${communeLabel}`
         )}
         width='800px'
-        confirmLabel='Créer une nouvelle Base Adresse Locale'
+        confirmLabel={isLoading ? 'En cours de création…' : 'Créer une nouvelle Base Adresse Locale'}
         cancelLabel='Annuler'
-        onConfirm={onConfirm}
+        isConfirmLoading={isLoading}
+        onConfirm={handleConfirmation}
         onCloseComplete={onClose}
       >
         <Pane>
@@ -113,7 +120,7 @@ const AlertPublishedBAL = ({isShown, userEmail, onClose, onConfirm, basesLocales
               key={bal._id}
               isAdmin
               userEmail={userEmail}
-              initialIsOpen={basesLocales.length === 1}
+              isDefaultOpen={basesLocales.length === 1}
               baseLocale={bal}
               onSelect={() => onBalSelect(bal)}
               onRemove={e => handleRemove(e, bal._id)}

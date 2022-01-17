@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, useEffect} from 'react'
+import {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
@@ -9,34 +9,42 @@ import BalDataContext from '../../contexts/bal-data'
 
 import VoieEditor from '../../components/bal/voie-editor'
 
-const VoieHeading = ({defaultVoie}) => {
-  const [voie, setVoie] = useState(defaultVoie)
+function VoieHeading({defaultVoie}) {
+  const [editedVoie, setEditedVoie] = useState(defaultVoie)
   const [hovered, setHovered] = useState(false)
-  const {token} = useContext(TokenContext)
-  const {editingId, setEditingId, isEditing, reloadVoies, numeros} = useContext(BalDataContext)
 
-  const onEnableVoieEditing = useCallback(() => {
+  const {token} = useContext(TokenContext)
+  const {editingId, setEditingId, isEditing, reloadVoies, reloadGeojson, numeros, setVoie} = useContext(BalDataContext)
+
+  const onEnableVoieEditing = () => {
     if (!isEditing) {
-      setEditingId(voie._id)
+      setEditingId(editedVoie._id)
       setHovered(false)
     }
-  }, [setEditingId, isEditing, voie._id])
+  }
 
-  const onEditVoie = useCallback(async ({nom, typeNumerotation, trace}) => {
-    const editedVoie = await editVoie(voie._id, {
+  const onEditVoie = async ({nom, typeNumerotation, trace}) => {
+    const voie = await editVoie(editedVoie._id, {
       nom,
       typeNumerotation,
       trace
     }, token)
 
     setEditingId(null)
-    await reloadVoies()
 
-    setVoie(editedVoie)
-  }, [reloadVoies, setEditingId, token, voie])
+    await reloadVoies()
+    await reloadGeojson()
+
+    setEditedVoie(voie)
+
+    // Update voie name in breadcrum
+    if (editingId === editedVoie._id) {
+      setVoie(voie)
+    }
+  }
 
   useEffect(() => {
-    setVoie(defaultVoie)
+    setEditedVoie(defaultVoie)
   }, [defaultVoie])
 
   return (
@@ -44,11 +52,11 @@ const VoieHeading = ({defaultVoie}) => {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={16}
+      padding={editingId === editedVoie._id ? 0 : 16}
     >
-      {editingId === voie._id ? (
+      {editingId === editedVoie._id ? (
         <VoieEditor
-          initialValue={voie}
+          initialValue={editedVoie}
           onSubmit={onEditVoie}
           onCancel={() => setEditingId(null)}
         />
@@ -59,7 +67,7 @@ const VoieHeading = ({defaultVoie}) => {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {voie.nom}
+          {editedVoie.nom}
           {!isEditing && token && (
             <EditIcon
               marginBottom={-2}
@@ -70,7 +78,7 @@ const VoieHeading = ({defaultVoie}) => {
         </Heading>
       )}
       {numeros && (
-        <Text>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
+        <Text padding={editingId === editedVoie._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
       )}
     </Pane>
   )

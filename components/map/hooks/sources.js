@@ -44,7 +44,7 @@ function useSources(voie, toponyme, hovered, editingId) {
 
     features = features.map(feature => setPaintProperties(feature))
 
-    const lines = features.filter(({properties, id}) => properties.type === 'voie-trace' && id !== editingId)
+    const lines = features.filter(({properties}) => properties.type === 'voie-trace' && properties.idVoie !== editingId)
 
     sources.push({
       name: 'voie-trace',
@@ -89,7 +89,7 @@ function useSources(voie, toponyme, hovered, editingId) {
     }
 
     return sources
-  }, [geojson, voie, hovered, editingId])
+  }, [geojson, voie, toponyme, hovered, editingId])
 }
 
 export default useSources

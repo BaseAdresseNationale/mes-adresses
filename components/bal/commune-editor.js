@@ -1,11 +1,13 @@
-import React, {useState, useCallback} from 'react'
+import {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Checkbox, Button, IconButton, Alert, UndoIcon} from 'evergreen-ui'
+import {Checkbox, Button, IconButton, Alert, UndoIcon} from 'evergreen-ui'
 
 import {useCheckboxInput} from '../../hooks/input'
 import useFocus from '../../hooks/focus'
 import useKeyEvent from '../../hooks/key-event'
 
+import Form from '../form'
+import FormInput from '../form-input'
 import {CommuneSearch} from '../commune-search'
 
 function CommuneEditor({onSubmit, onCancel, ...props}) {
@@ -41,33 +43,35 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
     onCancel()
   }, [onCancel])
 
-  useKeyEvent('keyup', ({key}) => {
+  useKeyEvent(({key}) => {
     if (key === 'Escape') {
       onCancel()
     }
-  }, [onCancel])
+  }, [onCancel], 'keyup')
 
   return (
-    <Pane is='form' onSubmit={onFormSubmit}>
-      <CommuneSearch
-        required
-        disabled={isLoading}
-        width='100%'
-        maxWidth={500}
-        innerRef={setRef}
-        onSelect={onSelect}
-        {...props}
-      />
+    <Form onFormSubmit={onFormSubmit}>
+      <FormInput>
+        <CommuneSearch
+          required
+          disabled={isLoading}
+          width='100%'
+          maxWidth={500}
+          innerRef={setRef}
+          onSelect={onSelect}
+          {...props}
+        />
 
-      <Checkbox
-        checked={populate}
-        label='Importer les données de la BAN'
-        disabled={isLoading}
-        onChange={onPopulateChange}
-      />
+        <Checkbox
+          checked={populate}
+          label='Importer les données de la BAN'
+          disabled={isLoading}
+          onChange={onPopulateChange}
+        />
+      </FormInput>
 
       {error && (
-        <Alert marginBottom={16} intent='danger' title='Erreur'>
+        <Alert marginY={32} intent='danger' title='Erreur'>
           {error}
         </Alert>
       )}
@@ -86,7 +90,7 @@ function CommuneEditor({onSubmit, onCancel, ...props}) {
           onClick={onFormCancel}
         />
       )}
-    </Pane>
+    </Form>
   )
 }
 

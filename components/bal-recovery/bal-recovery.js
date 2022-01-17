@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import {Alert, Button, Text} from 'evergreen-ui'
 
 import RecoverBALAlert from './recover-bal-alert'

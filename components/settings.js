@@ -26,6 +26,8 @@ import SettingsContext from '../contexts/settings'
 import {validateEmail} from '../lib/utils/email'
 import BalDataContext from '../contexts/bal-data'
 
+import Form from './form'
+import FormInput from './form-input'
 import RenewTokenDialog from './renew-token-dialog'
 import Certification from './settings/certification'
 
@@ -33,14 +35,16 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const Settings = React.memo(({nomBaseLocale}) => {
+const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
   const {showSettings, setShowSettings} = useContext(SettingsContext)
   const {token, emails, reloadEmails} = useContext(TokenContext)
-  const {baseLocale, codeCommune, reloadBaseLocale} = useContext(BalDataContext)
+  const balDataContext = useContext(BalDataContext)
+
+  const baseLocale = balDataContext.baseLocale || initialBaseLocale
 
   const [isLoading, setIsLoading] = useState(false)
   const [balEmails, setBalEmails] = useState([])
-  const [nomInput, onNomInputChange] = useInput(nomBaseLocale)
+  const [nomInput, onNomInputChange] = useInput(baseLocale.nom)
   const [email, onEmailChange, resetEmail] = useInput()
   const [commune, setCommune] = useState()
   const [hasChanges, setHasChanges] = useState(false)
@@ -50,7 +54,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
   const formHasChanged = useCallback(() => {
     return nomInput !== baseLocale.nom ||
     mailHasChanged(emails || [], balEmails)
-  }, [nomInput, baseLocale, emails, balEmails])
+  }, [nomInput, baseLocale.nom, emails, balEmails])
 
   useEffect(() => {
     setBalEmails(emails || [])
@@ -78,15 +82,15 @@ const Settings = React.memo(({nomBaseLocale}) => {
     setIsLoading(true)
 
     try {
-      await updateBaseLocale(baseLocale._id, {
+      await updateBaseLocale(initialBaseLocale._id, {
         nom: nomInput.trim(),
         emails: balEmails
       }, token)
 
       await reloadEmails()
-      await reloadBaseLocale()
+      await balDataContext.reloadBaseLocale()
 
-      if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length !== 0) {
+      if (mailHasChanged(emails || [], balEmails) && difference(emails, balEmails).length > 0) {
         setIsRenewTokenWarningShown(true)
       }
 
@@ -96,18 +100,18 @@ const Settings = React.memo(({nomBaseLocale}) => {
     }
 
     setIsLoading(false)
-  }, [baseLocale._id, nomInput, balEmails, token, reloadEmails, reloadBaseLocale, emails])
+  }, [initialBaseLocale._id, nomInput, balEmails, token, reloadEmails, balDataContext, emails])
 
   const fetchCommune = useCallback(async () => {
-    const commune = await getCommune(baseLocale._id, codeCommune)
+    const commune = await getCommune(initialBaseLocale._id, codeCommune)
     setCommune(commune)
-  }, [baseLocale, codeCommune])
+  }, [initialBaseLocale._id, codeCommune])
 
   useEffect(() => { // Update number of certified numeros when setting is open
-    if (baseLocale?._id && codeCommune) {
+    if (codeCommune) {
       fetchCommune()
     }
-  }, [baseLocale, codeCommune, showSettings, fetchCommune])
+  }, [initialBaseLocale._id, codeCommune, showSettings, fetchCommune])
 
   useEffect(() => {
     if (error) {
@@ -145,73 +149,80 @@ const Settings = React.memo(({nomBaseLocale}) => {
         overflowY='scroll'
       >
         {token ? (
-          <Pane padding={16} is='form' onSubmit={onSubmit}>
-            <TextInputField
-              required
-              name='nom'
-              id='nom'
-              value={nomInput}
-              maxWidth={600}
-              disabled={isLoading || baseLocale.status === 'demo'}
-              label='Nom'
-              placeholder='Nom'
-              onChange={onNomInputChange}
-            />
+          <Form onFormSubmit={onSubmit}>
+            <FormInput>
+              <TextInputField
+                required
+                name='nom'
+                id='nom'
+                value={nomInput}
+                maxWidth={600}
+                marginBottom={0}
+                disabled={isLoading || baseLocale.status === 'demo'}
+                label='Nom'
+                placeholder='Nom'
+                onChange={onNomInputChange}
+              />
+            </FormInput>
 
-            <Label display='block' marginBottom={4}>
-              Adresses email
-              {' '}
-              <span title='This field is required.'>*</span>
-            </Label>
-            {balEmails.map(email => (
-              <Pane key={email} display='flex' marginBottom={8}>
+            <FormInput>
+              <Label display='block' marginBottom={4}>
+                Adresses email
+                {' '}
+                <span title='This field is required.'>*</span>
+              </Label>
+              {balEmails.map(email => (
+                <Pane key={email} display='flex' marginBottom={8}>
+                  <TextInput
+                    readOnly
+                    disabled
+                    type='email'
+                    display='block'
+                    width='100%'
+                    maxWidth={400}
+                    value={email}
+                  />
+                  {balEmails.length > 1 && (
+                    <IconButton
+                      type='button'
+                      icon={DeleteIcon}
+                      marginLeft={4}
+                      appearance='minimal'
+                      intent='danger'
+                      onClick={() => onRemoveEmail(email)}
+                    />
+                  )}
+                </Pane>
+
+              ))}
+
+              <Pane display='flex' marginBottom={0}>
                 <TextInput
-                  readOnly
-                  disabled
-                  type='email'
                   display='block'
+                  type='email'
                   width='100%'
+                  placeholder='Ajouter une adresse email…'
                   maxWidth={400}
+                  isInvalid={Boolean(error && error.includes('mail'))}
                   value={email}
+                  disabled={baseLocale.status === 'demo'}
+                  onChange={onEmailChange}
                 />
-                {balEmails.length > 1 && (
+
+                {email && !balEmails.includes(email) && (
                   <IconButton
-                    type='button'
-                    icon={DeleteIcon}
+                    type='submit'
+                    icon={AddIcon}
                     marginLeft={4}
+                    disabled={!email}
                     appearance='minimal'
-                    intent='danger'
-                    onClick={() => onRemoveEmail(email)}
+                    intent='default'
+                    onClick={onAddEmail}
                   />
                 )}
+
               </Pane>
-            ))}
-
-            <Pane display='flex' marginBottom={16}>
-              <TextInput
-                display='block'
-                type='email'
-                width='100%'
-                placeholder='Ajouter une adresse email…'
-                maxWidth={400}
-                isInvalid={Boolean(error && error.includes('mail'))}
-                value={email}
-                disabled={baseLocale.status === 'demo'}
-                onChange={onEmailChange}
-              />
-              {email && !balEmails.includes(email) && (
-                <IconButton
-                  type='submit'
-                  icon={AddIcon}
-                  marginLeft={4}
-                  disabled={!email}
-                  appearance='minimal'
-                  intent='default'
-                  onClick={onAddEmail}
-                />
-              )}
-            </Pane>
-
+            </FormInput>
             {error && (
               <Alert marginBottom={16} intent='danger' title='Erreur'>
                 {error}
@@ -222,7 +233,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
               <RenewTokenDialog
                 token={token}
                 emails={emails}
-                baseLocaleId={baseLocale._id}
+                baseLocaleId={initialBaseLocale._id}
                 isShown={isRenewTokenWarningShown}
                 setIsShown={setIsRenewTokenWarningShown}
                 setError={setError}
@@ -233,7 +244,7 @@ const Settings = React.memo(({nomBaseLocale}) => {
               {isLoading ? 'En cours…' : 'Enregistrer les changements'}
             </Button>
 
-          </Pane>
+          </Form>
         ) : (
           <Spinner size={64} margin='auto' />
         )}
@@ -262,8 +273,17 @@ const Settings = React.memo(({nomBaseLocale}) => {
   )
 })
 
+Settings.defaultProps = {
+  codeCommune: null
+}
+
 Settings.propTypes = {
-  nomBaseLocale: PropTypes.string.isRequired
+  initialBaseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    nom: PropTypes.string.isRequired
+  }).isRequired,
+  codeCommune: PropTypes.string
 }
 
 export default Settings

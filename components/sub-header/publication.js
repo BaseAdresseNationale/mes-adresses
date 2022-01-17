@@ -1,11 +1,11 @@
-import React, {useMemo, useState, useEffect} from 'react'
+import {useMemo, useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import {Badge, Button, Alert, Dialog, Menu, Pane, Popover, Tooltip, Paragraph, Position, Strong, Link, DownloadIcon, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl, getCommune} from '../../lib/bal-api'
 
-const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPublish}) => {
+function Publication({token, baseLocale, commune, status, onChangeStatus, onPublish}) {
   const [isShown, setIsShown] = useState(false)
   const [noBal, setNoBal] = useState(false)
   const [multiBal, setMultiBal] = useState(false)
@@ -40,10 +40,8 @@ const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPubl
       setIsBALCertified(nbNumeros === nbNumerosCertifies)
     }
 
-    if (baseLocale?._id && commune?.code) {
-      fetchCommune()
-    }
-  }, [baseLocale, commune])
+    fetchCommune()
+  }, [baseLocale._id, commune.code])
 
   if (!token) {
     return (
@@ -59,137 +57,135 @@ const Publication = ({token, baseLocale, commune, status, onChangeStatus, onPubl
   }
 
   return (
-    <>
-      {status === 'ready-to-publish' ? (
-        <div>
-          <Badge
-            color='blue'
-            marginRight={8}
-            paddingTop={2}
-            height={20}
-          >
-            Prête à être publiée
-          </Badge>
-          <Popover
-            position={Position.BOTTOM_RIGHT}
-            content={
-              <Menu>
-                <Menu.Group>
-                  <Menu.Item icon={UploadIcon} onClick={onPublish}>
-                    Publier
-                  </Menu.Item>
-                  <Menu.Item icon={EditIcon} onClick={onChangeStatus}>
-                    Revenir au brouillon
-                  </Menu.Item>
-                </Menu.Group>
-              </Menu>
-            }
-          >
-            <Button
-              appearance='primary'
-              marginRight={8}
-              height={24}
-              iconAfter={CaretDownIcon}
-            >
-              Publication
-            </Button>
-          </Popover>
-        </div>
-      ) : status === 'published' ? (
-        <Tooltip
-          position={Position.BOTTOM_LEFT}
-          content="Votre BAL est désormais publiée ! Pour la mettre à jour, il vous suffit de l'éditer ici et les changements seront appliqués d'ici quelques jours"
+    status === 'ready-to-publish' ? (
+      <div>
+        <Badge
+          color='blue'
+          marginRight={8}
+          paddingTop={2}
+          height={20}
         >
-          <Badge
-            color='green'
-            marginRight={8}
-            paddingTop={2}
-            height={20}
-          >
-            Publiée
-          </Badge>
-        </Tooltip>
-      ) : (
-        <div>
-          <Dialog
-            isShown={isShown}
-            title='Félicitations, vous y êtes presque &nbsp; 🎉'
-            intent='success'
-            confirmLabel='Publier'
-            cancelLabel='Plus tard'
-            onConfirm={onPublish}
-            onCloseComplete={() => {
-              setIsShown(false)
-              onChangeStatus()
-            }}
-          >
-            <Pane marginTop={4}>
-              <Strong>Votre Base Adresse Locale est maintenant &nbsp;</Strong>
-              <Badge
-                color='blue'
-                marginRight={8}
-                paddingTop={2}
-                height={20}
-              >
-                Prête à être publiée
-              </Badge>
-              <Paragraph>Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.</Paragraph>
-              <Paragraph>Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.</Paragraph>
-              {!isBALCertified && (
-                <Alert
-                  intent='warning'
-                  title='Toutes vos adresses ne sont pas certifiées'
-                  marginY={16}
-                >
-                  Nous vous recommandons de certifier la totalité de vos adresses.
-                  Une adresse certifiée est déclarée authentique par la mairie, ce qui renforce la qualité de la Base Adresse Locale et facilite sa réutilisation.
-                  Vous êtes cependant libre de publier maintenant et certifier vos adresses plus tard.
-                  Notez qu’il est possible de certifier la totalité de vos adresses depuis le menu « Paramètres ».
-                </Alert>
-              )}
-            </Pane>
-            <Link href={csvUrl} display='flex' marginTop='1em'>
-              Télécharger vos adresses au format CSV
-              <DownloadIcon marginLeft='.5em' marginTop='3px' />
-            </Link>
-          </Dialog>
-
-          <Dialog
-            isShown={noBal}
-            hasFooter={false}
-            title='Votre Base Adresse Locale est vide'
-            onCloseComplete={() => setNoBal(false)}
-          >
-            <Paragraph>Merci d’ajouter au moins une commune à votre Base Adresse Locale.</Paragraph>
-          </Dialog>
-
-          <Dialog
-            isShown={multiBal}
-            hasFooter={false}
-            title='Votre Base Adresse Locale contient plusieurs communes'
-            onCloseComplete={() => setMultiBal(false)}
-          >
-            <Paragraph>Pour vous authentifier et assurer une publication rapide, adressez-nous le lien de votre Base Adresse Locale à <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a></Paragraph>
-          </Dialog>
-
-          <Badge
-            marginRight={8}
-            paddingTop={2}
-            height={20}
-          >
-            Brouillon
-          </Badge>
+          Prête à être publiée
+        </Badge>
+        <Popover
+          position={Position.BOTTOM_RIGHT}
+          content={
+            <Menu>
+              <Menu.Group>
+                <Menu.Item icon={UploadIcon} onClick={onPublish}>
+                  Publier
+                </Menu.Item>
+                <Menu.Item icon={EditIcon} onClick={onChangeStatus}>
+                  Revenir au brouillon
+                </Menu.Item>
+              </Menu.Group>
+            </Menu>
+          }
+        >
           <Button
+            appearance='primary'
             marginRight={8}
             height={24}
-            appearance='primary'
-            onClick={handleDialogs}
+            iconAfter={CaretDownIcon}
           >
-            Publier
+            Publication
           </Button>
-        </div>
-      )}
-    </>
+        </Popover>
+      </div>
+    ) : (status === 'published' ? (
+      <Tooltip
+        position={Position.BOTTOM_LEFT}
+        content="Votre BAL est désormais publiée ! Pour la mettre à jour, il vous suffit de l'éditer ici et les changements seront appliqués d'ici quelques jours"
+      >
+        <Badge
+          color='green'
+          marginRight={8}
+          paddingTop={2}
+          height={20}
+        >
+          Publiée
+        </Badge>
+      </Tooltip>
+    ) : (
+      <div>
+        <Dialog
+          isShown={isShown}
+          title='Félicitations, vous y êtes presque &nbsp; 🎉'
+          intent='success'
+          confirmLabel='Publier'
+          cancelLabel='Plus tard'
+          onConfirm={onPublish}
+          onCloseComplete={() => {
+            setIsShown(false)
+            onChangeStatus()
+          }}
+        >
+          <Pane marginTop={4}>
+            <Strong>Votre Base Adresse Locale est maintenant &nbsp;</Strong>
+            <Badge
+              color='blue'
+              marginRight={8}
+              paddingTop={2}
+              height={20}
+            >
+              Prête à être publiée
+            </Badge>
+            <Paragraph>Vous pouvez dès maintenant publier vos adresses afin de mettre à jour la Base Adresse Nationale.</Paragraph>
+            <Paragraph>Une fois la publication effective, il vous sera toujours possible de modifier vos adresses afin de les mettre à jour.</Paragraph>
+            {!isBALCertified && (
+              <Alert
+                intent='warning'
+                title='Toutes vos adresses ne sont pas certifiées'
+                marginY={16}
+              >
+                Nous vous recommandons de certifier la totalité de vos adresses.
+                Une adresse certifiée est déclarée authentique par la mairie, ce qui renforce la qualité de la Base Adresse Locale et facilite sa réutilisation.
+                Vous êtes cependant libre de publier maintenant et certifier vos adresses plus tard.
+                Notez qu’il est possible de certifier la totalité de vos adresses depuis le menu « Paramètres ».
+              </Alert>
+            )}
+          </Pane>
+          <Link href={csvUrl} display='flex' marginTop='1em'>
+            Télécharger vos adresses au format CSV
+            <DownloadIcon marginLeft='.5em' marginTop='3px' />
+          </Link>
+        </Dialog>
+
+        <Dialog
+          isShown={noBal}
+          hasFooter={false}
+          title='Votre Base Adresse Locale est vide'
+          onCloseComplete={() => setNoBal(false)}
+        >
+          <Paragraph>Merci d’ajouter au moins une commune à votre Base Adresse Locale.</Paragraph>
+        </Dialog>
+
+        <Dialog
+          isShown={multiBal}
+          hasFooter={false}
+          title='Votre Base Adresse Locale contient plusieurs communes'
+          onCloseComplete={() => setMultiBal(false)}
+        >
+          <Paragraph>Pour vous authentifier et assurer une publication rapide, adressez-nous le lien de votre Base Adresse Locale à <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a></Paragraph>
+        </Dialog>
+
+        <Badge
+          marginRight={8}
+          paddingTop={2}
+          height={20}
+        >
+          Brouillon
+        </Badge>
+        <Button
+          marginRight={8}
+          height={24}
+          appearance='primary'
+          onClick={handleDialogs}
+        >
+          Publier
+        </Button>
+      </div>
+    ))
   )
 }
 
