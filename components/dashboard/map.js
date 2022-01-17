@@ -74,7 +74,8 @@ function Map({departement, basesLocales, contours}) {
 
   const handleResize = useCallback(() => {
     if (mapRef && mapRef.current) {
-      const {width, height} = mapRef.current.getBoundingClientRect()
+      const width = mapRef.current.offsetWidth
+      const height = mapRef.current.offsetHeight
 
       const {bbox} = geoData
       const padding = width > 50 && height > 50 ? 20 : 0
