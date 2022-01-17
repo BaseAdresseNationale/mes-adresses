@@ -1,11 +1,13 @@
 import PropTypes from 'prop-types'
 import {Pane, Heading} from 'evergreen-ui'
 
+import {spaceThousands} from '../../lib/utils/numbers'
+
 function Counter({label, value, color}) {
   return (
     <Pane marginY={16} marginX='auto' textAlign='center'>
       <Heading size={700} color={color}>
-        {value}
+        {spaceThousands(value)}
       </Heading>
       <Heading size={500} fontWeight={300} color='muted'>
         {label}
