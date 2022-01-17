@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} from 'evergreen-ui'
 
 const STYLES = [
-  {label: 'Plan', value: 'vector'},
-  {label: 'Plan IGN(Version Bêta)', value: 'plan-ign'},
+  {label: 'Plan OpenMapTiles', value: 'vector'},
+  {label: 'Plan IGN (Bêta)', value: 'plan-ign'},
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
