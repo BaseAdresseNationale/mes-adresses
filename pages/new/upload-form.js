@@ -168,7 +168,10 @@ function UploadForm() {
           throw new Error('Fichier invalide')
         }
 
-        Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
+        Router.push(
+          `/bal/commune?balId=${bal._id}&codeCommune=${selectedCodeCommune}`,
+          `/bal/${bal._id}/communes/${selectedCodeCommune}`
+        )
       } catch (error) {
         setError(error.message)
       }
