@@ -132,7 +132,9 @@ function UploadForm() {
     if (validateResponse) {
       const communes = extractCommuneFromCSV(validateResponse)
 
-      if (communes.length > 1 && !selectedCodeCommune) {
+      if (communes.length === 1) {
+        setSelectedCodeCommune(communes[0].code)
+      } else if (communes.length > 1 && !selectedCodeCommune) {
         onWarning(
           'Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. Veuillez choisir une commune, puis validez à nouveau le formulaire.',
           communes
@@ -142,7 +144,7 @@ function UploadForm() {
 
       const userBALs = []
 
-      const basesLocales = await searchBAL(selectedCodeCommune, email)
+      const basesLocales = await searchBAL(selectedCodeCommune || communes[0].code, email)
       if (basesLocales.length > 0) {
         userBALs.push(...basesLocales)
       }
