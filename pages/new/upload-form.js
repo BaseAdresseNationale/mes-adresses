@@ -153,7 +153,6 @@ function UploadForm() {
         setUserBALs(uniqUserBALs)
         setIsShown(true)
       } else {
-        setSelectedCodeCommune(communes[0].code)
         createNewBal()
       }
     }
