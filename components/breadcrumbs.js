@@ -1,21 +1,39 @@
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
-import {Pane, Link, Text} from 'evergreen-ui'
+import {Pane, Link, Text, HomeIcon} from 'evergreen-ui'
 
 function BaseLocalLink({baseLocale}) {
   return useMemo(() => {
     if (baseLocale.communes.length > 1) {
       return (
-        <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
-          <Link href={`/bal/${baseLocale._id}`}>
-            {baseLocale.nom || 'Base Adresse Locale'}
-          </Link>
-        </NextLink>
+        <>
+          <NextLink href='/'>
+            <Link href='/'>
+              <HomeIcon style={{verticalAlign: 'middle', color: '#000'}} />
+            </Link>
+          </NextLink>
+          <Text color='muted'>{' > '}</Text>
+          <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
+            <Link href={`/bal/${baseLocale._id}`}>
+              {baseLocale.nom || 'Base Adresse Locale'}
+            </Link>
+          </NextLink>
+        </>
       )
     }
 
-    return <Text>{baseLocale.nom || 'Base Adresse Locale'}</Text>
+    return (
+      <>
+        <NextLink href='/'>
+          <Link href='/'>
+            <HomeIcon style={{verticalAlign: 'middle', color: '#000'}} />
+          </Link>
+        </NextLink>
+        <Text color='muted'>{' > '}</Text>
+        <Text>{baseLocale.nom || 'Base Adresse Locale'}</Text>
+      </>
+    )
   }, [baseLocale])
 }
 

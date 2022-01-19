@@ -13,7 +13,7 @@ import ParcellesContext from '../../contexts/parcelles'
 
 import AddressEditor from '../bal/address-editor'
 
-import {vector, ortho} from './styles'
+import {vector, ortho, planIGN} from './styles'
 
 import NavControl from './nav-control'
 import EditableMarker from './editable-marker'
@@ -50,6 +50,8 @@ function getBaseStyle(style) {
     case 'vector':
       return vector
 
+    case 'plan-ign':
+      return planIGN
     default:
       return vector
   }
