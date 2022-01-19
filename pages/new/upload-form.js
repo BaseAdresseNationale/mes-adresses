@@ -138,12 +138,10 @@ function UploadForm() {
 
       const userBALs = []
 
-      await Promise.all(codes.map(async code => {
-        const basesLocales = await searchBAL(code, email)
-        if (basesLocales.length > 0) {
-          userBALs.push(...basesLocales)
-        }
-      }))
+      const basesLocales = await searchBAL(selectedCodeCommune, email)
+      if (basesLocales.length > 0) {
+        userBALs.push(...basesLocales)
+      }
 
       if (userBALs.length > 0) {
         const uniqUserBALs = uniqBy(userBALs, '_id')
@@ -151,15 +149,16 @@ function UploadForm() {
         setUserBALs(uniqUserBALs)
         setIsShown(true)
       } else {
+        setSelectedCodeCommune(communes[0].code)
         createNewBal()
       }
     }
-  }, [createNewBal, file, email])
+  }, [createNewBal, file, email, selectedCodeCommune])
 
   useEffect(() => {
     async function upload() {
       try {
-        const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
+        const response = await uploadBaseLocaleCsv(bal._id, selectedCodeCommune, file, bal.token)
         if (!response.isValid) {
           throw new Error('Fichier invalide')
         }
@@ -170,11 +169,11 @@ function UploadForm() {
       }
     }
 
-    if (file && bal) {
+    if (file && bal && selectedCodeCommune) {
       setIsLoading(true)
       upload()
     }
-  }, [bal, file])
+  }, [bal, selectedCodeCommune, file])
 
   useEffect(() => {
     if (file || error) {
