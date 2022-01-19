@@ -14,6 +14,7 @@ import {useInput} from '../../hooks/input'
 import Form from '../../components/form'
 import FormInput from '../../components/form-input'
 import Uploader from '../../components/uploader'
+import SelectCommune from '../../components/select-commune'
 
 import AlertPublishedBAL from './alert-published-bal'
 
@@ -39,12 +40,15 @@ function UploadForm() {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
+  const [warning, setWarning] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const [focusRef] = useFocus()
   const [userBALs, setUserBALs] = useState([])
   const [isShown, setIsShown] = useState(false)
+  const [communesList, setCommunesList] = useState(null)
+  const [selectedCodeCommune, setSelectedCodeCommune] = useState(null)
 
   const {addBalAccess} = useContext(LocalStorageContext)
 
@@ -52,6 +56,16 @@ function UploadForm() {
     setFile(null)
     setIsLoading(false)
     setError(error)
+  }
+
+  const onWarning = (warning, communes = null) => {
+    setIsLoading(false)
+    setWarning(warning)
+
+    if (communes) {
+      setCommunesList(communes)
+      setSelectedCodeCommune(communes[0].code)
+    }
   }
 
   const onDrop = useCallback(async ([file]) => {
@@ -226,9 +240,18 @@ function UploadForm() {
             </Pane>
           </Pane>
 
-          {error && (
-            <Alert marginBottom={16} intent='danger' title='Erreur'>
-              {error}
+          {(error || warning) && (
+            <Alert marginBottom={16} intent={error ? 'danger' : 'warning'} title={error ? 'Erreur' : 'Attention'}>
+              <Text>
+                {error || warning}
+              </Text>
+              {warning && communesList && selectedCodeCommune && (
+                <SelectCommune
+                  communes={communesList}
+                  selectedCodeCommune={selectedCodeCommune}
+                  setSelectedCodeCommune={setSelectedCodeCommune}
+                />
+              )}
             </Alert>
           )}
 
