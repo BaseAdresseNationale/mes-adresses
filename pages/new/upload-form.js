@@ -1,7 +1,7 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
-import {uniq, uniqBy} from 'lodash'
+import {uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '../../lib/bal-api'
@@ -29,11 +29,16 @@ function getFileExtension(name) {
   return null
 }
 
-function extractCodeCommuneFromCSV(response) {
+function extractCommuneFromCSV(response) {
   // Get cle_interop and slice it to get the commune's code
-  const codes = response.rows.map(r => r.parsedValues.cle_interop.slice(0, 5))
+  const communes = response.rows.map(r => (
+    {
+      code: r.parsedValues.cle_interop.slice(0, 5),
+      nom: r.parsedValues.commune_nom
+    }
+  ))
 
-  return uniq(codes)
+  return uniqBy(communes, 'code')
 }
 
 function UploadForm() {
@@ -121,9 +126,13 @@ function UploadForm() {
     const validateResponse = await validate(file)
 
     if (validateResponse) {
-      const codes = extractCodeCommuneFromCSV(validateResponse)
-      if (codes.length > 1) {
-        onError('Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. L’import d’un fichier CSV n’est possible que si ce fichier ne contient les adresses que d’une commune.')
+      const communes = extractCommuneFromCSV(validateResponse)
+
+      if (communes.length > 1 && !selectedCodeCommune) {
+        onWarning(
+          'Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. Veuillez choisir une commune, puis validez à nouveau le formulaire.',
+          communes
+        )
         return
       }
 
