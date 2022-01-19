@@ -81,6 +81,8 @@ function UploadForm() {
 
       setFile(file)
       setError(null)
+      setWarning(null)
+      setSelectedCodeCommune(null)
     }
   }, [])
 
@@ -113,6 +115,8 @@ function UploadForm() {
   const onCancel = () => {
     setIsShown(false)
     setIsLoading(false)
+    setWarning(null)
+    setSelectedCodeCommune(null)
   }
 
   const onSubmit = async e => {
