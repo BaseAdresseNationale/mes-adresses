@@ -1,7 +1,7 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
-import {uniq, uniqBy} from 'lodash'
+import {uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '../../lib/bal-api'
@@ -14,6 +14,7 @@ import {useInput} from '../../hooks/input'
 import Form from '../../components/form'
 import FormInput from '../../components/form-input'
 import Uploader from '../../components/uploader'
+import SelectCommune from '../../components/select-commune'
 
 import AlertPublishedBAL from './alert-published-bal'
 
@@ -28,23 +29,31 @@ function getFileExtension(name) {
   return null
 }
 
-function extractCodeCommuneFromCSV(response) {
+function extractCommuneFromCSV(response) {
   // Get cle_interop and slice it to get the commune's code
-  const codes = response.rows.map(r => r.parsedValues.cle_interop.slice(0, 5))
+  const communes = response.rows.map(r => (
+    {
+      code: r.parsedValues.cle_interop.slice(0, 5),
+      nom: r.parsedValues.commune_nom
+    }
+  ))
 
-  return uniq(codes)
+  return uniqBy(communes, 'code')
 }
 
 function UploadForm() {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
+  const [warning, setWarning] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const [focusRef] = useFocus()
   const [userBALs, setUserBALs] = useState([])
   const [isShown, setIsShown] = useState(false)
+  const [communesList, setCommunesList] = useState(null)
+  const [selectedCodeCommune, setSelectedCodeCommune] = useState(null)
 
   const {addBalAccess} = useContext(LocalStorageContext)
 
@@ -52,6 +61,16 @@ function UploadForm() {
     setFile(null)
     setIsLoading(false)
     setError(error)
+  }
+
+  const onWarning = (warning, communes = null) => {
+    setIsLoading(false)
+    setWarning(warning)
+
+    if (communes) {
+      setCommunesList(communes)
+      setSelectedCodeCommune(communes[0].code)
+    }
   }
 
   const onDrop = useCallback(async ([file]) => {
@@ -62,6 +81,8 @@ function UploadForm() {
 
       setFile(file)
       setError(null)
+      setWarning(null)
+      setSelectedCodeCommune(null)
     }
   }, [])
 
@@ -94,6 +115,8 @@ function UploadForm() {
   const onCancel = () => {
     setIsShown(false)
     setIsLoading(false)
+    setWarning(null)
+    setSelectedCodeCommune(null)
   }
 
   const onSubmit = async e => {
@@ -107,20 +130,24 @@ function UploadForm() {
     const validateResponse = await validate(file)
 
     if (validateResponse) {
-      const codes = extractCodeCommuneFromCSV(validateResponse)
-      if (codes.length > 1) {
-        onError('Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. L’import d’un fichier CSV n’est possible que si ce fichier ne contient les adresses que d’une commune.')
+      const communes = extractCommuneFromCSV(validateResponse)
+
+      if (communes.length === 1) {
+        setSelectedCodeCommune(communes[0].code)
+      } else if (communes.length > 1 && !selectedCodeCommune) {
+        onWarning(
+          'Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. Veuillez choisir une commune, puis validez à nouveau le formulaire.',
+          communes
+        )
         return
       }
 
       const userBALs = []
 
-      await Promise.all(codes.map(async code => {
-        const basesLocales = await searchBAL(code, email)
-        if (basesLocales.length > 0) {
-          userBALs.push(...basesLocales)
-        }
-      }))
+      const basesLocales = await searchBAL(selectedCodeCommune || communes[0].code, email)
+      if (basesLocales.length > 0) {
+        userBALs.push(...basesLocales)
+      }
 
       if (userBALs.length > 0) {
         const uniqUserBALs = uniqBy(userBALs, '_id')
@@ -131,27 +158,30 @@ function UploadForm() {
         createNewBal()
       }
     }
-  }, [createNewBal, file, email])
+  }, [createNewBal, file, email, selectedCodeCommune])
 
   useEffect(() => {
     async function upload() {
       try {
-        const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
+        const response = await uploadBaseLocaleCsv(bal._id, selectedCodeCommune, file, bal.token)
         if (!response.isValid) {
           throw new Error('Fichier invalide')
         }
 
-        Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
+        Router.push(
+          `/bal/commune?balId=${bal._id}&codeCommune=${selectedCodeCommune}`,
+          `/bal/${bal._id}/communes/${selectedCodeCommune}`
+        )
       } catch (error) {
         setError(error.message)
       }
     }
 
-    if (file && bal) {
+    if (file && bal && selectedCodeCommune) {
       setIsLoading(true)
       upload()
     }
-  }, [bal, file])
+  }, [bal, selectedCodeCommune, file])
 
   useEffect(() => {
     if (file || error) {
@@ -226,9 +256,18 @@ function UploadForm() {
             </Pane>
           </Pane>
 
-          {error && (
-            <Alert marginBottom={16} intent='danger' title='Erreur'>
-              {error}
+          {(error || warning) && (
+            <Alert marginBottom={16} intent={error ? 'danger' : 'warning'} title={error ? 'Erreur' : 'Attention'}>
+              <Text>
+                {error || warning}
+              </Text>
+              {warning && communesList && selectedCodeCommune && (
+                <SelectCommune
+                  communes={communesList}
+                  selectedCodeCommune={selectedCodeCommune}
+                  setSelectedCodeCommune={setSelectedCodeCommune}
+                />
+              )}
             </Alert>
           )}
 
