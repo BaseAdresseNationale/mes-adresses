@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Pane, Heading} from 'evergreen-ui'
+import {Pane} from 'evergreen-ui'
 import {uniq, flattenDeep} from 'lodash'
 
 import {getBasesLocalesStats, getContoursCommunes, listBasesLocales} from '../lib/bal-api'
@@ -10,6 +10,7 @@ import BALCreationChart from '../components/dashboard/bal-creation-chart'
 import BALCounterChart from '../components/dashboard/bal-counter-chart'
 import Counter from '../components/dashboard/counter'
 import Redirection from './dashboard/redirection'
+import PublishedBalStats from '../components/dashboard/published-bal-stats'
 
 function Index({basesLocales, basesLoclesStats, contoursCommunes}) {
   const communeCount = uniq(flattenDeep(
@@ -22,14 +23,9 @@ function Index({basesLocales, basesLoclesStats, contoursCommunes}) {
     <DashboardLayout title='Tableau de bord de l&apos;éditeur Mes Adresses' mapData={{basesLocales, contours: contoursCommunes}}>
       <Pane display='grid' gridGap='2em' padding={5}>
         <Counter label='Communes couvertes par une Base Adresse Locale' value={communeCount} />
-        <Pane>
-          <Heading size={500} color='muted' fontWeight={300} textAlign='center'>Chiffres des Bases Adresses Locales publiées</Heading>
-          <Pane display='grid' gridTemplateColumns='repeat(3, 1fr)'>
-            <Counter label='Voies' value={basesLoclesStats.nbVoies} />
-            <Counter label='Lieux-dits' value={basesLoclesStats.nbLieuxDits} />
-            <Counter label='Adresses certifiées' value={basesLoclesStats.nbNumerosCertifies} />
-          </Pane>
-        </Pane>
+
+        <PublishedBalStats stats={basesLoclesStats} />
+
         <BALCounterChart basesLocales={basesLocales} />
         <BALCreationChart basesLocales={basesLocales} />
         <Redirection />
