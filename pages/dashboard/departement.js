@@ -10,10 +10,13 @@ import Counter from '../../components/dashboard/counter'
 import PieChart from '../../components/dashboard/charts/pie-chart'
 import CommuneBALList from '../../components/dashboard/commune-bal-list'
 import DashboardLayout from '../../components/layout/dashboard'
+import PublishedBalStats from '../../components/dashboard/published-bal-stats'
 
 function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, contoursCommunes}) {
   const {nom, code} = departement
-
+  let nbVoies = 0
+  let nbLieuxDits = 0
+  let nbNumerosCertifies = 0
   const codesCommunes = new Set(filteredCommunesInBAL.map(({code}) => code))
   const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutDemo.map(({communes}) => communes)))
   const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.has(c)).length
@@ -26,6 +29,12 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
     contours: contoursCommunes
   }
 
+  basesLocalesDepartementWithoutDemo.forEach(bal => {
+    nbVoies += bal.nbVoies
+    nbLieuxDits += bal.nbLieuxDits
+    nbNumerosCertifies += bal.nbNumerosCertifies
+  })
+
   return (
     <DashboardLayout backButton title={`Tableau de bord de l'éditeur Mes Adresses - ${nom} (${code})`} mapData={mapData}>
       {basesLocalesDepartementWithoutDemo.length > 0 ? (
@@ -36,6 +45,8 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
               value={countCommunesActuelles}
             />
           )}
+
+          <PublishedBalStats stats={{nbVoies, nbLieuxDits, nbNumerosCertifies}} />
 
           <Pane display='flex' flexDirection='column' alignItems='center' >
             <Counter
