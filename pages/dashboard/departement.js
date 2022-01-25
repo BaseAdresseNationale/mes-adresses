@@ -23,6 +23,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
   const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.has(c)).length
 
   const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutDemo)
+  const countPublishedBAL = BALByStatus.find(({label}) => label === 'Publiée').values
 
   const mapData = {
     departement: code,
@@ -48,7 +49,9 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
             />
           )}
 
-          <PublishedBalStats stats={{nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies}} />
+          {countPublishedBAL > 0 && (
+            <PublishedBalStats stats={{nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies}} />
+          )}
 
           <Pane display='flex' flexDirection='column' alignItems='center' >
             <Counter
