@@ -16,6 +16,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
   const {nom, code} = departement
   let nbVoies = 0
   let nbLieuxDits = 0
+  let nbNumeros = 0
   let nbNumerosCertifies = 0
   const codesCommunes = new Set(filteredCommunesInBAL.map(({code}) => code))
   const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutDemo.map(({communes}) => communes)))
@@ -32,6 +33,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
   basesLocalesDepartementWithoutDemo.forEach(bal => {
     nbVoies += bal.nbVoies
     nbLieuxDits += bal.nbLieuxDits
+    nbNumeros += bal.nbNumeros
     nbNumerosCertifies += bal.nbNumerosCertifies
   })
 
@@ -46,7 +48,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
             />
           )}
 
-          <PublishedBalStats stats={{nbVoies, nbLieuxDits, nbNumerosCertifies}} />
+          <PublishedBalStats stats={{nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies}} />
 
           <Pane display='flex' flexDirection='column' alignItems='center' >
             <Counter
