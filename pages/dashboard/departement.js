@@ -31,10 +31,10 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
   }
 
   basesLocalesDepartementWithoutDemo.forEach(bal => {
-    nbVoies += bal.nbVoies
-    nbLieuxDits += bal.nbLieuxDits
-    nbNumeros += bal.nbNumeros
-    nbNumerosCertifies += bal.nbNumerosCertifies
+    nbVoies += bal.nbVoies || 0
+    nbLieuxDits += bal.nbLieuxDits || 0
+    nbNumeros += bal.nbNumeros || 0
+    nbNumerosCertifies += bal.nbNumerosCertifies || 0
   })
 
   return (
