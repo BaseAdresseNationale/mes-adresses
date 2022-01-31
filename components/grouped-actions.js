@@ -64,6 +64,10 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     resetPositionType()
   }
 
+  const onFormCancel = () => {
+    resetPositionType()
+  }
+
   const handleConfirm = useCallback(async event => {
     event.preventDefault()
 
@@ -223,7 +227,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                   isLoading={isLoading}
                   isCertified={isAllSelectedCertifie}
                   onConfirm={setCertifie}
-                  onCancel={() => setIsShown(false)}
+                  onCancel={onFormCancel}
                 />
               </Pane>
             </Form>
@@ -262,7 +266,7 @@ GroupedActions.propTypes = {
   resetSelectedNumerosIds: PropTypes.func.isRequired,
   setIsRemoveWarningShown: PropTypes.func.isRequired,
   isAllSelectedCertifie: PropTypes.bool.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
 }
 
 export default GroupedActions
