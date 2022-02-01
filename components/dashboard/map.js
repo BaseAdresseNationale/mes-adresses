@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
 import {Paragraph, Heading, Alert} from 'evergreen-ui'
 
-import {colors} from '../../lib/colors'
-
 const defaultViewport = {
   latitude: 46.9,
   longitude: 1.7,
@@ -16,7 +14,7 @@ const defaultGeoData = {
   bbox: [-5.317, 41.277, 9.689, 51.234]
 }
 
-function Map({departement, basesLocales, contours}) {
+function Map({departement, basesLocales}) {
   const [viewport, setViewport] = useState(defaultViewport)
   const [hovered, setHovered] = useState(null)
   const [hoveredId, setHoveredId] = useState(null)
@@ -30,27 +28,11 @@ function Map({departement, basesLocales, contours}) {
   const mapRef = useRef()
 
   const balLayer = {
-    id: 'balLayer',
-    type: 'fill',
+    type: 'line',
+    'source-layer': 'contours-bal',
     paint: {
-      'fill-color': [
-        'match',
-        ['get', 'maxStatus'],
-        'draft',
-        colors.neutral,
-        'ready-to-publish',
-        colors.blue,
-        'published',
-        colors.green,
-        'white'
-      ],
-      'fill-opacity': [
-        'case',
-        ['==', ['get', 'code'], hoveredId ? hoveredId : null],
-        0.8,
-        1
-      ],
-      'fill-outline-color': '#ffffff'
+      'line-color': '#877b59',
+      'line-opacity': 1,
     }
   }
 
@@ -249,10 +231,17 @@ function Map({departement, basesLocales, contours}) {
           />
         </Source>
 
-        <Source id='contours-bal' type='geojson' data={contours}>
+        <Source
+          id='contours-bal'
+          type='vector'
+          format='pbf'
+          tiles={['http://localhost:5000/v1/stats/tiles/{z}/{x}/{y}.pbf']}
+          minzoom={6}
+          maxzoom={14}
+        >
           <Layer
             {...balLayer}
-            id='contours-bal-fills'
+            id='contours-bal-lines'
             source='contours-bal'
             beforeId='place-town'
           />
