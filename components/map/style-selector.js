@@ -44,6 +44,10 @@ function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, han
           <ControlIcon color={isCadastreDisplayed ? 'selected' : 'muted'} />
         </Button>
       </Tooltip>
+
+      {isCadastreDisplayed && style === 'vector' && (
+        <Button is='a' href='https://cadastre.data.gouv.fr/datasets/cadastre-etalab'>Millésime du plan cadastral</Button>
+      )}
     </Pane>
   )
 }
