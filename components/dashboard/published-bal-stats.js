@@ -4,12 +4,13 @@ import {Heading, Pane} from 'evergreen-ui'
 import Counter from './counter'
 
 function PublishedBalStats({stats}) {
-  const {nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies} = stats
+  const {nbCommunes, nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies} = stats
 
   return (
-    <Pane>
+    <Pane marginTop={16}>
       <Heading size={500} color='muted' fontWeight={300} textAlign='center'>Chiffres des Bases Adresses Locales publiées</Heading>
-      <Pane display='grid' gridTemplateColumns='repeat(4, 1fr)'>
+      <Pane display='grid' gridTemplateColumns='repeat(3, 1fr)'>
+        <Counter label={nbCommunes > 1 ? 'Communes' : 'Commune'} value={nbCommunes} />
         <Counter label={nbVoies > 1 ? 'Voies' : 'Voie'} value={nbVoies} />
         <Counter label={nbLieuxDits > 1 ? 'Lieux-dits' : 'Lieu-dit'} value={nbLieuxDits} />
         <Counter label={nbNumeros > 1 ? 'Adresses' : 'Adresse'} value={nbNumeros} />
