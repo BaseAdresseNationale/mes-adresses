@@ -32,15 +32,16 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
     <DashboardLayout backButton title={`Tableau de bord de l'éditeur Mes Adresses - ${nom} (${code})`} mapData={mapData}>
       {basesLocalesDepartementWithoutDemo.length > 0 ? (
         <Pane display='grid' gridGap='2em' padding={8}>
+
+          {countPublishedBAL?.values > 0 && (
+            <PublishedBalStats stats={{nbCommunes, nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies}} />
+          )}
+
           {countCommunesActuelles > 0 && (
             <Counter
               label={`${countCommunesActuelles > 1 ? 'Communes couvertes' : 'Commune couverte'} par une Base Adresse Locale`}
               value={countCommunesActuelles}
             />
-          )}
-
-          {countPublishedBAL?.values > 0 && (
-            <PublishedBalStats stats={{nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies}} />
           )}
 
           <Pane display='flex' flexDirection='column' alignItems='center' >
