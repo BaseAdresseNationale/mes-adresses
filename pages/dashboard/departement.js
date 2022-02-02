@@ -14,7 +14,7 @@ import PublishedBalStats from '../../components/dashboard/published-bal-stats'
 
 function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, stats, contoursCommunes}) {
   const {nom, code} = departement
-  const {nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies} = stats
+  const {nbCommunes, nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies} = stats
   const codesCommunes = new Set(filteredCommunesInBAL.map(({code}) => code))
   const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutDemo.map(({communes}) => communes)))
   const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.has(c)).length
