@@ -4,6 +4,7 @@ import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} fr
 
 const STYLES = [
   {label: 'Plan OpenMapTiles', value: 'vector'},
+  {label: 'Plan IGN (Bêta)', value: 'plan-ign'},
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
@@ -27,7 +28,7 @@ function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, han
         position={Position.TOP_LEFT}
         title='Choix du fond de carte'
         hasFilter={false}
-        height={110}
+        height={140}
         options={STYLES}
         selected={style}
         onSelect={style => handleStyle(style.value)}
