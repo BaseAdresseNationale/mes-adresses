@@ -35,7 +35,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
     setIsEditing
   } = useContext(BalDataContext)
 
-  useHelp(3)
+  useHelp(2)
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
       'numero'

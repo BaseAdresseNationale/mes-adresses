@@ -9,7 +9,7 @@ import useFuse from '../../hooks/fuse'
 
 import {listBasesLocales} from '../../lib/bal-api'
 
-import BaseLocaleCard from './base-locale-card'
+import BaseLocaleCard from '../base-locale-card'
 
 function PublicBasesLocalesList({basesLocales, sortBal}) {
   const [limit, setLimit] = useState(50)

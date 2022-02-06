@@ -10,7 +10,6 @@ import {getCommune} from '../../lib/geo-api'
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
 
-import useHelp from '../../hooks/help'
 import useFuse from '../../hooks/fuse'
 
 import DeleteWarning from '../../components/delete-warning'
@@ -26,7 +25,6 @@ const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const {token} = useContext(TokenContext)
   const balDataContext = useContext(BalDataContext)
 
-  useHelp(1)
   const [filtered, onFilter] = useFuse(communes, 200, {
     keys: [
       'nom'

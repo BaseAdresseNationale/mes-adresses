@@ -1,7 +1,8 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
+import {toaster} from 'evergreen-ui'
 
-import {getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, certifyBAL} from '../lib/bal-api'
+import {getHabilitation, getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, certifyBAL} from '../lib/bal-api'
 
 import TokenContext from './token'
 
@@ -17,9 +18,22 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const [toponymes, setToponymes] = useState()
   const [voie, setVoie] = useState(null)
   const [toponyme, setToponyme] = useState()
-  const [baseLocale, setBaseLocal] = useState(null)
+  const [baseLocale, setBaseLocale] = useState(null)
+  const [habilitation, setHabilitation] = useState(null)
+  const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
 
   const {token} = useContext(TokenContext)
+
+  const reloadHabilitation = useCallback(async () => {
+    if (balId && token) {
+      try {
+        const habilitation = await getHabilitation(token, balId)
+        setHabilitation(habilitation)
+      } catch {
+        setHabilitation(null)
+      }
+    }
+  }, [balId, token])
 
   const reloadParcelles = useCallback(async () => {
     if (balId && codeCommune) {
@@ -91,9 +105,28 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     if (balId) {
       const baseLocale = await getBaseLocale(balId)
 
-      setBaseLocal(baseLocale)
+      setBaseLocale(baseLocale)
+    } else {
+      setBaseLocale(null)
     }
   }, [balId])
+
+  const refreshBALSync = useCallback(async () => {
+    if (baseLocale) {
+      const {sync} = baseLocale
+      if (sync && sync.status === 'synced' && !sync.isPaused && !isRefrehSyncStat) {
+        setIsRefrehSyncStat(true)
+        setTimeout(() => {
+          reloadBaseLocale()
+          setIsRefrehSyncStat(false)
+          toaster.notify('De nouvelles modifications ont été détectées', {
+            description: 'Elles seront automatiquement transmises dans la Base Adresses Nationale d’ici quelques heures.',
+            duration: 10
+          })
+        }, 30000) // Maximum interval between CRON job
+      }
+    }
+  }, [baseLocale, isRefrehSyncStat, reloadBaseLocale])
 
   const setEditingId = useCallback(editingId => {
     if (token) {
@@ -114,7 +147,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
   const certifyAllNumeros = useCallback(async () => {
     await certifyBAL(balId, codeCommune, token, {certifie: true})
     await reloadNumeros()
-  }, [balId, codeCommune, token, reloadNumeros])
+
+    refreshBALSync()
+  }, [balId, codeCommune, token, reloadNumeros, refreshBALSync])
 
   useEffect(() => {
     reloadGeojson()
@@ -138,6 +173,14 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     reloadNumerosToponyme()
   }, [idToponyme, reloadNumerosToponyme])
 
+  useEffect(() => {
+    reloadHabilitation()
+  }, [balId, token, reloadHabilitation])
+
+  useEffect(() => {
+    reloadBaseLocale()
+  }, [balId, reloadBaseLocale])
+
   const value = useMemo(() => ({
     isEditing,
     setIsEditing,
@@ -147,13 +190,17 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     geojson,
     reloadGeojson,
     baseLocale,
+    habilitation,
     codeCommune,
     voie,
     setVoie,
     numeros,
     voies,
     toponymes,
+    isRefrehSyncStat,
     setEditingId,
+    refreshBALSync,
+    reloadHabilitation,
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
@@ -171,6 +218,8 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     reloadGeojson,
     baseLocale,
     reloadBaseLocale,
+    habilitation,
+    reloadHabilitation,
     codeCommune,
     voie,
     numeros,
@@ -181,7 +230,9 @@ export const BalDataContextProvider = React.memo(({balId, codeCommune, idVoie, i
     reloadToponymes,
     reloadNumerosToponyme,
     toponyme,
-    certifyAllNumeros
+    certifyAllNumeros,
+    isRefrehSyncStat,
+    refreshBALSync
   ])
 
   return (

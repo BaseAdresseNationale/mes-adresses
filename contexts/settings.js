@@ -3,12 +3,12 @@ import React, {useState, useMemo} from 'react'
 const SettingsContext = React.createContext()
 
 export function SettingsContextProvider(props) {
-  const [showSettings, setShowSettings] = useState(false)
+  const [isSettingsDisplayed, setIsSettingsDisplayed] = useState(false)
 
   const value = useMemo(() => ({
-    showSettings,
-    setShowSettings
-  }), [showSettings])
+    isSettingsDisplayed,
+    setIsSettingsDisplayed
+  }), [isSettingsDisplayed])
 
   return (
     <SettingsContext.Provider value={value} {...props} />
