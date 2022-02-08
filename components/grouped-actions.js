@@ -54,18 +54,15 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(getDefaultToponyme)
 
-  const handleComplete = () => {
-    setIsShown(false)
-    setIsLoading(false)
-  }
-
   const handleClick = () => {
     setIsShown(true)
     resetPositionType()
   }
 
-  const onFormCancel = () => {
-    resetPositionType()
+  const onFormCancel = event => {
+    event.preventDefault()
+    resetSelectedNumerosIds()
+    setIsShown(false)
   }
 
   const handleConfirm = useCallback(async event => {
@@ -139,9 +136,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           intent='success'
           title='Modification multiple'
           isConfirmLoading={isLoading}
-          cancelLabel='Annuler'
           hasFooter={false}
-          onCloseComplete={() => handleComplete()}
         >
           <Pane marginX='-32px' marginBottom='-8px'>
             <Paragraph marginBottom={8} marginLeft={32} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
