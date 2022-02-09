@@ -58,7 +58,7 @@ function Toponymes() {
             Cliquez sur le nom du toponyme
           </ListItem>
           <ListItem>
-            Éditer le nom du toponyme
+            Éditez le nom du toponyme
           </ListItem>
           <ListItem>
             Vous pouvez également modifier la position du toponyme en déplaçant le <MapMarkerIcon icon={MapMarkerIcon} color='info' /> sur la carte

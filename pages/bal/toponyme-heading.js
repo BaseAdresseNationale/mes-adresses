@@ -13,7 +13,7 @@ function ToponymeHeading({defaultToponyme}) {
   const [toponyme, setToponyme] = useState(defaultToponyme)
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
-  const {editingId, setEditingId, isEditing, reloadToponymes, numeros} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing, refreshBALSync, reloadToponymes, numeros} = useContext(BalDataContext)
 
   const onEnableToponymeEditing = useCallback(() => {
     if (!isEditing) {
@@ -31,9 +31,10 @@ function ToponymeHeading({defaultToponyme}) {
 
     setEditingId(null)
     await reloadToponymes()
+    refreshBALSync()
 
     setToponyme(editedToponyme)
-  }, [reloadToponymes, setEditingId, token, toponyme])
+  }, [reloadToponymes, refreshBALSync, setEditingId, token, toponyme])
 
   useEffect(() => {
     setToponyme(defaultToponyme)

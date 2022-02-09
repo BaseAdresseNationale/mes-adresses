@@ -13,7 +13,7 @@ import useError from '../../hooks/error'
 import {listBasesLocales} from '../../lib/bal-api'
 
 import DeleteWarning from '../delete-warning'
-import BaseLocaleCard from './base-locale-card'
+import BaseLocaleCard from '../base-locale-card'
 
 function BasesLocalesList({basesLocales, sortBal}) {
   const {removeBAL} = useContext(LocalStorageContext)

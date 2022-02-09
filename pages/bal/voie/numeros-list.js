@@ -17,7 +17,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {numeros, reloadNumeros} = useContext(BalDataContext)
+  const {numeros, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
@@ -66,7 +66,8 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
   const onRemove = useCallback(async (idNumero, isToasterDisabled) => {
     await removeNumero(idNumero, token, isToasterDisabled)
     await reloadNumeros()
-  }, [reloadNumeros, token])
+    refreshBALSync()
+  }, [reloadNumeros, refreshBALSync, token])
 
   const onMultipleRemove = async () => {
     try {
@@ -75,6 +76,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
       }))
 
       await reloadNumeros()
+      refreshBALSync()
       toaster.success('Les numéros ont bien été supprimés')
     } catch (error) {
       setError(error.message)
@@ -93,6 +95,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
       }))
 
       await reloadNumeros()
+      refreshBALSync()
       toaster.success('Les numéros ont bien été modifiés')
     } catch (error) {
       setError(error.message)

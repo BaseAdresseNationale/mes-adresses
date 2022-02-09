@@ -10,7 +10,7 @@ import useError from '../../hooks/error'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
-import BaseLocaleCard from '../../components/bases-locales-list/base-locale-card'
+import BaseLocaleCard from '../../components/base-locale-card'
 import DeleteWarning from '../../components/delete-warning'
 
 function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) {
@@ -136,7 +136,7 @@ AlertPublishedBAL.propTypes = {
   isShown: PropTypes.bool,
   userEmail: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
-  basesLocales: PropTypes.object.isRequired,
+  basesLocales: PropTypes.array.isRequired,
   onConfirm: PropTypes.func.isRequired,
   updateBAL: PropTypes.func.isRequired
 }
