@@ -261,7 +261,7 @@ GroupedActions.propTypes = {
   resetSelectedNumerosIds: PropTypes.func.isRequired,
   setIsRemoveWarningShown: PropTypes.func.isRequired,
   isAllSelectedCertifie: PropTypes.bool.isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired
 }
 
 export default GroupedActions
