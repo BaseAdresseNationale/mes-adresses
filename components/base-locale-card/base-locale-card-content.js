@@ -59,7 +59,7 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
         <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
           {hasToken && (
             isDeletable ? (
-              <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer</Button>
+              <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer définitivement</Button>
             ) : (
               <Tooltip content={tooltipContent}>
                 {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
