@@ -2,13 +2,13 @@ import {useState, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
+import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, MinusIcon} from 'evergreen-ui'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 
-function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove}) {
+function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove, onHide}) {
   const {status, _created, emails} = baseLocale
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
 
@@ -70,6 +70,8 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
             )
           )}
 
+          <Button iconAfter={MinusIcon} onClick={onHide}>Retirer de la liste</Button>
+
           {hasToken ? (
             <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
           ) : (
@@ -95,7 +97,8 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
 BaseLocaleCardContent.defaultProps = {
   isAdmin: false,
   userEmail: null,
-  onRemove: null
+  onRemove: null,
+  onHide: null
 }
 
 BaseLocaleCardContent.propTypes = {
@@ -110,6 +113,7 @@ BaseLocaleCardContent.propTypes = {
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
+  onHide: PropTypes.func,
   onRemove: PropTypes.func
 }
 

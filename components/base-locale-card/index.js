@@ -12,7 +12,7 @@ import StatusBadge from '../status-badge'
 
 import BaseLocaleCardContent from './base-locale-card-content'
 
-function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove}) {
+function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove, onHide}) {
   const {nom, communes, _updated} = baseLocale
   const [commune, setCommune] = useState()
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
@@ -104,6 +104,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
           baseLocale={baseLocale}
           onSelect={onSelect}
           onRemove={onRemove}
+          onHide={onHide}
         />
       )}
     </Card>
@@ -114,6 +115,7 @@ BaseLocaleCard.defaultProps = {
   isAdmin: false,
   userEmail: null,
   onRemove: null,
+  onHide: null,
   isDefaultOpen: false
 }
 
@@ -132,6 +134,7 @@ BaseLocaleCard.propTypes = {
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
   onSelect: PropTypes.func.isRequired,
+  onHide: PropTypes.func,
   onRemove: PropTypes.func
 }
 
