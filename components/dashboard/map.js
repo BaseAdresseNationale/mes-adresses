@@ -235,7 +235,7 @@ function Map({departement, basesLocales}) {
           id='contours-bal'
           type='vector'
           format='pbf'
-          tiles={['http://localhost:5000/v1/stats/tiles/{z}/{x}/{y}.pbf']}
+          tiles={['http://localhost:5000/v1/stats/couverture-tiles/{z}/{x}/{y}.pbf']}
           minzoom={6}
           maxzoom={14}
         >
