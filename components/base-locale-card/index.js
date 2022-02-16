@@ -116,6 +116,7 @@ BaseLocaleCard.defaultProps = {
   userEmail: null,
   onRemove: null,
   onHide: null,
+  onSelect: null,
   isDefaultOpen: false
 }
 
@@ -133,7 +134,7 @@ BaseLocaleCard.propTypes = {
   isDefaultOpen: PropTypes.bool,
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
-  onSelect: PropTypes.func.isRequired,
+  onSelect: PropTypes.func,
   onHide: PropTypes.func,
   onRemove: PropTypes.func
 }

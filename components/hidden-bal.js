@@ -1,21 +1,51 @@
-import {useState, useContext} from 'react'
-import PropTypes from 'prop-types'
-import {Pane, Text, PlusIcon, MinusIcon, UndoIcon} from 'evergreen-ui'
+import {useState, useCallback, useEffect, useContext} from 'react'
+import {Pane, Text, PlusIcon, MinusIcon, UndoIcon, Spinner} from 'evergreen-ui'
+import {map, filter} from 'lodash'
+
+import {getBaseLocale} from '../lib/bal-api'
 
 import LocalStorageContext from '../contexts/local-storage'
 
 import BaseLocaleCard from './base-locale-card'
 
-function HiddenBal({basesLocales}) {
+function HiddenBal() {
   const [isWrapped, setIsWrapped] = useState(true)
-  const {removeHiddenBal} = useContext(LocalStorageContext)
+  const [isLoading, setIsLoading] = useState(true)
+  const [basesLocales, setBasesLocales] = useState(null)
+
+  const {balAccess, getHiddenBal, removeHiddenBal} = useContext(LocalStorageContext)
+
+  const getUserHiddenBals = useCallback(async () => {
+    setIsLoading(true)
+    const balsToLoad = filter(Object.keys(balAccess), id => getHiddenBal(id))
+    const basesLocales = await Promise.all(
+      map(balsToLoad, async id => {
+        try {
+          return await getBaseLocale(id, balAccess[id])
+        } catch {
+          console.log(`Impossible de récupérer la bal ${id}`)
+        }
+      }))
+
+    const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
+
+    setBasesLocales(findedBasesLocales)
+    setIsLoading(false)
+  }, [balAccess, getHiddenBal])
+
+  useEffect(() => {
+    // Fetch bases locales only once
+    if (!isWrapped && !basesLocales) {
+      getUserHiddenBals()
+    }
+  }, [isWrapped, basesLocales, getUserHiddenBals])
 
   return (
     <Pane display='flex' flexDirection='column' justifyContent='center'>
       <Pane
         display='flex'
         justifyContent='center'
-        alignItem='center'
+        alignItems='center'
         cursor='pointer'
         textAlign='center'
         textDecoration='underline'
@@ -31,37 +61,38 @@ function HiddenBal({basesLocales}) {
 
       </Pane>
       {!isWrapped && (
-        <Pane background='#E4E7EB'>
-          {basesLocales.map(bal => (
-            <Pane key={bal._id} display='flex' alignItems='center'>
-              <Pane flex={1}>
-                <BaseLocaleCard
-                  isAdmin
-                  baseLocale={bal}
-                  isDefaultOpen={false}
-                />
+        isLoading ? (
+          <Pane display='flex' alignItems='center' justifyContent='center' flex={1}>
+            <Spinner />
+          </Pane>
+        ) : (
+          <Pane background='#E4E7EB'>
+            {basesLocales.map(bal => (
+              <Pane key={bal._id} display='flex' alignItems='center'>
+                <Pane flex={1}>
+                  <BaseLocaleCard
+                    isAdmin
+                    baseLocale={bal}
+                    isDefaultOpen={false}
+                  />
+                </Pane>
+                <Pane
+                  display='flex'
+                  flexDirection='column'
+                  alignItems='center'
+                  cursor='pointer'
+                  margin={16}
+                  onClick={() => removeHiddenBal(bal._id)}
+                >
+                  <UndoIcon size={24} />
+                  <Text size={300}>Ne plus masquer</Text>
+                </Pane>
               </Pane>
-              <Pane
-                display='flex'
-                flexDirection='column'
-                alignItems='center'
-                cursor='pointer'
-                margin={16}
-                onClick={() => removeHiddenBal(bal._id)}
-              >
-                <UndoIcon size={24} />
-                <Text size={300}>Ne plus masquer</Text>
-              </Pane>
-            </Pane>
-          ))}
-        </Pane>
-      )}
+            ))}
+          </Pane>
+        ))}
     </Pane>
   )
-}
-
-HiddenBal.propTypes = {
-  basesLocales: PropTypes.array.isRequired
 }
 
 export default HiddenBal

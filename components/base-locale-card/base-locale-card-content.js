@@ -75,7 +75,15 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
           </Pane>
 
           {hasToken ? (
-            <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
+            <Button
+              appearance='primary'
+              iconAfter={EditIcon}
+              marginRight='8px'
+              onClick={onSelect}
+              disabled={!onSelect}
+            >
+              Gérer les adresses
+            </Button>
           ) : (
             <>
               <RecoverBALAlert
@@ -100,7 +108,8 @@ BaseLocaleCardContent.defaultProps = {
   isAdmin: false,
   userEmail: null,
   onRemove: null,
-  onHide: null
+  onHide: null,
+  onSelect: null
 }
 
 BaseLocaleCardContent.propTypes = {
@@ -114,7 +123,7 @@ BaseLocaleCardContent.propTypes = {
   }).isRequired,
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
-  onSelect: PropTypes.func.isRequired,
+  onSelect: PropTypes.func,
   onHide: PropTypes.func,
   onRemove: PropTypes.func
 }

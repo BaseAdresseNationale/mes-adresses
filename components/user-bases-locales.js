@@ -1,7 +1,7 @@
 import {useState, useEffect, useContext, useCallback} from 'react'
 import Router from 'next/router'
 import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
-import {map} from 'lodash'
+import {map, filter} from 'lodash'
 
 import {getBaseLocale} from '../lib/bal-api'
 
@@ -11,17 +11,18 @@ import HiddenBal from '../components/hidden-bal'
 import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {
-  const {balAccess, hiddenBal} = useContext(LocalStorageContext)
+  const {balAccess, hiddenBal, getHiddenBal} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(true)
   const [basesLocales, setBasesLocales] = useState([])
 
   const getUserBals = useCallback(async () => {
     setIsLoading(true)
+    const balsToLoad = filter(Object.keys(balAccess), id => !getHiddenBal(id))
     const basesLocales = await Promise.all(
-      map(balAccess, async (token, id) => {
+      map(balsToLoad, async id => {
         try {
-          return await getBaseLocale(id, token)
+          return await getBaseLocale(id, balAccess[id])
         } catch {
           console.log(`Impossible de récupérer la bal ${id}`)
         }
@@ -31,7 +32,7 @@ function UserBasesLocales() {
 
     setBasesLocales(findedBasesLocales)
     setIsLoading(false)
-  }, [balAccess])
+  }, [balAccess, getHiddenBal])
 
   useEffect(() => {
     getUserBals()
@@ -51,7 +52,7 @@ function UserBasesLocales() {
         <BasesLocalesList basesLocales={basesLocales} />
 
         {hiddenBal && Object.keys(hiddenBal).length > 0 && (
-          <HiddenBal basesLocales={basesLocales.filter(({_id}) => Boolean(hiddenBal[_id]))} />
+          <HiddenBal />
         )}
 
         <Pane margin='auto' textAlign='center' marginTop={16}>
