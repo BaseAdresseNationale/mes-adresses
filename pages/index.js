@@ -6,8 +6,6 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import BALRecovery from '../components/bal-recovery/bal-recovery'
 
-import HiddenBal from '../components/hidden-bal'
-
 const UserBasesLocales = dynamic(() => import('../components/user-bases-locales'), { // eslint-disable-line node/no-unsupported-features/es-syntax
   ssr: false,
   loading: () => (
@@ -27,10 +25,6 @@ function Index() {
       </Heading>
 
       <UserBasesLocales />
-
-      <Pane paddingX={22} paddingTop={22}>
-        <HiddenBal />
-      </Pane>
 
       <Pane padding={22}>
         <BALRecovery />

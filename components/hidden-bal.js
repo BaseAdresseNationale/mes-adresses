@@ -1,25 +1,67 @@
-import {useContext} from 'react'
-import {Alert, Button, Text} from 'evergreen-ui'
+import {useState, useContext} from 'react'
+import PropTypes from 'prop-types'
+import {Pane, Text, PlusIcon, MinusIcon, UndoIcon} from 'evergreen-ui'
 
 import LocalStorageContext from '../contexts/local-storage'
 
-function HiddenBal() {
-  const {setHiddenBal, hiddenBal} = useContext(LocalStorageContext)
-  const isPlural = hiddenBal ? Object.keys(hiddenBal).length > 1 : false
+import BaseLocaleCard from './base-locale-card'
+
+function HiddenBal({basesLocales}) {
+  const [isWrapped, setIsWrapped] = useState(true)
+  const {removeHiddenBal} = useContext(LocalStorageContext)
 
   return (
-    <div>
-      {hiddenBal && Object.keys(hiddenBal).length > 0 && (
-        <Alert intent='warning'>
-          <Text>
-            Il y a {Object.keys(hiddenBal).length} base{isPlural ? 's' : ''} adresse{isPlural ? 's' : ''} locale{isPlural ? 's' : ''} non listée{isPlural ? 's' : ''}.
-            Pour l{isPlural ? 'es ' : '’'}afficher
-          </Text>
-          <Button appearance='primary' marginLeft='1em' onClick={() => setHiddenBal(null)}>Cliquez ici</Button>
-        </Alert>
+    <Pane display='flex' flexDirection='column' justifyContent='center'>
+      <Pane
+        display='flex'
+        justifyContent='center'
+        alignItem='center'
+        cursor='pointer'
+        textAlign='center'
+        textDecoration='underline'
+        marginY={16}
+        onClick={() => setIsWrapped(!isWrapped)}
+      >
+        <Text marginRight={8}>{isWrapped ? 'Afficher' : 'Cacher'} vos Bases Adresses Locales masquées</Text>
+        <Pane>{isWrapped ? (
+          <PlusIcon style={{verticalAlign: 'middle'}} />
+        ) : (
+          <MinusIcon style={{verticalAlign: 'middle'}} />
+        )}</Pane>
+
+      </Pane>
+      {!isWrapped && (
+        <Pane background='#E4E7EB'>
+          {basesLocales.map(bal => (
+            <Pane key={bal._id} display='flex' alignItems='center'>
+              <Pane flex={1}>
+                <BaseLocaleCard
+                  isAdmin
+                  baseLocale={bal}
+                  isDefaultOpen={false}
+                />
+              </Pane>
+              <Pane
+                display='flex'
+                flexDirection='column'
+                alignItems='center'
+                cursor='pointer'
+                margin={16}
+                onClick={() => removeHiddenBal(bal._id)}
+              >
+                <UndoIcon size={24} />
+                <Text size={300}>Ne plus masquer</Text>
+              </Pane>
+            </Pane>
+          ))}
+        </Pane>
       )}
-    </div>
+    </Pane>
   )
+}
+
+HiddenBal.propTypes = {
+  basesLocales: PropTypes.array.isRequired
 }
 
 export default HiddenBal

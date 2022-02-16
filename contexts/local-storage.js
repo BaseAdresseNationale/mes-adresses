@@ -17,7 +17,7 @@ export function LocalStorageContextProvider(props) {
   const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY)
   const [recoveryEmailSent, setRecoveryEmailSent] = useLocalStorage(RECOVERY_EMAIL)
   const [informedAboutCertification, , getInformedAboutCertification, addInformedAboutCertification] = useLocalStorage(CERTIFICATION_AUTO_KEY)
-  const [hiddenBal, setHiddenBal, getHiddenBal, addHiddenBal] = useLocalStorage(VISIBILITY_KEY)
+  const [hiddenBal, setHiddenBal, getHiddenBal, addHiddenBal, removeHiddenBal] = useLocalStorage(VISIBILITY_KEY)
 
   const removeBAL = useCallback(async balId => {
     const token = getBalToken(balId)
@@ -30,7 +30,7 @@ export function LocalStorageContextProvider(props) {
     wasWelcomed, setWasWelcomed,
     recoveryEmailSent, setRecoveryEmailSent,
     informedAboutCertification, getInformedAboutCertification, addInformedAboutCertification,
-    hiddenBal, setHiddenBal, getHiddenBal, addHiddenBal
+    hiddenBal, setHiddenBal, getHiddenBal, addHiddenBal, removeHiddenBal
   }), [
     balAccess,
     getBalToken,
@@ -46,7 +46,8 @@ export function LocalStorageContextProvider(props) {
     hiddenBal,
     setHiddenBal,
     getHiddenBal,
-    addHiddenBal
+    addHiddenBal,
+    removeHiddenBal
   ])
 
   return (

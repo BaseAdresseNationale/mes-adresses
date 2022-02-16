@@ -2,7 +2,7 @@ import {useState, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, MinusIcon} from 'evergreen-ui'
+import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
@@ -57,20 +57,22 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
 
       {isAdmin ? (
         <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
-          {hasToken && (
-            isDeletable ? (
-              <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer définitivement</Button>
-            ) : (
-              <Tooltip content={tooltipContent}>
-                {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
-                <Pane>
-                  <Button disabled iconAfter={TrashIcon}>Supprimer</Button>
-                </Pane>
-              </Tooltip>
-            )
-          )}
+          <Pane display='flex' flexFlow='wrap' gap={8}>
+            {hasToken && (
+              isDeletable ? (
+                <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer définitivement</Button>
+              ) : (
+                <Tooltip content={tooltipContent}>
+                  {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
+                  <Pane>
+                    <Button disabled iconAfter={TrashIcon}>Supprimer</Button>
+                  </Pane>
+                </Tooltip>
+              )
+            )}
 
-          <Button iconAfter={MinusIcon} onClick={onHide}>Retirer de la liste</Button>
+            {onHide && <Button iconAfter={EyeOffIcon} onClick={onHide}>Masquer de la liste</Button>}
+          </Pane>
 
           {hasToken ? (
             <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>

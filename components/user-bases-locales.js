@@ -7,10 +7,11 @@ import {getBaseLocale} from '../lib/bal-api'
 
 import LocalStorageContext from '../contexts/local-storage'
 
+import HiddenBal from '../components/hidden-bal'
 import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {
-  const {balAccess} = useContext(LocalStorageContext)
+  const {balAccess, hiddenBal} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(true)
   const [basesLocales, setBasesLocales] = useState([])
@@ -49,7 +50,11 @@ function UserBasesLocales() {
       <>
         <BasesLocalesList basesLocales={basesLocales} />
 
-        <Pane margin='auto' textAlign='center'>
+        {hiddenBal && Object.keys(hiddenBal).length > 0 && (
+          <HiddenBal basesLocales={basesLocales.filter(({_id}) => Boolean(hiddenBal[_id]))} />
+        )}
+
+        <Pane margin='auto' textAlign='center' marginTop={16}>
           <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
           <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
         </Pane>
