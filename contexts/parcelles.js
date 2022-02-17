@@ -1,4 +1,5 @@
 import React, {useState, useContext, useEffect, useCallback, useMemo} from 'react'
+import PropTypes from 'prop-types'
 
 import MapContext from './map'
 
@@ -16,6 +17,7 @@ function getHoveredFeatureId(map, id) {
 
 export function ParcellesContextProvider(props) {
   const {map, isCadastreDisplayed} = useContext(MapContext)
+  const {commune} = props
 
   const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] = useState(false)
   const [selectedParcelles, setSelectedParcelles] = useState([])
@@ -83,6 +85,13 @@ export function ParcellesContextProvider(props) {
     }
   }, [map, isParcelleSelectionEnabled, hoveredParcelle])
 
+  const filterLayer = useCallback((layer, codeCommune) => {
+    const filter = ['match', ['get', 'commune']]
+    filter.push(codeCommune, true, false)
+
+    map.setFilter(layer, filter)
+  }, [map])
+
   // Reset IsLayerLoaded when selection is disabled
   useEffect(() => {
     if (!isParcelleSelectionEnabled) {
@@ -90,6 +99,13 @@ export function ParcellesContextProvider(props) {
       setIsLayerLoaded(false)
     }
   }, [isParcelleSelectionEnabled])
+
+  useEffect(() => {
+    if (map && isLayerLoaded && isParcelleSelectionEnabled) {
+      filterLayer('parcelles', commune?.code)
+      filterLayer('parcelles-fill', commune?.code)
+    }
+  }, [map, isLayerLoaded, isParcelleSelectionEnabled, filterLayer, commune])
 
   // Updates highlighted parcelles when parcelles changes
   // or when selection is enabled/disabled
@@ -130,6 +146,14 @@ export function ParcellesContextProvider(props) {
   return (
     <ParcellesContext.Provider value={value} {...props} />
   )
+}
+
+ParcellesContextProvider.propTypes = {
+  commune: PropTypes.string
+}
+
+ParcellesContextProvider.defaultProps = {
+  commune: null
 }
 
 export default ParcellesContext

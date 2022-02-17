@@ -102,7 +102,7 @@ function App({error, Component, pageProps, query}) {
             <MapContextProvider>
               <DrawContextProvider>
                 <MarkersContextProvider>
-                  <ParcellesContextProvider>
+                  <ParcellesContextProvider commune={pageProps.commune}>
                     <HelpContextProvider>
 
                       <Help />
