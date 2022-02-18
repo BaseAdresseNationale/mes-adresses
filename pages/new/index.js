@@ -63,7 +63,7 @@ function Index({defaultCommune, isDemo}) {
         <Pane display='flex' flex={1}>
           <Pane margin='auto' textAlign='center'>
             <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-            <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
+            <Button is='a' href='/new?demo=1'>Essayer l’outil</Button>
           </Pane>
         </Pane>
       )}
