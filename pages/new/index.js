@@ -1,6 +1,5 @@
 import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import Router from 'next/router'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 
 import {getCommune} from '../../lib/geo-api'
