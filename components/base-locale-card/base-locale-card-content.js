@@ -65,7 +65,7 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
                 <Tooltip content={tooltipContent}>
                   {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
                   <Pane>
-                    <Button disabled iconAfter={TrashIcon}>Supprimer</Button>
+                    <Button disabled iconAfter={TrashIcon}>Supprimer définitivement</Button>
                   </Pane>
                 </Tooltip>
               )
