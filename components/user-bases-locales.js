@@ -47,7 +47,7 @@ function UserBasesLocales() {
   }
 
   return (
-    basesLocales.length > 0 ? (
+    basesLocales.length > 0 || hiddenBal ? (
       <>
         <BasesLocalesList basesLocales={basesLocales} />
 
