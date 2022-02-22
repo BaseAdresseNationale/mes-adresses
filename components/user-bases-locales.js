@@ -53,23 +53,12 @@ function UserBasesLocales() {
   }
 
   return (
-    basesLocales.length > 0 || hiddenBal ? (
-      <>
+    <Pane display='flex' flexDirection='column' flex={1} justifyContent='center'>
+      {basesLocales.length > 0 ? (
         <BasesLocalesList basesLocales={basesLocales} />
-
-        {hiddenBal && Object.keys(hiddenBal).length > 0 && (
-          <HiddenBal />
-        )}
-
-        <Pane margin='auto' textAlign='center' marginTop={16}>
-          <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-          <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
-        </Pane>
-      </>
-    ) : (
-      <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' margin='auto'>
+      ) : (
         <Button
-          marginBottom={12}
+          margin='auto'
           height={40}
           appearance='primary'
           iconBefore={PlusIcon}
@@ -77,10 +66,17 @@ function UserBasesLocales() {
         >
           Créer une Base Adresse Locale
         </Button>
+      )}
+
+      {hiddenBal && Object.keys(hiddenBal).length > 0 && (
+        <HiddenBal />
+      )}
+
+      <Pane margin='auto' textAlign='center' marginTop={16}>
         <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
         <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
       </Pane>
-    )
+    </Pane>
   )
 }
 
