@@ -13,7 +13,7 @@ const CERTIFICATION_AUTO_KEY = 'certificationAutoAlert'
 const VISIBILITY_KEY = 'hidden-bal'
 
 export function LocalStorageContextProvider(props) {
-  const [balAccess, , getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY, {})
+  const [balAccess, , getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY) // Do not assign a default value
   const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY)
   const [recoveryEmailSent, setRecoveryEmailSent] = useLocalStorage(RECOVERY_EMAIL)
   const [informedAboutCertification, , getInformedAboutCertification, addInformedAboutCertification] = useLocalStorage(CERTIFICATION_AUTO_KEY)
