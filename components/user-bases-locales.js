@@ -18,24 +18,30 @@ function UserBasesLocales() {
 
   const getUserBals = useCallback(async () => {
     setIsLoading(true)
-    const balsToLoad = filter(Object.keys(balAccess), id => !getHiddenBal(id))
-    const basesLocales = await Promise.all(
-      map(balsToLoad, async id => {
-        try {
-          return await getBaseLocale(id, balAccess[id])
-        } catch {
-          console.log(`Impossible de récupérer la bal ${id}`)
-        }
-      }))
 
-    const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
+    if (balAccess) {
+      const balsToLoad = filter(Object.keys(balAccess), id => !getHiddenBal(id))
+      const basesLocales = await Promise.all(
+        map(balsToLoad, async id => {
+          const token = balAccess[id]
+          try {
+            return await getBaseLocale(id, token)
+          } catch {
+            console.log(`Impossible de récupérer la bal ${id}`)
+          }
+        }))
 
-    setBasesLocales(findedBasesLocales)
+      const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
+      setBasesLocales(findedBasesLocales)
+    }
+
     setIsLoading(false)
   }, [balAccess, getHiddenBal])
 
   useEffect(() => {
-    getUserBals()
+    if (balAccess !== undefined) {
+      getUserBals()
+    }
   }, [balAccess, getUserBals])
 
   if (balAccess === undefined || isLoading) {
