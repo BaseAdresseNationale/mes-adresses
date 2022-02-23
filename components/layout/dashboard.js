@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import Link from 'next/Link'
+import Link from 'next/link'
 import {Heading, Pane, Icon} from 'evergreen-ui'
 
 import Map from '../dashboard/map'

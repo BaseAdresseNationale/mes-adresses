@@ -1,6 +1,6 @@
 import {useState, useEffect, useContext, useCallback} from 'react'
 import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
-import Link from 'next/Link'
+import Link from 'next/link'
 import {map} from 'lodash'
 
 import {getBaseLocale} from '../lib/bal-api'
@@ -51,7 +51,9 @@ function UserBasesLocales() {
 
         <Pane margin='auto' textAlign='center'>
           <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-          <Button is='a' href='/new?demo=1'>Essayer l’outil</Button>
+          <Link href='/new?demo=1' passHref>
+            <Button is='a'>Essayer l’outil</Button>
+          </Link>
         </Pane>
       </>
     ) : (
@@ -68,7 +70,9 @@ function UserBasesLocales() {
           </Button>
         </Link>
         <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-        <Button is='a' href='/new?demo=1'>Essayer l’outil</Button>
+        <Link href='/new?demo=1' passHref>
+          <Button is='a'>Essayer l’outil</Button>
+        </Link>
       </Pane>
     )
   )

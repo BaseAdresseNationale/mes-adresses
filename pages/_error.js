@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, ErrorIcon, Alert, Text} from 'evergreen-ui'
 
 import Header from '../components/header'
-import Link from 'next/Link'
+import Link from 'next/link'
 
 import Custom404 from './404'
 

@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
-import Link from 'next/Link'
+import Link from 'next/link'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import BALRecovery from '../components/bal-recovery/bal-recovery'

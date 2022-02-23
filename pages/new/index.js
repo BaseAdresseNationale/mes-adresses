@@ -1,6 +1,7 @@
 import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
+import Link from 'next/link'
 
 import {getCommune} from '../../lib/geo-api'
 
@@ -62,7 +63,9 @@ function Index({defaultCommune, isDemo}) {
         <Pane display='flex' flex={1}>
           <Pane margin='auto' textAlign='center'>
             <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-            <Button is='a' href='/new?demo=1'>Essayer l’outil</Button>
+            <Link href='/new?demo=1' passHref>
+              <Button is='a' href='/new?demo=1'>Essayer l’outil</Button>
+            </Link>
           </Pane>
         </Pane>
       )}

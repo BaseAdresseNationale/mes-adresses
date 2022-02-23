@@ -1,5 +1,5 @@
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, RouteIcon} from 'evergreen-ui'
-import Link from 'next/Link'
+import Link from 'next/link'
 import Header from '../components/header'
 
 function Custom404() {
