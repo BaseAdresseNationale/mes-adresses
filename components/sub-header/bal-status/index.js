@@ -44,12 +44,14 @@ function BALStatus({baseLocale, commune, token, isRefrehSyncStat, handleChangeSt
             togglePause={baseLocale.sync.isPaused ? handleResumeSync : handlePause}
           />
         ) : (
-          <Publication
-            baseLocale={baseLocale}
-            status={baseLocale.status}
-            handleBackToDraft={() => handleChangeStatus('draft')}
-            onPublish={handleHabilitation}
-          />
+          baseLocale.status !== 'demo' && (
+            <Publication
+              baseLocale={baseLocale}
+              status={baseLocale.status}
+              handleBackToDraft={() => handleChangeStatus('draft')}
+              onPublish={handleHabilitation}
+            />
+          )
         )
       ) : (
         <Tooltip
