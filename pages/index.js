@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
-
+import Link from 'next/Link'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import BALRecovery from '../components/bal-recovery/bal-recovery'
@@ -20,11 +20,11 @@ function Index() {
       <Header />
       <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
         Mes Bases Adresse Locales
-        <link href='/new' passHref>
+        <Link href='/new' passHref>
           <Button iconBefore={PlusIcon} is='a'>
             Créer une Base Adresse Locale
           </Button>
-        </link>
+        </Link>
       </Heading>
 
       <UserBasesLocales />
