@@ -14,7 +14,7 @@ import Form from './form'
 import FormInput from './form-input'
 
 function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) {
-  const {voies, toponymes} = useContext(BalDataContext)
+  const {voies, toponymes, baseLocale} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -69,48 +69,35 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const handleConfirm = useCallback(async event => {
     event.preventDefault()
 
-    const data = {selectedVoieId, selectedToponymeId, numeros: selectedNumeros, positionType}
-    const body = data.numeros
-    const type = data.positionType
-
-    setIsLoading(true)
-
-    const commentCondition = r => {
+    const commentCondition = c => {
       if (removeAllComments) {
         return null
       }
 
-      if (comment === '') {
-        return r.comment || null
+      if (c) {
+        return c
       }
-
-      if (r.comment) {
-        return `${r.comment} , ${comment}`
-      }
-
-      return comment
     }
 
-    body.map(r => {
-      r.voie = selectedVoieId
-      r.toponyme = selectedToponymeId === '' ? null : selectedToponymeId || r.toponyme
-      r.positions.forEach(position => {
-        if (type) {
-          position.type = type
-        }
-      })
-
-      r.comment = commentCondition(r)
-
-      if (certifie !== null) {
-        r.certifie = certifie
+    const getCertifie = c => {
+      if (c !== null) {
+        return c
       }
+    }
 
-      return r
-    })
+    setIsLoading(true)
 
     try {
-      await onSubmit(body)
+      await onSubmit(baseLocale._id, {
+        numerosIds: selectedNumerosIds,
+        changes: {
+          voie: selectedVoieId,
+          [positionType === '' ? null : 'positionType']: positionType,
+          toponyme: selectedToponymeId === '' ? null : selectedToponymeId,
+          comment: commentCondition(comment),
+          certifie: getCertifie(certifie)
+        }
+      })
     } catch (error) {
       setError(error.message)
     }
@@ -118,7 +105,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     setIsLoading(false)
     setIsShown(false)
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, certifie, selectedToponymeId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
+  }, [comment, selectedVoieId, certifie, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds])
 
   useEffect(() => {
     if (!isShown) {

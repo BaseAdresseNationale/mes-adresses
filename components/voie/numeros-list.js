@@ -2,7 +2,7 @@ import {useState, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
 
-import {editNumero, removeNumero} from '../../lib/bal-api'
+import {batchNumeros, removeNumero} from '../../lib/bal-api'
 
 import TableRow from '../table-row'
 import DeleteWarning from '../delete-warning'
@@ -86,13 +86,9 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
     setIsRemoveWarningShown(false)
   }
 
-  const onMultipleEdit = async body => {
+  const onMultipleEdit = async (balId, body) => {
     try {
-      await Promise.all(body.map(async numero => {
-        await editNumero(numero._id, {
-          ...numero
-        }, token, true)
-      }))
+      await batchNumeros(balId, body, token)
 
       await reloadNumeros()
       refreshBALSync()
