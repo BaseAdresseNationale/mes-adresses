@@ -1,6 +1,6 @@
 import {useState, useEffect, useContext, useCallback} from 'react'
-import Router from 'next/router'
 import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
+import Link from 'next/link'
 import {map} from 'lodash'
 
 import {getBaseLocale} from '../lib/bal-api'
@@ -51,22 +51,28 @@ function UserBasesLocales() {
 
         <Pane margin='auto' textAlign='center'>
           <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-          <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
+          <Link href='/new?demo=1' passHref>
+            <Button is='a'>Essayer l’outil</Button>
+          </Link>
         </Pane>
       </>
     ) : (
       <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' margin='auto'>
-        <Button
-          marginBottom={12}
-          height={40}
-          appearance='primary'
-          iconBefore={PlusIcon}
-          onClick={() => Router.push('/new')}
-        >
-          Créer une Base Adresse Locale
-        </Button>
+        <Link href='/new' passHref>
+          <Button
+            marginBottom={12}
+            height={40}
+            appearance='primary'
+            iconBefore={PlusIcon}
+            is='a'
+          >
+            Créer une Base Adresse Locale
+          </Button>
+        </Link>
         <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-        <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
+        <Link href='/new?demo=1' passHref>
+          <Button is='a'>Essayer l’outil</Button>
+        </Link>
       </Pane>
     )
   )
