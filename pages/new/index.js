@@ -54,7 +54,9 @@ function Index({defaultCommune, isDemo}) {
 
         {balAccess && (
           <Pane marginLeft={16} marginY={8}>
-            <BackButton is='a' href='/'>Retour à la liste de mes Bases Adresses Locales</BackButton>
+            <Link href='/' passHref>
+              <BackButton is='a' >Retour à la liste de mes Bases Adresses Locales</BackButton>
+            </Link>
           </Pane>
         )}
       </Pane>
