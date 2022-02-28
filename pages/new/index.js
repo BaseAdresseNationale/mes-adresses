@@ -55,7 +55,7 @@ function Index({defaultCommune, isDemo}) {
         {balAccess && (
           <Pane marginLeft={16} marginY={8}>
             <Link href='/' passHref>
-              <BackButton is='a' >Retour à la liste de mes Bases Adresses Locales</BackButton>
+              <BackButton is='a'>Retour à la liste de mes Bases Adresses Locales</BackButton>
             </Link>
           </Pane>
         )}
@@ -66,7 +66,7 @@ function Index({defaultCommune, isDemo}) {
           <Pane margin='auto' textAlign='center'>
             <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
             <Link href='/new?demo=1' passHref>
-              <Button is='a' href='/new?demo=1'>Essayer l’outil</Button>
+              <Button is='a'>Essayer l’outil</Button>
             </Link>
           </Pane>
         </Pane>
