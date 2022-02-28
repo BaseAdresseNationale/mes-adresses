@@ -1,7 +1,7 @@
 import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import Router from 'next/router'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
+import Link from 'next/link'
 
 import {getCommune} from '../../lib/geo-api'
 
@@ -54,7 +54,9 @@ function Index({defaultCommune, isDemo}) {
 
         {balAccess && (
           <Pane marginLeft={16} marginY={8}>
-            <BackButton is='a' href='/'>Retour à la liste de mes Bases Adresses Locales</BackButton>
+            <Link href='/' passHref>
+              <BackButton is='a'>Retour à la liste de mes Bases Adresses Locales</BackButton>
+            </Link>
           </Pane>
         )}
       </Pane>
@@ -63,7 +65,9 @@ function Index({defaultCommune, isDemo}) {
         <Pane display='flex' flex={1}>
           <Pane margin='auto' textAlign='center'>
             <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-            <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
+            <Link href='/new?demo=1' passHref>
+              <Button is='a'>Essayer l’outil</Button>
+            </Link>
           </Pane>
         </Pane>
       )}

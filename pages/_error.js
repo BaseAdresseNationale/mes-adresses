@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, ErrorIcon, Alert, Text} from 'evergreen-ui'
 
 import Header from '../components/header'
+import Link from 'next/link'
 
 import Custom404 from './404'
 
 function CustomError({statusCode}) {
-  const router = useRouter()
-
   if (statusCode === 404) {
     return <Custom404 />
   }
@@ -30,10 +28,11 @@ function CustomError({statusCode}) {
             Si vous rencontrez cette page, merci de le signaler à notre support à l’adresse courriel : <a href={`mailto:adresse@data.gouv.fr?subject=Une erreur est survenue - code ${statusCode}`}>adresse@data.gouv.fr</a>. Nous vous prions de bien vouloir nous excuser pour la gêne occasionnée.
           </Text>
         </Alert>
-
-        <Button iconBefore={ArrowLeftIcon} onClick={() => router.push('/')}>
-          Retour à la page d’accueil
-        </Button>
+        <Link href='/' passHref>
+          <Button iconBefore={ArrowLeftIcon} is='a'>
+            Retour à la page d’accueil
+          </Button>
+        </Link>
       </Pane>
     </Pane>
   )
