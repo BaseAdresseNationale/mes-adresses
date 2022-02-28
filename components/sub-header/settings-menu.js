@@ -1,6 +1,5 @@
 import {useContext} from 'react'
 import PropTypes from 'prop-types'
-import NextLink from 'next/link'
 import {Popover, Menu, Position, Button, CogIcon, DownloadIcon} from 'evergreen-ui'
 
 import SettingsContext from '../../contexts/settings'
@@ -29,11 +28,9 @@ function SettingsMenu({isAdmin, csvUrl}) {
       content={
         <Menu>
           <Menu.Group>
-            <NextLink href={csvUrl}>
-              <Menu.Item icon={DownloadIcon} is='a' href={csvUrl} color='inherit' textDecoration='none'>
-                Télécharger au format CSV
-              </Menu.Item>
-            </NextLink>
+            <Menu.Item icon={DownloadIcon} is='a' href={csvUrl} color='inherit' textDecoration='none'>
+              Télécharger au format CSV
+            </Menu.Item>
           </Menu.Group>
           {isAdmin && (
             <>
