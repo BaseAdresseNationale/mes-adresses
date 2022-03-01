@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
 import {Paragraph, Heading, Alert} from 'evergreen-ui'
 
+import {colors} from '../../lib/colors'
+
 const defaultViewport = {
   latitude: 46.9,
   longitude: 1.7,
@@ -28,11 +30,27 @@ function Map({departement, basesLocales}) {
   const mapRef = useRef()
 
   const balLayer = {
-    type: 'line',
-    'source-layer': 'contours-bal',
+    type: 'fill',
+    'source-layer': 'communes',
     paint: {
-      'line-color': '#877b59',
-      'line-opacity': 1,
+      'fill-color': [
+        'case',
+        ['==', ['get', 'maxStatus'], 'published'],
+        colors.green,
+        ['==', ['get', 'maxStatus'], 'replaced'],
+        colors.red,
+        ['==', ['get', 'maxStatus'], 'ready-to-publish'],
+        colors.blue,
+        ['==', ['get', 'maxStatus'], 'draft'],
+        colors.neutral,
+        '#696f8c'
+      ],
+      'fill-opacity': [
+        'case',
+        ['==', ['get', 'code'], hoveredId ? hoveredId : null],
+        1,
+        0.8
+      ],
     }
   }
 
@@ -51,7 +69,8 @@ function Map({departement, basesLocales}) {
         0.3
       ],
       'fill-outline-color': '#000'
-    }
+    },
+    filter: ['!=', 'code', selectedDepartement]
   }
 
   const handleResize = useCallback(() => {
@@ -232,19 +251,14 @@ function Map({departement, basesLocales}) {
         </Source>
 
         <Source
-          id='contours-bal'
+          id='bal'
           type='vector'
           format='pbf'
           tiles={['http://localhost:5000/v1/stats/couverture-tiles/{z}/{x}/{y}.pbf']}
           minzoom={6}
           maxzoom={14}
         >
-          <Layer
-            {...balLayer}
-            id='contours-bal-lines'
-            source='contours-bal'
-            beforeId='place-town'
-          />
+          <Layer id='bal-fill' {...balLayer} />
         </Source>
 
         {hovered && hovered.feature.properties.maxStatus && viewport.zoom > 5 && (
