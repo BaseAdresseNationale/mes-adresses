@@ -1,5 +1,5 @@
-import {useState, useRef, useEffect, useCallback} from 'react'
-import Router from 'next/router'
+import {useState, useRef, useEffect} from 'react'
+import {useRouter} from 'next/router'
 import PropTypes from 'prop-types'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
 import {Paragraph, Heading, Alert} from 'evergreen-ui'
@@ -25,8 +25,10 @@ function Map({departement, basesLocales}) {
   const [isTouchScreenDevice, setIsTouchScreenDevice] = useState(false)
   const [isDragPanEnabled, setIsDragPanEnabled] = useState(false)
   const [hoveredCommune, setHoveredCommune] = useState(null)
-  const [selectedDepartement, setSelectedDepartement] = useState(null)
   const [geoData, setGeoData] = useState(defaultGeoData)
+
+  const router = useRouter()
+
   const mapRef = useRef()
 
   const balLayer = {
@@ -62,7 +64,7 @@ function Map({departement, basesLocales}) {
       'fill-color': '#ffffff',
       'fill-opacity': [
         'case',
-        ['==', ['get', 'code'], selectedDepartement ? selectedDepartement : null],
+        ['==', ['get', 'code'], departement ? departement : null],
         0.5,
         ['==', ['get', 'code'], hoveredId ? hoveredId : null],
         0.8,
@@ -70,24 +72,10 @@ function Map({departement, basesLocales}) {
       ],
       'fill-outline-color': '#000'
     },
-    filter: ['!=', 'code', selectedDepartement]
+    filter: ['!=', 'code', departement || '']
   }
 
-  const handleResize = useCallback(() => {
-    if (mapRef && mapRef.current) {
-      const width = mapRef.current.offsetWidth
-      const height = mapRef.current.offsetHeight
-
-      const {bbox} = geoData
-      const padding = width > 50 && height > 50 ? 20 : 0
-      const viewport = new WebMercatorViewport({width, height})
-        .fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], {padding})
-
-      setViewport(viewport)
-    }
-  }, [geoData])
-
-  const onHover = useCallback(event => {
+  const onHover = event => {
     if (event.features && event.features.length > 0) {
       const feature = event.features[0]
       const nextHoveredId = feature.properties.code
@@ -106,38 +94,36 @@ function Map({departement, basesLocales}) {
         setHoveredId(nextHoveredId)
       }
     }
-  }, [basesLocales, hoveredId])
+  }
 
-  const onLeave = useCallback(() => {
+  const onLeave = () => {
     if (hoveredId) {
       setHoveredId(null)
     }
-  }, [hoveredId])
+  }
 
-  const onWheel = useCallback(event => {
+  const onWheel = event => {
     event.stopPropagation()
     if (isZoomActivated) {
       setWarningZoom(false)
     } else {
       setWarningZoom(true)
     }
-  }, [isZoomActivated])
+  }
 
-  const onDepartementSelect = useCallback(codeDepartement => {
-    const as = `/dashboard/departement/${codeDepartement}`
-
-    Router.push({
+  const onDepartementSelect = codeDepartement => {
+    router.push({
       pathname: '/dashboard/departement',
       query: {codeDepartement}
-    }, as)
-  }, [])
+    }, `/dashboard/departement/${codeDepartement}`)
+  }
 
-  const handleDoubleClick = useCallback(event => {
+  const handleDoubleClick = event => {
     event.stopPropagation()
     setIsZoomActivated(!isZoomActivated)
-  }, [isZoomActivated])
+  }
 
-  const handleClick = useCallback(event => {
+  const handleClick = event => {
     event.stopPropagation()
     const departementsSourceLayer = event.features.find(({sourceLayer}) => sourceLayer === 'departements')
 
@@ -146,17 +132,7 @@ function Map({departement, basesLocales}) {
 
       onDepartementSelect(code)
     }
-  }, [onDepartementSelect])
-
-  const handleMobileTouch = useCallback(event => {
-    event.stopPropagation()
-    const {touches} = event
-    if (touches.length > 1) {
-      setIsDragPanEnabled(true)
-    } else {
-      setIsDragPanEnabled(false)
-    }
-  }, [])
+  }
 
   useEffect(() => {
     const getGeoData = async location => {
@@ -173,34 +149,6 @@ function Map({departement, basesLocales}) {
   }, [departement])
 
   useEffect(() => {
-    if (departement) {
-      setSelectedDepartement(departement)
-    }
-  }, [departement])
-
-  useEffect(() => {
-    setIsTouchScreenDevice('ontouchstart' in document.documentElement)
-  }, [])
-
-  useEffect(() => {
-    handleResize()
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [handleResize])
-
-  useEffect(() => {
-    const map = mapRef.current
-    map.addEventListener('touchmove', handleMobileTouch)
-
-    return () => {
-      map.addEventListener('touchmove', handleMobileTouch)
-    }
-  }, [handleMobileTouch])
-
-  useEffect(() => {
     if (warningZoom) {
       const timer = setTimeout(() => setWarningZoom(false), 2000)
       return () => {
@@ -208,6 +156,44 @@ function Map({departement, basesLocales}) {
       }
     }
   }, [warningZoom])
+
+  useEffect(() => {
+    const map = mapRef.current
+
+    const handleMobileTouch = event => {
+      event.stopPropagation()
+      const {touches} = event
+      if (touches.length > 1) {
+        setIsDragPanEnabled(true)
+      } else {
+        setIsDragPanEnabled(false)
+      }
+    }
+
+    const handleResize = () => {
+      if (mapRef && mapRef.current) {
+        const width = mapRef.current.offsetWidth
+        const height = mapRef.current.offsetHeight
+
+        const {bbox} = geoData
+        const padding = width > 50 && height > 50 ? 20 : 0
+        const viewport = new WebMercatorViewport({width, height})
+          .fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], {padding})
+
+        setViewport(viewport)
+      }
+    }
+
+    setIsTouchScreenDevice('ontouchstart' in document.documentElement)
+
+    map.addEventListener('touchmove', handleMobileTouch)
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      map.addEventListener('touchmove', handleMobileTouch)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div ref={mapRef} className='map-container'>
