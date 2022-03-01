@@ -1,7 +1,7 @@
 import {useState, useEffect, useContext, useCallback} from 'react'
-import Router from 'next/router'
-import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
+import Link from 'next/link'
 import {map, filter} from 'lodash'
+import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
 
 import {getBaseLocale} from '../lib/bal-api'
 
@@ -57,15 +57,17 @@ function UserBasesLocales() {
       {basesLocales.length > 0 ? (
         <BasesLocalesList basesLocales={basesLocales} />
       ) : (
-        <Button
-          margin='auto'
-          height={40}
-          appearance='primary'
-          iconBefore={PlusIcon}
-          onClick={() => Router.push('/new')}
-        >
-          Créer une Base Adresse Locale
-        </Button>
+        <Link href='/new' passHref>
+          <Button
+            margin='auto'
+            height={40}
+            appearance='primary'
+            iconBefore={PlusIcon}
+            is='a'
+          >
+            Créer une Base Adresse Locale
+          </Button>
+        </Link>
       )}
 
       {hiddenBal && Object.keys(hiddenBal).length > 0 && (
@@ -74,7 +76,9 @@ function UserBasesLocales() {
 
       <Pane margin='auto' textAlign='center' marginTop={16}>
         <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-        <Button onClick={() => Router.push('/new?demo=1')}>Essayer l’outil</Button>
+        <Link href='/new?demo=1' passHref>
+          <Button is='a'>Essayer l’outil</Button>
+        </Link>
       </Pane>
     </Pane>
   )

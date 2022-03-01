@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import Router from 'next/router'
+import Link from 'next/link'
 import {Heading, Pane, Icon} from 'evergreen-ui'
 
 import Map from '../dashboard/map'
@@ -24,20 +24,22 @@ function BackButton() {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <Heading
-      textAlign='center'
-      cursor='pointer'
-      size={500}
-      margin={0}
-      padding='1em'
-      color='#fff'
-      backgroundColor={isHovered ? '#66788a' : '#435a6f'}
-      onClick={() => Router.push('/dashboard')}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <Icon icon='arrow-left' style={{verticalAlign: 'middle'}} marginRight={4} /> Retour France métropolitaine
-    </Heading>
+    <Link href='/dashboard' passHref>
+      <Heading
+        textAlign='center'
+        cursor='pointer'
+        size={500}
+        margin={0}
+        padding='1em'
+        color='#fff'
+        backgroundColor={isHovered ? '#66788a' : '#435a6f'}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        is='a'
+      >
+        <Icon icon='arrow-left' style={{verticalAlign: 'middle'}} marginRight={4} /> Retour France métropolitaine
+      </Heading>
+    </Link>
   )
 }
 

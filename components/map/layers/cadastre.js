@@ -1,4 +1,4 @@
-export const cadastreLayers = parcelles => [{
+export const cadastreLayers = (parcelles, codeCommune) => [{
   id: 'batiments-fill',
   type: 'fill',
   source: 'cadastre',
@@ -25,6 +25,7 @@ export const cadastreLayers = parcelles => [{
   type: 'line',
   source: 'cadastre',
   'source-layer': 'parcelles',
+  filter: ['match', ['get', 'commune'], codeCommune, true, false],
   minzoom: 16,
   maxzoom: 24,
   layout: {
@@ -52,6 +53,7 @@ export const cadastreLayers = parcelles => [{
   type: 'fill',
   source: 'cadastre',
   'source-layer': 'parcelles',
+  filter: ['match', ['get', 'commune'], codeCommune, true, false],
   paint: {
     'fill-color': 'rgba(129, 123, 0, 1)',
     'fill-opacity': [
