@@ -200,6 +200,8 @@ function Map({departement, basesLocales}) {
         dragPan={!isTouchScreenDevice || isDragPanEnabled}
         width='100%'
         height='100%'
+        minZoom={4}
+        maxZoom={14}
         doubleClickZoom={false}
         scrollZoom={isZoomActivated}
         mapStyle='https://etalab-tiles.fr/styles/osm-bright/style.json'
@@ -237,8 +239,6 @@ function Map({departement, basesLocales}) {
           type='vector'
           format='pbf'
           tiles={['http://localhost:5000/v1/stats/couverture-tiles/{z}/{x}/{y}.pbf']}
-          minzoom={6}
-          maxzoom={14}
         >
           <Layer id='bal-fill' {...balLayer} />
         </Source>
