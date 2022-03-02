@@ -38,7 +38,7 @@ function BALCreationChart({basesLocales}) {
       backgroundColor: colors.green
     },
     {
-      label: 'Remplacée',
+      label: 'Remplacées',
       data: sumByStatus('replaced'),
       backgroundColor: colors.red
     },
