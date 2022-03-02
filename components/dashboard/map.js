@@ -221,7 +221,6 @@ function Map({departement, basesLocales}) {
             />
           </div>
         )}
-
         <Source
           id='decoupage-administratif'
           type='vector'
@@ -240,7 +239,7 @@ function Map({departement, basesLocales}) {
           format='pbf'
           tiles={['http://localhost:5000/v1/stats/couverture-tiles/{z}/{x}/{y}.pbf']}
         >
-          <Layer id='bal-fill' {...balLayer} />
+          <Layer id='bal-fill' {...balLayer} beforeId='departements-fill' />
         </Source>
 
         {hovered && hovered.feature.properties.maxStatus && viewport.zoom > 5 && (
