@@ -160,6 +160,12 @@ function App({error, Component, pageProps, query}) {
           </BalDataContextProvider>
         </TokenContextProvider>
       </LocalStorageContextProvider>
+      {/*⚠️ This is needed to expand Evergreen’Tootip width*/}
+      <style jsx global>{`
+        div[id^="evergreen-tooltip"].ub-max-w_240px.ub-bg-clr_white.ub-box-szg_border-box {
+          max-width: fit-content;
+        }
+      `}</style>
     </>
   )
 }
