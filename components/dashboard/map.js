@@ -237,7 +237,7 @@ function Map({departement, basesLocales}) {
           id='bal'
           type='vector'
           format='pbf'
-          tiles={['http://localhost:5000/v1/stats/couverture-tiles/{z}/{x}/{y}.pbf']}
+          tiles={['https://api-bal.adresse.data.gouv.fr/v1/stats/couverture-tiles/{z}/{x}/{y}.pbf']}
         >
           <Layer id='bal-fill' {...balLayer} beforeId='departements-fill' />
         </Source>
