@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react'
+import {useState, useCallback, useRef, useEffect} from 'react'
 import {useRouter} from 'next/router'
 import PropTypes from 'prop-types'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
@@ -12,9 +12,7 @@ const defaultViewport = {
   zoom: 4
 }
 
-const defaultGeoData = {
-  bbox: [-5.317, 41.277, 9.689, 51.234]
-}
+const defaultBbox = [-5.317, 41.277, 9.689, 51.234]
 
 function Map({departement, basesLocales}) {
   const [viewport, setViewport] = useState(defaultViewport)
@@ -25,7 +23,6 @@ function Map({departement, basesLocales}) {
   const [isTouchScreenDevice, setIsTouchScreenDevice] = useState(false)
   const [isDragPanEnabled, setIsDragPanEnabled] = useState(false)
   const [hoveredCommune, setHoveredCommune] = useState(null)
-  const [geoData, setGeoData] = useState(defaultGeoData)
 
   const router = useRouter()
 
@@ -134,19 +131,33 @@ function Map({departement, basesLocales}) {
     }
   }
 
+  const handleResize = useCallback((bbox = defaultBbox) => {
+    if (mapRef && mapRef.current) {
+      const width = mapRef.current.offsetWidth
+      const height = mapRef.current.offsetHeight
+
+      const padding = width > 50 && height > 50 ? 20 : 0
+      const viewport = new WebMercatorViewport({width, height})
+        .fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], {padding})
+
+      setViewport(viewport)
+    }
+  }, [mapRef])
+
   useEffect(() => {
     const getGeoData = async location => {
       const fetchGeoData = await fetch(`/geo/${location}`)
-      const response = await fetchGeoData.json()
-      setGeoData(response)
+      const {bbox} = await fetchGeoData.json()
+
+      handleResize(bbox)
     }
 
     if (departement) {
       getGeoData(`DEP-${departement}`)
     } else {
-      setGeoData(defaultGeoData)
+      handleResize(defaultBbox)
     }
-  }, [departement])
+  }, [departement, handleResize])
 
   useEffect(() => {
     if (warningZoom) {
@@ -167,20 +178,6 @@ function Map({departement, basesLocales}) {
         setIsDragPanEnabled(true)
       } else {
         setIsDragPanEnabled(false)
-      }
-    }
-
-    const handleResize = () => {
-      if (mapRef && mapRef.current) {
-        const width = mapRef.current.offsetWidth
-        const height = mapRef.current.offsetHeight
-
-        const {bbox} = geoData
-        const padding = width > 50 && height > 50 ? 20 : 0
-        const viewport = new WebMercatorViewport({width, height})
-          .fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], {padding})
-
-        setViewport(viewport)
       }
     }
 
@@ -230,7 +227,6 @@ function Map({departement, basesLocales}) {
         >
           <Layer
             {...departementsLayer}
-            id='decoupage-departement-fills'
             source='decoupage-administratif'
             beforeId='place-town'
           />
