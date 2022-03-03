@@ -38,6 +38,11 @@ function BALCreationChart({basesLocales}) {
       backgroundColor: colors.green
     },
     {
+      label: 'Remplacées',
+      data: sumByStatus('replaced'),
+      backgroundColor: colors.red
+    },
+    {
       label: 'Prêtes à être publiées',
       data: sumByStatus('ready-to-publish'),
       backgroundColor: colors.blue
