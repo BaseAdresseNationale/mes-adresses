@@ -7,7 +7,7 @@ import {editToponyme} from '../../lib/bal-api'
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
 
-import ToponymeEditor from '../../components/bal/toponyme-editor'
+import ToponymeEditor from '../bal/toponyme-editor'
 
 function ToponymeHeading({defaultToponyme}) {
   const [toponyme, setToponyme] = useState(defaultToponyme)

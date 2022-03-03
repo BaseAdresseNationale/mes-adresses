@@ -13,8 +13,7 @@ import useFuse from '../../hooks/fuse'
 import NumeroEditor from '../../components/bal/numero-editor'
 import ToponymeNumeros from '../../components/toponyme/toponyme-numeros'
 import AddNumeros from '../../components/toponyme/add-numeros'
-
-import ToponymeHeading from './toponyme-heading'
+import ToponymeHeading from '../../components/toponyme/toponyme-heading'
 
 function Toponyme({commune, toponyme, defaultNumeros}) {
   const [isEdited, setEdited] = useState(false)

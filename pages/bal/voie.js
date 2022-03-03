@@ -10,9 +10,8 @@ import BalDataContext from '../../contexts/bal-data'
 import useHelp from '../../hooks/help'
 
 import NumeroEditor from '../../components/bal/numero-editor'
-
-import VoieHeading from './voie-heading'
-import NumerosList from './voie/numeros-list'
+import VoieHeading from '../../components/voie/voie-heading'
+import NumerosList from '../../components/voie/numeros-list'
 
 const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
