@@ -6,6 +6,8 @@ import {Paragraph, Heading, Alert} from 'evergreen-ui'
 
 import {colors} from '../../lib/colors'
 
+const BAL_API_URL = process.env.NEXT_PUBLIC_BAL_API_URL || 'https://api-bal.adresse.data.gouv.fr/v1'
+
 const defaultViewport = {
   latitude: 46.9,
   longitude: 1.7,
@@ -237,7 +239,7 @@ function Map({departement, basesLocales}) {
           id='bal'
           type='vector'
           format='pbf'
-          tiles={['https://api-bal.adresse.data.gouv.fr/v1/stats/couverture-tiles/{z}/{x}/{y}.pbf']}
+          tiles={[`${BAL_API_URL}/stats/couverture-tiles/{z}/{x}/{y}.pbf`]}
         >
           <Layer id='bal-fill' {...balLayer} beforeId='departements-fill' />
         </Source>
