@@ -10,9 +10,9 @@ import {createBaseLocale, addCommune, populateCommune, searchBAL} from '../../li
 import useFocus from '../../hooks/focus'
 import {useInput, useCheckboxInput} from '../../hooks/input'
 
-import Form from '../../components/form'
-import FormInput from '../../components/form-input'
-import {CommuneSearchField} from '../../components/commune-search'
+import Form from '../form'
+import FormInput from '../form-input'
+import {CommuneSearchField} from '../commune-search'
 import AlertPublishedBAL from './alert-published-bal'
 
 function CreateForm({defaultCommune}) {

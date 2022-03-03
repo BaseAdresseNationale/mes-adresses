@@ -11,10 +11,10 @@ import LocalStorageContext from '../../contexts/local-storage'
 import useFocus from '../../hooks/focus'
 import {useInput} from '../../hooks/input'
 
-import Form from '../../components/form'
-import FormInput from '../../components/form-input'
-import Uploader from '../../components/uploader'
-import SelectCommune from '../../components/select-commune'
+import Form from '../form'
+import FormInput from '../form-input'
+import Uploader from '../uploader'
+import SelectCommune from '../select-commune'
 
 import AlertPublishedBAL from './alert-published-bal'
 
@@ -288,9 +288,5 @@ function UploadForm() {
     </>
   )
 }
-
-UploadForm.getInitialProps = () => ({
-  layout: 'fullscreen'
-})
 
 export default UploadForm
