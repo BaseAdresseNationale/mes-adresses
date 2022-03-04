@@ -16,11 +16,15 @@ import DeleteWarning from '../delete-warning'
 import BaseLocaleCard from '../base-locale-card'
 
 function BasesLocalesList({basesLocales, sortBal}) {
-  const {removeBAL} = useContext(LocalStorageContext)
+  const {removeBAL, getHiddenBal, addHiddenBal} = useContext(LocalStorageContext)
 
   const [toRemove, setToRemove] = useState(null)
 
   const [setError] = useError(null)
+
+  const isHidden = useCallback(balId => {
+    return getHiddenBal(balId)
+  }, [getHiddenBal])
 
   const onBalSelect = useCallback(bal => {
     if (bal.communes.length === 1) {
@@ -57,6 +61,12 @@ function BasesLocalesList({basesLocales, sortBal}) {
     setToRemove(balId)
   }, [])
 
+  const handleHide = useCallback((e, balId) => {
+    e.stopPropagation()
+
+    addHiddenBal(balId, true)
+  }, [addHiddenBal])
+
   return (
     basesLocales.length > 0 && (
       <Pane borderTop>
@@ -87,7 +97,7 @@ function BasesLocalesList({basesLocales, sortBal}) {
             </Table.Row>
           )}
           <Table.Body background='tint1'>
-            {sortBal(filtered).map(bal => (
+            {sortBal(filtered).filter(({_id}) => Boolean(!isHidden(_id))).map(bal => (
               <BaseLocaleCard
                 key={bal._id}
                 isAdmin
@@ -95,6 +105,7 @@ function BasesLocalesList({basesLocales, sortBal}) {
                 isDefaultOpen={basesLocales.length === 1}
                 onSelect={() => onBalSelect(bal)}
                 onRemove={e => handleRemove(e, bal._id)}
+                onHide={e => handleHide(e, bal._id)}
               />
             ))}
           </Table.Body>

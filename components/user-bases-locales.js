@@ -1,39 +1,47 @@
 import {useState, useEffect, useContext, useCallback} from 'react'
-import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
 import Link from 'next/link'
-import {map} from 'lodash'
+import {map, filter} from 'lodash'
+import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
 
 import {getBaseLocale} from '../lib/bal-api'
 
 import LocalStorageContext from '../contexts/local-storage'
 
+import HiddenBal from '../components/hidden-bal'
 import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {
-  const {balAccess} = useContext(LocalStorageContext)
+  const {balAccess, hiddenBal, getHiddenBal} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(true)
   const [basesLocales, setBasesLocales] = useState([])
 
   const getUserBals = useCallback(async () => {
     setIsLoading(true)
-    const basesLocales = await Promise.all(
-      map(balAccess, async (token, id) => {
-        try {
-          return await getBaseLocale(id, token)
-        } catch {
-          console.log(`Impossible de récupérer la bal ${id}`)
-        }
-      }))
 
-    const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
+    if (balAccess) {
+      const balsToLoad = filter(Object.keys(balAccess), id => !getHiddenBal(id))
+      const basesLocales = await Promise.all(
+        map(balsToLoad, async id => {
+          const token = balAccess[id]
+          try {
+            return await getBaseLocale(id, token)
+          } catch {
+            console.log(`Impossible de récupérer la bal ${id}`)
+          }
+        }))
 
-    setBasesLocales(findedBasesLocales)
+      const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
+      setBasesLocales(findedBasesLocales)
+    }
+
     setIsLoading(false)
-  }, [balAccess])
+  }, [balAccess, getHiddenBal])
 
   useEffect(() => {
-    getUserBals()
+    if (balAccess !== undefined) {
+      getUserBals()
+    }
   }, [balAccess, getUserBals])
 
   if (balAccess === undefined || isLoading) {
@@ -45,22 +53,13 @@ function UserBasesLocales() {
   }
 
   return (
-    basesLocales.length > 0 ? (
-      <>
+    <Pane display='flex' flexDirection='column' flex={1} justifyContent='center'>
+      {basesLocales.length > 0 ? (
         <BasesLocalesList basesLocales={basesLocales} />
-
-        <Pane margin='auto' textAlign='center'>
-          <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-          <Link href='/new?demo=1' passHref>
-            <Button is='a'>Essayer l’outil</Button>
-          </Link>
-        </Pane>
-      </>
-    ) : (
-      <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' margin='auto'>
+      ) : (
         <Link href='/new' passHref>
           <Button
-            marginBottom={12}
+            margin='auto'
             height={40}
             appearance='primary'
             iconBefore={PlusIcon}
@@ -69,12 +68,19 @@ function UserBasesLocales() {
             Créer une Base Adresse Locale
           </Button>
         </Link>
+      )}
+
+      {hiddenBal && Object.keys(hiddenBal).length > 0 && (
+        <HiddenBal />
+      )}
+
+      <Pane margin='auto' textAlign='center' marginTop={16}>
         <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
         <Link href='/new?demo=1' passHref>
           <Button is='a'>Essayer l’outil</Button>
         </Link>
       </Pane>
-    )
+    </Pane>
   )
 }
 

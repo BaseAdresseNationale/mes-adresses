@@ -2,13 +2,13 @@ import {useState, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon} from 'evergreen-ui'
+import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
 
 import LocalStorageContext from '../../contexts/local-storage'
 
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 
-function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove}) {
+function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove, onHide}) {
   const {status, _created, emails} = baseLocale
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
 
@@ -57,21 +57,33 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
 
       {isAdmin ? (
         <Pane borderTop display='flex' justifyContent='space-between' paddingTop='1em' marginTop='1em'>
-          {hasToken && (
-            isDeletable ? (
-              <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer</Button>
-            ) : (
-              <Tooltip content={tooltipContent}>
-                {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
-                <Pane>
-                  <Button disabled iconAfter={TrashIcon}>Supprimer</Button>
-                </Pane>
-              </Tooltip>
-            )
-          )}
+          <Pane display='flex' flexFlow='wrap' gap={8}>
+            {hasToken && (
+              isDeletable ? (
+                <Button iconAfter={TrashIcon} intent='danger' disabled={!onRemove} onClick={onRemove}>Supprimer définitivement</Button>
+              ) : (
+                <Tooltip content={tooltipContent}>
+                  {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
+                  <Pane>
+                    <Button disabled iconAfter={TrashIcon}>Supprimer définitivement</Button>
+                  </Pane>
+                </Tooltip>
+              )
+            )}
+
+            {onHide && <Button iconAfter={EyeOffIcon} onClick={onHide}>Masquer de la liste</Button>}
+          </Pane>
 
           {hasToken ? (
-            <Button appearance='primary' iconAfter={EditIcon} marginRight='8px' onClick={onSelect}>Gérer les adresses</Button>
+            <Button
+              appearance='primary'
+              iconAfter={EditIcon}
+              marginRight='8px'
+              onClick={onSelect}
+              disabled={!onSelect}
+            >
+              Gérer les adresses
+            </Button>
           ) : (
             <>
               <RecoverBALAlert
@@ -95,7 +107,9 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
 BaseLocaleCardContent.defaultProps = {
   isAdmin: false,
   userEmail: null,
-  onRemove: null
+  onRemove: null,
+  onHide: null,
+  onSelect: null
 }
 
 BaseLocaleCardContent.propTypes = {
@@ -109,7 +123,8 @@ BaseLocaleCardContent.propTypes = {
   }).isRequired,
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
-  onSelect: PropTypes.func.isRequired,
+  onSelect: PropTypes.func,
+  onHide: PropTypes.func,
   onRemove: PropTypes.func
 }
 
