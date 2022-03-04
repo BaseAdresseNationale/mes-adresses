@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Pane} from 'evergreen-ui'
+import {Heading, Pane, Button} from 'evergreen-ui'
 import {uniq, flattenDeep} from 'lodash'
 
 import {getBasesLocalesStats, listBasesLocales} from '../lib/bal-api'
@@ -9,7 +9,6 @@ import DashboardLayout from '../components/layout/dashboard'
 import BALCreationChart from '../components/dashboard/bal-creation-chart'
 import BALCounterChart from '../components/dashboard/bal-counter-chart'
 import Counter from '../components/dashboard/counter'
-import Redirection from './dashboard/redirection'
 import PublishedBalStats from '../components/dashboard/published-bal-stats'
 
 function Index({basesLocales, basesLoclesStats}) {
@@ -28,7 +27,13 @@ function Index({basesLocales, basesLoclesStats}) {
 
         <BALCounterChart basesLocales={basesLocales} />
         <BALCreationChart basesLocales={basesLocales} />
-        <Redirection />
+
+        <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' padding={20} >
+          <Heading marginBottom={15}>Vous voulez avoir une vue d&apos;ensemble de toutes les BAL publiées, y compris sur d&apos;autres outils ?</Heading>
+          <Button appearance='primary' is='a' height={30} href='https://adresse.data.gouv.fr/bases-locales#map-stat' target='_blank' fontSize='0.8em'>
+            État du déploiement des Bases Adresses Locales
+          </Button>
+        </Pane>
       </Pane>
     </DashboardLayout>
   )

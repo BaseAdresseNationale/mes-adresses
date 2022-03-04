@@ -7,7 +7,7 @@ import {editVoie} from '../../lib/bal-api'
 import TokenContext from '../../contexts/token'
 import BalDataContext from '../../contexts/bal-data'
 
-import VoieEditor from '../../components/bal/voie-editor'
+import VoieEditor from '../bal/voie-editor'
 
 function VoieHeading({defaultVoie}) {
   const [editedVoie, setEditedVoie] = useState(defaultVoie)
