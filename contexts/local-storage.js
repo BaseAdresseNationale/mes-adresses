@@ -10,12 +10,14 @@ const STORAGE_KEY = 'bal-access'
 const WELCOMED_KEY = 'was-welcomed'
 const RECOVERY_EMAIL = 'recovery-email-sent'
 const CERTIFICATION_AUTO_KEY = 'certificationAutoAlert'
+const VISIBILITY_KEY = 'hidden-bal'
 
 export function LocalStorageContextProvider(props) {
-  const [balAccess, , getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY)
+  const [balAccess, , getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY) // Do not assign a default value
   const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY)
   const [recoveryEmailSent, setRecoveryEmailSent] = useLocalStorage(RECOVERY_EMAIL)
   const [informedAboutCertification, , getInformedAboutCertification, addInformedAboutCertification] = useLocalStorage(CERTIFICATION_AUTO_KEY)
+  const [hiddenBal, setHiddenBal, getHiddenBal, addHiddenBal, removeHiddenBal] = useLocalStorage(VISIBILITY_KEY)
 
   const removeBAL = useCallback(async balId => {
     const token = getBalToken(balId)
@@ -27,7 +29,8 @@ export function LocalStorageContextProvider(props) {
     balAccess, getBalToken, addBalAccess, removeBAL,
     wasWelcomed, setWasWelcomed,
     recoveryEmailSent, setRecoveryEmailSent,
-    informedAboutCertification, getInformedAboutCertification, addInformedAboutCertification
+    informedAboutCertification, getInformedAboutCertification, addInformedAboutCertification,
+    hiddenBal, setHiddenBal, getHiddenBal, addHiddenBal, removeHiddenBal
   }), [
     balAccess,
     getBalToken,
@@ -39,7 +42,12 @@ export function LocalStorageContextProvider(props) {
     setRecoveryEmailSent,
     informedAboutCertification,
     getInformedAboutCertification,
-    addInformedAboutCertification
+    addInformedAboutCertification,
+    hiddenBal,
+    setHiddenBal,
+    getHiddenBal,
+    addHiddenBal,
+    removeHiddenBal
   ])
 
   return (

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {Heading, Pane} from 'evergreen-ui'
 import {flatten, groupBy, uniq} from 'lodash'
 
-import {getContoursCommunes, listBALByCodeDepartement} from '../../lib/bal-api'
+import {listBALByCodeDepartement} from '../../lib/bal-api'
 import {getDepartement, searchCommunesByCode} from '../../lib/geo-api'
 import {getBALByStatus} from '../../lib/bases-locales'
 
@@ -12,7 +12,7 @@ import CommuneBALList from '../../components/dashboard/commune-bal-list'
 import DashboardLayout from '../../components/layout/dashboard'
 import PublishedBalStats from '../../components/dashboard/published-bal-stats'
 
-function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, stats, contoursCommunes}) {
+function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, stats}) {
   const {nom, code} = departement
   const {nbCommunes, nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies} = stats
   const codesCommunes = new Set(filteredCommunesInBAL.map(({code}) => code))
@@ -24,8 +24,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
 
   const mapData = {
     departement: code,
-    basesLocales: basesLocalesDepartementWithoutDemo,
-    contours: contoursCommunes
+    basesLocales: basesLocalesDepartementWithoutDemo
   }
 
   return (
@@ -75,7 +74,6 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
 Departement.getInitialProps = async ({query}) => {
   const {codeDepartement} = query
 
-  const contoursCommunes = await getContoursCommunes()
   const departement = await getDepartement(codeDepartement)
   const basesLocalesDepartement = await listBALByCodeDepartement(codeDepartement)
   const basesLocalesDepartementWithoutDemo = basesLocalesDepartement.basesLocales.filter(b => b.status !== 'demo')
@@ -93,7 +91,6 @@ Departement.getInitialProps = async ({query}) => {
   return {
     departement,
     filteredCommunesInBAL,
-    contoursCommunes,
     basesLocalesDepartementWithoutDemo,
     BALGroupedByCommune,
     stats: basesLocalesDepartement.stats,
@@ -106,8 +103,7 @@ Departement.propTypes = {
   filteredCommunesInBAL: PropTypes.array.isRequired,
   basesLocalesDepartementWithoutDemo: PropTypes.array.isRequired,
   BALGroupedByCommune: PropTypes.object.isRequired,
-  stats: PropTypes.object.isRequired,
-  contoursCommunes: PropTypes.object.isRequired
+  stats: PropTypes.object.isRequired
 }
 
 export default Departement
