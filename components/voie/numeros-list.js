@@ -2,7 +2,7 @@ import {useState, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
 
-import {batchNumeros, removeNumero} from '../../lib/bal-api'
+import {batchNumeros, removeMultipleNumeros, removeNumero} from '../../lib/bal-api'
 
 import TableRow from '../table-row'
 import DeleteWarning from '../delete-warning'
@@ -17,7 +17,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {numeros, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
+  const {numeros, reloadNumeros, refreshBALSync, baseLocale} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
     keys: [
@@ -71,9 +71,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
 
   const onMultipleRemove = async () => {
     try {
-      await Promise.all(selectedNumerosIds.map(async id => {
-        await onRemove(id, true)
-      }))
+      await removeMultipleNumeros(baseLocale._id, {numerosIds: selectedNumerosIds}, token, true)
 
       await reloadNumeros()
       refreshBALSync()
