@@ -33,7 +33,12 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     }
 
     try {
-      await onSubmit(body)
+      if (nom.length >= 3) {
+        await onSubmit(body)
+      } else {
+        setError('le nom de la voie doit être supérieur à 3 caractères')
+        setIsLoading(false)
+      }
     } catch (error) {
       setIsLoading(false)
       setError(error.message)
@@ -96,7 +101,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
         </Alert>
       )}
 
-      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
+      <Button isLoading={isLoading} disabled={Boolean(nom.length < 3 && error)} type='submit' appearance='primary' intent='success'>
         {isLoading ? 'En cours…' : 'Enregistrer'}
       </Button>
 
