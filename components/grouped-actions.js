@@ -28,6 +28,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
   const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
+  const hasComment = selectedNumeros.some(numero => numero.comment)
 
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
@@ -210,6 +211,10 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               )}
 
               <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
+
+              {hasComment && (
+                <Alert intent='warning' marginBottom={8}>Attention, certains numéros sélectionnés possèdent un commentaire. En cas de modification, il sera remplacé.</Alert>
+              )}
 
               <Checkbox
                 label='Effacer tous les commentaires'
