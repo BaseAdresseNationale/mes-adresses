@@ -10,8 +10,8 @@ import {getCommune} from '@/lib/geo-api'
 
 import SubHeader from '@/components/sub-header'
 import IEWarning from '@/components/ie-warning'
-import Fullscreen from '@/components/layout/fullscreen'
-import Sidebar from '@/components/layout/sidebar'
+import Fullscreen from '@/layouts/fullscreen'
+import Sidebar from '@/layouts/sidebar'
 import WelcomeMessage from '@/components/welcome-message'
 import CertificationMessage from '@/components/certification-message'
 
