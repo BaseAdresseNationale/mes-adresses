@@ -9,8 +9,8 @@ import BalDataContext from '@/contexts/bal-data'
 import useFuse from '@/hooks/fuse'
 
 import {normalizeSort} from '@/lib/normalize'
-import TableRow from '../table-row'
-import VoieEditor from './voie-editor'
+import TableRow from '@/components/table-row'
+import VoieEditor from '@/components/bal/voie-editor'
 
 function VoiesList({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) {
   const {

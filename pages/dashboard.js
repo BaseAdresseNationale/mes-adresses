@@ -4,7 +4,7 @@ import {uniq, flattenDeep} from 'lodash'
 
 import {getBasesLocalesStats, listBasesLocales} from '@/lib/bal-api'
 
-import DashboardLayout from '@/layouts/dashboard'
+import DashboardLayout from 'layout/dashboard'
 
 import BALCreationChart from '@/components/dashboard/bal-creation-chart'
 import BALCounterChart from '@/components/dashboard/bal-counter-chart'

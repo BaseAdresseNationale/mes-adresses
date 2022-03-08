@@ -5,7 +5,7 @@ import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, Ic
 import MarkersContext from '@/contexts/markers'
 
 import {positionsTypesList} from '@/lib/positions-types-list'
-import InputLabel from '../input-label'
+import InputLabel from '@/components/input-label'
 
 function PositionEditor({isToponyme}) {
   const {markers, addMarker, updateMarker, removeMarker} = useContext(MarkersContext)

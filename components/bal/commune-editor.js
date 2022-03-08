@@ -6,9 +6,9 @@ import {useCheckboxInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 import useKeyEvent from '@/hooks/key-event'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import {CommuneSearch} from '../commune-search'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import {CommuneSearch} from '@/components/commune-search'
 
 function CommuneEditor({onSubmit, onCancel, ...props}) {
   const [isLoading, setIsLoading] = useState(false)

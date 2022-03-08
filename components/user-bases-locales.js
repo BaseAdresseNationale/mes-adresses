@@ -8,7 +8,7 @@ import {getBaseLocale} from '@/lib/bal-api'
 import LocalStorageContext from '@/contexts/local-storage'
 
 import HiddenBal from '@/components/hidden-bal'
-import BasesLocalesList from './bases-locales-list'
+import BasesLocalesList from '@/components/bases-locales-list'
 
 function UserBasesLocales() {
   const {balAccess, hiddenBal, getHiddenBal} = useContext(LocalStorageContext)

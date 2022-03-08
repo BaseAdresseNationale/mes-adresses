@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useCallback, useContext, useMemo} from 'react'
 import {uniqueId} from 'lodash'
 
-import BalDataContext from './bal-data'
-import MapContext from './map'
+import BalDataContext from '@/contexts/bal-data'
+import MapContext from '@/contexts/map'
 
 const MarkersContext = React.createContext()
 

@@ -4,7 +4,7 @@ import {Pane, TextInputField} from 'evergreen-ui'
 
 import useFocus from '@/hooks/focus'
 
-import AccentTool from './accent-tool'
+import AccentTool from '@/components/accent-tool'
 
 function AssistedTextField({label, placeholder, value, onChange, isFocus, isDisabled}) {
   const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})

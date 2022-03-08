@@ -2,9 +2,9 @@ import {useContext, useMemo} from 'react'
 
 import BalDataContext from '@/contexts/bal-data'
 
-import {getVoiesLabelLayer, getVoieTraceLayer} from '../layers/voies'
-import {getNumerosPointLayer, getNumerosLabelLayer} from '../layers/numeros'
-import {cadastreLayers} from '../layers/cadastre'
+import {getVoiesLabelLayer, getVoieTraceLayer} from '@/components/map/layers/voies'
+import {getNumerosPointLayer, getNumerosLabelLayer} from '@/components/map/layers/numeros'
+import {cadastreLayers} from '@/components/map/layers/cadastre'
 
 function useLayers(voie, sources, isCadastreDisplayed, style) {
   const {parcelles, codeCommune} = useContext(BalDataContext)

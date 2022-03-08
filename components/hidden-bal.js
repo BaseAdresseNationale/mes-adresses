@@ -6,7 +6,7 @@ import {getBaseLocale} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
-import BaseLocaleCard from './base-locale-card'
+import BaseLocaleCard from '@/components/base-locale-card'
 
 function HiddenBal() {
   const [isWrapped, setIsWrapped] = useState(true)

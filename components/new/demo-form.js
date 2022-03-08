@@ -10,9 +10,9 @@ import {createBaseLocaleDemo} from '@/lib/bal-api'
 import useFocus from '@/hooks/focus'
 import {useCheckboxInput} from '@/hooks/input'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import {CommuneSearchField} from '../commune-search'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import CommuneSearchField from '@/components/commune-search/commune-search-field'
 
 function DemoForm({defaultCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)

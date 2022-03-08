@@ -9,8 +9,8 @@ import BalDataContext from '@/contexts/bal-data'
 import useFuse from '@/hooks/fuse'
 
 import {normalizeSort} from '@/lib/normalize'
-import TableRow from '../table-row'
-import ToponymeEditor from './toponyme-editor'
+import TableRow from '@/components/table-row'
+import ToponymeEditor from '@/components/bal/toponyme-editor'
 
 function ToponymesList({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) {
   const {

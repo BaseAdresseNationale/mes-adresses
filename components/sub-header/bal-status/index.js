@@ -5,9 +5,9 @@ import {sync, pauseSync, resumeSync} from '@/lib/bal-api'
 
 import StatusBadge from '@/components/status-badge'
 
-import BANSync from './ban-sync'
-import Publication from './publication'
-import RefreshSyncBadge from './refresh-sync-badge'
+import BANSync from '@/components/sub-header/bal-status/ban-sync'
+import Publication from '@/components/sub-header/bal-status/publication'
+import RefreshSyncBadge from '@/components/sub-header/bal-status/refresh-sync-badge'
 
 function BALStatus({baseLocale, commune, token, isRefrehSyncStat, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
   const handleSync = async () => {

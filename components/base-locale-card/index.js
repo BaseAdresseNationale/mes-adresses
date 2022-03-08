@@ -7,10 +7,10 @@ import {fr} from 'date-fns/locale'
 import {getCommune} from '@/lib/bal-api'
 import {getCommune as getCommuneGeoData} from '@/lib/geo-api'
 
-import CertificationCount from '../certification-count'
-import StatusBadge from '../status-badge'
+import CertificationCount from '@/components/certification-count'
+import StatusBadge from '@/components/status-badge'
 
-import BaseLocaleCardContent from './base-locale-card-content'
+import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
 
 function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove, onHide}) {
   const {nom, communes, _updated} = baseLocale

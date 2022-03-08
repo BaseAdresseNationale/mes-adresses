@@ -4,7 +4,7 @@ import Router from 'next/router'
 
 import {getBaseLocale} from '@/lib/bal-api'
 
-import LocalStorageContext from './local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
 const TokenContext = React.createContext()
 

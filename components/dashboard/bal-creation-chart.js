@@ -6,7 +6,7 @@ import {format, formatISO} from 'date-fns'
 import {colors} from '@/lib/colors'
 import {filterByStatus} from '@/lib/bases-locales'
 
-import BarChart from './charts/bar-chart'
+import BarChart from '@/components/dashboard/charts/bar-chart'
 
 function BALCreationChart({basesLocales}) {
   const groupedByMonth = Object.values(groupBy(basesLocales, ({_created}) => {

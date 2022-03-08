@@ -9,12 +9,12 @@ import ParcellesContext from '@/contexts/parcelles'
 import {useInput} from '@/hooks/input'
 import useKeyEvent from '@/hooks/key-event'
 
-import AssistedTextField from '../assisted-text-field'
+import AssistedTextField from '@/components/assisted-text-field'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import PositionEditor from './position-editor'
-import SelectParcelles from './numero-editor/select-parcelles'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import PositionEditor from '@/components/bal/position-editor'
+import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 
 function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const {setIsEditing} = useContext(BalDataContext)

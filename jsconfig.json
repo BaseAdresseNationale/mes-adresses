@@ -19,6 +19,12 @@
       ],
       "@/hooks/*": [
         "hooks/*"
+      ],
+      "@/server/*": [
+        "server/*"
+      ],
+      "@/pages/*": [
+        "pages/*"
       ]
     }
   }

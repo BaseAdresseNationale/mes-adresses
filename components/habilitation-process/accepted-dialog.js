@@ -4,8 +4,8 @@ import {Pane, Heading, Alert, Text, Link, Strong, UnorderedList, ListItem, Uploa
 
 import {getCommune} from '@/lib/bal-api'
 
-import StatusBadge from '../status-badge'
-import TextWrapper from '../text-wrapper'
+import StatusBadge from '@/components/status-badge'
+import TextWrapper from '@/components/text-wrapper'
 
 import AuthenticatedUser from './authenticated-user'
 

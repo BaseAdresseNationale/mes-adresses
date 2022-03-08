@@ -2,8 +2,8 @@ import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Strong, Alert, Text, Heading, PeopleIcon, TimeIcon, LogInIcon, UnorderedList, ListItem} from 'evergreen-ui'
 
-import FranceConnect from './france-connect'
-import CodeEmail from './code-email'
+import FranceConnect from '@/components/habilitation-process/strategy-selection/france-connect'
+import CodeEmail from '@/components/habilitation-process/strategy-selection/code-email'
 
 const StrategySelection = React.memo(({franceconnectAuthenticationUrl, emailCommune, handleStrategy}) => {
   const [hovered, setHovered] = useState()

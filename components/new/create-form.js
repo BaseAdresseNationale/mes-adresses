@@ -10,10 +10,10 @@ import {createBaseLocale, addCommune, populateCommune, searchBAL} from '@/lib/ba
 import useFocus from '@/hooks/focus'
 import {useInput, useCheckboxInput} from '@/hooks/input'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import {CommuneSearchField} from '../commune-search'
-import AlertPublishedBAL from './alert-published-bal'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import CommuneSearchField from '@/components/commune-search/commune-search-field'
+import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 function CreateForm({defaultCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)

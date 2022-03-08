@@ -10,7 +10,7 @@ import {removeNumero} from '@/lib/bal-api'
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
-import NumeroMarker from './numero-marker'
+import NumeroMarker from '@/components/map/numero-marker'
 
 function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed, setIsContextMenuDisplayed}) {
   const [setError] = useError()

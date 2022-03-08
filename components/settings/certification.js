@@ -4,7 +4,7 @@ import {Pane, Dialog, Button, EndorsedIcon} from 'evergreen-ui'
 
 import BalDataContext from '@/contexts/bal-data'
 
-import CertificationCount from '../certification-count'
+import CertificationCount from '@/components/certification-count'
 
 function Certification({nbNumeros, nbNumerosCertifies, onSubmit}) {
   const {certifyAllNumeros} = useContext(BalDataContext)

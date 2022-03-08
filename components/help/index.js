@@ -3,7 +3,7 @@ import {Pane, SideSheet, Paragraph, Heading, Tablist, Tab, Link} from 'evergreen
 
 import HelpContext from '@/contexts/help'
 
-import HelpTabs, {TABS} from './help-tabs'
+import HelpTabs, {TABS} from '@/components/help/help-tabs'
 
 function Help() {
   const {showHelp, setShowHelp, selectedIndex, setSelectedIndex} = useContext(HelpContext)

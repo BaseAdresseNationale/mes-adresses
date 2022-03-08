@@ -10,8 +10,8 @@ import useError from '@/hooks/error'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
-import BaseLocaleCard from '../base-locale-card'
-import DeleteWarning from '../delete-warning'
+import BaseLocaleCard from '@/components/base-locale-card'
+import DeleteWarning from '@/components/delete-warning'
 
 function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) {
   const {removeBAL} = useContext(LocalStorageContext)

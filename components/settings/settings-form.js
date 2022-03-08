@@ -21,9 +21,9 @@ import {validateEmail} from '@/lib/utils/email'
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import RenewTokenDialog from '../renew-token-dialog'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import RenewTokenDialog from '@/components/renew-token-dialog'
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())

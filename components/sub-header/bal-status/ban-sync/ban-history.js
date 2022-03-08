@@ -4,7 +4,7 @@ import {Pane, Heading, Button, Text, Icon, HistoryIcon, Spinner} from 'evergreen
 
 import {getRevisions} from '@/lib/ban-api'
 
-import Revision from './ban-history/revision'
+import Revision from '@/components/sub-header/bal-status/ban-sync/ban-history/revision'
 
 function BANHistory({baseLocaleId, syncStatus, commune}) {
   const [revisions, setRevisions] = useState()

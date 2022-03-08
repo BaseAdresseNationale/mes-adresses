@@ -8,10 +8,10 @@ import {positionsTypesList} from '@/lib/positions-types-list'
 import BalDataContext from '@/contexts/bal-data'
 import {useInput, useCheckboxInput} from '@/hooks/input'
 
-import Comment from './comment'
-import CertificationButton from './certification-button'
-import Form from './form'
-import FormInput from './form-input'
+import Comment from '@/components/comment'
+import CertificationButton from '@/components/certification-button'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
 
 function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) {
   const {voies, toponymes} = useContext(BalDataContext)

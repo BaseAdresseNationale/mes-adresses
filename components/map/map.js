@@ -11,22 +11,22 @@ import TokenContext from '@/contexts/token'
 import DrawContext from '@/contexts/draw'
 import ParcellesContext from '@/contexts/parcelles'
 
-import AddressEditor from '../bal/address-editor'
+import AddressEditor from '@/components/bal/address-editor'
 
-import {vector, ortho, planIGN} from './styles'
+import {vector, ortho, planIGN} from '@/components/map/styles'
 
-import NavControl from './nav-control'
-import EditableMarker from './editable-marker'
-import Control from './control'
-import NumerosMarkers from './numeros-markers'
-import ToponymeMarker from './toponyme-marker'
-import Draw from './draw'
-import StyleSelector from './style-selector'
+import NavControl from '@/components/map/nav-control'
+import EditableMarker from '@/components/map/editable-marker'
+import Control from '@/components/map/control'
+import NumerosMarkers from '@/components/map/numeros-markers'
+import ToponymeMarker from '@/components/map/toponyme-marker'
+import Draw from '@/components/map/draw'
+import StyleSelector from '@/components/map/style-selector'
 
-import useBounds from './hooks/bounds'
-import useSources from './hooks/sources'
-import useLayers from './hooks/layers'
-import useHovered from './hooks/hovered'
+import useBounds from '@/components/map/hooks/bounds'
+import useSources from '@/components/map/hooks/sources'
+import useLayers from '@/components/map/hooks/layers'
+import useHovered from '@/components/map/hooks/hovered'
 
 const settings = {
   maxZoom: 19

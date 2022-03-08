@@ -10,10 +10,10 @@ import {sendAuthenticationCode, validateAuthenticationCode} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
 
-import ValidateAuthentication from './validate-authentication'
-import StrategySelection from './strategy-selection'
-import AcceptedDialog from './accepted-dialog'
-import RejectedDialog from './rejected-dialog'
+import ValidateAuthentication from '@/components/habilitation-process/validate-authentication'
+import StrategySelection from '@/components/habilitation-process/strategy-selection'
+import AcceptedDialog from '@/components/habilitation-process/accepted-dialog'
+import RejectedDialog from '@/components/habilitation-process/rejected-dialog'
 
 function getStep(habilitation) {
   if (habilitation.status !== 'pending') {

@@ -12,8 +12,8 @@ import useError from '@/hooks/error'
 
 import {listBasesLocales} from '@/lib/bal-api'
 
-import DeleteWarning from '../delete-warning'
-import BaseLocaleCard from '../base-locale-card'
+import DeleteWarning from '@/components/delete-warning'
+import BaseLocaleCard from '@/components/base-locale-card'
 
 function BasesLocalesList({basesLocales, sortBal}) {
   const {removeBAL, getHiddenBal, addHiddenBal} = useContext(LocalStorageContext)
