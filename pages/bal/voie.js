@@ -2,16 +2,16 @@ import React, {useState, useCallback, useEffect, useMemo, useContext} from 'reac
 import PropTypes from 'prop-types'
 import {Pane, Table} from 'evergreen-ui'
 
-import {editNumero, getNumeros, addVoie, addNumero} from '../../lib/bal-api'
+import {editNumero, getNumeros, addVoie, addNumero} from '@/lib/bal-api'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import useHelp from '../../hooks/help'
+import useHelp from '@/hooks/help'
 
-import NumeroEditor from '../../components/bal/numero-editor'
-import VoieHeading from '../../components/voie/voie-heading'
-import NumerosList from '../../components/voie/numeros-list'
+import NumeroEditor from '@/components/bal/numero-editor'
+import VoieHeading from '@/components/voie/voie-heading'
+import NumerosList from '@/components/voie/numeros-list'
 
 const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)

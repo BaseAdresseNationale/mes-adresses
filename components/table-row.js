@@ -2,8 +2,8 @@ import React, {useState, useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, EndorsedIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
 
-import TokenContext from '../contexts/token'
-import BalDataContext from '../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
 const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId, isCertified}) => {
   const [hovered, setHovered] = useState(false)

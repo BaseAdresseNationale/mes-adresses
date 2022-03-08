@@ -4,12 +4,12 @@ import {validate} from '@etalab/bal'
 import {uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '../../lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '@/lib/bal-api'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import useFocus from '../../hooks/focus'
-import {useInput} from '../../hooks/input'
+import useFocus from '@/hooks/focus'
+import {useInput} from '@/hooks/input'
 
 import Form from '../form'
 import FormInput from '../form-input'

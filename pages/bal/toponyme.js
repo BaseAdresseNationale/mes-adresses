@@ -2,18 +2,18 @@ import {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
 
-import {addVoie, editNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
+import {addVoie, editNumero, getNumerosToponyme, getToponyme} from '@/lib/bal-api'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import useHelp from '../../hooks/help'
-import useFuse from '../../hooks/fuse'
+import useHelp from '@/hooks/help'
+import useFuse from '@/hooks/fuse'
 
-import NumeroEditor from '../../components/bal/numero-editor'
-import ToponymeNumeros from '../../components/toponyme/toponyme-numeros'
-import AddNumeros from '../../components/toponyme/add-numeros'
-import ToponymeHeading from '../../components/toponyme/toponyme-heading'
+import NumeroEditor from '@/components/bal/numero-editor'
+import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
+import AddNumeros from '@/components/toponyme/add-numeros'
+import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
 function Toponyme({commune, toponyme, defaultNumeros}) {
   const [isEdited, setEdited] = useState(false)

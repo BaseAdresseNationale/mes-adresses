@@ -2,7 +2,7 @@ import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInputField} from 'evergreen-ui'
 
-import useFocus from '../hooks/focus'
+import useFocus from '@/hooks/focus'
 
 import AccentTool from './accent-tool'
 

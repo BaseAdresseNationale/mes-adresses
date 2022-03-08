@@ -4,11 +4,11 @@ import Router from 'next/router'
 import {uniq} from 'lodash'
 import {Pane, Dialog, Alert, Paragraph, Strong} from 'evergreen-ui'
 
-import {getCommune} from '../../lib/geo-api'
+import {getCommune} from '@/lib/geo-api'
 
-import useError from '../../hooks/error'
+import useError from '@/hooks/error'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
 import BaseLocaleCard from '../base-locale-card'
 import DeleteWarning from '../delete-warning'

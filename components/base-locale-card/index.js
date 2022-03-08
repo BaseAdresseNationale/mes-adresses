@@ -4,8 +4,8 @@ import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'ever
 import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
 
-import {getCommune} from '../../lib/bal-api'
-import {getCommune as getCommuneGeoData} from '../../lib/geo-api'
+import {getCommune} from '@/lib/bal-api'
+import {getCommune as getCommuneGeoData} from '@/lib/geo-api'
 
 import CertificationCount from '../certification-count'
 import StatusBadge from '../status-badge'

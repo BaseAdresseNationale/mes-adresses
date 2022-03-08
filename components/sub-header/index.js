@@ -2,12 +2,12 @@ import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
-import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '../../lib/bal-api'
+import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@/lib/bal-api'
 
-import BalDataContext from '../../contexts/bal-data'
-import TokenContext from '../../contexts/token'
+import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
 
-import useError from '../../hooks/error'
+import useError from '@/hooks/error'
 
 import HabilitationProcess from '../habilitation-process/index'
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {Autocomplete, SearchInput} from 'evergreen-ui'
 import {useDebouncedCallback} from 'use-debounce'
 
-import {searchCommunes} from '../../lib/geo-api'
+import {searchCommunes} from '@/lib/geo-api'
 
 function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onSelect, ...props}) {
   const [communes, setCommunes] = useState([])

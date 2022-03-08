@@ -2,10 +2,10 @@ import {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
-import {editToponyme} from '../../lib/bal-api'
+import {editToponyme} from '@/lib/bal-api'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
 import ToponymeEditor from '../bal/toponyme-editor'
 

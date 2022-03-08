@@ -2,10 +2,10 @@ import React, {useState, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {SideSheet, Pane, Alert} from 'evergreen-ui'
 
-import {getCommune} from '../lib/bal-api'
+import {getCommune} from '@/lib/bal-api'
 
-import SettingsContext from '../contexts/settings'
-import BalDataContext from '../contexts/bal-data'
+import SettingsContext from '@/contexts/settings'
+import BalDataContext from '@/contexts/bal-data'
 
 import Certification from './settings/certification'
 import SettingsForm from './settings/settings-form'

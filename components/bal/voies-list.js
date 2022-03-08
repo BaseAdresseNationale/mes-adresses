@@ -4,11 +4,11 @@ import {sortBy} from 'lodash'
 
 import {Pane, Table} from 'evergreen-ui'
 
-import BalDataContext from '../../contexts/bal-data'
+import BalDataContext from '@/contexts/bal-data'
 
-import useFuse from '../../hooks/fuse'
+import useFuse from '@/hooks/fuse'
 
-import {normalizeSort} from '../../lib/normalize'
+import {normalizeSort} from '@/lib/normalize'
 import TableRow from '../table-row'
 import VoieEditor from './voie-editor'
 

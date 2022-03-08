@@ -2,12 +2,12 @@ import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Alert} from 'evergreen-ui'
 
-import BalDataContext from '../../contexts/bal-data'
-import MarkersContext from '../../contexts/markers'
-import ParcellesContext from '../../contexts/parcelles'
+import BalDataContext from '@/contexts/bal-data'
+import MarkersContext from '@/contexts/markers'
+import ParcellesContext from '@/contexts/parcelles'
 
-import {useInput} from '../../hooks/input'
-import useKeyEvent from '../../hooks/key-event'
+import {useInput} from '@/hooks/input'
+import useKeyEvent from '@/hooks/key-event'
 
 import AssistedTextField from '../assisted-text-field'
 

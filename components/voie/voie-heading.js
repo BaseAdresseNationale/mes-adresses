@@ -2,10 +2,10 @@ import {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
-import {editVoie} from '../../lib/bal-api'
+import {editVoie} from '@/lib/bal-api'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
 import VoieEditor from '../bal/voie-editor'
 

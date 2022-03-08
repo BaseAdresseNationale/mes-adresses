@@ -2,9 +2,9 @@ import {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Checkbox, Button, IconButton, Alert, UndoIcon} from 'evergreen-ui'
 
-import {useCheckboxInput} from '../../hooks/input'
-import useFocus from '../../hooks/focus'
-import useKeyEvent from '../../hooks/key-event'
+import {useCheckboxInput} from '@/hooks/input'
+import useFocus from '@/hooks/focus'
+import useKeyEvent from '@/hooks/key-event'
 
 import Form from '../form'
 import FormInput from '../form-input'

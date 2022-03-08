@@ -4,18 +4,18 @@ import Router from 'next/router'
 import {sortBy} from 'lodash'
 import {Pane, Heading, Paragraph, Button, Table, Text, AddIcon, Alert} from 'evergreen-ui'
 
-import {addCommune, removeCommune, populateCommune} from '../lib/bal-api'
-import {getCommune} from '../lib/geo-api'
+import {addCommune, removeCommune, populateCommune} from '@/lib/bal-api'
+import {getCommune} from '@/lib/geo-api'
 
-import TokenContext from '../contexts/token'
-import BalDataContext from '../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import useFuse from '../hooks/fuse'
+import useFuse from '@/hooks/fuse'
 
-import DeleteWarning from '../components/delete-warning'
-import TableRow from '../components/table-row'
-import CommuneEditor from '../components/bal/commune-editor'
-import {normalizeSort} from '../lib/normalize'
+import DeleteWarning from '@/components/delete-warning'
+import TableRow from '@/components/table-row'
+import CommuneEditor from '@/components/bal/commune-editor'
+import {normalizeSort} from '@/lib/normalize'
 
 const Index = React.memo(({baseLocale, defaultCommunes}) => {
   const [communes, setCommunes] = useState(defaultCommunes)

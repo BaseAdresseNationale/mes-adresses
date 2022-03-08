@@ -2,15 +2,15 @@ import {useState, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
 
-import {editNumero, removeNumero} from '../../lib/bal-api'
+import {editNumero, removeNumero} from '@/lib/bal-api'
 
 import TableRow from '../table-row'
 import DeleteWarning from '../delete-warning'
 import GroupedActions from '../grouped-actions'
 
-import BalDataContext from '../../contexts/bal-data'
+import BalDataContext from '@/contexts/bal-data'
 
-import useFuse from '../../hooks/fuse'
+import useFuse from '@/hooks/fuse'
 
 function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)

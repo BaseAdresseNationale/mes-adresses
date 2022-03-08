@@ -2,9 +2,9 @@ import {useState, useCallback, useEffect, useContext} from 'react'
 import {Pane, Text, PlusIcon, MinusIcon, UndoIcon, Spinner} from 'evergreen-ui'
 import {map, filter} from 'lodash'
 
-import {getBaseLocale} from '../lib/bal-api'
+import {getBaseLocale} from '@/lib/bal-api'
 
-import LocalStorageContext from '../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
 import BaseLocaleCard from './base-locale-card'
 

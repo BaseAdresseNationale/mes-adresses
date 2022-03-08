@@ -5,11 +5,11 @@ import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
 import {Pane, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
-import MapContext from '../../contexts/map'
-import BalDataContext from '../../contexts/bal-data'
-import TokenContext from '../../contexts/token'
-import DrawContext from '../../contexts/draw'
-import ParcellesContext from '../../contexts/parcelles'
+import MapContext from '@/contexts/map'
+import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import DrawContext from '@/contexts/draw'
+import ParcellesContext from '@/contexts/parcelles'
 
 import AddressEditor from '../bal/address-editor'
 

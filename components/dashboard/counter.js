@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Pane, Heading} from 'evergreen-ui'
 
-import {spaceThousands} from '../../lib/utils/numbers'
+import {spaceThousands} from '@/lib/utils/numbers'
 
 function Counter({label, value, color}) {
   return (

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Table, Button, PlusIcon} from 'evergreen-ui'
 
-import {sortBalByUpdate} from '../../lib/sort-bal'
+import {sortBalByUpdate} from '@/lib/sort-bal'
 
-import useFuse from '../../hooks/fuse'
+import useFuse from '@/hooks/fuse'
 
-import {listBasesLocales} from '../../lib/bal-api'
+import {listBasesLocales} from '@/lib/bal-api'
 
 import BaseLocaleCard from '../base-locale-card'
 

@@ -2,7 +2,7 @@ import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Dialog, Button, EndorsedIcon} from 'evergreen-ui'
 
-import BalDataContext from '../../contexts/bal-data'
+import BalDataContext from '@/contexts/bal-data'
 
 import CertificationCount from '../certification-count'
 

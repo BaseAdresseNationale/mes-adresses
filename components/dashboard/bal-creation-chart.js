@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import {groupBy} from 'lodash'
 import {format, formatISO} from 'date-fns'
 
-import {colors} from '../../lib/colors'
-import {filterByStatus} from '../../lib/bases-locales'
+import {colors} from '@/lib/colors'
+import {filterByStatus} from '@/lib/bases-locales'
 
 import BarChart from './charts/bar-chart'
 

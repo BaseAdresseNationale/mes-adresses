@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Alert, Text, Link, Strong, UnorderedList, ListItem, UploadIcon, UpdatedIcon} from 'evergreen-ui'
 
-import {getCommune} from '../../lib/bal-api'
+import {getCommune} from '@/lib/bal-api'
 
 import StatusBadge from '../status-badge'
 import TextWrapper from '../text-wrapper'

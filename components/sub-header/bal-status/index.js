@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import {Pane, Tooltip, Button, Position, EditIcon} from 'evergreen-ui'
 
-import {sync, pauseSync, resumeSync} from '../../../lib/bal-api'
+import {sync, pauseSync, resumeSync} from '@/lib/bal-api'
 
-import StatusBadge from '../../status-badge'
+import StatusBadge from '@/components/status-badge'
 
 import BANSync from './ban-sync'
 import Publication from './publication'

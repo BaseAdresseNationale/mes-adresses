@@ -2,10 +2,10 @@ import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Checkbox, Alert} from 'evergreen-ui'
 
-import DrawContext from '../../contexts/draw'
+import DrawContext from '@/contexts/draw'
 
-import {useInput, useCheckboxInput} from '../../hooks/input'
-import useKeyEvent from '../../hooks/key-event'
+import {useInput, useCheckboxInput} from '@/hooks/input'
+import useKeyEvent from '@/hooks/key-event'
 
 import Form from '../form'
 import FormInput from '../form-input'

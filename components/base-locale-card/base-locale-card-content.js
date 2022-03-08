@@ -4,7 +4,7 @@ import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
 import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
 

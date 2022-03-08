@@ -3,11 +3,11 @@ import Link from 'next/link'
 import {map, filter} from 'lodash'
 import {Pane, Spinner, Button, PlusIcon, Heading} from 'evergreen-ui'
 
-import {getBaseLocale} from '../lib/bal-api'
+import {getBaseLocale} from '@/lib/bal-api'
 
-import LocalStorageContext from '../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import HiddenBal from '../components/hidden-bal'
+import HiddenBal from '@/components/hidden-bal'
 import BasesLocalesList from './bases-locales-list'
 
 function UserBasesLocales() {

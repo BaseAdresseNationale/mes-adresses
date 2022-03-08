@@ -1,6 +1,6 @@
 import {useContext, useMemo} from 'react'
 
-import BalDataContext from '../../../contexts/bal-data'
+import BalDataContext from '@/contexts/bal-data'
 
 import {getVoiesLabelLayer, getVoieTraceLayer} from '../layers/voies'
 import {getNumerosPointLayer, getNumerosLabelLayer} from '../layers/numeros'

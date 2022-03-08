@@ -2,7 +2,7 @@ import React, {useState, useCallback, useEffect, useContext, useMemo} from 'reac
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 
-import {getBaseLocale} from '../lib/bal-api'
+import {getBaseLocale} from '@/lib/bal-api'
 
 import LocalStorageContext from './local-storage'
 

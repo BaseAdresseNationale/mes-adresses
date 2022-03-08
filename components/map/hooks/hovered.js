@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState, useContext} from 'react'
 
-import ParcellesContext from '../../../contexts/parcelles'
+import ParcellesContext from '@/contexts/parcelles'
 
 function useHovered() {
   const {handleHoveredParcelle} = useContext(ParcellesContext)

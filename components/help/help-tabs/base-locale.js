@@ -1,6 +1,6 @@
 import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tab, CogIcon, PlusIcon} from 'evergreen-ui'
 
-import BALRecovery from '../../bal-recovery/bal-recovery'
+import BALRecovery from '@/components/bal-recovery/bal-recovery'
 
 import Tuto from '../tuto'
 import Unauthorized from '../tuto/unauthorized'

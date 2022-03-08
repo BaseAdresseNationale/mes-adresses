@@ -15,11 +15,11 @@ import {
 } from 'evergreen-ui'
 import {isEqual, difference} from 'lodash'
 
-import {useInput} from '../../hooks/input'
-import {updateBaseLocale} from '../../lib/bal-api'
-import {validateEmail} from '../../lib/utils/email'
-import BalDataContext from '../../contexts/bal-data'
-import TokenContext from '../../contexts/token'
+import {useInput} from '@/hooks/input'
+import {updateBaseLocale} from '@/lib/bal-api'
+import {validateEmail} from '@/lib/utils/email'
+import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
 
 import Form from '../form'
 import FormInput from '../form-input'

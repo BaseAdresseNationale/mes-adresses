@@ -1,8 +1,8 @@
 import React, {useCallback, useMemo} from 'react'
 
-import {removeBaseLocale} from '../lib/bal-api'
+import {removeBaseLocale} from '@/lib/bal-api'
 
-import {useLocalStorage} from '../hooks/local-storage'
+import {useLocalStorage} from '@/hooks/local-storage'
 
 const LocalStorageContext = React.createContext()
 

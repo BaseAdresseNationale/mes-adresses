@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
-import {getBALByStatus} from '../../lib/bases-locales'
+import {getBALByStatus} from '@/lib/bases-locales'
 
 import Counter from './counter'
 import PieChart from './charts/pie-chart'
