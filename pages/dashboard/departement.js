@@ -9,7 +9,7 @@ import {getBALByStatus} from '@/lib/bases-locales'
 import Counter from '@/components/dashboard/counter'
 import PieChart from '@/components/dashboard/charts/pie-chart'
 import CommuneBALList from '@/components/dashboard/commune-bal-list'
-import DashboardLayout from 'layout/dashboard'
+import DashboardLayout from '@/layouts/dashboard'
 import PublishedBalStats from '@/components/dashboard/published-bal-stats'
 
 function Departement({departement, filteredCommunesInBAL, basesLocalesDepartementWithoutDemo, BALGroupedByCommune, stats}) {
