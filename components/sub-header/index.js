@@ -47,7 +47,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
     const voies = await getVoies(initialBaseLocale._id, commune.code)
     const foundTooShortName = voies.find(voie => voie.nom.length < 3)
     if (foundTooShortName) {
-      setError('Ce BAL comprend des voies de moins de 3 caractères. Ceci n’est pas autorisé par le format BAL 1.3')
+      setError('Cette BAL comprend des voies de moins de 3 caractères. Ceci n’est pas autorisé par le format BAL 1.3')
       return
     }
 
