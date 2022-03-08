@@ -69,7 +69,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
                 {communes.length === 0 ? (
                   <Text fontSize={12} fontStyle='italic'>Vide</Text>
                 ) : (communes.length < 2 ? (
-                  commune && <Text fontStyle='italic'>{commune.nom} ({commune.codeDepartement}) </Text>
+                  commune && <Text fontStyle='italic'> {commune.nom} ({commune.codeDepartement}) </Text>
                 ) : (
                   <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
                 ))}
