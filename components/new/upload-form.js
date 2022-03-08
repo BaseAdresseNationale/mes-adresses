@@ -133,7 +133,7 @@ function UploadForm() {
       const communes = extractCommuneFromCSV(validateResponse)
 
       if (validateResponse.uniqueErrors.some(error => error.includes('voie_nom.trop_court'))) {
-        onWarning('Ce fichier comprend des voies de moins de 3 caractères. Ceci n’est pas autorisé par le format BAL 1.3')
+        onError('Ce fichier comprend des voies de moins de 3 caractères. Ceci n’est pas autorisé par le format BAL 1.3')
         return
       }
 
