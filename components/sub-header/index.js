@@ -2,7 +2,7 @@ import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
-import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '../../lib/bal-api'
+import {getVoies, createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '../../lib/bal-api'
 
 import BalDataContext from '../../contexts/bal-data'
 import TokenContext from '../../contexts/token'
@@ -42,6 +42,13 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
   }
 
   const handleHabilitation = async () => {
+    const voies = await getVoies(initialBaseLocale._id, commune.code)
+    const foundTooShortName = voies.find(voie => voie.nom.length < 3)
+    if (foundTooShortName) {
+      setError('Ce BAL comprend des voies de moins de 3 caractères. Ceci n’est pas autorisé par le format BAL 1.3')
+      return
+    }
+
     await handleChangeStatus('ready-to-publish')
 
     if (!balDataContext.habilitation || balDataContext.habilitation.status === 'rejected') {
