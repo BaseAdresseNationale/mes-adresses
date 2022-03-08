@@ -42,6 +42,8 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
   }
 
   const handleHabilitation = async () => {
+    setError(null)
+
     const voies = await getVoies(initialBaseLocale._id, commune.code)
     const foundTooShortName = voies.find(voie => voie.nom.length < 3)
     if (foundTooShortName) {
