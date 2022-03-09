@@ -1,14 +1,14 @@
 import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-
 import {Pane, Table} from 'evergreen-ui'
+
+import {normalizeSort} from '@/lib/normalize'
 
 import BalDataContext from '@/contexts/bal-data'
 
 import useFuse from '@/hooks/fuse'
 
-import {normalizeSort} from '@/lib/normalize'
 import TableRow from '@/components/table-row'
 import VoieEditor from '@/components/bal/voie-editor'
 

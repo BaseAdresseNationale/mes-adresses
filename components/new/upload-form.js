@@ -15,7 +15,6 @@ import Form from '@/components/form'
 import FormInput from '@/components/form-input'
 import Uploader from '@/components/uploader'
 import SelectCommune from '@/components/select-commune'
-
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 const MAX_SIZE = 10 * 1024 * 1024

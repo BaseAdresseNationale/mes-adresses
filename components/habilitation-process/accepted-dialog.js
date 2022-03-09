@@ -6,8 +6,7 @@ import {getCommune} from '@/lib/bal-api'
 
 import StatusBadge from '@/components/status-badge'
 import TextWrapper from '@/components/text-wrapper'
-
-import AuthenticatedUser from './authenticated-user'
+import AuthenticatedUser from '@/components/habilitation-process/authenticated-user'
 
 function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicted}) {
   const [isBALCertified, setIsBALCertified] = useState(false)

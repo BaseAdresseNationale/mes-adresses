@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import Link from 'next/link'
 import {Heading, Pane, Icon} from 'evergreen-ui'
 
-import Map from '../components/dashboard/map'
-import Header from '../components/header'
+import Map from '@/components/dashboard/map'
+import Header from '@/components/header'
 
 const MOBILE_WIDTH = '820'
 

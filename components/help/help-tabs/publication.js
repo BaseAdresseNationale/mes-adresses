@@ -1,7 +1,6 @@
 import {Alert, Button, ListItem, OrderedList, UnorderedList, Pane, Paragraph, Text, Strong, CaretDownIcon, UploadIcon, EditIcon} from 'evergreen-ui'
 
 import StatusBadge from '@/components/status-badge'
-
 import Tuto from '@/components/help/tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Problems from '@/components/help/help-tabs/problems'

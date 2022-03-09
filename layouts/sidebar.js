@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {Pane, Button, ChevronRightIcon, CrossIcon, ChevronLeftIcon} from 'evergreen-ui'
 
 import useWindowSize from '@/hooks/window-size'
+
 import BalDataContext from '@/contexts/bal-data'
 
 function Sidebar({isHidden, size, onToggle, top, ...props}) {

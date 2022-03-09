@@ -8,16 +8,6 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import {getBaseLocale, getVoie, getToponyme} from '@/lib/bal-api'
 import {getCommune} from '@/lib/geo-api'
 
-import SubHeader from '@/components/sub-header'
-import IEWarning from '@/components/ie-warning'
-import Fullscreen from '@/layouts/fullscreen'
-import Sidebar from '@/layouts/sidebar'
-import WelcomeMessage from '@/components/welcome-message'
-import CertificationMessage from '@/components/certification-message'
-
-import Map from '@/components/map'
-import Help from '@/components/help'
-
 import {LocalStorageContextProvider} from '@/contexts/local-storage'
 import {HelpContextProvider} from '@/contexts/help'
 import {SettingsContextProvider} from '@/contexts/settings'
@@ -29,11 +19,20 @@ import {BalDataContextProvider} from '@/contexts/bal-data'
 import {ParcellesContextProvider} from '@/contexts/parcelles'
 
 import useWindowSize from '@/hooks/window-size'
-import Settings from '@/components/settings'
-
-import Header from '@/components/header'
 
 import ErrorPage from '@/pages/_error'
+
+import Fullscreen from '@/layouts/fullscreen'
+import Sidebar from '@/layouts/sidebar'
+
+import Settings from '@/components/settings'
+import Header from '@/components/header'
+import SubHeader from '@/components/sub-header'
+import IEWarning from '@/components/ie-warning'
+import WelcomeMessage from '@/components/welcome-message'
+import CertificationMessage from '@/components/certification-message'
+import Map from '@/components/map'
+import Help from '@/components/help'
 
 const layoutMap = {
   fullscreen: Fullscreen,

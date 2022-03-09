@@ -4,10 +4,9 @@ import Router from 'next/router'
 import {Pane, Table, Button, PlusIcon} from 'evergreen-ui'
 
 import {sortBalByUpdate} from '@/lib/sort-bal'
+import {listBasesLocales} from '@/lib/bal-api'
 
 import useFuse from '@/hooks/fuse'
-
-import {listBasesLocales} from '@/lib/bal-api'
 
 import BaseLocaleCard from '@/components/base-locale-card'
 

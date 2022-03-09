@@ -4,13 +4,12 @@ import Router from 'next/router'
 import {Pane, Table, Paragraph} from 'evergreen-ui'
 
 import {sortBalByUpdate} from '@/lib/sort-bal'
+import {listBasesLocales} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
 import useFuse from '@/hooks/fuse'
 import useError from '@/hooks/error'
-
-import {listBasesLocales} from '@/lib/bal-api'
 
 import DeleteWarning from '@/components/delete-warning'
 import BaseLocaleCard from '@/components/base-locale-card'

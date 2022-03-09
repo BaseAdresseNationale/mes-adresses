@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {Pane, Heading, Button, Paragraph, ManualIcon} from 'evergreen-ui'
 
 import HelpContext from '@/contexts/help'
+
 import useHelp from '@/hooks/help'
 
 function DocumentationLink({title, description, link, onClick}) {

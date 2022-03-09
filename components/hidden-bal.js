@@ -1,6 +1,6 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
-import {Pane, Text, PlusIcon, MinusIcon, UndoIcon, Spinner} from 'evergreen-ui'
 import {map, filter} from 'lodash'
+import {Pane, Text, PlusIcon, MinusIcon, UndoIcon, Spinner} from 'evergreen-ui'
 
 import {getBaseLocale} from '@/lib/bal-api'
 

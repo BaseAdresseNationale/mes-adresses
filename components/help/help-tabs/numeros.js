@@ -3,7 +3,6 @@ import {Pane, Paragraph, OrderedList, ListItem, Strong, Button, Menu, IconButton
 import Tuto from '@/components/help/tuto'
 import SubTuto from '@/components/help/tuto/sub-tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
-
 import Sidebar from '@/components/help/tuto/sidebar'
 import Problems from '@/components/help/help-tabs/problems'
 

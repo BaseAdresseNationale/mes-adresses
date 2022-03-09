@@ -1,15 +1,14 @@
 import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
+import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 
 import {getCommune} from '@/lib/bal-api'
 import {getCommune as getCommuneGeoData} from '@/lib/geo-api'
 
 import CertificationCount from '@/components/certification-count'
 import StatusBadge from '@/components/status-badge'
-
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
 
 function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove, onHide}) {

@@ -12,9 +12,7 @@ import DrawContext from '@/contexts/draw'
 import ParcellesContext from '@/contexts/parcelles'
 
 import AddressEditor from '@/components/bal/address-editor'
-
 import {vector, ortho, planIGN} from '@/components/map/styles'
-
 import NavControl from '@/components/map/nav-control'
 import EditableMarker from '@/components/map/editable-marker'
 import Control from '@/components/map/control'
@@ -22,7 +20,6 @@ import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
 import Draw from '@/components/map/draw'
 import StyleSelector from '@/components/map/style-selector'
-
 import useBounds from '@/components/map/hooks/bounds'
 import useSources from '@/components/map/hooks/sources'
 import useLayers from '@/components/map/hooks/layers'

@@ -10,10 +10,8 @@ import TokenContext from '@/contexts/token'
 import useError from '@/hooks/error'
 
 import HabilitationProcess from '@/components/habilitation-process/index'
-
 import Breadcrumbs from '@/components/breadcrumbs'
 import HabilitationTag from '@/components/habilitation-tag'
-
 import SettingsMenu from '@/components/sub-header/settings-menu'
 import DemoWarning from '@/components/sub-header/demo-warning'
 import BALStatus from '@/components/sub-header/bal-status'

@@ -5,7 +5,9 @@ import {sortBy, uniq} from 'lodash'
 
 import {normalizeSort} from '@/lib/normalize'
 import {positionsTypesList} from '@/lib/positions-types-list'
+
 import BalDataContext from '@/contexts/bal-data'
+
 import {useInput, useCheckboxInput} from '@/hooks/input'
 
 import Comment from '@/components/comment'

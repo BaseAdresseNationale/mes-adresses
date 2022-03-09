@@ -2,11 +2,11 @@ import {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Menu, CogIcon, Dialog, Paragraph, Strong} from 'evergreen-ui'
 
+import {getCommune} from '@/lib/bal-api'
+
 import LocalStorageContext from '@/contexts/local-storage'
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
-
-import {getCommune} from '@/lib/bal-api'
 
 function CertificationMessage({balId, codeCommune}) {
   const [isShown, setIsShown] = useState(false)

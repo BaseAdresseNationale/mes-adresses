@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
-import LocalStorageContext from '@/contexts/local-storage'
-
 import {createBaseLocale, addCommune, populateCommune, searchBAL} from '@/lib/bal-api'
+
+import LocalStorageContext from '@/contexts/local-storage'
 
 import useFocus from '@/hooks/focus'
 import {useInput, useCheckboxInput} from '@/hooks/input'

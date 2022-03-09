@@ -1,7 +1,7 @@
 import {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, SelectField, TextInput, Alert, TextInputField} from 'evergreen-ui'
 import {sortBy} from 'lodash'
+import {Pane, SelectField, TextInput, Alert, TextInputField} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 import {computeCompletNumero} from '@/lib/utils/numero'

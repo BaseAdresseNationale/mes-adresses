@@ -4,7 +4,6 @@ import {Pane, Tooltip, Button, Position, EditIcon} from 'evergreen-ui'
 import {sync, pauseSync, resumeSync} from '@/lib/bal-api'
 
 import StatusBadge from '@/components/status-badge'
-
 import BANSync from '@/components/sub-header/bal-status/ban-sync'
 import Publication from '@/components/sub-header/bal-status/publication'
 import RefreshSyncBadge from '@/components/sub-header/bal-status/refresh-sync-badge'

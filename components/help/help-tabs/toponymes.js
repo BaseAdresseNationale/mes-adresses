@@ -2,7 +2,6 @@ import {OrderedList, Pane, ListItem, Button, AddIcon, MapMarkerIcon, Menu, MoreI
 
 import Tuto from '@/components/help/tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
-
 import Sidebar from '@/components/help/tuto/sidebar'
 import Problems from '@/components/help/help-tabs/problems'
 

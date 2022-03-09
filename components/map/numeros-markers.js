@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import randomColor from 'randomcolor'
 
-import useError from '@/hooks/error'
-
 import {removeNumero} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
+
+import useError from '@/hooks/error'
 
 import NumeroMarker from '@/components/map/numero-marker'
 

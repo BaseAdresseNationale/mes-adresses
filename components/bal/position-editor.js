@@ -2,9 +2,10 @@ import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
 
+import {positionsTypesList} from '@/lib/positions-types-list'
+
 import MarkersContext from '@/contexts/markers'
 
-import {positionsTypesList} from '@/lib/positions-types-list'
 import InputLabel from '@/components/input-label'
 
 function PositionEditor({isToponyme}) {

@@ -1,10 +1,8 @@
 import {Pane, OrderedList, ListItem, Button, Strong, Paragraph, Tab, CogIcon, PlusIcon} from 'evergreen-ui'
 
 import BALRecovery from '@/components/bal-recovery/bal-recovery'
-
 import Tuto from '@/components/help/tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
-
 import Problems from '@/components/help/help-tabs/problems'
 
 function BaseLocale() {
