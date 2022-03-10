@@ -86,7 +86,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
 
   const onMultipleEdit = async (balId, body) => {
     try {
-      await batchNumeros(balId, body, token)
+      await batchNumeros(balId, body, token, true)
 
       await reloadNumeros()
       refreshBALSync()
