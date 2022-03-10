@@ -60,8 +60,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     resetPositionType()
   }
 
-  const onFormCancel = event => {
-    event.preventDefault()
+  const onFormCancel = () => {
     resetSelectedNumerosIds()
     setIsShown(false)
   }
@@ -125,6 +124,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           title='Modification multiple'
           isConfirmLoading={isLoading}
           hasFooter={false}
+          onCloseComplete={() => onFormCancel()}
         >
           <Pane marginX='-32px' marginBottom='-8px'>
             <Paragraph marginBottom={8} marginLeft={32} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
