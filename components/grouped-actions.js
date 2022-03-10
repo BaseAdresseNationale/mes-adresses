@@ -68,19 +68,19 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const handleConfirm = useCallback(async event => {
     event.preventDefault()
 
-    const commentCondition = c => {
+    const commentCondition = commentValue => {
       if (removeAllComments) {
         return null
       }
 
-      if (c) {
-        return c
+      if (commentValue) {
+        return commentValue
       }
     }
 
-    const getCertifie = c => {
-      if (c !== null) {
-        return c
+    const getIsCertifie = isCertifie => {
+      if (isCertifie !== null) {
+        return isCertifie
       }
     }
 
@@ -94,7 +94,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           [positionType === '' ? null : 'positionType']: positionType,
           toponyme: selectedToponymeId === '' ? null : selectedToponymeId,
           comment: commentCondition(comment),
-          certifie: getCertifie(certifie)
+          certifie: getIsCertifie(certifie)
         }
       })
     } catch (error) {
@@ -200,7 +200,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
 
               {hasComment && (
-                <Alert intent='warning' marginBottom={8}>Attention, certains numéros sélectionnés possèdent un commentaire. En cas de modification, il sera remplacé.</Alert>
+                <Alert intent='warning' marginBottom={8}>Attention, certains numéros sélectionnés possèdent un commentaire. En cas de modification, leurs commentaires seront remplacés.</Alert>
               )}
 
               <Checkbox
