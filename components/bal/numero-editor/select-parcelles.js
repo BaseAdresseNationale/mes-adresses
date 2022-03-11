@@ -1,6 +1,8 @@
-import {useContext} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Text} from 'evergreen-ui'
+
+import SelectedParcellesDialog from './selected-parcelles-dialog'
 
 import ParcellesContext from '../../../contexts/parcelles'
 
@@ -8,9 +10,16 @@ import InputLabel from '../../input-label'
 import MapContext from '../../../contexts/map'
 
 function SelectParcelles({isToponyme}) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const {isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
   const addressType = isToponyme ? 'toponyme' : 'numéro'
+
+  useEffect(() => {
+    if (isDialogOpen && selectedParcelles.length < 4) {
+      setIsDialogOpen(false)
+    }
+  }, [isDialogOpen, selectedParcelles])
 
   return (
     <Pane display='flex' flexDirection='column'>
@@ -20,7 +29,7 @@ function SelectParcelles({isToponyme}) {
       />
       <Pane>
         {selectedParcelles.length > 0 ?
-          selectedParcelles.map(parcelle => {
+          selectedParcelles.slice(0, 3).map(parcelle => {
             const isHovered = parcelle === hoveredParcelle?.id
 
             return (
@@ -44,6 +53,19 @@ function SelectParcelles({isToponyme}) {
             </Alert>
           )}
       </Pane>
+
+      <SelectedParcellesDialog
+        selectedParcelles={selectedParcelles}
+        hoveredParcelle={hoveredParcelle}
+        handleParcelle={handleParcelle}
+        handleHoveredParcelle={handleHoveredParcelle}
+        isShown={isDialogOpen}
+        setIsShown={setIsDialogOpen}
+      />
+
+      {selectedParcelles.length > 3 && (
+        <Button marginTop={8} type='button' onClick={() => setIsDialogOpen(true)}>Afficher les autres parcelles sélectionnées ({selectedParcelles.length - 3})</Button>
+      )}
 
       <Button
         type='button'
