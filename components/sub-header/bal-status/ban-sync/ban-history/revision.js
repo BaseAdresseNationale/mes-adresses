@@ -14,7 +14,7 @@ function getIndicatorColor(isCurrent, isUserBAL) {
 }
 
 function Revision({baseLocaleId, commune, revision}) {
-  const isUserBAL = revision.context.extras.balId === baseLocaleId
+  const isUserBAL = revision.context.extras?.balId === baseLocaleId
   const indicatorColor = getIndicatorColor(revision.current, isUserBAL)
 
   return (
