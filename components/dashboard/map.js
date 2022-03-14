@@ -40,6 +40,8 @@ function Map({departement, basesLocales}) {
         colors.green,
         ['==', ['get', 'maxStatus'], 'replaced'],
         colors.red,
+        ['==', ['get', 'maxStatus'], 'published-other'],
+        colors.purple,
         ['==', ['get', 'maxStatus'], 'ready-to-publish'],
         colors.blue,
         ['==', ['get', 'maxStatus'], 'draft'],
