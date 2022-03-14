@@ -9,7 +9,7 @@ function SelectedParcellesDialog({selectedParcelles, hoveredParcelle, handleParc
       title='Parcelles sélectionnées'
       onCloseComplete={() => setIsShown(false)}
     >
-      {selectedParcelles.slice(3).map(parcelle => {
+      {selectedParcelles.map(parcelle => {
         const isHovered = parcelle === hoveredParcelle?.id
 
         return (

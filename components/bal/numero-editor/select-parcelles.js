@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext} from 'react'
+import {useState, useEffect, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Text} from 'evergreen-ui'
 
@@ -15,11 +15,23 @@ function SelectParcelles({isToponyme}) {
   const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
   const addressType = isToponyme ? 'toponyme' : 'numéro'
 
+  const firstSelectedParcelles = useMemo(() => {
+    if (selectedParcelles.length > 0) {
+      return selectedParcelles.slice(0, 3)
+    }
+  }, [selectedParcelles])
+
+  const lastSelectedParcelles = useMemo(() => {
+    if (selectedParcelles.length > 3) {
+      return selectedParcelles.slice(3)
+    }
+  }, [selectedParcelles])
+
   useEffect(() => {
-    if (isDialogOpen && selectedParcelles.length < 4) {
+    if (isDialogOpen && !lastSelectedParcelles) {
       setIsDialogOpen(false)
     }
-  }, [isDialogOpen, selectedParcelles])
+  }, [isDialogOpen, lastSelectedParcelles])
 
   return (
     <Pane display='flex' flexDirection='column'>
@@ -29,7 +41,7 @@ function SelectParcelles({isToponyme}) {
       />
       <Pane>
         {selectedParcelles.length > 0 ?
-          selectedParcelles.slice(0, 3).map(parcelle => {
+          firstSelectedParcelles.map(parcelle => {
             const isHovered = parcelle === hoveredParcelle?.id
 
             return (
@@ -54,17 +66,18 @@ function SelectParcelles({isToponyme}) {
           )}
       </Pane>
 
-      <SelectedParcellesDialog
-        selectedParcelles={selectedParcelles}
-        hoveredParcelle={hoveredParcelle}
-        handleParcelle={handleParcelle}
-        handleHoveredParcelle={handleHoveredParcelle}
-        isShown={isDialogOpen}
-        setIsShown={setIsDialogOpen}
-      />
-
-      {selectedParcelles.length > 3 && (
-        <Button marginTop={8} type='button' onClick={() => setIsDialogOpen(true)}>Afficher les autres parcelles sélectionnées ({selectedParcelles.length - 3})</Button>
+      {lastSelectedParcelles && (
+        <>
+          <SelectedParcellesDialog
+            selectedParcelles={lastSelectedParcelles}
+            hoveredParcelle={hoveredParcelle}
+            handleParcelle={handleParcelle}
+            handleHoveredParcelle={handleHoveredParcelle}
+            isShown={isDialogOpen}
+            setIsShown={setIsDialogOpen}
+          />
+          <Button marginTop={8} type='button' onClick={() => setIsDialogOpen(true)}>Afficher les autres parcelles sélectionnées ({lastSelectedParcelles.length})</Button>
+        </>
       )}
 
       <Button
