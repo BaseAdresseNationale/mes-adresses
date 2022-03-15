@@ -56,7 +56,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
               <Pane key={code} background={key % 2 ? 'tin1' : 'tint2'}>
                 <CommuneBALList
                   nomCommune={nom}
-                  basesLocales={BALGroupedByCommune[code]}
+                  basesLocales={BALGroupedByCommune[nom]}
                 />
               </Pane>
             ))}
