@@ -64,9 +64,8 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, isPopulating, on
             <TableRow
               key={voie._id}
               id={voie._id}
-              isSelectable={!isEditing && !isPopulating}
               label={voie.nom}
-              isEditingEnabled={Boolean(!isEditing && token)}
+              isEditingEnabled={Boolean(!isEditing && !isPopulating && token)}
               actions={{
                 onSelect,
                 onEdit: onEnableEditing,

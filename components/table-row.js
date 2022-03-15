@@ -1,24 +1,12 @@
-import React, {useContext, useCallback, useMemo} from 'react'
+import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Table, Position, Tooltip, EndorsedIcon, WarningSignIcon, CommentIcon, Checkbox} from 'evergreen-ui'
-
-import BalDataContext from '@/contexts/bal-data'
 
 import TableRowActions from '@/components/table-row/table-row-actions'
 import TableRowEditShortcut from './table-row/table-row-edit-shortcut'
 
-const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectable, isSelected, toponymeId, isEditingEnabled, isCertified, handleSelect, actions}) => {
-  const {numeros, toponymes} = useContext(BalDataContext)
-  const hasNumero = numeros && numeros.length > 1
-
+const TableRow = React.memo(({id, label, complement, warning, comment, secondary, isSelectable, isSelected, isEditingEnabled, isCertified, handleSelect, actions}) => {
   const {onSelect, onEdit, onRemove} = actions
-
-  const toponymeName = useMemo(() => {
-    if (toponymeId && toponymes) {
-      const toponyme = toponymes.find(({_id}) => _id === toponymeId)
-      return toponyme?.nom
-    }
-  }, [toponymeId, toponymes])
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && isEditingEnabled) {
@@ -30,7 +18,7 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
 
   return (
     <Table.Row onClick={onClick}>
-      {isEditingEnabled && hasNumero && isSelectable && (
+      {isEditingEnabled && isSelectable && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
             checked={isSelected}
@@ -41,7 +29,7 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
 
       <TableRowEditShortcut
         label={label}
-        complement={toponymeName}
+        complement={complement}
         isEditingEnabled={isEditingEnabled}
         isSelectable={Boolean(onSelect)}
       />
@@ -94,8 +82,8 @@ TableRow.propTypes = {
   id: PropTypes.string.isRequired,
   warning: PropTypes.string,
   label: PropTypes.string.isRequired,
+  complement: PropTypes.string,
   comment: PropTypes.string,
-  toponymeId: PropTypes.string,
   secondary: PropTypes.string,
   isSelectable: PropTypes.bool,
   handleSelect: PropTypes.func,
@@ -110,9 +98,9 @@ TableRow.propTypes = {
 }
 
 TableRow.defaultProps = {
+  complement: null,
   warning: null,
   comment: null,
-  toponymeId: null,
   secondary: null,
   isSelectable: false,
   handleSelect: null,

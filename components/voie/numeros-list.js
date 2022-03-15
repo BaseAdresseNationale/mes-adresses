@@ -17,7 +17,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {isEditing, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
+  const {isEditing, reloadNumeros, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
@@ -44,6 +44,13 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
 
     return filteredCertifieNumeros?.length === selectedNumerosIds.length
   }, [numeros, selectedNumerosIds])
+
+  const getToponymeName = useCallback(toponymeId => {
+    if (toponymeId) {
+      const toponyme = toponymes.find(({_id}) => _id === toponymeId)
+      return toponyme?.nom
+    }
+  }, [toponymes])
 
   const handleSelect = useCallback(id => {
     setSelectedNumerosIds(selectedNumero => {
@@ -193,10 +200,10 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             isCertified={numero.certifie}
             comment={numero.comment}
             warning={numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
-            isSelectable={!isEditionDisabled}
+            isSelectable={!isEditionDisabled && filtered.length > 1}
             label={numero.numeroComplet}
             secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-            toponymeId={numero.toponyme}
+            complement={getToponymeName(numero.toponyme)}
             handleSelect={handleSelect}
             isSelected={selectedNumerosIds.includes(numero._id)}
             isEditingEnabled={Boolean(!isEditing && token)}

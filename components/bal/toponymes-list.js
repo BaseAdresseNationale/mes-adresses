@@ -65,9 +65,8 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
               key={toponyme._id}
               id={toponyme._id}
               warning={toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null}
-              isSelectable={!isEditing && !isPopulating}
               label={toponyme.nom}
-              isEditingEnabled={Boolean(!isEditing && token)}
+              isEditingEnabled={Boolean(!isEditing && !isPopulating && token)}
               actions={{
                 onSelect,
                 onEdit: onEnableEditing,
