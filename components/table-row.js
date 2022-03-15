@@ -6,7 +6,7 @@ import TableRowActions from '@/components/table-row/table-row-actions'
 import TableRowEditShortcut from './table-row/table-row-edit-shortcut'
 import TableRowNotifications from './table-row/table-row-notifications'
 
-const TableRow = React.memo(({id, label, complement, secondary, notifications, isSelectable, isSelected, isEditingEnabled, handleSelect, actions}) => {
+const TableRow = React.memo(({id, label, complement, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
   const {onSelect, onEdit, onRemove} = actions
 
   const onClick = useCallback(e => {
@@ -19,7 +19,7 @@ const TableRow = React.memo(({id, label, complement, secondary, notifications, i
 
   return (
     <Table.Row onClick={onClick}>
-      {isEditingEnabled && isSelectable && (
+      {isEditingEnabled && handleSelect && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
             checked={isSelected}
@@ -41,7 +41,9 @@ const TableRow = React.memo(({id, label, complement, secondary, notifications, i
         </Table.TextCell>
       )}
 
-      {notifications && <TableRowNotifications {...notifications} />}
+      {notifications && (
+        <TableRowNotifications {...notifications} />
+      )}
 
       {isEditingEnabled && actions && (
         <TableRowActions
@@ -59,7 +61,6 @@ TableRow.propTypes = {
   label: PropTypes.string.isRequired,
   complement: PropTypes.string,
   secondary: PropTypes.string,
-  isSelectable: PropTypes.bool,
   handleSelect: PropTypes.func,
   isSelected: PropTypes.bool,
   isEditingEnabled: PropTypes.bool,
@@ -75,7 +76,6 @@ TableRow.defaultProps = {
   complement: null,
   secondary: null,
   notifications: null,
-  isSelectable: false,
   handleSelect: null,
   isSelected: false,
   isEditingEnabled: false

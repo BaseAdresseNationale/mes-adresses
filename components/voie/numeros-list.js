@@ -195,13 +195,11 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
         {filtered.map(numero => (
           <TableRow
             key={numero._id}
-            {...numero}
             id={numero._id}
-            isSelectable={!isEditionDisabled && filtered.length > 1}
             label={numero.numeroComplet}
             secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
             complement={getToponymeName(numero.toponyme)}
-            handleSelect={handleSelect}
+            handleSelect={!isEditionDisabled && filtered.length > 1 ? handleSelect : null}
             isSelected={selectedNumerosIds.includes(numero._id)}
             isEditingEnabled={Boolean(!isEditing && token)}
             notifications={{
