@@ -6,6 +6,7 @@ import {Pane, Table} from 'evergreen-ui'
 import {normalizeSort} from '@/lib/normalize'
 
 import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
 
 import useFuse from '@/hooks/fuse'
 
@@ -13,6 +14,7 @@ import TableRow from '@/components/table-row'
 import VoieEditor from '@/components/bal/voie-editor'
 
 function VoiesList({voies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) {
+  const {token} = useContext(TokenContext)
   const {isEditing, editingId} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(voies, 200, {
@@ -64,6 +66,7 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, isPopulating, on
               id={voie._id}
               isSelectable={!isEditing && !isPopulating}
               label={voie.nom}
+              isEditingEnabled={Boolean(!isEditing && token)}
               actions={{
                 onSelect,
                 onEdit: onEnableEditing,

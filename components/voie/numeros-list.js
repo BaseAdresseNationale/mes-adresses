@@ -17,7 +17,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {reloadNumeros, refreshBALSync} = useContext(BalDataContext)
+  const {isEditing, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
@@ -199,6 +199,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             toponymeId={numero.toponyme}
             handleSelect={handleSelect}
             isSelected={selectedNumerosIds.includes(numero._id)}
+            isEditingEnabled={Boolean(!isEditing && token)}
             actions={{
               onRemove,
               onEdit: handleEditing

@@ -2,14 +2,13 @@ import React, {useState, useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Table, Position, Tooltip, EditIcon, EndorsedIcon, WarningSignIcon, CommentIcon, Checkbox} from 'evergreen-ui'
 
-import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
-import TableRowActions from './table-row/table-row-actions'
 
-const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectable, isSelected, toponymeId, isCertified, handleSelect, actions}) => {
+import TableRowActions from '@/components/table-row/table-row-actions'
+
+const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectable, isSelected, toponymeId, isEditingEnabled, isCertified, handleSelect, actions}) => {
   const [hovered, setHovered] = useState(false)
-  const {token} = useContext(TokenContext)
-  const {numeros, isEditing, toponymes} = useContext(BalDataContext)
+  const {numeros, toponymes} = useContext(BalDataContext)
   const hasNumero = numeros && numeros.length > 1
 
   const {onSelect, onEdit, onRemove} = actions
@@ -22,12 +21,12 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
   }, [toponymeId, toponymes])
 
   const onClick = useCallback(e => {
-    if (e.target.closest('[data-editable]') && !isEditing && token) {
+    if (e.target.closest('[data-editable]') && isEditingEnabled) {
       onEdit(id)
     } else if (onSelect && e.target.closest('[data-browsable]')) {
       onSelect(id)
     }
-  }, [id, isEditing, token, onEdit, onSelect])
+  }, [id, isEditingEnabled, onEdit, onSelect])
 
   const _onMouseEnter = useCallback(() => {
     if (onEdit) {
@@ -41,7 +40,7 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
 
   return (
     <Table.Row onClick={onClick}>
-      {token && !isEditing && hasNumero && isSelectable && (
+      {isEditingEnabled && hasNumero && isSelectable && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
             checked={isSelected}
@@ -59,20 +58,20 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
         <Table.TextCell
           data-editable
           flex='0 1 1'
-          style={{cursor: onEdit && !isEditing ? 'text' : 'default'}}
+          style={{cursor: isEditingEnabled && onEdit ? 'text' : 'default'}}
           className='edit-cell'
         >
           <Pane padding={1}>
             {label} <i>{toponymeName && ` - ${toponymeName}`}</i>
-            {!isEditing && onEdit && token && (
+            {isEditingEnabled && onEdit && (
               <span className='pencil-icon'>
                 <EditIcon marginBottom={-4} marginLeft={8} />
               </span>
-
             )}
           </Pane>
         </Table.TextCell>
       </Table.Cell>
+
       {secondary && (
         <Table.TextCell flex='0 1 1'>
           {secondary}
@@ -106,7 +105,7 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
         </Table.TextCell>
       )}
 
-      {token && actions && (
+      {isEditingEnabled && actions && (
         <TableRowActions
           onSelect={() => onSelect(id)}
           onEdit={() => onEdit(id)}
@@ -138,6 +137,7 @@ TableRow.propTypes = {
   handleSelect: PropTypes.func,
   isSelected: PropTypes.bool,
   isCertified: PropTypes.bool,
+  isEditingEnabled: PropTypes.bool,
   actions: PropTypes.shape({
     onSelect: PropTypes.func,
     onEdit: PropTypes.func,
@@ -153,7 +153,8 @@ TableRow.defaultProps = {
   isSelectable: false,
   handleSelect: null,
   isSelected: false,
-  isCertified: false
+  isCertified: false,
+  isEditingEnabled: false
 }
 
 export default TableRow

@@ -6,6 +6,7 @@ import {Pane, Table} from 'evergreen-ui'
 import {normalizeSort} from '@/lib/normalize'
 
 import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
 
 import useFuse from '@/hooks/fuse'
 
@@ -13,6 +14,7 @@ import TableRow from '@/components/table-row'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
 function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) {
+  const {token} = useContext(TokenContext)
   const {isEditing, editingId} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(toponymes, 200, {
@@ -65,6 +67,7 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
               warning={toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null}
               isSelectable={!isEditing && !isPopulating}
               label={toponyme.nom}
+              isEditingEnabled={Boolean(!isEditing && token)}
               actions={{
                 onSelect,
                 onEdit: onEnableEditing,
