@@ -1,6 +1,6 @@
 import {useState, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
+import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
 
 import {batchNumeros, removeMultipleNumeros, removeNumero} from '../../lib/bal-api'
 
@@ -15,7 +15,6 @@ import GroupedActions from '@/components/grouped-actions'
 function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
-  const [error, setError] = useState(null)
 
   const {numeros, reloadNumeros, refreshBALSync, baseLocale} = useContext(BalDataContext)
 
@@ -70,30 +69,20 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
   }, [reloadNumeros, refreshBALSync, token])
 
   const onMultipleRemove = async () => {
-    try {
-      await removeMultipleNumeros(baseLocale._id, {numerosIds: selectedNumerosIds}, token, true)
+    await removeMultipleNumeros(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
 
-      await reloadNumeros()
-      refreshBALSync()
-      toaster.success('Les numéros ont bien été supprimés')
-    } catch (error) {
-      setError(error.message)
-    }
+    await reloadNumeros()
+    refreshBALSync()
 
     setSelectedNumerosIds([])
     setIsRemoveWarningShown(false)
   }
 
   const onMultipleEdit = async (balId, body) => {
-    try {
-      await batchNumeros(balId, body, token, true)
+    await batchNumeros(balId, body, token)
 
-      await reloadNumeros()
-      refreshBALSync()
-      toaster.success('Les numéros ont bien été modifiés')
-    } catch (error) {
-      setError(error.message)
-    }
+    await reloadNumeros()
+    refreshBALSync()
   }
 
   return (
@@ -147,12 +136,6 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
         onConfirm={onMultipleRemove}
       />
 
-      {error && (
-        <Alert marginY={5} intent='danger' title='Erreur'>
-          {error}
-        </Alert>
-      )}
-
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
@@ -198,12 +181,6 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
           />
         ))}
       </Pane>
-
-      {error && (
-        <Alert marginY={5} intent='danger' title='Erreur'>
-          {error}
-        </Alert>
-      )}
     </>
   )
 }
