@@ -1,15 +1,18 @@
 import React, {useState, useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Table, Popover, Menu, Position, IconButton, toaster, Tooltip, EditIcon, EndorsedIcon, WarningSignIcon, CommentIcon, Checkbox, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Table, Position, Tooltip, EditIcon, EndorsedIcon, WarningSignIcon, CommentIcon, Checkbox} from 'evergreen-ui'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
+import TableRowActions from './table-row/table-row-actions'
 
-const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId, isCertified}) => {
+const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectable, isSelected, toponymeId, isCertified, handleSelect, actions}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
   const {numeros, isEditing, toponymes} = useContext(BalDataContext)
   const hasNumero = numeros && numeros.length > 1
+
+  const {onSelect, onEdit, onRemove} = actions
 
   const toponymeName = useMemo(() => {
     if (toponymeId && toponymes) {
@@ -25,18 +28,6 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
       onSelect(id)
     }
   }, [id, isEditing, token, onEdit, onSelect])
-
-  const _onEdit = useCallback(() => {
-    onEdit(id)
-  }, [onEdit, id])
-
-  const _onRemove = useCallback(async () => {
-    try {
-      await onRemove(id)
-    } catch (error) {
-      toaster.danger(`Erreur : ${error.message}`)
-    }
-  }, [onRemove, id])
 
   const _onMouseEnter = useCallback(() => {
     if (onEdit) {
@@ -87,6 +78,7 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
           {secondary}
         </Table.TextCell>
       )}
+
       {comment && (
         <Table.Cell flex='0 1 1'>
           <Tooltip
@@ -97,6 +89,7 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
           </Tooltip>
         </Table.Cell>
       )}
+
       {isCertified && (
         <Table.TextCell flex='0 1 1'>
           <Tooltip content='Cette adresse est certifiée par la commune' position={Position.BOTTOM}>
@@ -104,6 +97,7 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
           </Tooltip>
         </Table.TextCell>
       )}
+
       {warning && (
         <Table.TextCell flex='0 1 1'>
           <Tooltip content={warning} position={Position.BOTTOM}>
@@ -111,35 +105,13 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
           </Tooltip>
         </Table.TextCell>
       )}
-      {token && (onEdit || onRemove) && (
-        <Table.TextCell flex='0 1 1'>
-          <Popover
-            position={Position.BOTTOM_LEFT}
-            content={
-              <Menu>
-                <Menu.Group>
-                  {onSelect && (
-                    <Menu.Item icon={SendToMapIcon} onSelect={() => onSelect(id)}>
-                      Consulter
-                    </Menu.Item>
-                  )}
-                  {onEdit && !isEditing && (
-                    <Menu.Item icon={EditIcon} onSelect={_onEdit}>
-                      Modifier
-                    </Menu.Item>
-                  )}
-                  {onRemove && (
-                    <Menu.Item icon={TrashIcon} intent='danger' onSelect={_onRemove}>
-                      Supprimer…
-                    </Menu.Item>
-                  )}
-                </Menu.Group>
-              </Menu>
-            }
-          >
-            <IconButton type='button' height={24} icon={MoreIcon} appearance='minimal' />
-          </Popover>
-        </Table.TextCell>
+
+      {token && actions && (
+        <TableRowActions
+          onSelect={() => onSelect(id)}
+          onEdit={() => onEdit(id)}
+          onRemove={() => onRemove(id)}
+        />
       )}
 
       <style global jsx>{`
@@ -163,12 +135,14 @@ TableRow.propTypes = {
   toponymeId: PropTypes.string,
   secondary: PropTypes.string,
   isSelectable: PropTypes.bool,
-  onSelect: PropTypes.func,
-  onEdit: PropTypes.func,
-  onRemove: PropTypes.func.isRequired,
   handleSelect: PropTypes.func,
   isSelected: PropTypes.bool,
-  isCertified: PropTypes.bool
+  isCertified: PropTypes.bool,
+  actions: PropTypes.shape({
+    onSelect: PropTypes.func,
+    onEdit: PropTypes.func,
+    onRemove: PropTypes.func
+  }).isRequired
 }
 
 TableRow.defaultProps = {
@@ -177,9 +151,7 @@ TableRow.defaultProps = {
   toponymeId: null,
   secondary: null,
   isSelectable: false,
-  onEdit: null,
   handleSelect: null,
-  onSelect: null,
   isSelected: false,
   isCertified: false
 }

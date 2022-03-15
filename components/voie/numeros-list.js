@@ -199,8 +199,10 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             toponymeId={numero.toponyme}
             handleSelect={handleSelect}
             isSelected={selectedNumerosIds.includes(numero._id)}
-            onEdit={handleEditing}
-            onRemove={onRemove}
+            actions={{
+              onRemove,
+              onEdit: handleEditing
+            }}
           />
         ))}
       </Pane>

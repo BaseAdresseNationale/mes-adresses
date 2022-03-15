@@ -64,9 +64,11 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, isPopulating, on
               id={voie._id}
               isSelectable={!isEditing && !isPopulating}
               label={voie.nom}
-              onSelect={onSelect}
-              onEdit={onEnableEditing}
-              onRemove={id => setToRemove(id)}
+              actions={{
+                onSelect,
+                onEdit: onEnableEditing,
+                onRemove: () => setToRemove(voie._id)
+              }}
             />
           ))}
       </Table>
