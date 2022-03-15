@@ -18,7 +18,7 @@ const TableRow = React.memo(({id, label, complement, secondary, notifications, i
   }, [id, isEditingEnabled, onEdit, onSelect])
 
   return (
-    <Table.Row onClick={onClick}>
+    <Table.Row onClick={onClick} paddingRight={8}>
       {isEditingEnabled && handleSelect && (
         <Table.Cell flex='0 1 1'>
           <Checkbox
