@@ -5,7 +5,7 @@ import {Pane, Table, Popover, Menu, Position, IconButton, toaster, Tooltip, Edit
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
-const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId, isCertified}) => {
+const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectable, onSelect, onEdit, onRemove, handleSelect, isSelected, toponymeId, isCertified}) => {
   const [hovered, setHovered] = useState(false)
   const {token} = useContext(TokenContext)
   const {numeros, isEditing, toponymes} = useContext(BalDataContext)
@@ -19,12 +19,12 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
   }, [toponymeId, toponymes])
 
   const onClick = useCallback(e => {
-    if (e.target.closest('[data-editable]') && !isEditing && !code && token) { // Not a commune
+    if (e.target.closest('[data-editable]') && !isEditing && token) {
       onEdit(id)
     } else if (onSelect && e.target.closest('[data-browsable]')) {
       onSelect(id)
     }
-  }, [code, id, isEditing, token, onEdit, onSelect])
+  }, [id, isEditing, token, onEdit, onSelect])
 
   const _onEdit = useCallback(() => {
     onEdit(id)
@@ -58,9 +58,7 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
           />
         </Table.Cell>
       )}
-      {code && (
-        <Table.TextCell data-browsable isNumber flex='0 1 1'>{code}</Table.TextCell>
-      )}
+
       <Table.Cell
         data-browsable
         style={onSelect ? {cursor: 'pointer', backgroundColor: hovered ? '#E4E7EB' : '#f5f6f7'} : null}
@@ -159,7 +157,6 @@ const TableRow = React.memo(({id, code, label, warning, comment, secondary, isSe
 
 TableRow.propTypes = {
   id: PropTypes.string.isRequired,
-  code: PropTypes.string,
   warning: PropTypes.string,
   label: PropTypes.string.isRequired,
   comment: PropTypes.string,
@@ -175,7 +172,6 @@ TableRow.propTypes = {
 }
 
 TableRow.defaultProps = {
-  code: null,
   warning: null,
   comment: null,
   toponymeId: null,
