@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import {Table, Checkbox} from 'evergreen-ui'
 
 import TableRowActions from '@/components/table-row/table-row-actions'
-import TableRowEditShortcut from './table-row/table-row-edit-shortcut'
-import TableRowNotifications from './table-row/table-row-notifications'
+import TableRowEditShortcut from '@/components/table-row/table-row-edit-shortcut'
+import TableRowNotifications from '@/components/table-row/table-row-notifications'
 
 const TableRow = React.memo(({id, label, complement, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
   const {onSelect, onEdit, onRemove} = actions
