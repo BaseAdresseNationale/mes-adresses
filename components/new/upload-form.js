@@ -126,7 +126,7 @@ function UploadForm() {
   }
 
   const checkUserBALs = useCallback(async () => {
-    const validateResponse = await validate(file)
+    const validateResponse = await validate(file, {relaxFieldsDetection: true})
 
     if (validateResponse) {
       const communes = extractCommuneFromCSV(validateResponse)
