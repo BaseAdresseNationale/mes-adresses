@@ -1,13 +1,13 @@
-import React, {useState, useContext, useCallback, useMemo} from 'react'
+import React, {useContext, useCallback, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Table, Position, Tooltip, EditIcon, EndorsedIcon, WarningSignIcon, CommentIcon, Checkbox} from 'evergreen-ui'
+import {Table, Position, Tooltip, EndorsedIcon, WarningSignIcon, CommentIcon, Checkbox} from 'evergreen-ui'
 
 import BalDataContext from '@/contexts/bal-data'
 
 import TableRowActions from '@/components/table-row/table-row-actions'
+import TableRowEditShortcut from './table-row/table-row-edit-shortcut'
 
 const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectable, isSelected, toponymeId, isEditingEnabled, isCertified, handleSelect, actions}) => {
-  const [hovered, setHovered] = useState(false)
   const {numeros, toponymes} = useContext(BalDataContext)
   const hasNumero = numeros && numeros.length > 1
 
@@ -28,16 +28,6 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
     }
   }, [id, isEditingEnabled, onEdit, onSelect])
 
-  const _onMouseEnter = useCallback(() => {
-    if (onEdit) {
-      setHovered(true)
-    }
-  }, [onEdit])
-
-  const _onMouseLeave = useCallback(() => {
-    setHovered(false)
-  }, [])
-
   return (
     <Table.Row onClick={onClick}>
       {isEditingEnabled && hasNumero && isSelectable && (
@@ -49,28 +39,12 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
         </Table.Cell>
       )}
 
-      <Table.Cell
-        data-browsable
-        style={onSelect ? {cursor: 'pointer', backgroundColor: hovered ? '#E4E7EB' : '#f5f6f7'} : null}
-        onMouseEnter={() => _onMouseEnter(id)}
-        onMouseLeave={_onMouseLeave}
-      >
-        <Table.TextCell
-          data-editable
-          flex='0 1 1'
-          style={{cursor: isEditingEnabled && onEdit ? 'text' : 'default'}}
-          className='edit-cell'
-        >
-          <Pane padding={1}>
-            {label} <i>{toponymeName && ` - ${toponymeName}`}</i>
-            {isEditingEnabled && onEdit && (
-              <span className='pencil-icon'>
-                <EditIcon marginBottom={-4} marginLeft={8} />
-              </span>
-            )}
-          </Pane>
-        </Table.TextCell>
-      </Table.Cell>
+      <TableRowEditShortcut
+        label={label}
+        complement={toponymeName}
+        isEditingEnabled={isEditingEnabled}
+        isSelectable={Boolean(onSelect)}
+      />
 
       {secondary && (
         <Table.TextCell flex='0 1 1'>
@@ -112,16 +86,6 @@ const TableRow = React.memo(({id, label, warning, comment, secondary, isSelectab
           onRemove={() => onRemove(id)}
         />
       )}
-
-      <style global jsx>{`
-        .edit-cell .pencil-icon {
-          display: none;
-        }
-
-        .edit-cell:hover .pencil-icon {
-          display: inline-block;
-        }
-        `}</style>
     </Table.Row>
   )
 })
