@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import NextImage from 'next/image'
 import {Pane, Text, StatusIndicator, Strong, Badge} from 'evergreen-ui'
 
-import RevisionUser from './revision-user'
+import RevisionUser from '@/components/sub-header/bal-status/ban-sync/ban-history/revision-user'
 
 function getIndicatorColor(isCurrent, isUserBAL) {
   if (isCurrent) {

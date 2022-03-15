@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Heading, Icon, Pane} from 'evergreen-ui'
 
-import BaseLocaleCard from '../base-locale-card'
+import BaseLocaleCard from '@/components/base-locale-card'
 
 function CommuneBALList({nomCommune, basesLocales}) {
   const [isOpen, setIsOpen] = useState(false)

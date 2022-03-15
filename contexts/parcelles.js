@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect, useCallback, useMemo} from 'react'
 
-import MapContext from './map'
+import MapContext from '@/contexts/map'
 
 const ParcellesContext = React.createContext()
 

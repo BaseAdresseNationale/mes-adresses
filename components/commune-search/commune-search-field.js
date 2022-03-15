@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import {FormField} from 'evergreen-ui'
 import {splitBoxProps} from 'ui-box'
 
-import CommuneSearch from './commune-search'
+import CommuneSearch from '@/components/commune-search/commune-search'
 
 let idCounter = 0
 

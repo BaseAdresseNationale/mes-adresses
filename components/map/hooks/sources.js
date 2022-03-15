@@ -3,7 +3,7 @@ import {groupBy} from 'lodash'
 import computeCentroid from '@turf/centroid'
 import randomColor from 'randomcolor'
 
-import BalDataContext from '../../../contexts/bal-data'
+import BalDataContext from '@/contexts/bal-data'
 
 function useSources(voie, toponyme, hovered, editingId) {
   const {geojson} = useContext(BalDataContext)

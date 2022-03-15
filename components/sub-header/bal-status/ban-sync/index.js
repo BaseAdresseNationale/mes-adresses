@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import {Popover, Pane, Alert, Button, Position, CaretDownIcon} from 'evergreen-ui'
 
-import {computeStatus} from '../../../../lib/statuses'
+import {computeStatus} from '@/lib/statuses'
 
-import BANHistory from './ban-history'
-import SyncButton from './sync-button'
+import BANHistory from '@/components/sub-header/bal-status/ban-sync/ban-history'
+import SyncButton from '@/components/sub-header/bal-status/ban-sync/sync-button'
 
 function BANSync({baseLocale, commune, handleSync, togglePause}) {
   const {status, sync} = baseLocale

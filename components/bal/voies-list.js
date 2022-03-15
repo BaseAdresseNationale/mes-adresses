@@ -1,16 +1,16 @@
 import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-
 import {Pane, Table} from 'evergreen-ui'
 
-import BalDataContext from '../../contexts/bal-data'
+import {normalizeSort} from '@/lib/normalize'
 
-import useFuse from '../../hooks/fuse'
+import BalDataContext from '@/contexts/bal-data'
 
-import {normalizeSort} from '../../lib/normalize'
-import TableRow from '../table-row'
-import VoieEditor from './voie-editor'
+import useFuse from '@/hooks/fuse'
+
+import TableRow from '@/components/table-row'
+import VoieEditor from '@/components/bal/voie-editor'
 
 function VoiesList({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) {
   const {

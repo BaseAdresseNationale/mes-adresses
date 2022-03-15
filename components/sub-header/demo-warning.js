@@ -1,13 +1,13 @@
 import {useState, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
+import Router from 'next/router'
 import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
 
-import Router from 'next/router'
-import {useInput} from '../../hooks/input'
-import useFocus from '../../hooks/focus'
+import {getCommune} from '@/lib/geo-api'
+import {transformToDraft} from '@/lib/bal-api'
 
-import {getCommune} from '../../lib/geo-api'
-import {transformToDraft} from '../../lib/bal-api'
+import {useInput} from '@/hooks/input'
+import useFocus from '@/hooks/focus'
 
 function DemoWarning({baseLocale, token}) {
   const {_id, communes} = baseLocale

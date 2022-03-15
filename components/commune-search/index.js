@@ -1,2 +1,2 @@
-export {default as CommuneSearch} from './commune-search'
-export {default as CommuneSearchField} from './commune-search-field'
+export {default as CommuneSearch} from '@/components/commune-search/commune-search'
+export {default as CommuneSearchField} from '@/components/commune-search/commune-search-field'

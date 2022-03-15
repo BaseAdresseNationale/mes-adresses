@@ -4,9 +4,9 @@ import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import RecoverBALAlert from '../bal-recovery/recover-bal-alert'
+import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 
 function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove, onHide}) {
   const {status, _created, emails} = baseLocale

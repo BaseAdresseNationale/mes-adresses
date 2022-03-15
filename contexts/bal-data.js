@@ -4,7 +4,7 @@ import {toaster} from 'evergreen-ui'
 
 import {getHabilitation, getParcelles, getCommuneGeoJson, getNumeros, getVoies, getVoie, getBaseLocale, getToponymes, getNumerosToponyme, getToponyme, certifyBAL} from '../lib/bal-api'
 
-import TokenContext from './token'
+import TokenContext from '@/contexts/token'
 
 const BalDataContext = React.createContext()
 

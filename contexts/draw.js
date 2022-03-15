@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext, useMemo} from 'react'
 
-import BalDataContext from './bal-data'
+import BalDataContext from '@/contexts/bal-data'
 
 const DrawContext = React.createContext()
 

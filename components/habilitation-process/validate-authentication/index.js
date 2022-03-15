@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Pane, Button, ChevronLeftIcon} from 'evergreen-ui'
 
-import CodeValidation from './code-validation'
+import CodeValidation from '@/components/habilitation-process/validate-authentication/code-validation'
 
 function ValidateAuthentication({emailCommune, validatePinCode, resendCode, onCancel}) {
   return (
