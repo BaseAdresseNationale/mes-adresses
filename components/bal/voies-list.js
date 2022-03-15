@@ -13,7 +13,7 @@ import useFuse from '@/hooks/fuse'
 import TableRow from '@/components/table-row'
 import VoieEditor from '@/components/bal/voie-editor'
 
-function VoiesList({voies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) {
+function VoiesList({voies, onEnableEditing, isAdding, onSelect, onAdd, onEdit, onCancel, setToRemove}) {
   const {token} = useContext(TokenContext)
   const {isEditing, editingId} = useContext(BalDataContext)
 
@@ -65,7 +65,7 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, isPopulating, on
               key={voie._id}
               id={voie._id}
               label={voie.nom}
-              isEditingEnabled={Boolean(!isEditing && !isPopulating && token)}
+              isEditingEnabled={Boolean(!isEditing && token)}
               actions={{
                 onSelect,
                 onEdit: onEnableEditing,
@@ -80,7 +80,6 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, isPopulating, on
 
 VoiesList.propTypes = {
   voies: PropTypes.array,
-  isPopulating: PropTypes.bool,
   isAdding: PropTypes.bool.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
@@ -91,8 +90,7 @@ VoiesList.propTypes = {
 }
 
 VoiesList.defaultProps = {
-  voies: null,
-  isPopulating: false
+  voies: null
 }
 
 export default VoiesList

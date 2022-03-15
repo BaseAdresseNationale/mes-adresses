@@ -16,7 +16,6 @@ import ToponymesList from '@/components/bal/toponymes-list'
 
 const Commune = React.memo(({baseLocale, commune}) => {
   const [isAdding, setIsAdding] = useState(false)
-  const [isPopulating, setIsPopulating] = useState(false)
   const [toRemove, setToRemove] = useState(null)
   const [selectedTab, setSelectedTab] = useState('voie')
 
@@ -39,13 +38,13 @@ const Commune = React.memo(({baseLocale, commune}) => {
   useHelp(selectedTab === 'voie' ? 1 : 2)
 
   const onPopulate = useCallback(async () => {
-    setIsPopulating(true)
+    setIsEditing(true)
 
     await populateCommune(baseLocale._id, commune.code, token)
     await reloadVoies()
 
-    setIsPopulating(false)
-  }, [baseLocale._id, commune, reloadVoies, token])
+    setIsEditing(false)
+  }, [baseLocale._id, commune, reloadVoies, setIsEditing, token])
 
   const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace, parcelles}) => {
     if (selectedTab === 'voie') {
@@ -216,7 +215,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isAdding || isPopulating || Boolean(editingId) || isEditing}
+              disabled={isAdding || isEditing}
               onClick={() => setIsAdding(true)}
             >
               Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
@@ -228,7 +227,6 @@ const Commune = React.memo(({baseLocale, commune}) => {
       {selectedTab === 'voie' ? (
         <VoiesList
           voies={voies}
-          isPopulating={isPopulating}
           isAdding={isAdding}
           setToRemove={setToRemove}
           onEnableEditing={onEnableEditing}
@@ -240,7 +238,6 @@ const Commune = React.memo(({baseLocale, commune}) => {
       ) : (
         <ToponymesList
           toponymes={toponymes}
-          isPopulating={isPopulating}
           isAdding={isAdding}
           setToRemove={setToRemove}
           onEnableEditing={onEnableEditing}
@@ -256,8 +253,14 @@ const Commune = React.memo(({baseLocale, commune}) => {
           <Paragraph size={300} color='muted'>
             Vous souhaitez importer les voies de la commune de {commune.nom} depuis la Base Adresse Nationale ?
           </Paragraph>
-          <Button marginTop={10} appearance='primary' disabled={isAdding || isPopulating} onClick={onPopulate}>
-            Importer les données de la BAN
+          <Button
+            marginTop={10}
+            appearance='primary'
+            disabled={isAdding || isEditing}
+            isLoading={isEditing}
+            onClick={onPopulate}
+          >
+            {isEditing ? 'Récupération des adresses…' : 'Récupérer les adresses de la BAN'}
           </Button>
         </Pane>
       )}

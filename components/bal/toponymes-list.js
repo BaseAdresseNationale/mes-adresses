@@ -13,7 +13,7 @@ import useFuse from '@/hooks/fuse'
 import TableRow from '@/components/table-row'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) {
+function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, setToRemove}) {
   const {token} = useContext(TokenContext)
   const {isEditing, editingId} = useContext(BalDataContext)
 
@@ -65,7 +65,7 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
               key={toponyme._id}
               id={toponyme._id}
               label={toponyme.nom}
-              isEditingEnabled={Boolean(!isEditing && !isPopulating && token)}
+              isEditingEnabled={Boolean(!isEditing && token)}
               notifications={{
                 warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
               }}
@@ -83,7 +83,6 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
 
 ToponymesList.propTypes = {
   toponymes: PropTypes.array.isRequired,
-  isPopulating: PropTypes.bool,
   isAdding: PropTypes.bool.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
@@ -91,10 +90,6 @@ ToponymesList.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired
-}
-
-ToponymesList.defaultProps = {
-  isPopulating: false
 }
 
 export default ToponymesList
