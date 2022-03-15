@@ -197,9 +197,6 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             key={numero._id}
             {...numero}
             id={numero._id}
-            isCertified={numero.certifie}
-            comment={numero.comment}
-            warning={numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
             isSelectable={!isEditionDisabled && filtered.length > 1}
             label={numero.numeroComplet}
             secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
@@ -207,6 +204,11 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             handleSelect={handleSelect}
             isSelected={selectedNumerosIds.includes(numero._id)}
             isEditingEnabled={Boolean(!isEditing && token)}
+            notifications={{
+              isCertified: numero.certifie,
+              comment: numero.comment,
+              warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
+            }}
             actions={{
               onRemove,
               onEdit: handleEditing
