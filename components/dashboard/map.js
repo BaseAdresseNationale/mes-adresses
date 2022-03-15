@@ -1,10 +1,10 @@
 import {useState, useCallback, useRef, useEffect} from 'react'
-import {useRouter} from 'next/router'
 import PropTypes from 'prop-types'
+import {useRouter} from 'next/router'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
 import {Paragraph, Heading, Alert} from 'evergreen-ui'
 
-import {colors} from '../../lib/colors'
+import {colors} from '@/lib/colors'
 
 const BAL_API_URL = process.env.NEXT_PUBLIC_BAL_API_URL || 'https://api-bal.adresse.data.gouv.fr/v1'
 

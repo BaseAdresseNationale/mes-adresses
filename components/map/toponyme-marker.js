@@ -5,13 +5,13 @@ import {useRouter} from 'next/router'
 import {Pane, Text, Menu, TrashIcon} from 'evergreen-ui'
 import {css} from 'glamor'
 
-import {removeToponyme} from '../../lib/bal-api'
+import {removeToponyme} from '@/lib/bal-api'
 
-import useError from '../../hooks/error'
+import TokenContext from '@/contexts/token'
+import MarkersContext from '@/contexts/markers'
+import BalDataContext from '@/contexts/bal-data'
 
-import TokenContext from '../../contexts/token'
-import MarkersContext from '../../contexts/markers'
-import BalDataContext from '../../contexts/bal-data'
+import useError from '@/hooks/error'
 
 function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplayed, setIsContextMenuDisplayed}) {
   const [setError] = useError()

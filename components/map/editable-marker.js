@@ -6,8 +6,8 @@ import nearestPointOnLine from '@turf/nearest-point-on-line'
 import length from '@turf/length'
 import lineSlice from '@turf/line-slice'
 
-import MarkersContext from '../../contexts/markers'
-import BalDataContext from '../../contexts/bal-data'
+import MarkersContext from '@/contexts/markers'
+import BalDataContext from '@/contexts/bal-data'
 
 function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
   const {markers, updateMarker, overrideText, suggestedNumero, setSuggestedNumero} = useContext(MarkersContext)

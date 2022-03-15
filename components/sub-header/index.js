@@ -2,21 +2,19 @@ import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
-import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '../../lib/bal-api'
+import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@/lib/bal-api'
 
-import BalDataContext from '../../contexts/bal-data'
-import TokenContext from '../../contexts/token'
+import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
 
-import useError from '../../hooks/error'
+import useError from '@/hooks/error'
 
-import HabilitationProcess from '../habilitation-process/index'
-
-import Breadcrumbs from '../breadcrumbs'
-import HabilitationTag from '../habilitation-tag'
-
-import SettingsMenu from './settings-menu'
-import DemoWarning from './demo-warning'
-import BALStatus from './bal-status'
+import HabilitationProcess from '@/components/habilitation-process/index'
+import Breadcrumbs from '@/components/breadcrumbs'
+import HabilitationTag from '@/components/habilitation-tag'
+import SettingsMenu from '@/components/sub-header/settings-menu'
+import DemoWarning from '@/components/sub-header/demo-warning'
+import BALStatus from '@/components/sub-header/bal-status'
 
 const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFranceConnectAuthentication}) => {
   const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(isFranceConnectAuthentication)

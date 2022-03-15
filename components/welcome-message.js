@@ -1,8 +1,8 @@
 import {useState, useEffect, useContext} from 'react'
 import {Pane, Dialog, Alert, Link, Paragraph, Heading, Strong, HelpIcon} from 'evergreen-ui'
 
-import TokenContext from '../contexts/token'
-import LocalStorageContext from '../contexts/local-storage'
+import TokenContext from '@/contexts/token'
+import LocalStorageContext from '@/contexts/local-storage'
 
 function WelcomeMessage() {
   const {token} = useContext(TokenContext)

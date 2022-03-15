@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
+import Link from 'next/link'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, ErrorIcon, Alert, Text} from 'evergreen-ui'
 
-import Header from '../components/header'
-import Link from 'next/link'
+import Custom404 from '@/pages/404'
 
-import Custom404 from './404'
+import Header from '@/components/header'
 
 function CustomError({statusCode}) {
   if (statusCode === 404) {

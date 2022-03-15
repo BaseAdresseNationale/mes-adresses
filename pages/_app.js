@@ -5,35 +5,34 @@ import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import {getBaseLocale, getVoie, getToponyme} from '../lib/bal-api'
-import {getCommune} from '../lib/geo-api'
+import {getBaseLocale, getVoie, getToponyme} from '@/lib/bal-api'
+import {getCommune} from '@/lib/geo-api'
 
-import SubHeader from '../components/sub-header'
-import IEWarning from '../components/ie-warning'
-import Fullscreen from '../components/layout/fullscreen'
-import Sidebar from '../components/layout/sidebar'
-import WelcomeMessage from '../components/welcome-message'
-import CertificationMessage from '../components/certification-message'
+import {LocalStorageContextProvider} from '@/contexts/local-storage'
+import {HelpContextProvider} from '@/contexts/help'
+import {SettingsContextProvider} from '@/contexts/settings'
+import {DrawContextProvider} from '@/contexts/draw'
+import {MarkersContextProvider} from '@/contexts/markers'
+import {MapContextProvider} from '@/contexts/map'
+import {TokenContextProvider} from '@/contexts/token'
+import {BalDataContextProvider} from '@/contexts/bal-data'
+import {ParcellesContextProvider} from '@/contexts/parcelles'
 
-import Map from '../components/map'
-import Help from '../components/help'
+import useWindowSize from '@/hooks/window-size'
 
-import {LocalStorageContextProvider} from '../contexts/local-storage'
-import {HelpContextProvider} from '../contexts/help'
-import {SettingsContextProvider} from '../contexts/settings'
-import {DrawContextProvider} from '../contexts/draw'
-import {MarkersContextProvider} from '../contexts/markers'
-import {MapContextProvider} from '../contexts/map'
-import {TokenContextProvider} from '../contexts/token'
-import {BalDataContextProvider} from '../contexts/bal-data'
-import {ParcellesContextProvider} from '../contexts/parcelles'
+import ErrorPage from '@/pages/_error'
 
-import useWindowSize from '../hooks/window-size'
-import Settings from '../components/settings'
+import Fullscreen from '@/layouts/fullscreen'
+import Sidebar from '@/layouts/sidebar'
 
-import Header from '../components/header'
-
-import ErrorPage from './_error'
+import Settings from '@/components/settings'
+import Header from '@/components/header'
+import SubHeader from '@/components/sub-header'
+import IEWarning from '@/components/ie-warning'
+import WelcomeMessage from '@/components/welcome-message'
+import CertificationMessage from '@/components/certification-message'
+import Map from '@/components/map'
+import Help from '@/components/help'
 
 const layoutMap = {
   fullscreen: Fullscreen,

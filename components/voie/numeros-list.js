@@ -4,13 +4,13 @@ import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toast
 
 import {batchNumeros, removeMultipleNumeros, removeNumero} from '../../lib/bal-api'
 
-import TableRow from '../table-row'
-import DeleteWarning from '../delete-warning'
-import GroupedActions from '../grouped-actions'
+import BalDataContext from '@/contexts/bal-data'
 
-import BalDataContext from '../../contexts/bal-data'
+import useFuse from '@/hooks/fuse'
 
-import useFuse from '../../hooks/fuse'
+import TableRow from '@/components/table-row'
+import DeleteWarning from '@/components/delete-warning'
+import GroupedActions from '@/components/grouped-actions'
 
 function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)

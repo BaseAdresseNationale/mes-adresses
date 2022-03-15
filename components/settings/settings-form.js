@@ -15,15 +15,17 @@ import {
 } from 'evergreen-ui'
 import {isEqual, difference} from 'lodash'
 
-import {useInput} from '../../hooks/input'
-import {updateBaseLocale} from '../../lib/bal-api'
-import {validateEmail} from '../../lib/utils/email'
-import BalDataContext from '../../contexts/bal-data'
-import TokenContext from '../../contexts/token'
+import {updateBaseLocale} from '@/lib/bal-api'
+import {validateEmail} from '@/lib/utils/email'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import RenewTokenDialog from '../renew-token-dialog'
+import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
+
+import {useInput} from '@/hooks/input'
+
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import RenewTokenDialog from '@/components/renew-token-dialog'
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())

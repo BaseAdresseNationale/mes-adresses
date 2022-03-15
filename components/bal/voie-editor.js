@@ -2,16 +2,15 @@ import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Checkbox, Alert} from 'evergreen-ui'
 
-import DrawContext from '../../contexts/draw'
+import DrawContext from '@/contexts/draw'
 
-import {useInput, useCheckboxInput} from '../../hooks/input'
-import useKeyEvent from '../../hooks/key-event'
+import {useInput, useCheckboxInput} from '@/hooks/input'
+import useKeyEvent from '@/hooks/key-event'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import AssistedTextField from '../assisted-text-field'
-
-import DrawEditor from './draw-editor'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import AssistedTextField from '@/components/assisted-text-field'
+import DrawEditor from '@/components/bal/draw-editor'
 
 function VoieEditor({initialValue, onSubmit, onCancel}) {
   const [isLoading, setIsLoading] = useState(false)

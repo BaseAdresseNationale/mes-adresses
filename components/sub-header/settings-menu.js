@@ -2,7 +2,7 @@ import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Popover, Menu, Position, Button, CogIcon, DownloadIcon} from 'evergreen-ui'
 
-import SettingsContext from '../../contexts/settings'
+import SettingsContext from '@/contexts/settings'
 
 function SettingsMenu({isAdmin, csvUrl}) {
   const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)

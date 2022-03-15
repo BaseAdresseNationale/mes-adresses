@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Pane, Badge, Position, Tooltip, Icon} from 'evergreen-ui'
 
-import {computeStatus} from '../lib/statuses'
+import {computeStatus} from '@/lib/statuses'
 
 function StatusBadge({status, sync}) {
   const {color, label, content, icon} = computeStatus(status, sync)

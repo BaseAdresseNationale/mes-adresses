@@ -2,13 +2,13 @@ import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, SelectField} from 'evergreen-ui'
 
-import {addNumero, addToponyme, addVoie} from '../../lib/bal-api'
+import {addNumero, addToponyme, addVoie} from '@/lib/bal-api'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import NumeroEditor from './numero-editor'
-import ToponymeEditor from './toponyme-editor'
+import NumeroEditor from '@/components/bal/numero-editor'
+import ToponymeEditor from '@/components/bal/toponyme-editor'
 
 function AddressEditor({commune, balId, codeCommune, closeForm}) {
   const {token} = useContext(TokenContext)

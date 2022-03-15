@@ -4,14 +4,14 @@ import Router from 'next/router'
 import {uniq} from 'lodash'
 import {Pane, Dialog, Alert, Paragraph, Strong} from 'evergreen-ui'
 
-import {getCommune} from '../../lib/geo-api'
+import {getCommune} from '@/lib/geo-api'
 
-import useError from '../../hooks/error'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import useError from '@/hooks/error'
 
-import BaseLocaleCard from '../base-locale-card'
-import DeleteWarning from '../delete-warning'
+import BaseLocaleCard from '@/components/base-locale-card'
+import DeleteWarning from '@/components/delete-warning'
 
 function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales, updateBAL}) {
   const {removeBAL} = useContext(LocalStorageContext)

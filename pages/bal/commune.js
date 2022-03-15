@@ -3,16 +3,16 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
 
-import {getVoies, addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '../../lib/bal-api'
+import {getVoies, addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '@/lib/bal-api'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import useHelp from '../../hooks/help'
+import useHelp from '@/hooks/help'
 
-import DeleteWarning from '../../components/delete-warning'
-import VoiesList from '../../components/bal/voies-list'
-import ToponymesList from '../../components/bal/toponymes-list'
+import DeleteWarning from '@/components/delete-warning'
+import VoiesList from '@/components/bal/voies-list'
+import ToponymesList from '@/components/bal/toponymes-list'
 
 const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   const [isAdding, setIsAdding] = useState(false)

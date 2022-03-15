@@ -3,17 +3,17 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import {createBaseLocale, addCommune, populateCommune, searchBAL} from '@/lib/bal-api'
 
-import {createBaseLocale, addCommune, populateCommune, searchBAL} from '../../lib/bal-api'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import useFocus from '../../hooks/focus'
-import {useInput, useCheckboxInput} from '../../hooks/input'
+import useFocus from '@/hooks/focus'
+import {useInput, useCheckboxInput} from '@/hooks/input'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import {CommuneSearchField} from '../commune-search'
-import AlertPublishedBAL from './alert-published-bal'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import CommuneSearchField from '@/components/commune-search/commune-search-field'
+import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 function CreateForm({defaultCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)

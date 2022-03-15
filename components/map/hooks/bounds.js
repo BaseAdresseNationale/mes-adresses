@@ -2,7 +2,7 @@ import {useMemo, useContext, useState, useEffect} from 'react'
 import bbox from '@turf/bbox'
 import buffer from '@turf/buffer'
 
-import BalDataContext from '../../../contexts/bal-data'
+import BalDataContext from '@/contexts/bal-data'
 
 const BUFFER_RADIUS = 100
 

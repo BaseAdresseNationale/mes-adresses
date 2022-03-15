@@ -3,17 +3,16 @@ import PropTypes from 'prop-types'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 import Link from 'next/link'
 
-import {getCommune} from '../lib/geo-api'
+import {getCommune} from '@/lib/geo-api'
 
-import LocalStorageContext from '../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import Header from '../components/header'
-import Footer from '../components/footer'
-import BackButton from '../components/back-button'
-
-import CreateForm from '../components/new/create-form'
-import UploadForm from '../components/new/upload-form'
-import DemoForm from '../components/new/demo-form'
+import Header from '@/components/header'
+import Footer from '@/components/footer'
+import BackButton from '@/components/back-button'
+import CreateForm from '@/components/new/create-form'
+import UploadForm from '@/components/new/upload-form'
+import DemoForm from '@/components/new/demo-form'
 
 function Index({defaultCommune, isDemo}) {
   const {balAccess} = useContext(LocalStorageContext)

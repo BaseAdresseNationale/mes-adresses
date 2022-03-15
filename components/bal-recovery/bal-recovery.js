@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import {Alert, Button, Text} from 'evergreen-ui'
 
-import RecoverBALAlert from './recover-bal-alert'
+import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 
 function BALRecovery() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)

@@ -1,10 +1,9 @@
 import {OrderedList, Pane, ListItem, Button, AddIcon, MapMarkerIcon, Menu, MoreIcon, Paragraph, Tab, Heading, Badge, Strong, EditIcon, Text, TrashIcon, Select} from 'evergreen-ui'
 
-import Tuto from '../tuto'
-import Unauthorized from '../tuto/unauthorized'
-
-import Sidebar from '../tuto/sidebar'
-import Problems from './problems'
+import Tuto from '@/components/help/tuto'
+import Unauthorized from '@/components/help/tuto/unauthorized'
+import Sidebar from '@/components/help/tuto/sidebar'
+import Problems from '@/components/help/help-tabs/problems'
 
 const before = (
   <Paragraph marginTop='default'>

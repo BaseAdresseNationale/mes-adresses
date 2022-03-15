@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 import {SelectField, SelectMenu, Pane, Button, Alert, Text} from 'evergreen-ui'
 
-import {normalizeSort} from '../../lib/normalize'
-import {getNumeros} from '../../lib/bal-api'
+import {normalizeSort} from '@/lib/normalize'
+import {getNumeros} from '@/lib/bal-api'
 
-import BalDataContext from '../../contexts/bal-data'
-import Form from '../form'
-import FormInput from '../form-input'
+import BalDataContext from '@/contexts/bal-data'
+
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
 
 function AddNumeros({onSubmit, onCancel, isLoading}) {
   const [selectedVoieId, setSelectedVoieId] = useState()
