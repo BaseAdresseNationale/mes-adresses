@@ -98,19 +98,18 @@ App.getInitialProps = async ({Component, ctx}) => {
   try {
     if (query.balId) {
       baseLocale = await getBaseLocale(query.balId)
-    }
 
-    if (query.codeCommune) {
-      if (baseLocale.communes.includes(query.codeCommune)) {
-        const baseLocaleCommune = await getCommune(query.balId, query.codeCommune)
-        const geoCommune = await getGeoCommune(query.codeCommune, {
-          fields: 'contour'
-        })
-
-        commune = {...baseLocaleCommune, ...geoCommune}
-      } else {
+      const [codeCommune] = baseLocale.communes
+      if (query.codeCommune && query.codeCommune !== codeCommune) {
         throw new Error('La commune demandée ne fais pas partie de la Base Adresse Locale')
       }
+
+      const baseLocaleCommune = await getCommune(query.balId, codeCommune)
+      const geoCommune = await getGeoCommune(codeCommune, {
+        fields: 'contour'
+      })
+
+      commune = {...baseLocaleCommune, ...geoCommune}
     }
 
     if (query.idVoie) {
@@ -140,7 +139,13 @@ App.getInitialProps = async ({Component, ctx}) => {
   }
 
   return {
-    pageProps,
+    pageProps: {
+      baseLocale,
+      commune,
+      voie,
+      toponyme,
+      ...pageProps
+    },
     query
   }
 }
