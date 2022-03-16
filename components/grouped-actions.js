@@ -88,16 +88,21 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
     setIsLoading(true)
 
+    const changes = {
+      voie: selectedVoieId,
+      toponyme: selectedToponymeId === '' ? null : selectedToponymeId,
+      comment: commentCondition(comment),
+      certifie: getIsCertifie(certifie)
+    }
+
+    if (positionType) {
+      changes.positionType = positionType
+    }
+
     try {
       await onSubmit(baseLocale._id, {
         numerosIds: selectedNumerosIds,
-        changes: {
-          voie: selectedVoieId,
-          [positionType === '' ? null : 'positionType']: positionType,
-          toponyme: selectedToponymeId === '' ? null : selectedToponymeId,
-          comment: commentCondition(comment),
-          certifie: getIsCertifie(certifie)
-        }
+        changes
       })
     } catch (error) {
       setError(error.message)
