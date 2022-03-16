@@ -6,16 +6,16 @@ import TableRowActions from '@/components/table-row/table-row-actions'
 import TableRowEditShortcut from '@/components/table-row/table-row-edit-shortcut'
 import TableRowNotifications from '@/components/table-row/table-row-notifications'
 
-const TableRow = React.memo(({id, label, complement, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
-  const {onSelect, onEdit, onRemove} = actions
+const TableRow = React.memo(({label, complement, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
+  const {onSelect, onEdit} = actions
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && isEditingEnabled) {
-      onEdit(id)
+      onEdit()
     } else if (onSelect && e.target.closest('[data-browsable]')) {
-      onSelect(id)
+      onSelect()
     }
-  }, [id, isEditingEnabled, onEdit, onSelect])
+  }, [isEditingEnabled, onEdit, onSelect])
 
   return (
     <Table.Row onClick={onClick} paddingRight={8}>
@@ -23,7 +23,7 @@ const TableRow = React.memo(({id, label, complement, secondary, notifications, i
         <Table.Cell flex='0 1 1'>
           <Checkbox
             checked={isSelected}
-            onChange={() => handleSelect(id)}
+            onChange={handleSelect}
           />
         </Table.Cell>
       )}
@@ -46,18 +46,13 @@ const TableRow = React.memo(({id, label, complement, secondary, notifications, i
       )}
 
       {isEditingEnabled && actions && (
-        <TableRowActions
-          onSelect={() => onSelect(id)}
-          onEdit={() => onEdit(id)}
-          onRemove={() => onRemove(id)}
-        />
+        <TableRowActions {...actions} />
       )}
     </Table.Row>
   )
 })
 
 TableRow.propTypes = {
-  id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   complement: PropTypes.string,
   secondary: PropTypes.string,
@@ -68,7 +63,6 @@ TableRow.propTypes = {
   actions: PropTypes.shape({
     onSelect: PropTypes.func,
     onEdit: PropTypes.func,
-    onRemove: PropTypes.func
   }).isRequired
 }
 

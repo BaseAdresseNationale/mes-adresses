@@ -70,7 +70,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
     }
   }
 
-  const onRemove = useCallback(async (idNumero, isToasterDisabled) => {
+  const onRemove = useCallback(async (idNumero, isToasterDisabled = false) => {
     await removeNumero(idNumero, token, isToasterDisabled)
     await reloadNumeros()
     refreshBALSync()
@@ -195,11 +195,10 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
         {filtered.map(numero => (
           <TableRow
             key={numero._id}
-            id={numero._id}
             label={numero.numeroComplet}
             secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
             complement={getToponymeName(numero.toponyme)}
-            handleSelect={!isEditionDisabled && filtered.length > 1 ? handleSelect : null}
+            handleSelect={!isEditionDisabled && filtered.length > 1 ? () => handleSelect(numero._id) : null}
             isSelected={selectedNumerosIds.includes(numero._id)}
             isEditingEnabled={Boolean(!isEditing && token)}
             notifications={{
@@ -208,8 +207,8 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
               warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
             }}
             actions={{
-              onRemove,
-              onEdit: handleEditing
+              onRemove: () => onRemove(numero._id),
+              onEdit: () => handleEditing(numero._id)
             }}
           />
         ))}

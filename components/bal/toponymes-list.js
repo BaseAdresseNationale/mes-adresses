@@ -63,15 +63,14 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
           ) : (
             <TableRow
               key={toponyme._id}
-              id={toponyme._id}
               label={toponyme.nom}
               isEditingEnabled={Boolean(!isEditing && token)}
               notifications={{
                 warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
               }}
               actions={{
-                onSelect,
-                onEdit: onEnableEditing,
+                onSelect: () => onSelect(toponyme._id),
+                onEdit: () => onEnableEditing(toponyme._id),
                 onRemove: () => setToRemove(toponyme._id)
               }}
             />
