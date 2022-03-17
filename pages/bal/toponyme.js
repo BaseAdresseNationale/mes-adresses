@@ -2,7 +2,7 @@ import {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
 
-import {addVoie, editNumero, getNumerosToponyme} from '@/lib/bal-api'
+import {addVoie, editNumero, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -15,7 +15,7 @@ import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
 import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
-function Toponyme({commune, defaultNumeros, ...props}) {
+function Toponyme({baseLocale, commune}) {
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
@@ -24,7 +24,6 @@ function Toponyme({commune, defaultNumeros, ...props}) {
   const {token} = useContext(TokenContext)
 
   const {
-    baseLocale,
     toponyme,
     numeros,
     reloadNumerosToponyme,
@@ -35,7 +34,7 @@ function Toponyme({commune, defaultNumeros, ...props}) {
   } = useContext(BalDataContext)
 
   useHelp(2)
-  const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
+  const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
       'numero'
     ]
@@ -50,7 +49,7 @@ function Toponyme({commune, defaultNumeros, ...props}) {
     try {
       await Promise.all(numeros.map(id => {
         return editNumero(id, {
-          toponyme: props.toponyme._id
+          toponyme: toponyme._id
         }, token, true)
       }))
 
@@ -125,7 +124,7 @@ function Toponyme({commune, defaultNumeros, ...props}) {
 
   return (
     <>
-      <ToponymeHeading toponyme={toponyme || props.toponyme} />
+      <ToponymeHeading toponyme={toponyme} />
       <Pane
         flexShrink={0}
         elevation={0}
@@ -186,7 +185,7 @@ function Toponyme({commune, defaultNumeros, ...props}) {
             </Table.Row>
           )}
 
-          {editingId && editingId !== props.toponyme._id ? (
+          {editingId && editingId !== toponyme._id ? (
             <Table.Row height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
                 <NumeroEditor
@@ -207,31 +206,23 @@ function Toponyme({commune, defaultNumeros, ...props}) {
   )
 }
 
-Toponyme.getInitialProps = async ({baseLocale, commune, toponyme}) => {
-  const defaultNumeros = await getNumerosToponyme(toponyme._id)
+Toponyme.getInitialProps = async ({query}) => {
+  const toponyme = await getToponyme(query.idToponyme)
+  const numeros = await getNumerosToponyme(toponyme._id)
 
   return {
     toponyme,
-    baseLocale,
-    commune,
-    defaultNumeros
+    numeros
   }
 }
 
 Toponyme.propTypes = {
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired
+  }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired
-  }).isRequired,
-  toponyme: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired,
-    positions: PropTypes.array.isRequired
-  }).isRequired,
-  defaultNumeros: PropTypes.array
-}
-
-Toponyme.defaultProps = {
-  defaultNumeros: null
+  }).isRequired
 }
 
 export default Toponyme

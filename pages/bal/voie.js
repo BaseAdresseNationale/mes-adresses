@@ -2,7 +2,7 @@ import React, {useState, useCallback, useEffect, useMemo, useContext} from 'reac
 import PropTypes from 'prop-types'
 import {Pane, Table} from 'evergreen-ui'
 
-import {editNumero, getNumeros, addVoie, addNumero} from '@/lib/bal-api'
+import {editNumero, getNumeros, getVoie, addVoie, addNumero} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -13,7 +13,7 @@ import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
 
-const Voie = React.memo(({baseLocale, commune, defaultNumeros, ...props}) => {
+const Voie = React.memo(({baseLocale, commune}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   useHelp(3)
@@ -63,7 +63,7 @@ const Voie = React.memo(({baseLocale, commune, defaultNumeros, ...props}) => {
     await reloadNumeros()
     refreshBALSync()
 
-    if (editedVoie._id !== props.voie._id || isNewVoie) {
+    if (editedVoie._id !== voie._id || isNewVoie) {
       await reloadGeojson()
     }
 
@@ -101,7 +101,7 @@ const Voie = React.memo(({baseLocale, commune, defaultNumeros, ...props}) => {
 
   return (
     <>
-      <VoieHeading voie={voie || props.voie} />
+      <VoieHeading voie={voie} />
 
       {isFormOpen ? (
         <Pane flex={1} overflowY='scroll'>
@@ -109,7 +109,7 @@ const Voie = React.memo(({baseLocale, commune, defaultNumeros, ...props}) => {
             <Table.Cell display='block' padding={0} background='tint1'>
               <NumeroEditor
                 hasPreview
-                initialVoieId={props.voie._id}
+                initialVoieId={voie._id}
                 initialValue={editedNumero}
                 commune={commune}
                 onSubmit={editedNumero ? onEdit : onAdd}
@@ -121,8 +121,8 @@ const Voie = React.memo(({baseLocale, commune, defaultNumeros, ...props}) => {
       ) : (
         <NumerosList
           token={token}
-          voieId={props.voie._id}
-          defaultNumeros={defaultNumeros}
+          voieId={voie._id}
+          numeros={numeros}
           isEditionDisabled={isEditing}
           handleEditing={handleEditing}
         />
@@ -131,14 +131,13 @@ const Voie = React.memo(({baseLocale, commune, defaultNumeros, ...props}) => {
   )
 })
 
-Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
-  const defaultNumeros = await getNumeros(voie._id)
+Voie.getInitialProps = async ({query}) => {
+  const voie = await getVoie(query.idVoie)
+  const numeros = await getNumeros(voie._id)
 
   return {
     voie,
-    baseLocale,
-    commune,
-    defaultNumeros
+    numeros
   }
 }
 
@@ -148,16 +147,7 @@ Voie.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired
-  }).isRequired,
-  voie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired,
-  defaultNumeros: PropTypes.array
-}
-
-Voie.defaultProps = {
-  defaultNumeros: null
+  }).isRequired
 }
 
 export default Voie

@@ -12,14 +12,14 @@ import TableRow from '@/components/table-row'
 import DeleteWarning from '@/components/delete-warning'
 import GroupedActions from '@/components/grouped-actions'
 
-function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEditing}) {
+function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {numeros, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
+  const {reloadNumeros, refreshBALSync} = useContext(BalDataContext)
 
-  const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
+  const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
       'numeroComplet'
     ]
@@ -221,7 +221,7 @@ NumerosList.defaultProps = {
 NumerosList.propTypes = {
   token: PropTypes.string,
   voieId: PropTypes.string.isRequired,
-  defaultNumeros: PropTypes.array.isRequired,
+  numeros: PropTypes.array.isRequired,
   isEditionDisabled: PropTypes.bool.isRequired,
   handleEditing: PropTypes.func.isRequired
 }

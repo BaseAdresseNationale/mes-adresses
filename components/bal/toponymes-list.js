@@ -12,12 +12,8 @@ import useFuse from '@/hooks/fuse'
 import TableRow from '@/components/table-row'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function ToponymesList({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) {
-  const {
-    isEditing,
-    editingId,
-    toponymes
-  } = useContext(BalDataContext)
+function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) {
+  const {isEditing, editingId} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(toponymes, 200, {
     keys: [
@@ -80,6 +76,7 @@ function ToponymesList({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
 }
 
 ToponymesList.propTypes = {
+  toponymes: PropTypes.array.isRequired,
   isPopulating: PropTypes.bool,
   isAdding: PropTypes.bool.isRequired,
   setToRemove: PropTypes.func.isRequired,

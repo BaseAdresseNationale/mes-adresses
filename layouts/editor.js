@@ -16,7 +16,7 @@ import WelcomeMessage from '@/components/welcome-message'
 import CertificationMessage from '@/components/certification-message'
 import Settings from '@/components/settings'
 
-function Editor({baseLocale, commune, voie, toponyme, children}) {
+function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
   const [isHidden, setIsHidden] = useState(false)
 
   const leftOffset = useMemo(() => {
@@ -28,7 +28,15 @@ function Editor({baseLocale, commune, voie, toponyme, children}) {
   }, [baseLocale])
 
   return (
-    <BalDataContextProvider initialBaseLocale={baseLocale} initialCommune={commune} initialVoie={voie} initialToponyme={toponyme}>
+    <BalDataContextProvider
+      initialBaseLocale={baseLocale}
+      initialCommune={commune}
+      initialVoie={voie}
+      initialToponyme={toponyme}
+      initialVoies={voies}
+      initialToponymes={toponymes}
+      initialNumeros={numeros}
+    >
       <MapContextProvider>
         <DrawContextProvider>
           <MarkersContextProvider>
@@ -78,6 +86,9 @@ Editor.propTypes = {
   }),
   voie: PropTypes.object,
   toponyme: PropTypes.object,
+  voies: PropTypes.array,
+  toponymes: PropTypes.array,
+  numeros: PropTypes.array,
   children: PropTypes.node.isRequired
 }
 

@@ -6,7 +6,7 @@ import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import {getCommune as getGeoCommune} from '@/lib/geo-api'
-import {getBaseLocale, getCommune, getVoie, getToponyme} from '@/lib/bal-api'
+import {getBaseLocale, getCommune, getVoies, getToponymes} from '@/lib/bal-api'
 
 import {LocalStorageContextProvider} from '@/contexts/local-storage'
 import {HelpContextProvider} from '@/contexts/help'
@@ -92,8 +92,8 @@ App.getInitialProps = async ({Component, ctx}) => {
 
   let baseLocale
   let commune
-  let voie
-  let toponyme
+  let voies
+  let toponymes
 
   try {
     if (query.balId) {
@@ -110,14 +110,8 @@ App.getInitialProps = async ({Component, ctx}) => {
       })
 
       commune = {...baseLocaleCommune, ...geoCommune}
-    }
-
-    if (query.idVoie) {
-      voie = await getVoie(query.idVoie)
-    }
-
-    if (query.idToponyme) {
-      toponyme = await getToponyme(query.idToponyme)
+      voies = await getVoies(query.balId, codeCommune)
+      toponymes = await getToponymes(query.balId, codeCommune)
     }
 
     if (Component.getInitialProps) {
@@ -125,8 +119,8 @@ App.getInitialProps = async ({Component, ctx}) => {
         ...ctx,
         baseLocale,
         commune,
-        voie,
-        toponyme
+        voies,
+        toponymes
       })
     }
   } catch {
@@ -142,8 +136,8 @@ App.getInitialProps = async ({Component, ctx}) => {
     pageProps: {
       baseLocale,
       commune,
-      voie,
-      toponyme,
+      voies,
+      toponymes,
       ...pageProps
     },
     query

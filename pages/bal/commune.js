@@ -1,9 +1,9 @@
 import React, {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import Router from 'next/router'
+import {useRouter} from 'next/router'
 import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
 
-import {getVoies, addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '@/lib/bal-api'
+import {addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -14,13 +14,14 @@ import DeleteWarning from '@/components/delete-warning'
 import VoiesList from '@/components/bal/voies-list'
 import ToponymesList from '@/components/bal/toponymes-list'
 
-const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
+const Commune = React.memo(({baseLocale, commune}) => {
   const [isAdding, setIsAdding] = useState(false)
   const [isPopulating, setIsPopulating] = useState(false)
   const [toRemove, setToRemove] = useState(null)
   const [selectedTab, setSelectedTab] = useState('voie')
 
   const {token} = useContext(TokenContext)
+  const router = useRouter()
 
   const {
     voies,
@@ -128,17 +129,17 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
     }
 
     if (selectedTab === 'voie') {
-      Router.push(
+      router.replace(
         `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${id}`,
         `/bal/${baseLocale._id}/communes/${commune.code}/voies/${id}`
       )
     } else {
-      Router.push(
+      router.replace(
         `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${id}`,
         `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${id}`
       )
     }
-  }, [baseLocale._id, editingId, isAdding, commune, selectedTab, onCancel])
+  }, [baseLocale._id, router, editingId, isAdding, commune, selectedTab, onCancel])
 
   useEffect(() => {
     if (isAdding) {
@@ -226,7 +227,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
 
       {selectedTab === 'voie' ? (
         <VoiesList
-          defaultVoies={defaultVoies}
+          voies={voies}
           isPopulating={isPopulating}
           isAdding={isAdding}
           setToRemove={setToRemove}
@@ -238,6 +239,7 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
         />
       ) : (
         <ToponymesList
+          toponymes={toponymes}
           isPopulating={isPopulating}
           isAdding={isAdding}
           setToRemove={setToRemove}
@@ -287,16 +289,6 @@ const Commune = React.memo(({baseLocale, commune, defaultVoies}) => {
   )
 })
 
-Commune.getInitialProps = async ({baseLocale, commune}) => {
-  const defaultVoies = await getVoies(baseLocale._id, commune.code)
-
-  return {
-    baseLocale,
-    commune,
-    defaultVoies
-  }
-}
-
 Commune.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
@@ -304,12 +296,7 @@ Commune.propTypes = {
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
-  }).isRequired,
-  defaultVoies: PropTypes.array
-}
-
-Commune.defaultProps = {
-  defaultVoies: null
+  }).isRequired
 }
 
 export default Commune
