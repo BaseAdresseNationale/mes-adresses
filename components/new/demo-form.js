@@ -20,11 +20,11 @@ function DemoForm({defaultCommune}) {
   const [isLoading, setIsLoading] = useState(false)
 
   const [populate, onPopulateChange] = useCheckboxInput(true)
-  const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
+  const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [focusRef] = useFocus()
 
   const onSelect = useCallback(commune => {
-    setCommune(commune.code)
+    setCodeCommune(commune.code)
   }, [])
 
   const onSubmit = useCallback(async e => {
@@ -32,15 +32,15 @@ function DemoForm({defaultCommune}) {
 
     setIsLoading(true)
 
-    const bal = await createBaseLocaleDemo({commune, populate})
+    const bal = await createBaseLocaleDemo({codeCommune, populate})
 
     addBalAccess(bal._id, bal.token)
 
     Router.push(
-      `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
-      `/bal/${bal._id}/communes/${commune}`
+      `/bal/commune?balId=${bal._id}&codeCommune=${codeCommune}`,
+      `/bal/${bal._id}/communes/${codeCommune}`
     )
-  }, [commune, populate, addBalAccess])
+  }, [codeCommune, populate, addBalAccess])
 
   return (
 
@@ -86,7 +86,10 @@ function DemoForm({defaultCommune}) {
 }
 
 DemoForm.propTypes = {
-  defaultCommune: PropTypes.object
+  defaultCommune: PropTypes.shape({
+    nom: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired
+  }),
 }
 
 DemoForm.defaultProps = {

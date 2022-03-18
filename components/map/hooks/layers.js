@@ -7,7 +7,7 @@ import {getNumerosPointLayer, getNumerosLabelLayer} from '@/components/map/layer
 import {cadastreLayers} from '@/components/map/layers/cadastre'
 
 function useLayers(voie, sources, isCadastreDisplayed, style) {
-  const {parcelles, codeCommune} = useContext(BalDataContext)
+  const {parcelles, commune} = useContext(BalDataContext)
 
   return useMemo(() => {
     const hasNumeros = sources.find(({name}) => name === 'positions')
@@ -15,7 +15,7 @@ function useLayers(voie, sources, isCadastreDisplayed, style) {
     let layers = []
 
     if (isCadastreDisplayed) {
-      layers = [...cadastreLayers(parcelles, codeCommune)]
+      layers = [...cadastreLayers(parcelles, commune.code)]
     }
 
     if (hasVoies) {
@@ -36,7 +36,7 @@ function useLayers(voie, sources, isCadastreDisplayed, style) {
     }
 
     return layers
-  }, [voie, sources, isCadastreDisplayed, parcelles, style, codeCommune])
+  }, [voie, sources, isCadastreDisplayed, parcelles, style, commune.code])
 }
 
 export default useLayers

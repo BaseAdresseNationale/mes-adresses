@@ -62,7 +62,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 <>
                   <WelcomeMessage />
                   {baseLocale.status === 'published' && (
-                    <CertificationMessage balId={baseLocale._id} codeCommune={commune?.code} />
+                    <CertificationMessage balId={baseLocale._id} codeCommune={commune.code} />
                   )}
 
                   {children}

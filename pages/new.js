@@ -88,7 +88,7 @@ Index.getInitialProps = async ({query}) => {
 }
 
 Index.propTypes = {
-  defaultCommune: PropTypes.string,
+  defaultCommune: PropTypes.object,
   isDemo: PropTypes.bool
 }
 
