@@ -21,7 +21,6 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedVoieId, setSelectedVoieId] = useState(idVoie)
-  const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
   const [certifie, setCertifie] = useState(null)
@@ -99,14 +98,10 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
       changes.positionType = positionType
     }
 
-    try {
-      await onSubmit(baseLocale._id, {
-        numerosIds: selectedNumerosIds,
-        changes
-      })
-    } catch (error) {
-      setError(error.message)
-    }
+    await onSubmit(baseLocale._id, {
+      numerosIds: selectedNumerosIds,
+      changes
+    })
 
     setIsLoading(false)
     setIsShown(false)
@@ -228,11 +223,6 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           </Pane>
         </Dialog>
 
-        {error && (
-          <Alert marginBottom={16} intent='danger' title='Erreur'>
-            {error}
-          </Alert>
-        )}
         <Button
           iconBefore={EditIcon}
           appearance='primary'
