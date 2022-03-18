@@ -2,7 +2,7 @@ import {useState, useCallback, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
 
-import {batchNumeros, removeMultipleNumeros, removeNumero} from '../../lib/bal-api'
+import {batchNumeros, removeMultipleNumeros, removeNumero} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
 
