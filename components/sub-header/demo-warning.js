@@ -10,7 +10,7 @@ import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 
 function DemoWarning({baseLocale, token}) {
-  const {_id, communes} = baseLocale
+  const {_id, commune} = baseLocale
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [placeholder, setPlaceholder] = useState('')
@@ -31,24 +31,24 @@ function DemoWarning({baseLocale, token}) {
       token
     )
 
-    if (communes.length === 1) {
-      Router.push(`/bal/communes?balId=${_id}&codeCommune=${communes[0]}`,
-        `/bal/${_id}/communes/${communes[0]}`)
+    if (commune) {
+      Router.push(`/bal/communes?balId=${_id}&codeCommune=${commune}`,
+        `/bal/${_id}/communes/${commune}`)
     } else {
       Router.push(`/bal/${_id}`)
     }
-  }, [_id, communes, token, email, nom])
+  }, [_id, commune, token, email, nom])
 
   useEffect(() => {
     const fetchCommune = async code => {
-      if (communes.length > 0) {
+      if (commune) {
         const commune = await getCommune(code)
         setPlaceholder(commune.nom)
         setNom(`Adresses de ${commune.nom}`)
       }
     }
 
-    fetchCommune(communes[0])
+    fetchCommune(commune)
     return () => null
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -121,7 +121,7 @@ function DemoWarning({baseLocale, token}) {
 DemoWarning.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    communes: PropTypes.array.isRequired
+    commune: PropTypes.array.isRequired
   }).isRequired,
   token: PropTypes.string.isRequired
 }

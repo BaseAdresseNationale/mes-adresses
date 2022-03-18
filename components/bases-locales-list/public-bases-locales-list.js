@@ -14,10 +14,10 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
   const [limit, setLimit] = useState(50)
 
   const onBalSelect = useCallback(bal => {
-    if (bal.communes.length === 1) {
+    if (bal.commune) {
       Router.push(
-        `/bal/commune?balId=${bal._id}&codeCommune=${bal.communes[0]}`,
-        `/bal/${bal._id}/communes/${bal.communes[0]}`
+        `/bal/commune?balId=${bal._id}&codeCommune=${bal.commune}`,
+        `/bal/${bal._id}/communes/${bal.commune}`
       )
     } else {
       Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)

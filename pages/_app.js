@@ -5,8 +5,8 @@ import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import {getCommune as getGeoCommune} from '@/lib/geo-api'
-import {getBaseLocale, getCommune, getVoies, getToponymes, getCommuneExtras} from '@/lib/bal-api'
+import {getCommune} from '@/lib/geo-api'
+import {getBaseLocale, getVoies, getToponymes, getCommuneExtras} from '@/lib/bal-api'
 
 import {LocalStorageContextProvider} from '@/contexts/local-storage'
 import {HelpContextProvider} from '@/contexts/help'
@@ -101,21 +101,14 @@ App.getInitialProps = async ({Component, ctx}) => {
     if (query.balId) {
       baseLocale = await getBaseLocale(query.balId)
 
-      const [codeCommune] = baseLocale.communes
-      if (query.codeCommune && query.codeCommune !== codeCommune) {
-        throw new Error('La commune demandée ne fais pas partie de la Base Adresse Locale')
-      }
-
-      const baseLocaleCommune = await getCommune(query.balId, codeCommune)
-      const geoCommune = await getGeoCommune(codeCommune, {
+      const communeExtras = await getCommuneExtras(baseLocale.commune)
+      const geoCommune = await getCommune(baseLocale.commune, {
         fields: 'contour'
       })
 
-      const communeExtras = await getCommuneExtras(codeCommune)
-
-      commune = {...baseLocaleCommune, ...geoCommune, ...communeExtras}
-      voies = await getVoies(query.balId, codeCommune)
-      toponymes = await getToponymes(query.balId, codeCommune)
+      commune = {...geoCommune, ...communeExtras}
+      voies = await getVoies(query.balId, baseLocale.commune)
+      toponymes = await getToponymes(query.balId, baseLocale.commune)
     }
 
     if (Component.getInitialProps) {

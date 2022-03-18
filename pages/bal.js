@@ -7,7 +7,7 @@ const Index = React.memo(({baseLocale}) => {
   const router = useRouter()
 
   useEffect(() => {
-    const [codeCommume] = baseLocale.communes
+    const codeCommume = baseLocale.commune
 
     router.push(
       `/bal/commune?balId=${baseLocale._id}&codeCommune=${codeCommume}`,
@@ -45,7 +45,7 @@ Index.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    communes: PropTypes.array.isRequired
+    commune: PropTypes.string.isRequired
   }).isRequired
 }
 

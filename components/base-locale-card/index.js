@@ -12,7 +12,7 @@ import StatusBadge from '@/components/status-badge'
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
 
 function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove, onHide}) {
-  const {nom, communes, _updated} = baseLocale
+  const {nom, commune: codeCommune, _updated} = baseLocale
   const [commune, setCommune] = useState()
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
 
@@ -24,15 +24,15 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
 
   useEffect(() => {
     const fetchCommune = async code => {
-      if (communes.length > 0) {
+      if (codeCommune) {
         const communeBal = await getCommune(baseLocale._id, code)
         const communeInfo = await getCommuneGeoData(code)
         setCommune({...communeBal, ...communeInfo})
       }
     }
 
-    fetchCommune(communes[0])
-  }, [baseLocale, communes])
+    fetchCommune(codeCommune)
+  }, [baseLocale, codeCommune])
 
   return (
     <Card
@@ -65,18 +65,16 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
                   {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
                 </Text>
 
-                {communes.length === 0 ? (
-                  <Text fontSize={12} fontStyle='italic'>Vide</Text>
-                ) : (communes.length < 2 ? (
-                  commune && <Text fontStyle='italic'> {commune.nom} ({commune.codeDepartement}) </Text>
+                {codeCommune && commune ? (
+                  <Text fontStyle='italic'> {commune.nom} ({commune.codeDepartement}) </Text>
                 ) : (
-                  <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
-                ))}
+                  <Text fontSize={12} fontStyle='italic'>Vide</Text>
+                )}
               </Pane>
             </Pane>
 
             <Pane display='grid' justifySelf='end' alignSelf='center' gridTemplateColumns='1fr' gap='1em'>
-              {communes.length === 1 && commune && (
+              {codeCommune && commune && (
                 <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
               )}
             </Pane>
@@ -123,7 +121,7 @@ BaseLocaleCard.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    communes: PropTypes.array.isRequired,
+    commune: PropTypes.string.isRequired,
     _updated: PropTypes.string,
     status: PropTypes.oneOf([
       'draft', 'ready-to-publish', 'replaced', 'published', 'demo'

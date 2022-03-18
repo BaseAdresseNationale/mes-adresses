@@ -2,13 +2,11 @@ import PropTypes from 'prop-types'
 import {Button, Menu, Tooltip, Popover, Position, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
 function Publication({baseLocale, status, handleBackToDraft, onPublish}) {
-  if (baseLocale.communes.length !== 1) {
+  if (!baseLocale.commune) {
     return (
       <Tooltip
         position={Position.BOTTOM_RIGHT}
-        content={baseLocale.communes.length === 0 ?
-          'Votre Base Adresse Locale est vide, ajoutez au moins une commune à votre Base Adresse Locale' :
-          'Votre Base Adresse Locale contient plusieurs communes, pour vous authentifier et assurer une publication rapide, adressez-nous le lien de votre Base Adresse Locale à adresse@data.gouv.fr'}
+        content='Votre Base Adresse Locale est vide, ajoutez au moins une commune à votre Base Adresse Locale'
       >
         <Button
           disabled
@@ -64,7 +62,7 @@ function Publication({baseLocale, status, handleBackToDraft, onPublish}) {
 Publication.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    communes: PropTypes.array.isRequired
+    commune: PropTypes.string.isRequired
   }).isRequired,
   status: PropTypes.oneOf([
     'draft', 'ready-to-publish', 'published'
