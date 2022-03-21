@@ -70,16 +70,18 @@ export const BalDataContextProvider = React.memo(({
   }, [baseLocale._id, commune])
 
   const reloadNumeros = useCallback(async () => {
-    const numeros = await getNumeros(initialVoie._id, token)
-    await reloadParcelles()
-    setNumeros(numeros)
-  }, [initialVoie, token, reloadParcelles])
+    let numeros
+    if (voie) {
+      numeros = await getNumeros(voie._id, token)
+    } else if (toponyme) {
+      numeros = await getNumerosToponyme(toponyme._id, token)
+    }
 
-  const reloadNumerosToponyme = useCallback(async () => {
-    const numeros = await getNumerosToponyme(initialToponyme._id, token)
-    await reloadParcelles()
-    setNumeros(numeros)
-  }, [initialToponyme, token, reloadParcelles])
+    if (numeros) {
+      await reloadParcelles()
+      setNumeros(numeros)
+    }
+  }, [voie, toponyme, token, reloadParcelles])
 
   const reloadCommune = useCallback(async () => {
     const baseLocaleCommune = await getCommune(baseLocale._id, initialCommune.code)
@@ -191,7 +193,6 @@ export const BalDataContextProvider = React.memo(({
     reloadToponymes,
     reloadCommune,
     reloadBaseLocale,
-    reloadNumerosToponyme,
     setVoie,
     setToponyme,
     certifyAllNumeros
@@ -221,7 +222,6 @@ export const BalDataContextProvider = React.memo(({
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
-    reloadNumerosToponyme,
     toponyme,
     certifyAllNumeros,
     isRefrehSyncStat,

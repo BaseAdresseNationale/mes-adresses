@@ -26,7 +26,7 @@ function Toponyme({baseLocale, commune}) {
   const {
     toponyme,
     numeros,
-    reloadNumerosToponyme,
+    reloadNumeros,
     editingId,
     setEditingId,
     isEditing,
@@ -53,7 +53,7 @@ function Toponyme({baseLocale, commune}) {
         }, token, true)
       }))
 
-      await reloadNumerosToponyme()
+      await reloadNumeros()
 
       if (isMultiNumeros) {
         toaster.success('Les numéros ont bien été ajoutés')
@@ -83,13 +83,13 @@ function Toponyme({baseLocale, commune}) {
       }
 
       await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-      await reloadNumerosToponyme()
+      await reloadNumeros()
     } catch (error) {
       setError(error.message)
     }
 
     setEditingId(null)
-  }, [editingId, setEditingId, baseLocale, commune.code, reloadNumerosToponyme, token])
+  }, [editingId, setEditingId, baseLocale, commune.code, reloadNumeros, token])
 
   const handleSelection = useCallback(id => {
     if (!isEditing) {
