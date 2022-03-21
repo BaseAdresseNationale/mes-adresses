@@ -1,5 +1,4 @@
 import React, {useState, useContext} from 'react'
-import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane} from 'evergreen-ui'
 

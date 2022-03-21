@@ -6,6 +6,8 @@ import {Pane, Heading, Paragraph, Spinner, Button} from 'evergreen-ui'
 import {listBasesLocales} from '@/lib/bal-api'
 import {sortBalByUpdate} from '@/lib/sort-bal'
 
+import Main from '@/layouts/main'
+
 const PublicBasesLocalesList = dynamic(() => import('@/components/bases-locales-list/public-bases-locales-list'), { // eslint-disable-line node/no-unsupported-features/es-syntax
   ssr: false,
   loading: () => (
