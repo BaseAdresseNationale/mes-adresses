@@ -32,7 +32,7 @@ function DemoForm({defaultCommune}) {
 
     setIsLoading(true)
 
-    const bal = await createBaseLocaleDemo({codeCommune, populate})
+    const bal = await createBaseLocaleDemo({commune: codeCommune, populate})
 
     addBalAccess(bal._id, bal.token)
 
