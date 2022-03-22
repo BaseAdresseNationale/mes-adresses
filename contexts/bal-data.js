@@ -13,7 +13,7 @@ import {
   getToponymes,
   getNumerosToponyme,
   certifyBAL
-} from '../lib/bal-api'
+} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 
