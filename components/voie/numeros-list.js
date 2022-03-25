@@ -17,7 +17,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {reloadNumeros, refreshBALSync} = useContext(BalDataContext)
+  const {isEditing, reloadNumeros, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
@@ -45,6 +45,13 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
     return filteredCertifieNumeros?.length === selectedNumerosIds.length
   }, [numeros, selectedNumerosIds])
 
+  const getToponymeName = useCallback(toponymeId => {
+    if (toponymeId) {
+      const toponyme = toponymes.find(({_id}) => _id === toponymeId)
+      return toponyme?.nom
+    }
+  }, [toponymes])
+
   const handleSelect = useCallback(id => {
     setSelectedNumerosIds(selectedNumero => {
       if (selectedNumero.includes(id)) {
@@ -63,7 +70,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
     }
   }
 
-  const onRemove = useCallback(async (idNumero, isToasterDisabled) => {
+  const onRemove = useCallback(async (idNumero, isToasterDisabled = false) => {
     await removeNumero(idNumero, token, isToasterDisabled)
     await reloadNumeros()
     refreshBALSync()
@@ -188,19 +195,21 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
         {filtered.map(numero => (
           <TableRow
             key={numero._id}
-            {...numero}
-            id={numero._id}
-            isCertified={numero.certifie}
-            comment={numero.comment}
-            warning={numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
-            isSelectable={!isEditionDisabled}
             label={numero.numeroComplet}
             secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-            toponymeId={numero.toponyme}
-            handleSelect={handleSelect}
+            complement={getToponymeName(numero.toponyme)}
+            handleSelect={!isEditionDisabled && filtered.length > 1 ? () => handleSelect(numero._id) : null}
             isSelected={selectedNumerosIds.includes(numero._id)}
-            onEdit={handleEditing}
-            onRemove={onRemove}
+            isEditingEnabled={Boolean(!isEditing && token)}
+            notifications={{
+              isCertified: numero.certifie,
+              comment: numero.comment,
+              warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
+            }}
+            actions={{
+              onRemove: () => onRemove(numero._id),
+              onEdit: () => handleEditing(numero._id)
+            }}
           />
         ))}
       </Pane>
