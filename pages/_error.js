@@ -6,8 +6,6 @@ import Main from '@/layouts/main'
 
 import Custom404 from '@/pages/404'
 
-import Header from '@/components/header'
-
 function CustomError({statusCode}) {
   if (statusCode === 404) {
     return <Custom404 />
@@ -15,7 +13,6 @@ function CustomError({statusCode}) {
 
   return (
     <Main>
-      <Header />
       <Pane
         display='flex'
         flex={1}

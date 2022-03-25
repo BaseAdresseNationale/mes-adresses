@@ -56,21 +56,23 @@ function App({error, Component, pageProps, query}) {
 
             <Help />
 
-            {error ? (
-              <ErrorPage statusCode={error.statusCode} />
-            ) : (
-              <Pane height='100%' width='100%' display='flex' flexDirection='column'>
-                <Header />
-                <IEWarning />
-                {query.balId ? (
-                  <Editor {...pageProps}>
+            <Pane height='100%' width='100%' display='flex' flexDirection='column'>
+              <Header />
+              {error ? (
+                <ErrorPage statusCode={error.statusCode} />
+              ) : (
+                <>
+                  <IEWarning />
+                  {query.balId ? (
+                    <Editor {...pageProps}>
+                      <Component {...pageProps} />
+                    </Editor>
+                  ) : (
                     <Component {...pageProps} />
-                  </Editor>
-                ) : (
-                  <Component {...pageProps} />
-                )}
-              </Pane>
-            )}
+                  )}
+                </>
+              )}
+            </Pane>
           </HelpContextProvider>
         </TokenContextProvider>
       </LocalStorageContextProvider>

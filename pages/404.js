@@ -3,12 +3,9 @@ import {Pane, Heading, Button, Icon, ArrowLeftIcon, RouteIcon} from 'evergreen-u
 
 import Main from '@/layouts/main'
 
-import Header from '@/components/header'
-
 function Custom404() {
   return (
     <Main>
-      <Header />
       <Pane
         display='flex'
         flex={1}
