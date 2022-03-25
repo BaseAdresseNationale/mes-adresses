@@ -10,14 +10,14 @@ import BalDataContext from '@/contexts/bal-data'
 import NumeroEditor from '@/components/bal/numero-editor'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function AddressEditor({commune, balId, codeCommune, closeForm}) {
+function AddressEditor({balId, commune, closeForm}) {
   const {token} = useContext(TokenContext)
   const {voie, reloadVoies, reloadNumeros, reloadToponymes, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
 
   const [isToponyme, setIsToponyme] = useState(false)
 
   const onAddToponyme = async toponymeData => {
-    await addToponyme(balId, codeCommune, toponymeData, token)
+    await addToponyme(balId, commune.code, toponymeData, token)
     await reloadToponymes()
     await reloadGeojson()
     refreshBALSync()
@@ -30,11 +30,15 @@ function AddressEditor({commune, balId, codeCommune, closeForm}) {
     const isNewVoie = !editedVoie._id
 
     if (isNewVoie) {
-      editedVoie = await addVoie(balId, codeCommune, editedVoie, token)
+      editedVoie = await addVoie(balId, commune.code, editedVoie, token)
     }
 
     await addNumero(editedVoie._id, numero, token)
-    await reloadNumeros()
+
+    if (voie?._id === editedVoie._id) {
+      await reloadNumeros()
+    }
+
     await reloadVoies()
     refreshBALSync()
 
@@ -69,9 +73,8 @@ function AddressEditor({commune, balId, codeCommune, closeForm}) {
 }
 
 AddressEditor.propTypes = {
-  commune: PropTypes.object.isRequired,
   balId: PropTypes.string.isRequired,
-  codeCommune: PropTypes.string.isRequired,
+  commune: PropTypes.object.isRequired,
   closeForm: PropTypes.func.isRequired
 }
 

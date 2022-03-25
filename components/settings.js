@@ -1,8 +1,5 @@
-import React, {useState, useContext, useEffect, useCallback} from 'react'
-import PropTypes from 'prop-types'
+import React, {useContext, useEffect} from 'react'
 import {SideSheet, Pane, Alert} from 'evergreen-ui'
-
-import {getCommune} from '@/lib/bal-api'
 
 import SettingsContext from '@/contexts/settings'
 import BalDataContext from '@/contexts/bal-data'
@@ -10,38 +7,29 @@ import BalDataContext from '@/contexts/bal-data'
 import Certification from '@/components/settings/certification'
 import SettingsForm from '@/components/settings/settings-form'
 
-const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
+const Settings = React.memo(() => {
   const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)
-  const balDataContext = useContext(BalDataContext)
-
-  const baseLocale = balDataContext.baseLocale || initialBaseLocale
-
-  const [commune, setCommune] = useState()
-
-  const fetchCommune = useCallback(async () => {
-    const commune = await getCommune(initialBaseLocale._id, codeCommune)
-    setCommune(commune)
-  }, [initialBaseLocale._id, codeCommune])
+  const {baseLocale, commune, reloadCommune} = useContext(BalDataContext)
 
   useEffect(() => { // Update number of certified numeros when setting is open
-    if (codeCommune) {
-      fetchCommune()
+    if (isSettingsDisplayed) {
+      reloadCommune()
     }
-  }, [initialBaseLocale._id, codeCommune, isSettingsDisplayed, fetchCommune])
+  }, [isSettingsDisplayed, reloadCommune])
 
   return (
     <SideSheet
       isShown={isSettingsDisplayed}
       onCloseComplete={() => setIsSettingsDisplayed(false)}
     >
-      <SettingsForm initialBaseLocale={initialBaseLocale} />
+      <SettingsForm baseLocale={baseLocale} />
 
       <Pane borderBottom='1px solid #d8dae5' width='80%' marginY={16} marginX='auto' />
 
       <Pane padding={16}>
         {commune && (
           <Pane display='flex' justifyContent='center'>
-            <Certification nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} onSubmit={fetchCommune} />
+            <Certification nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} onSubmit={() => reloadCommune()} />
           </Pane>
         )}
       </Pane>
@@ -60,18 +48,5 @@ const Settings = React.memo(({initialBaseLocale, codeCommune}) => {
     </SideSheet>
   )
 })
-
-Settings.defaultProps = {
-  codeCommune: null
-}
-
-Settings.propTypes = {
-  initialBaseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired,
-  codeCommune: PropTypes.string
-}
 
 export default Settings

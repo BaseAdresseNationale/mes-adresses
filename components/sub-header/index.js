@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react'
-import PropTypes from 'prop-types'
+import {useRouter} from 'next/router'
 import {Pane} from 'evergreen-ui'
 
 import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@/lib/bal-api'
@@ -16,24 +16,33 @@ import SettingsMenu from '@/components/sub-header/settings-menu'
 import DemoWarning from '@/components/sub-header/demo-warning'
 import BALStatus from '@/components/sub-header/bal-status'
 
-const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFranceConnectAuthentication}) => {
-  const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(isFranceConnectAuthentication)
+const SubHeader = React.memo(() => {
+  const {query} = useRouter()
+  const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(query['france-connect'] === '1')
 
-  const balDataContext = useContext(BalDataContext)
+  const {
+    baseLocale,
+    habilitation,
+    reloadBaseLocale,
+    reloadHabilitation,
+    commune,
+    voie,
+    toponyme,
+    isRefrehSyncStat
+  } = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
 
   const [setError] = useError(null)
 
-  const csvUrl = getBaseLocaleCsvUrl(initialBaseLocale._id)
-  const baseLocale = balDataContext.baseLocale || initialBaseLocale
-  const isEntitled = balDataContext.habilitation && balDataContext.habilitation.status === 'accepted'
+  const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
+  const isEntitled = habilitation && habilitation.status === 'accepted'
   const isAdmin = Boolean(token)
 
   const handleChangeStatus = async status => {
     try {
-      await updateBaseLocale(initialBaseLocale._id, {status}, token)
+      await updateBaseLocale(baseLocale._id, {status}, token)
 
-      await balDataContext.reloadBaseLocale()
+      await reloadBaseLocale()
     } catch (error) {
       setError(error.message)
     }
@@ -42,9 +51,9 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
   const handleHabilitation = async () => {
     await handleChangeStatus('ready-to-publish')
 
-    if (!balDataContext.habilitation || balDataContext.habilitation.status === 'rejected') {
-      await createHabilitation(token, initialBaseLocale._id)
-      await balDataContext.reloadHabilitation()
+    if (!habilitation || habilitation.status === 'rejected') {
+      await createHabilitation(token, baseLocale._id)
+      await reloadHabilitation()
     }
 
     setIsHabilitationDisplayed(true)
@@ -56,7 +65,7 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
 
   const handleSync = async () => {
     await sync(baseLocale._id, token)
-    await balDataContext.reloadBaseLocale()
+    await reloadBaseLocale()
   }
 
   return (
@@ -79,8 +88,8 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
         <Breadcrumbs
           baseLocale={baseLocale}
           commune={commune}
-          voie={balDataContext.voie || voie}
-          toponyme={balDataContext.toponyme || toponyme}
+          voie={voie}
+          toponyme={toponyme}
           marginLeft={8}
         />
 
@@ -91,10 +100,10 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
               baseLocale={baseLocale}
               commune={commune}
               token={token}
-              isRefrehSyncStat={balDataContext.isRefrehSyncStat}
+              isRefrehSyncStat={isRefrehSyncStat}
               handleChangeStatus={handleChangeStatus}
               handleHabilitation={handleHabilitation}
-              reloadBaseLocale={async () => balDataContext.reloadBaseLocale()}
+              reloadBaseLocale={async () => reloadBaseLocale()}
             />
           )}
         </Pane>
@@ -104,13 +113,13 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
         <DemoWarning baseLocale={baseLocale} token={token} />
       )}
 
-      {isAdmin && commune && balDataContext.habilitation && (
+      {isAdmin && commune && habilitation && (
         <HabilitationProcess
           token={token}
           isShown={isHabilitationDisplayed}
           baseLocale={baseLocale}
           commune={commune}
-          habilitation={balDataContext.habilitation}
+          habilitation={habilitation}
           resetHabilitationProcess={handleHabilitation}
           handleClose={handleCloseHabilitation}
           handleSync={handleSync}
@@ -119,23 +128,5 @@ const SubHeader = React.memo(({initialBaseLocale, commune, voie, toponyme, isFra
     </>
   )
 })
-
-SubHeader.propTypes = {
-  initialBaseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    status: PropTypes.oneOf(['demo', 'replaced', 'draft', 'ready-to-publish', 'published'])
-  }).isRequired,
-  commune: PropTypes.object,
-  voie: PropTypes.object,
-  toponyme: PropTypes.object,
-  isFranceConnectAuthentication: PropTypes.bool
-}
-
-SubHeader.defaultProps = {
-  commune: null,
-  voie: null,
-  toponyme: null,
-  isFranceConnectAuthentication: false
-}
 
 export default SubHeader

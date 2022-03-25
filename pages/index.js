@@ -2,8 +2,8 @@ import dynamic from 'next/dynamic'
 import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
 import Link from 'next/link'
 
-import Header from '@/components/header'
-import Footer from '@/components/footer'
+import Main from '@/layouts/main'
+
 import BALRecovery from '@/components/bal-recovery/bal-recovery'
 
 const UserBasesLocales = dynamic(() => import('@/components/user-bases-locales'), { // eslint-disable-line node/no-unsupported-features/es-syntax
@@ -17,8 +17,7 @@ const UserBasesLocales = dynamic(() => import('@/components/user-bases-locales')
 
 function Index() {
   return (
-    <Pane height='100vh' display='flex' flexDirection='column'>
-      <Header />
+    <Main>
       <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
         Mes Bases Adresse Locales
         <Link href='/new' passHref>
@@ -33,15 +32,8 @@ function Index() {
       <Pane padding={22}>
         <BALRecovery />
       </Pane>
-      <Footer />
-    </Pane>
+    </Main>
   )
-}
-
-Index.getInitialProps = async () => {
-  return {
-    layout: 'fullscreen'
-  }
 }
 
 export default Index

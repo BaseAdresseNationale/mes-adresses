@@ -1,72 +1,27 @@
-import {useState, useMemo, useEffect} from 'react'
+import {useState} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import {getBaseLocale, getVoie, getToponyme} from '@/lib/bal-api'
-import {getCommune} from '@/lib/geo-api'
+import {getCommune as getGeoCommune} from '@/lib/geo-api'
+import {getBaseLocale, getCommune, getVoies, getToponymes} from '@/lib/bal-api'
 
 import {LocalStorageContextProvider} from '@/contexts/local-storage'
 import {HelpContextProvider} from '@/contexts/help'
-import {SettingsContextProvider} from '@/contexts/settings'
-import {DrawContextProvider} from '@/contexts/draw'
-import {MarkersContextProvider} from '@/contexts/markers'
-import {MapContextProvider} from '@/contexts/map'
 import {TokenContextProvider} from '@/contexts/token'
-import {BalDataContextProvider} from '@/contexts/bal-data'
-import {ParcellesContextProvider} from '@/contexts/parcelles'
-
-import useWindowSize from '@/hooks/window-size'
 
 import ErrorPage from '@/pages/_error'
 
-import Fullscreen from '@/layouts/fullscreen'
-import Sidebar from '@/layouts/sidebar'
+import Editor from '@/layouts/editor'
 
-import Settings from '@/components/settings'
 import Header from '@/components/header'
-import SubHeader from '@/components/sub-header'
 import IEWarning from '@/components/ie-warning'
-import WelcomeMessage from '@/components/welcome-message'
-import CertificationMessage from '@/components/certification-message'
-import Map from '@/components/map'
 import Help from '@/components/help'
 
-const layoutMap = {
-  fullscreen: Fullscreen,
-  sidebar: Sidebar
-}
-
 function App({error, Component, pageProps, query}) {
-  const {innerWidth} = useWindowSize()
-  const [isShown, setIsShown] = useState(false)
-  const [isHidden, setIsHidden] = useState(false)
-  const {layout, ...otherPageProps} = pageProps
-  const Wrapper = layoutMap[layout] || Fullscreen
-
-  const leftOffset = useMemo(() => {
-    if (layout === 'sidebar' && !isHidden) {
-      return 500
-    }
-
-    return 0
-  }, [layout, isHidden])
-
-  const topOffset = useMemo(() => {
-    if (pageProps.baseLocale && pageProps.baseLocale.status === 'demo') {
-      return 166 // Adding space for demo-warning component
-    }
-
-    return pageProps.baseLocale ? 116 : 0
-  }, [pageProps.baseLocale])
-
-  useEffect(() => {
-    if (innerWidth && innerWidth < 700 && !/(\/dashboard)/.test(location.pathname)) {
-      setIsShown(true)
-    }
-  }, [innerWidth])
+  const [isMobileWarningDisplayed, setIsMobileWarningDisplayed] = useState(false)
 
   return (
     <>
@@ -77,11 +32,11 @@ function App({error, Component, pageProps, query}) {
 
       <Pane>
         <Dialog
-          isShown={isShown}
+          isShown={isMobileWarningDisplayed}
           title='Attention'
           confirmLabel='Continuer'
           hasCancel={false}
-          onCloseComplete={() => setIsShown(false)}
+          onCloseComplete={() => setIsMobileWarningDisplayed(false)}
         >
           <Paragraph marginTop='default'>
             Afin de profiter d’une meilleure expérience, il est recommandé d’utiliser cet outil sur un écran plus grand 🖥
@@ -97,66 +52,28 @@ function App({error, Component, pageProps, query}) {
 
       <LocalStorageContextProvider>
         <TokenContextProvider balId={query.balId} _token={query.token}>
-          <BalDataContextProvider balId={query.balId} codeCommune={query.codeCommune} idVoie={query.idVoie} idToponyme={query.idToponyme}>
-            <MapContextProvider>
-              <DrawContextProvider>
-                <MarkersContextProvider>
-                  <ParcellesContextProvider>
-                    <HelpContextProvider>
+          <HelpContextProvider>
 
-                      <Help />
+            <Help />
 
-                      {pageProps.baseLocale && (
-                        <SettingsContextProvider>
-                          <Settings initialBaseLocale={pageProps.baseLocale} codeCommune={pageProps.commune?.code} />
-                          <Header />
-                          <SubHeader
-                            {...pageProps}
-                            initialBaseLocale={pageProps.baseLocale}
-                            isFranceConnectAuthentication={query['france-connect'] === '1'}
-                          />
-                        </SettingsContextProvider>
-                      )}
-
-                      {pageProps.baseLocale && (
-                        <Map
-                          top={topOffset}
-                          left={leftOffset}
-                          commune={pageProps.commune}
-                          voie={pageProps.voie}
-                          toponyme={pageProps.toponyme}
-                        />
-                      )}
-
-                      <Wrapper
-                        top={topOffset}
-                        isHidden={isHidden}
-                        size={500}
-                        elevation={2}
-                        background='tint2'
-                        display='flex'
-                        flexDirection='column'
-                        onToggle={setIsHidden}
-                      >
-                        {error ? (
-                          <ErrorPage statusCode={error.statusCode} />
-                        ) : (
-                          <>
-                            <IEWarning />
-                            {pageProps.baseLocale && <WelcomeMessage />}
-                            {pageProps.baseLocale && pageProps.baseLocale.status === 'published' && (
-                              <CertificationMessage balId={query.balId} codeCommune={query.codeCommune} />
-                            )}
-                            <Component {...otherPageProps} />
-                          </>
-                        )}
-                      </Wrapper>
-                    </HelpContextProvider>
-                  </ParcellesContextProvider>
-                </MarkersContextProvider>
-              </DrawContextProvider>
-            </MapContextProvider>
-          </BalDataContextProvider>
+            <Pane height='100%' width='100%' display='flex' flexDirection='column'>
+              <Header />
+              {error ? (
+                <ErrorPage statusCode={error.statusCode} />
+              ) : (
+                <>
+                  <IEWarning />
+                  {query.balId ? (
+                    <Editor {...pageProps}>
+                      <Component {...pageProps} />
+                    </Editor>
+                  ) : (
+                    <Component {...pageProps} />
+                  )}
+                </>
+              )}
+            </Pane>
+          </HelpContextProvider>
         </TokenContextProvider>
       </LocalStorageContextProvider>
       {/* ⚠️ This is needed to expand Evergreen’Tootip width
@@ -173,36 +90,30 @@ function App({error, Component, pageProps, query}) {
 App.getInitialProps = async ({Component, ctx}) => {
   const {query} = ctx
 
-  let pageProps = {
-    layout: 'fullscreen'
-  }
+  let pageProps = {}
 
   let baseLocale
   let commune
-  let voie
-  let toponyme
+  let voies
+  let toponymes
 
   try {
     if (query.balId) {
       baseLocale = await getBaseLocale(query.balId)
-    }
 
-    if (query.codeCommune) {
-      if (baseLocale.communes.includes(query.codeCommune)) {
-        commune = await getCommune(query.codeCommune, {
-          fields: 'contour'
-        })
-      } else {
+      const [codeCommune] = baseLocale.communes
+      if (query.codeCommune && query.codeCommune !== codeCommune) {
         throw new Error('La commune demandée ne fais pas partie de la Base Adresse Locale')
       }
-    }
 
-    if (query.idVoie) {
-      voie = await getVoie(query.idVoie)
-    }
+      const baseLocaleCommune = await getCommune(query.balId, codeCommune)
+      const geoCommune = await getGeoCommune(codeCommune, {
+        fields: 'contour'
+      })
 
-    if (query.idToponyme) {
-      toponyme = await getToponyme(query.idToponyme)
+      commune = {...baseLocaleCommune, ...geoCommune}
+      voies = await getVoies(query.balId, codeCommune)
+      toponymes = await getToponymes(query.balId, codeCommune)
     }
 
     if (Component.getInitialProps) {
@@ -210,8 +121,8 @@ App.getInitialProps = async ({Component, ctx}) => {
         ...ctx,
         baseLocale,
         commune,
-        voie,
-        toponyme
+        voies,
+        toponymes
       })
     }
   } catch {
@@ -224,7 +135,13 @@ App.getInitialProps = async ({Component, ctx}) => {
   }
 
   return {
-    pageProps,
+    pageProps: {
+      baseLocale,
+      commune,
+      voies,
+      toponymes,
+      ...pageProps
+    },
     query
   }
 }
