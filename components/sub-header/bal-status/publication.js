@@ -6,7 +6,7 @@ function Publication({baseLocale, status, handleBackToDraft, onPublish}) {
     return (
       <Tooltip
         position={Position.BOTTOM_RIGHT}
-        content='Votre Base Adresse Locale est vide, ajoutez au moins une commune à votre Base Adresse Locale'
+        content='Votre Base Adresse Locale est vide, ajoutez une commune à votre Base Adresse Locale'
       >
         <Button
           disabled
