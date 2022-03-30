@@ -1,25 +1,7 @@
 import PropTypes from 'prop-types'
-import {Button, Menu, Tooltip, Popover, Position, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
+import {Button, Menu, Popover, Position, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
-function Publication({baseLocale, status, handleBackToDraft, onPublish}) {
-  if (!baseLocale.commune) {
-    return (
-      <Tooltip
-        position={Position.BOTTOM_RIGHT}
-        content='Votre Base Adresse Locale est vide, ajoutez une commune à votre Base Adresse Locale'
-      >
-        <Button
-          disabled
-          marginRight={8}
-          height={24}
-          appearance='primary'
-        >
-          Publier
-        </Button>
-      </Tooltip>
-    )
-  }
-
+function Publication({status, handleBackToDraft, onPublish}) {
   return (
     status === 'ready-to-publish' ? (
       <Popover
