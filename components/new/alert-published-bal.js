@@ -35,14 +35,10 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
   }, [basesLocales])
 
   const onBalSelect = bal => {
-    if (bal.commune) {
-      Router.push(
-        `/bal/commune?balId=${bal._id}&codeCommune=${bal.commune}`,
-        `/bal/${bal._id}/communes/${bal.commune}`
-      )
-    } else {
-      Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
-    }
+    Router.push(
+      `/bal/commune?balId=${bal._id}&codeCommune=${bal.commune}`,
+      `/bal/${bal._id}/communes/${bal.commune}`
+    )
   }
 
   const onRemove = useCallback(async () => {

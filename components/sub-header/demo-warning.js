@@ -31,12 +31,8 @@ function DemoWarning({baseLocale, token}) {
       token
     )
 
-    if (commune) {
-      Router.push(`/bal/communes?balId=${_id}&codeCommune=${commune}`,
-        `/bal/${_id}/communes/${commune}`)
-    } else {
-      Router.push(`/bal/${_id}`)
-    }
+    Router.push(`/bal/communes?balId=${_id}&codeCommune=${commune}`,
+      `/bal/${_id}/communes/${commune}`)
   }, [_id, commune, token, email, nom])
 
   useEffect(() => {
@@ -121,7 +117,7 @@ function DemoWarning({baseLocale, token}) {
 DemoWarning.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    commune: PropTypes.array.isRequired
+    commune: PropTypes.string.isRequired
   }).isRequired,
   token: PropTypes.string.isRequired
 }

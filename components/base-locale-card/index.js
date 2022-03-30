@@ -65,16 +65,14 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
                   {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
                 </Text>
 
-                {codeCommune && commune ? (
+                {commune && (
                   <Text fontStyle='italic'> {commune.nom} ({commune.codeDepartement}) </Text>
-                ) : (
-                  <Text fontSize={12} fontStyle='italic'>Vide</Text>
                 )}
               </Pane>
             </Pane>
 
             <Pane display='grid' justifySelf='end' alignSelf='center' gridTemplateColumns='1fr' gap='1em'>
-              {codeCommune && commune && (
+              {commune && (
                 <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
               )}
             </Pane>
