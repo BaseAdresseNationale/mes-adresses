@@ -18,7 +18,7 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
 
   const [communeLabel, setCommuneLabel] = useState('cette commune')
   const [isLoading, setIsLoading] = useState(false)
-  const uniqCommunes = uniq(...basesLocales.map(({commune}) => commune))
+  const uniqCommunes = uniq(basesLocales.map(({commune}) => commune))
   const [toRemove, setToRemove] = useState(null)
 
   const [setError] = useError(null)
