@@ -16,7 +16,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback((e, numeroId) => {
     e.stopPropagation()
@@ -70,12 +70,13 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
     try {
       await removeNumero(numeroId, token)
       await reloadNumeros()
+      refreshBALSync()
     } catch (error) {
       setError(error.message)
     }
 
     setIsContextMenuDisplayed(null)
-  }, [token, reloadNumeros, setError, setIsContextMenuDisplayed])
+  }, [token, reloadNumeros, setError, setIsContextMenuDisplayed, refreshBALSync])
 
   return (
     numeros.map(numero => (
