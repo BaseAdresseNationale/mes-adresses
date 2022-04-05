@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {Heading, Pane, Button} from 'evergreen-ui'
 import {uniq, flattenDeep} from 'lodash'
 
-import {getBasesLocalesStats, listBasesLocales} from '@/lib/bal-api'
+import {getBasesLocalesStats, listBasesLocalesExcludedDemo} from '@/lib/bal-api'
 
 import DashboardLayout from '@/layouts/dashboard'
 
@@ -11,7 +11,7 @@ import BALCounterChart from '@/components/dashboard/bal-counter-chart'
 import Counter from '@/components/dashboard/counter'
 import PublishedBalStats from '@/components/dashboard/published-bal-stats'
 
-function Index({basesLocales, basesLoclesStats}) {
+function Index({basesLocales, basesLocalesStats, basesLocalesStatsByStatus}) {
   const communeCount = uniq(flattenDeep(
     basesLocales
       .filter(({communes}) => communes.length > 0)
@@ -21,11 +21,11 @@ function Index({basesLocales, basesLoclesStats}) {
   return (
     <DashboardLayout title='Tableau de bord de l&apos;éditeur Mes Adresses' mapData={{basesLocales}}>
       <Pane display='grid' gridGap='2em' padding={5}>
-        <PublishedBalStats stats={basesLoclesStats} />
+        <PublishedBalStats stats={basesLocalesStats} />
 
         <Counter label='Communes couvertes par une Base Adresse Locale' value={communeCount} />
 
-        <BALCounterChart basesLocales={basesLocales} />
+        <BALCounterChart basesLocalesStatsByStatus={basesLocalesStatsByStatus} nbBasesLocales={basesLocales.length} />
         <BALCreationChart basesLocales={basesLocales} />
 
         <Pane display='flex' flexDirection='column' justifyContent='center' alignItems='center' padding={20} >
@@ -40,19 +40,22 @@ function Index({basesLocales, basesLoclesStats}) {
 }
 
 Index.getInitialProps = async () => {
-  const basesLocales = await listBasesLocales()
-  const basesLoclesStats = await getBasesLocalesStats()
-  const basesLocalesWithoutDemo = basesLocales.filter((b => b.status !== 'demo'))
+  const basesLocales = await listBasesLocalesExcludedDemo()
+  const stats = await getBasesLocalesStats()
+  const {basesLocalesStats, basesLocalesStatsByStatus} = stats
 
   return {
-    basesLocales: basesLocalesWithoutDemo,
-    basesLoclesStats
+    basesLocales,
+    basesLocalesStats,
+    basesLocalesStatsByStatus,
+    layout: 'fullscreen'
   }
 }
 
 Index.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  basesLoclesStats: PropTypes.object.isRequired
+  basesLocalesStats: PropTypes.object.isRequired,
+  basesLocalesStatsByStatus: PropTypes.object.isRequired
 }
 
 export default Index
