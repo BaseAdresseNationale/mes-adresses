@@ -6,19 +6,20 @@ import {getBALByStatus} from '@/lib/bases-locales'
 import Counter from '@/components/dashboard/counter'
 import PieChart from '@/components/dashboard/charts/pie-chart'
 
-function BALCounterChart({basesLocales}) {
-  const BALByStatus = getBALByStatus(basesLocales)
+function BALCounterChart({basesLocalesStatsByStatus, nbBasesLocales}) {
+  const BALByStatus = getBALByStatus(basesLocalesStatsByStatus)
 
   return (
     <Pane display='flex' flexDirection='column' alignItems='center' >
-      <Counter label='Bases Adresse locales' value={basesLocales.length} />
+      <Counter label='Bases Adresse locales' value={nbBasesLocales} />
       <PieChart height={240} data={BALByStatus} />
     </Pane>
   )
 }
 
 BALCounterChart.propTypes = {
-  basesLocales: PropTypes.array.isRequired
+  basesLocalesStatsByStatus: PropTypes.object.isRequired,
+  nbBasesLocales: PropTypes.number.isRequired
 }
 
 export default BALCounterChart
