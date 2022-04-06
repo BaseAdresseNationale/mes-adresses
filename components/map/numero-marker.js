@@ -4,7 +4,7 @@ import {Marker} from 'react-map-gl'
 import {Pane, Text, Menu, Position, WarningSignIcon, TrashIcon, EndorsedIcon} from 'evergreen-ui'
 import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
 
-import {computeCompletNumero} from '../../lib/utils/numero'
+import {computeCompletNumero} from '@/lib/utils/numero'
 
 function NumeroMarker({numero, style, isContextMenuDisplayed, setIsContextMenuDisplayed, onEnableEditing, removeAddress}) {
   const position = numero.positions.find(position => position.type === 'entrée') || numero.positions[0]

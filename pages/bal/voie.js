@@ -2,18 +2,18 @@ import React, {useState, useCallback, useEffect, useMemo, useContext} from 'reac
 import PropTypes from 'prop-types'
 import {Pane, Table} from 'evergreen-ui'
 
-import {editNumero, getNumeros, addVoie, addNumero} from '../../lib/bal-api'
+import {editNumero, getNumeros, getVoie, addVoie, addNumero} from '@/lib/bal-api'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import useHelp from '../../hooks/help'
+import useHelp from '@/hooks/help'
 
-import NumeroEditor from '../../components/bal/numero-editor'
-import VoieHeading from '../../components/voie/voie-heading'
-import NumerosList from '../../components/voie/numeros-list'
+import NumeroEditor from '@/components/bal/numero-editor'
+import VoieHeading from '@/components/voie/voie-heading'
+import NumerosList from '@/components/voie/numeros-list'
 
-const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
+const Voie = React.memo(({baseLocale, commune}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   useHelp(3)
@@ -21,6 +21,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   const {token} = useContext(TokenContext)
 
   const {
+    voie,
     numeros,
     reloadNumeros,
     reloadVoies,
@@ -100,7 +101,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
 
   return (
     <>
-      <VoieHeading defaultVoie={voie} />
+      <VoieHeading voie={voie} />
 
       {isFormOpen ? (
         <Pane flex={1} overflowY='scroll'>
@@ -121,7 +122,7 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
         <NumerosList
           token={token}
           voieId={voie._id}
-          defaultNumeros={defaultNumeros}
+          numeros={numeros}
           isEditionDisabled={isEditing}
           handleEditing={handleEditing}
         />
@@ -130,15 +131,13 @@ const Voie = React.memo(({baseLocale, commune, voie, defaultNumeros}) => {
   )
 })
 
-Voie.getInitialProps = async ({baseLocale, commune, voie}) => {
-  const defaultNumeros = await getNumeros(voie._id)
+Voie.getInitialProps = async ({query}) => {
+  const voie = await getVoie(query.idVoie)
+  const numeros = await getNumeros(voie._id)
 
   return {
-    layout: 'sidebar',
     voie,
-    baseLocale,
-    commune,
-    defaultNumeros
+    numeros
   }
 }
 
@@ -148,16 +147,7 @@ Voie.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired
-  }).isRequired,
-  voie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired,
-  defaultNumeros: PropTypes.array
-}
-
-Voie.defaultProps = {
-  defaultNumeros: null
+  }).isRequired
 }
 
 export default Voie

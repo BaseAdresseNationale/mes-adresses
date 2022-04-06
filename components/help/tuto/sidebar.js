@@ -1,6 +1,6 @@
 import {Paragraph, IconButton, ChevronRightIcon} from 'evergreen-ui'
 
-import Tuto from '.'
+import Tuto from '@/components/help/tuto'
 
 function Sidebar() {
   return (

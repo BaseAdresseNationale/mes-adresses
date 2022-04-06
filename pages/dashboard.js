@@ -2,14 +2,14 @@ import PropTypes from 'prop-types'
 import {Heading, Pane, Button} from 'evergreen-ui'
 import {uniq, flattenDeep} from 'lodash'
 
-import {getBasesLocalesStats, listBasesLocales} from '../lib/bal-api'
+import {getBasesLocalesStats, listBasesLocales} from '@/lib/bal-api'
 
-import DashboardLayout from '../components/layout/dashboard'
+import DashboardLayout from '@/layouts/dashboard'
 
-import BALCreationChart from '../components/dashboard/bal-creation-chart'
-import BALCounterChart from '../components/dashboard/bal-counter-chart'
-import Counter from '../components/dashboard/counter'
-import PublishedBalStats from '../components/dashboard/published-bal-stats'
+import BALCreationChart from '@/components/dashboard/bal-creation-chart'
+import BALCounterChart from '@/components/dashboard/bal-counter-chart'
+import Counter from '@/components/dashboard/counter'
+import PublishedBalStats from '@/components/dashboard/published-bal-stats'
 
 function Index({basesLocales, basesLoclesStats}) {
   const communeCount = uniq(flattenDeep(
@@ -46,8 +46,7 @@ Index.getInitialProps = async () => {
 
   return {
     basesLocales: basesLocalesWithoutDemo,
-    basesLoclesStats,
-    layout: 'fullscreen'
+    basesLoclesStats
   }
 }
 

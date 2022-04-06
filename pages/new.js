@@ -3,17 +3,16 @@ import PropTypes from 'prop-types'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 import Link from 'next/link'
 
-import {getCommune} from '../lib/geo-api'
+import {getCommune} from '@/lib/geo-api'
 
-import LocalStorageContext from '../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import Header from '../components/header'
-import Footer from '../components/footer'
-import BackButton from '../components/back-button'
+import Main from '@/layouts/main'
 
-import CreateForm from '../components/new/create-form'
-import UploadForm from '../components/new/upload-form'
-import DemoForm from '../components/new/demo-form'
+import BackButton from '@/components/back-button'
+import CreateForm from '@/components/new/create-form'
+import UploadForm from '@/components/new/upload-form'
+import DemoForm from '@/components/new/demo-form'
 
 function Index({defaultCommune, isDemo}) {
   const {balAccess} = useContext(LocalStorageContext)
@@ -21,8 +20,7 @@ function Index({defaultCommune, isDemo}) {
   const [index, setIndex] = useState(0)
 
   return (
-    <Pane height='100%' display='flex' flexDirection='column'>
-      <Header />
+    <Main>
       <Pane padding={12}>
         <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${isDemo ? 'de démonstration' : ''}`}</Heading>
         <Paragraph>
@@ -71,8 +69,7 @@ function Index({defaultCommune, isDemo}) {
           </Pane>
         </Pane>
       )}
-      <Footer />
-    </Pane>
+    </Main>
   )
 }
 
@@ -86,13 +83,12 @@ Index.getInitialProps = async ({query}) => {
 
   return {
     defaultCommune,
-    isDemo: query.demo === '1',
-    layout: 'fullscreen'
+    isDemo: query.demo === '1'
   }
 }
 
 Index.propTypes = {
-  defaultCommune: PropTypes.string,
+  defaultCommune: PropTypes.object,
   isDemo: PropTypes.bool
 }
 

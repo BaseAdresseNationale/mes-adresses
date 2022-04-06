@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 
-import BaseLocale from './base-locale'
-import Voies from './voies'
-import Toponymes from './toponymes'
-import Numeros from './numeros'
-import Publication from './publication'
+import BaseLocale from '@/components/help/help-tabs/base-locale'
+import Voies from '@/components/help/help-tabs/voies'
+import Toponymes from '@/components/help/help-tabs/toponymes'
+import Numeros from '@/components/help/help-tabs/numeros'
+import Publication from '@/components/help/help-tabs/publication'
 
 export const TABS = [
   'Base locale',

@@ -2,19 +2,18 @@ import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Alert} from 'evergreen-ui'
 
-import BalDataContext from '../../contexts/bal-data'
-import MarkersContext from '../../contexts/markers'
-import ParcellesContext from '../../contexts/parcelles'
+import BalDataContext from '@/contexts/bal-data'
+import MarkersContext from '@/contexts/markers'
+import ParcellesContext from '@/contexts/parcelles'
 
-import {useInput} from '../../hooks/input'
-import useKeyEvent from '../../hooks/key-event'
+import {useInput} from '@/hooks/input'
+import useKeyEvent from '@/hooks/key-event'
 
-import AssistedTextField from '../assisted-text-field'
-
-import Form from '../form'
-import FormInput from '../form-input'
-import PositionEditor from './position-editor'
-import SelectParcelles from './numero-editor/select-parcelles'
+import AssistedTextField from '@/components/assisted-text-field'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import PositionEditor from '@/components/bal/position-editor'
+import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 
 function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const {setIsEditing} = useContext(BalDataContext)
@@ -22,7 +21,7 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange, resetNom] = useInput(initialValue ? initialValue.nom : '')
+  const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [error, setError] = useState()
 
   const onFormSubmit = useCallback(async e => {

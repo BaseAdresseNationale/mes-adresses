@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Paragraph, Button, EditIcon} from 'evergreen-ui'
 
-import Tuto from '.'
+import Tuto from '@/components/help/tuto'
 
 function Unauthorized({title}) {
   return (

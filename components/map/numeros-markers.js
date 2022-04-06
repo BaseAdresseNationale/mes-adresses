@@ -3,20 +3,20 @@ import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import randomColor from 'randomcolor'
 
-import useError from '../../hooks/error'
+import {removeNumero} from '@/lib/bal-api'
 
-import {removeNumero} from '../../lib/bal-api'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import useError from '@/hooks/error'
 
-import NumeroMarker from './numero-marker'
+import NumeroMarker from '@/components/map/numero-marker'
 
 function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed, setIsContextMenuDisplayed}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros, reloadNumerosToponyme} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback((e, numeroId) => {
     e.stopPropagation()
@@ -69,13 +69,14 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
   const removeAddress = useCallback(async numeroId => {
     try {
       await removeNumero(numeroId, token)
-      await (voie ? reloadNumeros() : reloadNumerosToponyme())
+      await reloadNumeros()
+      refreshBALSync()
     } catch (error) {
       setError(error.message)
     }
 
     setIsContextMenuDisplayed(null)
-  }, [token, voie, reloadNumeros, reloadNumerosToponyme, setError, setIsContextMenuDisplayed])
+  }, [token, reloadNumeros, setError, setIsContextMenuDisplayed, refreshBALSync])
 
   return (
     numeros.map(numero => (

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import {Pane, Text} from 'evergreen-ui'
-import {computeCompletNumero} from '../../lib/utils/numero'
+
+import {computeCompletNumero} from '@/lib/utils/numero'
 
 const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
   const completNumero = computeCompletNumero(numero, suffixe)

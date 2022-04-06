@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {isEqual} from 'lodash'
 import {Pane, Heading, Button, Alert, EditIcon, EraserIcon} from 'evergreen-ui'
 
-import DrawContext from '../../contexts/draw'
+import DrawContext from '@/contexts/draw'
 
 function DrawEditor({trace}) {
   const {modeId, data, setData} = useContext(DrawContext)

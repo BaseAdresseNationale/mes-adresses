@@ -2,12 +2,12 @@ import {useCallback, useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Dialog, Label, Paragraph, TextInput, toaster} from 'evergreen-ui'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import {recoverBAL} from '@/lib/bal-api'
+import {validateEmail} from '@/lib/utils/email'
 
-import {useInput} from '../../hooks/input'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import {recoverBAL} from '../../lib/bal-api'
-import {validateEmail} from '../../lib/utils/email'
+import {useInput} from '@/hooks/input'
 
 const hasBeenSentRecently = sentAt => {
   const now = new Date()

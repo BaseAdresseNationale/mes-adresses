@@ -1,9 +1,9 @@
 import {useContext} from 'react'
 import {Pane, SideSheet, Paragraph, Heading, Tablist, Tab, Link} from 'evergreen-ui'
 
-import HelpContext from '../../contexts/help'
+import HelpContext from '@/contexts/help'
 
-import HelpTabs, {TABS} from './help-tabs'
+import HelpTabs, {TABS} from '@/components/help/help-tabs'
 
 function Help() {
   const {showHelp, setShowHelp, selectedIndex, setSelectedIndex} = useContext(HelpContext)

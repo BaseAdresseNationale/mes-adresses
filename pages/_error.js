@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
+import Link from 'next/link'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, ErrorIcon, Alert, Text} from 'evergreen-ui'
 
-import Header from '../components/header'
-import Link from 'next/link'
+import Main from '@/layouts/main'
 
-import Custom404 from './404'
+import Custom404 from '@/pages/404'
 
 function CustomError({statusCode}) {
   if (statusCode === 404) {
@@ -12,10 +12,10 @@ function CustomError({statusCode}) {
   }
 
   return (
-    <Pane display='flex' backgroundColor='#fff' flexDirection='column' width='100%' height='100%'>
-      <Header />
+    <Main>
       <Pane
         display='flex'
+        flex={1}
         alignItems='center'
         flexDirection='column'
         justifyContent='center'
@@ -34,7 +34,7 @@ function CustomError({statusCode}) {
           </Button>
         </Link>
       </Pane>
-    </Pane>
+    </Main>
   )
 }
 

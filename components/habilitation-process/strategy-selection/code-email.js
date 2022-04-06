@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Strong, Button, Alert, Text, OrderedList, Link, EnvelopeIcon, ListItem} from 'evergreen-ui'
 
-import TextWrapper from '../../text-wrapper'
+import TextWrapper from '@/components/text-wrapper'
 
 function isEmail(email) {
   const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([a-zA-Z\-\d]+\.)+[a-zA-Z]{2,}))$/

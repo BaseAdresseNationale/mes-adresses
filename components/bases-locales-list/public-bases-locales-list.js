@@ -3,13 +3,12 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Table, Button, PlusIcon} from 'evergreen-ui'
 
-import {sortBalByUpdate} from '../../lib/sort-bal'
+import {sortBalByUpdate} from '@/lib/sort-bal'
+import {listBasesLocales} from '@/lib/bal-api'
 
-import useFuse from '../../hooks/fuse'
+import useFuse from '@/hooks/fuse'
 
-import {listBasesLocales} from '../../lib/bal-api'
-
-import BaseLocaleCard from '../base-locale-card'
+import BaseLocaleCard from '@/components/base-locale-card'
 
 function PublicBasesLocalesList({basesLocales, sortBal}) {
   const [limit, setLimit] = useState(50)
@@ -79,11 +78,8 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
 }
 
 PublicBasesLocalesList.getInitialProps = async () => {
-  const basesLocales = await listBasesLocales()
-
   return {
-    basesLocales,
-    layout: 'fullscreen'
+    basesLocales: await listBasesLocales()
   }
 }
 

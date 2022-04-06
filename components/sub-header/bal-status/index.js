@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types'
 import {Pane, Tooltip, Button, Position, EditIcon} from 'evergreen-ui'
 
-import {sync, pauseSync, resumeSync} from '../../../lib/bal-api'
+import {sync, pauseSync, resumeSync} from '@/lib/bal-api'
 
-import StatusBadge from '../../status-badge'
-
-import BANSync from './ban-sync'
-import Publication from './publication'
-import RefreshSyncBadge from './refresh-sync-badge'
+import StatusBadge from '@/components/status-badge'
+import BANSync from '@/components/sub-header/bal-status/ban-sync'
+import Publication from '@/components/sub-header/bal-status/publication'
+import RefreshSyncBadge from '@/components/sub-header/bal-status/refresh-sync-badge'
 
 function BALStatus({baseLocale, commune, token, isRefrehSyncStat, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
   const handleSync = async () => {
