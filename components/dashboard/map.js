@@ -42,6 +42,8 @@ function Map({departement, basesLocales}) {
         colors.green,
         ['==', ['get', 'maxStatus'], 'replaced'],
         colors.red,
+        ['==', ['get', 'maxStatus'], 'published-other'],
+        colors.purple,
         ['==', ['get', 'maxStatus'], 'ready-to-publish'],
         colors.blue,
         ['==', ['get', 'maxStatus'], 'draft'],
@@ -236,6 +238,11 @@ function Map({departement, basesLocales}) {
         onLeave={onLeave}
         onWheel={onWheel}
       >
+        <div className='legend'>
+          <div className='color' />
+          Publié hors Mes Adresses
+        </div>
+
         {warningZoom && !isTouchScreenDevice && (
           <div className='map warning-zoom'>
             <Alert
@@ -306,6 +313,22 @@ function Map({departement, basesLocales}) {
            width: 100%;
            height: 100%;
            min-height: 300px;
+         }
+
+         .legend {
+            background: #fffc;
+            display: flex;
+            position: absolute;
+            padding: .2em;
+            border-radius: 4px;
+            margin: .2em;
+         }
+
+         .legend .color {
+           background-color: ${colors.purple};
+           width: 40px;
+           height: 20px;
+           margin-right: 4px;
          }
         `}</style>
     </div>
