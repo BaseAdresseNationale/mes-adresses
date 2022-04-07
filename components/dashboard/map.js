@@ -2,7 +2,7 @@ import {useState, useCallback, useRef, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
-import {Paragraph, Heading, Alert} from 'evergreen-ui'
+import {Paragraph, Heading, Text, Alert} from 'evergreen-ui'
 
 import {colors} from '@/lib/colors'
 
@@ -240,7 +240,7 @@ function Map({departement, basesLocales}) {
       >
         <div className='legend'>
           <div className='color' />
-          Publié hors Mes Adresses
+          <Text>Publié hors Mes Adresses</Text>
         </div>
 
         {warningZoom && !isTouchScreenDevice && (
