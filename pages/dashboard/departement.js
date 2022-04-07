@@ -69,7 +69,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
   )
 }
 
-Departement.getInitialProps = async ({query}) => {
+export async function getServerSideProps({query}) {
   const {codeDepartement} = query
 
   const departement = await getDepartement(codeDepartement)
@@ -83,14 +83,15 @@ Departement.getInitialProps = async ({query}) => {
   const filteredCommunesInBAL = communesActuelles.filter(({code}) => codesCommunes.includes(code))
 
   return {
-    departement,
-    filteredCommunesInBAL,
-    basesLocalesDepartement: basesLocales,
-    BALGroupedByCommune,
-    stats: stats.basesLocalesStats,
-    basesLocalesStatsByStatus: stats.basesLocalesStatsByStatus,
-    countCommunesActuelles: communesActuelles.length,
-    layout: 'fullscreen'
+    props: {
+      departement,
+      filteredCommunesInBAL,
+      basesLocalesDepartement: basesLocales,
+      BALGroupedByCommune,
+      stats: stats.basesLocalesStats,
+      basesLocalesStatsByStatus: stats.basesLocalesStatsByStatus,
+      countCommunesActuelles: communesActuelles.length
+    }
   }
 }
 

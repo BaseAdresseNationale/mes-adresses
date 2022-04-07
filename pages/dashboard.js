@@ -39,15 +39,17 @@ function Index({basesLocales, basesLocalesStats, basesLocalesStatsByStatus}) {
   )
 }
 
-Index.getInitialProps = async () => {
+export async function getServerSideProps() {
   const basesLocales = await listBasesLocalesExcludedDemo()
   const stats = await getBasesLocalesStats()
   const {basesLocalesStats, basesLocalesStatsByStatus} = stats
 
   return {
-    basesLocales,
-    basesLocalesStats,
-    basesLocalesStatsByStatus
+    props: {
+      basesLocales,
+      basesLocalesStats,
+      basesLocalesStatsByStatus
+    }
   }
 }
 
