@@ -51,7 +51,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
           </Pane>
 
           <Pane>
-            <Heading size={500} marginY={8}>Liste des Base Adresse Locale</Heading>
+            <Heading size={500} marginY={8}>Liste des Bases Adresses Locales</Heading>
             {sortBy(filteredCommunesInBAL, ['nom', 'code']).map(({code, nom}, key) => (
               <Pane key={code} background={key % 2 ? 'tin1' : 'tint2'}>
                 <CommuneBALList
