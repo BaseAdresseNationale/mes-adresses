@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {Heading, Pane} from 'evergreen-ui'
-import {flatten, groupBy, uniq} from 'lodash'
+import {flatten, groupBy, uniq, sortBy} from 'lodash'
 
 import {listBALByCodeDepartement} from '../../lib/bal-api'
 import {getDepartement, searchCommunesByCode} from '../../lib/geo-api'
@@ -52,11 +52,11 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
 
           <Pane>
             <Heading size={500} marginY={8}>Liste des Base Adresse Locale</Heading>
-            {filteredCommunesInBAL.map(({code, nom}, key) => (
+            {sortBy(filteredCommunesInBAL, ['nom', 'code']).map(({code, nom}, key) => (
               <Pane key={code} background={key % 2 ? 'tin1' : 'tint2'}>
                 <CommuneBALList
                   nomCommune={nom}
-                  basesLocales={BALGroupedByCommune[nom]}
+                  basesLocales={BALGroupedByCommune[code]}
                 />
               </Pane>
             ))}
