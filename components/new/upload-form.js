@@ -32,7 +32,7 @@ function extractCommuneFromCSV(response) {
   // Get cle_interop and slice it to get the commune's code
   const communes = response.rows.map(r => (
     {
-      code: r.parsedValues.cle_interop.slice(0, 5),
+      code: r.parsedValues.cle_interop?.toUpperCase().slice(0, 5),
       nom: r.parsedValues.commune_nom
     }
   ))
