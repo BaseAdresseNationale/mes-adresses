@@ -16,7 +16,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
-  const {isEditing, reloadNumeros, toponymes, refreshBALSync} = useContext(BalDataContext)
+  const {baseLocale, isEditing, reloadNumeros, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
