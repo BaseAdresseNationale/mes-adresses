@@ -88,7 +88,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     setIsLoading(true)
 
     const changes = {
-      voie: selectedVoieId,
+      voie: idVoie === selectedVoieId ? null : selectedVoieId,
       toponyme: selectedToponymeId === '' ? null : selectedToponymeId,
       comment: commentCondition(comment),
       certifie: getIsCertifie(certifie)
@@ -106,7 +106,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     setIsLoading(false)
     setIsShown(false)
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, certifie, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds])
+  }, [comment, selectedVoieId, certifie, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds, idVoie])
 
   useEffect(() => {
     if (!isShown) {
