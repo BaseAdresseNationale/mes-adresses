@@ -115,11 +115,8 @@ function BasesLocalesList({basesLocales, sortBal}) {
 }
 
 BasesLocalesList.getInitialProps = async () => {
-  const basesLocales = await listBasesLocales()
-
   return {
-    basesLocales,
-    layout: 'fullscreen'
+    basesLocales: await listBasesLocales()
   }
 }
 

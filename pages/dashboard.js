@@ -46,8 +46,7 @@ Index.getInitialProps = async () => {
 
   return {
     basesLocales: basesLocalesWithoutDemo,
-    basesLoclesStats,
-    layout: 'fullscreen'
+    basesLoclesStats
   }
 }
 

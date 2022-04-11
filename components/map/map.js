@@ -1,5 +1,4 @@
 import {useState, useMemo, useEffect, useCallback, useContext} from 'react'
-import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
@@ -67,7 +66,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({commune, voie, toponyme}) {
+function Map() {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -78,9 +77,12 @@ function Map({commune, voie, toponyme}) {
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
 
-  const {balId, codeCommune} = router.query
+  const {balId} = router.query
 
   const {
+    commune,
+    voie,
+    toponyme,
     numeros,
     toponymes,
     editingId,
@@ -137,14 +139,14 @@ function Map({commune, voie, toponyme}) {
         setEditingId(voie._id)
       } else {
         router.push(
-          `/bal/voie?balId=${balId}&codeCommune=${codeCommune}&idVoie=${idVoie}`,
-          `/bal/${balId}/communes/${codeCommune}/voies/${idVoie}`
+          `/bal/voie?balId=${balId}&codeCommune=${commune.code}&idVoie=${idVoie}`,
+          `/bal/${balId}/communes/${commune.code}/voies/${idVoie}`
         )
       }
     }
 
     setIsContextMenuDisplayed(null)
-  }, [router, balId, codeCommune, setEditingId, isEditing, voie, handleParcelle])
+  }, [router, balId, commune, setEditingId, isEditing, voie, handleParcelle])
 
   const handleCursor = useCallback(({isHovering}) => {
     if (modeId === 'drawLineString') {
@@ -290,7 +292,7 @@ function Map({commune, voie, toponyme}) {
           {isEditing && (
             <EditableMarker
               style={style || defaultStyle}
-              idVoie={voie ? voie._id : null}
+              idVoie={voie?._id}
               isToponyme={Boolean(toponyme)}
               viewport={viewport}
             />
@@ -303,27 +305,14 @@ function Map({commune, voie, toponyme}) {
       {commune && openForm && (
         <Pane background='white' height={400} overflowY='auto'>
           <AddressEditor
-            commune={commune}
             balId={balId}
-            codeCommune={codeCommune}
+            commune={commune}
             closeForm={() => setOpenForm(false)}
           />
         </Pane>
       )}
     </Pane>
   )
-}
-
-Map.propTypes = {
-  commune: PropTypes.object,
-  voie: PropTypes.object,
-  toponyme: PropTypes.object
-}
-
-Map.defaultProps = {
-  commune: null,
-  voie: null,
-  toponyme: null
 }
 
 export default Map

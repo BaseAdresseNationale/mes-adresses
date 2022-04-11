@@ -6,18 +6,16 @@ import {Pane, Table} from 'evergreen-ui'
 import {normalizeSort} from '@/lib/normalize'
 
 import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
 
 import useFuse from '@/hooks/fuse'
 
 import TableRow from '@/components/table-row'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function ToponymesList({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, isPopulating, setToRemove}) {
-  const {
-    isEditing,
-    editingId,
-    toponymes
-  } = useContext(BalDataContext)
+function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, setToRemove}) {
+  const {token} = useContext(TokenContext)
+  const {isEditing, editingId} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(toponymes, 200, {
     keys: [
@@ -65,13 +63,16 @@ function ToponymesList({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
           ) : (
             <TableRow
               key={toponyme._id}
-              id={toponyme._id}
-              warning={toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null}
-              isSelectable={!isEditing && !isPopulating}
               label={toponyme.nom}
-              onSelect={onSelect}
-              onEdit={onEnableEditing}
-              onRemove={id => setToRemove(id)}
+              isEditingEnabled={Boolean(!isEditing && token)}
+              notifications={{
+                warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
+              }}
+              actions={{
+                onSelect: () => onSelect(toponyme._id),
+                onEdit: () => onEnableEditing(toponyme._id),
+                onRemove: () => setToRemove(toponyme._id)
+              }}
             />
           ))}
       </Table>
@@ -80,7 +81,7 @@ function ToponymesList({isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEdi
 }
 
 ToponymesList.propTypes = {
-  isPopulating: PropTypes.bool,
+  toponymes: PropTypes.array.isRequired,
   isAdding: PropTypes.bool.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
@@ -88,10 +89,6 @@ ToponymesList.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired
-}
-
-ToponymesList.defaultProps = {
-  isPopulating: false
 }
 
 export default ToponymesList

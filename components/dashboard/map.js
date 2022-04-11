@@ -1,8 +1,8 @@
-import {useState, useCallback, useRef, useEffect} from 'react'
+import {useState, useCallback, useRef, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGL, {Source, Layer, Popup, WebMercatorViewport} from 'react-map-gl'
-import {Paragraph, Heading, Alert} from 'evergreen-ui'
+import {Paragraph, Heading, Text, Alert} from 'evergreen-ui'
 
 import {colors} from '@/lib/colors'
 
@@ -16,10 +16,11 @@ const defaultViewport = {
 
 const defaultBbox = [-5.317, 41.277, 9.689, 51.234]
 
+let hoveredId = null
+
 function Map({departement, basesLocales}) {
   const [viewport, setViewport] = useState(defaultViewport)
   const [hovered, setHovered] = useState(null)
-  const [hoveredId, setHoveredId] = useState(null)
   const [warningZoom, setWarningZoom] = useState(false)
   const [isZoomActivated, setIsZoomActivated] = useState(false)
   const [isTouchScreenDevice, setIsTouchScreenDevice] = useState(false)
@@ -29,8 +30,9 @@ function Map({departement, basesLocales}) {
   const router = useRouter()
 
   const mapRef = useRef()
+  const mapContainerRef = useRef()
 
-  const balLayer = {
+  const balLayer = useMemo(() => ({
     type: 'fill',
     'source-layer': 'communes',
     paint: {
@@ -40,6 +42,8 @@ function Map({departement, basesLocales}) {
         colors.green,
         ['==', ['get', 'maxStatus'], 'replaced'],
         colors.red,
+        ['==', ['get', 'maxStatus'], 'published-other'],
+        colors.purple,
         ['==', ['get', 'maxStatus'], 'ready-to-publish'],
         colors.blue,
         ['==', ['get', 'maxStatus'], 'draft'],
@@ -48,14 +52,14 @@ function Map({departement, basesLocales}) {
       ],
       'fill-opacity': [
         'case',
-        ['==', ['get', 'code'], hoveredId ? hoveredId : null],
-        1,
-        0.8
+        ['boolean', ['feature-state', 'hover'], false],
+        0.8,
+        1
       ],
     }
-  }
+  }), [])
 
-  const departementsLayer = {
+  const departementsLayer = useMemo(() => ({
     id: 'departements-fill',
     'source-layer': 'departements',
     type: 'fill',
@@ -63,21 +67,18 @@ function Map({departement, basesLocales}) {
       'fill-color': '#ffffff',
       'fill-opacity': [
         'case',
-        ['==', ['get', 'code'], departement ? departement : null],
-        0.5,
-        ['==', ['get', 'code'], hoveredId ? hoveredId : null],
-        0.8,
+        ['boolean', ['feature-state', 'hover'], false],
+        1,
         0.3
       ],
       'fill-outline-color': '#000'
     },
     filter: ['!=', 'code', departement || '']
-  }
+  }), [departement])
 
   const onHover = event => {
     if (event.features && event.features.length > 0) {
       const feature = event.features[0]
-      const nextHoveredId = feature.properties.code
       const [longitude, latitude] = event.lngLat
       const hoverInfo = {
         longitude,
@@ -89,15 +90,32 @@ function Map({departement, basesLocales}) {
       setHovered(hoverInfo)
       setHoveredCommune(communeBALNumber)
 
-      if (hoveredId !== nextHoveredId) {
-        setHoveredId(nextHoveredId)
+      if (hoveredId !== null) {
+        mapRef.current.setFeatureState(
+          {source: 'decoupage-administratif', sourceLayer: 'departements', id: hoveredId},
+          {hover: false}
+        )
+      }
+
+      if (feature.id) {
+        hoveredId = feature.id
+        mapRef.current.setFeatureState(
+          {source: 'decoupage-administratif', sourceLayer: 'departements', id: hoveredId},
+          {hover: true}
+        )
+      } else {
+        hoveredId = null
       }
     }
   }
 
   const onLeave = () => {
-    if (hoveredId) {
-      setHoveredId(null)
+    if (hoveredId !== null) {
+      hoveredId = null
+      mapRef.current.setFeatureState(
+        {source: 'decoupage-administratif', sourceLayer: 'departements', id: hoveredId},
+        {hover: false}
+      )
     }
   }
 
@@ -134,9 +152,9 @@ function Map({departement, basesLocales}) {
   }
 
   const handleResize = useCallback((bbox = defaultBbox) => {
-    if (mapRef && mapRef.current) {
-      const width = mapRef.current.offsetWidth
-      const height = mapRef.current.offsetHeight
+    if (mapContainerRef && mapContainerRef.current) {
+      const width = mapContainerRef.current.offsetWidth
+      const height = mapContainerRef.current.offsetHeight
 
       const padding = width > 50 && height > 50 ? 20 : 0
       const viewport = new WebMercatorViewport({width, height})
@@ -144,7 +162,7 @@ function Map({departement, basesLocales}) {
 
       setViewport(viewport)
     }
-  }, [mapRef])
+  }, [mapContainerRef])
 
   useEffect(() => {
     const getGeoData = async location => {
@@ -171,7 +189,7 @@ function Map({departement, basesLocales}) {
   }, [warningZoom])
 
   useEffect(() => {
-    const map = mapRef.current
+    const map = mapContainerRef.current
 
     const handleMobileTouch = event => {
       event.stopPropagation()
@@ -195,9 +213,14 @@ function Map({departement, basesLocales}) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div ref={mapRef} className='map-container'>
+    <div ref={mapContainerRef} className='map-container'>
       <MapGL
         {...viewport}
+        ref={ref => {
+          if (ref) {
+            mapRef.current = ref.getMap()
+          }
+        }}
         touchZoom
         dragPan={!isTouchScreenDevice || isDragPanEnabled}
         width='100%'
@@ -215,6 +238,11 @@ function Map({departement, basesLocales}) {
         onLeave={onLeave}
         onWheel={onWheel}
       >
+        <div className='legend'>
+          <div className='color' />
+          <Text>Publié hors Mes Adresses</Text>
+        </div>
+
         {warningZoom && !isTouchScreenDevice && (
           <div className='map warning-zoom'>
             <Alert
@@ -285,6 +313,22 @@ function Map({departement, basesLocales}) {
            width: 100%;
            height: 100%;
            min-height: 300px;
+         }
+
+         .legend {
+            background: #fffc;
+            display: flex;
+            position: absolute;
+            padding: .2em;
+            border-radius: 4px;
+            margin: .2em;
+         }
+
+         .legend .color {
+           background-color: ${colors.purple};
+           width: 40px;
+           height: 20px;
+           margin-right: 4px;
          }
         `}</style>
     </div>

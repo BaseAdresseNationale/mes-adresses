@@ -6,20 +6,18 @@ import {Pane, Table} from 'evergreen-ui'
 import {normalizeSort} from '@/lib/normalize'
 
 import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
 
 import useFuse from '@/hooks/fuse'
 
 import TableRow from '@/components/table-row'
 import VoieEditor from '@/components/bal/voie-editor'
 
-function VoiesList({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulating, onAdd, onEdit, onCancel, setToRemove}) {
-  const {
-    isEditing,
-    editingId,
-    voies
-  } = useContext(BalDataContext)
+function VoiesList({voies, onEnableEditing, isAdding, onSelect, onAdd, onEdit, onCancel, setToRemove}) {
+  const {token} = useContext(TokenContext)
+  const {isEditing, editingId} = useContext(BalDataContext)
 
-  const [filtered, setFilter] = useFuse(voies || defaultVoies, 200, {
+  const [filtered, setFilter] = useFuse(voies, 200, {
     keys: [
       'nom'
     ]
@@ -65,12 +63,13 @@ function VoiesList({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
           ) : (
             <TableRow
               key={voie._id}
-              id={voie._id}
-              isSelectable={!isEditing && !isPopulating}
               label={voie.nom}
-              onSelect={onSelect}
-              onEdit={onEnableEditing}
-              onRemove={id => setToRemove(id)}
+              isEditingEnabled={Boolean(!isEditing && token)}
+              actions={{
+                onSelect: () => onSelect(voie._id),
+                onEdit: () => onEnableEditing(voie._id),
+                onRemove: () => setToRemove(voie._id)
+              }}
             />
           ))}
       </Table>
@@ -79,8 +78,7 @@ function VoiesList({defaultVoies, onEnableEditing, isAdding, onSelect, isPopulat
 }
 
 VoiesList.propTypes = {
-  defaultVoies: PropTypes.array,
-  isPopulating: PropTypes.bool,
+  voies: PropTypes.array,
   isAdding: PropTypes.bool.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
@@ -91,8 +89,7 @@ VoiesList.propTypes = {
 }
 
 VoiesList.defaultProps = {
-  defaultVoies: null,
-  isPopulating: false
+  voies: null
 }
 
 export default VoiesList
