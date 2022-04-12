@@ -30,10 +30,10 @@ function getFileExtension(name) {
 
 function extractCommuneFromCSV(response) {
   // Get cle_interop and slice it to get the commune's code
-  const communes = response.rows.map(r => (
+  const communes = response.rows.map(({parsedValues, additionalValues}) => (
     {
-      code: r.parsedValues.cle_interop.slice(0, 5),
-      nom: r.parsedValues.commune_nom
+      code: parsedValues.commune_insee || additionalValues?.cle_interop?.codeCommune,
+      nom: parsedValues.commune_nom
     }
   ))
 
