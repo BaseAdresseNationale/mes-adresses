@@ -15,10 +15,6 @@
     "cadastre": {
     "type": "vector",
     "url": "https://openmaptiles.geo.data.gouv.fr/data/cadastre.json"
-    },
-    "decoupage-administratif": {
-    "type": "vector",
-    "url": "https://openmaptiles.geo.data.gouv.fr/data/decoupage-administratif.json"
     }
     },
   "transition": {
