@@ -28,9 +28,9 @@ function getFileExtension(name) {
   return null
 }
 
-function extractCommuneFromCSV(response) {
+function extractCommuneFromCSV(rows) {
   // Get cle_interop and slice it to get the commune's code
-  const communes = response.rows.map(({parsedValues, additionalValues}) => (
+  const communes = rows.map(({parsedValues, additionalValues}) => (
     {
       code: parsedValues.commune_insee || additionalValues?.cle_interop?.codeCommune,
       nom: parsedValues.commune_nom
@@ -44,14 +44,13 @@ function UploadForm() {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
-  const [warning, setWarning] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange] = useInput('')
   const [email, onEmailChange] = useInput('')
   const [focusRef] = useFocus()
   const [userBALs, setUserBALs] = useState([])
   const [isShown, setIsShown] = useState(false)
-  const [communesList, setCommunesList] = useState(null)
+  const [communes, setCommunes] = useState(null)
   const [selectedCodeCommune, setSelectedCodeCommune] = useState(null)
 
   const {addBalAccess} = useContext(LocalStorageContext)
@@ -62,28 +61,28 @@ function UploadForm() {
     setError(error)
   }
 
-  const onWarning = (warning, communes = null) => {
-    setIsLoading(false)
-    setWarning(warning)
+  const onDrop = async ([file]) => {
+    setError(null)
+    setCommunes(null)
+    setSelectedCodeCommune(null)
 
-    if (communes) {
-      setCommunesList(communes)
-      setSelectedCodeCommune(communes[0].code)
-    }
-  }
-
-  const onDrop = useCallback(async ([file]) => {
     if (file) {
       if (getFileExtension(file.name).toLowerCase() !== 'csv') {
         return onError('Ce type de fichier n’est pas supporté. Vous devez déposer un fichier CSV.')
       }
 
+      // Detect multi communes
+      const {rows} = await validate(file, {relaxFieldsDetection: true})
+      const communes = extractCommuneFromCSV(rows)
+
+      setSelectedCodeCommune(communes[0].code)
+      if (communes.length > 1) {
+        setCommunes(communes)
+      }
+
       setFile(file)
-      setError(null)
-      setWarning(null)
-      setSelectedCodeCommune(null)
     }
-  }, [])
+  }
 
   const onDropRejected = rejectedFiles => {
     const [file] = rejectedFiles
@@ -114,7 +113,7 @@ function UploadForm() {
   const onCancel = () => {
     setIsShown(false)
     setIsLoading(false)
-    setWarning(null)
+    setCommunes(null)
     setSelectedCodeCommune(null)
   }
 
@@ -126,38 +125,22 @@ function UploadForm() {
   }
 
   const checkUserBALs = useCallback(async () => {
-    const validateResponse = await validate(file, {relaxFieldsDetection: true})
+    const userBALs = []
 
-    if (validateResponse) {
-      const communes = extractCommuneFromCSV(validateResponse)
-
-      if (communes.length === 1) {
-        setSelectedCodeCommune(communes[0].code)
-      } else if (communes.length > 1 && !selectedCodeCommune) {
-        onWarning(
-          'Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. Veuillez choisir une commune, puis validez à nouveau le formulaire.',
-          communes
-        )
-        return
-      }
-
-      const userBALs = []
-
-      const basesLocales = await searchBAL(selectedCodeCommune || communes[0].code, email)
-      if (basesLocales.length > 0) {
-        userBALs.push(...basesLocales)
-      }
-
-      if (userBALs.length > 0) {
-        const uniqUserBALs = uniqBy(userBALs, '_id')
-
-        setUserBALs(uniqUserBALs)
-        setIsShown(true)
-      } else {
-        createNewBal()
-      }
+    const basesLocales = await searchBAL(selectedCodeCommune, email)
+    if (basesLocales.length > 0) {
+      userBALs.push(...basesLocales)
     }
-  }, [createNewBal, file, email, selectedCodeCommune])
+
+    if (userBALs.length > 0) {
+      const uniqUserBALs = uniqBy(userBALs, '_id')
+
+      setUserBALs(uniqUserBALs)
+      setIsShown(true)
+    } else {
+      createNewBal()
+    }
+  }, [createNewBal, email, selectedCodeCommune])
 
   useEffect(() => {
     async function upload() {
@@ -245,7 +228,7 @@ function UploadForm() {
                   maxSize={MAX_SIZE}
                   height={150}
                   marginBottom={24}
-                  placeholder='Sélectionnez ou glissez ici votre fichier BAL au format CSV (maximum 10 Mo)'
+                  placeholder='Sélectionnez ou glissez ici votre fichier BAL au format CSV (maximum 10 Mo)'
                   loadingLabel='Analyse en cours'
                   disabled={isLoading}
                   onDrop={onDrop}
@@ -255,18 +238,24 @@ function UploadForm() {
             </Pane>
           </Pane>
 
-          {(error || warning) && (
-            <Alert marginBottom={16} intent={error ? 'danger' : 'warning'} title={error ? 'Erreur' : 'Attention'}>
+          {communes && (
+            <Alert marginBottom={16} intent='warning' title='Attention'>
               <Text>
-                {error || warning}
+                Le fichier comporte plusieurs communes. Pour gérer plusieurs communes, vous devez créer plusieurs Bases Adresses Locales. Veuillez choisir une commune, puis validez à nouveau le formulaire.
               </Text>
-              {warning && communesList && selectedCodeCommune && (
-                <SelectCommune
-                  communes={communesList}
-                  selectedCodeCommune={selectedCodeCommune}
-                  setSelectedCodeCommune={setSelectedCodeCommune}
-                />
-              )}
+              <SelectCommune
+                communes={communes}
+                selectedCodeCommune={selectedCodeCommune}
+                setSelectedCodeCommune={setSelectedCodeCommune}
+              />
+            </Alert>
+          )}
+
+          {error && (
+            <Alert marginBottom={16} intent='danger' title='Erreur'>
+              <Text>
+                {error}
+              </Text>
             </Alert>
           )}
 
