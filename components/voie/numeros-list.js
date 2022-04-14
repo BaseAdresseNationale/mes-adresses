@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo, useContext} from 'react'
+import {useState, useCallback, useMemo, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
 
@@ -12,12 +12,14 @@ import TableRow from '@/components/table-row'
 import DeleteWarning from '@/components/delete-warning'
 import GroupedActions from '@/components/grouped-actions'
 
+let needGeojsonUpdate = true
+
 function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {isEditing, reloadNumeros, toponymes, refreshBALSync} = useContext(BalDataContext)
+  const {isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
@@ -73,6 +75,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const onRemove = useCallback(async (idNumero, isToasterDisabled = false) => {
     await removeNumero(idNumero, token, isToasterDisabled)
     await reloadNumeros()
+    needGeojsonUpdate = true
     refreshBALSync()
   }, [reloadNumeros, refreshBALSync, token])
 
@@ -83,6 +86,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       }))
 
       await reloadNumeros()
+      needGeojsonUpdate = true
       refreshBALSync()
       toaster.success('Les numéros ont bien été supprimés')
     } catch (error) {
@@ -108,6 +112,15 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       setError(error.message)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdate) {
+        reloadGeojson()
+        needGeojsonUpdate = false
+      }
+    }
+  }, [voieId, reloadGeojson])
 
   return (
     <>
