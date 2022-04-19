@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useMemo, useContext} from 'react'
+import React, {useState, useCallback, useEffect, useMemo, useRef, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Table} from 'evergreen-ui'
 
@@ -13,14 +13,13 @@ import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
 
-let needGeojsonUpdate = false
-
 const Voie = React.memo(({baseLocale, commune}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   useHelp(3)
 
   const {token} = useContext(TokenContext)
+  const needGeojsonUpdateRef = useRef(false)
 
   const {
     voie,
@@ -54,7 +53,7 @@ const Voie = React.memo(({baseLocale, commune}) => {
 
   const handleGeojsonRefresh = useCallback(async editedVoie => {
     if (editedVoie._id === voie._id) {
-      needGeojsonUpdate = true
+      needGeojsonUpdateRef.current = true
     } else {
       await reloadGeojson()
     }
@@ -107,9 +106,9 @@ const Voie = React.memo(({baseLocale, commune}) => {
 
   useEffect(() => {
     return () => {
-      if (needGeojsonUpdate) {
+      if (needGeojsonUpdateRef.current) {
         reloadGeojson()
-        needGeojsonUpdate = false
+        needGeojsonUpdateRef.current = false
       }
     }
   }, [voie, reloadGeojson])
