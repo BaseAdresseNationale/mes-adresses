@@ -105,7 +105,7 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
               isMultiSelect
               hasFilter={false}
               title='Sélection des numéros'
-              options={numeroOptions}
+              options={voieNumeros.length > 0 ? numeroOptions : []}
               selected={selectedVoieNumeros}
               emptyView={(
                 <Pane height='100%' paddingX='1em' display='flex' alignItems='center' justifyContent='center' textAlign='center'>
@@ -120,7 +120,7 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
               </Button>
             </SelectMenu>
 
-            <Text size={300} fontStyle='italic' color='#2E56CD'>{selectedVoiesCount}</Text>
+            {voieNumeros.length > 0 && <Text size={300} fontStyle='italic' color='#2E56CD'>{selectedVoiesCount}</Text>}
           </Pane>
         )}
 
