@@ -5,6 +5,7 @@ import {flatten, groupBy, uniq, sortBy} from 'lodash'
 import {listBALByCodeDepartement} from '../../lib/bal-api'
 import {getDepartement, searchCommunesByCode} from '../../lib/geo-api'
 import {getBALByStatus} from '../../lib/bases-locales'
+import {normalizeSort} from '../../lib/normalize'
 
 import Counter from '../../components/dashboard/counter'
 import PieChart from '../../components/dashboard/charts/pie-chart'
@@ -52,7 +53,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
 
           <Pane>
             <Heading size={500} marginY={8}>Liste des Bases Adresses Locales</Heading>
-            {sortBy(filteredCommunesInBAL, ['nom', 'code']).map(({code, nom}, key) => (
+            {filteredCommunesInBAL.map(({code, nom}, key) => (
               <Pane key={code} background={key % 2 ? 'tin1' : 'tint2'}>
                 <CommuneBALList
                   nomCommune={nom}
@@ -90,7 +91,7 @@ Departement.getInitialProps = async ({query}) => {
 
   return {
     departement,
-    filteredCommunesInBAL,
+    filteredCommunesInBAL: sortBy(filteredCommunesInBAL, [({nom}) => normalizeSort(nom), 'code']),
     basesLocalesDepartementWithoutDemo,
     BALGroupedByCommune,
     stats: basesLocalesDepartement.stats,
