@@ -276,7 +276,7 @@ function UploadForm() {
             intent='danger'
             onConfirm={() => setInvalidRowsCount(null)}
             onCancel={onCancel}
-            confirmLabel={invalidRowsCount > 1 ? 'Supprimer la ligne invalide' : 'Supprimer les lignes invalide'}
+            confirmLabel='Utiliser uniquement les adresses conformes'
             cancelLabel='Annuler'
             hasClose={false}
             shouldCloseOnOverlayClick={false}
@@ -287,7 +287,7 @@ function UploadForm() {
             </Paragraph>
 
             <Paragraph marginTop={8}>
-              En continuant, les lignes invalides seront supprimées afin de créer votre Base Adresse Locale.
+              En continuant, seules les adresses conformes seront utilisées  pour créer votre Base Adresse Locale.
             </Paragraph>
 
             <Alert intent='info' title='Plus d’informations' marginTop={8}>
