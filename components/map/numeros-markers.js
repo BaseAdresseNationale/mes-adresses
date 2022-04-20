@@ -1,4 +1,4 @@
-import {useCallback, useContext} from 'react'
+import {useCallback, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import randomColor from 'randomcolor'
@@ -16,7 +16,9 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+
+  const needGeojsonUpdateRef = useRef(false)
 
   const onEnableEditing = useCallback((e, numeroId) => {
     e.stopPropagation()
@@ -70,6 +72,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
     try {
       await removeNumero(numeroId, token)
       await reloadNumeros()
+      needGeojsonUpdateRef.current = true
       refreshBALSync()
     } catch (error) {
       setError(error.message)
@@ -77,6 +80,15 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
 
     setIsContextMenuDisplayed(null)
   }, [token, reloadNumeros, setError, setIsContextMenuDisplayed, refreshBALSync])
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [voie, reloadGeojson])
 
   return (
     numeros.map(numero => (

@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useMemo, useContext} from 'react'
+import React, {useState, useCallback, useEffect, useMemo, useRef, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Table} from 'evergreen-ui'
 
@@ -19,6 +19,7 @@ const Voie = React.memo(({baseLocale, commune}) => {
   useHelp(3)
 
   const {token} = useContext(TokenContext)
+  const needGeojsonUpdateRef = useRef(false)
 
   const {
     voie,
@@ -45,10 +46,18 @@ const Voie = React.memo(({baseLocale, commune}) => {
     }
   }, [setIsEditing, setEditingId])
 
-  const resetEditing = () => {
+  const resetEditing = useCallback(() => {
     setIsFormOpen(false)
     setEditingId(null)
-  }
+  }, [setEditingId])
+
+  const handleGeojsonRefresh = useCallback(async editedVoie => {
+    if (editedVoie._id === voie._id) {
+      needGeojsonUpdateRef.current = true
+    } else {
+      await reloadGeojson()
+    }
+  }, [voie._id, reloadGeojson])
 
   const onAdd = async (voieData, body) => {
     let editedVoie = voieData
@@ -63,14 +72,12 @@ const Voie = React.memo(({baseLocale, commune}) => {
     await reloadNumeros()
     refreshBALSync()
 
-    if (editedVoie._id !== voie._id || isNewVoie) {
-      await reloadGeojson()
-    }
+    handleGeojsonRefresh(editedVoie)
 
     resetEditing()
   }
 
-  const onEdit = async (voieData, body) => {
+  const onEdit = useCallback(async (voieData, body) => {
     let editedVoie = voieData
     const isNewVoie = !editedVoie._id
 
@@ -82,12 +89,10 @@ const Voie = React.memo(({baseLocale, commune}) => {
     await reloadNumeros()
     refreshBALSync()
 
-    if (editedVoie._id !== voie._id || isNewVoie) {
-      await reloadGeojson()
-    }
+    handleGeojsonRefresh(editedVoie)
 
     resetEditing()
-  }
+  }, [baseLocale._id, commune.code, editingId, refreshBALSync, reloadNumeros, resetEditing, token, handleGeojsonRefresh])
 
   useEffect(() => {
     setIsFormOpen(Boolean(editedNumero))
@@ -98,6 +103,15 @@ const Voie = React.memo(({baseLocale, commune}) => {
       setIsFormOpen(false) // Force closing editing form when isEditing is false
     }
   }, [isEditing])
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [voie, reloadGeojson])
 
   return (
     <>

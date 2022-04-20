@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo, useContext} from 'react'
+import {useState, useCallback, useMemo, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
 
@@ -16,7 +16,9 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
-  const {baseLocale, isEditing, reloadNumeros, toponymes, refreshBALSync} = useContext(BalDataContext)
+  const {baseLocale, isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
+
+  const needGeojsonUpdateRef = useRef(false)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
@@ -72,6 +74,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const onRemove = useCallback(async (idNumero, isToasterDisabled = false) => {
     await removeNumero(idNumero, token, isToasterDisabled)
     await reloadNumeros()
+    needGeojsonUpdateRef.current = true
     refreshBALSync()
   }, [reloadNumeros, refreshBALSync, token])
 
@@ -79,6 +82,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
     await removeMultipleNumeros(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
 
     await reloadNumeros()
+    needGeojsonUpdateRef.current = true
     refreshBALSync()
 
     setSelectedNumerosIds([])
@@ -91,6 +95,15 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
     await reloadNumeros()
     refreshBALSync()
   }
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [voieId, reloadGeojson])
 
   return (
     <>
