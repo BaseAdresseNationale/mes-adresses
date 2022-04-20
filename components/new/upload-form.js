@@ -2,7 +2,7 @@ import {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
 import {uniqBy} from 'lodash'
-import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
+import {Pane, Alert, Button, Dialog, TextInputField, Text, Strong, FormField, PlusIcon, InboxIcon, Paragraph, ShareIcon} from 'evergreen-ui'
 
 import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '@/lib/bal-api'
 
@@ -28,11 +28,15 @@ function getFileExtension(name) {
   return null
 }
 
+function extractCommuneCodeFromRow({parsedValues, additionalValues}) {
+  return parsedValues.commune_insee || additionalValues?.cle_interop?.codeCommune
+}
+
 function extractCommuneFromCSV(rows) {
   // Get cle_interop and slice it to get the commune's code
   const communes = rows.map(({parsedValues, additionalValues}) => (
     {
-      code: parsedValues.commune_insee || additionalValues?.cle_interop?.codeCommune,
+      code: extractCommuneCodeFromRow({parsedValues, additionalValues}),
       nom: parsedValues.commune_nom
     }
   ))
@@ -52,6 +56,8 @@ function UploadForm() {
   const [isShown, setIsShown] = useState(false)
   const [communes, setCommunes] = useState(null)
   const [selectedCodeCommune, setSelectedCodeCommune] = useState(null)
+  const [validationReport, setValidationReport] = useState(null)
+  const [invalidRowsCount, setInvalidRowsCount] = useState(null)
 
   const {addBalAccess} = useContext(LocalStorageContext)
 
@@ -72,14 +78,15 @@ function UploadForm() {
       }
 
       // Detect multi communes
-      const {rows} = await validate(file, {relaxFieldsDetection: true})
-      const communes = extractCommuneFromCSV(rows)
+      const validationReport = await validate(file, {relaxFieldsDetection: true})
+      const communes = extractCommuneFromCSV(validationReport.rows)
 
       setSelectedCodeCommune(communes[0].code)
       if (communes.length > 1) {
         setCommunes(communes)
       }
 
+      setValidationReport(validationReport)
       setFile(file)
     }
   }
@@ -111,10 +118,14 @@ function UploadForm() {
   }, [bal, email, nom, addBalAccess])
 
   const onCancel = () => {
+    setFile(null)
     setIsShown(false)
     setIsLoading(false)
     setCommunes(null)
     setSelectedCodeCommune(null)
+    setValidationReport(null)
+    setInvalidRowsCount(null)
+    setError(null)
   }
 
   const onSubmit = async e => {
@@ -141,6 +152,14 @@ function UploadForm() {
       createNewBal()
     }
   }, [createNewBal, email, selectedCodeCommune])
+
+  useEffect(() => {
+    if (selectedCodeCommune && validationReport) {
+      // Get invalid rows of selected commune
+      const invalidRowsCount = validationReport.rows.filter(row => !row.isValid && extractCommuneCodeFromRow(row) === selectedCodeCommune).length
+      setInvalidRowsCount(invalidRowsCount)
+    }
+  }, [selectedCodeCommune, validationReport])
 
   useEffect(() => {
     async function upload() {
@@ -250,6 +269,31 @@ function UploadForm() {
               />
             </Alert>
           )}
+
+          <Dialog
+            isShown={invalidRowsCount > 0}
+            title='Le fichier comporte des erreurs'
+            intent='danger'
+            onConfirm={() => setInvalidRowsCount(null)}
+            onCancel={onCancel}
+            confirmLabel={invalidRowsCount > 1 ? 'Supprimer la ligne invalide' : 'Supprimer les lignes invalide'}
+            cancelLabel='Annuler'
+            hasClose={false}
+            shouldCloseOnOverlayClick={false}
+            shouldCloseOnEscapePress={false}
+          >
+            <Paragraph>
+              <Strong>{`${invalidRowsCount} ${invalidRowsCount > 1 ? 'lignes comportent' : 'ligne comporte'} au moins une erreur`}</Strong>. Une ligne invalide ne peut pas être importée dans votre Base Adresses Locale.
+            </Paragraph>
+
+            <Paragraph marginTop={8}>
+              En continuant, les lignes invalides seront supprimées afin de créer votre Base Adresse Locale.
+            </Paragraph>
+
+            <Alert intent='info' title='Plus d’informations' marginTop={8}>
+              <Text>Pour obtenir le rapport détaillé des erreurs, consulter <a href={`${process.env.NEXT_PUBLIC_ADRESSE_URL}/bases-locales/validateur`} target='_blank' rel='noreferrer'>le validateur de Bases Adresses Locales <ShareIcon verticalAlign='middle' /></a>.</Text>
+            </Alert>
+          </Dialog>
 
           {error && (
             <Alert marginBottom={16} intent='danger' title='Erreur'>
