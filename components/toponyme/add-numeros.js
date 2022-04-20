@@ -70,9 +70,14 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
   }, [selectedVoieNumeros.length, voieNumeros.length])
 
   const numeroOptions = useMemo(() => {
-    const toggleFullSelect = {label: selectedVoieNumeros.length > 0 ? 'Désélectionner tous les numéros' : 'Sélectionner tous les numéros', value: 'toggle'}
-    const options = [toggleFullSelect]
-    voieNumeros.map(({_id, numero, suffixe}) => options.push({label: `${numero}${suffixe ? suffixe : ''}`, value: _id}))
+    let options = []
+
+    if (voieNumeros.length > 0) {
+      const toggleFullSelect = {label: selectedVoieNumeros.length > 0 ? 'Désélectionner tous les numéros' : 'Sélectionner tous les numéros', value: 'toggle'}
+      const numeros = voieNumeros.map(({_id, numero, suffixe}) => ({label: `${numero}${suffixe ? suffixe : ''}`, value: _id}))
+
+      options = [toggleFullSelect, ...numeros]
+    }
 
     return options
   }, [selectedVoieNumeros, voieNumeros])
@@ -105,7 +110,7 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
               isMultiSelect
               hasFilter={false}
               title='Sélection des numéros'
-              options={voieNumeros.length > 0 ? numeroOptions : []}
+              options={numeroOptions}
               selected={selectedVoieNumeros}
               emptyView={(
                 <Pane height='100%' paddingX='1em' display='flex' alignItems='center' justifyContent='center' textAlign='center'>
