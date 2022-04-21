@@ -2,7 +2,6 @@ import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Alert} from 'evergreen-ui'
 
-import BalDataContext from '@/contexts/bal-data'
 import MarkersContext from '@/contexts/markers'
 import ParcellesContext from '@/contexts/parcelles'
 
@@ -16,7 +15,6 @@ import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 
 function ToponymeEditor({initialValue, onSubmit, onCancel}) {
-  const {setIsEditing} = useContext(BalDataContext)
   const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
@@ -87,17 +85,6 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
   }, [resetNom, setError, setSelectedParcelles, initialValue])
 
   useEffect(() => {
-    setIsEditing(true)
-    setIsParcelleSelectionEnabled(true)
-
-    return () => {
-      setIsEditing(false)
-      setIsParcelleSelectionEnabled(false)
-      disableMarkers()
-    }
-  }, [setIsEditing, disableMarkers, setIsParcelleSelectionEnabled])
-
-  useEffect(() => {
     if (initialValue) {
       const positions = initialValue.positions.map(position => (
         {
@@ -112,6 +99,17 @@ function ToponymeEditor({initialValue, onSubmit, onCancel}) {
       addMarker({type: 'segment'})
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setIsParcelleSelectionEnabled(true)
+
+    // Disable edition on component unmount
+    return () => {
+      onCancel()
+      setIsParcelleSelectionEnabled(false)
+      disableMarkers()
+    }
+  }, [onCancel, disableMarkers, setIsParcelleSelectionEnabled])
 
   return (
     <Form onFormSubmit={onFormSubmit}>

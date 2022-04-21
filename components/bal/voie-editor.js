@@ -60,11 +60,13 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
     }
   }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
 
+  // Disable edit mode on component unmount
   useEffect(() => {
     return () => {
       disableDraw()
+      onCancel()
     }
-  }, [disableDraw])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Form onFormSubmit={onFormSubmit}>
