@@ -66,8 +66,7 @@ function UploadForm() {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const onError = error => {
-    setFile(null)
-    setIsLoading(false)
+    resetForm()
     setError(error)
   }
 
@@ -85,13 +84,17 @@ function UploadForm() {
       const validationReport = await validate(file, {relaxFieldsDetection: true})
       const communes = extractCommuneFromCSV(validationReport.rows)
 
-      setSelectedCodeCommune(communes[0].code)
-      if (communes.length > 1) {
-        setCommunes(communes)
-      }
+      if (communes[0]) {
+        setSelectedCodeCommune(communes[0].code)
+        if (communes.length > 1) {
+          setCommunes(communes)
+        }
 
-      setValidationReport(validationReport)
-      setFile(file)
+        setValidationReport(validationReport)
+        setFile(file)
+      } else {
+        onError('Aucune commune n’a pu être trouvée.')
+      }
     }
   }
 
@@ -121,7 +124,7 @@ function UploadForm() {
     }
   }, [bal, email, nom, addBalAccess])
 
-  const onCancel = () => {
+  const resetForm = () => {
     setFile(null)
     setIsShown(false)
     setIsLoading(false)
@@ -129,6 +132,10 @@ function UploadForm() {
     setSelectedCodeCommune(null)
     setValidationReport(null)
     setInvalidRowsCount(null)
+  }
+
+  const onCancel = () => {
+    resetForm()
     setError(null)
   }
 
@@ -169,14 +176,14 @@ function UploadForm() {
     async function upload() {
       try {
         const response = await uploadBaseLocaleCsv(bal._id, selectedCodeCommune, file, bal.token)
-        if (!response.isValid) {
-          throw new Error('Fichier invalide')
+        if (response.isValid) {
+          Router.push(
+            `/bal/commune?balId=${bal._id}&codeCommune=${selectedCodeCommune}`,
+            `/bal/${bal._id}/communes/${selectedCodeCommune}`
+          )
+        } else {
+          onError(VALIDATEUR_LINK_TEXT)
         }
-
-        Router.push(
-          `/bal/commune?balId=${bal._id}&codeCommune=${selectedCodeCommune}`,
-          `/bal/${bal._id}/communes/${selectedCodeCommune}`
-        )
       } catch (error) {
         setError(error.message)
       }
