@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo, useContext} from 'react'
+import {useState, useCallback, useMemo, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
 
@@ -17,7 +17,9 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {isEditing, reloadNumeros, toponymes, refreshBALSync} = useContext(BalDataContext)
+  const {isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
+
+  const needGeojsonUpdateRef = useRef(false)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
@@ -73,6 +75,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const onRemove = useCallback(async (idNumero, isToasterDisabled = false) => {
     await removeNumero(idNumero, token, isToasterDisabled)
     await reloadNumeros()
+    needGeojsonUpdateRef.current = true
     refreshBALSync()
   }, [reloadNumeros, refreshBALSync, token])
 
@@ -83,6 +86,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       }))
 
       await reloadNumeros()
+      needGeojsonUpdateRef.current = true
       refreshBALSync()
       toaster.success('Les numéros ont bien été supprimés')
     } catch (error) {
@@ -108,6 +112,15 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       setError(error.message)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [voieId, reloadGeojson])
 
   return (
     <>
