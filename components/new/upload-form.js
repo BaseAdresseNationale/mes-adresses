@@ -65,11 +65,6 @@ function UploadForm() {
 
   const {addBalAccess} = useContext(LocalStorageContext)
 
-  const onError = useCallback(error => {
-    resetForm()
-    setError(error)
-  }, [])
-
   const onDrop = async ([file]) => {
     setError(null)
     setCommunes(null)
@@ -133,6 +128,11 @@ function UploadForm() {
     setValidationReport(null)
     setInvalidRowsCount(null)
   }
+
+  const onError = useCallback(error => {
+    resetForm()
+    setError(error)
+  }, [])
 
   const onCancel = () => {
     resetForm()
