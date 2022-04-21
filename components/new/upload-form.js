@@ -21,6 +21,8 @@ const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data
 
 const MAX_SIZE = 10 * 1024 * 1024
 
+const VALIDATEUR_LINK_TEXT = <Text>Pour obtenir un rapport détaillé des erreurs qui on était détectées, consultez <a href={`${ADRESSE_URL}/bases-locales/validateur`} target='_blank' rel='noreferrer'>le validateur de Bases Adresses Locales <ShareIcon verticalAlign='middle' /></a>.</Text>
+
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')
   if (pos > 0) {
@@ -285,15 +287,19 @@ function UploadForm() {
             shouldCloseOnEscapePress={false}
           >
             <Paragraph>
-              <Strong>{`${invalidRowsCount} ${invalidRowsCount > 1 ? 'lignes comportent' : 'ligne comporte'} au moins une erreur`}</Strong>. Une ligne invalide ne peut pas être importée dans votre Base Adresses Locale.
+              {invalidRowsCount > 1 ? (
+                <><Strong>{invalidRowsCount} lignes comportent au moins une erreur</Strong> et ne pourront pas être importées dans votre Base Adresse Locale.</>
+              ) : (
+                <><Strong>1 ligne comporte au moins une erreur</Strong> et ne pourra pas être importée dans votre Base Adresse Locale.</>
+              )}
             </Paragraph>
 
             <Paragraph marginTop={8}>
               En continuant, seules les adresses conformes seront utilisées  pour créer votre Base Adresse Locale.
             </Paragraph>
 
-            <Alert intent='info' title='Plus d’informations' marginTop={8}>
-              <Text>Pour obtenir le rapport détaillé des erreurs, consulter <a href={`${ADRESSE_URL}/bases-locales/validateur`} target='_blank' rel='noreferrer'>le validateur de Bases Adresses Locales <ShareIcon verticalAlign='middle' /></a>.</Text>
+            <Alert title='Plus d’informations' marginTop={8}>
+              {VALIDATEUR_LINK_TEXT}
             </Alert>
           </Dialog>
 
