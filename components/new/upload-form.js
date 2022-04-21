@@ -65,10 +65,10 @@ function UploadForm() {
 
   const {addBalAccess} = useContext(LocalStorageContext)
 
-  const onError = error => {
+  const onError = useCallback(error => {
     resetForm()
     setError(error)
-  }
+  }, [])
 
   const onDrop = async ([file]) => {
     setError(null)
@@ -193,7 +193,7 @@ function UploadForm() {
       setIsLoading(true)
       upload()
     }
-  }, [bal, selectedCodeCommune, file])
+  }, [bal, selectedCodeCommune, file, onError])
 
   useEffect(() => {
     if (file || error) {
