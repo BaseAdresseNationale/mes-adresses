@@ -2,10 +2,10 @@ import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Text} from 'evergreen-ui'
 
-import ParcellesContext from '../../../contexts/parcelles'
+import ParcellesContext from '@/contexts/parcelles'
+import MapContext from '@/contexts/map'
 
-import InputLabel from '../../input-label'
-import MapContext from '../../../contexts/map'
+import InputLabel from '@/components/input-label'
 
 function SelectParcelles({isToponyme}) {
   const {isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)

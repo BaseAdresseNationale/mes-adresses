@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 import {Button, Pane, Text, PlusIcon, PropertyIcon, SelectField} from 'evergreen-ui'
 
-import {normalizeSort} from '../../../lib/normalize'
+import {normalizeSort} from '@/lib/normalize'
 
-import AssistedTextField from '../../assisted-text-field'
+import AssistedTextField from '@/components/assisted-text-field'
 
 function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)

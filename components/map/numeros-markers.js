@@ -1,22 +1,24 @@
-import {useCallback, useContext} from 'react'
+import {useCallback, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import randomColor from 'randomcolor'
 
-import useError from '../../hooks/error'
+import {removeNumero} from '@/lib/bal-api'
 
-import {removeNumero} from '../../lib/bal-api'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import useError from '@/hooks/error'
 
-import NumeroMarker from './numero-marker'
+import NumeroMarker from '@/components/map/numero-marker'
 
 function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed, setIsContextMenuDisplayed}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros, reloadNumerosToponyme} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+
+  const needGeojsonUpdateRef = useRef(false)
 
   const onEnableEditing = useCallback((e, numeroId) => {
     e.stopPropagation()
@@ -69,13 +71,24 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
   const removeAddress = useCallback(async numeroId => {
     try {
       await removeNumero(numeroId, token)
-      await (voie ? reloadNumeros() : reloadNumerosToponyme())
+      await reloadNumeros()
+      needGeojsonUpdateRef.current = true
+      refreshBALSync()
     } catch (error) {
       setError(error.message)
     }
 
     setIsContextMenuDisplayed(null)
-  }, [token, voie, reloadNumeros, reloadNumerosToponyme, setError, setIsContextMenuDisplayed])
+  }, [token, reloadNumeros, setError, setIsContextMenuDisplayed, refreshBALSync])
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [voie, reloadGeojson])
 
   return (
     numeros.map(numero => (

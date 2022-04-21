@@ -3,10 +3,12 @@ import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import {Pane, Heading, Paragraph, Spinner, Button} from 'evergreen-ui'
 
-import {listBasesLocales} from '../lib/bal-api'
-import {sortBalByUpdate} from '../lib/sort-bal'
+import {listBasesLocales} from '@/lib/bal-api'
+import {sortBalByUpdate} from '@/lib/sort-bal'
 
-const PublicBasesLocalesList = dynamic(() => import('../components/bases-locales-list/public-bases-locales-list'), { // eslint-disable-line node/no-unsupported-features/es-syntax
+import Main from '@/layouts/main'
+
+const PublicBasesLocalesList = dynamic(() => import('@/components/bases-locales-list/public-bases-locales-list'), { // eslint-disable-line node/no-unsupported-features/es-syntax
   ssr: false,
   loading: () => (
     <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
@@ -17,7 +19,7 @@ const PublicBasesLocalesList = dynamic(() => import('../components/bases-locales
 
 function All({basesLocales}) {
   return (
-    <>
+    <Main>
       <Pane padding={16} backgroundColor='white'>
         <Heading size={600} marginBottom={8}>Rechercher une Base Adresse Locale</Heading>
         <Paragraph>
@@ -39,16 +41,13 @@ function All({basesLocales}) {
           </Button>
         </Link>
       </Pane>
-    </>
+    </Main>
   )
 }
 
 All.getInitialProps = async () => {
-  const basesLocales = await listBasesLocales()
-
   return {
-    basesLocales,
-    layout: 'fullscreen'
+    basesLocales: await listBasesLocales()
   }
 }
 

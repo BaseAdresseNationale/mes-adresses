@@ -2,9 +2,9 @@ import React, {useState, useCallback, useEffect, useContext, useMemo} from 'reac
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 
-import {getBaseLocale} from '../lib/bal-api'
+import {getBaseLocale} from '@/lib/bal-api'
 
-import LocalStorageContext from './local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
 const TokenContext = React.createContext()
 

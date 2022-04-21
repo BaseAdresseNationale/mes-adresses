@@ -4,19 +4,18 @@ import {validate} from '@etalab/bal'
 import {uniqBy} from 'lodash'
 import {Pane, Alert, Button, TextInputField, Text, FormField, PlusIcon, InboxIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '../../lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '@/lib/bal-api'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import useFocus from '../../hooks/focus'
-import {useInput} from '../../hooks/input'
+import useFocus from '@/hooks/focus'
+import {useInput} from '@/hooks/input'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import Uploader from '../uploader'
-import SelectCommune from '../select-commune'
-
-import AlertPublishedBAL from './alert-published-bal'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import Uploader from '@/components/uploader'
+import SelectCommune from '@/components/select-commune'
+import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 const MAX_SIZE = 10 * 1024 * 1024
 
@@ -31,10 +30,10 @@ function getFileExtension(name) {
 
 function extractCommuneFromCSV(response) {
   // Get cle_interop and slice it to get the commune's code
-  const communes = response.rows.map(r => (
+  const communes = response.rows.map(({parsedValues, additionalValues}) => (
     {
-      code: r.parsedValues.cle_interop.slice(0, 5),
-      nom: r.parsedValues.commune_nom
+      code: parsedValues.commune_insee || additionalValues?.cle_interop?.codeCommune,
+      nom: parsedValues.commune_nom
     }
   ))
 
@@ -127,7 +126,7 @@ function UploadForm() {
   }
 
   const checkUserBALs = useCallback(async () => {
-    const validateResponse = await validate(file)
+    const validateResponse = await validate(file, {relaxFieldsDetection: true})
 
     if (validateResponse) {
       const communes = extractCommuneFromCSV(validateResponse)

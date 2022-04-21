@@ -1,14 +1,15 @@
 import {useState, useCallback, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {SelectField, SelectMenu, Pane, Button, Alert, Text} from 'evergreen-ui'
+import {SelectField, SelectMenu, Pane, Button, Text} from 'evergreen-ui'
 
-import {normalizeSort} from '../../lib/normalize'
-import {getNumeros} from '../../lib/bal-api'
+import {normalizeSort} from '@/lib/normalize'
+import {getNumeros} from '@/lib/bal-api'
 
-import BalDataContext from '../../contexts/bal-data'
-import Form from '../form'
-import FormInput from '../form-input'
+import BalDataContext from '@/contexts/bal-data'
+
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
 
 function AddNumeros({onSubmit, onCancel, isLoading}) {
   const [selectedVoieId, setSelectedVoieId] = useState()
@@ -22,31 +23,25 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
     if (idVoie) {
       const numeros = await getNumeros(idVoie)
       setVoieNumeros(numeros)
+      setSelectedVoieNumeros(numeros.map(({_id}) => _id))
     }
   }
 
   const handleSelectNumero = ({value}) => {
-    setSelectedVoieNumeros(selectedNumeros => {
-      return selectedNumeros.includes(value) ?
-        selectedNumeros.filter(id => id !== value) :
-        [...selectedNumeros, value]
-    })
+    if (value === 'toggle') {
+      if (selectedVoieNumeros.length === voieNumeros.length) {
+        setSelectedVoieNumeros([])
+      } else {
+        setSelectedVoieNumeros(voieNumeros.map(({_id}) => _id))
+      }
+    } else {
+      setSelectedVoieNumeros(selectedNumeros => {
+        return selectedNumeros.includes(value) ?
+          selectedNumeros.filter(id => id !== value) :
+          [...selectedNumeros, value]
+      })
+    }
   }
-
-  const numerosLabel = useMemo(() => {
-    const selectedNumeroCount = selectedVoieNumeros.length
-    if (selectedNumeroCount === 0) {
-      return 'Choisir les numéros'
-    }
-
-    if (selectedNumeroCount === 1) {
-      const numero = voieNumeros.find(({_id}) => _id === selectedVoieNumeros[0])
-      const voie = voies.find(({_id}) => _id === selectedVoieId)
-      return `le ${numero.numero} ${voie.nom}`
-    }
-
-    return `${selectedNumeroCount} numéros sélectionnés`
-  }, [selectedVoieId, voieNumeros, selectedVoieNumeros, voies])
 
   const handleSubmit = useCallback(event => {
     event.preventDefault()
@@ -57,6 +52,35 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
 
     onSubmit(numeros)
   }, [selectedVoieNumeros, voieNumeros, onSubmit])
+
+  const selectedVoiesCount = useMemo(() => {
+    if (selectedVoieNumeros.length === voieNumeros.length) {
+      return 'Tous les numéros sont sélectionnés'
+    }
+
+    if (selectedVoieNumeros.length === 0) {
+      return 'Aucun numéro n’est sélectionné'
+    }
+
+    if (selectedVoieNumeros.length === 1) {
+      return '1 numéro est sélectionné'
+    }
+
+    return `${selectedVoieNumeros.length} numéros sont sélectionnés`
+  }, [selectedVoieNumeros.length, voieNumeros.length])
+
+  const numeroOptions = useMemo(() => {
+    let options = []
+
+    if (voieNumeros.length > 0) {
+      const toggleFullSelect = {label: selectedVoieNumeros.length > 0 ? 'Désélectionner tous les numéros' : 'Sélectionner tous les numéros', value: 'toggle'}
+      const numeros = voieNumeros.map(({_id, numero, suffixe}) => ({label: `${numero}${suffixe ? suffixe : ''}`, value: _id}))
+
+      options = [toggleFullSelect, ...numeros]
+    }
+
+    return options
+  }, [selectedVoieNumeros, voieNumeros])
 
   return (
     <Pane>
@@ -81,32 +105,28 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
         </Pane>
 
         {selectedVoieId && (
-          <Alert marginY={8} title='Préciser les numéros à ajouter au toponyme'>
-            <Text>
-              Sélectionnez les numéros que vous souhaitez ajouter au toponyme. Si aucun numéro n’est spécifié, alors tous les numéros de la voie seront ajoutés.
-            </Text>
+          <Pane display='flex' justifyContent='space-between' alignItems='center' marginY={8}>
+            <SelectMenu
+              isMultiSelect
+              hasFilter={false}
+              title='Sélection des numéros'
+              options={numeroOptions}
+              selected={selectedVoieNumeros}
+              emptyView={(
+                <Pane height='100%' paddingX='1em' display='flex' alignItems='center' justifyContent='center' textAlign='center'>
+                  <Text size={300}>Aucun numéro n’est disponible pour cette voie</Text>
+                </Pane>
+              )}
+              onSelect={handleSelectNumero}
+              onDeselect={handleSelectNumero}
+            >
+              <Button marginTop={0} type='button'>
+                Sélectionner les numéros
+              </Button>
+            </SelectMenu>
 
-            <Pane diplay='flex'>
-              <SelectMenu
-                isMultiSelect
-                hasFilter={false}
-                title='Sélection des numéros'
-                options={voieNumeros.map(({_id, numero, suffixe}) => ({label: `${numero}${suffixe ? suffixe : ''}`, value: _id}))}
-                selected={selectedVoieNumeros}
-                emptyView={(
-                  <Pane height='100%' paddingX='1em' display='flex' alignItems='center' justifyContent='center' textAlign='center'>
-                    <Text size={300}>Aucun numéro n’est disponible pour cette voie</Text>
-                  </Pane>
-                )}
-                onSelect={handleSelectNumero}
-                onDeselect={handleSelectNumero}
-              >
-                <Button marginTop={8} type='button'>
-                  {numerosLabel}
-                </Button>
-              </SelectMenu>
-            </Pane>
-          </Alert>
+            {voieNumeros.length > 0 && <Text size={300} fontStyle='italic' color='#2E56CD'>{selectedVoiesCount}</Text>}
+          </Pane>
         )}
 
         <Button
@@ -114,7 +134,7 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
           type='submit'
           appearance='primary'
           intent='success'
-          disabled={!(selectedVoieId && voieNumeros.length > 0)}
+          disabled={!(selectedVoieId && voieNumeros.length > 0) || selectedVoieNumeros.length === 0}
         >
           {isLoading ? 'Enregistrement…' : 'Enregistrer'}
         </Button>

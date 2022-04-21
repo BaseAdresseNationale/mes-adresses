@@ -1,25 +1,27 @@
-import {useState, useCallback, useMemo, useContext} from 'react'
+import {useState, useCallback, useMemo, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
 
-import {editNumero, removeNumero} from '../../lib/bal-api'
+import {editNumero, removeNumero} from '@/lib/bal-api'
 
-import TableRow from '../table-row'
-import DeleteWarning from '../delete-warning'
-import GroupedActions from '../grouped-actions'
+import BalDataContext from '@/contexts/bal-data'
 
-import BalDataContext from '../../contexts/bal-data'
+import useFuse from '@/hooks/fuse'
 
-import useFuse from '../../hooks/fuse'
+import TableRow from '@/components/table-row'
+import DeleteWarning from '@/components/delete-warning'
+import GroupedActions from '@/components/grouped-actions'
 
-function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEditing}) {
+function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
   const [error, setError] = useState(null)
 
-  const {numeros, reloadNumeros, refreshBALSync} = useContext(BalDataContext)
+  const {isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
 
-  const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
+  const needGeojsonUpdateRef = useRef(false)
+
+  const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
       'numeroComplet'
     ]
@@ -45,6 +47,13 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
     return filteredCertifieNumeros?.length === selectedNumerosIds.length
   }, [numeros, selectedNumerosIds])
 
+  const getToponymeName = useCallback(toponymeId => {
+    if (toponymeId) {
+      const toponyme = toponymes.find(({_id}) => _id === toponymeId)
+      return toponyme?.nom
+    }
+  }, [toponymes])
+
   const handleSelect = useCallback(id => {
     setSelectedNumerosIds(selectedNumero => {
       if (selectedNumero.includes(id)) {
@@ -63,9 +72,10 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
     }
   }
 
-  const onRemove = useCallback(async (idNumero, isToasterDisabled) => {
+  const onRemove = useCallback(async (idNumero, isToasterDisabled = false) => {
     await removeNumero(idNumero, token, isToasterDisabled)
     await reloadNumeros()
+    needGeojsonUpdateRef.current = true
     refreshBALSync()
   }, [reloadNumeros, refreshBALSync, token])
 
@@ -76,6 +86,7 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
       }))
 
       await reloadNumeros()
+      needGeojsonUpdateRef.current = true
       refreshBALSync()
       toaster.success('Les numéros ont bien été supprimés')
     } catch (error) {
@@ -101,6 +112,15 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
       setError(error.message)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [voieId, reloadGeojson])
 
   return (
     <>
@@ -188,19 +208,21 @@ function NumerosList({token, voieId, defaultNumeros, isEditionDisabled, handleEd
         {filtered.map(numero => (
           <TableRow
             key={numero._id}
-            {...numero}
-            id={numero._id}
-            isCertified={numero.certifie}
-            comment={numero.comment}
-            warning={numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null}
-            isSelectable={!isEditionDisabled}
             label={numero.numeroComplet}
             secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-            toponymeId={numero.toponyme}
-            handleSelect={handleSelect}
+            complement={getToponymeName(numero.toponyme)}
+            handleSelect={!isEditionDisabled && filtered.length > 1 ? () => handleSelect(numero._id) : null}
             isSelected={selectedNumerosIds.includes(numero._id)}
-            onEdit={handleEditing}
-            onRemove={onRemove}
+            isEditingEnabled={Boolean(!isEditing && token)}
+            notifications={{
+              isCertified: numero.certifie,
+              comment: numero.comment,
+              warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
+            }}
+            actions={{
+              onRemove: () => onRemove(numero._id),
+              onEdit: () => handleEditing(numero._id)
+            }}
           />
         ))}
       </Pane>
@@ -221,7 +243,7 @@ NumerosList.defaultProps = {
 NumerosList.propTypes = {
   token: PropTypes.string,
   voieId: PropTypes.string.isRequired,
-  defaultNumeros: PropTypes.array.isRequired,
+  numeros: PropTypes.array.isRequired,
   isEditionDisabled: PropTypes.bool.isRequired,
   handleEditing: PropTypes.func.isRequired
 }

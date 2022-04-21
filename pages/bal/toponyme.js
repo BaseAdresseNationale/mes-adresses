@@ -2,32 +2,31 @@ import {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
 
-import {addVoie, editNumero, getNumerosToponyme, getToponyme} from '../../lib/bal-api'
+import {addVoie, editNumero, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
 
-import TokenContext from '../../contexts/token'
-import BalDataContext from '../../contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
-import useHelp from '../../hooks/help'
-import useFuse from '../../hooks/fuse'
+import useHelp from '@/hooks/help'
+import useFuse from '@/hooks/fuse'
 
-import NumeroEditor from '../../components/bal/numero-editor'
-import ToponymeNumeros from '../../components/toponyme/toponyme-numeros'
-import AddNumeros from '../../components/toponyme/add-numeros'
-import ToponymeHeading from '../../components/toponyme/toponyme-heading'
+import NumeroEditor from '@/components/bal/numero-editor'
+import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
+import AddNumeros from '@/components/toponyme/add-numeros'
+import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
-function Toponyme({commune, toponyme, defaultNumeros}) {
+function Toponyme({baseLocale, commune}) {
   const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
-  const [updatedToponyme, setUpdatedToponyme] = useState(toponyme)
   const [error, setError] = useState()
   const [isLoading, setIsLoading] = useState(false)
 
   const {token} = useContext(TokenContext)
 
   const {
-    baseLocale,
+    toponyme,
     numeros,
-    reloadNumerosToponyme,
+    reloadNumeros,
     editingId,
     setEditingId,
     isEditing,
@@ -35,7 +34,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
   } = useContext(BalDataContext)
 
   useHelp(2)
-  const [filtered, setFilter] = useFuse(numeros || defaultNumeros, 200, {
+  const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
       'numero'
     ]
@@ -54,7 +53,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
         }, token, true)
       }))
 
-      await reloadNumerosToponyme()
+      await reloadNumeros()
 
       if (isMultiNumeros) {
         toaster.success('Les numéros ont bien été ajoutés')
@@ -83,17 +82,14 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
         editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
       }
 
-      const {toponyme} = body
       await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-
-      await reloadNumerosToponyme(updatedToponyme._id || toponyme)
-      setUpdatedToponyme(toponyme ? await getToponyme(toponyme) : updatedToponyme)
+      await reloadNumeros()
     } catch (error) {
       setError(error.message)
     }
 
     setEditingId(null)
-  }, [editingId, setEditingId, baseLocale, commune.code, reloadNumerosToponyme, token, updatedToponyme])
+  }, [editingId, setEditingId, baseLocale, commune.code, reloadNumeros, token])
 
   const handleSelection = useCallback(id => {
     if (!isEditing) {
@@ -128,7 +124,7 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
 
   return (
     <>
-      <ToponymeHeading defaultToponyme={toponyme} />
+      <ToponymeHeading toponyme={toponyme} />
       <Pane
         flexShrink={0}
         elevation={0}
@@ -210,32 +206,23 @@ function Toponyme({commune, toponyme, defaultNumeros}) {
   )
 }
 
-Toponyme.getInitialProps = async ({baseLocale, commune, toponyme}) => {
-  const defaultNumeros = await getNumerosToponyme(toponyme._id)
+Toponyme.getInitialProps = async ({query}) => {
+  const toponyme = await getToponyme(query.idToponyme)
+  const numeros = await getNumerosToponyme(toponyme._id)
 
   return {
-    layout: 'sidebar',
     toponyme,
-    baseLocale,
-    commune,
-    defaultNumeros
+    numeros
   }
 }
 
 Toponyme.propTypes = {
+  baseLocale: PropTypes.shape({
+    _id: PropTypes.string.isRequired
+  }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired
-  }).isRequired,
-  toponyme: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired,
-    positions: PropTypes.array.isRequired
-  }).isRequired,
-  defaultNumeros: PropTypes.array
-}
-
-Toponyme.defaultProps = {
-  defaultNumeros: null
+  }).isRequired
 }
 
 export default Toponyme

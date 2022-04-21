@@ -3,17 +3,17 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
-import LocalStorageContext from '../../contexts/local-storage'
+import {createBaseLocale, addCommune, populateCommune, searchBAL} from '@/lib/bal-api'
 
-import {createBaseLocale, addCommune, populateCommune, searchBAL} from '../../lib/bal-api'
+import LocalStorageContext from '@/contexts/local-storage'
 
-import useFocus from '../../hooks/focus'
-import {useInput, useCheckboxInput} from '../../hooks/input'
+import useFocus from '@/hooks/focus'
+import {useInput, useCheckboxInput} from '@/hooks/input'
 
-import Form from '../form'
-import FormInput from '../form-input'
-import {CommuneSearchField} from '../commune-search'
-import AlertPublishedBAL from './alert-published-bal'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
+import CommuneSearchField from '@/components/commune-search/commune-search-field'
+import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 function CreateForm({defaultCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)
@@ -24,13 +24,13 @@ function CreateForm({defaultCommune}) {
   )
   const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
-  const [commune, setCommune] = useState(defaultCommune ? defaultCommune.code : null)
+  const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
   const [userBALs, setUserBALs] = useState([])
   const [focusRef] = useFocus()
 
   const onSelect = useCallback(commune => {
-    setCommune(commune.code)
+    setCodeCommune(commune.code)
   }, [])
 
   const createNewBal = useCallback(async () => {
@@ -41,26 +41,26 @@ function CreateForm({defaultCommune}) {
       ]
     })
 
-    if (commune) {
+    if (codeCommune) {
       addBalAccess(bal._id, bal.token)
-      await addCommune(bal._id, commune, bal.token)
+      await addCommune(bal._id, codeCommune, bal.token)
 
       if (populate) {
-        await populateCommune(bal._id, commune, bal.token)
+        await populateCommune(bal._id, codeCommune, bal.token)
       }
 
       Router.push(
-        `/bal/commune?balId=${bal._id}&codeCommune=${commune}`,
-        `/bal/${bal._id}/communes/${commune}`
+        `/bal/commune?balId=${bal._id}&codeCommune=${codeCommune}`,
+        `/bal/${bal._id}/communes/${codeCommune}`
       )
     }
-  }, [email, nom, populate, commune, addBalAccess])
+  }, [email, nom, populate, codeCommune, addBalAccess])
 
   const onSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
 
-    checkUserBALs(commune, email)
+    checkUserBALs(codeCommune, email)
   }
 
   const onCancel = () => {
@@ -69,7 +69,7 @@ function CreateForm({defaultCommune}) {
   }
 
   const checkUserBALs = async () => {
-    const userBALs = await searchBAL(commune, email)
+    const userBALs = await searchBAL(codeCommune, email)
 
     if (userBALs.length > 0) {
       setUserBALs(userBALs)
@@ -88,7 +88,7 @@ function CreateForm({defaultCommune}) {
             isShown={isShown}
             userEmail={email}
             basesLocales={userBALs}
-            updateBAL={() => checkUserBALs(commune, email)}
+            updateBAL={() => checkUserBALs(codeCommune, email)}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
@@ -158,7 +158,10 @@ function CreateForm({defaultCommune}) {
 }
 
 CreateForm.propTypes = {
-  defaultCommune: PropTypes.object
+  defaultCommune: PropTypes.shape({
+    nom: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired
+  }),
 }
 
 CreateForm.defaultProps = {

@@ -2,7 +2,7 @@ import {useState, useCallback, useMemo, useContext} from 'react'
 import {Editor, EditingMode, DrawLineStringMode} from 'react-map-gl-draw'
 import {Portal, Pane, Alert} from 'evergreen-ui'
 
-import DrawContext from '../../contexts/draw'
+import DrawContext from '@/contexts/draw'
 
 const MODES = {
   editing: EditingMode,

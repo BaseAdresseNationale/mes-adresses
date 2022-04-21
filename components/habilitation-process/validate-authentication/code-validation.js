@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import NextImage from 'next/image'
 import {Pane, Heading, Text, Link, TextInput, IconButton, TickIcon} from 'evergreen-ui'
 
-import Form from '../../form'
-import FormInput from '../../form-input'
+import Form from '@/components/form'
+import FormInput from '@/components/form-input'
 
 function CodeValidation({email, handleSubmit, resendCode}) {
   const [code, setCode] = useState('')

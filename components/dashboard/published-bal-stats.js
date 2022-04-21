@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Heading, Pane} from 'evergreen-ui'
 
-import Counter from './counter'
+import Counter from '@/components/dashboard/counter'
 
 function PublishedBalStats({stats}) {
   const {nbCommunes, nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies} = stats
