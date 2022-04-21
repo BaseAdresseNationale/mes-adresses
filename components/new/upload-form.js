@@ -17,6 +17,8 @@ import Uploader from '@/components/uploader'
 import SelectCommune from '@/components/select-commune'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
+const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
+
 const MAX_SIZE = 10 * 1024 * 1024
 
 function getFileExtension(name) {
@@ -291,7 +293,7 @@ function UploadForm() {
             </Paragraph>
 
             <Alert intent='info' title='Plus d’informations' marginTop={8}>
-              <Text>Pour obtenir le rapport détaillé des erreurs, consulter <a href={`${process.env.NEXT_PUBLIC_ADRESSE_URL}/bases-locales/validateur`} target='_blank' rel='noreferrer'>le validateur de Bases Adresses Locales <ShareIcon verticalAlign='middle' /></a>.</Text>
+              <Text>Pour obtenir le rapport détaillé des erreurs, consulter <a href={`${ADRESSE_URL}/bases-locales/validateur`} target='_blank' rel='noreferrer'>le validateur de Bases Adresses Locales <ShareIcon verticalAlign='middle' /></a>.</Text>
             </Alert>
           </Dialog>
 
