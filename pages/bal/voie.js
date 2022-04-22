@@ -95,16 +95,6 @@ const Voie = React.memo(({baseLocale, commune}) => {
   }, [baseLocale._id, commune.code, editingId, refreshBALSync, reloadNumeros, resetEditing, token, handleGeojsonRefresh])
 
   useEffect(() => {
-    setIsFormOpen(Boolean(editedNumero))
-  }, [editedNumero])
-
-  useEffect(() => {
-    if (!isEditing) {
-      setIsFormOpen(false) // Force closing editing form when isEditing is false
-    }
-  }, [isEditing])
-
-  useEffect(() => {
     return () => {
       if (needGeojsonUpdateRef.current) {
         reloadGeojson()

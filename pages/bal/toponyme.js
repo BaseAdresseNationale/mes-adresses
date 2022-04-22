@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect, useContext} from 'react'
+import {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
 
@@ -16,7 +16,6 @@ import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
 function Toponyme({baseLocale, commune}) {
-  const [isEdited, setEdited] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
   const [isLoading, setIsLoading] = useState(false)
@@ -97,25 +96,6 @@ function Toponyme({baseLocale, commune}) {
     setEditingId(null)
     setError(null)
   }, [setEditingId])
-
-  useEffect(() => {
-    if (editingId) {
-      setEdited(false)
-    }
-  }, [editingId])
-
-  useEffect(() => {
-    if (isEdited) {
-      setError(null)
-      setEditingId(null)
-    }
-  }, [isEdited, setEditingId])
-
-  useEffect(() => {
-    if (!isEditing) {
-      setIsAdding(false) // Force closing editing form when isEditing is false
-    }
-  }, [isEditing, setIsAdding])
 
   return (
     <>

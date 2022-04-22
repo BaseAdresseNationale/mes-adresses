@@ -141,18 +141,6 @@ const Commune = React.memo(({baseLocale, commune}) => {
   }, [baseLocale._id, router, editingId, isAdding, commune, selectedTab, onCancel])
 
   useEffect(() => {
-    if (isAdding) {
-      setIsEditing(true)
-    }
-  }, [isAdding, setIsEditing])
-
-  useEffect(() => {
-    if (!isEditing) {
-      setIsAdding(false) // Force closing editing form when isEditing is false
-    }
-  }, [isEditing, setIsAdding])
-
-  useEffect(() => {
     if (editingId && toponymes.some(toponyme => toponyme._id === editingId)) {
       setSelectedTab('toponyme')
     }
