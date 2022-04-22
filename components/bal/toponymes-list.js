@@ -17,6 +17,8 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
   const {token} = useContext(TokenContext)
   const {isEditing, editingId} = useContext(BalDataContext)
 
+  const isEditable = Boolean(!isEditing && !isAdding && token)
+
   const [filtered, setFilter] = useFuse(toponymes, 200, {
     keys: [
       'nom'
@@ -64,7 +66,7 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
             <TableRow
               key={toponyme._id}
               label={toponyme.nom}
-              isEditingEnabled={Boolean(!isEditing && token)}
+              isEditingEnabled={isEditable}
               notifications={{
                 warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
               }}

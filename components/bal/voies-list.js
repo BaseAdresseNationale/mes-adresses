@@ -17,6 +17,7 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, onAdd, onEdit, o
   const {token} = useContext(TokenContext)
   const {isEditing, editingId} = useContext(BalDataContext)
 
+  const isEditable = Boolean(!isEditing && !isAdding && token)
   const [filtered, setFilter] = useFuse(voies, 200, {
     keys: [
       'nom'
@@ -64,7 +65,7 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, onAdd, onEdit, o
             <TableRow
               key={voie._id}
               label={voie.nom}
-              isEditingEnabled={Boolean(!isEditing && token)}
+              isEditingEnabled={isEditable}
               actions={{
                 onSelect: () => onSelect(voie._id),
                 onEdit: () => onEnableEditing(voie._id),
