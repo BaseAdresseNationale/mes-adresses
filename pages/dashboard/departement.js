@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
 import {Heading, Pane} from 'evergreen-ui'
-import {flatten} from 'lodash'
+import {flatten, sortBy} from 'lodash'
 
 import {listBALByCodeDepartement} from '@/lib/bal-api'
 import {getDepartement, searchCommunesByCode} from '@/lib/geo-api'
 import {getBALByStatus} from '@/lib/bases-locales'
+import {normalizeSort} from '@/lib/normalize'
 
 import DashboardLayout from '@/layouts/dashboard'
 
@@ -49,7 +50,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
           </Pane>
 
           <Pane>
-            <Heading size={500} marginY={8}>Liste des Base Adresse Locale</Heading>
+            <Heading size={500} marginY={8}>Liste des Bases Adresses Locales</Heading>
             {filteredCommunesInBAL.map(({code, nom}, key) => (
               <Pane key={code} background={key % 2 ? 'tin1' : 'tint2'}>
                 <CommuneBALList
@@ -85,7 +86,7 @@ export async function getServerSideProps({query}) {
   return {
     props: {
       departement,
-      filteredCommunesInBAL,
+      filteredCommunesInBAL: sortBy(filteredCommunesInBAL, [({nom}) => normalizeSort(nom), 'code']),
       basesLocalesDepartement: basesLocales,
       BALGroupedByCommune,
       stats: stats.basesLocalesStats,
