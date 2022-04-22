@@ -9411,7 +9411,7 @@
      "minzoom": 13,
      "maxzoom": 21,
      "layout": {
-      "visibility": "visible",
+      "visibility": "none",
       "line-cap": "butt",
       "line-join": "round"
      },
@@ -14544,6 +14544,125 @@
       "text-halo-color": "rgba(255, 255, 255, 0.5)",
       "text-halo-width": 4
      }
+    },
+    {
+      "id": "communes",
+      "type": "line",
+      "source": "decoupage-administratif",
+      "source-layer": "communes",
+      "minzoom": 2,
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#ffffff",
+        "line-dasharray": [
+          3,
+          1,
+          1,
+          1
+        ],
+        "line-width": {
+          "base": 1.4,
+          "stops": [
+            [
+              4,
+              0.4
+            ],
+            [
+              5,
+              1
+            ],
+            [
+              12,
+              3
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "departements",
+      "type": "line",
+      "source": "decoupage-administratif",
+      "source-layer": "departements",
+      "maxzoom":9,
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(248, 7%, 66%)",
+        "line-dasharray": [
+          3,
+          1,
+          1,
+          1
+        ],
+        "line-width": {
+          "base": 1.4,
+          "stops": [
+            [
+              0,
+              0.6
+            ],
+            [
+              4,
+              1.4
+            ],
+            [
+              5,
+              2
+            ],
+            [
+              12,
+              8
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "regions",
+      "type": "line",
+      "source": "decoupage-administratif",
+      "source-layer": "regions",
+      "maxzoom":5,
+      "layout": {
+        "line-join": "round",
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "hsl(248, 7%, 70%)",
+        "line-dasharray": [
+          3,
+          1,
+          1,
+          1
+        ],
+        "line-width": {
+          "base": 1.6,
+          "stops": [
+            [
+              0,
+              0.6
+            ],
+            [
+              4,
+              1.4
+            ],
+            [
+              5,
+              2
+            ],
+            [
+              12,
+              8
+            ]
+          ]
+        }
+      }
     }
      ]
     }
