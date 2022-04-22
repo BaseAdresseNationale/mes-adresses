@@ -69,11 +69,6 @@ function Toponyme({baseLocale, commune}) {
     setIsEditing(false)
   }
 
-  const onEnableAdding = () => {
-    setIsAdding(true)
-    setIsEditing(true)
-  }
-
   const onEdit = useCallback(async (voieData, body) => {
     let editedVoie = voieData
 
@@ -144,7 +139,7 @@ function Toponyme({baseLocale, commune}) {
               appearance='primary'
               intent='success'
               disabled={isAdding || isEditing}
-              onClick={onEnableAdding}
+              onClick={() => setIsAdding(true)}
             >
               Ajouter des numéros
             </Button>
@@ -185,7 +180,7 @@ function Toponyme({baseLocale, commune}) {
             </Table.Row>
           )}
 
-          {editingId && editingId !== toponyme._id ? (
+          {editingId && editingId !== toponyme._id && !isAdding ? (
             <Table.Row height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
                 <NumeroEditor
@@ -198,7 +193,7 @@ function Toponyme({baseLocale, commune}) {
               </Table.Cell>
             </Table.Row>
           ) : (
-            <ToponymeNumeros numeros={filtered} handleSelect={handleSelection} isEditable={token && !isEditing} />
+            <ToponymeNumeros numeros={filtered} handleSelect={handleSelection} isEditable={token && !isAdding} />
           )}
         </Table>
       </Pane>

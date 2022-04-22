@@ -26,7 +26,7 @@ import AddressPreview from '@/components/bal/address-preview'
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
 function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmit, onCancel}) {
-  const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
+  const {voies, toponymes} = useContext(BalDataContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
@@ -134,14 +134,13 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
   }, [setOverrideText, numero, suffixe])
 
   useEffect(() => {
-    setIsEditing(true)
     setIsParcelleSelectionEnabled(true)
     return () => {
+      onCancel()
       disableMarkers()
-      setIsEditing(false)
       setIsParcelleSelectionEnabled(false)
     }
-  }, [setIsEditing, disableMarkers, setIsParcelleSelectionEnabled])
+  }, [disableMarkers, setIsParcelleSelectionEnabled, onCancel])
 
   useEffect(() => {
     let nom = null

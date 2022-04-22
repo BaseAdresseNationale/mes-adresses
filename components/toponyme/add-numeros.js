@@ -1,4 +1,4 @@
-import {useState, useCallback, useContext, useMemo} from 'react'
+import {useState, useEffect, useCallback, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 import {SelectField, SelectMenu, Pane, Button, Text} from 'evergreen-ui'
@@ -81,6 +81,12 @@ function AddNumeros({onSubmit, onCancel, isLoading}) {
 
     return options
   }, [selectedVoieNumeros, voieNumeros])
+
+  useEffect(() => {
+    return () => {
+      onCancel()
+    }
+  }, [onCancel])
 
   return (
     <Pane>
