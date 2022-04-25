@@ -66,7 +66,7 @@ function VoieEditor({initialValue, onSubmit, onCancel}) {
       disableDraw()
       onCancel()
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [onCancel, disableDraw])
 
   return (
     <Form onFormSubmit={onFormSubmit}>
