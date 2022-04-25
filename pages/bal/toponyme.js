@@ -1,4 +1,4 @@
-import {useState, useCallback, useContext} from 'react'
+import {useState, useCallback, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
 
@@ -16,7 +16,6 @@ import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
 function Toponyme({baseLocale, commune}) {
-  const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -31,6 +30,8 @@ function Toponyme({baseLocale, commune}) {
     isEditing,
     setIsEditing
   } = useContext(BalDataContext)
+
+  const isAdding = useMemo(() => isEditing && !editingId, [isEditing, editingId])
 
   useHelp(2)
   const [filtered, setFilter] = useFuse(numeros, 200, {
@@ -64,7 +65,6 @@ function Toponyme({baseLocale, commune}) {
     }
 
     setIsLoading(false)
-    setIsAdding(false)
     setIsEditing(false)
   }
 
@@ -92,7 +92,6 @@ function Toponyme({baseLocale, commune}) {
   }, [isEditing, setEditingId])
 
   const onCancel = useCallback(() => {
-    setIsAdding(false)
     setEditingId(null)
     setError(null)
   }, [setEditingId])
@@ -118,8 +117,8 @@ function Toponyme({baseLocale, commune}) {
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isAdding || isEditing}
-              onClick={() => setIsAdding(true)}
+              disabled={isEditing}
+              onClick={() => setIsEditing(true)}
             >
               Ajouter des numéros
             </Button>

@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, useEffect} from 'react'
+import React, {useState, useCallback, useContext, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
@@ -15,10 +15,8 @@ import VoiesList from '@/components/bal/voies-list'
 import ToponymesList from '@/components/bal/toponymes-list'
 
 const Commune = React.memo(({baseLocale, commune}) => {
-  const [isAdding, setIsAdding] = useState(false)
   const [toRemove, setToRemove] = useState(null)
   const [selectedTab, setSelectedTab] = useState('voie')
-
   const {token} = useContext(TokenContext)
   const router = useRouter()
 
@@ -34,6 +32,8 @@ const Commune = React.memo(({baseLocale, commune}) => {
     isEditing,
     setIsEditing
   } = useContext(BalDataContext)
+
+  const isAdding = useMemo(() => isEditing && !editingId, [isEditing, editingId])
 
   useHelp(selectedTab === 'voie' ? 1 : 2)
 
@@ -71,11 +71,9 @@ const Commune = React.memo(({baseLocale, commune}) => {
 
     refreshBALSync()
     setIsEditing(false)
-    setIsAdding(false)
   }, [baseLocale._id, commune, reloadVoies, token, selectedTab, refreshBALSync, reloadToponymes, reloadGeojson, setIsEditing])
 
   const onEnableEditing = useCallback(async id => {
-    setIsAdding(false)
     setEditingId(id)
   }, [setEditingId])
 
@@ -118,7 +116,6 @@ const Commune = React.memo(({baseLocale, commune}) => {
   }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, selectedTab, toRemove, token])
 
   const onCancel = useCallback(() => {
-    setIsAdding(false)
     setEditingId(null)
   }, [setEditingId])
 
@@ -204,7 +201,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
               appearance='primary'
               intent='success'
               disabled={isAdding || isEditing}
-              onClick={() => setIsAdding(true)}
+              onClick={() => setIsEditing(true)}
             >
               Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
             </Button>
