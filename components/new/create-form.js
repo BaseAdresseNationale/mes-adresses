@@ -133,7 +133,7 @@ function CreateForm({defaultCommune}) {
             id='commune'
             initialSelectedItem={defaultCommune}
             label='Commune'
-            hint='Si vous ne trouvez pas votre commune, essayez d’ajouter le code département'
+            hint='Pour affiner la recherche, renseignez le code département'
             placeholder='Roche 42'
             appearance='default'
             maxWidth={500}
