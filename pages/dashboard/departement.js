@@ -81,12 +81,13 @@ export async function getServerSideProps({query}) {
     return communes
   })))
 
-  const filteredCommunesInBAL = communesActuelles.filter(({code}) => codesCommunes.includes(code))
+  const filteredCommunesInBAL = sortBy(communesActuelles, [({nom}) => normalizeSort(nom), 'code'])
+    .filter(({code}) => codesCommunes.includes(code))
 
   return {
     props: {
       departement,
-      filteredCommunesInBAL: sortBy(filteredCommunesInBAL, [({nom}) => normalizeSort(nom), 'code']),
+      filteredCommunesInBAL,
       basesLocalesDepartement: basesLocales,
       BALGroupedByCommune,
       stats: stats.basesLocalesStats,
