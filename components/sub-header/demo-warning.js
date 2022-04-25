@@ -37,11 +37,9 @@ function DemoWarning({baseLocale, token}) {
 
   useEffect(() => {
     const fetchCommune = async code => {
-      if (commune) {
-        const commune = await getCommune(code)
-        setPlaceholder(commune.nom)
-        setNom(`Adresses de ${commune.nom}`)
-      }
+      const commune = await getCommune(code)
+      setPlaceholder(commune.nom)
+      setNom(`Adresses de ${commune.nom}`)
     }
 
     fetchCommune(commune)
