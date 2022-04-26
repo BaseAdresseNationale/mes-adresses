@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import {Pane, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
+import {Pane, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
 import MapContext from '@/contexts/map'
 import BalDataContext from '@/contexts/bal-data'
@@ -19,6 +19,7 @@ import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
 import Draw from '@/components/map/draw'
 import StyleSelector from '@/components/map/style-selector'
+import AddressEditorControl from '@/components/map/address-editor-control'
 import useBounds from '@/components/map/hooks/bounds'
 import useSources from '@/components/map/hooks/sources'
 import useLayers from '@/components/map/hooks/layers'
@@ -221,18 +222,17 @@ function Map({isAddressFormOpen, handleAddressForm}) {
             onChange={setIsLabelsDisplayed}
           />
         )}
-
-        {token && (
-          <Control
-            icon={MapMarkerIcon}
-            isEnabled={isAddressFormOpen}
-            isDisabled={isEditing && !isAddressFormOpen}
-            enabledHint='Annuler'
-            disabledHint='Créer une adresse'
-            onChange={handleAddressForm}
-          />
-        )}
       </Pane>
+
+      {token && (
+        <Pane position='absolute' zIndex={1} top={130} right={15}>
+          <AddressEditorControl
+            isAddressFormOpen={isAddressFormOpen}
+            handleAddressForm={handleAddressForm}
+            isDisabled={isEditing && !isAddressFormOpen}
+          />
+        </Pane>
+      )}
 
       <Pane display='flex' flex={1}>
         <MapGl
