@@ -202,7 +202,9 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
               <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
 
               {hasComment && (comment.length > 0 || removeAllComments) && (
-                <Alert intent='warning' marginBottom={8}>Attention, certains numéros sélectionnés possèdent un commentaire. En cas de {removeAllComments ? 'suppression' : 'modification'}, leurs commentaires seront {removeAllComments ? 'supprimés' : 'remplacés'}.</Alert>
+                <Alert intent='warning' title='Attention' marginBottom={8}>
+                  <Text>certains numéros sélectionnés possèdent un commentaire. En cas de {removeAllComments ? 'suppression' : 'modification'}, leurs commentaires seront {removeAllComments ? 'supprimés' : 'remplacés'}.</Text>
+                </Alert>
               )}
 
               <Checkbox
