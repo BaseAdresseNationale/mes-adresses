@@ -1,6 +1,6 @@
 import {useContext, useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Button, Heading, Dialog, Paragraph, SelectField, Checkbox, Alert, EditIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Button, Heading, Dialog, Paragraph, Text, SelectField, Checkbox, Alert, EditIcon, TrashIcon} from 'evergreen-ui'
 import {sortBy, uniq} from 'lodash'
 
 import {normalizeSort} from '@/lib/normalize'
@@ -16,12 +16,11 @@ import Form from '@/components/form'
 import FormInput from '@/components/form-input'
 
 function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) {
-  const {voies, toponymes} = useContext(BalDataContext)
+  const {voies, toponymes, baseLocale} = useContext(BalDataContext)
 
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedVoieId, setSelectedVoieId] = useState(idVoie)
-  const [error, setError] = useState()
   const [comment, onCommentChange] = useInput('')
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
   const [certifie, setCertifie] = useState(null)
@@ -30,6 +29,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const selectedNumerosUniqType = uniq(selectedNumeros.map(numero => (numero.positions[0].type)))
   const hasMultiposition = selectedNumeros.find(numero => numero.positions.length > 1)
+  const hasComment = selectedNumeros.some(numero => numero.comment)
 
   const selectedNumerosUniqVoie = uniq(selectedNumeros.map(numero => numero.voie))
 
@@ -69,56 +69,44 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const handleConfirm = useCallback(async event => {
     event.preventDefault()
 
-    const data = {selectedVoieId, selectedToponymeId, numeros: selectedNumeros, positionType}
-    const body = data.numeros
-    const type = data.positionType
-
-    setIsLoading(true)
-
-    const commentCondition = r => {
+    const commentCondition = commentValue => {
       if (removeAllComments) {
         return null
       }
 
-      if (comment === '') {
-        return r.comment || null
+      if (commentValue) {
+        return commentValue
       }
-
-      if (r.comment) {
-        return `${r.comment} , ${comment}`
-      }
-
-      return comment
     }
 
-    body.map(r => {
-      r.voie = selectedVoieId
-      r.toponyme = selectedToponymeId === '' ? null : selectedToponymeId || r.toponyme
-      r.positions.forEach(position => {
-        if (type) {
-          position.type = type
-        }
-      })
-
-      r.comment = commentCondition(r)
-
-      if (certifie !== null) {
-        r.certifie = certifie
+    const getIsCertifie = isCertifie => {
+      if (isCertifie !== null) {
+        return isCertifie
       }
+    }
 
-      return r
+    setIsLoading(true)
+
+    const changes = {
+      voie: idVoie === selectedVoieId ? null : selectedVoieId,
+      toponyme: selectedToponymeId === '' ? null : selectedToponymeId,
+      comment: commentCondition(comment),
+      certifie: getIsCertifie(certifie)
+    }
+
+    if (positionType) {
+      changes.positionType = positionType
+    }
+
+    await onSubmit(baseLocale._id, {
+      numerosIds: selectedNumerosIds,
+      changes
     })
-
-    try {
-      await onSubmit(body)
-    } catch (error) {
-      setError(error.message)
-    }
 
     setIsLoading(false)
     setIsShown(false)
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, certifie, selectedToponymeId, onSubmit, positionType, removeAllComments, selectedNumeros, resetSelectedNumerosIds])
+  }, [comment, selectedVoieId, certifie, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds, idVoie])
 
   useEffect(() => {
     if (!isShown) {
@@ -213,11 +201,19 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
               <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
 
-              <Checkbox
-                label='Effacer tous les commentaires'
-                checked={removeAllComments}
-                onChange={onRemoveAllCommentsChange}
-              />
+              {hasComment && (comment.length > 0 || removeAllComments) && (
+                <Alert intent='warning' title='Attention' marginBottom={8}>
+                  <Text>certains numéros sélectionnés possèdent un commentaire. En cas de {removeAllComments ? 'suppression' : 'modification'}, leurs commentaires seront {removeAllComments ? 'supprimés' : 'remplacés'}.</Text>
+                </Alert>
+              )}
+
+              {hasComment && (
+                <Checkbox
+                  label='Effacer tous les commentaires'
+                  checked={removeAllComments}
+                  onChange={onRemoveAllCommentsChange}
+                />
+              )}
 
               <Pane display='flex' justifyContent='end' paddingBottom={16}>
                 <CertificationButton
@@ -231,11 +227,6 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
           </Pane>
         </Dialog>
 
-        {error && (
-          <Alert marginBottom={16} intent='danger' title='Erreur'>
-            {error}
-          </Alert>
-        )}
         <Button
           iconBefore={EditIcon}
           appearance='primary'
