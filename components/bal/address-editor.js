@@ -1,5 +1,6 @@
 import {useState, useEffect, useContext, useRef} from 'react'
 import PropTypes from 'prop-types'
+import {useRouter} from 'next/router'
 import {Pane, Heading, SelectField} from 'evergreen-ui'
 
 import {addNumero, addToponyme, addVoie} from '@/lib/bal-api'
@@ -17,6 +18,7 @@ function AddressEditor({closeForm}) {
   const [isToponyme, setIsToponyme] = useState(false)
 
   const formRef = useRef(false)
+  const router = useRouter()
 
   const onAddToponyme = async toponymeData => {
     await addToponyme(baseLocale._id, commune.code, toponymeData, token)
@@ -57,6 +59,13 @@ function AddressEditor({closeForm}) {
       closeForm()
     }
   }, [isEditing, closeForm])
+
+  // Close form on page changes
+  useEffect(() => {
+    if (formRef.current) {
+      closeForm()
+    }
+  }, [router, closeForm])
 
   useEffect(() => {
     setIsEditing(true)
