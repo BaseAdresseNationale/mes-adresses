@@ -1,8 +1,8 @@
 import {useState, useCallback, useMemo, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Paragraph, Heading, Button, Table, Checkbox, Alert, AddIcon, toaster} from 'evergreen-ui'
+import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
 
-import {editNumero, removeNumero} from '@/lib/bal-api'
+import {batchNumeros, removeMultipleNumeros, removeNumero} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
 
@@ -15,9 +15,8 @@ import GroupedActions from '@/components/grouped-actions'
 function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
-  const [error, setError] = useState(null)
 
-  const {isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
+  const {baseLocale, isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const needGeojsonUpdateRef = useRef(false)
 
@@ -80,37 +79,21 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   }, [reloadNumeros, refreshBALSync, token])
 
   const onMultipleRemove = async () => {
-    try {
-      await Promise.all(selectedNumerosIds.map(async id => {
-        await onRemove(id, true)
-      }))
+    await removeMultipleNumeros(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
 
-      await reloadNumeros()
-      needGeojsonUpdateRef.current = true
-      refreshBALSync()
-      toaster.success('Les numéros ont bien été supprimés')
-    } catch (error) {
-      setError(error.message)
-    }
+    await reloadNumeros()
+    needGeojsonUpdateRef.current = true
+    refreshBALSync()
 
     setSelectedNumerosIds([])
     setIsRemoveWarningShown(false)
   }
 
-  const onMultipleEdit = async body => {
-    try {
-      await Promise.all(body.map(async numero => {
-        await editNumero(numero._id, {
-          ...numero
-        }, token, true)
-      }))
+  const onMultipleEdit = async (balId, body) => {
+    await batchNumeros(balId, body, token)
 
-      await reloadNumeros()
-      refreshBALSync()
-      toaster.success('Les numéros ont bien été modifiés')
-    } catch (error) {
-      setError(error.message)
-    }
+    await reloadNumeros()
+    refreshBALSync()
   }
 
   useEffect(() => {
@@ -173,12 +156,6 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
         onConfirm={onMultipleRemove}
       />
 
-      {error && (
-        <Alert marginY={5} intent='danger' title='Erreur'>
-          {error}
-        </Alert>
-      )}
-
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
@@ -226,12 +203,6 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           />
         ))}
       </Pane>
-
-      {error && (
-        <Alert marginY={5} intent='danger' title='Erreur'>
-          {error}
-        </Alert>
-      )}
     </>
   )
 }

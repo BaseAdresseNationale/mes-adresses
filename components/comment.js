@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types'
-import {Pane, Textarea, Label} from 'evergreen-ui'
+import {Textarea, Label} from 'evergreen-ui'
+
+import FormInput from '@/components/form-input'
 
 function Comment({input, limit, onChange, isDisabled}) {
   return (
-    <Pane>
+    <FormInput>
       <Label marginBottom={4} display='block'>
         Commentaire
       </Label>
@@ -13,7 +15,7 @@ function Comment({input, limit, onChange, isDisabled}) {
         disabled={isDisabled}
         onChange={input.length < limit ? onChange : () => {}}
       />
-    </Pane>
+    </FormInput>
   )
 }
 
