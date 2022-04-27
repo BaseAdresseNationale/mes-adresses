@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
-    "@etalab/bal": "^2.3.3",
+    "@etalab/bal": "^2.4.0",
     "@next/bundle-analyzer": "^12.0.1",
     "@turf/bbox": "^6.5.0",
     "@turf/buffer": "^6.5.0",
