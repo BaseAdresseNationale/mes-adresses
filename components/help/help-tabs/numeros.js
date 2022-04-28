@@ -57,7 +57,7 @@ function Numeros() {
           <OrderedList margin={8}>
             <ListItem>
               <Pane display='flex' alignItems='center'>
-                Cliquez sur le bouton <IconButton marginLeft={8} icon={MapMarkerIcon} />
+                Cliquez sur le bouton <IconButton marginLeft={8} icon={AddIcon} intent='success' appearance='primary' />
               </Pane>
             </ListItem>
             <ListItem>
