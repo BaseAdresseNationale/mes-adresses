@@ -1,8 +1,9 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {useRouter} from 'next/router'
 import {Button, Checkbox} from 'evergreen-ui'
 
-import {editVoie} from '@/lib/bal-api'
+import {addVoie, editVoie} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
 import DrawContext from '@/contexts/draw'
@@ -22,8 +23,10 @@ function VoieEditor({initialValue, closeForm}) {
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [validationMessages, setValidationMessages] = useState(null)
 
+  const router = useRouter()
+
   const {token} = useContext(TokenContext)
-  const {refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
+  const {baseLocale, commune, setEditingId, setIsEditing, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
 
   const onFormSubmit = useCallback(async e => {
@@ -33,27 +36,38 @@ function VoieEditor({initialValue, closeForm}) {
     setIsLoading(true)
 
     try {
-      const {validationMessages, ...updatedVoie} = await editVoie(initialValue._id, {
+      const body = {
         nom,
         typeNumerotation: isMetric ? 'metrique' : 'numerique',
         trace: data ? data.geometry : null
-      }, token)
+      }
+
+      // Add or edit a voie
+      const submit = initialValue ?
+        async () => editVoie(initialValue._id, body, token) :
+        async () => addVoie(baseLocale._id, commune.code, body, token)
+      const {validationMessages, ...updatedVoie} = await submit()
 
       if (validationMessages) {
         setValidationMessages(validationMessages)
         throw new Error('Invalid Payload')
       } else {
-        await reloadVoies()
-        await reloadGeojson()
         refreshBALSync()
 
-        setVoie(updatedVoie)
+        if (initialValue && initialValue._id === router.query.idVoie) {
+          setVoie(updatedVoie)
+        } else {
+          await reloadVoies()
+          await reloadGeojson()
+        }
+
+        setIsLoading(false)
         closeForm()
       }
-    } catch {}
-
-    setIsLoading(false)
-  }, [initialValue._id, nom, isMetric, data, token, closeForm, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
+    } catch {
+      setIsLoading(false)
+    }
+  }, [router, baseLocale._id, commune.code, initialValue, nom, isMetric, data, token, closeForm, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -82,10 +96,17 @@ function VoieEditor({initialValue, closeForm}) {
   }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
 
   useEffect(() => {
+    if (initialValue) {
+      setEditingId(initialValue._id)
+    }
+
+    setIsEditing(true)
     return () => {
       disableDraw()
+      setEditingId(null)
+      setIsEditing(false)
     }
-  }, [disableDraw])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Form onFormSubmit={onFormSubmit}>
@@ -133,7 +154,7 @@ function VoieEditor({initialValue, closeForm}) {
 VoieEditor.propTypes = {
   initialValue: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string,
+    nom: PropTypes.string.isRequired,
     typeNumerotation: PropTypes.string,
     trace: PropTypes.object
   }),

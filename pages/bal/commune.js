@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
 
-import {addVoie, populateCommune, editVoie, removeVoie, addToponyme, editToponyme, removeToponyme} from '@/lib/bal-api'
+import {populateCommune, removeVoie, addToponyme, editToponyme, removeToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -13,9 +13,11 @@ import useHelp from '@/hooks/help'
 import DeleteWarning from '@/components/delete-warning'
 import VoiesList from '@/components/bal/voies-list'
 import ToponymesList from '@/components/bal/toponymes-list'
+import VoieEditor from '@/components/bal/voie-editor'
 
 const Commune = React.memo(({baseLocale, commune}) => {
   const [isAdding, setIsAdding] = useState(false)
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
   const [selectedTab, setSelectedTab] = useState('voie')
 
@@ -46,62 +48,37 @@ const Commune = React.memo(({baseLocale, commune}) => {
     setIsEditing(false)
   }, [baseLocale._id, commune, reloadVoies, setIsEditing, token])
 
-  const onAdd = useCallback(async ({nom, positions, typeNumerotation, trace, parcelles}) => {
-    if (selectedTab === 'voie') {
-      await addVoie(baseLocale._id, commune.code, {
-        nom,
-        typeNumerotation,
-        trace
-      }, token)
+  const onAdd = useCallback(async ({nom, positions, parcelles}) => {
+    await addToponyme(baseLocale._id, commune.code, {
+      nom,
+      positions,
+      parcelles
+    }, token)
 
-      await reloadVoies()
-
-      if (trace) {
-        await reloadGeojson()
-      }
-    } else {
-      await addToponyme(baseLocale._id, commune.code, {
-        nom,
-        positions,
-        parcelles
-      }, token)
-
-      await reloadToponymes()
-    }
+    await reloadToponymes()
 
     refreshBALSync()
     setIsEditing(false)
     setIsAdding(false)
-  }, [baseLocale._id, commune, reloadVoies, token, selectedTab, refreshBALSync, reloadToponymes, reloadGeojson, setIsEditing])
+  }, [baseLocale._id, commune, token, refreshBALSync, reloadToponymes, setIsEditing])
 
   const onEnableEditing = useCallback(async id => {
     setIsAdding(false)
     setEditingId(id)
   }, [setEditingId])
 
-  const onEdit = useCallback(async ({nom, typeNumerotation, trace, positions, parcelles}) => {
-    if (selectedTab === 'voie') {
-      await editVoie(editingId, {
-        nom,
-        typeNumerotation,
-        trace
-      }, token)
+  const onEdit = useCallback(async ({nom, positions, parcelles}) => {
+    await editToponyme(editingId, {
+      nom,
+      positions,
+      parcelles
+    }, token)
 
-      await reloadVoies()
-      await reloadGeojson()
-    } else {
-      await editToponyme(editingId, {
-        nom,
-        positions,
-        parcelles
-      }, token)
-
-      await reloadToponymes()
-    }
+    await reloadToponymes()
 
     refreshBALSync()
     setEditingId(null)
-  }, [editingId, setEditingId, refreshBALSync, reloadVoies, reloadToponymes, reloadGeojson, selectedTab, token])
+  }, [editingId, setEditingId, refreshBALSync, reloadToponymes, token])
 
   const onRemove = useCallback(async () => {
     if (selectedTab === 'voie') {
@@ -120,7 +97,8 @@ const Commune = React.memo(({baseLocale, commune}) => {
   const onCancel = useCallback(() => {
     setIsAdding(false)
     setEditingId(null)
-  }, [setEditingId])
+    setIsEditing(false)
+  }, [setIsEditing, setEditingId])
 
   const onSelect = useCallback(id => {
     if (editingId || isAdding) {
@@ -200,40 +178,46 @@ const Commune = React.memo(({baseLocale, commune}) => {
         </div>
       </Pane>
 
-      <Pane
-        flexShrink={0}
-        elevation={0}
-        backgroundColor='white'
-        paddingX={16}
-        display='flex'
-        alignItems='center'
-        minHeight={50}
-      >
-        {token && (
-          <Pane marginLeft='auto'>
-            <Button
-              iconBefore={AddIcon}
-              appearance='primary'
-              intent='success'
-              disabled={isAdding || isEditing}
-              onClick={() => setIsAdding(true)}
-            >
-              Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
-            </Button>
-          </Pane>
-        )}
-      </Pane>
+      {isCreateFormOpen ? (
+        <Pane>
+          {selectedTab === 'voie' && (
+            <VoieEditor closeForm={() => setIsCreateFormOpen(false)} />
+          )}
+        </Pane>
+      ) : (
+        <Pane
+          flexShrink={0}
+          elevation={0}
+          backgroundColor='white'
+          paddingX={16}
+          display='flex'
+          alignItems='center'
+          minHeight={50}
+        >
+          {token && (
+            <Pane marginLeft='auto'>
+              <Button
+                iconBefore={AddIcon}
+                appearance='primary'
+                intent='success'
+                disabled={isAdding || isEditing}
+                onClick={() => setIsCreateFormOpen(true)}
+              >
+                Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
+              </Button>
+            </Pane>
+          )}
+        </Pane>
+      )}
 
       {selectedTab === 'voie' ? (
         <VoiesList
           voies={voies}
-          isAdding={isAdding}
+          editedId={editedId}
           setToRemove={setToRemove}
-          onEnableEditing={onEnableEditing}
+          onEnableEditing={setEditedId}
           onSelect={onSelect}
-          onCancel={onCancel}
-          onAdd={onAdd}
-          onEdit={onEdit}
+          onCancel={() => setEditedId(null)}
         />
       ) : (
         <ToponymesList

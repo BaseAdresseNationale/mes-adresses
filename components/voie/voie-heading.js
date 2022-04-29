@@ -9,13 +9,14 @@ import VoieEditor from '@/components/bal/voie-editor'
 
 function VoieHeading({voie}) {
   const [hovered, setHovered] = useState(false)
+  const [isFormOpen, setIsFormOpen] = useState(false)
 
   const {token} = useContext(TokenContext)
-  const {editingId, setEditingId, isEditing, numeros} = useContext(BalDataContext)
+  const {editingId, isEditing, numeros} = useContext(BalDataContext)
 
   const onEnableVoieEditing = () => {
     if (!isEditing) {
-      setEditingId(voie._id)
+      setIsFormOpen(true)
       setHovered(false)
     }
   }
@@ -25,10 +26,10 @@ function VoieHeading({voie}) {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={editingId === voie._id ? 0 : 16}
+      padding={isFormOpen ? 0 : 16}
     >
-      {editingId === voie._id ? (
-        <VoieEditor initialValue={voie} closeForm={() => setEditingId(null)} />
+      {isFormOpen ? (
+        <VoieEditor initialValue={voie} closeForm={() => setIsFormOpen(false)} />
       ) : (
         <Heading
           style={{cursor: hovered && !isEditing ? 'text' : 'default'}}
