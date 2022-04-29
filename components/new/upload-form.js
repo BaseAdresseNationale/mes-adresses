@@ -1,4 +1,5 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
+import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
 import {uniqBy} from 'lodash'
@@ -9,7 +10,6 @@ import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '@/lib/bal-api'
 import LocalStorageContext from '@/contexts/local-storage'
 
 import useFocus from '@/hooks/focus'
-import {useInput} from '@/hooks/input'
 
 import Form from '@/components/form'
 import FormInput from '@/components/form-input'
@@ -48,16 +48,11 @@ function extractCommuneFromCSV(rows) {
   return uniqBy(communes, 'code')
 }
 
-function UploadForm() {
+function UploadForm({nom, onNomChange, email, onEmailChange, userBALs, setUserBALs, isLoading, setIsLoading, isShown, setIsShown}) {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput('')
-  const [email, onEmailChange] = useInput('')
   const [focusRef] = useFocus()
-  const [userBALs, setUserBALs] = useState([])
-  const [isShown, setIsShown] = useState(false)
   const [communes, setCommunes] = useState(null)
   const [selectedCodeCommune, setSelectedCodeCommune] = useState(null)
   const [validationReport, setValidationReport] = useState(null)
@@ -119,7 +114,7 @@ function UploadForm() {
     }
   }, [bal, email, nom, addBalAccess])
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setFile(null)
     setIsShown(false)
     setIsLoading(false)
@@ -127,12 +122,12 @@ function UploadForm() {
     setSelectedCodeCommune(null)
     setValidationReport(null)
     setInvalidRowsCount(null)
-  }
+  }, [setIsShown, setIsLoading])
 
   const onError = useCallback(error => {
     resetForm()
     setError(error)
-  }, [])
+  }, [resetForm])
 
   const onCancel = () => {
     resetForm()
@@ -162,7 +157,7 @@ function UploadForm() {
     } else {
       createNewBal()
     }
-  }, [createNewBal, email, selectedCodeCommune])
+  }, [createNewBal, email, selectedCodeCommune, setUserBALs, setIsShown])
 
   useEffect(() => {
     if (selectedCodeCommune && validationReport) {
@@ -193,13 +188,13 @@ function UploadForm() {
       setIsLoading(true)
       upload()
     }
-  }, [bal, selectedCodeCommune, file, onError])
+  }, [bal, selectedCodeCommune, setIsLoading, file, onError])
 
   useEffect(() => {
     if (file || error) {
       setIsLoading(false)
     }
-  }, [error, file])
+  }, [error, file, setIsLoading])
 
   return (
     <>
@@ -334,6 +329,19 @@ function UploadForm() {
       </Alert>
     </>
   )
+}
+
+UploadForm.propTypes = {
+  nom: PropTypes.string.isRequired,
+  onNomChange: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
+  onEmailChange: PropTypes.func.isRequired,
+  userBALs: PropTypes.array.isRequired,
+  setUserBALs: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  setIsLoading: PropTypes.func.isRequired,
+  isShown: PropTypes.bool.isRequired,
+  setIsShown: PropTypes.func.isRequired
 }
 
 export default UploadForm

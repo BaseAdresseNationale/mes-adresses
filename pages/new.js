@@ -9,6 +9,8 @@ import LocalStorageContext from '@/contexts/local-storage'
 
 import Main from '@/layouts/main'
 
+import {useInput} from '@/hooks/input'
+
 import BackButton from '@/components/back-button'
 import CreateForm from '@/components/new/create-form'
 import UploadForm from '@/components/new/upload-form'
@@ -18,6 +20,15 @@ function Index({defaultCommune, isDemo}) {
   const {balAccess} = useContext(LocalStorageContext)
 
   const [index, setIndex] = useState(0)
+  const [nom, onNomChange] = useInput(
+    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
+  )
+  const [email, onEmailChange] = useInput('')
+  const [userBALs, setUserBALs] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [isShown, setIsShown] = useState(false)
+
+  const Form = index === 0 ? CreateForm : UploadForm
 
   return (
     <Main>
@@ -42,11 +53,19 @@ function Index({defaultCommune, isDemo}) {
             </TabNavigation>
 
             <Pane flex={1} overflowY='scroll'>
-              {index === 0 ? (
-                <CreateForm defaultCommune={defaultCommune} />
-              ) : (
-                <UploadForm />
-              )}
+              <Form
+                defaultCommune={defaultCommune}
+                nom={nom}
+                onNomChange={onNomChange}
+                email={email}
+                onEmailChange={onEmailChange}
+                userBALs={userBALs}
+                setUserBALs={setUserBALs}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                isShown={isShown}
+                setIsShown={setIsShown}
+              />
             </Pane>
           </>)}
 

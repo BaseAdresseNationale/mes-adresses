@@ -8,25 +8,19 @@ import {createBaseLocale, addCommune, populateCommune, searchBAL} from '@/lib/ba
 import LocalStorageContext from '@/contexts/local-storage'
 
 import useFocus from '@/hooks/focus'
-import {useInput, useCheckboxInput} from '@/hooks/input'
+import {useCheckboxInput} from '@/hooks/input'
 
 import Form from '@/components/form'
 import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
-function CreateForm({defaultCommune}) {
+function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, userBALs, setUserBALs, isLoading, setIsLoading, isShown, setIsShown}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput(
-    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
-  )
-  const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
-  const [isShown, setIsShown] = useState(false)
-  const [userBALs, setUserBALs] = useState([])
+
   const [focusRef] = useFocus()
 
   const onSelect = useCallback(commune => {
@@ -164,6 +158,16 @@ CreateForm.propTypes = {
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired
   }),
+  nom: PropTypes.string.isRequired,
+  onNomChange: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
+  onEmailChange: PropTypes.func.isRequired,
+  userBALs: PropTypes.array.isRequired,
+  setUserBALs: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  setIsLoading: PropTypes.func.isRequired,
+  isShown: PropTypes.bool.isRequired,
+  setIsShown: PropTypes.func.isRequired
 }
 
 CreateForm.defaultProps = {
