@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
 
-import {populateCommune, removeVoie, addToponyme, editToponyme, removeToponyme} from '@/lib/bal-api'
+import {populateCommune, removeVoie, removeToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -12,11 +12,12 @@ import useHelp from '@/hooks/help'
 
 import DeleteWarning from '@/components/delete-warning'
 import VoiesList from '@/components/bal/voies-list'
-import ToponymesList from '@/components/bal/toponymes-list'
 import VoieEditor from '@/components/bal/voie-editor'
+import ToponymesList from '@/components/bal/toponymes-list'
+import ToponymeEditor from '@/components/bal/toponyme-editor'
 
 const Commune = React.memo(({baseLocale, commune}) => {
-  const [isAdding, setIsAdding] = useState(false)
+  const [editedId, setEditedId] = useState(null)
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
   const [selectedTab, setSelectedTab] = useState('voie')
@@ -32,7 +33,6 @@ const Commune = React.memo(({baseLocale, commune}) => {
     reloadToponymes,
     reloadGeojson,
     editingId,
-    setEditingId,
     isEditing,
     setIsEditing
   } = useContext(BalDataContext)
@@ -48,38 +48,6 @@ const Commune = React.memo(({baseLocale, commune}) => {
     setIsEditing(false)
   }, [baseLocale._id, commune, reloadVoies, setIsEditing, token])
 
-  const onAdd = useCallback(async ({nom, positions, parcelles}) => {
-    await addToponyme(baseLocale._id, commune.code, {
-      nom,
-      positions,
-      parcelles
-    }, token)
-
-    await reloadToponymes()
-
-    refreshBALSync()
-    setIsEditing(false)
-    setIsAdding(false)
-  }, [baseLocale._id, commune, token, refreshBALSync, reloadToponymes, setIsEditing])
-
-  const onEnableEditing = useCallback(async id => {
-    setIsAdding(false)
-    setEditingId(id)
-  }, [setEditingId])
-
-  const onEdit = useCallback(async ({nom, positions, parcelles}) => {
-    await editToponyme(editingId, {
-      nom,
-      positions,
-      parcelles
-    }, token)
-
-    await reloadToponymes()
-
-    refreshBALSync()
-    setEditingId(null)
-  }, [editingId, setEditingId, refreshBALSync, reloadToponymes, token])
-
   const onRemove = useCallback(async () => {
     if (selectedTab === 'voie') {
       await removeVoie(toRemove, token)
@@ -94,15 +62,9 @@ const Commune = React.memo(({baseLocale, commune}) => {
     setToRemove(null)
   }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, selectedTab, toRemove, token])
 
-  const onCancel = useCallback(() => {
-    setIsAdding(false)
-    setEditingId(null)
-    setIsEditing(false)
-  }, [setIsEditing, setEditingId])
-
   const onSelect = useCallback(id => {
-    if (editingId || isAdding) {
-      onCancel()
+    if (editingId) {
+      setEditedId(null)
     }
 
     if (selectedTab === 'voie') {
@@ -116,19 +78,12 @@ const Commune = React.memo(({baseLocale, commune}) => {
         `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${id}`
       )
     }
-  }, [baseLocale._id, router, editingId, isAdding, commune, selectedTab, onCancel])
+  }, [baseLocale._id, router, editingId, commune, selectedTab])
 
   useEffect(() => {
-    if (isAdding) {
-      setIsEditing(true)
-    }
-  }, [isAdding, setIsEditing])
-
-  useEffect(() => {
-    if (!isEditing) {
-      setIsAdding(false) // Force closing editing form when isEditing is false
-    }
-  }, [isEditing, setIsAdding])
+    setEditedId(null)
+    setIsCreateFormOpen(false)
+  }, [selectedTab])
 
   useEffect(() => {
     if (editingId && toponymes.some(toponyme => toponyme._id === editingId)) {
@@ -178,10 +133,12 @@ const Commune = React.memo(({baseLocale, commune}) => {
         </div>
       </Pane>
 
-      {isCreateFormOpen ? (
+      {isCreateFormOpen && !editingId ? (
         <Pane>
-          {selectedTab === 'voie' && (
+          {selectedTab === 'voie' ? (
             <VoieEditor closeForm={() => setIsCreateFormOpen(false)} />
+          ) : (
+            <ToponymeEditor closeForm={() => setIsCreateFormOpen(false)} />
           )}
         </Pane>
       ) : (
@@ -200,7 +157,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
                 iconBefore={AddIcon}
                 appearance='primary'
                 intent='success'
-                disabled={isAdding || isEditing}
+                disabled={isEditing}
                 onClick={() => setIsCreateFormOpen(true)}
               >
                 Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
@@ -222,13 +179,11 @@ const Commune = React.memo(({baseLocale, commune}) => {
       ) : (
         <ToponymesList
           toponymes={toponymes}
-          isAdding={isAdding}
+          editedId={editedId}
           setToRemove={setToRemove}
-          onEnableEditing={onEnableEditing}
+          onEnableEditing={setEditedId}
           onSelect={onSelect}
-          onCancel={onCancel}
-          onAdd={onAdd}
-          onEdit={onEdit}
+          onCancel={() => setEditedId(null)}
         />
       )}
 
@@ -240,7 +195,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
           <Button
             marginTop={10}
             appearance='primary'
-            disabled={isAdding || isEditing}
+            disabled={isEditing}
             isLoading={isEditing}
             onClick={onPopulate}
           >

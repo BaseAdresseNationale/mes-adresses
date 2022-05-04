@@ -2,38 +2,23 @@ import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
-import {editToponyme} from '@/lib/bal-api'
-
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
 function ToponymeHeading({toponyme}) {
+  const [isFormOpen, setIsFormOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
+
   const {token} = useContext(TokenContext)
-  const {editingId, setEditingId, isEditing, setToponyme, refreshBALSync, reloadToponymes, numeros} = useContext(BalDataContext)
+  const {isEditing, numeros} = useContext(BalDataContext)
 
   const onEnableToponymeEditing = () => {
     if (!isEditing) {
-      setEditingId(toponyme._id)
+      setIsFormOpen(true)
       setHovered(false)
     }
-  }
-
-  const onEditToponyme = async ({nom, positions, parcelles}) => {
-    const editedToponyme = await editToponyme(toponyme._id, {
-      nom,
-      positions,
-      parcelles
-    }, token)
-
-    setEditingId(null)
-
-    await reloadToponymes()
-    refreshBALSync()
-
-    setToponyme(editedToponyme)
   }
 
   return (
@@ -43,12 +28,8 @@ function ToponymeHeading({toponyme}) {
       background='tint1'
       padding={0}
     >
-      {editingId === toponyme._id ? (
-        <ToponymeEditor
-          initialValue={toponyme}
-          onSubmit={onEditToponyme}
-          onCancel={() => setEditingId(null)}
-        />
+      {isFormOpen ? (
+        <ToponymeEditor initialValue={toponyme} closeForm={() => setIsFormOpen(false)} />
       ) : (
         <Heading
           style={{cursor: hovered && !isEditing ? 'text' : 'default'}}

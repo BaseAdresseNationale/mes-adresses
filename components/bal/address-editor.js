@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Heading, SelectField} from 'evergreen-ui'
 
-import {addNumero, addToponyme, addVoie} from '@/lib/bal-api'
+import {addNumero, addVoie} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -13,21 +13,12 @@ import ToponymeEditor from '@/components/bal/toponyme-editor'
 
 function AddressEditor({closeForm}) {
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, voie, isEditing, setIsEditing, reloadVoies, reloadNumeros, reloadToponymes, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+  const {baseLocale, commune, voie, reloadVoies, reloadNumeros, reloadGeojson, refreshBALSync, isEditing, setIsEditing} = useContext(BalDataContext)
 
   const [isToponyme, setIsToponyme] = useState(false)
 
   const formRef = useRef(false)
   const router = useRouter()
-
-  const onAddToponyme = async toponymeData => {
-    await addToponyme(baseLocale._id, commune.code, toponymeData, token)
-    await reloadToponymes()
-    await reloadGeojson()
-    refreshBALSync()
-
-    closeForm()
-  }
 
   const onAddNumero = async (voieData, numero) => {
     let editedVoie = voieData
@@ -90,7 +81,7 @@ function AddressEditor({closeForm}) {
       </Pane>
 
       {isToponyme ? (
-        <ToponymeEditor onSubmit={onAddToponyme} onCancel={closeForm} />
+        <ToponymeEditor closeForm={closeForm} />
       ) : (
         <NumeroEditor commune={commune} initialVoieId={voie?._id} onSubmit={onAddNumero} onCancel={closeForm} />
       )}
