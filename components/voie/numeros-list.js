@@ -71,8 +71,8 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
     }
   }
 
-  const onRemove = useCallback(async (idNumero, isToasterDisabled = false) => {
-    await removeNumero(idNumero, token, isToasterDisabled)
+  const onRemove = useCallback(async idNumero => {
+    await removeNumero(idNumero, token)
     await reloadNumeros()
     needGeojsonUpdateRef.current = true
     refreshBALSync()

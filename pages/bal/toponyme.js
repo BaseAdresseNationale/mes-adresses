@@ -1,8 +1,8 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, Table, Button, Alert, AddIcon, toaster} from 'evergreen-ui'
+import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
 
-import {addVoie, editNumero, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
+import {addVoie, editNumero, batchNumeros, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -44,22 +44,14 @@ function Toponyme({baseLocale, commune}) {
 
   const onAdd = async numeros => {
     setIsLoading(true)
-    const isMultiNumeros = numeros.length > 1
 
     try {
-      await Promise.all(numeros.map(id => {
-        return editNumero(id, {
-          toponyme: toponyme._id
-        }, token, true)
-      }))
+      await batchNumeros(baseLocale._id, {
+        numerosIds: numeros,
+        changes: {toponyme: toponyme._id}
+      }, token)
 
       await reloadNumeros()
-
-      if (isMultiNumeros) {
-        toaster.success('Les numéros ont bien été ajoutés')
-      } else {
-        toaster.success('Le numéro a bien été ajouté')
-      }
     } catch (error) {
       setError(error.message)
     }
