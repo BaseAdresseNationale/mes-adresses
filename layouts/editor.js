@@ -15,9 +15,11 @@ import Map from '@/components/map'
 import WelcomeMessage from '@/components/welcome-message'
 import CertificationMessage from '@/components/certification-message'
 import Settings from '@/components/settings'
+import AddressEditor from '@/components/bal/address-editor'
 
 function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
   const [isHidden, setIsHidden] = useState(false)
+  const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
 
   const leftOffset = useMemo(() => {
     return isHidden ? 0 : 500
@@ -47,7 +49,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 <SubHeader />
               </SettingsContextProvider>
 
-              <Map top={116} left={leftOffset} />
+              <Map top={116} left={leftOffset} isAddressFormOpen={isAddressFormOpen} handleAddressForm={setIsAddressFormOpen} />
 
               <Sidebar
                 top={topOffset}
@@ -65,7 +67,11 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                     <CertificationMessage balId={baseLocale._id} codeCommune={commune.code} />
                   )}
 
-                  {children}
+                  {isAddressFormOpen ? (
+                    <AddressEditor closeForm={() => setIsAddressFormOpen(false)} />
+                  ) : (
+                    children
+                  )}
                 </>
               </Sidebar>
             </ParcellesContextProvider>

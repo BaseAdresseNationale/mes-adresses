@@ -1,5 +1,6 @@
-import {useState, useContext} from 'react'
+import {useState, useEffect, useContext, useRef} from 'react'
 import PropTypes from 'prop-types'
+import {useRouter} from 'next/router'
 import {Pane, Heading, SelectField} from 'evergreen-ui'
 
 import {addNumero, addToponyme, addVoie} from '@/lib/bal-api'
@@ -10,14 +11,17 @@ import BalDataContext from '@/contexts/bal-data'
 import NumeroEditor from '@/components/bal/numero-editor'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function AddressEditor({balId, commune, closeForm}) {
+function AddressEditor({closeForm}) {
   const {token} = useContext(TokenContext)
-  const {voie, reloadVoies, reloadNumeros, reloadToponymes, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+  const {baseLocale, commune, voie, isEditing, setIsEditing, reloadVoies, reloadNumeros, reloadToponymes, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
 
   const [isToponyme, setIsToponyme] = useState(false)
 
+  const formRef = useRef(false)
+  const router = useRouter()
+
   const onAddToponyme = async toponymeData => {
-    await addToponyme(balId, commune.code, toponymeData, token)
+    await addToponyme(baseLocale._id, commune.code, toponymeData, token)
     await reloadToponymes()
     await reloadGeojson()
     refreshBALSync()
@@ -30,7 +34,7 @@ function AddressEditor({balId, commune, closeForm}) {
     const isNewVoie = !editedVoie._id
 
     if (isNewVoie) {
-      editedVoie = await addVoie(balId, commune.code, editedVoie, token)
+      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
     }
 
     await addNumero(editedVoie._id, numero, token)
@@ -49,8 +53,30 @@ function AddressEditor({balId, commune, closeForm}) {
     closeForm()
   }
 
+  // Close form when edition is canceled
+  useEffect(() => {
+    if (formRef.current && !isEditing) {
+      closeForm()
+    }
+  }, [isEditing, closeForm])
+
+  // Close form on page changes
+  useEffect(() => {
+    if (formRef.current) {
+      closeForm()
+    }
+  }, [router, closeForm])
+
+  useEffect(() => {
+    setIsEditing(true)
+    formRef.current = true
+    return () => {
+      setIsEditing(false)
+    }
+  }, [setIsEditing])
+
   return (
-    <Pane>
+    <Pane overflowY='scroll'>
       <Pane padding={12}>
         <Heading is='h4' >Nouvelle adresse</Heading>
         <SelectField
@@ -73,8 +99,6 @@ function AddressEditor({balId, commune, closeForm}) {
 }
 
 AddressEditor.propTypes = {
-  balId: PropTypes.string.isRequired,
-  commune: PropTypes.object.isRequired,
   closeForm: PropTypes.func.isRequired
 }
 

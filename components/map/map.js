@@ -1,8 +1,9 @@
 import {useState, useMemo, useEffect, useCallback, useContext} from 'react'
+import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import {fromJS} from 'immutable'
-import {Pane, MapMarkerIcon, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
+import {Pane, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
 import MapContext from '@/contexts/map'
 import BalDataContext from '@/contexts/bal-data'
@@ -10,7 +11,6 @@ import TokenContext from '@/contexts/token'
 import DrawContext from '@/contexts/draw'
 import ParcellesContext from '@/contexts/parcelles'
 
-import AddressEditor from '@/components/bal/address-editor'
 import {vector, ortho, planIGN} from '@/components/map/styles'
 import NavControl from '@/components/map/nav-control'
 import EditableMarker from '@/components/map/editable-marker'
@@ -19,6 +19,7 @@ import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
 import Draw from '@/components/map/draw'
 import StyleSelector from '@/components/map/style-selector'
+import AddressEditorControl from '@/components/map/address-editor-control'
 import useBounds from '@/components/map/hooks/bounds'
 import useSources from '@/components/map/hooks/sources'
 import useLayers from '@/components/map/hooks/layers'
@@ -66,13 +67,12 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map() {
+function Map({isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
-  const [openForm, setOpenForm] = useState(false)
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null)
   const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
   const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
@@ -87,7 +87,6 @@ function Map() {
     toponymes,
     editingId,
     setEditingId,
-    setIsEditing,
     isEditing
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
@@ -197,22 +196,9 @@ function Map() {
     }
   }, [map, bounds, setViewport])
 
-  useEffect(() => {
-    if (openForm) {
-      setIsEditing(true)
-    }
-  }, [setIsEditing, openForm])
-
-  useEffect(() => {
-    if (!isEditing) {
-      setOpenForm(false) // Force closing editing form when isEditing is false
-    }
-  }, [isEditing, setOpenForm])
-
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
       <StyleSelector
-        isFormOpen={openForm}
         style={style}
         handleStyle={setStyle}
         isCadastreDisplayed={isCadastreDisplayed}
@@ -236,18 +222,17 @@ function Map() {
             onChange={setIsLabelsDisplayed}
           />
         )}
-
-        {token && commune && (
-          <Control
-            icon={MapMarkerIcon}
-            isEnabled={openForm}
-            isDisabled={isEditing}
-            enabledHint='Annuler'
-            disabledHint='Créer une adresse'
-            onChange={setOpenForm}
-          />
-        )}
       </Pane>
+
+      {token && (
+        <Pane position='absolute' zIndex={1} top={130} right={15}>
+          <AddressEditorControl
+            isAddressFormOpen={isAddressFormOpen}
+            handleAddressForm={handleAddressForm}
+            isDisabled={isEditing && !isAddressFormOpen}
+          />
+        </Pane>
+      )}
 
       <Pane display='flex' flex={1}>
         <MapGl
@@ -301,18 +286,13 @@ function Map() {
           <Draw />
         </MapGl>
       </Pane>
-
-      {commune && openForm && (
-        <Pane background='white' height={400} overflowY='auto'>
-          <AddressEditor
-            balId={balId}
-            commune={commune}
-            closeForm={() => setOpenForm(false)}
-          />
-        </Pane>
-      )}
     </Pane>
   )
+}
+
+Map.propTypes = {
+  isAddressFormOpen: PropTypes.bool.isRequired,
+  handleAddressForm: PropTypes.func.isRequired
 }
 
 export default Map

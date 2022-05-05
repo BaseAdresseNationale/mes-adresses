@@ -8,15 +8,15 @@ const STYLES = [
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
-function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, handleCadastre}) {
+function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre}) {
   const [showPopover, setShowPopover] = useState(false)
 
   return (
     <Pane
       position='absolute'
       display='flex'
-      left={16}
-      bottom={isFormOpen ? 410 : 16}
+      left={22}
+      bottom={22}
       border='none'
       elevation={2}
       zIndex={2}
@@ -50,7 +50,6 @@ function StyleSelector({style, isFormOpen, handleStyle, isCadastreDisplayed, han
 
 StyleSelector.propTypes = {
   style: PropTypes.string.isRequired,
-  isFormOpen: PropTypes.bool.isRequired,
   handleStyle: PropTypes.func.isRequired,
   isCadastreDisplayed: PropTypes.bool.isRequired,
   handleCadastre: PropTypes.func.isRequired
