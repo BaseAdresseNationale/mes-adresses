@@ -1,11 +1,15 @@
-import {useState, useCallback, useContext, useEffect} from 'react'
+import {useState, useCallback, useContext, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Pane, SelectField, TextInput, Alert, TextInputField} from 'evergreen-ui'
+import {Pane, SelectField, TextInput, TextInputField} from 'evergreen-ui'
+
+import {addVoie, addNumero, editNumero} from '@/lib/bal-api'
 
 import {normalizeSort} from '@/lib/normalize'
 import {computeCompletNumero} from '@/lib/utils/numero'
+import {getValidationMessage} from '@/lib/validation-messages'
 
+import TokenContext from '@/contexts/token'
 import MarkersContext from '@/contexts/markers'
 import BalDataContext from '@/contexts/bal-data'
 import ParcellesContext from '@/contexts/parcelles'
@@ -25,23 +29,22 @@ import AddressPreview from '@/components/bal/address-preview'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmit, onCancel}) {
-  const {voies, toponymes, setIsEditing} = useContext(BalDataContext)
-  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
-
+function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [selectedNomToponyme, setSelectedNomToponyme] = useState('')
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
   const [isLoading, setIsLoading] = useState(false)
   const [certifie, setCertifie] = useState(initialValue?.certifie || false)
-  const [numero, onNumeroChange, resetNumero] = useInput(initialValue?.numero.toString() || '')
+  const [numero, onNumeroChange] = useInput(initialValue?.numero.toString())
   const [nomVoie, onNomVoieChange] = useState('')
   const [selectedNomVoie, setSelectedNomVoie] = useState('')
-  const [suffixe, onSuffixeChange, resetSuffixe] = useInput(initialValue?.suffixe || '')
-  const [comment, onCommentChange, resetComment] = useInput(initialValue?.comment || '')
-  const [error, setError] = useState()
-  const [focusRef] = useFocus()
+  const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe)
+  const [comment, onCommentChange] = useInput(initialValue?.comment)
+  const [validationMessages, setValidationMessages] = useState(null)
 
+  const {token} = useContext(TokenContext)
+  const {baseLocale, commune, voies, toponymes, setEditingId, setIsEditing, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+  const {selectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
   const {
     markers,
     addMarker,
@@ -50,12 +53,33 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
     setOverrideText
   } = useContext(MarkersContext)
 
-  const onFormSubmit = useCallback(async e => {
-    e.preventDefault()
+  const needGeojsonUpdateRef = useRef(false)
 
-    setIsLoading(true)
+  const [focusRef] = useFocus()
 
-    const voie = nomVoie ? {nom: nomVoie} : {_id: voieId}
+  const handleGeojsonRefresh = useCallback(async editedVoie => {
+    if (editedVoie._id === initialVoieId) {
+      needGeojsonUpdateRef.current = true
+    } else {
+      await reloadGeojson()
+    }
+  }, [initialVoieId, reloadGeojson])
+
+  const getEditedVoie = useCallback(async () => {
+    if (nomVoie) {
+      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, commune.code, {nom: nomVoie}, token)
+      if (validationMessages) {
+        setValidationMessages(validationMessages)
+        throw new Error('Invalid Payload')
+      }
+
+      return newVoie
+    }
+
+    return {_id: voieId}
+  }, [baseLocale._id, commune.code, nomVoie, voieId, token])
+
+  const getNumeroBody = useCallback(() => {
     const body = {
       toponyme: toponymeId,
       numero: Number(numero),
@@ -79,41 +103,49 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
         )
       })
 
-      body.positions = positions
+      return {...body, positions}
     }
+  }, [initialValue, numero, suffixe, markers, certifie, toponymeId, comment, selectedParcelles])
 
-    try {
-      await onSubmit(voie, body)
-    } catch (error) {
-      setError(error.message)
-      setIsLoading(false)
-    }
-  }, [numero, nomVoie, voieId, toponymeId, suffixe, comment, markers, selectedParcelles, certifie, initialValue, onSubmit])
-
-  const onFormCancel = useCallback(e => {
+  const onFormSubmit = useCallback(async e => {
     e.preventDefault()
 
-    disableMarkers()
-    onCancel()
-  }, [disableMarkers, onCancel])
+    setIsLoading(true)
+
+    try {
+      const body = getNumeroBody()
+      const voie = await getEditedVoie()
+
+      // Add or edit a numero
+      const submit = initialValue ?
+        async () => editNumero(initialValue._id, {voie: voie._id, ...body}, token) :
+        async () => addNumero(voie._id, body, token)
+      const {validationMessages} = await submit()
+
+      if (validationMessages) {
+        setValidationMessages(validationMessages)
+        throw new Error('Invalid Payload')
+      } else {
+        await reloadNumeros()
+
+        handleGeojsonRefresh(voie)
+
+        setIsLoading(false)
+        refreshBALSync()
+        closeForm()
+      }
+    } catch {
+      setIsLoading(false)
+    }
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, initialValue])
 
   useKeyEvent(({key}) => {
     if (key === 'Escape') {
-      disableMarkers()
-      onCancel()
+      closeForm()
     }
-  }, [onCancel], 'keyup')
+  }, [closeForm], 'keyup')
 
-  useEffect(() => {
-    const {numero, suffixe, parcelles, comment} = initialValue || {}
-    resetNumero(numero)
-    resetSuffixe(suffixe || '')
-    resetComment(comment || '')
-    setSelectedParcelles(parcelles || [])
-    setError(null)
-  }, [resetNumero, resetSuffixe, resetComment, setError, setSelectedParcelles, initialValue])
-
-  useEffect(() => {
+  const initMarkers = useCallback(() => {
     if (initialValue) {
       const positions = initialValue.positions.map(position => (
         {
@@ -127,21 +159,11 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
     } else {
       addMarker({type: 'entrée'})
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [initialValue, addMarker])
 
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
   }, [setOverrideText, numero, suffixe])
-
-  useEffect(() => {
-    setIsEditing(true)
-    setIsParcelleSelectionEnabled(true)
-    return () => {
-      disableMarkers()
-      setIsEditing(false)
-      setIsParcelleSelectionEnabled(false)
-    }
-  }, [setIsEditing, disableMarkers, setIsParcelleSelectionEnabled])
 
   useEffect(() => {
     let nom = null
@@ -160,6 +182,28 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
 
     setSelectedNomToponyme(nom)
   }, [toponymeId, toponymes])
+
+  useEffect(() => {
+    setIsEditing(true)
+    if (initialValue) {
+      setEditingId(initialValue._id)
+    }
+
+    setIsParcelleSelectionEnabled(true)
+    initMarkers()
+
+    return () => {
+      setEditingId(null)
+      setIsEditing(false)
+      disableMarkers()
+      setIsParcelleSelectionEnabled(false)
+
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [initialValue, initMarkers, reloadGeojson, setIsEditing, setEditingId, disableMarkers, setIsParcelleSelectionEnabled])
 
   return (
     <Form onFormSubmit={onFormSubmit}>
@@ -180,6 +224,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
             voies={voies}
             nomVoie={nomVoie}
             mode={voieId ? 'selection' : 'creation'}
+            validationMessage={getValidationMessage(validationMessages, 'nom')}
             handleVoie={setVoieId}
             handleNomVoie={onNomVoieChange}
           />
@@ -222,6 +267,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
               marginBottom={0}
               placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
               onChange={onNumeroChange}
+              validationMessage={getValidationMessage(validationMessages, 'numero')}
             />
 
             <TextInput
@@ -237,6 +283,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
               marginBottom={0}
               placeholder='Suffixe'
               onChange={onSuffixeChange}
+              validationMessage={getValidationMessage(validationMessages, 'suffixe')}
             />
           </Pane>
         </FormInput>
@@ -253,17 +300,11 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
 
         <Comment input={comment} onChange={onCommentChange} />
 
-        {error && (
-          <Alert marginBottom={16} intent='danger' title='Erreur'>
-            {error}
-          </Alert>
-        )}
-
         <CertificationButton
           isCertified={initialValue?.certifie || false}
           isLoading={isLoading}
           onConfirm={setCertifie}
-          onCancel={onFormCancel}
+          onCancel={closeForm}
         />
       </Pane>
     </Form>
@@ -273,6 +314,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, onSubmi
 NumeroEditor.propTypes = {
   initialVoieId: PropTypes.string,
   initialValue: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     numero: PropTypes.number.isRequired,
     voie: PropTypes.oneOfType([
       PropTypes.object, // When "voie" comes from getNumerosToponyme() -> it's an Object with "nomVoie", needed to sort numeros by voie and display nomVoie
@@ -285,17 +327,15 @@ NumeroEditor.propTypes = {
     toponyme: PropTypes.string,
     certifie: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
   }),
-  commune: PropTypes.object.isRequired,
   hasPreview: PropTypes.bool,
-  onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func
+  closeForm: PropTypes.func
 }
 
 NumeroEditor.defaultProps = {
   initialValue: null,
   initialVoieId: null,
   hasPreview: false,
-  onCancel: null
+  closeForm: null
 }
 
 export default NumeroEditor

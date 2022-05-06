@@ -1,8 +1,8 @@
-import {useState, useCallback, useEffect, useContext} from 'react'
+import {useState, useCallback, useEffect, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
 
-import {addVoie, editNumero, batchNumeros, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
+import {batchNumeros, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -15,10 +15,10 @@ import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
 import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
-function Toponyme({baseLocale, commune}) {
-  const [isEdited, setEdited] = useState(false)
-  const [isAdding, setIsAdding] = useState(false)
-  const [error, setError] = useState()
+function Toponyme({baseLocale}) {
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [editedNumeroId, setEditedNumeroId] = useState(null)
+  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const {token} = useContext(TokenContext)
@@ -27,8 +27,6 @@ function Toponyme({baseLocale, commune}) {
     toponyme,
     numeros,
     reloadNumeros,
-    editingId,
-    setEditingId,
     isEditing,
     setIsEditing
   } = useContext(BalDataContext)
@@ -40,7 +38,9 @@ function Toponyme({baseLocale, commune}) {
     ]
   })
 
-  const editedNumero = filtered.find(numero => numero._id === editingId)
+  const editedNumero = useMemo(() => {
+    return filtered.find(numero => numero._id === editedNumeroId)
+  }, [filtered, editedNumeroId])
 
   const onAdd = async numeros => {
     setIsLoading(true)
@@ -57,92 +57,60 @@ function Toponyme({baseLocale, commune}) {
     }
 
     setIsLoading(false)
-    setIsAdding(false)
+    setIsFormOpen(false)
     setIsEditing(false)
   }
 
   const onEnableAdding = () => {
-    setIsAdding(true)
+    setIsFormOpen(true)
     setIsEditing(true)
   }
 
-  const onEdit = useCallback(async (voieData, body) => {
-    let editedVoie = voieData
-
-    try {
-      if (!editedVoie._id) {
-        editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
-      }
-
-      await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-      await reloadNumeros()
-    } catch (error) {
-      setError(error.message)
-    }
-
-    setEditingId(null)
-  }, [editingId, setEditingId, baseLocale, commune.code, reloadNumeros, token])
-
-  const handleSelection = useCallback(id => {
-    if (!isEditing) {
-      setEditingId(id)
-    }
-  }, [isEditing, setEditingId])
-
   const onCancel = useCallback(() => {
-    setIsAdding(false)
-    setEditingId(null)
+    if (isFormOpen) {
+      setIsEditing(false)
+    }
+
+    setEditedNumeroId(null)
+    setIsFormOpen(false)
     setError(null)
-  }, [setEditingId])
+  }, [isFormOpen, setIsEditing])
 
   useEffect(() => {
-    if (editingId) {
-      setEdited(false)
+    return () => {
+      setIsEditing(false)
     }
-  }, [editingId])
-
-  useEffect(() => {
-    if (isEdited) {
-      setError(null)
-      setEditingId(null)
-    }
-  }, [isEdited, setEditingId])
-
-  useEffect(() => {
-    if (!isEditing) {
-      setIsAdding(false) // Force closing editing form when isEditing is false
-    }
-  }, [isEditing, setIsAdding])
+  }, [setIsEditing])
 
   return (
     <>
       <ToponymeHeading toponyme={toponyme} />
-      <Pane
-        flexShrink={0}
-        elevation={0}
-        backgroundColor='white'
-        padding={16}
-        display='flex'
-        alignItems='center'
-        minHeight={64}
-      >
-        <Pane>
+      {token && isFormOpen ? (
+        <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
+      ) : (
+        <Pane
+          flexShrink={0}
+          elevation={0}
+          backgroundColor='white'
+          padding={16}
+          display='flex'
+          alignItems='center'
+          minHeight={64}
+        >
           <Heading>Liste des numéros</Heading>
-        </Pane>
-        {token && (
           <Pane marginLeft='auto'>
             <Button
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isAdding || isEditing}
+              disabled={isEditing}
               onClick={onEnableAdding}
             >
               Ajouter des numéros
             </Button>
           </Pane>
-        )}
-      </Pane>
+        </Pane>
+      )}
 
       {error && (
         <Alert marginY={5} intent='danger' title='Erreur'>
@@ -161,14 +129,6 @@ function Toponyme({baseLocale, commune}) {
             </Table.Head>
           )}
 
-          {isAdding && (
-            <Table.Row height='auto' >
-              <Table.Cell borderBottom display='block' padding={0} background='tint1'>
-                <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
-              </Table.Cell>
-            </Table.Row>
-          )}
-
           {filtered.length === 0 && (
             <Table.Row>
               <Table.TextCell color='muted' fontStyle='italic'>
@@ -177,20 +137,18 @@ function Toponyme({baseLocale, commune}) {
             </Table.Row>
           )}
 
-          {editingId && editingId !== toponyme._id ? (
+          {editedNumero ? (
             <Table.Row height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
                 <NumeroEditor
                   hasPreview
                   initialValue={editedNumero}
-                  commune={commune}
-                  onSubmit={onEdit}
-                  onCancel={onCancel}
+                  closeForm={onCancel}
                 />
               </Table.Cell>
             </Table.Row>
           ) : (
-            <ToponymeNumeros numeros={filtered} handleSelect={handleSelection} isEditable={token && !isEditing} />
+            <ToponymeNumeros numeros={filtered} handleSelect={setEditedNumeroId} isEditable={token && !isEditing} />
           )}
         </Table>
       </Pane>
@@ -211,9 +169,6 @@ Toponyme.getInitialProps = async ({query}) => {
 Toponyme.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
-  }).isRequired,
-  commune: PropTypes.shape({
-    code: PropTypes.string.isRequired
   }).isRequired
 }
 

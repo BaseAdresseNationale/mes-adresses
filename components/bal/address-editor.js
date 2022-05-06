@@ -3,48 +3,20 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Heading, SelectField} from 'evergreen-ui'
 
-import {addNumero, addVoie} from '@/lib/bal-api'
-
-import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
 import NumeroEditor from '@/components/bal/numero-editor'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
 function AddressEditor({closeForm}) {
-  const {token} = useContext(TokenContext)
-  const {baseLocale, commune, voie, reloadVoies, reloadNumeros, reloadGeojson, refreshBALSync, isEditing, setIsEditing} = useContext(BalDataContext)
-
   const [isToponyme, setIsToponyme] = useState(false)
+
+  const {voie, isEditing} = useContext(BalDataContext)
 
   const formRef = useRef(false)
   const router = useRouter()
 
-  const onAddNumero = async (voieData, numero) => {
-    let editedVoie = voieData
-    const isNewVoie = !editedVoie._id
-
-    if (isNewVoie) {
-      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
-    }
-
-    await addNumero(editedVoie._id, numero, token)
-
-    if (voie?._id === editedVoie._id) {
-      await reloadNumeros()
-    }
-
-    await reloadVoies()
-    refreshBALSync()
-
-    if (!voie || voie._id !== editedVoie._id || isNewVoie) {
-      await reloadGeojson()
-    }
-
-    closeForm()
-  }
-
-  // Close form when edition is canceled
+  // Close form when edition is canceled form menu
   useEffect(() => {
     if (formRef.current && !isEditing) {
       closeForm()
@@ -59,17 +31,13 @@ function AddressEditor({closeForm}) {
   }, [router, closeForm])
 
   useEffect(() => {
-    setIsEditing(true)
     formRef.current = true
-    return () => {
-      setIsEditing(false)
-    }
-  }, [setIsEditing])
+  }, [])
 
   return (
     <Pane overflowY='scroll'>
       <Pane padding={12}>
-        <Heading is='h4' >Nouvelle adresse</Heading>
+        <Heading is='h4'>Nouvelle adresse</Heading>
         <SelectField
           label='Créer un nouveau'
           value={isToponyme ? 'toponyme' : 'numero'}
@@ -83,7 +51,7 @@ function AddressEditor({closeForm}) {
       {isToponyme ? (
         <ToponymeEditor closeForm={closeForm} />
       ) : (
-        <NumeroEditor commune={commune} initialVoieId={voie?._id} onSubmit={onAddNumero} onCancel={closeForm} />
+        <NumeroEditor initialVoieId={voie?._id} closeForm={closeForm} />
       )}
     </Pane>
   )
