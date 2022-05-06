@@ -11,6 +11,7 @@ import TokenContext from '@/contexts/token'
 
 import {useInput, useCheckboxInput} from '@/hooks/input'
 import useKeyEvent from '@/hooks/key-event'
+import useValidationMessage from '@/hooks/validation-messages'
 
 import Form from '@/components/form'
 import FormInput from '@/components/form-input'
@@ -21,7 +22,7 @@ function VoieEditor({initialValue, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
-  const [validationMessages, setValidationMessages] = useState(null)
+  const [getValidationMessage, setValidationMessages] = useValidationMessage()
 
   const router = useRouter()
 
@@ -48,26 +49,23 @@ function VoieEditor({initialValue, closeForm}) {
         async () => addVoie(baseLocale._id, commune.code, body, token)
       const {validationMessages, ...updatedVoie} = await submit()
 
-      if (validationMessages) {
-        setValidationMessages(validationMessages)
-        throw new Error('Invalid Payload')
+      setValidationMessages(validationMessages)
+
+      refreshBALSync()
+
+      if (initialValue && initialValue._id === router.query.idVoie) {
+        setVoie(updatedVoie)
       } else {
-        refreshBALSync()
-
-        if (initialValue && initialValue._id === router.query.idVoie) {
-          setVoie(updatedVoie)
-        } else {
-          await reloadVoies()
-          await reloadGeojson()
-        }
-
-        setIsLoading(false)
-        closeForm()
+        await reloadVoies()
+        await reloadGeojson()
       }
+
+      setIsLoading(false)
+      closeForm()
     } catch {
       setIsLoading(false)
     }
-  }, [router, baseLocale._id, commune.code, initialValue, nom, isMetric, data, token, closeForm, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
+  }, [router, baseLocale._id, commune.code, initialValue, nom, isMetric, data, token, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -78,7 +76,7 @@ function VoieEditor({initialValue, closeForm}) {
   // Reset validation messages on changes
   useEffect(() => {
     setValidationMessages(null)
-  }, [nom])
+  }, [nom, setValidationMessages])
 
   useKeyEvent(({key}) => {
     if (key === 'Escape') {
@@ -117,7 +115,7 @@ function VoieEditor({initialValue, closeForm}) {
           placeholder='Nom de la voie'
           value={nom}
           onChange={onNomChange}
-          validationMessage={validationMessages?.nom[0]}
+          validationMessage={getValidationMessage('nom')}
         />
 
         <Checkbox

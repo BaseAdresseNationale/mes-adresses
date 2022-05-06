@@ -7,7 +7,6 @@ import {addVoie, addNumero, editNumero} from '@/lib/bal-api'
 
 import {normalizeSort} from '@/lib/normalize'
 import {computeCompletNumero} from '@/lib/utils/numero'
-import {getValidationMessage} from '@/lib/validation-messages'
 
 import TokenContext from '@/contexts/token'
 import MarkersContext from '@/contexts/markers'
@@ -17,6 +16,7 @@ import ParcellesContext from '@/contexts/parcelles'
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 import useKeyEvent from '@/hooks/key-event'
+import useValidationMessage from '@/hooks/validation-messages'
 
 import Comment from '@/components/comment'
 import Form from '@/components/form'
@@ -40,7 +40,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const [selectedNomVoie, setSelectedNomVoie] = useState('')
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe)
   const [comment, onCommentChange] = useInput(initialValue?.comment)
-  const [validationMessages, setValidationMessages] = useState(null)
+  const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
   const {baseLocale, commune, voies, toponymes, setEditingId, setIsEditing, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
@@ -68,16 +68,13 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
       const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, commune.code, {nom: nomVoie}, token)
-      if (validationMessages) {
-        setValidationMessages(validationMessages)
-        throw new Error('Invalid Payload')
-      }
+      setValidationMessages(validationMessages)
 
       return newVoie
     }
 
     return {_id: voieId}
-  }, [baseLocale._id, commune.code, nomVoie, voieId, token])
+  }, [baseLocale._id, commune.code, nomVoie, voieId, token, setValidationMessages])
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -121,23 +118,19 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
         async () => editNumero(initialValue._id, {voie: voie._id, ...body}, token) :
         async () => addNumero(voie._id, body, token)
       const {validationMessages} = await submit()
+      setValidationMessages(validationMessages)
 
-      if (validationMessages) {
-        setValidationMessages(validationMessages)
-        throw new Error('Invalid Payload')
-      } else {
-        await reloadNumeros()
+      await reloadNumeros()
 
-        handleGeojsonRefresh(voie)
+      handleGeojsonRefresh(voie)
 
-        setIsLoading(false)
-        refreshBALSync()
-        closeForm()
-      }
+      setIsLoading(false)
+      refreshBALSync()
+      closeForm()
     } catch {
       setIsLoading(false)
     }
-  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, initialValue])
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, initialValue, setValidationMessages])
 
   useKeyEvent(({key}) => {
     if (key === 'Escape') {
@@ -224,7 +217,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
             voies={voies}
             nomVoie={nomVoie}
             mode={voieId ? 'selection' : 'creation'}
-            validationMessage={getValidationMessage(validationMessages, 'nom')}
+            validationMessage={getValidationMessage('nom')}
             handleVoie={setVoieId}
             handleNomVoie={onNomVoieChange}
           />
@@ -267,7 +260,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
               marginBottom={0}
               placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
               onChange={onNumeroChange}
-              validationMessage={getValidationMessage(validationMessages, 'numero')}
+              validationMessage={getValidationMessage('numero')}
             />
 
             <TextInput
@@ -283,14 +276,14 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
               marginBottom={0}
               placeholder='Suffixe'
               onChange={onSuffixeChange}
-              validationMessage={getValidationMessage(validationMessages, 'suffixe')}
+              validationMessage={getValidationMessage('suffixe')}
             />
           </Pane>
         </FormInput>
 
         {markers.length > 0 && (
           <FormInput>
-            <PositionEditor validationMessage={getValidationMessage(validationMessages, 'positions')} />
+            <PositionEditor validationMessage={getValidationMessage('positions')} />
           </FormInput>
         )}
 

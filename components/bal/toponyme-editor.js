@@ -4,7 +4,6 @@ import {useRouter} from 'next/router'
 import {Button} from 'evergreen-ui'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
-import {getValidationMessage} from '@/lib/validation-messages'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -13,6 +12,7 @@ import ParcellesContext from '@/contexts/parcelles'
 
 import {useInput} from '@/hooks/input'
 import useKeyEvent from '@/hooks/key-event'
+import useValidationMessage from '@/hooks/validation-messages'
 
 import AssistedTextField from '@/components/assisted-text-field'
 import Form from '@/components/form'
@@ -23,7 +23,7 @@ import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 function ToponymeEditor({initialValue, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
-  const [validationMessages, setValidationMessages] = useState(null)
+  const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const router = useRouter()
 
@@ -64,27 +64,23 @@ function ToponymeEditor({initialValue, closeForm}) {
         async () => editToponyme(initialValue._id, body, token) :
         async () => addToponyme(baseLocale._id, commune.code, body, token)
       const {validationMessages, ...toponyme} = await submit()
+      setValidationMessages(validationMessages)
 
-      if (validationMessages) {
-        setValidationMessages(validationMessages)
-        throw new Error('Invalid Payload')
+      refreshBALSync()
+
+      if (initialValue && initialValue._id === router.query.idToponyme) {
+        setToponyme(toponyme)
       } else {
-        refreshBALSync()
-
-        if (initialValue && initialValue._id === router.query.idToponyme) {
-          setToponyme(toponyme)
-        } else {
-          await reloadToponymes()
-          await reloadGeojson()
-        }
-
-        setIsLoading(false)
-        closeForm()
+        await reloadToponymes()
+        await reloadGeojson()
       }
+
+      setIsLoading(false)
+      closeForm()
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, router, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadGeojson])
+  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, router, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadGeojson, setValidationMessages])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -148,12 +144,12 @@ function ToponymeEditor({initialValue, closeForm}) {
           placeholder='Nom du toponyme'
           value={nom}
           onChange={onNomChange}
-          validationMessage={getValidationMessage(validationMessages, 'nom')}
+          validationMessage={getValidationMessage('nom')}
         />
       </FormInput>
 
       <FormInput>
-        <PositionEditor isToponyme validationMessage={getValidationMessage(validationMessages, 'positions')} />
+        <PositionEditor isToponyme validationMessage={getValidationMessage('positions')} />
       </FormInput>
 
       <FormInput>
