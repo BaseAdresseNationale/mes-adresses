@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon, FormField} from 'evergreen-ui'
 
@@ -8,20 +8,67 @@ import MarkersContext from '@/contexts/markers'
 
 import InputLabel from '@/components/input-label'
 
+function Position({marker, isRemovable, handleChange, onRemove}) {
+  const onSelect = useCallback(e => {
+    const type = e.target.value
+    handleChange(marker._id, {...marker, type})
+  }, [marker, handleChange])
+
+  const removeMarker = useCallback(e => {
+    e.preventDefault()
+    onRemove(marker._id)
+  }, [marker._id, onRemove])
+
+  return (
+    <>
+      <Select
+        value={marker.type}
+        marginBottom={8}
+        height={32}
+        onChange={onSelect}
+      >
+        {positionsTypesList.map(positionType => (
+          <option key={positionType.value} value={positionType.value}>
+            {positionType.name}
+          </option>
+        ))}
+      </Select>
+      <Icon icon={MapMarkerIcon} size={22} margin='auto' />
+      <Heading size={100} marginY='auto'>
+        <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
+      </Heading>
+      <Heading size={100} marginY='auto'>
+        <Small>{marker.longitude && marker.longitude.toFixed(6)}</Small>
+      </Heading>
+      <IconButton
+        disabled={isRemovable}
+        appearance='default'
+        iconSize={15}
+        icon={TrashIcon}
+        intent='danger'
+        onClick={removeMarker}
+      />
+    </>
+  )
+}
+
+Position.propTypes = {
+  marker: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    latitude: PropTypes.string.isRequired,
+    longitude: PropTypes.string.isRequired,
+  }),
+  isRemovable: PropTypes.bool.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired
+}
+
 function PositionEditor({isToponyme, validationMessage}) {
   const {markers, addMarker, updateMarker, removeMarker} = useContext(MarkersContext)
 
   const handleAddMarker = () => {
     addMarker({type: isToponyme ? 'segment' : 'entrée'})
-  }
-
-  const handleChange = (e, marker) => {
-    updateMarker(marker._id, {...marker, type: e.target.value})
-  }
-
-  const deletePosition = (e, marker) => {
-    e.preventDefault()
-    removeMarker(marker._id)
   }
 
   return (
@@ -44,35 +91,13 @@ function PositionEditor({isToponyme, validationMessage}) {
           <div />
 
           {markers.map(marker => (
-            <React.Fragment key={marker._id}>
-              <Select
-                value={marker.type}
-                marginBottom={8}
-                height={32}
-                onChange={e => handleChange(e, marker)}
-              >
-                {positionsTypesList.map(positionType => (
-                  <option key={positionType.value} value={positionType.value}>
-                    {positionType.name}
-                  </option>
-                ))}
-              </Select>
-              <Icon icon={MapMarkerIcon} size={22} margin='auto' />
-              <Heading size={100} marginY='auto'>
-                <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
-              </Heading>
-              <Heading size={100} marginY='auto'>
-                <Small>{marker.longitude && marker.longitude.toFixed(6)}</Small>
-              </Heading>
-              <IconButton
-                disabled={isToponyme ? false : markers.length === 1}
-                appearance='default'
-                iconSize={15}
-                icon={TrashIcon}
-                intent='danger'
-                onClick={e => deletePosition(e, marker)}
-              />
-            </React.Fragment>
+            <Position
+              key={marker._id}
+              marker={marker}
+              isRemovable={isToponyme ? false : markers.length === 1}
+              handleChange={updateMarker}
+              onRemove={removeMarker}
+            />
           ))}
         </Pane>
       ) : (
