@@ -290,7 +290,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
 
         {markers.length > 0 && (
           <FormInput>
-            <PositionEditor />
+            <PositionEditor validationMessage={getValidationMessage(validationMessages, 'positions')} />
           </FormInput>
         )}
 

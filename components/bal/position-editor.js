@@ -1,6 +1,6 @@
 import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
+import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon, FormField} from 'evergreen-ui'
 
 import {positionsTypesList} from '@/lib/positions-types-list'
 
@@ -8,7 +8,7 @@ import MarkersContext from '@/contexts/markers'
 
 import InputLabel from '@/components/input-label'
 
-function PositionEditor({isToponyme}) {
+function PositionEditor({isToponyme, validationMessage}) {
   const {markers, addMarker, updateMarker, removeMarker} = useContext(MarkersContext)
 
   const handleAddMarker = () => {
@@ -25,7 +25,7 @@ function PositionEditor({isToponyme}) {
   }
 
   return (
-    <>
+    <FormField validationMessage={validationMessage}>
       <InputLabel
         title='Positions'
         help={markers.length > 1 ?
@@ -94,12 +94,13 @@ function PositionEditor({isToponyme}) {
       >
         {`Ajouter une position au ${isToponyme ? 'toponyme' : 'numéro'}`}
       </Button>
-    </>
+    </FormField>
   )
 }
 
 PositionEditor.propTypes = {
-  isToponyme: PropTypes.bool
+  isToponyme: PropTypes.bool,
+  validationMessage: PropTypes.string.isRequired
 }
 
 PositionEditor.defaultProps = {

@@ -4,6 +4,7 @@ import {useRouter} from 'next/router'
 import {Button} from 'evergreen-ui'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
+import {getValidationMessage} from '@/lib/validation-messages'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -147,12 +148,12 @@ function ToponymeEditor({initialValue, closeForm}) {
           placeholder='Nom du toponyme'
           value={nom}
           onChange={onNomChange}
-          validationMessage={validationMessages?.nom[0]}
+          validationMessage={getValidationMessage(validationMessages, 'nom')}
         />
       </FormInput>
 
       <FormInput>
-        <PositionEditor isToponyme />
+        <PositionEditor isToponyme validationMessage={getValidationMessage(validationMessages, 'positions')} />
       </FormInput>
 
       <FormInput>
