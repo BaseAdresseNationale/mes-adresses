@@ -1,4 +1,4 @@
-import {useCallback, useContext} from 'react'
+import {useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon, FormField} from 'evergreen-ui'
 
@@ -56,20 +56,40 @@ Position.propTypes = {
   marker: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    latitude: PropTypes.string.isRequired,
-    longitude: PropTypes.string.isRequired,
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
   }),
   isRemovable: PropTypes.bool.isRequired,
   handleChange: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired
 }
 
-function PositionEditor({isToponyme, validationMessage}) {
-  const {markers, addMarker, updateMarker, removeMarker} = useContext(MarkersContext)
+function PositionEditor({initialPositions, isToponyme, validationMessage}) {
+  const {markers, addMarker, updateMarker, removeMarker, disableMarkers} = useContext(MarkersContext)
 
-  const handleAddMarker = () => {
+  const handleAddMarker = useCallback(() => {
     addMarker({type: isToponyme ? 'segment' : 'entrée'})
-  }
+  }, [isToponyme, addMarker])
+
+  useEffect(() => {
+    if (initialPositions) {
+      const positions = initialPositions.map(position => (
+        {
+          longitude: position.point.coordinates[0],
+          latitude: position.point.coordinates[1],
+          type: position.type
+        }
+      ))
+
+      positions.forEach(position => addMarker(position))
+    } else {
+      handleAddMarker()
+    }
+
+    return () => {
+      disableMarkers()
+    }
+  }, [initialPositions, addMarker, handleAddMarker, disableMarkers])
 
   return (
     <FormField validationMessage={validationMessage}>
@@ -124,12 +144,15 @@ function PositionEditor({isToponyme, validationMessage}) {
 }
 
 PositionEditor.propTypes = {
+  initialPositions: PropTypes.array,
   isToponyme: PropTypes.bool,
-  validationMessage: PropTypes.string.isRequired
+  validationMessage: PropTypes.string
 }
 
 PositionEditor.defaultProps = {
-  isToponyme: false
+  initialPositions: null,
+  isToponyme: false,
+  validationMessage: null
 }
 
 export default PositionEditor

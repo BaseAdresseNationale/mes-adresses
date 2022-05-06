@@ -1,6 +1,5 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
 import {Button} from 'evergreen-ui'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
@@ -11,11 +10,11 @@ import MarkersContext from '@/contexts/markers'
 import ParcellesContext from '@/contexts/parcelles'
 
 import {useInput} from '@/hooks/input'
-import useKeyEvent from '@/hooks/key-event'
 import useValidationMessage from '@/hooks/validation-messages'
 
-import AssistedTextField from '@/components/assisted-text-field'
+import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
+import AssistedTextField from '@/components/assisted-text-field'
 import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
@@ -25,11 +24,9 @@ function ToponymeEditor({initialValue, closeForm}) {
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
-  const router = useRouter()
-
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, setToponyme, setIsEditing, setEditingId, reloadToponymes, refreshBALSync, reloadGeojson} = useContext(BalDataContext)
-  const {markers, addMarker, disableMarkers} = useContext(MarkersContext)
+  const {baseLocale, commune, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson} = useContext(BalDataContext)
+  const {markers} = useContext(MarkersContext)
   const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
 
   const onFormSubmit = useCallback(async e => {
@@ -68,7 +65,7 @@ function ToponymeEditor({initialValue, closeForm}) {
 
       refreshBALSync()
 
-      if (initialValue && initialValue._id === router.query.idToponyme) {
+      if (initialValue?._id === toponyme._id) {
         setToponyme(toponyme)
       } else {
         await reloadToponymes()
@@ -80,7 +77,7 @@ function ToponymeEditor({initialValue, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, router, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadGeojson, setValidationMessages])
+  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadGeojson, setValidationMessages])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -95,12 +92,6 @@ function ToponymeEditor({initialValue, closeForm}) {
     return 'Enregistrer'
   }, [isLoading])
 
-  useKeyEvent(({key}) => {
-    if (key === 'Escape') {
-      closeForm()
-    }
-  }, [closeForm], 'keyup')
-
   useEffect(() => {
     const {nom, parcelles} = initialValue || {}
     resetNom(nom || '')
@@ -108,68 +99,52 @@ function ToponymeEditor({initialValue, closeForm}) {
     setValidationMessages(null)
   }, [resetNom, setValidationMessages, setSelectedParcelles, initialValue])
 
-  useEffect(() => {
-    setIsEditing(true)
+  const onMount = useCallback(() => {
     setIsParcelleSelectionEnabled(true)
-
-    if (initialValue) {
-      setEditingId(initialValue._id)
-      const positions = initialValue.positions.map(position => (
-        {
-          longitude: position.point.coordinates[0],
-          latitude: position.point.coordinates[1],
-          type: position.type
-        }
-      ))
-
-      positions.forEach(position => addMarker(position))
-    } else {
-      addMarker({type: 'segment'})
-    }
-
-    return () => {
-      setEditingId(null)
-      setIsEditing(false)
-      disableMarkers()
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [setIsParcelleSelectionEnabled])
 
   return (
-    <Form onFormSubmit={onFormSubmit}>
-      <FormInput>
-        <AssistedTextField
-          isFocus
-          dsiabled={isLoading}
-          label='Nom du toponyme'
-          placeholder='Nom du toponyme'
-          value={nom}
-          onChange={onNomChange}
-          validationMessage={getValidationMessage('nom')}
-        />
-      </FormInput>
+    <FormMaster editingId={initialValue?._id} mountForm={onMount} closeForm={closeForm}>
+      <Form onFormSubmit={onFormSubmit}>
+        <FormInput>
+          <AssistedTextField
+            isFocus
+            dsiabled={isLoading}
+            label='Nom du toponyme'
+            placeholder='Nom du toponyme'
+            value={nom}
+            onChange={onNomChange}
+            validationMessage={getValidationMessage('nom')}
+          />
+        </FormInput>
 
-      <FormInput>
-        <PositionEditor isToponyme validationMessage={getValidationMessage('positions')} />
-      </FormInput>
+        <FormInput>
+          <PositionEditor
+            initialPositions={initialValue?.positions}
+            isToponyme
+            validationMessage={getValidationMessage('positions')}
+          />
+        </FormInput>
 
-      <FormInput>
-        <SelectParcelles isToponyme />
-      </FormInput>
+        <FormInput>
+          <SelectParcelles isToponyme />
+        </FormInput>
 
-      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
-        {submitLabel}
-      </Button>
+        <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
+          {submitLabel}
+        </Button>
 
-      <Button
-        disabled={isLoading}
-        appearance='minimal'
-        marginLeft={8}
-        display='inline-flex'
-        onClick={onFormCancel}
-      >
-        Annuler
-      </Button>
-    </Form>
+        <Button
+          disabled={isLoading}
+          appearance='minimal'
+          marginLeft={8}
+          display='inline-flex'
+          onClick={onFormCancel}
+        >
+          Annuler
+        </Button>
+      </Form>
+    </FormMaster>
   )
 }
 

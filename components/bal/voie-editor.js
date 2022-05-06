@@ -1,6 +1,5 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
 import {Button, Checkbox} from 'evergreen-ui'
 
 import {addVoie, editVoie} from '@/lib/bal-api'
@@ -10,9 +9,9 @@ import DrawContext from '@/contexts/draw'
 import TokenContext from '@/contexts/token'
 
 import {useInput, useCheckboxInput} from '@/hooks/input'
-import useKeyEvent from '@/hooks/key-event'
 import useValidationMessage from '@/hooks/validation-messages'
 
+import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
 import FormInput from '@/components/form-input'
 import AssistedTextField from '@/components/assisted-text-field'
@@ -24,10 +23,8 @@ function VoieEditor({initialValue, closeForm}) {
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage()
 
-  const router = useRouter()
-
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, setEditingId, setIsEditing, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
+  const {baseLocale, commune, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
 
   const onFormSubmit = useCallback(async e => {
@@ -47,14 +44,14 @@ function VoieEditor({initialValue, closeForm}) {
       const submit = initialValue ?
         async () => editVoie(initialValue._id, body, token) :
         async () => addVoie(baseLocale._id, commune.code, body, token)
-      const {validationMessages, ...updatedVoie} = await submit()
+      const {validationMessages, ...voie} = await submit()
 
       setValidationMessages(validationMessages)
 
       refreshBALSync()
 
-      if (initialValue && initialValue._id === router.query.idVoie) {
-        setVoie(updatedVoie)
+      if (initialValue?._id === voie._id) {
+        setVoie(voie)
       } else {
         await reloadVoies()
         await reloadGeojson()
@@ -65,7 +62,7 @@ function VoieEditor({initialValue, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [router, baseLocale._id, commune.code, initialValue, nom, isMetric, data, token, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
+  }, [baseLocale._id, commune.code, initialValue, nom, isMetric, data, token, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -78,12 +75,6 @@ function VoieEditor({initialValue, closeForm}) {
     setValidationMessages(null)
   }, [nom, setValidationMessages])
 
-  useKeyEvent(({key}) => {
-    if (key === 'Escape') {
-      closeForm()
-    }
-  }, [closeForm], 'keyup')
-
   useEffect(() => {
     if (isMetric) {
       setModeId(data ? 'editing' : 'drawLineString')
@@ -93,59 +84,52 @@ function VoieEditor({initialValue, closeForm}) {
     }
   }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
 
-  useEffect(() => {
-    if (initialValue) {
-      setEditingId(initialValue._id)
-    }
-
-    setIsEditing(true)
-    return () => {
-      disableDraw()
-      setEditingId(null)
-      setIsEditing(false)
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const onUnmount = useCallback(() => {
+    disableDraw()
+  }, [disableDraw])
 
   return (
-    <Form onFormSubmit={onFormSubmit}>
-      <FormInput>
-        <AssistedTextField
-          isFocus
-          label='Nom de la voie'
-          placeholder='Nom de la voie'
-          value={nom}
-          onChange={onNomChange}
-          validationMessage={getValidationMessage('nom')}
-        />
+    <FormMaster editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm}>
+      <Form onFormSubmit={onFormSubmit}>
+        <FormInput>
+          <AssistedTextField
+            isFocus
+            label='Nom de la voie'
+            placeholder='Nom de la voie'
+            value={nom}
+            onChange={onNomChange}
+            validationMessage={getValidationMessage('nom')}
+          />
 
-        <Checkbox
-          marginBottom={0}
-          checked={isMetric}
-          label='Cette voie utilise la numérotation métrique'
-          onChange={onIsMetricChange}
-        />
-      </FormInput>
+          <Checkbox
+            marginBottom={0}
+            checked={isMetric}
+            label='Cette voie utilise la numérotation métrique'
+            onChange={onIsMetricChange}
+          />
+        </FormInput>
 
-      {isMetric && (
-        <DrawEditor trace={initialValue ? initialValue.trace : null} />
-      )}
+        {isMetric && (
+          <DrawEditor trace={initialValue ? initialValue.trace : null} />
+        )}
 
-      <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
-        {isLoading ? 'En cours…' : 'Enregistrer'}
-      </Button>
-
-      {closeForm && (
-        <Button
-          disabled={isLoading}
-          appearance='minimal'
-          marginLeft={8}
-          display='inline-flex'
-          onClick={onFormCancel}
-        >
-          Annuler
+        <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
+          {isLoading ? 'En cours…' : 'Enregistrer'}
         </Button>
-      )}
-    </Form>
+
+        {closeForm && (
+          <Button
+            disabled={isLoading}
+            appearance='minimal'
+            marginLeft={8}
+            display='inline-flex'
+            onClick={onFormCancel}
+          >
+            Annuler
+          </Button>
+        )}
+      </Form>
+    </FormMaster>
   )
 }
 

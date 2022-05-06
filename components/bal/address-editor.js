@@ -1,6 +1,5 @@
-import {useState, useEffect, useContext, useRef} from 'react'
+import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
 import {Pane, Heading, SelectField} from 'evergreen-ui'
 
 import BalDataContext from '@/contexts/bal-data'
@@ -11,28 +10,7 @@ import ToponymeEditor from '@/components/bal/toponyme-editor'
 function AddressEditor({closeForm}) {
   const [isToponyme, setIsToponyme] = useState(false)
 
-  const {voie, isEditing} = useContext(BalDataContext)
-
-  const formRef = useRef(false)
-  const router = useRouter()
-
-  // Close form when edition is canceled form menu
-  useEffect(() => {
-    if (formRef.current && !isEditing) {
-      closeForm()
-    }
-  }, [isEditing, closeForm])
-
-  // Close form on page changes
-  useEffect(() => {
-    if (formRef.current) {
-      closeForm()
-    }
-  }, [router, closeForm])
-
-  useEffect(() => {
-    formRef.current = true
-  }, [])
+  const {voie} = useContext(BalDataContext)
 
   return (
     <Pane overflowY='scroll'>

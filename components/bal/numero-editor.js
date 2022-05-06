@@ -1,7 +1,7 @@
 import {useState, useCallback, useContext, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Pane, SelectField, TextInput, TextInputField} from 'evergreen-ui'
+import {Pane, SelectField, TextInputField} from 'evergreen-ui'
 
 import {addVoie, addNumero, editNumero} from '@/lib/bal-api'
 
@@ -15,9 +15,9 @@ import ParcellesContext from '@/contexts/parcelles'
 
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
-import useKeyEvent from '@/hooks/key-event'
 import useValidationMessage from '@/hooks/validation-messages'
 
+import FormMaster from '@/components/form-master'
 import Comment from '@/components/comment'
 import Form from '@/components/form'
 import FormInput from '@/components/form-input'
@@ -43,15 +43,9 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, voies, toponymes, setEditingId, setIsEditing, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
   const {selectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
-  const {
-    markers,
-    addMarker,
-    disableMarkers,
-    suggestedNumero,
-    setOverrideText
-  } = useContext(MarkersContext)
+  const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
   const needGeojsonUpdateRef = useRef(false)
 
@@ -132,28 +126,6 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
     }
   }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, initialValue, setValidationMessages])
 
-  useKeyEvent(({key}) => {
-    if (key === 'Escape') {
-      closeForm()
-    }
-  }, [closeForm], 'keyup')
-
-  const initMarkers = useCallback(() => {
-    if (initialValue) {
-      const positions = initialValue.positions.map(position => (
-        {
-          longitude: position.point.coordinates[0],
-          latitude: position.point.coordinates[1],
-          type: position.type
-        }
-      ))
-
-      positions.forEach(position => addMarker(position))
-    } else {
-      addMarker({type: 'entrée'})
-    }
-  }, [initialValue, addMarker])
-
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
   }, [setOverrideText, numero, suffixe])
@@ -176,131 +148,125 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
     setSelectedNomToponyme(nom)
   }, [toponymeId, toponymes])
 
-  useEffect(() => {
-    setIsEditing(true)
-    if (initialValue) {
-      setEditingId(initialValue._id)
-    }
-
+  const onMount = useCallback(() => {
     setIsParcelleSelectionEnabled(true)
-    initMarkers()
+  }, [setIsParcelleSelectionEnabled])
 
-    return () => {
-      setEditingId(null)
-      setIsEditing(false)
-      disableMarkers()
-      setIsParcelleSelectionEnabled(false)
+  const onUnmount = useCallback(() => {
+    setIsParcelleSelectionEnabled(false)
 
-      if (needGeojsonUpdateRef.current) {
-        reloadGeojson()
-        needGeojsonUpdateRef.current = false
-      }
+    if (needGeojsonUpdateRef.current) {
+      reloadGeojson()
+      needGeojsonUpdateRef.current = false
     }
-  }, [initialValue, initMarkers, reloadGeojson, setIsEditing, setEditingId, disableMarkers, setIsParcelleSelectionEnabled])
+  }, [setIsParcelleSelectionEnabled, reloadGeojson])
 
   return (
-    <Form onFormSubmit={onFormSubmit}>
-      {hasPreview && (
-        <AddressPreview
-          numero={numero}
-          suffixe={suffixe}
-          selectedNomToponyme={selectedNomToponyme}
-          voie={nomVoie || selectedNomVoie}
-          commune={commune}
-        />
-      )}
-
-      <Pane paddingTop={hasPreview ? 36 : 0}>
-        <FormInput>
-          <NumeroVoieSelector
-            voieId={voieId}
-            voies={voies}
-            nomVoie={nomVoie}
-            mode={voieId ? 'selection' : 'creation'}
-            validationMessage={getValidationMessage('nom')}
-            handleVoie={setVoieId}
-            handleNomVoie={onNomVoieChange}
+    <FormMaster editingId={initialValue?._id} mountForm={onMount} unmountForm={onUnmount} closeForm={closeForm}>
+      <Form onFormSubmit={onFormSubmit}>
+        {hasPreview && (
+          <AddressPreview
+            numero={numero}
+            suffixe={suffixe}
+            selectedNomToponyme={selectedNomToponyme}
+            voie={nomVoie || selectedNomVoie}
+            commune={commune}
           />
-        </FormInput>
-
-        <Pane display='flex'>
-          <FormInput>
-            <SelectField
-              label='Toponyme'
-              flex={1}
-              marginBottom={0}
-              value={toponymeId || ''}
-              onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
-            >
-              <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
-              {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
-                <option key={_id} value={_id}>
-                  {nom}
-                </option>
-              ))}
-            </SelectField>
-          </FormInput>
-        </Pane>
-
-        <FormInput>
-          <Pane display='flex' alignItems='flex-end'>
-            <TextInputField
-              ref={focusRef}
-              required
-              label='Numéro'
-              display='block'
-              type='number'
-              disabled={isLoading}
-              width='100%'
-              maxWidth={300}
-              flex={2}
-              min={0}
-              max={9999}
-              value={numero}
-              marginBottom={0}
-              placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
-              onChange={onNumeroChange}
-              validationMessage={getValidationMessage('numero')}
-            />
-
-            <TextInput
-              style={{textTransform: 'lowercase'}}
-              display='block'
-              marginLeft={8}
-              disabled={isLoading}
-              width='100%'
-              flex={1}
-              minWidth={59}
-              value={suffixe}
-              maxLength={10}
-              marginBottom={0}
-              placeholder='Suffixe'
-              onChange={onSuffixeChange}
-              validationMessage={getValidationMessage('suffixe')}
-            />
-          </Pane>
-        </FormInput>
-
-        {markers.length > 0 && (
-          <FormInput>
-            <PositionEditor validationMessage={getValidationMessage('positions')} />
-          </FormInput>
         )}
 
-        <FormInput>
-          <SelectParcelles />
-        </FormInput>
+        <Pane paddingTop={hasPreview ? 36 : 0}>
+          <FormInput>
+            <NumeroVoieSelector
+              voieId={voieId}
+              voies={voies}
+              nomVoie={nomVoie}
+              mode={voieId ? 'selection' : 'creation'}
+              validationMessage={getValidationMessage('nom')}
+              handleVoie={setVoieId}
+              handleNomVoie={onNomVoieChange}
+            />
+          </FormInput>
 
-        <Comment input={comment} onChange={onCommentChange} />
+          <Pane display='flex'>
+            <FormInput>
+              <SelectField
+                label='Toponyme'
+                flex={1}
+                marginBottom={0}
+                value={toponymeId || ''}
+                onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
+              >
+                <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
+                {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
+                  <option key={_id} value={_id}>
+                    {nom}
+                  </option>
+                ))}
+              </SelectField>
+            </FormInput>
+          </Pane>
 
-        <CertificationButton
-          isCertified={initialValue?.certifie || false}
-          isLoading={isLoading}
-          onConfirm={setCertifie}
-          onCancel={closeForm}
-        />
-      </Pane>
-    </Form>
+          <FormInput>
+            <Pane display='flex' alignItems='flex-start'>
+              <TextInputField
+                ref={focusRef}
+                required
+                label='Numéro'
+                display='block'
+                type='number'
+                disabled={isLoading}
+                width='100%'
+                maxWidth={300}
+                flex={2}
+                min={0}
+                max={9999}
+                value={numero}
+                marginBottom={0}
+                placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
+                onChange={onNumeroChange}
+                validationMessage={getValidationMessage('numero')}
+              />
+
+              <TextInputField
+                style={{textTransform: 'lowercase'}}
+                display='block'
+                marginTop={18}
+                marginLeft={8}
+                disabled={isLoading}
+                width='100%'
+                flex={1}
+                minWidth={59}
+                value={suffixe}
+                marginBottom={0}
+                placeholder='Suffixe'
+                onChange={onSuffixeChange}
+                validationMessage={getValidationMessage('suffixe')}
+              />
+            </Pane>
+          </FormInput>
+
+          <FormInput>
+            <PositionEditor
+              initialPositions={initialValue?.positions}
+              validationMessage={getValidationMessage('positions')}
+            />
+          </FormInput>
+
+          <FormInput>
+            <SelectParcelles />
+          </FormInput>
+
+          <Comment input={comment} onChange={onCommentChange} />
+
+          <CertificationButton
+            isCertified={initialValue?.certifie || false}
+            isLoading={isLoading}
+            onConfirm={setCertifie}
+            onCancel={closeForm}
+          />
+        </Pane>
+      </Form>
+    </FormMaster>
   )
 }
 
