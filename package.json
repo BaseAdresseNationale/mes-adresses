@@ -33,7 +33,7 @@
     "get-stream": "^6.0.1",
     "glamor": "^2.20.40",
     "got": "^11.8.2",
-    "immutable": "^4.0.0-rc.12",
+    "immutable": "^4.0.0",
     "lodash": "^4.17.21",
     "next": "^11.1.2",
     "prop-types": "^15.8.1",
