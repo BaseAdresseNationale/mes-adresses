@@ -3692,10 +3692,10 @@ events@^3.0.0:
   resolved "https://registry.yarnpkg.com/events/-/events-3.0.0.tgz#9a0a0dfaf62893d92b875b8f2698ca4114973e88"
   integrity sha512-Dc381HFWJzEOhQ+d8pkNon++bk9h6cdAoAj4iE6Q4y6xgTzySWXlKn05/TVNpjnfRqi/X0EpJEJohPjNI3zpVA==
 
-evergreen-ui@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/evergreen-ui/-/evergreen-ui-6.4.0.tgz#5a0a88af3ca6ecce235d48edbf855f2ccfa07582"
-  integrity sha512-dRNCx2Of2Sex30FcBzmOJA+egBLINWPIu2hm2KI5F3bpLsswvLfi3tIfNXN5RWxEK94RUguPgFLUlFcP5ExYSQ==
+evergreen-ui@^6.9.10:
+  version "6.9.10"
+  resolved "https://registry.yarnpkg.com/evergreen-ui/-/evergreen-ui-6.9.10.tgz#9997d69fbb9a58df36dae13898a9147df8b787f1"
+  integrity sha512-GSPi8tdEB/oZ3mRFxaxIRLbiPk8Paj/sKrdxRHSqtb9N+b3YgAVfHjcjH39cO+uWaZD9nCqTVFW7fZ6nwQRREA==
   dependencies:
     "@babel/runtime" "^7.1.2"
     "@segment/react-tiny-virtual-list" "^2.2.1"
@@ -3706,13 +3706,17 @@ evergreen-ui@^6.4.0:
     downshift "^5.2.0"
     fuzzaldrin-plus "^0.6.0"
     glamor "^2.20.40"
+    humanize-plus "^1.8.2"
     lodash.debounce "^4.0.8"
+    lodash.differencewith "^4.5.0"
+    lodash.isempty "^4.4.0"
     lodash.merge "^4.6.2"
+    lodash.uniqby "^4.7.0"
     prop-types "^15.6.2"
     react-fast-compare "^3.2.0"
     react-transition-group "^4.4.1"
     tinycolor2 "^1.4.1"
-    ui-box "^5.0.0"
+    ui-box "^5.0.1"
 
 evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   version "1.0.3"
@@ -4564,6 +4568,11 @@ human-signals@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
+
+humanize-plus@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/humanize-plus/-/humanize-plus-1.8.2.tgz#a65b34459ad6367adbb3707a82a3c9f916167030"
+  integrity sha1-pls0RZrWNnrbs3B6gqPJ+RYWcDA=
 
 hyphenate-style-name@^1.0.2:
   version "1.0.4"
@@ -5418,6 +5427,16 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
+lodash.differencewith@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.differencewith/-/lodash.differencewith-4.5.0.tgz#bafafbc918b55154e179176a00bb0aefaac854b7"
+  integrity sha1-uvr7yRi1UVTheRdqALsK76rIVLc=
+
+lodash.isempty@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.isempty/-/lodash.isempty-4.4.0.tgz#6f86cbedd8be4ec987be9aaf33c9684db1b31e7e"
+  integrity sha1-b4bL7di+TsmHvpqvM8loTbGzHn4=
+
 lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
@@ -5437,6 +5456,11 @@ lodash.truncate@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
+
+lodash.uniqby@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
+  integrity sha1-2ZwHpmnp5tJOE2Lf4mbGdhavEwI=
 
 lodash@^4.13.1:
   version "4.17.11"
@@ -8082,10 +8106,10 @@ ua-parser-js@^0.7.18:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
   integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
 
-ui-box@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/ui-box/-/ui-box-5.0.0.tgz#8b73e81cc7a50cf53749b969d411e8f56a93af48"
-  integrity sha512-DJZZKe8UoB1e6hNenNniO3ror9ER57EG5k+fOUm17vrLnU2T4vhoTnWGoStewXJzQ4Ur9ox9Xk4kljVKFpXlzQ==
+ui-box@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/ui-box/-/ui-box-5.0.1.tgz#a2eaf230c004c06f0acab414d1fdfe922a970287"
+  integrity sha512-LhZ5pHE+QdtoAZlbSgSSrxrByHBDJfIaTQr9OPxi9cJ56f5SySJYlvIRXvFDmF4hwgs0WBcvV8v6Gp8pJPrPrQ==
   dependencies:
     "@emotion/hash" "^0.7.1"
     inline-style-prefixer "^5.0.4"
