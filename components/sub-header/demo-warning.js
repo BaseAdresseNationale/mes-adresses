@@ -1,19 +1,21 @@
-import {useState, useEffect, useCallback} from 'react'
+import {useState, useEffect, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/geo-api'
 import {transformToDraft} from '@/lib/bal-api'
 
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 
+import BalDataContext from '@/contexts/bal-data'
+
 function DemoWarning({baseLocale, token}) {
-  const {_id, commune} = baseLocale
+  const {commune} = useContext(BalDataContext)
+
+  const {_id} = baseLocale
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [placeholder, setPlaceholder] = useState('')
   const [nom, setNom] = useState()
   const [email, onEmailChange] = useInput()
   const [focusRef] = useFocus()
@@ -31,18 +33,13 @@ function DemoWarning({baseLocale, token}) {
       token
     )
 
-    Router.push(`/bal/communes?balId=${_id}&codeCommune=${commune}`,
-      `/bal/${_id}/communes/${commune}`)
+    Router.push(`/bal/communes?balId=${_id}&codeCommune=${commune.codeCommune}`,
+      `/bal/${_id}/communes/${commune.codeCommune}`)
   }, [_id, commune, token, email, nom])
 
   useEffect(() => {
-    const fetchCommune = async code => {
-      const commune = await getCommune(code)
-      setPlaceholder(commune.nom)
-      setNom(`Adresses de ${commune.nom}`)
-    }
+    setNom(`Adresses de ${commune.nom}`)
 
-    fetchCommune(commune)
     return () => null
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -88,7 +85,7 @@ function DemoWarning({baseLocale, token}) {
               disabled={isLoading}
               value={nom}
               label='Nom de la Base Adresse Locale'
-              placeholder={placeholder}
+              placeholder={commune.nom}
               onChange={e => setNom(e.target.value)}
             />
 
