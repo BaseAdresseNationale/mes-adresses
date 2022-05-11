@@ -107,8 +107,8 @@ App.getInitialProps = async ({Component, ctx}) => {
       })
 
       commune = {...geoCommune, ...communeExtras}
-      voies = await getVoies(query.balId, baseLocale.commune)
-      toponymes = await getToponymes(query.balId, baseLocale.commune)
+      voies = await getVoies(query.balId)
+      toponymes = await getToponymes(query.balId)
     }
 
     if (Component.getInitialProps) {

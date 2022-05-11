@@ -176,7 +176,7 @@ function UploadForm() {
   useEffect(() => {
     async function upload() {
       try {
-        const response = await uploadBaseLocaleCsv(bal._id, selectedCodeCommune, file, bal.token)
+        const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
         if (response.isValid) {
           Router.push(
             `/bal/commune?balId=${bal._id}&codeCommune=${selectedCodeCommune}`,

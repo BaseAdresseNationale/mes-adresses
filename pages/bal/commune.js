@@ -42,11 +42,11 @@ const Commune = React.memo(({baseLocale, commune}) => {
   const onPopulate = useCallback(async () => {
     setIsEditing(true)
 
-    await populateCommune(baseLocale._id, commune.code, token)
+    await populateCommune(baseLocale._id, token)
     await reloadVoies()
 
     setIsEditing(false)
-  }, [baseLocale._id, commune, reloadVoies, setIsEditing, token])
+  }, [baseLocale._id, reloadVoies, setIsEditing, token])
 
   const onRemove = useCallback(async () => {
     if (selectedTab === 'voie') {

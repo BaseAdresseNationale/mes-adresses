@@ -41,24 +41,24 @@ export const BalDataContextProvider = React.memo(({
   const [habilitation, reloadHabilitation, isHabilitationValid] = useHabilitation(initialBaseLocale, token)
 
   const reloadParcelles = useCallback(async () => {
-    const parcelles = await getParcelles(baseLocale._id, commune.code)
+    const parcelles = await getParcelles(baseLocale._id)
     setParcelles(parcelles)
-  }, [baseLocale._id, commune])
+  }, [baseLocale._id])
 
   const reloadGeojson = useCallback(async () => {
-    const geojson = await getCommuneGeoJson(baseLocale._id, commune.code)
+    const geojson = await getCommuneGeoJson(baseLocale._id)
     setGeojson(geojson)
-  }, [baseLocale._id, commune])
+  }, [baseLocale._id])
 
   const reloadVoies = useCallback(async () => {
-    const voies = await getVoies(baseLocale._id, commune.code)
+    const voies = await getVoies(baseLocale._id)
     setVoies(voies)
-  }, [baseLocale._id, commune])
+  }, [baseLocale._id])
 
   const reloadToponymes = useCallback(async () => {
-    const toponymes = await getToponymes(baseLocale._id, commune.code)
+    const toponymes = await getToponymes(baseLocale._id)
     setToponymes(toponymes)
-  }, [baseLocale._id, commune])
+  }, [baseLocale._id])
 
   const reloadNumeros = useCallback(async () => {
     let numeros
@@ -120,11 +120,11 @@ export const BalDataContextProvider = React.memo(({
   }, [editingId, numeros, voie, toponyme])
 
   const certifyAllNumeros = useCallback(async () => {
-    await certifyBAL(baseLocale._id, commune.code, token, {certifie: true})
+    await certifyBAL(baseLocale._id, token, {certifie: true})
     await reloadNumeros()
 
     refreshBALSync()
-  }, [baseLocale._id, commune, token, reloadNumeros, refreshBALSync])
+  }, [baseLocale._id, token, reloadNumeros, refreshBALSync])
 
   // Update states on client side load
   useEffect(() => {

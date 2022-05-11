@@ -46,7 +46,7 @@ function CreateForm({defaultCommune}) {
       addBalAccess(bal._id, bal.token)
 
       if (populate) {
-        await populateCommune(bal._id, codeCommune, bal.token)
+        await populateCommune(bal._id, bal.token)
       }
 
       Router.push(

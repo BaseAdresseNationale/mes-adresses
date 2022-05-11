@@ -62,14 +62,14 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCa
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
-      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, commune.code, {nom: nomVoie}, token)
+      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, {nom: nomVoie}, token)
       setValidationMessages(validationMessages)
 
       return newVoie
     }
 
     return {_id: voieId}
-  }, [baseLocale._id, commune.code, nomVoie, voieId, token, setValidationMessages])
+  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages])
 
   const getNumeroBody = useCallback(() => {
     const body = {

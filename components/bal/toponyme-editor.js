@@ -61,7 +61,7 @@ function ToponymeEditor({initialValue, closeForm}) {
       // Add or edit a toponyme
       const submit = initialValue ?
         async () => editToponyme(initialValue._id, body, token) :
-        async () => addToponyme(baseLocale._id, commune.code, body, token)
+        async () => addToponyme(baseLocale._id, body, token)
       const {validationMessages, ...toponyme} = await submit()
       setValidationMessages(validationMessages)
 
