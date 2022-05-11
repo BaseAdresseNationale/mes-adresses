@@ -23,7 +23,7 @@ export const BalDataContextProvider = React.memo(({
   initialBaseLocale, initialCommune, initialVoie, initialToponyme, initialVoies, initialToponymes, initialNumeros, ...props
 }) => {
   const [isEditing, setIsEditing] = useState(false)
-  const [editingId, _setEditingId] = useState()
+  const [editingId, _setEditingId] = useState(null)
   const [parcelles, setParcelles] = useState([])
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState(initialNumeros)

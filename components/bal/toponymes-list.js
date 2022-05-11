@@ -13,9 +13,9 @@ import useFuse from '@/hooks/fuse'
 import TableRow from '@/components/table-row'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, onEnableEditing, setToRemove}) {
+function ToponymesList({toponymes, editedId, onCancel, onSelect, onEnableEditing, setToRemove}) {
   const {token} = useContext(TokenContext)
-  const {isEditing, editingId} = useContext(BalDataContext)
+  const {isEditing} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(toponymes, 200, {
     keys: [
@@ -32,16 +32,6 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
             onChange={setFilter}
           />
         </Table.Head>
-        {isAdding && (
-          <Table.Row height='auto'>
-            <Table.Cell borderBottom display='block' padding={0} background='tint1'>
-              <ToponymeEditor
-                onSubmit={onAdd}
-                onCancel={onCancel}
-              />
-            </Table.Cell>
-          </Table.Row>
-        )}
         {filtered.length === 0 && (
           <Table.Row>
             <Table.TextCell color='muted' fontStyle='italic'>
@@ -50,14 +40,10 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
           </Table.Row>
         )}
         {sortBy(filtered, t => normalizeSort(t.nom))
-          .map(toponyme => toponyme._id === editingId ? (
+          .map(toponyme => toponyme._id === editedId ? (
             <Table.Row key={toponyme._id} height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
-                <ToponymeEditor
-                  initialValue={toponyme}
-                  onSubmit={onEdit}
-                  onCancel={onCancel}
-                />
+                <ToponymeEditor initialValue={toponyme} closeForm={onCancel} />
               </Table.Cell>
             </Table.Row>
           ) : (
@@ -82,13 +68,15 @@ function ToponymesList({toponymes, isAdding, onAdd, onEdit, onCancel, onSelect, 
 
 ToponymesList.propTypes = {
   toponymes: PropTypes.array.isRequired,
-  isAdding: PropTypes.bool.isRequired,
+  editedId: PropTypes.string,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onAdd: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired
+}
+
+ToponymesList.defaultProps = {
+  editedId: null
 }
 
 export default ToponymesList
