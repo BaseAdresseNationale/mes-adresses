@@ -1,6 +1,6 @@
 import {useState, useCallback, useMemo, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
+import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon, Spinner} from 'evergreen-ui'
 
 import {batchNumeros, removeMultipleNumeros, removeNumero} from '@/lib/bal-api'
 
@@ -13,12 +13,14 @@ import DeleteWarning from '@/components/delete-warning'
 import GroupedActions from '@/components/grouped-actions'
 
 function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing}) {
+  const [limit, setLimit] = useState(15)
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
   const {baseLocale, isEditing, reloadNumeros, reloadParcelles, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const needGeojsonUpdateRef = useRef(false)
+  const scrollRef = useRef(null)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
@@ -99,6 +101,24 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   }
 
   useEffect(() => {
+    const handleScroll = () => {
+      const isAtBottom = scrollRef.current.scrollHeight - scrollRef.current.scrollTop <= scrollRef.current.clientHeight
+
+      if (isAtBottom) {
+        setLimit(limit => limit + 10)
+      }
+    }
+
+    if (scrollRef?.current) {
+      scrollRef.current.addEventListener('scroll', handleScroll)
+    }
+
+    return () => {
+      scrollRef.current.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
+  useEffect(() => {
     return () => {
       if (needGeojsonUpdateRef.current) {
         reloadGeojson()
@@ -158,7 +178,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
         onConfirm={onMultipleRemove}
       />
 
-      <Pane flex={1} overflowY='scroll'>
+      <Pane flex={1} overflowY='scroll' ref={scrollRef}>
         <Table>
           <Table.Head>
             {numeros && token && filtered.length > 1 && !isEditionDisabled && (
@@ -184,7 +204,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           )}
         </Table>
 
-        {filtered.map(numero => (
+        {filtered.slice(0, limit).map(numero => (
           <TableRow
             key={numero._id}
             label={numero.numeroComplet}
@@ -204,6 +224,10 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             }}
           />
         ))}
+
+        {filtered.slice(0, limit).length < filtered.length && (
+          <Pane display='flex' justifyContent='center' marginY={8}><Spinner /></Pane>
+        )}
       </Pane>
     </>
   )
