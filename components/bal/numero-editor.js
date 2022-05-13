@@ -43,11 +43,8 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-
-  const {selectedParcelles} = useContext(ParcellesContext)
-
   const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
-
+  const {selectedParcelles} = useContext(ParcellesContext)
   const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
   const needGeojsonUpdateRef = useRef(false)
