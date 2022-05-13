@@ -113,7 +113,6 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
         async () => addNumero(voie._id, body, token)
       const {validationMessages} = await submit()
       setValidationMessages(validationMessages)
-      
 
       await reloadNumeros()
       reloadVoies()
