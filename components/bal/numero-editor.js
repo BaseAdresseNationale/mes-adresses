@@ -115,7 +115,10 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
       setValidationMessages(validationMessages)
 
       await reloadNumeros()
-      reloadVoies()
+
+      if (initialVoieId !== voie._id) {
+        reloadVoies()
+      }
 
       handleGeojsonRefresh(voie)
 
@@ -125,7 +128,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, initialValue, setValidationMessages, reloadVoies])
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, initialValue, setValidationMessages, reloadVoies, initialVoieId])
 
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
