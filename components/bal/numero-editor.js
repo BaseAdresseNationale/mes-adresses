@@ -44,7 +44,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
 
   const {token} = useContext(TokenContext)
   const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
-  const {selectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
+  const {selectedParcelles} = useContext(ParcellesContext)
   const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
   const needGeojsonUpdateRef = useRef(false)
@@ -148,21 +148,15 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
     setSelectedNomToponyme(nom)
   }, [toponymeId, toponymes])
 
-  const onMount = useCallback(() => {
-    setIsParcelleSelectionEnabled(true)
-  }, [setIsParcelleSelectionEnabled])
-
   const onUnmount = useCallback(() => {
-    setIsParcelleSelectionEnabled(false)
-
     if (needGeojsonUpdateRef.current) {
       reloadGeojson()
       needGeojsonUpdateRef.current = false
     }
-  }, [setIsParcelleSelectionEnabled, reloadGeojson])
+  }, [reloadGeojson])
 
   return (
-    <FormMaster editingId={initialValue?._id} mountForm={onMount} unmountForm={onUnmount} closeForm={closeForm}>
+    <FormMaster editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm}>
       <Form onFormSubmit={onFormSubmit}>
         {hasPreview && (
           <AddressPreview

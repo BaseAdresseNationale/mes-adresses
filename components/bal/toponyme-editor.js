@@ -27,7 +27,7 @@ function ToponymeEditor({initialValue, closeForm}) {
   const {token} = useContext(TokenContext)
   const {baseLocale, commune, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
-  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
+  const {selectedParcelles, setSelectedParcelles} = useContext(ParcellesContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -99,12 +99,8 @@ function ToponymeEditor({initialValue, closeForm}) {
     setValidationMessages(null)
   }, [resetNom, setValidationMessages, setSelectedParcelles, initialValue])
 
-  const onMount = useCallback(() => {
-    setIsParcelleSelectionEnabled(true)
-  }, [setIsParcelleSelectionEnabled])
-
   return (
-    <FormMaster editingId={initialValue?._id} mountForm={onMount} closeForm={closeForm}>
+    <FormMaster editingId={initialValue?._id} closeForm={closeForm}>
       <Form onFormSubmit={onFormSubmit}>
         <FormInput>
           <AssistedTextField

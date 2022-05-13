@@ -5,7 +5,7 @@ import BalDataContext from '@/contexts/bal-data'
 
 import useKeyEvent from '@/hooks/key-event'
 
-function FormMaster({editingId, mountForm, unmountForm, closeForm, children}) {
+function FormMaster({editingId, unmountForm, closeForm, children}) {
   const {isEditing, setEditingId, setIsEditing} = useContext(BalDataContext)
 
   const formRef = useRef(false)
@@ -30,10 +30,6 @@ function FormMaster({editingId, mountForm, unmountForm, closeForm, children}) {
       setEditingId(editingId)
     }
 
-    if (mountForm) {
-      mountForm()
-    }
-
     return () => {
       setIsEditing(false)
       setEditingId(null)
@@ -49,13 +45,11 @@ function FormMaster({editingId, mountForm, unmountForm, closeForm, children}) {
 
 FormMaster.defaultProps = {
   editingId: null,
-  mountForm: null,
   unmountForm: null
 }
 
 FormMaster.propTypes = {
   editingId: PropTypes.string,
-  mountForm: PropTypes.func,
   unmountForm: PropTypes.func,
   closeForm: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired

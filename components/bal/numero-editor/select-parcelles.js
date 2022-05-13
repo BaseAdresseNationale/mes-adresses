@@ -9,12 +9,17 @@ import InputLabel from '@/components/input-label'
 
 function SelectParcelles({initialParcelles, isToponyme}) {
   const {isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
-  const {selectedParcelles, setSelectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
+  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
   const addressType = isToponyme ? 'toponyme' : 'numéro'
 
   useEffect(() => {
     setSelectedParcelles(initialParcelles)
-  }, [initialParcelles, setSelectedParcelles])
+    setIsParcelleSelectionEnabled(true)
+
+    return () => {
+      setIsParcelleSelectionEnabled(false)
+    }
+  }, [initialParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled])
 
   return (
     <Pane display='flex' flexDirection='column'>
