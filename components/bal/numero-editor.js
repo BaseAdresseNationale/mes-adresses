@@ -43,8 +43,11 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync} = useContext(BalDataContext)
+
   const {selectedParcelles} = useContext(ParcellesContext)
+
+  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
+
   const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
   const needGeojsonUpdateRef = useRef(false)
@@ -120,6 +123,10 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
         await reloadParcelles()
       }
 
+      if (initialVoieId !== voie._id) {
+        reloadVoies()
+      }
+
       handleGeojsonRefresh(voie)
 
       setIsLoading(false)
@@ -128,7 +135,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, reloadParcelles, initialValue, setValidationMessages])
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, reloadParcelles, initialValue, setValidationMessages, reloadVoies, initialVoieId])
 
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
