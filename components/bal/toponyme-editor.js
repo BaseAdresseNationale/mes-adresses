@@ -127,7 +127,7 @@ function ToponymeEditor({initialValue, closeForm}) {
         </FormInput>
 
         <FormInput>
-          <SelectParcelles isToponyme />
+          <SelectParcelles initialParcelles={initialValue.parcelles} isToponyme />
         </FormInput>
 
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
