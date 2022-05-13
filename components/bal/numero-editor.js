@@ -145,7 +145,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
 
   useEffect(() => {
     let nom = null
-    if (toponymeId && toponymeId !== '- Choisir un toponyme -') {
+    if (toponymeId) {
       nom = toponymes.find(toponyme => toponyme._id === toponymeId).nom
     }
 
@@ -198,7 +198,9 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
                 flex={1}
                 marginBottom={0}
                 value={toponymeId || ''}
-                onChange={({target}) => setToponymeId(target.value === (REMOVE_TOPONYME_LABEL || '') ? null : target.value)}
+                onChange={({target}) => {
+                  setToponymeId((target.value === REMOVE_TOPONYME_LABEL || target.value === '- Choisir un toponyme -') ? null : target.value)
+                }}
               >
                 <option value={null}>{initialValue?.toponyme ? REMOVE_TOPONYME_LABEL : '- Choisir un toponyme -'}</option>
                 {sortBy(toponymes, t => normalizeSort(t.nom)).map(({_id, nom}) => (
