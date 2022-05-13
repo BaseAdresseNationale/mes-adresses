@@ -27,7 +27,7 @@ function ToponymeEditor({initialValue, closeForm}) {
   const {token} = useContext(TokenContext)
   const {baseLocale, commune, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
-  const {selectedParcelles, setSelectedParcelles} = useContext(ParcellesContext)
+  const {selectedParcelles} = useContext(ParcellesContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -93,11 +93,10 @@ function ToponymeEditor({initialValue, closeForm}) {
   }, [isLoading])
 
   useEffect(() => {
-    const {nom, parcelles} = initialValue || {}
+    const {nom} = initialValue || {}
     resetNom(nom || '')
-    setSelectedParcelles(parcelles || [])
     setValidationMessages(null)
-  }, [resetNom, setValidationMessages, setSelectedParcelles, initialValue])
+  }, [resetNom, setValidationMessages, initialValue])
 
   return (
     <FormMaster editingId={initialValue?._id} closeForm={closeForm}>
