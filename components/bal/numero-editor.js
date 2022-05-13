@@ -1,6 +1,6 @@
 import {useState, useCallback, useContext, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {sortBy} from 'lodash'
+import {difference, sortBy} from 'lodash'
 import {Pane, SelectField, TextInputField} from 'evergreen-ui'
 
 import {addVoie, addNumero, editNumero} from '@/lib/bal-api'
@@ -43,7 +43,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync} = useContext(BalDataContext)
   const {selectedParcelles} = useContext(ParcellesContext)
   const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
@@ -116,6 +116,10 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
 
       await reloadNumeros()
 
+      if (difference(initialValue?.parcelles, body.parcelles).length > 0) {
+        await reloadParcelles()
+      }
+
       handleGeojsonRefresh(voie)
 
       setIsLoading(false)
@@ -124,7 +128,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, initialValue, setValidationMessages])
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, reloadParcelles, initialValue, setValidationMessages])
 
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)

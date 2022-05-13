@@ -1,5 +1,6 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {difference} from 'lodash'
 import {Button} from 'evergreen-ui'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
@@ -25,7 +26,7 @@ function ToponymeEditor({initialValue, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson} = useContext(BalDataContext)
+  const {baseLocale, commune, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
   const {selectedParcelles} = useContext(ParcellesContext)
 
@@ -72,12 +73,16 @@ function ToponymeEditor({initialValue, closeForm}) {
         await reloadGeojson()
       }
 
+      if (difference(initialValue?.parcelles, body.parcelles).length > 0) {
+        await reloadParcelles()
+      }
+
       setIsLoading(false)
       closeForm()
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadGeojson, setValidationMessages])
+  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
