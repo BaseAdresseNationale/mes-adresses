@@ -1,6 +1,6 @@
 import {useState, useCallback, useContext, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {sortBy} from 'lodash'
+import {difference, sortBy} from 'lodash'
 import {Pane, SelectField, TextInputField} from 'evergreen-ui'
 
 import {addVoie, addNumero, editNumero} from '@/lib/bal-api'
@@ -43,8 +43,8 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, refreshBALSync, reloadVoies} = useContext(BalDataContext)
-  const {selectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
+  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
+  const {selectedParcelles} = useContext(ParcellesContext)
   const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
   const needGeojsonUpdateRef = useRef(false)
@@ -116,6 +116,10 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
 
       await reloadNumeros()
 
+      if (difference(initialValue?.parcelles, body.parcelles).length > 0) {
+        await reloadParcelles()
+      }
+
       if (initialVoieId !== voie._id) {
         reloadVoies()
       }
@@ -128,7 +132,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, initialValue, setValidationMessages, reloadVoies, initialVoieId])
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, reloadParcelles, initialValue, setValidationMessages, reloadVoies, initialVoieId])
 
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
@@ -152,21 +156,15 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
     setSelectedNomToponyme(nom)
   }, [toponymeId, toponymes])
 
-  const onMount = useCallback(() => {
-    setIsParcelleSelectionEnabled(true)
-  }, [setIsParcelleSelectionEnabled])
-
   const onUnmount = useCallback(() => {
-    setIsParcelleSelectionEnabled(false)
-
     if (needGeojsonUpdateRef.current) {
       reloadGeojson()
       needGeojsonUpdateRef.current = false
     }
-  }, [setIsParcelleSelectionEnabled, reloadGeojson])
+  }, [reloadGeojson])
 
   return (
-    <FormMaster editingId={initialValue?._id} mountForm={onMount} unmountForm={onUnmount} closeForm={closeForm}>
+    <FormMaster editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm}>
       <Form onFormSubmit={onFormSubmit}>
         {hasPreview && (
           <AddressPreview
@@ -259,7 +257,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
           </FormInput>
 
           <FormInput>
-            <SelectParcelles />
+            <SelectParcelles initialParcelles={initialValue?.parcelles} />
           </FormInput>
 
           <Comment input={comment} onChange={onCommentChange} />

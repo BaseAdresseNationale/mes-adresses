@@ -1,5 +1,6 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {difference} from 'lodash'
 import {Button} from 'evergreen-ui'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
@@ -25,9 +26,9 @@ function ToponymeEditor({initialValue, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson} = useContext(BalDataContext)
+  const {baseLocale, commune, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
-  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled} = useContext(ParcellesContext)
+  const {selectedParcelles} = useContext(ParcellesContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -72,12 +73,16 @@ function ToponymeEditor({initialValue, closeForm}) {
         await reloadGeojson()
       }
 
+      if (difference(initialValue?.parcelles, body.parcelles).length > 0) {
+        await reloadParcelles()
+      }
+
       setIsLoading(false)
       closeForm()
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadGeojson, setValidationMessages])
+  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -93,18 +98,13 @@ function ToponymeEditor({initialValue, closeForm}) {
   }, [isLoading])
 
   useEffect(() => {
-    const {nom, parcelles} = initialValue || {}
+    const {nom} = initialValue || {}
     resetNom(nom || '')
-    setSelectedParcelles(parcelles || [])
     setValidationMessages(null)
-  }, [resetNom, setValidationMessages, setSelectedParcelles, initialValue])
-
-  const onMount = useCallback(() => {
-    setIsParcelleSelectionEnabled(true)
-  }, [setIsParcelleSelectionEnabled])
+  }, [resetNom, setValidationMessages, initialValue])
 
   return (
-    <FormMaster editingId={initialValue?._id} mountForm={onMount} closeForm={closeForm}>
+    <FormMaster editingId={initialValue?._id} closeForm={closeForm}>
       <Form onFormSubmit={onFormSubmit}>
         <FormInput>
           <AssistedTextField
@@ -127,7 +127,7 @@ function ToponymeEditor({initialValue, closeForm}) {
         </FormInput>
 
         <FormInput>
-          <SelectParcelles isToponyme />
+          <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
         </FormInput>
 
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>

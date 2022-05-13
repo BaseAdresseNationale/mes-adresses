@@ -78,10 +78,9 @@ export const BalDataContextProvider = React.memo(({
     }
 
     if (numeros) {
-      await reloadParcelles()
       setNumeros(numeros)
     }
-  }, [voie, toponyme, token, reloadParcelles])
+  }, [voie, toponyme, token])
 
   const reloadCommune = useCallback(async () => {
     const baseLocaleCommune = await getCommune(baseLocale._id, initialCommune.code)
@@ -188,6 +187,7 @@ export const BalDataContextProvider = React.memo(({
     setEditingId,
     refreshBALSync,
     reloadHabilitation,
+    reloadParcelles,
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
@@ -202,6 +202,7 @@ export const BalDataContextProvider = React.memo(({
     setEditingId,
     editingItem,
     parcelles,
+    reloadParcelles,
     geojson,
     reloadGeojson,
     baseLocale,

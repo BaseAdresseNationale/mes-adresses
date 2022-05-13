@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react'
+import {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
@@ -12,7 +12,7 @@ function ToponymeHeading({toponyme}) {
   const [hovered, setHovered] = useState(false)
 
   const {token} = useContext(TokenContext)
-  const {isEditing, numeros} = useContext(BalDataContext)
+  const {isEditing, editingId, numeros} = useContext(BalDataContext)
 
   const onEnableToponymeEditing = () => {
     if (!isEditing) {
@@ -20,6 +20,12 @@ function ToponymeHeading({toponyme}) {
       setHovered(false)
     }
   }
+
+  useEffect(() => {
+    if (editingId === toponyme._id) {
+      setIsFormOpen(true)
+    }
+  }, [editingId, toponyme._id])
 
   return (
     <Pane
