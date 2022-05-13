@@ -253,7 +253,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
           </FormInput>
 
           <FormInput>
-            <SelectParcelles initialParcelles={initialValue.parcelles} />
+            <SelectParcelles initialParcelles={initialValue?.parcelles} />
           </FormInput>
 
           <Comment input={comment} onChange={onCommentChange} />
