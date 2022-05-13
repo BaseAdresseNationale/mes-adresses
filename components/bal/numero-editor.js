@@ -141,7 +141,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
 
   useEffect(() => {
     let nom = null
-    if (toponymeId && toponymeId !== '- Choisir un toponyme -') {
+    if (toponymeId) {
       nom = toponymes.find(toponyme => toponyme._id === toponymeId).nom
     }
 
