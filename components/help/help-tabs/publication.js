@@ -129,7 +129,7 @@ function Publication() {
 
           <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
             <Pane height={32} marginTop={4}>
-              <StatusBadge status='replaced' sync={{isPaused: true, status: 'conflit'}} />
+              <StatusBadge status='replaced' sync={{isPaused: true, status: 'conflict'}} />
             </Pane>
             <Text>
               Une autre Base Adresse Locale a remplacé la votre, impossible de mettre à jour automatiquement vos adresses. Vous pouvez forcer la mise à jour afin de remplacer la Base Adresse Locale actuellement en place.
