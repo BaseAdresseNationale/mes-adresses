@@ -33,8 +33,8 @@ function DemoWarning({baseLocale, token}) {
       token
     )
 
-    Router.push(`/bal/communes?balId=${_id}&codeCommune=${commune.codeCommune}`,
-      `/bal/${_id}/communes/${commune.codeCommune}`)
+    Router.push(`/bal/communes?balId=${_id}&codeCommune=${commune.code}`,
+      `/bal/${_id}/communes/${commune.code}`)
   }, [_id, commune, token, email, nom])
 
   useEffect(() => {
