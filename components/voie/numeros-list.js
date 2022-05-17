@@ -1,6 +1,6 @@
 import {useState, useCallback, useMemo, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon, Spinner} from 'evergreen-ui'
+import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
 
 import {batchNumeros, removeMultipleNumeros, removeNumero} from '@/lib/bal-api'
 
@@ -11,7 +11,7 @@ import useFuse from '@/hooks/fuse'
 import TableRow from '@/components/table-row'
 import DeleteWarning from '@/components/delete-warning'
 import GroupedActions from '@/components/grouped-actions'
-import useInfiniteScroll from '@/hooks/infinite-scroll'
+import InfiniteScrollList from '@/components/infinite-scroll-list'
 
 function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
@@ -26,7 +26,6 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       'numeroComplet'
     ]
   })
-  const [list, handleScroll, setItems, limit] = useInfiniteScroll(filtered, 15)
 
   const isGroupedActionsShown = useMemo(() => (
     token && !isEditionDisabled && numeros && selectedNumerosIds.length > 1
@@ -101,10 +100,6 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   }
 
   useEffect(() => {
-    setItems(filtered)
-  }, [filtered, setItems])
-
-  useEffect(() => {
     return () => {
       if (needGeojsonUpdateRef.current) {
         reloadGeojson()
@@ -164,10 +159,10 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
         onConfirm={onMultipleRemove}
       />
 
-      <Pane flex={1} overflowY='scroll' onScroll={handleScroll}>
+      <Pane flex={1} overflowY='auto'>
         <Table>
           <Table.Head>
-            {numeros && token && list.length > 1 && !isEditionDisabled && (
+            {numeros && token && filtered.length > 1 && !isEditionDisabled && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
@@ -181,7 +176,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             />
           </Table.Head>
 
-          {list.length === 0 && (
+          {filtered.length === 0 && (
             <Table.Row>
               <Table.TextCell color='muted' fontStyle='italic'>
                 Aucun numéro
@@ -190,30 +185,28 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           )}
         </Table>
 
-        {list.map(numero => (
-          <TableRow
-            key={numero._id}
-            label={numero.numeroComplet}
-            secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
-            complement={getToponymeName(numero.toponyme)}
-            handleSelect={!isEditionDisabled && filtered.length > 1 ? () => handleSelect(numero._id) : null}
-            isSelected={selectedNumerosIds.includes(numero._id)}
-            isEditingEnabled={Boolean(!isEditing && token)}
-            notifications={{
-              isCertified: numero.certifie,
-              comment: numero.comment,
-              warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
-            }}
-            actions={{
-              onRemove: () => onRemove(numero._id),
-              onEdit: () => handleEditing(numero._id)
-            }}
-          />
-        ))}
-
-        {limit < filtered.length && (
-          <Pane display='flex' justifyContent='center' marginY={16}><Spinner /></Pane>
-        )}
+        <InfiniteScrollList items={filtered}>
+          {(numero => (
+            <TableRow
+              key={numero._id}
+              label={numero.numeroComplet}
+              secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+              complement={getToponymeName(numero.toponyme)}
+              handleSelect={!isEditionDisabled && filtered.length > 1 ? () => handleSelect(numero._id) : null}
+              isSelected={selectedNumerosIds.includes(numero._id)}
+              isEditingEnabled={Boolean(!isEditing && token)}
+              notifications={{
+                isCertified: numero.certifie,
+                comment: numero.comment,
+                warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
+              }}
+              actions={{
+                onRemove: () => onRemove(numero._id),
+                onEdit: () => handleEditing(numero._id)
+              }}
+            />
+          ))}
+        </InfiniteScrollList>
       </Pane>
     </>
   )

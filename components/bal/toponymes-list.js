@@ -1,7 +1,7 @@
-import {useContext, useEffect} from 'react'
+import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Pane, Spinner, Table} from 'evergreen-ui'
+import {Pane, Table} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 
@@ -9,10 +9,10 @@ import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
 
 import useFuse from '@/hooks/fuse'
-import useInfiniteScroll from '@/hooks/infinite-scroll'
 
 import TableRow from '@/components/table-row'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
+import InfiniteScrollList from '@/components/infinite-scroll-list'
 
 function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnableEditing, setToRemove}) {
   const {token} = useContext(TokenContext)
@@ -23,14 +23,9 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
       'nom'
     ]
   })
-  const [list, handleScroll, setItems, limit] = useInfiniteScroll(filtered, 15)
-
-  useEffect(() => {
-    setItems(filtered)
-  }, [filtered, setItems])
 
   return (
-    <Pane flex={1} overflowY='scroll' onScroll={handleScroll}>
+    <Pane flex={1} overflowY='auto'>
       <Table>
         <Table.Head>
           <Table.SearchHeaderCell
@@ -38,6 +33,7 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
             onChange={setFilter}
           />
         </Table.Head>
+
         {filtered.length === 0 && (
           <Table.Row>
             <Table.TextCell color='muted' fontStyle='italic'>
@@ -45,8 +41,9 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
             </Table.TextCell>
           </Table.Row>
         )}
-        {sortBy(list, t => normalizeSort(t.nom))
-          .map(toponyme => toponyme._id === editedId ? (
+
+        <InfiniteScrollList items={sortBy(filtered, t => normalizeSort(t.nom))}>
+          {(toponyme => toponyme._id === editedId ? (
             <Table.Row key={toponyme._id} height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
                 <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={onCancel} />
@@ -68,10 +65,7 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
               }}
             />
           ))}
-
-        {limit < filtered.length && (
-          <Pane display='flex' justifyContent='center' marginY={16}><Spinner /></Pane>
-        )}
+        </InfiniteScrollList>
       </Table>
     </Pane>
   )
