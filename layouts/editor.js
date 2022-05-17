@@ -69,7 +69,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 <>
                   <WelcomeMessage />
                   {baseLocale.status === 'published' && (
-                    <CertificationMessage balId={baseLocale._id} codeCommune={commune.code} />
+                    <CertificationMessage balId={baseLocale._id} />
                   )}
 
                   {isAddressFormOpen ? (
@@ -90,7 +90,8 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 Editor.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
+    status: PropTypes.string.isRequired,
+    commune: PropTypes.string.isRequired
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,

@@ -86,7 +86,6 @@ Voie.propTypes = {
     _id: PropTypes.string.isRequired
   }).isRequired,
   commune: PropTypes.shape({
-    code: PropTypes.string.isRequired,
     hasCadastre: PropTypes.bool.isRequired
   }).isRequired
 }

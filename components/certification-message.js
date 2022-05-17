@@ -8,7 +8,7 @@ import LocalStorageContext from '@/contexts/local-storage'
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
 
-function CertificationMessage({balId, codeCommune}) {
+function CertificationMessage({balId}) {
   const [isShown, setIsShown] = useState(false)
 
   const {getInformedAboutCertification, addInformedAboutCertification} = useContext(LocalStorageContext)
@@ -75,8 +75,7 @@ function CertificationMessage({balId, codeCommune}) {
 }
 
 CertificationMessage.propTypes = {
-  balId: PropTypes.string.isRequired,
-  codeCommune: PropTypes.string.isRequired
+  balId: PropTypes.string.isRequired
 }
 
 export default CertificationMessage
