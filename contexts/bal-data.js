@@ -2,10 +2,11 @@ import React, {useState, useMemo, useCallback, useEffect, useContext} from 'reac
 import PropTypes from 'prop-types'
 import {toaster} from 'evergreen-ui'
 
+import {getCommune} from '@/lib/geo-api'
+
 import {
   getParcelles,
   getCommuneGeoJson,
-  getCommune,
   getNumeros,
   getVoies,
   getBaseLocale,
@@ -73,14 +74,14 @@ export const BalDataContextProvider = React.memo(({
     }
   }, [voie, toponyme, token])
 
-  const reloadCommune = useCallback(async () => {
-    const baseLocaleCommune = await getCommune(baseLocale._id, initialCommune.code)
-    setCommune({...initialCommune, ...baseLocaleCommune})
-  }, [baseLocale._id, initialCommune])
-
   const reloadBaseLocale = useCallback(async () => {
     const bal = await getBaseLocale(baseLocale._id)
+    const commune = await getCommune(bal.commune, {
+      fields: 'contour'
+    })
+
     setBaseLocale(bal)
+    setCommune(commune)
   }, [baseLocale._id])
 
   const refreshBALSync = useCallback(async () => {
@@ -179,7 +180,6 @@ export const BalDataContextProvider = React.memo(({
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
-    reloadCommune,
     reloadBaseLocale,
     setVoie,
     setToponyme,
@@ -198,7 +198,6 @@ export const BalDataContextProvider = React.memo(({
     habilitation,
     isHabilitationValid,
     reloadHabilitation,
-    reloadCommune,
     commune,
     voie,
     numeros,
