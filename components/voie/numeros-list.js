@@ -11,9 +11,9 @@ import useFuse from '@/hooks/fuse'
 import TableRow from '@/components/table-row'
 import DeleteWarning from '@/components/delete-warning'
 import GroupedActions from '@/components/grouped-actions'
+import useInfiniteScroll from '@/hooks/infinite-scroll'
 
 function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing}) {
-  const [limit, setLimit] = useState(15)
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
@@ -26,9 +26,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       'numeroComplet'
     ]
   })
-  const numeroDisplayed = useMemo(() => {
-    return filtered.slice(0, limit)
-  }, [filtered, limit])
+  const [list, handleScroll, setItems, limit] = useInfiniteScroll(filtered, 15)
 
   const isGroupedActionsShown = useMemo(() => (
     token && !isEditionDisabled && numeros && selectedNumerosIds.length > 1
@@ -102,17 +100,9 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
     refreshBALSync()
   }
 
-  const handleScroll = useCallback(({target}) => {
-    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight
-
-    if (isAtBottom) {
-      setLimit(limit => limit + 10)
-    }
-  }, [])
-
   useEffect(() => {
-    setLimit(15)
-  }, [filtered])
+    setItems(filtered)
+  }, [filtered, setItems])
 
   useEffect(() => {
     return () => {
@@ -177,7 +167,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       <Pane flex={1} overflowY='scroll' onScroll={handleScroll}>
         <Table>
           <Table.Head>
-            {numeros && token && numeroDisplayed.length > 1 && !isEditionDisabled && (
+            {numeros && token && list.length > 1 && !isEditionDisabled && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
@@ -191,7 +181,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             />
           </Table.Head>
 
-          {numeroDisplayed.length === 0 && (
+          {list.length === 0 && (
             <Table.Row>
               <Table.TextCell color='muted' fontStyle='italic'>
                 Aucun numéro
@@ -200,7 +190,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           )}
         </Table>
 
-        {numeroDisplayed.map(numero => (
+        {list.map(numero => (
           <TableRow
             key={numero._id}
             label={numero.numeroComplet}
@@ -221,8 +211,8 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           />
         ))}
 
-        {numeroDisplayed.length < filtered.length && (
-          <Pane display='flex' justifyContent='center' marginY={8}><Spinner /></Pane>
+        {limit < filtered.length && (
+          <Pane display='flex' justifyContent='center' marginY={16}><Spinner /></Pane>
         )}
       </Pane>
     </>

@@ -1,7 +1,7 @@
-import {useContext} from 'react'
+import {useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Pane, Table} from 'evergreen-ui'
+import {Pane, Spinner, Table} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 
@@ -9,6 +9,7 @@ import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
 
 import useFuse from '@/hooks/fuse'
+import useInfiniteScroll from '@/hooks/infinite-scroll'
 
 import TableRow from '@/components/table-row'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
@@ -22,9 +23,14 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
       'nom'
     ]
   })
+  const [list, handleScroll, setItems, limit] = useInfiniteScroll(filtered, 15)
+
+  useEffect(() => {
+    setItems(filtered)
+  }, [filtered, setItems])
 
   return (
-    <Pane flex={1} overflowY='scroll'>
+    <Pane flex={1} overflowY='scroll' onScroll={handleScroll}>
       <Table>
         <Table.Head>
           <Table.SearchHeaderCell
@@ -39,7 +45,7 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
             </Table.TextCell>
           </Table.Row>
         )}
-        {sortBy(filtered, t => normalizeSort(t.nom))
+        {sortBy(list, t => normalizeSort(t.nom))
           .map(toponyme => toponyme._id === editedId ? (
             <Table.Row key={toponyme._id} height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
@@ -62,6 +68,10 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
               }}
             />
           ))}
+
+        {limit < filtered.length && (
+          <Pane display='flex' justifyContent='center' marginY={16}><Spinner /></Pane>
+        )}
       </Table>
     </Pane>
   )
