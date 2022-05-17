@@ -20,13 +20,15 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const {baseLocale, isEditing, reloadNumeros, reloadParcelles, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const needGeojsonUpdateRef = useRef(false)
-  const scrollRef = useRef(null)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
       'numeroComplet'
     ]
   })
+  const numeroDisplayed = useMemo(() => {
+    return filtered.slice(0, limit)
+  }, [filtered, limit])
 
   const isGroupedActionsShown = useMemo(() => (
     token && !isEditionDisabled && numeros && selectedNumerosIds.length > 1
@@ -100,23 +102,17 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
     refreshBALSync()
   }
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const isAtBottom = scrollRef.current.scrollHeight - scrollRef.current.scrollTop <= scrollRef.current.clientHeight
+  const handleScroll = useCallback(({target}) => {
+    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight
 
-      if (isAtBottom) {
-        setLimit(limit => limit + 10)
-      }
-    }
-
-    if (scrollRef?.current) {
-      scrollRef.current.addEventListener('scroll', handleScroll)
-    }
-
-    return () => {
-      scrollRef.current.removeEventListener('scroll', handleScroll)
+    if (isAtBottom) {
+      setLimit(limit => limit + 10)
     }
   }, [])
+
+  useEffect(() => {
+    setLimit(15)
+  }, [filtered])
 
   useEffect(() => {
     return () => {
@@ -178,10 +174,10 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
         onConfirm={onMultipleRemove}
       />
 
-      <Pane flex={1} overflowY='scroll' ref={scrollRef}>
+      <Pane flex={1} overflowY='scroll' onScroll={handleScroll}>
         <Table>
           <Table.Head>
-            {numeros && token && filtered.length > 1 && !isEditionDisabled && (
+            {numeros && token && numeroDisplayed.length > 1 && !isEditionDisabled && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
@@ -195,7 +191,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             />
           </Table.Head>
 
-          {filtered.length === 0 && (
+          {numeroDisplayed.length === 0 && (
             <Table.Row>
               <Table.TextCell color='muted' fontStyle='italic'>
                 Aucun numéro
@@ -204,7 +200,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           )}
         </Table>
 
-        {filtered.slice(0, limit).map(numero => (
+        {numeroDisplayed.map(numero => (
           <TableRow
             key={numero._id}
             label={numero.numeroComplet}
@@ -225,7 +221,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           />
         ))}
 
-        {filtered.slice(0, limit).length < filtered.length && (
+        {numeroDisplayed.length < filtered.length && (
           <Pane display='flex' justifyContent='center' marginY={8}><Spinner /></Pane>
         )}
       </Pane>
