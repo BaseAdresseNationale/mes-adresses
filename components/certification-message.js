@@ -2,7 +2,7 @@ import {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Menu, CogIcon, Dialog, Paragraph, Strong} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/bal-api'
+import {getBaseLocale} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 import BalDataContext from '@/contexts/bal-data'
@@ -29,7 +29,7 @@ function CertificationMessage({balId, codeCommune}) {
       const hasBeenAutocertified = getInformedAboutCertification(balId)
 
       if (!hasBeenAutocertified) {
-        const {nbNumerosCertifies} = await getCommune(balId, codeCommune)
+        const {nbNumerosCertifies} = await getBaseLocale(balId)
 
         if (nbNumerosCertifies === 0) {
           setIsShown(true)

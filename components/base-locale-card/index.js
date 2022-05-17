@@ -4,7 +4,7 @@ import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
 import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/bal-api'
+import {getBaseLocale} from '@/lib/bal-api'
 import {getCommune as getCommuneGeoData} from '@/lib/geo-api'
 
 import CertificationCount from '@/components/certification-count'
@@ -25,7 +25,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
   useEffect(() => {
     const fetchCommune = async code => {
       if (codeCommune) {
-        const communeBal = await getCommune(baseLocale._id, code)
+        const communeBal = await getBaseLocale(baseLocale._id)
         const communeInfo = await getCommuneGeoData(code)
         setCommune({...communeBal, ...communeInfo})
       }
