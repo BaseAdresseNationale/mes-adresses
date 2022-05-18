@@ -16,7 +16,7 @@ import VoieEditor from '@/components/bal/voie-editor'
 import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-const Commune = React.memo(({baseLocale, commune}) => {
+const BaseLocale = React.memo(({baseLocale, commune}) => {
   const [editedId, setEditedId] = useState(null)
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
@@ -68,17 +68,17 @@ const Commune = React.memo(({baseLocale, commune}) => {
     }
 
     if (selectedTab === 'voie') {
-      router.replace(
-        `/bal/voie?balId=${baseLocale._id}&codeCommune=${commune.code}&idVoie=${id}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/voies/${id}`
+      router.push(
+        `/bal/voie?balId=${baseLocale._id}&idVoie=${id}`,
+        `/bal/${baseLocale._id}/voies/${id}`
       )
     } else {
-      router.replace(
-        `/bal/toponyme?balId=${baseLocale._id}&codeCommune=${commune.code}&idToponyme=${id}`,
-        `/bal/${baseLocale._id}/communes/${commune.code}/toponymes/${id}`
+      router.push(
+        `/bal/toponyme?balId=${baseLocale._id}&idToponyme=${id}`,
+        `/bal/${baseLocale._id}/toponymes/${id}`
       )
     }
-  }, [baseLocale._id, router, editingId, commune, selectedTab])
+  }, [baseLocale._id, router, editingId, selectedTab])
 
   useEffect(() => {
     setEditedId(null)
@@ -232,7 +232,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
   )
 })
 
-Commune.propTypes = {
+BaseLocale.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
   }).isRequired,
@@ -243,4 +243,4 @@ Commune.propTypes = {
   }).isRequired
 }
 
-export default Commune
+export default BaseLocale
