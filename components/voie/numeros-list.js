@@ -159,31 +159,29 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
         onConfirm={onMultipleRemove}
       />
 
-      <Pane flex={1} overflowY='auto'>
-        <Table>
-          <Table.Head>
-            {numeros && token && filtered.length > 1 && !isEditionDisabled && (
-              <Table.Cell flex='0 1 1'>
-                <Checkbox
-                  checked={isAllSelected}
-                  onChange={handleSelectAll}
-                />
-              </Table.Cell>
-            )}
-            <Table.SearchHeaderCell
-              placeholder='Rechercher un numéro'
-              onChange={setFilter}
-            />
-          </Table.Head>
-
-          {filtered.length === 0 && (
-            <Table.Row>
-              <Table.TextCell color='muted' fontStyle='italic'>
-                Aucun numéro
-              </Table.TextCell>
-            </Table.Row>
+      <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
+        <Table.Head>
+          {numeros && token && filtered.length > 1 && !isEditionDisabled && (
+            <Table.Cell flex='0 1 1'>
+              <Checkbox
+                checked={isAllSelected}
+                onChange={handleSelectAll}
+              />
+            </Table.Cell>
           )}
-        </Table>
+          <Table.SearchHeaderCell
+            placeholder='Rechercher un numéro'
+            onChange={setFilter}
+          />
+        </Table.Head>
+
+        {filtered.length === 0 && (
+          <Table.Row>
+            <Table.TextCell color='muted' fontStyle='italic'>
+              Aucun numéro
+            </Table.TextCell>
+          </Table.Row>
+        )}
 
         <InfiniteScrollList items={filtered}>
           {(numero => (
@@ -207,7 +205,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             />
           ))}
         </InfiniteScrollList>
-      </Pane>
+      </Table>
     </>
   )
 }

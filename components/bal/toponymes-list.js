@@ -1,7 +1,7 @@
 import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Pane, Table} from 'evergreen-ui'
+import {Table} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 
@@ -25,49 +25,47 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
   })
 
   return (
-    <Pane flex={1} overflowY='auto'>
-      <Table>
-        <Table.Head>
-          <Table.SearchHeaderCell
-            placeholder='Rechercher un toponyme'
-            onChange={setFilter}
-          />
-        </Table.Head>
+    <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
+      <Table.Head>
+        <Table.SearchHeaderCell
+          placeholder='Rechercher un toponyme'
+          onChange={setFilter}
+        />
+      </Table.Head>
 
-        {filtered.length === 0 && (
-          <Table.Row>
-            <Table.TextCell color='muted' fontStyle='italic'>
-              Aucun résultat
-            </Table.TextCell>
+      {filtered.length === 0 && (
+        <Table.Row>
+          <Table.TextCell color='muted' fontStyle='italic'>
+            Aucun résultat
+          </Table.TextCell>
+        </Table.Row>
+      )}
+
+      <InfiniteScrollList items={sortBy(filtered, t => normalizeSort(t.nom))}>
+        {(toponyme => toponyme._id === editedId ? (
+          <Table.Row key={toponyme._id} height='auto'>
+            <Table.Cell display='block' padding={0} background='tint1'>
+              <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={onCancel} />
+            </Table.Cell>
           </Table.Row>
-        )}
-
-        <InfiniteScrollList items={sortBy(filtered, t => normalizeSort(t.nom))}>
-          {(toponyme => toponyme._id === editedId ? (
-            <Table.Row key={toponyme._id} height='auto'>
-              <Table.Cell display='block' padding={0} background='tint1'>
-                <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={onCancel} />
-              </Table.Cell>
-            </Table.Row>
-          ) : (
-            <TableRow
-              key={toponyme._id}
-              label={toponyme.nom}
-              nomAlt={toponyme.nomAlt}
-              isEditingEnabled={Boolean(!isEditing && token)}
-              notifications={{
-                warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
-              }}
-              actions={{
-                onSelect: () => onSelect(toponyme._id),
-                onEdit: () => onEnableEditing(toponyme._id),
-                onRemove: () => setToRemove(toponyme._id)
-              }}
-            />
-          ))}
-        </InfiniteScrollList>
-      </Table>
-    </Pane>
+        ) : (
+          <TableRow
+            key={toponyme._id}
+            label={toponyme.nom}
+            nomAlt={toponyme.nomAlt}
+            isEditingEnabled={Boolean(!isEditing && token)}
+            notifications={{
+              warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
+            }}
+            actions={{
+              onSelect: () => onSelect(toponyme._id),
+              onEdit: () => onEnableEditing(toponyme._id),
+              onRemove: () => setToRemove(toponyme._id)
+            }}
+          />
+        ))}
+      </InfiniteScrollList>
+    </Table>
   )
 }
 
