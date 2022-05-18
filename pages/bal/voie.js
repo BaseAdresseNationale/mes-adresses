@@ -1,8 +1,8 @@
-import React, {useState, useCallback, useEffect, useMemo, useRef, useContext} from 'react'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Table} from 'evergreen-ui'
 
-import {editNumero, getNumeros, getVoie, addVoie, addNumero} from '@/lib/bal-api'
+import {getNumeros, getVoie} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -13,121 +13,46 @@ import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
 
-const Voie = React.memo(({baseLocale, commune}) => {
-  const [isFormOpen, setIsFormOpen] = useState(false)
+const Voie = React.memo(() => {
+  const [formState, setFormState] = useState({isOpen: false, editedNumero: null})
 
   useHelp(3)
 
   const {token} = useContext(TokenContext)
-  const needGeojsonUpdateRef = useRef(false)
 
-  const {
-    voie,
-    numeros,
-    reloadNumeros,
-    reloadVoies,
-    reloadGeojson,
-    refreshBALSync,
-    isEditing,
-    editingId,
-    setEditingId,
-    setIsEditing
-  } = useContext(BalDataContext)
-
-  const editedNumero = useMemo(() => (
-    numeros?.find(numero => numero._id === editingId)
-  ), [numeros, editingId])
+  const {voie, numeros, isEditing, editingId} = useContext(BalDataContext)
 
   const handleEditing = useCallback(numeroId => {
-    setIsEditing(true)
-    setIsFormOpen(true)
-    if (numeroId) {
-      setEditingId(numeroId)
-    }
-  }, [setIsEditing, setEditingId])
+    const editedNumero = numeros.find(numero => numero._id === numeroId)
+    setFormState({isOpen: true, editedNumero})
+  }, [numeros])
 
-  const resetEditing = useCallback(() => {
-    setIsFormOpen(false)
-    setEditingId(null)
-  }, [setEditingId])
+  const closeForm = useCallback(() => {
+    setFormState({isOpen: false, editedNumero: null})
+  }, [])
 
-  const handleGeojsonRefresh = useCallback(async editedVoie => {
-    if (editedVoie._id === voie._id) {
-      needGeojsonUpdateRef.current = true
-    } else {
-      await reloadGeojson()
-    }
-  }, [voie._id, reloadGeojson])
-
-  const onAdd = async (voieData, body) => {
-    let editedVoie = voieData
-    const isNewVoie = !editedVoie._id
-
-    if (isNewVoie) {
-      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
-      await reloadVoies()
-    }
-
-    await addNumero(editedVoie._id, body, token)
-    await reloadNumeros()
-    refreshBALSync()
-
-    handleGeojsonRefresh(editedVoie)
-
-    resetEditing()
-  }
-
-  const onEdit = useCallback(async (voieData, body) => {
-    let editedVoie = voieData
-    const isNewVoie = !editedVoie._id
-
-    if (isNewVoie) {
-      editedVoie = await addVoie(baseLocale._id, commune.code, editedVoie, token)
-    }
-
-    await editNumero(editingId, {...body, voie: editedVoie._id}, token)
-    await reloadNumeros()
-    refreshBALSync()
-
-    handleGeojsonRefresh(editedVoie)
-
-    resetEditing()
-  }, [baseLocale._id, commune.code, editingId, refreshBALSync, reloadNumeros, resetEditing, token, handleGeojsonRefresh])
-
+  // Open form when numero is selected from map
   useEffect(() => {
-    setIsFormOpen(Boolean(editedNumero))
-  }, [editedNumero])
-
-  useEffect(() => {
-    if (!isEditing) {
-      setIsFormOpen(false) // Force closing editing form when isEditing is false
+    if (editingId && numeros.map(({_id}) => _id).includes(editingId)) {
+      handleEditing(editingId)
     }
-  }, [isEditing])
-
-  useEffect(() => {
-    return () => {
-      if (needGeojsonUpdateRef.current) {
-        reloadGeojson()
-        needGeojsonUpdateRef.current = false
-      }
-    }
-  }, [voie, reloadGeojson])
+    // HandleEditing has been removed from the list
+    // to avoid being retriggered by `numeros` update when form is sumbitted
+  }, [editingId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
       <VoieHeading voie={voie} />
 
-      {isFormOpen ? (
+      {formState.isOpen ? (
         <Pane flex={1} overflowY='scroll'>
           <Table.Row height='auto'>
             <Table.Cell display='block' padding={0} background='tint1'>
               <NumeroEditor
                 hasPreview
                 initialVoieId={voie._id}
-                initialValue={editedNumero}
-                commune={commune}
-                onSubmit={editedNumero ? onEdit : onAdd}
-                onCancel={resetEditing}
+                initialValue={formState.editedNumero}
+                closeForm={closeForm}
               />
             </Table.Cell>
           </Table.Row>

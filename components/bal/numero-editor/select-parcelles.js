@@ -1,4 +1,4 @@
-import {useContext} from 'react'
+import {useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, Badge, Alert, TrashIcon, ControlIcon, Text} from 'evergreen-ui'
 
@@ -7,10 +7,19 @@ import MapContext from '@/contexts/map'
 
 import InputLabel from '@/components/input-label'
 
-function SelectParcelles({isToponyme}) {
+function SelectParcelles({initialParcelles, isToponyme}) {
   const {isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
-  const {selectedParcelles, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
+  const {selectedParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled, hoveredParcelle, handleHoveredParcelle, handleParcelle} = useContext(ParcellesContext)
   const addressType = isToponyme ? 'toponyme' : 'numéro'
+
+  useEffect(() => {
+    setSelectedParcelles(initialParcelles)
+    setIsParcelleSelectionEnabled(true)
+
+    return () => {
+      setIsParcelleSelectionEnabled(false)
+    }
+  }, [initialParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled])
 
   return (
     <Pane display='flex' flexDirection='column'>
@@ -60,11 +69,13 @@ function SelectParcelles({isToponyme}) {
 }
 
 SelectParcelles.defaultProps = {
+  initialParcelles: [],
   isToponyme: false
 }
 
 SelectParcelles.propTypes = {
-  isToponyme: PropTypes.bool
+  initialParcelles: PropTypes.array,
+  isToponyme: PropTypes.bool,
 }
 
 export default SelectParcelles

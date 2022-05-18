@@ -1,6 +1,6 @@
-import React, {useContext} from 'react'
+import {useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon} from 'evergreen-ui'
+import {Strong, Pane, Select, Heading, Icon, Small, TrashIcon, MapMarkerIcon, IconButton, Button, AddIcon, FormField} from 'evergreen-ui'
 
 import {positionsTypesList} from '@/lib/positions-types-list'
 
@@ -8,24 +8,91 @@ import MarkersContext from '@/contexts/markers'
 
 import InputLabel from '@/components/input-label'
 
-function PositionEditor({isToponyme}) {
-  const {markers, addMarker, updateMarker, removeMarker} = useContext(MarkersContext)
+function Position({marker, isRemovable, handleChange, onRemove}) {
+  const onSelect = useCallback(e => {
+    const type = e.target.value
+    handleChange(marker._id, {...marker, type})
+  }, [marker, handleChange])
 
-  const handleAddMarker = () => {
-    addMarker({type: isToponyme ? 'segment' : 'entrée'})
-  }
-
-  const handleChange = (e, marker) => {
-    updateMarker(marker._id, {...marker, type: e.target.value})
-  }
-
-  const deletePosition = (e, marker) => {
+  const removeMarker = useCallback(e => {
     e.preventDefault()
-    removeMarker(marker._id)
-  }
+    onRemove(marker._id)
+  }, [marker._id, onRemove])
 
   return (
     <>
+      <Select
+        value={marker.type}
+        marginBottom={8}
+        height={32}
+        onChange={onSelect}
+      >
+        {positionsTypesList.map(positionType => (
+          <option key={positionType.value} value={positionType.value}>
+            {positionType.name}
+          </option>
+        ))}
+      </Select>
+      <Icon icon={MapMarkerIcon} size={22} margin='auto' />
+      <Heading size={100} marginY='auto'>
+        <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
+      </Heading>
+      <Heading size={100} marginY='auto'>
+        <Small>{marker.longitude && marker.longitude.toFixed(6)}</Small>
+      </Heading>
+      <IconButton
+        disabled={isRemovable}
+        appearance='default'
+        iconSize={15}
+        icon={TrashIcon}
+        intent='danger'
+        onClick={removeMarker}
+      />
+    </>
+  )
+}
+
+Position.propTypes = {
+  marker: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    latitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
+  }),
+  isRemovable: PropTypes.bool.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired
+}
+
+function PositionEditor({initialPositions, isToponyme, validationMessage}) {
+  const {markers, addMarker, updateMarker, removeMarker, disableMarkers} = useContext(MarkersContext)
+
+  const handleAddMarker = useCallback(() => {
+    addMarker({type: isToponyme ? 'segment' : 'entrée'})
+  }, [isToponyme, addMarker])
+
+  useEffect(() => {
+    if (initialPositions) {
+      const positions = initialPositions.map(position => (
+        {
+          longitude: position.point.coordinates[0],
+          latitude: position.point.coordinates[1],
+          type: position.type
+        }
+      ))
+
+      positions.forEach(position => addMarker(position))
+    } else {
+      handleAddMarker()
+    }
+
+    return () => {
+      disableMarkers()
+    }
+  }, [initialPositions, addMarker, handleAddMarker, disableMarkers])
+
+  return (
+    <FormField validationMessage={validationMessage}>
       <InputLabel
         title='Positions'
         help={markers.length > 1 ?
@@ -44,35 +111,13 @@ function PositionEditor({isToponyme}) {
           <div />
 
           {markers.map(marker => (
-            <React.Fragment key={marker._id}>
-              <Select
-                value={marker.type}
-                marginBottom={8}
-                height={32}
-                onChange={e => handleChange(e, marker)}
-              >
-                {positionsTypesList.map(positionType => (
-                  <option key={positionType.value} value={positionType.value}>
-                    {positionType.name}
-                  </option>
-                ))}
-              </Select>
-              <Icon icon={MapMarkerIcon} size={22} margin='auto' />
-              <Heading size={100} marginY='auto'>
-                <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
-              </Heading>
-              <Heading size={100} marginY='auto'>
-                <Small>{marker.longitude && marker.longitude.toFixed(6)}</Small>
-              </Heading>
-              <IconButton
-                disabled={isToponyme ? false : markers.length === 1}
-                appearance='default'
-                iconSize={15}
-                icon={TrashIcon}
-                intent='danger'
-                onClick={e => deletePosition(e, marker)}
-              />
-            </React.Fragment>
+            <Position
+              key={marker._id}
+              marker={marker}
+              isRemovable={isToponyme ? false : markers.length === 1}
+              handleChange={updateMarker}
+              onRemove={removeMarker}
+            />
           ))}
         </Pane>
       ) : (
@@ -94,16 +139,20 @@ function PositionEditor({isToponyme}) {
       >
         {`Ajouter une position au ${isToponyme ? 'toponyme' : 'numéro'}`}
       </Button>
-    </>
+    </FormField>
   )
 }
 
 PositionEditor.propTypes = {
-  isToponyme: PropTypes.bool
+  initialPositions: PropTypes.array,
+  isToponyme: PropTypes.bool,
+  validationMessage: PropTypes.string
 }
 
 PositionEditor.defaultProps = {
-  isToponyme: false
+  initialPositions: null,
+  isToponyme: false,
+  validationMessage: null
 }
 
 export default PositionEditor

@@ -7,7 +7,7 @@ import {normalizeSort} from '@/lib/normalize'
 
 import AssistedTextField from '@/components/assisted-text-field'
 
-function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNomVoie}) {
+function NumeroVoieSelector({voieId, voies, nomVoie, mode, validationMessage, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)
 
   const toggleMode = () => {
@@ -38,6 +38,7 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
             label='Nouvelle voie'
             placeholder='Nom de la voie'
             value={nomVoie}
+            validationMessage={validationMessage}
             onChange={handleNomVoieChange}
           />
         ) : (
@@ -77,7 +78,8 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, handleVoie, handleNom
 NumeroVoieSelector.defaultProps = {
   voieId: null,
   nomVoie: '',
-  mode: 'selection'
+  mode: 'selection',
+  validationMessage: null
 }
 
 NumeroVoieSelector.propTypes = {
@@ -85,6 +87,7 @@ NumeroVoieSelector.propTypes = {
   nomVoie: PropTypes.string,
   voies: PropTypes.array.isRequired,
   mode: PropTypes.oneOf(['creation', 'selection']),
+  validationMessage: PropTypes.string,
   handleVoie: PropTypes.func.isRequired,
   handleNomVoie: PropTypes.func.isRequired
 }
