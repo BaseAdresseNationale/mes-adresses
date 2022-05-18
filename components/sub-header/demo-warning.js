@@ -33,9 +33,9 @@ function DemoWarning({baseLocale, token}) {
       token
     )
 
-    Router.push(`/bal/communes?balId=${_id}&codeCommune=${commune.code}`,
-      `/bal/${_id}/communes/${commune.code}`)
-  }, [_id, commune, token, email, nom])
+    Router.push(`/bal?balId=${_id}`,
+      `/bal/${_id}`)
+  }, [_id, token, email, nom])
 
   useEffect(() => {
     setNom(`Adresses de ${commune.nom}`)

@@ -13,14 +13,10 @@ function CommuneBALList({nomCommune, basesLocales}) {
   }
 
   const onBalSelect = useCallback(bal => {
-    if (bal.commune) {
-      Router.push(
-        `/bal/commune?balId=${bal._id}&codeCommune=${bal.commune}`,
-        `/bal/${bal._id}/communes/${bal.commune}`
-      )
-    } else {
-      Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
-    }
+    Router.push(
+      `/bal?balId=${bal._id}`,
+      `/bal/${bal._id}`
+    )
   }, [])
 
   return (

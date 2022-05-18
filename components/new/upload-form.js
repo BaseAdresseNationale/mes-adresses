@@ -179,8 +179,8 @@ function UploadForm() {
         const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
         if (response.isValid) {
           Router.push(
-            `/bal/commune?balId=${bal._id}&codeCommune=${selectedCodeCommune}`,
-            `/bal/${bal._id}/communes/${selectedCodeCommune}`
+            `/bal?balId=${bal._id}`,
+            `/bal/${bal._id}`
           )
         } else {
           onError(VALIDATEUR_LINK_TEXT)

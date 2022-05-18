@@ -39,8 +39,8 @@ function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
       <BaseLocalLink baseLocale={baseLocale} />
       <Text color='muted'>{' > '}</Text>
 
-      <NextLink href={`/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
-        <Link href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+      <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
+        <Link href={`/bal/${baseLocale._id}`}>
           {commune.nom}
         </Link>
       </NextLink>

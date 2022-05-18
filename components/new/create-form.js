@@ -50,8 +50,8 @@ function CreateForm({defaultCommune}) {
       }
 
       Router.push(
-        `/bal/commune?balId=${bal._id}&codeCommune=${codeCommune}`,
-        `/bal/${bal._id}/communes/${codeCommune}`
+        `/bal?balId=${bal._id}`,
+        `/bal/${bal._id}`
       )
     }
   }, [email, nom, populate, codeCommune, addBalAccess])

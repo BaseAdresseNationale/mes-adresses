@@ -138,14 +138,14 @@ function Map({isAddressFormOpen, handleAddressForm, hasCadastre}) {
         setEditingId(voie._id)
       } else {
         router.push(
-          `/bal/voie?balId=${balId}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-          `/bal/${balId}/communes/${commune.code}/voies/${idVoie}`
+          `/bal/voie?balId=${balId}&idVoie=${idVoie}`,
+          `/bal/${balId}/voies/${idVoie}`
         )
       }
     }
 
     setIsContextMenuDisplayed(null)
-  }, [router, balId, commune, setEditingId, isEditing, voie, handleParcelle])
+  }, [router, balId, setEditingId, isEditing, voie, handleParcelle])
 
   const handleCursor = useCallback(({isHovering}) => {
     if (modeId === 'drawLineString') {
