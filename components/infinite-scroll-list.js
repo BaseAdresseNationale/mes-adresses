@@ -11,13 +11,6 @@ function InfiniteScrollList({items, children}) {
   const containerRef = useRef()
 
   const handleScroll = useCallback(({target}) => {
-    const isAtTop = target.scrollTop === 0
-
-    // Reset limit
-    if (isAtTop) {
-      setLimit(visibleElements.current)
-    }
-
     const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight
 
     // Increase limit
