@@ -42,6 +42,21 @@ module.exports = app => {
     })
   })
 
+  // Redirection des URL modifiées depuis le passage en mono-commmune
+  router.get('/bal/:balId/communes/:codeCommune/voies/:idVoie', (req, res) => {
+    const {balId, idVoie} = req.params
+    res.redirect(`/bal/${balId}/voies/${idVoie}`)
+  })
+
+  router.get('/bal/:balId/communes/:codeCommune/toponymes/:idToponyme', (req, res) => {
+    const {balId, idToponyme} = req.params
+    res.redirect(`/bal/${balId}/toponymes/${idToponyme}`)
+  })
+
+  router.get('/bal/:balId/communes/:codeCommune', (req, res) => {
+    res.redirect(`/bal/${req.params.balId}`)
+  })
+
   router.get('/geo/:location', (req, res) => {
     const {location} = req.params
 
