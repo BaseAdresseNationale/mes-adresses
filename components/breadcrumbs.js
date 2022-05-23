@@ -57,7 +57,6 @@ Breadcrumbs.propTypes = {
     nom: PropTypes.string
   }).isRequired,
   commune: PropTypes.shape({
-    code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
   }),
   voie: PropTypes.shape({

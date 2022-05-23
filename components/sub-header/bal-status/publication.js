@@ -42,10 +42,6 @@ function Publication({status, handleBackToDraft, onPublish}) {
 }
 
 Publication.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    commune: PropTypes.string.isRequired
-  }).isRequired,
   status: PropTypes.oneOf([
     'draft', 'ready-to-publish', 'published'
   ]).isRequired,

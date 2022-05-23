@@ -67,7 +67,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({isAddressFormOpen, handleAddressForm, hasCadastre}) {
+function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -80,7 +80,6 @@ function Map({isAddressFormOpen, handleAddressForm, hasCadastre}) {
   const {balId} = router.query
 
   const {
-    commune,
     voie,
     toponyme,
     numeros,
@@ -201,7 +200,7 @@ function Map({isAddressFormOpen, handleAddressForm, hasCadastre}) {
       <StyleSelector
         style={style}
         handleStyle={setStyle}
-        hasCadastre={hasCadastre}
+        hasCadastre={commune.hasCadastre}
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
@@ -292,9 +291,11 @@ function Map({isAddressFormOpen, handleAddressForm, hasCadastre}) {
 }
 
 Map.propTypes = {
+  commune: PropTypes.shape({
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired,
   isAddressFormOpen: PropTypes.bool.isRequired,
-  handleAddressForm: PropTypes.func.isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+  handleAddressForm: PropTypes.func.isRequired
 }
 
 export default Map

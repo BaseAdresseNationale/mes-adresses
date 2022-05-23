@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback, useContext} from 'react'
+import {useState, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
@@ -8,11 +8,7 @@ import {transformToDraft} from '@/lib/bal-api'
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 
-import BalDataContext from '@/contexts/bal-data'
-
-function DemoWarning({baseLocale, token}) {
-  const {commune} = useContext(BalDataContext)
-
+function DemoWarning({baseLocale, communeName, token}) {
   const {_id} = baseLocale
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -38,7 +34,7 @@ function DemoWarning({baseLocale, token}) {
   }, [_id, token, email, nom])
 
   useEffect(() => {
-    setNom(`Adresses de ${commune.nom}`)
+    setNom(`Adresses de ${communeName}`)
 
     return () => null
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -85,7 +81,7 @@ function DemoWarning({baseLocale, token}) {
               disabled={isLoading}
               value={nom}
               label='Nom de la Base Adresse Locale'
-              placeholder={commune.nom}
+              placeholder={communeName}
               onChange={e => setNom(e.target.value)}
             />
 
@@ -114,6 +110,7 @@ DemoWarning.propTypes = {
     _id: PropTypes.string.isRequired,
     commune: PropTypes.string.isRequired
   }).isRequired,
+  communeName: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired
 }
 

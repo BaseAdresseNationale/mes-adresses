@@ -2,8 +2,6 @@ import React, {useState, useMemo, useCallback, useEffect, useContext} from 'reac
 import PropTypes from 'prop-types'
 import {toaster} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/geo-api'
-
 import {
   getParcelles,
   getCommuneGeoJson,
@@ -22,7 +20,7 @@ import useHabilitation from '@/hooks/habilitation'
 const BalDataContext = React.createContext()
 
 export const BalDataContextProvider = React.memo(({
-  initialBaseLocale, initialCommune, initialVoie, initialToponyme, initialVoies, initialToponymes, initialNumeros, ...props
+  initialBaseLocale, initialVoie, initialToponyme, initialVoies, initialToponymes, initialNumeros, ...props
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState(null)
@@ -33,7 +31,6 @@ export const BalDataContextProvider = React.memo(({
   const [toponymes, setToponymes] = useState(initialToponymes)
   const [voie, setVoie] = useState(initialVoie)
   const [toponyme, setToponyme] = useState(initialToponyme)
-  const [commune, setCommune] = useState(initialCommune)
   const [baseLocale, setBaseLocale] = useState(initialBaseLocale)
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
 
@@ -76,12 +73,8 @@ export const BalDataContextProvider = React.memo(({
 
   const reloadBaseLocale = useCallback(async () => {
     const bal = await getBaseLocale(baseLocale._id)
-    const commune = await getCommune(bal.commune, {
-      fields: 'contour'
-    })
 
     setBaseLocale(bal)
-    setCommune(commune)
   }, [baseLocale._id])
 
   const refreshBALSync = useCallback(async () => {
@@ -164,7 +157,6 @@ export const BalDataContextProvider = React.memo(({
     baseLocale,
     habilitation,
     isHabilitationValid,
-    commune,
     geojson,
     parcelles,
     voie: voie || initialVoie,
@@ -198,7 +190,6 @@ export const BalDataContextProvider = React.memo(({
     habilitation,
     isHabilitationValid,
     reloadHabilitation,
-    commune,
     voie,
     numeros,
     initialVoie,
@@ -226,9 +217,6 @@ BalDataContextProvider.propTypes = {
   initialBaseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
   }).isRequired,
-  initialCommune: PropTypes.shape({
-    code: PropTypes.string.isRequired
-  }),
   initialVoie: PropTypes.object,
   initialToponyme: PropTypes.object,
   initialVoies: PropTypes.array,
@@ -237,7 +225,6 @@ BalDataContextProvider.propTypes = {
 }
 
 BalDataContextProvider.defaultProps = {
-  initialCommune: null,
   initialVoie: null,
   initialToponyme: null,
   initialVoies: null,

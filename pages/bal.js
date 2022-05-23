@@ -138,7 +138,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
           {selectedTab === 'voie' ? (
             <VoieEditor closeForm={() => setIsCreateFormOpen(false)} />
           ) : (
-            <ToponymeEditor hasCadastre={commune.hasCadastre} closeForm={() => setIsCreateFormOpen(false)} />
+            <ToponymeEditor commune={commune} closeForm={() => setIsCreateFormOpen(false)} />
           )}
         </Pane>
       ) : (
@@ -180,10 +180,10 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
         <ToponymesList
           toponymes={toponymes}
           editedId={editedId}
+          commune={commune}
           setToRemove={setToRemove}
           onEnableEditing={setEditedId}
           onSelect={onSelect}
-          hasCadastre={commune.hasCadastre}
           onCancel={() => setEditedId(null)}
         />
       )}
