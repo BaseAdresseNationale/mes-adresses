@@ -116,10 +116,9 @@ const SubHeader = React.memo(() => {
         <DemoWarning baseLocale={baseLocale} token={token} />
       )}
 
-      {isAdmin && commune && habilitation && (
+      {isAdmin && commune && habilitation && isHabilitationDisplayed && (
         <HabilitationProcess
           token={token}
-          isShown={isHabilitationDisplayed}
           baseLocale={baseLocale}
           commune={commune}
           habilitation={habilitation}
