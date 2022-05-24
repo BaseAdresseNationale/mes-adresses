@@ -112,11 +112,15 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handleSy
   useEffect(() => {
     const step = getStep(habilitation)
     if (step === 2) {
-      checkConflictingRevision()
+      if (baseLocale.sync) { // Skip publication step when renewing accreditation
+        handleClose()
+      } else {
+        checkConflictingRevision()
+      }
     }
 
     setStep(step)
-  }, [habilitation, checkConflictingRevision])
+  }, [baseLocale, habilitation, checkConflictingRevision, handleClose])
 
   return (
     <Dialog
@@ -179,6 +183,7 @@ HabilitationProcess.propTypes = {
   token: PropTypes.string.isRequired,
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    sync: PropTypes.string
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
