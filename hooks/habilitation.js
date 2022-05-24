@@ -1,27 +1,25 @@
-import {useState, useCallback, useEffect} from 'react'
+import {useState, useCallback, useEffect, useRef} from 'react'
 import {toaster} from 'evergreen-ui'
 
 import {getHabilitation} from '@/lib/bal-api'
 
-export default function useHabilitation(baseLocaleId, token) {
+export default function useHabilitation(baseLocale, token) {
   const [habilitation, setHabilitation] = useState(null)
   const [isValid, setIsValid] = useState(false)
 
-  const reloadHabilitation = useCallback(async () => {
-    if (token) {
-      try {
-        const habilitation = await getHabilitation(token, baseLocaleId)
-        setHabilitation(habilitation)
-      } catch {
-        setHabilitation(null)
-      }
-    }
-  }, [baseLocaleId, token])
+  const isFirstLoad = useRef(true)
 
-  useEffect(() => {
-    if (habilitation) {
-      let isExpired = null
-      if (habilitation.expiresAt) {
+  const handleInvalidHabilitation = useCallback(habilitation => {
+    let isValid = false
+
+    if (baseLocale.sync) {
+      if (!habilitation || habilitation.status !== 'accepted') {
+        toaster.danger('Aucune habilitation valide trouvée', {
+          description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
+          duration: 10
+        })
+      } else if (habilitation?.expiresAt) {
+        let isExpired = null
         const expiresAt = new Date(habilitation.expiresAt)
         isExpired = expiresAt < new Date()
         if (isExpired) {
@@ -30,13 +28,31 @@ export default function useHabilitation(baseLocaleId, token) {
             duration: 10
           })
         }
-      }
 
-      const isRejected = habilitation.status === 'rejected'
-      const isValid = isExpired === false && !isRejected
-      setIsValid(isValid)
+        isValid = isExpired === false
+      } else {
+        isValid = true
+      }
     }
-  }, [habilitation])
+
+    setIsValid(isValid)
+  }, [baseLocale.sync])
+
+  const reloadHabilitation = useCallback(async () => {
+    if (token) {
+      try {
+        const habilitation = await getHabilitation(token, baseLocale._id)
+        setHabilitation(habilitation)
+
+        if (isFirstLoad.current) {
+          handleInvalidHabilitation(habilitation)
+          isFirstLoad.current = false
+        }
+      } catch {
+        setHabilitation(null)
+      }
+    }
+  }, [baseLocale._id, token, handleInvalidHabilitation])
 
   useEffect(() => {
     reloadHabilitation()
