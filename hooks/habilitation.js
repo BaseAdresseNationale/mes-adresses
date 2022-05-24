@@ -26,7 +26,7 @@ export default function useHabilitation(baseLocaleId, token) {
         isExpired = expiresAt < new Date()
         if (isExpired) {
           toaster.danger('L’habilitaton est expirée', {
-            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresses Nationale. Cliquer sur "Publier" pour renouveler l’habilitation.',
+            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
             duration: 10
           })
         }
