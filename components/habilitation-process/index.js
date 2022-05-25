@@ -7,6 +7,7 @@ const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://mes-adresses
 
 import {getRevisions} from '@/lib/ban-api'
 import {sendAuthenticationCode, validateAuthenticationCode} from '@/lib/bal-api'
+import {isCOM} from '@/lib/utils/commune'
 
 import BalDataContext from '@/contexts/bal-data'
 
@@ -14,6 +15,7 @@ import ValidateAuthentication from '@/components/habilitation-process/validate-a
 import StrategySelection from '@/components/habilitation-process/strategy-selection'
 import AcceptedDialog from '@/components/habilitation-process/accepted-dialog'
 import RejectedDialog from '@/components/habilitation-process/rejected-dialog'
+import COMDialog from '@/components/habilitation-process/com-dialog'
 
 function getStep(habilitation) {
   if (habilitation.status !== 'pending') {
@@ -137,12 +139,16 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handleSy
       onCloseComplete={handleClose}
     >
       <Pane>
-        {step === 0 && (
+        {step === 0 && !isCOM(commune.code) && (
           <StrategySelection
             franceconnectAuthenticationUrl={habilitation.franceconnectAuthenticationUrl}
             emailCommune={habilitation.emailCommune}
             handleStrategy={handleStrategy}
           />
+        )}
+
+        {step === 0 && isCOM(commune.code) && (
+          <COMDialog baseLocaleId={baseLocale._id} />
         )}
 
         {step === 1 && (
