@@ -139,16 +139,16 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handleSy
       onCloseComplete={handleClose}
     >
       <Pane>
-        {step === 0 && !isCOM(commune.code) && (
-          <StrategySelection
-            franceconnectAuthenticationUrl={habilitation.franceconnectAuthenticationUrl}
-            emailCommune={habilitation.emailCommune}
-            handleStrategy={handleStrategy}
-          />
-        )}
-
-        {step === 0 && isCOM(commune.code) && (
-          <COMDialog baseLocaleId={baseLocale._id} />
+        {step === 0 && (
+          isCOM(commune.code) ? (
+            <COMDialog baseLocaleId={baseLocale._id} />
+          ) : (
+            <StrategySelection
+              franceconnectAuthenticationUrl={habilitation.franceconnectAuthenticationUrl}
+              emailCommune={habilitation.emailCommune}
+              handleStrategy={handleStrategy}
+            />
+          )
         )}
 
         {step === 1 && (
