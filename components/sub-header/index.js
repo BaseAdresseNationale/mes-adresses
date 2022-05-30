@@ -4,6 +4,7 @@ import {useRouter} from 'next/router'
 import {Pane} from 'evergreen-ui'
 
 import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@/lib/bal-api'
+import {isCOM} from '@/lib/utils/commune'
 
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
@@ -13,6 +14,7 @@ import useError from '@/hooks/error'
 import HabilitationProcess from '@/components/habilitation-process/index'
 import Breadcrumbs from '@/components/breadcrumbs'
 import HabilitationTag from '@/components/habilitation-tag'
+import COMDialog from '@/components/habilitation-process/com-dialog'
 import SettingsMenu from '@/components/sub-header/settings-menu'
 import DemoWarning from '@/components/sub-header/demo-warning'
 import BALStatus from '@/components/sub-header/bal-status'
@@ -53,7 +55,7 @@ const SubHeader = React.memo(({commune}) => {
       await handleChangeStatus('ready-to-publish')
     }
 
-    if (!habilitation || !isHabilitationValid) {
+    if ((!habilitation || !isHabilitationValid) && !isCOM(commune.code)) {
       await createHabilitation(token, baseLocale._id)
       await reloadHabilitation()
     }
@@ -114,7 +116,11 @@ const SubHeader = React.memo(({commune}) => {
         <DemoWarning baseLocale={baseLocale} communeName={commune.nom} token={token} />
       )}
 
-      {isAdmin && habilitation && isHabilitationDisplayed && (
+      {isAdmin && commune && isHabilitationDisplayed && isCOM(commune.code) && (
+        <COMDialog baseLocaleId={baseLocale._id} handleClose={handleCloseHabilitation} />
+      )}
+
+      {isAdmin && commune && habilitation && isHabilitationDisplayed && !isCOM(commune.code) && (
         <HabilitationProcess
           token={token}
           baseLocale={baseLocale}
@@ -131,6 +137,7 @@ const SubHeader = React.memo(({commune}) => {
 
 SubHeader.propTypes = {
   commune: PropTypes.shape({
+    code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
   }).isRequired
 }
