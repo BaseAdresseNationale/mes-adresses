@@ -13,7 +13,7 @@ function AddressEditor({closeForm}) {
   const {voie} = useContext(BalDataContext)
 
   return (
-    <Pane overflowY='scroll'>
+    <Pane display='flex' flexDirection='column' height='100%'>
       <Pane padding={12}>
         <Heading is='h4'>Nouvelle adresse</Heading>
         <SelectField
@@ -26,11 +26,13 @@ function AddressEditor({closeForm}) {
         </SelectField>
       </Pane>
 
-      {isToponyme ? (
-        <ToponymeEditor closeForm={closeForm} />
-      ) : (
-        <NumeroEditor initialVoieId={voie?._id} closeForm={closeForm} />
-      )}
+      <Pane display='flex' flexDirection='column' flex={1} overflowY='auto'>
+        {isToponyme ? (
+          <ToponymeEditor closeForm={closeForm} />
+        ) : (
+          <NumeroEditor initialVoieId={voie?._id} hasPreview closeForm={closeForm} />
+        )}
+      </Pane>
     </Pane>
   )
 }
