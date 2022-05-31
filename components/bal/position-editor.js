@@ -89,7 +89,9 @@ function PositionEditor({initialPositions, isToponyme, validationMessage}) {
     return () => {
       disableMarkers()
     }
-  }, [initialPositions, addMarker, handleAddMarker, disableMarkers])
+
+    // Remove addMarker and handleAddMarker from hooks to prevent useEffect running when viewport changing
+  }, [initialPositions, disableMarkers]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <FormField validationMessage={validationMessage}>
