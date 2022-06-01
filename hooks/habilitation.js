@@ -10,32 +10,34 @@ export default function useHabilitation(baseLocale, token) {
   const isFirstLoad = useRef(true)
 
   const handleInvalidHabilitation = useCallback(habilitation => {
-    let isValid = false
+    if (habilitation) {
+      const isAccepted = habilitation.status === 'accepted'
+      const isExpired = new Date(habilitation.expiresAt) < new Date()
 
-    if (baseLocale.sync) {
-      if (!habilitation || habilitation.status !== 'accepted') {
-        toaster.danger('Aucune habilitation valide trouvée', {
-          description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
-          duration: 10
-        })
-      } else if (habilitation?.expiresAt) {
-        let isExpired = null
-        const expiresAt = new Date(habilitation.expiresAt)
-        isExpired = expiresAt < new Date()
-        if (isExpired) {
+      if (baseLocale.sync && isFirstLoad.current) {
+        if (!isAccepted) {
+          toaster.danger('Aucune habilitation valide trouvée', {
+            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
+            duration: 10
+          })
+        } else if (isExpired) {
           toaster.danger('L’habilitaton est expirée', {
             description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
             duration: 10
           })
         }
 
-        isValid = isExpired === false
-      } else {
-        isValid = true
+        isFirstLoad.current = false
       }
-    }
 
-    setIsValid(isValid)
+      setIsValid(isAccepted && !isExpired)
+    } else {
+      toaster.danger('Aucune habilitation trouvée', {
+        description: 'Cliquez sur "Publier" pour demander une habilitation.',
+        duration: 10
+      })
+      setIsValid(false)
+    }
   }, [baseLocale.sync])
 
   const reloadHabilitation = useCallback(async () => {
@@ -43,11 +45,7 @@ export default function useHabilitation(baseLocale, token) {
       try {
         const habilitation = await getHabilitation(token, baseLocale._id)
         setHabilitation(habilitation)
-
-        if (isFirstLoad.current) {
-          handleInvalidHabilitation(habilitation)
-          isFirstLoad.current = false
-        }
+        handleInvalidHabilitation(habilitation)
       } catch {
         setHabilitation(null)
       }
