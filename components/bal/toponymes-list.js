@@ -11,10 +11,9 @@ import TokenContext from '@/contexts/token'
 import useFuse from '@/hooks/fuse'
 
 import TableRow from '@/components/table-row'
-import ToponymeEditor from '@/components/bal/toponyme-editor'
 import InfiniteScrollList from '@/components/infinite-scroll-list'
 
-function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnableEditing, setToRemove}) {
+function ToponymesList({toponymes, onSelect, onEnableEditing, setToRemove}) {
   const {token} = useContext(TokenContext)
   const {isEditing} = useContext(BalDataContext)
 
@@ -42,13 +41,7 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
       )}
 
       <InfiniteScrollList items={sortBy(filtered, t => normalizeSort(t.nom))}>
-        {(toponyme => toponyme._id === editedId ? (
-          <Table.Row key={toponyme._id} height='auto'>
-            <Table.Cell display='block' padding={0} background='tint1'>
-              <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={onCancel} />
-            </Table.Cell>
-          </Table.Row>
-        ) : (
+        {toponyme => (
           <TableRow
             key={toponyme._id}
             label={toponyme.nom}
@@ -63,7 +56,7 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
               onRemove: () => setToRemove(toponyme._id)
             }}
           />
-        ))}
+        )}
       </InfiniteScrollList>
     </Table>
   )
@@ -71,16 +64,9 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
 
 ToponymesList.propTypes = {
   toponymes: PropTypes.array.isRequired,
-  editedId: PropTypes.string,
-  commune: PropTypes.object.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
-}
-
-ToponymesList.defaultProps = {
-  editedId: null
+  onSelect: PropTypes.func.isRequired
 }
 
 export default ToponymesList

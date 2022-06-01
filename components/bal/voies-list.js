@@ -11,10 +11,9 @@ import TokenContext from '@/contexts/token'
 import useFuse from '@/hooks/fuse'
 
 import TableRow from '@/components/table-row'
-import VoieEditor from '@/components/bal/voie-editor'
 import InfiniteScrollList from '../infinite-scroll-list'
 
-function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToRemove}) {
+function VoiesList({voies, onEnableEditing, onSelect, setToRemove}) {
   const {token} = useContext(TokenContext)
   const {isEditing} = useContext(BalDataContext)
 
@@ -42,13 +41,7 @@ function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToR
       )}
 
       <InfiniteScrollList items={sortBy(filtered, v => normalizeSort(v.nom))}>
-        {voie => voie._id === editedId ? (
-          <Table.Row key={voie._id} height='auto'>
-            <Table.Cell display='block' padding={0} background='tint1'>
-              <VoieEditor initialValue={voie} closeForm={onCancel} />
-            </Table.Cell>
-          </Table.Row>
-        ) : (
+        {voie => (
           <TableRow
             key={voie._id}
             label={voie.nom}
@@ -68,15 +61,9 @@ function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToR
 
 VoiesList.propTypes = {
   voies: PropTypes.array.isRequired,
-  editedId: PropTypes.string,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
-}
-
-VoiesList.defaultProps = {
-  editedId: null
+  onSelect: PropTypes.func.isRequired
 }
 
 export default VoiesList

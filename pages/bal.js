@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext, useEffect} from 'react'
+import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
@@ -17,8 +17,8 @@ import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
 const BaseLocale = React.memo(({baseLocale, commune}) => {
-  const [editedId, setEditedId] = useState(null)
-  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false)
+  const [editedItem, setEditedItem] = useState(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
   const [selectedTab, setSelectedTab] = useState('voie')
 
@@ -33,7 +33,6 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
     reloadToponymes,
     reloadGeojson,
     reloadParcelles,
-    editingId,
     isEditing,
     setIsEditing
   } = useContext(BalDataContext)
@@ -65,10 +64,6 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
   }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, reloadParcelles, selectedTab, toRemove, token])
 
   const onSelect = useCallback(id => {
-    if (editingId) {
-      setEditedId(null)
-    }
-
     if (selectedTab === 'voie') {
       router.push(
         `/bal/voie?balId=${baseLocale._id}&idVoie=${id}`,
@@ -80,18 +75,17 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
         `/bal/${baseLocale._id}/toponymes/${id}`
       )
     }
-  }, [baseLocale._id, router, editingId, selectedTab])
+  }, [baseLocale._id, router, selectedTab])
 
-  useEffect(() => {
-    setEditedId(null)
-    setIsCreateFormOpen(false)
-  }, [selectedTab])
-
-  useEffect(() => {
-    if (editingId && toponymes.some(toponyme => toponyme._id === editingId)) {
-      setSelectedTab('toponyme')
+  const onEdit = useCallback(id => {
+    if (id) {
+      setEditedItem([...voies, ...toponymes].find(({_id}) => _id === id))
+      setIsFormOpen(true)
+    } else {
+      setEditedItem(null)
+      setIsFormOpen(false)
     }
-  }, [toponymes, editingId])
+  }, [voies, toponymes])
 
   return (
     <>
@@ -118,93 +112,91 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
         )}
       </Pane>
 
-      <Pane
-        flexShrink={0}
-        elevation={0}
-        backgroundColor='white'
-        width='100%'
-        display='flex'
-        justifyContent='space-around'
-        height={38}
-      >
-        <div className={`tab ${selectedTab === 'voie' ? 'selected' : ''}`} onClick={() => setSelectedTab('voie')}>
-          <Heading>Liste des voies</Heading>
-        </div>
-        <div className={`tab ${selectedTab === 'toponyme' ? 'selected' : ''}`} onClick={() => setSelectedTab('toponyme')}>
-          <Heading>Liste des toponymes</Heading>
-        </div>
-      </Pane>
-
-      {isCreateFormOpen && !editingId ? (
+      {isFormOpen ? (
         <Pane height='fit-content' overflowY='scroll'>
           {selectedTab === 'voie' ? (
-            <VoieEditor closeForm={() => setIsCreateFormOpen(false)} />
+            <VoieEditor initialValue={editedItem} closeForm={() => onEdit(null)} />
           ) : (
-            <ToponymeEditor commune={commune} closeForm={() => setIsCreateFormOpen(false)} />
+            <ToponymeEditor initialValue={editedItem} commune={commune} closeForm={() => onEdit(null)} />
           )}
         </Pane>
       ) : (
-        <Pane
-          flexShrink={0}
-          elevation={0}
-          backgroundColor='white'
-          paddingX={16}
-          display='flex'
-          alignItems='center'
-          minHeight={50}
-        >
-          {token && (
-            <Pane marginLeft='auto'>
+        <>
+          <Pane
+            flexShrink={0}
+            elevation={0}
+            backgroundColor='white'
+            width='100%'
+            display='flex'
+            justifyContent='space-around'
+            height={38}
+          >
+            <div className={`tab ${selectedTab === 'voie' ? 'selected' : ''}`} onClick={() => setSelectedTab('voie')}>
+              <Heading>Liste des voies</Heading>
+            </div>
+            <div className={`tab ${selectedTab === 'toponyme' ? 'selected' : ''}`} onClick={() => setSelectedTab('toponyme')}>
+              <Heading>Liste des toponymes</Heading>
+            </div>
+          </Pane>
+
+          <Pane
+            flexShrink={0}
+            elevation={0}
+            backgroundColor='white'
+            paddingX={16}
+            display='flex'
+            alignItems='center'
+            minHeight={50}
+          >
+            {token && (
+              <Pane marginLeft='auto'>
+                <Button
+                  iconBefore={AddIcon}
+                  appearance='primary'
+                  intent='success'
+                  disabled={isEditing}
+                  onClick={() => setIsFormOpen(true)}
+                >
+                  Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
+                </Button>
+              </Pane>
+            )}
+          </Pane>
+
+          {selectedTab === 'voie' ? (
+            <VoiesList
+              voies={voies}
+              setToRemove={setToRemove}
+              onEnableEditing={onEdit}
+              onSelect={onSelect}
+            />
+          ) : (
+            <ToponymesList
+              toponymes={toponymes}
+              commune={commune}
+              setToRemove={setToRemove}
+              onEnableEditing={onEdit}
+              onSelect={onSelect}
+            />
+          )}
+
+          {token && voies && voies.length === 0 && (
+            <Pane borderTop marginTop='auto' padding={16}>
+              <Paragraph size={300} color='muted'>
+                Vous souhaitez importer les voies de la commune de {commune.nom} depuis la Base Adresse Nationale ?
+              </Paragraph>
               <Button
-                iconBefore={AddIcon}
+                marginTop={10}
                 appearance='primary'
-                intent='success'
                 disabled={isEditing}
-                onClick={() => setIsCreateFormOpen(true)}
+                isLoading={isEditing}
+                onClick={onPopulate}
               >
-                Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
+                {isEditing ? 'Récupération des adresses…' : 'Récupérer les adresses de la BAN'}
               </Button>
             </Pane>
           )}
-        </Pane>
-      )}
-
-      {selectedTab === 'voie' ? (
-        <VoiesList
-          voies={voies}
-          editedId={editedId}
-          setToRemove={setToRemove}
-          onEnableEditing={setEditedId}
-          onSelect={onSelect}
-          onCancel={() => setEditedId(null)}
-        />
-      ) : (
-        <ToponymesList
-          toponymes={toponymes}
-          editedId={editedId}
-          commune={commune}
-          setToRemove={setToRemove}
-          onEnableEditing={setEditedId}
-          onSelect={onSelect}
-          onCancel={() => setEditedId(null)}
-        />
-      )}
-
-      {token && voies && voies.length === 0 && (
-        <Pane borderTop marginTop='auto' padding={16}>
-          <Paragraph size={300} color='muted'>
-            Vous souhaitez importer les voies de la commune de {commune.nom} depuis la Base Adresse Nationale ?
-          </Paragraph>
-          <Button
-            marginTop={10}
-            appearance='primary'
-            disabled={isEditing}
-            isLoading={isEditing}
-            onClick={onPopulate}
-          >
-            {isEditing ? 'Récupération des adresses…' : 'Récupérer les adresses de la BAN'}
-          </Button>
-        </Pane>
+        </>
       )}
 
       <style jsx>{`
@@ -229,7 +221,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
         .tab .selected:hover {
           background: #E4E7EB;
         }
-        `}</style>
+      `}</style>
     </>
   )
 })
