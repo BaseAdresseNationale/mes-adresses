@@ -67,7 +67,7 @@ Publication.propTypes = {
     communes: PropTypes.array.isRequired
   }).isRequired,
   status: PropTypes.oneOf([
-    'draft', 'ready-to-publish'
+    'draft', 'ready-to-publish', 'published'
   ]).isRequired,
   handleBackToDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired

@@ -183,7 +183,7 @@ HabilitationProcess.propTypes = {
   token: PropTypes.string.isRequired,
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    sync: PropTypes.string
+    sync: PropTypes.object
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
