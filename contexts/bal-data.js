@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {toaster} from 'evergreen-ui'
 
 import {
-  getHabilitation,
   getParcelles,
   getCommuneGeoJson,
   getCommune,
@@ -17,13 +16,15 @@ import {
 
 import TokenContext from '@/contexts/token'
 
+import useHabilitation from '@/hooks/habilitation'
+
 const BalDataContext = React.createContext()
 
 export const BalDataContextProvider = React.memo(({
   initialBaseLocale, initialCommune, initialVoie, initialToponyme, initialVoies, initialToponymes, initialNumeros, ...props
 }) => {
   const [isEditing, setIsEditing] = useState(false)
-  const [editingId, _setEditingId] = useState()
+  const [editingId, _setEditingId] = useState(null)
   const [parcelles, setParcelles] = useState([])
   const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState(initialNumeros)
@@ -33,21 +34,11 @@ export const BalDataContextProvider = React.memo(({
   const [toponyme, setToponyme] = useState(initialToponyme)
   const [commune, setCommune] = useState(initialCommune)
   const [baseLocale, setBaseLocale] = useState(initialBaseLocale)
-  const [habilitation, setHabilitation] = useState(null)
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
 
   const {token} = useContext(TokenContext)
 
-  const reloadHabilitation = useCallback(async () => {
-    if (token) {
-      try {
-        const habilitation = await getHabilitation(token, baseLocale._id)
-        setHabilitation(habilitation)
-      } catch {
-        setHabilitation(null)
-      }
-    }
-  }, [baseLocale._id, token])
+  const [habilitation, reloadHabilitation, isHabilitationValid] = useHabilitation(initialBaseLocale, token)
 
   const reloadParcelles = useCallback(async () => {
     const parcelles = await getParcelles(baseLocale._id, commune.code)
@@ -78,10 +69,9 @@ export const BalDataContextProvider = React.memo(({
     }
 
     if (numeros) {
-      await reloadParcelles()
       setNumeros(numeros)
     }
-  }, [voie, toponyme, token, reloadParcelles])
+  }, [voie, toponyme, token])
 
   const reloadCommune = useCallback(async () => {
     const baseLocaleCommune = await getCommune(baseLocale._id, initialCommune.code)
@@ -95,7 +85,7 @@ export const BalDataContextProvider = React.memo(({
 
   const refreshBALSync = useCallback(async () => {
     const {sync} = baseLocale
-    if (sync && sync.status === 'synced' && !sync.isPaused && !isRefrehSyncStat) {
+    if (isHabilitationValid && sync && sync.status === 'synced' && !sync.isPaused && !isRefrehSyncStat) {
       setIsRefrehSyncStat(true)
       setTimeout(() => {
         reloadBaseLocale()
@@ -106,7 +96,7 @@ export const BalDataContextProvider = React.memo(({
         })
       }, 30000) // Maximum interval between CRON job
     }
-  }, [baseLocale, isRefrehSyncStat, reloadBaseLocale])
+  }, [baseLocale, isHabilitationValid, isRefrehSyncStat, reloadBaseLocale])
 
   const setEditingId = useCallback(editingId => {
     if (token) {
@@ -135,10 +125,6 @@ export const BalDataContextProvider = React.memo(({
 
     refreshBALSync()
   }, [baseLocale._id, commune, token, reloadNumeros, refreshBALSync])
-
-  useEffect(() => {
-    reloadHabilitation()
-  }, [token, reloadHabilitation])
 
   // Update states on client side load
   useEffect(() => {
@@ -176,6 +162,7 @@ export const BalDataContextProvider = React.memo(({
     reloadGeojson,
     baseLocale,
     habilitation,
+    isHabilitationValid,
     commune,
     geojson,
     parcelles,
@@ -188,6 +175,7 @@ export const BalDataContextProvider = React.memo(({
     setEditingId,
     refreshBALSync,
     reloadHabilitation,
+    reloadParcelles,
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
@@ -202,11 +190,13 @@ export const BalDataContextProvider = React.memo(({
     setEditingId,
     editingItem,
     parcelles,
+    reloadParcelles,
     geojson,
     reloadGeojson,
     baseLocale,
     reloadBaseLocale,
     habilitation,
+    isHabilitationValid,
     reloadHabilitation,
     reloadCommune,
     commune,

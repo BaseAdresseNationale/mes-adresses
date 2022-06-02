@@ -27,7 +27,7 @@ function getStep(habilitation) {
   return 0
 }
 
-function HabilitationProcess({isShown, token, baseLocale, commune, habilitation, handleSync, resetHabilitationProcess, handleClose}) {
+function HabilitationProcess({token, baseLocale, commune, habilitation, handleSync, resetHabilitationProcess, handleClose}) {
   const [step, setStep] = useState(getStep(habilitation))
   const [isLoading, setIsLoading] = useState(false)
   const [isConflicted, setIsConflicted] = useState(false)
@@ -112,16 +112,20 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
   useEffect(() => {
     const step = getStep(habilitation)
     if (step === 2) {
-      checkConflictingRevision()
+      if (baseLocale.sync) { // Skip publication step when renewing accreditation
+        handleClose()
+      } else {
+        checkConflictingRevision()
+      }
     }
 
     setStep(step)
-  }, [isShown, habilitation, checkConflictingRevision])
+  }, [baseLocale, habilitation, checkConflictingRevision, handleClose])
 
   return (
     <Dialog
+      isShown
       width={1200}
-      isShown={isShown}
       preventBodyScrolling
       hasHeader={false}
       intent={isConflicted ? 'danger' : 'success'}
@@ -176,10 +180,10 @@ function HabilitationProcess({isShown, token, baseLocale, commune, habilitation,
 }
 
 HabilitationProcess.propTypes = {
-  isShown: PropTypes.bool.isRequired,
   token: PropTypes.string.isRequired,
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    sync: PropTypes.object
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,

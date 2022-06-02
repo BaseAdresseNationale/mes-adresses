@@ -25,6 +25,7 @@ const SubHeader = React.memo(() => {
     habilitation,
     reloadBaseLocale,
     reloadHabilitation,
+    isHabilitationValid,
     commune,
     voie,
     toponyme,
@@ -35,7 +36,6 @@ const SubHeader = React.memo(() => {
   const [setError] = useError(null)
 
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
-  const isEntitled = habilitation && habilitation.status === 'accepted'
   const isAdmin = Boolean(token)
 
   const handleChangeStatus = async status => {
@@ -49,9 +49,11 @@ const SubHeader = React.memo(() => {
   }
 
   const handleHabilitation = async () => {
-    await handleChangeStatus('ready-to-publish')
+    if (baseLocale.status === 'draft') {
+      await handleChangeStatus('ready-to-publish')
+    }
 
-    if (!habilitation || habilitation.status === 'rejected') {
+    if (!habilitation || !isHabilitationValid) {
       await createHabilitation(token, baseLocale._id)
       await reloadHabilitation()
     }
@@ -83,7 +85,7 @@ const SubHeader = React.memo(() => {
         alignItems='center'
         padding={8}
       >
-        {isEntitled && commune && <HabilitationTag communeName={commune.nom} />}
+        {isHabilitationValid && commune && <HabilitationTag communeName={commune.nom} />}
 
         <Breadcrumbs
           baseLocale={baseLocale}
@@ -100,6 +102,7 @@ const SubHeader = React.memo(() => {
               baseLocale={baseLocale}
               commune={commune}
               token={token}
+              isHabilitationValid={isHabilitationValid}
               isRefrehSyncStat={isRefrehSyncStat}
               handleChangeStatus={handleChangeStatus}
               handleHabilitation={handleHabilitation}
@@ -113,10 +116,9 @@ const SubHeader = React.memo(() => {
         <DemoWarning baseLocale={baseLocale} token={token} />
       )}
 
-      {isAdmin && commune && habilitation && (
+      {isAdmin && commune && habilitation && isHabilitationDisplayed && (
         <HabilitationProcess
           token={token}
-          isShown={isHabilitationDisplayed}
           baseLocale={baseLocale}
           commune={commune}
           habilitation={habilitation}

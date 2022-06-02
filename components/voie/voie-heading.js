@@ -2,8 +2,6 @@ import {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
-import {editVoie} from '@/lib/bal-api'
-
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
@@ -11,31 +9,16 @@ import VoieEditor from '@/components/bal/voie-editor'
 
 function VoieHeading({voie}) {
   const [hovered, setHovered] = useState(false)
+  const [isFormOpen, setIsFormOpen] = useState(false)
 
   const {token} = useContext(TokenContext)
-  const {editingId, setEditingId, isEditing, refreshBALSync, reloadVoies, reloadGeojson, numeros, setVoie} = useContext(BalDataContext)
+  const {editingId, isEditing, numeros} = useContext(BalDataContext)
 
   const onEnableVoieEditing = () => {
     if (!isEditing) {
-      setEditingId(voie._id)
+      setIsFormOpen(true)
       setHovered(false)
     }
-  }
-
-  const onEditVoie = async ({nom, typeNumerotation, trace}) => {
-    const updatedVoie = await editVoie(voie._id, {
-      nom,
-      typeNumerotation,
-      trace
-    }, token)
-
-    setEditingId(null)
-
-    await reloadVoies()
-    await reloadGeojson()
-    refreshBALSync()
-
-    setVoie(updatedVoie)
   }
 
   return (
@@ -43,14 +26,10 @@ function VoieHeading({voie}) {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={editingId === voie._id ? 0 : 16}
+      padding={isFormOpen ? 0 : 16}
     >
-      {editingId === voie._id ? (
-        <VoieEditor
-          initialValue={voie}
-          onSubmit={onEditVoie}
-          onCancel={() => setEditingId(null)}
-        />
+      {isFormOpen ? (
+        <VoieEditor initialValue={voie} closeForm={() => setIsFormOpen(false)} />
       ) : (
         <Heading
           style={{cursor: hovered && !isEditing ? 'text' : 'default'}}

@@ -1,7 +1,6 @@
-import React, {useState, useEffect, useCallback, useContext, useMemo} from 'react'
+import React, {useState, useCallback, useContext, useMemo} from 'react'
 import {uniqueId} from 'lodash'
 
-import BalDataContext from '@/contexts/bal-data'
 import MapContext from '@/contexts/map'
 
 const MarkersContext = React.createContext()
@@ -12,19 +11,12 @@ export function MarkersContextProvider(props) {
   const [suggestedNumero, setSuggestedNumero] = useState(null)
 
   const {viewport} = useContext(MapContext)
-  const {editingId} = useContext(BalDataContext)
 
   const disableMarkers = useCallback(() => {
     setMarkers([])
     setOverrideText(null)
     setSuggestedNumero(null)
   }, [])
-
-  useEffect(() => {
-    if (!editingId) {
-      disableMarkers()
-    }
-  }, [disableMarkers, editingId])
 
   const addMarker = useCallback(data => {
     let marker = {...data}

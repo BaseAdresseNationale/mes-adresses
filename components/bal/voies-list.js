@@ -13,9 +13,9 @@ import useFuse from '@/hooks/fuse'
 import TableRow from '@/components/table-row'
 import VoieEditor from '@/components/bal/voie-editor'
 
-function VoiesList({voies, onEnableEditing, isAdding, onSelect, onAdd, onEdit, onCancel, setToRemove}) {
+function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToRemove}) {
   const {token} = useContext(TokenContext)
-  const {isEditing, editingId} = useContext(BalDataContext)
+  const {isEditing} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(voies, 200, {
     keys: [
@@ -32,16 +32,6 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, onAdd, onEdit, o
             onChange={setFilter}
           />
         </Table.Head>
-        {isAdding && (
-          <Table.Row height='auto'>
-            <Table.Cell borderBottom display='block' padding={0} background='tint1'>
-              <VoieEditor
-                onSubmit={onAdd}
-                onCancel={onCancel}
-              />
-            </Table.Cell>
-          </Table.Row>
-        )}
         {filtered.length === 0 && (
           <Table.Row>
             <Table.TextCell color='muted' fontStyle='italic'>
@@ -50,14 +40,10 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, onAdd, onEdit, o
           </Table.Row>
         )}
         {sortBy(filtered, v => normalizeSort(v.nom))
-          .map(voie => voie._id === editingId ? (
+          .map(voie => voie._id === editedId ? (
             <Table.Row key={voie._id} height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
-                <VoieEditor
-                  initialValue={voie}
-                  onSubmit={onEdit}
-                  onCancel={onCancel}
-                />
+                <VoieEditor initialValue={voie} closeForm={onCancel} />
               </Table.Cell>
             </Table.Row>
           ) : (
@@ -78,18 +64,16 @@ function VoiesList({voies, onEnableEditing, isAdding, onSelect, onAdd, onEdit, o
 }
 
 VoiesList.propTypes = {
-  voies: PropTypes.array,
-  isAdding: PropTypes.bool.isRequired,
+  voies: PropTypes.array.isRequired,
+  editedId: PropTypes.string,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onAdd: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired
 }
 
 VoiesList.defaultProps = {
-  voies: null
+  editedId: null
 }
 
 export default VoiesList
