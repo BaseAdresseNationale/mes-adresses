@@ -20,7 +20,7 @@ import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 
-function ToponymeEditor({initialValue, closeForm}) {
+function ToponymeEditor({initialValue, closeForm, hasCadastre}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
@@ -126,9 +126,11 @@ function ToponymeEditor({initialValue, closeForm}) {
           />
         </FormInput>
 
-        <FormInput>
-          <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
-        </FormInput>
+        {hasCadastre && (
+          <FormInput>
+            <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
+          </FormInput>
+        )}
 
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
           {submitLabel}
@@ -155,7 +157,8 @@ ToponymeEditor.propTypes = {
     parcelles: PropTypes.array.isRequired,
     positions: PropTypes.array.isRequired
   }),
-  closeForm: PropTypes.func.isRequired
+  closeForm: PropTypes.func.isRequired,
+  hasCadastre: PropTypes.bool.isRequired
 }
 
 ToponymeEditor.defaultProps = {

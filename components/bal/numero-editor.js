@@ -29,7 +29,7 @@ import AddressPreview from '@/components/bal/address-preview'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
+function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCadastre}) {
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [selectedNomToponyme, setSelectedNomToponyme] = useState('')
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
@@ -256,9 +256,11 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
             />
           </FormInput>
 
-          <FormInput>
-            <SelectParcelles initialParcelles={initialValue?.parcelles} />
-          </FormInput>
+          {hasCadastre && (
+            <FormInput>
+              <SelectParcelles initialParcelles={initialValue?.parcelles} />
+            </FormInput>
+          )}
 
           <Comment input={comment} onChange={onCommentChange} />
 
@@ -291,7 +293,8 @@ NumeroEditor.propTypes = {
     certifie: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
   }),
   hasPreview: PropTypes.bool,
-  closeForm: PropTypes.func
+  closeForm: PropTypes.func,
+  hasCadastre: PropTypes.bool.isRequired
 }
 
 NumeroEditor.defaultProps = {

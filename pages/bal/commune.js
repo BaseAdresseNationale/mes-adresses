@@ -16,7 +16,7 @@ import VoieEditor from '@/components/bal/voie-editor'
 import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-const Commune = React.memo(({baseLocale, commune}) => {
+const Commune = React.memo(({baseLocale, commune, hasCadastre}) => {
   const [editedId, setEditedId] = useState(null)
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
@@ -138,7 +138,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
           {selectedTab === 'voie' ? (
             <VoieEditor closeForm={() => setIsCreateFormOpen(false)} />
           ) : (
-            <ToponymeEditor closeForm={() => setIsCreateFormOpen(false)} />
+            <ToponymeEditor hasCadastre={hasCadastre} closeForm={() => setIsCreateFormOpen(false)} />
           )}
         </Pane>
       ) : (
@@ -183,6 +183,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
           setToRemove={setToRemove}
           onEnableEditing={setEditedId}
           onSelect={onSelect}
+          hasCadastre={hasCadastre}
           onCancel={() => setEditedId(null)}
         />
       )}
@@ -238,7 +239,8 @@ Commune.propTypes = {
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
-  }).isRequired
+  }).isRequired,
+  hasCadastre: PropTypes.bool.isRequired
 }
 
 export default Commune

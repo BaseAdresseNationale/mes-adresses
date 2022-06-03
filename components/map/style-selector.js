@@ -8,7 +8,7 @@ const STYLES = [
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
-function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre}) {
+function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre, hasCadastre}) {
   const [showPopover, setShowPopover] = useState(false)
 
   return (
@@ -39,11 +39,13 @@ function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre}
         </Button>
 
       </SelectMenu>
-      <Tooltip content={isCadastreDisplayed ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
-        <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>
-          <ControlIcon color={isCadastreDisplayed ? 'selected' : 'muted'} />
-        </Button>
-      </Tooltip>
+      {hasCadastre && (
+        <Tooltip content={isCadastreDisplayed ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
+          <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>
+            <ControlIcon color={isCadastreDisplayed ? 'selected' : 'muted'} />
+          </Button>
+        </Tooltip>
+      )}
     </Pane>
   )
 }
@@ -52,7 +54,8 @@ StyleSelector.propTypes = {
   style: PropTypes.string.isRequired,
   handleStyle: PropTypes.func.isRequired,
   isCadastreDisplayed: PropTypes.bool.isRequired,
-  handleCadastre: PropTypes.func.isRequired
+  handleCadastre: PropTypes.func.isRequired,
+  hasCadastre: PropTypes.bool.isRequired
 }
 
 export default StyleSelector
