@@ -48,7 +48,7 @@ function extractCommuneFromCSV(rows) {
   return uniqBy(communes, 'code')
 }
 
-function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommune, email, onEmailChange, userBALs, setUserBALs, isLoading, setIsLoading, isShown, setIsShown}) {
+function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommune, email, onEmailChange, userBALs, setUserBALs, onCancel, isLoading, setIsLoading, isShown, setIsShown}) {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
@@ -116,20 +116,19 @@ function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommu
 
   const resetForm = useCallback(() => {
     setFile(null)
-    setIsShown(false)
-    setIsLoading(false)
     setCommunes(null)
     setSelectedCodeCommune(null)
     setValidationReport(null)
     setInvalidRowsCount(null)
-  }, [setIsShown, setIsLoading, setSelectedCodeCommune])
+  }, [setSelectedCodeCommune])
 
   const onError = useCallback(error => {
     resetForm()
     setError(error)
   }, [resetForm])
 
-  const onCancel = () => {
+  const handleClose = () => {
+    onCancel()
     resetForm()
     setError(null)
   }
@@ -207,7 +206,7 @@ function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommu
               basesLocales={userBALs}
               updateBAL={() => checkUserBALs(email)}
               onConfirm={() => createNewBal(selectedCodeCommune)}
-              onClose={() => onCancel()}
+              onClose={() => handleClose()}
             />
           )}
 
@@ -340,6 +339,7 @@ UploadForm.propTypes = {
   onEmailChange: PropTypes.func.isRequired,
   userBALs: PropTypes.array.isRequired,
   setUserBALs: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   setIsLoading: PropTypes.func.isRequired,
   isShown: PropTypes.bool.isRequired,

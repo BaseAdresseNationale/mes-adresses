@@ -31,6 +31,11 @@ function Index({defaultCommune, isDemo}) {
 
   const Form = index === 0 ? CreateForm : UploadForm
 
+  const onCancel = () => {
+    setIsShown(false)
+    setIsLoading(false)
+  }
+
   return (
     <Main>
       <Pane padding={12}>
@@ -64,6 +69,7 @@ function Index({defaultCommune, isDemo}) {
                 onEmailChange={onEmailChange}
                 userBALs={userBALs}
                 setUserBALs={setUserBALs}
+                onCancel={onCancel}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
                 isShown={isShown}

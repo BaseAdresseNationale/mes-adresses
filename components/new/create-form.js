@@ -15,7 +15,7 @@ import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
-function CreateForm({defaultCommune, selectedCodeCommune, setSelectedCodeCommune, nom, onNomChange, email, onEmailChange, userBALs, setUserBALs, isLoading, setIsLoading, isShown, setIsShown}) {
+function CreateForm({defaultCommune, selectedCodeCommune, setSelectedCodeCommune, nom, onNomChange, email, onEmailChange, userBALs, setUserBALs, onCancel, isLoading, setIsLoading, isShown, setIsShown}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [populate, onPopulateChange] = useCheckboxInput(true)
@@ -56,11 +56,6 @@ function CreateForm({defaultCommune, selectedCodeCommune, setSelectedCodeCommune
     checkUserBALs(selectedCodeCommune, email)
   }
 
-  const onCancel = () => {
-    setIsShown(false)
-    setIsLoading(false)
-  }
-
   const checkUserBALs = async () => {
     const userBALs = await searchBAL(selectedCodeCommune, email)
 
@@ -83,7 +78,7 @@ function CreateForm({defaultCommune, selectedCodeCommune, setSelectedCodeCommune
             basesLocales={userBALs}
             updateBAL={() => checkUserBALs(selectedCodeCommune, email)}
             onConfirm={createNewBal}
-            onClose={() => onCancel()}
+            onClose={onCancel}
           />
         )}
 
@@ -165,6 +160,7 @@ CreateForm.propTypes = {
   onEmailChange: PropTypes.func.isRequired,
   userBALs: PropTypes.array.isRequired,
   setUserBALs: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   setIsLoading: PropTypes.func.isRequired,
   isShown: PropTypes.bool.isRequired,
