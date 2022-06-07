@@ -26,6 +26,7 @@ import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import NumeroVoieSelector from '@/components/bal/numero-editor/numero-voie-selector'
 import AddressPreview from '@/components/bal/address-preview'
+import DisabledFormInput from '@/components/disabled-form-input'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
@@ -256,10 +257,12 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCa
             />
           </FormInput>
 
-          {hasCadastre && (
+          {hasCadastre ? (
             <FormInput>
               <SelectParcelles initialParcelles={initialValue?.parcelles} />
             </FormInput>
+          ) : (
+            <DisabledFormInput label='Parcelles' />
           )}
 
           <Comment input={comment} onChange={onCommentChange} />

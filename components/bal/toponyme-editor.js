@@ -19,6 +19,7 @@ import AssistedTextField from '@/components/assisted-text-field'
 import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
+import DisabledFormInput from '@/components/disabled-form-input'
 
 function ToponymeEditor({initialValue, closeForm, hasCadastre}) {
   const [isLoading, setIsLoading] = useState(false)
@@ -126,10 +127,12 @@ function ToponymeEditor({initialValue, closeForm, hasCadastre}) {
           />
         </FormInput>
 
-        {hasCadastre && (
+        {hasCadastre ? (
           <FormInput>
             <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
           </FormInput>
+        ) : (
+          <DisabledFormInput label='Parcelles' />
         )}
 
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
