@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import {Pane, Alert, Label} from 'evergreen-ui'
 
 function DisabledFormInput({label}) {
@@ -18,6 +19,10 @@ function DisabledFormInput({label}) {
       />
     </Pane>
   )
+}
+
+DisabledFormInput.propTypes = {
+  label: PropTypes.string.isRequired
 }
 
 export default DisabledFormInput
