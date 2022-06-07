@@ -39,10 +39,16 @@ function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre,
         </Button>
 
       </SelectMenu>
-      {hasCadastre && (
+      {hasCadastre ? (
         <Tooltip content={isCadastreDisplayed ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
           <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>
             <ControlIcon color={isCadastreDisplayed ? 'selected' : 'muted'} />
+          </Button>
+        </Tooltip>
+      ) : (
+        <Tooltip content='Le cadastre n’est pas disponible pour cette commune'>
+          <Button style={{padding: '.8em'}}>
+            <ControlIcon color='muted' />
           </Button>
         </Tooltip>
       )}
