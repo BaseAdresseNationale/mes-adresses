@@ -22,6 +22,7 @@ function Position({marker, isRemovable, handleChange, onRemove}) {
   return (
     <>
       <Select
+        label=''
         value={marker.type}
         marginBottom={8}
         height={32}
@@ -94,7 +95,7 @@ function PositionEditor({initialPositions, isToponyme, validationMessage}) {
   }, [initialPositions, disableMarkers]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <FormField validationMessage={validationMessage}>
+    <FormField label='' validationMessage={validationMessage}>
       <InputLabel
         title='Positions'
         help={markers.length > 1 ?

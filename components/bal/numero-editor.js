@@ -233,6 +233,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCa
               />
 
               <TextInputField
+                label=''
                 style={{textTransform: 'lowercase'}}
                 display='block'
                 marginTop={18}
