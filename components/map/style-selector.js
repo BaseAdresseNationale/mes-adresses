@@ -1,6 +1,8 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} from 'evergreen-ui'
+import {Pane, SelectMenu, Button, Position, LayersIcon} from 'evergreen-ui'
+
+import CadastreControl from '@/components/map/cadastre-control.js'
 
 const STYLES = [
   {label: 'Plan OpenMapTiles', value: 'vector'},
@@ -39,19 +41,11 @@ function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre,
         </Button>
 
       </SelectMenu>
-      {hasCadastre ? (
-        <Tooltip content={isCadastreDisplayed ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
-          <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>
-            <ControlIcon color={isCadastreDisplayed ? 'selected' : 'muted'} />
-          </Button>
-        </Tooltip>
-      ) : (
-        <Tooltip content='Le cadastre n’est pas disponible pour cette commune'>
-          <Button style={{padding: '.8em'}}>
-            <ControlIcon color='muted' />
-          </Button>
-        </Tooltip>
-      )}
+      <CadastreControl
+        hasCadastre={hasCadastre}
+        isCadastreDisplayed={isCadastreDisplayed}
+        onClick={() => handleCadastre(show => !show)}
+      />
     </Pane>
   )
 }
