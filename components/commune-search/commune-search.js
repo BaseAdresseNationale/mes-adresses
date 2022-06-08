@@ -15,7 +15,6 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
     })
 
     setCommunes(result
-      .filter(c => c.departement) // Filter communes without departements
       .filter(c => !exclude.includes(c.code))
     )
   }, 300, [exclude])
@@ -25,7 +24,7 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
       isFilterDisabled
       initialSelectedItem={initialSelectedItem}
       items={communes}
-      itemToString={item => item ? `${item.nom} (${item.departement.nom} - ${item.departement.code})` : ''}
+      itemToString={item => item ? `${item.nom} (${item.departement ? `${item.departement.nom} - ${item.departement.code}` : 'Collectivité d’Outre-Mer'})` : ''}
       onChange={onSelect}
     >
       {({getInputProps, getRef, inputValue}) => {
