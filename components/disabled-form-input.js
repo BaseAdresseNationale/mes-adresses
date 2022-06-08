@@ -10,10 +10,9 @@ function DisabledFormInput({label}) {
       marginBottom={8}
       width='100%'
     >
-      <Label>
-        {label}
-      </Label>
+      <Label>{label}</Label>
       <Alert
+        marginY={4}
         intent='warning'
         title='Cette fonctionnalité n’est pas disponible pour cette commune.'
       />
