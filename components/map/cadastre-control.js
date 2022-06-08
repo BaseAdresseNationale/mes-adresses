@@ -11,7 +11,7 @@ function CadastreControl({hasCadastre, isCadastreDisplayed, onClick}) {
       </Tooltip>
     ) : (
       <Tooltip content='Le cadastre n’est pas disponible pour cette commune'>
-        <Button style={{padding: '.8em'}}>
+        <Button style={{padding: '.8em'}} cursor='not-allowed'>
           <ControlIcon color='muted' />
         </Button>
       </Tooltip>
