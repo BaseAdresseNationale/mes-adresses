@@ -49,7 +49,12 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 <SubHeader />
               </SettingsContextProvider>
 
-              <Map top={116} left={leftOffset} isAddressFormOpen={isAddressFormOpen} handleAddressForm={setIsAddressFormOpen} />
+              <Map
+                top={116} left={leftOffset}
+                isAddressFormOpen={isAddressFormOpen}
+                handleAddressForm={setIsAddressFormOpen}
+                hasCadastre={commune.hasCadastre}
+              />
 
               <Sidebar
                 top={topOffset}
@@ -68,7 +73,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                   )}
 
                   {isAddressFormOpen ? (
-                    <AddressEditor closeForm={() => setIsAddressFormOpen(false)} />
+                    <AddressEditor hasCadastre={commune.hasCadastre} closeForm={() => setIsAddressFormOpen(false)} />
                   ) : (
                     children
                   )}
@@ -89,6 +94,7 @@ Editor.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
+    hasCadastre: PropTypes.bool.isRequired
   }),
   voie: PropTypes.object,
   toponyme: PropTypes.object,

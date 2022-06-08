@@ -26,10 +26,11 @@ import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import NumeroVoieSelector from '@/components/bal/numero-editor/numero-voie-selector'
 import AddressPreview from '@/components/bal/address-preview'
+import DisabledFormInput from '@/components/disabled-form-input'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
+function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCadastre}) {
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [selectedNomToponyme, setSelectedNomToponyme] = useState('')
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
@@ -232,6 +233,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
               />
 
               <TextInputField
+                label=''
                 style={{textTransform: 'lowercase'}}
                 display='block'
                 marginTop={18}
@@ -256,9 +258,13 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
             />
           </FormInput>
 
-          <FormInput>
-            <SelectParcelles initialParcelles={initialValue?.parcelles} />
-          </FormInput>
+          {hasCadastre ? (
+            <FormInput>
+              <SelectParcelles initialParcelles={initialValue?.parcelles} />
+            </FormInput>
+          ) : (
+            <DisabledFormInput label='Parcelles' />
+          )}
 
           <Comment input={comment} onChange={onCommentChange} />
 
@@ -291,7 +297,8 @@ NumeroEditor.propTypes = {
     certifie: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
   }),
   hasPreview: PropTypes.bool,
-  closeForm: PropTypes.func
+  closeForm: PropTypes.func,
+  hasCadastre: PropTypes.bool.isRequired
 }
 
 NumeroEditor.defaultProps = {

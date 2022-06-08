@@ -67,7 +67,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({isAddressFormOpen, handleAddressForm}) {
+function Map({isAddressFormOpen, handleAddressForm, hasCadastre}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -201,6 +201,7 @@ function Map({isAddressFormOpen, handleAddressForm}) {
       <StyleSelector
         style={style}
         handleStyle={setStyle}
+        hasCadastre={hasCadastre}
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
@@ -292,7 +293,8 @@ function Map({isAddressFormOpen, handleAddressForm}) {
 
 Map.propTypes = {
   isAddressFormOpen: PropTypes.bool.isRequired,
-  handleAddressForm: PropTypes.func.isRequired
+  handleAddressForm: PropTypes.func.isRequired,
+  hasCadastre: PropTypes.bool.isRequired
 }
 
 export default Map

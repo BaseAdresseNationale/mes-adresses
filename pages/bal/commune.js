@@ -138,7 +138,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
           {selectedTab === 'voie' ? (
             <VoieEditor closeForm={() => setIsCreateFormOpen(false)} />
           ) : (
-            <ToponymeEditor closeForm={() => setIsCreateFormOpen(false)} />
+            <ToponymeEditor hasCadastre={commune.hasCadastre} closeForm={() => setIsCreateFormOpen(false)} />
           )}
         </Pane>
       ) : (
@@ -183,6 +183,7 @@ const Commune = React.memo(({baseLocale, commune}) => {
           setToRemove={setToRemove}
           onEnableEditing={setEditedId}
           onSelect={onSelect}
+          hasCadastre={commune.hasCadastre}
           onCancel={() => setEditedId(null)}
         />
       )}
@@ -237,7 +238,8 @@ Commune.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired,
+    hasCadastre: PropTypes.bool.isRequired
   }).isRequired
 }
 

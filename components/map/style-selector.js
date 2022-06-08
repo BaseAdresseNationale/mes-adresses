@@ -1,6 +1,8 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, SelectMenu, Button, Position, Tooltip, LayersIcon, ControlIcon} from 'evergreen-ui'
+import {Pane, SelectMenu, Button, Position, LayersIcon} from 'evergreen-ui'
+
+import CadastreControl from '@/components/map/cadastre-control.js'
 
 const STYLES = [
   {label: 'Plan OpenMapTiles', value: 'vector'},
@@ -8,7 +10,7 @@ const STYLES = [
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
-function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre}) {
+function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre, hasCadastre}) {
   const [showPopover, setShowPopover] = useState(false)
 
   return (
@@ -39,11 +41,11 @@ function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre}
         </Button>
 
       </SelectMenu>
-      <Tooltip content={isCadastreDisplayed ? 'Masquer le cadastre' : 'Afficher le cadastre'}>
-        <Button style={{padding: '.8em'}} onClick={() => handleCadastre(show => !show)}>
-          <ControlIcon color={isCadastreDisplayed ? 'selected' : 'muted'} />
-        </Button>
-      </Tooltip>
+      <CadastreControl
+        hasCadastre={hasCadastre}
+        isCadastreDisplayed={isCadastreDisplayed}
+        onClick={() => handleCadastre(show => !show)}
+      />
     </Pane>
   )
 }
@@ -52,7 +54,8 @@ StyleSelector.propTypes = {
   style: PropTypes.string.isRequired,
   handleStyle: PropTypes.func.isRequired,
   isCadastreDisplayed: PropTypes.bool.isRequired,
-  handleCadastre: PropTypes.func.isRequired
+  handleCadastre: PropTypes.func.isRequired,
+  hasCadastre: PropTypes.bool.isRequired
 }
 
 export default StyleSelector
