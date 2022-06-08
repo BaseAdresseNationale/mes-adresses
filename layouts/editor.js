@@ -17,7 +17,7 @@ import CertificationMessage from '@/components/certification-message'
 import Settings from '@/components/settings'
 import AddressEditor from '@/components/bal/address-editor'
 
-function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, hasCadastre, children}) {
+function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
   const [isHidden, setIsHidden] = useState(false)
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
 
@@ -53,7 +53,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 top={116} left={leftOffset}
                 isAddressFormOpen={isAddressFormOpen}
                 handleAddressForm={setIsAddressFormOpen}
-                hasCadastre={hasCadastre}
+                hasCadastre={commune.hasCadastre}
               />
 
               <Sidebar
@@ -73,7 +73,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                   )}
 
                   {isAddressFormOpen ? (
-                    <AddressEditor hasCadastre={hasCadastre} closeForm={() => setIsAddressFormOpen(false)} />
+                    <AddressEditor hasCadastre={commune.hasCadastre} closeForm={() => setIsAddressFormOpen(false)} />
                   ) : (
                     children
                   )}
@@ -94,14 +94,14 @@ Editor.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
+    hasCadastre: PropTypes.bool.isRequired
   }),
   voie: PropTypes.object,
   toponyme: PropTypes.object,
   voies: PropTypes.array,
   toponymes: PropTypes.array,
   numeros: PropTypes.array,
-  children: PropTypes.node.isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+  children: PropTypes.node.isRequired
 }
 
 export default Editor

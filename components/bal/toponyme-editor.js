@@ -21,7 +21,7 @@ import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import DisabledFormInput from '@/components/disabled-form-input'
 
-function ToponymeEditor({initialValue, closeForm, hasCadastre}) {
+function ToponymeEditor({initialValue, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
@@ -127,7 +127,7 @@ function ToponymeEditor({initialValue, closeForm, hasCadastre}) {
           />
         </FormInput>
 
-        {hasCadastre ? (
+        {commune.hasCadastre ? (
           <FormInput>
             <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
           </FormInput>
@@ -160,8 +160,10 @@ ToponymeEditor.propTypes = {
     parcelles: PropTypes.array.isRequired,
     positions: PropTypes.array.isRequired
   }),
-  closeForm: PropTypes.func.isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+  commune: PropTypes.shape({
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired,
+  closeForm: PropTypes.func.isRequired
 }
 
 ToponymeEditor.defaultProps = {

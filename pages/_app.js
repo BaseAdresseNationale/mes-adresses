@@ -6,7 +6,7 @@ import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import {getCommune as getGeoCommune} from '@/lib/geo-api'
-import {getBaseLocale, getCommune, getVoies, getToponymes, checkCadastreCommune} from '@/lib/bal-api'
+import {getBaseLocale, getCommune, getVoies, getToponymes, getCommuneExtras} from '@/lib/bal-api'
 
 import {LocalStorageContextProvider} from '@/contexts/local-storage'
 import {HelpContextProvider} from '@/contexts/help'
@@ -96,7 +96,6 @@ App.getInitialProps = async ({Component, ctx}) => {
   let commune
   let voies
   let toponymes
-  let communeCadastre
 
   try {
     if (query.balId) {
@@ -112,11 +111,11 @@ App.getInitialProps = async ({Component, ctx}) => {
         fields: 'contour'
       })
 
-      commune = {...baseLocaleCommune, ...geoCommune}
+      const communeExtras = await getCommuneExtras(codeCommune)
+
+      commune = {...baseLocaleCommune, ...geoCommune, ...communeExtras}
       voies = await getVoies(query.balId, codeCommune)
       toponymes = await getToponymes(query.balId, codeCommune)
-
-      communeCadastre = await checkCadastreCommune(codeCommune)
     }
 
     if (Component.getInitialProps) {
@@ -125,8 +124,7 @@ App.getInitialProps = async ({Component, ctx}) => {
         baseLocale,
         commune,
         voies,
-        toponymes,
-        hasCadastre: communeCadastre?.hasCadastre
+        toponymes
       })
     }
   } catch {
@@ -144,7 +142,6 @@ App.getInitialProps = async ({Component, ctx}) => {
       commune,
       voies,
       toponymes,
-      hasCadastre: communeCadastre?.hasCadastre,
       ...pageProps
     },
     query

@@ -16,7 +16,7 @@ import VoieEditor from '@/components/bal/voie-editor'
 import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-const Commune = React.memo(({baseLocale, commune, hasCadastre}) => {
+const Commune = React.memo(({baseLocale, commune}) => {
   const [editedId, setEditedId] = useState(null)
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
@@ -138,7 +138,7 @@ const Commune = React.memo(({baseLocale, commune, hasCadastre}) => {
           {selectedTab === 'voie' ? (
             <VoieEditor closeForm={() => setIsCreateFormOpen(false)} />
           ) : (
-            <ToponymeEditor hasCadastre={hasCadastre} closeForm={() => setIsCreateFormOpen(false)} />
+            <ToponymeEditor hasCadastre={commune.hasCadastre} closeForm={() => setIsCreateFormOpen(false)} />
           )}
         </Pane>
       ) : (
@@ -183,7 +183,7 @@ const Commune = React.memo(({baseLocale, commune, hasCadastre}) => {
           setToRemove={setToRemove}
           onEnableEditing={setEditedId}
           onSelect={onSelect}
-          hasCadastre={hasCadastre}
+          hasCadastre={commune.hasCadastre}
           onCancel={() => setEditedId(null)}
         />
       )}
@@ -238,9 +238,9 @@ Commune.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+    nom: PropTypes.string.isRequired,
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired
 }
 
 export default Commune

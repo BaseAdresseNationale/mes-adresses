@@ -15,7 +15,7 @@ import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
 import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
-function Toponyme({baseLocale, hasCadastre}) {
+function Toponyme({baseLocale, commune}) {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editedNumeroId, setEditedNumeroId] = useState(null)
   const [error, setError] = useState(null)
@@ -142,7 +142,7 @@ function Toponyme({baseLocale, hasCadastre}) {
               <Table.Cell display='block' padding={0} background='tint1'>
                 <NumeroEditor
                   hasPreview
-                  hasCadastre={hasCadastre}
+                  hasCadastre={commune.hasCadastre}
                   initialValue={editedNumero}
                   closeForm={onCancel}
                 />
@@ -171,7 +171,9 @@ Toponyme.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
   }).isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+  commune: PropTypes.shape({
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired
 }
 
 export default Toponyme

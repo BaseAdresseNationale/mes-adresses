@@ -13,7 +13,7 @@ import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
 
-const Voie = React.memo(({hasCadastre}) => {
+const Voie = React.memo(({commune}) => {
   const [formState, setFormState] = useState({isOpen: false, editedNumero: null})
 
   useHelp(3)
@@ -50,7 +50,7 @@ const Voie = React.memo(({hasCadastre}) => {
             <Table.Cell display='block' padding={0} background='tint1'>
               <NumeroEditor
                 hasPreview
-                hasCadastre={hasCadastre}
+                hasCadastre={commune.hasCadastre}
                 initialVoieId={voie._id}
                 initialValue={formState.editedNumero}
                 closeForm={closeForm}
@@ -86,9 +86,9 @@ Voie.propTypes = {
     _id: PropTypes.string.isRequired
   }).isRequired,
   commune: PropTypes.shape({
-    code: PropTypes.string.isRequired
-  }).isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+    code: PropTypes.string.isRequired,
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired
 }
 
 export default Voie
