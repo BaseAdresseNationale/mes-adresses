@@ -5,14 +5,14 @@ import {fr} from 'date-fns/locale'
 import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 
 import {getBaseLocale} from '@/lib/bal-api'
-import {getCommune as getCommuneGeoData} from '@/lib/geo-api'
+import {getCommune} from '@/lib/geo-api'
 
 import CertificationCount from '@/components/certification-count'
 import StatusBadge from '@/components/status-badge'
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
 
 function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove, onHide}) {
-  const {nom, commune: codeCommune, _updated} = baseLocale
+  const {nom, _updated} = baseLocale
   const [commune, setCommune] = useState()
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
 
@@ -23,16 +23,15 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
   }
 
   useEffect(() => {
-    const fetchCommune = async code => {
-      if (codeCommune) {
-        const communeBal = await getBaseLocale(baseLocale._id)
-        const communeInfo = await getCommuneGeoData(code)
-        setCommune({...communeBal, ...communeInfo})
-      }
+    const fetchCommune = async () => {
+      const communeBal = await getBaseLocale(baseLocale._id)
+      const communeGeo = await getCommune(baseLocale.commune)
+
+      setCommune({...communeBal, ...communeGeo})
     }
 
-    fetchCommune(codeCommune)
-  }, [baseLocale, codeCommune])
+    fetchCommune()
+  }, [baseLocale])
 
   return (
     <Card
