@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Dialog, Pane, Heading, Strong, Paragraph} from 'evergreen-ui'
+import {Dialog, Pane, Heading, Strong, Paragraph, InlineAlert, Alert} from 'evergreen-ui'
 
 function COMDialog({baseLocaleId, handleClose}) {
   return (
@@ -11,20 +11,16 @@ function COMDialog({baseLocaleId, handleClose}) {
       hasFooter={false}
       onCloseComplete={handleClose}
     >
-      <Pane display='flex' flexDirection='column' alignItems='center' justifyContent='center' marginY={16}>
-        <Heading marginBottom={8} textAlign='center' color='#225DF5'>Publication de votre Base Adresse Locale</Heading>
-        <Paragraph>
+      <Pane display='flex' flexDirection='column' marginY={16}>
+        <Heading size={700} textAlign='center' marginBottom={8}>Publication de votre Base Adresse Locale</Heading>
+        <InlineAlert intent='warning' marginY={16}>
           Votre commune fait partie des Collectivités d’Outre-Mer pour lesquelles une authentification automatique est en cours de développement.
-        </Paragraph>
-        <Paragraph textAlign='center'>
-          Dans l’attente, afin de pouvoir publier vos adresses dans la <Strong>Base Adresse Nationale</Strong>, vous devez nous contacter sur <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>.
-        </Paragraph>
-        <Paragraph textAlign='center'>
-          Dans votre courriel, veuillez nous indiquer l’identifiant de votre <Strong>Base Adresse Locale</Strong> ({baseLocaleId}).
-        </Paragraph>
-        <Paragraph textAlign='center'>
-          Merci de nous contacter.
-        </Paragraph>
+        </InlineAlert>
+
+        <Alert intent='none' title='Merci de nous contacter'>
+          <Paragraph marginTop={8}>Dans l’attente, afin de pouvoir publier vos adresses dans la <Strong>Base Adresse Nationale</Strong>, vous devez nous contacter à l’adresse : <a href='mailto:adresse@data.gouv.fr'>adresse@data.gouv.fr</a>.</Paragraph>
+          <Paragraph>Dans votre courriel, veuillez nous indiquer l’identifiant de votre Base Adresse Locale <Strong>({baseLocaleId})</Strong>.</Paragraph>
+        </Alert>
       </Pane>
     </Dialog>
   )
