@@ -238,8 +238,7 @@ BaseLocale.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired,
-    hasCadastre: PropTypes.bool.isRequired
+    nom: PropTypes.string.isRequired
   }).isRequired
 }
 
