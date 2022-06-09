@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
 
-import {createBaseLocale, addCommune, populateCommune, searchBAL} from '@/lib/bal-api'
+import {createBaseLocale, populateCommune, searchBAL} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
@@ -34,24 +34,24 @@ function CreateForm({defaultCommune}) {
   }, [])
 
   const createNewBal = useCallback(async () => {
-    const bal = await createBaseLocale({
-      nom,
-      emails: [
-        email
-      ]
-    })
-
     if (codeCommune) {
+      const bal = await createBaseLocale({
+        nom,
+        emails: [
+          email
+        ],
+        commune: codeCommune
+      })
+
       addBalAccess(bal._id, bal.token)
-      await addCommune(bal._id, codeCommune, bal.token)
 
       if (populate) {
-        await populateCommune(bal._id, codeCommune, bal.token)
+        await populateCommune(bal._id, bal.token)
       }
 
       Router.push(
-        `/bal/commune?balId=${bal._id}&codeCommune=${codeCommune}`,
-        `/bal/${bal._id}/communes/${codeCommune}`
+        `/bal?balId=${bal._id}`,
+        `/bal/${bal._id}`
       )
     }
   }, [email, nom, populate, codeCommune, addBalAccess])

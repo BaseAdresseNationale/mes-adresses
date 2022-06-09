@@ -84,7 +84,7 @@ function Toponyme({baseLocale, commune}) {
 
   return (
     <>
-      <ToponymeHeading toponyme={toponyme} />
+      <ToponymeHeading toponyme={toponyme} commune={commune} />
       {token && isFormOpen ? (
         <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
       ) : (
@@ -142,8 +142,8 @@ function Toponyme({baseLocale, commune}) {
               <Table.Cell display='block' padding={0} background='tint1'>
                 <NumeroEditor
                   hasPreview
-                  hasCadastre={commune.hasCadastre}
                   initialValue={editedNumero}
+                  commune={commune}
                   closeForm={onCancel}
                 />
               </Table.Cell>
@@ -171,9 +171,7 @@ Toponyme.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
   }).isRequired,
-  commune: PropTypes.shape({
-    hasCadastre: PropTypes.bool.isRequired
-  }).isRequired
+  commune: PropTypes.object.isRequired
 }
 
 export default Toponyme

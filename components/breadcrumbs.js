@@ -4,44 +4,20 @@ import NextLink from 'next/link'
 import {Pane, Link, Text, HomeIcon} from 'evergreen-ui'
 
 function BaseLocalLink({baseLocale}) {
-  return useMemo(() => {
-    if (baseLocale.communes.length > 1) {
-      return (
-        <>
-          <NextLink href='/'>
-            <Link href='/'>
-              <HomeIcon style={{verticalAlign: 'middle', color: '#000'}} />
-            </Link>
-          </NextLink>
-          <Text color='muted'>{' > '}</Text>
-          <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
-            <Link href={`/bal/${baseLocale._id}`}>
-              {baseLocale.nom || 'Base Adresse Locale'}
-            </Link>
-          </NextLink>
-        </>
-      )
-    }
-
-    return (
-      <>
-        <NextLink href='/'>
-          <Link href='/'>
-            <HomeIcon style={{verticalAlign: 'middle', color: '#000'}} />
-          </Link>
-        </NextLink>
-        <Text color='muted'>{' > '}</Text>
-        <Text>{baseLocale.nom || 'Base Adresse Locale'}</Text>
-      </>
-    )
-  }, [baseLocale])
+  return useMemo(() => (
+    <>
+      <NextLink href='/'>
+        <Link href='/'>
+          <HomeIcon style={{verticalAlign: 'middle', color: '#000'}} />
+        </Link>
+      </NextLink>
+      <Text color='muted'>{' > '}</Text>
+      <Text>{baseLocale.nom || 'Base Adresse Locale'}</Text>
+    </>
+  ), [baseLocale])
 }
 
 function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
-  if (!commune) {
-    return <BaseLocalLink baseLocale={baseLocale} />
-  }
-
   if (!voie && !toponyme) {
     return (
       <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
@@ -57,8 +33,8 @@ function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
       <BaseLocalLink baseLocale={baseLocale} />
       <Text color='muted'>{' > '}</Text>
 
-      <NextLink href={`/bal/commune?balId=${baseLocale._id}&codeCommune=${commune.code}`} as={`/bal/${baseLocale._id}/communes/${commune.code}`}>
-        <Link href={`/bal/${baseLocale._id}/communes/${commune.code}`}>
+      <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
+        <Link href={`/bal/${baseLocale._id}`}>
           {commune.nom}
         </Link>
       </NextLink>
@@ -75,9 +51,8 @@ Breadcrumbs.propTypes = {
     nom: PropTypes.string
   }).isRequired,
   commune: PropTypes.shape({
-    code: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired
-  }),
+  }).isRequired,
   voie: PropTypes.shape({
     nom: PropTypes.string.isRequired
   }),
@@ -87,7 +62,6 @@ Breadcrumbs.propTypes = {
 }
 
 Breadcrumbs.defaultProps = {
-  commune: null,
   voie: null,
   toponyme: null
 }

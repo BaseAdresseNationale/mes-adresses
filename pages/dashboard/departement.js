@@ -18,7 +18,7 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
   const {nom, code} = departement
   const {nbCommunes, nbVoies, nbLieuxDits, nbNumeros, nbNumerosCertifies} = stats
   const codesCommunes = new Set(filteredCommunesInBAL.map(({code}) => code))
-  const communesWithoutTest = uniq(flatten(basesLocalesDepartementWithoutDemo.map(({communes}) => communes)))
+  const communesWithoutTest = uniq(basesLocalesDepartementWithoutDemo.map(({commune}) => commune))
   const countCommunesActuelles = communesWithoutTest.filter(c => codesCommunes.has(c)).length
 
   const BALByStatus = getBALByStatus(basesLocalesDepartementWithoutDemo)
@@ -80,8 +80,7 @@ Departement.getInitialProps = async ({query}) => {
   const basesLocalesDepartement = await listBALByCodeDepartement(codeDepartement)
   const basesLocalesDepartementWithoutDemo = basesLocalesDepartement.basesLocales.filter(b => b.status !== 'demo')
 
-  const BALAddedOneCodeCommune = flatten(basesLocalesDepartementWithoutDemo.map(b => b.communes.map(c => ({...b, commune: c}))))
-  const BALGroupedByCommune = groupBy(BALAddedOneCodeCommune, 'commune')
+  const BALGroupedByCommune = groupBy(basesLocalesDepartementWithoutDemo, 'commune')
 
   const communesActuelles = flatten(await Promise.all(Object.keys(BALGroupedByCommune).map(async c => {
     const communes = await searchCommunesByCode(c)

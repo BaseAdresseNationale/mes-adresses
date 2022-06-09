@@ -49,7 +49,7 @@ function useBounds(commune, voie, toponyme) {
         return data
       }
 
-      return commune?.contour
+      return commune.contour
     }
 
     return null

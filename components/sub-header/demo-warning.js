@@ -1,21 +1,19 @@
-import {useState, useEffect, useCallback} from 'react'
+import {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/geo-api'
 import {transformToDraft} from '@/lib/bal-api'
 
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 
-function DemoWarning({baseLocale, token}) {
-  const {_id, communes} = baseLocale
+function DemoWarning({baseLocale, communeName, token}) {
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [placeholder, setPlaceholder] = useState('')
-  const [nom, setNom] = useState()
+  const [nom, setNom] = useState(`Adresses de ${communeName}`)
   const [email, onEmailChange] = useInput()
+
   const [focusRef] = useFocus()
 
   const onSubmit = useCallback(async e => {
@@ -23,34 +21,16 @@ function DemoWarning({baseLocale, token}) {
     setIsLoading(true)
 
     await transformToDraft(
-      _id,
-      {
+      baseLocale._id, {
         nom: nom ? nom.trim() : null,
         email
       },
       token
     )
 
-    if (communes.length === 1) {
-      Router.push(`/bal/communes?balId=${_id}&codeCommune=${communes[0]}`,
-        `/bal/${_id}/communes/${communes[0]}`)
-    } else {
-      Router.push(`/bal/${_id}`)
-    }
-  }, [_id, communes, token, email, nom])
-
-  useEffect(() => {
-    const fetchCommune = async code => {
-      if (communes.length > 0) {
-        const commune = await getCommune(code)
-        setPlaceholder(commune.nom)
-        setNom(`Adresses de ${commune.nom}`)
-      }
-    }
-
-    fetchCommune(communes[0])
-    return () => null
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    Router.push(`/bal?balId=${baseLocale._id}`,
+      `/bal/${baseLocale._id}`)
+  }, [baseLocale._id, token, email, nom])
 
   return (
     <Pane
@@ -94,7 +74,7 @@ function DemoWarning({baseLocale, token}) {
               disabled={isLoading}
               value={nom}
               label='Nom de la Base Adresse Locale'
-              placeholder={placeholder}
+              placeholder={communeName}
               onChange={e => setNom(e.target.value)}
             />
 
@@ -121,8 +101,8 @@ function DemoWarning({baseLocale, token}) {
 DemoWarning.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    communes: PropTypes.array.isRequired
   }).isRequired,
+  communeName: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired
 }
 

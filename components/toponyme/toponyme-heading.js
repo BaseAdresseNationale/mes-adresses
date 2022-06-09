@@ -7,7 +7,7 @@ import BalDataContext from '@/contexts/bal-data'
 
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function ToponymeHeading({toponyme}) {
+function ToponymeHeading({toponyme, commune}) {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
 
@@ -35,7 +35,7 @@ function ToponymeHeading({toponyme}) {
       padding={0}
     >
       {isFormOpen ? (
-        <ToponymeEditor initialValue={toponyme} closeForm={() => setIsFormOpen(false)} />
+        <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={() => setIsFormOpen(false)} />
       ) : (
         <Heading
           style={{cursor: hovered && !isEditing ? 'text' : 'default'}}
@@ -66,7 +66,8 @@ ToponymeHeading.propTypes = {
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
     positions: PropTypes.array.isRequired
-  }).isRequired
+  }).isRequired,
+  commune: PropTypes.object.isRequired
 }
 
 export default ToponymeHeading

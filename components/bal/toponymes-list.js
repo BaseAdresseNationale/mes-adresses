@@ -13,7 +13,7 @@ import useFuse from '@/hooks/fuse'
 import TableRow from '@/components/table-row'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function ToponymesList({toponymes, editedId, onCancel, onSelect, onEnableEditing, setToRemove, hasCadastre}) {
+function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnableEditing, setToRemove}) {
   const {token} = useContext(TokenContext)
   const {isEditing} = useContext(BalDataContext)
 
@@ -43,7 +43,7 @@ function ToponymesList({toponymes, editedId, onCancel, onSelect, onEnableEditing
           .map(toponyme => toponyme._id === editedId ? (
             <Table.Row key={toponyme._id} height='auto'>
               <Table.Cell display='block' padding={0} background='tint1'>
-                <ToponymeEditor initialValue={toponyme} closeForm={onCancel} hasCadastre={hasCadastre} />
+                <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={onCancel} />
               </Table.Cell>
             </Table.Row>
           ) : (
@@ -69,11 +69,11 @@ function ToponymesList({toponymes, editedId, onCancel, onSelect, onEnableEditing
 ToponymesList.propTypes = {
   toponymes: PropTypes.array.isRequired,
   editedId: PropTypes.string,
+  commune: PropTypes.object.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+  onCancel: PropTypes.func.isRequired
 }
 
 ToponymesList.defaultProps = {
