@@ -18,7 +18,7 @@ import ToponymeMarker from '@/components/map/toponyme-marker'
 import Draw from '@/components/map/draw'
 import Control from '@/components/map/controls/control'
 import NavControl from '@/components/map/controls/nav-control'
-import StyleSelector from '@/components/map/controls/style-selector'
+import StyleControl from '@/components/map/controls/style-control'
 import AddressEditorControl from '@/components/map/controls/address-editor-control'
 import useBounds from '@/components/map/hooks/bounds'
 import useSources from '@/components/map/hooks/sources'
@@ -198,7 +198,7 @@ function Map({isAddressFormOpen, handleAddressForm, hasCadastre}) {
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
-      <StyleSelector
+      <StyleControl
         style={style}
         handleStyle={setStyle}
         hasCadastre={hasCadastre}

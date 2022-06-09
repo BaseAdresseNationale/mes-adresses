@@ -10,7 +10,7 @@ const STYLES = [
   {label: 'Photographie aérienne', value: 'ortho'}
 ]
 
-function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre, hasCadastre}) {
+function StyleControl({style, handleStyle, isCadastreDisplayed, handleCadastre, hasCadastre}) {
   const [showPopover, setShowPopover] = useState(false)
 
   return (
@@ -50,7 +50,7 @@ function StyleSelector({style, handleStyle, isCadastreDisplayed, handleCadastre,
   )
 }
 
-StyleSelector.propTypes = {
+StyleControl.propTypes = {
   style: PropTypes.string.isRequired,
   handleStyle: PropTypes.func.isRequired,
   isCadastreDisplayed: PropTypes.bool.isRequired,
@@ -58,4 +58,4 @@ StyleSelector.propTypes = {
   hasCadastre: PropTypes.bool.isRequired
 }
 
-export default StyleSelector
+export default StyleControl
