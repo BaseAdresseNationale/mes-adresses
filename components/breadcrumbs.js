@@ -4,26 +4,20 @@ import NextLink from 'next/link'
 import {Pane, Link, Text, HomeIcon} from 'evergreen-ui'
 
 function BaseLocalLink({baseLocale}) {
-  return useMemo(() => {
-    return (
-      <>
-        <NextLink href='/'>
-          <Link href='/'>
-            <HomeIcon style={{verticalAlign: 'middle', color: '#000'}} />
-          </Link>
-        </NextLink>
-        <Text color='muted'>{' > '}</Text>
-        <Text>{baseLocale.nom || 'Base Adresse Locale'}</Text>
-      </>
-    )
-  }, [baseLocale])
+  return useMemo(() => (
+    <>
+      <NextLink href='/'>
+        <Link href='/'>
+          <HomeIcon style={{verticalAlign: 'middle', color: '#000'}} />
+        </Link>
+      </NextLink>
+      <Text color='muted'>{' > '}</Text>
+      <Text>{baseLocale.nom || 'Base Adresse Locale'}</Text>
+    </>
+  ), [baseLocale])
 }
 
 function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
-  if (!commune) {
-    return <BaseLocalLink baseLocale={baseLocale} />
-  }
-
   if (!voie && !toponyme) {
     return (
       <Pane paddingY={2} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis' {...props}>
@@ -58,7 +52,7 @@ Breadcrumbs.propTypes = {
   }).isRequired,
   commune: PropTypes.shape({
     nom: PropTypes.string.isRequired
-  }),
+  }).isRequired,
   voie: PropTypes.shape({
     nom: PropTypes.string.isRequired
   }),
@@ -68,7 +62,6 @@ Breadcrumbs.propTypes = {
 }
 
 Breadcrumbs.defaultProps = {
-  commune: null,
   voie: null,
   toponyme: null
 }
