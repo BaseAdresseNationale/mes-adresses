@@ -20,6 +20,7 @@ import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import DisabledFormInput from '@/components/disabled-form-input'
+import router from 'next/router'
 
 function ToponymeEditor({initialValue, commune, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
@@ -67,7 +68,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
 
       refreshBALSync()
 
-      if (initialValue?._id === toponyme._id) {
+      if (initialValue?._id === toponyme._id && router.query.idToponyme) {
         setToponyme(toponyme)
       } else {
         await reloadToponymes()

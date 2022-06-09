@@ -1,5 +1,6 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import router from 'next/router'
 import {Button, Checkbox} from 'evergreen-ui'
 
 import {addVoie, editVoie} from '@/lib/bal-api'
@@ -50,7 +51,7 @@ function VoieEditor({initialValue, closeForm}) {
 
       refreshBALSync()
 
-      if (initialValue?._id === voie._id) {
+      if (initialValue?._id === voie._id && router.query.idVoie) {
         setVoie(voie)
       } else {
         await reloadVoies()
