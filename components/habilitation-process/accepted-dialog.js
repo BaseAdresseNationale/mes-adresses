@@ -14,15 +14,14 @@ function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicte
   const {nomNaissance, nomMarital, prenom, typeMandat} = strategy.mandat || {}
 
   useEffect(() => {
-    async function fectCommune() {
-      const communeBAL = await getBaseLocale(baseLocaleId)
-      const {nbNumeros, nbNumerosCertifies} = communeBAL
+    async function fetchBALStats() {
+      const {nbNumeros, nbNumerosCertifies} = await getBaseLocale(baseLocaleId)
 
       setIsBALCertified(nbNumeros === nbNumerosCertifies)
     }
 
-    fectCommune()
-  }, [baseLocaleId, commune.code, setIsBALCertified])
+    fetchBALStats()
+  }, [baseLocaleId, setIsBALCertified])
 
   return (
     <Pane>
