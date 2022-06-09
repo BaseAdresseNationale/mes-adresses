@@ -2,7 +2,7 @@ import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectMenu, Button, Position, LayersIcon} from 'evergreen-ui'
 
-import CadastreControl from '@/components/map/cadastre-control.js'
+import CadastreControl from '@/components/map/controls/cadastre-control.js'
 
 const STYLES = [
   {label: 'Plan OpenMapTiles', value: 'vector'},
