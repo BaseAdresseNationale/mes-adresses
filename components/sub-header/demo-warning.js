@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from 'react'
+import {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
@@ -9,11 +9,11 @@ import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 
 function DemoWarning({baseLocale, communeName, token}) {
-  const {_id} = baseLocale
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, setNom] = useState()
+  const [nom, setNom] = useState(`Adresses de ${communeName}`)
   const [email, onEmailChange] = useInput()
+
   const [focusRef] = useFocus()
 
   const onSubmit = useCallback(async e => {
@@ -21,23 +21,16 @@ function DemoWarning({baseLocale, communeName, token}) {
     setIsLoading(true)
 
     await transformToDraft(
-      _id,
-      {
+      baseLocale._id, {
         nom: nom ? nom.trim() : null,
         email
       },
       token
     )
 
-    Router.push(`/bal?balId=${_id}`,
-      `/bal/${_id}`)
-  }, [_id, token, email, nom])
-
-  useEffect(() => {
-    setNom(`Adresses de ${communeName}`)
-
-    return () => null
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    Router.push(`/bal?balId=${baseLocale._id}`,
+      `/bal/${baseLocale._id}`)
+  }, [baseLocale._id, token, email, nom])
 
   return (
     <Pane
@@ -108,7 +101,6 @@ function DemoWarning({baseLocale, communeName, token}) {
 DemoWarning.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    commune: PropTypes.string.isRequired
   }).isRequired,
   communeName: PropTypes.string.isRequired,
   token: PropTypes.string.isRequired
