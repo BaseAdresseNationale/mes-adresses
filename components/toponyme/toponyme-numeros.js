@@ -10,6 +10,12 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
     return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
   }, [numeros])
 
+  const handleClick = id => {
+    if (isEditable) {
+      handleSelect(id)
+    }
+  }
+
   return (
     Object.keys(numerosByVoie).sort((a, b) => a > b).map(nomVoie => (
       <React.Fragment key={nomVoie}>
@@ -28,7 +34,7 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
             style={{cursor: 'pointer', backgroundColor: hovered === _id ? '#E4E7EB' : '#f5f6f7'}}
             onMouseEnter={() => setHovered(_id)}
             onMouseLeave={() => setHovered(null)}
-            onClick={() => handleSelect(_id)}
+            onClick={() => handleClick(_id)}
           >
             <Table.Cell data-browsable>
               <Table.TextCell data-editable flex='0 1 1'>
