@@ -20,7 +20,13 @@ const Voie = React.memo(({commune}) => {
 
   const {token} = useContext(TokenContext)
 
-  const {voie, numeros, isEditing, editingId} = useContext(BalDataContext)
+  const {
+    voie,
+    numeros,
+    isEditing,
+    editingId,
+    reloadNumeros
+  } = useContext(BalDataContext)
 
   const handleEditing = useCallback(numeroId => {
     const editedNumero = numeros.find(numero => numero._id === numeroId)
@@ -39,6 +45,13 @@ const Voie = React.memo(({commune}) => {
     // HandleEditing has been removed from the list
     // to avoid being retriggered by `numeros` update when form is sumbitted
   }, [editingId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load protected fields (ex: 'comment')
+  useEffect(() => {
+    if (token) {
+      reloadNumeros()
+    }
+  }, [token, reloadNumeros])
 
   return (
     <>

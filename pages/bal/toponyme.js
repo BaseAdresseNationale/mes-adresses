@@ -82,6 +82,13 @@ function Toponyme({baseLocale, commune}) {
     }
   }, [setIsEditing])
 
+  // Load protected fields (ex: 'comment')
+  useEffect(() => {
+    if (token) {
+      reloadNumeros()
+    }
+  }, [token, reloadNumeros])
+
   return (
     <>
       <ToponymeHeading toponyme={toponyme} commune={commune} />
