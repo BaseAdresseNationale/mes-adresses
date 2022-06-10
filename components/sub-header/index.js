@@ -13,6 +13,7 @@ import useError from '@/hooks/error'
 import HabilitationProcess from '@/components/habilitation-process/index'
 import Breadcrumbs from '@/components/breadcrumbs'
 import HabilitationTag from '@/components/habilitation-tag'
+import COMDialog from '@/components/habilitation-process/com-dialog'
 import SettingsMenu from '@/components/sub-header/settings-menu'
 import DemoWarning from '@/components/sub-header/demo-warning'
 import BALStatus from '@/components/sub-header/bal-status'
@@ -53,7 +54,7 @@ const SubHeader = React.memo(({commune}) => {
       await handleChangeStatus('ready-to-publish')
     }
 
-    if (!habilitation || !isHabilitationValid) {
+    if ((!habilitation || !isHabilitationValid) && !commune.isCOM) {
       await createHabilitation(token, baseLocale._id)
       await reloadHabilitation()
     }
@@ -114,7 +115,11 @@ const SubHeader = React.memo(({commune}) => {
         <DemoWarning baseLocale={baseLocale} communeName={commune.nom} token={token} />
       )}
 
-      {isAdmin && habilitation && isHabilitationDisplayed && (
+      {isAdmin && isHabilitationDisplayed && commune.isCOM && (
+        <COMDialog baseLocaleId={baseLocale._id} handleClose={handleCloseHabilitation} />
+      )}
+
+      {isAdmin && habilitation && isHabilitationDisplayed && !commune.isCOM && (
         <HabilitationProcess
           token={token}
           baseLocale={baseLocale}
@@ -131,7 +136,8 @@ const SubHeader = React.memo(({commune}) => {
 
 SubHeader.propTypes = {
   commune: PropTypes.shape({
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired,
+    isCOM: PropTypes.bool.isRequired
   }).isRequired
 }
 
