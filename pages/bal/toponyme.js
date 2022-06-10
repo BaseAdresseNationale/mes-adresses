@@ -82,6 +82,7 @@ function Toponyme({baseLocale, commune}) {
     }
   }, [setIsEditing])
 
+// Load protected fields (ex: 'comment')
   useEffect(() => {
     if (token) {
       reloadNumeros()

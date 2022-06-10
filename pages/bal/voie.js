@@ -46,6 +46,7 @@ const Voie = React.memo(({commune}) => {
     // to avoid being retriggered by `numeros` update when form is sumbitted
   }, [editingId]) // eslint-disable-line react-hooks/exhaustive-deps
 
+// Load protected fields (ex: 'comment')
   useEffect(() => {
     if (token) {
       reloadNumeros()
