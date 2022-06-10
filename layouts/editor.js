@@ -92,10 +92,7 @@ Editor.propTypes = {
     _id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired
   }).isRequired,
-  commune: PropTypes.shape({
-    code: PropTypes.string.isRequired,
-    hasCadastre: PropTypes.bool.isRequired
-  }),
+  commune: PropTypes.object.isRequired,
   voie: PropTypes.object,
   toponyme: PropTypes.object,
   voies: PropTypes.array,
