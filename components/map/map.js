@@ -164,14 +164,14 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
   useEffect(() => {
     setStyle(prevStyle => {
-      if (modeId) {
+      if (modeId && commune.hasOrtho) {
         setEditPrevSyle(prevStyle)
         return 'ortho'
       }
 
       return editPrevStyle
     })
-  }, [modeId]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [modeId, commune]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (map) {
