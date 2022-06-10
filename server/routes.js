@@ -4,29 +4,19 @@ const geo = require('../geo.json')
 module.exports = app => {
   const router = new Router()
 
-  router.get('/bal/:balId/communes/:codeCommune/voies/:idVoie', (req, res) => {
+  router.get('/bal/:balId/voies/:idVoie', (req, res) => {
     app.render(req, res, '/bal/voie', {
       ...req.query,
       balId: req.params.balId,
-      codeCommune: req.params.codeCommune,
       idVoie: req.params.idVoie
     })
   })
 
-  router.get('/bal/:balId/communes/:codeCommune/toponymes/:idToponyme', (req, res) => {
+  router.get('/bal/:balId/toponymes/:idToponyme', (req, res) => {
     app.render(req, res, '/bal/toponyme', {
       ...req.query,
       balId: req.params.balId,
-      codeCommune: req.params.codeCommune,
       idToponyme: req.params.idToponyme
-    })
-  })
-
-  router.get('/bal/:balId/communes/:codeCommune', (req, res) => {
-    app.render(req, res, '/bal/commune', {
-      ...req.query,
-      balId: req.params.balId,
-      codeCommune: req.params.codeCommune
     })
   })
 
@@ -50,6 +40,21 @@ module.exports = app => {
       ...req.query,
       codeDepartement: req.params.codeDepartement
     })
+  })
+
+  // Redirection des URL modifiées depuis le passage en mono-commmune
+  router.get('/bal/:balId/communes/:codeCommune/voies/:idVoie', (req, res) => {
+    const {balId, idVoie} = req.params
+    res.redirect(`/bal/${balId}/voies/${idVoie}`)
+  })
+
+  router.get('/bal/:balId/communes/:codeCommune/toponymes/:idToponyme', (req, res) => {
+    const {balId, idToponyme} = req.params
+    res.redirect(`/bal/${balId}/toponymes/${idToponyme}`)
+  })
+
+  router.get('/bal/:balId/communes/:codeCommune', (req, res) => {
+    res.redirect(`/bal/${req.params.balId}`)
   })
 
   router.get('/geo/:location', (req, res) => {

@@ -105,10 +105,11 @@ function UploadForm() {
     }
   }
 
-  const createNewBal = useCallback(async () => {
+  const createNewBal = useCallback(async codeCommune => {
     if (!bal) {
       const baseLocale = await createBaseLocale({
         nom,
+        commune: codeCommune,
         emails: [
           email
         ]
@@ -160,7 +161,7 @@ function UploadForm() {
       setUserBALs(uniqUserBALs)
       setIsShown(true)
     } else {
-      createNewBal()
+      createNewBal(selectedCodeCommune)
     }
   }, [createNewBal, email, selectedCodeCommune])
 
@@ -175,11 +176,11 @@ function UploadForm() {
   useEffect(() => {
     async function upload() {
       try {
-        const response = await uploadBaseLocaleCsv(bal._id, selectedCodeCommune, file, bal.token)
+        const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
         if (response.isValid) {
           Router.push(
-            `/bal/commune?balId=${bal._id}&codeCommune=${selectedCodeCommune}`,
-            `/bal/${bal._id}/communes/${selectedCodeCommune}`
+            `/bal?balId=${bal._id}`,
+            `/bal/${bal._id}`
           )
         } else {
           onError(VALIDATEUR_LINK_TEXT)
@@ -211,7 +212,7 @@ function UploadForm() {
               userEmail={email}
               basesLocales={userBALs}
               updateBAL={() => checkUserBALs(email)}
-              onConfirm={createNewBal}
+              onConfirm={() => createNewBal(selectedCodeCommune)}
               onClose={() => onCancel()}
             />
           )}

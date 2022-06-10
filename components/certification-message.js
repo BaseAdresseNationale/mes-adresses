@@ -2,13 +2,13 @@ import {useState, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Menu, CogIcon, Dialog, Paragraph, Strong} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/bal-api'
+import {getBaseLocale} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
 
-function CertificationMessage({balId, codeCommune}) {
+function CertificationMessage({balId}) {
   const [isShown, setIsShown] = useState(false)
 
   const {getInformedAboutCertification, addInformedAboutCertification} = useContext(LocalStorageContext)
@@ -29,7 +29,7 @@ function CertificationMessage({balId, codeCommune}) {
       const hasBeenAutocertified = getInformedAboutCertification(balId)
 
       if (!hasBeenAutocertified) {
-        const {nbNumerosCertifies} = await getCommune(balId, codeCommune)
+        const {nbNumerosCertifies} = await getBaseLocale(balId)
 
         if (nbNumerosCertifies === 0) {
           setIsShown(true)
@@ -75,8 +75,7 @@ function CertificationMessage({balId, codeCommune}) {
 }
 
 CertificationMessage.propTypes = {
-  balId: PropTypes.string.isRequired,
-  codeCommune: PropTypes.string.isRequired
+  balId: PropTypes.string.isRequired
 }
 
 export default CertificationMessage

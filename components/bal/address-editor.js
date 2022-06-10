@@ -7,7 +7,7 @@ import BalDataContext from '@/contexts/bal-data'
 import NumeroEditor from '@/components/bal/numero-editor'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 
-function AddressEditor({closeForm, hasCadastre}) {
+function AddressEditor({commune, closeForm}) {
   const [isToponyme, setIsToponyme] = useState(false)
 
   const {voie} = useContext(BalDataContext)
@@ -28,9 +28,9 @@ function AddressEditor({closeForm, hasCadastre}) {
 
       <Pane display='flex' flexDirection='column' flex={1} overflowY='auto'>
         {isToponyme ? (
-          <ToponymeEditor hasCadastre={hasCadastre} closeForm={closeForm} />
+          <ToponymeEditor commune={commune} closeForm={closeForm} />
         ) : (
-          <NumeroEditor hasCadastre={hasCadastre} initialVoieId={voie?._id} hasPreview closeForm={closeForm} />
+          <NumeroEditor initialVoieId={voie?._id} commune={commune} hasPreview closeForm={closeForm} />
         )}
       </Pane>
     </Pane>
@@ -38,8 +38,10 @@ function AddressEditor({closeForm, hasCadastre}) {
 }
 
 AddressEditor.propTypes = {
-  closeForm: PropTypes.func.isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+  commune: PropTypes.shape({
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired,
+  closeForm: PropTypes.func.isRequired
 }
 
 export default AddressEditor

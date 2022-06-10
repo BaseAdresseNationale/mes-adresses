@@ -26,14 +26,10 @@ function BasesLocalesList({basesLocales, sortBal}) {
   }, [getHiddenBal])
 
   const onBalSelect = useCallback(bal => {
-    if (bal.communes.length === 1) {
-      Router.push(
-        `/bal/commune?balId=${bal._id}&codeCommune=${bal.communes[0]}`,
-        `/bal/${bal._id}/communes/${bal.communes[0]}`
-      )
-    } else {
-      Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
-    }
+    Router.push(
+      `/bal?balId=${bal._id}`,
+      `/bal/${bal._id}`
+    )
   }, [])
 
   const [filtered, onFilter] = useFuse(basesLocales, 200, {

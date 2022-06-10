@@ -50,9 +50,9 @@ const Voie = React.memo(({commune}) => {
             <Table.Cell display='block' padding={0} background='tint1'>
               <NumeroEditor
                 hasPreview
-                hasCadastre={commune.hasCadastre}
                 initialVoieId={voie._id}
                 initialValue={formState.editedNumero}
+                commune={commune}
                 closeForm={closeForm}
               />
             </Table.Cell>
@@ -82,13 +82,7 @@ Voie.getInitialProps = async ({query}) => {
 }
 
 Voie.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired
-  }).isRequired,
-  commune: PropTypes.shape({
-    code: PropTypes.string.isRequired,
-    hasCadastre: PropTypes.bool.isRequired
-  }).isRequired
+  commune: PropTypes.object.isRequired
 }
 
 export default Voie

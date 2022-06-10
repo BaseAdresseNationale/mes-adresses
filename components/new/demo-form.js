@@ -37,8 +37,8 @@ function DemoForm({defaultCommune}) {
     addBalAccess(bal._id, bal.token)
 
     Router.push(
-      `/bal/commune?balId=${bal._id}&codeCommune=${codeCommune}`,
-      `/bal/${bal._id}/communes/${codeCommune}`
+      `/bal?balId=${bal._id}`,
+      `/bal/${bal._id}`
     )
   }, [codeCommune, populate, addBalAccess])
 

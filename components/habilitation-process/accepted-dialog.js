@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Alert, Text, Link, Strong, UnorderedList, ListItem, UploadIcon, UpdatedIcon} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/bal-api'
+import {getBaseLocale} from '@/lib/bal-api'
 
 import StatusBadge from '@/components/status-badge'
 import TextWrapper from '@/components/text-wrapper'
@@ -14,15 +14,14 @@ function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicte
   const {nomNaissance, nomMarital, prenom, typeMandat} = strategy.mandat || {}
 
   useEffect(() => {
-    async function fectCommune() {
-      const communeBAL = await getCommune(baseLocaleId, commune.code)
-      const {nbNumeros, nbNumerosCertifies} = communeBAL
+    async function fetchBALStats() {
+      const {nbNumeros, nbNumerosCertifies} = await getBaseLocale(baseLocaleId)
 
       setIsBALCertified(nbNumeros === nbNumerosCertifies)
     }
 
-    fectCommune()
-  }, [baseLocaleId, commune.code, setIsBALCertified])
+    fetchBALStats()
+  }, [baseLocaleId, setIsBALCertified])
 
   return (
     <Pane>

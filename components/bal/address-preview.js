@@ -51,7 +51,10 @@ AddressPreview.propTypes = {
   suffixe: PropTypes.string,
   selectedNomToponyme: PropTypes.string,
   voie: PropTypes.string,
-  commune: PropTypes.object.isRequired
+  commune: PropTypes.shape({
+    nom: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired
+  }).isRequired
 }
 
 AddressPreview.defaultProps = {

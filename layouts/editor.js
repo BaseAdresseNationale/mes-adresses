@@ -32,7 +32,6 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
   return (
     <BalDataContextProvider
       initialBaseLocale={baseLocale}
-      initialCommune={commune}
       initialVoie={voie}
       initialToponyme={toponyme}
       initialVoies={voies}
@@ -46,14 +45,15 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 
               <SettingsContextProvider>
                 <Settings />
-                <SubHeader />
+                <SubHeader commune={commune} />
               </SettingsContextProvider>
 
               <Map
-                top={116} left={leftOffset}
+                top={116}
+                left={leftOffset}
+                commune={commune}
                 isAddressFormOpen={isAddressFormOpen}
                 handleAddressForm={setIsAddressFormOpen}
-                hasCadastre={commune.hasCadastre}
               />
 
               <Sidebar
@@ -69,11 +69,11 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 <>
                   <WelcomeMessage />
                   {baseLocale.status === 'published' && (
-                    <CertificationMessage balId={baseLocale._id} codeCommune={commune.code} />
+                    <CertificationMessage balId={baseLocale._id} />
                   )}
 
                   {isAddressFormOpen ? (
-                    <AddressEditor hasCadastre={commune.hasCadastre} closeForm={() => setIsAddressFormOpen(false)} />
+                    <AddressEditor commune={commune} closeForm={() => setIsAddressFormOpen(false)} />
                   ) : (
                     children
                   )}

@@ -20,14 +20,15 @@ import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import DisabledFormInput from '@/components/disabled-form-input'
+import router from 'next/router'
 
-function ToponymeEditor({initialValue, closeForm}) {
+function ToponymeEditor({initialValue, commune, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
+  const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
   const {selectedParcelles} = useContext(ParcellesContext)
 
@@ -61,13 +62,13 @@ function ToponymeEditor({initialValue, closeForm}) {
       // Add or edit a toponyme
       const submit = initialValue ?
         async () => editToponyme(initialValue._id, body, token) :
-        async () => addToponyme(baseLocale._id, commune.code, body, token)
+        async () => addToponyme(baseLocale._id, body, token)
       const {validationMessages, ...toponyme} = await submit()
       setValidationMessages(validationMessages)
 
       refreshBALSync()
 
-      if (initialValue?._id === toponyme._id) {
+      if (initialValue?._id === toponyme._id && router.query.idToponyme) {
         setToponyme(toponyme)
       } else {
         await reloadToponymes()
@@ -83,7 +84,7 @@ function ToponymeEditor({initialValue, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, commune.code, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
+  }, [token, baseLocale._id, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()

@@ -18,7 +18,7 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
 
   const [communeLabel, setCommuneLabel] = useState('cette commune')
   const [isLoading, setIsLoading] = useState(false)
-  const uniqCommunes = uniq(...basesLocales.map(({communes}) => communes))
+  const uniqCommunes = uniq(basesLocales.map(({commune}) => commune))
   const [toRemove, setToRemove] = useState(null)
 
   const [setError] = useError(null)
@@ -31,18 +31,14 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
       }
     }
 
-    fetchCommune(basesLocales[0].communes[0])
+    fetchCommune(basesLocales[0].commune)
   }, [basesLocales])
 
   const onBalSelect = bal => {
-    if (bal.communes.length === 1) {
-      Router.push(
-        `/bal/commune?balId=${bal._id}&codeCommune=${bal.communes[0]}`,
-        `/bal/${bal._id}/communes/${bal.communes[0]}`
-      )
-    } else {
-      Router.push(`/bal?balId=${bal._id}`, `/bal/${bal._id}`)
-    }
+    Router.push(
+      `/bal?balId=${bal._id}`,
+      `/bal/${bal._id}`
+    )
   }
 
   const onRemove = useCallback(async () => {

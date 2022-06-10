@@ -30,7 +30,7 @@ import DisabledFormInput from '@/components/disabled-form-input'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCadastre}) {
+function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeForm}) {
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [selectedNomToponyme, setSelectedNomToponyme] = useState('')
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
@@ -44,7 +44,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCa
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
+  const {baseLocale, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
   const {selectedParcelles} = useContext(ParcellesContext)
   const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
@@ -62,14 +62,14 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCa
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
-      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, commune.code, {nom: nomVoie}, token)
+      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, {nom: nomVoie}, token)
       setValidationMessages(validationMessages)
 
       return newVoie
     }
 
     return {_id: voieId}
-  }, [baseLocale._id, commune.code, nomVoie, voieId, token, setValidationMessages])
+  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages])
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -258,7 +258,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm, hasCa
             />
           </FormInput>
 
-          {hasCadastre ? (
+          {commune.hasCadastre ? (
             <FormInput>
               <SelectParcelles initialParcelles={initialValue?.parcelles} />
             </FormInput>
@@ -296,9 +296,11 @@ NumeroEditor.propTypes = {
     toponyme: PropTypes.string,
     certifie: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
   }),
+  commune: PropTypes.shape({
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired,
   hasPreview: PropTypes.bool,
-  closeForm: PropTypes.func,
-  hasCadastre: PropTypes.bool.isRequired
+  closeForm: PropTypes.func
 }
 
 NumeroEditor.defaultProps = {

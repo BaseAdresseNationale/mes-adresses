@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import {Heading, Pane, Button} from 'evergreen-ui'
-import {uniq, flattenDeep} from 'lodash'
+import {uniq} from 'lodash'
 
 import {getBasesLocalesStats, listBasesLocales} from '@/lib/bal-api'
 
@@ -12,11 +12,10 @@ import Counter from '@/components/dashboard/counter'
 import PublishedBalStats from '@/components/dashboard/published-bal-stats'
 
 function Index({basesLocales, basesLoclesStats}) {
-  const communeCount = uniq(flattenDeep(
+  const communeCount = uniq(
     basesLocales
-      .filter(({communes}) => communes.length > 0)
-      .map(({communes}) => communes)
-  )).length
+      .filter(({commune}) => commune)
+  ).length
 
   return (
     <DashboardLayout title='Tableau de bord de l&apos;éditeur Mes Adresses' mapData={{basesLocales}}>
