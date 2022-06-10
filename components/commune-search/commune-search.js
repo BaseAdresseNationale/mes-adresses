@@ -11,12 +11,10 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
   const [onSearch] = useDebouncedCallback(async value => {
     const result = await searchCommunes(value, {
       fields: 'departement',
-      limit: 7
+      limit: 20
     })
 
-    setCommunes(result
-      .filter(c => !exclude.includes(c.code))
-    )
+    setCommunes(result.filter(c => c._score > 0.1))
   }, 300, [exclude])
 
   return (
