@@ -82,6 +82,12 @@ function Toponyme({baseLocale, commune}) {
     }
   }, [setIsEditing])
 
+  useEffect(() => {
+    if (token) {
+      reloadNumeros()
+    }
+  }, [token, reloadNumeros])
+
   return (
     <>
       <ToponymeHeading toponyme={toponyme} commune={commune} />
