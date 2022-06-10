@@ -5,7 +5,7 @@ import {useDebouncedCallback} from 'use-debounce'
 
 import {searchCommunes} from '@/lib/geo-api'
 
-function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onSelect, ...props}) {
+function CommuneSearch({placeholder, innerRef, initialSelectedItem, onSelect, ...props}) {
   const [communes, setCommunes] = useState([])
 
   const [onSearch] = useDebouncedCallback(async value => {
@@ -15,7 +15,7 @@ function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onS
     })
 
     setCommunes(result.filter(c => c._score > 0.1))
-  }, 300, [exclude])
+  }, 300)
 
   return (
     <Autocomplete
@@ -59,7 +59,6 @@ CommuneSearch.propTypes = {
     }).isRequired
   }),
   placeholder: PropTypes.string,
-  exclude: PropTypes.array,
   innerRef: PropTypes.func,
   onSelect: PropTypes.func
 }
@@ -67,7 +66,6 @@ CommuneSearch.propTypes = {
 CommuneSearch.defaultProps = {
   initialSelectedItem: null,
   placeholder: 'Chercher une commune…',
-  exclude: [],
   innerRef: () => {},
   onSelect: () => {}
 }
