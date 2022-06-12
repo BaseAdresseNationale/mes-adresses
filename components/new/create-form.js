@@ -19,7 +19,7 @@ function CreateForm({defaultCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput(
+  const [nom, onNomChange] = useState(
     defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
   )
   const [email, onEmailChange] = useInput('')
@@ -31,6 +31,7 @@ function CreateForm({defaultCommune}) {
 
   const onSelect = useCallback(commune => {
     setCodeCommune(commune.code)
+    onNomChange(commune.nom);
   }, [])
 
   const createNewBal = useCallback(async () => {
@@ -95,6 +96,21 @@ function CreateForm({defaultCommune}) {
         )}
 
         <FormInput>
+          <CommuneSearchField
+            required
+            id='commune'
+            initialSelectedItem={defaultCommune}
+            label='Commune'
+            hint='Pour affiner la recherche, renseignez le code département'
+            placeholder='Roche 42'
+            appearance='default'
+            maxWidth={500}
+            disabled={isLoading}
+            onSelect={onSelect}
+          />
+        </FormInput>
+
+        <FormInput>
           <TextInputField
             ref={focusRef}
             required
@@ -107,7 +123,7 @@ function CreateForm({defaultCommune}) {
             disabled={isLoading}
             label='Nom de la Base Adresse Locale'
             placeholder='Nom'
-            onChange={onNomChange}
+            onChange={(e) =>{onNomChange(e.target.value)}}
           />
         </FormInput>
 
@@ -124,21 +140,6 @@ function CreateForm({defaultCommune}) {
             label='Votre adresse email'
             placeholder='nom@example.com'
             onChange={onEmailChange}
-          />
-        </FormInput>
-
-        <FormInput>
-          <CommuneSearchField
-            required
-            id='commune'
-            initialSelectedItem={defaultCommune}
-            label='Commune'
-            hint='Pour affiner la recherche, renseignez le code département'
-            placeholder='Roche 42'
-            appearance='default'
-            maxWidth={500}
-            disabled={isLoading}
-            onSelect={onSelect}
           />
 
           <Checkbox
