@@ -28,22 +28,29 @@ function StyleControl({style, commune, handleStyle, isCadastreDisplayed, handleC
       cursor='pointer'
       onClick={() => setShowPopover(!showPopover)}
     >
-      <SelectMenu
-        closeOnSelect
-        position={Position.TOP_LEFT}
-        title='Choix du fond de carte'
-        hasFilter={false}
-        height={40 + (33 * availableStyles.length)}
-        options={availableStyles}
-        selected={style}
-        onSelect={style => handleStyle(style.value)}
-      >
+      {availableStyles.length > 1 ? (
+        <SelectMenu
+          closeOnSelect
+          position={Position.TOP_LEFT}
+          title='Choix du fond de carte'
+          hasFilter={false}
+          height={40 + (33 * availableStyles.length)}
+          options={availableStyles}
+          selected={style}
+          onSelect={style => handleStyle(style.value)}
+        >
+          <Button className='map-style-button' style={{borderRadius: '3px 0 0 3px'}}>
+            <LayersIcon style={{marginRight: '.5em', borderRadius: '0 3px 3px 0'}} />
+            <div className='map-style-label'>{availableStyles.find(({value}) => value === style).label}</div>
+          </Button>
+
+        </SelectMenu>
+      ) : (
         <Button className='map-style-button' style={{borderRadius: '3px 0 0 3px'}}>
           <LayersIcon style={{marginRight: '.5em', borderRadius: '0 3px 3px 0'}} />
-          <div className='map-style-label'>{availableStyles.find(({value}) => value === style).label}</div>
+          <div className='map-style-label'>{availableStyles[0].label}</div>
         </Button>
-
-      </SelectMenu>
+      )}
       <CadastreControl
         hasCadastre={commune.hasCadastre}
         isCadastreDisplayed={isCadastreDisplayed}
