@@ -15,7 +15,6 @@ import Breadcrumbs from '@/components/breadcrumbs'
 import HabilitationTag from '@/components/habilitation-tag'
 import COMDialog from '@/components/habilitation-process/com-dialog'
 import SettingsMenu from '@/components/sub-header/settings-menu'
-import DemoWarning from '@/components/sub-header/demo-warning'
 import BALStatus from '@/components/sub-header/bal-status'
 
 const SubHeader = React.memo(({commune}) => {
@@ -110,10 +109,6 @@ const SubHeader = React.memo(({commune}) => {
           />
         </Pane>
       </Pane>
-
-      {baseLocale.status === 'demo' && (
-        <DemoWarning baseLocale={baseLocale} communeName={commune.nom} token={token} />
-      )}
 
       {isAdmin && isHabilitationDisplayed && commune.isCOM && (
         <COMDialog baseLocaleId={baseLocale._id} handleClose={handleCloseHabilitation} />

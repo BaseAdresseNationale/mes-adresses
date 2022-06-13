@@ -34,66 +34,62 @@ function DemoWarning({baseLocale, communeName, token}) {
 
   return (
     <Pane
-      position='fixed'
-      top={116}
-      left={0}
-      height={50}
       width='100%'
+      textAlign='center'
       backgroundColor='#F7D154'
-      elevation={0}
-      zIndex={3}
+      position='fixed'
+      bottom={0}
+      height={50}
       display='flex'
-      flexDirection='column'
+      alignItems='center'
       justifyContent='center'
     >
-      <div
-        style={{margin: 'auto', textAlign: 'center'}}
+      <WarningSignIcon size={20} marginX='.5em' style={{verticalAlign: 'sub'}} />
+      <Text>
+        Cette Base Adresse Locale de démonstration sera supprimée d’ici 24 heures sans modifications
+      </Text>
+
+      <Dialog
+        isShown={isShown}
+        title='Sauvegarder mes modifications'
+        cancelLabel='Annuler'
+        intent='success'
+        isConfirmLoading={isLoading}
+        confirmLabel='Conserver'
+        hasFooter={false}
+        onCloseComplete={() => setIsShown(false)}
       >
-        <WarningSignIcon size={20} marginX='.5em' style={{verticalAlign: 'sub'}} />
-        <Text>
-          Cette Base Adresse Locale de démonstration sera supprimée d’ici 24 heures sans modifications
-        </Text>
-        <Dialog
-          isShown={isShown}
-          title='Sauvegarder mes modifications'
-          cancelLabel='Annuler'
-          intent='success'
-          isConfirmLoading={isLoading}
-          confirmLabel='Conserver'
-          hasFooter={false}
-          onCloseComplete={() => setIsShown(false)}
-        >
-          <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit}>
 
-            <TextInputField
-              ref={focusRef}
-              required
-              autoComplete='new-password' // Hack to bypass chrome autocomplete
-              name='nom'
-              id='nom'
-              disabled={isLoading}
-              value={nom}
-              label='Nom de la Base Adresse Locale'
-              placeholder={communeName}
-              onChange={e => setNom(e.target.value)}
-            />
+          <TextInputField
+            ref={focusRef}
+            required
+            autoComplete='new-password' // Hack to bypass chrome autocomplete
+            name='nom'
+            id='nom'
+            disabled={isLoading}
+            value={nom}
+            label='Nom de la Base Adresse Locale'
+            placeholder={communeName}
+            onChange={e => setNom(e.target.value)}
+          />
 
-            <TextInputField
-              required
-              type='email'
-              name='email'
-              id='email'
-              disabled={isLoading}
-              value={email}
-              label='Votre adresse email'
-              placeholder='nom@example.com'
-              onChange={onEmailChange}
-            />
-            <Button appearance='primary' intent='success' isLoading={isLoading} type='submit' >Sauvegarder</Button>
-          </form>
-        </Dialog>
-        <Button height={24} marginX='.5em' onClick={() => setIsShown(true)}>Je souhaite la conserver</Button>
-      </div>
+          <TextInputField
+            required
+            type='email'
+            name='email'
+            id='email'
+            disabled={isLoading}
+            value={email}
+            label='Votre adresse email'
+            placeholder='nom@example.com'
+            onChange={onEmailChange}
+          />
+          <Button appearance='primary' intent='success' isLoading={isLoading} type='submit' >Sauvegarder</Button>
+        </form>
+      </Dialog>
+
+      <Button height={24} marginX='.5em' width='fit-content' onClick={() => setIsShown(true)}>Je souhaite la conserver</Button>
     </Pane>
   )
 }

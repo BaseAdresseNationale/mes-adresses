@@ -1,4 +1,4 @@
-import {useState, useMemo} from 'react'
+import {useState, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 
 import {SettingsContextProvider} from '@/contexts/settings'
@@ -7,6 +7,7 @@ import {MarkersContextProvider} from '@/contexts/markers'
 import {MapContextProvider} from '@/contexts/map'
 import {BalDataContextProvider} from '@/contexts/bal-data'
 import {ParcellesContextProvider} from '@/contexts/parcelles'
+import TokenContext from '@/contexts/token'
 
 import Sidebar from '@/layouts/sidebar'
 
@@ -16,18 +17,17 @@ import WelcomeMessage from '@/components/welcome-message'
 import CertificationMessage from '@/components/certification-message'
 import Settings from '@/components/settings'
 import AddressEditor from '@/components/bal/address-editor'
+import DemoWarning from '@/components/sub-header/demo-warning'
 
 function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
   const [isHidden, setIsHidden] = useState(false)
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
 
+  const {token} = useContext(TokenContext)
+
   const leftOffset = useMemo(() => {
     return isHidden ? 0 : 500
   }, [isHidden])
-
-  const topOffset = useMemo(() => {
-    return baseLocale.status === 'demo' ? 166 : 116
-  }, [baseLocale])
 
   return (
     <BalDataContextProvider
@@ -50,6 +50,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 
               <Map
                 top={116}
+                bottom={baseLocale.status === 'demo' ? 50 : 0}
                 left={leftOffset}
                 commune={commune}
                 isAddressFormOpen={isAddressFormOpen}
@@ -57,7 +58,8 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
               />
 
               <Sidebar
-                top={topOffset}
+                top={116}
+                bottom={baseLocale.status === 'demo' ? 50 : 0}
                 isHidden={isHidden}
                 size={500}
                 elevation={2}
@@ -67,6 +69,10 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 onToggle={setIsHidden}
               >
                 <>
+                  {baseLocale.status === 'demo' && (
+                    <DemoWarning baseLocale={baseLocale} communeName={commune.nom} token={token} />
+                  )}
+
                   <WelcomeMessage />
                   {baseLocale.status === 'published' && (
                     <CertificationMessage balId={baseLocale._id} />
