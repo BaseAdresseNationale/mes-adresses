@@ -9,12 +9,13 @@ function CommuneSearch({placeholder, innerRef, initialSelectedItem, onSelect, ..
   const [communes, setCommunes] = useState([])
 
   const [onSearch] = useDebouncedCallback(async value => {
-    const result = await searchCommunes(value, {
+    const results = await searchCommunes(value, {
       fields: 'departement',
       limit: 20
     })
+    const bestResults = results.filter(c => c._score > 0.1)
 
-    setCommunes(result.filter(c => c._score > 0.1))
+    setCommunes(bestResults.length > 5 ? bestResults : results)
   }, 300)
 
   return (
