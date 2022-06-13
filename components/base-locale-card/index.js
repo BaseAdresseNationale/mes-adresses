@@ -4,15 +4,15 @@ import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
 import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/bal-api'
-import {getCommune as getCommuneGeoData} from '@/lib/geo-api'
+import {getBaseLocale} from '@/lib/bal-api'
+import {getCommune} from '@/lib/geo-api'
 
 import CertificationCount from '@/components/certification-count'
 import StatusBadge from '@/components/status-badge'
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
 
 function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove, onHide}) {
-  const {nom, communes, _updated} = baseLocale
+  const {nom, _updated} = baseLocale
   const [commune, setCommune] = useState()
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
 
@@ -23,16 +23,15 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
   }
 
   useEffect(() => {
-    const fetchCommune = async code => {
-      if (communes.length > 0) {
-        const communeBal = await getCommune(baseLocale._id, code)
-        const communeInfo = await getCommuneGeoData(code)
-        setCommune({...communeBal, ...communeInfo})
-      }
+    const fetchCommune = async () => {
+      const communeBal = await getBaseLocale(baseLocale._id)
+      const communeGeo = await getCommune(baseLocale.commune)
+
+      setCommune({...communeBal, ...communeGeo})
     }
 
-    fetchCommune(communes[0])
-  }, [baseLocale, communes])
+    fetchCommune()
+  }, [baseLocale])
 
   return (
     <Card
@@ -65,18 +64,14 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
                   {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
                 </Text>
 
-                {communes.length === 0 ? (
-                  <Text fontSize={12} fontStyle='italic'>Vide</Text>
-                ) : (communes.length < 2 ? (
-                  commune && <Text fontStyle='italic'> {commune.nom} ({commune.codeDepartement}) </Text>
-                ) : (
-                  <Text fontSize={12} fontStyle='italic'>{communes.length} Communes</Text>
-                ))}
+                {commune && (
+                  <Text fontStyle='italic'> {commune.nom} ({commune.codeDepartement}) </Text>
+                )}
               </Pane>
             </Pane>
 
             <Pane display='grid' justifySelf='end' alignSelf='center' gridTemplateColumns='1fr' gap='1em'>
-              {communes.length === 1 && commune && (
+              {commune && (
                 <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
               )}
             </Pane>
@@ -123,7 +118,7 @@ BaseLocaleCard.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    communes: PropTypes.array.isRequired,
+    commune: PropTypes.string.isRequired,
     _updated: PropTypes.string,
     status: PropTypes.oneOf([
       'draft', 'ready-to-publish', 'replaced', 'published', 'demo'

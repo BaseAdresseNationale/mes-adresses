@@ -26,10 +26,11 @@ import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import NumeroVoieSelector from '@/components/bal/numero-editor/numero-voie-selector'
 import AddressPreview from '@/components/bal/address-preview'
+import DisabledFormInput from '@/components/disabled-form-input'
 
 const REMOVE_TOPONYME_LABEL = 'Aucun toponyme'
 
-function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
+function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeForm}) {
   const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voie._id)
   const [selectedNomToponyme, setSelectedNomToponyme] = useState('')
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme)
@@ -43,7 +44,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
+  const {baseLocale, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
   const {selectedParcelles} = useContext(ParcellesContext)
   const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
 
@@ -61,14 +62,14 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
-      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, commune.code, {nom: nomVoie}, token)
+      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, {nom: nomVoie}, token)
       setValidationMessages(validationMessages)
 
       return newVoie
     }
 
     return {_id: voieId}
-  }, [baseLocale._id, commune.code, nomVoie, voieId, token, setValidationMessages])
+  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages])
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -232,6 +233,7 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
               />
 
               <TextInputField
+                label=''
                 style={{textTransform: 'lowercase'}}
                 display='block'
                 marginTop={18}
@@ -256,9 +258,13 @@ function NumeroEditor({initialVoieId, initialValue, hasPreview, closeForm}) {
             />
           </FormInput>
 
-          <FormInput>
-            <SelectParcelles initialParcelles={initialValue?.parcelles} />
-          </FormInput>
+          {commune.hasCadastre ? (
+            <FormInput>
+              <SelectParcelles initialParcelles={initialValue?.parcelles} />
+            </FormInput>
+          ) : (
+            <DisabledFormInput label='Parcelles' />
+          )}
 
           <Comment input={comment} onChange={onCommentChange} />
 
@@ -290,6 +296,9 @@ NumeroEditor.propTypes = {
     toponyme: PropTypes.string,
     certifie: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
   }),
+  commune: PropTypes.shape({
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired,
   hasPreview: PropTypes.bool,
   closeForm: PropTypes.func
 }

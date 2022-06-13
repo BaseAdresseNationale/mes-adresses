@@ -13,14 +13,20 @@ import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
 
-const Voie = React.memo(() => {
+const Voie = React.memo(({commune}) => {
   const [formState, setFormState] = useState({isOpen: false, editedNumero: null})
 
   useHelp(3)
 
   const {token} = useContext(TokenContext)
 
-  const {voie, numeros, isEditing, editingId} = useContext(BalDataContext)
+  const {
+    voie,
+    numeros,
+    isEditing,
+    editingId,
+    reloadNumeros
+  } = useContext(BalDataContext)
 
   const handleEditing = useCallback(numeroId => {
     const editedNumero = numeros.find(numero => numero._id === numeroId)
@@ -40,6 +46,13 @@ const Voie = React.memo(() => {
     // to avoid being retriggered by `numeros` update when form is sumbitted
   }, [editingId]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Load protected fields (ex: 'comment')
+  useEffect(() => {
+    if (token) {
+      reloadNumeros()
+    }
+  }, [token, reloadNumeros])
+
   return (
     <>
       <VoieHeading voie={voie} />
@@ -52,6 +65,7 @@ const Voie = React.memo(() => {
                 hasPreview
                 initialVoieId={voie._id}
                 initialValue={formState.editedNumero}
+                commune={commune}
                 closeForm={closeForm}
               />
             </Table.Cell>
@@ -81,12 +95,7 @@ Voie.getInitialProps = async ({query}) => {
 }
 
 Voie.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired
-  }).isRequired,
-  commune: PropTypes.shape({
-    code: PropTypes.string.isRequired
-  }).isRequired
+  commune: PropTypes.object.isRequired
 }
 
 export default Voie

@@ -12,14 +12,14 @@ import DrawContext from '@/contexts/draw'
 import ParcellesContext from '@/contexts/parcelles'
 
 import {vector, ortho, planIGN} from '@/components/map/styles'
-import NavControl from '@/components/map/nav-control'
 import EditableMarker from '@/components/map/editable-marker'
-import Control from '@/components/map/control'
 import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
 import Draw from '@/components/map/draw'
-import StyleSelector from '@/components/map/style-selector'
-import AddressEditorControl from '@/components/map/address-editor-control'
+import Control from '@/components/map/controls/control'
+import NavControl from '@/components/map/controls/nav-control'
+import StyleControl from '@/components/map/controls/style-control'
+import AddressEditorControl from '@/components/map/controls/address-editor-control'
 import useBounds from '@/components/map/hooks/bounds'
 import useSources from '@/components/map/hooks/sources'
 import useLayers from '@/components/map/hooks/layers'
@@ -67,7 +67,7 @@ function generateNewStyle(style, sources, layers) {
   return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
 }
 
-function Map({isAddressFormOpen, handleAddressForm}) {
+function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
   const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
@@ -80,7 +80,6 @@ function Map({isAddressFormOpen, handleAddressForm}) {
   const {balId} = router.query
 
   const {
-    commune,
     voie,
     toponyme,
     numeros,
@@ -138,14 +137,14 @@ function Map({isAddressFormOpen, handleAddressForm}) {
         setEditingId(voie._id)
       } else {
         router.push(
-          `/bal/voie?balId=${balId}&codeCommune=${commune.code}&idVoie=${idVoie}`,
-          `/bal/${balId}/communes/${commune.code}/voies/${idVoie}`
+          `/bal/voie?balId=${balId}&idVoie=${idVoie}`,
+          `/bal/${balId}/voies/${idVoie}`
         )
       }
     }
 
     setIsContextMenuDisplayed(null)
-  }, [router, balId, commune, setEditingId, isEditing, voie, handleParcelle])
+  }, [router, balId, setEditingId, isEditing, voie, handleParcelle])
 
   const handleCursor = useCallback(({isHovering}) => {
     if (modeId === 'drawLineString') {
@@ -198,9 +197,10 @@ function Map({isAddressFormOpen, handleAddressForm}) {
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
-      <StyleSelector
+      <StyleControl
         style={style}
         handleStyle={setStyle}
+        hasCadastre={commune.hasCadastre}
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
@@ -291,6 +291,9 @@ function Map({isAddressFormOpen, handleAddressForm}) {
 }
 
 Map.propTypes = {
+  commune: PropTypes.shape({
+    hasCadastre: PropTypes.bool.isRequired
+  }).isRequired,
   isAddressFormOpen: PropTypes.bool.isRequired,
   handleAddressForm: PropTypes.func.isRequired
 }

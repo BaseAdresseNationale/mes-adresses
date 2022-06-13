@@ -32,7 +32,6 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
   return (
     <BalDataContextProvider
       initialBaseLocale={baseLocale}
-      initialCommune={commune}
       initialVoie={voie}
       initialToponyme={toponyme}
       initialVoies={voies}
@@ -46,10 +45,16 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 
               <SettingsContextProvider>
                 <Settings />
-                <SubHeader />
+                <SubHeader commune={commune} />
               </SettingsContextProvider>
 
-              <Map top={116} left={leftOffset} isAddressFormOpen={isAddressFormOpen} handleAddressForm={setIsAddressFormOpen} />
+              <Map
+                top={116}
+                left={leftOffset}
+                commune={commune}
+                isAddressFormOpen={isAddressFormOpen}
+                handleAddressForm={setIsAddressFormOpen}
+              />
 
               <Sidebar
                 top={topOffset}
@@ -64,11 +69,11 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 <>
                   <WelcomeMessage />
                   {baseLocale.status === 'published' && (
-                    <CertificationMessage balId={baseLocale._id} codeCommune={commune.code} />
+                    <CertificationMessage balId={baseLocale._id} />
                   )}
 
                   {isAddressFormOpen ? (
-                    <AddressEditor closeForm={() => setIsAddressFormOpen(false)} />
+                    <AddressEditor commune={commune} closeForm={() => setIsAddressFormOpen(false)} />
                   ) : (
                     children
                   )}
@@ -87,9 +92,7 @@ Editor.propTypes = {
     _id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired
   }).isRequired,
-  commune: PropTypes.shape({
-    code: PropTypes.string.isRequired,
-  }),
+  commune: PropTypes.object.isRequired,
   voie: PropTypes.object,
   toponyme: PropTypes.object,
   voies: PropTypes.array,

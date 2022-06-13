@@ -1,5 +1,6 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import router from 'next/router'
 import {Button, Checkbox} from 'evergreen-ui'
 
 import {addVoie, editVoie} from '@/lib/bal-api'
@@ -24,7 +25,7 @@ function VoieEditor({initialValue, closeForm}) {
   const [getValidationMessage, setValidationMessages] = useValidationMessage()
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, commune, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
+  const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
 
   const onFormSubmit = useCallback(async e => {
@@ -43,14 +44,14 @@ function VoieEditor({initialValue, closeForm}) {
       // Add or edit a voie
       const submit = initialValue ?
         async () => editVoie(initialValue._id, body, token) :
-        async () => addVoie(baseLocale._id, commune.code, body, token)
+        async () => addVoie(baseLocale._id, body, token)
       const {validationMessages, ...voie} = await submit()
 
       setValidationMessages(validationMessages)
 
       refreshBALSync()
 
-      if (initialValue?._id === voie._id) {
+      if (initialValue?._id === voie._id && router.query.idVoie) {
         setVoie(voie)
       } else {
         await reloadVoies()
@@ -62,7 +63,7 @@ function VoieEditor({initialValue, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [baseLocale._id, commune.code, initialValue, nom, isMetric, data, token, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
+  }, [baseLocale._id, initialValue, nom, isMetric, data, token, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()

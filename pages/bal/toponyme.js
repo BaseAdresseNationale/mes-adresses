@@ -15,7 +15,7 @@ import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
 import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
-function Toponyme({baseLocale}) {
+function Toponyme({baseLocale, commune}) {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editedNumeroId, setEditedNumeroId] = useState(null)
   const [error, setError] = useState(null)
@@ -82,9 +82,16 @@ function Toponyme({baseLocale}) {
     }
   }, [setIsEditing])
 
+  // Load protected fields (ex: 'comment')
+  useEffect(() => {
+    if (token) {
+      reloadNumeros()
+    }
+  }, [token, reloadNumeros])
+
   return (
     <>
-      <ToponymeHeading toponyme={toponyme} />
+      <ToponymeHeading toponyme={toponyme} commune={commune} />
       {token && isFormOpen ? (
         <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
       ) : (
@@ -143,6 +150,7 @@ function Toponyme({baseLocale}) {
                 <NumeroEditor
                   hasPreview
                   initialValue={editedNumero}
+                  commune={commune}
                   closeForm={onCancel}
                 />
               </Table.Cell>
@@ -169,7 +177,8 @@ Toponyme.getInitialProps = async ({query}) => {
 Toponyme.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
-  }).isRequired
+  }).isRequired,
+  commune: PropTypes.object.isRequired
 }
 
 export default Toponyme

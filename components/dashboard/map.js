@@ -85,7 +85,7 @@ function Map({departement, basesLocales}) {
         latitude,
         feature
       }
-      const communeBALNumber = basesLocales.filter(({communes}) => communes.includes(hoveredId)).length
+      const communeBALNumber = basesLocales.filter(({commune}) => commune === hoveredId).length
 
       setHovered(hoverInfo)
       setHoveredCommune(communeBALNumber)

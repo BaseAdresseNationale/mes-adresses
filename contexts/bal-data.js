@@ -5,7 +5,6 @@ import {toaster} from 'evergreen-ui'
 import {
   getParcelles,
   getCommuneGeoJson,
-  getCommune,
   getNumeros,
   getVoies,
   getBaseLocale,
@@ -21,7 +20,7 @@ import useHabilitation from '@/hooks/habilitation'
 const BalDataContext = React.createContext()
 
 export const BalDataContextProvider = React.memo(({
-  initialBaseLocale, initialCommune, initialVoie, initialToponyme, initialVoies, initialToponymes, initialNumeros, ...props
+  initialBaseLocale, initialVoie, initialToponyme, initialVoies, initialToponymes, initialNumeros, ...props
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState(null)
@@ -32,7 +31,6 @@ export const BalDataContextProvider = React.memo(({
   const [toponymes, setToponymes] = useState(initialToponymes)
   const [voie, setVoie] = useState(initialVoie)
   const [toponyme, setToponyme] = useState(initialToponyme)
-  const [commune, setCommune] = useState(initialCommune)
   const [baseLocale, setBaseLocale] = useState(initialBaseLocale)
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
 
@@ -41,24 +39,24 @@ export const BalDataContextProvider = React.memo(({
   const [habilitation, reloadHabilitation, isHabilitationValid] = useHabilitation(initialBaseLocale, token)
 
   const reloadParcelles = useCallback(async () => {
-    const parcelles = await getParcelles(baseLocale._id, commune.code)
+    const parcelles = await getParcelles(baseLocale._id)
     setParcelles(parcelles)
-  }, [baseLocale._id, commune])
+  }, [baseLocale._id])
 
   const reloadGeojson = useCallback(async () => {
-    const geojson = await getCommuneGeoJson(baseLocale._id, commune.code)
+    const geojson = await getCommuneGeoJson(baseLocale._id)
     setGeojson(geojson)
-  }, [baseLocale._id, commune])
+  }, [baseLocale._id])
 
   const reloadVoies = useCallback(async () => {
-    const voies = await getVoies(baseLocale._id, commune.code)
+    const voies = await getVoies(baseLocale._id)
     setVoies(voies)
-  }, [baseLocale._id, commune])
+  }, [baseLocale._id])
 
   const reloadToponymes = useCallback(async () => {
-    const toponymes = await getToponymes(baseLocale._id, commune.code)
+    const toponymes = await getToponymes(baseLocale._id)
     setToponymes(toponymes)
-  }, [baseLocale._id, commune])
+  }, [baseLocale._id])
 
   const reloadNumeros = useCallback(async () => {
     let numeros
@@ -73,13 +71,9 @@ export const BalDataContextProvider = React.memo(({
     }
   }, [voie, toponyme, token])
 
-  const reloadCommune = useCallback(async () => {
-    const baseLocaleCommune = await getCommune(baseLocale._id, initialCommune.code)
-    setCommune({...initialCommune, ...baseLocaleCommune})
-  }, [baseLocale._id, initialCommune])
-
   const reloadBaseLocale = useCallback(async () => {
     const bal = await getBaseLocale(baseLocale._id)
+
     setBaseLocale(bal)
   }, [baseLocale._id])
 
@@ -120,11 +114,11 @@ export const BalDataContextProvider = React.memo(({
   }, [editingId, numeros, voie, toponyme])
 
   const certifyAllNumeros = useCallback(async () => {
-    await certifyBAL(baseLocale._id, commune.code, token, {certifie: true})
+    await certifyBAL(baseLocale._id, token, {certifie: true})
     await reloadNumeros()
 
     refreshBALSync()
-  }, [baseLocale._id, commune, token, reloadNumeros, refreshBALSync])
+  }, [baseLocale._id, token, reloadNumeros, refreshBALSync])
 
   // Update states on client side load
   useEffect(() => {
@@ -163,7 +157,6 @@ export const BalDataContextProvider = React.memo(({
     baseLocale,
     habilitation,
     isHabilitationValid,
-    commune,
     geojson,
     parcelles,
     voie: voie || initialVoie,
@@ -179,7 +172,6 @@ export const BalDataContextProvider = React.memo(({
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
-    reloadCommune,
     reloadBaseLocale,
     setVoie,
     setToponyme,
@@ -198,8 +190,6 @@ export const BalDataContextProvider = React.memo(({
     habilitation,
     isHabilitationValid,
     reloadHabilitation,
-    reloadCommune,
-    commune,
     voie,
     numeros,
     initialVoie,
@@ -227,9 +217,6 @@ BalDataContextProvider.propTypes = {
   initialBaseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired
   }).isRequired,
-  initialCommune: PropTypes.shape({
-    code: PropTypes.string.isRequired
-  }),
   initialVoie: PropTypes.object,
   initialToponyme: PropTypes.object,
   initialVoies: PropTypes.array,
@@ -238,7 +225,6 @@ BalDataContextProvider.propTypes = {
 }
 
 BalDataContextProvider.defaultProps = {
-  initialCommune: null,
   initialVoie: null,
   initialToponyme: null,
   initialVoies: null,

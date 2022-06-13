@@ -17,7 +17,7 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
   const [setError] = useError()
   const router = useRouter()
 
-  const {balId, codeCommune} = router.query
+  const {balId} = router.query
 
   const {token} = useContext(TokenContext)
   const {markers} = useContext(MarkersContext)
@@ -29,8 +29,8 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
     if (!isEditing) {
       if (voie || initialToponyme !== toponyme) {
         router.push(
-          `/bal/toponyme?balId=${balId}&codeCommune=${codeCommune}&idToponyme=${initialToponyme._id}`,
-          `/bal/${balId}/communes/${codeCommune}/toponymes/${initialToponyme._id}`
+          `/bal/toponyme?balId=${balId}&idToponyme=${initialToponyme._id}`,
+          `/bal/${balId}/toponymes/${initialToponyme._id}`
         )
       }
 
@@ -38,7 +38,7 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
         setEditingId(toponyme._id)
       }
     }
-  }, [isEditing, setEditingId, voie, balId, codeCommune, initialToponyme, router, toponyme])
+  }, [isEditing, setEditingId, voie, balId, initialToponyme, router, toponyme])
 
   const position = initialToponyme.positions.find(position => position.type === 'segment') || initialToponyme.positions[0]
 
@@ -65,8 +65,8 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
 
       if (_id === toponyme._id) {
         return router.push(
-          `/bal/commune?balId=${balId}&codeCommune=${codeCommune}`,
-          `/bal/${balId}/communes/${codeCommune}`
+          `/bal?balId=${balId}`,
+          `/bal/${balId}`
         )
       }
     } catch (error) {
