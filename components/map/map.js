@@ -205,15 +205,15 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         handleCadastre={setIsCadastreDisplayed}
       />
 
-      <Pane
-        position='absolute'
-        className='mapboxgl-ctrl-group mapboxgl-ctrl'
-        top={88}
-        right={16}
-        zIndex={2}
-      >
+      {(voie || (toponymes && toponymes.length > 0)) && (
+        <Pane
+          position='absolute'
+          className='mapboxgl-ctrl-group mapboxgl-ctrl'
+          top={100}
+          right={16}
+          zIndex={2}
+        >
 
-        {(voie || (toponymes && toponymes.length > 0)) && (
           <Control
             icon={isLabelsDisplayed ? EyeOffIcon : EyeOpenIcon}
             isEnabled={isLabelsDisplayed}
@@ -221,11 +221,16 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
             disabledHint={numeros ? 'Afficher les détails' : 'Afficher les toponymes'}
             onChange={setIsLabelsDisplayed}
           />
-        )}
-      </Pane>
+        </Pane>
+      )}
 
       {token && (
-        <Pane position='absolute' zIndex={1} top={130} right={15}>
+        <Pane
+          position='absolute'
+          zIndex={1}
+          top={voie || (toponymes && toponymes.length > 0) ? 136 : 100}
+          right={15}
+        >
           <AddressEditorControl
             isAddressFormOpen={isAddressFormOpen}
             handleAddressForm={handleAddressForm}
