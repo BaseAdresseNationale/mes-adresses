@@ -164,14 +164,14 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
   useEffect(() => {
     setStyle(prevStyle => {
-      if (modeId) {
+      if (modeId && commune.hasOrtho) {
         setEditPrevSyle(prevStyle)
         return 'ortho'
       }
 
       return editPrevStyle
     })
-  }, [modeId]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [modeId, commune]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (map) {
@@ -200,20 +200,20 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       <StyleControl
         style={style}
         handleStyle={setStyle}
-        hasCadastre={commune.hasCadastre}
+        commune={commune}
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
 
-      <Pane
-        position='absolute'
-        className='mapboxgl-ctrl-group mapboxgl-ctrl'
-        top={88}
-        right={16}
-        zIndex={2}
-      >
+      {(voie || (toponymes && toponymes.length > 0)) && (
+        <Pane
+          position='absolute'
+          className='mapboxgl-ctrl-group mapboxgl-ctrl'
+          top={100}
+          right={16}
+          zIndex={2}
+        >
 
-        {(voie || (toponymes && toponymes.length > 0)) && (
           <Control
             icon={isLabelsDisplayed ? EyeOffIcon : EyeOpenIcon}
             isEnabled={isLabelsDisplayed}
@@ -221,11 +221,16 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
             disabledHint={numeros ? 'Afficher les détails' : 'Afficher les toponymes'}
             onChange={setIsLabelsDisplayed}
           />
-        )}
-      </Pane>
+        </Pane>
+      )}
 
       {token && (
-        <Pane position='absolute' zIndex={1} top={130} right={15}>
+        <Pane
+          position='absolute'
+          zIndex={1}
+          top={voie || (toponymes && toponymes.length > 0) ? 136 : 100}
+          right={15}
+        >
           <AddressEditorControl
             isAddressFormOpen={isAddressFormOpen}
             handleAddressForm={handleAddressForm}
@@ -292,7 +297,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
 Map.propTypes = {
   commune: PropTypes.shape({
-    hasCadastre: PropTypes.bool.isRequired
+    hasOrtho: PropTypes.bool.isRequired
   }).isRequired,
   isAddressFormOpen: PropTypes.bool.isRequired,
   handleAddressForm: PropTypes.func.isRequired

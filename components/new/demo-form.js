@@ -53,6 +53,8 @@ function DemoForm({defaultCommune}) {
             id='commune'
             initialSelectedItem={defaultCommune}
             label='Commune'
+            hint='Pour affiner la recherche, renseignez le code département'
+            placeholder='Roche 42'
             appearance='default'
             maxWidth={500}
             disabled={isLoading}
