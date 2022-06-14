@@ -1,11 +1,11 @@
 import {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
-import Router from 'next/router'
-import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
+import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon, toaster} from 'evergreen-ui'
 
 import {transformToDraft} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
+import BalDataContext from '@/contexts/bal-data'
 
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
@@ -17,23 +17,33 @@ function DemoWarning({baseLocale, communeName}) {
   const [email, onEmailChange] = useInput()
 
   const [focusRef] = useFocus()
+
+  const {reloadBaseLocale} = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
 
   const onSubmit = useCallback(async e => {
     e.preventDefault()
     setIsLoading(true)
 
-    await transformToDraft(
-      baseLocale._id, {
-        nom: nom ? nom.trim() : null,
-        email
-      },
-      token
-    )
+    try {
+      await transformToDraft(
+        baseLocale._id, {
+          nom: nom ? nom.trim() : null,
+          email
+        },
+        token
+      )
 
-    Router.push(`/bal?balId=${baseLocale._id}`,
-      `/bal/${baseLocale._id}`)
-  }, [baseLocale._id, token, email, nom])
+      await reloadBaseLocale()
+    } catch (error) {
+      toaster.danger('Impossible de conserver cette Base Adresse Locale', {
+        description: error.message
+      })
+    }
+
+    setIsShown(false)
+    setIsLoading(false)
+  }, [baseLocale._id, token, email, nom, reloadBaseLocale])
 
   return (
     <Pane
