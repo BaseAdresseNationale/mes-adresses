@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react'
+import React, {useState, useMemo, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {groupBy} from 'lodash'
 import {Heading, Table, EditIcon, Tooltip, CommentIcon, WarningSignIcon, Position} from 'evergreen-ui'
@@ -10,11 +10,11 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
     return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
   }, [numeros])
 
-  const handleClick = id => {
+  const handleClick = useCallback(id => {
     if (isEditable) {
       handleSelect(id)
     }
-  }
+  }, [isEditable, handleSelect])
 
   return (
     Object.keys(numerosByVoie).sort((a, b) => a > b).map(nomVoie => (
