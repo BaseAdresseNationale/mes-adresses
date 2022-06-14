@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react'
+import React, {useState, useMemo, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {groupBy} from 'lodash'
 import {Heading, Table, EditIcon, Tooltip, CommentIcon, WarningSignIcon, Position} from 'evergreen-ui'
@@ -9,6 +9,12 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
   const numerosByVoie = useMemo(() => {
     return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
   }, [numeros])
+
+  const handleClick = useCallback(id => {
+    if (isEditable) {
+      handleSelect(id)
+    }
+  }, [isEditable, handleSelect])
 
   return (
     Object.keys(numerosByVoie).sort((a, b) => a > b).map(nomVoie => (
@@ -28,7 +34,7 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
             style={{cursor: 'pointer', backgroundColor: hovered === _id ? '#E4E7EB' : '#f5f6f7'}}
             onMouseEnter={() => setHovered(_id)}
             onMouseLeave={() => setHovered(null)}
-            onClick={() => handleSelect(_id)}
+            onClick={() => handleClick(_id)}
           >
             <Table.Cell data-browsable>
               <Table.TextCell data-editable flex='0 1 1'>
