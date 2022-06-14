@@ -23,6 +23,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
   const [isHidden, setIsHidden] = useState(false)
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
 
+  const isDemo = baseLocale.status === 'demo'
   const {token} = useContext(TokenContext)
 
   const leftOffset = useMemo(() => {
@@ -50,7 +51,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 
               <Map
                 top={116}
-                bottom={baseLocale.status === 'demo' ? 50 : 0}
+                bottom={isDemo ? 50 : 0}
                 left={leftOffset}
                 commune={commune}
                 isAddressFormOpen={isAddressFormOpen}
@@ -59,7 +60,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 
               <Sidebar
                 top={116}
-                bottom={baseLocale.status === 'demo' ? 50 : 0}
+                bottom={isDemo ? 50 : 0}
                 isHidden={isHidden}
                 size={500}
                 elevation={2}
@@ -69,7 +70,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 onToggle={setIsHidden}
               >
                 <>
-                  {baseLocale.status === 'demo' && (
+                  {isDemo && (
                     <DemoWarning baseLocale={baseLocale} communeName={commune.nom} token={token} />
                   )}
 
