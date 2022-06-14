@@ -1,20 +1,23 @@
-import {useState, useCallback} from 'react'
+import {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Text, Button, Dialog, TextInputField, WarningSignIcon} from 'evergreen-ui'
 
 import {transformToDraft} from '@/lib/bal-api'
 
+import TokenContext from '@/contexts/token'
+
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 
-function DemoWarning({baseLocale, communeName, token}) {
+function DemoWarning({baseLocale, communeName}) {
   const [isShown, setIsShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [nom, setNom] = useState(`Adresses de ${communeName}`)
   const [email, onEmailChange] = useInput()
 
   const [focusRef] = useFocus()
+  const {token} = useContext(TokenContext)
 
   const onSubmit = useCallback(async e => {
     e.preventDefault()
@@ -98,8 +101,7 @@ DemoWarning.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
   }).isRequired,
-  communeName: PropTypes.string.isRequired,
-  token: PropTypes.string.isRequired
+  communeName: PropTypes.string.isRequired
 }
 
 export default DemoWarning

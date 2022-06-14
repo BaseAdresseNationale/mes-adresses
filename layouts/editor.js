@@ -1,4 +1,4 @@
-import {useState, useMemo, useContext} from 'react'
+import {useState, useMemo} from 'react'
 import PropTypes from 'prop-types'
 
 import {SettingsContextProvider} from '@/contexts/settings'
@@ -7,7 +7,6 @@ import {MarkersContextProvider} from '@/contexts/markers'
 import {MapContextProvider} from '@/contexts/map'
 import {BalDataContextProvider} from '@/contexts/bal-data'
 import {ParcellesContextProvider} from '@/contexts/parcelles'
-import TokenContext from '@/contexts/token'
 
 import Sidebar from '@/layouts/sidebar'
 
@@ -24,7 +23,6 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
 
   const isDemo = baseLocale.status === 'demo'
-  const {token} = useContext(TokenContext)
 
   const leftOffset = useMemo(() => {
     return isHidden ? 0 : 500
@@ -71,7 +69,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
               >
                 <>
                   {isDemo && (
-                    <DemoWarning baseLocale={baseLocale} communeName={commune.nom} token={token} />
+                    <DemoWarning baseLocale={baseLocale} communeName={commune.nom} />
                   )}
 
                   <WelcomeMessage />
