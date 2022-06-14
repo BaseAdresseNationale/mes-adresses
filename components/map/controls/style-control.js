@@ -1,17 +1,20 @@
-import {useState} from 'react'
+import {useMemo, useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, SelectMenu, Button, Position, LayersIcon} from 'evergreen-ui'
 
 import CadastreControl from '@/components/map/controls/cadastre-control.js'
 
-const STYLES = [
-  {label: 'Plan OpenMapTiles', value: 'vector'},
-  {label: 'Plan IGN (Bêta)', value: 'plan-ign'},
-  {label: 'Photographie aérienne', value: 'ortho'}
-]
-
-function StyleControl({style, handleStyle, isCadastreDisplayed, handleCadastre, hasCadastre}) {
+function StyleControl({style, commune, handleStyle, isCadastreDisplayed, handleCadastre}) {
   const [showPopover, setShowPopover] = useState(false)
+
+  const availableStyles = useMemo(() => {
+    const {hasOrtho, hasOpenMapTiles, hasPlanIGN} = commune
+    return [
+      {label: 'Plan OpenMapTiles', value: 'vector', isAvailable: hasOpenMapTiles},
+      {label: 'Plan IGN (Bêta)', value: 'plan-ign', isAvailable: hasPlanIGN},
+      {label: 'Photographie aérienne', value: 'ortho', isAvailable: hasOrtho}
+    ].filter(({isAvailable}) => isAvailable)
+  }, [commune])
 
   return (
     <Pane
@@ -25,24 +28,31 @@ function StyleControl({style, handleStyle, isCadastreDisplayed, handleCadastre, 
       cursor='pointer'
       onClick={() => setShowPopover(!showPopover)}
     >
-      <SelectMenu
-        closeOnSelect
-        position={Position.TOP_LEFT}
-        title='Choix du fond de carte'
-        hasFilter={false}
-        height={140}
-        options={STYLES}
-        selected={style}
-        onSelect={style => handleStyle(style.value)}
-      >
+      {availableStyles.length > 1 ? (
+        <SelectMenu
+          closeOnSelect
+          position={Position.TOP_LEFT}
+          title='Choix du fond de carte'
+          hasFilter={false}
+          height={40 + (33 * availableStyles.length)}
+          options={availableStyles}
+          selected={style}
+          onSelect={style => handleStyle(style.value)}
+        >
+          <Button className='map-style-button' style={{borderRadius: '3px 0 0 3px'}}>
+            <LayersIcon style={{marginRight: '.5em', borderRadius: '0 3px 3px 0'}} />
+            <div className='map-style-label'>{availableStyles.find(({value}) => value === style).label}</div>
+          </Button>
+
+        </SelectMenu>
+      ) : (
         <Button className='map-style-button' style={{borderRadius: '3px 0 0 3px'}}>
           <LayersIcon style={{marginRight: '.5em', borderRadius: '0 3px 3px 0'}} />
-          <div className='map-style-label'>{STYLES.find(({value}) => value === style).label}</div>
+          <div className='map-style-label'>{availableStyles[0].label}</div>
         </Button>
-
-      </SelectMenu>
+      )}
       <CadastreControl
-        hasCadastre={hasCadastre}
+        hasCadastre={commune.hasCadastre}
         isCadastreDisplayed={isCadastreDisplayed}
         onClick={() => handleCadastre(show => !show)}
       />
@@ -55,7 +65,12 @@ StyleControl.propTypes = {
   handleStyle: PropTypes.func.isRequired,
   isCadastreDisplayed: PropTypes.bool.isRequired,
   handleCadastre: PropTypes.func.isRequired,
-  hasCadastre: PropTypes.bool.isRequired
+  commune: PropTypes.shape({
+    hasCadastre: PropTypes.bool.isRequired,
+    hasOpenMapTiles: PropTypes.bool.isRequired,
+    hasOrtho: PropTypes.bool.isRequired,
+    hasPlanIGN: PropTypes.bool.isRequired
+  }).isRequired
 }
 
 export default StyleControl
