@@ -5,27 +5,25 @@ import {useDebouncedCallback} from 'use-debounce'
 
 import {searchCommunes} from '@/lib/geo-api'
 
-function CommuneSearch({placeholder, exclude, innerRef, initialSelectedItem, onSelect, ...props}) {
+function CommuneSearch({placeholder, innerRef, initialSelectedItem, onSelect, ...props}) {
   const [communes, setCommunes] = useState([])
 
   const [onSearch] = useDebouncedCallback(async value => {
-    const result = await searchCommunes(value, {
+    const results = await searchCommunes(value, {
       fields: 'departement',
-      limit: 7
+      limit: 20
     })
+    const bestResults = results.filter(c => c._score > 0.1)
 
-    setCommunes(result
-      .filter(c => c.departement) // Filter communes without departements
-      .filter(c => !exclude.includes(c.code))
-    )
-  }, 300, [exclude])
+    setCommunes(bestResults.length > 5 ? bestResults : results)
+  }, 300)
 
   return (
     <Autocomplete
       isFilterDisabled
       initialSelectedItem={initialSelectedItem}
       items={communes}
-      itemToString={item => item ? `${item.nom} (${item.departement.nom} - ${item.departement.code})` : ''}
+      itemToString={item => item ? `${item.nom} (${item.departement ? `${item.departement.nom} - ${item.departement.code}` : 'Collectivité d’Outre-Mer'})` : ''}
       onChange={onSelect}
     >
       {({getInputProps, getRef, inputValue}) => {
@@ -62,7 +60,6 @@ CommuneSearch.propTypes = {
     }).isRequired
   }),
   placeholder: PropTypes.string,
-  exclude: PropTypes.array,
   innerRef: PropTypes.func,
   onSelect: PropTypes.func
 }
@@ -70,7 +67,6 @@ CommuneSearch.propTypes = {
 CommuneSearch.defaultProps = {
   initialSelectedItem: null,
   placeholder: 'Chercher une commune…',
-  exclude: [],
   innerRef: () => {},
   onSelect: () => {}
 }
