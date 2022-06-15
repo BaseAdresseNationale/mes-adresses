@@ -16,18 +16,17 @@ import WelcomeMessage from '@/components/welcome-message'
 import CertificationMessage from '@/components/certification-message'
 import Settings from '@/components/settings'
 import AddressEditor from '@/components/bal/address-editor'
+import DemoWarning from '@/components/demo-warning'
 
 function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
   const [isHidden, setIsHidden] = useState(false)
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
 
+  const isDemo = baseLocale.status === 'demo'
+
   const leftOffset = useMemo(() => {
     return isHidden ? 0 : 500
   }, [isHidden])
-
-  const topOffset = useMemo(() => {
-    return baseLocale.status === 'demo' ? 166 : 116
-  }, [baseLocale])
 
   return (
     <BalDataContextProvider
@@ -50,6 +49,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 
               <Map
                 top={116}
+                bottom={isDemo ? 50 : 0}
                 left={leftOffset}
                 commune={commune}
                 isAddressFormOpen={isAddressFormOpen}
@@ -57,7 +57,8 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
               />
 
               <Sidebar
-                top={topOffset}
+                top={116}
+                bottom={isDemo ? 50 : 0}
                 isHidden={isHidden}
                 size={500}
                 elevation={2}
@@ -67,6 +68,10 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 onToggle={setIsHidden}
               >
                 <>
+                  {isDemo && (
+                    <DemoWarning baseLocale={baseLocale} communeName={commune.nom} />
+                  )}
+
                   <WelcomeMessage />
                   {baseLocale.status === 'published' && (
                     <CertificationMessage balId={baseLocale._id} />

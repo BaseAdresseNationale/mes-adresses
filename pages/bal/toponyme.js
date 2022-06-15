@@ -92,7 +92,7 @@ function Toponyme({baseLocale, commune}) {
   return (
     <>
       <ToponymeHeading toponyme={toponyme} commune={commune} />
-      {token && isFormOpen ? (
+      {token && isFormOpen && isEditing ? (
         <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
       ) : (
         <Pane

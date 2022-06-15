@@ -6,7 +6,7 @@ import useWindowSize from '@/hooks/window-size'
 
 import BalDataContext from '@/contexts/bal-data'
 
-function Sidebar({isHidden, size, onToggle, top, ...props}) {
+function Sidebar({isHidden, size, onToggle, top, bottom, ...props}) {
   const {innerWidth} = useWindowSize()
   const {setEditingId, isEditing, setIsEditing} = useContext(BalDataContext)
 
@@ -34,7 +34,7 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
       left={isHidden ? -size : 0}
       right='auto'
       top={top}
-      bottom={0}
+      bottom={bottom}
       zIndex={2}
     >
       {innerWidth > 800 && (
@@ -77,6 +77,7 @@ function Sidebar({isHidden, size, onToggle, top, ...props}) {
 
 Sidebar.propTypes = {
   isHidden: PropTypes.bool,
+  bottom: PropTypes.number,
   children: PropTypes.node.isRequired,
   size: PropTypes.number.isRequired,
   onToggle: PropTypes.func.isRequired,
@@ -84,7 +85,8 @@ Sidebar.propTypes = {
 }
 
 Sidebar.defaultProps = {
-  isHidden: false
+  isHidden: false,
+  bottom: 0
 }
 
 export default Sidebar
