@@ -45,7 +45,8 @@
     "react-map-gl": "^5.3.17",
     "react-map-gl-draw": "^0.21.1",
     "sharp": "^0.29.3",
-    "use-debounce": "^1.1.1"
+    "use-debounce": "^1.1.1",
+    "maplibre-gl": "^2.1.9"
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",

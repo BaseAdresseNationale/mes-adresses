@@ -2,8 +2,8 @@ import {useState} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
-
-import 'mapbox-gl/dist/mapbox-gl.css'
+import maplibregl from 'maplibre-gl'
+import 'maplibre-gl/src/css/maplibre-gl.css'
 
 import {getCommune} from '@/lib/geo-api'
 import {getBaseLocale, getVoies, getToponymes, getCommuneExtras} from '@/lib/bal-api'

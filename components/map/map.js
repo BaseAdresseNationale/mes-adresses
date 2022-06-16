@@ -207,7 +207,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
       <Pane
         position='absolute'
-        className='mapboxgl-ctrl-group mapboxgl-ctrl'
+        className='maplibregl-ctrl-group maplibregl-ctrl'
         top={88}
         right={16}
         zIndex={2}

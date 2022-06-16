@@ -10,7 +10,7 @@ function Control({isEnabled, isDisabled, icon, enabledHint, disabledHint, onChan
 
   if (isDisabled) {
     return (
-      <Pane is='button' className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'>
+      <Pane is='button' className='maplibregl-ctrl-icon maplibregl-ctrl-enabled'>
         <Icon icon={icon} color='muted' />
       </Pane>
     )
@@ -23,7 +23,7 @@ function Control({isEnabled, isDisabled, icon, enabledHint, disabledHint, onChan
     >
       <Pane
         is='button'
-        className='mapboxgl-ctrl-icon mapboxgl-ctrl-enabled'
+        className='maplibregl-ctrl-icon maplibregl-ctrl-enabled'
         onClick={onToggle}
       >
         <Icon icon={icon} color={isDisabled ? 'muted' : 'black'} />
