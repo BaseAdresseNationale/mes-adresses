@@ -1,13 +1,11 @@
-import {useState, useCallback, useEffect, useContext} from 'react'
+import {useState, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {validate} from '@etalab/bal'
 import {uniqBy} from 'lodash'
 import {Pane, Alert, Button, Dialog, TextInputField, Text, Strong, FormField, PlusIcon, InboxIcon, Paragraph, ShareIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '@/lib/bal-api'
-
-import LocalStorageContext from '@/contexts/local-storage'
+import {uploadBaseLocaleCsv} from '@/lib/bal-api'
 
 import useFocus from '@/hooks/focus'
 
@@ -48,16 +46,29 @@ function extractCommuneFromCSV(rows) {
   return uniqBy(communes, 'code')
 }
 
-function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommune, email, onEmailChange, userBALs, setUserBALs, onCancel, isLoading, setIsLoading, isShown, setIsShown}) {
-  const [bal, setBal] = useState(null)
+function UploadForm({
+  onNomChange,
+  selectedCodeCommune,
+  setSelectedCodeCommune,
+  nom,
+  email,
+  onEmailChange,
+  bal,
+  userBALs,
+  onCancel,
+  isLoading,
+  setIsLoading,
+  isShown,
+  checkUserBALs,
+  createNewBal,
+  onSubmit
+}) {
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
   const [focusRef] = useFocus()
   const [communes, setCommunes] = useState(null)
   const [validationReport, setValidationReport] = useState(null)
   const [invalidRowsCount, setInvalidRowsCount] = useState(null)
-
-  const {addBalAccess} = useContext(LocalStorageContext)
 
   const onDrop = async ([file]) => {
     setError(null)
@@ -99,21 +110,6 @@ function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommu
     }
   }
 
-  const createNewBal = useCallback(async codeCommune => {
-    if (!bal) {
-      const baseLocale = await createBaseLocale({
-        nom,
-        commune: codeCommune,
-        emails: [
-          email
-        ]
-      })
-
-      addBalAccess(baseLocale._id, baseLocale.token)
-      setBal(baseLocale)
-    }
-  }, [bal, email, nom, addBalAccess])
-
   const resetForm = useCallback(() => {
     setFile(null)
     setCommunes(null)
@@ -132,31 +128,6 @@ function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommu
     resetForm()
     setError(null)
   }
-
-  const onSubmit = async e => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    await checkUserBALs()
-  }
-
-  const checkUserBALs = useCallback(async () => {
-    const userBALs = []
-
-    const basesLocales = await searchBAL(selectedCodeCommune, email)
-    if (basesLocales.length > 0) {
-      userBALs.push(...basesLocales)
-    }
-
-    if (userBALs.length > 0) {
-      const uniqUserBALs = uniqBy(userBALs, '_id')
-
-      setUserBALs(uniqUserBALs)
-      setIsShown(true)
-    } else {
-      createNewBal(selectedCodeCommune)
-    }
-  }, [createNewBal, email, selectedCodeCommune, setUserBALs, setIsShown])
 
   useEffect(() => {
     if (selectedCodeCommune && validationReport) {
@@ -204,9 +175,9 @@ function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommu
               isShown={isShown}
               userEmail={email}
               basesLocales={userBALs}
-              updateBAL={() => checkUserBALs(email)}
+              updateBAL={checkUserBALs}
               onConfirm={() => createNewBal(selectedCodeCommune)}
-              onClose={() => handleClose()}
+              onClose={handleClose}
             />
           )}
 
@@ -331,23 +302,29 @@ function UploadForm({nom, onNomChange, selectedCodeCommune, setSelectedCodeCommu
 }
 
 UploadForm.propTypes = {
-  nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
   selectedCodeCommune: PropTypes.string,
   setSelectedCodeCommune: PropTypes.func.isRequired,
+  nom: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   onEmailChange: PropTypes.func.isRequired,
   userBALs: PropTypes.array.isRequired,
-  setUserBALs: PropTypes.func.isRequired,
+  bal: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    token: PropTypes.string.isRequired
+  }),
   onCancel: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   setIsLoading: PropTypes.func.isRequired,
   isShown: PropTypes.bool.isRequired,
-  setIsShown: PropTypes.func.isRequired
+  checkUserBALs: PropTypes.func.isRequired,
+  createNewBal: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired
 }
 
 UploadForm.defaultProps = {
-  selectedCodeCommune: null
+  selectedCodeCommune: null,
+  bal: null
 }
 
 export default UploadForm

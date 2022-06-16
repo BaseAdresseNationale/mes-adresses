@@ -1,9 +1,11 @@
-import {useState, useContext} from 'react'
+import {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 import Link from 'next/link'
+import {uniqBy} from 'lodash'
 
 import {getCommune} from '@/lib/geo-api'
+import {createBaseLocale, searchBAL} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
@@ -17,8 +19,9 @@ import UploadForm from '@/components/new/upload-form'
 import DemoForm from '@/components/new/demo-form'
 
 function Index({defaultCommune, isDemo}) {
-  const {balAccess} = useContext(LocalStorageContext)
+  const {addBalAccess, balAccess} = useContext(LocalStorageContext)
 
+  const [bal, setBal] = useState(null)
   const [index, setIndex] = useState(0)
   const [nom, onNomChange] = useInput(
     defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
@@ -30,6 +33,47 @@ function Index({defaultCommune, isDemo}) {
   const [selectedCodeCommune, setSelectedCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
 
   const Form = index === 0 ? CreateForm : UploadForm
+
+  const createNewBal = useCallback(async codeCommune => {
+    if (codeCommune && !bal) {
+      const baseLocale = await createBaseLocale({
+        nom,
+        commune: codeCommune,
+        emails: [
+          email
+        ]
+      })
+
+      addBalAccess(baseLocale._id, baseLocale.token)
+      setBal(baseLocale)
+    }
+  }, [bal, nom, email, addBalAccess])
+
+  const checkUserBALs = useCallback(async () => {
+    const userBALs = []
+
+    const basesLocales = await searchBAL(selectedCodeCommune, email)
+
+    if (basesLocales.length > 0) {
+      userBALs.push(...basesLocales)
+    }
+
+    if (basesLocales.length > 0) {
+      const uniqUserBALs = uniqBy(userBALs, '_id')
+
+      setUserBALs(uniqUserBALs)
+      setIsShown(true)
+    } else {
+      await createNewBal(selectedCodeCommune)
+    }
+  }, [selectedCodeCommune, email, createNewBal])
+
+  const onSubmit = async e => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    await checkUserBALs()
+  }
 
   const onCancel = () => {
     setIsShown(false)
@@ -67,13 +111,16 @@ function Index({defaultCommune, isDemo}) {
                 onNomChange={onNomChange}
                 email={email}
                 onEmailChange={onEmailChange}
+                bal={bal}
                 userBALs={userBALs}
-                setUserBALs={setUserBALs}
                 onCancel={onCancel}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
                 isShown={isShown}
                 setIsShown={setIsShown}
+                checkUserBALs={checkUserBALs}
+                createNewBal={createNewBal}
+                onSubmit={onSubmit}
               />
             </Pane>
           </>)}
