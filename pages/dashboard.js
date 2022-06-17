@@ -14,7 +14,7 @@ import PublishedBalStats from '@/components/dashboard/published-bal-stats'
 function Index({basesLocales, basesLoclesStats}) {
   const communeCount = uniq(
     basesLocales
-      .filter(({commune}) => commune)
+      .map(({commune}) => commune)
   ).length
 
   return (
