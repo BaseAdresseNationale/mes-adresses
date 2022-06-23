@@ -33,6 +33,7 @@ export const BalDataContextProvider = React.memo(({
   const [toponyme, setToponyme] = useState(initialToponyme)
   const [baseLocale, setBaseLocale] = useState(initialBaseLocale)
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
+  const isDeleted = Boolean(baseLocale._deleted)
 
   const {token} = useContext(TokenContext)
 
@@ -175,7 +176,8 @@ export const BalDataContextProvider = React.memo(({
     reloadBaseLocale,
     setVoie,
     setToponyme,
-    certifyAllNumeros
+    certifyAllNumeros,
+    isDeleted
   }), [
     isEditing,
     editingId,
@@ -205,7 +207,8 @@ export const BalDataContextProvider = React.memo(({
     toponyme,
     certifyAllNumeros,
     isRefrehSyncStat,
-    refreshBALSync
+    refreshBALSync,
+    isDeleted
   ])
 
   return (
