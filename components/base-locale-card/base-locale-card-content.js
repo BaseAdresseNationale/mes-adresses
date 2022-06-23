@@ -9,7 +9,7 @@ import LocalStorageContext from '@/contexts/local-storage'
 import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 
 function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove, onHide}) {
-  const {status, _created, emails} = baseLocale
+  const {status, _created, emails, _deleted} = baseLocale
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
 
   const {getBalToken} = useContext(LocalStorageContext)
@@ -19,6 +19,7 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
   }, [baseLocale._id, getBalToken])
 
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
+  const deletedDate = _deleted ? format(new Date(_deleted), 'PPP', {locale: fr}) : null
   const isDeletable = status === 'draft' || status === 'demo'
   const tooltipContent = status === 'ready-to-publish' ?
     'Vous ne pouvez pas supprimer une BAL lorsqu’elle est prête à être publiée' :
@@ -26,9 +27,20 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
   return (
     <>
       <Pane borderTop flex={3} display='flex' flexDirection='row' paddingTop='1em'>
-        <Pane flex={1} textAlign='center' margin='auto'>
-          <Text>Créée le <Pane><b>{createDate}</b></Pane></Text>
-        </Pane>
+        {deletedDate ? (
+          <>
+            <Pane flex={1} textAlign='center' margin='auto'>
+              <Text>Créée le <Pane><b>{createDate}</b></Pane></Text>
+            </Pane>
+            <Pane flex={1} textAlign='center' margin='auto'>
+              <Text>Supprimée le <Pane><b>{deletedDate}</b></Pane></Text>
+            </Pane>
+          </>
+        ) : (
+          <Pane flex={1} textAlign='center' margin='auto'>
+            <Text>Créée le <Pane><b>{createDate}</b></Pane></Text>
+          </Pane>
+        )}
 
         {emails && isAdmin && (
           <Pane flex={1} textAlign='center' padding='8px' display='flex' flexDirection='row' justifyContent='center' margin='auto'>
@@ -97,7 +109,7 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
         </Pane>
       ) : (
         <Pane borderTop display='flex' justifyContent='flex-end' paddingTop='1em' marginTop='1em'>
-          <Button appearance='primary' marginRight='8px' onClick={onSelect}>Consulter</Button>
+          <Button appearance='primary' marginRight='8px' disabled={deletedDate} onClick={onSelect}>Consulter</Button>
         </Pane>
       )}
     </>
