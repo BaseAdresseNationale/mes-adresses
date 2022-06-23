@@ -17,6 +17,7 @@ import CertificationMessage from '@/components/certification-message'
 import Settings from '@/components/settings'
 import AddressEditor from '@/components/bal/address-editor'
 import DemoWarning from '@/components/demo-warning'
+import DeletedWarning from '@/components/deleted-warning'
 
 function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
   const [isHidden, setIsHidden] = useState(false)
@@ -47,8 +48,12 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 <SubHeader commune={commune} />
               </SettingsContextProvider>
 
+              {baseLocale._deleted && (
+                <DeletedWarning baseLocale={baseLocale} />
+              )}
+
               <Map
-                top={116}
+                top={baseLocale._deleted ? 166 : 116}
                 bottom={isDemo ? 50 : 0}
                 left={leftOffset}
                 commune={commune}
@@ -57,7 +62,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
               />
 
               <Sidebar
-                top={116}
+                top={baseLocale._deleted ? 166 : 116}
                 bottom={isDemo ? 50 : 0}
                 isHidden={isHidden}
                 size={500}
