@@ -129,6 +129,7 @@ BaseLocaleCardContent.propTypes = {
     _id: PropTypes.string.isRequired,
     emails: PropTypes.array,
     _created: PropTypes.string.isRequired,
+    _deleted: PropTypes.string,
     status: PropTypes.oneOf([
       'draft', 'ready-to-publish', 'replaced', 'published', 'demo'
     ])
