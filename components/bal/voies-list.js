@@ -15,7 +15,7 @@ import VoieEditor from '@/components/bal/voie-editor'
 
 function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToRemove}) {
   const {token} = useContext(TokenContext)
-  const {isEditing} = useContext(BalDataContext)
+  const {isEditing, isDeleted} = useContext(BalDataContext)
 
   const [filtered, setFilter] = useFuse(voies, 200, {
     keys: [
@@ -50,7 +50,7 @@ function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToR
             <TableRow
               key={voie._id}
               label={voie.nom}
-              isEditingEnabled={Boolean(!isEditing && token)}
+              isEditingEnabled={Boolean(!isEditing && token && !isDeleted)}
               actions={{
                 onSelect: () => onSelect(voie._id),
                 onEdit: () => onEnableEditing(voie._id),

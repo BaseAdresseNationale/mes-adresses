@@ -16,17 +16,17 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros, reloadGeojson, refreshBALSync, isDeleted} = useContext(BalDataContext)
 
   const needGeojsonUpdateRef = useRef(false)
 
   const onEnableEditing = useCallback((e, numeroId) => {
     e.stopPropagation()
 
-    if (!isEditing) {
+    if (!isEditing && !isDeleted) {
       setEditingId(numeroId)
     }
-  }, [setEditingId, isEditing])
+  }, [setEditingId, isEditing, isDeleted])
 
   const colorSeed = useCallback(id => {
     return id ? randomColor({

@@ -12,10 +12,10 @@ function VoieHeading({voie}) {
   const [isFormOpen, setIsFormOpen] = useState(false)
 
   const {token} = useContext(TokenContext)
-  const {editingId, isEditing, numeros} = useContext(BalDataContext)
+  const {editingId, isEditing, numeros, isDeleted} = useContext(BalDataContext)
 
   const onEnableVoieEditing = () => {
-    if (!isEditing) {
+    if (!isEditing && !isDeleted) {
       setIsFormOpen(true)
       setHovered(false)
     }
@@ -38,7 +38,7 @@ function VoieHeading({voie}) {
           onMouseLeave={() => setHovered(false)}
         >
           {voie.nom}
-          {!isEditing && token && (
+          {!isEditing && token && !isDeleted && (
             <EditIcon
               marginBottom={-2}
               marginLeft={8}

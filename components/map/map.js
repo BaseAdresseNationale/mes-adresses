@@ -86,7 +86,8 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     toponymes,
     editingId,
     setEditingId,
-    isEditing
+    isEditing,
+    isDeleted
   } = useContext(BalDataContext)
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
@@ -224,7 +225,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         </Pane>
       )}
 
-      {token && (
+      {token && !isDeleted && (
         <Pane
           position='absolute'
           zIndex={1}
