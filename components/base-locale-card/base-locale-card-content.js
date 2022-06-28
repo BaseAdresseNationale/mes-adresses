@@ -109,7 +109,7 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
         </Pane>
       ) : (
         <Pane borderTop display='flex' justifyContent='flex-end' paddingTop='1em' marginTop='1em'>
-          <Button appearance='primary' marginRight='8px' disabled={deletedDate} onClick={onSelect}>Consulter</Button>
+          <Button appearance='primary' marginRight='8px' onClick={onSelect}>Consulter</Button>
         </Pane>
       )}
     </>
