@@ -47,7 +47,7 @@ function All({basesLocales}) {
 
 All.getInitialProps = async () => {
   return {
-    basesLocales: await listBasesLocales({fetchDeleted: true})
+    basesLocales: await listBasesLocales()
   }
 }
 

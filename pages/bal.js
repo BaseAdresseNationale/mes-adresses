@@ -34,8 +34,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
     reloadGeojson,
     editingId,
     isEditing,
-    setIsEditing,
-    isDeleted
+    setIsEditing
   } = useContext(BalDataContext)
 
   useHelp(selectedTab === 'voie' ? 1 : 2)
@@ -152,7 +151,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
           alignItems='center'
           minHeight={50}
         >
-          {token && !isDeleted && (
+          {token && (
             <Pane marginLeft='auto'>
               <Button
                 iconBefore={AddIcon}
