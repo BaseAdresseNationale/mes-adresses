@@ -48,12 +48,8 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                 <SubHeader commune={commune} />
               </SettingsContextProvider>
 
-              {baseLocale._deleted && (
-                <DeletedWarning baseLocale={baseLocale} />
-              )}
-
               <Map
-                top={baseLocale._deleted ? 166 : 116}
+                top={116}
                 bottom={isDemo ? 50 : 0}
                 left={leftOffset}
                 commune={commune}
@@ -62,7 +58,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
               />
 
               <Sidebar
-                top={baseLocale._deleted ? 166 : 116}
+                top={116}
                 bottom={isDemo ? 50 : 0}
                 isHidden={isHidden}
                 size={500}
