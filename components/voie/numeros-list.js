@@ -16,7 +16,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
-  const {baseLocale, isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync, isDeleted} = useContext(BalDataContext)
+  const {baseLocale, isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const needGeojsonUpdateRef = useRef(false)
 
@@ -120,7 +120,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           <Heading>Liste des numéros</Heading>
         </Pane>
 
-        {token && !isDeleted && (
+        {token && (
           <Pane marginLeft='auto'>
             <Button
               iconBefore={AddIcon}
@@ -159,7 +159,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       <Pane flex={1} overflowY='scroll'>
         <Table>
           <Table.Head>
-            {numeros && token && filtered.length > 1 && !isEditionDisabled && !isDeleted && (
+            {numeros && token && filtered.length > 1 && !isEditionDisabled && (
               <Table.Cell flex='0 1 1'>
                 <Checkbox
                   checked={isAllSelected}
@@ -190,7 +190,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
             complement={getToponymeName(numero.toponyme)}
             handleSelect={!isEditionDisabled && filtered.length > 1 ? () => handleSelect(numero._id) : null}
             isSelected={selectedNumerosIds.includes(numero._id)}
-            isEditingEnabled={Boolean(!isEditing && token && !isDeleted)}
+            isEditingEnabled={Boolean(!isEditing && token)}
             notifications={{
               isCertified: numero.certifie,
               comment: numero.comment,

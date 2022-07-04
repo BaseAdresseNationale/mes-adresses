@@ -29,8 +29,7 @@ const SubHeader = React.memo(({commune}) => {
     isHabilitationValid,
     voie,
     toponyme,
-    isRefrehSyncStat,
-    isDeleted
+    isRefrehSyncStat
   } = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
 
@@ -97,19 +96,17 @@ const SubHeader = React.memo(({commune}) => {
         />
 
         <Pane marginLeft='auto' display='flex' alignItems='center'>
-          <SettingsMenu isAdmin={isAdmin && !isDeleted} csvUrl={csvUrl} />
-          {!isDeleted && (
-            <BALStatus
-              baseLocale={baseLocale}
-              commune={commune}
-              token={token}
-              isHabilitationValid={isHabilitationValid}
-              isRefrehSyncStat={isRefrehSyncStat}
-              handleChangeStatus={handleChangeStatus}
-              handleHabilitation={handleHabilitation}
-              reloadBaseLocale={async () => reloadBaseLocale()}
-            />
-          )}
+          <SettingsMenu isAdmin={isAdmin} csvUrl={csvUrl} />
+          <BALStatus
+            baseLocale={baseLocale}
+            commune={commune}
+            token={token}
+            isHabilitationValid={isHabilitationValid}
+            isRefrehSyncStat={isRefrehSyncStat}
+            handleChangeStatus={handleChangeStatus}
+            handleHabilitation={handleHabilitation}
+            reloadBaseLocale={async () => reloadBaseLocale()}
+          />
         </Pane>
       </Pane>
 

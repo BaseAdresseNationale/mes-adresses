@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon, TrashIcon} from 'evergreen-ui'
+import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 
 import {getBaseLocale} from '@/lib/bal-api'
 import {getCommune} from '@/lib/geo-api'
@@ -15,7 +15,6 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
   const {nom, _updated} = baseLocale
   const [commune, setCommune] = useState()
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
-  const isDeleted = baseLocale._deleted
 
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
 
@@ -37,7 +36,6 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
   return (
     <Card
       border
-      borderColor={baseLocale._deleted ? '#d14343' : ''}
       elevation={2}
       margin={12}
       padding={6}
@@ -60,11 +58,8 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
             )}
 
             <Pane>
-              <Heading fontSize='18px' color={isDeleted ? '#d14343' : ''}>
+              <Heading fontSize='18px'>
                 {nom}
-                {isDeleted && (
-                  <TrashIcon size={15} marginX={8} />
-                )}
               </Heading>
               <Pane>
                 <Text fontSize={12} fontStyle='italic'>

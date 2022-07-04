@@ -28,8 +28,7 @@ function Toponyme({baseLocale, commune}) {
     numeros,
     reloadNumeros,
     isEditing,
-    setIsEditing,
-    isDeleted
+    setIsEditing
   } = useContext(BalDataContext)
 
   useHelp(2)
@@ -106,19 +105,17 @@ function Toponyme({baseLocale, commune}) {
           minHeight={64}
         >
           <Heading>Liste des numéros</Heading>
-          {!isDeleted && (
-            <Pane marginLeft='auto'>
-              <Button
-                iconBefore={AddIcon}
-                appearance='primary'
-                intent='success'
-                disabled={isEditing}
-                onClick={onEnableAdding}
-              >
-                Ajouter des numéros
-              </Button>
-            </Pane>
-          )}
+          <Pane marginLeft='auto'>
+            <Button
+              iconBefore={AddIcon}
+              appearance='primary'
+              intent='success'
+              disabled={isEditing}
+              onClick={onEnableAdding}
+            >
+              Ajouter des numéros
+            </Button>
+          </Pane>
         </Pane>
       )}
 
