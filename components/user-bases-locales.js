@@ -32,7 +32,6 @@ function UserBasesLocales() {
         }))
 
       const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
-
       setBasesLocales(findedBasesLocales)
     }
 

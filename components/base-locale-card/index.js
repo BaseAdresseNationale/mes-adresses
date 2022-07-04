@@ -58,9 +58,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
             )}
 
             <Pane>
-              <Heading fontSize='18px'>
-                {nom}
-              </Heading>
+              <Heading fontSize='18px'>{nom}</Heading>
               <Pane>
                 <Text fontSize={12} fontStyle='italic'>
                   {_updated ? 'Dernière mise à jour il y a ' + majDate : 'Jamais mise à jour'} -
