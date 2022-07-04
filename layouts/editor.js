@@ -95,8 +95,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 Editor.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    _deleted: PropTypes.string
+    status: PropTypes.string.isRequired
   }).isRequired,
   commune: PropTypes.object.isRequired,
   voie: PropTypes.object,

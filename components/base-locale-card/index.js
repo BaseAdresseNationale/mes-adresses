@@ -122,7 +122,6 @@ BaseLocaleCard.propTypes = {
     nom: PropTypes.string.isRequired,
     commune: PropTypes.string.isRequired,
     _updated: PropTypes.string,
-    _deleted: PropTypes.bool,
     status: PropTypes.oneOf([
       'draft', 'ready-to-publish', 'replaced', 'published', 'demo'
     ]),
