@@ -31,7 +31,7 @@ function UserBasesLocales() {
           }
         }))
 
-      const findedBasesLocales = basesLocales.filter(bal => Boolean(bal) && !bal._deleted)
+      const findedBasesLocales = basesLocales.filter(bal => Boolean(bal))
 
       setBasesLocales(findedBasesLocales)
     }
