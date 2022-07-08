@@ -1,6 +1,6 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
-import {validate} from '@etalab/bal'
+import {validate} from '@ban-team/validateur-bal'
 import {uniqBy} from 'lodash'
 import {Pane, Alert, Button, Dialog, TextInputField, Text, Strong, FormField, PlusIcon, InboxIcon, Paragraph, ShareIcon} from 'evergreen-ui'
 
