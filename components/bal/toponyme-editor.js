@@ -25,10 +25,8 @@ import LanguageField from './language-field'
 
 import router from 'next/router'
 
-const nomVoieAlt = null
-
 function ToponymeEditor({initialValue, commune, closeForm}) {
-  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage] = useLanguages(nomVoieAlt)
+  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomVoieAlt)
 
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
@@ -47,6 +45,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
 
     const body = {
       nom,
+      nomVoieAlt: sanitizedAltVoieNames,
       positions: [],
       parcelles: selectedParcelles
     }
@@ -91,7 +90,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
+  }, [token, baseLocale._id, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages, sanitizedAltVoieNames])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -118,7 +117,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         <FormInput>
           <AssistedTextField
             isFocus
-            dsiabled={isLoading}
+            disabled={isLoading}
             label='Nom du toponyme'
             placeholder='Nom du toponyme'
             value={nom}
@@ -190,6 +189,7 @@ ToponymeEditor.propTypes = {
   initialValue: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
+    nomVoieAlt: PropTypes.object.isRequired,
     parcelles: PropTypes.array.isRequired,
     positions: PropTypes.array.isRequired
   }),
