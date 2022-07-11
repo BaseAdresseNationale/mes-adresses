@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useMemo} from 'react'
 import {uniqueId} from 'lodash'
 
 export default function useLanguages(initialValue) {
@@ -7,6 +7,19 @@ export default function useLanguages(initialValue) {
   })
 
   const [selectedLanguages, setSelectedLanguages] = useState(initialLanguageList || [])
+
+  const sanitizedAltVoieNames = useMemo(() => {
+    const sanitizedLanguages = {}
+    selectedLanguages.map(language => {
+      if (language.label) {
+        sanitizedLanguages[language.value] = language.label
+      }
+
+      return language
+    })
+
+    return Object.keys(sanitizedLanguages).length > 0 ? sanitizedLanguages : null
+  }, [selectedLanguages])
 
   const onAddLanguage = () => {
     setSelectedLanguages([...selectedLanguages, {label: '', value: '', disabled: false, id: uniqueId()}])
@@ -27,6 +40,6 @@ export default function useLanguages(initialValue) {
     setSelectedLanguages([...selectedLanguages])
   }
 
-  return [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage]
+  return [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames]
 }
 

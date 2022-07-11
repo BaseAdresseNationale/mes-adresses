@@ -19,15 +19,12 @@ import FormInput from '@/components/form-input'
 import AssistedTextField from '@/components/assisted-text-field'
 import DrawEditor from '@/components/bal/draw-editor'
 import LanguageField from './language-field'
-
-const nomVoieAlt = {bre: 'Gwidel', cos: 'Carghjese'}
 function VoieEditor({initialValue, closeForm}) {
-  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage] = useLanguages(nomVoieAlt)
-
   const [isLoading, setIsLoading] = useState(false)
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage()
+  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomVoieAlt)
 
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
@@ -42,6 +39,7 @@ function VoieEditor({initialValue, closeForm}) {
     try {
       const body = {
         nom,
+        nomVoieAlt: sanitizedAltVoieNames,
         typeNumerotation: isMetric ? 'metrique' : 'numerique',
         trace: data ? data.geometry : null
       }
@@ -68,7 +66,7 @@ function VoieEditor({initialValue, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [baseLocale._id, initialValue, nom, isMetric, data, token, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
+  }, [baseLocale._id, initialValue, nom, isMetric, data, token, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync, sanitizedAltVoieNames])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -121,9 +119,9 @@ function VoieEditor({initialValue, closeForm}) {
                 index={index}
                 field={field}
                 selectedLanguages={selectedLanguages}
-                handleLanguageChange={handleLanguageChange}
-                handleLanguageSelect={handleLanguageSelect}
-                removeLanguage={removeLanguage}
+                onChange={handleLanguageChange}
+                onSelect={handleLanguageSelect}
+                onDelete={removeLanguage}
               />
             )
           })}
