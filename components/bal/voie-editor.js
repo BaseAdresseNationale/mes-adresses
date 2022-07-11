@@ -2,7 +2,6 @@ import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import router from 'next/router'
 import {Button, Checkbox, AddIcon} from 'evergreen-ui'
-import {uniqueId} from 'lodash'
 
 import {addVoie, editVoie} from '@/lib/bal-api'
 
@@ -12,6 +11,7 @@ import TokenContext from '@/contexts/token'
 
 import {useInput, useCheckboxInput} from '@/hooks/input'
 import useValidationMessage from '@/hooks/validation-messages'
+import useLanguages from '@/hooks/languages'
 
 import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
@@ -20,22 +20,14 @@ import AssistedTextField from '@/components/assisted-text-field'
 import DrawEditor from '@/components/bal/draw-editor'
 import LanguageField from './language-field'
 
-// Const nomVoieAlt = {bre: 'Gwidel', cos: 'Carghjese'}
-const nomVoieAlt = null
+const nomVoieAlt = {bre: 'Gwidel', cos: 'Carghjese'}
 function VoieEditor({initialValue, closeForm}) {
-  // Const initialLanguageList = initialValue.nomVoieAlt && Object.keys(initialValue.nomVoieAlt).map(language => {
-  //   return {label: initialValue.nomVoieAlt[language], value: language, disabled: true, id: uniqueId()}
-  // })
-
-  const initialLanguageList = nomVoieAlt && Object.keys(nomVoieAlt).map(language => {
-    return {label: nomVoieAlt[language], value: language, disabled: true, id: uniqueId()}
-  })
+  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage] = useLanguages(nomVoieAlt)
 
   const [isLoading, setIsLoading] = useState(false)
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage()
-  const [selectedLanguages, setSelectedLanguages] = useState(initialLanguageList || [])
 
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
@@ -101,25 +93,6 @@ function VoieEditor({initialValue, closeForm}) {
   const onUnmount = useCallback(() => {
     disableDraw()
   }, [disableDraw])
-
-  const onAddLanguage = () => {
-    setSelectedLanguages([...selectedLanguages, {label: '', value: '', disabled: false, id: uniqueId()}])
-  }
-
-  const handleLanguageSelect = (codeISO, index) => {
-    selectedLanguages[index].value = codeISO
-    setSelectedLanguages([...selectedLanguages])
-  }
-
-  const handleLanguageChange = (event, index) => {
-    selectedLanguages[index].label = event.target.value
-    setSelectedLanguages([...selectedLanguages])
-  }
-
-  const removeLanguage = index => {
-    selectedLanguages.splice(index, 1)
-    setSelectedLanguages([...selectedLanguages])
-  }
 
   return (
     <FormMaster editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm}>

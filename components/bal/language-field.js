@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Pane, Button, SelectMenu, TextInputField, Tooltip, TrashIcon} from 'evergreen-ui'
 
-function LanguageField({field, index, selectedLanguages, handleLanguageChange, handleLanguageSelect, removeLanguage}) {
+function LanguageField({field, index, selectedLanguages, onChange, onSelect, onDelete}) {
   const languagesList = [
     {label: 'Breton', value: 'bre', disabled: false},
     {label: 'Basque', value: 'eus', disabled: false},
@@ -36,7 +36,7 @@ function LanguageField({field, index, selectedLanguages, handleLanguageChange, h
         title='Select Option'
         options={languagesList}
         selected={field ? detectLanguage(field) : null}
-        onSelect={item => handleLanguageSelect(item.value, index)}
+        onSelect={item => onSelect(item.value, index)}
         width='fit-content'
       >
         <Button
@@ -50,7 +50,7 @@ function LanguageField({field, index, selectedLanguages, handleLanguageChange, h
       </SelectMenu>
       <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px'>
         <TextInputField
-          onChange={e => handleLanguageChange(e, index)}
+          onChange={e => onChange(e, index)}
           value={field.label}
           label=''
           aria-label={`Écrire le ${handlePlaceholder}`}
@@ -65,7 +65,7 @@ function LanguageField({field, index, selectedLanguages, handleLanguageChange, h
           <Button
             type='button'
             aria-label='Supprimer la langue régionale'
-            onClick={() => removeLanguage(index)}
+            onClick={() => onDelete(index)}
             intent='danger'
             width='fit-content'
             padding={0}
@@ -83,9 +83,9 @@ LanguageField.propTypes = {
   field: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
   selectedLanguages: PropTypes.array.isRequired,
-  handleLanguageChange: PropTypes.func.isRequired,
-  handleLanguageSelect: PropTypes.func.isRequired,
-  removeLanguage: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired
 }
 
 export default LanguageField
