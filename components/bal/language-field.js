@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
-import {Pane, Button, SelectMenu, TextInputField, Tooltip, TrashIcon} from 'evergreen-ui'
+import {Pane, Button, SelectMenu, Tooltip, TrashIcon} from 'evergreen-ui'
+
+import AssistedTextField from '@/components/assisted-text-field'
 
 function LanguageField({field, index, selectedLanguages, onChange, onSelect, onDelete, isToponyme}) {
   const languagesList = [
@@ -48,19 +50,17 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
           {detectLanguage(field) || 'Sélectionner une langue régionale...'}
         </Button>
       </SelectMenu>
-      <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px'>
-        <TextInputField
-          onChange={e => onChange(e, index)}
-          value={field.label}
+      <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
+        <AssistedTextField
+          isFocus
           label=''
+          isRequired={false}
           aria-label={`Écrire le ${handlePlaceholder}`}
           placeholder={handlePlaceholder}
-          width='100%'
-          display='flex'
-          padding={0}
-          margin={0}
+          value={field.label}
+          onChange={e => onChange(e, index)}
+          isFullWidth
         />
-
         <Tooltip content='Supprimer la langue régionale'>
           <Button
             type='button'
@@ -69,7 +69,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
             intent='danger'
             width='fit-content'
             padding={0}
-            margin={0}
+            marginBottom={8}
           >
             <TrashIcon size={14} color='danger' />
           </Button>
