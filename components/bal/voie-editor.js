@@ -24,7 +24,7 @@ function VoieEditor({initialValue, closeForm}) {
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage()
-  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomVoieAlt)
+  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomAlt)
 
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
@@ -39,7 +39,7 @@ function VoieEditor({initialValue, closeForm}) {
     try {
       const body = {
         nom,
-        nomVoieAlt: sanitizedAltVoieNames,
+        nomAlt: sanitizedAltVoieNames,
         typeNumerotation: isMetric ? 'metrique' : 'numerique',
         trace: data ? data.geometry : null
       }
@@ -166,7 +166,7 @@ VoieEditor.propTypes = {
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
     typeNumerotation: PropTypes.string,
-    nomVoieAlt: PropTypes.object,
+    nomAlt: PropTypes.object,
     trace: PropTypes.object
   }),
   closeForm: PropTypes.func.isRequired

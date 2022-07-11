@@ -26,7 +26,7 @@ import LanguageField from './language-field'
 import router from 'next/router'
 
 function ToponymeEditor({initialValue, commune, closeForm}) {
-  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomVoieAlt)
+  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomAlt)
 
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
@@ -45,7 +45,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
 
     const body = {
       nom,
-      nomVoieAlt: sanitizedAltVoieNames,
+      nomAlt: sanitizedAltVoieNames,
       positions: [],
       parcelles: selectedParcelles
     }
@@ -189,7 +189,7 @@ ToponymeEditor.propTypes = {
   initialValue: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    nomVoieAlt: PropTypes.object.isRequired,
+    nomAlt: PropTypes.object.isRequired,
     parcelles: PropTypes.array.isRequired,
     positions: PropTypes.array.isRequired
   }),
