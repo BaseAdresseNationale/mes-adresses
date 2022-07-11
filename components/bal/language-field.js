@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Pane, Button, SelectMenu, TextInputField, Tooltip, TrashIcon} from 'evergreen-ui'
 
-function LanguageField({field, index, selectedLanguages, onChange, onSelect, onDelete}) {
+function LanguageField({field, index, selectedLanguages, onChange, onSelect, onDelete, isToponyme}) {
   const languagesList = [
     {label: 'Breton', value: 'bre', disabled: false},
     {label: 'Basque', value: 'eus', disabled: false},
@@ -28,7 +28,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
     }
   }
 
-  const handlePlaceholder = field.label === '' && field.value ? `Nom de la voie en ${detectLanguage(field).toLowerCase()}` : 'Nom de la voie en langue régionale'
+  const handlePlaceholder = field.label === '' && field.value ? `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en ${detectLanguage(field).toLowerCase()}` : `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en langue régionale`
 
   return (
     <Pane width='100%' display='flex' flexDirection='column' height='fit-content' marginBottom={18}>
@@ -85,7 +85,12 @@ LanguageField.propTypes = {
   selectedLanguages: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired
+  onDelete: PropTypes.func.isRequired,
+  isToponyme: PropTypes.bool
+}
+
+LanguageField.defaultProps = {
+  isToponyme: false
 }
 
 export default LanguageField

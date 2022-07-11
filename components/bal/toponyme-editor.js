@@ -1,7 +1,7 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {difference} from 'lodash'
-import {Button} from 'evergreen-ui'
+import {Button, AddIcon} from 'evergreen-ui'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
 
@@ -12,6 +12,7 @@ import ParcellesContext from '@/contexts/parcelles'
 
 import {useInput} from '@/hooks/input'
 import useValidationMessage from '@/hooks/validation-messages'
+import useLanguages from '@/hooks/languages'
 
 import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
@@ -20,9 +21,15 @@ import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import DisabledFormInput from '@/components/disabled-form-input'
+import LanguageField from './language-field'
+
 import router from 'next/router'
 
+const nomVoieAlt = null
+
 function ToponymeEditor({initialValue, commune, closeForm}) {
+  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage] = useLanguages(nomVoieAlt)
+
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
@@ -118,6 +125,31 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
             onChange={onNomChange}
             validationMessage={getValidationMessage('nom')}
           />
+
+          {selectedLanguages.map((field, index) => {
+            return (
+              <LanguageField
+                key={field.id}
+                index={index}
+                field={field}
+                selectedLanguages={selectedLanguages}
+                onChange={handleLanguageChange}
+                onSelect={handleLanguageSelect}
+                onDelete={removeLanguage}
+                isToponyme
+              />
+            )
+          })}
+          <Button
+            type='button'
+            appearance='primary'
+            intent='success'
+            iconBefore={AddIcon}
+            width='100%'
+            onClick={onAddLanguage}
+          >
+            Ajouter une langue régionale
+          </Button>
         </FormInput>
 
         <FormInput>
