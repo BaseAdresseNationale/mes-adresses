@@ -2,7 +2,9 @@ import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Table, EditIcon} from 'evergreen-ui'
 
-const TableRowEditShortcut = React.memo(({label, complement, isEditingEnabled, isSelectable}) => {
+import LanguagePreview from '../bal/language-preview'
+
+const TableRowEditShortcut = React.memo(({label, nomAlt, complement, isEditingEnabled, isSelectable}) => {
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -18,7 +20,7 @@ const TableRowEditShortcut = React.memo(({label, complement, isEditingEnabled, i
         style={{cursor: isEditingEnabled ? 'text' : 'pointer'}}
         className='edit-cell'
       >
-        <Pane padding={1}>
+        <Pane padding={1} fontSize={15}>
           {label} {complement && <i>{` - ${complement}`}</i>}
           {isEditingEnabled && (
             <span className='pencil-icon'>
@@ -26,6 +28,7 @@ const TableRowEditShortcut = React.memo(({label, complement, isEditingEnabled, i
             </span>
           )}
         </Pane>
+        {nomAlt && <LanguagePreview nomAlt={nomAlt} />}
       </Table.TextCell>
 
       <style global jsx>{`
@@ -43,13 +46,15 @@ const TableRowEditShortcut = React.memo(({label, complement, isEditingEnabled, i
 
 TableRowEditShortcut.propTypes = {
   label: PropTypes.string.isRequired,
+  nomAlt: PropTypes.object,
   complement: PropTypes.string,
   isEditingEnabled: PropTypes.bool.isRequired,
   isSelectable: PropTypes.bool.isRequired
 }
 
 TableRowEditShortcut.defaultProps = {
-  complement: null
+  complement: null,
+  nomAlt: null
 }
 
 export default TableRowEditShortcut
