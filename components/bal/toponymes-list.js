@@ -50,6 +50,7 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
             <TableRow
               key={toponyme._id}
               label={toponyme.nom}
+              nomAlt={toponyme.nomAlt}
               isEditingEnabled={Boolean(!isEditing && token)}
               notifications={{
                 warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
