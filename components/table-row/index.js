@@ -6,7 +6,7 @@ import TableRowActions from '@/components/table-row/table-row-actions'
 import TableRowEditShortcut from '@/components/table-row/table-row-edit-shortcut'
 import TableRowNotifications from '@/components/table-row/table-row-notifications'
 
-const TableRow = React.memo(({label, complement, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
+const TableRow = React.memo(({label, nomAlt, complement, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
   const {onSelect, onEdit} = actions
 
   const onClick = useCallback(e => {
@@ -30,6 +30,7 @@ const TableRow = React.memo(({label, complement, secondary, notifications, isSel
 
       <TableRowEditShortcut
         label={label}
+        nomAlt={nomAlt}
         complement={complement}
         isEditingEnabled={isEditingEnabled}
         isSelectable={Boolean(onSelect)}
@@ -54,6 +55,7 @@ const TableRow = React.memo(({label, complement, secondary, notifications, isSel
 
 TableRow.propTypes = {
   label: PropTypes.string.isRequired,
+  nomAlt: PropTypes.object,
   complement: PropTypes.string,
   secondary: PropTypes.string,
   handleSelect: PropTypes.func,
@@ -68,6 +70,7 @@ TableRow.propTypes = {
 
 TableRow.defaultProps = {
   complement: null,
+  nomAlt: null,
   secondary: null,
   notifications: null,
   handleSelect: null,
