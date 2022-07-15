@@ -45,7 +45,7 @@ function AssistedTextField({label, ariaLabel, placeholder, value, validationMess
         marginLeft={8}
         marginTop={3}
       >
-        <AccentTool input={value} handleAccent={e => handleChangeAccent(e)} cursorPosition={cursorPosition} />
+        <AccentTool input={value} handleAccent={e => handleChangeAccent(e)} cursorPosition={cursorPosition} isDisabled={isDisabled} />
       </Pane>
     </Pane>
   )
