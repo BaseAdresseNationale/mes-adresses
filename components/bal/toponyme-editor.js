@@ -189,7 +189,7 @@ ToponymeEditor.propTypes = {
   initialValue: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
-    nomAlt: PropTypes.object.isRequired,
+    nomAlt: PropTypes.object,
     parcelles: PropTypes.array.isRequired,
     positions: PropTypes.array.isRequired
   }),
