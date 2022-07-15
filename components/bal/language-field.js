@@ -22,22 +22,15 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
     }
   }
 
-  const detectLanguage = field => {
-    for (const language of languagesList) {
-      if (field.value === language.value) {
-        return language.label
-      }
-    }
-  }
-
-  const handlePlaceholder = field.label === '' && field.value ? `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en ${detectLanguage(field).toLowerCase()}` : `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en langue régionale`
+  const languageFullName = languagesList.find(language => language.value === field.value)?.label
+  const handlePlaceholder = field.label === '' && field.value ? `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en ${languageFullName.toLowerCase()}` : `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en langue régionale`
 
   return (
     <Pane width='100%' display='flex' flexDirection='column' height='fit-content' marginBottom={18}>
       <SelectMenu
         title='Choisir une langue régionale'
         options={languagesList}
-        selected={field ? detectLanguage(field) : null}
+        selected={languageFullName || null}
         onSelect={item => onSelect(item.value, index)}
         width='fit-content'
         closeOnSelect
@@ -46,9 +39,9 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
           type='button'
           width='fit-content'
           margin={0}
-          fontStyle={detectLanguage(field) ? '' : 'italic'}
+          fontStyle={languageFullName ? '' : 'italic'}
         >
-          {detectLanguage(field) || 'Sélectionner une langue régionale...'}
+          {languageFullName || 'Sélectionner une langue régionale...'}
         </Button>
       </SelectMenu>
       <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
