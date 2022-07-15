@@ -26,7 +26,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
   const handlePlaceholder = field.label === '' && field.value ? `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en ${languageFullName.toLowerCase()}` : `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en langue régionale`
 
   return (
-    <Pane width='100%' display='flex' flexDirection='column' height='fit-content' marginBottom={18}>
+    <Pane width='100%' display='flex' flexDirection='column' height='fit-content' marginBottom={18} marginTop='1em'>
       <SelectMenu
         title='Choisir une langue régionale'
         options={languagesList}
@@ -64,7 +64,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
             intent='danger'
             width='fit-content'
             padding={0}
-            marginBottom={8}
+            marginTop={8}
           >
             <TrashIcon size={14} color='danger' />
           </Button>

@@ -22,7 +22,7 @@ function AssistedTextField({label, ariaLabel, placeholder, value, validationMess
   }
 
   return (
-    <Pane display='flex' alignItems={validationMessage ? 'last baseline' : 'flex-end'} marginBottom='1em'>
+    <Pane display='flex' alignItems={validationMessage ? 'last baseline' : 'flex-end'}>
       <TextInputField
         ref={isFocus && focusRef}
         required={isRequired}

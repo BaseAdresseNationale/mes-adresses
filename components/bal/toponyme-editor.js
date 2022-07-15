@@ -146,6 +146,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
             iconBefore={AddIcon}
             width='100%'
             onClick={onAddLanguage}
+            marginTop='1em'
           >
             Ajouter une langue régionale
           </Button>
