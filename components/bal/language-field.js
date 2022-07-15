@@ -40,6 +40,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
         selected={field ? detectLanguage(field) : null}
         onSelect={item => onSelect(item.value, index)}
         width='fit-content'
+        closeOnSelect
       >
         <Button
           type='button'
