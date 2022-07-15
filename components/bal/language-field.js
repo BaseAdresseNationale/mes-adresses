@@ -35,7 +35,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
   return (
     <Pane width='100%' display='flex' flexDirection='column' height='fit-content' marginBottom={18}>
       <SelectMenu
-        title='Select Option'
+        title='Choisir une langue régionale'
         options={languagesList}
         selected={field ? detectLanguage(field) : null}
         onSelect={item => onSelect(item.value, index)}
