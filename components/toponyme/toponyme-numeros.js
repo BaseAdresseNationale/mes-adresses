@@ -1,13 +1,22 @@
 import React, {useState, useMemo, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {groupBy} from 'lodash'
 import {Heading, Table, EditIcon, Tooltip, CommentIcon, WarningSignIcon, Position} from 'evergreen-ui'
+
+import LanguagePreview from '../bal/language-preview'
 
 function ToponymeNumeros({numeros, handleSelect, isEditable}) {
   const [hovered, setHovered] = useState(null)
 
   const numerosByVoie = useMemo(() => {
-    return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
+    const numerosByVoie = {}
+    for (const numero of numeros) {
+      numerosByVoie[numero.voie.nom] = {
+        nomAlt: numero.voie.nomAlt || null,
+        numeros: numeros.sort((a, b) => a.numero - b.numero)
+      }
+    }
+
+    return numerosByVoie
   }, [numeros])
 
   const handleClick = useCallback(id => {
@@ -22,13 +31,14 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
         <Table.Cell style={{padding: 0}} backgroundColor='white'>
           <Heading padding='1em' width='100%'>
             {nomVoie}
+            {numerosByVoie[nomVoie].nomAlt && <LanguagePreview nomAlt={numerosByVoie[nomVoie].nomAlt} />}
           </Heading>
           <Table.TextCell flex='0 1 1'>
-            {numerosByVoie[nomVoie].length} numéro{numerosByVoie[nomVoie].length > 1 ? 's' : ''}
+            {numerosByVoie[nomVoie].numeros.length} numéro{numerosByVoie[nomVoie].numeros.length > 1 ? 's' : ''}
           </Table.TextCell>
         </Table.Cell>
 
-        {numerosByVoie[nomVoie].map(({_id, numero, suffixe, positions, comment}) => (
+        {numerosByVoie[nomVoie].numeros.map(({_id, numero, suffixe, positions, comment}) => (
           <Table.Row
             key={_id}
             style={{cursor: 'pointer', backgroundColor: hovered === _id ? '#E4E7EB' : '#f5f6f7'}}
