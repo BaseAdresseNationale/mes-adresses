@@ -16,6 +16,7 @@ import ParcellesContext from '@/contexts/parcelles'
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 import useValidationMessage from '@/hooks/validation-messages'
+import useLanguages from '@/hooks/languages'
 
 import FormMaster from '@/components/form-master'
 import Comment from '@/components/comment'
@@ -42,6 +43,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe)
   const [comment, onCommentChange] = useInput(initialValue?.comment)
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
+  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomAlt)
 
   const {token} = useContext(TokenContext)
   const {baseLocale, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
@@ -62,14 +64,14 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
-      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, {nom: nomVoie}, token)
+      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, {nom: nomVoie, nomAlt: sanitizedAltVoieNames}, token)
       setValidationMessages(validationMessages)
 
       return newVoie
     }
 
     return {_id: voieId}
-  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages])
+  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages, sanitizedAltVoieNames])
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -183,10 +185,16 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
               voieId={voieId}
               voies={voies}
               nomVoie={nomVoie}
+              initialNomAlt={initialValue?.nomAlt}
               mode={voieId ? 'selection' : 'creation'}
               validationMessage={getValidationMessage('nom')}
               handleVoie={setVoieId}
               handleNomVoie={onNomVoieChange}
+              selectedLanguages={selectedLanguages}
+              onAddLanguage={onAddLanguage}
+              onLanguageSelect={handleLanguageSelect}
+              onLanguageChange={handleLanguageChange}
+              onRemoveLanguage={removeLanguage}
             />
           </FormInput>
 
@@ -289,6 +297,7 @@ NumeroEditor.propTypes = {
       PropTypes.object, // When "voie" comes from getNumerosToponyme() -> it's an Object with "nomVoie", needed to sort numeros by voie and display nomVoie
       PropTypes.string // When "voie" comes from getNumeros() -> it's a String (only the id of "voie" is return)
     ]).isRequired,
+    nomAlt: PropTypes.object,
     suffixe: PropTypes.string,
     parcelles: PropTypes.array,
     comment: PropTypes.string,
