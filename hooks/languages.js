@@ -11,7 +11,7 @@ export default function useLanguages(initialValue) {
   const sanitizedAltVoieNames = useMemo(() => {
     const sanitizedLanguages = {}
     selectedLanguages.map(language => {
-      if (language.label) {
+      if (language.label && language.value) {
         sanitizedLanguages[language.value] = language.label
       }
 
