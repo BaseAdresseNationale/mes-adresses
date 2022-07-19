@@ -6,7 +6,7 @@ import useFocus from '@/hooks/focus'
 
 import AccentTool from '@/components/accent-tool'
 
-function AssistedTextField({label, placeholder, value, validationMessage, onChange, isFocus, isDisabled, isRequired, isFullWidth}) {
+function AssistedTextField({label, placeholder, value, validationMessage, onChange, isFocus, isDisabled, isRequired}) {
   const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
   const [focusRef, ref] = useFocus()
 
@@ -35,7 +35,6 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
         validationMessage={validationMessage}
         onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
         onChange={e => handleChangeInput(e)}
-        width={isFullWidth ? '100%' : ''}
       />
       <Pane
         display='flex'
@@ -55,8 +54,7 @@ AssistedTextField.defaultProps = {
   isFocus: false,
   isDisabled: false,
   validationMessage: null,
-  isRequired: true,
-  isFullWidth: false
+  isRequired: true
 }
 
 AssistedTextField.propTypes = {
@@ -67,8 +65,7 @@ AssistedTextField.propTypes = {
   onChange: PropTypes.func.isRequired,
   isFocus: PropTypes.bool,
   isDisabled: PropTypes.bool,
-  isRequired: PropTypes.bool,
-  isFullWidth: PropTypes.bool
+  isRequired: PropTypes.bool
 }
 
 export default AssistedTextField

@@ -53,7 +53,6 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
           placeholder={handlePlaceholder}
           value={field.label}
           onChange={e => onChange(e, index)}
-          isFullWidth
           isDisabled={!field.value}
         />
         <Tooltip content='Supprimer la langue régionale'>
