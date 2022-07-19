@@ -1,14 +1,13 @@
 import {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Button, Pane, Text, PlusIcon, PropertyIcon, SelectField, AddIcon} from 'evergreen-ui'
+import {Button, Pane, Text, PlusIcon, PropertyIcon, SelectField} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 
 import AssistedTextField from '@/components/assisted-text-field'
-import LanguageField from '../language-field'
 
-function NumeroVoieSelector({voieId, voies, nomVoie, mode, validationMessage, handleVoie, handleNomVoie, selectedLanguages, onAddLanguage, onLanguageSelect, onLanguageChange, onRemoveLanguage}) {
+function NumeroVoieSelector({voieId, voies, nomVoie, mode, validationMessage, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)
 
   const toggleMode = () => {
@@ -34,44 +33,14 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, validationMessage, ha
     <Pane display='flex' flex={1} alignItems='flex-end'>
       <Pane>
         {isCreateMode ? (
-          <>
-            <AssistedTextField
-              isFocus
-              label='Nouvelle voie'
-              placeholder='Nom de la voie'
-              value={nomVoie}
-              validationMessage={validationMessage}
-              onChange={handleNomVoieChange}
-            />
-            {mode === 'selection' && (
-              <>
-                {selectedLanguages.map((field, index) => {
-                  return (
-                    <LanguageField
-                      key={field.id}
-                      index={index}
-                      field={field}
-                      selectedLanguages={selectedLanguages}
-                      onChange={onLanguageChange}
-                      onSelect={onLanguageSelect}
-                      onDelete={onRemoveLanguage}
-                    />
-                  )
-                })}
-                <Button
-                  type='button'
-                  appearance='primary'
-                  intent='success'
-                  iconBefore={AddIcon}
-                  width='100%'
-                  onClick={onAddLanguage}
-                  marginTop='1em'
-                >
-                  Ajouter une langue régionale
-                </Button>
-              </>
-            )}
-          </>
+          <AssistedTextField
+            isFocus
+            label='Nouvelle voie'
+            placeholder='Nom de la voie'
+            value={nomVoie}
+            validationMessage={validationMessage}
+            onChange={handleNomVoieChange}
+          />
         ) : (
           <SelectField
             required
@@ -110,8 +79,7 @@ NumeroVoieSelector.defaultProps = {
   voieId: null,
   nomVoie: '',
   mode: 'selection',
-  validationMessage: null,
-  selectedLanguages: null
+  validationMessage: null
 }
 
 NumeroVoieSelector.propTypes = {
@@ -121,12 +89,7 @@ NumeroVoieSelector.propTypes = {
   mode: PropTypes.oneOf(['creation', 'selection']),
   validationMessage: PropTypes.string,
   handleVoie: PropTypes.func.isRequired,
-  handleNomVoie: PropTypes.func.isRequired,
-  selectedLanguages: PropTypes.array,
-  onAddLanguage: PropTypes.func.isRequired,
-  onLanguageSelect: PropTypes.func.isRequired,
-  onLanguageChange: PropTypes.func.isRequired,
-  onRemoveLanguage: PropTypes.func.isRequired
+  handleNomVoie: PropTypes.func.isRequired
 }
 
 export default NumeroVoieSelector
