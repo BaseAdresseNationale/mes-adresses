@@ -133,6 +133,7 @@ function VoieEditor({initialValue, closeForm}) {
             width='100%'
             onClick={onAddLanguage}
             marginTop='1em'
+            disabled={selectedLanguages.length === 7}
           >
             Ajouter une langue régionale
           </Button>
