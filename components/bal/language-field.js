@@ -47,7 +47,6 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
       </SelectMenu>
       <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
         <AssistedTextField
-          isFocus
           label=''
           isRequired={false}
           aria-label={`Écrire le ${handlePlaceholder}`}
