@@ -21,7 +21,7 @@ import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import DisabledFormInput from '@/components/disabled-form-input'
-import LanguageField from './language-field'
+import LanguageField from '@/components/bal/language-field'
 
 import router from 'next/router'
 
