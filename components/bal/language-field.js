@@ -40,7 +40,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
           type='button'
           width='fit-content'
           margin={0}
-          fontStyle={languageFullName ? '' : 'italic'}
+          fontStyle={languageFullName ? 'default' : 'italic'}
         >
           <PropertyIcon marginRight={8} /> {languageFullName || 'Sélectionner une langue régionale'}
         </Button>
