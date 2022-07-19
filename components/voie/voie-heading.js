@@ -59,7 +59,7 @@ function VoieHeading({voie}) {
             <Text padding={editingId === voie._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
           )}
         </Pane>
-        {voie.nomAlt && <LanguagePreview nomAlt={voie.nomAlt} hasIcon />}
+        {voie.nomAlt && <LanguagePreview nomAlt={voie.nomAlt} />}
       </Heading>
     </Pane>
   )

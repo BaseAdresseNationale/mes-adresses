@@ -66,7 +66,7 @@ function ToponymeHeading({toponyme, commune}) {
             <Text padding={editingId === toponyme._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
           )}
         </Pane>
-        {toponyme.nomAlt && <LanguagePreview nomAlt={toponyme.nomAlt} hasIcon />}
+        {toponyme.nomAlt && <LanguagePreview nomAlt={toponyme.nomAlt} />}
       </Heading>
     </Pane>
   )
