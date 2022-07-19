@@ -9,7 +9,11 @@ function LanguagePreview({nomAlt, hasIcon}) {
         <Tooltip
           content={
             <UnorderedList>
-              {Object.keys(nomAlt).map(voieName => <ListItem color='white' key={voieName}>{nomAlt[voieName]}</ListItem>)}
+              {Object.keys(nomAlt).map(language => (
+                <ListItem color='white' key={language}>
+                  {nomAlt[language]}
+                </ListItem>
+              ))}
             </UnorderedList>
           }
           position={Position.BOTTOM_LEFT}
