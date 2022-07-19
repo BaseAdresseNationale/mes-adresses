@@ -30,7 +30,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
       <SelectMenu
         title='Choisir une langue régionale'
         options={languagesList}
-        selected={languageFullName || null}
+        selected={languageFullName}
         onSelect={item => onSelect(item.value, index)}
         width='fit-content'
         closeOnSelect
