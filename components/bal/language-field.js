@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Pane, Button, SelectMenu, Tooltip, TrashIcon} from 'evergreen-ui'
+import {Pane, Button, SelectMenu, Tooltip, TrashIcon, PropertyIcon} from 'evergreen-ui'
 
 import AssistedTextField from '@/components/assisted-text-field'
 
@@ -41,7 +41,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
           margin={0}
           fontStyle={languageFullName ? '' : 'italic'}
         >
-          {languageFullName || 'Sélectionner une langue régionale...'}
+          <PropertyIcon marginRight={8} /> {languageFullName || 'Sélectionner une langue régionale'}
         </Button>
       </SelectMenu>
       <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
