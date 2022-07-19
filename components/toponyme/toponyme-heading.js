@@ -29,7 +29,7 @@ function ToponymeHeading({toponyme, commune}) {
   }, [editingId, toponyme._id])
 
   return isFormOpen ? (
-    <Pane background='tint1' padding={isFormOpen ? 0 : 16}>
+    <Pane background='tint1' padding={0}>
       <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={() => setIsFormOpen(false)} />
     </Pane>
   ) : (
@@ -37,7 +37,7 @@ function ToponymeHeading({toponyme, commune}) {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={isFormOpen ? 0 : 16}
+      padding={16}
     >
       <Heading
         style={{cursor: hovered && !isEditing ? 'text' : 'default'}}
