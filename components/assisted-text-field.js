@@ -24,8 +24,8 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
   return (
     <Pane display='flex' alignItems={validationMessage ? 'last baseline' : 'flex-end'}>
       <TextInputField
-        ref={isFocus && focusRef}
-        required={isRequired}
+        ref={isFocus ? focusRef : null}
+        required
         marginBottom={0}
         disabled={isDisabled}
         label={label}
