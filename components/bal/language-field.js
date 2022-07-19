@@ -8,7 +8,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
   const languagesList = [
     {label: 'Breton', value: 'bre', disabled: false},
     {label: 'Basque', value: 'eus', disabled: false},
-    {label: 'Alsacien', value: 'asw', disabled: false},
+    {label: 'Alsacien', value: 'gsw', disabled: false},
     {label: 'Corse', value: 'cos', disabled: false},
     {label: 'Créole martiquais | guadeloupéen', value: 'gyn', disabled: false},
     {label: 'Créole réunionais', value: 'rcf', disabled: false},
