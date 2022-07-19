@@ -50,7 +50,6 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
           isFocus
           label=''
           isRequired={false}
-          aria-label={`Écrire le ${handlePlaceholder}`}
           placeholder={handlePlaceholder}
           value={field.label}
           onChange={e => onChange(e, index)}
