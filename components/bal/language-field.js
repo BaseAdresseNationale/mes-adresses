@@ -1,3 +1,4 @@
+import {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, SelectMenu, Tooltip, TrashIcon, PropertyIcon} from 'evergreen-ui'
 
@@ -23,7 +24,14 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
   }
 
   const languageFullName = languagesList.find(language => language.value === field.value)?.label
-  const handlePlaceholder = field.label === '' && field.value ? `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en ${languageFullName.toLowerCase()}` : `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en langue régionale`
+  const textFieldPlaceholder = useMemo(() => {
+    const isLanguageSelected = field.label === '' && field.value
+    if (isLanguageSelected) {
+      return `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en ${languageFullName.toLowerCase()}`
+    }
+
+    return `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en langue régionale`
+  }, [field, isToponyme, languageFullName])
 
   return (
     <Pane width='100%' display='flex' flexDirection='column' height='fit-content' marginBottom={18} marginTop='1em'>
@@ -50,7 +58,7 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
           isFocus
           label=''
           isRequired={false}
-          placeholder={handlePlaceholder}
+          placeholder={textFieldPlaceholder}
           value={field.label}
           onChange={e => onChange(e, index)}
           isDisabled={!field.value}
