@@ -27,8 +27,8 @@ function LanguagePreview({nomAlt}) {
       </Pane>
     ) : (
       <Pane fontStyle='italic' fontWeight='lighter' display='flex' gap={8} alignItems='center'>
-        <Image src={`/static/images/flags/${Object.keys(nomAlt)[0]}.svg`} height={22} width={22} />
-        <Pane fontWeight='lighter' fontSize={16}>{nomAlt[Object.keys(nomAlt)]}</Pane>
+        <Image src={`/static/images/flags/${Object.keys(nomAlt)[0]}.svg`} height={18} width={18} />
+        <Pane fontWeight='lighter' fontSize={14}>{nomAlt[Object.keys(nomAlt)]}</Pane>
       </Pane>
     )
   )
