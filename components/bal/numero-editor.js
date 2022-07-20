@@ -16,7 +16,6 @@ import ParcellesContext from '@/contexts/parcelles'
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 import useValidationMessage from '@/hooks/validation-messages'
-import useLanguages from '@/hooks/languages'
 
 import FormMaster from '@/components/form-master'
 import Comment from '@/components/comment'
@@ -43,7 +42,6 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe)
   const [comment, onCommentChange] = useInput(initialValue?.comment)
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
-  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomAlt)
 
   const {token} = useContext(TokenContext)
   const {baseLocale, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
@@ -64,14 +62,14 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
-      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, {nom: nomVoie, nomAlt: sanitizedAltVoieNames}, token)
+      const {validationMessages, ...newVoie} = await addVoie(baseLocale._id, {nom: nomVoie}, token)
       setValidationMessages(validationMessages)
 
       return newVoie
     }
 
     return {_id: voieId}
-  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages, sanitizedAltVoieNames])
+  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages])
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -190,11 +188,6 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
               validationMessage={getValidationMessage('nom')}
               handleVoie={setVoieId}
               handleNomVoie={onNomVoieChange}
-              selectedLanguages={selectedLanguages}
-              onAddLanguage={onAddLanguage}
-              onLanguageSelect={handleLanguageSelect}
-              onLanguageChange={handleLanguageChange}
-              onRemoveLanguage={removeLanguage}
             />
           </FormInput>
 
