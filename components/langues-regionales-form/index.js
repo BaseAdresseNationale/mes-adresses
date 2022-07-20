@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {reduce} from 'lodash'
 import {Button, AddIcon} from 'evergreen-ui'
 
-import languesRegionales from '../../langues-regionales.json'
+import languesRegionales from '@ban-team/shared-data/langues-regionales.json'
 
 import LanguageField from './language-field'
 
@@ -55,7 +55,6 @@ function LanguesRegionalesForm({initialValue, handleLanguages}) {
         <LanguageField
           key={language.id}
           initialValue={language}
-          languesRegionales={languesRegionales}
           availableLanguages={languesRegionales.filter(({code}) => !nomAlt.map(({code}) => code).includes(code))}
           onChange={value => onLanguageChange(value, language.id)}
           onDelete={() => onRemoveLanguage(language.id)}

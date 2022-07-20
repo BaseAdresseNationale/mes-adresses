@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.17.9",
+    "@ban-team/shared-data": "^1.0.0",
     "@ban-team/validateur-bal": "^2.7.1",
     "@next/bundle-analyzer": "^12.1.6",
     "@turf/bbox": "^6.5.0",

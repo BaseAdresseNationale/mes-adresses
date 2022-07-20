@@ -1,8 +1,9 @@
 import {useCallback, useState, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, SelectMenu, Tooltip, TrashIcon, PropertyIcon} from 'evergreen-ui'
+import {capitalize} from 'lodash'
 
-import languesRegionales from '../../langues-regionales.json'
+import languesRegionales from '@ban-team/shared-data/langues-regionales.json'
 
 import AssistedTextField from '@/components/assisted-text-field'
 
@@ -33,7 +34,7 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
       <SelectMenu
         title='Choisir une langue régionale'
         options={availableLanguages.map(({code, label}) => {
-          return {value: code, label}
+          return {value: code, label: capitalize(label)}
         }).sort((a, b) => a.label.localeCompare(b.label))}
         selected={languageLabel}
         onSelect={({value}) => handleLanguageCode(value)}
