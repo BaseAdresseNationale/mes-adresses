@@ -1,9 +1,38 @@
 [
-    {"label": "Breton", "code": "bre"},
-    {"label": "Basque", "code": "eus"},
-    {"label": "Alsacien", "code": "asw"},
-    {"label": "Corse", "code": "cos"},
-    {"label": "Créole martiquais | guadeloupéen", "code": "gyn"},
-    {"label": "Créole réunionais", "code": "rcf"},
-    {"label": "Occitan", "code": "oci"}
-  ]
+  {
+    "label": "Breton",
+    "code": "bre"
+  },
+  {
+    "label": "Basque",
+    "code": "eus"
+  },
+  {
+    "label": "Alsacien",
+    "code": "gsw"
+  },
+  {
+    "label": "Corse",
+    "code": "cos"
+  },
+  {
+    "label": "Créole martiquais | guadeloupéen",
+    "code": "gcf"
+  },
+  {
+    "label": "Créole réunionais",
+    "code": "rcf"
+  },
+  {
+    "label": "Occitan",
+    "code": "oci"
+  },
+  {
+    "label": "Mahorais",
+    "code": "swb"
+  },
+  {
+    "label": "Créole guyanais",
+    "code": "gcr"
+  }
+]
