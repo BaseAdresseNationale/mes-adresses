@@ -27,7 +27,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
-  const [nomAlt, setNomAlt] = useState(initialValue.nomAlt)
+  const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
 
   const {token} = useContext(TokenContext)
   const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)

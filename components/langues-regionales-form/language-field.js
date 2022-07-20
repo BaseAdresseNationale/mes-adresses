@@ -16,6 +16,11 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
     }
   }, [codeISO])
 
+  const handleLanguageCode = codeISO => {
+    setCodeISO(codeISO)
+    onChange({code: codeISO, value: input})
+  }
+
   const handleLanguageChange = useCallback(event => {
     const {value} = event.target
 
@@ -24,14 +29,14 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
   }, [codeISO, onChange])
 
   return (
-    <Pane width='100%' display='flex' flexDirection='column' height='fit-content' marginBottom={18} marginTop='1em'>
+    <Pane width='100%' display='flex' flexDirection='column' marginBottom={18} marginTop='1em'>
       <SelectMenu
         title='Choisir une langue régionale'
         options={availableLanguages.map(({code, label}) => {
           return {value: code, label}
         }).sort((a, b) => a.label.localeCompare(b.label))}
         selected={languageLabel}
-        onSelect={({value}) => setCodeISO(value)}
+        onSelect={({value}) => handleLanguageCode(value)}
         width='fit-content'
         closeOnSelect
         hasFilter={false}

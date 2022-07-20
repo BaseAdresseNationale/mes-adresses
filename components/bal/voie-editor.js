@@ -24,7 +24,7 @@ function VoieEditor({initialValue, closeForm}) {
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage()
-  const [nomAlt, setNomAlt] = useState(initialValue.nomAlt)
+  const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
