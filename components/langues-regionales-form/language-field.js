@@ -29,7 +29,7 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
         title='Choisir une langue régionale'
         options={availableLanguages.map(({code, label}) => {
           return {value: code, label}
-        })}
+        }).sort((a, b) => a.label.localeCompare(b.label))}
         selected={languageLabel}
         onSelect={({value}) => setCodeISO(value)}
         width='fit-content'
