@@ -2,6 +2,7 @@ import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {difference} from 'lodash'
 import {Button} from 'evergreen-ui'
+import router from 'next/router'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
 
@@ -20,9 +21,7 @@ import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import DisabledFormInput from '@/components/disabled-form-input'
-
-import router from 'next/router'
-import LanguesRegionalesForm from '../langues-regionales-form/langues-regionales-form'
+import LanguesRegionalesForm from '@/components/langues-regionales-form'
 
 function ToponymeEditor({initialValue, commune, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)

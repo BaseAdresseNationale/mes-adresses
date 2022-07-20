@@ -5,7 +5,7 @@ import {Button, AddIcon} from 'evergreen-ui'
 
 import languesRegionales from '../../langues-regionales.json'
 
-import LanguageField from '../bal/language-field'
+import LanguageField from './language-field'
 
 function objectToArray(obj) {
   return Object.keys(obj).map(key => {
