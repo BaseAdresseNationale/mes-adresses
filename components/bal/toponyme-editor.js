@@ -1,7 +1,7 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {difference} from 'lodash'
-import {Button, AddIcon} from 'evergreen-ui'
+import {Button} from 'evergreen-ui'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
 
@@ -12,7 +12,6 @@ import ParcellesContext from '@/contexts/parcelles'
 
 import {useInput} from '@/hooks/input'
 import useValidationMessage from '@/hooks/validation-messages'
-import useLanguages from '@/hooks/languages'
 
 import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
@@ -21,16 +20,15 @@ import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import DisabledFormInput from '@/components/disabled-form-input'
-import LanguageField from '@/components/bal/language-field'
 
 import router from 'next/router'
+import LanguesRegionalesForm from '../langues-regionales-form/langues-regionales-form'
 
 function ToponymeEditor({initialValue, commune, closeForm}) {
-  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomAlt)
-
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
+  const [nomAlt, setNomAlt] = useState(initialValue.nomAlt)
 
   const {token} = useContext(TokenContext)
   const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
@@ -45,7 +43,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
 
     const body = {
       nom,
-      nomAlt: sanitizedAltVoieNames,
+      nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
       positions: [],
       parcelles: selectedParcelles
     }
@@ -90,7 +88,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages, sanitizedAltVoieNames])
+  }, [token, baseLocale._id, initialValue, nom, nomAlt, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -125,31 +123,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
             validationMessage={getValidationMessage('nom')}
           />
 
-          {selectedLanguages.map((field, index) => {
-            return (
-              <LanguageField
-                key={field.id}
-                index={index}
-                field={field}
-                selectedLanguages={selectedLanguages}
-                onChange={handleLanguageChange}
-                onSelect={handleLanguageSelect}
-                onDelete={removeLanguage}
-                isToponyme
-              />
-            )
-          })}
-          <Button
-            type='button'
-            appearance='primary'
-            intent='success'
-            iconBefore={AddIcon}
-            width='100%'
-            onClick={onAddLanguage}
-            marginTop='1em'
-          >
-            Ajouter une langue régionale
-          </Button>
+          <LanguesRegionalesForm initialValue={initialValue.nomAlt} handleLanguages={setNomAlt} />
         </FormInput>
 
         <FormInput>

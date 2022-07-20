@@ -1,7 +1,7 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import router from 'next/router'
-import {Button, Checkbox, AddIcon} from 'evergreen-ui'
+import {Button, Checkbox} from 'evergreen-ui'
 
 import {addVoie, editVoie} from '@/lib/bal-api'
 
@@ -11,21 +11,20 @@ import TokenContext from '@/contexts/token'
 
 import {useInput, useCheckboxInput} from '@/hooks/input'
 import useValidationMessage from '@/hooks/validation-messages'
-import useLanguages from '@/hooks/languages'
 
 import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
 import FormInput from '@/components/form-input'
 import AssistedTextField from '@/components/assisted-text-field'
 import DrawEditor from '@/components/bal/draw-editor'
-import LanguageField from './language-field'
+import LanguesRegionalesForm from '../langues-regionales-form/langues-regionales-form'
+
 function VoieEditor({initialValue, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [isMetric, onIsMetricChange] = useCheckboxInput(initialValue ? initialValue.typeNumerotation === 'metrique' : false)
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage()
-  const [selectedLanguages, onAddLanguage, handleLanguageSelect, handleLanguageChange, removeLanguage, sanitizedAltVoieNames] = useLanguages(initialValue?.nomAlt)
-
+  const [nomAlt, setNomAlt] = useState(initialValue.nomAlt)
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
@@ -39,7 +38,7 @@ function VoieEditor({initialValue, closeForm}) {
     try {
       const body = {
         nom,
-        nomAlt: sanitizedAltVoieNames,
+        nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
         typeNumerotation: isMetric ? 'metrique' : 'numerique',
         trace: data ? data.geometry : null
       }
@@ -66,7 +65,7 @@ function VoieEditor({initialValue, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [baseLocale._id, initialValue, nom, isMetric, data, token, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync, sanitizedAltVoieNames])
+  }, [baseLocale._id, initialValue, nom, isMetric, data, token, nomAlt, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -112,31 +111,7 @@ function VoieEditor({initialValue, closeForm}) {
             marginBottom='1em'
           />
 
-          {selectedLanguages.map((field, index) => {
-            return (
-              <LanguageField
-                key={field.id}
-                index={index}
-                field={field}
-                selectedLanguages={selectedLanguages}
-                onChange={handleLanguageChange}
-                onSelect={handleLanguageSelect}
-                onDelete={removeLanguage}
-              />
-            )
-          })}
-          <Button
-            type='button'
-            appearance='primary'
-            intent='success'
-            iconBefore={AddIcon}
-            width='100%'
-            onClick={onAddLanguage}
-            marginTop='1em'
-            disabled={selectedLanguages.length === 7}
-          >
-            Ajouter une langue régionale
-          </Button>
+          <LanguesRegionalesForm initialValue={initialValue.nomAlt} handleLanguages={setNomAlt} />
         </FormInput>
 
         {isMetric && (

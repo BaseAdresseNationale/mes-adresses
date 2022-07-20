@@ -1,45 +1,37 @@
-import {useMemo} from 'react'
+import {useCallback, useState, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Button, SelectMenu, Tooltip, TrashIcon, PropertyIcon} from 'evergreen-ui'
 
+import languesRegionales from '../../langues-regionales.json'
+
 import AssistedTextField from '@/components/assisted-text-field'
 
-function LanguageField({field, index, selectedLanguages, onChange, onSelect, onDelete, isToponyme}) {
-  const languagesList = [
-    {label: 'Breton', value: 'bre', disabled: false},
-    {label: 'Basque', value: 'eus', disabled: false},
-    {label: 'Alsacien', value: 'gsw', disabled: false},
-    {label: 'Corse', value: 'cos', disabled: false},
-    {label: 'Créole martiquais | guadeloupéen', value: 'gyn', disabled: false},
-    {label: 'Créole réunionais', value: 'rcf', disabled: false},
-    {label: 'Occitan', value: 'oci', disabled: false},
-  ]
+function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
+  const [codeISO, setCodeISO] = useState(initialValue?.code)
+  const [input, setInput] = useState(initialValue?.value || '')
 
-  for (const language of languagesList) {
-    for (const selected of selectedLanguages) {
-      if (selected.value === language.value) {
-        language.disabled = true
-      }
+  const languageLabel = useMemo(() => {
+    if (codeISO) {
+      return languesRegionales.find(language => language.code === codeISO).label
     }
-  }
+  }, [codeISO])
 
-  const languageFullName = languagesList.find(language => language.value === field.value)?.label
-  const textFieldPlaceholder = useMemo(() => {
-    const isLanguageSelected = field.label === '' && field.value
-    if (isLanguageSelected) {
-      return `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en ${languageFullName.toLowerCase()}`
-    }
+  const handleLanguageChange = useCallback(event => {
+    const {value} = event.target
 
-    return `Nom ${isToponyme ? 'du toponyme' : 'de la voie'} en langue régionale`
-  }, [field, isToponyme, languageFullName])
+    setInput(value)
+    onChange({code: codeISO, value})
+  }, [codeISO, onChange])
 
   return (
     <Pane width='100%' display='flex' flexDirection='column' height='fit-content' marginBottom={18} marginTop='1em'>
       <SelectMenu
         title='Choisir une langue régionale'
-        options={languagesList}
-        selected={languageFullName}
-        onSelect={item => onSelect(item.value, index)}
+        options={availableLanguages.map(({code, label}) => {
+          return {value: code, label}
+        })}
+        selected={languageLabel}
+        onSelect={({value}) => setCodeISO(value)}
         width='fit-content'
         closeOnSelect
         hasFilter={false}
@@ -48,26 +40,28 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
           type='button'
           width='fit-content'
           margin={0}
-          fontStyle={languageFullName ? 'default' : 'italic'}
+          fontStyle={codeISO ? 'default' : 'italic'}
         >
-          <PropertyIcon marginRight={8} /> {languageFullName || 'Sélectionner une langue régionale'}
+          <PropertyIcon marginRight={8} /> {languageLabel || 'Sélectionner une langue régionale'}
         </Button>
       </SelectMenu>
+
       <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
         <AssistedTextField
           isFocus
           label=''
           isRequired={false}
-          placeholder={textFieldPlaceholder}
-          value={field.label}
-          onChange={e => onChange(e, index)}
-          isDisabled={!field.value}
+          placeholder={`Nom en ${codeISO ? languageLabel : 'langue régionale'}`}
+          value={input}
+          onChange={handleLanguageChange}
+          isDisabled={!codeISO}
         />
+
         <Tooltip content='Supprimer la langue régionale'>
           <Button
             type='button'
             aria-label='Supprimer la langue régionale'
-            onClick={() => onDelete(index)}
+            onClick={() => onDelete(codeISO)}
             intent='danger'
             width='fit-content'
             padding={0}
@@ -82,17 +76,13 @@ function LanguageField({field, index, selectedLanguages, onChange, onSelect, onD
 }
 
 LanguageField.propTypes = {
-  field: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
-  selectedLanguages: PropTypes.array.isRequired,
+  initialValue: PropTypes.shape({
+    code: PropTypes.oneOf(languesRegionales.map(({code}) => code)),
+    value: PropTypes.string
+  }).isRequired,
+  availableLanguages: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  isToponyme: PropTypes.bool
-}
-
-LanguageField.defaultProps = {
-  isToponyme: false
 }
 
 export default LanguageField

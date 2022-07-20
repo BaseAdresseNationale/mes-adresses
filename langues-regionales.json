@@ -1,0 +1,9 @@
+[
+    {"label": "Breton", "code": "bre"},
+    {"label": "Basque", "code": "eus"},
+    {"label": "Alsacien", "code": "asw"},
+    {"label": "Corse", "code": "cos"},
+    {"label": "Créole martiquais | guadeloupéen", "code": "gyn"},
+    {"label": "Créole réunionais", "code": "rcf"},
+    {"label": "Occitan", "code": "oci"}
+  ]
