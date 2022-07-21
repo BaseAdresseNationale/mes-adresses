@@ -23,7 +23,7 @@ function VoieHeading({voie}) {
   }
 
   return isFormOpen ? (
-    <Pane background='tint1' padding={isFormOpen ? 0 : 16}>
+    <Pane background='tint1' padding={0}>
       <VoieEditor initialValue={voie} closeForm={() => setIsFormOpen(false)} />
     </Pane>
   ) : (
@@ -31,7 +31,7 @@ function VoieHeading({voie}) {
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={isFormOpen ? 0 : 16}
+      padding={16}
     >
       <Heading
         style={{cursor: hovered && !isEditing ? 'text' : 'default'}}

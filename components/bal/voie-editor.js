@@ -1,7 +1,7 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import router from 'next/router'
-import {Button, Checkbox} from 'evergreen-ui'
+import {Pane, Button, Checkbox} from 'evergreen-ui'
 
 import {addVoie, editVoie} from '@/lib/bal-api'
 
@@ -94,29 +94,31 @@ function VoieEditor({initialValue, closeForm}) {
   return (
     <FormMaster editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm}>
       <Form onFormSubmit={onFormSubmit}>
-        <FormInput>
-          <AssistedTextField
-            isFocus
-            label='Nom de la voie'
-            placeholder='Nom de la voie'
-            value={nom}
-            onChange={onNomChange}
-            validationMessage={getValidationMessage('nom')}
-          />
+        <Pane maxHeight={400} overflowY='scroll'>
+          <FormInput>
+            <AssistedTextField
+              isFocus
+              label='Nom de la voie'
+              placeholder='Nom de la voie'
+              value={nom}
+              onChange={onNomChange}
+              validationMessage={getValidationMessage('nom')}
+            />
 
-          <Checkbox
-            checked={isMetric}
-            label='Cette voie utilise la numérotation métrique'
-            onChange={onIsMetricChange}
-            marginBottom='1em'
-          />
+            <Checkbox
+              checked={isMetric}
+              label='Cette voie utilise la numérotation métrique'
+              onChange={onIsMetricChange}
+              marginBottom='1em'
+            />
 
-          <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
-        </FormInput>
+            <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
+          </FormInput>
 
-        {isMetric && (
-          <DrawEditor trace={initialValue ? initialValue.trace : null} />
-        )}
+          {isMetric && (
+            <DrawEditor trace={initialValue ? initialValue.trace : null} />
+          )}
+        </Pane>
 
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
           {isLoading ? 'En cours…' : 'Enregistrer'}

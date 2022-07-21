@@ -30,7 +30,9 @@ function ToponymeHeading({toponyme, commune}) {
 
   return isFormOpen ? (
     <Pane background='tint1' padding={0}>
-      <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={() => setIsFormOpen(false)} />
+      <Pane maxHeight={700} overflowY='scroll'>
+        <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={() => setIsFormOpen(false)} />
+      </Pane>
     </Pane>
   ) : (
     <Pane
@@ -44,7 +46,7 @@ function ToponymeHeading({toponyme, commune}) {
         onClick={onEnableToponymeEditing}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        padding={16}
+        padding={0}
       >
         <Pane
           marginBottom={8}
