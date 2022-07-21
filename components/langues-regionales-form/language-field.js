@@ -13,7 +13,7 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
 
   const languageLabel = useMemo(() => {
     if (codeISO) {
-      return languesRegionales.find(language => language.code === codeISO).label
+      return languesRegionales.find(language => language.code === codeISO)?.label
     }
   }, [codeISO])
 

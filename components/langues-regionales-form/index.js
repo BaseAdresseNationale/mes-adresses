@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {reduce} from 'lodash'
+import {reduce, uniqueId} from 'lodash'
 import {Button, AddIcon} from 'evergreen-ui'
 
 import languesRegionales from '@ban-team/shared-data/langues-regionales.json'
@@ -9,8 +9,8 @@ import LanguageField from './language-field'
 
 function objectToArray(obj) {
   if (obj) {
-    return Object.keys(obj).map((key, index) => {
-      return {code: key, value: obj[key], id: index}
+    return Object.keys(obj).map(key => {
+      return {code: key, value: obj[key], id: uniqueId()}
     })
   }
 
@@ -26,7 +26,7 @@ function LanguesRegionalesForm({initialValue, handleLanguages}) {
   const [nomAlt, setNomAlt] = useState(objectToArray(initialValue))
 
   const onAddForm = () => {
-    setNomAlt(prev => [...prev, {code: null, value: '', id: prev.length}])
+    setNomAlt(prev => [...prev, {code: null, value: '', id: uniqueId()}])
   }
 
   const onLanguageChange = useCallback(({code, value}, id) => {
