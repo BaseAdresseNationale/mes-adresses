@@ -23,6 +23,11 @@ Installation des dépendances Node.js
 $ yarn
 ```
 
+## Drapeaux disponible pour les langues régionales
+```
+$ yarn flags
+```
+
 ## Développement
 
 Lancer le serveur de développement :

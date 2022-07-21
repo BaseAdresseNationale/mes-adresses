@@ -50,6 +50,7 @@ function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToR
             <TableRow
               key={voie._id}
               label={voie.nom}
+              nomAlt={voie.nomAlt}
               isEditingEnabled={Boolean(!isEditing && token)}
               actions={{
                 onSelect: () => onSelect(voie._id),
