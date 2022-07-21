@@ -5,9 +5,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "node server",
-    "build": "next build",
+    "build-next": "next build",
     "start": "NODE_ENV=production node server",
-    "flags": "node scripts/available-flags",
+    "build-available-flags": "node scripts/build-available-flags",
+    "build": "yarn build-available-flags && yarn build-next",
     "build:geo": "node scripts/build-geo"
   },
   "dependencies": {
