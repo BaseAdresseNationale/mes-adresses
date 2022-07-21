@@ -573,11 +573,12 @@
   resolved "https://registry.yarnpkg.com/@ban-team/shared-data/-/shared-data-1.0.0.tgz#b45dc45a33ff0f9421ffa876f77f0f4671087e10"
   integrity sha512-P5qTuSvRkLcDM2Rm6hriLbM4bC15SLTD6i9oquhSSnIbTkt235kmY+ThDTER5DcSircHeKOsQcD/5j0Mluv8SQ==
 
-"@ban-team/validateur-bal@^2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@ban-team/validateur-bal/-/validateur-bal-2.7.1.tgz#ff9f530593d9fbca6592b980888eec37c6cdc739"
-  integrity sha512-Xa3QdKPgISKsmhFHurtUYu3S9OZR+LLuwG5xFk2pyEliFTfRkt/+DUnICa7z/492atH31h5+QRp5w2ujN9JDcQ==
+"@ban-team/validateur-bal@^2.9.0":
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/@ban-team/validateur-bal/-/validateur-bal-2.9.0.tgz#09fa914d42bedaf09c8369126ceed1b0a110945e"
+  integrity sha512-Qid9f/9bnYJyBdAt6vlrp43fDXcAl9bxvD9UTTUC7IMZsZXgIcnxyO8LUnjHz358MDraRmljRCb+U+pLAoA6bA==
   dependencies:
+    "@ban-team/shared-data" "^1.0.0"
     "@etalab/project-legal" "^0.6.0"
     blob-to-buffer "^1.2.9"
     bluebird "^3.7.2"
