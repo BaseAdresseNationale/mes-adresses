@@ -1,10 +1,11 @@
-import {useState} from 'react'
 import PropTypes from 'prop-types'
 import Image from 'next/image'
 import {Pane, UnorderedList, ListItem, Tooltip, Position, HelpIcon} from 'evergreen-ui'
 
+import availableFlags from '../../available-flags.json'
+
 function LanguagePreview({nomAlt}) {
-  const [isFlagExist, setIsFlagExist] = useState(true)
+  const isFlagExist = availableFlags.includes(Object.keys(nomAlt)[0])
 
   return (
     Object.keys(nomAlt).length > 1 ? (
@@ -34,7 +35,6 @@ function LanguagePreview({nomAlt}) {
           src={isFlagExist ? `/static/images/flags/${Object.keys(nomAlt)[0]}.svg` : '/static/images/flags/ntr.svg'}
           height={18}
           width={18}
-          onLoadingComplete={result => result.naturalHeight <= 1 ? setIsFlagExist(false) : setIsFlagExist(true)}
         />
         <Pane fontWeight='lighter' fontSize={14}>{nomAlt[Object.keys(nomAlt)]}</Pane>
       </Pane>

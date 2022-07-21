@@ -7,6 +7,7 @@
     "dev": "node server",
     "build": "next build",
     "start": "NODE_ENV=production node server",
+    "flags": "node scripts/available-flags",
     "build:geo": "node scripts/build-geo"
   },
   "dependencies": {
