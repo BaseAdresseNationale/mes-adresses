@@ -6,6 +6,7 @@ import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
 import VoieEditor from '@/components/bal/voie-editor'
+import LanguagePreview from '../bal/language-preview'
 
 function VoieHeading({voie}) {
   const [hovered, setHovered] = useState(false)
@@ -21,35 +22,45 @@ function VoieHeading({voie}) {
     }
   }
 
-  return (
+  return isFormOpen ? (
+    <Pane background='tint1' padding={0}>
+      <VoieEditor initialValue={voie} closeForm={() => setIsFormOpen(false)} />
+    </Pane>
+  ) : (
     <Pane
       display='flex'
       flexDirection='column'
       background='tint1'
-      padding={isFormOpen ? 0 : 16}
+      padding={16}
     >
-      {isFormOpen ? (
-        <VoieEditor initialValue={voie} closeForm={() => setIsFormOpen(false)} />
-      ) : (
-        <Heading
-          style={{cursor: hovered && !isEditing ? 'text' : 'default'}}
-          onClick={onEnableVoieEditing}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
+      <Heading
+        style={{cursor: hovered && !isEditing ? 'text' : 'default'}}
+        onClick={onEnableVoieEditing}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <Pane
+          marginBottom={8}
+          display='flex'
+          flexDirection={voie.nomAlt ? 'row' : 'column'}
+          justifyContent='space-between'
         >
-          {voie.nom}
-          {!isEditing && token && (
-            <EditIcon
-              marginBottom={-2}
-              marginLeft={8}
-              color={hovered ? 'black' : 'muted'}
-            />
+          <Pane>
+            {voie.nom}
+            {!isEditing && token && (
+              <EditIcon
+                marginBottom={-2}
+                marginLeft={8}
+                color={hovered ? 'black' : 'muted'}
+              />
+            )}
+          </Pane>
+          {numeros && (
+            <Text padding={editingId === voie._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
           )}
-        </Heading>
-      )}
-      {numeros && (
-        <Text padding={editingId === voie._id ? 16 : 0}>{numeros.length} numéro{numeros.length > 1 ? 's' : ''}</Text>
-      )}
+        </Pane>
+        {voie.nomAlt && <LanguagePreview nomAlt={voie.nomAlt} />}
+      </Heading>
     </Pane>
   )
 }
@@ -57,7 +68,8 @@ function VoieHeading({voie}) {
 VoieHeading.propTypes = {
   voie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
+    nom: PropTypes.string.isRequired,
+    nomAlt: PropTypes.object
   }).isRequired
 }
 

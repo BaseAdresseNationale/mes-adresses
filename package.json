@@ -5,13 +5,16 @@
   "license": "MIT",
   "scripts": {
     "dev": "node server",
-    "build": "next build",
+    "build-next": "next build",
     "start": "NODE_ENV=production node server",
+    "build-available-flags": "node scripts/build-available-flags",
+    "build": "yarn build-available-flags && yarn build-next",
     "build:geo": "node scripts/build-geo"
   },
   "dependencies": {
     "@babel/runtime": "^7.17.9",
-    "@etalab/bal": "^2.4.0",
+    "@ban-team/shared-data": "^1.0.0",
+    "@ban-team/validateur-bal": "^2.9.0",
     "@next/bundle-analyzer": "^12.1.6",
     "@turf/bbox": "^6.5.0",
     "@turf/buffer": "^6.5.0",

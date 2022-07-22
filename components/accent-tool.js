@@ -34,7 +34,7 @@ const ACCENTS = [
   'Œ'
 ]
 
-function AccentTool({input, handleAccent, cursorPosition}) {
+function AccentTool({input, handleAccent, cursorPosition, isDisabled}) {
   const handleClick = event => {
     const stringArray = input.split('')
     const {start, end} = cursorPosition
@@ -61,7 +61,7 @@ function AccentTool({input, handleAccent, cursorPosition}) {
         </Pane>
       )}
     >
-      <Button type='button'>É</Button>
+      <Button type='button' disabled={isDisabled}>É</Button>
     </Popover>
   )
 }
@@ -69,7 +69,12 @@ function AccentTool({input, handleAccent, cursorPosition}) {
 AccentTool.propTypes = {
   input: PropTypes.string.isRequired,
   handleAccent: PropTypes.func.isRequired,
-  cursorPosition: PropTypes.objectOf(PropTypes.number).isRequired
+  cursorPosition: PropTypes.objectOf(PropTypes.number).isRequired,
+  isDisabled: PropTypes.bool
+}
+
+AccentTool.defaultProps = {
+  isDisabled: false
 }
 
 export default AccentTool

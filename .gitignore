@@ -2,6 +2,8 @@ node_modules
 reports
 .next
 
+available-flags.json
+
 .env*
 !.env.sample
 

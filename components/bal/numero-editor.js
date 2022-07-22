@@ -183,6 +183,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
               voieId={voieId}
               voies={voies}
               nomVoie={nomVoie}
+              initialNomAlt={initialValue?.nomAlt}
               mode={voieId ? 'selection' : 'creation'}
               validationMessage={getValidationMessage('nom')}
               handleVoie={setVoieId}
@@ -289,6 +290,7 @@ NumeroEditor.propTypes = {
       PropTypes.object, // When "voie" comes from getNumerosToponyme() -> it's an Object with "nomVoie", needed to sort numeros by voie and display nomVoie
       PropTypes.string // When "voie" comes from getNumeros() -> it's a String (only the id of "voie" is return)
     ]).isRequired,
+    nomAlt: PropTypes.object,
     suffixe: PropTypes.string,
     parcelles: PropTypes.array,
     comment: PropTypes.string,

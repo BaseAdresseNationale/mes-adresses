@@ -1,6 +1,6 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
 import Router from 'next/router'
-import {validate} from '@etalab/bal'
+import {validate} from '@ban-team/validateur-bal'
 import {uniqBy} from 'lodash'
 import {Pane, Alert, Button, Dialog, TextInputField, Text, Strong, FormField, PlusIcon, InboxIcon, Paragraph, ShareIcon} from 'evergreen-ui'
 
@@ -21,7 +21,7 @@ const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data
 
 const MAX_SIZE = 10 * 1024 * 1024
 
-const VALIDATEUR_LINK_TEXT = <Text>Pour obtenir un rapport détaillé des erreurs qui on était détectées, consultez <a href={`${ADRESSE_URL}/bases-locales/validateur`} target='_blank' rel='noreferrer'>le validateur de Bases Adresses Locales <ShareIcon verticalAlign='middle' /></a>.</Text>
+const VALIDATEUR_LINK_TEXT = <Text>Pour obtenir un rapport détaillé des erreurs qui ont été détectées, consultez <a href={`${ADRESSE_URL}/bases-locales/validateur`} target='_blank' rel='noreferrer'>le validateur de Bases Adresses Locales <ShareIcon verticalAlign='middle' /></a>.</Text>
 
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')

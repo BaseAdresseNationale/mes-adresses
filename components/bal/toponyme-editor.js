@@ -2,6 +2,7 @@ import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {difference} from 'lodash'
 import {Button} from 'evergreen-ui'
+import router from 'next/router'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
 
@@ -20,12 +21,13 @@ import FormInput from '@/components/form-input'
 import PositionEditor from '@/components/bal/position-editor'
 import SelectParcelles from '@/components/bal/numero-editor/select-parcelles'
 import DisabledFormInput from '@/components/disabled-form-input'
-import router from 'next/router'
+import LanguesRegionalesForm from '@/components/langues-regionales-form'
 
 function ToponymeEditor({initialValue, commune, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
+  const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
 
   const {token} = useContext(TokenContext)
   const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
@@ -40,6 +42,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
 
     const body = {
       nom,
+      nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
       positions: [],
       parcelles: selectedParcelles
     }
@@ -84,7 +87,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, initialValue, nom, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
+  }, [token, baseLocale._id, initialValue, nom, nomAlt, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
@@ -111,13 +114,15 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         <FormInput>
           <AssistedTextField
             isFocus
-            dsiabled={isLoading}
+            disabled={isLoading}
             label='Nom du toponyme'
             placeholder='Nom du toponyme'
             value={nom}
             onChange={onNomChange}
             validationMessage={getValidationMessage('nom')}
           />
+
+          <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
         </FormInput>
 
         <FormInput>
@@ -158,6 +163,7 @@ ToponymeEditor.propTypes = {
   initialValue: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string.isRequired,
+    nomAlt: PropTypes.object,
     parcelles: PropTypes.array.isRequired,
     positions: PropTypes.array.isRequired
   }),
