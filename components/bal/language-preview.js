@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import Image from 'next/image'
 import {Pane, UnorderedList, ListItem, Tooltip, Position, HelpIcon} from 'evergreen-ui'
 
+import languesRegionales from '@ban-team/shared-data/langues-regionales.json'
+
 import availableFlags from '../../available-flags.json'
 
 function LanguagePreview({nomAlt}) {
@@ -28,6 +30,7 @@ function LanguagePreview({nomAlt}) {
                     src={isFlagExist ? `/static/images/flags/${language}.svg` : '/images/icons/flags/ntr.svg'}
                     height={22}
                     width={22}
+                    alt={`Nom de la voie en ${languesRegionales.find(lr => lr.code === language).label}`}
                   />
                   {nomAlt[language]}
                 </ListItem>
