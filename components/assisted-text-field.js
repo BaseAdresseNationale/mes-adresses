@@ -11,13 +11,19 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
   const [focusRef, ref] = useFocus()
 
   const handleChangeAccent = e => {
-    ref.focus()
+    if (isFocus) {
+      ref.focus()
+      ref.setSelectionRange(cursorPosition.start, cursorPosition.end) // Put the cursor back to his position
+    }
+
     onChange(e)
-    ref.setSelectionRange(cursorPosition.start, cursorPosition.end) // Put the cursor back to his position
   }
 
   const handleChangeInput = e => {
-    ref.focus()
+    if (isFocus) {
+      ref.focus()
+    }
+
     onChange(e)
   }
 
