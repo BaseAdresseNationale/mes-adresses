@@ -2,6 +2,8 @@ import PropTypes from 'prop-types'
 import Image from 'next/image'
 import {Pane, UnorderedList, ListItem, Tooltip, Position, HelpIcon} from 'evergreen-ui'
 
+import languesRegionales from '@ban-team/shared-data/langues-regionales.json'
+
 import availableFlags from '../../available-flags.json'
 
 function LanguagePreview({nomAlt}) {
@@ -9,25 +11,52 @@ function LanguagePreview({nomAlt}) {
 
   return (
     Object.keys(nomAlt).length > 1 ? (
-      <Pane fontStyle='italic' fontSize={14} fontWeight='lighter'>
+      <Pane
+        fontStyle='italic'
+        fontWeight='lighter'
+        display='flex'
+        gap={5}
+        alignItems='center'
+        fontSize={13}
+      >
         <Tooltip
           content={
-            <UnorderedList>
-              {Object.keys(nomAlt).map(language => (
-                <ListItem color='white' key={language}>
-                  {nomAlt[language]}
-                </ListItem>
-              ))}
+            <UnorderedList display='flex' flexDirection='column' padding={0} margin={0}>
+              {Object.keys(nomAlt).map(language => {
+                const foundLangueRegionale = languesRegionales.find(lr => lr.code === language)
+
+                return (
+                  <ListItem
+                    key={language}
+                    color='white'
+                    listStyleType='hidden'
+                    display='grid'
+                    alignItems='start'
+                    gridTemplateColumns='22px 1fr'
+                    gap={8}
+                    marginLeft={-15}
+                  >
+                    <Image
+                      src={isFlagExist ? `/static/images/flags/${language}.svg` : '/images/icons/flags/ntr.svg'}
+                      height={22}
+                      width={22}
+                      alt={foundLangueRegionale ? (
+                        `Nom de la voie en ${foundLangueRegionale.label}`
+                      ) : (
+                        'Nom de la langue régionale non supportée'
+                      )}
+                    />
+                    {nomAlt[language]}
+                  </ListItem>
+                )
+              })}
             </UnorderedList>
           }
           position={Position.BOTTOM_LEFT}
-          padding={0}
-          margin={0}
         >
-          <Pane fontSize={12} display='flex' alignItems='center' gap='5px'>
-            <HelpIcon size={12} />Afficher les alternatives régionales
-          </Pane>
+          <HelpIcon size={16} />
         </Tooltip>
+        Alternatives régionales
       </Pane>
     ) : (
       <Pane fontStyle='italic' fontWeight='lighter' display='flex' gap={8} alignItems='center'>
