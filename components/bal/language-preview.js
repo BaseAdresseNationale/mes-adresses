@@ -30,7 +30,11 @@ function LanguagePreview({nomAlt}) {
                     src={isFlagExist ? `/static/images/flags/${language}.svg` : '/images/icons/flags/ntr.svg'}
                     height={22}
                     width={22}
-                    alt={`Nom de la voie en ${languesRegionales.find(lr => lr.code === language).label}`}
+                    alt={languesRegionales.some(lr => lr.code === language) ? (
+                      `Nom de la voie en ${languesRegionales.find(lr => lr.code === language).label}`
+                    ) : (
+                      'Nom de la langue régionale introuvable'
+                    )}
                   />
                   {nomAlt[language]}
                 </ListItem>
