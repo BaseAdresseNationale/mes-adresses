@@ -15,30 +15,34 @@ function LanguagePreview({nomAlt}) {
         <Tooltip
           content={
             <UnorderedList display='flex' flexDirection='column' padding={0} margin={0}>
-              {Object.keys(nomAlt).map(language => (
-                <ListItem
-                  key={language}
-                  color='white'
-                  listStyleType='hidden'
-                  display='grid'
-                  alignItems='start'
-                  gridTemplateColumns='22px 1fr'
-                  gap={8}
-                  marginLeft={-15}
-                >
-                  <Image
-                    src={isFlagExist ? `/static/images/flags/${language}.svg` : '/images/icons/flags/ntr.svg'}
-                    height={22}
-                    width={22}
-                    alt={languesRegionales.some(lr => lr.code === language) ? (
-                      `Nom de la voie en ${languesRegionales.find(lr => lr.code === language).label}`
-                    ) : (
-                      'Nom de la langue régionale introuvable'
-                    )}
-                  />
-                  {nomAlt[language]}
-                </ListItem>
-              ))}
+              {Object.keys(nomAlt).map(language => {
+                const foundLangueRegionale = languesRegionales.find(lr => lr.code === language)
+
+                return (
+                  <ListItem
+                    key={language}
+                    color='white'
+                    listStyleType='hidden'
+                    display='grid'
+                    alignItems='start'
+                    gridTemplateColumns='22px 1fr'
+                    gap={8}
+                    marginLeft={-15}
+                  >
+                    <Image
+                      src={isFlagExist ? `/static/images/flags/${language}.svg` : '/images/icons/flags/ntr.svg'}
+                      height={22}
+                      width={22}
+                      alt={foundLangueRegionale ? (
+                        `Nom de la voie en ${foundLangueRegionale.label}`
+                      ) : (
+                        'Nom de la langue régionale non supportée'
+                      )}
+                    />
+                    {nomAlt[language]}
+                  </ListItem>
+                )
+              })}
             </UnorderedList>
           }
           position={Position.BOTTOM_LEFT}
