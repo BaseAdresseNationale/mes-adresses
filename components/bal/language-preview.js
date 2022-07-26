@@ -11,7 +11,7 @@ function LanguagePreview({nomAlt}) {
 
   return (
     Object.keys(nomAlt).length > 1 ? (
-      <Pane fontStyle='italic' fontSize={14} fontWeight='lighter'>
+      <Pane fontStyle='italic' fontWeight='lighter' display='flex' gap='5px' alignItems='center' fontSize={13}>
         <Tooltip
           content={
             <UnorderedList display='flex' flexDirection='column' padding={0} margin={0}>
@@ -47,10 +47,9 @@ function LanguagePreview({nomAlt}) {
           }
           position={Position.BOTTOM_LEFT}
         >
-          <Pane fontSize={12} display='flex' alignItems='center' gap='5px'>
-            <HelpIcon size={12} />Afficher les alternatives régionales
-          </Pane>
+          <HelpIcon size={16} />
         </Tooltip>
+        Alternatives régionales
       </Pane>
     ) : (
       <Pane fontStyle='italic' fontWeight='lighter' display='flex' gap={8} alignItems='center'>
