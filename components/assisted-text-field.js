@@ -1,27 +1,22 @@
-import {useState} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInputField} from 'evergreen-ui'
-
-import useFocus from '@/hooks/focus'
 
 import AccentTool from '@/components/accent-tool'
 
 function AssistedTextField({label, placeholder, value, validationMessage, onChange, isFocus, isDisabled, isRequired}) {
   const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
-  const [focusRef, ref] = useFocus()
+  const textFieldRef = useRef()
+
+  useEffect(() => {
+    if (isFocus) {
+      textFieldRef.current.focus()
+    }
+  }, [isFocus])
 
   const handleChangeAccent = e => {
     if (isFocus) {
-      ref.focus()
-      ref.setSelectionRange(cursorPosition.start, cursorPosition.end) // Put the cursor back to his position
-    }
-
-    onChange(e)
-  }
-
-  const handleChangeInput = e => {
-    if (isFocus) {
-      ref.focus()
+      textFieldRef.current.focus()
     }
 
     onChange(e)
@@ -30,7 +25,7 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
   return (
     <Pane display='flex' alignItems={validationMessage ? 'last baseline' : 'flex-end'}>
       <TextInputField
-        ref={isFocus ? focusRef : null}
+        ref={textFieldRef}
         required={isRequired}
         marginBottom={0}
         disabled={isDisabled}
@@ -39,8 +34,8 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
         value={value}
         isInvalid={Boolean(validationMessage)}
         validationMessage={validationMessage}
+        onChange={e => onChange(e)}
         onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
-        onChange={e => handleChangeInput(e)}
       />
       <Pane
         display='flex'
