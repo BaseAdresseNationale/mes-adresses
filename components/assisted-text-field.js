@@ -34,7 +34,7 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
         value={value}
         isInvalid={Boolean(validationMessage)}
         validationMessage={validationMessage}
-        onChange={e => onChange(e)}
+        onChange={onChange}
         onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
       />
       <Pane
@@ -46,7 +46,7 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
       >
         <AccentTool
           input={value}
-          handleAccent={e => handleChangeAccent(e)}
+          handleAccent={handleChangeAccent}
           cursorPosition={cursorPosition}
           isDisabled={isDisabled}
         />
