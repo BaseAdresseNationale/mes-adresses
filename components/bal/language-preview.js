@@ -11,7 +11,14 @@ function LanguagePreview({nomAlt}) {
 
   return (
     Object.keys(nomAlt).length > 1 ? (
-      <Pane fontStyle='italic' fontWeight='lighter' display='flex' gap='5px' alignItems='center' fontSize={13}>
+      <Pane
+        fontStyle='italic'
+        fontWeight='lighter'
+        display='flex'
+        gap={5}
+        alignItems='center'
+        fontSize={13}
+      >
         <Tooltip
           content={
             <UnorderedList display='flex' flexDirection='column' padding={0} margin={0}>

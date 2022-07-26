@@ -20,7 +20,7 @@ const TableRowEditShortcut = React.memo(({label, nomAlt, complement, isEditingEn
         style={{cursor: isEditingEnabled ? 'text' : 'pointer'}}
         className='edit-cell'
       >
-        <Pane padding={1} fontSize={15} marginBottom={8}>
+        <Pane padding={1} fontSize={15}>
           {label} {complement && <i>{` - ${complement}`}</i>}
           {isEditingEnabled && (
             <span className='pencil-icon'>
@@ -28,7 +28,12 @@ const TableRowEditShortcut = React.memo(({label, nomAlt, complement, isEditingEn
             </span>
           )}
         </Pane>
-        {nomAlt && <LanguagePreview nomAlt={nomAlt} />}
+
+        {nomAlt && (
+          <Pane marginTop={4}>
+            <LanguagePreview nomAlt={nomAlt} />
+          </Pane>
+        )}
       </Table.TextCell>
 
       <style global jsx>{`
