@@ -50,7 +50,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
 
   const needGeojsonUpdateRef = useRef(false)
 
-  const [focusRef] = useFocus()
+  const [focusedElement] = useFocus({value: null, isFocus: true})
 
   const handleGeojsonRefresh = useCallback(async editedVoie => {
     if (editedVoie._id === initialVoieId) {
@@ -215,7 +215,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
           <FormInput>
             <Pane display='flex' alignItems='flex-start'>
               <TextInputField
-                ref={focusRef}
+                ref={focusedElement}
                 required
                 label='Numéro'
                 display='block'
