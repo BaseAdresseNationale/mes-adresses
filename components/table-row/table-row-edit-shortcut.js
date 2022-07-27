@@ -28,7 +28,12 @@ const TableRowEditShortcut = React.memo(({label, nomAlt, complement, isEditingEn
             </span>
           )}
         </Pane>
-        {nomAlt && <LanguagePreview nomAlt={nomAlt} />}
+
+        {nomAlt && (
+          <Pane marginTop={4}>
+            <LanguagePreview nomAlt={nomAlt} />
+          </Pane>
+        )}
       </Table.TextCell>
 
       <style global jsx>{`
