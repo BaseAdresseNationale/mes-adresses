@@ -10,14 +10,8 @@ const MODES = {
 }
 
 function Draw() {
-  const [editor, setEditor] = useState(null)
   const {drawEnabled, modeId, hint, data, setHint, setData} = useContext(DrawContext)
-
-  const editorRef = useCallback(ref => {
-    if (ref) {
-      setEditor(ref)
-    }
-  }, [])
+  const editorRef = useRef()
 
   const _onUpdate = useCallback(({data, editType}) => {
     if (editType === 'addTentativePosition') {
@@ -38,8 +32,8 @@ function Draw() {
     return null
   }
 
-  if (!data && editor) {
-    editor.deleteFeatures(0)
+  if (!data && editorRef?.current) {
+    editorRef.current.deleteFeatures(0)
   }
 
   return (
