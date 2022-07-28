@@ -10,46 +10,34 @@ export function DrawContextProvider(props) {
   const [hint, setHint] = useState(null)
   const [data, setData] = useState(null)
 
-  const {editingItem} = useContext(BalDataContext)
+  const {voie} = useContext(BalDataContext)
 
   useEffect(() => {
-    if (modeId === 'drawLineString') {
-      setHint('Indiquez le début de la voie')
-    }
-  }, [modeId])
-
-  useEffect(() => {
-    if (data) {
-      setHint(null)
-      setModeId('editing')
-    }
-  }, [data, setModeId])
-
-  useEffect(() => {
-    if (editingItem) {
-      if (editingItem.typeNumerotation === 'metrique') {
-        if (editingItem.trace) {
-          setData({
-            type: 'Feature',
-            properties: {},
-            geometry: editingItem.trace
-          })
-          setModeId('editing')
-        } else {
-          setModeId('drawLineString')
-        }
-      }
+    if (voie?.trace) {
+      setData({
+        type: 'Feature',
+        properties: {},
+        geometry: voie.trace
+      })
     } else {
-      setModeId(null)
+      setData(null)
     }
-  }, [editingItem])
+  }, [voie])
 
   useEffect(() => {
-    if (!drawEnabled) {
-      setData(null)
+    if (drawEnabled) {
+      if (data) { // Edition mode
+        setModeId('editing')
+        setHint(null)
+      } else { // Creation mode
+        setModeId('drawLineString')
+        setHint('Indiquez le début de la voie')
+      }
+    } else { // Reset states
       setModeId(null)
+      setHint(null)
     }
-  }, [drawEnabled])
+  }, [drawEnabled, data])
 
   const value = useMemo(() => ({
     drawEnabled,
