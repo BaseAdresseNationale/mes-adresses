@@ -38,6 +38,7 @@ export function DrawContextProvider(props) {
     } else { // Reset states
       setModeId(null)
       setHint(null)
+      setVoie(null)
     }
   }, [drawEnabled, data])
 
