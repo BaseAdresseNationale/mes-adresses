@@ -120,7 +120,11 @@ function VoieEditor({initialValue, closeForm}) {
               marginBottom='1em'
             />
 
-            <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
+            <LanguesRegionalesForm
+              initialValue={initialValue?.nomAlt}
+              validationMessage={getValidationMessage('nomAlt')}
+              handleLanguages={setNomAlt}
+            />
           </FormInput>
 
           {isMetric && (

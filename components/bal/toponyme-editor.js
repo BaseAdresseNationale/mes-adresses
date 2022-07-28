@@ -126,7 +126,11 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
               validationMessage={getValidationMessage('nom')}
             />
 
-            <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
+            <LanguesRegionalesForm
+              initialValue={initialValue?.nomAlt}
+              validationMessage={getValidationMessage('nomAlt')}
+              handleLanguages={setNomAlt}
+            />
           </FormInput>
 
           <FormInput>
