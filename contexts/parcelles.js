@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useCallback, useMemo} from 'react'
+import React, {useState, useContext, useEffect, useCallback, useMemo, useRef} from 'react'
 
 import MapContext from '@/contexts/map'
 
@@ -19,8 +19,9 @@ export function ParcellesContextProvider(props) {
 
   const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] = useState(false)
   const [selectedParcelles, setSelectedParcelles] = useState([])
-  const [hoveredParcelle, setHoveredParcelle] = useState(null)
   const [isLayerLoaded, setIsLayerLoaded] = useState(false)
+
+  const hoveredParcelle = useRef()
 
   const handleParcelle = useCallback(parcelle => {
     if (isParcelleSelectionEnabled) {
@@ -35,24 +36,26 @@ export function ParcellesContextProvider(props) {
   }, [selectedParcelles, isParcelleSelectionEnabled])
 
   const handleHoveredParcelle = useCallback(hovered => {
-    if (map) {
-      setHoveredParcelle(prev => {
-        if (prev && isCadastreDisplayed) {
-          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prev.featureId}, {hover: false})
+    if (map && hoveredParcelle) {
+      if (hoveredParcelle.current && isCadastreDisplayed) {
+        map.setFeatureState({
+          source: 'cadastre',
+          sourceLayer: 'parcelles',
+          id: hoveredParcelle.current.featureId
+        }, {hover: false})
+      }
+
+      if (hovered) {
+        const featureId = hovered.featureId || getHoveredFeatureId(map, hovered.id)
+
+        if (featureId && isCadastreDisplayed) {
+          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: true})
         }
 
-        if (hovered) {
-          const featureId = hovered.featureId || getHoveredFeatureId(map, hovered.id)
-
-          if (featureId && isCadastreDisplayed) {
-            map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: true})
-          }
-
-          return {id: hovered.id, featureId}
-        }
-
-        return null
-      })
+        hoveredParcelle.current = {id: hovered.id, featureId}
+      } else {
+        hoveredParcelle.current = null
+      }
     }
   }, [map, isCadastreDisplayed])
 
@@ -73,15 +76,12 @@ export function ParcellesContextProvider(props) {
 
   // Clean hovered parcelle when selection is disabled
   useEffect(() => {
-    if (!isParcelleSelectionEnabled && map) {
-      setHoveredParcelle(prev => {
-        if (prev) {
-          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prev.featureId}, {hover: false})
-          return null
-        }
-      })
+    if (!isParcelleSelectionEnabled && map && hoveredParcelle?.current) {
+      const {featureId} = hoveredParcelle.current
+      map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: false})
+      hoveredParcelle.current = null
     }
-  }, [map, isParcelleSelectionEnabled, hoveredParcelle])
+  }, [map, isParcelleSelectionEnabled])
 
   // Reset IsLayerLoaded when selection is disabled
   useEffect(() => {
