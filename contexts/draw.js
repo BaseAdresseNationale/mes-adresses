@@ -1,6 +1,4 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react'
-
-import BalDataContext from '@/contexts/bal-data'
+import React, {useState, useEffect, useMemo, useCallback} from 'react'
 
 const DrawContext = React.createContext()
 
@@ -9,8 +7,12 @@ export function DrawContextProvider(props) {
   const [modeId, setModeId] = useState(null)
   const [hint, setHint] = useState(null)
   const [data, setData] = useState(null)
+  const [voie, setVoie] = useState(null)
 
-  const {voie} = useContext(BalDataContext)
+  const enableDraw = useCallback(voie => {
+    setVoie(voie)
+    setDrawEnabled(true)
+  }, [])
 
   useEffect(() => {
     if (voie?.trace) {
@@ -41,7 +43,7 @@ export function DrawContextProvider(props) {
 
   const value = useMemo(() => ({
     drawEnabled,
-    enableDraw: () => setDrawEnabled(true),
+    enableDraw,
     disableDraw: () => setDrawEnabled(false),
     modeId,
     setModeId,
@@ -50,6 +52,7 @@ export function DrawContextProvider(props) {
     data,
     setData
   }), [
+    enableDraw,
     drawEnabled,
     modeId,
     hint,

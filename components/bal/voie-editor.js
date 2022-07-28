@@ -28,7 +28,7 @@ function VoieEditor({initialValue, closeForm}) {
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
-  const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
+  const {drawEnabled, data, enableDraw, disableDraw} = useContext(DrawContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -86,12 +86,11 @@ function VoieEditor({initialValue, closeForm}) {
 
   useEffect(() => {
     if (isMetric) {
-      // SetModeId(data ? 'editing' : 'drawLineString')
-      enableDraw()
+      enableDraw(initialValue)
     } else if (!isMetric && drawEnabled) {
       disableDraw()
     }
-  }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
+  }, [initialValue, disableDraw, drawEnabled, enableDraw, isMetric])
 
   const onUnmount = useCallback(() => {
     disableDraw()
