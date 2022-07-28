@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo, useContext} from 'react'
+import React, {useCallback, useMemo, useContext, useRef} from 'react'
 import {Editor, EditingMode, DrawLineStringMode} from 'react-map-gl-draw'
 import {Portal, Pane, Alert} from 'evergreen-ui'
 
@@ -67,4 +67,4 @@ function Draw() {
   )
 }
 
-export default Draw
+export default React.memo(Draw)
