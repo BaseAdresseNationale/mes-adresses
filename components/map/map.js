@@ -127,11 +127,9 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const onClick = useCallback(event => {
     const feature = event?.features[0]
 
-    if (feature?.source === 'cadastre' && feature?.state.hover) {
+    if (feature?.source === 'cadastre') {
       handleParcelle(feature.properties.id)
-    }
-
-    if (feature && feature.properties.idVoie && !isEditing) {
+    } else if (feature && feature.properties.idVoie && !isEditing) {
       const {idVoie} = feature.properties
       if (feature.layer.id === 'voie-trace-line' && voie && idVoie === voie._id) {
         setEditingId(voie._id)
