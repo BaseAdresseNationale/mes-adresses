@@ -1,6 +1,6 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {isEqual} from 'lodash'
+import {difference} from 'lodash'
 import {Button} from 'evergreen-ui'
 import router from 'next/router'
 
@@ -78,7 +78,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         await reloadGeojson()
       }
 
-      if (!isEqual(initialValue?.parcelles, body.parcelles)) {
+      if (difference(initialValue?.parcelles || [], body.parcelles).length > 0) {
         await reloadParcelles()
       }
 
