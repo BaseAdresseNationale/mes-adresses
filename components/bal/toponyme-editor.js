@@ -111,7 +111,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   return (
     <FormMaster editingId={initialValue?._id} closeForm={closeForm}>
       <Form onFormSubmit={onFormSubmit}>
-        <Pane maxHeight={500} overflowY='scroll'>
+        <Pane>
           <FormInput>
             <AssistedTextField
               isFocus

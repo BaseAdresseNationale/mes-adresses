@@ -90,7 +90,7 @@ function Toponyme({baseLocale, commune}) {
   }, [token, reloadNumeros])
 
   return (
-    <>
+    <Pane height='fit-content' overflowY='scroll'>
       <ToponymeHeading toponyme={toponyme} commune={commune} />
       {token && isFormOpen && isEditing ? (
         <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
@@ -160,7 +160,7 @@ function Toponyme({baseLocale, commune}) {
           )}
         </Table>
       </Pane>
-    </>
+    </Pane>
   )
 }
 
