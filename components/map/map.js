@@ -69,7 +69,7 @@ function generateNewStyle(style, sources, layers) {
 
 function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
-  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
+  const {mapRef, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
@@ -95,12 +95,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
   const layers = useLayers(voie, sources, isCadastreDisplayed, style)
-
-  const mapRef = useCallback(ref => {
-    if (ref) {
-      setMap(ref.getMap())
-    }
-  }, [setMap])
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -172,8 +166,9 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   }, [modeId, commune]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (map) {
+    if (mapRef?.current) {
       if (bounds) {
+        const map = mapRef.current.getMap()
         const camera = map.cameraForBounds(bounds, {
           padding: 100
         })
@@ -191,7 +186,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         setViewport(viewport => ({...viewport}))
       }
     }
-  }, [map, bounds, setViewport])
+  }, [mapRef, bounds, setViewport])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
