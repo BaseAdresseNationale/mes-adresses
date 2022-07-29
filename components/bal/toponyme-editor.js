@@ -1,7 +1,7 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {difference} from 'lodash'
-import {Button} from 'evergreen-ui'
+import {Pane, Button} from 'evergreen-ui'
 import router from 'next/router'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
@@ -111,35 +111,37 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   return (
     <FormMaster editingId={initialValue?._id} closeForm={closeForm}>
       <Form onFormSubmit={onFormSubmit}>
-        <FormInput>
-          <AssistedTextField
-            isFocus
-            disabled={isLoading}
-            label='Nom du toponyme'
-            placeholder='Nom du toponyme'
-            value={nom}
-            onChange={onNomChange}
-            validationMessage={getValidationMessage('nom')}
-          />
-
-          <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
-        </FormInput>
-
-        <FormInput>
-          <PositionEditor
-            initialPositions={initialValue?.positions}
-            isToponyme
-            validationMessage={getValidationMessage('positions')}
-          />
-        </FormInput>
-
-        {commune.hasCadastre ? (
+        <Pane maxHeight={500} overflowY='scroll'>
           <FormInput>
-            <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
+            <AssistedTextField
+              isFocus
+              disabled={isLoading}
+              label='Nom du toponyme'
+              placeholder='Nom du toponyme'
+              value={nom}
+              onChange={onNomChange}
+              validationMessage={getValidationMessage('nom')}
+            />
+
+            <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
           </FormInput>
-        ) : (
-          <DisabledFormInput label='Parcelles' />
-        )}
+
+          <FormInput>
+            <PositionEditor
+              initialPositions={initialValue?.positions}
+              isToponyme
+              validationMessage={getValidationMessage('positions')}
+            />
+          </FormInput>
+
+          {commune.hasCadastre ? (
+            <FormInput>
+              <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
+            </FormInput>
+          ) : (
+            <DisabledFormInput label='Parcelles' />
+          )}
+        </Pane>
 
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
           {submitLabel}
