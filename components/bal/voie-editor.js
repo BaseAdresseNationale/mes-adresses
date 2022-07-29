@@ -1,6 +1,7 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import router from 'next/router'
+import {isEqual} from 'lodash'
 import {Pane, Button, Checkbox} from 'evergreen-ui'
 
 import {addVoie, editVoie} from '@/lib/bal-api'
@@ -27,7 +28,7 @@ function VoieEditor({initialValue, closeForm}) {
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
-  const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
+  const {drawEnabled, data, enableDraw, disableDraw} = useContext(DrawContext)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -55,6 +56,11 @@ function VoieEditor({initialValue, closeForm}) {
 
       if (initialValue?._id === voie._id && router.query.idVoie) {
         setVoie(voie)
+
+        // Reload voie trace
+        if (!isEqual(initialValue.trace, data?.geometry) || body.typeNumerotation !== initialValue.typeNumerotation) {
+          await reloadGeojson()
+        }
       } else {
         await reloadVoies()
         await reloadGeojson()
@@ -80,12 +86,11 @@ function VoieEditor({initialValue, closeForm}) {
 
   useEffect(() => {
     if (isMetric) {
-      setModeId(data ? 'editing' : 'drawLineString')
-      enableDraw()
+      enableDraw(initialValue)
     } else if (!isMetric && drawEnabled) {
       disableDraw()
     }
-  }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
+  }, [initialValue, disableDraw, drawEnabled, enableDraw, isMetric])
 
   const onUnmount = useCallback(() => {
     disableDraw()

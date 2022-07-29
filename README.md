@@ -25,7 +25,7 @@ $ yarn
 
 ## Drapeaux disponible pour les langues régionales
 ```
-$ yarn flags
+$ yarn build-available-flags
 ```
 
 ## Développement
