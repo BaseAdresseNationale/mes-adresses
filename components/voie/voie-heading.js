@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react'
+import {useState, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, EditIcon, Text} from 'evergreen-ui'
 
@@ -15,12 +15,18 @@ function VoieHeading({voie}) {
   const {token} = useContext(TokenContext)
   const {editingId, isEditing, numeros} = useContext(BalDataContext)
 
-  const onEnableVoieEditing = () => {
+  const onEnableVoieEditing = useCallback(() => {
     if (!isEditing) {
       setIsFormOpen(true)
       setHovered(false)
     }
-  }
+  }, [isEditing])
+
+  useEffect(() => {
+    if (editingId === voie._id) {
+      onEnableVoieEditing()
+    }
+  }, [voie, editingId, onEnableVoieEditing])
 
   return isFormOpen ? (
     <Pane background='tint1' padding={0}>
