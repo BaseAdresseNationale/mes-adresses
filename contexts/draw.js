@@ -39,6 +39,7 @@ export function DrawContextProvider(props) {
       setModeId(null)
       setHint(null)
       setVoie(null)
+      setData(null)
     }
   }, [drawEnabled, data])
 
