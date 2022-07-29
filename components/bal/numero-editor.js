@@ -1,6 +1,6 @@
 import {useState, useCallback, useContext, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {difference, sortBy} from 'lodash'
+import {xor, sortBy} from 'lodash'
 import {Pane, SelectField, TextInputField} from 'evergreen-ui'
 
 import {addVoie, addNumero, editNumero} from '@/lib/bal-api'
@@ -117,7 +117,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
 
       await reloadNumeros()
 
-      if (difference(initialValue?.parcelles || [], body.parcelles).length > 0) {
+      if (xor(initialValue?.parcelles, body?.parcelles).length > 0) {
         await reloadParcelles()
       }
 
