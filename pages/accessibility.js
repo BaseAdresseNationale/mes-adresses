@@ -60,20 +60,22 @@ function Accessibility() {
 
       <Pane width='100%' display='flex' flexDirection='column' alignItems='center' gap='1em' marginBottom='2em'>
         <Heading is='h3' size={800} color='#2952CC'>Voie de recours</Heading>
-        <Paragraph>Si vous constatez un <Strong>défaut d’accessibilité</Strong> vous empêchant d’accéder à un contenu ou une fonctionnalité du site, que vous nous le signalez et que vous ne parvenez pas à obtenir une réponse de notre part, vous êtes en droit de faire parvenir vos doléances ou une demande de saisine au <Strong>Défenseur des droits</Strong>.<br />
-          Plusieurs moyens sont à votre disposition :
-        </Paragraph>
-        <UnorderedList>
-          <ListItem>Écrire un message au <Strong>Défenseur des droits</Strong>.</ListItem>
-          <ListItem>Contacter <Strong>le délégué du Défenseur des droits</Strong> dans votre région.</ListItem>
-          <ListItem>Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre).<br />
-            <Strong>
-              Défenseur des droits<br />
-              Libre réponse 71120<br />
-              75342 Paris CEDEX 07
-            </Strong>
-          </ListItem>
-        </UnorderedList>
+        <Pane>
+          <Paragraph>Si vous constatez un <Strong>défaut d’accessibilité</Strong> vous empêchant d’accéder à un contenu ou une fonctionnalité du site, que vous nous le signalez et que vous ne parvenez pas à obtenir une réponse de notre part, vous êtes en droit de faire parvenir vos doléances ou une demande de saisine au <Strong>Défenseur des droits</Strong>.<br />
+            Plusieurs moyens sont à votre disposition :
+          </Paragraph>
+          <UnorderedList>
+            <ListItem>Écrire un message au <Strong>Défenseur des droits</Strong>.</ListItem>
+            <ListItem>Contacter <Strong>le délégué du Défenseur des droits</Strong> dans votre région.</ListItem>
+            <ListItem>Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre).<br />
+              <Strong>
+                Défenseur des droits<br />
+                Libre réponse 71120<br />
+                75342 Paris CEDEX 07
+              </Strong>
+            </ListItem>
+          </UnorderedList>
+        </Pane>
       </Pane>
     </Pane>
   )
