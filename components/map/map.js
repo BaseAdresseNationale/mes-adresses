@@ -11,6 +11,10 @@ import TokenContext from '@/contexts/token'
 import DrawContext from '@/contexts/draw'
 import ParcellesContext from '@/contexts/parcelles'
 
+import {cadastreLayers} from '@/components/map/layers/cadastre'
+import {voiesLayers} from '@/components/map/layers/voies'
+import {numerosLayers} from '@/components/map/layers/numeros'
+
 import {vector, ortho, planIGN} from '@/components/map/styles'
 import EditableMarker from '@/components/map/editable-marker'
 import NumerosMarkers from '@/components/map/numeros-markers'
@@ -22,8 +26,13 @@ import StyleControl from '@/components/map/controls/style-control'
 import AddressEditorControl from '@/components/map/controls/address-editor-control'
 import useBounds from '@/components/map/hooks/bounds'
 import useSources from '@/components/map/hooks/sources'
-import useLayers from '@/components/map/hooks/layers'
 import useHovered from '@/components/map/hooks/hovered'
+
+const LAYERS = [
+  ...cadastreLayers,
+  ...voiesLayers,
+  ...numerosLayers
+]
 
 const settings = {
   maxZoom: 19
@@ -54,7 +63,7 @@ function getBaseStyle(style) {
   }
 }
 
-function generateNewStyle(style, sources, layers) {
+function generateNewStyle(style, sources) {
   let baseStyle = getBaseStyle(style)
 
   for (const {name, data} of sources) {
@@ -64,7 +73,7 @@ function generateNewStyle(style, sources, layers) {
     }))
   }
 
-  return baseStyle.updateIn(['layers'], arr => arr.push(...layers))
+  return baseStyle.updateIn(['layers'], arr => arr.push(...LAYERS))
 }
 
 function Map({commune, isAddressFormOpen, handleAddressForm}) {
@@ -94,7 +103,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const [hovered, setHovered, handleHover] = useHovered()
   const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
-  const layers = useLayers(voie, sources, style)
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -146,13 +154,29 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     return isHovering ? 'pointer' : 'default'
   }, [modeId])
 
+  // Adapt layer paint property to map style
+  useEffect(() => {
+    if (mapRef?.current) {
+      const map = mapRef.current.getMap()
+      const isOrtho = style === 'ortho'
+
+      if (map.getLayer('voie-label')) {
+        map.setPaintProperty('voie-label', 'text-halo-color', isOrtho ? '#ffffff' : '#f8f4f0')
+      }
+
+      if (map.getLayer('numeros-point')) {
+        map.setPaintProperty('numeros-point', 'circle-stroke-color', isOrtho ? '#ffffff' : '#f8f4f0')
+      }
+    }
+  }, [mapRef, style])
+
   useEffect(() => {
     if (sources.length > 0) {
-      setMapStyle(generateNewStyle(style, sources, layers))
+      setMapStyle(generateNewStyle(style, sources))
     } else {
       setMapStyle(getBaseStyle(style))
     }
-  }, [sources, layers, style, defaultStyle])
+  }, [sources, style, defaultStyle])
 
   useEffect(() => {
     setStyle(prevStyle => {
