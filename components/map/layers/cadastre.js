@@ -4,6 +4,9 @@ export const cadastreLayers = codeCommune => [{
   source: 'cadastre',
   'source-layer': 'batiments',
   minzoom: 16,
+  layout: {
+    visibility: 'none'
+  },
   paint: {
     'fill-opacity': 0.3
   }
@@ -15,6 +18,9 @@ export const cadastreLayers = codeCommune => [{
   'source-layer': 'batiments',
   minzoom: 16,
   maxzoom: 22,
+  layout: {
+    visibility: 'none'
+  },
   paint: {
     'line-opacity': 1,
     'line-color': 'rgba(0, 0, 0, 1)'
@@ -29,6 +35,7 @@ export const cadastreLayers = codeCommune => [{
   minzoom: 16,
   maxzoom: 24,
   layout: {
+    visibility: 'none',
     'line-cap': 'butt'
   },
   paint: {
@@ -54,6 +61,9 @@ export const cadastreLayers = codeCommune => [{
   source: 'cadastre',
   'source-layer': 'parcelles',
   filter: ['match', ['get', 'commune'], codeCommune, true, false],
+  layout: {
+    visibility: 'none'
+  },
   paint: {
     'fill-color': 'rgba(129, 123, 0, 1)',
     'fill-opacity': [
@@ -76,6 +86,9 @@ export const cadastreLayers = codeCommune => [{
   type: 'fill',
   source: 'cadastre',
   'source-layer': 'parcelles',
+  layout: {
+    visibility: 'none'
+  },
   filter: [
     '==',
     'id',
@@ -91,6 +104,9 @@ export const cadastreLayers = codeCommune => [{
   type: 'fill',
   source: 'cadastre',
   'source-layer': 'parcelles',
+  layout: {
+    visibility: 'none'
+  },
   filter: [
     '==',
     'id',
@@ -120,6 +136,9 @@ export const cadastreLayers = codeCommune => [{
   'source-layer': 'sections',
   minzoom: 12,
   maxzoom: 24,
+  layout: {
+    visibility: 'none'
+  },
   paint: {
     'line-color': 'rgba(116, 134, 241, 1)',
     'line-opacity': 0.9,
@@ -134,6 +153,7 @@ export const cadastreLayers = codeCommune => [{
   minzoom: 12.5,
   maxzoom: 16,
   layout: {
+    visibility: 'none',
     'text-field': '{code}',
     'text-font': ['Open Sans Regular']
   },
@@ -152,6 +172,7 @@ export const cadastreLayers = codeCommune => [{
     'all'
   ],
   layout: {
+    visibility: 'none',
     'text-field': '{numero}',
     'text-font': ['Open Sans Regular'],
     'text-allow-overlap': false,

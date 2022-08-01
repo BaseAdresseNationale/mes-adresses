@@ -1,5 +1,7 @@
 import React, {useState, useContext, useEffect, useCallback, useMemo, useRef} from 'react'
 
+import {cadastreLayers} from '@/components/map/layers/cadastre'
+
 import MapContext from '@/contexts/map'
 import BalDataContext from './bal-data'
 
@@ -17,7 +19,7 @@ function getHoveredFeatureId(map, id) {
 
 export function ParcellesContextProvider(props) {
   const {mapRef, isCadastreDisplayed} = useContext(MapContext)
-  const {parcelles} = useContext(BalDataContext)
+  const {baseLocale, parcelles} = useContext(BalDataContext)
 
   const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] = useState(false)
   const [selectedParcelles, setSelectedParcelles] = useState([])
@@ -82,6 +84,17 @@ export function ParcellesContextProvider(props) {
 
     setIsLayerLoaded(parcelleHightlightedLayer && parcellesSeletedLayer)
   }, [mapRef, setIsLayerLoaded])
+
+  useEffect(() => {
+    if (mapRef?.current) {
+      const map = mapRef.current.getMap()
+      const layers = cadastreLayers(baseLocale.codeCommune)
+
+      layers.forEach(layer => {
+        map.setLayoutProperty(layer.id, 'visibility', isCadastreDisplayed ? 'visible' : 'none')
+      })
+    }
+  }, [mapRef, isCadastreDisplayed, baseLocale.codeCommune])
 
   useEffect(() => {
     if (mapRef?.current && isLayerLoaded && isCadastreDisplayed) {

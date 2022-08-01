@@ -12,11 +12,7 @@ function useLayers(voie, sources, isCadastreDisplayed, style) {
   return useMemo(() => {
     const hasNumeros = sources.find(({name}) => name === 'positions')
     const hasVoies = sources.find(({name}) => name === 'voies')
-    let layers = []
-
-    if (isCadastreDisplayed) {
-      layers = [...cadastreLayers(baseLocale.commune)]
-    }
+    const layers = [...cadastreLayers(baseLocale.commune)]
 
     if (hasVoies) {
       layers.push(getVoieTraceLayer(style))
@@ -36,7 +32,7 @@ function useLayers(voie, sources, isCadastreDisplayed, style) {
     }
 
     return layers
-  }, [voie, sources, isCadastreDisplayed, style, baseLocale.commune])
+  }, [voie, sources, style, baseLocale.commune])
 }
 
 export default useLayers

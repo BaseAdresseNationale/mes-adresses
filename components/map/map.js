@@ -94,7 +94,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const [hovered, setHovered, handleHover] = useHovered()
   const sources = useSources(voie, toponyme, hovered, editingId)
   const bounds = useBounds(commune, voie, toponyme)
-  const layers = useLayers(voie, sources, isCadastreDisplayed, style)
+  const layers = useLayers(voie, sources, style)
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
