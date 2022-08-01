@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect, useCallback, useMemo, useRef} from 'react'
 
 import MapContext from '@/contexts/map'
+import BalDataContext from './bal-data'
 
 const ParcellesContext = React.createContext()
 
@@ -16,6 +17,7 @@ function getHoveredFeatureId(map, id) {
 
 export function ParcellesContextProvider(props) {
   const {mapRef, isCadastreDisplayed} = useContext(MapContext)
+  const {parcelles} = useContext(BalDataContext)
 
   const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] = useState(false)
   const [selectedParcelles, setSelectedParcelles] = useState([])
@@ -75,9 +77,22 @@ export function ParcellesContextProvider(props) {
   // Use state to know when parcelle-highlighted layer is loaded
   const handleLoad = useCallback(() => {
     const map = mapRef.current.getMap()
-    const layer = map.getLayer('parcelle-highlighted')
-    setIsLayerLoaded(Boolean(layer))
+    const parcelleHightlightedLayer = map.getLayer('parcelle-highlighted')
+    const parcellesSeletedLayer = map.getLayer('parcelles-selected')
+
+    setIsLayerLoaded(parcelleHightlightedLayer && parcellesSeletedLayer)
   }, [mapRef, setIsLayerLoaded])
+
+  useEffect(() => {
+    if (mapRef?.current && isLayerLoaded && isCadastreDisplayed) {
+      const map = mapRef.current.getMap()
+      const filters = parcelles.length > 0 ?
+        ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])] :
+        ['==', ['get', 'id'], '']
+
+      map.setFilter('parcelles-selected', filters)
+    }
+  }, [mapRef, parcelles, isLayerLoaded, isCadastreDisplayed])
 
   // Clean hovered parcelle when selection is disabled
   useEffect(() => {
@@ -104,7 +119,7 @@ export function ParcellesContextProvider(props) {
   }, [isParcelleSelectionEnabled, isLayerLoaded, selectedParcelles, highlightParcelles])
 
   // Look styledata event
-  // to know if parcelle-highlighted layer is loaded or not
+  // to know if parcelle-highlighted & parcelles-selected layers are loaded or not
   useEffect(() => {
     if (mapRef?.current && !LOAD) {
       LOAD = true

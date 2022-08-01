@@ -1,4 +1,4 @@
-export const cadastreLayers = (parcelles, codeCommune) => [{
+export const cadastreLayers = codeCommune => [{
   id: 'batiments-fill',
   type: 'fill',
   source: 'cadastre',
@@ -76,7 +76,11 @@ export const cadastreLayers = (parcelles, codeCommune) => [{
   type: 'fill',
   source: 'cadastre',
   'source-layer': 'parcelles',
-  filter: ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])],
+  filter: [
+    '==',
+    'id',
+    ''
+  ],
   paint: {
     'fill-color': '#0053b3',
     'fill-opacity': 0.2
