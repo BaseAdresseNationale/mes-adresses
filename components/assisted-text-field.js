@@ -1,30 +1,31 @@
-import {useState} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInputField} from 'evergreen-ui'
-
-import useFocus from '@/hooks/focus'
 
 import AccentTool from '@/components/accent-tool'
 
 function AssistedTextField({label, placeholder, value, validationMessage, onChange, isFocus, isDisabled, isRequired}) {
   const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
-  const [focusRef, ref] = useFocus()
+  const textFieldRef = useRef()
+
+  useEffect(() => {
+    if (isFocus) {
+      textFieldRef.current.focus()
+    }
+  }, [isFocus])
 
   const handleChangeAccent = e => {
-    ref.focus()
-    onChange(e)
-    ref.setSelectionRange(cursorPosition.start, cursorPosition.end) // Put the cursor back to his position
-  }
+    if (isFocus) {
+      textFieldRef.current.focus()
+    }
 
-  const handleChangeInput = e => {
-    ref.focus()
     onChange(e)
   }
 
   return (
     <Pane display='flex' alignItems={validationMessage ? 'last baseline' : 'flex-end'}>
       <TextInputField
-        ref={isFocus && focusRef}
+        ref={textFieldRef}
         required={isRequired}
         marginBottom={0}
         disabled={isDisabled}
@@ -33,8 +34,8 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
         value={value}
         isInvalid={Boolean(validationMessage)}
         validationMessage={validationMessage}
+        onChange={onChange}
         onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
-        onChange={e => handleChangeInput(e)}
       />
       <Pane
         display='flex'
@@ -43,7 +44,12 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
         marginLeft={8}
         marginTop={3}
       >
-        <AccentTool input={value} handleAccent={e => handleChangeAccent(e)} cursorPosition={cursorPosition} isDisabled={isDisabled} />
+        <AccentTool
+          input={value}
+          handleAccent={handleChangeAccent}
+          cursorPosition={cursorPosition}
+          isDisabled={isDisabled}
+        />
       </Pane>
     </Pane>
   )
