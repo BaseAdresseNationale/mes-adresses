@@ -134,7 +134,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
       </Pane>
 
       {isCreateFormOpen && !editingId ? (
-        <Pane>
+        <Pane height='fit-content' overflowY='scroll'>
           {selectedTab === 'voie' ? (
             <VoieEditor closeForm={() => setIsCreateFormOpen(false)} />
           ) : (
