@@ -85,17 +85,27 @@ export function ParcellesContextProvider(props) {
     setIsLayerLoaded(parcelleHightlightedLayer && parcellesSeletedLayer)
   }, [mapRef, setIsLayerLoaded])
 
+  // Filter cadastre with code commune
   useEffect(() => {
     if (mapRef?.current) {
       const map = mapRef.current.getMap()
-      const layers = cadastreLayers(baseLocale.codeCommune)
+      map.setFilter('parcelles', ['match', ['get', 'commune'], baseLocale.codeCommune, true, false])
+      map.setFilter('parcelles-fill', ['match', ['get', 'commune'], baseLocale.codeCommune, true, false])
+    }
+  }, [mapRef, baseLocale.codeCommune])
 
-      layers.forEach(layer => {
+  // Toggle all cadastre layers visiblity
+  useEffect(() => {
+    if (mapRef?.current) {
+      const map = mapRef.current.getMap()
+
+      cadastreLayers.forEach(layer => {
         map.setLayoutProperty(layer.id, 'visibility', isCadastreDisplayed ? 'visible' : 'none')
       })
     }
-  }, [mapRef, isCadastreDisplayed, baseLocale.codeCommune])
+  }, [mapRef, isCadastreDisplayed])
 
+  // Toggle selected parcelle visibility
   useEffect(() => {
     if (mapRef?.current && isLayerLoaded && isCadastreDisplayed) {
       const map = mapRef.current.getMap()

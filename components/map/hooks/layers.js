@@ -1,18 +1,14 @@
-import {useContext, useMemo} from 'react'
-
-import BalDataContext from '@/contexts/bal-data'
+import {useMemo} from 'react'
 
 import {getVoiesLabelLayer, getVoieTraceLayer} from '@/components/map/layers/voies'
 import {getNumerosPointLayer, getNumerosLabelLayer} from '@/components/map/layers/numeros'
 import {cadastreLayers} from '@/components/map/layers/cadastre'
 
 function useLayers(voie, sources, isCadastreDisplayed, style) {
-  const {baseLocale} = useContext(BalDataContext)
-
   return useMemo(() => {
     const hasNumeros = sources.find(({name}) => name === 'positions')
     const hasVoies = sources.find(({name}) => name === 'voies')
-    const layers = [...cadastreLayers(baseLocale.commune)]
+    const layers = [...cadastreLayers]
 
     if (hasVoies) {
       layers.push(getVoieTraceLayer(style))
@@ -32,7 +28,7 @@ function useLayers(voie, sources, isCadastreDisplayed, style) {
     }
 
     return layers
-  }, [voie, sources, style, baseLocale.commune])
+  }, [voie, sources, style])
 }
 
 export default useLayers
