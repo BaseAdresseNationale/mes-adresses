@@ -8,10 +8,8 @@ function useCaretPosition({initialValue, isFocus}) {
   const [caretPosition, setCaretPosition] = useState(initialValue ? initialValue.length : 0)
 
   const updateCaretPosition = useCallback(() => {
-    if (focusedElement && focusedElement.current) {
-      setCaretPosition(focusedElement.current.selectionStart)
-      focusedElement.current.focus()
-    }
+    setCaretPosition(focusedElement.current.selectionStart)
+    focusedElement.current.focus()
   }, [focusedElement])
 
   useEffect(() => {
