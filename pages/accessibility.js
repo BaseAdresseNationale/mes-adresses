@@ -48,7 +48,7 @@ function Accessibility() {
 
       <Pane width='100%' display='flex' flexDirection='column' alignItems='center' gap='1em'>
         <Heading is='h3' size={800} color='#2952CC'>Information et contact</Heading>
-        <Paragraph lineHeight='200%'>Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez contacter notre équipe pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme.</Paragraph>
+        <Paragraph width='100%' lineHeight='200%'>Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez contacter notre équipe pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme.</Paragraph>
         <Button
           onClick={() => router.push('mailto:adresse@data.gouv.fr')}
           appearance='primary'
