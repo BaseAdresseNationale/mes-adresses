@@ -5,27 +5,20 @@ import useFocus from './focus'
 
 function useCaretPosition({initialValue, isFocus}) {
   const [focusedElement] = useFocus({value: null, isFocus})
-
-  const [start, setStart] = useState(initialValue ? initialValue.length : 0)
-  const [end, setEnd] = useState(initialValue ? initialValue.length : 0)
+  const [caretPosition, setCaretPosition] = useState(initialValue ? initialValue.length : 0)
 
   const updateCaretPosition = useCallback(() => {
     if (focusedElement && focusedElement.current) {
-      const {selectionStart, selectionEnd} = focusedElement.current
-
-      setStart(selectionStart)
-      setEnd(selectionEnd)
-
+      setCaretPosition(focusedElement.current.selectionStart)
       focusedElement.current.focus()
     }
   }, [focusedElement])
 
   useEffect(() => {
     if (focusedElement && focusedElement.current) {
-      const newCursorPosition = start + 1
-      focusedElement.current.setSelectionRange(newCursorPosition, newCursorPosition)
+      focusedElement.current.setSelectionRange(caretPosition + 1, caretPosition + 1)
     }
-  }, [start, end, isFocus, focusedElement])
+  }, [caretPosition, isFocus, focusedElement])
 
   return {ref: focusedElement, updateCaretPosition}
 }
