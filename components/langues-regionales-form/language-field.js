@@ -10,6 +10,7 @@ import AssistedTextField from '@/components/assisted-text-field'
 function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
   const [codeISO, setCodeISO] = useState(initialValue?.code)
   const [input, setInput] = useState(initialValue?.value || '')
+  const [isFocus, setIsFocus] = useState(false)
 
   const languageLabel = useMemo(() => {
     if (codeISO) {
@@ -20,6 +21,7 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
   const handleLanguageCode = codeISO => {
     setCodeISO(codeISO)
     onChange({code: codeISO, value: input})
+    setIsFocus(true)
   }
 
   const handleLanguageChange = useCallback(event => {
@@ -55,7 +57,7 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
       <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
         <AssistedTextField
           label=''
-          isFocus={Boolean(codeISO)}
+          isFocus={isFocus}
           isRequired={false}
           placeholder={`Nom en ${codeISO ? languageLabel : 'langue régionale'}`}
           value={input}
