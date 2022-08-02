@@ -1,7 +1,7 @@
 import {useRouter} from 'next/router'
 import Image from 'next/image'
 
-import {Pane, Heading, Paragraph, Text, Strong, UnorderedList, ListItem, DeleteIcon, Button, EnvelopeIcon} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Text, Strong, UnorderedList, ListItem, DeleteIcon, Button, EnvelopeIcon, Link} from 'evergreen-ui'
 
 function Accessibility() {
   const router = useRouter()
@@ -65,8 +65,15 @@ function Accessibility() {
             Plusieurs moyens sont à votre disposition :
           </Paragraph>
           <UnorderedList>
-            <ListItem>Écrire un message au <Strong>Défenseur des droits</Strong>.</ListItem>
-            <ListItem>Contacter <Strong>le délégué du Défenseur des droits</Strong> dans votre région.</ListItem>
+            <ListItem>
+              <Link href='https://formulaire.defenseurdesdroits.fr' textDecoration='underline' color='neutral' target='_blank'>
+                Écrire un message au <Strong>Défenseur des droits</Strong>.
+              </Link>
+            </ListItem>
+            <ListItem>
+              <Link href='https://www.defenseurdesdroits.fr/saisir/delegues' textDecoration='underline' color='neutral' target='_blank'>
+                Contacter <Strong>le délégué du Défenseur des droits</Strong></Link> dans votre région.
+            </ListItem>
             <ListItem>Envoyer un courrier par la poste (gratuit, ne pas mettre de timbre).<br />
               <Strong>
                 Défenseur des droits<br />
