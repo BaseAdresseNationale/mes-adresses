@@ -55,6 +55,7 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
       <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
         <AssistedTextField
           label=''
+          isFocus={Boolean(codeISO)}
           isRequired={false}
           placeholder={`Nom en ${codeISO ? languageLabel : 'langue régionale'}`}
           value={input}
