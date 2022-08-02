@@ -4,9 +4,8 @@ import {Pane, TextInputField} from 'evergreen-ui'
 import useCaretPosition from '@/hooks/caret-position'
 import AccentTool from '@/components/accent-tool'
 
-function AssistedTextField({label, placeholder, value, validationMessage, onChange, isDisabled, isRequired, isFocus}) {
+function AssistedTextField({label, placeholder, value, isFocus, validationMessage, onChange, isDisabled, isRequired, exitFocus}) {
   const {ref: inputRef, updateCaretPosition} = useCaretPosition({initialValue: value, isFocus})
-
   const handleChangeAccent = e => {
     onChange(e)
     updateCaretPosition()
@@ -25,6 +24,7 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
         isInvalid={Boolean(validationMessage)}
         validationMessage={validationMessage}
         onChange={onChange}
+        onBlur={exitFocus}
       />
       <Pane
         display='flex'
@@ -50,7 +50,8 @@ AssistedTextField.defaultProps = {
   isDisabled: false,
   validationMessage: null,
   isRequired: true,
-  isFocus: false
+  isFocus: false,
+  exitFocus: () => {}
 }
 
 AssistedTextField.propTypes = {
@@ -61,7 +62,8 @@ AssistedTextField.propTypes = {
   onChange: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool,
   isRequired: PropTypes.bool,
-  isFocus: PropTypes.bool
+  isFocus: PropTypes.bool,
+  exitFocus: PropTypes.func
 }
 
 export default AssistedTextField
