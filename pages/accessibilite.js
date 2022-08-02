@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 import {Pane, Heading, Paragraph, Text, Strong, UnorderedList, ListItem, DeleteIcon, Button, EnvelopeIcon, Link} from 'evergreen-ui'
 
-function Accessibility() {
+function Accessibilite() {
   const router = useRouter()
   return (
     <Pane display='flex' flexDirection='column' alignItems='center' gap='4em' marginX='6em' marginTop='2em' fontSize={14}>
@@ -88,4 +88,4 @@ function Accessibility() {
   )
 }
 
-export default Accessibility
+export default Accessibilite
