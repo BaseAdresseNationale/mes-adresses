@@ -15,7 +15,7 @@ function DemoWarning({baseLocale, communeName}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, setNom] = useState(`Adresses de ${communeName}`)
   const [email, onEmailChange] = useInput()
-  const [focusedElement] = useFocus({value: null, isFocus: true})
+  const [focusedElement] = useFocus(true)
 
   const {reloadBaseLocale} = useContext(BalDataContext)
   const {token} = useContext(TokenContext)

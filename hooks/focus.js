@@ -1,7 +1,7 @@
 import {useRef, useEffect} from 'react'
 
-function useFocus({value, isFocus}) {
-  const focusedElement = useRef(value || null)
+function useFocus(isFocus) {
+  const focusedElement = useRef()
 
   useEffect(() => {
     if (focusedElement?.current && isFocus) {

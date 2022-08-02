@@ -4,7 +4,7 @@ import {useState, useEffect, useCallback} from 'react'
 import useFocus from './focus'
 
 function useCaretPosition({initialValue, isFocus}) {
-  const [focusedElement] = useFocus({value: null, isFocus})
+  const [focusedElement] = useFocus(isFocus)
   const [caretPosition, setCaretPosition] = useState(initialValue ? initialValue.length : 0)
 
   const updateCaretPosition = useCallback(() => {
