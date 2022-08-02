@@ -15,9 +15,7 @@ function useCaretPosition({initialValue, isFocus}) {
   }, [focusedElement])
 
   useEffect(() => {
-    if (focusedElement && focusedElement.current) {
-      focusedElement.current.setSelectionRange(caretPosition + 1, caretPosition + 1)
-    }
+    focusedElement.current.setSelectionRange(caretPosition + 1, caretPosition + 1)
   }, [caretPosition, isFocus, focusedElement])
 
   return {ref: focusedElement, updateCaretPosition}
