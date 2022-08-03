@@ -7,7 +7,14 @@ export const voiesLayers = [{
   paint: {
     'text-color': [
       'case',
-      ['==', ['get', 'opacity'], 1],
+      [
+        'boolean',
+        [
+          'feature-state',
+          'hover'
+        ],
+        false
+      ],
       ['get', 'color'],
       '#000'
     ],
@@ -38,7 +45,20 @@ export const voiesLayers = [{
   source: 'voie-trace',
   paint: {
     'line-color': ['get', 'color'],
-    'line-width': 4
+    'line-width': 4,
+    'line-opacity': [
+      'case',
+      [
+        'boolean',
+        [
+          'feature-state',
+          'hover'
+        ],
+        false
+      ],
+      1,
+      0.7
+    ]
   },
   layout: {
     'line-join': 'round'

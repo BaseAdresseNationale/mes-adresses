@@ -1,72 +1,65 @@
-import {useMemo, useContext} from 'react'
-import {groupBy} from 'lodash'
+import {useMemo, useContext, useCallback, useEffect, useRef} from 'react'
+import {groupBy, pick} from 'lodash'
 import computeCentroid from '@turf/centroid'
 import randomColor from 'randomcolor'
 
+import MapContext from '@/contexts/map'
 import BalDataContext from '@/contexts/bal-data'
 
-function useSources(voie, toponyme, hovered, editingId) {
-  const {geojson} = useContext(BalDataContext)
+function useSources() {
+  const {mapRef} = useContext(MapContext)
+  const {geojson, editingId} = useContext(BalDataContext)
 
-  return useMemo(() => {
-    const sources = []
-    const setPaintProperties = feature => {
-      return {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          id: feature.properties.idNumero || feature.properties.idVoie,
-          opacity: feature.properties.idVoie === hovered ? 1 : 0.4,
-          color: randomColor({
-            luminosity: 'dark',
-            seed: feature.properties.idVoie
-          })
-        }
+  const isStyleLoad = useRef(false)
+
+  const setPaintProperties = useCallback(feature => {
+    return {
+      ...feature,
+      properties: {
+        ...feature.properties,
+        color: randomColor({
+          luminosity: 'dark',
+          seed: feature.properties.idVoie
+        })
       }
     }
+  }, [])
 
-    if (!geojson) {
-      return sources
+  const features = useMemo(() => {
+    if (geojson) {
+      // Exclude toponymes
+      const features = geojson.features.filter(feature => feature.properties.type !== 'toponyme')
+
+      return features.map(feature => setPaintProperties(feature))
     }
 
-    // Exclude toponymes
-    let features = geojson.features.filter(feature => feature.properties.type !== 'toponyme')
+    return []
+  }, [geojson, setPaintProperties])
 
-    if (voie) {
-      // Exlude current voie’s numeros, replace by <NumeroMarker />
-      features = features.filter(({properties}) => (properties.idVoie !== voie._id) || (properties.idVoie === voie._id && properties.type === 'voie-trace'))
+  const voieTraceData = useMemo(() => {
+    return {
+      type: 'FeatureCollection',
+      features: features.filter(({properties}) => properties.type === 'voie-trace' && properties.idVoie !== editingId)
     }
+  }, [features, editingId])
 
-    if (toponyme) {
-      // Exclude current toponyme’s numeros, replace by <NumeroMarker /
-      features = features.filter(({properties}) => properties.idToponyme !== toponyme._id)
+  const positionsData = useMemo(() => {
+    return {
+      type: 'FeatureCollection',
+      features: features.length > 0 ?
+        features.filter(({properties}) => properties.type !== 'voie-trace') :
+        []
     }
+  }, [features])
 
-    features = features.map(feature => setPaintProperties(feature))
-
-    const lines = features.filter(({properties}) => properties.type === 'voie-trace' && properties.idVoie !== editingId)
-
-    sources.push({
-      name: 'voie-trace',
-      data: {
-        type: 'FeatureCollection',
-        features: lines
-      }
-    })
+  const voiesData = useMemo(() => {
+    let data = []
 
     if (features.length > 0) {
-      sources.push({
-        name: 'positions',
-        data: {
-          type: 'FeatureCollection',
-          features: features.filter(({properties}) => properties.type !== 'voie-trace')
-        }
-      })
-
       const adresses = features.filter(feature => feature.properties.type === 'adresse')
       const groups = groupBy(adresses, feature => feature.properties.idVoie)
 
-      const voies = Object.values(groups).map(features => {
+      data = Object.values(groups).map(features => {
         const [feature] = features
 
         const centroid = computeCentroid({
@@ -74,22 +67,65 @@ function useSources(voie, toponyme, hovered, editingId) {
           features
         })
 
-        centroid.properties = feature.properties
+        centroid.properties = pick(feature.properties, ['idVoie', 'nomVoie', 'color'])
 
         return centroid
       })
-
-      sources.push({
-        name: 'voies',
-        data: {
-          type: 'FeatureCollection',
-          features: voies
-        }
-      })
     }
 
-    return sources
-  }, [geojson, voie, toponyme, hovered, editingId])
+    return {
+      type: 'FeatureCollection',
+      features: data
+    }
+  }, [features])
+
+  const reloadVoieTrace = useCallback(() => {
+    if (isStyleLoad.current) {
+      const map = mapRef.current.getMap()
+      const voieTraceSource = map.getSource('voie-trace')
+      voieTraceSource.setData(voieTraceData)
+    }
+  }, [mapRef, voieTraceData])
+
+  const reloadPositions = useCallback(() => {
+    if (isStyleLoad.current) {
+      const map = mapRef.current.getMap()
+      const positionsSource = map.getSource('positions')
+      positionsSource.setData(positionsData)
+    }
+  }, [mapRef, positionsData])
+
+  const reloadVoies = useCallback(() => {
+    if (isStyleLoad.current) {
+      const map = mapRef.current.getMap()
+      const voiesSource = map.getSource('voies')
+      voiesSource.setData(voiesData)
+    }
+  }, [mapRef, voiesData])
+
+  const handleLoad = useCallback(() => {
+    if (mapRef?.current) {
+      reloadVoieTrace()
+      reloadPositions()
+      reloadVoies()
+
+      isStyleLoad.current = true
+    }
+  }, [mapRef, reloadVoieTrace, reloadPositions, reloadVoies])
+
+  useEffect(() => {
+    reloadVoieTrace()
+  }, [reloadVoieTrace])
+
+  useEffect(() => {
+    reloadPositions()
+  }, [reloadPositions])
+
+  useEffect(() => {
+    reloadVoies()
+  }, [reloadVoies])
+
+  return [voieTraceData, positionsData, voiesData, handleLoad]
 }
 
 export default useSources

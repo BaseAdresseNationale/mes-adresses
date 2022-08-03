@@ -13,10 +13,19 @@ export const numerosLayers = [{
       type: 'identity',
       property: 'color'
     },
-    'circle-opacity': {
-      type: 'identity',
-      property: 'opacity'
-    },
+    'circle-opacity': [
+      'case',
+      [
+        'boolean',
+        [
+          'feature-state',
+          'hover'
+        ],
+        false
+      ],
+      1,
+      0.7
+    ],
     'circle-radius': {
       stops: [
         [12, 0.8],
@@ -49,10 +58,19 @@ export const numerosLayers = [{
         [18, 2]
       ]
     },
-    'text-opacity': {
-      type: 'identity',
-      property: 'opacity'
-    }
+    'text-opacity': [
+      'case',
+      [
+        'boolean',
+        [
+          'feature-state',
+          'hover'
+        ],
+        false
+      ],
+      1,
+      0.7
+    ],
   },
   layout: {
     'text-font': ['Open Sans Regular'],

@@ -1,4 +1,4 @@
-import {useState, useMemo, useEffect, useCallback, useContext} from 'react'
+import {useState, useMemo, useEffect, useCallback, useContext, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
@@ -34,6 +34,12 @@ const LAYERS = [
   ...numerosLayers
 ]
 
+const SOURCES = [
+  {name: 'voies', data: {type: 'FeatureCollection', features: []}},
+  {name: 'positions', data: {type: 'FeatureCollection', features: []}},
+  {name: 'voie-trace', data: {type: 'FeatureCollection', features: []}}
+]
+
 const settings = {
   maxZoom: 19
 }
@@ -63,13 +69,14 @@ function getBaseStyle(style) {
   }
 }
 
-function generateNewStyle(style, sources) {
+function generateNewStyle(style) {
   let baseStyle = getBaseStyle(style)
 
-  for (const {name, data} of sources) {
+  for (const {name, data} of SOURCES) {
     baseStyle = baseStyle.setIn(['sources', name], fromJS({
       type: 'geojson',
-      data
+      data,
+      generateId: true
     }))
   }
 
@@ -78,17 +85,17 @@ function generateNewStyle(style, sources) {
 
 function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
-  const {mapRef, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
+  const {mapRef, handleMapRef, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null)
-  const [editPrevStyle, setEditPrevSyle] = useState(defaultStyle)
-  const [mapStyle, setMapStyle] = useState(getBaseStyle(defaultStyle))
+  const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle))
 
   const {balId} = router.query
 
   const {
+    baseLocale,
     voie,
     toponyme,
     numeros,
@@ -100,9 +107,49 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
 
-  const [hovered, setHovered, handleHover] = useHovered()
-  const sources = useSources(voie, toponyme, hovered, editingId)
+  const [handleHover, handleMouseLeave] = useHovered(mapRef)
+  const [voieTraceData, positionsData, voiesData, handleLoad] = useSources()
   const bounds = useBounds(commune, voie, toponyme)
+
+  const prevStyle = useRef(defaultStyle)
+
+  const updatePositionsLayer = useCallback(() => {
+    if (mapRef?.current) {
+      const map = mapRef.current.getMap()
+
+      if (map.getSource('positions')) {
+        // Filter positions of voie or toponyme
+        if (voie) {
+          map.setFilter('numeros-point', ['!=', ['get', 'idVoie'], voie._id])
+          map.setFilter('numeros-label', ['!=', ['get', 'idVoie'], voie._id])
+          map.setFilter('voie-label', ['!=', ['get', 'idVoie'], voie._id])
+        } else if (toponyme) {
+          map.setFilter('numeros-point', ['!=', ['get', 'idToponyme'], toponyme._id])
+          map.setFilter('numeros-label', ['!=', ['get', 'idToponyme'], toponyme._id])
+        } else {
+          // Remove filter
+          map.setFilter('numeros-point', null)
+          map.setFilter('numeros-label', null)
+          map.setFilter('voie-label', null)
+        }
+      }
+
+      if (map.getSource('cadastre')) {
+        // Filter cadastre with code commune
+        map.setFilter('parcelles', ['match', ['get', 'commune'], baseLocale.commune, true, false])
+        map.setFilter('parcelles-fill', ['match', ['get', 'commune'], baseLocale.commune, true, false])
+      }
+    }
+  }, [mapRef, baseLocale.commune, voie, toponyme])
+
+  const handleRef = useCallback(ref => {
+    if (ref) {
+      handleMapRef(ref)
+      const map = ref.getMap()
+      map.on('style.load', handleLoad)
+      map.on('style.load', updatePositionsLayer)
+    }
+  }, [handleMapRef, handleLoad, updatePositionsLayer])
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -111,20 +158,22 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       return ['parcelles-fill']
     }
 
-    if (sources.some(({name}) => name === 'voies')) {
-      layers.push('voie-trace-line')
-    }
+    if (!isEditing) {
+      if (voieTraceData.features.length > 0) {
+        layers.push('voie-trace-line')
+      }
 
-    if (sources.some(({name}) => name === 'positions')) {
-      layers.push('numeros-point', 'numeros-label')
-    }
+      if (positionsData.features.length > 0) {
+        layers.push('numeros-point', 'numeros-label')
+      }
 
-    if (!voie && sources.some(({name}) => name === 'voies')) {
-      layers.push('voie-label')
+      if (voiesData.features.length > 0) {
+        layers.push('voie-label')
+      }
     }
 
     return layers
-  }, [isParcelleSelectionEnabled, sources, voie, isCadastreDisplayed])
+  }, [isEditing, isParcelleSelectionEnabled, voieTraceData, positionsData, voiesData, isCadastreDisplayed])
 
   const onClick = useCallback(event => {
     const feature = event?.features[0]
@@ -154,9 +203,17 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     return isHovering ? 'pointer' : 'default'
   }, [modeId])
 
-  // Adapt layer paint property to map style
+  // Hide current voie's or toponyme's numeros
+  useEffect(() => {
+    updatePositionsLayer()
+  }, [mapRef, voie, toponyme, updatePositionsLayer])
+
+  // Change map's style and adapte layers
   useEffect(() => {
     if (mapRef?.current) {
+      setMapStyle(generateNewStyle(style))
+
+      // Adapt layer paint property to map style
       const map = mapRef.current.getMap()
       const isOrtho = style === 'ortho'
 
@@ -170,24 +227,17 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     }
   }, [mapRef, style])
 
+  // Auto switch to ortho on draw and save previous style
   useEffect(() => {
-    if (sources.length > 0) {
-      setMapStyle(generateNewStyle(style, sources))
-    } else {
-      setMapStyle(getBaseStyle(style))
-    }
-  }, [sources, style, defaultStyle])
-
-  useEffect(() => {
-    setStyle(prevStyle => {
+    setStyle(style => {
       if (modeId && commune.hasOrtho) {
-        setEditPrevSyle(prevStyle)
+        prevStyle.current = style
         return 'ortho'
       }
 
-      return editPrevStyle
+      return prevStyle.current
     })
-  }, [modeId, commune]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [modeId, setStyle, commune])
 
   useEffect(() => {
     if (mapRef?.current) {
@@ -258,7 +308,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
       <Pane display='flex' flex={1}>
         <MapGl
-          ref={mapRef}
+          ref={handleRef}
           reuseMap
           viewState={viewport}
           mapStyle={mapStyle}
@@ -270,7 +320,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           getCursor={handleCursor}
           onClick={onClick}
           onHover={handleHover}
-          onMouseLeave={() => setHovered(null)}
+          onMouseLeave={handleMouseLeave}
           onViewportChange={setViewport}
         >
 
