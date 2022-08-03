@@ -15,7 +15,7 @@ function DemoWarning({baseLocale, communeName}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, setNom] = useState(`Adresses de ${communeName}`)
   const [email, onEmailChange] = useInput()
-  const [focusedElement] = useFocus(true)
+  const [ref, , setIsFocus] = useFocus({})
 
   const {reloadBaseLocale} = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
@@ -70,12 +70,12 @@ function DemoWarning({baseLocale, communeName}) {
         confirmLabel='Conserver'
         hasFooter={false}
         onCloseComplete={() => setIsShown(false)}
-        onOpenComplete={() => focusedElement.current.focus()}
+        onOpenComplete={() => setIsFocus(true)}
       >
         <form onSubmit={onSubmit}>
 
           <TextInputField
-            ref={focusedElement}
+            ref={ref}
             required
             autoComplete='new-password' // Hack to bypass chrome autocomplete
             name='nom'

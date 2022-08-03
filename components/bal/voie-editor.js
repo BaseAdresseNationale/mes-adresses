@@ -12,6 +12,7 @@ import TokenContext from '@/contexts/token'
 
 import {useInput, useCheckboxInput} from '@/hooks/input'
 import useValidationMessage from '@/hooks/validation-messages'
+import useFocus from '@/hooks/focus'
 
 import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
@@ -29,6 +30,7 @@ function VoieEditor({initialValue, closeForm}) {
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw} = useContext(DrawContext)
+  const [ref, isFocus] = useFocus({autofocus: true})
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -102,7 +104,8 @@ function VoieEditor({initialValue, closeForm}) {
         <Pane maxHeight={400} overflowY='scroll'>
           <FormInput>
             <AssistedTextField
-              isFocus
+              isFocus={isFocus}
+              forwadedRef={ref}
               label='Nom de la voie'
               placeholder='Nom de la voie'
               value={nom}

@@ -1,22 +1,19 @@
 
 import {useState, useEffect, useCallback} from 'react'
 
-import useFocus from './focus'
-
-function useCaretPosition({initialValue, isFocus}) {
-  const [focusedElement] = useFocus(isFocus)
+function useCaretPosition({initialValue, isFocus, ref}) {
   const [caretPosition, setCaretPosition] = useState(initialValue ? initialValue.length : 0)
 
   const updateCaretPosition = useCallback(() => {
-    setCaretPosition(focusedElement.current.selectionStart)
-    focusedElement.current.focus()
-  }, [focusedElement])
+    setCaretPosition(ref.current.selectionStart)
+    ref.current.focus()
+  }, [ref])
 
   useEffect(() => {
-    focusedElement.current.setSelectionRange(caretPosition + 1, caretPosition + 1)
-  }, [caretPosition, isFocus, focusedElement])
+    ref.current.setSelectionRange(caretPosition + 1, caretPosition + 1)
+  }, [caretPosition, isFocus, ref])
 
-  return {ref: focusedElement, updateCaretPosition}
+  return {updateCaretPosition}
 }
 
 export default useCaretPosition

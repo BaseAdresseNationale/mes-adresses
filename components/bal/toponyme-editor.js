@@ -12,6 +12,7 @@ import MarkersContext from '@/contexts/markers'
 import ParcellesContext from '@/contexts/parcelles'
 
 import {useInput} from '@/hooks/input'
+import useFocus from '@/hooks/focus'
 import useValidationMessage from '@/hooks/validation-messages'
 
 import FormMaster from '@/components/form-master'
@@ -33,6 +34,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
   const {selectedParcelles} = useContext(ParcellesContext)
+  const [ref, isFocus] = useFocus({autofocus: true})
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -114,7 +116,8 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         <Pane>
           <FormInput>
             <AssistedTextField
-              isFocus
+              isFocus={isFocus}
+              forwadedRef={ref}
               disabled={isLoading}
               label='Nom du toponyme'
               placeholder='Nom du toponyme'

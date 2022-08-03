@@ -1,15 +1,16 @@
-import {useRef, useEffect} from 'react'
+import {useState, useRef, useEffect} from 'react'
 
-function useFocus(isFocus) {
-  const focusedElement = useRef()
+function useFocus({autofocus = false}) {
+  const ref = useRef()
+  const [isFocus, setIsFocus] = useState(autofocus)
 
   useEffect(() => {
-    if (focusedElement?.current && isFocus) {
-      focusedElement.current.focus()
+    if (ref?.current && isFocus) {
+      ref.current.focus()
     }
-  }, [isFocus])
+  }, [ref, isFocus])
 
-  return [focusedElement]
+  return [ref, isFocus, setIsFocus]
 }
 
 export default useFocus
