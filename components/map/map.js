@@ -95,7 +95,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {balId} = router.query
 
   const {
-    baseLocale,
     voie,
     toponyme,
     numeros,
@@ -133,14 +132,8 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           map.setFilter('voie-label', null)
         }
       }
-
-      if (map.getSource('cadastre')) {
-        // Filter cadastre with code commune
-        map.setFilter('parcelles', ['match', ['get', 'commune'], baseLocale.commune, true, false])
-        map.setFilter('parcelles-fill', ['match', ['get', 'commune'], baseLocale.commune, true, false])
-      }
     }
-  }, [mapRef, baseLocale.commune, voie, toponyme])
+  }, [mapRef, voie, toponyme])
 
   const handleRef = useCallback(ref => {
     if (ref) {

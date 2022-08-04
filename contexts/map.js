@@ -14,6 +14,7 @@ const defaultStyle = 'vector'
 export function MapContextProvider(props) {
   const mapRef = useRef()
 
+  const [map, setMap] = useState(null)
   const [style, setStyle] = useState(defaultStyle)
   const [viewport, setViewport] = useState(defaultViewport)
   const [isCadastreDisplayed, setIsCadastreDisplayed] = useState(false)
@@ -21,6 +22,7 @@ export function MapContextProvider(props) {
   const handleMapRef = useCallback(ref => {
     if (ref) {
       mapRef.current = ref
+      setMap(ref.getMap())
     }
   }, [])
 
@@ -31,12 +33,14 @@ export function MapContextProvider(props) {
   }, [viewport])
 
   const value = useMemo(() => ({
+    map,
     mapRef,
     style, setStyle, defaultStyle,
     viewport, setViewport,
     isCadastreDisplayed, setIsCadastreDisplayed,
     handleMapRef
   }), [
+    map,
     style,
     viewport,
     isCadastreDisplayed,

@@ -16,8 +16,8 @@ function getHoveredFeatureId(map, id) {
 }
 
 export function ParcellesContextProvider(props) {
-  const {mapRef, isCadastreDisplayed} = useContext(MapContext)
-  const {parcelles} = useContext(BalDataContext)
+  const {map, isCadastreDisplayed} = useContext(MapContext)
+  const {baseLocale, parcelles} = useContext(BalDataContext)
 
   const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] = useState(false)
   const [selectedParcelles, setSelectedParcelles] = useState([])
@@ -37,9 +37,7 @@ export function ParcellesContextProvider(props) {
   }, [selectedParcelles, isParcelleSelectionEnabled])
 
   const handleHoveredParcelle = useCallback(hovered => {
-    if (mapRef?.current && hoveredParcelle) {
-      const map = mapRef.current.getMap()
-
+    if (hoveredParcelle && map) {
       if (hoveredParcelle.current && isCadastreDisplayed) {
         map.setFeatureState({
           source: 'cadastre',
@@ -60,43 +58,60 @@ export function ParcellesContextProvider(props) {
         hoveredParcelle.current = null
       }
     }
-  }, [mapRef, isCadastreDisplayed])
+  }, [map, isCadastreDisplayed])
+
+  const toggleCadastreVisibility = useCallback(() => {
+    cadastreLayers.forEach(layer => {
+      map.setLayoutProperty(layer.id, 'visibility', isCadastreDisplayed ? 'visible' : 'none')
+    })
+  }, [map, isCadastreDisplayed])
+
+  const filterSelectedParcelles = useCallback(() => {
+    const filter = parcelles.length > 0 ?
+      ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])] :
+      ['==', ['get', 'id'], '']
+
+    map.setFilter('parcelles-selected', filter)
+  }, [map, parcelles])
+
+  const filterHighlightedParcelles = useCallback(() => {
+    const filter = isParcelleSelectionEnabled ?
+      ['any', ...selectedParcelles.map(id => ['==', ['get', 'id'], id])] :
+      ['==', ['get', 'id'], '']
+
+    map.setFilter('parcelle-highlighted', filter)
+  }, [map, isParcelleSelectionEnabled, selectedParcelles])
+
+  const reloadParcellesLayers = useCallback(() => {
+    // Toggle all cadastre layers visiblity
+    // Filter cadastre with code commune
+    map.setFilter('parcelles', ['match', ['get', 'commune'], baseLocale.commune, true, false])
+    map.setFilter('parcelles-fill', ['match', ['get', 'commune'], baseLocale.commune, true, false])
+
+    toggleCadastreVisibility()
+
+    // Toggle selected parcelle visibility
+    if (isCadastreDisplayed) {
+      filterSelectedParcelles()
+      filterHighlightedParcelles()
+    }
+  }, [map, baseLocale.commune, toggleCadastreVisibility, filterSelectedParcelles, filterHighlightedParcelles, isCadastreDisplayed])
 
   // Toggle all cadastre layers visiblity
   useEffect(() => {
-    if (mapRef.current) {
-      const map = mapRef.current.getMap()
-      if (map.getSource('cadastre')) {
-        cadastreLayers.forEach(layer => {
-          map.setLayoutProperty(layer.id, 'visibility', isCadastreDisplayed ? 'visible' : 'none')
-        })
-      }
+    if (map && map.getSource('cadastre')) {
+      toggleCadastreVisibility()
     }
-  }, [mapRef, isCadastreDisplayed])
+  }, [map, toggleCadastreVisibility])
 
-  // Toggle selected parcelle visibility
+  // Updates highlighted parcelles when parcelles changes
+  // or when selection is enabled/disabled
   useEffect(() => {
-    if (mapRef?.current) {
-      const map = mapRef.current.getMap()
-      if (isCadastreDisplayed) {
-        const filters = parcelles.length > 0 ?
-          ['any', ...parcelles.map(id => ['==', ['get', 'id'], id])] :
-          ['==', ['get', 'id'], '']
-
-        map.setFilter('parcelles-selected', filters)
-      }
+    if (map && isCadastreDisplayed) {
+      filterSelectedParcelles()
+      filterHighlightedParcelles()
     }
-  }, [mapRef, parcelles, isCadastreDisplayed])
-
-  // Clean hovered parcelle when selection is disabled
-  useEffect(() => {
-    if (!isParcelleSelectionEnabled && hoveredParcelle?.current && mapRef?.current) {
-      const map = mapRef.current.getMap()
-      const {featureId} = hoveredParcelle.current
-      map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: false})
-      hoveredParcelle.current = null
-    }
-  }, [mapRef, isParcelleSelectionEnabled])
+  }, [map, isCadastreDisplayed, filterHighlightedParcelles, filterSelectedParcelles])
 
   // Reset isStyleLoaded when selection is disabled
   useEffect(() => {
@@ -105,18 +120,17 @@ export function ParcellesContextProvider(props) {
     }
   }, [isParcelleSelectionEnabled])
 
-  // Updates highlighted parcelles when parcelles changes
-  // or when selection is enabled/disabled
   useEffect(() => {
-    if (isCadastreDisplayed && mapRef?.current) {
-      const map = mapRef.current.getMap()
-      const filters = isParcelleSelectionEnabled ?
-        ['any', ...selectedParcelles.map(id => ['==', ['get', 'id'], id])] :
-        ['==', ['get', 'id'], '']
-
-      map.setFilter('parcelle-highlighted', filters)
+    if (map) {
+      map.on('style.load', reloadParcellesLayers)
     }
-  }, [mapRef, selectedParcelles, isParcelleSelectionEnabled, isCadastreDisplayed])
+
+    return () => {
+      if (map) {
+        map.off('style.load', reloadParcellesLayers)
+      }
+    }
+  }, [map, reloadParcellesLayers])
 
   const value = useMemo(() => ({
     selectedParcelles, setSelectedParcelles,
