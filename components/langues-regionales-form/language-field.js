@@ -60,7 +60,6 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
         <AssistedTextField
           label=''
           forwadedRef={ref}
-          isFocus={isFocus}
           exitFocus={() => setIsFocus(false)}
           isRequired={false}
           placeholder={`Nom en ${codeISO ? languageLabel : 'langue régionale'}`}

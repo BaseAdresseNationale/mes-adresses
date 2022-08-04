@@ -37,7 +37,6 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, validationMessage, ha
       <Pane>
         {isCreateMode ? (
           <AssistedTextField
-            isFocus={isFocus}
             forwadedRef={ref}
             label='Nouvelle voie'
             placeholder='Nom de la voie'

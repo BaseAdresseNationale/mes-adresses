@@ -116,7 +116,6 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         <Pane>
           <FormInput>
             <AssistedTextField
-              isFocus={isFocus}
               forwadedRef={ref}
               disabled={isLoading}
               label='Nom du toponyme'

@@ -1,7 +1,7 @@
 
 import {useState, useEffect, useCallback} from 'react'
 
-function useCaretPosition({initialValue, isFocus, ref}) {
+function useCaretPosition({initialValue, ref}) {
   const [caretPosition, setCaretPosition] = useState(initialValue ? initialValue.length : 0)
 
   const updateCaretPosition = useCallback(() => {
@@ -11,7 +11,7 @@ function useCaretPosition({initialValue, isFocus, ref}) {
 
   useEffect(() => {
     ref.current.setSelectionRange(caretPosition + 1, caretPosition + 1)
-  }, [caretPosition, isFocus, ref])
+  }, [caretPosition, ref])
 
   return {updateCaretPosition}
 }

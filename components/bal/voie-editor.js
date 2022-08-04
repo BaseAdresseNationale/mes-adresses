@@ -104,7 +104,6 @@ function VoieEditor({initialValue, closeForm}) {
         <Pane maxHeight={400} overflowY='scroll'>
           <FormInput>
             <AssistedTextField
-              isFocus={isFocus}
               forwadedRef={ref}
               label='Nom de la voie'
               placeholder='Nom de la voie'
