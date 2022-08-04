@@ -34,7 +34,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
   const {selectedParcelles} = useContext(ParcellesContext)
-  const [ref, isFocus] = useFocus(true)
+  const [ref] = useFocus(true)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()

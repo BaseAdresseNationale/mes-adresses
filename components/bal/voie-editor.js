@@ -30,7 +30,7 @@ function VoieEditor({initialValue, closeForm}) {
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw} = useContext(DrawContext)
-  const [ref, isFocus] = useFocus(true)
+  const [ref] = useFocus(true)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()

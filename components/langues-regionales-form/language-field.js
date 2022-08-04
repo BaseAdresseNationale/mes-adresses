@@ -12,7 +12,7 @@ import AssistedTextField from '@/components/assisted-text-field'
 function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
   const [codeISO, setCodeISO] = useState(initialValue?.code)
   const [input, setInput] = useState(initialValue?.value || '')
-  const [ref, isFocus, setIsFocus] = useFocus()
+  const [ref, setIsFocus] = useFocus()
 
   const languageLabel = useMemo(() => {
     if (codeISO) {
