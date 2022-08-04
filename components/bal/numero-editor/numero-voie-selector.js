@@ -11,7 +11,7 @@ import AssistedTextField from '@/components/assisted-text-field'
 
 function NumeroVoieSelector({voieId, voies, nomVoie, mode, validationMessage, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)
-  const [ref, isFocus] = useFocus({autofocus: true})
+  const [ref, isFocus] = useFocus(true)
 
   const toggleMode = () => {
     setIsCreateMode(mode => !mode)
