@@ -1,7 +1,10 @@
-import {useCallback, useRef} from 'react'
+import {useCallback, useContext, useRef} from 'react'
+
+import ParcellesContext from '@/contexts/parcelles'
 
 function useHovered(map) {
   const hovered = useRef()
+  const {handleHoveredParcelle} = useContext(ParcellesContext)
 
   // Highlight related features
   const handleRelatedFeatures = (map, feature, isHovered) => {
@@ -32,7 +35,11 @@ function useHovered(map) {
     const feature = event && event.features && event.features[0]
 
     if (feature) {
-      const {source, id, sourceLayer} = feature
+      const {source, id, sourceLayer, properties} = feature
+
+      if (source === 'cadastre') {
+        handleHoveredParcelle({featureId: id, id: properties.id})
+      }
 
       if (hovered.current) {
         map.setFeatureState({

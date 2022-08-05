@@ -19,32 +19,29 @@ export function ParcellesContextProvider(props) {
   const {map, isCadastreDisplayed} = useContext(MapContext)
   const {baseLocale, parcelles} = useContext(BalDataContext)
 
+  const [hoveredParcelle, setHoveredParcelle] = useState(null)
   const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] = useState(false)
   const [selectedParcelles, setSelectedParcelles] = useState([])
 
-  const hoveredParcelle = useRef()
+  const prevHoveredParcelle = useRef()
 
   const handleHoveredParcelle = useCallback(hovered => {
-    if (hoveredParcelle && map) {
-      if (hoveredParcelle.current && isCadastreDisplayed) {
-        map.setFeatureState({
-          source: 'cadastre',
-          sourceLayer: 'parcelles',
-          id: hoveredParcelle.current.featureId
-        }, {hover: false})
+    if (map && hovered) {
+      const featureId = hovered.featureId || getHoveredFeatureId(map, hovered.id)
+
+      if (!hovered.featureId && isCadastreDisplayed) { // Handle parcelle from side menu
+        map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: true})
+        prevHoveredParcelle.current = featureId
       }
 
-      if (hovered) {
-        const featureId = hovered.featureId || getHoveredFeatureId(map, hovered.id)
-
-        if (featureId && isCadastreDisplayed) {
-          map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: featureId}, {hover: true})
-        }
-
-        hoveredParcelle.current = {id: hovered.id, featureId}
-      } else {
-        hoveredParcelle.current = null
+      setHoveredParcelle({id: hovered.id, featureId})
+    } else {
+      if (prevHoveredParcelle?.current && isCadastreDisplayed) {
+        map.setFeatureState({source: 'cadastre', sourceLayer: 'parcelles', id: prevHoveredParcelle.current}, {hover: false})
+        prevHoveredParcelle.current = null
       }
+
+      setHoveredParcelle(null)
     }
   }, [map, isCadastreDisplayed])
 
