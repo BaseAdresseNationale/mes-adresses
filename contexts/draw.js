@@ -1,6 +1,4 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react'
-
-import BalDataContext from '@/contexts/bal-data'
+import React, {useState, useEffect, useMemo, useCallback} from 'react'
 
 const DrawContext = React.createContext()
 
@@ -9,51 +7,45 @@ export function DrawContextProvider(props) {
   const [modeId, setModeId] = useState(null)
   const [hint, setHint] = useState(null)
   const [data, setData] = useState(null)
+  const [voie, setVoie] = useState(null)
 
-  const {editingItem} = useContext(BalDataContext)
-
-  useEffect(() => {
-    if (modeId === 'drawLineString') {
-      setHint('Indiquez le début de la voie')
-    }
-  }, [modeId])
+  const enableDraw = useCallback(voie => {
+    setVoie(voie)
+    setDrawEnabled(true)
+  }, [])
 
   useEffect(() => {
-    if (data) {
-      setHint(null)
-      setModeId('editing')
-    }
-  }, [data, setModeId])
-
-  useEffect(() => {
-    if (editingItem) {
-      if (editingItem.typeNumerotation === 'metrique') {
-        if (editingItem.trace) {
-          setData({
-            type: 'Feature',
-            properties: {},
-            geometry: editingItem.trace
-          })
-          setModeId('editing')
-        } else {
-          setModeId('drawLineString')
-        }
-      }
+    if (voie?.trace) {
+      setData({
+        type: 'Feature',
+        properties: {},
+        geometry: voie.trace
+      })
     } else {
-      setModeId(null)
+      setData(null)
     }
-  }, [editingItem])
+  }, [voie])
 
   useEffect(() => {
-    if (!drawEnabled) {
-      setData(null)
+    if (drawEnabled) {
+      if (data) { // Edition mode
+        setModeId('editing')
+        setHint(null)
+      } else { // Creation mode
+        setModeId('drawLineString')
+        setHint('Indiquez le début de la voie')
+      }
+    } else { // Reset states
       setModeId(null)
+      setHint(null)
+      setVoie(null)
+      setData(null)
     }
-  }, [drawEnabled])
+  }, [drawEnabled, data])
 
   const value = useMemo(() => ({
     drawEnabled,
-    enableDraw: () => setDrawEnabled(true),
+    enableDraw,
     disableDraw: () => setDrawEnabled(false),
     modeId,
     setModeId,
@@ -62,6 +54,7 @@ export function DrawContextProvider(props) {
     data,
     setData
   }), [
+    enableDraw,
     drawEnabled,
     modeId,
     hint,
