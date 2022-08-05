@@ -27,7 +27,7 @@ function CreateForm({defaultCommune}) {
   const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
   const [userBALs, setUserBALs] = useState([])
-  const [focusRef] = useFocus()
+  const [focusedElement] = useFocus(true)
 
   const onSelect = useCallback(commune => {
     setCodeCommune(commune.code)
@@ -96,7 +96,7 @@ function CreateForm({defaultCommune}) {
 
         <FormInput>
           <TextInputField
-            ref={focusRef}
+            ref={focusedElement}
             required
             autoComplete='new-password' // Hack to bypass chrome autocomplete
             name='nom'
