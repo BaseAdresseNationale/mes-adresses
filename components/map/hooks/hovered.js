@@ -1,6 +1,6 @@
 import {useCallback, useRef} from 'react'
 
-function useHovered(mapRef) {
+function useHovered(map) {
   const hovered = useRef()
 
   // Highlight related features
@@ -33,7 +33,6 @@ function useHovered(mapRef) {
 
     if (feature) {
       const {source, id, sourceLayer} = feature
-      const map = mapRef.current.getMap()
 
       if (hovered.current) {
         map.setFeatureState({
@@ -50,18 +49,17 @@ function useHovered(mapRef) {
       map.setFeatureState({source, id, sourceLayer}, {hover: true})
       handleRelatedFeatures(map, feature, true)
     }
-  }, [mapRef])
+  }, [map])
 
   const handleMouseLeave = useCallback(() => {
     if (hovered.current) {
       const {id, source, sourceLayer} = hovered.current
-      const map = mapRef.current.getMap()
       map.setFeatureState({source, sourceLayer, id}, {hover: false})
       handleRelatedFeatures(map, hovered.current, false)
     }
 
     hovered.current = null
-  }, [mapRef])
+  }, [map])
 
   return [handleHover, handleMouseLeave]
 }

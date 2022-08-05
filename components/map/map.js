@@ -85,7 +85,7 @@ function generateNewStyle(style) {
 
 function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
-  const {mapRef, handleMapRef, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
+  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
@@ -106,43 +106,39 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
 
-  const [handleHover, handleMouseLeave] = useHovered(mapRef)
+  const [handleHover, handleMouseLeave] = useHovered(map)
   const [voieTraceData, positionsData, voiesData, handleLoad] = useSources()
   const bounds = useBounds(commune, voie, toponyme)
 
   const prevStyle = useRef(defaultStyle)
 
   const updatePositionsLayer = useCallback(() => {
-    if (mapRef?.current) {
-      const map = mapRef.current.getMap()
-
-      if (map.getSource('positions')) {
-        // Filter positions of voie or toponyme
-        if (voie) {
-          map.setFilter('numeros-point', ['!=', ['get', 'idVoie'], voie._id])
-          map.setFilter('numeros-label', ['!=', ['get', 'idVoie'], voie._id])
-          map.setFilter('voie-label', ['!=', ['get', 'idVoie'], voie._id])
-        } else if (toponyme) {
-          map.setFilter('numeros-point', ['!=', ['get', 'idToponyme'], toponyme._id])
-          map.setFilter('numeros-label', ['!=', ['get', 'idToponyme'], toponyme._id])
-        } else {
-          // Remove filter
-          map.setFilter('numeros-point', null)
-          map.setFilter('numeros-label', null)
-          map.setFilter('voie-label', null)
-        }
+    if (map?.getSource('positions')) {
+      // Filter positions of voie or toponyme
+      if (voie) {
+        map.setFilter('numeros-point', ['!=', ['get', 'idVoie'], voie._id])
+        map.setFilter('numeros-label', ['!=', ['get', 'idVoie'], voie._id])
+        map.setFilter('voie-label', ['!=', ['get', 'idVoie'], voie._id])
+      } else if (toponyme) {
+        map.setFilter('numeros-point', ['!=', ['get', 'idToponyme'], toponyme._id])
+        map.setFilter('numeros-label', ['!=', ['get', 'idToponyme'], toponyme._id])
+      } else {
+        // Remove filter
+        map.setFilter('numeros-point', null)
+        map.setFilter('numeros-label', null)
+        map.setFilter('voie-label', null)
       }
     }
-  }, [mapRef, voie, toponyme])
+  }, [map, voie, toponyme])
 
   const handleRef = useCallback(ref => {
     if (ref) {
-      handleMapRef(ref)
       const map = ref.getMap()
+      setMap(map)
       map.on('style.load', handleLoad)
       map.on('style.load', updatePositionsLayer)
     }
-  }, [handleMapRef, handleLoad, updatePositionsLayer])
+  }, [setMap, handleLoad, updatePositionsLayer])
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -199,15 +195,14 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   // Hide current voie's or toponyme's numeros
   useEffect(() => {
     updatePositionsLayer()
-  }, [mapRef, voie, toponyme, updatePositionsLayer])
+  }, [map, voie, toponyme, updatePositionsLayer])
 
   // Change map's style and adapte layers
   useEffect(() => {
-    if (mapRef?.current) {
+    if (map) {
       setMapStyle(generateNewStyle(style))
 
       // Adapt layer paint property to map style
-      const map = mapRef.current.getMap()
       const isOrtho = style === 'ortho'
 
       if (map.getLayer('voie-label')) {
@@ -218,7 +213,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         map.setPaintProperty('numeros-point', 'circle-stroke-color', isOrtho ? '#ffffff' : '#f8f4f0')
       }
     }
-  }, [mapRef, style])
+  }, [map, style])
 
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
@@ -233,9 +228,8 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   }, [modeId, setStyle, commune])
 
   useEffect(() => {
-    if (mapRef?.current) {
+    if (map) {
       if (bounds) {
-        const map = mapRef.current.getMap()
         const camera = map.cameraForBounds(bounds, {
           padding: 100
         })
@@ -253,7 +247,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         setViewport(viewport => ({...viewport}))
       }
     }
-  }, [mapRef, bounds, setViewport])
+  }, [map, bounds, setViewport])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>

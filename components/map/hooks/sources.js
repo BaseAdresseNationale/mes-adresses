@@ -7,7 +7,7 @@ import MapContext from '@/contexts/map'
 import BalDataContext from '@/contexts/bal-data'
 
 function useSources() {
-  const {mapRef} = useContext(MapContext)
+  const {map} = useContext(MapContext)
   const {geojson, editingId} = useContext(BalDataContext)
 
   const isStyleLoad = useRef(false)
@@ -81,37 +81,34 @@ function useSources() {
 
   const reloadVoieTrace = useCallback(() => {
     if (isStyleLoad.current) {
-      const map = mapRef.current.getMap()
       const voieTraceSource = map.getSource('voie-trace')
       voieTraceSource.setData(voieTraceData)
     }
-  }, [mapRef, voieTraceData])
+  }, [map, voieTraceData])
 
   const reloadPositions = useCallback(() => {
     if (isStyleLoad.current) {
-      const map = mapRef.current.getMap()
       const positionsSource = map.getSource('positions')
       positionsSource.setData(positionsData)
     }
-  }, [mapRef, positionsData])
+  }, [map, positionsData])
 
   const reloadVoies = useCallback(() => {
     if (isStyleLoad.current) {
-      const map = mapRef.current.getMap()
       const voiesSource = map.getSource('voies')
       voiesSource.setData(voiesData)
     }
-  }, [mapRef, voiesData])
+  }, [map, voiesData])
 
   const handleLoad = useCallback(() => {
-    if (mapRef?.current) {
+    if (map) {
       reloadVoieTrace()
       reloadPositions()
       reloadVoies()
 
       isStyleLoad.current = true
     }
-  }, [mapRef, reloadVoieTrace, reloadPositions, reloadVoies])
+  }, [map, reloadVoieTrace, reloadPositions, reloadVoies])
 
   useEffect(() => {
     reloadVoieTrace()

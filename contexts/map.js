@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo, useRef, useCallback} from 'react'
+import React, {useEffect, useState, useMemo} from 'react'
 
 const MapContext = React.createContext()
 
@@ -12,19 +12,10 @@ const defaultViewport = {
 const defaultStyle = 'vector'
 
 export function MapContextProvider(props) {
-  const mapRef = useRef()
-
   const [map, setMap] = useState(null)
   const [style, setStyle] = useState(defaultStyle)
   const [viewport, setViewport] = useState(defaultViewport)
   const [isCadastreDisplayed, setIsCadastreDisplayed] = useState(false)
-
-  const handleMapRef = useCallback(ref => {
-    if (ref) {
-      mapRef.current = ref
-      setMap(ref.getMap())
-    }
-  }, [])
 
   useEffect(() => {
     if (!viewport) {
@@ -33,18 +24,15 @@ export function MapContextProvider(props) {
   }, [viewport])
 
   const value = useMemo(() => ({
-    map,
-    mapRef,
+    map, setMap,
     style, setStyle, defaultStyle,
     viewport, setViewport,
     isCadastreDisplayed, setIsCadastreDisplayed,
-    handleMapRef
   }), [
     map,
     style,
     viewport,
-    isCadastreDisplayed,
-    handleMapRef
+    isCadastreDisplayed
   ])
 
   return (
