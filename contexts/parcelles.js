@@ -24,18 +24,6 @@ export function ParcellesContextProvider(props) {
 
   const hoveredParcelle = useRef()
 
-  const handleParcelle = useCallback(parcelle => {
-    if (isParcelleSelectionEnabled) {
-      setSelectedParcelles(parcelles => {
-        if (selectedParcelles.includes(parcelle)) {
-          return selectedParcelles.filter(id => id !== parcelle)
-        }
-
-        return [...parcelles, parcelle]
-      })
-    }
-  }, [selectedParcelles, isParcelleSelectionEnabled])
-
   const handleHoveredParcelle = useCallback(hovered => {
     if (hoveredParcelle && map) {
       if (hoveredParcelle.current && isCadastreDisplayed) {
@@ -59,6 +47,19 @@ export function ParcellesContextProvider(props) {
       }
     }
   }, [map, isCadastreDisplayed])
+
+  const handleParcelle = useCallback(parcelle => {
+    if (isParcelleSelectionEnabled) {
+      setSelectedParcelles(parcelles => {
+        if (selectedParcelles.includes(parcelle)) {
+          return selectedParcelles.filter(id => id !== parcelle)
+        }
+
+        return [...parcelles, parcelle]
+      })
+      handleHoveredParcelle(null)
+    }
+  }, [selectedParcelles, isParcelleSelectionEnabled, handleHoveredParcelle])
 
   const toggleCadastreVisibility = useCallback(() => {
     cadastreLayers.forEach(layer => {
