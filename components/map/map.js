@@ -308,6 +308,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           onClick={onClick}
           onHover={handleHover}
           onMouseLeave={handleMouseLeave}
+          onMouseOut={handleMouseLeave}
           onViewportChange={setViewport}
         >
 
