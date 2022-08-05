@@ -50,8 +50,7 @@ AssistedTextField.defaultProps = {
   placeholder: '',
   isDisabled: false,
   validationMessage: null,
-  isRequired: true,
-  exitFocus: () => {}
+  isRequired: true
 }
 
 AssistedTextField.propTypes = {
@@ -63,7 +62,7 @@ AssistedTextField.propTypes = {
   forwadedRef: PropTypes.object.isRequired,
   isDisabled: PropTypes.bool,
   isRequired: PropTypes.bool,
-  exitFocus: PropTypes.func
+  exitFocus: PropTypes.func.isRequired
 }
 
 export default AssistedTextField

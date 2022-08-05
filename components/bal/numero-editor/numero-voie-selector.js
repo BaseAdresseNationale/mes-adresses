@@ -11,7 +11,7 @@ import AssistedTextField from '@/components/assisted-text-field'
 
 function NumeroVoieSelector({voieId, voies, nomVoie, mode, validationMessage, handleVoie, handleNomVoie}) {
   const [isCreateMode, setIsCreateMode] = useState(mode === 'creation' || !voieId)
-  const [ref] = useFocus(true)
+  const [ref, setIsFocus] = useFocus(true)
 
   const toggleMode = () => {
     setIsCreateMode(mode => !mode)
@@ -38,6 +38,7 @@ function NumeroVoieSelector({voieId, voies, nomVoie, mode, validationMessage, ha
         {isCreateMode ? (
           <AssistedTextField
             forwadedRef={ref}
+            exitFocus={() => setIsFocus(false)}
             label='Nouvelle voie'
             placeholder='Nom de la voie'
             value={nomVoie}

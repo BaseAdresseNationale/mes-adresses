@@ -30,7 +30,7 @@ function VoieEditor({initialValue, closeForm}) {
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw} = useContext(DrawContext)
-  const [ref] = useFocus(true)
+  const [ref, setIsFocus] = useFocus(true)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -105,6 +105,7 @@ function VoieEditor({initialValue, closeForm}) {
           <FormInput>
             <AssistedTextField
               forwadedRef={ref}
+              exitFocus={() => setIsFocus(false)}
               label='Nom de la voie'
               placeholder='Nom de la voie'
               value={nom}
