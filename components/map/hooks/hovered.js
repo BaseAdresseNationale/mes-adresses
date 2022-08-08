@@ -56,17 +56,21 @@ function useHovered(map) {
       map.setFeatureState({source, id, sourceLayer}, {hover: true})
       handleRelatedFeatures(map, feature, true)
     }
-  }, [map])
+  }, [map, handleHoveredParcelle])
 
   const handleMouseLeave = useCallback(() => {
     if (hovered.current) {
       const {id, source, sourceLayer} = hovered.current
       map.setFeatureState({source, sourceLayer, id}, {hover: false})
       handleRelatedFeatures(map, hovered.current, false)
+
+      if (source === 'cadastre') {
+        handleHoveredParcelle(null)
+      }
     }
 
     hovered.current = null
-  }, [map])
+  }, [map, handleHoveredParcelle])
 
   return [handleHover, handleMouseLeave]
 }
