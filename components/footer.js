@@ -6,7 +6,7 @@ import HelpContext from '@/contexts/help'
 
 import useHelp from '@/hooks/help'
 
-function DocumentationLink({title, description, link, icon, onClick}) {
+function FooterLink({title, description, link, icon, onClick}) {
   return (
     <Pane display='flex' flexDirection='column' alignItems='center'>
       {link ? (
@@ -26,12 +26,12 @@ function DocumentationLink({title, description, link, icon, onClick}) {
   )
 }
 
-DocumentationLink.defaultProps = {
+FooterLink.defaultProps = {
   link: null,
   onClick: null
 }
 
-DocumentationLink.propTypes = {
+FooterLink.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   icon: PropTypes.object.isRequired,
@@ -61,17 +61,19 @@ function Footer() {
           <Heading textAlign='center' marginBottom={12} size={600}>Besoin d’aide ?</Heading>
         </Pane>
         <Pane display='grid' gridTemplateColumns='1fr 1fr 1fr' justifyContent='space-between' alignItems='center'>
-          <DocumentationLink
+          <FooterLink
             title='Guides de l’adressage'
+            icon={ManualIcon}
             description='Pour vous accompagner dans la gestion des adresses de votre commune'
             link='https://adresse.data.gouv.fr/guides'
           />
-          <DocumentationLink
+          <FooterLink
             title='Guide interactif'
+            icon={ManualIcon}
             description='Le manuel de l’éditeur toujours à porté de main'
             onClick={handleHelp}
           />
-          <DocumentationLink
+          <FooterLink
             title='Accessibilité : non-conforme'
             icon={WalkIcon}
             description='Consultez la déclaration d’accessibilité'
