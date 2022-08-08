@@ -30,8 +30,8 @@ import useHovered from '@/components/map/hooks/hovered'
 
 const LAYERS = [
   ...cadastreLayers,
-  ...voiesLayers,
-  ...numerosLayers
+  ...numerosLayers,
+  ...voiesLayers
 ]
 
 const SOURCES = [
