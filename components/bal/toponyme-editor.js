@@ -1,7 +1,7 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {difference} from 'lodash'
-import {Button} from 'evergreen-ui'
+import {Pane, Button} from 'evergreen-ui'
 import router from 'next/router'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
@@ -12,6 +12,7 @@ import MarkersContext from '@/contexts/markers'
 import ParcellesContext from '@/contexts/parcelles'
 
 import {useInput} from '@/hooks/input'
+import useFocus from '@/hooks/focus'
 import useValidationMessage from '@/hooks/validation-messages'
 
 import FormMaster from '@/components/form-master'
@@ -33,6 +34,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
   const {selectedParcelles} = useContext(ParcellesContext)
+  const [ref, setIsFocus] = useFocus(true)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -111,35 +113,38 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   return (
     <FormMaster editingId={initialValue?._id} closeForm={closeForm}>
       <Form onFormSubmit={onFormSubmit}>
-        <FormInput>
-          <AssistedTextField
-            isFocus
-            disabled={isLoading}
-            label='Nom du toponyme'
-            placeholder='Nom du toponyme'
-            value={nom}
-            onChange={onNomChange}
-            validationMessage={getValidationMessage('nom')}
-          />
-
-          <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
-        </FormInput>
-
-        <FormInput>
-          <PositionEditor
-            initialPositions={initialValue?.positions}
-            isToponyme
-            validationMessage={getValidationMessage('positions')}
-          />
-        </FormInput>
-
-        {commune.hasCadastre ? (
+        <Pane>
           <FormInput>
-            <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
+            <AssistedTextField
+              forwadedRef={ref}
+              exitFocus={() => setIsFocus(false)}
+              disabled={isLoading}
+              label='Nom du toponyme'
+              placeholder='Nom du toponyme'
+              value={nom}
+              onChange={onNomChange}
+              validationMessage={getValidationMessage('nom')}
+            />
+
+            <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
           </FormInput>
-        ) : (
-          <DisabledFormInput label='Parcelles' />
-        )}
+
+          <FormInput>
+            <PositionEditor
+              initialPositions={initialValue?.positions}
+              isToponyme
+              validationMessage={getValidationMessage('positions')}
+            />
+          </FormInput>
+
+          {commune.hasCadastre ? (
+            <FormInput>
+              <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
+            </FormInput>
+          ) : (
+            <DisabledFormInput label='Parcelles' />
+          )}
+        </Pane>
 
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
           {submitLabel}
