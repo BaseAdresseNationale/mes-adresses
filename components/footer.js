@@ -28,15 +28,14 @@ function DocumentationLink({title, description, link, icon, onClick}) {
 
 DocumentationLink.defaultProps = {
   link: null,
-  icon: ManualIcon,
   onClick: null
 }
 
 DocumentationLink.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
+  icon: PropTypes.object.isRequired,
   link: PropTypes.string,
-  icon: PropTypes.object,
   onClick: PropTypes.func
 }
 
