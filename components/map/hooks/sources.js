@@ -1,4 +1,4 @@
-import {useMemo, useContext, useCallback, useEffect, useRef} from 'react'
+import {useMemo, useContext, useCallback, useEffect, useState} from 'react'
 import {groupBy, pick} from 'lodash'
 import computeCentroid from '@turf/centroid'
 import randomColor from 'randomcolor'
@@ -10,7 +10,7 @@ function useSources() {
   const {map} = useContext(MapContext)
   const {geojson, editingId} = useContext(BalDataContext)
 
-  const isStyleLoad = useRef(false)
+  const [isStyleLoaded, setIsStyleLoaded] = useState(false)
 
   const setPaintProperties = useCallback(feature => {
     return {
@@ -80,35 +80,25 @@ function useSources() {
   }, [features])
 
   const reloadVoieTrace = useCallback(() => {
-    if (isStyleLoad.current) {
+    if (isStyleLoaded) {
       const voieTraceSource = map.getSource('voie-trace')
       voieTraceSource.setData(voieTraceData)
     }
-  }, [map, voieTraceData])
+  }, [map, isStyleLoaded, voieTraceData])
 
   const reloadPositions = useCallback(() => {
-    if (isStyleLoad.current) {
+    if (isStyleLoaded) {
       const positionsSource = map.getSource('positions')
       positionsSource.setData(positionsData)
     }
-  }, [map, positionsData])
+  }, [map, isStyleLoaded, positionsData])
 
   const reloadVoies = useCallback(() => {
-    if (isStyleLoad.current) {
+    if (isStyleLoaded) {
       const voiesSource = map.getSource('voies')
       voiesSource.setData(voiesData)
     }
-  }, [map, voiesData])
-
-  const handleLoad = useCallback(() => {
-    if (map) {
-      reloadVoieTrace()
-      reloadPositions()
-      reloadVoies()
-
-      isStyleLoad.current = true
-    }
-  }, [map, reloadVoieTrace, reloadPositions, reloadVoies])
+  }, [map, isStyleLoaded, voiesData])
 
   useEffect(() => {
     reloadVoieTrace()
@@ -122,7 +112,7 @@ function useSources() {
     reloadVoies()
   }, [reloadVoies])
 
-  return [voieTraceData, positionsData, voiesData, handleLoad]
+  return [voieTraceData, positionsData, voiesData, setIsStyleLoaded]
 }
 
 export default useSources

@@ -107,7 +107,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {token} = useContext(TokenContext)
 
   const [handleHover, handleMouseLeave] = useHovered(map)
-  const [voieTraceData, positionsData, voiesData, handleLoad] = useSources()
+  const [voieTraceData, positionsData, voiesData, setIsStyleLoaded] = useSources()
   const bounds = useBounds(commune, voie, toponyme)
 
   const prevStyle = useRef(defaultStyle)
@@ -135,10 +135,10 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     if (ref) {
       const map = ref.getMap()
       setMap(map)
-      map.on('style.load', handleLoad)
+      map.on('style.load', () => setIsStyleLoaded(true))
       map.on('style.load', updatePositionsLayer)
     }
-  }, [setMap, handleLoad, updatePositionsLayer])
+  }, [setMap, setIsStyleLoaded, updatePositionsLayer])
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -200,6 +200,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   // Change map's style and adapte layers
   useEffect(() => {
     if (map) {
+      setIsStyleLoaded(false)
       setMapStyle(generateNewStyle(style))
 
       // Adapt layer paint property to map style
@@ -213,7 +214,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         map.setPaintProperty('numeros-point', 'circle-stroke-color', isOrtho ? '#ffffff' : '#f8f4f0')
       }
     }
-  }, [map, style])
+  }, [map, style, setIsStyleLoaded])
 
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
