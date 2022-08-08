@@ -1,7 +1,7 @@
 import {useContext} from 'react'
 import NextLink from 'next/link'
 import Image from 'next/image'
-import {Pane, Button, Link, HelpIcon, BookIcon, WalkIcon} from 'evergreen-ui'
+import {Pane, Button, Link, HelpIcon, BookIcon} from 'evergreen-ui'
 
 import HelpContext from '@/contexts/help'
 
@@ -29,12 +29,6 @@ function Header() {
         <Button appearance='minimal' marginRight='12px' minHeight='55px' iconAfter={BookIcon}>
           <Link href='https://adresse.data.gouv.fr/guides' textDecoration='none' color='neutral' target='_blank'>
             Guides de l’adressage
-          </Link>
-        </Button>
-
-        <Button appearance='minimal' marginRight='12px' minHeight='55px' iconAfter={WalkIcon}>
-          <Link href='/accessibility' textDecoration='none' color='neutral'>
-            Accessibilité : non-conforme
           </Link>
         </Button>
       </Pane>
