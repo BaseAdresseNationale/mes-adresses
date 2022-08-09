@@ -8,6 +8,7 @@ import availableFlags from '../../available-flags.json'
 
 function LanguagePreview({nomAlt}) {
   const isFlagExist = availableFlags.includes(Object.keys(nomAlt)[0])
+  const foundLangueRegionale = languesRegionales.find(lr => lr.code === Object.keys(nomAlt)[0])
 
   return (
     Object.keys(nomAlt).length > 1 ? (
@@ -64,6 +65,7 @@ function LanguagePreview({nomAlt}) {
           src={isFlagExist ? `/static/images/flags/${Object.keys(nomAlt)[0]}.svg` : '/static/images/flags/ntr.svg'}
           height={18}
           width={18}
+          alt={foundLangueRegionale ? `Nom de la voie en ${foundLangueRegionale.label}` : 'Le nom de la langue régionale n’a pas pu être détecté'}
         />
         <Pane fontWeight='lighter' fontSize={14}>{nomAlt[Object.keys(nomAlt)]}</Pane>
       </Pane>
