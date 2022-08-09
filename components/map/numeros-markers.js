@@ -16,7 +16,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+  const {setEditingId, isEditing, reloadNumeros, reloadParcelles, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
 
   const needGeojsonUpdateRef = useRef(false)
 
@@ -72,6 +72,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
     try {
       await removeNumero(numeroId, token)
       await reloadNumeros()
+      await reloadParcelles()
       needGeojsonUpdateRef.current = true
       refreshBALSync()
     } catch (error) {
@@ -79,7 +80,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
     }
 
     setIsContextMenuDisplayed(null)
-  }, [token, reloadNumeros, setError, setIsContextMenuDisplayed, refreshBALSync])
+  }, [token, reloadNumeros, reloadParcelles, setError, setIsContextMenuDisplayed, refreshBALSync])
 
   useEffect(() => {
     return () => {
