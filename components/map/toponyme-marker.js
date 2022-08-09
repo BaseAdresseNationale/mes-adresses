@@ -21,7 +21,7 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
 
   const {token} = useContext(TokenContext)
   const {markers} = useContext(MarkersContext)
-  const {editingId, setEditingId, isEditing, reloadToponymes, voie, toponyme} = useContext(BalDataContext)
+  const {editingId, setEditingId, isEditing, reloadToponymes, reloadParcelles, voie, toponyme} = useContext(BalDataContext)
 
   const onEnableEditing = useCallback(e => {
     e.stopPropagation()
@@ -62,6 +62,7 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
     try {
       await removeToponyme(_id, token)
       await reloadToponymes()
+      await reloadParcelles()
 
       if (_id === toponyme._id) {
         return router.push(
