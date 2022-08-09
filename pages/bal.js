@@ -32,6 +32,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
     reloadVoies,
     reloadToponymes,
     reloadGeojson,
+    reloadParcelles,
     editingId,
     isEditing,
     setIsEditing
@@ -57,10 +58,11 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
       await reloadToponymes()
     }
 
+    await reloadParcelles()
     await reloadGeojson()
     refreshBALSync()
     setToRemove(null)
-  }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, selectedTab, toRemove, token])
+  }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, reloadParcelles, selectedTab, toRemove, token])
 
   const onSelect = useCallback(id => {
     if (editingId) {
