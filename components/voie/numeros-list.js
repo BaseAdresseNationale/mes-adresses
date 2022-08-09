@@ -16,7 +16,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
-  const {baseLocale, isEditing, reloadNumeros, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
+  const {baseLocale, isEditing, reloadNumeros, reloadParcelles, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
 
   const needGeojsonUpdateRef = useRef(false)
 
@@ -74,14 +74,16 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   const onRemove = useCallback(async idNumero => {
     await removeNumero(idNumero, token)
     await reloadNumeros()
+    await reloadParcelles()
     needGeojsonUpdateRef.current = true
     refreshBALSync()
-  }, [reloadNumeros, refreshBALSync, token])
+  }, [reloadNumeros, reloadParcelles, refreshBALSync, token])
 
   const onMultipleRemove = async () => {
     await removeMultipleNumeros(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
 
     await reloadNumeros()
+    await reloadParcelles()
     needGeojsonUpdateRef.current = true
     refreshBALSync()
 
