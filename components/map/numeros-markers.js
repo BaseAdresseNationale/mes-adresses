@@ -20,11 +20,17 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
 
   const needGeojsonUpdateRef = useRef(false)
 
-  const onEnableEditing = useCallback(numeroId => {
+  const onEnableEditing = useCallback((event, numeroId) => {
+    const {rightButton} = event
+
     if (!isEditing) {
-      setEditingId(numeroId)
+      if (rightButton) {
+        setIsContextMenuDisplayed(numeroId)
+      } else {
+        setEditingId(numeroId)
+      }
     }
-  }, [setEditingId, isEditing])
+  }, [setEditingId, setIsContextMenuDisplayed, isEditing])
 
   const colorSeed = useCallback(id => {
     return id ? randomColor({
@@ -96,7 +102,6 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
         numero={numero}
         style={markerStyle(colorSeed(numero.voie?._id || voie?._id))}
         isContextMenuDisplayed={numero._id === isContextMenuDisplayed}
-        setIsContextMenuDisplayed={setIsContextMenuDisplayed}
         removeAddress={removeAddress}
         onEnableEditing={onEnableEditing}
       />

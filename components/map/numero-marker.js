@@ -6,7 +6,7 @@ import {Tooltip} from 'evergreen-ui/commonjs/tooltip'
 
 import {computeCompletNumero} from '@/lib/utils/numero'
 
-function NumeroMarker({numero, style, isContextMenuDisplayed, setIsContextMenuDisplayed, onEnableEditing, removeAddress}) {
+function NumeroMarker({numero, style, isContextMenuDisplayed, onEnableEditing, removeAddress}) {
   const position = numero.positions.find(position => position.type === 'entrée') || numero.positions[0]
 
   if (!position) {
@@ -17,8 +17,8 @@ function NumeroMarker({numero, style, isContextMenuDisplayed, setIsContextMenuDi
   const completNumero = numero.numeroComplet || computeCompletNumero(numero.numero, numero.suffixe)
 
   return (
-    <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false} onClick={() => onEnableEditing(numero._id)}>
-      <Pane {...style} paddingX={4} onContextMenu={() => setIsContextMenuDisplayed(numero._id)}>
+    <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false} onClick={e => onEnableEditing(e, numero._id)}>
+      <Pane {...style} paddingX={4}>
         <Text color='white' marginLeft={8} marginRight={4}>
           {completNumero}
         </Text>
@@ -67,7 +67,6 @@ NumeroMarker.propTypes = {
   }).isRequired,
   style: PropTypes.object.isRequired,
   isContextMenuDisplayed: PropTypes.bool,
-  setIsContextMenuDisplayed: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
   removeAddress: PropTypes.func.isRequired
 }
