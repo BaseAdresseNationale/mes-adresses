@@ -20,9 +20,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
 
   const needGeojsonUpdateRef = useRef(false)
 
-  const onEnableEditing = useCallback((e, numeroId) => {
-    e.stopPropagation()
-
+  const onEnableEditing = useCallback(numeroId => {
     if (!isEditing) {
       setEditingId(numeroId)
     }
