@@ -1,4 +1,4 @@
-import {useMemo, useContext, useCallback, useEffect, useState} from 'react'
+import {useMemo, useContext, useCallback, useEffect} from 'react'
 import {groupBy, pick} from 'lodash'
 import computeCentroid from '@turf/centroid'
 import randomColor from 'randomcolor'
@@ -6,11 +6,9 @@ import randomColor from 'randomcolor'
 import MapContext from '@/contexts/map'
 import BalDataContext from '@/contexts/bal-data'
 
-function useSources() {
+function useSources(isStyleLoaded) {
   const {map} = useContext(MapContext)
   const {geojson, editingId} = useContext(BalDataContext)
-
-  const [isStyleLoaded, setIsStyleLoaded] = useState(false)
 
   const setPaintProperties = useCallback(feature => {
     return {
@@ -112,7 +110,7 @@ function useSources() {
     reloadVoies()
   }, [reloadVoies])
 
-  return [voieTraceData, positionsData, voiesData, setIsStyleLoaded]
+  return [voieTraceData, positionsData, voiesData]
 }
 
 export default useSources

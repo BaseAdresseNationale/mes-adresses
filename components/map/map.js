@@ -85,7 +85,7 @@ function generateNewStyle(style) {
 
 function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
-  const {map, setMap, style, setStyle, defaultStyle, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
+  const {map, handleMapRef, style, setStyle, defaultStyle, isStyleLoaded, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
@@ -107,7 +107,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {token} = useContext(TokenContext)
 
   const [handleHover, handleMouseLeave] = useHovered(map)
-  const [voieTraceData, positionsData, voiesData, setIsStyleLoaded] = useSources()
+  const [voieTraceData, positionsData, voiesData] = useSources(isStyleLoaded)
   const bounds = useBounds(commune, voie, toponyme)
 
   const prevStyle = useRef(defaultStyle)
@@ -130,15 +130,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       }
     }
   }, [map, voie, toponyme])
-
-  const handleRef = useCallback(ref => {
-    if (ref) {
-      const map = ref.getMap()
-      setMap(map)
-      map.on('style.load', () => setIsStyleLoaded(true))
-      map.on('style.load', updatePositionsLayer)
-    }
-  }, [setMap, setIsStyleLoaded, updatePositionsLayer])
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -200,7 +191,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   // Change map's style and adapte layers
   useEffect(() => {
     if (map) {
-      setIsStyleLoaded(false)
       setMapStyle(generateNewStyle(style))
 
       // Adapt layer paint property to map style
@@ -214,7 +204,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         map.setPaintProperty('numeros-point', 'circle-stroke-color', isOrtho ? '#ffffff' : '#f8f4f0')
       }
     }
-  }, [map, style, setIsStyleLoaded])
+  }, [map, style])
 
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
@@ -227,6 +217,12 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       return prevStyle.current
     })
   }, [modeId, setStyle, commune])
+
+  useEffect(() => {
+    if (isStyleLoaded) {
+      updatePositionsLayer()
+    }
+  }, [isStyleLoaded, updatePositionsLayer])
 
   useEffect(() => {
     if (map) {
@@ -296,7 +292,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
       <Pane display='flex' flex={1}>
         <MapGl
-          ref={handleRef}
+          ref={handleMapRef}
           reuseMap
           viewState={viewport}
           mapStyle={mapStyle}

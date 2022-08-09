@@ -16,7 +16,7 @@ function getHoveredFeatureId(map, id) {
 }
 
 export function ParcellesContextProvider(props) {
-  const {map, isCadastreDisplayed} = useContext(MapContext)
+  const {map, isCadastreDisplayed, isStyleLoaded} = useContext(MapContext)
   const {baseLocale, parcelles} = useContext(BalDataContext)
 
   const [hoveredParcelle, setHoveredParcelle] = useState(null)
@@ -97,19 +97,19 @@ export function ParcellesContextProvider(props) {
 
   // Toggle all cadastre layers visiblity
   useEffect(() => {
-    if (map && map.getSource('cadastre')) {
+    if (map && map.getSource('cadastre') && isStyleLoaded) {
       toggleCadastreVisibility()
     }
-  }, [map, toggleCadastreVisibility])
+  }, [map, isStyleLoaded, toggleCadastreVisibility])
 
   // Updates highlighted parcelles when parcelles changes
   // or when selection is enabled/disabled
   useEffect(() => {
-    if (map && isCadastreDisplayed) {
+    if (map && isCadastreDisplayed && isStyleLoaded) {
       filterSelectedParcelles()
       filterHighlightedParcelles()
     }
-  }, [map, isCadastreDisplayed, filterHighlightedParcelles, filterSelectedParcelles])
+  }, [map, isCadastreDisplayed, isStyleLoaded, filterHighlightedParcelles, filterSelectedParcelles])
 
   // Reset isStyleLoaded when selection is disabled
   useEffect(() => {
@@ -119,16 +119,10 @@ export function ParcellesContextProvider(props) {
   }, [isParcelleSelectionEnabled])
 
   useEffect(() => {
-    if (map) {
-      map.on('style.load', reloadParcellesLayers)
+    if (isStyleLoaded) {
+      reloadParcellesLayers()
     }
-
-    return () => {
-      if (map) {
-        map.off('style.load', reloadParcellesLayers)
-      }
-    }
-  }, [map, reloadParcellesLayers])
+  }, [isStyleLoaded, reloadParcellesLayers])
 
   const value = useMemo(() => ({
     selectedParcelles, setSelectedParcelles,
