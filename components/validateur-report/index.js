@@ -4,16 +4,17 @@ import {groupBy, remove} from 'lodash'
 
 import VoieRow from '@/components/validateur-report/voie-row'
 
+const validAlertSchemas = new Set(['voie_nom', 'numero', 'suffixe'])
+
 function ValidateurReport({rows, voies, baseLocaleId}) {
   const sanitizedRowsByVoies = {}
-
   if (voies) {
     const rowsByVoies = groupBy(rows, row => row.rawValues.voie_nom)
 
     // Create a new object, grouped by voies names
     Object.keys(rowsByVoies).forEach(nomVoie => {
       const rowsWithAlerts = rowsByVoies[nomVoie].filter(row => {
-        remove(row.errors, error => error.level === 'I') // Remove unusefull "information" type alerts
+        remove(row.errors, error => !validAlertSchemas.has(error.schemaName)) // Remove unusefull alerts
         return row.errors.length > 0
       })
 
@@ -21,10 +22,12 @@ function ValidateurReport({rows, voies, baseLocaleId}) {
       const numerosWithAlerts = rowsWithAlerts.filter(row => row.parsedValues.numero).map(numero => ({address: numero.parsedValues, alerts: numero.errors}))
 
       // For each voie, add voie's id, it's own alerts list and it's numeros with alerts list
-      sanitizedRowsByVoies[nomVoie] = {
-        voieId: voies.find(voie => voie.nom === nomVoie)?._id,
-        voieAlerts: rowWithVoieAlerts.length > 0 ? rowWithVoieAlerts[0].errors : [],
-        numerosWithAlerts
+      if (rowWithVoieAlerts.length > 0 || numerosWithAlerts.length > 0) {
+        sanitizedRowsByVoies[nomVoie] = {
+          voieId: voies.find(voie => voie.nom === nomVoie)?._id,
+          voieAlerts: rowWithVoieAlerts.length > 0 ? rowWithVoieAlerts[0].errors : [],
+          numerosWithAlerts
+        }
       }
     })
   }
