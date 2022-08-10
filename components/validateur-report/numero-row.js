@@ -34,7 +34,7 @@ function NumeroRow({numero, numerosWithAlerts}) {
             {alerts.map(({code, level}) => (
               <ListItem
                 key={code}
-                color={level === 'E' ? 'red500' : 'orange500'}
+                color={level === 'E' ? 'red500' : (level === 'W' ? 'orange500' : 'blue500')}
                 padding={0}
                 marginX={14}
               >
