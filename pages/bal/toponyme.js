@@ -26,6 +26,7 @@ function Toponyme({baseLocale, commune}) {
   const {
     toponyme,
     numeros,
+    editingId,
     reloadNumeros,
     isEditing,
     setIsEditing
@@ -89,12 +90,21 @@ function Toponyme({baseLocale, commune}) {
     }
   }, [token, reloadNumeros])
 
+  // Open form when numero is selected from map
+  useEffect(() => {
+    if (editingId && numeros.map(({_id}) => _id).includes(editingId)) {
+      setIsFormOpen(true)
+      setEditedNumeroId(editingId)
+    }
+    // To avoid being retriggered by `numeros` update when form is sumbitted
+  }, [editingId]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <>
       <Pane overflowY='scroll'>
         <ToponymeHeading toponyme={toponyme} commune={commune} />
       </Pane>
-      {token && isFormOpen && isEditing ? (
+      {token && isFormOpen && isEditing && !editedNumeroId ? (
         <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
       ) : (
         <Pane
