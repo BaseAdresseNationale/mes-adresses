@@ -22,9 +22,9 @@ function NumeroRow({numero, numerosWithAlerts}) {
       <Pane width='100%' display='flex' flexDirection='column' gap={20} justifyContent='center'>
         <AlertHeader
           type='secondary'
-          hasWarnings={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'W'})) > 0)}
-          hasErrors={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'E'})) > 0)}
-          hasInfos={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'I'})) > 0)}
+          hasWarnings={filter(numero.alerts, ({level}) => level === 'W').length > 0}
+          hasErrors={filter(numero.alerts, ({level}) => level === 'E').length > 0}
+          hasInfos={filter(numero.alerts, ({level}) => level === 'I').length > 0}
         >
           <Text fontSize={15} fontWeight={700}>{address.numero} {address.voie_nom}</Text>
         </AlertHeader>
