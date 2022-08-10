@@ -84,14 +84,16 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
         key={marker._id}
         {...marker}
         draggable
+        offsetLeft={-11.225}
+        offsetTop={-32}
         onDrag={e => onDrag(e, idx)}
         onDragEnd={e => onDragEnd(e, idx)}
       >
         <Pane>
           <Text
             position='absolute'
-            top={-62}
-            transform='translate(-50%)'
+            top={-30}
+            transform='translate(-30%)'
             borderRadius={20}
             backgroundColor='rgba(0, 0, 0, 0.7)'
             color='white'
@@ -106,7 +108,6 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
           <MapMarkerIcon
             filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
             color={style === 'vector' ? 'info' : 'success'}
-            transform='translate(-50%, -100%)'
             size={size}
           />
         </Pane>
