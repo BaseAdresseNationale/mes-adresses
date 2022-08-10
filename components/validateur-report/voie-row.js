@@ -10,7 +10,7 @@ import NumeroRow from '@/components/validateur-report/numero-row'
 import AlertHeader from '@/components/validateur-report/alerts-header'
 import Dropdown from '@/components/dropdown'
 
-function VoieRow({nomVoie, voie, baseLocaleID}) {
+function VoieRow({nomVoie, voie, baseLocaleId}) {
   const [isVoieOpen, setIsVoieOpen] = useState(false)
 
   const {voieId, voieAlerts, numerosWithAlerts} = voie
@@ -23,7 +23,7 @@ function VoieRow({nomVoie, voie, baseLocaleID}) {
             <Pane width='100%' display='flex' justifyContent='space-between' alignItems='center'>
               <Heading as='h2' fontSize={16}>{nomVoie}</Heading>
               {voieId && (
-                <Link href={`/bal/voie?balId=${baseLocaleID}&idVoie=${voieId}`} passHref>
+                <Link href={`/bal/voie?balId=${baseLocaleId}&idVoie=${voieId}`} passHref>
                   <Text
                     marginRight={8}
                     fontStyle='italic'
@@ -89,7 +89,7 @@ function VoieRow({nomVoie, voie, baseLocaleID}) {
 VoieRow.propTypes = {
   nomVoie: PropTypes.string.isRequired,
   voie: PropTypes.object.isRequired,
-  baseLocaleID: PropTypes.string.isRequired
+  baseLocaleId: PropTypes.string.isRequired
 }
 
 export default VoieRow

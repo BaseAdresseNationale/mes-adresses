@@ -4,7 +4,7 @@ import {groupBy, remove} from 'lodash'
 
 import VoieRow from '@/components/validateur-report/voie-row'
 
-function ValidateurReport({rows, voies, baseLocaleID}) {
+function ValidateurReport({rows, voies, baseLocaleId}) {
   const sanitizedRowsByVoies = {}
 
   if (voies) {
@@ -32,14 +32,14 @@ function ValidateurReport({rows, voies, baseLocaleID}) {
   return (
     <Pane display='flex' flexDirection='column' gap={12}>
       {Object.keys(sanitizedRowsByVoies).map(voie => {
-        return <VoieRow key={voie} nomVoie={voie} voie={sanitizedRowsByVoies[voie]} baseLocaleID={baseLocaleID} />
+        return <VoieRow key={voie} nomVoie={voie} voie={sanitizedRowsByVoies[voie]} baseLocaleId={baseLocaleId} />
       })}
     </Pane>
   )
 }
 
 ValidateurReport.propTypes = {
-  baseLocaleID: PropTypes.string.isRequired,
+  baseLocaleId: PropTypes.string.isRequired,
   voies: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired
 }
