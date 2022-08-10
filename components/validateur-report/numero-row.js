@@ -2,7 +2,6 @@ import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, UnorderedList, ListItem} from 'evergreen-ui'
 import {filter} from 'lodash'
-
 import {getLabel} from '@ban-team/validateur-bal'
 
 import AlertHeader from '@/components/validateur-report/alerts-header'

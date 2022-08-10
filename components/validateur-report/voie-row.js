@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import Link from 'next/link'
 import {Pane, Heading, Text, UnorderedList, ListItem} from 'evergreen-ui'
 import {sortBy, some, size, filter} from 'lodash'
-
 import {getLabel} from '@ban-team/validateur-bal'
 
 import NumeroRow from '@/components/validateur-report/numero-row'
