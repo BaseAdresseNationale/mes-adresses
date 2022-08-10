@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect, useContext, useMemo} from 'react'
+import {useState, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
 
@@ -9,6 +9,7 @@ import BalDataContext from '@/contexts/bal-data'
 
 import useHelp from '@/hooks/help'
 import useFuse from '@/hooks/fuse'
+import useFormState from '@/hooks/form-state'
 
 import NumeroEditor from '@/components/bal/numero-editor'
 import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
@@ -16,8 +17,8 @@ import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 
 function Toponyme({baseLocale, commune}) {
-  const [isFormOpen, setIsFormOpen] = useState(false)
-  const [editedNumeroId, setEditedNumeroId] = useState(null)
+  const [isFormOpen, handleEditing, editedNumero, reset] = useFormState()
+
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -26,7 +27,6 @@ function Toponyme({baseLocale, commune}) {
   const {
     toponyme,
     numeros,
-    editingId,
     reloadNumeros,
     isEditing,
     setIsEditing
@@ -38,10 +38,6 @@ function Toponyme({baseLocale, commune}) {
       'numero'
     ]
   })
-
-  const editedNumero = useMemo(() => {
-    return filtered.find(numero => numero._id === editedNumeroId)
-  }, [filtered, editedNumeroId])
 
   const onAdd = async numeros => {
     setIsLoading(true)
@@ -58,12 +54,12 @@ function Toponyme({baseLocale, commune}) {
     }
 
     setIsLoading(false)
-    setIsFormOpen(false)
+    reset()
     setIsEditing(false)
   }
 
   const onEnableAdding = () => {
-    setIsFormOpen(true)
+    handleEditing()
     setIsEditing(true)
   }
 
@@ -72,10 +68,9 @@ function Toponyme({baseLocale, commune}) {
       setIsEditing(false)
     }
 
-    setEditedNumeroId(null)
-    setIsFormOpen(false)
+    reset()
     setError(null)
-  }, [isFormOpen, setIsEditing])
+  }, [isFormOpen, reset, setIsEditing])
 
   useEffect(() => {
     return () => {
@@ -90,21 +85,12 @@ function Toponyme({baseLocale, commune}) {
     }
   }, [token, reloadNumeros])
 
-  // Open form when numero is selected from map
-  useEffect(() => {
-    if (editingId && numeros.map(({_id}) => _id).includes(editingId)) {
-      setIsFormOpen(true)
-      setEditedNumeroId(editingId)
-    }
-    // To avoid being retriggered by `numeros` update when form is sumbitted
-  }, [editingId]) // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <>
       <Pane overflowY='scroll'>
         <ToponymeHeading toponyme={toponyme} commune={commune} />
       </Pane>
-      {token && isFormOpen && isEditing && !editedNumeroId ? (
+      {token && isFormOpen && isEditing && !editedNumero ? (
         <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
       ) : (
         <Pane
@@ -170,7 +156,7 @@ function Toponyme({baseLocale, commune}) {
               </Table.Row>
             </Pane>
           ) : (
-            <ToponymeNumeros numeros={filtered} handleSelect={setEditedNumeroId} isEditable={token && !isEditing} />
+            <ToponymeNumeros numeros={filtered} handleSelect={handleEditing} isEditable={token && !isEditing} />
           )}
         </Table>
       </Pane>
