@@ -25,14 +25,14 @@ function NumeroRow({numero, numerosWithAlerts}) {
 
         {isNumeroOpen && (
           <UnorderedList background='white' borderRadius={6} padding={8}>
-            {alerts.map(alert => (
+            {alerts.map(({code, level}) => (
               <ListItem
-                key={alert.code}
-                color={alert.level === 'E' ? 'red500' : 'orange500'}
+                key={code}
+                color={level === 'E' ? 'red500' : 'orange500'}
                 padding={0}
                 marginX={14}
               >
-                {getLabel(alert.code)}
+                {getLabel(code)}
               </ListItem>
             )
             )}
