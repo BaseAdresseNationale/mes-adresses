@@ -90,8 +90,10 @@ function Toponyme({baseLocale, commune}) {
   }, [token, reloadNumeros])
 
   return (
-    <Pane height='fit-content' overflowY='scroll'>
-      <ToponymeHeading toponyme={toponyme} commune={commune} />
+    <>
+      <Pane overflowY='scroll'>
+        <ToponymeHeading toponyme={toponyme} commune={commune} />
+      </Pane>
       {token && isFormOpen && isEditing ? (
         <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
       ) : (
@@ -145,22 +147,24 @@ function Toponyme({baseLocale, commune}) {
           )}
 
           {editedNumero ? (
-            <Table.Row height='auto'>
-              <Table.Cell display='block' padding={0} background='tint1'>
-                <NumeroEditor
-                  hasPreview
-                  initialValue={editedNumero}
-                  commune={commune}
-                  closeForm={onCancel}
-                />
-              </Table.Cell>
-            </Table.Row>
+            <Pane flex={1} overflowY='scroll'>
+              <Table.Row height='auto'>
+                <Table.Cell display='block' padding={0} background='tint1'>
+                  <NumeroEditor
+                    hasPreview
+                    initialValue={editedNumero}
+                    commune={commune}
+                    closeForm={onCancel}
+                  />
+                </Table.Cell>
+              </Table.Row>
+            </Pane>
           ) : (
             <ToponymeNumeros numeros={filtered} handleSelect={setEditedNumeroId} isEditable={token && !isEditing} />
           )}
         </Table>
       </Pane>
-    </Pane>
+    </>
   )
 }
 
