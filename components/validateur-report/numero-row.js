@@ -25,18 +25,17 @@ function NumeroRow({numero, numerosWithAlerts}) {
 
         {isNumeroOpen && (
           <UnorderedList background='white' borderRadius={6} padding={8}>
-            {alerts.map(alert => {
-              return (
-                <ListItem
-                  key={alert.code}
-                  color={alert.level === 'E' ? 'red500' : 'orange500'}
-                  padding={0}
-                  marginX={14}
-                >
-                  {getLabel(alert.code)}
-                </ListItem>
-              )
-            })}
+            {alerts.map(alert => (
+              <ListItem
+                key={alert.code}
+                color={alert.level === 'E' ? 'red500' : 'orange500'}
+                padding={0}
+                marginX={14}
+              >
+                {getLabel(alert.code)}
+              </ListItem>
+            )
+            )}
           </UnorderedList>
         )}
       </Pane>

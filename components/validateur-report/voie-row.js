@@ -55,17 +55,16 @@ function VoieRow({nomVoie, voie, baseLocaleId}) {
               <Pane marginY={20}>
                 <Text fontWeight={700} fontSize={16}>Alertes concernant la voie</Text>
                 <UnorderedList >
-                  {voieAlerts.map(alert => {
-                    return (
-                      <ListItem
-                        key={alert.code}
-                        color={alert.level === 'E' ? 'red500' : 'orange500'}
-                        fontSize={15}
-                      >
-                        {getLabel(alert.code)}
-                      </ListItem>
-                    )
-                  })}
+                  {voieAlerts.map(alert => (
+                    <ListItem
+                      key={alert.code}
+                      color={alert.level === 'E' ? 'red500' : 'orange500'}
+                      fontSize={15}
+                    >
+                      {getLabel(alert.code)}
+                    </ListItem>
+                  )
+                  )}
                 </UnorderedList>
               </Pane>
             )}
