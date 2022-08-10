@@ -1,14 +1,14 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, UnorderedList, ListItem} from 'evergreen-ui'
-import {filter, some, size} from 'lodash'
+import {filter} from 'lodash'
 
 import {getLabel} from '@ban-team/validateur-bal'
 
 import AlertHeader from '@/components/validateur-report/alerts-header'
 import Dropdown from '@/components/dropdown'
 
-function NumeroRow({numero, numerosWithAlerts}) {
+function NumeroRow({numero}) {
   const {address, alerts} = numero
   const [isNumeroOpen, setIsNumeroOpen] = useState(false)
 
@@ -50,8 +50,7 @@ function NumeroRow({numero, numerosWithAlerts}) {
 }
 
 NumeroRow.propTypes = {
-  numero: PropTypes.object.isRequired,
-  numerosWithAlerts: PropTypes.array.isRequired
+  numero: PropTypes.object.isRequired
 }
 
 export default NumeroRow
