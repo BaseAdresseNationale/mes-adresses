@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, UnorderedList, ListItem} from 'evergreen-ui'
+import {filter, some, size} from 'lodash'
 
 import {getLabel} from '@ban-team/validateur-bal'
 
@@ -19,7 +20,12 @@ function NumeroRow({numero, numerosWithAlerts}) {
       dropdownStyle='secondary'
     >
       <Pane width='100%' display='flex' flexDirection='column' gap={20} justifyContent='center'>
-        <AlertHeader numerosWithAlerts={numerosWithAlerts} type='secondary'>
+        <AlertHeader
+          type='secondary'
+          hasWarnings={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'W'})) > 0)}
+          hasErrors={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'E'})) > 0)}
+          hasInfos={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'I'})) > 0)}
+        >
           <Text fontSize={15} fontWeight={700}>{address.numero} {address.voie_nom}</Text>
         </AlertHeader>
 

@@ -2,7 +2,7 @@ import {useState} from 'react'
 import PropTypes from 'prop-types'
 import Link from 'next/link'
 import {Pane, Heading, Text, UnorderedList, ListItem} from 'evergreen-ui'
-import {sortBy} from 'lodash'
+import {sortBy, some, size, filter} from 'lodash'
 
 import {getLabel} from '@ban-team/validateur-bal'
 
@@ -19,7 +19,12 @@ function VoieRow({nomVoie, voie, baseLocaleId}) {
     <Dropdown isOpen={isVoieOpen} handleOpen={() => setIsVoieOpen(!isVoieOpen)}>
       <Pane width='100%'>
         <Pane display='flex' flexDirection='column' gap={8}>
-          <AlertHeader isVoie voieAlerts={voieAlerts}>
+          <AlertHeader
+            isVoie
+            hasWarnings={some(voieAlerts, ({level}) => level === 'W')}
+            hasErrors={some(voieAlerts, ({level}) => level === 'E')}
+            hasInfos={some(voieAlerts, ({level}) => level === 'I')}
+          >
             <Pane width='100%' display='flex' justifyContent='space-between' alignItems='center'>
               <Heading as='h2' fontSize={16}>{nomVoie}</Heading>
               {voieId && (
@@ -40,7 +45,11 @@ function VoieRow({nomVoie, voie, baseLocaleId}) {
 
           {numerosWithAlerts.length > 0 && (
             <Pane paddingLeft={20}>
-              <AlertHeader numerosWithAlerts={numerosWithAlerts}>
+              <AlertHeader
+                hasWarnings={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'W'})) > 0)}
+                hasErrors={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'E'})) > 0)}
+                hasInfos={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'I'})) > 0)}
+              >
                 <Text fontStyle='italic'>
                   {`${numerosWithAlerts.length} ${numerosWithAlerts.length > 1 ? 'numéros ont' : 'numéro a'} des alertes`}
                 </Text>
