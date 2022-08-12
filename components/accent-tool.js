@@ -34,17 +34,13 @@ const ACCENTS = [
   'Œ'
 ]
 
-function AccentTool({input, handleAccent, cursorPosition, isDisabled}) {
+function AccentTool({input, handleAccent, updateCaret, forwadedRef, isDisabled}) {
   const handleClick = event => {
-    const stringArray = input.split('')
-    const {start, end} = cursorPosition
-    stringArray.splice(start, end - start, event.target.value)
+    const {selectionStart, selectionEnd} = forwadedRef.current
+    const valueWithAccent = {target: {value: input.slice(0, selectionStart) + event.target.value + input.slice(selectionEnd)}}
 
-    cursorPosition.start += 1
-    cursorPosition.end += 1
-
-    const valueWithAccent = {target: {value: stringArray.join('')}}
     handleAccent(valueWithAccent)
+    updateCaret()
   }
 
   return (
@@ -69,7 +65,8 @@ function AccentTool({input, handleAccent, cursorPosition, isDisabled}) {
 AccentTool.propTypes = {
   input: PropTypes.string.isRequired,
   handleAccent: PropTypes.func.isRequired,
-  cursorPosition: PropTypes.objectOf(PropTypes.number).isRequired,
+  updateCaret: PropTypes.func.isRequired,
+  forwadedRef: PropTypes.object.isRequired,
   isDisabled: PropTypes.bool
 }
 
