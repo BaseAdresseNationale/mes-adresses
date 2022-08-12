@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
+import React, {useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Table} from 'evergreen-ui'
 
@@ -8,43 +8,19 @@ import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
 import useHelp from '@/hooks/help'
+import useFormState from '@/hooks/form-state'
 
 import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
 
 const Voie = React.memo(({commune}) => {
-  const [formState, setFormState] = useState({isOpen: false, editedNumero: null})
+  const [isFormOpen, handleEditing, editedNumero, reset] = useFormState()
 
   useHelp(3)
 
   const {token} = useContext(TokenContext)
-
-  const {
-    voie,
-    numeros,
-    isEditing,
-    editingId,
-    reloadNumeros
-  } = useContext(BalDataContext)
-
-  const handleEditing = useCallback(numeroId => {
-    const editedNumero = numeros.find(numero => numero._id === numeroId)
-    setFormState({isOpen: true, editedNumero})
-  }, [numeros])
-
-  const closeForm = useCallback(() => {
-    setFormState({isOpen: false, editedNumero: null})
-  }, [])
-
-  // Open form when numero is selected from map
-  useEffect(() => {
-    if (editingId && numeros.map(({_id}) => _id).includes(editingId)) {
-      handleEditing(editingId)
-    }
-    // HandleEditing has been removed from the list
-    // to avoid being retriggered by `numeros` update when form is sumbitted
-  }, [editingId]) // eslint-disable-line react-hooks/exhaustive-deps
+  const {voie, numeros, reloadNumeros} = useContext(BalDataContext)
 
   // Load protected fields (ex: 'comment')
   useEffect(() => {
@@ -57,16 +33,16 @@ const Voie = React.memo(({commune}) => {
     <>
       <VoieHeading voie={voie} />
 
-      {formState.isOpen ? (
+      {isFormOpen ? (
         <Pane flex={1} overflowY='scroll'>
           <Table.Row height='auto'>
             <Table.Cell display='block' padding={0} background='tint1'>
               <NumeroEditor
                 hasPreview
                 initialVoieId={voie._id}
-                initialValue={formState.editedNumero}
+                initialValue={editedNumero}
                 commune={commune}
-                closeForm={closeForm}
+                closeForm={reset}
               />
             </Table.Cell>
           </Table.Row>
@@ -76,7 +52,6 @@ const Voie = React.memo(({commune}) => {
           token={token}
           voieId={voie._id}
           numeros={numeros}
-          isEditionDisabled={isEditing}
           handleEditing={handleEditing}
         />
       )}
