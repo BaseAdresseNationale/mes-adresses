@@ -84,8 +84,8 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
         key={marker._id}
         {...marker}
         draggable
-        offsetLeft={-size / 2}
-        offsetTop={-size}
+        offsetLeft={-11.225}
+        offsetTop={-32}
         onDrag={e => onDrag(e, idx)}
         onDragEnd={e => onDragEnd(e, idx)}
       >
