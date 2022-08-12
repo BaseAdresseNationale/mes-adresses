@@ -84,8 +84,8 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
         key={marker._id}
         {...marker}
         draggable
-        offsetLeft={-11.225}
-        offsetTop={-32}
+        offsetLeft={-size / 2}
+        offsetTop={-size}
         onDrag={e => onDrag(e, idx)}
         onDragEnd={e => onDragEnd(e, idx)}
       >
@@ -93,7 +93,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
           <Text
             position='absolute'
             top={-30}
-            transform='translate(-30%)'
+            transform={`translate(calc(-50% + ${size / 2}px), -5px)`} // Place label on top of marker
             borderRadius={20}
             backgroundColor='rgba(0, 0, 0, 0.7)'
             color='white'
