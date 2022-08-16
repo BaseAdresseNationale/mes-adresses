@@ -84,7 +84,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
         key={marker._id}
         {...marker}
         draggable
-        offsetLeft={(-size / 2) + ((size / 100) * 15)} // Update offsets for more precise placement
+        offsetLeft={(-size / 2) + ((size / 100) * 15)} // Calculates the difference of width between the SVG size and its container
         offsetTop={-size + 1}
         onDrag={e => onDrag(e, idx)}
         onDragEnd={e => onDragEnd(e, idx)}
