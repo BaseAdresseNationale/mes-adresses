@@ -1,3 +1,4 @@
+import {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 import {groupBy, remove} from 'lodash'
@@ -7,7 +8,8 @@ import VoieRow from '@/components/validateur-report/voie-row'
 const validAlertSchemas = new Set(['voie_nom', 'numero', 'suffixe'])
 
 function ValidateurReport({rows, voies, baseLocaleId}) {
-  const sanitizedRowsByVoies = {}
+  const sanitizedRowsByVoies = useMemo(() => ({}), [])
+
   if (voies) {
     const rowsByVoies = groupBy(rows, row => row.rawValues.voie_nom)
 
