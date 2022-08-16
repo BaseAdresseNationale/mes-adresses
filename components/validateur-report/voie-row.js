@@ -1,8 +1,8 @@
-import {useState} from 'react'
+import {useState, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import Link from 'next/link'
 import {Pane, Heading, Text, UnorderedList, ListItem} from 'evergreen-ui'
-import {sortBy, some, size, filter} from 'lodash'
+import {sortBy, some} from 'lodash'
 import {getLabel} from '@ban-team/validateur-bal'
 
 import NumeroRow from '@/components/validateur-report/numero-row'
@@ -14,15 +14,26 @@ function VoieRow({nomVoie, voie, baseLocaleId}) {
 
   const {voieId, voieAlerts, numerosWithAlerts} = voie
 
+  const [hasVoieWarnings, hasVoieErrors, hasVoieInfos, hasNumeroWarnings, hasNumeroErrors, hasNumeroInfos] = useMemo(() => {
+    return [
+      some(voie.voieAlerts, ({level}) => level === 'W'),
+      some(voie.voieAlerts, ({level}) => level === 'E'),
+      some(voie.voieAlerts, ({level}) => level === 'I'),
+      some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'W').length > 0),
+      some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'E').length > 0),
+      some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'I').length > 0),
+    ]
+  }, [numerosWithAlerts, voie])
+
   return (
     <Dropdown isOpen={isVoieOpen} handleOpen={() => setIsVoieOpen(!isVoieOpen)}>
       <Pane width='100%'>
         <Pane display='flex' flexDirection='column' gap={8}>
           <AlertHeader
-            isVoie
-            hasWarnings={some(voieAlerts, ({level}) => level === 'W')}
-            hasErrors={some(voieAlerts, ({level}) => level === 'E')}
-            hasInfos={some(voieAlerts, ({level}) => level === 'I')}
+            size={22}
+            hasWarnings={hasVoieWarnings}
+            hasErrors={hasVoieErrors}
+            hasInfos={hasVoieInfos}
           >
             <Pane width='100%' display='flex' justifyContent='space-between' alignItems='center'>
               <Heading as='h2' fontSize={16}>{nomVoie}</Heading>
@@ -45,9 +56,9 @@ function VoieRow({nomVoie, voie, baseLocaleId}) {
           {numerosWithAlerts.length > 0 && (
             <Pane paddingLeft={20}>
               <AlertHeader
-                hasWarnings={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'W'})) > 0)}
-                hasErrors={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'E'})) > 0)}
-                hasInfos={some(numerosWithAlerts, numero => size(filter(numero.alerts, {level: 'I'})) > 0)}
+                hasWarnings={hasNumeroWarnings}
+                hasErrors={hasNumeroErrors}
+                hasInfos={hasNumeroInfos}
               >
                 <Text fontStyle='italic'>
                   {`${numerosWithAlerts.length} ${numerosWithAlerts.length > 1 ? 'numéros ont' : 'numéro a'} des alertes`}

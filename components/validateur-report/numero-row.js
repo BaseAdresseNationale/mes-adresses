@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Text, UnorderedList, ListItem} from 'evergreen-ui'
 import {filter} from 'lodash'
@@ -11,6 +11,14 @@ function NumeroRow({numero}) {
   const {address, alerts} = numero
   const [isNumeroOpen, setIsNumeroOpen] = useState(false)
 
+  const [hasWarnings, hasErrors, hasInfos] = useMemo(() => {
+    return [
+      filter(numero.alerts, ({level}) => level === 'W').length > 0,
+      filter(numero.alerts, ({level}) => level === 'E').length > 0,
+      filter(numero.alerts, ({level}) => level === 'I').length > 0
+    ]
+  }, [numero])
+
   return (
     <Dropdown
       key={address.numero}
@@ -21,9 +29,9 @@ function NumeroRow({numero}) {
       <Pane width='100%' display='flex' flexDirection='column' gap={20} justifyContent='center'>
         <AlertHeader
           type='secondary'
-          hasWarnings={filter(numero.alerts, ({level}) => level === 'W').length > 0}
-          hasErrors={filter(numero.alerts, ({level}) => level === 'E').length > 0}
-          hasInfos={filter(numero.alerts, ({level}) => level === 'I').length > 0}
+          hasWarnings={hasWarnings}
+          hasErrors={hasErrors}
+          hasInfos={hasInfos}
         >
           <Text fontSize={15} fontWeight={700}>{address.numero} {address.voie_nom}</Text>
         </AlertHeader>
