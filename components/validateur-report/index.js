@@ -34,7 +34,14 @@ function ValidateurReport({rows, voies, baseLocaleId}) {
 
   return (
     <Pane display='flex' flexDirection='column' gap={12}>
-      {Object.keys(sanitizedRowsByVoies).map(voie => <VoieRow key={voie} nomVoie={voie} voie={sanitizedRowsByVoies[voie]} baseLocaleId={baseLocaleId} />)}
+      {Object.keys(sanitizedRowsByVoies).map(voie => (
+        <VoieRow
+          key={sanitizedRowsByVoies[voie].voieId}
+          nomVoie={voie}
+          voie={sanitizedRowsByVoies[voie]}
+          baseLocaleId={baseLocaleId}
+        />
+      ))}
     </Pane>
   )
 }
