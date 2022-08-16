@@ -21,7 +21,7 @@ function NumeroRow({numero}) {
 
   return (
     <Dropdown
-      key={address.numero}
+      key={`${address.long}-${address.lat}`}
       isOpen={isNumeroOpen}
       handleOpen={() => setIsNumeroOpen(!isNumeroOpen)}
       dropdownStyle='secondary'
