@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
-import {groupBy, remove} from 'lodash'
+import {groupBy, filter} from 'lodash'
 
 import VoieRow from '@/components/validateur-report/voie-row'
 
@@ -16,7 +16,7 @@ function ValidateurReport({rows, voies, baseLocaleId}) {
     // Create a new object, grouped by voies names
     Object.keys(rowsByVoies).forEach(nomVoie => {
       const rowsWithAlerts = rowsByVoies[nomVoie].filter(row => {
-        remove(row.errors, error => !validAlertSchemas.has(error.schemaName)) // Remove unusefull alerts
+        row.errors = filter(row.errors, error => validAlertSchemas.has(error.schemaName)) // Keep usefull alerts only
         return row.errors.length > 0
       })
 
