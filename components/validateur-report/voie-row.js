@@ -37,7 +37,7 @@ function VoieRow({nomVoie, voie, baseLocaleId}) {
           >
             <Pane width='100%' display='flex' justifyContent='space-between' alignItems='center'>
               <Heading as='h2' fontSize={16}>{nomVoie}</Heading>
-              {voieId && (
+              {voieId && baseLocaleId && (
                 <Link href={`/bal/voie?balId=${baseLocaleId}&idVoie=${voieId}`} passHref>
                   <Text
                     marginRight={8}
@@ -111,7 +111,11 @@ VoieRow.propTypes = {
     voieAlerts: PropTypes.array.isRequired,
     numerosWithAlerts: PropTypes.array.isRequired
   }).isRequired,
-  baseLocaleId: PropTypes.string.isRequired
+  baseLocaleId: PropTypes.string
+}
+
+VoieRow.defaultProps = {
+  baseLocaleId: null
 }
 
 export default VoieRow

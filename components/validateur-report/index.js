@@ -49,9 +49,13 @@ function ValidateurReport({rows, voies, baseLocaleId}) {
 }
 
 ValidateurReport.propTypes = {
-  baseLocaleId: PropTypes.string.isRequired,
   voies: PropTypes.array.isRequired,
-  rows: PropTypes.array.isRequired
+  rows: PropTypes.array.isRequired,
+  baseLocaleId: PropTypes.string
+}
+
+ValidateurReport.defaultProps = {
+  baseLocaleId: null
 }
 
 export default ValidateurReport
