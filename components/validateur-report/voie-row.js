@@ -106,7 +106,11 @@ function VoieRow({nomVoie, voie, baseLocaleId}) {
 
 VoieRow.propTypes = {
   nomVoie: PropTypes.string.isRequired,
-  voie: PropTypes.object.isRequired,
+  voie: PropTypes.shape({
+      voieId: Proptype.string.isRequired,
+      voieAlerts: Protypes.array.isRequired,
+      numerosWithAlerts: Proptypes.array.isRequired
+  }).isRequired,
   baseLocaleId: PropTypes.string.isRequired
 }
 
