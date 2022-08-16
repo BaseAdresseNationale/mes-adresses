@@ -26,7 +26,7 @@ function ValidateurReport({rows, voies, baseLocaleId}) {
       // For each voie, add voie's id, it's own alerts list and it's numeros with alerts list
       if (rowWithVoieAlerts.length > 0 || numerosWithAlerts.length > 0) {
         sanitizedRowsByVoies[nomVoie] = {
-          voieId: voies.find(voie => voie.nom === nomVoie)?._id,
+          voieId: voies.find(voie => voie.nom === nomVoie)._id,
           voieAlerts: rowWithVoieAlerts.length > 0 ? rowWithVoieAlerts[0].errors : [],
           numerosWithAlerts
         }
