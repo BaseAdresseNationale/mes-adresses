@@ -10,11 +10,13 @@ export default function useValidationMessage() {
     }
   }, [])
 
-  const getValidationMessage = useCallback(index => {
-    if (validationMessages && validationMessages[index]) {
-      return validationMessages[index][0]
+  const getValidationMessages = useCallback((field, index = null) => {
+    if (validationMessages && validationMessages[field]) {
+      return index === null ?
+        validationMessages[field] :
+        validationMessages[field][index]
     }
   }, [validationMessages])
 
-  return [getValidationMessage, setValidationMessages]
+  return [getValidationMessages, setValidationMessages]
 }

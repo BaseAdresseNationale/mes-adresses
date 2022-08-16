@@ -22,8 +22,17 @@ function languagesArrayToObj(arr) {
   return reduce(filtered, (acc, current) => ({...acc, [current.code]: current.value}), {})
 }
 
-function LanguesRegionalesForm({initialValue, validationMessage, handleLanguages}) {
+function LanguesRegionalesForm({initialValue, validationMessages, handleLanguages}) {
   const [nomAlt, setNomAlt] = useState(objectToArray(initialValue))
+
+  const getAltValidationMessage = useCallback(code => {
+    if (validationMessages) {
+      const validationMessage = validationMessages.find(m => m.startsWith(code))
+      if (validationMessage) {
+        return validationMessage.split(' : ')[1] // Return message without code ISO as prefix
+      }
+    }
+  }, [validationMessages])
 
   const onAddForm = () => {
     setNomAlt(prev => [...prev, {code: null, value: '', id: uniqueId()}])
@@ -51,20 +60,16 @@ function LanguesRegionalesForm({initialValue, validationMessage, handleLanguages
 
   return (
     <>
-      {nomAlt.map(language => {
-        const [codeISO, message] = validationMessage?.split(' : ') || []
-
-        return (
-          <LanguageField
-            key={language.id}
-            initialValue={language}
-            availableLanguages={languesRegionales.filter(({code}) => !nomAlt.map(({code}) => code).includes(code))}
-            validationMessage={codeISO === language.code ? message : null}
-            onChange={value => onLanguageChange(value, language.id)}
-            onDelete={() => onRemoveLanguage(language.id)}
-          />
-        )
-      })}
+      {nomAlt.map(language => (
+        <LanguageField
+          key={language.id}
+          initialValue={language}
+          availableLanguages={languesRegionales.filter(({code}) => !nomAlt.map(({code}) => code).includes(code))}
+          validationMessage={getAltValidationMessage(language.code)}
+          onChange={value => onLanguageChange(value, language.id)}
+          onDelete={() => onRemoveLanguage(language.id)}
+        />
+      ))}
 
       <Button
         type='button'
@@ -84,7 +89,7 @@ function LanguesRegionalesForm({initialValue, validationMessage, handleLanguages
 
 LanguesRegionalesForm.propTypes = {
   initialValue: PropTypes.object,
-  validationMessage: PropTypes.string,
+  validationMessages: PropTypes.string,
   handleLanguages: PropTypes.func.isRequired,
 }
 

@@ -27,7 +27,7 @@ import LanguesRegionalesForm from '@/components/langues-regionales-form'
 function ToponymeEditor({initialValue, commune, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
-  const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
+  const [getValidationMessages, setValidationMessages] = useValidationMessage(null)
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
 
   const {token} = useContext(TokenContext)
@@ -123,12 +123,12 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
               placeholder='Nom du toponyme'
               value={nom}
               onChange={onNomChange}
-              validationMessage={getValidationMessage('nom')}
+              validationMessage={getValidationMessages('nom', 0)}
             />
 
             <LanguesRegionalesForm
               initialValue={initialValue?.nomAlt}
-              validationMessage={getValidationMessage('nomAlt')}
+              validationMessages={getValidationMessages('nomAlt')}
               handleLanguages={setNomAlt}
             />
           </FormInput>
@@ -137,7 +137,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
             <PositionEditor
               initialPositions={initialValue?.positions}
               isToponyme
-              validationMessage={getValidationMessage('positions')}
+              validationMessage={getValidationMessages('positions', 0)}
             />
           </FormInput>
 
