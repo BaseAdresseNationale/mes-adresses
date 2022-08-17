@@ -71,6 +71,10 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
     }
   }, [csvUrl])
 
+  const handleVoieHref = voieId => {
+    return `/bal/voie?balId=${baseLocale._id}&idVoie=${voieId}`
+  }
+
   return (
     <>
       <Pane borderTop flex={3} display='flex' flexDirection='row' paddingTop='1em'>
@@ -154,7 +158,7 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
           <ValidateurReport
             rows={report}
             voies={voies}
-            baseLocaleId={baseLocale._id}
+            onRedirect={handleVoieHref}
           />
         </Pane>
       )}

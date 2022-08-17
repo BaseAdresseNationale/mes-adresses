@@ -7,7 +7,7 @@ import VoieRow from '@/components/validateur-report/voie-row'
 
 const validAlertSchemas = new Set(['voie_nom', 'numero', 'suffixe'])
 
-function ValidateurReport({rows, voies, baseLocaleId}) {
+function ValidateurReport({rows, voies, onRedirect}) {
   const sanitizedRowsByVoies = useMemo(() => ({}), [])
 
   const rowsByVoies = groupBy(rows, row => row.rawValues.voie_nom)
@@ -40,7 +40,7 @@ function ValidateurReport({rows, voies, baseLocaleId}) {
           key={sanitizedRowsByVoies[voie].voieId}
           nomVoie={voie}
           voie={sanitizedRowsByVoies[voie]}
-          baseLocaleId={baseLocaleId}
+          onRedirect={onRedirect}
         />
       ))}
     </Pane>
@@ -50,11 +50,7 @@ function ValidateurReport({rows, voies, baseLocaleId}) {
 ValidateurReport.propTypes = {
   voies: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired,
-  baseLocaleId: PropTypes.string
-}
-
-ValidateurReport.defaultProps = {
-  baseLocaleId: null
+  onRedirect: PropTypes.func.isRequired
 }
 
 export default ValidateurReport
