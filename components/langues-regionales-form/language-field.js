@@ -56,7 +56,7 @@ function LanguageField({initialValue, availableLanguages, validationMessage, onC
         </Button>
       </SelectMenu>
 
-      <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
+      <Pane display='grid' gridTemplateColumns='1fr 40px' marginTop={5} gap={10}>
         <AssistedTextField
           label=''
           forwadedRef={ref}
