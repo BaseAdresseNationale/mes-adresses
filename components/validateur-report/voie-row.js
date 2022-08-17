@@ -36,7 +36,7 @@ function VoieRow({nomVoie, voie, baseLocaleId}) {
             hasInfos={hasVoieInfos}
           >
             <Pane width='100%' display='flex' justifyContent='space-between' alignItems='center'>
-              <Heading as='h2' fontSize={16}>{nomVoie}</Heading>
+              <Heading is='h4' size='400'>{nomVoie}</Heading>
               {voieId && baseLocaleId && (
                 <Link href={`/bal/voie?balId=${baseLocaleId}&idVoie=${voieId}`} passHref>
                   <Text

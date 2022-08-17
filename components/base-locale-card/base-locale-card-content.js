@@ -151,7 +151,7 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
 
       {!isLoading && report && (
         <Pane marginTop='1em'>
-          <Heading as='h3' fontSize={16} marginBottom={6}>Anomalies détectées</Heading>
+          <Heading is='h3' fontSize={17} marginBottom={6}>Anomalies détectées</Heading>
           <ValidateurReport
             rows={report}
             voies={voies}
