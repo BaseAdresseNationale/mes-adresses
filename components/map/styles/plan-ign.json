@@ -10,7 +10,7 @@
       "https://wxs.ign.fr/essentiels/geoportail/tms/1.0.0/PLAN.IGN/{z}/{x}/{y}.pbf"
     ],
     "scheme": "xyz",
-    "attribution": "<a target='_blank' href='https://geoservices.ign.fr/documentation/donnees/cartes/planign'>© IGN</a>"
+    "attribution": "<a target='_blank' href='https://geoservices.ign.fr/planign'>© IGN</a>"
     },
     "cadastre": {
     "type": "vector",
