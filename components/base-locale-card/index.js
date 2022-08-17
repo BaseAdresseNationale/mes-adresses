@@ -4,7 +4,7 @@ import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
 import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 
-import {getBaseLocale} from '@/lib/bal-api'
+import {getBaseLocale, getVoies} from '@/lib/bal-api'
 import {getCommune} from '@/lib/geo-api'
 
 import CertificationCount from '@/components/certification-count'
@@ -26,8 +26,9 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
     const fetchCommune = async () => {
       const communeBal = await getBaseLocale(baseLocale._id)
       const communeGeo = await getCommune(baseLocale.commune)
+      const voies = await getVoies(baseLocale._id)
 
-      setCommune({...communeBal, ...communeGeo})
+      setCommune({...communeBal, ...communeGeo, voies})
     }
 
     fetchCommune()
@@ -96,6 +97,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
           isAdmin={isAdmin}
           userEmail={userEmail}
           baseLocale={baseLocale}
+          voies={commune.voies}
           onSelect={onSelect}
           onRemove={onRemove}
           onHide={onHide}

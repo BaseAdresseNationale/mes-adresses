@@ -1,16 +1,24 @@
-import {useState, useMemo, useContext} from 'react'
+import {useState, useMemo, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
+import {Pane, Button, Tooltip, Text, Heading, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
+
+import {getBaseLocaleCsvUrl} from '@/lib/bal-api'
+import {prevalidate} from '@ban-team/validateur-bal'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
 import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
+import ValidateurReport from '../validateur-report'
 
-function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove, onHide}) {
+function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect, onRemove, onHide}) {
   const {status, _created, emails} = baseLocale
+
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
+  const [csvUrl, setCsvUrl] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [report, setReport] = useState(null)
 
   const {getBalToken} = useContext(LocalStorageContext)
 
@@ -23,6 +31,46 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
   const tooltipContent = status === 'ready-to-publish' ?
     'Vous ne pouvez pas supprimer une BAL lorsqu’elle est prête à être publiée' :
     'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
+
+  useEffect(() => {
+    const fetchCsvUrl = async () => {
+      const url = await getBaseLocaleCsvUrl(baseLocale._id)
+      setCsvUrl(url)
+    }
+
+    fetchCsvUrl()
+  }, [baseLocale])
+
+  const parseFile = async file => {
+    setIsLoading(true)
+    try {
+      const report = await prevalidate(file, {relaxFieldsDetection: true})
+      if (report.parseOk) {
+        setReport(report.rows)
+      } else {
+        console.log(`Impossible d’analyser le fichier... [${report.parseErrors[0].message}]`)
+        setReport(null)
+      }
+    } catch {
+      setReport(null)
+    }
+
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    if (csvUrl) {
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', csvUrl)
+      xhr.responseType = 'blob'
+      xhr.addEventListener('load', () => {
+        parseFile(xhr.response)
+      })
+
+      xhr.send()
+    }
+  }, [csvUrl])
+
   return (
     <>
       <Pane borderTop flex={3} display='flex' flexDirection='row' paddingTop='1em'>
@@ -100,6 +148,17 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
           <Button appearance='primary' marginRight='8px' onClick={onSelect}>Consulter</Button>
         </Pane>
       )}
+
+      {!isLoading && report && (
+        <Pane marginTop='1em'>
+          <Heading as='h3' fontSize={16} marginBottom={6}>Anomalies détectées</Heading>
+          <ValidateurReport
+            rows={report}
+            voies={voies}
+            baseLocaleId={baseLocale._id}
+          />
+        </Pane>
+      )}
     </>
   )
 }
@@ -121,6 +180,7 @@ BaseLocaleCardContent.propTypes = {
       'draft', 'ready-to-publish', 'replaced', 'published', 'demo'
     ])
   }).isRequired,
+  voies: PropTypes.array.isRequired,
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
   onSelect: PropTypes.func,
