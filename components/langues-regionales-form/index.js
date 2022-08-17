@@ -89,7 +89,7 @@ function LanguesRegionalesForm({initialValue, validationMessages, handleLanguage
 
 LanguesRegionalesForm.propTypes = {
   initialValue: PropTypes.object,
-  validationMessages: PropTypes.string,
+  validationMessages: PropTypes.array,
   handleLanguages: PropTypes.func.isRequired,
 }
 
