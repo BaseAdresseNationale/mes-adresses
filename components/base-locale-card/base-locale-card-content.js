@@ -2,7 +2,7 @@ import {useState, useMemo, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Pane, Button, Tooltip, Text, Heading, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
+import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl} from '@/lib/bal-api'
 import {prevalidate} from '@ban-team/validateur-bal'
@@ -151,7 +151,6 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
 
       {!isLoading && report && (
         <Pane marginTop='1em'>
-          <Heading is='h3' fontSize={17} marginBottom={6}>Anomalies détectées</Heading>
           <ValidateurReport
             rows={report}
             voies={voies}
