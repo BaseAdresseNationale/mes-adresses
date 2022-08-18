@@ -1,7 +1,7 @@
 import {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading} from 'evergreen-ui'
-import {groupBy, filter} from 'lodash'
+import {groupBy, filter, uniqueId} from 'lodash'
 
 import VoieRow from '@/components/validateur-report/voie-row'
 
@@ -41,7 +41,7 @@ function ValidateurReport({rows, voies, onRedirect}) {
       <Heading is='h3' fontSize={17} marginBottom={6}>Anomalies détectées</Heading>
       {Object.keys(sanitizedRowsByVoies).map(voie => (
         <VoieRow
-          key={sanitizedRowsByVoies[voie].voieId}
+          key={uniqueId}
           nomVoie={voie}
           {...sanitizedRowsByVoies[voie]}
           onRedirect={onRedirect}
