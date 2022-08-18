@@ -10,12 +10,12 @@ import Dropdown from '@/components/dropdown'
 function NumeroRow({address, alerts}) {
   const [isNumeroOpen, setIsNumeroOpen] = useState(false)
 
-  const [hasWarnings, hasErrors, hasInfos] = useMemo(() => {
-    return [
-      filter(alerts, ({level}) => level === 'W').length > 0,
-      filter(alerts, ({level}) => level === 'E').length > 0,
-      filter(alerts, ({level}) => level === 'I').length > 0
-    ]
+  const hasAlerts = useMemo(() => {
+    return {
+      hasWarnings: filter(alerts, ({level}) => level === 'W').length > 0,
+      hasErrors: filter(alerts, ({level}) => level === 'E').length > 0,
+      haseInfos: filter(alerts, ({level}) => level === 'I').length > 0
+    }
   }, [alerts])
 
   return (
@@ -26,12 +26,7 @@ function NumeroRow({address, alerts}) {
       dropdownStyle='secondary'
     >
       <Pane width='100%' display='flex' flexDirection='column' gap={20} justifyContent='center'>
-        <AlertHeader
-          type='secondary'
-          hasWarnings={hasWarnings}
-          hasErrors={hasErrors}
-          hasInfos={hasInfos}
-        >
+        <AlertHeader type='secondary' {...hasAlerts}>
           <Text fontSize={15} fontWeight={700}>{address.numero} {address.voie_nom}</Text>
         </AlertHeader>
 

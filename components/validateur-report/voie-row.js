@@ -14,27 +14,27 @@ function VoieRow({nomVoie, voie, onRedirect}) {
 
   const {voieId, voieAlerts, numerosWithAlerts} = voie
 
-  const [hasVoieWarnings, hasVoieErrors, hasVoieInfos, hasNumeroWarnings, hasNumeroErrors, hasNumeroInfos] = useMemo(() => {
-    return [
-      some(voie.voieAlerts, ({level}) => level === 'W'),
-      some(voie.voieAlerts, ({level}) => level === 'E'),
-      some(voie.voieAlerts, ({level}) => level === 'I'),
-      some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'W').length > 0),
-      some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'E').length > 0),
-      some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'I').length > 0),
-    ]
-  }, [numerosWithAlerts, voie])
+  const hasVoieAlerts = useMemo(() => {
+    return {
+      hasWarnings: some(voieAlerts, ({level}) => level === 'W'),
+      hasErrors: some(voieAlerts, ({level}) => level === 'E'),
+      hasInfos: some(voieAlerts, ({level}) => level === 'I')
+    }
+  }, [voieAlerts])
+
+  const hasNumeroAlerts = useMemo(() => {
+    return {
+      hasWarnings: some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'W').length > 0),
+      hasErrors: some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'E').length > 0),
+      hasInfos: some(numerosWithAlerts, ({alerts}) => alerts.filter(({level}) => level === 'I').length > 0)
+    }
+  }, [numerosWithAlerts])
 
   return (
     <Dropdown isOpen={isVoieOpen} handleOpen={() => setIsVoieOpen(!isVoieOpen)}>
       <Pane width='100%'>
         <Pane display='flex' flexDirection='column' gap={8}>
-          <AlertHeader
-            size={22}
-            hasWarnings={hasVoieWarnings}
-            hasErrors={hasVoieErrors}
-            hasInfos={hasVoieInfos}
-          >
+          <AlertHeader size={22} {...hasVoieAlerts}>
             <Pane width='100%' display='flex' justifyContent='space-between' alignItems='center'>
               <Heading is='h4' size='400'>{nomVoie}</Heading>
               {voieId && (
@@ -55,11 +55,7 @@ function VoieRow({nomVoie, voie, onRedirect}) {
 
           {numerosWithAlerts.length > 0 && (
             <Pane paddingLeft={20}>
-              <AlertHeader
-                hasWarnings={hasNumeroWarnings}
-                hasErrors={hasNumeroErrors}
-                hasInfos={hasNumeroInfos}
-              >
+              <AlertHeader {...hasNumeroAlerts}>
                 <Text fontStyle='italic'>
                   {`${numerosWithAlerts.length} ${numerosWithAlerts.length > 1 ? 'numéros ont' : 'numéro a'} des alertes`}
                 </Text>
