@@ -15,7 +15,6 @@ import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 import useValidationMessage from '@/hooks/validation-messages'
 
-import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
 import AssistedTextField from '@/components/assisted-text-field'
 import FormInput from '@/components/form-input'
@@ -111,41 +110,41 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   }, [resetNom, setValidationMessages, initialValue])
 
   return (
-    <FormMaster editingId={initialValue?._id} closeForm={closeForm}>
-      <Form onFormSubmit={onFormSubmit}>
-        <Pane>
+    <Form editingId={initialValue?._id} closeForm={closeForm} onFormSubmit={onFormSubmit}>
+      <Pane>
+        <FormInput>
+          <AssistedTextField
+            forwadedRef={ref}
+            exitFocus={() => setIsFocus(false)}
+            disabled={isLoading}
+            label='Nom du toponyme'
+            placeholder='Nom du toponyme'
+            value={nom}
+            onChange={onNomChange}
+            validationMessage={getValidationMessage('nom')}
+          />
+
+          <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
+        </FormInput>
+
+        <FormInput>
+          <PositionEditor
+            initialPositions={initialValue?.positions}
+            isToponyme
+            validationMessage={getValidationMessage('positions')}
+          />
+        </FormInput>
+
+        {commune.hasCadastre ? (
           <FormInput>
-            <AssistedTextField
-              forwadedRef={ref}
-              exitFocus={() => setIsFocus(false)}
-              disabled={isLoading}
-              label='Nom du toponyme'
-              placeholder='Nom du toponyme'
-              value={nom}
-              onChange={onNomChange}
-              validationMessage={getValidationMessage('nom')}
-            />
-
-            <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
+            <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
           </FormInput>
+        ) : (
+          <DisabledFormInput label='Parcelles' />
+        )}
+      </Pane>
 
-          <FormInput>
-            <PositionEditor
-              initialPositions={initialValue?.positions}
-              isToponyme
-              validationMessage={getValidationMessage('positions')}
-            />
-          </FormInput>
-
-          {commune.hasCadastre ? (
-            <FormInput>
-              <SelectParcelles initialParcelles={initialValue?.parcelles} isToponyme />
-            </FormInput>
-          ) : (
-            <DisabledFormInput label='Parcelles' />
-          )}
-        </Pane>
-
+      <Pane>
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
           {submitLabel}
         </Button>
@@ -159,8 +158,8 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         >
           Annuler
         </Button>
-      </Form>
-    </FormMaster>
+      </Pane>
+    </Form>
   )
 }
 
