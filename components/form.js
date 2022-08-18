@@ -1,10 +1,11 @@
 import {useEffect, useContext, useRef} from 'react'
 import PropTypes from 'prop-types'
-import {Pane} from 'evergreen-ui'
 
 import BalDataContext from '@/contexts/bal-data'
 
 import useKeyEvent from '@/hooks/key-event'
+
+import FormContainer from '@/components/form-container'
 
 function Form({editingId, unmountForm, closeForm, onFormSubmit, children}) {
   const {isEditing, setEditingId, setIsEditing} = useContext(BalDataContext)
@@ -42,12 +43,9 @@ function Form({editingId, unmountForm, closeForm, onFormSubmit, children}) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Pane
-      is='form'
+    <FormContainer
       display='flex'
       flexDirection='column'
-      background='gray300'
-      padding={12}
       height='100%'
       maxHeight='100%'
       width='100%'
@@ -57,7 +55,7 @@ function Form({editingId, unmountForm, closeForm, onFormSubmit, children}) {
       onSubmit={onFormSubmit}
     >
       {children}
-    </Pane>
+    </FormContainer>
   )
 }
 
