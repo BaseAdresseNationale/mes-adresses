@@ -93,7 +93,7 @@ function VoieRow({nomVoie, voie, onRedirect}) {
                 <Text width='100%' fontWeight={700} fontSize={16}>Alertes concernant les numéros de la voie</Text>
                 <Pane display='flex' flexDirection='column' gap={10} marginTop={6}>
                   {sortBy(numerosWithAlerts, item => item.address.numero, ['asc']).map(numero =>
-                    <NumeroRow key={numero.address.numero} numero={numero} numerosWithAlerts={numerosWithAlerts} />)}
+                    <NumeroRow key={numero.address.numero} {...numero} />)}
                 </Pane>
               </>
             )}

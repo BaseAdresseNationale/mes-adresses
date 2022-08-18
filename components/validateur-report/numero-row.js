@@ -7,17 +7,16 @@ import {getLabel} from '@ban-team/validateur-bal'
 import AlertHeader from '@/components/validateur-report/alerts-header'
 import Dropdown from '@/components/dropdown'
 
-function NumeroRow({numero}) {
-  const {address, alerts} = numero
+function NumeroRow({address, alerts}) {
   const [isNumeroOpen, setIsNumeroOpen] = useState(false)
 
   const [hasWarnings, hasErrors, hasInfos] = useMemo(() => {
     return [
-      filter(numero.alerts, ({level}) => level === 'W').length > 0,
-      filter(numero.alerts, ({level}) => level === 'E').length > 0,
-      filter(numero.alerts, ({level}) => level === 'I').length > 0
+      filter(alerts, ({level}) => level === 'W').length > 0,
+      filter(alerts, ({level}) => level === 'E').length > 0,
+      filter(alerts, ({level}) => level === 'I').length > 0
     ]
-  }, [numero])
+  }, [alerts])
 
   return (
     <Dropdown
@@ -57,7 +56,8 @@ function NumeroRow({numero}) {
 }
 
 NumeroRow.propTypes = {
-  numero: PropTypes.object.isRequired
+  address: PropTypes.object.isRequired,
+  alerts: PropTypes.array.isRequired
 }
 
 export default NumeroRow
