@@ -16,7 +16,6 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
   const {status, _created, emails} = baseLocale
 
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
-  const [csvUrl, setCsvUrl] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [report, setReport] = useState(null)
 
@@ -31,15 +30,6 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
   const tooltipContent = status === 'ready-to-publish' ?
     'Vous ne pouvez pas supprimer une BAL lorsqu’elle est prête à être publiée' :
     'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
-
-  useEffect(() => {
-    const fetchCsvUrl = async () => {
-      const url = await getBaseLocaleCsvUrl(baseLocale._id)
-      setCsvUrl(url)
-    }
-
-    fetchCsvUrl()
-  }, [baseLocale])
 
   const parseFile = async file => {
     setIsLoading(true)
@@ -59,17 +49,19 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
   }
 
   useEffect(() => {
-    if (csvUrl) {
-      const xhr = new XMLHttpRequest()
-      xhr.open('GET', csvUrl)
-      xhr.responseType = 'blob'
-      xhr.addEventListener('load', () => {
-        parseFile(xhr.response)
-      })
+    const createBlob = async () => {
+      try {
+        const fetchedCsv = await fetch(getBaseLocaleCsvUrl(baseLocale._id))
+        const blob = await fetchedCsv.blob()
 
-      xhr.send()
+        parseFile(blob)
+      } catch {
+        console.log('Le blob du fichier csv n’a pas pu être créé')
+      }
     }
-  }, [csvUrl])
+
+    createBlob()
+  }, [baseLocale])
 
   const handleVoieHref = voieId => {
     return `/bal/voie?balId=${baseLocale._id}&idVoie=${voieId}`
