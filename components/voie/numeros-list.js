@@ -1,7 +1,9 @@
 import {useState, useCallback, useMemo, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
+import {sortBy} from 'lodash'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
 
+import {normalizeSort} from '@/lib/normalize'
 import {batchNumeros, removeMultipleNumeros, removeNumero} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
@@ -26,6 +28,12 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
       'numeroComplet'
     ]
   })
+
+  const scrollableItems = useMemo(() => (
+    sortBy(filtered, n => {
+      normalizeSort(n.numeroComplet)
+    })
+  ), [filtered])
 
   const isGroupedActionsShown = useMemo(() => (
     token && !isEditionDisabled && numeros && selectedNumerosIds.length > 1
@@ -183,7 +191,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
           </Table.Row>
         )}
 
-        <InfiniteScrollList items={filtered}>
+        <InfiniteScrollList items={scrollableItems}>
           {(numero => (
             <TableRow
               key={numero._id}

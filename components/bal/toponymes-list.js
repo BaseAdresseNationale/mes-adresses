@@ -1,4 +1,4 @@
-import {useContext} from 'react'
+import {useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 import {Table} from 'evergreen-ui'
@@ -23,6 +23,10 @@ function ToponymesList({toponymes, onSelect, onEnableEditing, setToRemove}) {
     ]
   })
 
+  const scrollableItems = useMemo(() => (
+    sortBy(filtered, v => normalizeSort(v.nom))
+  ), [filtered])
+
   return (
     <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
       <Table.Head>
@@ -40,7 +44,7 @@ function ToponymesList({toponymes, onSelect, onEnableEditing, setToRemove}) {
         </Table.Row>
       )}
 
-      <InfiniteScrollList items={sortBy(filtered, t => normalizeSort(t.nom))}>
+      <InfiniteScrollList items={scrollableItems}>
         {toponyme => (
           <TableRow
             key={toponyme._id}
