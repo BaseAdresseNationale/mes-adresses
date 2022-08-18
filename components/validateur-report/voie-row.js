@@ -9,10 +9,8 @@ import NumeroRow from '@/components/validateur-report/numero-row'
 import AlertHeader from '@/components/validateur-report/alerts-header'
 import Dropdown from '@/components/dropdown'
 
-function VoieRow({nomVoie, voie, onRedirect}) {
+function VoieRow({nomVoie, voieId, voieAlerts, numerosWithAlerts, onRedirect}) {
   const [isVoieOpen, setIsVoieOpen] = useState(false)
-
-  const {voieId, voieAlerts, numerosWithAlerts} = voie
 
   const hasVoieAlerts = useMemo(() => {
     return {
@@ -102,11 +100,9 @@ function VoieRow({nomVoie, voie, onRedirect}) {
 
 VoieRow.propTypes = {
   nomVoie: PropTypes.string.isRequired,
-  voie: PropTypes.shape({
-    voieId: PropTypes.string.isRequired,
-    voieAlerts: PropTypes.array.isRequired,
-    numerosWithAlerts: PropTypes.array.isRequired
-  }).isRequired,
+  voieId: PropTypes.string.isRequired,
+  voieAlerts: PropTypes.array.isRequired,
+  numerosWithAlerts: PropTypes.array.isRequired,
   onRedirect: PropTypes.func.isRequired
 }
 

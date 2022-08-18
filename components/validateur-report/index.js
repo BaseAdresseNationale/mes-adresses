@@ -43,7 +43,7 @@ function ValidateurReport({rows, voies, onRedirect}) {
         <VoieRow
           key={sanitizedRowsByVoies[voie].voieId}
           nomVoie={voie}
-          voie={sanitizedRowsByVoies[voie]}
+          {...sanitizedRowsByVoies[voie]}
           onRedirect={onRedirect}
         />
       ))}
