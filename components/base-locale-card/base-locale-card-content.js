@@ -1,5 +1,6 @@
 import {useState, useMemo, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {useRouter} from 'next/router'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
@@ -12,7 +13,8 @@ import LocalStorageContext from '@/contexts/local-storage'
 import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 import ValidateurReport from '../validateur-report'
 
-function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect, onRemove, onHide}) {
+function BaseLocaleCardContent({isAdmin, voies, baseLocale, userEmail, onSelect, onRemove, onHide}) {
+  const router = useRouter()
   const {status, _created, emails} = baseLocale
 
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
@@ -63,8 +65,9 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
     createBlob()
   }, [baseLocale])
 
-  const handleVoieHref = voieId => {
-    return `/bal/voie?balId=${baseLocale._id}&idVoie=${voieId}`
+  const handleVoieRedirect = name => {
+    const voieId = voies.find(voie => voie.nom === name)._id
+    router.push(`/bal/voie?balId=${baseLocale._id}&idVoie=${voieId}`)
   }
 
   return (
@@ -149,8 +152,7 @@ function BaseLocaleCardContent({isAdmin, baseLocale, voies, userEmail, onSelect,
         <Pane marginTop='1em'>
           <ValidateurReport
             rows={report}
-            voies={voies}
-            onRedirect={handleVoieHref}
+            onRedirect={handleVoieRedirect}
           />
         </Pane>
       )}

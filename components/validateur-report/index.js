@@ -7,7 +7,7 @@ import VoieRow from '@/components/validateur-report/voie-row'
 
 const validAlertSchemas = new Set(['voie_nom', 'numero', 'suffixe'])
 
-function ValidateurReport({rows, voies, onRedirect}) {
+function ValidateurReport({rows, onRedirect}) {
   const sanitizedRowsByVoies = useMemo(() => {
     const finalObj = {}
 
@@ -26,7 +26,6 @@ function ValidateurReport({rows, voies, onRedirect}) {
       // For each voie, add voie's id, it's own alerts list and it's numeros with alerts list
       if (rowWithVoieAlerts.length > 0 || numerosWithAlerts.length > 0) {
         finalObj[nomVoie] = {
-          voieId: voies.find(voie => voie.nom === nomVoie)._id,
           voieAlerts: rowWithVoieAlerts.length > 0 ? rowWithVoieAlerts[0].errors : [],
           numerosWithAlerts
         }
@@ -34,7 +33,7 @@ function ValidateurReport({rows, voies, onRedirect}) {
     })
 
     return finalObj
-  }, [rows, voies])
+  }, [rows])
 
   return Object.keys(sanitizedRowsByVoies).length > 0 && (
     <Pane display='flex' flexDirection='column' justifyContent='center' gap={12}>
@@ -52,7 +51,6 @@ function ValidateurReport({rows, voies, onRedirect}) {
 }
 
 ValidateurReport.propTypes = {
-  voies: PropTypes.array.isRequired,
   rows: PropTypes.array.isRequired,
   onRedirect: PropTypes.func.isRequired
 }

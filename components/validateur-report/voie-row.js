@@ -1,7 +1,6 @@
 import {useState, useMemo} from 'react'
 import PropTypes from 'prop-types'
-import Link from 'next/link'
-import {Pane, Heading, Text, UnorderedList, ListItem} from 'evergreen-ui'
+import {Pane, Heading, Text, Button, UnorderedList, ListItem} from 'evergreen-ui'
 import {sortBy, some} from 'lodash'
 import {getLabel} from '@ban-team/validateur-bal'
 
@@ -9,7 +8,7 @@ import NumeroRow from '@/components/validateur-report/numero-row'
 import AlertHeader from '@/components/validateur-report/alerts-header'
 import Dropdown from '@/components/dropdown'
 
-function VoieRow({nomVoie, voieId, voieAlerts, numerosWithAlerts, onRedirect}) {
+function VoieRow({nomVoie, voieAlerts, numerosWithAlerts, onRedirect}) {
   const [isVoieOpen, setIsVoieOpen] = useState(false)
 
   const hasVoieAlerts = useMemo(() => {
@@ -35,19 +34,15 @@ function VoieRow({nomVoie, voieId, voieAlerts, numerosWithAlerts, onRedirect}) {
           <AlertHeader size={22} {...hasVoieAlerts}>
             <Pane width='100%' display='flex' justifyContent='space-between' alignItems='center'>
               <Heading is='h4' size='400'>{nomVoie}</Heading>
-              {voieId && (
-                <Link href={onRedirect(voieId)} passHref>
-                  <Text
-                    marginRight={8}
-                    fontStyle='italic'
-                    color='neutral'
-                    textDecoration='underline'
-                    cursor='pointer'
-                  >
-                    Accéder à la voie
-                  </Text>
-                </Link>
-              )}
+              <Button
+                appearance='minimal'
+                marginRight={8}
+                textDecoration='underline'
+                onClick={() => onRedirect(nomVoie)}
+              >
+                Accéder à la voie
+              </Button>
+
             </Pane>
           </AlertHeader>
 
@@ -100,7 +95,6 @@ function VoieRow({nomVoie, voieId, voieAlerts, numerosWithAlerts, onRedirect}) {
 
 VoieRow.propTypes = {
   nomVoie: PropTypes.string.isRequired,
-  voieId: PropTypes.string.isRequired,
   voieAlerts: PropTypes.array.isRequired,
   numerosWithAlerts: PropTypes.array.isRequired,
   onRedirect: PropTypes.func.isRequired

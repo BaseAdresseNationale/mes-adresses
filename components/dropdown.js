@@ -21,6 +21,7 @@ function Dropdown({children, isOpen, handleOpen, dropdownStyle}) {
         border='none'
         height='fit-content'
         padding={0}
+        marginTop={5}
       >
         {isOpen ? <ChevronDownIcon size={20} /> : <ChevronRightIcon size={20} />}
       </Button>
