@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {Pane, Spinner} from 'evergreen-ui'
 
 const ELEMENT_HEIGHT = 48
+const SPINNER_HEIGHT = 50
 
 function InfiniteScrollList({items, children}) {
   const [limit, setLimit] = useState(5)
@@ -11,7 +12,7 @@ function InfiniteScrollList({items, children}) {
   const containerRef = useRef()
 
   const handleScroll = useCallback(({target}) => {
-    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight
+    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + SPINNER_HEIGHT
 
     // Increase limit
     if (isAtBottom) {
@@ -46,7 +47,7 @@ function InfiniteScrollList({items, children}) {
       ))}
 
       {limit < items.length && (
-        <Pane display='flex' justifyContent='center' marginY={8}><Spinner /></Pane>
+        <Pane display='flex' justifyContent='center' marginY={8}><Spinner size={SPINNER_HEIGHT} /></Pane>
       )}
     </Pane>
   )
