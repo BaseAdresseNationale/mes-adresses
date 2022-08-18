@@ -1,6 +1,6 @@
 import React, {useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Table} from 'evergreen-ui'
+import {Pane} from 'evergreen-ui'
 
 import {getNumeros, getVoie} from '@/lib/bal-api'
 
@@ -33,28 +33,24 @@ const Voie = React.memo(({commune}) => {
     <>
       <VoieHeading voie={voie} />
 
-      {isFormOpen ? (
-        <Pane flex={1} overflowY='scroll'>
-          <Table.Row height='auto'>
-            <Table.Cell display='block' padding={0} background='tint1'>
-              <NumeroEditor
-                hasPreview
-                initialVoieId={voie._id}
-                initialValue={editedNumero}
-                commune={commune}
-                closeForm={reset}
-              />
-            </Table.Cell>
-          </Table.Row>
-        </Pane>
-      ) : (
+      <Pane position='relative' display='flex' flexDirection='column' height='100%' width='100%' overflow='hidden'>
+        {isFormOpen && (
+          <NumeroEditor
+            hasPreview
+            initialVoieId={voie._id}
+            initialValue={editedNumero}
+            commune={commune}
+            closeForm={reset}
+          />
+        )}
+
         <NumerosList
           token={token}
           voieId={voie._id}
           numeros={numeros}
           handleEditing={handleEditing}
         />
-      )}
+      </Pane>
     </>
   )
 })
