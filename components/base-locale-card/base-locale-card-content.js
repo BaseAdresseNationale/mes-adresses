@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
+import {Pane, Button, Tooltip, Text, Spinner, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
 
 import {getBaseLocaleCsvUrl} from '@/lib/bal-api'
 import {prevalidate} from '@ban-team/validateur-bal'
@@ -18,7 +18,7 @@ function BaseLocaleCardContent({isAdmin, voies, baseLocale, userEmail, onSelect,
   const {status, _created, emails} = baseLocale
 
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [report, setReport] = useState(null)
 
   const {getBalToken} = useContext(LocalStorageContext)
@@ -34,7 +34,6 @@ function BaseLocaleCardContent({isAdmin, voies, baseLocale, userEmail, onSelect,
     'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
 
   const parseFile = async file => {
-    setIsLoading(true)
     try {
       const report = await prevalidate(file, {relaxFieldsDetection: true})
       if (report.parseOk) {
@@ -46,8 +45,6 @@ function BaseLocaleCardContent({isAdmin, voies, baseLocale, userEmail, onSelect,
     } catch {
       setReport(null)
     }
-
-    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -57,9 +54,12 @@ function BaseLocaleCardContent({isAdmin, voies, baseLocale, userEmail, onSelect,
         const blob = await fetchedCsv.blob()
 
         parseFile(blob)
+        setIsLoading(false)
       } catch {
         console.log('Le blob du fichier csv n’a pas pu être créé')
       }
+
+      setIsLoading(false)
     }
 
     createBlob()
@@ -148,7 +148,11 @@ function BaseLocaleCardContent({isAdmin, voies, baseLocale, userEmail, onSelect,
         </Pane>
       )}
 
-      {!isLoading && report && (
+      {isLoading && !report ? (
+        <Pane display='flex' justifyContent='center' >
+          <Spinner size={22} />
+        </Pane>
+      ) : (
         <Pane marginTop='1em'>
           <ValidateurReport
             rows={report}
