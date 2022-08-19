@@ -23,7 +23,7 @@ import TokenContext from '@/contexts/token'
 
 import {useInput} from '@/hooks/input'
 
-import Form from '@/components/form'
+import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import RenewTokenDialog from '@/components/renew-token-dialog'
 
@@ -126,7 +126,7 @@ const Settings = React.memo(({baseLocale}) => {
         flexDirection='column'
         overflowY='scroll'
       >
-        <Form onFormSubmit={onSubmit}>
+        <FormContainer onFormSubmit={onSubmit}>
           <FormInput>
             <TextInputField
               required
@@ -221,7 +221,7 @@ const Settings = React.memo(({baseLocale}) => {
             {isLoading ? 'En cours…' : 'Enregistrer les changements'}
           </Button>
 
-        </Form>
+        </FormContainer>
       </Pane>
     </Pane>
   )

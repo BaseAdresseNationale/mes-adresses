@@ -87,78 +87,73 @@ function Toponyme({baseLocale, commune}) {
 
   return (
     <>
-      <Pane overflowY='scroll'>
-        <ToponymeHeading toponyme={toponyme} commune={commune} />
-      </Pane>
-      {token && isFormOpen && isEditing && !editedNumero ? (
-        <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
-      ) : (
-        <Pane
-          flexShrink={0}
-          elevation={0}
-          backgroundColor='white'
-          padding={16}
-          display='flex'
-          alignItems='center'
-          minHeight={64}
-        >
-          <Heading>Liste des numéros</Heading>
-          <Pane marginLeft='auto'>
-            <Button
-              iconBefore={AddIcon}
-              appearance='primary'
-              intent='success'
-              disabled={isEditing}
-              onClick={onEnableAdding}
-            >
-              Ajouter des numéros
-            </Button>
-          </Pane>
-        </Pane>
-      )}
+      <ToponymeHeading toponyme={toponyme} commune={commune} />
 
-      {error && (
-        <Alert marginY={5} intent='danger' title='Erreur'>
-          {error}
-        </Alert>
-      )}
+      <Pane position='relative' display='flex' flexDirection='column' height='100%' width='100%' overflow='hidden'>
+        {editedNumero && (
+          <NumeroEditor
+            hasPreview
+            initialValue={editedNumero}
+            commune={commune}
+            closeForm={onCancel}
+          />
+        )}
 
-      <Pane flex={1} overflowY='scroll'>
-        <Table>
-          {!isEditing && (
-            <Table.Head>
-              <Table.SearchHeaderCell
-                placeholder='Rechercher un numéro'
-                onChange={setFilter}
-              />
-            </Table.Head>
-          )}
-
-          {filtered.length === 0 && (
-            <Table.Row>
-              <Table.TextCell color='muted' fontStyle='italic'>
-                Aucun numéro
-              </Table.TextCell>
-            </Table.Row>
-          )}
-
-          {editedNumero ? (
-            <Pane flex={1} overflowY='scroll'>
-              <Table.Row height='auto'>
-                <Table.Cell display='block' padding={0} background='tint1'>
-                  <NumeroEditor
-                    hasPreview
-                    initialValue={editedNumero}
-                    commune={commune}
-                    closeForm={onCancel}
-                  />
-                </Table.Cell>
-              </Table.Row>
+        {token && isFormOpen && isEditing && !editedNumero ? (
+          <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
+        ) : (
+          <Pane
+            flexShrink={0}
+            elevation={0}
+            backgroundColor='white'
+            padding={16}
+            display='flex'
+            alignItems='center'
+            minHeight={64}
+          >
+            <Heading>Liste des numéros</Heading>
+            <Pane marginLeft='auto'>
+              <Button
+                iconBefore={AddIcon}
+                appearance='primary'
+                intent='success'
+                disabled={isEditing}
+                onClick={onEnableAdding}
+              >
+                Ajouter des numéros
+              </Button>
             </Pane>
-          ) : (
+          </Pane>
+        )}
+
+        {error && (
+          <Alert marginY={5} intent='danger' title='Erreur'>
+            {error}
+          </Alert>
+        )}
+
+        <Pane flex={1} overflowY='scroll'>
+          <Table>
+            {!isEditing && (
+              <Table.Head>
+                <Table.SearchHeaderCell
+                  placeholder='Rechercher un numéro'
+                  onChange={setFilter}
+                />
+              </Table.Head>
+            )}
+
+            {filtered.length === 0 && (
+              <Table.Row>
+                <Table.TextCell color='muted' fontStyle='italic'>
+                  Aucun numéro
+                </Table.TextCell>
+              </Table.Row>
+            )}
+
             <ToponymeNumeros numeros={filtered} handleSelect={handleEditing} isEditable={token && !isEditing} />
-          )}
-        </Table>
+          </Table>
+        </Pane>
       </Pane>
     </>
   )

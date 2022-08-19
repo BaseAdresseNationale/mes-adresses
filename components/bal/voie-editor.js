@@ -14,7 +14,6 @@ import {useInput, useCheckboxInput} from '@/hooks/input'
 import useValidationMessage from '@/hooks/validation-messages'
 import useFocus from '@/hooks/focus'
 
-import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
 import FormInput from '@/components/form-input'
 import AssistedTextField from '@/components/assisted-text-field'
@@ -99,35 +98,35 @@ function VoieEditor({initialValue, closeForm}) {
   }, [disableDraw])
 
   return (
-    <FormMaster editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm}>
-      <Form onFormSubmit={onFormSubmit}>
-        <Pane maxHeight={400} overflowY='scroll'>
-          <FormInput>
-            <AssistedTextField
-              forwadedRef={ref}
-              exitFocus={() => setIsFocus(false)}
-              label='Nom de la voie'
-              placeholder='Nom de la voie'
-              value={nom}
-              onChange={onNomChange}
-              validationMessage={getValidationMessage('nom')}
-            />
+    <Form editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm} onFormSubmit={onFormSubmit}>
+      <Pane maxHeight={400} overflowY='scroll'>
+        <FormInput>
+          <AssistedTextField
+            forwadedRef={ref}
+            exitFocus={() => setIsFocus(false)}
+            label='Nom de la voie'
+            placeholder='Nom de la voie'
+            value={nom}
+            onChange={onNomChange}
+            validationMessage={getValidationMessage('nom')}
+          />
 
-            <Checkbox
-              checked={isMetric}
-              label='Cette voie utilise la numérotation métrique'
-              onChange={onIsMetricChange}
-              marginBottom='1em'
-            />
+          <Checkbox
+            checked={isMetric}
+            label='Cette voie utilise la numérotation métrique'
+            onChange={onIsMetricChange}
+            marginBottom='1em'
+          />
 
-            <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
-          </FormInput>
+          <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
+        </FormInput>
 
-          {isMetric && (
-            <DrawEditor trace={initialValue ? initialValue.trace : null} />
-          )}
-        </Pane>
+        {isMetric && (
+          <DrawEditor trace={initialValue ? initialValue.trace : null} />
+        )}
+      </Pane>
 
+      <Pane>
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
           {isLoading ? 'En cours…' : 'Enregistrer'}
         </Button>
@@ -143,8 +142,8 @@ function VoieEditor({initialValue, closeForm}) {
             Annuler
           </Button>
         )}
-      </Form>
-    </FormMaster>
+      </Pane>
+    </Form>
   )
 }
 
