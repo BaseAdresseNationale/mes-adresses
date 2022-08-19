@@ -12,7 +12,7 @@ function InfiniteScrollList({items, children}) {
   const containerRef = useRef()
 
   const handleScroll = useCallback(({target}) => {
-    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + SPINNER_HEIGHT
+    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + (SPINNER_HEIGHT * 1.25)
 
     // Increase limit
     if (isAtBottom) {
@@ -41,13 +41,16 @@ function InfiniteScrollList({items, children}) {
   }, [])
 
   return (
-    <Pane ref={containerRef} display='flex' flex={1} flexDirection='column' overflowY='scroll' onScroll={handleScroll}>
+    <Pane ref={containerRef} display='flex' position='relative' flex={1} flexDirection='column' overflowY='scroll' onScroll={handleScroll}>
       {items.slice(0, limit).map(numero => (
         children(numero)
       ))}
 
       {limit < items.length && (
-        <Pane display='flex' justifyContent='center' marginY={8}><Spinner size={SPINNER_HEIGHT} /></Pane>
+        // Add margin to prevents spin animation to move scrollbar
+        <Pane display='flex' justifyContent='center' marginY={SPINNER_HEIGHT / 2}>
+          <Spinner size={SPINNER_HEIGHT} />
+        </Pane>
       )}
     </Pane>
   )
