@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import NextImage from 'next/image'
 import {Pane, Heading, Text, Link, TextInput, IconButton, TickIcon} from 'evergreen-ui'
 
-import Form from '@/components/form'
 import FormInput from '@/components/form-input'
+import FormContainer from '@/components/form-container'
 
 function CodeValidation({email, handleSubmit, resendCode}) {
   const [code, setCode] = useState('')
@@ -42,7 +42,7 @@ function CodeValidation({email, handleSubmit, resendCode}) {
         <Heading is='h2'>Authentification de la mairie</Heading>
       </Pane>
 
-      <Form>
+      <FormContainer>
         <Pane display='flex' flexDirection='column' alignItems='center' textAlign='center' width='100%'>
           <FormInput>
             <Pane display='flex' flexDirection='column'>
@@ -80,7 +80,7 @@ function CodeValidation({email, handleSubmit, resendCode}) {
             </Pane>
           </FormInput>
         </Pane>
-      </Form>
+      </FormContainer>
 
       <Pane marginX='auto' marginTop={16} marginBottom={16} textAlign='center'>
         <Text>Vous n’avez pas reçu votre code ?</Text>
