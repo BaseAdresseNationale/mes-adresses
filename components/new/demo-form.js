@@ -1,4 +1,4 @@
-import {useState, useCallback, useContext} from 'react'
+import {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, Checkbox, Button, Alert, PlusIcon} from 'evergreen-ui'
@@ -7,10 +7,9 @@ import {createBaseLocaleDemo} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
-import useFocus from '@/hooks/focus'
 import {useCheckboxInput} from '@/hooks/input'
 
-import Form from '@/components/form'
+import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 
@@ -21,7 +20,13 @@ function DemoForm({defaultCommune}) {
 
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
-  const [focusRef] = useFocus()
+  const [ref, setRef] = useState()
+
+  useEffect(() => {
+    if (ref) {
+      ref.focus()
+    }
+  }, [ref])
 
   const onSelect = useCallback(commune => {
     setCodeCommune(commune.code)
@@ -43,13 +48,12 @@ function DemoForm({defaultCommune}) {
   }, [codeCommune, populate, addBalAccess])
 
   return (
-
     <Pane overflowY='scroll'>
-      <Form onFormSubmit={onSubmit}>
+      <FormContainer onSubmit={onSubmit}>
         <FormInput>
           <CommuneSearchField
             required
-            innerRef={focusRef}
+            innerRef={setRef}
             id='commune'
             initialSelectedItem={defaultCommune}
             label='Commune'
@@ -81,7 +85,7 @@ function DemoForm({defaultCommune}) {
         <Button height={40} marginTop={32} marginLeft={12} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
           {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
         </Button>
-      </Form>
+      </FormContainer>
     </Pane>
 
   )

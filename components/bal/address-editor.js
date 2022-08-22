@@ -26,7 +26,7 @@ function AddressEditor({commune, closeForm}) {
         </SelectField>
       </Pane>
 
-      <Pane display='flex' flexDirection='column' flex={1} overflowY='auto'>
+      <Pane position='relative' display='flex' flexDirection='column' height='100%' width='100%' overflow='hidden'>
         {isToponyme ? (
           <ToponymeEditor commune={commune} closeForm={closeForm} />
         ) : (

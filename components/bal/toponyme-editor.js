@@ -1,7 +1,7 @@
 import {useState, useMemo, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {difference} from 'lodash'
-import {Button} from 'evergreen-ui'
+import {xor} from 'lodash'
+import {Pane, Button} from 'evergreen-ui'
 import router from 'next/router'
 
 import {addToponyme, editToponyme} from '@/lib/bal-api'
@@ -12,9 +12,9 @@ import MarkersContext from '@/contexts/markers'
 import ParcellesContext from '@/contexts/parcelles'
 
 import {useInput} from '@/hooks/input'
+import useFocus from '@/hooks/focus'
 import useValidationMessage from '@/hooks/validation-messages'
 
-import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
 import AssistedTextField from '@/components/assisted-text-field'
 import FormInput from '@/components/form-input'
@@ -33,6 +33,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
   const {selectedParcelles} = useContext(ParcellesContext)
+  const [ref, setIsFocus] = useFocus(true)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -78,7 +79,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         await reloadGeojson()
       }
 
-      if (difference(initialValue?.parcelles, body.parcelles).length > 0) {
+      if (xor(initialValue?.parcelles, body.parcelles).length > 0) {
         await reloadParcelles()
       }
 
@@ -109,11 +110,12 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   }, [resetNom, setValidationMessages, initialValue])
 
   return (
-    <FormMaster editingId={initialValue?._id} closeForm={closeForm}>
-      <Form onFormSubmit={onFormSubmit}>
+    <Form editingId={initialValue?._id} closeForm={closeForm} onFormSubmit={onFormSubmit}>
+      <Pane>
         <FormInput>
           <AssistedTextField
-            isFocus
+            forwadedRef={ref}
+            exitFocus={() => setIsFocus(false)}
             disabled={isLoading}
             label='Nom du toponyme'
             placeholder='Nom du toponyme'
@@ -140,7 +142,9 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         ) : (
           <DisabledFormInput label='Parcelles' />
         )}
+      </Pane>
 
+      <Pane>
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
           {submitLabel}
         </Button>
@@ -154,8 +158,8 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         >
           Annuler
         </Button>
-      </Form>
-    </FormMaster>
+      </Pane>
+    </Form>
   )
 }
 

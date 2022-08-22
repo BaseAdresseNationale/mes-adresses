@@ -1,30 +1,21 @@
-import {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TextInputField} from 'evergreen-ui'
 
-import useFocus from '@/hooks/focus'
-
+import useCaretPosition from '@/hooks/caret-position'
 import AccentTool from '@/components/accent-tool'
 
-function AssistedTextField({label, placeholder, value, validationMessage, onChange, isFocus, isDisabled, isRequired}) {
-  const [cursorPosition, setCursorPosition] = useState({start: 0, end: 0})
-  const [focusRef, ref] = useFocus()
+function AssistedTextField({label, forwadedRef, placeholder, value, validationMessage, onChange, isDisabled, isRequired, exitFocus}) {
+  const {updateCaretPosition} = useCaretPosition({initialValue: value, ref: forwadedRef})
 
   const handleChangeAccent = e => {
-    ref.focus()
     onChange(e)
-    ref.setSelectionRange(cursorPosition.start, cursorPosition.end) // Put the cursor back to his position
-  }
-
-  const handleChangeInput = e => {
-    ref.focus()
-    onChange(e)
+    updateCaretPosition()
   }
 
   return (
     <Pane display='flex' alignItems={validationMessage ? 'last baseline' : 'flex-end'}>
       <TextInputField
-        ref={isFocus && focusRef}
+        ref={forwadedRef}
         required={isRequired}
         marginBottom={0}
         disabled={isDisabled}
@@ -33,8 +24,8 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
         value={value}
         isInvalid={Boolean(validationMessage)}
         validationMessage={validationMessage}
-        onBlur={e => setCursorPosition({start: e.target.selectionStart, end: e.target.selectionEnd})}
-        onChange={e => handleChangeInput(e)}
+        onChange={onChange}
+        onBlur={exitFocus}
       />
       <Pane
         display='flex'
@@ -43,7 +34,13 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
         marginLeft={8}
         marginTop={3}
       >
-        <AccentTool input={value} handleAccent={e => handleChangeAccent(e)} cursorPosition={cursorPosition} isDisabled={isDisabled} />
+        <AccentTool
+          input={value}
+          handleAccent={handleChangeAccent}
+          updateCaret={updateCaretPosition}
+          isDisabled={isDisabled}
+          forwadedRef={forwadedRef}
+        />
       </Pane>
     </Pane>
   )
@@ -51,7 +48,6 @@ function AssistedTextField({label, placeholder, value, validationMessage, onChan
 
 AssistedTextField.defaultProps = {
   placeholder: '',
-  isFocus: false,
   isDisabled: false,
   validationMessage: null,
   isRequired: true
@@ -63,9 +59,10 @@ AssistedTextField.propTypes = {
   value: PropTypes.string.isRequired,
   validationMessage: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  isFocus: PropTypes.bool,
+  forwadedRef: PropTypes.object.isRequired,
   isDisabled: PropTypes.bool,
-  isRequired: PropTypes.bool
+  isRequired: PropTypes.bool,
+  exitFocus: PropTypes.func.isRequired
 }
 
 export default AssistedTextField

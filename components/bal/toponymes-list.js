@@ -1,7 +1,7 @@
-import {useContext} from 'react'
+import {useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Pane, Table} from 'evergreen-ui'
+import {Table} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 
@@ -11,9 +11,9 @@ import TokenContext from '@/contexts/token'
 import useFuse from '@/hooks/fuse'
 
 import TableRow from '@/components/table-row'
-import ToponymeEditor from '@/components/bal/toponyme-editor'
+import InfiniteScrollList from '@/components/infinite-scroll-list'
 
-function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnableEditing, setToRemove}) {
+function ToponymesList({toponymes, onSelect, onEnableEditing, setToRemove}) {
   const {token} = useContext(TokenContext)
   const {isEditing} = useContext(BalDataContext)
 
@@ -23,62 +23,54 @@ function ToponymesList({toponymes, editedId, commune, onCancel, onSelect, onEnab
     ]
   })
 
+  const scrollableItems = useMemo(() => (
+    sortBy(filtered, v => normalizeSort(v.nom))
+  ), [filtered])
+
   return (
-    <Pane flex={1} overflowY='scroll'>
-      <Table>
-        <Table.Head>
-          <Table.SearchHeaderCell
-            placeholder='Rechercher un toponyme'
-            onChange={setFilter}
+    <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
+      <Table.Head>
+        <Table.SearchHeaderCell
+          placeholder='Rechercher un toponyme'
+          onChange={setFilter}
+        />
+      </Table.Head>
+
+      {filtered.length === 0 && (
+        <Table.Row>
+          <Table.TextCell color='muted' fontStyle='italic'>
+            Aucun résultat
+          </Table.TextCell>
+        </Table.Row>
+      )}
+
+      <InfiniteScrollList items={scrollableItems}>
+        {toponyme => (
+          <TableRow
+            key={toponyme._id}
+            label={toponyme.nom}
+            nomAlt={toponyme.nomAlt}
+            isEditingEnabled={Boolean(!isEditing && token)}
+            notifications={{
+              warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
+            }}
+            actions={{
+              onSelect: () => onSelect(toponyme._id),
+              onEdit: () => onEnableEditing(toponyme._id),
+              onRemove: () => setToRemove(toponyme._id)
+            }}
           />
-        </Table.Head>
-        {filtered.length === 0 && (
-          <Table.Row>
-            <Table.TextCell color='muted' fontStyle='italic'>
-              Aucun résultat
-            </Table.TextCell>
-          </Table.Row>
         )}
-        {sortBy(filtered, t => normalizeSort(t.nom))
-          .map(toponyme => toponyme._id === editedId ? (
-            <Table.Row key={toponyme._id} height='auto'>
-              <Table.Cell display='block' padding={0} background='tint1'>
-                <ToponymeEditor initialValue={toponyme} commune={commune} closeForm={onCancel} />
-              </Table.Cell>
-            </Table.Row>
-          ) : (
-            <TableRow
-              key={toponyme._id}
-              label={toponyme.nom}
-              nomAlt={toponyme.nomAlt}
-              isEditingEnabled={Boolean(!isEditing && token)}
-              notifications={{
-                warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null
-              }}
-              actions={{
-                onSelect: () => onSelect(toponyme._id),
-                onEdit: () => onEnableEditing(toponyme._id),
-                onRemove: () => setToRemove(toponyme._id)
-              }}
-            />
-          ))}
-      </Table>
-    </Pane>
+      </InfiniteScrollList>
+    </Table>
   )
 }
 
 ToponymesList.propTypes = {
   toponymes: PropTypes.array.isRequired,
-  editedId: PropTypes.string,
-  commune: PropTypes.object.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
-}
-
-ToponymesList.defaultProps = {
-  editedId: null
+  onSelect: PropTypes.func.isRequired
 }
 
 export default ToponymesList

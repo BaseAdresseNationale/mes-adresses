@@ -9,7 +9,7 @@ import {uploadBaseLocaleCsv} from '@/lib/bal-api'
 
 import useFocus from '@/hooks/focus'
 
-import Form from '@/components/form'
+import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import Uploader from '@/components/uploader'
 import SelectCommune from '@/components/select-commune'
@@ -65,7 +65,7 @@ function UploadForm({
 }) {
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
-  const [focusRef] = useFocus()
+  const [focusRef] = useFocus(true)
   const [communes, setCommunes] = useState(null)
   const [validationReport, setValidationReport] = useState(null)
   const [invalidRowsCount, setInvalidRowsCount] = useState(null)
@@ -169,7 +169,7 @@ function UploadForm({
   return (
     <>
       <Pane marginY={32} flex={1} overflowY='scroll'>
-        <Form onFormSubmit={onSubmit}>
+        <FormContainer onSubmit={onSubmit}>
           {userBALs.length > 0 && (
             <AlertPublishedBAL
               isShown={isShown}
@@ -286,7 +286,7 @@ function UploadForm({
           <Button height={40} type='submit' appearance='primary' intent='success' disabled={Boolean(error) || !file} isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
             {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
           </Button>
-        </Form>
+        </FormContainer>
       </Pane>
 
       <Alert margin={16} title='Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?' marginY={16}>

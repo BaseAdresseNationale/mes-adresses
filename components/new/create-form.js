@@ -8,7 +8,7 @@ import {useCheckboxInput} from '@/hooks/input'
 
 import useFocus from '@/hooks/focus'
 
-import Form from '@/components/form'
+import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
@@ -30,8 +30,8 @@ function CreateForm({
   createNewBal,
   onSubmit
 }) {
-  const [focusRef] = useFocus()
   const [populate, onPopulateChange] = useCheckboxInput(true)
+  const [focusedElement] = useFocus(true)
 
   const onSelect = useCallback(commune => {
     setSelectedCodeCommune(commune.code)
@@ -57,7 +57,7 @@ function CreateForm({
   return (
 
     <Pane overflowY='scroll' marginY={32}>
-      <Form onFormSubmit={onSubmit}>
+      <FormContainer onSubmit={onSubmit}>
         {userBALs.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
@@ -71,7 +71,7 @@ function CreateForm({
 
         <FormInput>
           <TextInputField
-            ref={focusRef}
+            ref={focusedElement}
             required
             autoComplete='new-password' // Hack to bypass chrome autocomplete
             name='nom'
@@ -128,7 +128,7 @@ function CreateForm({
         <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
           {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
         </Button>
-      </Form>
+      </FormContainer>
     </Pane>
 
   )

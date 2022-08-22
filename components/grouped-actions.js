@@ -12,7 +12,7 @@ import {useInput, useCheckboxInput} from '@/hooks/input'
 
 import Comment from '@/components/comment'
 import CertificationButton from '@/components/certification-button'
-import Form from '@/components/form'
+import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 
 function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumerosIds, setIsRemoveWarningShown, isAllSelectedCertifie, onSubmit}) {
@@ -130,7 +130,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
         >
           <Pane marginX='-32px' marginBottom='-8px'>
             <Paragraph marginBottom={8} marginLeft={32} color='muted'>{`${selectedNumerosIds.length} numéros sélectionnés`}</Paragraph>
-            <Form onFormSubmit={handleConfirm}>
+            <FormContainer onSubmit={handleConfirm}>
               <FormInput>
                 <SelectField
                   value={selectedVoieId}
@@ -223,7 +223,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                   onCancel={onFormCancel}
                 />
               </Pane>
-            </Form>
+            </FormContainer>
           </Pane>
         </Dialog>
 

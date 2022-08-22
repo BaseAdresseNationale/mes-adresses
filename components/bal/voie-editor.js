@@ -1,6 +1,7 @@
 import {useState, useContext, useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import router from 'next/router'
+import {isEqual} from 'lodash'
 import {Pane, Button, Checkbox} from 'evergreen-ui'
 
 import {addVoie, editVoie} from '@/lib/bal-api'
@@ -11,8 +12,8 @@ import TokenContext from '@/contexts/token'
 
 import {useInput, useCheckboxInput} from '@/hooks/input'
 import useValidationMessage from '@/hooks/validation-messages'
+import useFocus from '@/hooks/focus'
 
-import FormMaster from '@/components/form-master'
 import Form from '@/components/form'
 import FormInput from '@/components/form-input'
 import AssistedTextField from '@/components/assisted-text-field'
@@ -27,7 +28,8 @@ function VoieEditor({initialValue, closeForm}) {
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
   const {token} = useContext(TokenContext)
   const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
-  const {drawEnabled, data, enableDraw, disableDraw, setModeId} = useContext(DrawContext)
+  const {drawEnabled, data, enableDraw, disableDraw} = useContext(DrawContext)
+  const [ref, setIsFocus] = useFocus(true)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -55,6 +57,11 @@ function VoieEditor({initialValue, closeForm}) {
 
       if (initialValue?._id === voie._id && router.query.idVoie) {
         setVoie(voie)
+
+        // Reload voie trace
+        if (!isEqual(initialValue.trace, data?.geometry) || body.typeNumerotation !== initialValue.typeNumerotation) {
+          await reloadGeojson()
+        }
       } else {
         await reloadVoies()
         await reloadGeojson()
@@ -80,46 +87,46 @@ function VoieEditor({initialValue, closeForm}) {
 
   useEffect(() => {
     if (isMetric) {
-      setModeId(data ? 'editing' : 'drawLineString')
-      enableDraw()
+      enableDraw(initialValue)
     } else if (!isMetric && drawEnabled) {
       disableDraw()
     }
-  }, [data, disableDraw, drawEnabled, enableDraw, isMetric, setModeId])
+  }, [initialValue, disableDraw, drawEnabled, enableDraw, isMetric])
 
   const onUnmount = useCallback(() => {
     disableDraw()
   }, [disableDraw])
 
   return (
-    <FormMaster editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm}>
-      <Form onFormSubmit={onFormSubmit}>
-        <Pane maxHeight={400} overflowY='scroll'>
-          <FormInput>
-            <AssistedTextField
-              isFocus
-              label='Nom de la voie'
-              placeholder='Nom de la voie'
-              value={nom}
-              onChange={onNomChange}
-              validationMessage={getValidationMessage('nom')}
-            />
+    <Form editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm} onFormSubmit={onFormSubmit}>
+      <Pane maxHeight={400} overflowY='scroll'>
+        <FormInput>
+          <AssistedTextField
+            forwadedRef={ref}
+            exitFocus={() => setIsFocus(false)}
+            label='Nom de la voie'
+            placeholder='Nom de la voie'
+            value={nom}
+            onChange={onNomChange}
+            validationMessage={getValidationMessage('nom')}
+          />
 
-            <Checkbox
-              checked={isMetric}
-              label='Cette voie utilise la numérotation métrique'
-              onChange={onIsMetricChange}
-              marginBottom='1em'
-            />
+          <Checkbox
+            checked={isMetric}
+            label='Cette voie utilise la numérotation métrique'
+            onChange={onIsMetricChange}
+            marginBottom='1em'
+          />
 
-            <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
-          </FormInput>
+          <LanguesRegionalesForm initialValue={initialValue?.nomAlt} handleLanguages={setNomAlt} />
+        </FormInput>
 
-          {isMetric && (
-            <DrawEditor trace={initialValue ? initialValue.trace : null} />
-          )}
-        </Pane>
+        {isMetric && (
+          <DrawEditor trace={initialValue ? initialValue.trace : null} />
+        )}
+      </Pane>
 
+      <Pane>
         <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
           {isLoading ? 'En cours…' : 'Enregistrer'}
         </Button>
@@ -135,8 +142,8 @@ function VoieEditor({initialValue, closeForm}) {
             Annuler
           </Button>
         )}
-      </Form>
-    </FormMaster>
+      </Pane>
+    </Form>
   )
 }
 
