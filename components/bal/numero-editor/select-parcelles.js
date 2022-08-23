@@ -36,6 +36,7 @@ function SelectParcelles({initialParcelles, isToponyme}) {
               <Badge
                 key={parcelle}
                 isInteractive
+                fontSize={12}
                 color={parcelle === hoveredParcelle?.id ? 'red' : 'green'}
                 margin={4}
                 onClick={() => handleParcelle(parcelle)}
