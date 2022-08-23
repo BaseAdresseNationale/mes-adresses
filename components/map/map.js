@@ -262,7 +262,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       {(voie || (toponymes && toponymes.length > 0)) && (
         <Pane
           position='absolute'
-          className='mapboxgl-ctrl-group mapboxgl-ctrl'
+          className='maplibregl-ctrl-group maplibregl-ctrl'
           top={100}
           right={16}
           zIndex={2}
