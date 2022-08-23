@@ -2,6 +2,7 @@ import {useState, useMemo, useEffect, useCallback, useContext, useRef} from 'rea
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
+import maplibregl from 'maplibre-gl'
 import {fromJS} from 'immutable'
 import {Pane, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
@@ -295,6 +296,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       <Pane display='flex' flex={1}>
         <MapGl
           ref={handleMapRef}
+          mapLib={maplibregl}
           reuseMap
           viewState={viewport}
           mapStyle={mapStyle}
