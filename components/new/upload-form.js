@@ -48,6 +48,7 @@ function extractCommuneFromCSV(rows) {
 
 function UploadForm({
   onNomChange,
+  setSelectedCommune,
   selectedCodeCommune,
   setSelectedCodeCommune,
   nom,
@@ -73,6 +74,7 @@ function UploadForm({
   const onDrop = async ([file]) => {
     setError(null)
     setCommunes(null)
+    setSelectedCommune(null)
     setSelectedCodeCommune(null)
 
     if (file) {
@@ -303,6 +305,7 @@ function UploadForm({
 
 UploadForm.propTypes = {
   onNomChange: PropTypes.func.isRequired,
+  setSelectedCommune: PropTypes.func.isRequired,
   selectedCodeCommune: PropTypes.string,
   setSelectedCodeCommune: PropTypes.func.isRequired,
   nom: PropTypes.string.isRequired,

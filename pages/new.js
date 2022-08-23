@@ -30,6 +30,7 @@ function Index({defaultCommune, isDemo}) {
   const [userBALs, setUserBALs] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isShown, setIsShown] = useState(false)
+  const [selectedCommune, setSelectedCommune] = useState(defaultCommune || null)
   const [selectedCodeCommune, setSelectedCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
 
   const Form = index === 0 ? CreateForm : UploadForm
@@ -80,6 +81,11 @@ function Index({defaultCommune, isDemo}) {
     setIsLoading(false)
   }
 
+  const onSelect = useCallback(commune => {
+    setSelectedCommune(commune)
+    setSelectedCodeCommune(commune.code)
+  }, [setSelectedCommune, setSelectedCodeCommune])
+
   return (
     <Main>
       <Pane padding={12}>
@@ -105,6 +111,9 @@ function Index({defaultCommune, isDemo}) {
             <Pane flex={1} overflowY='scroll'>
               <Form
                 defaultCommune={defaultCommune}
+                onSelect={onSelect}
+                selectedCommune={selectedCommune}
+                setSelectedCommune={setSelectedCommune}
                 selectedCodeCommune={selectedCodeCommune}
                 setSelectedCodeCommune={setSelectedCodeCommune}
                 nom={nom}

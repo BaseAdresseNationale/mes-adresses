@@ -14,11 +14,11 @@ import CommuneSearchField from '@/components/commune-search/commune-search-field
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 function CreateForm({
-  defaultCommune,
   nom,
   onNomChange,
+  onSelect,
+  selectedCommune,
   selectedCodeCommune,
-  setSelectedCodeCommune,
   bal,
   email,
   onEmailChange,
@@ -32,10 +32,6 @@ function CreateForm({
 }) {
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [focusedElement] = useFocus(true)
-
-  const onSelect = useCallback(commune => {
-    setSelectedCodeCommune(commune.code)
-  }, [setSelectedCodeCommune])
 
   const redirectToNewBAL = useCallback(async newBal => {
     if (populate) {
@@ -106,7 +102,7 @@ function CreateForm({
           <CommuneSearchField
             required
             id='commune'
-            initialSelectedItem={defaultCommune}
+            initialSelectedItem={selectedCommune}
             label='Commune'
             hint='Pour affiner la recherche, renseignez le code département'
             placeholder='Roche 42'
@@ -135,14 +131,14 @@ function CreateForm({
 }
 
 CreateForm.propTypes = {
-  defaultCommune: PropTypes.shape({
+  selectedCommune: PropTypes.shape({
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired
   }),
   selectedCodeCommune: PropTypes.string,
-  setSelectedCodeCommune: PropTypes.func.isRequired,
   nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
   onEmailChange: PropTypes.func.isRequired,
   bal: PropTypes.shape({
@@ -159,7 +155,7 @@ CreateForm.propTypes = {
 }
 
 CreateForm.defaultProps = {
-  defaultCommune: null,
+  selectedCommune: null,
   selectedCodeCommune: null,
   bal: null
 }
