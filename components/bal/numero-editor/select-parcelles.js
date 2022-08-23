@@ -27,7 +27,7 @@ function SelectParcelles({initialParcelles, isToponyme}) {
         title='Parcelles cadastre'
         help={`Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au ${addressType}. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.`}
       />
-      <Pane>
+      <Pane display='grid' gridTemplateColumns='1fr 1fr 1fr'>
         {selectedParcelles.length > 0 ?
           selectedParcelles.map(parcelle => {
             const isHovered = parcelle === hoveredParcelle?.id
@@ -36,7 +36,6 @@ function SelectParcelles({initialParcelles, isToponyme}) {
               <Badge
                 key={parcelle}
                 isInteractive
-                fontSize={12}
                 color={parcelle === hoveredParcelle?.id ? 'red' : 'green'}
                 margin={4}
                 onClick={() => handleParcelle(parcelle)}
