@@ -126,7 +126,7 @@ const Settings = React.memo(({baseLocale}) => {
         flexDirection='column'
         overflowY='scroll'
       >
-        <FormContainer onFormSubmit={onSubmit}>
+        <FormContainer onSubmit={onSubmit}>
           <FormInput>
             <TextInputField
               required
