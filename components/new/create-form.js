@@ -10,7 +10,7 @@ import LocalStorageContext from '@/contexts/local-storage'
 import useFocus from '@/hooks/focus'
 import {useInput, useCheckboxInput} from '@/hooks/input'
 
-import Form from '@/components/form'
+import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
@@ -82,7 +82,7 @@ function CreateForm({defaultCommune}) {
   return (
 
     <Pane overflowY='scroll' marginY={32}>
-      <Form onFormSubmit={onSubmit}>
+      <FormContainer onSubmit={onSubmit}>
         {userBALs.length > 0 && (
           <AlertPublishedBAL
             isShown={isShown}
@@ -153,7 +153,7 @@ function CreateForm({defaultCommune}) {
         <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
           {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
         </Button>
-      </Form>
+      </FormContainer>
     </Pane>
 
   )

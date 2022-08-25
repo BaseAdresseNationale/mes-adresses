@@ -1,7 +1,7 @@
-import {useContext} from 'react'
+import {useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Pane, Table} from 'evergreen-ui'
+import {Table} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 
@@ -11,9 +11,9 @@ import TokenContext from '@/contexts/token'
 import useFuse from '@/hooks/fuse'
 
 import TableRow from '@/components/table-row'
-import VoieEditor from '@/components/bal/voie-editor'
+import InfiniteScrollList from '../infinite-scroll-list'
 
-function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToRemove}) {
+function VoiesList({voies, onEnableEditing, onSelect, setToRemove}) {
   const {token} = useContext(TokenContext)
   const {isEditing} = useContext(BalDataContext)
 
@@ -23,58 +23,51 @@ function VoiesList({voies, editedId, onEnableEditing, onSelect, onCancel, setToR
     ]
   })
 
+  const scrollableItems = useMemo(() => (
+    sortBy(filtered, v => normalizeSort(v.nom))
+  ), [filtered])
+
   return (
-    <Pane flex={1} overflowY='scroll'>
-      <Table>
-        <Table.Head>
-          <Table.SearchHeaderCell
-            placeholder='Rechercher une voie'
-            onChange={setFilter}
+    <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
+      <Table.Head>
+        <Table.SearchHeaderCell
+          placeholder='Rechercher une voie'
+          onChange={setFilter}
+        />
+      </Table.Head>
+
+      {filtered.length === 0 && (
+        <Table.Row>
+          <Table.TextCell color='muted' fontStyle='italic'>
+            Aucun résultat
+          </Table.TextCell>
+        </Table.Row>
+      )}
+
+      <InfiniteScrollList items={scrollableItems}>
+        {voie => (
+          <TableRow
+            key={voie._id}
+            label={voie.nom}
+            nomAlt={voie.nomAlt}
+            isEditingEnabled={Boolean(!isEditing && token)}
+            actions={{
+              onSelect: () => onSelect(voie._id),
+              onEdit: () => onEnableEditing(voie._id),
+              onRemove: () => setToRemove(voie._id)
+            }}
           />
-        </Table.Head>
-        {filtered.length === 0 && (
-          <Table.Row>
-            <Table.TextCell color='muted' fontStyle='italic'>
-              Aucun résultat
-            </Table.TextCell>
-          </Table.Row>
         )}
-        {sortBy(filtered, v => normalizeSort(v.nom))
-          .map(voie => voie._id === editedId ? (
-            <Table.Row key={voie._id} height='auto'>
-              <Table.Cell display='block' padding={0} background='tint1'>
-                <VoieEditor initialValue={voie} closeForm={onCancel} />
-              </Table.Cell>
-            </Table.Row>
-          ) : (
-            <TableRow
-              key={voie._id}
-              label={voie.nom}
-              nomAlt={voie.nomAlt}
-              isEditingEnabled={Boolean(!isEditing && token)}
-              actions={{
-                onSelect: () => onSelect(voie._id),
-                onEdit: () => onEnableEditing(voie._id),
-                onRemove: () => setToRemove(voie._id)
-              }}
-            />
-          ))}
-      </Table>
-    </Pane>
+      </InfiniteScrollList>
+    </Table>
   )
 }
 
 VoiesList.propTypes = {
   voies: PropTypes.array.isRequired,
-  editedId: PropTypes.string,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
-}
-
-VoiesList.defaultProps = {
-  editedId: null
+  onSelect: PropTypes.func.isRequired
 }
 
 export default VoiesList
