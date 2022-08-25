@@ -2,7 +2,6 @@ import {useState, useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 import Link from 'next/link'
-import {uniqBy} from 'lodash'
 
 import {getCommune} from '@/lib/geo-api'
 import {createBaseLocale, searchBAL} from '@/lib/bal-api'
@@ -56,29 +55,25 @@ function Index({defaultCommune, isDemo}) {
     }
   }, [bal, nom, email, addBalAccess])
 
-  const checkUserBALs = useCallback(async () => {
-    const userBALs = []
+  const getUserBALs = useCallback(async () => {
+    const userBALs = await searchBAL(selectedCodeCommune, email)
+    setUserBALs(userBALs)
+    setIsShown(true)
 
-    const basesLocales = await searchBAL(selectedCodeCommune, email)
+    return userBALs
+  }, [selectedCodeCommune, email])
 
-    if (basesLocales.length > 0) {
-      userBALs.push(...basesLocales)
-    }
+  const checkUserBALs = async () => {
+    const userBALs = await getUserBALs()
 
-    if (basesLocales.length > 0) {
-      const uniqUserBALs = uniqBy(userBALs, '_id')
-
-      setUserBALs(uniqUserBALs)
-      setIsShown(true)
-    } else {
+    if (userBALs.length === 0) {
       await createNewBal(selectedCodeCommune)
     }
-  }, [selectedCodeCommune, email, createNewBal])
+  }
 
   const onSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
-
     await checkUserBALs()
   }
 
@@ -148,8 +143,6 @@ function Index({defaultCommune, isDemo}) {
                 onCancel={handleClose}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
-                checkUserBALs={checkUserBALs}
-                createNewBal={createNewBal}
                 onSubmit={onSubmit}
                 file={file}
                 setFile={setFile}
