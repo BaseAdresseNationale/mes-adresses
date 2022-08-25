@@ -134,7 +134,6 @@ function Index({defaultCommune, isDemo}) {
 
             <Pane flex={1} overflowY='scroll'>
               <Form
-                defaultCommune={defaultCommune}
                 onSelect={onSelect}
                 selectedCommune={selectedCommune}
                 setSelectedCommune={setSelectedCommune}
