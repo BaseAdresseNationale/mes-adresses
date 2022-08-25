@@ -11,24 +11,18 @@ import useFocus from '@/hooks/focus'
 import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
-import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 function CreateForm({
   nom,
   onNomChange,
   onSelect,
   selectedCommune,
-  selectedCodeCommune,
   bal,
   email,
   onEmailChange,
-  userBALs,
-  onCancel,
   isLoading,
-  isShown,
-  checkUserBALs,
-  createNewBal,
-  onSubmit
+  onSubmit,
+  children
 }) {
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [focusedElement] = useFocus(true)
@@ -54,17 +48,7 @@ function CreateForm({
 
     <Pane overflowY='scroll' marginY={32}>
       <FormContainer onSubmit={onSubmit}>
-        {userBALs.length > 0 && (
-          <AlertPublishedBAL
-            isShown={isShown}
-            userEmail={email}
-            basesLocales={userBALs}
-            updateBAL={checkUserBALs}
-            onConfirm={() => createNewBal(selectedCodeCommune)}
-            onClose={onCancel}
-          />
-        )}
-
+        {children}
         <FormInput>
           <TextInputField
             ref={focusedElement}
@@ -135,7 +119,6 @@ CreateForm.propTypes = {
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired
   }),
-  selectedCodeCommune: PropTypes.string,
   nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
@@ -145,19 +128,15 @@ CreateForm.propTypes = {
     _id: PropTypes.string.isRequired,
     token: PropTypes.string.isRequired
   }),
-  userBALs: PropTypes.array.isRequired,
-  onCancel: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  isShown: PropTypes.bool.isRequired,
-  checkUserBALs: PropTypes.func.isRequired,
-  createNewBal: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  children: PropTypes.node
 }
 
 CreateForm.defaultProps = {
   selectedCommune: null,
-  selectedCodeCommune: null,
-  bal: null
+  bal: null,
+  children: null
 }
 
 export default CreateForm

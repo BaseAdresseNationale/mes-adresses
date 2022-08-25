@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect} from 'react'
+import {useCallback, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {validate} from '@ban-team/validateur-bal'
@@ -13,7 +13,6 @@ import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import Uploader from '@/components/uploader'
 import SelectCommune from '@/components/select-commune'
-import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
@@ -55,21 +54,24 @@ function UploadForm({
   email,
   onEmailChange,
   bal,
-  userBALs,
   onCancel,
   isLoading,
   setIsLoading,
-  isShown,
-  checkUserBALs,
-  createNewBal,
-  onSubmit
+  onSubmit,
+  file,
+  setFile,
+  communes,
+  setCommunes,
+  validationReport,
+  setValidationReport,
+  invalidRowsCount,
+  setInvalidRowsCount,
+  error,
+  setError,
+  resetForm,
+  children
 }) {
-  const [file, setFile] = useState(null)
-  const [error, setError] = useState(null)
   const [focusRef] = useFocus(true)
-  const [communes, setCommunes] = useState(null)
-  const [validationReport, setValidationReport] = useState(null)
-  const [invalidRowsCount, setInvalidRowsCount] = useState(null)
 
   const onDrop = async ([file]) => {
     setError(null)
@@ -112,24 +114,10 @@ function UploadForm({
     }
   }
 
-  const resetForm = useCallback(() => {
-    setFile(null)
-    setCommunes(null)
-    setSelectedCodeCommune(null)
-    setValidationReport(null)
-    setInvalidRowsCount(null)
-  }, [setSelectedCodeCommune])
-
   const onError = useCallback(error => {
     resetForm()
     setError(error)
-  }, [resetForm])
-
-  const handleClose = () => {
-    onCancel()
-    resetForm()
-    setError(null)
-  }
+  }, [resetForm, setError])
 
   useEffect(() => {
     if (selectedCodeCommune && validationReport) {
@@ -137,7 +125,7 @@ function UploadForm({
       const invalidRowsCount = validationReport.rows.filter(row => !row.isValid && extractCommuneCodeFromRow(row) === selectedCodeCommune).length
       setInvalidRowsCount(invalidRowsCount)
     }
-  }, [selectedCodeCommune, validationReport])
+  }, [selectedCodeCommune, validationReport, setInvalidRowsCount])
 
   useEffect(() => {
     async function upload() {
@@ -160,7 +148,7 @@ function UploadForm({
       setIsLoading(true)
       upload()
     }
-  }, [bal, selectedCodeCommune, setIsLoading, file, onError])
+  }, [bal, selectedCodeCommune, setIsLoading, file, onError, setError])
 
   useEffect(() => {
     if (file || error) {
@@ -172,17 +160,7 @@ function UploadForm({
     <>
       <Pane marginY={32} flex={1} overflowY='scroll'>
         <FormContainer onSubmit={onSubmit}>
-          {userBALs.length > 0 && (
-            <AlertPublishedBAL
-              isShown={isShown}
-              userEmail={email}
-              basesLocales={userBALs}
-              updateBAL={checkUserBALs}
-              onConfirm={() => createNewBal(selectedCodeCommune)}
-              onClose={handleClose}
-            />
-          )}
-
+          {children}
           <Pane display='flex' flexDirection='row'>
             <Pane flex={1} maxWidth={600}>
               <FormInput>
@@ -311,7 +289,6 @@ UploadForm.propTypes = {
   nom: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   onEmailChange: PropTypes.func.isRequired,
-  userBALs: PropTypes.array.isRequired,
   bal: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     token: PropTypes.string.isRequired
@@ -319,15 +296,31 @@ UploadForm.propTypes = {
   onCancel: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   setIsLoading: PropTypes.func.isRequired,
-  isShown: PropTypes.bool.isRequired,
-  checkUserBALs: PropTypes.func.isRequired,
-  createNewBal: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  file: PropTypes.object,
+  setFile: PropTypes.func,
+  communes: PropTypes.array,
+  setCommunes: PropTypes.func.isRequired,
+  validationReport: PropTypes.object,
+  setValidationReport: PropTypes.func.isRequired,
+  invalidRowsCount: PropTypes.number,
+  setInvalidRowsCount: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  setError: PropTypes.func.isRequired,
+  resetForm: PropTypes.func.isRequired,
+  children: PropTypes.node
 }
 
 UploadForm.defaultProps = {
   selectedCodeCommune: null,
-  bal: null
+  bal: null,
+  file: null,
+  setFile: null,
+  communes: null,
+  validationReport: null,
+  invalidRowsCount: null,
+  error: null,
+  children: null
 }
 
 export default UploadForm

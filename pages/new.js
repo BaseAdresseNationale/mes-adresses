@@ -17,6 +17,7 @@ import BackButton from '@/components/back-button'
 import CreateForm from '@/components/new/create-form'
 import UploadForm from '@/components/new/upload-form'
 import DemoForm from '@/components/new/demo-form'
+import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
 function Index({defaultCommune, isDemo}) {
   const {addBalAccess, balAccess} = useContext(LocalStorageContext)
@@ -30,8 +31,13 @@ function Index({defaultCommune, isDemo}) {
   const [userBALs, setUserBALs] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isShown, setIsShown] = useState(false)
+  const [error, setError] = useState(null)
   const [selectedCommune, setSelectedCommune] = useState(defaultCommune || null)
   const [selectedCodeCommune, setSelectedCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
+  const [file, setFile] = useState(null)
+  const [communes, setCommunes] = useState(null)
+  const [validationReport, setValidationReport] = useState(null)
+  const [invalidRowsCount, setInvalidRowsCount] = useState(null)
 
   const Form = index === 0 ? CreateForm : UploadForm
 
@@ -76,6 +82,14 @@ function Index({defaultCommune, isDemo}) {
     await checkUserBALs()
   }
 
+  const resetForm = useCallback(() => {
+    setFile(null)
+    setCommunes(null)
+    setSelectedCodeCommune(null)
+    setValidationReport(null)
+    setInvalidRowsCount(null)
+  }, [setSelectedCodeCommune])
+
   const onCancel = () => {
     setIsShown(false)
     setIsLoading(false)
@@ -85,6 +99,16 @@ function Index({defaultCommune, isDemo}) {
     setSelectedCommune(commune)
     setSelectedCodeCommune(commune.code)
   }, [setSelectedCommune, setSelectedCodeCommune])
+
+  const handleClose = () => {
+    if (index === 0) {
+      onCancel()
+    } else {
+      onCancel()
+      resetForm()
+      setError(null)
+    }
+  }
 
   return (
     <Main>
@@ -122,15 +146,35 @@ function Index({defaultCommune, isDemo}) {
                 onEmailChange={onEmailChange}
                 bal={bal}
                 userBALs={userBALs}
-                onCancel={onCancel}
+                onCancel={handleClose}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
-                isShown={isShown}
-                setIsShown={setIsShown}
                 checkUserBALs={checkUserBALs}
                 createNewBal={createNewBal}
                 onSubmit={onSubmit}
-              />
+                file={file}
+                setFile={setFile}
+                communes={communes}
+                setCommunes={setCommunes}
+                validationReport={validationReport}
+                setValidationReport={setValidationReport}
+                setInvalidRowsCount={setInvalidRowsCount}
+                invalidRowsCount={invalidRowsCount}
+                error={error}
+                setError={setError}
+                resetForm={resetForm}
+              >
+                {userBALs.length > 0 && (
+                  <AlertPublishedBAL
+                    isShown={isShown}
+                    userEmail={email}
+                    basesLocales={userBALs}
+                    updateBAL={checkUserBALs}
+                    onConfirm={() => createNewBal(selectedCodeCommune)}
+                    onClose={handleClose}
+                  />
+                )}
+              </Form>
             </Pane>
           </>)}
 
