@@ -8,8 +8,6 @@ import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
 
-import useError from '@/hooks/error'
-
 import HabilitationProcess from '@/components/habilitation-process/index'
 import Breadcrumbs from '@/components/breadcrumbs'
 import HabilitationTag from '@/components/habilitation-tag'
@@ -33,19 +31,12 @@ const SubHeader = React.memo(({commune}) => {
   } = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
 
-  const [setError] = useError(null)
-
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
   const isAdmin = Boolean(token)
 
   const handleChangeStatus = async status => {
-    try {
-      await updateBaseLocale(baseLocale._id, {status}, token)
-
-      await reloadBaseLocale()
-    } catch (error) {
-      setError(error.message)
-    }
+    await updateBaseLocale(baseLocale._id, {status}, token)
+    await reloadBaseLocale()
   }
 
   const handleHabilitation = async () => {
