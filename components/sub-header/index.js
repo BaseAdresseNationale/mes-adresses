@@ -49,13 +49,18 @@ const SubHeader = React.memo(({commune}) => {
   }
 
   const handleHabilitation = async () => {
+    const isReadyToPublish = baseLocale.status === 'ready-to-publish'
+
     if (baseLocale.status === 'draft') {
       await handleChangeStatus('ready-to-publish')
     }
 
-    if ((!habilitation || !isHabilitationValid) && !commune.isCOM) {
-      await createHabilitation(token, baseLocale._id)
-      await reloadHabilitation()
+    if (isReadyToPublish && (!habilitation || !isHabilitationValid) && !commune.isCOM) {
+      const habilitation = await createHabilitation(token, baseLocale._id)
+
+      if (habilitation) {
+        await reloadHabilitation()
+      }
     }
 
     setIsHabilitationDisplayed(true)
