@@ -10,19 +10,21 @@ function InfiniteScrollList({items, children}) {
 
   const visibleElements = useRef()
   const containerRef = useRef()
+  const scrollPosition = useRef({target: null, limit})
 
   const handleScroll = useCallback(({target}) => {
     const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + SPINNER_HEIGHT
 
     // Increase limit
     if (isAtBottom) {
-      setLimit(limit => limit + visibleElements.current)
+      setLimit(limit => {
+        scrollPosition.current = {target, limit}
+        return limit + visibleElements.current
+      })
+    } else {
+      scrollPosition.current = {target, limit: scrollPosition.current.limit}
     }
   }, [])
-
-  useEffect(() => {
-    setLimit(visibleElements.current)
-  }, [items])
 
   useEffect(() => {
     function updateMaxVisibleElements() {
@@ -39,6 +41,17 @@ function InfiniteScrollList({items, children}) {
       window.removeEventListener('resize', updateMaxVisibleElements)
     }
   }, [])
+
+  // Restore scroll position when items update
+  useEffect(() => {
+    const {target, limit} = scrollPosition.current
+
+    if (target) {
+      setLimit(limit)
+      target.scroll({top: target.scrollTop, behavior: 'instant'})
+      setLimit(limit => limit + 1) // Prevent spinner to be visible
+    }
+  }, [items])
 
   return (
     <Pane ref={containerRef} display='flex' position='relative' flex={1} flexDirection='column' overflowY='scroll' onScroll={handleScroll}>
