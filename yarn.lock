@@ -517,11 +517,13 @@
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.1.0.tgz#88c35b72e79a20b79bb4c9b3e2817241a1c9f4f9"
   integrity sha512-XQr74QaLeMiqhStEhLn1im9EOMnkypp7MZOwQhGzqp2Weu5eQJbpPxWxixxlYRKWPOmJjsk6qYfYH9kq43yc2w==
 
-"@nebula.gl/edit-modes@0.21.1":
-  version "0.21.1"
-  resolved "https://registry.yarnpkg.com/@nebula.gl/edit-modes/-/edit-modes-0.21.1.tgz#9f72b10329a7e699655b66aee362555a0ad79316"
-  integrity sha512-S/A2I7mgONuE7auGmJ08ibU/xV9fUIPB2XKNCV05RCtlnFQBRu1lXLH2rgQKb+67TvinnozYZh+ZK7ME4FlyZA==
+"@nebula.gl/edit-modes@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@nebula.gl/edit-modes/-/edit-modes-1.0.3.tgz#c9cc940d41d23576e2e1bef0ae915e94a3d63a35"
+  integrity sha512-EsfgK3NE6eVoY/6w4/VtXKE8iHpKoUvVO/7hjNwve8wrWH7x3eUXRbqnZIOd+kInuS62dTDmawoZkioHAFOvtg==
   dependencies:
+    "@turf/along" ">=6.3.0"
+    "@turf/area" ">=4.0.0"
     "@turf/bbox" ">=4.0.0"
     "@turf/bbox-polygon" ">=4.0.0"
     "@turf/bearing" ">=4.0.0"
@@ -537,6 +539,7 @@
     "@turf/helpers" ">=4.0.0"
     "@turf/intersect" ">=4.0.0"
     "@turf/line-intersect" ">=4.0.0"
+    "@turf/midpoint" ">=4.0.0"
     "@turf/nearest-point-on-line" ">=4.0.0"
     "@turf/point-to-line-distance" ">=4.0.0"
     "@turf/polygon-to-line" ">=4.0.0"
@@ -683,6 +686,25 @@
   integrity sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==
   dependencies:
     defer-to-connect "^2.0.0"
+
+"@turf/along@>=6.3.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/along/-/along-6.5.0.tgz#ab12eec58a14de60fe243a62d31a474f415c8fef"
+  integrity sha512-LLyWQ0AARqJCmMcIEAXF4GEu8usmd4Kbz3qk1Oy5HoRNpZX47+i5exQtmIWKdqJ1MMhW26fCTXgpsEs5zgJ5gw==
+  dependencies:
+    "@turf/bearing" "^6.5.0"
+    "@turf/destination" "^6.5.0"
+    "@turf/distance" "^6.5.0"
+    "@turf/helpers" "^6.5.0"
+    "@turf/invariant" "^6.5.0"
+
+"@turf/area@>=4.0.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/area/-/area-6.5.0.tgz#1d0d7aee01d8a4a3d4c91663ed35cc615f36ad56"
+  integrity sha512-xCZdiuojokLbQ+29qR6qoMD89hv+JAgWjLrwSEWL+3JV8IXKeNFl6XkEJz9HGkVpnXvQKJoRz4/liT+8ZZ5Jyg==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+    "@turf/meta" "^6.5.0"
 
 "@turf/bbox-polygon@>=4.0.0":
   version "6.5.0"
@@ -866,6 +888,16 @@
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-6.5.0.tgz#b725c3653c9f432133eaa04d3421f7e51e0418ca"
   integrity sha512-RrArvtsV0vdsCBegoBtOalgdSOfkBrTJ07VkpiCnq/491W67hnMWmDu7e6Ztw0C3WldRYTXkg3SumfdzZxLBHA==
   dependencies:
+    "@turf/helpers" "^6.5.0"
+
+"@turf/midpoint@>=4.0.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/midpoint/-/midpoint-6.5.0.tgz#5f9428959309feccaf3f55873a8de70d4121bdce"
+  integrity sha512-MyTzV44IwmVI6ec9fB2OgZ53JGNlgOpaYl9ArKoF49rXpL84F9rNATndbe0+MQIhdkw8IlzA6xVP4lZzfMNVCw==
+  dependencies:
+    "@turf/bearing" "^6.5.0"
+    "@turf/destination" "^6.5.0"
+    "@turf/distance" "^6.5.0"
     "@turf/helpers" "^6.5.0"
 
 "@turf/nearest-point-on-line@>=4.0.0", "@turf/nearest-point-on-line@^6.5.0":
@@ -6005,13 +6037,13 @@ react-is@^16.13.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-map-gl-draw@^0.21.1:
-  version "0.21.1"
-  resolved "https://registry.yarnpkg.com/react-map-gl-draw/-/react-map-gl-draw-0.21.1.tgz#cb0d45eb56dfe48b9186304aeea1e4b8bcfd4f95"
-  integrity sha512-dTT8Gnst2fmr833UeVB0t4KMmv8b0+avyjsdvGwXSW0YhDUHO6zUXj1qc18ICUSIYdDiQndQx+uolyj9iwT+fg==
+react-map-gl-draw@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-map-gl-draw/-/react-map-gl-draw-1.0.3.tgz#adac219bf9b1ab3f581df28eb1591785485ab938"
+  integrity sha512-6FZwRlWzCwDzi3L0BXoWqix5Y5ecPBVOxkV4bNmBfcTN5phPWZ3nzSqVJETyqxD0Kmg6nLIXIotwSWhDImrgzw==
   dependencies:
     "@math.gl/web-mercator" "^3.1.3"
-    "@nebula.gl/edit-modes" "0.21.1"
+    "@nebula.gl/edit-modes" "1.0.3"
     "@turf/helpers" "^6.1.4"
     "@types/react-map-gl" "5.2.2"
     mjolnir.js "^2.4.0"
