@@ -9,7 +9,7 @@ import LocalStorageContext from '@/contexts/local-storage'
 
 import {useCheckboxInput} from '@/hooks/input'
 
-import Form from '@/components/form'
+import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 
@@ -49,7 +49,7 @@ function DemoForm({defaultCommune}) {
 
   return (
     <Pane overflowY='scroll'>
-      <Form onFormSubmit={onSubmit}>
+      <FormContainer onSubmit={onSubmit}>
         <FormInput>
           <CommuneSearchField
             required
@@ -85,7 +85,7 @@ function DemoForm({defaultCommune}) {
         <Button height={40} marginTop={32} marginLeft={12} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
           {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale de démonstration'}
         </Button>
-      </Form>
+      </FormContainer>
     </Pane>
 
   )

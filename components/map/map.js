@@ -106,6 +106,8 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {modeId} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
 
+  const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune])
+
   const [handleHover, handleMouseLeave] = useHovered(map)
   const [voieTraceData, positionsData, voiesData] = useSources(isStyleLoaded)
   const bounds = useBounds(commune, voie, toponyme)
@@ -209,14 +211,14 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
     setStyle(style => {
-      if (modeId && commune.hasOrtho) {
+      if (modeId && communeHasOrtho) {
         prevStyle.current = style
         return 'ortho'
       }
 
       return prevStyle.current
     })
-  }, [modeId, setStyle, commune])
+  }, [modeId, setStyle, communeHasOrtho])
 
   useEffect(() => {
     if (isStyleLoaded) {
