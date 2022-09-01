@@ -9,7 +9,7 @@ import useFocus from '@/hooks/focus'
 
 import AssistedTextField from '@/components/assisted-text-field'
 
-function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
+function LanguageField({initialValue, availableLanguages, validationMessage, onChange, onDelete}) {
   const [codeISO, setCodeISO] = useState(initialValue?.code)
   const [input, setInput] = useState(initialValue?.value || '')
   const [ref, setIsFocus] = useFocus()
@@ -56,7 +56,7 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
         </Button>
       </SelectMenu>
 
-      <Pane display='grid' gridTemplateColumns='1fr 40px' gap='10px' marginTop='5px' alignItems='center' justifyContent='flex-start'>
+      <Pane display='grid' gridTemplateColumns='1fr 40px' marginTop={5} gap={10}>
         <AssistedTextField
           label=''
           forwadedRef={ref}
@@ -64,6 +64,8 @@ function LanguageField({initialValue, availableLanguages, onChange, onDelete}) {
           isRequired={false}
           placeholder={`Nom en ${codeISO ? languageLabel : 'langue régionale'}`}
           value={input}
+          isInvalid={Boolean(validationMessage)}
+          validationMessage={validationMessage}
           onChange={handleLanguageChange}
           isDisabled={!codeISO}
         />
@@ -92,6 +94,7 @@ LanguageField.propTypes = {
     value: PropTypes.string
   }).isRequired,
   availableLanguages: PropTypes.array.isRequired,
+  validationMessage: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 }

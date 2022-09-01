@@ -13,10 +13,11 @@ function AssistedTextField({label, forwadedRef, placeholder, value, validationMe
   }
 
   return (
-    <Pane display='flex' alignItems={validationMessage ? 'last baseline' : 'flex-end'}>
+    <Pane display='flex' alignItems='flex-start'>
       <TextInputField
         ref={forwadedRef}
         required={isRequired}
+        flex={1}
         marginBottom={0}
         disabled={isDisabled}
         label={label}
@@ -32,7 +33,7 @@ function AssistedTextField({label, forwadedRef, placeholder, value, validationMe
         flexDirection='column'
         justifyContent='center'
         marginLeft={8}
-        marginTop={3}
+        marginTop={label.length > 0 ? 26 : 8}
       >
         <AccentTool
           input={value}

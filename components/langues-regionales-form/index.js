@@ -22,8 +22,17 @@ function languagesArrayToObj(arr) {
   return reduce(filtered, (acc, current) => ({...acc, [current.code]: current.value}), {})
 }
 
-function LanguesRegionalesForm({initialValue, handleLanguages}) {
+function LanguesRegionalesForm({initialValue, validationMessages, handleLanguages}) {
   const [nomAlt, setNomAlt] = useState(objectToArray(initialValue))
+
+  const getAltValidationMessage = useCallback(code => {
+    if (validationMessages) {
+      const validationMessage = validationMessages.find(m => m.startsWith(code))
+      if (validationMessage) {
+        return validationMessage.split(' : ')[1] // Return message without code ISO as prefix
+      }
+    }
+  }, [validationMessages])
 
   const onAddForm = () => {
     setNomAlt(prev => [...prev, {code: null, value: '', id: uniqueId()}])
@@ -56,6 +65,7 @@ function LanguesRegionalesForm({initialValue, handleLanguages}) {
           key={language.id}
           initialValue={language}
           availableLanguages={languesRegionales.filter(({code}) => !nomAlt.map(({code}) => code).includes(code))}
+          validationMessage={getAltValidationMessage(language.code)}
           onChange={value => onLanguageChange(value, language.id)}
           onDelete={() => onRemoveLanguage(language.id)}
         />
@@ -79,6 +89,7 @@ function LanguesRegionalesForm({initialValue, handleLanguages}) {
 
 LanguesRegionalesForm.propTypes = {
   initialValue: PropTypes.object,
+  validationMessages: PropTypes.array,
   handleLanguages: PropTypes.func.isRequired,
 }
 
