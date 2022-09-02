@@ -1,4 +1,5 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
+import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {validate} from '@ban-team/validateur-bal'
 import {uniqBy} from 'lodash'
@@ -9,7 +10,6 @@ import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '@/lib/bal-api'
 import LocalStorageContext from '@/contexts/local-storage'
 
 import useFocus from '@/hooks/focus'
-import {useInput} from '@/hooks/input'
 
 import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
@@ -48,13 +48,11 @@ function extractCommuneFromCSV(rows) {
   return uniqBy(communes, 'code')
 }
 
-function UploadForm() {
+function UploadForm({nom, onNomChange, email, onEmailChange}) {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput('')
-  const [email, onEmailChange] = useInput('')
   const [focusRef] = useFocus(true)
   const [userBALs, setUserBALs] = useState([])
   const [isShown, setIsShown] = useState(false)
@@ -335,6 +333,18 @@ function UploadForm() {
       </Alert>
     </>
   )
+}
+
+UploadForm.propTypes = {
+  nom: PropTypes.string,
+  onNomChange: PropTypes.func.isRequired,
+  email: PropTypes.string,
+  onEmailChange: PropTypes.func.isRequired
+}
+
+UploadForm.defaultProps = {
+  nom: null,
+  email: null
 }
 
 export default UploadForm
