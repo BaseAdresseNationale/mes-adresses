@@ -1,13 +1,36 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Table, Checkbox} from 'evergreen-ui'
+import {Table, Checkbox, Pane, Spinner, Tooltip, WarningSignIcon} from 'evergreen-ui'
+
+import {getNumeros} from '@/lib/bal-api'
 
 import TableRowActions from '@/components/table-row/table-row-actions'
 import TableRowEditShortcut from '@/components/table-row/table-row-edit-shortcut'
 import TableRowNotifications from '@/components/table-row/table-row-notifications'
 
-const TableRow = React.memo(({label, nomAlt, complement, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
+const TableRow = React.memo(({label, nomAlt, complement, voieId, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
   const {onSelect, onEdit} = actions
+
+  const [hasNumeros, setHasNumeros] = useState()
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchNumeros = async () => {
+      try {
+        if (voieId) {
+          const numeros = await getNumeros(voieId)
+          setHasNumeros(numeros.length > 0)
+        } else {
+          setHasNumeros(true)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchNumeros()
+    setIsLoading(false)
+  }, [voieId])
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && isEditingEnabled) {
@@ -17,7 +40,9 @@ const TableRow = React.memo(({label, nomAlt, complement, secondary, notification
     }
   }, [isEditingEnabled, onEdit, onSelect])
 
-  return (
+  return isLoading ? (
+    <Spinner size={4} />
+  ) : (
     <Table.Row onClick={onClick} paddingRight={8} minHeight={48}>
       {isEditingEnabled && handleSelect && (
         <Table.Cell flex='0 1 1'>
@@ -42,6 +67,14 @@ const TableRow = React.memo(({label, nomAlt, complement, secondary, notification
         </Table.TextCell>
       )}
 
+      {!hasNumeros && (
+        <Pane display='flex' alignItems='center' paddingLeft={8}>
+          <Tooltip content='Cette adresse ne dispose pas de numéro'>
+            <WarningSignIcon color='orange500' />
+          </Tooltip>
+        </Pane>
+      )}
+
       {notifications && (
         <TableRowNotifications {...notifications} />
       )}
@@ -57,6 +90,7 @@ TableRow.propTypes = {
   label: PropTypes.string.isRequired,
   nomAlt: PropTypes.object,
   complement: PropTypes.string,
+  voieId: PropTypes.string,
   secondary: PropTypes.string,
   handleSelect: PropTypes.func,
   isSelected: PropTypes.bool,
@@ -72,6 +106,7 @@ TableRow.defaultProps = {
   complement: null,
   nomAlt: null,
   secondary: null,
+  voieId: null,
   notifications: null,
   handleSelect: null,
   isSelected: false,

@@ -50,6 +50,7 @@ function VoiesList({voies, onEnableEditing, onSelect, setToRemove}) {
             key={voie._id}
             label={voie.nom}
             nomAlt={voie.nomAlt}
+            voieId={voie._id}
             isEditingEnabled={Boolean(!isEditing && token)}
             actions={{
               onSelect: () => onSelect(voie._id),
