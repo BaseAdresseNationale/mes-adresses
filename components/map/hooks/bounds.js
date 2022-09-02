@@ -6,7 +6,7 @@ import BalDataContext from '@/contexts/bal-data'
 
 const BUFFER_RADIUS = 100
 
-function useBounds(commune, voie, toponyme) {
+function useBounds(commune, voie, toponyme, editedNumero) {
   const {geojson} = useContext(BalDataContext)
   const [hasBound, setHasBound] = useState(false)
 
@@ -17,6 +17,24 @@ function useBounds(commune, voie, toponyme) {
   const data = useMemo(() => {
     if (hasBound) {
       let data = null
+
+      if (editedNumero?.positions.length > 1) {
+        const features = []
+        editedNumero.positions.forEach((p, idx) => {
+          features.push({
+            type: 'Feature',
+            geometry: editedNumero.positions[idx].point,
+            properties: {id: editedNumero._id}
+          })
+        })
+
+        data = {
+          type: 'FeatureCollection',
+          features
+        }
+
+        return data
+      }
 
       if (voie) {
         data = {
@@ -53,7 +71,7 @@ function useBounds(commune, voie, toponyme) {
     }
 
     return null
-  }, [commune, voie, toponyme, hasBound]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [commune, voie, toponyme, hasBound, editedNumero]) // eslint-disable-line react-hooks/exhaustive-deps
   // Use hasBound as hook instead of geojson to prevent fitBounds on numero update
 
   return useMemo(() => data ? bbox(data) : data, [data])
