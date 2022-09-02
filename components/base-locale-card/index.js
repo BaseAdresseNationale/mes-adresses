@@ -82,6 +82,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
             flex={1}
             justifyContent='center'
             height='40px'
+            minWidth='200px'
             borderRadius={5}
             alignItems='center'
           >
