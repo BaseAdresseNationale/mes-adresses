@@ -336,15 +336,10 @@ function UploadForm({nom, onNomChange, email, onEmailChange}) {
 }
 
 UploadForm.propTypes = {
-  nom: PropTypes.string,
+  nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
-  email: PropTypes.string,
+  email: PropTypes.string.isRequired,
   onEmailChange: PropTypes.func.isRequired
-}
-
-UploadForm.defaultProps = {
-  nom: null,
-  email: null
 }
 
 export default UploadForm

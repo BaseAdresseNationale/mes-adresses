@@ -160,16 +160,14 @@ CreateForm.propTypes = {
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired
   }),
-  nom: PropTypes.string,
+  nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
-  email: PropTypes.string,
+  email: PropTypes.string.isRequired,
   onEmailChange: PropTypes.func.isRequired
 }
 
 CreateForm.defaultProps = {
-  defaultCommune: null,
-  nom: null,
-  email: null
+  defaultCommune: null
 }
 
 export default CreateForm
