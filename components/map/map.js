@@ -89,7 +89,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {map, handleMapRef, style, setStyle, defaultStyle, isStyleLoaded, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
-  const [editedNumero, setEditedNumero] = useState()
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null)
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle))
@@ -112,7 +111,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
   const [handleHover, handleMouseLeave] = useHovered(map)
   const [voieTraceData, positionsData, voiesData] = useSources(isStyleLoaded)
-  const bounds = useBounds(commune, voie, toponyme, editedNumero)
+  const bounds = useBounds(commune, voie, toponyme)
 
   const prevStyle = useRef(defaultStyle)
 
