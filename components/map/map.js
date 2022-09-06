@@ -250,16 +250,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     }
   }, [map, bounds, setViewport])
 
-  useEffect(() => {
-    if (numeros && editingId) {
-      setEditedNumero(numeros.find(n => n._id === editingId))
-
-      return () => {
-        setEditedNumero(null)
-      }
-    }
-  }, [numeros, editingId])
-
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
       <StyleControl
