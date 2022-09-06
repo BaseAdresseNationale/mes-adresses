@@ -91,6 +91,29 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
         )}
 
         <FormInput>
+          <CommuneSearchField
+            required
+            id='commune'
+            initialSelectedItem={defaultCommune}
+            label='Commune'
+            hint='Pour affiner la recherche, renseignez le code département'
+            placeholder='Roche 42'
+            appearance='default'
+            maxWidth={500}
+            disabled={isLoading}
+            onSelect={onSelect}
+          />
+
+          <Checkbox
+            label='Importer les voies et numéros depuis la BAN'
+            checked={populate}
+            disabled={isLoading}
+            marginBottom={0}
+            onChange={onPopulateChange}
+          />
+        </FormInput>
+
+        <FormInput>
           <TextInputField
             ref={focusedElement}
             required
@@ -120,29 +143,6 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
             label='Votre adresse email'
             placeholder='nom@example.com'
             onChange={onEmailChange}
-          />
-        </FormInput>
-
-        <FormInput>
-          <CommuneSearchField
-            required
-            id='commune'
-            initialSelectedItem={defaultCommune}
-            label='Commune'
-            hint='Pour affiner la recherche, renseignez le code département'
-            placeholder='Roche 42'
-            appearance='default'
-            maxWidth={500}
-            disabled={isLoading}
-            onSelect={onSelect}
-          />
-
-          <Checkbox
-            label='Importer les voies et numéros depuis la BAN'
-            checked={populate}
-            disabled={isLoading}
-            marginBottom={0}
-            onChange={onPopulateChange}
           />
         </FormInput>
 
