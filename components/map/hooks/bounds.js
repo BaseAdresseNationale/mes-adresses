@@ -19,13 +19,12 @@ function useBounds(commune, voie, toponyme, editedNumero) {
       let data = null
 
       if (editedNumero?.positions.length > 1) {
-        const features = []
-        editedNumero.positions.forEach((p, idx) => {
-          features.push({
+        const features = editedNumero.positions.map((p, idx) => {
+          return {
             type: 'Feature',
             geometry: editedNumero.positions[idx].point,
             properties: {id: editedNumero._id}
-          })
+          }
         })
 
         data = {
