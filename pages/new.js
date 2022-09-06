@@ -19,7 +19,7 @@ import DemoForm from '@/components/new/demo-form'
 function Index({defaultCommune, isDemo}) {
   const {balAccess} = useContext(LocalStorageContext)
 
-  const [nom, onNomChange] = useInput(
+  const [nom, onNomChange, resetInput] = useInput(
     defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
   )
   const [email, onEmailChange] = useInput('')
@@ -57,6 +57,7 @@ function Index({defaultCommune, isDemo}) {
                 onNomChange={onNomChange}
                 email={email}
                 onEmailChange={onEmailChange}
+                resetInput={resetInput}
               />
             </Pane>
           </>)}

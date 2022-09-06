@@ -15,7 +15,7 @@ import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
-function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
+function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, resetInput}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(false)
@@ -25,9 +25,10 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
   const [userBALs, setUserBALs] = useState([])
   const [focusedElement] = useFocus(true)
 
-  const onSelect = useCallback(commune => {
+  const onSelect = useCallback(async commune => {
+    resetInput(`Adresses de ${commune.nom}`)
     setCodeCommune(commune.code)
-  }, [])
+  }, [resetInput])
 
   const createNewBal = useCallback(async () => {
     if (codeCommune) {
@@ -163,7 +164,8 @@ CreateForm.propTypes = {
   nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
-  onEmailChange: PropTypes.func.isRequired
+  onEmailChange: PropTypes.func.isRequired,
+  resetInput: PropTypes.func.isRequired
 }
 
 CreateForm.defaultProps = {
