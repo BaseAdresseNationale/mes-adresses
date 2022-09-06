@@ -1,5 +1,6 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
 import PropTypes from 'prop-types'
+import {union} from 'lodash'
 import {toaster} from 'evergreen-ui'
 
 import {
@@ -109,9 +110,9 @@ export const BalDataContextProvider = React.memo(({
         return toponyme
       }
 
-      return numeros && numeros.find(numero => numero._id === editingId)
+      return union(voies, toponymes, numeros).find(({_id}) => _id === editingId) || null
     }
-  }, [editingId, numeros, voie, toponyme])
+  }, [editingId, numeros, voie, toponyme, voies, toponymes])
 
   const certifyAllNumeros = useCallback(async () => {
     await certifyBAL(baseLocale._id, token, {certifie: true})
