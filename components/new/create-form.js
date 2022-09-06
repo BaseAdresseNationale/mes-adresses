@@ -8,21 +8,17 @@ import {createBaseLocale, populateCommune, searchBAL} from '@/lib/bal-api'
 import LocalStorageContext from '@/contexts/local-storage'
 
 import useFocus from '@/hooks/focus'
-import {useInput, useCheckboxInput} from '@/hooks/input'
+import {useCheckboxInput} from '@/hooks/input'
 
 import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
-function CreateForm({defaultCommune}) {
+function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(false)
-  const [nom, onNomChange] = useInput(
-    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
-  )
-  const [email, onEmailChange] = useInput('')
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
@@ -164,6 +160,10 @@ CreateForm.propTypes = {
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired
   }),
+  nom: PropTypes.string.isRequired,
+  onNomChange: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
+  onEmailChange: PropTypes.func.isRequired
 }
 
 CreateForm.defaultProps = {
