@@ -19,11 +19,11 @@ function useBounds(commune, voie, toponyme) {
       let data = null
 
       if (editingItem?.positions?.length > 1) {
-        const features = editingItem.positions.map((p, idx) => {
+        const features = editingItem.positions.map(({point, ...props}) => {
           return {
             type: 'Feature',
-            geometry: editingItem.positions[idx].point,
-            properties: {id: editingItem._id}
+            geometry: point,
+            properties: {id: editingItem._id, ...props}
           }
         })
 
