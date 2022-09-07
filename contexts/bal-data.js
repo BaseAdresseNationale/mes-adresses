@@ -110,7 +110,7 @@ export const BalDataContextProvider = React.memo(({
         return toponyme
       }
 
-      return union(voies, toponymes, numeros).find(({_id}) => _id === editingId) || null
+      return union(voies, toponymes, numeros).find(({_id}) => _id === editingId)
     }
   }, [editingId, numeros, voie, toponyme, voies, toponymes])
 
