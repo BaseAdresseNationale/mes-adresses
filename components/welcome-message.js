@@ -3,6 +3,7 @@ import {Pane, Dialog, Alert, Link, Paragraph, Heading, Strong, HelpIcon} from 'e
 
 import TokenContext from '@/contexts/token'
 import LocalStorageContext from '@/contexts/local-storage'
+import VideoContainer from '@/components/help/video-container'
 
 function WelcomeMessage() {
   const {token} = useContext(TokenContext)
@@ -63,11 +64,10 @@ function WelcomeMessage() {
         Nous vous recommandons de créer une Base Adresse Locale pour chaque commune afin de faciliter leur publication.
       </Alert>
 
-      <style jsx>{`
-        .title {
-
-        }
-        `}</style>
+      <VideoContainer
+        title='Introduction à mes-adresses :'
+        link='https://peertube.adresse.data.gouv.fr/w/toyKNe4rKyVD7mUovsWLKd'
+      />
     </Dialog>
   )
 }

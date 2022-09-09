@@ -5,6 +5,7 @@ import SubTuto from '@/components/help/tuto/sub-tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Sidebar from '@/components/help/tuto/sidebar'
 import Problems from '@/components/help/help-tabs/problems'
+import VideoContainer from '@/components/help/video-container'
 
 const before = (
   <Paragraph marginTop='default'>
@@ -15,6 +16,10 @@ const before = (
 function Voies() {
   return (
     <Pane>
+      <VideoContainer
+        title='Création / Modification d’une voie :'
+        link='https://peertube.adresse.data.gouv.fr/w/rgksUPigy8KWnmx8WFELDN'
+      />
       <Tuto title='Ajouter une voie'>
         {before}
         <OrderedList margin={8}>
