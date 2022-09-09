@@ -1,4 +1,4 @@
-import {useState, useCallback, useContext} from 'react'
+import {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
@@ -7,7 +7,6 @@ import {createBaseLocale, populateCommune, searchBAL} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
-import useFocus from '@/hooks/focus'
 import {useCheckboxInput} from '@/hooks/input'
 
 import FormContainer from '@/components/form-container'
@@ -23,7 +22,13 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
   const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
   const [userBALs, setUserBALs] = useState([])
-  const [focusedElement] = useFocus(true)
+  const [ref, setRef] = useState()
+
+  useEffect(() => {
+    if (ref) {
+      ref.focus()
+    }
+  }, [ref])
 
   const onSelect = useCallback(async commune => {
     if (nom === '') {
@@ -98,6 +103,7 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
         <FormInput>
           <CommuneSearchField
             required
+            innerRef={setRef}
             id='commune'
             initialSelectedItem={defaultCommune}
             label='Commune'
@@ -120,7 +126,6 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
 
         <FormInput>
           <TextInputField
-            ref={focusedElement}
             required
             autoComplete='new-password' // Hack to bypass chrome autocomplete
             name='nom'
