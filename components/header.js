@@ -1,7 +1,7 @@
 import {useContext} from 'react'
 import NextLink from 'next/link'
 import Image from 'next/image'
-import {Pane, Button, Link, HelpIcon, BookIcon} from 'evergreen-ui'
+import {Pane, Button, Link, HelpIcon, BookIcon, VideoIcon} from 'evergreen-ui'
 
 import HelpContext from '@/contexts/help'
 
@@ -24,6 +24,12 @@ function Header() {
           onClick={() => setShowHelp(!showHelp)}
         >
           Besoin d’aide
+        </Button>
+
+        <Button appearance='minimal' marginRight='12px' minHeight='55px' iconAfter={VideoIcon}>
+          <Link href='https://peertube.adresse.data.gouv.fr' textDecoration='none' color='neutral' target='_blank'>
+            Tutoriels vidéos
+          </Link>
         </Button>
 
         <Button appearance='minimal' marginRight='12px' minHeight='55px' iconAfter={BookIcon}>
