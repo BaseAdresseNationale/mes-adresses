@@ -76,7 +76,6 @@ function Index({defaultCommune, isDemo}) {
                 email={email}
                 onEmailChange={onEmailChange}
                 resetInput={resetInput}
-                useStoredNomBAL={useStoredNomBAL}
                 setSelectedCommune={setSelectedCommune}
               />
             </Pane>
