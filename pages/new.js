@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react'
+import {useState, useContext, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 import Link from 'next/link'
@@ -16,6 +16,16 @@ import CreateForm from '@/components/new/create-form'
 import UploadForm from '@/components/new/upload-form'
 import DemoForm from '@/components/new/demo-form'
 
+const useStoredNomBAL = commune => {
+  const ref = useRef()
+
+  useEffect(() => {
+    ref.current = commune ? `Adresses de ${commune.nom}` : null
+  })
+
+  return ref.current
+}
+
 function Index({defaultCommune, isDemo}) {
   const {balAccess} = useContext(LocalStorageContext)
 
@@ -23,10 +33,18 @@ function Index({defaultCommune, isDemo}) {
     defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
   )
   const [email, onEmailChange] = useInput('')
+  const [selectedCommune, setSelectedCommune] = useState(defaultCommune)
 
   const [index, setIndex] = useState(0)
 
   const Form = index === 0 ? CreateForm : UploadForm
+  const storedNomBAL = useStoredNomBAL(selectedCommune)
+
+  useEffect(() => {
+    if (selectedCommune && storedNomBAL && nom === storedNomBAL) {
+      resetInput(`Adresses de ${selectedCommune.nom}`)
+    }
+  }, [selectedCommune, storedNomBAL, nom, resetInput])
 
   return (
     <Main>
@@ -58,6 +76,8 @@ function Index({defaultCommune, isDemo}) {
                 email={email}
                 onEmailChange={onEmailChange}
                 resetInput={resetInput}
+                useStoredNomBAL={useStoredNomBAL}
+                setSelectedCommune={setSelectedCommune}
               />
             </Pane>
           </>)}

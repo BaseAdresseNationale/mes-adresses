@@ -48,7 +48,7 @@ function extractCommuneFromCSV(rows) {
   return uniqBy(communes, 'code')
 }
 
-function UploadForm({nom, onNomChange, email, onEmailChange}) {
+function UploadForm({nom, onNomChange, email, onEmailChange, resetInput, setSelectedCommune}) {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
@@ -78,6 +78,11 @@ function UploadForm({nom, onNomChange, email, onEmailChange}) {
       const communes = extractCommuneFromCSV(validationReport.rows)
 
       if (communes[0]) {
+        if (nom === '') {
+          resetInput(`Adresses de ${communes[0].nom}`)
+        }
+
+        setSelectedCommune(communes[0])
         setSelectedCodeCommune(communes[0].code)
         if (communes.length > 1) {
           setCommunes(communes)
@@ -339,7 +344,9 @@ UploadForm.propTypes = {
   nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
-  onEmailChange: PropTypes.func.isRequired
+  onEmailChange: PropTypes.func.isRequired,
+  resetInput: PropTypes.func.isRequired,
+  setSelectedCommune: PropTypes.func.isRequired
 }
 
 export default UploadForm
