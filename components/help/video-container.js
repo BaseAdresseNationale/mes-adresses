@@ -2,11 +2,11 @@ import PropTypes from 'prop-types'
 import {Pane, Heading, Paragraph, VideoIcon} from 'evergreen-ui'
 import Link from 'next/link'
 
-const TUBE_LINK = 'https://peertube.adresse.data.gouv.fr'
+const PEERTUBE_LINK = process.env.NEXT_PUBLIC_PEERTUBE
 
 function VideoContainer({title, link}) {
   // Extract code to use embed video
-  const embedCode = link.replace(`${TUBE_LINK}/w/`, '')
+  const embedCode = link.replace(`${PEERTUBE_LINK}/w/`, '')
 
   return (
     <Pane
@@ -25,7 +25,7 @@ function VideoContainer({title, link}) {
       )}
       <iframe
         title='Création d’une Base Adresse Locale'
-        src={`${TUBE_LINK}/videos/embed/${embedCode}?p2p=0`}
+        src={`${PEERTUBE_LINK}/videos/embed/${embedCode}?p2p=0`}
         height='315px'
         width='100%'
         frameBorder='0'
@@ -34,7 +34,7 @@ function VideoContainer({title, link}) {
       />
       <Paragraph paddingTop={10}>
         <VideoIcon paddingRight={5} verticalAlign='middle' size={25} />
-        <Link href={TUBE_LINK}>
+        <Link href={PEERTUBE_LINK}>
           Retouvez tous les tutoriels vidéos
         </Link>
       </Paragraph>

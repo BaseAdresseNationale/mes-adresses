@@ -5,6 +5,8 @@ import {Pane, Button, Link, HelpIcon, BookIcon, VideoIcon} from 'evergreen-ui'
 
 import HelpContext from '@/contexts/help'
 
+const PEERTUBE_LINK = process.env.NEXT_PUBLIC_PEERTUBE
+
 function Header() {
   const {showHelp, setShowHelp} = useContext(HelpContext)
 
@@ -27,7 +29,7 @@ function Header() {
         </Button>
 
         <Button appearance='minimal' marginRight='12px' minHeight='55px' iconAfter={VideoIcon}>
-          <Link href='https://peertube.adresse.data.gouv.fr' textDecoration='none' color='neutral' target='_blank'>
+          <Link href={PEERTUBE_LINK} textDecoration='none' color='neutral' target='_blank'>
             Tutoriels vidéos
           </Link>
         </Button>
