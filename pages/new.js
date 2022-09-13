@@ -7,6 +7,8 @@ import {getCommune} from '@/lib/geo-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
+import {useInput} from '@/hooks/input'
+
 import Main from '@/layouts/main'
 
 import BackButton from '@/components/back-button'
@@ -17,7 +19,14 @@ import DemoForm from '@/components/new/demo-form'
 function Index({defaultCommune, isDemo}) {
   const {balAccess} = useContext(LocalStorageContext)
 
+  const [nom, onNomChange] = useInput(
+    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
+  )
+  const [email, onEmailChange] = useInput('')
+
   const [index, setIndex] = useState(0)
+
+  const Form = index === 0 ? CreateForm : UploadForm
 
   return (
     <Main>
@@ -42,11 +51,13 @@ function Index({defaultCommune, isDemo}) {
             </TabNavigation>
 
             <Pane flex={1} overflowY='scroll'>
-              {index === 0 ? (
-                <CreateForm defaultCommune={defaultCommune} />
-              ) : (
-                <UploadForm />
-              )}
+              <Form
+                defaultCommune={defaultCommune}
+                nom={nom}
+                onNomChange={onNomChange}
+                email={email}
+                onEmailChange={onEmailChange}
+              />
             </Pane>
           </>)}
 
