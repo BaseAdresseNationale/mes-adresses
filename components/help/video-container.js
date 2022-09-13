@@ -25,11 +25,11 @@ function VideoContainer({title, link}) {
       )}
       <iframe
         title='Création d’une Base Adresse Locale'
-        src={`${TUBE_LINK}/videos/embed/${embedCode}?warningTitle=0`}
+        src={`${TUBE_LINK}/videos/embed/${embedCode}?p2p=0`}
         height='315px'
         width='100%'
         frameBorder='0'
-        sandbox='allow-same-origin allow-scripts'
+        sandbox='allow-same-origin allow-scripts allow-popups'
         allowFullScreen='allowfullscreen'
       />
       <Paragraph paddingTop={10}>
