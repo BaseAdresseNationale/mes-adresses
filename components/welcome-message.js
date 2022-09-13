@@ -27,6 +27,11 @@ function WelcomeMessage() {
         Vous souhaitez <Strong>mettre à jour les adresses</Strong> de votre commune ? Vous êtes au <Strong>bon endroit</Strong> ! 🎉
       </Paragraph>
 
+
+      <VideoContainer
+        link='https://peertube.adresse.data.gouv.fr/w/toyKNe4rKyVD7mUovsWLKd'
+      />
+
       <Pane marginY={16}>
         <Heading size={400}>Comment cela fonctionne ❓</Heading>
         <Paragraph>
@@ -63,11 +68,6 @@ function WelcomeMessage() {
       <Alert intent='none' title='Vous êtes en charge de plusieurs communes'>
         Nous vous recommandons de créer une Base Adresse Locale pour chaque commune afin de faciliter leur publication.
       </Alert>
-
-      <VideoContainer
-        title='Introduction à mes-adresses :'
-        link='https://peertube.adresse.data.gouv.fr/w/toyKNe4rKyVD7mUovsWLKd'
-      />
     </Dialog>
   )
 }
