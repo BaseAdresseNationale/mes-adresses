@@ -5,7 +5,7 @@ import SubTuto from '@/components/help/tuto/sub-tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Sidebar from '@/components/help/tuto/sidebar'
 import Problems from '@/components/help/help-tabs/problems'
-import VideoContainer from '@/components/help/video-container'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 const before = (
   <Paragraph marginTop='default'>
@@ -18,7 +18,7 @@ function Numeros() {
     <Pane>
       <VideoContainer
         title='Création / Modification d’un numéro :'
-        link='https://peertube.adresse.data.gouv.fr/w/un73nNp4kQofNkhT38D6YQ'
+        link={`${PEERTUBE_LINK}/w/un73nNp4kQofNkhT38D6YQ`}
       />
       <Tuto title='Bon à savoir'>
         <ListItem listStyleType='none'>

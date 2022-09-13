@@ -4,7 +4,7 @@ import Tuto from '@/components/help/tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Sidebar from '@/components/help/tuto/sidebar'
 import Problems from '@/components/help/help-tabs/problems'
-import VideoContainer from '@/components/help/video-container'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 const before = (
   <Paragraph marginTop='default'>
@@ -17,7 +17,7 @@ function Toponymes() {
     <Pane>
       <VideoContainer
         title='Création / Modification d’un toponyme :'
-        link='https://peertube.adresse.data.gouv.fr/w/ttnYNTcXtcubCHQX8kHdGt'
+        link={`${PEERTUBE_LINK}/w/ttnYNTcXtcubCHQX8kHdGt`}
       />
       <Tuto title='Ajouter un toponyme'>
         {before}

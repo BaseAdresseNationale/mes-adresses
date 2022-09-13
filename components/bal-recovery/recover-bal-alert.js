@@ -6,7 +6,7 @@ import {recoverBAL} from '@/lib/bal-api'
 import {validateEmail} from '@/lib/utils/email'
 
 import LocalStorageContext from '@/contexts/local-storage'
-import VideoContainer from '@/components/help/video-container'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 import {useInput} from '@/hooks/input'
 
@@ -91,7 +91,7 @@ function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
       </Paragraph>
       <VideoContainer
         title='Tutoriel sur la récupération :'
-        link='https://peertube.adresse.data.gouv.fr/w/fdD1tzvPfktHkkVK8p7h5D'
+        link={`${PEERTUBE_LINK}/w/fdD1tzvPfktHkkVK8p7h5D`}
       />
     </Dialog>
   )

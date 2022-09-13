@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {Pane, Heading, Paragraph, VideoIcon} from 'evergreen-ui'
 import Link from 'next/link'
 
-const PEERTUBE_LINK = process.env.NEXT_PUBLIC_PEERTUBE
+const PEERTUBE_LINK = process.env.NEXT_PUBLIC_PEERTUBE || 'https://peertube.adresse.data.gouv.fr'
 
 function VideoContainer({title, link}) {
   // Extract code to use embed video
@@ -51,4 +51,4 @@ VideoContainer.propTypes = {
   link: PropTypes.string.isRequired
 }
 
-export default VideoContainer
+export {VideoContainer, PEERTUBE_LINK}

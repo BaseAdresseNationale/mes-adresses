@@ -4,14 +4,14 @@ import BALRecovery from '@/components/bal-recovery/bal-recovery'
 import Tuto from '@/components/help/tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Problems from '@/components/help/help-tabs/problems'
-import VideoContainer from '@/components/help/video-container'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 function BaseLocale() {
   return (
     <Pane>
       <VideoContainer
         title='Création d’une Base Adresse Locale :'
-        link='https://peertube.adresse.data.gouv.fr/w/aNEtMh7fJCzsAPoGkwvFSg'
+        link={`${PEERTUBE_LINK}/w/aNEtMh7fJCzsAPoGkwvFSg`}
       />
       <Tuto title='Créer une nouvelle Base Adresse Locale'>
         <Paragraph marginTop='default'>

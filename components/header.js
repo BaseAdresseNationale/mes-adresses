@@ -4,8 +4,7 @@ import Image from 'next/image'
 import {Pane, Button, Link, HelpIcon, BookIcon, VideoIcon} from 'evergreen-ui'
 
 import HelpContext from '@/contexts/help'
-
-const PEERTUBE_LINK = process.env.NEXT_PUBLIC_PEERTUBE
+import {PEERTUBE_LINK} from '@/components/help/video-container'
 
 function Header() {
   const {showHelp, setShowHelp} = useContext(HelpContext)

@@ -3,7 +3,7 @@ import {Pane, Dialog, Alert, Link, Paragraph, Heading, Strong, HelpIcon} from 'e
 
 import TokenContext from '@/contexts/token'
 import LocalStorageContext from '@/contexts/local-storage'
-import VideoContainer from '@/components/help/video-container'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 function WelcomeMessage() {
   const {token} = useContext(TokenContext)
@@ -27,9 +27,8 @@ function WelcomeMessage() {
         Vous souhaitez <Strong>mettre à jour les adresses</Strong> de votre commune ? Vous êtes au <Strong>bon endroit</Strong> ! 🎉
       </Paragraph>
 
-
       <VideoContainer
-        link='https://peertube.adresse.data.gouv.fr/w/toyKNe4rKyVD7mUovsWLKd'
+        link={`${PEERTUBE_LINK}/w/toyKNe4rKyVD7mUovsWLKd`}
       />
 
       <Pane marginY={16}>
