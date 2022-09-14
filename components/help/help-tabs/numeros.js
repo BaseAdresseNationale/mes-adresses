@@ -5,6 +5,7 @@ import SubTuto from '@/components/help/tuto/sub-tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Sidebar from '@/components/help/tuto/sidebar'
 import Problems from '@/components/help/help-tabs/problems'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 const before = (
   <Paragraph marginTop='default'>
@@ -15,6 +16,10 @@ const before = (
 function Numeros() {
   return (
     <Pane>
+      <VideoContainer
+        title='Création / Modification d’un numéro :'
+        link={`${PEERTUBE_LINK}/w/un73nNp4kQofNkhT38D6YQ`}
+      />
       <Tuto title='Bon à savoir'>
         <ListItem listStyleType='none'>
           Pour renforcer la qualité des adresses, nous vous recommandons de certifier la totalité de vos adresses. <b>Une adresse certifiée est déclarée authentique par la mairie</b>, ce qui renforce la qualité de la Base Adresse Locale et facilite sa réutilisation.

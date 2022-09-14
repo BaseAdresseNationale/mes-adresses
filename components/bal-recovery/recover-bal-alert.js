@@ -6,6 +6,7 @@ import {recoverBAL} from '@/lib/bal-api'
 import {validateEmail} from '@/lib/utils/email'
 
 import LocalStorageContext from '@/contexts/local-storage'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 import {useInput} from '@/hooks/input'
 
@@ -83,11 +84,15 @@ function RecoverBALAlert({isShown, defaultEmail, baseLocaleId, onClose}) {
       <Paragraph marginTop={16}>
         Un courrier électronique va être envoyé à l’adresse que vous avez renseignée.<br />{}
       </Paragraph>
-      <Paragraph marginTop={8}>
+      <Paragraph marginY={8}>
         {baseLocaleId ?
           'Vous y retrouverez un lien d’administration de votre Base Adresse Locale. Il vous suffira alors de cliquer sur le lien afin de pouvoir la retrouver sur votre espace.' :
           'Vous y retrouverez la liste de toutes les Bases Adresses Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace.'}
       </Paragraph>
+      <VideoContainer
+        title='Tutoriel sur la récupération :'
+        link={`${PEERTUBE_LINK}/w/fdD1tzvPfktHkkVK8p7h5D`}
+      />
     </Dialog>
   )
 }
