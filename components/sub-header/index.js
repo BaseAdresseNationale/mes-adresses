@@ -35,15 +35,18 @@ const SubHeader = React.memo(({commune}) => {
   const isAdmin = Boolean(token)
 
   const handleChangeStatus = async status => {
-    await updateBaseLocale(baseLocale._id, {status}, token)
+    const updated = await updateBaseLocale(baseLocale._id, {status}, token)
     await reloadBaseLocale()
+
+    return updated
   }
 
   const handleHabilitation = async () => {
-    const isReadyToPublish = baseLocale.status === 'ready-to-publish'
+    let isReadyToPublish = ['published', 'ready-to-publish'].includes(baseLocale.status)
 
     if (baseLocale.status === 'draft') {
-      await handleChangeStatus('ready-to-publish')
+      const updated = await handleChangeStatus('ready-to-publish')
+      isReadyToPublish = Boolean(updated)
     }
 
     if (isReadyToPublish && (!habilitation || !isHabilitationValid) && !commune.isCOM) {
@@ -54,7 +57,7 @@ const SubHeader = React.memo(({commune}) => {
       }
     }
 
-    setIsHabilitationDisplayed(true)
+    setIsHabilitationDisplayed(isReadyToPublish)
   }
 
   const handleCloseHabilitation = () => {

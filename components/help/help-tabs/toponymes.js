@@ -4,6 +4,7 @@ import Tuto from '@/components/help/tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Sidebar from '@/components/help/tuto/sidebar'
 import Problems from '@/components/help/help-tabs/problems'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 const before = (
   <Paragraph marginTop='default'>
@@ -14,6 +15,10 @@ const before = (
 function Toponymes() {
   return (
     <Pane>
+      <VideoContainer
+        title='Création / Modification d’un toponyme :'
+        link={`${PEERTUBE_LINK}/w/ttnYNTcXtcubCHQX8kHdGt`}
+      />
       <Tuto title='Ajouter un toponyme'>
         {before}
         <OrderedList margin={8}>

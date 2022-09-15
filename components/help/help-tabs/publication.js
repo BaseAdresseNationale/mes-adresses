@@ -4,10 +4,15 @@ import StatusBadge from '@/components/status-badge'
 import Tuto from '@/components/help/tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Problems from '@/components/help/help-tabs/problems'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 function Publication() {
   return (
     <Pane>
+      <VideoContainer
+        title='Publication de votre Base Adresse Locale :'
+        link={`${PEERTUBE_LINK}/w/4uU6AHpTe7coPyhskBSANB`}
+      />
       <Tuto title='Obtenir une habilitation'>
         <Paragraph>
           Avant de pouvoir publier vos adresses, votre Base Adresses Locale doit être habilitée.
