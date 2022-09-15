@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Table, Checkbox, Pane, Spinner, Tooltip, WarningSignIcon} from 'evergreen-ui'
+import {Table, Checkbox, Pane, Tooltip, WarningSignIcon} from 'evergreen-ui'
 
 import {getNumeros} from '@/lib/bal-api'
 
@@ -11,17 +11,16 @@ import TableRowNotifications from '@/components/table-row/table-row-notification
 const TableRow = React.memo(({label, nomAlt, complement, voieId, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
   const {onSelect, onEdit} = actions
 
-  const [hasNumeros, setHasNumeros] = useState()
-  const [isLoading, setIsLoading] = useState(true)
+  const [hasNoNumero, setHasNoNumero] = useState()
 
   useEffect(() => {
     const fetchNumeros = async () => {
       try {
         if (voieId) {
           const numeros = await getNumeros(voieId)
-          setHasNumeros(numeros.length > 0)
+          setHasNoNumero(numeros.length === 0)
         } else {
-          setHasNumeros(true)
+          setHasNoNumero(false)
         }
       } catch (error) {
         console.log(error)
@@ -29,7 +28,6 @@ const TableRow = React.memo(({label, nomAlt, complement, voieId, secondary, noti
     }
 
     fetchNumeros()
-    setIsLoading(false)
   }, [voieId])
 
   const onClick = useCallback(e => {
@@ -40,9 +38,7 @@ const TableRow = React.memo(({label, nomAlt, complement, voieId, secondary, noti
     }
   }, [isEditingEnabled, onEdit, onSelect])
 
-  return isLoading ? (
-    <Spinner size={4} />
-  ) : (
+  return (
     <Table.Row onClick={onClick} paddingRight={8} minHeight={48}>
       {isEditingEnabled && handleSelect && (
         <Table.Cell flex='0 1 1'>
@@ -67,7 +63,7 @@ const TableRow = React.memo(({label, nomAlt, complement, voieId, secondary, noti
         </Table.TextCell>
       )}
 
-      {!hasNumeros && (
+      {hasNoNumero && (
         <Pane display='flex' alignItems='center' paddingLeft={8}>
           <Tooltip content='Cette adresse ne dispose pas de numéro'>
             <WarningSignIcon color='orange500' />
