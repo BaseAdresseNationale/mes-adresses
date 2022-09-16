@@ -3,6 +3,7 @@ import {Pane, Dialog, Alert, Link, Paragraph, Heading, Strong, HelpIcon} from 'e
 
 import TokenContext from '@/contexts/token'
 import LocalStorageContext from '@/contexts/local-storage'
+import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 function WelcomeMessage() {
   const {token} = useContext(TokenContext)
@@ -25,6 +26,10 @@ function WelcomeMessage() {
       <Paragraph textAlign='center'>
         Vous souhaitez <Strong>mettre à jour les adresses</Strong> de votre commune ? Vous êtes au <Strong>bon endroit</Strong> ! 🎉
       </Paragraph>
+
+      <VideoContainer
+        link={`${PEERTUBE_LINK}/w/toyKNe4rKyVD7mUovsWLKd`}
+      />
 
       <Pane marginY={16}>
         <Heading size={400}>Comment cela fonctionne ❓</Heading>
@@ -62,12 +67,6 @@ function WelcomeMessage() {
       <Alert intent='none' title='Vous êtes en charge de plusieurs communes'>
         Nous vous recommandons de créer une Base Adresse Locale pour chaque commune afin de faciliter leur publication.
       </Alert>
-
-      <style jsx>{`
-        .title {
-
-        }
-        `}</style>
     </Dialog>
   )
 }
