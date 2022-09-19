@@ -56,6 +56,10 @@ function VoiesList({voies, onEnableEditing, onSelect, setToRemove}) {
               onEdit: () => onEnableEditing(voie._id),
               onRemove: () => setToRemove(voie._id)
             }}
+            notifications={{
+              isCertified: voie.isAllCertified,
+              certificationContent: voie.isAllCertified ? 'Toutes les adresses de cette voie sont certifiées par la commune' : null
+            }}
           />
         )}
       </InfiniteScrollList>
