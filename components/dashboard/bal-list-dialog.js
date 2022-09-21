@@ -22,6 +22,7 @@ function BALListDialog({basesLocales, setSelectedBasesLocales, isShown, setIsSho
     <Pane>
       <Dialog
         isShown={isShown}
+        width={900}
         title={`${basesLocales.length > 1 ? 'Bases adresses locales' : 'Base adresse locale'}`}
         onCloseComplete={handleClose}
         hasFooter={false}
