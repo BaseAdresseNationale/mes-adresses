@@ -16,35 +16,41 @@ import CreateForm from '@/components/new/create-form'
 import UploadForm from '@/components/new/upload-form'
 import DemoForm from '@/components/new/demo-form'
 
-const useStoredNomBAL = commune => {
-  const ref = useRef()
-
-  useEffect(() => {
-    ref.current = commune ? `Adresses de ${commune.nom}` : null
-  })
-
-  return ref.current
+const getSuggestedBALName = commune => {
+  return commune ? `Adresses de ${commune.nom}` : null
 }
 
 function Index({defaultCommune, isDemo}) {
   const {balAccess} = useContext(LocalStorageContext)
 
-  const [nom, onNomChange, resetInput] = useInput(
-    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
-  )
+  const suggestedBALName = useRef({
+    suggested: getSuggestedBALName(defaultCommune),
+    prev: null
+  })
+
+  const [nom, onNomChange, resetInput] = useInput(suggestedBALName.current.suggested)
   const [email, onEmailChange] = useInput('')
   const [selectedCommune, setSelectedCommune] = useState(defaultCommune)
 
   const [index, setIndex] = useState(0)
 
   const Form = index === 0 ? CreateForm : UploadForm
-  const storedNomBAL = useStoredNomBAL(selectedCommune)
 
   useEffect(() => {
-    if (selectedCommune && storedNomBAL && nom === storedNomBAL) {
-      resetInput(`Adresses de ${selectedCommune.nom}`)
+    suggestedBALName.current = {
+      prev: suggestedBALName.current.suggested, // Suggestion for previous commune
+      suggested: getSuggestedBALName(selectedCommune), // Current suggestion
+      used: false // True when current suggestion has been used
     }
-  }, [selectedCommune, storedNomBAL, nom, resetInput])
+  }, [selectedCommune])
+
+  useEffect(() => {
+    const {prev, suggested, used} = suggestedBALName.current
+    if ((nom === '' && !used) || nom === prev) {
+      resetInput(suggested)
+      suggestedBALName.current = {...suggestedBALName.current, used: true}
+    }
+  }, [nom, selectedCommune, resetInput])
 
   return (
     <Main>
@@ -75,7 +81,6 @@ function Index({defaultCommune, isDemo}) {
                 onNomChange={onNomChange}
                 email={email}
                 onEmailChange={onEmailChange}
-                resetInput={resetInput}
                 setSelectedCommune={setSelectedCommune}
               />
             </Pane>
