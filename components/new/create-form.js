@@ -14,12 +14,11 @@ import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
-function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, setSelectedCommune}) {
+function CreateForm({commune, nom, onNomChange, email, onEmailChange, handleCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [populate, onPopulateChange] = useCheckboxInput(true)
-  const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
   const [userBALs, setUserBALs] = useState([])
   const [ref, setRef] = useState()
@@ -30,19 +29,14 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
     }
   }, [ref])
 
-  const onSelect = useCallback(async commune => {
-    setSelectedCommune(commune)
-    setCodeCommune(commune.code)
-  }, [setSelectedCommune])
-
   const createNewBal = useCallback(async () => {
-    if (codeCommune) {
+    if (commune) {
       const bal = await createBaseLocale({
         nom,
         emails: [
           email
         ],
-        commune: codeCommune
+        commune: commune.code
       })
 
       addBalAccess(bal._id, bal.token)
@@ -56,13 +50,13 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
         `/bal/${bal._id}`
       )
     }
-  }, [email, nom, populate, codeCommune, addBalAccess])
+  }, [email, nom, populate, commune, addBalAccess])
 
   const onSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
 
-    checkUserBALs(codeCommune, email)
+    checkUserBALs(commune.code, email)
   }
 
   const onCancel = () => {
@@ -71,7 +65,7 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
   }
 
   const checkUserBALs = async () => {
-    const userBALs = await searchBAL(codeCommune, email)
+    const userBALs = await searchBAL(commune.code, email)
 
     if (userBALs.length > 0) {
       setUserBALs(userBALs)
@@ -90,7 +84,7 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
             isShown={isShown}
             userEmail={email}
             basesLocales={userBALs}
-            updateBAL={() => checkUserBALs(codeCommune, email)}
+            updateBAL={() => checkUserBALs(commune.code, email)}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
@@ -101,14 +95,14 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
             required
             innerRef={setRef}
             id='commune'
-            initialSelectedItem={defaultCommune}
+            initialSelectedItem={commune}
             label='Commune'
             hint='Pour affiner la recherche, renseignez le code département'
             placeholder='Roche 42'
             appearance='default'
             maxWidth={500}
             disabled={isLoading}
-            onSelect={onSelect}
+            onSelect={handleCommune}
           />
 
           <Checkbox
@@ -157,12 +151,15 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange, set
         </Button>
       </FormContainer>
     </Pane>
-
   )
 }
 
+CreateForm.defaultProps = {
+  commune: null
+}
+
 CreateForm.propTypes = {
-  defaultCommune: PropTypes.shape({
+  commune: PropTypes.shape({
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired
   }),
@@ -170,11 +167,7 @@ CreateForm.propTypes = {
   onNomChange: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
   onEmailChange: PropTypes.func.isRequired,
-  setSelectedCommune: PropTypes.func.isRequired
-}
-
-CreateForm.defaultProps = {
-  defaultCommune: null
+  handleCommune: PropTypes.func.isRequired
 }
 
 export default CreateForm

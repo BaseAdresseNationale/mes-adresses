@@ -76,12 +76,12 @@ function Index({defaultCommune, isDemo}) {
 
             <Pane flex={1} overflowY='scroll'>
               <Form
-                defaultCommune={defaultCommune}
+                commune={selectedCommune}
                 nom={nom}
                 onNomChange={onNomChange}
                 email={email}
                 onEmailChange={onEmailChange}
-                setSelectedCommune={setSelectedCommune}
+                handleCommune={setSelectedCommune}
               />
             </Pane>
           </>)}

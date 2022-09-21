@@ -48,7 +48,7 @@ function extractCommuneFromCSV(rows) {
   return uniqBy(communes, 'code')
 }
 
-function UploadForm({nom, onNomChange, email, onEmailChange, setSelectedCommune}) {
+function UploadForm({nom, onNomChange, email, onEmailChange, handleCommune}) {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
@@ -66,6 +66,7 @@ function UploadForm({nom, onNomChange, email, onEmailChange, setSelectedCommune}
   const onDrop = async ([file]) => {
     setError(null)
     setCommunes(null)
+    handleCommune(null)
     setSelectedCodeCommune(null)
 
     if (file) {
@@ -78,7 +79,7 @@ function UploadForm({nom, onNomChange, email, onEmailChange, setSelectedCommune}
       const communes = extractCommuneFromCSV(validationReport.rows)
 
       if (communes[0]) {
-        setSelectedCommune(communes[0])
+        handleCommune(communes[0])
         setSelectedCodeCommune(communes[0].code)
         if (communes.length > 1) {
           setCommunes(communes)
@@ -124,6 +125,7 @@ function UploadForm({nom, onNomChange, email, onEmailChange, setSelectedCommune}
     setIsShown(false)
     setIsLoading(false)
     setCommunes(null)
+    handleCommune(null)
     setSelectedCodeCommune(null)
     setValidationReport(null)
     setInvalidRowsCount(null)
@@ -341,7 +343,7 @@ UploadForm.propTypes = {
   onNomChange: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
   onEmailChange: PropTypes.func.isRequired,
-  setSelectedCommune: PropTypes.func.isRequired
+  handleCommune: PropTypes.func.isRequired
 }
 
 export default UploadForm
