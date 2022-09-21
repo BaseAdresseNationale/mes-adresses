@@ -5,12 +5,7 @@ import {Pane, Dialog} from 'evergreen-ui'
 
 import BaseLocaleCard from '@/components/base-locale-card'
 
-function BALListDialog({basesLocales, setSelectedBasesLocales, isShown, setIsShown}) {
-  const handleClose = () => {
-    setIsShown(false)
-    setSelectedBasesLocales([])
-  }
-
+function BALListDialog({basesLocales, isShown, handleClose}) {
   const onBalSelect = useCallback(bal => {
     Router.push(
       `/bal?balId=${bal._id}`,
@@ -43,9 +38,8 @@ function BALListDialog({basesLocales, setSelectedBasesLocales, isShown, setIsSho
 
 BALListDialog.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  setSelectedBasesLocales: PropTypes.func.isRequired,
   isShown: PropTypes.bool.isRequired,
-  setIsShown: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired
 }
 
 export default BALListDialog

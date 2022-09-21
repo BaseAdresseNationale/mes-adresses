@@ -28,7 +28,6 @@ function Map({departement, basesLocales}) {
   const [isTouchScreenDevice, setIsTouchScreenDevice] = useState(false)
   const [isDragPanEnabled, setIsDragPanEnabled] = useState(false)
   const [hoveredCommune, setHoveredCommune] = useState(null)
-  const [isShown, setIsShown] = useState(false)
   const [selectedBasesLocales, setSelectedBasesLocales] = useState([])
   const [hoveredCommuneWithBAL, setHoveredCommuneWithBAL] = useState(false)
 
@@ -93,12 +92,7 @@ function Map({departement, basesLocales}) {
       const communeBALNumber = basesLocales.filter(({commune}) => commune === hoveredId).length
       const balSourceLayer = event.features.find(({sourceLayer, properties}) => sourceLayer === 'communes' && properties.maxStatus !== 'published-other')
 
-      if (balSourceLayer) {
-        setHoveredCommuneWithBAL(true)
-      } else {
-        setHoveredCommuneWithBAL(false)
-      }
-
+      setHoveredCommuneWithBAL(Boolean(balSourceLayer))
       setHovered(hoverInfo)
       setHoveredCommune(communeBALNumber)
 
@@ -152,11 +146,6 @@ function Map({departement, basesLocales}) {
     setIsZoomActivated(!isZoomActivated)
   }
 
-  const onCommuneSelect = basesLocales => {
-    setSelectedBasesLocales(basesLocales)
-    setIsShown(true)
-  }
-
   const handleClick = event => {
     event.stopPropagation()
     const departementsSourceLayer = event.features.find(({sourceLayer}) => sourceLayer === 'departements')
@@ -165,7 +154,7 @@ function Map({departement, basesLocales}) {
     if (balSourceLayer) {
       const filteredBasesLocales = basesLocales.filter(({commune}) => commune === balSourceLayer.properties.code)
 
-      onCommuneSelect(filteredBasesLocales)
+      setSelectedBasesLocales(filteredBasesLocales)
     }
 
     if (departementsSourceLayer) {
@@ -240,9 +229,8 @@ function Map({departement, basesLocales}) {
     <div ref={mapContainerRef} className='map-container'>
       <BALListDialog
         basesLocales={selectedBasesLocales}
-        setSelectedBasesLocales={setSelectedBasesLocales}
-        isShown={isShown}
-        setIsShown={setIsShown}
+        isShown={selectedBasesLocales.length > 0}
+        handleClose={() => setSelectedBasesLocales([])}
       />
 
       <MapGL
