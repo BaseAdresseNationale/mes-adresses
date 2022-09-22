@@ -296,15 +296,12 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       {hint && (
         <Pane
           zIndex={1}
-          position='absolute'
-          width='100%'
-          top={16}
-          right={180}
-          margin='auto'
+          position='fixed'
+          width='400px'
+          top={140}
+          left='55%'
         >
-          <Pane marginLeft='50%' width='400px'>
-            <Alert title={hint} />
-          </Pane>
+          <Alert title={hint} />
         </Pane>
       )}
 
