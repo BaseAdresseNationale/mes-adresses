@@ -4,7 +4,7 @@ import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import maplibregl from 'maplibre-gl'
 import {fromJS} from 'immutable'
-import {Pane, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
+import {Pane, Alert, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
 import MapContext from '@/contexts/map'
 import BalDataContext from '@/contexts/bal-data'
@@ -104,7 +104,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     setEditingId,
     isEditing
   } = useContext(BalDataContext)
-  const {modeId} = useContext(DrawContext)
+  const {modeId, hint} = useContext(DrawContext)
   const {token} = useContext(TokenContext)
 
   const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune])
@@ -290,6 +290,17 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
             handleAddressForm={handleAddressForm}
             isDisabled={isEditing && !isAddressFormOpen}
           />
+        </Pane>
+      )}
+
+      {hint && (
+        <Pane
+          zIndex={1}
+          position='fixed'
+          alignSelf='center'
+          top={130}
+        >
+          <Alert title={hint} />
         </Pane>
       )}
 
