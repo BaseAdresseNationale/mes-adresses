@@ -297,9 +297,8 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         <Pane
           zIndex={1}
           position='fixed'
-          width='400px'
-          top={140}
-          left='55%'
+          alignSelf='center'
+          top={130}
         >
           <Alert title={hint} />
         </Pane>
