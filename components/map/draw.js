@@ -1,6 +1,5 @@
 import React, {useCallback, useMemo, useContext, useRef} from 'react'
 import {Editor, EditingMode, DrawLineStringMode} from 'react-map-gl-draw'
-import {Portal, Pane, Alert} from 'evergreen-ui'
 
 import DrawContext from '@/contexts/draw'
 
@@ -10,7 +9,7 @@ const MODES = {
 }
 
 function Draw() {
-  const {drawEnabled, modeId, hint, data, setHint, setData} = useContext(DrawContext)
+  const {drawEnabled, modeId, data, setHint, setData} = useContext(DrawContext)
   const editorRef = useRef()
 
   const _onUpdate = useCallback(({data, editType}) => {
@@ -37,33 +36,15 @@ function Draw() {
   }
 
   return (
-    <>
-      <Editor
-        ref={editorRef}
-        style={{width: '100%', height: '100%'}}
-        clickRadius={12}
-        mode={mode}
-        features={data ? [data] : undefined}
-        editHandleShape='circle'
-        onUpdate={_onUpdate}
-      />
-
-      {hint && (
-        <Portal>
-          <Pane
-            zIndex={999}
-            position='fixed'
-            width='100%'
-            top={116}
-            marginTop='0.2em'
-          >
-            <Pane marginLeft='50%' width='400px'>
-              <Alert title={hint} />
-            </Pane>
-          </Pane>
-        </Portal>
-      )}
-    </>
+    <Editor
+      ref={editorRef}
+      style={{width: '100%', height: '100%'}}
+      clickRadius={12}
+      mode={mode}
+      features={data ? [data] : undefined}
+      editHandleShape='circle'
+      onUpdate={_onUpdate}
+    />
   )
 }
 
