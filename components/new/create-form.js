@@ -14,7 +14,7 @@ import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
-function CreateForm({commune, nom, onNomChange, email, onEmailChange, handleCommune}) {
+function CreateForm({namePlaceholder, commune, nom, onNomChange, email, onEmailChange, handleCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(false)
@@ -125,7 +125,7 @@ function CreateForm({commune, nom, onNomChange, email, onEmailChange, handleComm
             marginBottom={0}
             disabled={isLoading}
             label='Nom de la Base Adresse Locale'
-            placeholder='Nom'
+            placeholder={namePlaceholder}
             onChange={onNomChange}
           />
         </FormInput>
@@ -155,10 +155,12 @@ function CreateForm({commune, nom, onNomChange, email, onEmailChange, handleComm
 }
 
 CreateForm.defaultProps = {
+  namePlaceholder: 'Nom',
   commune: null
 }
 
 CreateForm.propTypes = {
+  namePlaceholder: PropTypes.string,
   commune: PropTypes.shape({
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired

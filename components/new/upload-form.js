@@ -48,7 +48,7 @@ function extractCommuneFromCSV(rows) {
   return uniqBy(communes, 'code')
 }
 
-function UploadForm({nom, onNomChange, email, onEmailChange, handleCommune}) {
+function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, handleCommune}) {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
@@ -231,7 +231,7 @@ function UploadForm({nom, onNomChange, email, onEmailChange, handleCommune}) {
                   value={nom}
                   disabled={isLoading}
                   label='Nom de la Base Adresse Locale'
-                  placeholder='Nom'
+                  placeholder={namePlaceholder}
                   onChange={onNomChange}
                 />
               </FormInput>
@@ -339,6 +339,11 @@ function UploadForm({nom, onNomChange, email, onEmailChange, handleCommune}) {
 }
 
 UploadForm.propTypes = {
+  namePlaceholder: 'Nom'
+}
+
+UploadForm.propTypes = {
+  namePlaceholder: PropTypes.string,
   nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,

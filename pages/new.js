@@ -76,6 +76,7 @@ function Index({defaultCommune, isDemo}) {
 
             <Pane flex={1} overflowY='scroll'>
               <Form
+                namePlaceholder={suggestedBALName.current.suggested}
                 commune={selectedCommune}
                 nom={nom}
                 onNomChange={onNomChange}
