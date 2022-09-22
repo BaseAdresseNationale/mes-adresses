@@ -65,7 +65,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
                 </Text>
 
                 {commune && (
-                  <Text fontStyle='italic'> {commune.nom} ({commune.codeDepartement || 'Collectivité d’Outre-Mer'})</Text>
+                  <Text fontStyle='italic'> {commune.nom} {commune.codeDepartement ? `(${commune.codeDepartement})` : ''}</Text>
                 )}
               </Pane>
             </Pane>
