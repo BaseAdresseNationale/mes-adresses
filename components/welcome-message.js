@@ -16,7 +16,7 @@ function WelcomeMessage() {
 
   return (
     <Dialog
-      isShown={isShown && Boolean(token)}
+      isShown={Boolean(isShown && token)}
       intent='success'
       title=' Bienvenue sur votre Base Adresse Locale'
       confirmLabel='Commencer l’adressage'
