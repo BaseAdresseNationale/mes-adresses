@@ -53,8 +53,7 @@ function ToponymesList({toponymes, onSelect, onEnableEditing, setToRemove}) {
             isEditingEnabled={Boolean(!isEditing && token)}
             notifications={{
               warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null,
-              isCertified: toponyme.isAllCertified,
-              certificationContent: toponyme.isAllCertified ? 'Toutes les adresses de ce toponyme sont certifiées par la commune' : null
+              certification: toponyme.isAllCertified ? 'Toutes les adresses de ce toponyme sont certifiées par la commune' : null
             }}
             actions={{
               onSelect: () => onSelect(toponyme._id),
