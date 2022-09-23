@@ -8,7 +8,7 @@ function Accessibilite() {
   return (
     <Pane display='flex' flexDirection='column' alignItems='center' gap='4em' marginX='6em' marginTop='2em' fontSize={14}>
       <Pane width='100%' maxWidth={500} textAlign='center'>
-        <Image src='/static/images/accessibilite-illustration.svg' layout='responsive' height={100} width={500} alt />
+        <Image src='/static/images/accessibilite-illustration.svg' layout='responsive' height={100} width={500} alt='' />
       </Pane>
 
       <Pane gap='1em' display='flex' flexDirection='column' alignItems='center'>

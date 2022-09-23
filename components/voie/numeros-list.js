@@ -15,7 +15,7 @@ import DeleteWarning from '@/components/delete-warning'
 import GroupedActions from '@/components/grouped-actions'
 import InfiniteScrollList from '@/components/infinite-scroll-list'
 
-function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing}) {
+function NumerosList({token, voieId, numeros, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
@@ -36,8 +36,8 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
   ), [filtered])
 
   const isGroupedActionsShown = useMemo(() => (
-    token && !isEditionDisabled && numeros && selectedNumerosIds.length > 1
-  ), [token, isEditionDisabled, numeros, selectedNumerosIds])
+    token && numeros && selectedNumerosIds.length > 1
+  ), [token, numeros, selectedNumerosIds])
 
   const noFilter = numeros && filtered.length === numeros.length
 
@@ -137,7 +137,6 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
               iconBefore={AddIcon}
               appearance='primary'
               intent='success'
-              disabled={isEditionDisabled}
               onClick={handleEditing}
             >Ajouter un numéro</Button>
           </Pane>
@@ -169,7 +168,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
 
       <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
         <Table.Head>
-          {numeros && token && filtered.length > 1 && !isEditionDisabled && (
+          {numeros && token && filtered.length > 1 && (
             <Table.Cell flex='0 1 1'>
               <Checkbox
                 checked={isAllSelected}
@@ -198,7 +197,7 @@ function NumerosList({token, voieId, numeros, isEditionDisabled, handleEditing})
               label={numero.numeroComplet}
               secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
               complement={getToponymeName(numero.toponyme)}
-              handleSelect={!isEditionDisabled && filtered.length > 1 ? () => handleSelect(numero._id) : null}
+              handleSelect={filtered.length > 1 ? () => handleSelect(numero._id) : null}
               isSelected={selectedNumerosIds.includes(numero._id)}
               isEditingEnabled={Boolean(!isEditing && token)}
               notifications={{
@@ -226,7 +225,6 @@ NumerosList.propTypes = {
   token: PropTypes.string,
   voieId: PropTypes.string.isRequired,
   numeros: PropTypes.array.isRequired,
-  isEditionDisabled: PropTypes.bool.isRequired,
   handleEditing: PropTypes.func.isRequired
 }
 
