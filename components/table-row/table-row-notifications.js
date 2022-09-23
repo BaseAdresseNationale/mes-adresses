@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Table, Position, Tooltip, EndorsedIcon, WarningSignIcon, CommentIcon} from 'evergreen-ui'
 
-function TableRowNotifications({isCertified, comment, warning}) {
+function TableRowNotifications({certification, comment, warning}) {
   return (
     <>
       {comment && (
@@ -15,9 +15,9 @@ function TableRowNotifications({isCertified, comment, warning}) {
         </Table.Cell>
       )}
 
-      {isCertified && (
+      {certification && (
         <Table.TextCell flex='0 1 1'>
-          <Tooltip content='Cette adresse est certifiée par la commune' position={Position.BOTTOM}>
+          <Tooltip content={certification} position={Position.BOTTOM}>
             <EndorsedIcon color='success' style={{verticalAlign: 'bottom'}} />
           </Tooltip>
         </Table.TextCell>
@@ -35,13 +35,13 @@ function TableRowNotifications({isCertified, comment, warning}) {
 }
 
 TableRowNotifications.propTypes = {
-  isCertified: PropTypes.bool,
+  certification: PropTypes.string,
   comment: PropTypes.string,
-  warning: PropTypes.string
+  warning: PropTypes.string,
 }
 
 TableRowNotifications.defaultProps = {
-  isCertified: null,
+  certification: null,
   comment: null,
   warning: null
 }

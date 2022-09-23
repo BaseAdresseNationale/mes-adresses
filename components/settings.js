@@ -9,13 +9,19 @@ import SettingsForm from '@/components/settings/settings-form'
 
 const Settings = React.memo(() => {
   const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)
-  const {baseLocale, reloadBaseLocale} = useContext(BalDataContext)
+  const {baseLocale, reloadBaseLocale, reloadVoies, reloadToponymes} = useContext(BalDataContext)
 
   useEffect(() => { // Update number of certified numeros when setting is open
     if (isSettingsDisplayed) {
       reloadBaseLocale()
     }
   }, [isSettingsDisplayed, reloadBaseLocale])
+
+  const handleSubmit = () => {
+    reloadVoies()
+    reloadToponymes()
+    reloadBaseLocale()
+  }
 
   return (
     <SideSheet
@@ -28,7 +34,7 @@ const Settings = React.memo(() => {
 
       <Pane padding={16}>
         <Pane display='flex' justifyContent='center'>
-          <Certification nbNumeros={baseLocale.nbNumeros} nbNumerosCertifies={baseLocale.nbNumerosCertifies} onSubmit={() => reloadBaseLocale()} />
+          <Certification nbNumeros={baseLocale.nbNumeros} nbNumerosCertifies={baseLocale.nbNumerosCertifies} onSubmit={handleSubmit} />
         </Pane>
       </Pane>
 
