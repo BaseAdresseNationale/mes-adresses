@@ -42,7 +42,7 @@ const SubHeader = React.memo(({commune}) => {
   }
 
   const handleHabilitation = async () => {
-    let isReadyToPublish = ['published', 'ready-to-publish'].includes(baseLocale.status)
+    let isReadyToPublish = ['published', 'ready-to-publish', 'replaced'].includes(baseLocale.status)
 
     if (baseLocale.status === 'draft') {
       const updated = await handleChangeStatus('ready-to-publish')
