@@ -201,7 +201,7 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
               isSelected={selectedNumerosIds.includes(numero._id)}
               isEditingEnabled={Boolean(!isEditing && token)}
               notifications={{
-                isCertified: numero.certifie,
+                certification: numero.certifie ? 'Cette adresse est certifiée par la commune' : null,
                 comment: numero.comment,
                 warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
               }}
