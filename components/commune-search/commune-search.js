@@ -23,7 +23,7 @@ function CommuneSearch({placeholder, innerRef, initialSelectedItem, onSelect, ..
       isFilterDisabled
       initialSelectedItem={initialSelectedItem}
       items={communes}
-      itemToString={item => item ? `${item.nom} (${item.departement ? `${item.departement.nom} - ${item.departement.code}` : 'Collectivité d’Outre-Mer'})` : ''}
+      itemToString={item => item ? `${item.nom} ${item.departement ? `(${item.departement.nom} - ${item.departement.code})` : ''}` : ''}
       onChange={onSelect}
     >
       {({getInputProps, getRef, inputValue}) => {

@@ -1,4 +1,4 @@
-import {useState, useCallback, useContext} from 'react'
+import {useState, useCallback, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 import {Pane, TextInputField, Checkbox, Button, PlusIcon} from 'evergreen-ui'
@@ -7,7 +7,6 @@ import {createBaseLocale, populateCommune, searchBAL} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
-import useFocus from '@/hooks/focus'
 import {useCheckboxInput} from '@/hooks/input'
 
 import FormContainer from '@/components/form-container'
@@ -15,28 +14,29 @@ import FormInput from '@/components/form-input'
 import CommuneSearchField from '@/components/commune-search/commune-search-field'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
 
-function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
+function CreateForm({namePlaceholder, commune, nom, onNomChange, email, onEmailChange, handleCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [populate, onPopulateChange] = useCheckboxInput(true)
-  const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
   const [isShown, setIsShown] = useState(false)
   const [userBALs, setUserBALs] = useState([])
-  const [focusedElement] = useFocus(true)
+  const [ref, setRef] = useState()
 
-  const onSelect = useCallback(commune => {
-    setCodeCommune(commune.code)
-  }, [])
+  useEffect(() => {
+    if (ref) {
+      ref.focus()
+    }
+  }, [ref])
 
   const createNewBal = useCallback(async () => {
-    if (codeCommune) {
+    if (commune) {
       const bal = await createBaseLocale({
         nom,
         emails: [
           email
         ],
-        commune: codeCommune
+        commune: commune.code
       })
 
       addBalAccess(bal._id, bal.token)
@@ -50,13 +50,13 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
         `/bal/${bal._id}`
       )
     }
-  }, [email, nom, populate, codeCommune, addBalAccess])
+  }, [email, nom, populate, commune, addBalAccess])
 
   const onSubmit = async e => {
     e.preventDefault()
     setIsLoading(true)
 
-    checkUserBALs(codeCommune, email)
+    checkUserBALs(commune.code, email)
   }
 
   const onCancel = () => {
@@ -65,7 +65,7 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
   }
 
   const checkUserBALs = async () => {
-    const userBALs = await searchBAL(codeCommune, email)
+    const userBALs = await searchBAL(commune.code, email)
 
     if (userBALs.length > 0) {
       setUserBALs(userBALs)
@@ -84,15 +84,38 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
             isShown={isShown}
             userEmail={email}
             basesLocales={userBALs}
-            updateBAL={() => checkUserBALs(codeCommune, email)}
+            updateBAL={() => checkUserBALs(commune.code, email)}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
         )}
 
         <FormInput>
+          <CommuneSearchField
+            required
+            innerRef={setRef}
+            id='commune'
+            initialSelectedItem={commune}
+            label='Commune'
+            hint='Pour affiner la recherche, renseignez le code département'
+            placeholder='Roche 42'
+            appearance='default'
+            maxWidth={500}
+            disabled={isLoading}
+            onSelect={handleCommune}
+          />
+
+          <Checkbox
+            label='Importer les voies et numéros depuis la BAN'
+            checked={populate}
+            disabled={isLoading}
+            marginBottom={0}
+            onChange={onPopulateChange}
+          />
+        </FormInput>
+
+        <FormInput>
           <TextInputField
-            ref={focusedElement}
             required
             autoComplete='new-password' // Hack to bypass chrome autocomplete
             name='nom'
@@ -102,7 +125,7 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
             marginBottom={0}
             disabled={isLoading}
             label='Nom de la Base Adresse Locale'
-            placeholder='Nom'
+            placeholder={namePlaceholder}
             onChange={onNomChange}
           />
         </FormInput>
@@ -123,51 +146,30 @@ function CreateForm({defaultCommune, nom, onNomChange, email, onEmailChange}) {
           />
         </FormInput>
 
-        <FormInput>
-          <CommuneSearchField
-            required
-            id='commune'
-            initialSelectedItem={defaultCommune}
-            label='Commune'
-            hint='Pour affiner la recherche, renseignez le code département'
-            placeholder='Roche 42'
-            appearance='default'
-            maxWidth={500}
-            disabled={isLoading}
-            onSelect={onSelect}
-          />
-
-          <Checkbox
-            label='Importer les voies et numéros depuis la BAN'
-            checked={populate}
-            disabled={isLoading}
-            marginBottom={0}
-            onChange={onPopulateChange}
-          />
-        </FormInput>
-
         <Button height={40} marginTop={8} type='submit' appearance='primary' intent='success' isLoading={isLoading} iconAfter={isLoading ? null : PlusIcon}>
           {isLoading ? 'En cours de création…' : 'Créer la Base Adresse Locale'}
         </Button>
       </FormContainer>
     </Pane>
-
   )
 }
 
+CreateForm.defaultProps = {
+  namePlaceholder: 'Nom',
+  commune: null
+}
+
 CreateForm.propTypes = {
-  defaultCommune: PropTypes.shape({
+  namePlaceholder: PropTypes.string,
+  commune: PropTypes.shape({
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired
   }),
   nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
-  onEmailChange: PropTypes.func.isRequired
-}
-
-CreateForm.defaultProps = {
-  defaultCommune: null
+  onEmailChange: PropTypes.func.isRequired,
+  handleCommune: PropTypes.func.isRequired
 }
 
 export default CreateForm

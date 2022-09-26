@@ -48,7 +48,7 @@ function extractCommuneFromCSV(rows) {
   return uniqBy(communes, 'code')
 }
 
-function UploadForm({nom, onNomChange, email, onEmailChange}) {
+function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, handleCommune}) {
   const [bal, setBal] = useState(null)
   const [file, setFile] = useState(null)
   const [error, setError] = useState(null)
@@ -66,6 +66,7 @@ function UploadForm({nom, onNomChange, email, onEmailChange}) {
   const onDrop = async ([file]) => {
     setError(null)
     setCommunes(null)
+    handleCommune(null)
     setSelectedCodeCommune(null)
 
     if (file) {
@@ -78,6 +79,7 @@ function UploadForm({nom, onNomChange, email, onEmailChange}) {
       const communes = extractCommuneFromCSV(validationReport.rows)
 
       if (communes[0]) {
+        handleCommune(communes[0])
         setSelectedCodeCommune(communes[0].code)
         if (communes.length > 1) {
           setCommunes(communes)
@@ -123,6 +125,7 @@ function UploadForm({nom, onNomChange, email, onEmailChange}) {
     setIsShown(false)
     setIsLoading(false)
     setCommunes(null)
+    handleCommune(null)
     setSelectedCodeCommune(null)
     setValidationReport(null)
     setInvalidRowsCount(null)
@@ -228,7 +231,7 @@ function UploadForm({nom, onNomChange, email, onEmailChange}) {
                   value={nom}
                   disabled={isLoading}
                   label='Nom de la Base Adresse Locale'
-                  placeholder='Nom'
+                  placeholder={namePlaceholder}
                   onChange={onNomChange}
                 />
               </FormInput>
@@ -336,10 +339,16 @@ function UploadForm({nom, onNomChange, email, onEmailChange}) {
 }
 
 UploadForm.propTypes = {
+  namePlaceholder: 'Nom'
+}
+
+UploadForm.propTypes = {
+  namePlaceholder: PropTypes.string,
   nom: PropTypes.string.isRequired,
   onNomChange: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
-  onEmailChange: PropTypes.func.isRequired
+  onEmailChange: PropTypes.func.isRequired,
+  handleCommune: PropTypes.func.isRequired
 }
 
 export default UploadForm

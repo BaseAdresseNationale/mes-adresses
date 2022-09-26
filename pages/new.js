@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react'
+import {useState, useContext, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
 import Link from 'next/link'
@@ -16,17 +16,41 @@ import CreateForm from '@/components/new/create-form'
 import UploadForm from '@/components/new/upload-form'
 import DemoForm from '@/components/new/demo-form'
 
+const getSuggestedBALName = commune => {
+  return commune ? `Adresses de ${commune.nom}` : null
+}
+
 function Index({defaultCommune, isDemo}) {
   const {balAccess} = useContext(LocalStorageContext)
 
-  const [nom, onNomChange] = useInput(
-    defaultCommune ? `Adresses de ${defaultCommune.nom}` : ''
-  )
+  const suggestedBALName = useRef({
+    suggested: getSuggestedBALName(defaultCommune),
+    prev: null
+  })
+
+  const [nom, onNomChange, resetInput] = useInput(suggestedBALName.current.suggested)
   const [email, onEmailChange] = useInput('')
+  const [selectedCommune, setSelectedCommune] = useState(defaultCommune)
 
   const [index, setIndex] = useState(0)
 
   const Form = index === 0 ? CreateForm : UploadForm
+
+  useEffect(() => {
+    suggestedBALName.current = {
+      prev: suggestedBALName.current.suggested, // Suggestion for previous commune
+      suggested: getSuggestedBALName(selectedCommune), // Current suggestion
+      used: false // True when current suggestion has been used
+    }
+  }, [selectedCommune])
+
+  useEffect(() => {
+    const {prev, suggested, used} = suggestedBALName.current
+    if ((nom === '' && !used) || nom === prev) {
+      resetInput(suggested)
+      suggestedBALName.current = {...suggestedBALName.current, used: true}
+    }
+  }, [nom, selectedCommune, resetInput])
 
   return (
     <Main>
@@ -52,11 +76,13 @@ function Index({defaultCommune, isDemo}) {
 
             <Pane flex={1} overflowY='scroll'>
               <Form
-                defaultCommune={defaultCommune}
+                namePlaceholder={suggestedBALName.current.suggested}
+                commune={selectedCommune}
                 nom={nom}
                 onNomChange={onNomChange}
                 email={email}
                 onEmailChange={onEmailChange}
+                handleCommune={setSelectedCommune}
               />
             </Pane>
           </>)}
