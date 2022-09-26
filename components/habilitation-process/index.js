@@ -5,7 +5,7 @@ import {Dialog, Pane, Text, Spinner, toaster} from 'evergreen-ui'
 
 const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://mes-adresses.data.gouv.fr'
 
-import {getRevisions} from '@/lib/ban-api'
+import {getRevisions} from '@/lib/ban-api-depot'
 import {sendAuthenticationCode, validateAuthenticationCode} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
