@@ -143,6 +143,7 @@ const SubHeader = React.memo(({commune}) => {
             token={token}
             isHabilitationValid={isHabilitationValid}
             isRefrehSyncStat={isRefrehSyncStat}
+            handlePublication={handlePublication}
             handleChangeStatus={handleChangeStatus}
             handleHabilitation={handleHabilitation}
             reloadBaseLocale={async () => reloadBaseLocale()}
