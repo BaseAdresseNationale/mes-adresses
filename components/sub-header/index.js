@@ -4,6 +4,7 @@ import {useRouter} from 'next/router'
 import {Pane} from 'evergreen-ui'
 
 import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@/lib/bal-api'
+import {getBANCommune} from '@/lib/api-ban'
 
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
@@ -14,10 +15,12 @@ import HabilitationTag from '@/components/habilitation-tag'
 import COMDialog from '@/components/habilitation-process/com-dialog'
 import SettingsMenu from '@/components/sub-header/settings-menu'
 import BALStatus from '@/components/sub-header/bal-status'
+import MassDeletionDialog from '../mass-deletion-dialog'
 
 const SubHeader = React.memo(({commune}) => {
   const {query} = useRouter()
   const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(query['france-connect'] === '1')
+  const [massDeletionStatus, setMassDeletionStatus] = useState()
 
   const {
     baseLocale,
@@ -34,11 +37,22 @@ const SubHeader = React.memo(({commune}) => {
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
   const isAdmin = Boolean(token)
 
-  const handleChangeStatus = async status => {
+  const updateStatus = async status => {
     const updated = await updateBaseLocale(baseLocale._id, {status}, token)
     await reloadBaseLocale()
 
+    setMassDeletionStatus(null)
+
     return updated
+  }
+
+  const handleChangeStatus = async status => {
+    const communeBAN = await getBANCommune(commune.code)
+    if (status === 'ready-to-publish' && (baseLocale.nbNumeros / communeBAN.nbNumeros) * 100 <= 50) {
+      setMassDeletionStatus(status)
+    } else {
+      updateStatus(status)
+    }
   }
 
   const handleHabilitation = async () => {
@@ -71,6 +85,12 @@ const SubHeader = React.memo(({commune}) => {
 
   return (
     <>
+      <MassDeletionDialog
+        isShown={Boolean(massDeletionStatus)}
+        handleConfirm={() => updateStatus(massDeletionStatus)}
+        handleCancel={() => setMassDeletionStatus(null)}
+      />
+
       <Pane
         position='fixed'
         top={76}
@@ -131,6 +151,7 @@ const SubHeader = React.memo(({commune}) => {
 SubHeader.propTypes = {
   commune: PropTypes.shape({
     nom: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired,
     isCOM: PropTypes.bool.isRequired
   }).isRequired
 }
