@@ -12,6 +12,7 @@ import useFuse from '@/hooks/fuse'
 
 import TableRow from '@/components/table-row'
 import InfiniteScrollList from '@/components/infinite-scroll-list'
+import CommentsContent from '@/components/comments-content'
 
 function ToponymesList({toponymes, onSelect, onEnableEditing, setToRemove}) {
   const {token} = useContext(TokenContext)
@@ -53,6 +54,7 @@ function ToponymesList({toponymes, onSelect, onEnableEditing, setToRemove}) {
             isEditingEnabled={Boolean(!isEditing && token)}
             notifications={{
               warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null,
+              comment: toponyme.commentedNumeros.length > 0 ? <CommentsContent comments={toponyme.commentedNumeros} /> : null,
               certification: toponyme.isAllCertified ? 'Toutes les adresses de ce toponyme sont certifiées par la commune' : null
             }}
             actions={{

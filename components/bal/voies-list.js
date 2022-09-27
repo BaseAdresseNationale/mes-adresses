@@ -11,6 +11,8 @@ import TokenContext from '@/contexts/token'
 import useFuse from '@/hooks/fuse'
 
 import TableRow from '@/components/table-row'
+import CommentsContent from '@/components/comments-content'
+
 import InfiniteScrollList from '../infinite-scroll-list'
 
 function VoiesList({voies, onEnableEditing, onSelect, setToRemove}) {
@@ -58,6 +60,7 @@ function VoiesList({voies, onEnableEditing, onSelect, setToRemove}) {
             }}
             notifications={{
               certification: voie.isAllCertified ? 'Toutes les adresses de cette voie sont certifiées par la commune' : null,
+              comment: voie.commentedNumeros.length > 0 ? <CommentsContent comments={voie.commentedNumeros} /> : null,
               warning: voie.nbNumeros === 0 ? 'Cette voie ne contient aucun numéro' : null
             }}
           />

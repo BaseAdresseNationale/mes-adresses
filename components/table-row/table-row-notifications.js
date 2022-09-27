@@ -36,7 +36,7 @@ function TableRowNotifications({certification, comment, warning}) {
 
 TableRowNotifications.propTypes = {
   certification: PropTypes.string,
-  comment: PropTypes.string,
+  comment: PropTypes.node,
   warning: PropTypes.string,
 }
 
