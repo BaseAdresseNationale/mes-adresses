@@ -1,9 +1,15 @@
+import {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {Dialog, Pane, Paragraph, Strong, VideoIcon} from 'evergreen-ui'
 
 import {PEERTUBE_LINK} from '@/components/help/video-container'
 
 function MassDeletionDialog({isShown, handleConfirm, handleCancel}) {
+  const onConfirm = useCallback(() => {
+    handleConfirm()
+    handleCancel() // Pass isShown to false
+  }, [handleConfirm, handleCancel])
+
   return (
     <Dialog
       isShown={isShown}
@@ -11,7 +17,7 @@ function MassDeletionDialog({isShown, handleConfirm, handleCancel}) {
       title='⚠️ Un très grand nombre d’adresses a été supprimé'
       cancelLabel='Annuler'
       confirmLabel='Continuer'
-      onConfirm={handleConfirm}
+      onConfirm={onConfirm}
       onCancel={handleCancel}
     >
       <Pane>
@@ -25,10 +31,15 @@ function MassDeletionDialog({isShown, handleConfirm, handleCancel}) {
   )
 }
 
+MassDeletionDialog.defaultProps = {
+  handleConfirm: null,
+  handleCancel: null
+}
+
 MassDeletionDialog.propTypes = {
   isShown: PropTypes.bool.isRequired,
-  handleConfirm: PropTypes.func.isRequired,
-  handleCancel: PropTypes.func.isRequired
+  handleConfirm: PropTypes.func,
+  handleCancel: PropTypes.func
 }
 
 export default MassDeletionDialog
