@@ -7,7 +7,7 @@ function CommentsList({comments}) {
   return comments.map(({_id, numero, suffixe, comment}) => (
     <Pane color='white' key={_id} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>
       <Text color='white'>
-        {numero}{suffixe} : {comment}
+        • {numero}{suffixe} : {comment}
       </Text>
     </Pane>
   ))
@@ -22,7 +22,7 @@ function CommentsContent({comments}) {
     <>
       <Pane marginBottom={8}>
         <Text color='white'>
-          Commentaire{`${comments.length > 0 ? 's' : ''}`}
+          Commentaire{`${comments.length > 0 ? 's' : ''}`} :
         </Text>
       </Pane>
       <CommentsList comments={filteredComments} />
