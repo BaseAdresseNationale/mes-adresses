@@ -14,7 +14,7 @@ function CommentsList({comments}) {
 }
 
 function CommentsContent({comments}) {
-  const filteredComments = comments.length > COMMENTS_LIMIT ? comments.slice(0, COMMENTS_LIMIT) : comments
+  const filteredComments = comments.slice(0, COMMENTS_LIMIT)
   const nbComments = comments.length
   const remainComments = nbComments - COMMENTS_LIMIT
 
@@ -22,7 +22,7 @@ function CommentsContent({comments}) {
     <>
       <Pane marginBottom={8}>
         <Text color='white'>
-          Commentaire{`${filteredComments.length > 0 ? 's' : ''}`}
+          Commentaire{`${comments.length > 0 ? 's' : ''}`}
         </Text>
       </Pane>
       <CommentsList comments={filteredComments} />

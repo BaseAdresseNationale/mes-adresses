@@ -36,7 +36,10 @@ function TableRowNotifications({certification, comment, warning}) {
 
 TableRowNotifications.propTypes = {
   certification: PropTypes.string,
-  comment: PropTypes.node,
+  comment: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.node
+  ]),
   warning: PropTypes.string,
 }
 
