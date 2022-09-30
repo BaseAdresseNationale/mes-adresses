@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Button, Text, Icon, HistoryIcon, Spinner} from 'evergreen-ui'
 
-import {getRevisions} from '@/lib/ban-api'
+import {getRevisions} from '@/lib/ban-api-depot'
 
 import Revision from '@/components/sub-header/bal-status/ban-sync/ban-history/revision'
 

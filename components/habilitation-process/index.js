@@ -5,7 +5,7 @@ import {Dialog, Pane, Text, Spinner, toaster} from 'evergreen-ui'
 
 const EDITEUR_URL = process.env.NEXT_PUBLIC_EDITEUR_URL || 'https://mes-adresses.data.gouv.fr'
 
-import {getRevisions} from '@/lib/ban-api'
+import {getRevisions} from '@/lib/ban-api-depot'
 import {sendAuthenticationCode, validateAuthenticationCode} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
@@ -27,7 +27,7 @@ function getStep(habilitation) {
   return 0
 }
 
-function HabilitationProcess({token, baseLocale, commune, habilitation, handleSync, resetHabilitationProcess, handleClose}) {
+function HabilitationProcess({token, baseLocale, commune, habilitation, handlePublication, resetHabilitationProcess, handleClose}) {
   const [step, setStep] = useState(getStep(habilitation))
   const [isLoading, setIsLoading] = useState(false)
   const [isConflicted, setIsConflicted] = useState(false)
@@ -103,7 +103,7 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handleSy
 
   const handleConfirm = () => {
     if (habilitation.status === 'accepted') {
-      handleSync()
+      handlePublication()
     }
 
     handleClose()
@@ -197,7 +197,7 @@ HabilitationProcess.propTypes = {
       type: PropTypes.oneOf(['email', 'franceconnect'])
     }),
   }).isRequired,
-  handleSync: PropTypes.func.isRequired,
+  handlePublication: PropTypes.func.isRequired,
   resetHabilitationProcess: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired
 }

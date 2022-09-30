@@ -1,9 +1,10 @@
 import React, {useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
-import {Pane} from 'evergreen-ui'
+import {Pane, toaster} from 'evergreen-ui'
 
 import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@/lib/bal-api'
+import {getBANCommune} from '@/lib/api-ban'
 
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
@@ -14,10 +15,12 @@ import HabilitationTag from '@/components/habilitation-tag'
 import COMDialog from '@/components/habilitation-process/com-dialog'
 import SettingsMenu from '@/components/sub-header/settings-menu'
 import BALStatus from '@/components/sub-header/bal-status'
+import MassDeletionDialog from '@/components/mass-deletion-dialog'
 
 const SubHeader = React.memo(({commune}) => {
   const {query} = useRouter()
   const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(query['france-connect'] === '1')
+  const [massDeletionConfirm, setMassDeletionConfirm] = useState()
 
   const {
     baseLocale,
@@ -34,11 +37,33 @@ const SubHeader = React.memo(({commune}) => {
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
   const isAdmin = Boolean(token)
 
-  const handleChangeStatus = async status => {
+  const checkMassDeletion = async () => {
+    try {
+      const communeBAN = await getBANCommune(commune.code)
+      return (baseLocale.nbNumeros / communeBAN.nbNumeros) * 100 <= 50
+    } catch (error) {
+      toaster.danger('Impossible de récupérer les données de la Base Adresse Nationale', {
+        description: error
+      })
+
+      return false
+    }
+  }
+
+  const updateStatus = async status => {
     const updated = await updateBaseLocale(baseLocale._id, {status}, token)
     await reloadBaseLocale()
 
     return updated
+  }
+
+  const handleChangeStatus = async status => {
+    const isMassDeletionDetected = await checkMassDeletion()
+    if (status === 'ready-to-publish' && isMassDeletionDetected) {
+      setMassDeletionConfirm(() => (() => updateStatus(status)))
+    } else {
+      updateStatus(status)
+    }
   }
 
   const handleHabilitation = async () => {
@@ -69,8 +94,24 @@ const SubHeader = React.memo(({commune}) => {
     await reloadBaseLocale()
   }
 
+  const handlePublication = async () => {
+    const isMassDeletionDetected = await checkMassDeletion()
+
+    if (isMassDeletionDetected) {
+      setMassDeletionConfirm(() => handleSync)
+    } else {
+      handleSync()
+    }
+  }
+
   return (
     <>
+      <MassDeletionDialog
+        isShown={Boolean(massDeletionConfirm)}
+        handleConfirm={massDeletionConfirm}
+        handleCancel={() => setMassDeletionConfirm(null)}
+      />
+
       <Pane
         position='fixed'
         top={76}
@@ -102,6 +143,7 @@ const SubHeader = React.memo(({commune}) => {
             token={token}
             isHabilitationValid={isHabilitationValid}
             isRefrehSyncStat={isRefrehSyncStat}
+            handlePublication={handlePublication}
             handleChangeStatus={handleChangeStatus}
             handleHabilitation={handleHabilitation}
             reloadBaseLocale={async () => reloadBaseLocale()}
@@ -121,7 +163,7 @@ const SubHeader = React.memo(({commune}) => {
           habilitation={habilitation}
           resetHabilitationProcess={handleHabilitation}
           handleClose={handleCloseHabilitation}
-          handleSync={handleSync}
+          handlePublication={handlePublication}
         />
       )}
     </>
@@ -131,6 +173,7 @@ const SubHeader = React.memo(({commune}) => {
 SubHeader.propTypes = {
   commune: PropTypes.shape({
     nom: PropTypes.string.isRequired,
+    code: PropTypes.string.isRequired,
     isCOM: PropTypes.bool.isRequired
   }).isRequired
 }
