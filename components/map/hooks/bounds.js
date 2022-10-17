@@ -1,72 +1,104 @@
-import {useMemo, useContext, useState, useEffect} from 'react'
+import {useMemo, useContext, useCallback, useState, useEffect, useRef} from 'react'
 import bbox from '@turf/bbox'
 
 import BalDataContext from '@/contexts/bal-data'
 import {useRouter} from 'next/router'
 
-function useBounds(commune, toponyme) {
+function positionsToFeatures(id, positions) {
+  if (positions.length > 0) {
+    return positions.map(({point, ...props}) => {
+      return {
+        type: 'Feature',
+        geometry: point,
+        properties: {id, ...props}
+      }
+    })
+  }
+}
+
+function useBounds(commune, voie, toponyme) {
   const {geojson, editingItem} = useContext(BalDataContext)
   const [data, setData] = useState(commune.contour)
   const [isGeojsonLoaded, setIsGeojsonLoaded] = useState(Boolean(geojson))
+
+  const geojsonFeatures = useRef(geojson?.features)
 
   const router = useRouter()
 
   useEffect(() => {
     setIsGeojsonLoaded(Boolean(geojson))
+    geojsonFeatures.current = geojson?.features
   }, [geojson])
 
-  useEffect(() => {
+  const getVoieBounds = useCallback(voieId => {
+    return {
+      type: 'FeatureCollection',
+      features: geojsonFeatures.current.filter(feature => feature.properties.idVoie === voieId)
+    }
+  }, [])
+
+  const getToponymeBounds = useCallback(toponymeId => {
+    let features
+    const numeroToponyme = geojsonFeatures.current.filter(feature => feature.properties.idToponyme === toponymeId)
+
+    if (numeroToponyme.length > 0) {
+      features = numeroToponyme
+    } else if (toponyme.positions.length > 0) {
+      features = positionsToFeatures(toponyme._id, toponyme.positions)
+    }
+
+    if (features?.length > 0) {
+      return {
+        type: 'FeatureCollection',
+        features
+      }
+    }
+
+    return commune.contour // Fallback when toponyme has no position or numeros
+  }, [toponyme, commune])
+
+  useEffect(() => { // Get bounds on page load
     let data
     const {idVoie, idToponyme} = router.query
 
     if (isGeojsonLoaded) {
       if (idVoie) {
-        data = {
-          type: 'FeatureCollection',
-          features: geojson.features.filter(feature => feature.properties.idVoie === router.query.idVoie)
-        }
+        data = getVoieBounds(idVoie)
       } else if (idToponyme) {
-        const numeroToponyme = geojson.features.filter(feature => feature.properties.idToponyme === idToponyme)
-        data = {
-          type: 'FeatureCollection',
-          features: numeroToponyme.length === 0 && toponyme.positions.length === 1 ?
-            [{
-              type: 'Feature',
-              geometry: toponyme.positions[0].point,
-              properties: {id: toponyme._id}
-            }] :
-            numeroToponyme
-        }
+        data = getToponymeBounds(idToponyme)
       }
     }
 
-    if (!geojson || (!router.query.idVoie && !router.query.idToponyme)) {
+    if (!geojsonFeatures.current || (!idVoie && !idToponyme)) {
       data = commune.contour
     }
 
     setData(data)
-  }, [commune.contour, router.query, isGeojsonLoaded, toponyme]) // eslint-disable-line react-hooks/exhaustive-deps
-  // Use hasBound as hook instead of geojson to prevent fitBounds on numero update
+  }, [commune.contour, router.query, isGeojsonLoaded, getVoieBounds, getToponymeBounds, toponyme, voie])
 
-  useEffect(() => {
-    if (editingItem?.positions?.length > 1) {
-      const features = editingItem.positions.map(({point, ...props}) => {
-        return {
-          type: 'Feature',
-          geometry: point,
-          properties: {id: editingItem._id, ...props}
+  useEffect(() => { // Get bound of the current edited item
+    if (editingItem) {
+      let data
+      if (editingItem.positions) { // Numéro or toponyme’s positions
+        if (editingItem.positions?.length > 1) {
+          const features = positionsToFeatures(editingItem._id, editingItem.positions)
+
+          data = {
+            type: 'FeatureCollection',
+            features
+          }
         }
-      })
+      } else if (editingItem.parcelle) { // Distinguishes toponyme and voie
+        data = getToponymeBounds(editingItem._id)
+      } else {
+        data = getVoieBounds(editingItem._id)
+      }
 
-      setData({
-        type: 'FeatureCollection',
-        features
-      })
+      setData(data)
     }
-  }, [editingItem, setData])
+  }, [editingItem, getVoieBounds, getToponymeBounds])
 
   return useMemo(() => data ? bbox(data) : null, [data])
 }
 
 export default useBounds
-

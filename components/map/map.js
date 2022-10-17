@@ -111,7 +111,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
   const [handleHover, handleMouseLeave] = useHovered(map)
   const [voieTraceData, positionsData, voiesData] = useSources(isStyleLoaded)
-  const bounds = useBounds(commune, toponyme)
+  const bounds = useBounds(commune, voie, toponyme)
 
   const prevStyle = useRef(defaultStyle)
 
