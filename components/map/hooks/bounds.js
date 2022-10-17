@@ -31,11 +31,17 @@ function useBounds(commune, voie, toponyme) {
   }, [geojson])
 
   const getVoieBounds = useCallback(voieId => {
-    return {
-      type: 'FeatureCollection',
-      features: geojsonFeatures.current.filter(feature => feature.properties.idVoie === voieId)
+    const features = geojsonFeatures.current.filter(feature => feature.properties.idVoie === voieId)
+
+    if (features.length > 0) {
+      return {
+        type: 'FeatureCollection',
+        features: geojsonFeatures.current.filter(feature => feature.properties.idVoie === voieId)
+      }
     }
-  }, [])
+
+    return commune.contour // Fallback when voie has no position or numeros
+  }, [commune])
 
   const getToponymeBounds = useCallback(toponymeId => {
     let features
