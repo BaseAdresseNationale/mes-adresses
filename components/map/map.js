@@ -228,24 +228,18 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   }, [isStyleLoaded, updatePositionsLayer])
 
   useEffect(() => {
-    if (map) {
-      if (bounds) {
-        const camera = map.cameraForBounds(bounds, {
-          padding: 100
-        })
+    if (map && bounds) {
+      const camera = map.cameraForBounds(bounds, {
+        padding: 100
+      })
 
-        if (camera) {
-          setViewport(viewport => ({
-            ...viewport,
-            bearing: camera.bearing,
-            longitude: camera.center.lng,
-            latitude: camera.center.lat,
-            zoom: camera.zoom
-          }))
-        }
-      } else {
-        setViewport(viewport => ({...viewport}))
-      }
+      setViewport(viewport => ({
+        ...viewport,
+        bearing: camera.bearing,
+        longitude: camera.center.lng,
+        latitude: camera.center.lat,
+        zoom: camera.zoom
+      }))
     }
   }, [map, bounds, setViewport])
 
