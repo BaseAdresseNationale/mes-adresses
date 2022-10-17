@@ -1,8 +1,9 @@
 import {useState, useEffect} from 'react'
+import NextImage from 'next/image'
 import PropTypes from 'prop-types'
 import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
+import {Heading, Card, Pane, Text, Tooltip, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 
 import {getBaseLocale} from '@/lib/bal-api'
 import {getCommune} from '@/lib/geo-api'
@@ -86,6 +87,22 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
             borderRadius={5}
             alignItems='center'
           >
+            {baseLocale?._habilitation && (
+              <Tooltip content='Les adresses de cette Base Locale sont gérées par la commune'>
+                <Pane
+                  position='relative'
+                  width={45}
+                  height={45}
+                  marginX={12}
+                >
+                  <NextImage
+                    src='/static/images/mairie.svg'
+                    alt='Logo Mairie'
+                    layout='fill'
+                  />
+                </Pane>
+              </Tooltip>
+            )}
             <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
           </Pane>
         </Pane>
@@ -121,6 +138,7 @@ BaseLocaleCard.propTypes = {
     nom: PropTypes.string.isRequired,
     commune: PropTypes.string.isRequired,
     _updated: PropTypes.string,
+    _habilitation: PropTypes.string,
     status: PropTypes.oneOf([
       'draft', 'ready-to-publish', 'replaced', 'published', 'demo'
     ]),
