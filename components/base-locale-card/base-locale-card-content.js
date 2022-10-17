@@ -1,4 +1,4 @@
-import {useState, useMemo, useContext} from 'react'
+import {useState, useMemo, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
@@ -8,27 +8,69 @@ import LocalStorageContext from '@/contexts/local-storage'
 
 import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 
+import {getHabilitation} from '@/lib/bal-api'
+
 function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove, onHide}) {
   const {status, _created, emails} = baseLocale
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
+  const [habilitation, setHabilitation] = useState(null)
 
   const {getBalToken} = useContext(LocalStorageContext)
+  const token = getBalToken(baseLocale._id)
+
+  const loadHabilitation = useCallback(async () => {
+    const hab = await getHabilitation(token, baseLocale._id)
+    setHabilitation(hab)
+  }, [setHabilitation, baseLocale, token])
 
   const hasToken = useMemo(() => {
-    return Boolean(getBalToken(baseLocale._id))
-  }, [baseLocale._id, getBalToken])
+    return Boolean(token)
+  }, [token])
 
-  const createDate = format(new Date(_created), 'PPP', {locale: fr})
+  function formatDate(string) {
+    return format(new Date(string), 'PPP', {locale: fr})
+  }
+
   const isDeletable = status === 'draft' || status === 'demo'
   const tooltipContent = status === 'ready-to-publish' ?
     'Vous ne pouvez pas supprimer une BAL lorsqu’elle est prête à être publiée' :
     'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
+
+  useEffect(() => {
+    if (baseLocale._habilitation && token) {
+      loadHabilitation()
+    }
+  }, [baseLocale, loadHabilitation, token])
+
   return (
     <>
-      <Pane borderTop flex={3} display='flex' flexDirection='row' paddingTop='1em'>
+      <Pane borderTop flex={3} display='flex' paddingTop='1em'>
         <Pane flex={1} textAlign='center' margin='auto'>
-          <Text>Créée le <Pane><b>{createDate}</b></Pane></Text>
+          <Text>Créée le <Pane><b>{formatDate(_created)}</b></Pane></Text>
         </Pane>
+
+        {habilitation && (
+          <Pane
+            flex={1}
+            padding={5}
+            textAlign='center'
+            display='flex'
+            flexDirection='column'
+            justifyContent='center'
+            alignItems='center'
+          >
+            <Text>
+              Les adresses de cette Base Locale sont gérées par la commune
+            </Text>
+            <Text>
+              <small>
+                <i>
+                  L’habilitation reçue prendra fin le {formatDate(habilitation.expiresAt)}
+                </i>
+              </small>
+            </Text>
+          </Pane>
+        )}
 
         {emails && isAdmin && (
           <Pane flex={1} textAlign='center' padding='8px' display='flex' flexDirection='row' justifyContent='center' margin='auto'>
@@ -117,6 +159,7 @@ BaseLocaleCardContent.propTypes = {
     _id: PropTypes.string.isRequired,
     emails: PropTypes.array,
     _created: PropTypes.string.isRequired,
+    _habilitation: PropTypes.string,
     status: PropTypes.oneOf([
       'draft', 'ready-to-publish', 'replaced', 'published', 'demo'
     ])
