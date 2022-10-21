@@ -4,7 +4,6 @@ import Router from 'next/router'
 import {Pane, Table, Paragraph} from 'evergreen-ui'
 
 import {sortBalByUpdate} from '@/lib/sort-bal'
-import {listBasesLocales} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
@@ -108,12 +107,6 @@ function BasesLocalesList({basesLocales, sortBal}) {
       </Pane>
     )
   )
-}
-
-BasesLocalesList.getInitialProps = async () => {
-  return {
-    basesLocales: await listBasesLocales()
-  }
 }
 
 BasesLocalesList.defaultProps = {

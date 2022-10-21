@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
-import {Pane, Heading, Paragraph, Spinner, Button} from 'evergreen-ui'
+import {useRouter} from 'next/router'
+import {useDebouncedCallback} from 'use-debounce'
+import {Pane, Heading, Paragraph, Spinner, Button, Pagination} from 'evergreen-ui'
 
-import {listBasesLocales} from '@/lib/bal-api'
+import {searchBasesLocales} from '@/lib/bal-api'
 import {sortBalByUpdate} from '@/lib/sort-bal'
 
 import Main from '@/layouts/main'
@@ -17,7 +19,26 @@ const PublicBasesLocalesList = dynamic(() => import('@/components/bases-locales-
   )
 })
 
-function All({basesLocales}) {
+function All({basesLocales, nom, page, limit, totalPages}) {
+  const router = useRouter()
+
+  const [onFilter] = useDebouncedCallback(async value => {
+    const query = {page, limit}
+
+    if (value.length >= 2) {
+      query.nom = value
+    }
+
+    router.push({pathname: '/all', query})
+  }, 400)
+
+  const handlePageChange = page => {
+    router.push({
+      pathname: '/all',
+      query: {page, limit}
+    })
+  }
+
   return (
     <Main>
       <Pane padding={16} backgroundColor='white'>
@@ -28,8 +49,22 @@ function All({basesLocales}) {
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
-        <PublicBasesLocalesList basesLocales={basesLocales} sortBal={sortBalByUpdate} />
+        <PublicBasesLocalesList
+          basesLocales={basesLocales}
+          searchInput={nom}
+          onFilter={onFilter} />
       </Pane>
+
+      {totalPages > 1 && (
+        <Pagination
+          marginX='auto'
+          page={page}
+          totalPages={totalPages}
+          onPreviousPage={() => handlePageChange(page - 1)}
+          onPageChange={handlePageChange}
+          onNextPage={() => handlePageChange(page + 1)}
+        />
+      )}
 
       <Pane borderTop marginTop='auto' padding={16}>
         <Paragraph size={300} color='muted'>
@@ -45,14 +80,22 @@ function All({basesLocales}) {
   )
 }
 
-All.getInitialProps = async () => {
+All.getInitialProps = async ({query}) => {
+  const result = await searchBasesLocales(query)
+
   return {
-    basesLocales: await listBasesLocales()
+    ...result,
+    nom: query.nom || '',
+    basesLocales: sortBalByUpdate(result.basesLocales)
   }
 }
 
 All.propTypes = {
-  basesLocales: PropTypes.array.isRequired
+  basesLocales: PropTypes.array.isRequired,
+  nom: PropTypes.string.isRequired,
+  page: PropTypes.number.isRequired,
+  limit: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired
 }
 
 export default All

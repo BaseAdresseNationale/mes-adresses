@@ -1,18 +1,11 @@
-import {useCallback, useMemo, useState} from 'react'
+import {useCallback} from 'react'
 import PropTypes from 'prop-types'
 import Router from 'next/router'
-import {Pane, Table, Button, PlusIcon} from 'evergreen-ui'
-
-import {sortBalByUpdate} from '@/lib/sort-bal'
-import {listBasesLocales} from '@/lib/bal-api'
-
-import useFuse from '@/hooks/fuse'
+import {Pane, Table} from 'evergreen-ui'
 
 import BaseLocaleCard from '@/components/base-locale-card'
 
-function PublicBasesLocalesList({basesLocales, sortBal}) {
-  const [limit, setLimit] = useState(50)
-
+function PublicBasesLocalesList({basesLocales, searchInput, onFilter}) {
   const onBalSelect = useCallback(bal => {
     Router.push(
       `/bal?balId=${bal._id}`,
@@ -20,26 +13,17 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
     )
   }, [])
 
-  const [filtered, onFilter] = useFuse(basesLocales, 200, {
-    keys: [
-      'nom'
-    ]
-  })
-
-  const slicedBasesLocalesList = useMemo(() => {
-    return sortBal(filtered).slice(0, limit)
-  }, [filtered, sortBal, limit])
-
   return (
     <Pane borderTop>
       <Table>
         <Table.Head>
           <Table.SearchHeaderCell
+            value={searchInput}
             placeholder='Rechercher une Base Adresse Locale'
             onChange={onFilter}
           />
         </Table.Head>
-        {slicedBasesLocalesList.length === 0 && (
+        {basesLocales.length === 0 && (
           <Table.Row>
             <Table.TextCell color='muted' fontStyle='italic'>
               Aucun résultat
@@ -47,7 +31,7 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
           </Table.Row>
         )}
         <Table.Body background='tint1'>
-          {slicedBasesLocalesList.map(bal => (
+          {basesLocales.map(bal => (
             <BaseLocaleCard
               key={bal._id}
               baseLocale={bal}
@@ -55,37 +39,20 @@ function PublicBasesLocalesList({basesLocales, sortBal}) {
               onSelect={() => onBalSelect(bal)}
             />
           ))}
-          {limit < filtered.length && (
-            <Pane style={{width: '100%', display: 'flex', justifyContent: 'space-around'}}>
-              <Button
-                appearance='minimal'
-                marginBottom='1em'
-                iconAfter={PlusIcon}
-                onClick={() => setLimit(limit => limit + 50)}
-              >
-                Afficher les 50 Bases Locales suivantes
-              </Button>
-            </Pane>
-          )}
         </Table.Body>
       </Table>
     </Pane>
   )
 }
 
-PublicBasesLocalesList.getInitialProps = async () => {
-  return {
-    basesLocales: await listBasesLocales()
-  }
-}
-
-PublicBasesLocalesList.defaultProps = {
-  sortBal: sortBalByUpdate
+PublicBasesLocalesList.propTypes = {
+  searchInput: ''
 }
 
 PublicBasesLocalesList.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  sortBal: PropTypes.func
+  searchInput: PropTypes.string,
+  onFilter: PropTypes.func
 }
 
 export default PublicBasesLocalesList
