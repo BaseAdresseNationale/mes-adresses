@@ -65,10 +65,10 @@ function CreateForm({namePlaceholder, commune, nom, onNomChange, email, onEmailC
   }
 
   const checkUserBALs = async () => {
-    const {basesLocales} = await searchBasesLocales({commune: commune.code, email})
+    const {results} = await searchBasesLocales({commune: commune.code, email})
 
-    if (basesLocales.length > 0) {
-      setUserBALs(basesLocales)
+    if (results.length > 0) {
+      setUserBALs(results)
       setIsShown(true)
     } else {
       createNewBal()

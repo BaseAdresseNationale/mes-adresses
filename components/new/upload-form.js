@@ -151,9 +151,9 @@ function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, ha
   const checkUserBALs = useCallback(async () => {
     const userBALs = []
 
-    const {basesLocales} = await searchBasesLocales({commune: selectedCodeCommune, email})
-    if (basesLocales.length > 0) {
-      userBALs.push(...basesLocales)
+    const {results} = await searchBasesLocales({commune: selectedCodeCommune, email})
+    if (results.length > 0) {
+      userBALs.push(...results)
     }
 
     if (userBALs.length > 0) {

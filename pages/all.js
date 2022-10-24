@@ -19,11 +19,13 @@ const PublicBasesLocalesList = dynamic(() => import('@/components/bases-locales-
   )
 })
 
-function All({basesLocales, nom, page, limit, totalPages}) {
+function All({basesLocales, nom, limit, offset, count}) {
   const router = useRouter()
+  const totalPages = Math.ceil(count / limit)
+  const currentPage = Math.ceil((offset - 1) / limit) + 1
 
   const [onFilter] = useDebouncedCallback(async value => {
-    const query = {page, limit}
+    const query = {page: count, limit}
 
     if (value.length >= 2) {
       query.nom = value
@@ -58,11 +60,11 @@ function All({basesLocales, nom, page, limit, totalPages}) {
       {totalPages > 1 && (
         <Pagination
           marginX='auto'
-          page={page}
+          page={currentPage}
           totalPages={totalPages}
-          onPreviousPage={() => handlePageChange(page - 1)}
+          onPreviousPage={() => handlePageChange(currentPage - 1)}
           onPageChange={handlePageChange}
-          onNextPage={() => handlePageChange(page + 1)}
+          onNextPage={() => handlePageChange(currentPage + 1)}
         />
       )}
 
@@ -86,16 +88,16 @@ All.getInitialProps = async ({query}) => {
   return {
     ...result,
     nom: query.nom || '',
-    basesLocales: sortBalByUpdate(result.basesLocales)
+    basesLocales: sortBalByUpdate(result.results)
   }
 }
 
 All.propTypes = {
   basesLocales: PropTypes.array.isRequired,
   nom: PropTypes.string.isRequired,
-  page: PropTypes.number.isRequired,
+  offset: PropTypes.number.isRequired,
   limit: PropTypes.number.isRequired,
-  totalPages: PropTypes.number.isRequired
+  count: PropTypes.number.isRequired
 }
 
 export default All
