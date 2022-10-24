@@ -89,9 +89,12 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
     const changes = {
       voie: idVoie === selectedVoieId ? null : selectedVoieId,
-      toponyme: selectedToponymeId === '' ? null : selectedToponymeId,
       comment: commentCondition(comment),
       certifie: getIsCertifie(certifie)
+    }
+
+    if (hasUniqToponyme) {
+      changes.toponyme = selectedToponymeId === '' ? null : selectedToponymeId
     }
 
     if (positionType) {
@@ -106,7 +109,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     setIsLoading(false)
     setIsShown(false)
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, certifie, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds, idVoie])
+  }, [comment, selectedVoieId, certifie, hasUniqToponyme, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds, idVoie])
 
   useEffect(() => {
     if (!isShown) {
