@@ -1,3 +1,4 @@
+import {useEffect, useState} from 'react'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
@@ -24,10 +25,12 @@ function All({basesLocales, nom, limit, offset, count}) {
   const totalPages = Math.ceil(count / limit)
   const currentPage = Math.ceil((offset - 1) / limit) + 1
 
-  const [onFilter] = useDebouncedCallback(async value => {
-    const query = {page: count, limit}
+  const [input, setInput] = useState(nom || '')
 
-    if (value.length >= 2) {
+  const [onFilter] = useDebouncedCallback(async value => {
+    const query = {page: currentPage, limit}
+
+    if (value.length > 0) {
       query.nom = value
     }
 
@@ -41,6 +44,12 @@ function All({basesLocales, nom, limit, offset, count}) {
     })
   }
 
+  useEffect(() => {
+    if (input !== nom) {
+      onFilter(input)
+    }
+  }, [input, nom, onFilter])
+
   return (
     <Main>
       <Pane padding={16} backgroundColor='white'>
@@ -53,8 +62,8 @@ function All({basesLocales, nom, limit, offset, count}) {
       <Pane flex={1} overflowY='scroll'>
         <PublicBasesLocalesList
           basesLocales={basesLocales}
-          searchInput={nom}
-          onFilter={onFilter} />
+          searchInput={input}
+          onFilter={setInput} />
       </Pane>
 
       {totalPages > 1 && (
