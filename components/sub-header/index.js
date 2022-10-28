@@ -113,6 +113,7 @@ const SubHeader = React.memo(({commune}) => {
         isShown={Boolean(massDeletionConfirm)}
         handleConfirm={massDeletionConfirm}
         handleCancel={() => setMassDeletionConfirm(null)}
+        onClose={() => setMassDeletionConfirm(null)}
       />
 
       <Pane
