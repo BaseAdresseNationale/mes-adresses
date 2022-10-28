@@ -60,9 +60,12 @@ const SubHeader = React.memo(({commune}) => {
   const handleChangeStatus = async status => {
     const isMassDeletionDetected = await checkMassDeletion()
     if (status === 'ready-to-publish' && isMassDeletionDetected) {
-      setMassDeletionConfirm(() => (() => updateStatus(status)))
+      setMassDeletionConfirm(() => (async () => {
+        const updated = await updateStatus(status)
+        setIsHabilitationDisplayed(updated)
+      }))
     } else {
-      updateStatus(status)
+      return updateStatus(status)
     }
   }
 
