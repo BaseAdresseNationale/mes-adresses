@@ -19,7 +19,7 @@ function PublicBasesLocalesList({basesLocales, searchInput, onFilter}) {
         <Table.Head>
           <Table.SearchHeaderCell
             value={searchInput}
-            placeholder='Rechercher une Base Adresse Locale'
+            placeholder='Rechercher un code commune'
             onChange={onFilter}
           />
         </Table.Head>

@@ -1,9 +1,8 @@
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import dynamic from 'next/dynamic'
 import {useRouter} from 'next/router'
-import {useDebouncedCallback} from 'use-debounce'
 import {Pane, Heading, Paragraph, Spinner, Button, Pagination} from 'evergreen-ui'
 
 import {searchBasesLocales} from '@/lib/bal-api'
@@ -20,22 +19,22 @@ const PublicBasesLocalesList = dynamic(() => import('@/components/bases-locales-
   )
 })
 
-function All({basesLocales, nom, limit, offset, count}) {
+function All({basesLocales, commune, limit, offset, count}) {
   const router = useRouter()
   const totalPages = Math.ceil(count / limit)
   const currentPage = Math.ceil((offset - 1) / limit) + 1
 
-  const [input, setInput] = useState(nom || '')
+  const [input, setInput] = useState(commune || '')
 
-  const [onFilter] = useDebouncedCallback(async value => {
+  const onFilter = async value => {
     const query = {page: currentPage, limit}
 
     if (value.length > 0) {
-      query.nom = value
+      query.commune = value
     }
 
     router.push({pathname: '/all', query})
-  }, 400)
+  }
 
   const handlePageChange = page => {
     router.push({
@@ -44,11 +43,17 @@ function All({basesLocales, nom, limit, offset, count}) {
     })
   }
 
-  useEffect(() => {
-    if (input !== nom) {
-      onFilter(input)
-    }
-  }, [input, nom, onFilter])
+  const handleInput = value => {
+    setInput(prev => {
+      const input = value.slice(0, 5)
+
+      if (input !== prev && (input.length === 5 || input.length === 0)) {
+        onFilter(input)
+      }
+
+      return input
+    })
+  }
 
   return (
     <Main>
@@ -63,7 +68,7 @@ function All({basesLocales, nom, limit, offset, count}) {
         <PublicBasesLocalesList
           basesLocales={basesLocales}
           searchInput={input}
-          onFilter={setInput} />
+          onFilter={handleInput} />
       </Pane>
 
       {totalPages > 1 && (
@@ -92,21 +97,31 @@ function All({basesLocales, nom, limit, offset, count}) {
 }
 
 All.getInitialProps = async ({query}) => {
-  const result = await searchBasesLocales(query)
+  let result
+
+  try {
+    result = await searchBasesLocales(query)
+  } catch {}
 
   return {
     ...result,
-    nom: query.nom || '',
-    basesLocales: sortBalByUpdate(result.results)
+    commune: query.commune || '',
+    basesLocales: result ? sortBalByUpdate(result.results) : []
   }
+}
+
+All.defaultProps = {
+  offset: 0,
+  limit: 20,
+  count: 0
 }
 
 All.propTypes = {
   basesLocales: PropTypes.array.isRequired,
-  nom: PropTypes.string.isRequired,
-  offset: PropTypes.number.isRequired,
-  limit: PropTypes.number.isRequired,
-  count: PropTypes.number.isRequired
+  commune: PropTypes.string.isRequired,
+  offset: PropTypes.number,
+  limit: PropTypes.number,
+  count: PropTypes.number
 }
 
 export default All
