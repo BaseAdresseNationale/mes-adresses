@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
-import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
+import {Pane, Heading, Text, Paragraph, Button, AddIcon, GroupedBarChartIcon} from 'evergreen-ui'
 
 import {populateCommune, removeVoie, removeToponyme} from '@/lib/bal-api'
 
@@ -15,12 +15,13 @@ import VoiesList from '@/components/bal/voies-list'
 import VoieEditor from '@/components/bal/voie-editor'
 import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
+import BalInfos from '@/components/bal/bal-infos'
 
 const BaseLocale = React.memo(({baseLocale, commune}) => {
   const [editedItem, setEditedItem] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
-  const [selectedTab, setSelectedTab] = useState('voie')
+  const [selectedTab, setSelectedTab] = useState('bal')
 
   const {token} = useContext(TokenContext)
   const router = useRouter()
@@ -130,6 +131,9 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
           justifyContent='space-around'
           height={38}
         >
+          <div className={`tab small ${selectedTab === 'bal' ? 'selected' : ''}`} onClick={() => setSelectedTab('bal')}>
+            <Heading><GroupedBarChartIcon /></Heading>
+          </div>
           <div className={`tab ${selectedTab === 'voie' ? 'selected' : ''}`} onClick={() => setSelectedTab('voie')}>
             <Heading>Liste des voies</Heading>
           </div>
@@ -138,38 +142,49 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
           </div>
         </Pane>
 
-        <Pane
-          flexShrink={0}
-          elevation={0}
-          backgroundColor='white'
-          paddingX={16}
-          display='flex'
-          alignItems='center'
-          minHeight={50}
-        >
-          {token && (
-            <Pane marginLeft='auto'>
-              <Button
-                iconBefore={AddIcon}
-                appearance='primary'
-                intent='success'
-                disabled={isEditing}
-                onClick={() => setIsFormOpen(true)}
-              >
-                Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
-              </Button>
-            </Pane>
-          )}
-        </Pane>
+        {selectedTab !== 'bal' && (
+          <Pane
+            flexShrink={0}
+            elevation={0}
+            backgroundColor='white'
+            paddingX={16}
+            display='flex'
+            alignItems='center'
+            minHeight={50}
+          >
+            {token && (
+              <Pane marginLeft='auto'>
+                <Button
+                  iconBefore={AddIcon}
+                  appearance='primary'
+                  intent='success'
+                  disabled={isEditing}
+                  onClick={() => setIsFormOpen(true)}
+                >
+                  Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
+                </Button>
+              </Pane>
+            )}
+          </Pane>
+        )}
 
-        {selectedTab === 'voie' ? (
+        {selectedTab === 'bal' && (
+          <BalInfos
+            nbVoies={voies.length}
+            nbToponymes={toponymes.length}
+          />
+        )}
+
+        {selectedTab === 'voie' && (
           <VoiesList
             voies={voies}
             setToRemove={setToRemove}
             onEnableEditing={onEdit}
             onSelect={onSelect}
           />
-        ) : (
+        )}
+
+        {selectedTab === 'toponyme' && (
           <ToponymesList
             toponymes={toponymes}
             commune={commune}
@@ -218,6 +233,10 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
 
         .tab .selected:hover {
           background: #E4E7EB;
+        }
+
+        .small {
+          width: 40%;
         }
       `}</style>
     </>
