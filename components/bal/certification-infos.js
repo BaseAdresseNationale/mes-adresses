@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react'
+import {useState, useContext, useEffect} from 'react'
 import {Pane, Heading, Dialog, Button, Text, Alert, EndorsedIcon, WarningSignIcon, LightbulbIcon, ChevronUpIcon, ChevronDownIcon, BanCircleIcon} from 'evergreen-ui'
 
 import BalDataContext from '@/contexts/bal-data'
@@ -7,7 +7,7 @@ import ProgressBar from '@/components/progress-bar'
 import Counter from '@/components/counter'
 
 function CertificationInfos() {
-  const {certifyAllNumeros, reloadBaseLocale, baseLocale} = useContext(BalDataContext)
+  const {certifyAllNumeros, reloadBaseLocale, baseLocale, reloadVoies, reloadToponymes} = useContext(BalDataContext)
   const [isDialogShown, setIsDialogShown] = useState(false)
   const [isInfosShown, setIsInfosShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -20,7 +20,9 @@ function CertificationInfos() {
     setIsLoading(true)
 
     await certifyAllNumeros()
-    await reloadBaseLocale()
+    reloadVoies()
+    reloadToponymes()
+    reloadBaseLocale()
 
     setIsLoading(false)
   }
@@ -29,6 +31,10 @@ function CertificationInfos() {
     setIsDialogShown(false)
     setIsInfosShown(false)
   }
+
+  useEffect(() => {
+    reloadBaseLocale()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
