@@ -4,7 +4,7 @@ import {Dialog, Pane, Paragraph, Strong, VideoIcon} from 'evergreen-ui'
 
 import {PEERTUBE_LINK} from '@/components/help/video-container'
 
-function MassDeletionDialog({isShown, handleConfirm, handleCancel}) {
+function MassDeletionDialog({isShown, handleConfirm, handleCancel, onClose}) {
   const onConfirm = useCallback(() => {
     handleConfirm()
     handleCancel() // Pass isShown to false
@@ -19,6 +19,7 @@ function MassDeletionDialog({isShown, handleConfirm, handleCancel}) {
       confirmLabel='Continuer'
       onConfirm={onConfirm}
       onCancel={handleCancel}
+      onCloseComplete={onClose}
     >
       <Pane>
         <Paragraph>Vous avez <Strong>supprimé au moins 50% des adresses</Strong> connues actuellement dans la Base Adresse Nationale.</Paragraph>
@@ -33,13 +34,15 @@ function MassDeletionDialog({isShown, handleConfirm, handleCancel}) {
 
 MassDeletionDialog.defaultProps = {
   handleConfirm: null,
-  handleCancel: null
+  handleCancel: null,
+  onClose: null
 }
 
 MassDeletionDialog.propTypes = {
   isShown: PropTypes.bool.isRequired,
   handleConfirm: PropTypes.func,
-  handleCancel: PropTypes.func
+  handleCancel: PropTypes.func,
+  onClose: PropTypes.func
 }
 
 export default MassDeletionDialog
