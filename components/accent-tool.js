@@ -3,35 +3,47 @@ import {Popover, Button, Pane} from 'evergreen-ui'
 
 const ACCENTS = [
   'à',
+  'á',
   'â',
   'é',
   'è',
   'ê',
   'ë',
+  'í',
   'î',
   'ï',
+  'ó',
   'ô',
   'ö',
+  'ú',
   'ù',
   'û',
   'ü',
   'ç',
+  'ñ',
   'œ',
+  'l·l',
   'À',
+  'Á',
   'Â',
   'É',
   'È',
   'Ê',
   'Ë',
+  'Í',
   'Î',
   'Ï',
+  'Ó',
   'Ô',
   'Ö',
+  'Ú',
   'Ù',
   'Û',
   'Ü',
   'Ç',
-  'Œ'
+  'Ñ',
+  'Œ',
+  'L·L'
 ]
 
 function AccentTool({input, handleAccent, updateCaret, forwadedRef, isDisabled}) {
@@ -46,7 +58,7 @@ function AccentTool({input, handleAccent, updateCaret, forwadedRef, isDisabled})
   return (
     <Popover
       content={({close}) => (
-        <Pane width={250} height={242} onClick={close}>
+        <Pane width={290} height={290} onClick={close}>
           <Pane display='grid' gridTemplateColumns='repeat(auto-fit, minmax(34px, auto))' gridGap={10}>
             {ACCENTS.map(accent => (
               <Button key={accent} appearance='minimal' value={accent} onClick={handleClick}>
