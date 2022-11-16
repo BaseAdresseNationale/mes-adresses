@@ -9,9 +9,11 @@ const ACCENTS = [
   'è',
   'ê',
   'ë',
+  'ì',
   'í',
   'î',
   'ï',
+  'ò',
   'ó',
   'ô',
   'ö',
@@ -30,9 +32,11 @@ const ACCENTS = [
   'È',
   'Ê',
   'Ë',
+  'Ì',
   'Í',
   'Î',
   'Ï',
+  'Ò',
   'Ó',
   'Ô',
   'Ö',
@@ -58,10 +62,10 @@ function AccentTool({input, handleAccent, updateCaret, forwadedRef, isDisabled})
   return (
     <Popover
       content={({close}) => (
-        <Pane width={290} height={290} onClick={close}>
-          <Pane display='grid' gridTemplateColumns='repeat(auto-fit, minmax(34px, auto))' gridGap={10}>
+        <Pane width={300} height={300} onClick={close}>
+          <Pane display='grid' gridTemplateColumns='repeat(auto-fit, 44px)' gridGap={6}>
             {ACCENTS.map(accent => (
-              <Button key={accent} appearance='minimal' value={accent} onClick={handleClick}>
+              <Button fontSize='large' key={accent} appearance='minimal' value={accent} onClick={handleClick}>
                 {accent}
               </Button>
             ))}
