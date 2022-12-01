@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import {Heading, Pane, Button} from 'evergreen-ui'
 import {uniq} from 'lodash'
 
-import {getBasesLocalesStats, listBasesLocales} from '@/lib/bal-api'
+import {getBasesLocales, getBasesLocalesStats} from '@/lib/bal-api'
 
 import DashboardLayout from '@/layouts/dashboard'
 
@@ -39,7 +39,7 @@ function Index({basesLocales, basesLoclesStats}) {
 }
 
 Index.getInitialProps = async () => {
-  const basesLocales = await listBasesLocales()
+  const basesLocales = await getBasesLocales()
   const basesLoclesStats = await getBasesLocalesStats()
   const basesLocalesWithoutDemo = basesLocales.filter((b => b.status !== 'demo'))
 

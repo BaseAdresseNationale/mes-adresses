@@ -5,7 +5,7 @@ import {validate} from '@ban-team/validateur-bal'
 import {uniqBy} from 'lodash'
 import {Pane, Alert, Button, Dialog, TextInputField, Text, Strong, FormField, PlusIcon, InboxIcon, Paragraph, ShareIcon} from 'evergreen-ui'
 
-import {createBaseLocale, uploadBaseLocaleCsv, searchBAL} from '@/lib/bal-api'
+import {createBaseLocale, uploadBaseLocaleCsv, searchBasesLocales} from '@/lib/bal-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
@@ -151,9 +151,9 @@ function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, ha
   const checkUserBALs = useCallback(async () => {
     const userBALs = []
 
-    const basesLocales = await searchBAL(selectedCodeCommune, email)
-    if (basesLocales.length > 0) {
-      userBALs.push(...basesLocales)
+    const {results} = await searchBasesLocales({commune: selectedCodeCommune, email})
+    if (results.length > 0) {
+      userBALs.push(...results)
     }
 
     if (userBALs.length > 0) {
