@@ -1,7 +1,7 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
-import {Pane, Dialog, Paragraph} from 'evergreen-ui'
+import {Pane, Dialog, Paragraph, toaster} from 'evergreen-ui'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
 
@@ -22,6 +22,13 @@ import Help from '@/components/help'
 
 function App({error, Component, pageProps, query}) {
   const [isMobileWarningDisplayed, setIsMobileWarningDisplayed] = useState(false)
+
+  useEffect(() => {
+    toaster.warning('Maintenance du site', {
+      description: 'Le site sera en maintenance de 17h à 17h30 et sera temporairement indisponible. Merci de votre compréhension.',
+      duration: 60
+    })
+  }, [])
 
   return (
     <>
