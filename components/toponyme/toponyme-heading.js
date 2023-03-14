@@ -16,7 +16,7 @@ function ToponymeHeading({toponyme, commune}) {
   const {isEditing, editingId, numeros} = useContext(BalDataContext)
 
   const onEnableToponymeEditing = () => {
-    if (!isEditing) {
+    if (!isEditing && token) {
       setIsFormOpen(true)
       setHovered(false)
     }

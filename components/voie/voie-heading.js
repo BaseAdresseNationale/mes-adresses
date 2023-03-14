@@ -16,11 +16,11 @@ function VoieHeading({voie}) {
   const {editingId, isEditing, numeros} = useContext(BalDataContext)
 
   const onEnableVoieEditing = useCallback(() => {
-    if (!isEditing) {
+    if (!isEditing && token) {
       setIsFormOpen(true)
       setHovered(false)
     }
-  }, [isEditing])
+  }, [isEditing, token])
 
   useEffect(() => {
     if (editingId === voie._id) {
