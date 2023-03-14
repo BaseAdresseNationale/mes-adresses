@@ -113,15 +113,17 @@ function Toponyme({baseLocale, commune}) {
           >
             <Heading>Liste des numéros</Heading>
             <Pane marginLeft='auto'>
-              <Button
-                iconBefore={AddIcon}
-                appearance='primary'
-                intent='success'
-                disabled={isEditing}
-                onClick={onEnableAdding}
-              >
-                Ajouter des numéros
-              </Button>
+              {token && (
+                <Button
+                  iconBefore={AddIcon}
+                  appearance='primary'
+                  intent='success'
+                  disabled={isEditing}
+                  onClick={onEnableAdding}
+                >
+                  Ajouter des numéros
+                </Button>
+              )}
             </Pane>
           </Pane>
         )}
