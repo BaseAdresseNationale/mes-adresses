@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react'
+import React, {useCallback} from 'react'
 
 import {removeBaseLocale} from '@/lib/bal-api'
 
@@ -25,33 +25,25 @@ export function LocalStorageContextProvider(props) {
     removeBalAccess(balId)
   }, [getBalToken, removeBalAccess])
 
-  const value = useMemo(() => ({
-    balAccess, getBalToken, addBalAccess, removeBAL,
-    wasWelcomed, setWasWelcomed,
-    recoveryEmailSent, setRecoveryEmailSent,
-    informedAboutCertification, getInformedAboutCertification, addInformedAboutCertification,
-    hiddenBal, setHiddenBal, getHiddenBal, addHiddenBal, removeHiddenBal
-  }), [
-    balAccess,
-    getBalToken,
-    addBalAccess,
-    removeBAL,
-    wasWelcomed,
-    setWasWelcomed,
-    recoveryEmailSent,
-    setRecoveryEmailSent,
-    informedAboutCertification,
-    getInformedAboutCertification,
-    addInformedAboutCertification,
-    hiddenBal,
-    setHiddenBal,
-    getHiddenBal,
-    addHiddenBal,
-    removeHiddenBal
-  ])
-
   return (
-    <LocalStorageContext.Provider value={value} {...props} />
+    <LocalStorageContext.Provider value={{
+      balAccess,
+      getBalToken,
+      addBalAccess,
+      removeBAL,
+      wasWelcomed,
+      setWasWelcomed,
+      recoveryEmailSent,
+      setRecoveryEmailSent,
+      informedAboutCertification,
+      getInformedAboutCertification,
+      addInformedAboutCertification,
+      hiddenBal,
+      setHiddenBal,
+      getHiddenBal,
+      addHiddenBal,
+      removeHiddenBal,
+    }} {...props} />
   )
 }
 
