@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
 
-import {populateCommune, removeVoie, removeToponyme} from '@/lib/bal-api'
+import {populateCommune, removeVoie, removeToponyme, convertVoieToToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -11,6 +11,7 @@ import BalDataContext from '@/contexts/bal-data'
 import useHelp from '@/hooks/help'
 
 import DeleteWarning from '@/components/delete-warning'
+import ConvertVoieWarning from '@/components/convert-voie-warning'
 import VoiesList from '@/components/bal/voies-list'
 import VoieEditor from '@/components/bal/voie-editor'
 import ToponymesList from '@/components/bal/toponymes-list'
@@ -20,6 +21,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
   const [editedItem, setEditedItem] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
+  const [toConvert, setToConvert] = useState(null)
   const [selectedTab, setSelectedTab] = useState('voie')
 
   const {token} = useContext(TokenContext)
@@ -63,6 +65,22 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
     setToRemove(null)
   }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, reloadParcelles, selectedTab, toRemove, token])
 
+  const onConvert = useCallback(async () => {
+    const res = await convertVoieToToponyme(toConvert, token)
+    if (!res.error) {
+      await reloadVoies()
+      await reloadToponymes()
+      await reloadParcelles()
+      await reloadGeojson()
+      refreshBALSync()
+      setSelectedTab('toponyme')
+      setEditedItem(res)
+      setIsFormOpen(true)
+    }
+
+    setToConvert(null)
+  }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, reloadParcelles, toConvert, token])
+
   const onSelect = useCallback(id => {
     if (selectedTab === 'voie') {
       router.push(
@@ -98,6 +116,16 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
         )}
         onCancel={() => setToRemove(null)}
         onConfirm={onRemove}
+      />
+      <ConvertVoieWarning
+        isShown={Boolean(toConvert)}
+        content={(
+          <Paragraph>
+            Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
+          </Paragraph>
+        )}
+        onCancel={() => setToConvert(null)}
+        onConfirm={onConvert}
       />
 
       <Pane
@@ -168,6 +196,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
             setToRemove={setToRemove}
             onEnableEditing={onEdit}
             onSelect={onSelect}
+            setToConvert={setToConvert}
           />
         ) : (
           <ToponymesList

@@ -1,7 +1,7 @@
 import {useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Table} from 'evergreen-ui'
+import {Table, KeyTabIcon} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 
@@ -15,7 +15,7 @@ import CommentsContent from '@/components/comments-content'
 
 import InfiniteScrollList from '../infinite-scroll-list'
 
-function VoiesList({voies, onEnableEditing, onSelect, setToRemove}) {
+function VoiesList({voies, onEnableEditing, onSelect, setToRemove, setToConvert}) {
   const {token} = useContext(TokenContext)
   const {isEditing} = useContext(BalDataContext)
 
@@ -56,7 +56,12 @@ function VoiesList({voies, onEnableEditing, onSelect, setToRemove}) {
             actions={{
               onSelect: () => onSelect(voie._id),
               onEdit: () => onEnableEditing(voie._id),
-              onRemove: () => setToRemove(voie._id)
+              onRemove: () => setToRemove(voie._id),
+              extra: voie.nbNumeros === 0 ? {
+                callback: () => setToConvert(voie._id),
+                icon: KeyTabIcon,
+                text: 'Convertir en toponyme',
+              } : null
             }}
             notifications={{
               certification: voie.isAllCertified ? 'Toutes les adresses de cette voie sont certifiées par la commune' : null,
@@ -74,7 +79,8 @@ VoiesList.propTypes = {
   voies: PropTypes.array.isRequired,
   setToRemove: PropTypes.func.isRequired,
   onEnableEditing: PropTypes.func.isRequired,
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
+  setToConvert: PropTypes.func.isRequired
 }
 
 export default VoiesList
