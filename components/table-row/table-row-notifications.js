@@ -1,10 +1,14 @@
+import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Table, Position, Tooltip, EndorsedIcon, WarningSignIcon, CommentIcon} from 'evergreen-ui'
+import TokenContext from '@/contexts/token'
 
 function TableRowNotifications({certification, comment, warning}) {
+  const {token} = useContext(TokenContext)
+
   return (
     <>
-      {comment && (
+      {comment && token && (
         <Table.Cell flex='0 1 1'>
           <Tooltip
             content={comment}
