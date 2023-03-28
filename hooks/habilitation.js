@@ -6,6 +6,7 @@ import {getHabilitation} from '@/lib/bal-api'
 export default function useHabilitation(baseLocale, token) {
   const [habilitation, setHabilitation] = useState(null)
   const [isValid, setIsValid] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const isFirstLoad = useRef(true)
 
@@ -52,9 +53,15 @@ export default function useHabilitation(baseLocale, token) {
     }
   }, [baseLocale._id, token, handleInvalidHabilitation])
 
-  useEffect(() => {
-    reloadHabilitation()
+  useEffect(async () => {
+    async function handleReloadHabilitation() {
+      setIsLoading(true)
+      await reloadHabilitation()
+      setIsLoading(false)
+    }
+
+    handleReloadHabilitation()
   }, [token, reloadHabilitation])
 
-  return [habilitation, reloadHabilitation, isValid]
+  return [habilitation, reloadHabilitation, isValid, isLoading]
 }

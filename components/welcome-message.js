@@ -1,12 +1,14 @@
 import {useState, useEffect, useContext} from 'react'
 import {Pane, Dialog, Alert, Link, Paragraph, Heading, Strong, HelpIcon} from 'evergreen-ui'
 
+import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
 import LocalStorageContext from '@/contexts/local-storage'
 import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
 
 function WelcomeMessage() {
   const {token} = useContext(TokenContext)
+  const {habilitationIsLoading} = useContext(BalDataContext)
   const {wasWelcomed, setWasWelcomed} = useContext(LocalStorageContext)
   const [isShown, setIsShown] = useState(false)
 
@@ -16,7 +18,7 @@ function WelcomeMessage() {
 
   return (
     <Dialog
-      isShown={Boolean(isShown && token)}
+      isShown={Boolean(isShown && token && !habilitationIsLoading)}
       intent='success'
       title=' Bienvenue sur votre Base Adresse Locale'
       confirmLabel='Commencer l’adressage'
