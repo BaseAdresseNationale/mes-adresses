@@ -103,7 +103,7 @@ const SubHeader = React.memo(({commune}) => {
     if (isMassDeletionDetected) {
       setMassDeletionConfirm(() => handleSync)
     } else {
-      handleSync()
+      await handleSync()
     }
   }
 

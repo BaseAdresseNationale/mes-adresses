@@ -5,6 +5,13 @@ import {Pane, Button, Checkbox, CircleArrowUpIcon, PlayIcon, PauseIcon, Automati
 function SyncButton({isSync, isConflicted, isPaused, handleSync, togglePause}) {
   const [isActionHovered, setIsActionHovered] = useState(false)
   const [isManualActionConfirmed, setIsManuelActionConfirmed] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(false)
+
+  const handleDisabledButton = async () => {
+    setIsDisabled( true )
+    await handleSync()
+    setIsDisabled( false )
+  }
 
   if (isConflicted) {
     return (
@@ -13,8 +20,8 @@ function SyncButton({isSync, isConflicted, isPaused, handleSync, togglePause}) {
           width='100%'
           intent='danger'
           appearance='primary'
-          onClick={handleSync}
-          disabled={!isManualActionConfirmed}
+          onClick={handleDisabledButton}
+          disabled={!isManualActionConfirmed || isDisabled}
         >
           Forcer la mise à jour
         </Button>
