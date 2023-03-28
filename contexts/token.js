@@ -11,6 +11,7 @@ const TokenContext = React.createContext()
 export function TokenContextProvider({balId, _token, ...props}) {
   const {getBalToken, addBalAccess} = useContext(LocalStorageContext)
 
+  const [tokenIsChecking, setTokenIsChecking] = useState(false)
   const [token, setToken] = useState(null)
   const [emails, setEmails] = useState(null)
 
@@ -23,10 +24,13 @@ export function TokenContextProvider({balId, _token, ...props}) {
     } else {
       setToken(null)
     }
+
+    setTokenIsChecking(false)
   }, [balId])
 
   useEffect(() => {
     if (balId) {
+      setTokenIsChecking(true)
       if (_token) {
         addBalAccess(balId, _token)
 
@@ -45,8 +49,8 @@ export function TokenContextProvider({balId, _token, ...props}) {
   }, [verify, balId, getBalToken])
 
   const value = useMemo(() => ({
-    token, emails, reloadEmails
-  }), [token, emails, reloadEmails])
+    token, emails, reloadEmails, tokenIsChecking
+  }), [token, emails, reloadEmails, tokenIsChecking])
 
   return (
     <TokenContext.Provider value={value} {...props} />

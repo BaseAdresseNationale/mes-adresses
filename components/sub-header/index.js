@@ -30,9 +30,10 @@ const SubHeader = React.memo(({commune}) => {
     isHabilitationValid,
     voie,
     toponyme,
-    isRefrehSyncStat
+    isRefrehSyncStat,
+    habilitationIsLoading
   } = useContext(BalDataContext)
-  const {token} = useContext(TokenContext)
+  const {token, tokenIsChecking} = useContext(TokenContext)
 
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
   const isAdmin = Boolean(token)
@@ -138,21 +139,22 @@ const SubHeader = React.memo(({commune}) => {
           toponyme={toponyme}
           marginLeft={8}
         />
-
-        <Pane marginLeft='auto' display='flex' alignItems='center'>
-          <SettingsMenu isAdmin={isAdmin} csvUrl={csvUrl} />
-          <BALStatus
-            baseLocale={baseLocale}
-            commune={commune}
-            token={token}
-            isHabilitationValid={isHabilitationValid}
-            isRefrehSyncStat={isRefrehSyncStat}
-            handlePublication={handlePublication}
-            handleChangeStatus={handleChangeStatus}
-            handleHabilitation={handleHabilitation}
-            reloadBaseLocale={async () => reloadBaseLocale()}
-          />
-        </Pane>
+        { !tokenIsChecking && !habilitationIsLoading && (
+          <Pane marginLeft='auto' display='flex' alignItems='center'>
+            <SettingsMenu isAdmin={isAdmin} csvUrl={csvUrl} />
+            <BALStatus
+              baseLocale={baseLocale}
+              commune={commune}
+              token={token}
+              isHabilitationValid={isHabilitationValid}
+              isRefrehSyncStat={isRefrehSyncStat}
+              handlePublication={handlePublication}
+              handleChangeStatus={handleChangeStatus}
+              handleHabilitation={handleHabilitation}
+              reloadBaseLocale={async () => reloadBaseLocale()}
+            />
+          </Pane>
+        )}
       </Pane>
 
       {isAdmin && isHabilitationDisplayed && commune.isCOM && (

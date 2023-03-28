@@ -1,11 +1,12 @@
-import {useState, useMemo} from 'react'
+import {useState, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
 
 import {SettingsContextProvider} from '@/contexts/settings'
 import {DrawContextProvider} from '@/contexts/draw'
 import {MarkersContextProvider} from '@/contexts/markers'
 import {MapContextProvider} from '@/contexts/map'
-import {BalDataContextProvider} from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
+import BalDataContext, {BalDataContextProvider} from '@/contexts/bal-data'
 import {ParcellesContextProvider} from '@/contexts/parcelles'
 
 import Sidebar from '@/layouts/sidebar'
@@ -17,10 +18,12 @@ import CertificationMessage from '@/components/certification-message'
 import Settings from '@/components/settings'
 import AddressEditor from '@/components/bal/address-editor'
 import DemoWarning from '@/components/demo-warning'
+import Overlay from '@/components/overlay'
 
 function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
   const [isHidden, setIsHidden] = useState(false)
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
+  const {tokenIsChecking} = useContext(TokenContext)
 
   const isDemo = baseLocale.status === 'demo'
 
@@ -41,6 +44,14 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
         <DrawContextProvider>
           <MarkersContextProvider>
             <ParcellesContextProvider>
+
+              <BalDataContext.Consumer>
+                {({habilitationIsLoading}) => (
+                  (tokenIsChecking || habilitationIsLoading) && (
+                    <Overlay text='Chargement de la Base Adresse Locale' />
+                  )
+                )}
+              </BalDataContext.Consumer>
 
               <SettingsContextProvider>
                 <Settings />
