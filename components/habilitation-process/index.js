@@ -31,6 +31,7 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handlePu
   const [step, setStep] = useState(getStep(habilitation))
   const [isLoading, setIsLoading] = useState(false)
   const [isConflicted, setIsConflicted] = useState(false)
+  const [isLoadingPublish, setIsLoadingPublish] = useState(false)
 
   const {reloadHabilitation} = useContext(BalDataContext)
 
@@ -101,11 +102,13 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handlePu
     resetHabilitationProcess()
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    setIsLoadingPublish(true)
     if (habilitation.status === 'accepted') {
-      handlePublication()
+      await handlePublication()
     }
 
+    setIsLoadingPublish(false)
     handleClose()
   }
 
@@ -134,6 +137,7 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handlePu
       confirmLabel={habilitation.status === 'accepted' ? (isConflicted ? 'Forcer la publication' : 'Publier') : 'Fermer'}
       cancelLabel='Attendre'
       onConfirm={handleConfirm}
+      isConfirmDisabled={isLoadingPublish}
       onCloseComplete={handleClose}
     >
       <Pane>
