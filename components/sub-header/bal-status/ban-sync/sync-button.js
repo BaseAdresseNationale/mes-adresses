@@ -8,9 +8,9 @@ function SyncButton({isSync, isConflicted, isPaused, handleSync, togglePause}) {
   const [isDisabled, setIsDisabled] = useState(false)
 
   const handleDisabledButton = async () => {
-    setIsDisabled( true )
+    setIsDisabled(true)
     await handleSync()
-    setIsDisabled( false )
+    setIsDisabled(false)
   }
 
   if (isConflicted) {
