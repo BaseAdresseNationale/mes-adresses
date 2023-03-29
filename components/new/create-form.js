@@ -8,6 +8,7 @@ import {createBaseLocale, populateCommune, searchBasesLocales} from '@/lib/bal-a
 import LocalStorageContext from '@/contexts/local-storage'
 
 import {useCheckboxInput} from '@/hooks/input'
+import useError from '@/hooks/error'
 
 import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
@@ -22,6 +23,7 @@ function CreateForm({namePlaceholder, commune, nom, onNomChange, email, onEmailC
   const [isShown, setIsShown] = useState(false)
   const [userBALs, setUserBALs] = useState([])
   const [ref, setRef] = useState()
+  const [setError] = useError(null)
 
   useEffect(() => {
     if (ref) {
@@ -56,7 +58,12 @@ function CreateForm({namePlaceholder, commune, nom, onNomChange, email, onEmailC
     e.preventDefault()
     setIsLoading(true)
 
-    checkUserBALs(commune.code, email)
+    try {
+      await checkUserBALs(commune.code, email)
+    } catch (error) {
+      setError(error.message)
+      setIsLoading(false)
+    }
   }
 
   const onCancel = () => {
