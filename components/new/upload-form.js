@@ -145,7 +145,12 @@ function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, ha
     e.preventDefault()
     setIsLoading(true)
 
-    await checkUserBALs()
+    try {
+      await checkUserBALs()
+    } catch (error) {
+      setError(error.message)
+      setIsLoading(false)
+    }
   }
 
   const checkUserBALs = useCallback(async () => {
@@ -202,6 +207,10 @@ function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, ha
       setIsLoading(false)
     }
   }, [error, file])
+
+  useEffect(() => {
+    setError(null)
+  }, [nom, file, email])
 
   return (
     <>
