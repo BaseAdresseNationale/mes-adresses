@@ -8,6 +8,7 @@ import {createBaseLocaleDemo} from '@/lib/bal-api'
 import LocalStorageContext from '@/contexts/local-storage'
 
 import {useCheckboxInput} from '@/hooks/input'
+import useError from '@/hooks/error'
 
 import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
@@ -17,6 +18,7 @@ function DemoForm({defaultCommune}) {
   const {addBalAccess} = useContext(LocalStorageContext)
 
   const [isLoading, setIsLoading] = useState(false)
+  const [setError] = useError()
 
   const [populate, onPopulateChange] = useCheckboxInput(true)
   const [codeCommune, setCodeCommune] = useState(defaultCommune ? defaultCommune.code : null)
@@ -32,20 +34,25 @@ function DemoForm({defaultCommune}) {
     setCodeCommune(commune.code)
   }, [])
 
-  const onSubmit = useCallback(async e => {
+  const onSubmit = async e => {
     e.preventDefault()
 
     setIsLoading(true)
 
-    const bal = await createBaseLocaleDemo({commune: codeCommune, populate})
+    try {
+      const bal = await createBaseLocaleDemo({commune: codeCommune, populate})
 
-    addBalAccess(bal._id, bal.token)
+      addBalAccess(bal._id, bal.token)
 
-    Router.push(
-      `/bal?balId=${bal._id}`,
-      `/bal/${bal._id}`
-    )
-  }, [codeCommune, populate, addBalAccess])
+      Router.push(
+        `/bal?balId=${bal._id}`,
+        `/bal/${bal._id}`
+      )
+    } catch (error) {
+      setError(error)
+      setIsLoading(false)
+    }
+  }
 
   return (
     <Pane overflowY='scroll'>
