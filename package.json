@@ -36,7 +36,7 @@
     "get-stream": "^6.0.1",
     "glamor": "^2.20.40",
     "got": "^11.8.2",
-    "immutable": "^4.0.0",
+    "immutable": "^4.3.0",
     "lodash": "^4.17.21",
     "mapbox-gl": "npm:empty-npm-package@1.0.0",
     "maplibre-gl": "^2.3.0",
