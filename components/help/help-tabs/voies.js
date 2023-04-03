@@ -1,4 +1,4 @@
-import {Pane, Paragraph, OrderedList, ListItem, Strong, Menu, Button, AddIcon, ColumnLayoutIcon, MapIcon, MoreIcon, SendToMapIcon, TrashIcon} from 'evergreen-ui'
+import {Pane, Paragraph, OrderedList, ListItem, Strong, Menu, Button, AddIcon, ColumnLayoutIcon, MapIcon, MoreIcon, SendToMapIcon, TrashIcon, KeyTabIcon} from 'evergreen-ui'
 
 import Tuto from '@/components/help/tuto'
 import SubTuto from '@/components/help/tuto/sub-tuto'
@@ -91,6 +91,31 @@ function Voies() {
             </Pane>
           </ListItem>
           <ListItem>Pour terminer, confirmez votre choix en cliquant sur <Button marginX={4} intent='danger' appearance='primary'>Supprimer</Button></ListItem>
+        </OrderedList>
+      </Tuto>
+
+      <Tuto title='Convertir une voie en toponyme'>
+        {before}
+        <Paragraph marginTop='default'>
+          Vous pouvez transformer une voie en toponyme si cette première ne contient aucun numéro.
+        </Paragraph>
+        <OrderedList margin={8}>
+          <ListItem>
+            Cliquez sur le bouton
+            <Button background='tint1' iconBefore={MoreIcon} appearance='minimal' />
+            se situant à droite du nom de la voie
+          </ListItem>
+          <ListItem>
+            Dans le menu qui vient d’apparaître, choisissez
+            <Button iconBefore={KeyTabIcon} marginX={4}>Convertir en toponyme</Button>
+          </ListItem>
+          <ListItem>
+            Pour terminer, confirmez votre choix en cliquant sur
+            <Button marginX={4} appearance='primary'>Confirmer</Button>
+          </ListItem>
+          <ListItem>
+            Vous serez redirigé sur l’édition du nouveau toponyme
+          </ListItem>
         </OrderedList>
       </Tuto>
 
