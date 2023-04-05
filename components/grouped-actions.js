@@ -57,15 +57,15 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [selectedToponymeId, setSelectedToponymeId] = useState(getDefaultToponyme)
 
   const selectedCommuneDeleguee = uniq(selectedNumeros.map(numero => (numero.communeDeleguee)))
-  const hasUniqCommuneDeleguee = selectedCommuneDeleguee.length === 1 && selectedCommuneDeleguee[0] != undefined
+  const hasUniqCommuneDeleguee = selectedCommuneDeleguee.length === 1 && selectedCommuneDeleguee[0] !== undefined
 
   const getDefaultCommuneDelegee = useCallback(() => {
     if (hasUniqCommuneDeleguee) {
       return selectedCommuneDeleguee[0]
     }
 
-    return ""
-  }, [hasUniqCommuneDeleguee])
+    return ''
+  }, [hasUniqCommuneDeleguee, selectedCommuneDeleguee])
 
   const [selectedCommuneDelegee, setSelectedCommuneDelegee] = useState(getDefaultCommuneDelegee)
   const handleClick = () => {
@@ -112,6 +112,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     if (positionType) {
       changes.positionType = positionType
     }
+
     if (selectedCommuneDelegee) {
       changes.communeDeleguee = selectedCommuneDelegee
     }
@@ -222,7 +223,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                     display='block'
                     onChange={event => setSelectedCommuneDelegee(event.target.value)}
                   >
-                    {( !hasUniqCommuneDeleguee ) && (
+                    {(!hasUniqCommuneDeleguee) && (
                       <option value='' >-- Veuillez choisir une commune déléguée --</option>
                     )}
                     {baseLocale.communesDeleguees.map(communeDeleguee => (

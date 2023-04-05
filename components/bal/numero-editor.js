@@ -41,7 +41,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe)
   const [comment, onCommentChange] = useInput(initialValue?.comment)
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
-  const [communeDeleguee, setCommuneDeleguee] = useState(initialValue?.communeDeleguee || "")
+  const [communeDeleguee, setCommuneDeleguee] = useState(initialValue?.communeDeleguee || '')
 
   const {token} = useContext(TokenContext)
   const {baseLocale, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
@@ -78,7 +78,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
       parcelles: selectedParcelles,
-      communeDeleguee: communeDeleguee == "" ? null : communeDeleguee,
+      communeDeleguee: communeDeleguee === '' ? null : communeDeleguee,
       certifie: certifie ?? (initialValue?.certifie || false)
     }
 
@@ -98,7 +98,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
 
       return {...body, positions}
     }
-  }, [initialValue, numero, suffixe, markers, certifie, toponymeId, comment, selectedParcelles])
+  }, [initialValue, numero, suffixe, markers, certifie, toponymeId, comment, selectedParcelles, communeDeleguee])
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
@@ -133,7 +133,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
     } catch {
       setIsLoading(false)
     }
-  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, communeDeleguee, refreshBALSync, reloadParcelles, initialValue, setValidationMessages, reloadVoies, initialVoieId])
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, reloadParcelles, initialValue, setValidationMessages, reloadVoies, initialVoieId])
 
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
@@ -259,7 +259,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
               label='Commune déléguée'
               margin={0}
               display='block'
-              onChange={event => {setCommuneDeleguee(event.target.value)}}
+              onChange={event => setCommuneDeleguee(event.target.value)}
             >
               <option value='' >-- Veuillez choisir une commune déléguée --</option>
               {baseLocale.communesDeleguees.map(communeDeleguee => (
@@ -312,7 +312,8 @@ NumeroEditor.propTypes = {
     comment: PropTypes.string,
     positions: PropTypes.array,
     toponyme: PropTypes.string,
-    certifie: PropTypes.bool // eslint-disable-line react/boolean-prop-naming
+    certifie: PropTypes.bool, // eslint-disable-line react/boolean-prop-naming
+    communeDeleguee: PropTypes.string
   }),
   commune: PropTypes.shape({
     hasCadastre: PropTypes.bool.isRequired
