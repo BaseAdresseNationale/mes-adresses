@@ -14,6 +14,8 @@ function ConvertVoieWarning({isShown, content, isLoading, onCancel, onConfirm}) 
       hasCancel={!isLoading}
       hasClose={!isLoading}
       isConfirmLoading={isLoading}
+      shouldCloseOnOverlayClick={!isLoading}
+      shouldCloseOnEscapePress={!isLoading}
     >
       {content}
     </Dialog>
