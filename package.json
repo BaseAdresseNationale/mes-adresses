@@ -12,7 +12,7 @@
     "build:geo": "node scripts/build-geo"
   },
   "dependencies": {
-    "@babel/runtime": "^7.17.9",
+    "@babel/runtime": "^7.21.0",
     "@ban-team/shared-data": "^1.2.0",
     "@ban-team/validateur-bal": "^2.13.0",
     "@next/bundle-analyzer": "^12.1.6",
@@ -36,7 +36,7 @@
     "get-stream": "^6.0.1",
     "glamor": "^2.20.40",
     "got": "^11.8.2",
-    "immutable": "^4.0.0",
+    "immutable": "^4.3.0",
     "lodash": "^4.17.21",
     "mapbox-gl": "npm:empty-npm-package@1.0.0",
     "maplibre-gl": "^2.3.0",
@@ -54,8 +54,8 @@
   },
   "devDependencies": {
     "dotenv": "^16.0.3",
-    "@babel/core": "^7.17.10",
-    "@babel/eslint-parser": "^7.17.0",
+    "@babel/core": "^7.21.3",
+    "@babel/eslint-parser": "^7.21.3",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "eslint": "^7.32.0",
     "eslint-config-xo-nextjs": "^3.2.0",
