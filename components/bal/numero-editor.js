@@ -41,6 +41,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe)
   const [comment, onCommentChange] = useInput(initialValue?.comment)
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
+  const [communeDeleguee, setCommuneDeleguee] = useState(initialValue?.communeDeleguee || "")
 
   const {token} = useContext(TokenContext)
   const {baseLocale, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
@@ -77,6 +78,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
       suffixe: suffixe.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
       parcelles: selectedParcelles,
+      communeDeleguee: communeDeleguee == "" ? null : communeDeleguee,
       certifie: certifie ?? (initialValue?.certifie || false)
     }
 
@@ -106,7 +108,6 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
     try {
       const body = getNumeroBody()
       const voie = await getEditedVoie()
-
       // Add or edit a numero
       const submit = initialValue ?
         async () => editNumero(initialValue._id, {voie: voie._id, ...body}, token) :
@@ -132,7 +133,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
     } catch {
       setIsLoading(false)
     }
-  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, reloadParcelles, initialValue, setValidationMessages, reloadVoies, initialVoieId])
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, communeDeleguee, refreshBALSync, reloadParcelles, initialValue, setValidationMessages, reloadVoies, initialVoieId])
 
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
@@ -249,6 +250,24 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
             />
           </Pane>
         </FormInput>
+
+        {baseLocale.communesDeleguees && (
+          <FormInput>
+            <SelectField
+              value={communeDeleguee}
+              flex={1}
+              label='Commune déléguée'
+              margin={0}
+              display='block'
+              onChange={event => {setCommuneDeleguee(event.target.value)}}
+            >
+              <option value='' >-- Veuillez choisir une commune déléguée --</option>
+              {baseLocale.communesDeleguees.map(communeDeleguee => (
+                <option key={communeDeleguee} value={communeDeleguee}>{communeDeleguee}</option>
+              ))}
+            </SelectField>
+          </FormInput>
+        )}
 
         <FormInput>
           <PositionEditor

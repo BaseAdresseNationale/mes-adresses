@@ -56,6 +56,18 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(getDefaultToponyme)
 
+  const selectedCommuneDeleguee = uniq(selectedNumeros.map(numero => (numero.communeDeleguee)))
+  const hasUniqCommuneDeleguee = selectedCommuneDeleguee.length === 1 && selectedCommuneDeleguee[0] != undefined
+
+  const getDefaultCommuneDelegee = useCallback(() => {
+    if (hasUniqCommuneDeleguee) {
+      return selectedCommuneDeleguee[0]
+    }
+
+    return ""
+  }, [hasUniqCommuneDeleguee])
+
+  const [selectedCommuneDelegee, setSelectedCommuneDelegee] = useState(getDefaultCommuneDelegee)
   const handleClick = () => {
     setIsShown(true)
     resetPositionType()
@@ -100,16 +112,18 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
     if (positionType) {
       changes.positionType = positionType
     }
+    if (selectedCommuneDelegee) {
+      changes.communeDeleguee = selectedCommuneDelegee
+    }
 
     await onSubmit(baseLocale._id, {
       numerosIds: selectedNumerosIds,
       changes
     })
-
     setIsLoading(false)
     setIsShown(false)
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, certifie, hasUniqToponyme, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds, idVoie])
+  }, [comment, selectedVoieId, certifie, hasUniqToponyme, selectedToponymeId, selectedCommuneDelegee, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds, idVoie])
 
   useEffect(() => {
     if (!isShown) {
@@ -197,6 +211,26 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                   ))}
                 </SelectField>
               </FormInput>
+
+              {baseLocale.communesDeleguees && (
+                <FormInput>
+                  <SelectField
+                    value={selectedCommuneDelegee}
+                    flex={1}
+                    label='Commune déléguée'
+                    margin={0}
+                    display='block'
+                    onChange={event => setSelectedCommuneDelegee(event.target.value)}
+                  >
+                    {( !hasUniqCommuneDeleguee ) && (
+                      <option value='' >-- Veuillez choisir une commune déléguée --</option>
+                    )}
+                    {baseLocale.communesDeleguees.map(communeDeleguee => (
+                      <option key={communeDeleguee} value={communeDeleguee}>{communeDeleguee}</option>
+                    ))}
+                  </SelectField>
+                </FormInput>
+              )}
 
               {hasMultiposition && (
                 <Alert intent='none' marginBottom={8}>Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée du type de position n’est pas possible. Ils doivent être modifiés séparément.</Alert>
