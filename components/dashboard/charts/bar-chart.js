@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types'
 import {Heading} from 'evergreen-ui'
-import {Bar} from 'react-chartjs-2'
+import {Chart} from 'react-chartjs-2'
+import {Chart as ChartJS, registerables} from 'chart.js'
 import 'chartjs-adapter-date-fns' // eslint-disable-line import/no-unassigned-import
 import {fr} from 'date-fns/locale'
+
+ChartJS.register(...registerables)
 
 function BarChart({title, data}) {
   const options = {
@@ -40,7 +43,7 @@ function BarChart({title, data}) {
           {title}
         </Heading>
       )}
-      <Bar data={data} options={options} />
+      <Chart type='bar' data={data} options={options} />
     </div>
 
   )
