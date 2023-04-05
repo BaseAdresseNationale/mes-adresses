@@ -8,7 +8,7 @@ import {searchCommunes} from '@/lib/geo-api'
 function CommuneSearch({placeholder, innerRef, initialSelectedItem, onSelect, ...props}) {
   const [communes, setCommunes] = useState([])
 
-  const [onSearch] = useDebouncedCallback(async value => {
+  const onSearch = useDebouncedCallback(async value => {
     const results = await searchCommunes(value, {
       fields: 'departement',
       limit: 20

@@ -51,7 +51,7 @@
     "react-map-gl": ">=5.3.21 <6.0.0",
     "react-map-gl-draw": "1.0.4",
     "sharp": "^0.29.3",
-    "use-debounce": "^1.1.1"
+    "use-debounce": "^9.0.4"
   },
   "devDependencies": {
     "dotenv": "^16.0.3",
