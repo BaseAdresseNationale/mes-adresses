@@ -32,7 +32,7 @@
     "eslint-config-next": "^13.2.4",
     "evergreen-ui": "^7.1.5",
     "express": "4.18.2",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.1.1",
     "fuse.js": "^3.4.5",
     "get-stream": "^6.0.1",
     "glamor": "^2.20.40",
