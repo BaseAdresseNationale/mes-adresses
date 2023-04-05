@@ -22,6 +22,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [toRemove, setToRemove] = useState(null)
   const [toConvert, setToConvert] = useState(null)
+  const [onConvertLoading, setOnConvertLoading] = useState(false)
   const [selectedTab, setSelectedTab] = useState('voie')
 
   const {token} = useContext(TokenContext)
@@ -66,6 +67,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
   }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, reloadParcelles, selectedTab, toRemove, token])
 
   const onConvert = useCallback(async () => {
+    setOnConvertLoading(true)
     const res = await convertVoieToToponyme(toConvert, token)
     if (!res.error) {
       await reloadVoies()
@@ -73,6 +75,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
       await reloadParcelles()
       await reloadGeojson()
       refreshBALSync()
+      setOnConvertLoading(false)
       setSelectedTab('toponyme')
       setEditedItem(res)
       setIsFormOpen(true)
@@ -124,6 +127,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
             Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
           </Paragraph>
         )}
+        isLoading={onConvertLoading}
         onCancel={() => setToConvert(null)}
         onConfirm={onConvert}
       />

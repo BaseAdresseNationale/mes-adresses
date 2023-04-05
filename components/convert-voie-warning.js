@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Dialog} from 'evergreen-ui'
 
-function ConvertVoieWarning({isShown, content, onCancel, onConfirm}) {
+function ConvertVoieWarning({isShown, content, isLoading, onCancel, onConfirm}) {
   return (
     <Dialog
       isShown={isShown}
@@ -11,6 +11,11 @@ function ConvertVoieWarning({isShown, content, onCancel, onConfirm}) {
       onCloseComplete={onCancel}
       onCancel={onCancel}
       onConfirm={onConfirm}
+      hasCancel={!isLoading}
+      hasClose={!isLoading}
+      isConfirmLoading={isLoading}
+      shouldCloseOnOverlayClick={!isLoading}
+      shouldCloseOnEscapePress={!isLoading}
     >
       {content}
     </Dialog>
@@ -20,6 +25,7 @@ function ConvertVoieWarning({isShown, content, onCancel, onConfirm}) {
 ConvertVoieWarning.propTypes = {
   isShown: PropTypes.bool,
   content: PropTypes.node.isRequired,
+  isLoading: PropTypes.bool,
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired
 }
