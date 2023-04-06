@@ -38,6 +38,7 @@ function PieChart({title, data, height}) {
 
 PieChart.propTypes = {
   title: PropTypes.string,
+  data: PropTypes.array.isRequired,
   height: PropTypes.number,
 }
 
