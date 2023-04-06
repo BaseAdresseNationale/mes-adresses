@@ -19,7 +19,12 @@ function useFuse(source, delay, options) {
 
   const debouncedCallback = useDebouncedCallback(value => {
     if (fuse) {
-      setFiltered(value ? fuse.search(value) : source)
+      if (value) {
+        const results = fuse.search(value)
+        setFiltered(results.map(result => result.item))
+      } else {
+        setFiltered(source)
+      }
     }
   }, delay)
 
