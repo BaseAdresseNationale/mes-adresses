@@ -1430,6 +1430,15 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+"@types/react@^16.9.5":
+  version "16.14.39"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.39.tgz#9cfb805f1ec14aa09b505fd87c6bd5a0a460f8d6"
+  integrity sha512-x7El4ktgDR1KhtMO/ytMvhGEdFt15nRiNcwKJL0rORvCNC9KDB242m6Lj/BqJ8/k4br1gmThdyHoz3fSUXZueQ==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
 "@types/responselike@*", "@types/responselike@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/responselike/-/responselike-1.0.0.tgz#251f4fe7d154d2bad125abe1b429b23afd262e29"
@@ -2379,6 +2388,11 @@ classnames@2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
+
+classnames@^2.3.0:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
+  integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
 
 clean-regexp@^1.0.0:
   version "1.0.0"
@@ -3709,17 +3723,20 @@ events@^3.0.0:
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
-evergreen-ui@^7.1.5:
-  version "7.1.5"
-  resolved "https://registry.yarnpkg.com/evergreen-ui/-/evergreen-ui-7.1.5.tgz#c94f1c15048d092edd1a9c57dbdfc2bf10940eaa"
-  integrity sha512-o+jNju1fEn3b8UmhC7gr1EL6hiV722+XGeMdnhxC8lOGWc402UXmWtBEubXJrvFabErOuwE4w6iO06giHNMRUA==
+evergreen-ui@6.13.0:
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/evergreen-ui/-/evergreen-ui-6.13.0.tgz#0f3560846fad5f71f95d8d909f2a874e227dc653"
+  integrity sha512-V9F/nebkbiXzM7qzlkoAcNuvJZQikD0u1iW3eEm3hmi7rBRM+XqZzYVSIYpiHbFVxtnFb4+otnsCkjxXsqS8rA==
   dependencies:
     "@babel/runtime" "^7.1.2"
     "@segment/react-tiny-virtual-list" "^2.2.1"
+    "@types/react" "^16.9.5"
     "@types/react-transition-group" "^4.4.0"
     arrify "^1.0.1"
+    classnames "^2.3.0"
     downshift "^5.2.0"
     fuzzaldrin-plus "^0.6.0"
+    glamor "^2.20.40"
     humanize-plus "^1.8.2"
     lodash.debounce "^4.0.8"
     lodash.differencewith "^4.5.0"
@@ -3731,7 +3748,7 @@ evergreen-ui@^7.1.5:
     react-fast-compare "^3.2.0"
     react-transition-group "^4.4.1"
     tinycolor2 "^1.4.1"
-    ui-box "^5.4.0"
+    ui-box "^5.3.0"
 
 evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   version "1.0.3"
@@ -8076,7 +8093,7 @@ ua-parser-js@^0.7.30:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.31.tgz#649a656b191dffab4f21d5e053e27ca17cbff5c6"
   integrity sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==
 
-ui-box@^5.4.0:
+ui-box@^5.3.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/ui-box/-/ui-box-5.4.1.tgz#34f497a143783a3513e850bd58379ac583e3f2fb"
   integrity sha512-5p+b6kSh1q/bptvLANuAusyB/3fGIvnw8w6rSZNPHckQ8UdPfjIK4DvinmMXRKgdniOba22h8ypVqtkJ9zK/iQ==
