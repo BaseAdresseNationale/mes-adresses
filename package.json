@@ -15,6 +15,7 @@
     "@babel/runtime": "^7.21.0",
     "@ban-team/shared-data": "^1.2.0",
     "@ban-team/validateur-bal": "^2.13.0",
+    "@etalab/decoupage-administratif": "^3.0.0",
     "@next/bundle-analyzer": "^12.1.6",
     "@turf/bbox": "^6.5.0",
     "@turf/buffer": "^6.5.0",

@@ -5,6 +5,7 @@ import {sortBy, uniq} from 'lodash'
 
 import {normalizeSort} from '@/lib/normalize'
 import {positionsTypesList} from '@/lib/positions-types-list'
+import {getCommuneNom} from '@/lib/cog'
 
 import BalDataContext from '@/contexts/bal-data'
 
@@ -232,7 +233,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                       <option value='' >-- Veuillez choisir une commune déléguée --</option>
                     )}
                     {baseLocale.communesDeleguees.map(communeDeleguee => (
-                      <option key={communeDeleguee} value={communeDeleguee}>{communeDeleguee}</option>
+                      <option key={communeDeleguee} value={communeDeleguee}>{getCommuneNom(communeDeleguee)}</option>
                     ))}
                   </SelectField>
                 </FormInput>

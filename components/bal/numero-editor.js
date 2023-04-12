@@ -7,6 +7,7 @@ import {addVoie, addNumero, editNumero} from '@/lib/bal-api'
 
 import {normalizeSort} from '@/lib/normalize'
 import {computeCompletNumero} from '@/lib/utils/numero'
+import {getCommuneNom} from '@/lib/cog'
 
 import TokenContext from '@/contexts/token'
 import MarkersContext from '@/contexts/markers'
@@ -263,7 +264,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
             >
               <option value='' >-- Veuillez choisir une commune déléguée --</option>
               {baseLocale.communesDeleguees.map(communeDeleguee => (
-                <option key={communeDeleguee} value={communeDeleguee}>{communeDeleguee}</option>
+                <option key={communeDeleguee} value={communeDeleguee}>{getCommuneNom(communeDeleguee)}</option>
               ))}
             </SelectField>
           </FormInput>
