@@ -56,16 +56,16 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
   const [selectedToponymeId, setSelectedToponymeId] = useState(getDefaultToponyme)
 
-  const selectedCommuneDeleguee = uniq(selectedNumeros.map(numero => (numero.communeDeleguee)))
-  const hasUniqCommuneDeleguee = selectedCommuneDeleguee.length === 1 && selectedCommuneDeleguee[0] !== undefined
+  const selectedNumerosUniqcommunesDeleguee = uniq(selectedNumeros.map(numero => (numero.communeDeleguee)))
+  const hasUniqCommuneDeleguee = selectedNumerosUniqcommunesDeleguee.length === 1 && selectedNumerosUniqcommunesDeleguee[0] !== undefined
 
   const getDefaultCommuneDelegee = useCallback(() => {
     if (hasUniqCommuneDeleguee) {
-      return selectedCommuneDeleguee[0]
+      return selectedNumerosUniqcommunesDeleguee[0]
     }
 
     return ''
-  }, [hasUniqCommuneDeleguee, selectedCommuneDeleguee])
+  }, [hasUniqCommuneDeleguee, selectedNumerosUniqcommunesDeleguee])
 
   const [selectedCommuneDelegee, setSelectedCommuneDelegee] = useState(getDefaultCommuneDelegee)
   const handleClick = () => {
@@ -213,6 +213,10 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                 </SelectField>
               </FormInput>
 
+              {hasMultiposition && (
+                <Alert intent='none' marginBottom={8}>Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée du type de position n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+              )}
+
               {baseLocale.communesDeleguees && (
                 <FormInput>
                   <SelectField
@@ -222,6 +226,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                     margin={0}
                     display='block'
                     onChange={event => setSelectedCommuneDelegee(event.target.value)}
+                    disabled={selectedNumerosUniqcommunesDeleguee.length > 1}
                   >
                     {(!hasUniqCommuneDeleguee) && (
                       <option value='' >-- Veuillez choisir une commune déléguée --</option>
@@ -233,8 +238,8 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                 </FormInput>
               )}
 
-              {hasMultiposition && (
-                <Alert intent='none' marginBottom={8}>Certains numéros sélectionnés possèdent plusieurs positions. La modification groupée du type de position n’est pas possible. Ils doivent être modifiés séparément.</Alert>
+              {selectedNumerosUniqcommunesDeleguee.length > 1 && (
+                <Alert intent='none' marginBottom={8}>Les numéros sélectionnés ne possèdent pas la même commune déléguée. La modification groupée de la commune déléguée n’est pas possible. Ils doivent être modifiés séparément.</Alert>
               )}
 
               <Comment input={comment} isDisabled={removeAllComments} onChange={onCommentChange} />
