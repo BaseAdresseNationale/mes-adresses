@@ -19,9 +19,16 @@ import Editor from '@/layouts/editor'
 import Header from '@/components/header'
 import IEWarning from '@/components/ie-warning'
 import Help from '@/components/help'
+import useMatomoTracker from '@/hooks/matomo-tracker'
 
 function App({error, Component, pageProps, query}) {
   const [isMobileWarningDisplayed, setIsMobileWarningDisplayed] = useState(false)
+
+  useMatomoTracker({
+    trackingEnabled: process.env.NODE_ENV === 'production',
+    siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID,
+    trackerUrl: process.env.NEXT_PUBLIC_MATOMO_TRACKER_URL
+  }, pageProps)
 
   return (
     <>
