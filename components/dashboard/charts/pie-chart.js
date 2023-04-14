@@ -1,7 +1,10 @@
 import {useRef} from 'react'
 import PropTypes from 'prop-types'
-import {Pie} from 'react-chartjs-2'
+import {Chart} from 'react-chartjs-2'
+import {Chart as ChartJS, registerables} from 'chart.js'
 import {Pane, Heading} from 'evergreen-ui'
+
+ChartJS.register(...registerables)
 
 function PieChart({title, data, height}) {
   const chartRef = useRef(null)
@@ -28,15 +31,15 @@ function PieChart({title, data, height}) {
         </Heading>
       )}
 
-      <Pie ref={chartRef} height={height} data={chart} options={options} />
+      <Chart type='pie' ref={chartRef} height={height} data={chart} options={options} />
     </Pane>
   )
 }
 
 PieChart.propTypes = {
   title: PropTypes.string,
+  data: PropTypes.array.isRequired,
   height: PropTypes.number,
-  data: PropTypes.array.isRequired
 }
 
 PieChart.defaultProps = {
