@@ -21,12 +21,12 @@ export default function useHabilitation(baseLocale, token) {
       if (baseLocale.sync && isFirstLoad.current) {
         if (!isAccepted) {
           toaster.danger('Aucune habilitation valide trouvée', {
-            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
+            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" ou "Je veux m\'habiliter" pour renouveler l’habilitation.',
             duration: 10
           })
         } else if (isExpired) {
           toaster.danger('L’habilitaton est expirée', {
-            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
+            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" ou "Je veux m\'habiliter" pour renouveler l’habilitation.',
             duration: 10
           })
         }
