@@ -1,10 +1,13 @@
 import {useState, useCallback, useEffect, useRef} from 'react'
 import {toaster} from 'evergreen-ui'
+import {useRouter} from 'next/router'
 
 import {getHabilitation} from '@/lib/bal-api'
 
 export default function useHabilitation(baseLocale, token) {
+  const {query} = useRouter()
   const [habilitation, setHabilitation] = useState(null)
+  const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(query['france-connect'] === '1')
   const [isValid, setIsValid] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -53,7 +56,7 @@ export default function useHabilitation(baseLocale, token) {
     }
   }, [baseLocale._id, token, handleInvalidHabilitation])
 
-  useEffect(async () => {
+  useEffect(() => {
     async function handleReloadHabilitation() {
       setIsLoading(true)
       await reloadHabilitation()
@@ -63,5 +66,5 @@ export default function useHabilitation(baseLocale, token) {
     handleReloadHabilitation()
   }, [token, reloadHabilitation])
 
-  return [habilitation, reloadHabilitation, isValid, isLoading]
+  return [habilitation, reloadHabilitation, isValid, isLoading, isHabilitationDisplayed, setIsHabilitationDisplayed]
 }
