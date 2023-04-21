@@ -1,10 +1,10 @@
-import React, {useState, useContext} from 'react'
+import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
-import {Pane, toaster} from 'evergreen-ui'
+import {Pane} from 'evergreen-ui'
 
-import {createHabilitation, getBaseLocaleCsvUrl, sync, updateBaseLocale} from '@/lib/bal-api'
-import {getBANCommune} from '@/lib/api-ban'
+import {getBaseLocaleCsvUrl} from '@/lib/bal-api'
+
+import usePublishProcess from '@/hooks/publish-process'
 
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
@@ -18,95 +18,30 @@ import BALStatus from '@/components/sub-header/bal-status'
 import MassDeletionDialog from '@/components/mass-deletion-dialog'
 
 const SubHeader = React.memo(({commune}) => {
-  const {query} = useRouter()
-  const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(query['france-connect'] === '1')
-  const [massDeletionConfirm, setMassDeletionConfirm] = useState()
-
   const {
     baseLocale,
     habilitation,
     reloadBaseLocale,
-    reloadHabilitation,
     isHabilitationValid,
     voie,
     toponyme,
     isRefrehSyncStat,
-    habilitationIsLoading
+    habilitationIsLoading,
+    isHabilitationDisplayed,
+    setIsHabilitationDisplayed
   } = useContext(BalDataContext)
   const {token, tokenIsChecking} = useContext(TokenContext)
 
   const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
   const isAdmin = Boolean(token)
 
-  const checkMassDeletion = async () => {
-    try {
-      const communeBAN = await getBANCommune(commune.code)
-      return (baseLocale.nbNumeros / communeBAN.nbNumeros) * 100 <= 50
-    } catch (error) {
-      toaster.danger('Impossible de récupérer les données de la Base Adresse Nationale', {
-        description: error
-      })
-
-      return false
-    }
-  }
-
-  const updateStatus = async status => {
-    const updated = await updateBaseLocale(baseLocale._id, {status}, token)
-    await reloadBaseLocale()
-
-    return updated
-  }
-
-  const handleChangeStatus = async status => {
-    const isMassDeletionDetected = await checkMassDeletion()
-    if (status === 'ready-to-publish' && isMassDeletionDetected) {
-      setMassDeletionConfirm(() => (async () => {
-        const updated = await updateStatus(status)
-        setIsHabilitationDisplayed(updated)
-      }))
-    } else {
-      return updateStatus(status)
-    }
-  }
-
-  const handleHabilitation = async () => {
-    let isReadyToPublish = ['published', 'ready-to-publish', 'replaced'].includes(baseLocale.status)
-
-    if (baseLocale.status === 'draft') {
-      const updated = await handleChangeStatus('ready-to-publish')
-      isReadyToPublish = Boolean(updated)
-    }
-
-    if (isReadyToPublish && (!habilitation || !isHabilitationValid) && !commune.isCOM) {
-      const habilitation = await createHabilitation(token, baseLocale._id)
-
-      if (habilitation) {
-        await reloadHabilitation()
-      }
-    }
-
-    setIsHabilitationDisplayed(isReadyToPublish)
-  }
-
-  const handleCloseHabilitation = () => {
-    setIsHabilitationDisplayed(false)
-  }
-
-  const handleSync = async () => {
-    await sync(baseLocale._id, token)
-    await reloadBaseLocale()
-  }
-
-  const handlePublication = async () => {
-    const isMassDeletionDetected = await checkMassDeletion()
-
-    if (isMassDeletionDetected) {
-      setMassDeletionConfirm(() => handleSync)
-    } else {
-      await handleSync()
-    }
-  }
+  const {
+    massDeletionConfirm,
+    setMassDeletionConfirm,
+    handleChangeStatus,
+    handleShowHabilitationProcess,
+    handlePublication
+  } = usePublishProcess(commune)
 
   return (
     <>
@@ -150,7 +85,7 @@ const SubHeader = React.memo(({commune}) => {
               isRefrehSyncStat={isRefrehSyncStat}
               handlePublication={handlePublication}
               handleChangeStatus={handleChangeStatus}
-              handleHabilitation={handleHabilitation}
+              handleHabilitation={handleShowHabilitationProcess}
               reloadBaseLocale={async () => reloadBaseLocale()}
             />
           </Pane>
@@ -158,7 +93,7 @@ const SubHeader = React.memo(({commune}) => {
       </Pane>
 
       {isAdmin && isHabilitationDisplayed && commune.isCOM && (
-        <COMDialog baseLocaleId={baseLocale._id} handleClose={handleCloseHabilitation} />
+        <COMDialog baseLocaleId={baseLocale._id} handleClose={() => setIsHabilitationDisplayed(false)} />
       )}
 
       {isAdmin && habilitation && isHabilitationDisplayed && !commune.isCOM && (
@@ -167,8 +102,8 @@ const SubHeader = React.memo(({commune}) => {
           baseLocale={baseLocale}
           commune={commune}
           habilitation={habilitation}
-          resetHabilitationProcess={handleHabilitation}
-          handleClose={handleCloseHabilitation}
+          resetHabilitationProcess={handleShowHabilitationProcess}
+          handleClose={() => setIsHabilitationDisplayed(false)}
           handlePublication={handlePublication}
         />
       )}
