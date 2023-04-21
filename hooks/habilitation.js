@@ -56,7 +56,7 @@ export default function useHabilitation(baseLocale, token) {
     }
   }, [baseLocale._id, token, handleInvalidHabilitation])
 
-  useEffect(async () => {
+  useEffect(() => {
     async function handleReloadHabilitation() {
       setIsLoading(true)
       await reloadHabilitation()
