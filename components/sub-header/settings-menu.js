@@ -37,7 +37,7 @@ function SettingsMenu({isAdmin, csvUrl}) {
               <Menu.Divider />
               <Menu.Group>
                 <Menu.Item icon={CogIcon} onSelect={() => setIsSettingsDisplayed(!isSettingsDisplayed)}>
-                  Paramètres
+                  Gérer les droits
                 </Menu.Item>
               </Menu.Group>
             </>

@@ -100,6 +100,7 @@ function BasesLocalesList({basesLocales, sortBal}) {
                 onSelect={() => onBalSelect(bal)}
                 onRemove={e => handleRemove(e, bal._id)}
                 onHide={e => handleHide(e, bal._id)}
+                isShownHabilitationStatus
               />
             ))}
           </Table.Body>

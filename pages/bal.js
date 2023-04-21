@@ -1,32 +1,31 @@
 import React, {useState, useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
-import {Pane, Heading, Text, Paragraph, Button, AddIcon} from 'evergreen-ui'
+import {Pane, Heading, Text, Paragraph, Button, AddIcon, Tablist, Tab} from 'evergreen-ui'
 
-import {populateCommune, removeVoie, removeToponyme, convertVoieToToponyme} from '@/lib/bal-api'
+import {populateCommune, convertVoieToToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
 import useHelp from '@/hooks/help'
 
-import DeleteWarning from '@/components/delete-warning'
 import ConvertVoieWarning from '@/components/convert-voie-warning'
 import VoiesList from '@/components/bal/voies-list'
 import VoieEditor from '@/components/bal/voie-editor'
 import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
+import CommuneTab from '@/components/bal/commune-tab'
+
+const TABS = ['Commune', 'Voies', 'Toponymes']
 
 const BaseLocale = React.memo(({baseLocale, commune}) => {
   const [editedItem, setEditedItem] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
-  const [toRemove, setToRemove] = useState(null)
   const [toConvert, setToConvert] = useState(null)
   const [onConvertLoading, setOnConvertLoading] = useState(false)
-  const [selectedTab, setSelectedTab] = useState('voie')
+  const [selectedTabIndex, setSelectedTabIndex] = useState(1)
 
   const {token} = useContext(TokenContext)
-  const router = useRouter()
 
   const {
     voies,
@@ -40,7 +39,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
     setIsEditing
   } = useContext(BalDataContext)
 
-  useHelp(selectedTab === 'voie' ? 1 : 2)
+  useHelp(selectedTabIndex)
 
   const onPopulate = useCallback(async () => {
     setIsEditing(true)
@@ -52,19 +51,10 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
   }, [baseLocale._id, reloadVoies, setIsEditing, token])
 
   const onRemove = useCallback(async () => {
-    if (selectedTab === 'voie') {
-      await removeVoie(toRemove, token)
-      await reloadVoies()
-    } else {
-      await removeToponyme(toRemove, token)
-      await reloadToponymes()
-    }
-
     await reloadParcelles()
     await reloadGeojson()
     refreshBALSync()
-    setToRemove(null)
-  }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, reloadParcelles, selectedTab, toRemove, token])
+  }, [refreshBALSync, reloadGeojson, reloadParcelles])
 
   const onConvert = useCallback(async () => {
     setOnConvertLoading(true)
@@ -76,27 +66,14 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
       await reloadGeojson()
       refreshBALSync()
       setOnConvertLoading(false)
-      setSelectedTab('toponyme')
+      // Select the tab topnyme after conversion
+      setSelectedTabIndex(2)
       setEditedItem(res)
       setIsFormOpen(true)
     }
 
     setToConvert(null)
   }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, reloadParcelles, toConvert, token])
-
-  const onSelect = useCallback(id => {
-    if (selectedTab === 'voie') {
-      router.push(
-        `/bal/voie?balId=${baseLocale._id}&idVoie=${id}`,
-        `/bal/${baseLocale._id}/voies/${id}`
-      )
-    } else {
-      router.push(
-        `/bal/toponyme?balId=${baseLocale._id}&idToponyme=${id}`,
-        `/bal/${baseLocale._id}/toponymes/${id}`
-      )
-    }
-  }, [baseLocale._id, router, selectedTab])
 
   const onEdit = useCallback(id => {
     if (id) {
@@ -108,18 +85,55 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
     }
   }, [voies, toponymes])
 
+  const displayTabContent = () => {
+    switch (selectedTabIndex) {
+      case 1:
+        return (
+          <VoiesList
+            voies={voies}
+            balId={baseLocale._id}
+            onEnableEditing={onEdit}
+            setToConvert={setToConvert}
+            onRemove={onRemove}
+            addButton={token && <Pane marginLeft='auto'>
+              <Button
+                iconBefore={AddIcon}
+                appearance='primary'
+                intent='success'
+                disabled={isEditing}
+                onClick={() => setIsFormOpen(true)}
+              >
+                Ajouter une voie
+              </Button>
+            </Pane>}
+          />
+        )
+      case 2:
+        return (
+          <ToponymesList
+            toponymes={toponymes}
+            balId={baseLocale._id}
+            onEnableEditing={onEdit}
+            addButton={token && <Pane marginLeft='auto'>
+              <Button
+                iconBefore={AddIcon}
+                appearance='primary'
+                intent='success'
+                disabled={isEditing}
+                onClick={() => setIsFormOpen(true)}
+              >
+                Ajouter un toponyme
+              </Button>
+            </Pane>}
+          />
+        )
+      default:
+        return <CommuneTab commune={commune} />
+    }
+  }
+
   return (
     <>
-      <DeleteWarning
-        isShown={Boolean(toRemove)}
-        content={(
-          <Paragraph>
-            {`Êtes vous bien sûr de vouloir supprimer ${selectedTab === 'voie' ? 'cette voie ainsi que tous ses numéros' : 'ce toponyme'} ?`}
-          </Paragraph>
-        )}
-        onCancel={() => setToRemove(null)}
-        onConfirm={onRemove}
-      />
       <ConvertVoieWarning
         isShown={Boolean(toConvert)}
         content={(
@@ -145,72 +159,32 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
       </Pane>
 
       <Pane position='relative' display='flex' flexDirection='column' height='100%' width='100%' overflow='hidden'>
-        {isFormOpen && (
-          selectedTab === 'voie' ? (
-            <VoieEditor initialValue={editedItem} closeForm={() => onEdit(null)} />
-          ) : (
-            <ToponymeEditor initialValue={editedItem} commune={commune} closeForm={() => onEdit(null)} />
-          )
-        )}
+        {isFormOpen && selectedTabIndex === 1 && <VoieEditor initialValue={editedItem} closeForm={() => onEdit(null)} />}
+        {isFormOpen && selectedTabIndex === 2 && <ToponymeEditor initialValue={editedItem} commune={commune} closeForm={() => onEdit(null)} />}
 
         <Pane
           flexShrink={0}
           elevation={0}
-          backgroundColor='white'
           width='100%'
           display='flex'
-          justifyContent='space-around'
-          height={38}
+          padding={10}
         >
-          <div className={`tab ${selectedTab === 'voie' ? 'selected' : ''}`} onClick={() => setSelectedTab('voie')}>
-            <Heading>Liste des voies</Heading>
-          </div>
-          <div className={`tab ${selectedTab === 'toponyme' ? 'selected' : ''}`} onClick={() => setSelectedTab('toponyme')}>
-            <Heading>Liste des toponymes</Heading>
-          </div>
+          <Tablist>
+            {TABS.map(
+              (tab, index) => (
+                <Tab
+                  key={tab}
+                  isSelected={selectedTabIndex === index}
+                  onSelect={() => setSelectedTabIndex(index)}
+                >
+                  {tab}
+                </Tab>
+              )
+            )}
+          </Tablist>
         </Pane>
 
-        <Pane
-          flexShrink={0}
-          elevation={0}
-          backgroundColor='white'
-          paddingX={16}
-          display='flex'
-          alignItems='center'
-          minHeight={50}
-        >
-          {token && (
-            <Pane marginLeft='auto'>
-              <Button
-                iconBefore={AddIcon}
-                appearance='primary'
-                intent='success'
-                disabled={isEditing}
-                onClick={() => setIsFormOpen(true)}
-              >
-                Ajouter {selectedTab === 'voie' ? 'une voie' : 'un toponyme'}
-              </Button>
-            </Pane>
-          )}
-        </Pane>
-
-        {selectedTab === 'voie' ? (
-          <VoiesList
-            voies={voies}
-            setToRemove={setToRemove}
-            onEnableEditing={onEdit}
-            onSelect={onSelect}
-            setToConvert={setToConvert}
-          />
-        ) : (
-          <ToponymesList
-            toponymes={toponymes}
-            commune={commune}
-            setToRemove={setToRemove}
-            onEnableEditing={onEdit}
-            onSelect={onSelect}
-          />
-        )}
+        {displayTabContent()}
 
         {token && voies && voies.length === 0 && (
           <Pane borderTop marginTop='auto' padding={16}>
