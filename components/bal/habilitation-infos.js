@@ -2,7 +2,7 @@ import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Alert, Button, Paragraph, Text} from 'evergreen-ui'
 
-import usePublish from '@/hooks/publish'
+import usePublishProcess from '@/hooks/publish-process'
 
 import BalDataContext from '@/contexts/bal-data'
 
@@ -10,8 +10,8 @@ function HabilitationInfos({commune}) {
   const {habilitation, isHabilitationValid} = useContext(BalDataContext)
 
   const {
-    handleHabilitation,
-  } = usePublish(commune)
+    handleShowHabilitationProcess,
+  } = usePublishProcess(commune)
 
   return (
     <Pane
@@ -27,7 +27,7 @@ function HabilitationInfos({commune}) {
           <Text is='p'>Afin de pouvoir publier la Base Adresse Locale vous devez avoir une habilitation valide.</Text>
           <Button
             appearance='primary'
-            onClick={handleHabilitation}
+            onClick={handleShowHabilitationProcess}
           >
             Je veux m&apos;habiliter
           </Button>
