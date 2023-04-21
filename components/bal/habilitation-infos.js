@@ -23,17 +23,17 @@ function HabilitationInfos({commune}) {
       <Heading marginBottom={15}>Habilitation</Heading>
 
       {(!habilitation || !isHabilitationValid) ?
-        <Alert title="Vous n'êtes pas habilité">
-          <Text is='p'>Afin de pouvoir publier la Base Adresse Locale vous devez avoir une habilitation valide.</Text>
+        <Alert title="Cette BAL n'est pas habilitée">
+          <Text marginTop={5} is='p'>{`Afin d'être synchronisée avec la Base d'Adresse Nationnale, cette Base Adresse Locale doit être habilitée par la commune de ${commune.nom}. Notez qu'une habilitation est valide pendant 6 mois.`}</Text>
           <Button
             appearance='primary'
             onClick={handleShowHabilitationProcess}
           >
-            Je veux m&apos;habiliter
+            Habiliter la BAL
           </Button>
         </Alert> :
-        <Alert intent='success' title='Vous êtes habilité'>
-          <Paragraph>{`Vous détenez une habilitation vous permettant de publier la Base Adresse Locale jusqu'au ${new Date(habilitation.expiresAt).toLocaleDateString()}.`}</Paragraph>
+        <Alert intent='success' title='Cette BAL est habilitée'>
+          <Paragraph marginTop={5} lineHeight={1.4}>{`Cette Base Adresse Locale détient une habilitation permettant d'alimenter la Base Adresse Nationale pour la commune de ${commune.nom}. Cette habilitation est valide jusqu'au ${new Date(habilitation.expiresAt).toLocaleDateString()}.`}</Paragraph>
         </Alert>}
     </Pane>
   )
@@ -41,7 +41,7 @@ function HabilitationInfos({commune}) {
 
 HabilitationInfos.propTypes = {
   commune: PropTypes.shape({
-    isCOM: PropTypes.bool.isRequired,
+    nom: PropTypes.string.isRequired,
   }).isRequired,
 }
 

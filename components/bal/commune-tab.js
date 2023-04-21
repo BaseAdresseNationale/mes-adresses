@@ -12,8 +12,8 @@ function CommuneTab({commune}) {
 
   return (
     <Pane overflowY='auto'>
-      <CertificationInfos />
       {baseLocale.status !== 'demo' && <HabilitationInfos commune={commune} />}
+      <CertificationInfos />
     </Pane>
   )
 }

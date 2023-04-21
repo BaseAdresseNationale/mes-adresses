@@ -7,13 +7,14 @@ import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon
 import LocalStorageContext from '@/contexts/local-storage'
 
 import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
+import CertificationCount from '@/components/certification-count'
+import HabilitationTag from '../habilitation-tag'
 
-function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemove, onHide}) {
+function BaseLocaleCardContent({isAdmin, baseLocale, commune, habilitation, userEmail, onSelect, onRemove, onHide}) {
   const {status, _created, emails} = baseLocale
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
 
   const {getBalToken} = useContext(LocalStorageContext)
-
   const hasToken = useMemo(() => {
     return Boolean(getBalToken(baseLocale._id))
   }, [baseLocale._id, getBalToken])
@@ -23,12 +24,31 @@ function BaseLocaleCardContent({isAdmin, baseLocale, userEmail, onSelect, onRemo
   const tooltipContent = status === 'ready-to-publish' ?
     'Vous ne pouvez pas supprimer une BAL lorsqu’elle est prête à être publiée' :
     'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
+
+  const showHabilitationValid = useMemo(() => {
+    if (!habilitation || !commune) {
+      return false
+    }
+
+    return (habilitation.status === 'accepted' && new Date(habilitation.expiresAt) > new Date())
+  }, [commune, habilitation])
   return (
     <>
       <Pane borderTop flex={3} display='flex' flexDirection='row' paddingTop='1em'>
         <Pane flex={1} textAlign='center' margin='auto'>
           <Text>Créée le <Pane><b>{createDate}</b></Pane></Text>
         </Pane>
+
+        {showHabilitationValid && (<Pane display='flex' justifyContent='center' flex={1} textAlign='center' margin='auto'>
+          <Text marginRight={5}>BAL habilitée</Text>
+          <HabilitationTag communeName={commune.nom} />
+        </Pane>)}
+
+        {commune && (<Pane flex={1} textAlign='center' margin='auto'>
+          <Text display='block'>Adresses certifiées</Text>
+          <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+        </Pane>
+        )}
 
         {emails && isAdmin && (
           <Pane flex={1} textAlign='center' padding='8px' display='flex' flexDirection='row' justifyContent='center' margin='auto'>
@@ -121,6 +141,15 @@ BaseLocaleCardContent.propTypes = {
       'draft', 'ready-to-publish', 'replaced', 'published', 'demo'
     ])
   }).isRequired,
+  commune: PropTypes.shape({
+    nom: PropTypes.string.isRequired,
+    nbNumeros: PropTypes.number.isRequired,
+    nbNumerosCertifies: PropTypes.number.isRequired,
+  }),
+  habilitation: PropTypes.shape({
+    status: PropTypes.string.isRequired,
+    expiresAt: PropTypes.number.isRequired,
+  }),
   isAdmin: PropTypes.bool,
   userEmail: PropTypes.string,
   onSelect: PropTypes.func,
