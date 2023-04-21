@@ -1,10 +1,13 @@
 import {useState, useCallback, useEffect, useRef} from 'react'
 import {toaster} from 'evergreen-ui'
+import {useRouter} from 'next/router'
 
 import {getHabilitation} from '@/lib/bal-api'
 
 export default function useHabilitation(baseLocale, token) {
+  const {query} = useRouter()
   const [habilitation, setHabilitation] = useState(null)
+  const [isHabilitationDisplayed, setIsHabilitationDisplayed] = useState(query['france-connect'] === '1')
   const [isValid, setIsValid] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -18,12 +21,12 @@ export default function useHabilitation(baseLocale, token) {
       if (baseLocale.sync && isFirstLoad.current) {
         if (!isAccepted) {
           toaster.danger('Aucune habilitation valide trouvée', {
-            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
+            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" ou "Je veux m\'habiliter" pour renouveler l’habilitation.',
             duration: 10
           })
         } else if (isExpired) {
           toaster.danger('L’habilitaton est expirée', {
-            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" pour renouveler l’habilitation.',
+            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" ou "Je veux m\'habiliter" pour renouveler l’habilitation.',
             duration: 10
           })
         }
@@ -63,5 +66,5 @@ export default function useHabilitation(baseLocale, token) {
     handleReloadHabilitation()
   }, [token, reloadHabilitation])
 
-  return [habilitation, reloadHabilitation, isValid, isLoading]
+  return [habilitation, reloadHabilitation, isValid, isLoading, isHabilitationDisplayed, setIsHabilitationDisplayed]
 }
