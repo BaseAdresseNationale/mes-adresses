@@ -4,16 +4,16 @@ import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
 import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
 
-import {getBaseLocale} from '@/lib/bal-api'
+import {getBaseLocale, getHabilitation} from '@/lib/bal-api'
 import {getCommune} from '@/lib/geo-api'
 
-import CertificationCount from '@/components/certification-count'
 import StatusBadge from '@/components/status-badge'
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
 
-function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect, onRemove, onHide}) {
+function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStatus, isDefaultOpen, onSelect, onRemove, onHide}) {
   const {nom, _updated} = baseLocale
   const [commune, setCommune] = useState()
+  const [habilitation, setHabilitation] = useState(null)
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
 
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
@@ -30,7 +30,21 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
       setCommune({...communeBal, ...communeGeo})
     }
 
+    const fetchHabilitation = async () => {
+      if (!baseLocale.token) {
+        return
+      }
+
+      try {
+        const habilitation = await getHabilitation(baseLocale.token, baseLocale._id)
+        setHabilitation(habilitation)
+      } catch {
+        setHabilitation(null)
+      }
+    }
+
     fetchCommune()
+    fetchHabilitation()
   }, [baseLocale])
 
   return (
@@ -69,12 +83,6 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
                 )}
               </Pane>
             </Pane>
-
-            <Pane display='grid' justifySelf='end' alignSelf='center' gridTemplateColumns='1fr' gap='1em'>
-              {commune && (
-                <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
-              )}
-            </Pane>
           </Pane>
 
           <Pane
@@ -97,6 +105,9 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isDefaultOpen, onSelect
           isAdmin={isAdmin}
           userEmail={userEmail}
           baseLocale={baseLocale}
+          commune={commune}
+          habilitation={habilitation}
+          isShownHabilitationStatus={isShownHabilitationStatus}
           onSelect={onSelect}
           onRemove={onRemove}
           onHide={onHide}
@@ -112,12 +123,14 @@ BaseLocaleCard.defaultProps = {
   onRemove: null,
   onHide: null,
   onSelect: null,
-  isDefaultOpen: false
+  isDefaultOpen: false,
+  isShownHabilitationStatus: false
 }
 
 BaseLocaleCard.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
+    token: PropTypes.string,
     nom: PropTypes.string.isRequired,
     commune: PropTypes.string.isRequired,
     _updated: PropTypes.string,
@@ -131,7 +144,8 @@ BaseLocaleCard.propTypes = {
   userEmail: PropTypes.string,
   onSelect: PropTypes.func,
   onHide: PropTypes.func,
-  onRemove: PropTypes.func
+  onRemove: PropTypes.func,
+  isShownHabilitationStatus: PropTypes.bool
 }
 
 export default BaseLocaleCard

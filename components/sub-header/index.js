@@ -11,7 +11,6 @@ import TokenContext from '@/contexts/token'
 
 import HabilitationProcess from '@/components/habilitation-process/index'
 import Breadcrumbs from '@/components/breadcrumbs'
-import HabilitationTag from '@/components/habilitation-tag'
 import COMDialog from '@/components/habilitation-process/com-dialog'
 import SettingsMenu from '@/components/sub-header/settings-menu'
 import BALStatus from '@/components/sub-header/bal-status'
@@ -27,8 +26,8 @@ const SubHeader = React.memo(({commune}) => {
     toponyme,
     isRefrehSyncStat,
     habilitationIsLoading,
-    isHabilitationDisplayed,
-    setIsHabilitationDisplayed
+    isHabilitationProcessDisplayed,
+    setIsHabilitationProcessDisplayed
   } = useContext(BalDataContext)
   const {token, tokenIsChecking} = useContext(TokenContext)
 
@@ -65,8 +64,6 @@ const SubHeader = React.memo(({commune}) => {
         alignItems='center'
         padding={8}
       >
-        {isHabilitationValid && <HabilitationTag communeName={commune.nom} />}
-
         <Breadcrumbs
           baseLocale={baseLocale}
           commune={commune}
@@ -92,18 +89,18 @@ const SubHeader = React.memo(({commune}) => {
         )}
       </Pane>
 
-      {isAdmin && isHabilitationDisplayed && commune.isCOM && (
-        <COMDialog baseLocaleId={baseLocale._id} handleClose={() => setIsHabilitationDisplayed(false)} />
+      {isAdmin && isHabilitationProcessDisplayed && commune.isCOM && (
+        <COMDialog baseLocaleId={baseLocale._id} handleClose={() => setIsHabilitationProcessDisplayed(false)} />
       )}
 
-      {isAdmin && habilitation && isHabilitationDisplayed && !commune.isCOM && (
+      {isAdmin && habilitation && isHabilitationProcessDisplayed && !commune.isCOM && (
         <HabilitationProcess
           token={token}
           baseLocale={baseLocale}
           commune={commune}
           habilitation={habilitation}
           resetHabilitationProcess={handleShowHabilitationProcess}
-          handleClose={() => setIsHabilitationDisplayed(false)}
+          handleClose={() => setIsHabilitationProcessDisplayed(false)}
           handlePublication={handlePublication}
         />
       )}

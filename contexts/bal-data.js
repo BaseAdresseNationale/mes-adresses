@@ -37,7 +37,7 @@ export const BalDataContextProvider = React.memo(({
 
   const {token} = useContext(TokenContext)
 
-  const [habilitation, reloadHabilitation, isHabilitationValid, habilitationIsLoading, isHabilitationDisplayed, setIsHabilitationDisplayed] = useHabilitation(initialBaseLocale, token)
+  const [habilitation, reloadHabilitation, isHabilitationValid, habilitationIsLoading, isHabilitationProcessDisplayed, setIsHabilitationProcessDisplayed] = useHabilitation(initialBaseLocale, token)
 
   const reloadParcelles = useCallback(async () => {
     const parcelles = await getParcelles(baseLocale._id)
@@ -117,9 +117,12 @@ export const BalDataContextProvider = React.memo(({
   const certifyAllNumeros = useCallback(async () => {
     await certifyBAL(baseLocale._id, token, {certifie: true})
     await reloadNumeros()
+    await reloadVoies()
+    await reloadToponymes()
+    await reloadBaseLocale()
 
     refreshBALSync()
-  }, [baseLocale._id, token, reloadNumeros, refreshBALSync])
+  }, [baseLocale._id, token, reloadNumeros, reloadVoies, reloadToponymes, reloadBaseLocale, refreshBALSync])
 
   // Update states on client side load
   useEffect(() => {
@@ -178,8 +181,8 @@ export const BalDataContextProvider = React.memo(({
     setToponyme,
     certifyAllNumeros,
     habilitationIsLoading,
-    isHabilitationDisplayed,
-    setIsHabilitationDisplayed
+    isHabilitationProcessDisplayed,
+    setIsHabilitationProcessDisplayed
   }), [
     isEditing,
     editingId,
@@ -211,8 +214,8 @@ export const BalDataContextProvider = React.memo(({
     isRefrehSyncStat,
     refreshBALSync,
     habilitationIsLoading,
-    isHabilitationDisplayed,
-    setIsHabilitationDisplayed
+    isHabilitationProcessDisplayed,
+    setIsHabilitationProcessDisplayed
   ])
 
   return (

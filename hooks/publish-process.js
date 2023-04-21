@@ -15,7 +15,7 @@ export default function usePublishProcess(commune) {
     reloadBaseLocale,
     reloadHabilitation,
     isHabilitationValid,
-    setIsHabilitationDisplayed
+    setIsHabilitationProcessDisplayed
   } = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
 
@@ -44,7 +44,7 @@ export default function usePublishProcess(commune) {
     if (status === 'ready-to-publish' && isMassDeletionDetected) {
       setMassDeletionConfirm(() => (async () => {
         const updated = await updateStatus(status)
-        setIsHabilitationDisplayed(updated)
+        setIsHabilitationProcessDisplayed(updated)
       }))
     } else {
       return updateStatus(status)
@@ -67,7 +67,7 @@ export default function usePublishProcess(commune) {
       }
     }
 
-    setIsHabilitationDisplayed(isReadyToPublish)
+    setIsHabilitationProcessDisplayed(isReadyToPublish)
   }
 
   const handleSync = async () => {
