@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import randomColor from 'randomcolor'
 
-import {removeNumero} from '@/lib/bal-api'
+import {softRemoveNumero} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
@@ -74,7 +74,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
 
   const removeAddress = useCallback(async numeroId => {
     try {
-      await removeNumero(numeroId, token)
+      await softRemoveNumero(numeroId, token)
       await reloadNumeros()
       await reloadParcelles()
       needGeojsonUpdateRef.current = true

@@ -1,5 +1,6 @@
 import {useState, useMemo, useContext} from 'react'
 import PropTypes from 'prop-types'
+import {Heading, TrashIcon, Pane, Dialog} from 'evergreen-ui'
 
 import {SettingsContextProvider} from '@/contexts/settings'
 import {DrawContextProvider} from '@/contexts/draw'
@@ -19,11 +20,13 @@ import Settings from '@/components/settings'
 import AddressEditor from '@/components/bal/address-editor'
 import DemoWarning from '@/components/demo-warning'
 import Overlay from '@/components/overlay'
+import Trash from '@/components/trash/trash'
 
 function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
   const [isHidden, setIsHidden] = useState(false)
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
   const {tokenIsChecking} = useContext(TokenContext)
+  const [isTrashOpen, setIsTrashOpen] = useState(false)
 
   const isDemo = baseLocale.status === 'demo'
 
@@ -44,7 +47,6 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
         <DrawContextProvider>
           <MarkersContextProvider>
             <ParcellesContextProvider>
-
               <BalDataContext.Consumer>
                 {({habilitationIsLoading}) => (
                   (tokenIsChecking || habilitationIsLoading) && (
@@ -55,7 +57,7 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
 
               <SettingsContextProvider>
                 <Settings />
-                <SubHeader commune={commune} />
+                <SubHeader commune={commune} setIsTrashOpen={setIsTrashOpen} />
               </SettingsContextProvider>
 
               <Map
@@ -93,6 +95,23 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                   ) : (
                     children
                   )}
+
+                  <Dialog
+                    isShown={isTrashOpen}
+                    title={
+                      <Pane width='100%' display='flex'>
+                        <TrashIcon color='danger' />
+                        <Heading paddingLeft={5} is='h3' color='#D14343'>Corbeille</Heading>
+                      </Pane>
+                    }
+                    onCloseComplete={() => setIsTrashOpen(false)}
+                    hasFooter={false}
+                    contentContainerProps={{padding: 0}}
+                  >
+                    <Pane height={500} width='100%'>
+                      <Trash />
+                    </Pane>
+                  </Dialog>
                 </>
               </Sidebar>
             </ParcellesContextProvider>

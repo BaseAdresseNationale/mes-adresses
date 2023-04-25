@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Table, EditIcon} from 'evergreen-ui'
+import {Pane, Table, EditIcon, Text} from 'evergreen-ui'
 
 import LanguagePreview from '../bal/language-preview'
 
-const TableRowEditShortcut = React.memo(({label, nomAlt, complement, isEditingEnabled, isSelectable}) => {
+const TableRowEditShortcut = React.memo(({label, nomAlt, complement, colors, isEditingEnabled, isSelectable}) => {
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -21,7 +21,8 @@ const TableRowEditShortcut = React.memo(({label, nomAlt, complement, isEditingEn
         className='edit-cell'
       >
         <Pane padding={1} fontSize={15}>
-          {label} {complement && <i>{` - ${complement}`}</i>}
+          <Text color={colors.label ? colors.label : 'default'}>{label}</Text>
+          {complement && <Text color={colors.complement ? colors.complement : 'default'}><i>{` - ${complement}`}</i></Text>}
           {isEditingEnabled && (
             <span className='pencil-icon'>
               <EditIcon marginBottom={-4} marginLeft={8} />
@@ -53,13 +54,15 @@ TableRowEditShortcut.propTypes = {
   label: PropTypes.string.isRequired,
   nomAlt: PropTypes.object,
   complement: PropTypes.string,
+  colors: PropTypes.object,
   isEditingEnabled: PropTypes.bool.isRequired,
   isSelectable: PropTypes.bool.isRequired
 }
 
 TableRowEditShortcut.defaultProps = {
   complement: null,
-  nomAlt: null
+  nomAlt: null,
+  colors: {}
 }
 
 export default TableRowEditShortcut

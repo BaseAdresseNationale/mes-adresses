@@ -1,10 +1,10 @@
 import {useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Popover, Menu, Position, Button, CogIcon, DownloadIcon} from 'evergreen-ui'
+import {Popover, Menu, Position, Button, CogIcon, DownloadIcon, TrashIcon} from 'evergreen-ui'
 
 import SettingsContext from '@/contexts/settings'
 
-function SettingsMenu({isAdmin, csvUrl}) {
+function SettingsMenu({isAdmin, csvUrl, setIsTrashOpen}) {
   const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)
 
   if (!isAdmin) {
@@ -27,6 +27,11 @@ function SettingsMenu({isAdmin, csvUrl}) {
       position={Position.BOTTOM_RIGHT}
       content={
         <Menu>
+          <Menu.Group>
+            <Menu.Item icon={TrashIcon} onSelect={() => setIsTrashOpen(true)}>
+              Voir la corbeille
+            </Menu.Item>
+          </Menu.Group>
           <Menu.Group>
             <Menu.Item icon={DownloadIcon} is='a' href={csvUrl} color='inherit' textDecoration='none'>
               Télécharger au format CSV
@@ -59,7 +64,8 @@ function SettingsMenu({isAdmin, csvUrl}) {
 
 SettingsMenu.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
-  csvUrl: PropTypes.string.isRequired
+  csvUrl: PropTypes.string.isRequired,
+  setIsTrashOpen: PropTypes.func.isRequired
 }
 
 export default SettingsMenu
