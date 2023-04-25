@@ -4,7 +4,7 @@ import {sortBy} from 'lodash'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
-import {batchNumeros, removeMultipleNumeros, removeNumero} from '@/lib/bal-api'
+import {batchNumeros, softRemoveMultipleNumero, softRemoveNumero} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
 
@@ -81,7 +81,7 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
   }
 
   const onRemove = useCallback(async idNumero => {
-    await removeNumero(idNumero, token)
+    await softRemoveNumero(idNumero, token)
     await reloadNumeros()
     await reloadParcelles()
     needGeojsonUpdateRef.current = true
@@ -89,7 +89,7 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
   }, [reloadNumeros, reloadParcelles, refreshBALSync, token])
 
   const onMultipleRemove = async () => {
-    await removeMultipleNumeros(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
+    await softRemoveMultipleNumero(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
 
     await reloadNumeros()
     await reloadParcelles()

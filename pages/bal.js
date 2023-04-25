@@ -114,6 +114,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
             toponymes={toponymes}
             balId={baseLocale._id}
             onEnableEditing={onEdit}
+            onRemove={onRemove}
             addButton={token && <Pane marginLeft='auto'>
               <Button
                 iconBefore={AddIcon}

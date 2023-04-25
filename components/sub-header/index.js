@@ -16,7 +16,7 @@ import SettingsMenu from '@/components/sub-header/settings-menu'
 import BALStatus from '@/components/sub-header/bal-status'
 import MassDeletionDialog from '@/components/mass-deletion-dialog'
 
-const SubHeader = React.memo(({commune}) => {
+const SubHeader = React.memo(({commune, setIsTrashOpen}) => {
   const {
     baseLocale,
     habilitation,
@@ -73,7 +73,7 @@ const SubHeader = React.memo(({commune}) => {
         />
         { !tokenIsChecking && !habilitationIsLoading && (
           <Pane marginLeft='auto' display='flex' alignItems='center'>
-            <SettingsMenu isAdmin={isAdmin} csvUrl={csvUrl} />
+            <SettingsMenu isAdmin={isAdmin} csvUrl={csvUrl} setIsTrashOpen={setIsTrashOpen} />
             <BALStatus
               baseLocale={baseLocale}
               commune={commune}
@@ -113,7 +113,8 @@ SubHeader.propTypes = {
     nom: PropTypes.string.isRequired,
     code: PropTypes.string.isRequired,
     isCOM: PropTypes.bool.isRequired
-  }).isRequired
+  }).isRequired,
+  setIsTrashOpen: PropTypes.func.isRequired
 }
 
 export default SubHeader

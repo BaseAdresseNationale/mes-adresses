@@ -5,7 +5,7 @@ import {useRouter} from 'next/router'
 import {Pane, Text, Menu, TrashIcon} from 'evergreen-ui'
 import {css} from 'glamor'
 
-import {removeToponyme} from '@/lib/bal-api'
+import {softRemoveToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import MarkersContext from '@/contexts/markers'
@@ -60,7 +60,7 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
     const {_id} = initialToponyme
 
     try {
-      await removeToponyme(_id, token)
+      await softRemoveToponyme(_id, token)
       await reloadToponymes()
       await reloadParcelles()
 

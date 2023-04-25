@@ -28,17 +28,22 @@ function InfiniteScrollList({items, children}) {
 
   useEffect(() => {
     function updateMaxVisibleElements() {
-      visibleElements.current = Math.ceil(containerRef.current.offsetHeight / ELEMENT_HEIGHT)
-      setLimit(visibleElements.current)
+      if (containerRef.current) {
+        visibleElements.current = Math.ceil(containerRef.current.offsetHeight / ELEMENT_HEIGHT)
+        setLimit(visibleElements.current)
+      }
     }
 
+    const observer = new ResizeObserver(() => updateMaxVisibleElements())
     if (containerRef.current) {
       updateMaxVisibleElements()
       window.addEventListener('resize', updateMaxVisibleElements)
+      observer.observe(containerRef.current)
     }
 
     return () => {
       window.removeEventListener('resize', updateMaxVisibleElements)
+      observer.disconnect()
     }
   }, [])
 

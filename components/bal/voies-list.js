@@ -5,7 +5,7 @@ import {Table, KeyTabIcon, Paragraph, Pane} from 'evergreen-ui'
 import {useRouter} from 'next/router'
 
 import {normalizeSort} from '@/lib/normalize'
-import {removeVoie} from '@/lib/bal-api'
+import {softRemoveVoie} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
@@ -25,7 +25,7 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
   const router = useRouter()
 
   const handleRemove = async () => {
-    await removeVoie(toRemove, token)
+    await softRemoveVoie(toRemove, token)
     await reloadVoies()
     await onRemove()
     setToRemove(null)
