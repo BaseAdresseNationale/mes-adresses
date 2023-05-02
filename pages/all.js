@@ -86,7 +86,7 @@ function All({basesLocales, commune, limit, offset, count}) {
         <Paragraph size={300} color='muted'>
           Vous pouvez également créer une nouvelle Base Adresse Locale.
         </Paragraph>
-        <Link href='/new' passHref>
+        <Link href='/new' passHref legacyBehavior>
           <Button marginTop={10} appearance='primary' is='a'>
             Créer une nouvelle Base Adresse Locale
           </Button>

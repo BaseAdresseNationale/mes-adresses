@@ -20,7 +20,7 @@ function Index() {
     <Main>
       <Heading padding={16} size={400} color='snow' display='flex' justifyContent='space-between' alignItems='center' backgroundColor='#0053b3' flexShrink='0'>
         Mes Bases Adresse Locales
-        <Link href='/new' passHref>
+        <Link href='/new' passHref legacyBehavior>
           <Button iconBefore={PlusIcon} is='a'>
             Créer une Base Adresse Locale
           </Button>

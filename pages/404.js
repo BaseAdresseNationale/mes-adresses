@@ -16,7 +16,7 @@ function Custom404() {
       >
         <Icon icon={RouteIcon} size={100} marginX='auto' marginY={16} color='#101840' />
         <Heading size={800} marginBottom='2em'>Erreur 404 - Page introuvable</Heading>
-        <Link href='/' passHref>
+        <Link href='/' passHref legacyBehavior>
           <Button iconBefore={ArrowLeftIcon} is='a'>
             Retour à la page d’accueil
           </Button>

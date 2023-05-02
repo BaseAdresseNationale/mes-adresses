@@ -24,7 +24,7 @@ function BackButton() {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <Link href='/dashboard' passHref>
+    <Link href='/dashboard' passHref legacyBehavior>
       <Heading
         textAlign='center'
         cursor='pointer'

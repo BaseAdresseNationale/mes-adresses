@@ -28,7 +28,7 @@ function CustomError({statusCode}) {
             Si vous rencontrez cette page, merci de le signaler à notre support à l’adresse courriel : <a href={`mailto:adresse@data.gouv.fr?subject=Une erreur est survenue - code ${statusCode}`}>adresse@data.gouv.fr</a>. Nous vous prions de bien vouloir nous excuser pour la gêne occasionnée.
           </Text>
         </Alert>
-        <Link href='/' passHref>
+        <Link href='/' passHref legacyBehavior>
           <Button iconBefore={ArrowLeftIcon} is='a'>
             Retour à la page d’accueil
           </Button>

@@ -57,7 +57,7 @@ function UserBasesLocales() {
       {basesLocales.length > 0 ? (
         <BasesLocalesList basesLocales={basesLocales} />
       ) : (
-        <Link href='/new' passHref>
+        <Link href='/new' passHref legacyBehavior>
           <Button
             margin='auto'
             height={40}
@@ -76,7 +76,7 @@ function UserBasesLocales() {
 
       <Pane margin='auto' textAlign='center' marginTop={16}>
         <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-        <Link href='/new?demo=1' passHref>
+        <Link href='/new?demo=1' passHref legacyBehavior>
           <Button is='a'>Essayer l’outil</Button>
         </Link>
       </Pane>
