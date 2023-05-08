@@ -4,6 +4,7 @@ import {useCallback, useContext, useState} from 'react'
 import {getVoiesDeleted, getToponymesDeleted, restoreToponyme, removeToponyme, removeVoie, restoreVoie, removeMultipleNumeros} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
+import MapContext from '@/contexts/map'
 import TokenContext from '@/contexts/token'
 
 function useTrash() {
@@ -12,10 +13,10 @@ function useTrash() {
     reloadVoies,
     reloadNumeros,
     reloadToponymes,
-    reloadGeojson,
     reloadParcelles,
     refreshBALSync
   } = useContext(BalDataContext)
+  const {reloadTiles} = useContext(MapContext)
   const {token} = useContext(TokenContext)
   const [voiesDeleted, setVoiesDeleted] = useState([])
   const [toponymesDeleted, setToponymesDeleted] = useState([])
@@ -44,11 +45,11 @@ function useTrash() {
       await reloadVoies()
       await reloadNumeros()
       await reloadParcelles()
-      await reloadGeojson()
+      reloadTiles()
       await reloadVoiesDeleted()
       await refreshBALSync()
     }
-  }, [token, reloadNumeros, reloadParcelles, reloadVoies, reloadGeojson, refreshBALSync, reloadVoiesDeleted])
+  }, [token, reloadNumeros, reloadParcelles, reloadVoies, reloadTiles, refreshBALSync, reloadVoiesDeleted])
 
   const onRemoveNumeros = useCallback(async voie => {
     const res = await removeMultipleNumeros(baseLocale._id, {numerosIds: voie.numeros.map(n => n._id)}, token)
@@ -70,11 +71,11 @@ function useTrash() {
     if (res) {
       await reloadParcelles()
       await reloadToponymes()
-      await reloadGeojson()
+      reloadTiles()
       await refreshBALSync()
       await reloadToponymesDelete()
     }
-  }, [token, reloadParcelles, reloadToponymes, reloadGeojson, refreshBALSync, reloadToponymesDelete])
+  }, [token, reloadParcelles, reloadToponymes, reloadTiles, refreshBALSync, reloadToponymesDelete])
 
   return {
     voiesDeleted,
