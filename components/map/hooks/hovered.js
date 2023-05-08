@@ -1,6 +1,7 @@
 import {useCallback, useContext, useRef} from 'react'
 
 import ParcellesContext from '@/contexts/parcelles'
+import {VOIE_LABEL, NUMEROS_POINT} from '@/components/map/layers/tiles'
 
 function useHovered(map) {
   const hovered = useRef()
@@ -12,7 +13,7 @@ function useHovered(map) {
 
     if (source === 'voies') {
       const voiePositions = map.querySourceFeatures('positions', {
-        sourceLayer: 'numeros-point',
+        sourceLayer: NUMEROS_POINT,
         filter: ['==', ['get', 'idVoie'], properties.idVoie]
       })
 
@@ -21,7 +22,7 @@ function useHovered(map) {
       })
     } else if (source === 'positions') {
       const [voie] = map.querySourceFeatures('voies', {
-        sourceLayer: 'voie-label',
+        sourceLayer: VOIE_LABEL,
         filter: ['==', ['get', 'idVoie'], properties.idVoie]
       })
 
@@ -33,7 +34,6 @@ function useHovered(map) {
 
   const handleHover = useCallback(event => {
     const feature = event && event.features && event.features[0]
-
     if (feature) {
       const {source, id, sourceLayer, properties} = feature
 
