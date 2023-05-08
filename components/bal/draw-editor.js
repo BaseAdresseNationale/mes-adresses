@@ -16,6 +16,10 @@ function DrawEditor({trace}) {
     })
   }, [setData, trace])
 
+  const handleDelete = useCallback(() => {
+    setData(null)
+  }, [setData])
+
   const isModified = useMemo(() => {
     if (data && trace) {
       return !isEqual(data.geometry.coordinates, trace.coordinates, isEqual)
@@ -58,7 +62,7 @@ function DrawEditor({trace}) {
           intent='danger'
           marginY={8} marginRight={12}
           iconBefore={EraserIcon}
-          onClick={() => setData(null)}
+          onClick={handleDelete}
         >
           Effacer le tracé
         </Button>
