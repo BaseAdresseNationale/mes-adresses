@@ -1,21 +1,18 @@
 import {useState, useMemo, useEffect, useCallback, useContext, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
-import MapGl from 'react-map-gl'
+import MapGl, {Source, Layer} from 'react-map-gl'
 import maplibregl from 'maplibre-gl'
-import {fromJS} from 'immutable'
 import {Pane, Alert, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
-import MapContext from '@/contexts/map'
-import BalDataContext from '@/contexts/bal-data'
+import MapContext, {BAL_API_URL, SOURCE_TILE_ID} from '@/contexts/map'
 import TokenContext from '@/contexts/token'
 import DrawContext from '@/contexts/draw'
 import ParcellesContext from '@/contexts/parcelles'
+import BalDataContext from '@/contexts/bal-data'
 
 import {cadastreLayers} from '@/components/map/layers/cadastre'
-import {voiesLayers} from '@/components/map/layers/voies'
-import {numerosLayers} from '@/components/map/layers/numeros'
-
+import {tilesLayers, VOIE_LABEL, VOIE_TRACE_LINE, NUMEROS_POINT, NUMEROS_LABEL} from '@/components/map/layers/tiles'
 import {vector, ortho, planIGN} from '@/components/map/styles'
 import EditableMarker from '@/components/map/editable-marker'
 import NumerosMarkers from '@/components/map/numeros-markers'
@@ -26,19 +23,10 @@ import NavControl from '@/components/map/controls/nav-control'
 import StyleControl from '@/components/map/controls/style-control'
 import AddressEditorControl from '@/components/map/controls/address-editor-control'
 import useBounds from '@/components/map/hooks/bounds'
-import useSources from '@/components/map/hooks/sources'
 import useHovered from '@/components/map/hooks/hovered'
 
 const LAYERS = [
   ...cadastreLayers,
-  ...numerosLayers,
-  ...voiesLayers
-]
-
-const SOURCES = [
-  {name: 'voies', data: {type: 'FeatureCollection', features: []}},
-  {name: 'positions', data: {type: 'FeatureCollection', features: []}},
-  {name: 'voie-trace', data: {type: 'FeatureCollection', features: []}}
 ]
 
 const settings = {
@@ -71,22 +59,25 @@ function getBaseStyle(style) {
 }
 
 function generateNewStyle(style) {
-  let baseStyle = getBaseStyle(style)
-
-  for (const {name, data} of SOURCES) {
-    baseStyle = baseStyle.setIn(['sources', name], fromJS({
-      type: 'geojson',
-      data,
-      generateId: true
-    }))
-  }
-
+  const baseStyle = getBaseStyle(style)
   return baseStyle.updateIn(['layers'], arr => arr.push(...LAYERS))
 }
 
 function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
-  const {map, handleMapRef, style, setStyle, defaultStyle, isStyleLoaded, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
+  const {
+    map,
+    isTileSourceLoaded,
+    handleMapRef,
+    style,
+    setStyle,
+    defaultStyle,
+    isStyleLoaded,
+    viewport,
+    setViewport,
+    isCadastreDisplayed,
+    setIsCadastreDisplayed
+  } = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
@@ -94,7 +85,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle))
 
   const {balId} = router.query
-
+  const BAL_TILES_URL = BAL_API_URL + '/bases-locales/' + balId + '/tiles/{z}/{x}/{y}.pbf'
   const {
     voie,
     toponyme,
@@ -110,29 +101,28 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune])
 
   const [handleHover, handleMouseLeave] = useHovered(map)
-  const [voieTraceData, positionsData, voiesData] = useSources(isStyleLoaded)
   const bounds = useBounds(commune, voie, toponyme)
 
   const prevStyle = useRef(defaultStyle)
 
   const updatePositionsLayer = useCallback(() => {
-    if (map?.getSource('positions')) {
+    if (map && isTileSourceLoaded) {
       // Filter positions of voie or toponyme
       if (voie) {
-        map.setFilter('numeros-point', ['!=', ['get', 'idVoie'], voie._id])
-        map.setFilter('numeros-label', ['!=', ['get', 'idVoie'], voie._id])
-        map.setFilter('voie-label', ['!=', ['get', 'idVoie'], voie._id])
+        map.setFilter(NUMEROS_POINT, ['!=', ['get', 'idVoie'], voie._id])
+        map.setFilter(NUMEROS_LABEL, ['!=', ['get', 'idVoie'], voie._id])
+        map.setFilter(VOIE_LABEL, ['!=', ['get', 'idVoie'], voie._id])
       } else if (toponyme) {
-        map.setFilter('numeros-point', ['!=', ['get', 'idToponyme'], toponyme._id])
-        map.setFilter('numeros-label', ['!=', ['get', 'idToponyme'], toponyme._id])
+        map.setFilter(NUMEROS_POINT, ['!=', ['get', 'idToponyme'], toponyme._id])
+        map.setFilter(NUMEROS_LABEL, ['!=', ['get', 'idToponyme'], toponyme._id])
       } else {
         // Remove filter
-        map.setFilter('numeros-point', null)
-        map.setFilter('numeros-label', null)
-        map.setFilter('voie-label', null)
+        map.setFilter(NUMEROS_POINT, null)
+        map.setFilter(NUMEROS_LABEL, null)
+        map.setFilter(VOIE_LABEL, null)
       }
     }
-  }, [map, voie, toponyme])
+  }, [map, voie, toponyme, isTileSourceLoaded])
 
   const interactiveLayerIds = useMemo(() => {
     const layers = []
@@ -141,22 +131,12 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       return ['parcelles-fill']
     }
 
-    if (!isEditing) {
-      if (voieTraceData.features.length > 0) {
-        layers.push('voie-trace-line')
-      }
-
-      if (positionsData.features.length > 0) {
-        layers.push('numeros-point', 'numeros-label')
-      }
-
-      if (voiesData.features.length > 0) {
-        layers.push('voie-label')
-      }
+    if (!isEditing && isTileSourceLoaded) {
+      layers.push(VOIE_TRACE_LINE, NUMEROS_POINT, NUMEROS_LABEL, VOIE_LABEL)
     }
 
     return layers
-  }, [isEditing, isParcelleSelectionEnabled, voieTraceData, positionsData, voiesData, isCadastreDisplayed])
+  }, [isEditing, isParcelleSelectionEnabled, isCadastreDisplayed, isTileSourceLoaded])
 
   const onClick = useCallback(event => {
     const feature = event?.features[0]
@@ -165,7 +145,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       handleParcelle(feature.properties.id)
     } else if (feature && feature.properties.idVoie && !isEditing) {
       const {idVoie} = feature.properties
-      if (feature.layer.id === 'voie-trace-line' && voie && idVoie === voie._id) {
+      if (feature.layer.id === VOIE_TRACE_LINE && voie && idVoie === voie._id) {
         setEditingId(voie._id)
       } else {
         router.push(
@@ -196,15 +176,17 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     if (map) {
       setMapStyle(generateNewStyle(style))
 
-      // Adapt layer paint property to map style
-      const isOrtho = style === 'ortho'
+      if (isTileSourceLoaded) {
+        // Adapt layer paint property to map style
+        const isOrtho = style === 'ortho'
 
-      if (map.getLayer('voie-label')) {
-        map.setPaintProperty('voie-label', 'text-halo-color', isOrtho ? '#ffffff' : '#f8f4f0')
-      }
+        if (map.getLayer(VOIE_LABEL)) {
+          map.setPaintProperty(VOIE_LABEL, 'text-halo-color', isOrtho ? '#ffffff' : '#f8f4f0')
+        }
 
-      if (map.getLayer('numeros-point')) {
-        map.setPaintProperty('numeros-point', 'circle-stroke-color', isOrtho ? '#ffffff' : '#f8f4f0')
+        if (map.getLayer(NUMEROS_POINT)) {
+          map.setPaintProperty(NUMEROS_POINT, 'circle-stroke-color', isOrtho ? '#ffffff' : '#f8f4f0')
+        }
       }
     }
   }, [map, style])
@@ -242,6 +224,15 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       }))
     }
   }, [map, bounds, setViewport])
+
+  const sourceTiles = useMemo(() => {
+    return {
+      id: SOURCE_TILE_ID,
+      type: 'vector',
+      tiles: [BAL_TILES_URL],
+      promoteId: 'id',
+    }
+  }, [BAL_TILES_URL])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -319,6 +310,12 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         >
 
           <NavControl onViewportChange={setViewport} />
+
+          <Source {...sourceTiles} >
+            { Object.values(tilesLayers).map(layer => (
+              <Layer key={layer.id} {...layer} />
+            ))}
+          </Source>
 
           {(voie || toponyme) && !modeId && numeros && (
             <NumerosMarkers
