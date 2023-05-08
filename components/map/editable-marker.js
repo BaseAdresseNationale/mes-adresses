@@ -6,27 +6,32 @@ import nearestPointOnLine from '@turf/nearest-point-on-line'
 import length from '@turf/length'
 import lineSlice from '@turf/line-slice'
 
+import MapContext from '@/contexts/map'
 import MarkersContext from '@/contexts/markers'
 import BalDataContext from '@/contexts/bal-data'
+import {VOIE_TRACE_LINE} from '@/components/map/layers/tiles'
 
 function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
+  const {map} = useContext(MapContext)
   const {markers, updateMarker, overrideText, suggestedNumero, setSuggestedNumero} = useContext(MarkersContext)
-  const {geojson, isEditing} = useContext(BalDataContext)
+  const {isEditing} = useContext(BalDataContext)
 
   const [suggestedMarkerNumero, setSuggestedMarkerNumero] = useState(suggestedNumero)
 
   const numberToDisplay = overrideText || suggestedMarkerNumero
+
   const voie = useMemo(() => {
     if (idVoie) {
-      return geojson.features
+      return map
+        .queryRenderedFeatures({layers: [VOIE_TRACE_LINE]})
         .filter(({geometry}) => geometry.type === 'LineString')
         .find(({properties}) => properties.idVoie === idVoie)
     }
-  }, [idVoie, geojson])
+  }, [idVoie, map])
 
   const computeSuggestedNumero = useCallback(coordinates => {
-    if (!isToponyme && !overrideText && voie) { // Is suggestion needed
-      const {geometry} = voie
+    if (!isToponyme && !overrideText && voie && voie.properties.originalGeometry) { // Is suggestion needed
+      const geometry = JSON.parse(voie.properties.originalGeometry)
       const point = {
         type: 'Feature',
         properties: {},
