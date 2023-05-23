@@ -1,11 +1,11 @@
 import {useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Popover, Menu, Position, Button, CogIcon, DownloadIcon, TrashIcon} from 'evergreen-ui'
+import {Popover, Menu, Position, Button, CogIcon, DownloadIcon, TrashIcon, SettingsIcon} from 'evergreen-ui'
 
 import SettingsContext from '@/contexts/settings'
 
 function SettingsMenu({isAdmin, csvBalUrl, csvVoiesUrl, setIsTrashOpen}) {
-  const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)
+  const {setSettingsDisplayed} = useContext(SettingsContext)
 
   return (
     <Popover
@@ -16,8 +16,6 @@ function SettingsMenu({isAdmin, csvBalUrl, csvVoiesUrl, setIsTrashOpen}) {
             <Menu.Item icon={DownloadIcon} is='a' href={csvBalUrl} color='inherit' textDecoration='none'>
               Télécharger Base Locale CSV
             </Menu.Item>
-          </Menu.Group>
-          <Menu.Group>
             <Menu.Item icon={DownloadIcon} is='a' href={csvVoiesUrl} color='inherit' textDecoration='none'>
               Télécharger liste des voies CSV
             </Menu.Item>
@@ -30,14 +28,19 @@ function SettingsMenu({isAdmin, csvBalUrl, csvVoiesUrl, setIsTrashOpen}) {
                   Voir la corbeille
                 </Menu.Item>
               </Menu.Group>
-              <Menu.Divider />
-              <Menu.Group>
-                <Menu.Item icon={CogIcon} onSelect={() => setIsSettingsDisplayed(!isSettingsDisplayed)}>
-                  Gérer les droits
-                </Menu.Item>
-              </Menu.Group>
-            </>
-          )}
+            </>)}
+          <Menu.Divider />
+          <Menu.Group>
+            <Menu.Item icon={SettingsIcon} onSelect={() => setSettingsDisplayed('user-settings')}>
+              Préférences utilisateur
+            </Menu.Item>
+            {isAdmin && (
+              <Menu.Item icon={CogIcon} onSelect={() => setSettingsDisplayed('bal-settings')}>
+                Gérer les droits
+              </Menu.Item>
+            )}
+          </Menu.Group>
+
         </Menu>
       }
     >

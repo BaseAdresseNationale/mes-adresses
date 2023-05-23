@@ -31,7 +31,7 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const Settings = React.memo(({baseLocale}) => {
+const BALSettings = React.memo(({baseLocale}) => {
   const {token, emails, reloadEmails} = useContext(TokenContext)
   const {reloadBaseLocale} = useContext(BalDataContext)
 
@@ -227,7 +227,7 @@ const Settings = React.memo(({baseLocale}) => {
   )
 })
 
-Settings.propTypes = {
+BALSettings.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
@@ -235,4 +235,4 @@ Settings.propTypes = {
   }).isRequired
 }
 
-export default Settings
+export default BALSettings
