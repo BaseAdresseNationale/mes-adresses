@@ -1,5 +1,6 @@
 import React, {useCallback, useState, useMemo, useEffect, useContext} from 'react'
 import BalContext from '@/contexts/bal-data'
+import LocalStorageContext from '@/contexts/local-storage'
 
 const MapContext = React.createContext()
 
@@ -23,8 +24,12 @@ export function MapContextProvider(props) {
   const [isCadastreDisplayed, setIsCadastreDisplayed] = useState(false)
   const [isTileSourceLoaded, setIsTileSourceLoaded] = useState(false)
   const [isStyleLoaded, setIsStyleLoaded] = useState(false)
+  const [isMapLoaded, setIsMapLoaded] = useState(false)
 
   const {baseLocale} = useContext(BalContext)
+  const {userSettings} = useContext(LocalStorageContext)
+
+  const balTilesUrl = `${BAL_API_URL}/bases-locales/${baseLocale._id}/tiles/{z}/{x}/{y}.pbf${userSettings?.colorblindMode ? '?colorblindMode=true' : ''}`
 
   useEffect(() => {
     map?.on('load', () => {
@@ -35,14 +40,18 @@ export function MapContextProvider(props) {
     })
   }, [map])
 
+  // When the map is fully loaded (with the layers), this event is triggered
+  map?.on('idle', () => {
+    setIsMapLoaded(true)
+  })
+
   const reloadTiles = useCallback(() => {
     if (map && isTileSourceLoaded) {
       const source = map.getSource(SOURCE_TILE_ID)
       // Remplace les tuiles avec de nouvelles tuiles
-      const BAL_TILES_URL = BAL_API_URL + '/bases-locales/' + baseLocale._id + '/tiles/{z}/{x}/{y}.pbf'
-      source.setTiles([BAL_TILES_URL])
+      source.setTiles([balTilesUrl])
     }
-  }, [map, isTileSourceLoaded, baseLocale._id])
+  }, [map, isTileSourceLoaded, balTilesUrl])
 
   const handleMapRef = useCallback(ref => {
     if (ref) {
@@ -60,6 +69,8 @@ export function MapContextProvider(props) {
     isStyleLoaded,
     viewport, setViewport,
     isCadastreDisplayed, setIsCadastreDisplayed,
+    balTilesUrl,
+    isMapLoaded
   }), [
     map,
     isTileSourceLoaded,
@@ -68,7 +79,9 @@ export function MapContextProvider(props) {
     isStyleLoaded,
     style,
     viewport,
-    isCadastreDisplayed
+    isCadastreDisplayed,
+    balTilesUrl,
+    isMapLoaded
   ])
 
   return (

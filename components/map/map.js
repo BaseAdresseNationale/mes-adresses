@@ -5,7 +5,7 @@ import MapGl, {Source, Layer} from 'react-map-gl'
 import maplibregl from 'maplibre-gl'
 import {Pane, Alert} from 'evergreen-ui'
 
-import MapContext, {BAL_API_URL, SOURCE_TILE_ID} from '@/contexts/map'
+import MapContext, {SOURCE_TILE_ID} from '@/contexts/map'
 import TokenContext from '@/contexts/token'
 import DrawContext from '@/contexts/draw'
 import ParcellesContext from '@/contexts/parcelles'
@@ -81,7 +81,9 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     viewport,
     setViewport,
     isCadastreDisplayed,
-    setIsCadastreDisplayed
+    setIsCadastreDisplayed,
+    balTilesUrl,
+    isMapLoaded
   } = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
@@ -90,7 +92,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle))
 
   const {balId} = router.query
-  const BAL_TILES_URL = BAL_API_URL + '/bases-locales/' + balId + '/tiles/{z}/{x}/{y}.pbf'
   const {
     voie,
     toponyme,
@@ -244,10 +245,10 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     return {
       id: SOURCE_TILE_ID,
       type: 'vector',
-      tiles: [BAL_TILES_URL],
+      tiles: [balTilesUrl],
       promoteId: 'id',
     }
-  }, [BAL_TILES_URL])
+  }, [balTilesUrl])
 
   const sourceCommune = useMemo(() => {
     return {
@@ -275,6 +276,18 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       console.error(e)
     }
   }
+
+  const selectedVoieColor = useMemo(() => {
+    if (!voie || !isMapLoaded) {
+      return
+    }
+
+    const featuresList = map?.querySourceFeatures(SOURCE_TILE_ID, {
+      sourceLayer: [LAYERS_SOURCE.VOIES_POINTS]
+    })
+
+    return featuresList?.find(feature => feature.id === voie._id)?.properties.color
+  }, [map, voie, isMapLoaded])
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
@@ -346,10 +359,10 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           {(voie || toponyme) && !modeId && numeros && (
             <NumerosMarkers
               numeros={numeros.filter(({_id}) => _id !== editingId)}
-              voie={voie}
               isLabelDisplayed={isLabelsDisplayed}
               isContextMenuDisplayed={isContextMenuDisplayed}
               setIsContextMenuDisplayed={setIsContextMenuDisplayed}
+              color={selectedVoieColor}
             />
           )}
 

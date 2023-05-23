@@ -1,7 +1,6 @@
 import {useCallback, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
-import randomColor from 'randomcolor'
 
 import {softRemoveNumero} from '@/lib/bal-api'
 
@@ -13,7 +12,7 @@ import useError from '@/hooks/error'
 
 import NumeroMarker from '@/components/map/numero-marker'
 
-function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed, setIsContextMenuDisplayed}) {
+function NumerosMarkers({numeros, isLabelDisplayed, isContextMenuDisplayed, setIsContextMenuDisplayed, color}) {
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
@@ -32,14 +31,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
     }
   }, [setEditingId, setIsContextMenuDisplayed, isEditing])
 
-  const colorSeed = useCallback(id => {
-    return id ? randomColor({
-      luminosity: 'dark',
-      seed: id
-    }) : '#1070ca'
-  }, [])
-
-  const markerStyle = useCallback(colorSeed => css({
+  const markerStyle = useCallback(color => css({
     borderRadius: 20,
     marginTop: -10,
     marginLeft: -10,
@@ -50,7 +42,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
 
     '&:before': {
       content: ' ',
-      backgroundColor: colorSeed,
+      backgroundColor: color,
       border: '1px solid white',
       display: 'inline-block',
       width: 8,
@@ -91,7 +83,7 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
       <NumeroMarker
         key={numero._id}
         numero={numero}
-        style={markerStyle(colorSeed(numero.voie?._id || voie?._id))}
+        style={markerStyle(color)}
         isContextMenuDisplayed={numero._id === isContextMenuDisplayed}
         removeAddress={removeAddress}
         onEnableEditing={onEnableEditing}
@@ -102,12 +94,10 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
 
 NumerosMarkers.propTypes = {
   numeros: PropTypes.array.isRequired,
-  voie: PropTypes.shape({
-    _id: PropTypes.string.isRequired
-  }),
   isLabelDisplayed: PropTypes.bool.isRequired,
   isContextMenuDisplayed: PropTypes.string,
-  setIsContextMenuDisplayed: PropTypes.func.isRequired
+  setIsContextMenuDisplayed: PropTypes.func.isRequired,
+  color: PropTypes.string
 }
 
 export default NumerosMarkers
