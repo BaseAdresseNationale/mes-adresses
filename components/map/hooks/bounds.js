@@ -39,9 +39,7 @@ function useBounds(commune, voie, toponyme) {
         features: geojsonFeatures.current.filter(feature => feature.properties.idVoie === voieId)
       }
     }
-
-    return commune.contour // Fallback when voie has no position or numeros
-  }, [commune])
+  }, [])
 
   const getToponymeBounds = useCallback(toponymeId => {
     let features
@@ -59,9 +57,7 @@ function useBounds(commune, voie, toponyme) {
         features
       }
     }
-
-    return commune.contour // Fallback when toponyme has no position or numeros
-  }, [toponyme, commune])
+  }, [toponyme])
 
   useEffect(() => { // Get bounds on page load
     let data
