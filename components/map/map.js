@@ -1,7 +1,7 @@
 import {useState, useMemo, useEffect, useCallback, useContext, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
-import MapGl, {Source, Layer} from 'react-map-gl'
+import MapGl, {Source, Layer, Popup} from 'react-map-gl'
 import maplibregl from 'maplibre-gl'
 import {Pane, Alert, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
 
@@ -17,6 +17,7 @@ import {vector, ortho, planIGN} from '@/components/map/styles'
 import EditableMarker from '@/components/map/editable-marker'
 import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
+import PopupFeature from '@/components/map/popup-feature'
 import Draw from '@/components/map/draw'
 import Control from '@/components/map/controls/control'
 import NavControl from '@/components/map/controls/nav-control'
@@ -83,7 +84,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null)
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle))
-
+  
   const {balId} = router.query
   const BAL_TILES_URL = BAL_API_URL + '/bases-locales/' + balId + '/tiles/{z}/{x}/{y}.pbf'
   const {
@@ -100,7 +101,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
   const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune])
 
-  const [handleHover, handleMouseLeave] = useHovered(map)
+  const [handleHover, handleMouseLeave, featureHovered] = useHovered(map)
   const bounds = useBounds(commune, voie, toponyme)
 
   const prevStyle = useRef(defaultStyle)
@@ -346,6 +347,9 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
             />
           )}
 
+          {(featureHovered !== null && viewport.zoom > 14) && (
+            <PopupFeature feature={featureHovered} commune={commune} />
+          )}
           <Draw />
         </MapGl>
       </Pane>

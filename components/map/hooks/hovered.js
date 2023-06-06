@@ -1,4 +1,4 @@
-import {useCallback, useContext, useRef} from 'react'
+import {useCallback, useContext, useRef, useState} from 'react'
 
 import ParcellesContext from '@/contexts/parcelles'
 import {VOIE_LABEL, NUMEROS_POINT} from '@/components/map/layers/tiles'
@@ -6,28 +6,29 @@ import {VOIE_LABEL, NUMEROS_POINT} from '@/components/map/layers/tiles'
 function useHovered(map) {
   const hovered = useRef()
   const {handleHoveredParcelle} = useContext(ParcellesContext)
+  const [featureHovered, setFeatureHovered] = useState(null)
 
   // Highlight related features
   const handleRelatedFeatures = (map, feature, isHovered) => {
-    const {source, properties} = feature
+    const {source, sourceLayer, properties} = feature
+    if (source === 'tiles') {
 
-    if (source === 'voies') {
-      const voiePositions = map.querySourceFeatures('positions', {
-        sourceLayer: NUMEROS_POINT,
-        filter: ['==', ['get', 'idVoie'], properties.idVoie]
-      })
-
-      voiePositions.forEach(({id}) => {
-        map.setFeatureState({source: 'positions', id}, {hover: isHovered})
-      })
-    } else if (source === 'positions') {
-      const [voie] = map.querySourceFeatures('voies', {
-        sourceLayer: VOIE_LABEL,
-        filter: ['==', ['get', 'idVoie'], properties.idVoie]
-      })
-
-      if (voie) {
-        map.setFeatureState({source: 'voies', id: voie.id}, {hover: isHovered})
+      if (sourceLayer == 'voies') {
+        const numerosFeatures = map.querySourceFeatures('tiles', {
+          sourceLayer: 'numeros',
+          filter: ['==', ['get', 'idVoie'], properties.idVoie]
+        })
+        numerosFeatures.forEach(({id}) => {
+          map.setFeatureState({source: 'tiles', sourceLayer: 'numeros', id}, {hover: isHovered})
+        })  
+      } else if (sourceLayer === 'numeros') {
+        const [voieFetaure] = map.querySourceFeatures('tiles', {
+          sourceLayer: 'voies',
+          filter: ['==', ['get', 'idVoie'], properties.idVoie]
+        })
+        if (voieFetaure) {
+          map.setFeatureState({source: 'tiles', sourceLayer: 'voies', id: voieFetaure.id}, {hover: isHovered})
+        }
       }
     }
   }
@@ -47,6 +48,7 @@ function useHovered(map) {
           id: hovered.current.id,
           sourceLayer: hovered.current.sourceLayer
         }, {hover: false})
+        setFeatureHovered(null)
         handleRelatedFeatures(map, hovered.current, false)
       }
 
@@ -55,12 +57,16 @@ function useHovered(map) {
       // Highlight hovered features
       map.setFeatureState({source, id, sourceLayer}, {hover: true})
       handleRelatedFeatures(map, feature, true)
+      if (source === 'tiles') {
+        setFeatureHovered(feature)
+      }
     }
   }, [map, handleHoveredParcelle])
 
   const handleMouseLeave = useCallback(() => {
     if (hovered.current) {
       const {id, source, sourceLayer} = hovered.current
+      setFeatureHovered(null)
       map.setFeatureState({source, sourceLayer, id}, {hover: false})
       handleRelatedFeatures(map, hovered.current, false)
 
@@ -72,7 +78,7 @@ function useHovered(map) {
     hovered.current = null
   }, [map, handleHoveredParcelle])
 
-  return [handleHover, handleMouseLeave]
+  return [handleHover, handleMouseLeave, featureHovered]
 }
 
 export default useHovered
