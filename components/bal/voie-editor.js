@@ -9,7 +9,6 @@ import {addVoie, editVoie} from '@/lib/bal-api'
 import BalDataContext from '@/contexts/bal-data'
 import DrawContext from '@/contexts/draw'
 import TokenContext from '@/contexts/token'
-import MapContext from '@/contexts/map'
 
 import {useInput, useCheckboxInput} from '@/hooks/input'
 import useValidationMessage from '@/hooks/validation-messages'
@@ -28,13 +27,13 @@ function VoieEditor({initialValue, closeForm}) {
   const [getValidationMessages, setValidationMessages] = useValidationMessage()
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
   const {token} = useContext(TokenContext)
-  const {baseLocale, refreshBALSync, reloadVoies, setVoie} = useContext(BalDataContext)
+  const {baseLocale, refreshBALSync, reloadVoies, reloadGeojson, setVoie} = useContext(BalDataContext)
   const {drawEnabled, data, enableDraw, disableDraw} = useContext(DrawContext)
-  const {reloadTiles} = useContext(MapContext)
   const [ref, setIsFocus] = useFocus(true)
 
   const onFormSubmit = useCallback(async e => {
     e.preventDefault()
+
     setValidationMessages(null)
     setIsLoading(true)
 
@@ -61,11 +60,11 @@ function VoieEditor({initialValue, closeForm}) {
 
         // Reload voie trace
         if (!isEqual(initialValue.trace, data?.geometry) || body.typeNumerotation !== initialValue.typeNumerotation) {
-          reloadTiles()
+          await reloadGeojson()
         }
       } else {
         await reloadVoies()
-        reloadTiles()
+        await reloadGeojson()
       }
 
       setIsLoading(false)
@@ -73,7 +72,7 @@ function VoieEditor({initialValue, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [baseLocale._id, initialValue, nom, isMetric, data, token, nomAlt, closeForm, setValidationMessages, setVoie, reloadVoies, refreshBALSync, reloadTiles])
+  }, [baseLocale._id, initialValue, nom, isMetric, data, token, nomAlt, closeForm, setValidationMessages, setVoie, reloadVoies, reloadGeojson, refreshBALSync])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()

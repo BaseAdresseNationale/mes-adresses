@@ -5,6 +5,7 @@ import {toaster} from 'evergreen-ui'
 
 import {
   getParcelles,
+  getCommuneGeoJson,
   getNumeros,
   getVoies,
   getBaseLocale,
@@ -25,6 +26,7 @@ export const BalDataContextProvider = React.memo(({
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState(null)
   const [parcelles, setParcelles] = useState([])
+  const [geojson, setGeojson] = useState()
   const [numeros, setNumeros] = useState(initialNumeros)
   const [voies, setVoies] = useState(initialVoies)
   const [toponymes, setToponymes] = useState(initialToponymes)
@@ -40,6 +42,11 @@ export const BalDataContextProvider = React.memo(({
   const reloadParcelles = useCallback(async () => {
     const parcelles = await getParcelles(baseLocale._id)
     setParcelles(parcelles)
+  }, [baseLocale._id])
+
+  const reloadGeojson = useCallback(async () => {
+    const geojson = await getCommuneGeoJson(baseLocale._id)
+    setGeojson(geojson)
   }, [baseLocale._id])
 
   const reloadVoies = useCallback(async () => {
@@ -141,6 +148,7 @@ export const BalDataContextProvider = React.memo(({
   }, [initialNumeros])
 
   useEffect(() => {
+    reloadGeojson()
     reloadParcelles()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -149,9 +157,11 @@ export const BalDataContextProvider = React.memo(({
     setIsEditing,
     editingId,
     editingItem,
+    reloadGeojson,
     baseLocale,
     habilitation,
     isHabilitationValid,
+    geojson,
     parcelles,
     voie: voie || initialVoie,
     toponyme: toponyme || initialToponyme,
@@ -180,6 +190,8 @@ export const BalDataContextProvider = React.memo(({
     editingItem,
     parcelles,
     reloadParcelles,
+    geojson,
+    reloadGeojson,
     baseLocale,
     reloadBaseLocale,
     habilitation,

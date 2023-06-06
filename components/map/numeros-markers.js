@@ -1,4 +1,4 @@
-import {useCallback, useContext} from 'react'
+import {useCallback, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {css} from 'glamor'
 import randomColor from 'randomcolor'
@@ -7,7 +7,6 @@ import {softRemoveNumero} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
-import MapContext from '@/contexts/map'
 
 import useError from '@/hooks/error'
 
@@ -17,8 +16,9 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
   const [setError] = useError()
 
   const {token} = useContext(TokenContext)
-  const {setEditingId, isEditing, reloadNumeros, reloadParcelles, refreshBALSync} = useContext(BalDataContext)
-  const {reloadTiles} = useContext(MapContext)
+  const {setEditingId, isEditing, reloadNumeros, reloadParcelles, reloadGeojson, refreshBALSync} = useContext(BalDataContext)
+
+  const needGeojsonUpdateRef = useRef(false)
 
   const onEnableEditing = useCallback((event, numeroId) => {
     const {rightButton} = event
@@ -77,14 +77,23 @@ function NumerosMarkers({numeros, voie, isLabelDisplayed, isContextMenuDisplayed
       await softRemoveNumero(numeroId, token)
       await reloadNumeros()
       await reloadParcelles()
-      await reloadTiles()
+      needGeojsonUpdateRef.current = true
       refreshBALSync()
     } catch (error) {
       setError(error.message)
     }
 
     setIsContextMenuDisplayed(null)
-  }, [token, reloadNumeros, reloadParcelles, setError, setIsContextMenuDisplayed, refreshBALSync, reloadTiles])
+  }, [token, reloadNumeros, reloadParcelles, setError, setIsContextMenuDisplayed, refreshBALSync])
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [voie, reloadGeojson])
 
   return (
     numeros.map(numero => (
