@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useContext, useRef, useEffect} from 'react'
+import React, {useCallback, useMemo, useContext, useRef} from 'react'
 import {Editor, EditingMode, DrawLineStringMode} from 'react-map-gl-draw'
 
 import DrawContext from '@/contexts/draw'
@@ -22,12 +22,6 @@ function Draw() {
     }
   }, [setData, setHint])
 
-  useEffect(() => {
-    if (!data && editorRef.current) {
-      editorRef.current.deleteFeatures(0)
-    }
-  }, [data])
-
   const mode = useMemo(() => {
     const Mode = MODES[modeId]
     return Mode ? new Mode() : null
@@ -35,6 +29,10 @@ function Draw() {
 
   if (!drawEnabled || !mode) {
     return null
+  }
+
+  if (!data && editorRef?.current) {
+    editorRef.current.deleteFeatures(0)
   }
 
   return (

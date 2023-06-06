@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo, useContext} from 'react'
+import {useState, useCallback, useMemo, useContext, useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
 import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
@@ -7,7 +7,6 @@ import {normalizeSort} from '@/lib/normalize'
 import {batchNumeros, softRemoveMultipleNumero, softRemoveNumero} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
-import MapContext from '@/contexts/map'
 
 import useFuse from '@/hooks/fuse'
 
@@ -20,8 +19,9 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
-  const {baseLocale, isEditing, reloadNumeros, reloadParcelles, toponymes, refreshBALSync} = useContext(BalDataContext)
-  const {reloadTiles} = useContext(MapContext)
+  const {baseLocale, isEditing, reloadNumeros, reloadParcelles, reloadGeojson, toponymes, refreshBALSync} = useContext(BalDataContext)
+
+  const needGeojsonUpdateRef = useRef(false)
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
@@ -84,16 +84,16 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
     await softRemoveNumero(idNumero, token)
     await reloadNumeros()
     await reloadParcelles()
-    reloadTiles()
+    needGeojsonUpdateRef.current = true
     refreshBALSync()
-  }, [reloadNumeros, reloadParcelles, refreshBALSync, token, reloadTiles])
+  }, [reloadNumeros, reloadParcelles, refreshBALSync, token])
 
   const onMultipleRemove = async () => {
     await softRemoveMultipleNumero(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
 
     await reloadNumeros()
     await reloadParcelles()
-    reloadTiles()
+    needGeojsonUpdateRef.current = true
     refreshBALSync()
 
     setSelectedNumerosIds([])
@@ -106,6 +106,15 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
     await reloadNumeros()
     refreshBALSync()
   }
+
+  useEffect(() => {
+    return () => {
+      if (needGeojsonUpdateRef.current) {
+        reloadGeojson()
+        needGeojsonUpdateRef.current = false
+      }
+    }
+  }, [voieId, reloadGeojson])
 
   return (
     <>

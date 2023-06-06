@@ -6,7 +6,6 @@ import {populateCommune, convertVoieToToponyme} from '@/lib/bal-api'
 
 import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
-import MapContext from '@/contexts/map'
 
 import useHelp from '@/hooks/help'
 
@@ -27,7 +26,6 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(1)
 
   const {token} = useContext(TokenContext)
-  const {reloadTiles} = useContext(MapContext)
 
   const {
     voies,
@@ -35,6 +33,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
     refreshBALSync,
     reloadVoies,
     reloadToponymes,
+    reloadGeojson,
     reloadParcelles,
     isEditing,
     setIsEditing
@@ -53,9 +52,9 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
 
   const onRemove = useCallback(async () => {
     await reloadParcelles()
-    await reloadTiles()
+    await reloadGeojson()
     refreshBALSync()
-  }, [refreshBALSync, reloadTiles, reloadParcelles])
+  }, [refreshBALSync, reloadGeojson, reloadParcelles])
 
   const onConvert = useCallback(async () => {
     setOnConvertLoading(true)
@@ -64,7 +63,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
       await reloadVoies()
       await reloadToponymes()
       await reloadParcelles()
-      await reloadTiles()
+      await reloadGeojson()
       refreshBALSync()
       setOnConvertLoading(false)
       // Select the tab topnyme after conversion
@@ -74,7 +73,7 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
     }
 
     setToConvert(null)
-  }, [reloadVoies, refreshBALSync, reloadToponymes, reloadTiles, reloadParcelles, toConvert, token])
+  }, [reloadVoies, refreshBALSync, reloadToponymes, reloadGeojson, reloadParcelles, toConvert, token])
 
   const onEdit = useCallback(id => {
     if (id) {

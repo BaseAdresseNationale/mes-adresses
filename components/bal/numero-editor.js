@@ -1,4 +1,4 @@
-import {useState, useCallback, useContext, useEffect} from 'react'
+import {useState, useCallback, useContext, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {xor, sortBy} from 'lodash'
 import {Pane, SelectField, TextInputField} from 'evergreen-ui'
@@ -16,7 +16,6 @@ import ParcellesContext from '@/contexts/parcelles'
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
 import useValidationMessage from '@/hooks/validation-messages'
-import MapContext from '@/contexts/map'
 
 import Comment from '@/components/comment'
 import Form from '@/components/form'
@@ -44,12 +43,21 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
   const [getValidationMessage, setValidationMessages] = useValidationMessage(null)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, voies, toponymes, reloadNumeros, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
+  const {baseLocale, voies, toponymes, reloadNumeros, reloadGeojson, reloadParcelles, refreshBALSync, reloadVoies} = useContext(BalDataContext)
   const {selectedParcelles} = useContext(ParcellesContext)
   const {markers, suggestedNumero, setOverrideText} = useContext(MarkersContext)
-  const {reloadTiles} = useContext(MapContext)
+
+  const needGeojsonUpdateRef = useRef(false)
 
   const [ref] = useFocus(true)
+
+  const handleGeojsonRefresh = useCallback(async editedVoie => {
+    if (editedVoie._id === initialVoieId) {
+      needGeojsonUpdateRef.current = true
+    } else {
+      await reloadGeojson()
+    }
+  }, [initialVoieId, reloadGeojson])
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
@@ -94,6 +102,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
     e.preventDefault()
 
     setIsLoading(true)
+
     try {
       const body = getNumeroBody()
       const voie = await getEditedVoie()
@@ -106,7 +115,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
       setValidationMessages(validationMessages)
 
       await reloadNumeros()
-      await reloadTiles()
+
       if (xor(initialValue?.parcelles, body?.parcelles).length > 0) {
         await reloadParcelles()
       }
@@ -115,13 +124,15 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
         reloadVoies()
       }
 
+      handleGeojsonRefresh(voie)
+
       setIsLoading(false)
       refreshBALSync()
       closeForm()
     } catch {
       setIsLoading(false)
     }
-  }, [token, getNumeroBody, getEditedVoie, closeForm, reloadNumeros, refreshBALSync, reloadParcelles, initialValue, setValidationMessages, reloadVoies, initialVoieId, reloadTiles])
+  }, [token, getNumeroBody, getEditedVoie, handleGeojsonRefresh, closeForm, reloadNumeros, refreshBALSync, reloadParcelles, initialValue, setValidationMessages, reloadVoies, initialVoieId])
 
   useEffect(() => {
     setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null)
@@ -145,8 +156,15 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
     setSelectedNomToponyme(nom)
   }, [toponymeId, toponymes])
 
+  const onUnmount = useCallback(() => {
+    if (needGeojsonUpdateRef.current) {
+      reloadGeojson()
+      needGeojsonUpdateRef.current = false
+    }
+  }, [reloadGeojson])
+
   return (
-    <Form editingId={initialValue?._id} closeForm={closeForm} onFormSubmit={onFormSubmit}>
+    <Form editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm} onFormSubmit={onFormSubmit}>
       {hasPreview && (
         <AddressPreview
           numero={numero}
