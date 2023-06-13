@@ -1,7 +1,5 @@
 import {useCallback, useContext, useRef, useState} from 'react'
-
 import ParcellesContext from '@/contexts/parcelles'
-import {VOIE_LABEL, NUMEROS_POINT} from '@/components/map/layers/tiles'
 
 function useHovered(map) {
   const hovered = useRef()
@@ -12,15 +10,14 @@ function useHovered(map) {
   const handleRelatedFeatures = (map, feature, isHovered) => {
     const {source, sourceLayer, properties} = feature
     if (source === 'tiles') {
-
-      if (sourceLayer == 'voies') {
+      if (sourceLayer === 'voies') {
         const numerosFeatures = map.querySourceFeatures('tiles', {
           sourceLayer: 'numeros',
           filter: ['==', ['get', 'idVoie'], properties.idVoie]
         })
         numerosFeatures.forEach(({id}) => {
           map.setFeatureState({source: 'tiles', sourceLayer: 'numeros', id}, {hover: isHovered})
-        })  
+        })
       } else if (sourceLayer === 'numeros') {
         const [voieFetaure] = map.querySourceFeatures('tiles', {
           sourceLayer: 'voies',
