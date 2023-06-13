@@ -1,6 +1,7 @@
 import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane, Heading, Alert, Button, Text} from 'evergreen-ui'
+import {format} from 'date-fns'
 
 import usePublishProcess from '@/hooks/publish-process'
 
@@ -42,7 +43,7 @@ function HabilitationInfos({commune}) {
           <span style={{marginLeft: 5}}>Cette Base Adresse Locale est habilitée</span>
         </Pane>}
         >
-          <Text marginTop={5} is='p'>Cette Base Adresse Locale détient une habilitation permettant d&apos;alimenter la Base Adresse Nationale pour la commune de {commune.nom}. Cette habilitation est valide jusqu&apos;au <b>{new Date(habilitation.expiresAt).toLocaleDateString()}</b>.</Text>
+          <Text marginTop={5} is='p'>Cette Base Adresse Locale détient une habilitation permettant d&apos;alimenter la Base Adresse Nationale pour la commune de {commune.nom}. Cette habilitation est valide jusqu&apos;au <b>{format(new Date(habilitation.expiresAt), 'dd/MM/yyyy')}</b>.</Text>
         </Alert>}
     </Pane>
   )
