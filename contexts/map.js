@@ -6,7 +6,9 @@ const defaultViewport = {
   latitude: 46.5693,
   longitude: 1.1771,
   zoom: 6,
-  transitionDuration: 0
+  transitionDuration: 0,
+  pitch: 0,
+  bearing: 0
 }
 
 const defaultStyle = 'vector'
@@ -34,13 +36,14 @@ export function MapContextProvider(props) {
     isStyleLoaded,
     viewport, setViewport,
     isCadastreDisplayed, setIsCadastreDisplayed,
-  }), [
+  }
+  ), [
     map,
     handleMapRef,
     isStyleLoaded,
     style,
     viewport,
-    isCadastreDisplayed
+    isCadastreDisplayed,
   ])
 
   return (

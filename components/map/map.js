@@ -4,11 +4,10 @@ import {useRouter} from 'next/router'
 import MapGl from 'react-map-gl'
 import maplibregl from 'maplibre-gl'
 import {fromJS} from 'immutable'
-import {Pane, Alert, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
+import {Pane} from 'evergreen-ui'
 
 import MapContext from '@/contexts/map'
 import BalDataContext from '@/contexts/bal-data'
-import TokenContext from '@/contexts/token'
 import DrawContext from '@/contexts/draw'
 import ParcellesContext from '@/contexts/parcelles'
 
@@ -21,13 +20,11 @@ import EditableMarker from '@/components/map/editable-marker'
 import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
 import Draw from '@/components/map/draw'
-import Control from '@/components/map/controls/control'
 import NavControl from '@/components/map/controls/nav-control'
-import StyleControl from '@/components/map/controls/style-control'
-import AddressEditorControl from '@/components/map/controls/address-editor-control'
 import useBounds from '@/components/map/hooks/bounds'
 import useSources from '@/components/map/hooks/sources'
 import useHovered from '@/components/map/hooks/hovered'
+import MapControls from './controls/map-controls'
 
 const LAYERS = [
   ...cadastreLayers,
@@ -86,7 +83,7 @@ function generateNewStyle(style) {
 
 function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const router = useRouter()
-  const {map, handleMapRef, style, setStyle, defaultStyle, isStyleLoaded, viewport, setViewport, isCadastreDisplayed, setIsCadastreDisplayed} = useContext(MapContext)
+  const {map, handleMapRef, style, setStyle, defaultStyle, isStyleLoaded, viewport, setViewport, isCadastreDisplayed} = useContext(MapContext)
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
@@ -104,8 +101,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     setEditingId,
     isEditing
   } = useContext(BalDataContext)
-  const {modeId, hint} = useContext(DrawContext)
-  const {token} = useContext(TokenContext)
+  const {modeId} = useContext(DrawContext)
 
   const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune])
 
@@ -245,59 +241,13 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
-      <StyleControl
-        style={style}
-        handleStyle={setStyle}
+      <MapControls
         commune={commune}
-        isCadastreDisplayed={isCadastreDisplayed}
-        handleCadastre={setIsCadastreDisplayed}
+        isLabelsDisplayed={isLabelsDisplayed}
+        setIsLabelsDisplayed={setIsLabelsDisplayed}
+        isAddressFormOpen={isAddressFormOpen}
+        handleAddressForm={handleAddressForm}
       />
-
-      {(voie || (toponymes && toponymes.length > 0)) && (
-        <Pane
-          position='absolute'
-          className='maplibregl-ctrl-group maplibregl-ctrl'
-          top={100}
-          right={16}
-          zIndex={2}
-        >
-
-          <Control
-            icon={isLabelsDisplayed ? EyeOffIcon : EyeOpenIcon}
-            isEnabled={isLabelsDisplayed}
-            enabledHint={numeros ? 'Masquer les détails' : 'Masquer les toponymes'}
-            disabledHint={numeros ? 'Afficher les détails' : 'Afficher les toponymes'}
-            onChange={setIsLabelsDisplayed}
-          />
-        </Pane>
-      )}
-
-      {token && (
-        <Pane
-          position='absolute'
-          zIndex={1}
-          top={voie || (toponymes && toponymes.length > 0) ? 136 : 100}
-          right={15}
-        >
-          <AddressEditorControl
-            isAddressFormOpen={isAddressFormOpen}
-            handleAddressForm={handleAddressForm}
-            isDisabled={isEditing && !isAddressFormOpen}
-          />
-        </Pane>
-      )}
-
-      {hint && (
-        <Pane
-          zIndex={1}
-          position='fixed'
-          alignSelf='center'
-          top={130}
-        >
-          <Alert title={hint} />
-        </Pane>
-      )}
-
       <Pane display='flex' flex={1}>
         <MapGl
           ref={handleMapRef}
