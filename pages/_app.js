@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -20,6 +21,12 @@ import Header from '@/components/header'
 import IEWarning from '@/components/ie-warning'
 import Help from '@/components/help'
 import useMatomoTracker from '@/hooks/matomo-tracker'
+
+const CrispWithNoSSR = dynamic(
+  // eslint-disable-next-line node/no-unsupported-features/es-syntax
+  () => import('../components/crisp-chat'),
+  {ssr: false}
+)
 
 function App({error, Component, pageProps, query}) {
   const [isMobileWarningDisplayed, setIsMobileWarningDisplayed] = useState(false)
@@ -79,6 +86,7 @@ function App({error, Component, pageProps, query}) {
                   )}
                 </>
               )}
+              <CrispWithNoSSR />
             </Pane>
           </HelpContextProvider>
         </TokenContextProvider>

@@ -28,6 +28,7 @@
     "chart.js": "^4.2.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "compression": "^1.7.4",
+    "crisp-sdk-web": "^1.0.19",
     "date-fns": "2.29.3",
     "eslint-config-next": "^13.2.4",
     "evergreen-ui": "6.13.0",
@@ -54,10 +55,10 @@
     "use-debounce": "^9.0.4"
   },
   "devDependencies": {
-    "dotenv": "^16.0.3",
     "@babel/core": "^7.21.4",
     "@babel/eslint-parser": "^7.21.3",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "dotenv": "^16.0.3",
     "eslint": "^7.32.0",
     "eslint-config-xo-nextjs": "^3.2.0",
     "xo": "^0.39.1"
