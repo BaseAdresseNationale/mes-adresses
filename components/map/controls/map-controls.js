@@ -8,8 +8,15 @@ import BalDataContext from '@/contexts/bal-data'
 import TokenContext from '@/contexts/token'
 import MapButton from './map-button'
 
+// It looks better if the black arrow is pointing to the north
+const DEFAULT_COMPASS_BEARING = 180
+const DEFAULT_COMPASS_PITCH = 0
+
 function MapControls({commune, isLabelsDisplayed, setIsLabelsDisplayed, isAddressFormOpen, handleAddressForm}) {
-  const [mapRotationDeg, setMapRotationDeg] = useState(180)
+  const [compassTransform, setCompassTransform] = useState({
+    bearing: DEFAULT_COMPASS_BEARING,
+    pitch: DEFAULT_COMPASS_PITCH
+  })
   const {style, setStyle, isCadastreDisplayed, setIsCadastreDisplayed, map, setViewport} = useContext(MapContext)
   const {hint} = useContext(DrawContext)
   const {
@@ -25,13 +32,15 @@ function MapControls({commune, isLabelsDisplayed, setIsLabelsDisplayed, isAddres
       return
     }
 
-    const {angle} = map.transform
-    const coef = 360 / (2 * Math.PI)
+    const pitch = map.getPitch()
+    const bearing = map.getBearing()
 
-    // It looks better if the black arrow is pointing to the north
-    setMapRotationDeg((angle * coef) - 180)
+    setCompassTransform({
+      bearing: DEFAULT_COMPASS_BEARING - bearing,
+      pitch: DEFAULT_COMPASS_PITCH - pitch
+    })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map?.transform.angle])
+  }, [map?.transform.pitch, map?.transform.bearing])
 
   const getShowHintsContent = () => {
     if (numeros) {
@@ -47,10 +56,15 @@ function MapControls({commune, isLabelsDisplayed, setIsLabelsDisplayed, isAddres
       pitch: 0,
       bearing: 0
     }))
-    setMapRotationDeg(180)
+    setCompassTransform({
+      bearing: DEFAULT_COMPASS_BEARING,
+      pitch: DEFAULT_COMPASS_PITCH
+    })
   }
 
-  const isRecenterButtonDisabled = Math.round(Math.abs(mapRotationDeg)) === 180
+  const isRecenterButtonDisabled =
+    Math.abs(Math.round(compassTransform.bearing)) === DEFAULT_COMPASS_BEARING &&
+    Math.abs(Math.round(compassTransform.pitch)) === DEFAULT_COMPASS_PITCH
 
   return (
     <>
@@ -64,18 +78,27 @@ function MapControls({commune, isLabelsDisplayed, setIsLabelsDisplayed, isAddres
 
       <Pane
         position='absolute'
-        top={100}
-        right={15}
+        top={90}
+        right={16}
         zIndex={1}
         className='map-controls-buttons'
         display='flex'
         flexDirection='column'
       >
+        <MapButton
+          tooltipContent='Réorienter la carte'
+          icon={() => <CompassIcon style={{transform: `rotate(${compassTransform.bearing}deg)`}} />}
+          onClick={onCenterMap}
+          disabled={isRecenterButtonDisabled}
+          marginBottom={15}
+        />
+
         {(voie || (toponymes && toponymes.length > 0)) && (
           <MapButton
             icon={isLabelsDisplayed ? EyeOffIcon : EyeOpenIcon}
             tooltipContent={getShowHintsContent()}
             onClick={() => setIsLabelsDisplayed(!isLabelsDisplayed)}
+            marginBottom={5}
           />
         )}
 
@@ -89,13 +112,6 @@ function MapControls({commune, isLabelsDisplayed, setIsLabelsDisplayed, isAddres
             appearance={isAddressFormOpen ? '' : 'primary'}
           />
         )}
-
-        <MapButton
-          tooltipContent='Réorienter la carte'
-          icon={() => <CompassIcon style={{transform: `rotate(${mapRotationDeg}deg)`}} />}
-          onClick={onCenterMap}
-          disabled={isRecenterButtonDisabled}
-        />
       </Pane>
 
       {hint && (
