@@ -1,4 +1,4 @@
-import {useCallback, useContext, useRef} from 'react'
+import {useCallback, useContext, useRef, useState} from 'react'
 
 import ParcellesContext from '@/contexts/parcelles'
 import {LAYERS_SOURCE} from '@/components/map/layers/tiles'
@@ -6,6 +6,7 @@ import {LAYERS_SOURCE} from '@/components/map/layers/tiles'
 function useHovered(map) {
   const hovered = useRef()
   const {handleHoveredParcelle} = useContext(ParcellesContext)
+  const [featureHovered, setFeatureHovered] = useState(null)
 
   const handleRelatedNumerosPoints = (map, idVoie, isHovered) => {
     const numerosFeatures = map.querySourceFeatures('tiles', {
@@ -50,6 +51,7 @@ function useHovered(map) {
           sourceLayer: hovered.current.sourceLayer
         }, {hover: false})
         handleRelatedFeatures(map, hovered.current, false)
+        setFeatureHovered(null)
       }
 
       hovered.current = feature
@@ -57,6 +59,9 @@ function useHovered(map) {
       // Highlight hovered features
       map.setFeatureState({source, id, sourceLayer}, {hover: true})
       handleRelatedFeatures(map, feature, true)
+      if (sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS || sourceLayer === LAYERS_SOURCE.VOIES_POINTS) {
+        setFeatureHovered(feature)
+      }
     }
   }, [map, handleHoveredParcelle])
 
@@ -65,6 +70,7 @@ function useHovered(map) {
       const {id, source, sourceLayer} = hovered.current
       map.setFeatureState({source, sourceLayer, id}, {hover: false})
       handleRelatedFeatures(map, hovered.current, false)
+      setFeatureHovered(null)
 
       if (source === 'cadastre') {
         handleHoveredParcelle(null)
@@ -74,7 +80,7 @@ function useHovered(map) {
     hovered.current = null
   }, [map, handleHoveredParcelle])
 
-  return [handleHover, handleMouseLeave]
+  return [handleHover, handleMouseLeave, featureHovered]
 }
 
 export default useHovered

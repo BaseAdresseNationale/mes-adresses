@@ -18,6 +18,7 @@ import {vector, ortho, planIGN} from '@/components/map/styles'
 import EditableMarker from '@/components/map/editable-marker'
 import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
+import PopupFeature from '@/components/map/popup-feature/popup-feature'
 import Draw from '@/components/map/draw'
 import Control from '@/components/map/controls/control'
 import NavControl from '@/components/map/controls/nav-control'
@@ -103,7 +104,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
   const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune])
 
-  const [handleHover, handleMouseLeave] = useHovered(map)
+  const [handleHover, handleMouseLeave, featureHovered] = useHovered(map)
   const bounds = useBounds(commune, voie, toponyme)
 
   const prevStyle = useRef(defaultStyle)
@@ -369,6 +370,10 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
               isToponyme={Boolean(toponyme)}
               viewport={viewport}
             />
+          )}
+
+          {(featureHovered !== null && viewport.zoom > 14) && (
+            <PopupFeature feature={featureHovered} commune={commune} />
           )}
 
           <Draw />
