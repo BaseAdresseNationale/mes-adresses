@@ -226,6 +226,7 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
               max={9999}
               value={numero}
               marginBottom={0}
+              onWheel={e => e.target.blur()}
               placeholder={`Numéro${suggestedNumero ? ` recommandé : ${suggestedNumero}` : ''}`}
               onChange={onNumeroChange}
               validationMessage={getValidationMessage('numero')}
