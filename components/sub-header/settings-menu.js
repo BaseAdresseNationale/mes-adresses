@@ -4,23 +4,8 @@ import {Popover, Menu, Position, Button, CogIcon, DownloadIcon, TrashIcon} from 
 
 import SettingsContext from '@/contexts/settings'
 
-function SettingsMenu({isAdmin, csvUrl, setIsTrashOpen}) {
+function SettingsMenu({isAdmin, csvBalUrl, csvVoiesUrl, setIsTrashOpen}) {
   const {isSettingsDisplayed, setIsSettingsDisplayed} = useContext(SettingsContext)
-
-  if (!isAdmin) {
-    return (
-      <Button
-        is='a'
-        href={csvUrl}
-        height={24}
-        iconAfter={DownloadIcon}
-        appearance='minimal'
-        marginRight={16}
-      >
-        Télécharger au format CSV
-      </Button>
-    )
-  }
 
   return (
     <Popover
@@ -28,17 +13,23 @@ function SettingsMenu({isAdmin, csvUrl, setIsTrashOpen}) {
       content={
         <Menu>
           <Menu.Group>
-            <Menu.Item icon={TrashIcon} onSelect={() => setIsTrashOpen(true)}>
-              Voir la corbeille
+            <Menu.Item icon={DownloadIcon} is='a' href={csvBalUrl} color='inherit' textDecoration='none'>
+              Télécharger Base Locale CSV
             </Menu.Item>
           </Menu.Group>
           <Menu.Group>
-            <Menu.Item icon={DownloadIcon} is='a' href={csvUrl} color='inherit' textDecoration='none'>
-              Télécharger au format CSV
+            <Menu.Item icon={DownloadIcon} is='a' href={csvVoiesUrl} color='inherit' textDecoration='none'>
+              Télécharger liste des voies CSV
             </Menu.Item>
           </Menu.Group>
           {isAdmin && (
             <>
+              <Menu.Divider />
+              <Menu.Group>
+                <Menu.Item icon={TrashIcon} onSelect={() => setIsTrashOpen(true)}>
+                  Voir la corbeille
+                </Menu.Item>
+              </Menu.Group>
               <Menu.Divider />
               <Menu.Group>
                 <Menu.Item icon={CogIcon} onSelect={() => setIsSettingsDisplayed(!isSettingsDisplayed)}>
@@ -64,7 +55,8 @@ function SettingsMenu({isAdmin, csvUrl, setIsTrashOpen}) {
 
 SettingsMenu.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
-  csvUrl: PropTypes.string.isRequired,
+  csvBalUrl: PropTypes.string.isRequired,
+  csvVoiesUrl: PropTypes.string.isRequired,
   setIsTrashOpen: PropTypes.func.isRequired
 }
 
