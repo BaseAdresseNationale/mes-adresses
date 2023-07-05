@@ -2,7 +2,7 @@ import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
-import {getBaseLocaleCsvUrl} from '@/lib/bal-api'
+import {getBaseLocaleCsvUrl, getListVoiesCsvUrl} from '@/lib/bal-api'
 
 import usePublishProcess from '@/hooks/publish-process'
 
@@ -31,7 +31,8 @@ const SubHeader = React.memo(({commune, setIsTrashOpen}) => {
   } = useContext(BalDataContext)
   const {token, tokenIsChecking} = useContext(TokenContext)
 
-  const csvUrl = getBaseLocaleCsvUrl(baseLocale._id)
+  const csvBalUrl = getBaseLocaleCsvUrl(baseLocale._id)
+  const csvVoiesUrl = getListVoiesCsvUrl(baseLocale._id)
   const isAdmin = Boolean(token)
 
   const {
@@ -73,7 +74,7 @@ const SubHeader = React.memo(({commune, setIsTrashOpen}) => {
         />
         { !tokenIsChecking && !habilitationIsLoading && (
           <Pane marginLeft='auto' display='flex' alignItems='center'>
-            <SettingsMenu isAdmin={isAdmin} csvUrl={csvUrl} setIsTrashOpen={setIsTrashOpen} />
+            <SettingsMenu isAdmin={isAdmin} csvBalUrl={csvBalUrl} csvVoiesUrl={csvVoiesUrl} setIsTrashOpen={setIsTrashOpen} />
             <BALStatus
               baseLocale={baseLocale}
               commune={commune}
