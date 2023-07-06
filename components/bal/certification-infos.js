@@ -1,16 +1,19 @@
 import {useState, useContext, useEffect} from 'react'
-import {Pane, Heading, Dialog, Button, Text, Alert, EndorsedIcon, WarningSignIcon, LightbulbIcon, ChevronUpIcon, ChevronDownIcon} from 'evergreen-ui'
+import {Pane, Heading, Dialog, Button, Text, Alert, EndorsedIcon, WarningSignIcon, LightbulbIcon, ChevronUpIcon, ChevronDownIcon, Position, Tooltip} from 'evergreen-ui'
 
 import BalDataContext from '@/contexts/bal-data'
+import TokenContext from '@/contexts/token'
 
 import ProgressBar from '@/components/progress-bar'
 import Counter from '@/components/counter'
 
 function CertificationInfos() {
   const {certifyAllNumeros, baseLocale, reloadBaseLocale} = useContext(BalDataContext)
+  const {token} = useContext(TokenContext)
   const [isDialogShown, setIsDialogShown] = useState(false)
   const [isInfosShown, setIsInfosShown] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isHoveredCertifyButton, setIsHoveredCertifyButton] = useState(false)
   const {nbNumeros, nbNumerosCertifies} = baseLocale
   const percentCertified = Math.round((nbNumerosCertifies * 100) / nbNumeros)
 
@@ -142,15 +145,28 @@ function CertificationInfos() {
               display='flex'
               justifyContent='end'
               paddingTop={15}
+
             >
-              <Button
-                isLoading={isLoading}
-                intent='infos'
-                appearance='primary'
-                onClick={() => setIsDialogShown(true)}
+              <div onMouseEnter={() => setIsHoveredCertifyButton(true)}
+                onMouseLeave={() => setIsHoveredCertifyButton(false)}
               >
-                Certifier mes adresses
-              </Button>
+                <Tooltip
+                  content='Vous n’êtes pas identifié comme administrateur de cette base adresse locale, vous ne pouvez donc pas certifier les adresses.'
+                  position={Position.BOTTOM_RIGHT}
+                  isShown={!token && isHoveredCertifyButton}
+                >
+
+                  <Button
+                    isLoading={isLoading}
+                    intent='infos'
+                    appearance='primary'
+                    disabled={!token}
+                    onClick={() => setIsDialogShown(true)}
+                  >
+                    Certifier mes adresses
+                  </Button>
+                </Tooltip>
+              </div>
             </Pane>
           </Alert>
         </Pane>
