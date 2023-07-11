@@ -75,7 +75,7 @@ function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, ha
       }
 
       // Detect multi communes
-      const validationReport = await validate(file, {relaxFieldsDetection: true})
+      const validationReport = await validate(file, {profile: '1.3-etalab', relaxFieldsDetection: true})
       const communes = extractCommuneFromCSV(validationReport.rows)
 
       if (communes[0]) {
