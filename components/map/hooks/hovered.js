@@ -1,39 +1,41 @@
 import {useCallback, useContext, useRef} from 'react'
 
 import ParcellesContext from '@/contexts/parcelles'
+import {LAYERS_SOURCE} from '@/components/map/layers/tiles'
 
 function useHovered(map) {
   const hovered = useRef()
   const {handleHoveredParcelle} = useContext(ParcellesContext)
 
+  const handleRelatedNumerosPoints = (map, idVoie, isHovered) => {
+    const numerosFeatures = map.querySourceFeatures('tiles', {
+      sourceLayer: LAYERS_SOURCE.NUMEROS_POINTS,
+      filter: ['==', ['get', 'idVoie'], idVoie]
+    })
+    numerosFeatures.forEach(({id}) => {
+      map.setFeatureState({source: 'tiles', sourceLayer: LAYERS_SOURCE.NUMEROS_POINTS, id}, {hover: isHovered})
+    })
+    map.setFeatureState({source: 'tiles', sourceLayer: LAYERS_SOURCE.VOIES_LINES_STRINGS, id: idVoie}, {hover: isHovered})
+  }
+
+  const handleRelatedVoiePoints = (map, id, isHovered) => {
+    map.setFeatureState({source: 'tiles', sourceLayer: LAYERS_SOURCE.VOIES_POINTS, id}, {hover: isHovered})
+  }
+
   // Highlight related features
   const handleRelatedFeatures = (map, feature, isHovered) => {
-    const {source, properties} = feature
-
-    if (source === 'voies') {
-      const voiePositions = map.querySourceFeatures('positions', {
-        sourceLayer: 'numeros-point',
-        filter: ['==', ['get', 'idVoie'], properties.idVoie]
-      })
-
-      voiePositions.forEach(({id}) => {
-        map.setFeatureState({source: 'positions', id}, {hover: isHovered})
-      })
-    } else if (source === 'positions') {
-      const [voie] = map.querySourceFeatures('voies', {
-        sourceLayer: 'voie-label',
-        filter: ['==', ['get', 'idVoie'], properties.idVoie]
-      })
-
-      if (voie) {
-        map.setFeatureState({source: 'voies', id: voie.id}, {hover: isHovered})
+    const {source, sourceLayer, properties} = feature
+    if (source === 'tiles') {
+      if (sourceLayer === LAYERS_SOURCE.VOIES_POINTS) {
+        handleRelatedNumerosPoints(map, properties.id, isHovered)
+      } else if (sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS || sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS) {
+        handleRelatedVoiePoints(map, sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ? properties.idVoie : properties.id, isHovered)
       }
     }
   }
 
   const handleHover = useCallback(event => {
     const feature = event && event.features && event.features[0]
-
     if (feature) {
       const {source, id, sourceLayer, properties} = feature
 

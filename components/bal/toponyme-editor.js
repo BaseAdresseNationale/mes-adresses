@@ -30,7 +30,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
 
   const {token} = useContext(TokenContext)
-  const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadGeojson, reloadParcelles} = useContext(BalDataContext)
+  const {baseLocale, setToponyme, reloadToponymes, refreshBALSync, reloadParcelles} = useContext(BalDataContext)
   const {markers} = useContext(MarkersContext)
   const {selectedParcelles} = useContext(ParcellesContext)
   const [ref, setIsFocus] = useFocus(true)
@@ -76,7 +76,6 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         setToponyme(toponyme)
       } else {
         await reloadToponymes()
-        await reloadGeojson()
       }
 
       if (xor(initialValue?.parcelles, body.parcelles).length > 0) {
@@ -88,7 +87,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
     } catch {
       setIsLoading(false)
     }
-  }, [token, baseLocale._id, initialValue, nom, nomAlt, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, reloadGeojson, setValidationMessages])
+  }, [token, baseLocale._id, initialValue, nom, nomAlt, markers, selectedParcelles, setToponyme, closeForm, refreshBALSync, reloadToponymes, reloadParcelles, setValidationMessages])
 
   const onFormCancel = useCallback(e => {
     e.preventDefault()
