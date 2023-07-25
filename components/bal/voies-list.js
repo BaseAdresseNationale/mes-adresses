@@ -22,13 +22,16 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
   const {token} = useContext(TokenContext)
   const [toRemove, setToRemove] = useState(null)
   const {isEditing, reloadVoies} = useContext(BalDataContext)
+  const [isDisabled, setIsDisabled] = useState(false)
   const router = useRouter()
 
   const handleRemove = async () => {
+    setIsDisabled(true)
     await softRemoveVoie(toRemove, token)
     await reloadVoies()
     await onRemove()
     setToRemove(null)
+    setIsDisabled(false)
   }
 
   const onSelect = id => {
@@ -59,6 +62,7 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
         )}
         onCancel={() => setToRemove(null)}
         onConfirm={handleRemove}
+        isDisabled={isDisabled}
       />
       <Pane
         flexShrink={0}
