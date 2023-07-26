@@ -50,14 +50,15 @@
     "react-dropzone": "^14.2.3",
     "react-map-gl": ">=5.3.21 <6.0.0",
     "react-map-gl-draw": "1.0.4",
+    "react-range": "^1.8.14",
     "sharp": "^0.29.3",
     "use-debounce": "^9.0.4"
   },
   "devDependencies": {
-    "dotenv": "^16.0.3",
     "@babel/core": "^7.21.4",
     "@babel/eslint-parser": "^7.21.3",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "dotenv": "^16.0.3",
     "eslint": "^7.32.0",
     "eslint-config-xo-nextjs": "^3.2.0",
     "xo": "^0.39.1"
