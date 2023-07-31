@@ -47,7 +47,7 @@ PopupFeatureNumero.propTypes = {
       numero: PropTypes.number.isRequired,
       certifie: PropTypes.bool.isRequired,
       parcelles: PropTypes.string.isRequired,
-      suffixe: PropTypes.number,
+      suffixe: PropTypes.string,
     })
   }),
   commune: PropTypes.shape({
