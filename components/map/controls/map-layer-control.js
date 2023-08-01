@@ -18,12 +18,14 @@ function MapLayerControl({map, isToponymesDisplayed, setIsToponymeDisplayed}) {
   const [poiLayerIsDisplayed, setPoiLayerIsDisplayed] = useState(true)
 
   useEffect(() => {
-    if (map && map.getLayer(VOIE_LABEL)) {
-      map.setLayerZoomRange(VOIE_LABEL, ZOOM.ALL.minZoom, voieLayerZoom[0])
-    }
+    if (map) {
+      if (map && map.getLayer(VOIE_LABEL)) {
+        map.setLayerZoomRange(VOIE_LABEL, ZOOM.ALL.minZoom, voieLayerZoom[0])
+      }
 
-    if (map.getLayer(VOIE_TRACE_LINE)) {
-      map.setLayerZoomRange(VOIE_TRACE_LINE, ZOOM.ALL.minZoom, voieLayerZoom[0])
+      if (map.getLayer(VOIE_TRACE_LINE)) {
+        map.setLayerZoomRange(VOIE_TRACE_LINE, ZOOM.ALL.minZoom, voieLayerZoom[0])
+      }
     }
   }, [map, voieLayerZoom])
 
