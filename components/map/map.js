@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
 import MapGl, {Source, Layer} from 'react-map-gl'
 import maplibregl from 'maplibre-gl'
-import {Pane, Alert, EyeOffIcon, EyeOpenIcon} from 'evergreen-ui'
+import {Pane, Alert} from 'evergreen-ui'
 
 import MapContext, {BAL_API_URL, SOURCE_TILE_ID} from '@/contexts/map'
 import TokenContext from '@/contexts/token'
@@ -20,10 +20,11 @@ import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
 import PopupFeature from '@/components/map/popup-feature/popup-feature'
 import Draw from '@/components/map/draw'
-import Control from '@/components/map/controls/control'
 import NavControl from '@/components/map/controls/nav-control'
 import StyleControl from '@/components/map/controls/style-control'
 import AddressEditorControl from '@/components/map/controls/address-editor-control'
+import ImageControl from '@/components/map/controls/image-control'
+import MapLayerControl from '@/components/map/controls/map-layer-control'
 import useBounds from '@/components/map/hooks/bounds'
 import useHovered from '@/components/map/hooks/hovered'
 
@@ -256,6 +257,25 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     }
   }, [commune])
 
+  const takeScreenshot = async () => {
+    function getImageBase64(map) {
+      return new Promise(resolve => {
+        map.once('render', () => resolve(map.getCanvas().toDataURL()))
+        map.setBearing(map.getBearing())
+      })
+    }
+
+    try {
+      const imageBase64 = await getImageBase64(map)
+      const a = document.createElement('a')
+      a.href = imageBase64
+      a.download = `Screenshot-${commune.nom}.png`
+      a.click()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
     <Pane display='flex' flexDirection='column' flex={1}>
       <StyleControl
@@ -266,32 +286,8 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         handleCadastre={setIsCadastreDisplayed}
       />
 
-      {(voie || (toponymes && toponymes.length > 0)) && (
-        <Pane
-          position='absolute'
-          className='maplibregl-ctrl-group maplibregl-ctrl'
-          top={100}
-          right={16}
-          zIndex={2}
-        >
-
-          <Control
-            icon={isLabelsDisplayed ? EyeOffIcon : EyeOpenIcon}
-            isEnabled={isLabelsDisplayed}
-            enabledHint={numeros ? 'Masquer les détails' : 'Masquer les toponymes'}
-            disabledHint={numeros ? 'Afficher les détails' : 'Afficher les toponymes'}
-            onChange={setIsLabelsDisplayed}
-          />
-        </Pane>
-      )}
-
       {token && (
-        <Pane
-          position='absolute'
-          zIndex={1}
-          top={voie || (toponymes && toponymes.length > 0) ? 136 : 100}
-          right={15}
-        >
+        <Pane position='absolute' zIndex={1} top={100} right={15} >
           <AddressEditorControl
             isAddressFormOpen={isAddressFormOpen}
             handleAddressForm={handleAddressForm}
@@ -300,13 +296,16 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         </Pane>
       )}
 
+      <Pane position='absolute' zIndex={1} top={140} right={15} >
+        <MapLayerControl map={map} isToponymesDisplayed={isLabelsDisplayed} setIsToponymeDisplayed={setIsLabelsDisplayed} />
+      </Pane>
+
+      <Pane position='absolute' zIndex={1} top={180} right={15} >
+        <ImageControl handleTakeScreenshot={takeScreenshot} />
+      </Pane>
+
       {hint && (
-        <Pane
-          zIndex={1}
-          position='fixed'
-          alignSelf='center'
-          top={130}
-        >
+        <Pane zIndex={1} position='fixed' alignSelf='center' top={130} >
           <Alert title={hint} />
         </Pane>
       )}
@@ -385,6 +384,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
 
 Map.propTypes = {
   commune: PropTypes.shape({
+    nom: PropTypes.string.isRequired,
     hasOrtho: PropTypes.bool.isRequired,
     contour: PropTypes.object.isRequired
   }).isRequired,

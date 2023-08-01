@@ -4,7 +4,11 @@ export const LAYERS_SOURCE = {
   VOIES_LINES_STRINGS: 'voies-linestrings'
 }
 
-const ZOOM = {
+export const ZOOM = {
+  ALL: {
+    minZoom: 13,
+    maxZoom: 20,
+  },
   NUMEROS_ZOOM: {
     minZoom: 13,
     maxZoom: 17
