@@ -10,7 +10,7 @@ function Comment({input, limit, onChange, isDisabled}) {
         Commentaire
       </Label>
       <Textarea
-        placeholder='Cette note est confidentiel et ne sera pas diffusée'
+        placeholder='Cette note est confidentielle et ne sera pas diffusée'
         value={input}
         disabled={isDisabled}
         onChange={input.length < limit ? onChange : () => {}}
