@@ -10,7 +10,7 @@ import useFuse from '@/hooks/fuse'
 import TableRowDeleted from '@/components/trash/table-row-deleted/index'
 import InfiniteScrollList from '@/components/infinite-scroll-list'
 
-function ItemsListDelete({itemsDeleted, model, onRestore, onRemoveVoie, onRemoveNumeros}) {
+function ItemsListDelete({itemsDeleted, model, onRestore, onRemove, onRemoveNumeros}) {
   const [filtered, setFilter] = useFuse(itemsDeleted, 200, {keys: ['nom']})
 
   const scrollableItems = useMemo(() => (
@@ -27,7 +27,7 @@ function ItemsListDelete({itemsDeleted, model, onRestore, onRemoveVoie, onRemove
       },
       {
         label: 'Supprimer',
-        callback: () => (item._deleted ? onRemoveVoie(item) : onRemoveNumeros(item)),
+        callback: () => (item._deleted ? onRemove(item) : onRemoveNumeros(item)),
         icon: TrashIcon,
         intent: 'danger'
       }
@@ -84,7 +84,7 @@ ItemsListDelete.propTypes = {
   itemsDeleted: PropTypes.array.isRequired,
   model: PropTypes.string.isRequired,
   onRestore: PropTypes.func.isRequired,
-  onRemoveVoie: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
   onRemoveNumeros: PropTypes.func.isRequired
 }
 
