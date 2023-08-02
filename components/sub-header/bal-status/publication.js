@@ -43,7 +43,7 @@ function Publication({status, handleBackToDraft, onPublish}) {
 
 Publication.propTypes = {
   status: PropTypes.oneOf([
-    'draft', 'ready-to-publish', 'published'
+    'draft', 'ready-to-publish', 'published', 'replaced'
   ]).isRequired,
   handleBackToDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired
