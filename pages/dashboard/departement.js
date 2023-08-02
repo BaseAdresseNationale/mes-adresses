@@ -73,7 +73,13 @@ function Departement({departement, filteredCommunesInBAL, basesLocalesDepartemen
   )
 }
 
-Departement.getInitialProps = async ({query}) => {
+Departement.getInitialProps = async ({res, query}) => {
+  if (res) {
+    res.statusCode = 404
+    res.end('Not found')
+    return
+  }
+
   const {codeDepartement} = query
 
   const departement = await getDepartement(codeDepartement)
