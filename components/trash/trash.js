@@ -34,7 +34,7 @@ function Trash() {
         model: 'voie',
         itemsDeleted: voiesDeleted,
         onRestore: setRestoreVoie,
-        onRemoveVoie,
+        onRemove: onRemoveVoie,
         onRemoveNumeros
       }
     }
