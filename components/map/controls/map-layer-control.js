@@ -112,7 +112,7 @@ function MapLayerControl({map, isToponymesDisplayed, setIsToponymeDisplayed}) {
         </Pane>
       }
     >
-      <Tooltip position={Position.LEFT} content='Ajuster les Claques'>
+      <Tooltip position={Position.LEFT} content='Ajuster les calques'>
         <IconButton icon={MapIcon} />
       </Tooltip>
     </Popover>
