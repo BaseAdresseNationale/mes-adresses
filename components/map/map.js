@@ -24,7 +24,6 @@ import NavControl from '@/components/map/controls/nav-control'
 import StyleControl from '@/components/map/controls/style-control'
 import AddressEditorControl from '@/components/map/controls/address-editor-control'
 import ImageControl from '@/components/map/controls/image-control'
-import MapLayerControl from '@/components/map/controls/map-layer-control'
 import useBounds from '@/components/map/hooks/bounds'
 import useHovered from '@/components/map/hooks/hovered'
 
@@ -258,25 +257,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     }
   }, [commune])
 
-  const takeScreenshot = async () => {
-    function getImageBase64(map) {
-      return new Promise(resolve => {
-        map.once('render', () => resolve(map.getCanvas().toDataURL()))
-        map.setBearing(map.getBearing())
-      })
-    }
-
-    try {
-      const imageBase64 = await getImageBase64(map)
-      const a = document.createElement('a')
-      a.href = imageBase64
-      a.download = `Screenshot-${commune.nom}.png`
-      a.click()
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
   const selectedVoieColor = useMemo(() => {
     if (!voie || !isMapLoaded) {
       return
@@ -310,11 +290,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       )}
 
       <Pane position='absolute' zIndex={1} top={140} right={15} >
-        <MapLayerControl map={map} isToponymesDisplayed={isLabelsDisplayed} setIsToponymeDisplayed={setIsLabelsDisplayed} />
-      </Pane>
-
-      <Pane position='absolute' zIndex={1} top={180} right={15} >
-        <ImageControl handleTakeScreenshot={takeScreenshot} />
+        <ImageControl map={map} communeNom={commune.nom} isToponymesDisplayed={isLabelsDisplayed} setIsToponymeDisplayed={setIsLabelsDisplayed} />
       </Pane>
 
       {hint && (
