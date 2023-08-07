@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Switch, Pane, Label} from 'evergreen-ui'
+import {Switch, Pane, Label, InfoSignIcon, Tooltip} from 'evergreen-ui'
 import {Range, getTrackBackground} from 'react-range'
 import {ZOOM} from '@/components/map/layers/tiles'
 
@@ -7,7 +7,13 @@ function LayerShowHideZoomControl({title, isDiplayed, setIsDiplayed, zoom, setZo
   return (
     <Pane marginBottom={4}>
       <Pane display='flex' flexDirection='row' alignItems='center' justifyContent='space-between' marginBottom='8px'>
-        <Label display='block' marginRight={8}>{title}</Label>
+        <Pane display='flex' flexDirection='row'>
+          <Label display='block' marginRight={4}>{title}</Label>
+          {(zoom && zoom.length > 0) &&
+            <Tooltip content={`Ajustez la distance d‘affichage des ${title}.`} >
+              <InfoSignIcon size={10} color='grey' />
+            </Tooltip>}
+        </Pane>
         <Pane display='flex' flexDirection='row' alignItems='center'>
           <Switch height={24} checked={isDiplayed} onChange={() => setIsDiplayed(!isDiplayed)} />
         </Pane>
