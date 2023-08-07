@@ -328,6 +328,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           onMouseLeave={handleMouseLeave}
           onMouseOut={handleMouseLeave}
           onViewportChange={setViewport}
+          dragRotate={false}
         >
 
           <NavControl onViewportChange={setViewport} />

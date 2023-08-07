@@ -38,7 +38,13 @@ function Index({basesLocales, basesLoclesStats}) {
   )
 }
 
-Index.getInitialProps = async () => {
+Index.getInitialProps = async ({res}) => {
+  if (res) {
+    res.statusCode = 404
+    res.end('Not found')
+    return
+  }
+
   const basesLocales = await getBasesLocales()
   const basesLoclesStats = await getBasesLocalesStats()
   const basesLocalesWithoutDemo = basesLocales.filter((b => b.status !== 'demo'))
