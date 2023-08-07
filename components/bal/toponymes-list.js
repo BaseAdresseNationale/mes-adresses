@@ -20,14 +20,17 @@ import CommentsContent from '@/components/comments-content'
 function ToponymesList({toponymes, onEnableEditing, onRemove, balId, addButton}) {
   const {token} = useContext(TokenContext)
   const [toRemove, setToRemove] = useState(null)
+  const [isDisabled, setIsDisabled] = useState(false)
   const {isEditing, reloadToponymes} = useContext(BalDataContext)
   const router = useRouter()
 
   const handleRemove = async () => {
+    setIsDisabled(true)
     await softRemoveToponyme(toRemove, token)
     await reloadToponymes()
     await onRemove()
     setToRemove(null)
+    setIsDisabled(false)
   }
 
   const onSelect = id => {
@@ -56,6 +59,7 @@ function ToponymesList({toponymes, onEnableEditing, onRemove, balId, addButton})
             Êtes vous bien sûr de vouloir supprimer ce toponyme ?
           </Paragraph>
         )}
+        isDisabled={isDisabled}
         onCancel={() => setToRemove(null)}
         onConfirm={handleRemove}
       />

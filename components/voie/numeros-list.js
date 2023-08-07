@@ -23,6 +23,8 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
   const {baseLocale, isEditing, reloadNumeros, reloadParcelles, toponymes, refreshBALSync} = useContext(BalDataContext)
   const {reloadTiles} = useContext(MapContext)
 
+  const [isDisabled, setIsDisabled] = useState(false)
+
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: [
       'numeroComplet'
@@ -89,6 +91,7 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
   }, [reloadNumeros, reloadParcelles, refreshBALSync, token, reloadTiles])
 
   const onMultipleRemove = async () => {
+    setIsDisabled(true)
     await softRemoveMultipleNumero(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
 
     await reloadNumeros()
@@ -98,6 +101,7 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
 
     setSelectedNumerosIds([])
     setIsRemoveWarningShown(false)
+    setIsDisabled(false)
   }
 
   const onMultipleEdit = async (balId, body) => {
@@ -155,6 +159,7 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
         )}
         onCancel={() => setIsRemoveWarningShown(false)}
         onConfirm={onMultipleRemove}
+        isDisabled={isDisabled}
       />
 
       <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
