@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import {Pane, UnorderedList, ListItem, Tooltip, Position, HelpIcon} from 'evergreen-ui'
 
 import languesRegionales from '@ban-team/shared-data/langues-regionales.json'

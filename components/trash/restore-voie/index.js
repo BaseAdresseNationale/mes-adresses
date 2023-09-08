@@ -1,6 +1,6 @@
 import {useState, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {Pane, Heading, Button, AddIcon, CloseIcon} from 'evergreen-ui'
+import {Pane, Heading, Button, AddIcon, CrossIcon} from 'evergreen-ui'
 
 import ListNumerosDeleted from '@/components/trash/restore-voie/list-numeros-deleted'
 import LanguagePreview from '@/components/bal/language-preview'
@@ -50,10 +50,11 @@ function RestoreVoie({voie, onRestoreVoie, onClose}) {
             {restaurerText()}
           </Button>
           <Button
-            iconBefore={CloseIcon}
+            iconBefore={CrossIcon}
             appearance='minimal'
             display='inline-flex'
             onClick={() => onClose()}
+            marginLeft={10}
           >
             Annuler
           </Button>

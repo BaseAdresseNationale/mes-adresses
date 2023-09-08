@@ -1,8 +1,7 @@
 import {useState, useMemo, useEffect, useCallback, useContext, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
-import MapGl, {Source, Layer} from 'react-map-gl'
-import maplibregl from 'maplibre-gl'
+import MapGl, {Source, Layer} from 'react-map-gl/maplibre'
 import {Pane, Alert} from 'evergreen-ui'
 
 import MapContext, {SOURCE_TILE_ID} from '@/contexts/map'
@@ -19,8 +18,8 @@ import EditableMarker from '@/components/map/editable-marker'
 import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
 import PopupFeature from '@/components/map/popup-feature/popup-feature'
-import Draw from '@/components/map/draw'
 import NavControl from '@/components/map/controls/nav-control'
+import DrawControl from './controls/draw-control'
 import StyleControl from '@/components/map/controls/style-control'
 import AddressEditorControl from '@/components/map/controls/address-editor-control'
 import ImageControl from '@/components/map/controls/image-control'
@@ -87,6 +86,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
+  const [cursor, setCursor] = useState('default')
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null)
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle))
 
@@ -160,26 +160,23 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       ((feature.sourceLayer === LAYERS_SOURCE.VOIES_POINTS || feature.sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS) && feature.properties.id))
     ) {
       const idVoie = feature.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ? feature.properties.idVoie : feature.properties.id
-      if (feature.layer.id === VOIE_TRACE_LINE && voie && idVoie === voie._id) {
-        setEditingId(voie._id)
-      } else {
-        router.push(
-          `/bal/voie?balId=${balId}&idVoie=${idVoie}`,
-          `/bal/${balId}/voies/${idVoie}`
-        )
-      }
+      router.push(
+        `/bal/${balId}/voies/${idVoie}`
+      )
     }
 
     setIsContextMenuDisplayed(null)
   }, [router, balId, setEditingId, isEditing, voie, handleParcelle])
 
-  const handleCursor = useCallback(({isHovering}) => {
+  useEffect(() => {
     if (modeId === 'drawLineString') {
-      return 'crosshair'
+      setCursor('crosshair')
+    } else if (featureHovered) {
+      setCursor('pointer')
+    } else {
+      setCursor('default')
     }
-
-    return isHovering ? 'pointer' : 'default'
-  }, [modeId])
+  }, [modeId, featureHovered])
 
   // Hide current voie's or toponyme's numeros
   useEffect(() => {
@@ -209,14 +206,14 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
     setStyle(style => {
-      if (modeId && communeHasOrtho) {
+      if (drawEnabled && communeHasOrtho) {
         prevStyle.current = style
         return 'ortho'
       }
 
       return prevStyle.current
     })
-  }, [modeId, setStyle, communeHasOrtho])
+  }, [drawEnabled, setStyle, communeHasOrtho])
 
   useEffect(() => {
     if (isStyleLoaded) {
@@ -230,13 +227,15 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         padding: 100
       })
 
-      setViewport(viewport => ({
-        ...viewport,
-        bearing: camera.bearing,
-        longitude: camera.center.lng,
-        latitude: camera.center.lat,
-        zoom: camera.zoom
-      }))
+      if (camera) {
+        setViewport(viewport => ({
+          ...viewport,
+          bearing: camera.bearing,
+          longitude: camera.center.lng,
+          latitude: camera.center.lat,
+          zoom: camera.zoom
+        }))
+      }
     }
   }, [map, bounds, setViewport])
 
@@ -278,9 +277,10 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
+      {map && <DrawControl map={map} drawEnabled={drawEnabled} isMapLoaded={isMapLoaded} />}
 
       {token && (
-        <Pane position='absolute' zIndex={1} top={100} right={15} >
+        <Pane position='absolute' zIndex={1} top={90} right={10} >
           <AddressEditorControl
             isAddressFormOpen={isAddressFormOpen}
             handleAddressForm={handleAddressForm}
@@ -289,12 +289,12 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         </Pane>
       )}
 
-      <Pane position='absolute' zIndex={1} top={140} right={15} >
+      <Pane position='absolute' zIndex={1} top={125} right={10} >
         <ImageControl map={map} communeNom={commune.nom} isToponymesDisplayed={isLabelsDisplayed} setIsToponymeDisplayed={setIsLabelsDisplayed} />
       </Pane>
 
       {hint && (
-        <Pane zIndex={1} position='fixed' alignSelf='center' top={130} >
+        <Pane zIndex={1} position='fixed' alignSelf='center' top={130} maxWidth='50%' >
           <Alert title={hint} />
         </Pane>
       )}
@@ -302,18 +302,19 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       <Pane display='flex' flex={1}>
         <MapGl
           ref={handleMapRef}
-          mapLib={maplibregl}
           reuseMap
-          viewState={viewport}
+          {...viewport}
           mapStyle={mapStyle}
           width='100%'
           height='100%'
+          styleDiffing={false}
           {...settings}
           {...interactionProps}
           interactiveLayerIds={interactiveLayerIds}
-          getCursor={handleCursor}
+          cursor={cursor}
           onClick={onClick}
-          onHover={handleHover}
+          onMove={({viewState}) => setViewport(viewState)}
+          onMouseMove={handleHover}
           onMouseLeave={handleMouseLeave}
           onMouseOut={handleMouseLeave}
           onViewportChange={setViewport}
@@ -361,11 +362,11 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
             />
           )}
 
-          {(featureHovered !== null && viewport.zoom > 14) && (
+          {(featureHovered !== null && viewport.zoom > 14 &&
+            (featureHovered.sourceLayer === LAYERS_SOURCE.VOIES_POINTS || featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS)) && (
             <PopupFeature feature={featureHovered} commune={commune} />
           )}
 
-          <Draw />
         </MapGl>
       </Pane>
     </Pane>

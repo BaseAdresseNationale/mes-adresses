@@ -1,5 +1,4 @@
-import {useState, useCallback, useEffect, useContext} from 'react'
-import PropTypes from 'prop-types'
+import React, {useState, useCallback, useEffect, useContext} from 'react'
 import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
 
 import {batchNumeros, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
@@ -9,15 +8,23 @@ import BalDataContext from '@/contexts/bal-data'
 
 import useHelp from '@/hooks/help'
 import useFuse from '@/hooks/fuse'
-import useFormState from '@/hooks/form-state'
+import useFormState from '@/hooks/useFormState'
 
 import NumeroEditor from '@/components/bal/numero-editor'
 import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
 import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
+import {CommmuneType} from '@/types/commune'
+import {BaseLocaleType} from '@/types/base-locale'
+import {getBaseEditorProps} from '@/layouts/editor'
 
-function Toponyme({baseLocale, commune}) {
-  const [isFormOpen, handleEditing, editedNumero, reset] = useFormState()
+interface ToponymePageProps {
+  baseLocale: BaseLocaleType;
+  commune: CommmuneType;
+}
+
+function ToponymePage({baseLocale, commune}: ToponymePageProps) {
+  const {isFormOpen, handleEditing, editedNumero, reset} = useFormState()
 
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -49,12 +56,13 @@ function Toponyme({baseLocale, commune}) {
       }, token)
 
       await reloadNumeros()
-    } catch (error) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError((error as any).message)
     }
 
     setIsLoading(false)
     reset()
+
     setIsEditing(false)
   }
 
@@ -161,21 +169,30 @@ function Toponyme({baseLocale, commune}) {
   )
 }
 
-Toponyme.getInitialProps = async ({query}) => {
-  const toponyme = await getToponyme(query.idToponyme)
-  const numeros = await getNumerosToponyme(toponyme._id)
+export async function getServerSideProps({params}) {
+  const {idToponyme, balId} = params
+  try {
+    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId as string)
+    const toponyme = await getToponyme(idToponyme)
+    const numeros = await getNumerosToponyme(toponyme._id)
 
-  return {
-    toponyme,
-    numeros
+    return {
+      props: {
+        baseLocale,
+        commune,
+        voies,
+        toponymes,
+        toponyme,
+        numeros
+      }
+    }
+  } catch {
+    return {
+      error: {
+        statusCode: 404
+      }
+    }
   }
 }
 
-Toponyme.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired
-  }).isRequired,
-  commune: PropTypes.object.isRequired
-}
-
-export default Toponyme
+export default ToponymePage

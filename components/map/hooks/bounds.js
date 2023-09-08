@@ -13,30 +13,28 @@ function useBounds(commune, voie, toponyme) {
 
   const router = useRouter()
 
-  const getBoundsItem = useCallback(item => {
-    if (map && isTileSourceLoaded && item && item.bbox) {
-      return item.bbox
+  const setBoundsItem = useCallback(item => {
+    if (map && item && item.bbox) {
+      setBounds(item.bbox)
     }
-
-    return communeBounds
-  }, [map, isTileSourceLoaded, communeBounds])
+  }, [map, setBounds])
 
   useEffect(() => { // Get bounds on page load and when edit
     const {idVoie, idToponyme} = router.query
-    let bounds = communeBounds
+    const bounds = communeBounds
 
     if (isTileSourceLoaded) {
       if (idVoie) {
-        bounds = getBoundsItem(voie)
+        setBoundsItem(voie)
       } else if (idToponyme) {
-        bounds = getBoundsItem(toponyme)
+        setBoundsItem(toponyme)
       } else if (editingItem) {
-        bounds = getBoundsItem(editingItem)
+        setBoundsItem(editingItem)
+      } else {
+        setBounds(bounds)
       }
     }
-
-    setBounds(bounds)
-  }, [communeBounds, router.query, isTileSourceLoaded, voie, toponyme, editingItem, getBoundsItem])
+  }, [communeBounds, router.query, isTileSourceLoaded, voie, toponyme, editingItem, setBoundsItem])
 
   return bounds
 }

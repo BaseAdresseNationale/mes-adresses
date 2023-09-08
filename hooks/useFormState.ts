@@ -8,7 +8,7 @@ export default function useFormState() {
 
   const {numeros, editingId} = useContext(BalDataContext)
 
-  const handleEditing = useCallback(numeroId => {
+  const handleEditing = useCallback((numeroId?: string) => {
     const editedNumero = numeros.find(numero => numero._id === numeroId) || null
     setEditedINumero(editedNumero)
     setIsFormOpen(true)
@@ -22,11 +22,11 @@ export default function useFormState() {
   // Open form when numero is selected from map
   useEffect(() => {
     if (editingId && numeros.map(({_id}) => _id).includes(editingId)) {
-      handleEditing(editingId)
+      handleEditing(editingId as string)
     }
     // HandleEditing has been removed from the list
     // to avoid being retriggered by `numeros` update when form is sumbitted
   }, [editingId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  return [isFormOpen, handleEditing, editedNumero, reset]
+  return {isFormOpen, handleEditing, editedNumero, reset}
 }

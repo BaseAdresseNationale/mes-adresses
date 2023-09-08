@@ -1,7 +1,14 @@
-import PropTypes from 'prop-types'
 import {Dialog} from 'evergreen-ui'
 
-function ConvertVoieWarning({isShown, content, isLoading, onCancel, onConfirm}) {
+interface ConvertVoieWarningProps {
+  isShown: boolean;
+  content: React.ReactNode;
+  isLoading: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}
+
+function ConvertVoieWarning({isShown = false, content, isLoading, onCancel, onConfirm}: ConvertVoieWarningProps) {
   return (
     <Dialog
       isShown={isShown}
@@ -20,18 +27,6 @@ function ConvertVoieWarning({isShown, content, isLoading, onCancel, onConfirm}) 
       {content}
     </Dialog>
   )
-}
-
-ConvertVoieWarning.propTypes = {
-  isShown: PropTypes.bool,
-  content: PropTypes.node.isRequired,
-  isLoading: PropTypes.bool,
-  onCancel: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired
-}
-
-ConvertVoieWarning.defaultProps = {
-  isShown: false
 }
 
 export default ConvertVoieWarning

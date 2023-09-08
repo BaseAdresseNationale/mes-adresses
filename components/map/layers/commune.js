@@ -10,9 +10,9 @@ export const LAYER_COMMUNE = {
       'interpolate',
       ['exponential', 0.5],
       ['zoom'],
-      11,
-      0.8,
       13,
+      0.8,
+      14,
       0
     ]
   }

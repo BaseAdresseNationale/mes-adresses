@@ -1,5 +1,4 @@
 import React, {useState, useCallback, useContext} from 'react'
-import PropTypes from 'prop-types'
 import {Pane, Heading, Text, Paragraph, Button, AddIcon, Tablist, Tab} from 'evergreen-ui'
 
 import {populateCommune, convertVoieToToponyme} from '@/lib/bal-api'
@@ -16,22 +15,26 @@ import VoieEditor from '@/components/bal/voie-editor'
 import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 import CommuneTab from '@/components/bal/commune-tab'
+import {CommmuneType} from '@/types/commune'
+import {getBaseEditorProps} from '@/layouts/editor'
 
 const TABS = ['Commune', 'Voies', 'Toponymes']
 
-const BaseLocale = React.memo(({baseLocale, commune}) => {
+interface BaseLocalePageProps {
+  commune: CommmuneType;
+}
+
+function BaseLocalePage({commune}: BaseLocalePageProps) {
   const [editedItem, setEditedItem] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [toConvert, setToConvert] = useState(null)
   const [onConvertLoading, setOnConvertLoading] = useState(false)
   const [selectedTabIndex, setSelectedTabIndex] = useState(1)
-
+  const {voies, toponymes, baseLocale} = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
   const {reloadTiles} = useContext(MapContext)
 
   const {
-    voies,
-    toponymes,
     refreshBALSync,
     reloadVoies,
     reloadToponymes,
@@ -102,7 +105,9 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
                 appearance='primary'
                 intent='success'
                 disabled={isEditing}
-                onClick={() => setIsFormOpen(true)}
+                onClick={() => {
+                  setIsFormOpen(true)
+                }}
               >
                 Ajouter une voie
               </Button>
@@ -122,7 +127,9 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
                 appearance='primary'
                 intent='success'
                 disabled={isEditing}
-                onClick={() => setIsFormOpen(true)}
+                onClick={() => {
+                  setIsFormOpen(true)
+                }}
               >
                 Ajouter un toponyme
               </Button>
@@ -144,7 +151,9 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
           </Paragraph>
         )}
         isLoading={onConvertLoading}
-        onCancel={() => setToConvert(null)}
+        onCancel={() => {
+          setToConvert(null)
+        }}
         onConfirm={onConvert}
       />
 
@@ -161,8 +170,12 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
       </Pane>
 
       <Pane position='relative' display='flex' flexDirection='column' height='100%' width='100%' overflow='hidden'>
-        {isFormOpen && selectedTabIndex === 1 && <VoieEditor initialValue={editedItem} closeForm={() => onEdit(null)} />}
-        {isFormOpen && selectedTabIndex === 2 && <ToponymeEditor initialValue={editedItem} commune={commune} closeForm={() => onEdit(null)} />}
+        {isFormOpen && selectedTabIndex === 1 && <VoieEditor initialValue={editedItem} closeForm={() => {
+          onEdit(null)
+        }} />}
+        {isFormOpen && selectedTabIndex === 2 && <ToponymeEditor initialValue={editedItem} commune={commune} closeForm={() => {
+          onEdit(null)
+        }} />}
 
         <Pane
           flexShrink={0}
@@ -177,7 +190,9 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
                 <Tab
                   key={tab}
                   isSelected={selectedTabIndex === index}
-                  onSelect={() => setSelectedTabIndex(index)}
+                  onSelect={() => {
+                    setSelectedTabIndex(index)
+                  }}
                 >
                   {tab}
                 </Tab>
@@ -231,16 +246,28 @@ const BaseLocale = React.memo(({baseLocale, commune}) => {
       `}</style>
     </>
   )
-})
-
-BaseLocale.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired
-  }).isRequired,
-  commune: PropTypes.shape({
-    code: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired
-  }).isRequired
 }
 
-export default BaseLocale
+export async function getServerSideProps({params}) {
+  const {balId} = params
+
+  try {
+    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId as string)
+    return {
+      props: {
+        commune,
+        baseLocale,
+        voies,
+        toponymes
+      }
+    }
+  } catch {
+    return {
+      error: {
+        statusCode: 404
+      }
+    }
+  }
+}
+
+export default BaseLocalePage

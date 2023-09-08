@@ -127,7 +127,7 @@ function VoieEditor({initialValue, closeForm}) {
         </FormInput>
 
         {isMetric && (
-          <DrawEditor trace={initialValue ? initialValue.trace : null} />
+          <DrawEditor />
         )}
       </Pane>
 

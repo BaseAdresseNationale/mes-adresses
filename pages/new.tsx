@@ -1,31 +1,40 @@
-import {useState, useContext, useRef, useEffect} from 'react'
-import PropTypes from 'prop-types'
-import {Pane, TabNavigation, Tab, Heading, Paragraph, Button} from 'evergreen-ui'
+import React, {useState, useContext, useRef, useEffect} from 'react'
+import {Pane, TabNavigation, Tab, Heading, Paragraph, Button, ArrowLeftIcon} from 'evergreen-ui'
 import Link from 'next/link'
 
-import {getCommune} from '@/lib/geo-api'
+import {getCommune} from '../lib/geo-api'
 
-import LocalStorageContext from '@/contexts/local-storage'
+import LocalStorageContext from '../contexts/local-storage'
 
-import {useInput} from '@/hooks/input'
+import {useInput} from '../hooks/input'
 
-import Main from '@/layouts/main'
+import Main from '../layouts/main'
 
-import BackButton from '@/components/back-button'
-import CreateForm from '@/components/new/create-form'
-import UploadForm from '@/components/new/upload-form'
-import DemoForm from '@/components/new/demo-form'
+import CreateForm from '../components/new/create-form'
+import UploadForm from '../components/new/upload-form'
+import DemoForm from '../components/new/demo-form'
+import {CommmuneType} from '../types/commune'
 
-const getSuggestedBALName = commune => {
+interface IndexPageProps {
+  defaultCommune?: CommmuneType;
+  isDemo: boolean;
+}
+
+const getSuggestedBALName = (commune?: CommmuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null
 }
 
-function Index({defaultCommune, isDemo}) {
+function IndexPage({defaultCommune, isDemo}: IndexPageProps) {
   const {balAccess} = useContext(LocalStorageContext)
 
-  const suggestedBALName = useRef({
+  const suggestedBALName = useRef<{
+    prev: string | null;
+    suggested: string | null;
+    used: boolean | undefined;
+  }>({
+    prev: null,
     suggested: getSuggestedBALName(defaultCommune),
-    prev: null
+    used: undefined
   })
 
   const [nom, onNomChange, resetInput] = useInput(suggestedBALName.current.suggested)
@@ -33,8 +42,6 @@ function Index({defaultCommune, isDemo}) {
   const [selectedCommune, setSelectedCommune] = useState(defaultCommune)
 
   const [index, setIndex] = useState(0)
-
-  const Form = index === 0 ? CreateForm : UploadForm
 
   useEffect(() => {
     suggestedBALName.current = {
@@ -68,29 +75,42 @@ function Index({defaultCommune, isDemo}) {
           (<>
             <TabNavigation display='flex' marginLeft={16}>
               {['Créer', 'Importer un fichier CSV'].map((tab, idx) => (
-                <Tab key={tab} id={tab} isSelected={index === idx} onSelect={() => setIndex(idx)}>
+                <Tab key={tab} id={tab} isSelected={index === idx} onSelect={() => {
+                  setIndex(idx)
+                }}
+                >
                   {tab}
                 </Tab>
               ))}
             </TabNavigation>
 
             <Pane flex={1} overflowY='scroll'>
-              <Form
-                namePlaceholder={suggestedBALName.current.suggested}
-                commune={selectedCommune}
-                nom={nom}
-                onNomChange={onNomChange}
-                email={email}
-                onEmailChange={onEmailChange}
-                handleCommune={setSelectedCommune}
-              />
+              {index === 0 ? (
+                <CreateForm namePlaceholder={suggestedBALName.current.suggested}
+                  commune={selectedCommune}
+                  nom={nom}
+                  onNomChange={onNomChange}
+                  email={email}
+                  onEmailChange={onEmailChange}
+                  handleCommune={setSelectedCommune} />) :
+                (
+                  <UploadForm
+                    namePlaceholder={suggestedBALName.current.suggested}
+                    nom={nom}
+                    onNomChange={onNomChange}
+                    email={email}
+                    onEmailChange={onEmailChange}
+                    handleCommune={setSelectedCommune} />
+                )}
             </Pane>
           </>)}
 
         {balAccess && (
           <Pane marginLeft={16} marginY={8}>
-            <Link href='/' passHref>
-              <BackButton is='a'>Retour à la liste de mes Bases Adresses Locales</BackButton>
+            <Link legacyBehavior href='/' passHref>
+              <Button is='a' iconBefore={ArrowLeftIcon}>
+                Retour à la liste de mes Bases Adresses Locales
+              </Button>
             </Link>
           </Pane>
         )}
@@ -100,7 +120,7 @@ function Index({defaultCommune, isDemo}) {
         <Pane display='flex' flex={1}>
           <Pane margin='auto' textAlign='center'>
             <Heading marginBottom={8}>Vous voulez simplement essayer l’éditeur sans créer de Base Adresse Locale ?</Heading>
-            <Link href='/new?demo=1' passHref>
+            <Link legacyBehavior href='/new?demo=1' passHref>
               <Button is='a'>Essayer l’outil</Button>
             </Link>
           </Pane>
@@ -110,8 +130,8 @@ function Index({defaultCommune, isDemo}) {
   )
 }
 
-Index.getInitialProps = async ({query}) => {
-  let defaultCommune
+export async function getServerSideProps({query}) {
+  let defaultCommune = null
   if (query.commune) {
     defaultCommune = await getCommune(query.commune, {
       fields: 'departement'
@@ -119,19 +139,11 @@ Index.getInitialProps = async ({query}) => {
   }
 
   return {
-    defaultCommune,
-    isDemo: query.demo === '1'
+    props: {
+      defaultCommune,
+      isDemo: query.demo === '1'
+    }
   }
 }
 
-Index.propTypes = {
-  defaultCommune: PropTypes.object,
-  isDemo: PropTypes.bool
-}
-
-Index.defaultProps = {
-  defaultCommune: null,
-  isDemo: false
-}
-
-export default Index
+export default IndexPage

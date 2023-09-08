@@ -29,7 +29,6 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
     if (!isEditing) {
       if (voie || initialToponyme !== toponyme) {
         router.push(
-          `/bal/toponyme?balId=${balId}&idToponyme=${initialToponyme._id}`,
           `/bal/${balId}/toponymes/${initialToponyme._id}`
         )
       }
@@ -66,7 +65,6 @@ function ToponymeMarker({initialToponyme, isLabelDisplayed, isContextMenuDisplay
 
       if (_id === toponyme._id) {
         return router.push(
-          `/bal?balId=${balId}`,
           `/bal/${balId}`
         )
       }

@@ -57,11 +57,11 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
   }, [isToponyme, overrideText, voie])
 
   const onDragEnd = useCallback((event, idx) => {
-    const [longitude, latitude] = event.lngLat
+    const {lng, lat} = event.lngLat
     const {_id, type} = markers[idx]
 
     setSuggestedNumero(suggestedMarkerNumero)
-    updateMarker(_id, {longitude, latitude, type})
+    updateMarker(_id, {longitude: lng, latitude: lat, type})
   }, [markers, updateMarker, suggestedMarkerNumero, setSuggestedNumero])
 
   const onDrag = useCallback((event, idx) => {
