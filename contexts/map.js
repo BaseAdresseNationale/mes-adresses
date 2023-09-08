@@ -57,8 +57,12 @@ export function MapContextProvider(props) {
     if (ref) {
       const map = ref.getMap()
       setMap(map)
-      map.on('style.load', () => setIsStyleLoaded(true))
-      map.on('styledataloading', () => setIsStyleLoaded(false))
+      map.on('styledataloading', () => {
+        setIsStyleLoaded(false)
+        map.once('style.load', () => {
+          setIsStyleLoaded(true)
+        })
+      })
     }
   }, [])
 

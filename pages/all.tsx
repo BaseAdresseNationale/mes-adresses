@@ -1,16 +1,22 @@
-import {useState} from 'react'
-import Link from 'next/link'
-import PropTypes from 'prop-types'
+import React, {useState} from 'react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import {useRouter} from 'next/router'
-import {Pane, Heading, Paragraph, Spinner, Button, Pagination} from 'evergreen-ui'
+import {Pane, Heading, Paragraph, Button, Pagination, Spinner} from 'evergreen-ui'
 
 import {searchBasesLocales} from '@/lib/bal-api'
 import {sortBalByUpdate} from '@/lib/sort-bal'
 
 import Main from '@/layouts/main'
+import {BaseLocaleType} from '@/types/base-locale'
 
-const PublicBasesLocalesList = dynamic(() => import('@/components/bases-locales-list/public-bases-locales-list'), { // eslint-disable-line node/no-unsupported-features/es-syntax
+interface PublicBasesLocalesListProps {
+  basesLocales: BaseLocaleType[];
+  searchInput: string;
+  onFilter: (value: string) => void;
+}
+
+const CSRPublicBasesLocalesList: React.ComponentType<PublicBasesLocalesListProps> = dynamic(() => import('../components/bases-locales-list/public-bases-locales-list.js') as any, {
   ssr: false,
   loading: () => (
     <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
@@ -19,7 +25,15 @@ const PublicBasesLocalesList = dynamic(() => import('@/components/bases-locales-
   )
 })
 
-function All({basesLocales, commune, limit, offset, count}) {
+interface AllPageProps {
+  basesLocales: BaseLocaleType[];
+  commune: string;
+  offset: number;
+  limit: number;
+  count: number;
+}
+
+function All({basesLocales, commune, limit = 20, offset = 0, count = 0}: AllPageProps) {
   const router = useRouter()
   const totalPages = Math.ceil(count / limit)
   const currentPage = Math.ceil((offset - 1) / limit) + 1
@@ -27,17 +41,17 @@ function All({basesLocales, commune, limit, offset, count}) {
   const [input, setInput] = useState(commune || '')
 
   const onFilter = async value => {
-    const query = {page: currentPage, limit}
+    const query = {page: currentPage, limit, commune: undefined}
 
     if (value.length > 0) {
       query.commune = value
     }
 
-    router.push({pathname: '/all', query})
+    await router.push({pathname: '/all', query})
   }
 
-  const handlePageChange = page => {
-    router.push({
+  const handlePageChange = async page => {
+    await router.push({
       pathname: '/all',
       query: {page, limit}
     })
@@ -48,7 +62,7 @@ function All({basesLocales, commune, limit, offset, count}) {
       const input = value.slice(0, 5)
 
       if (input !== prev && (input.length === 5 || input.length === 0)) {
-        onFilter(input)
+        void onFilter(input)
       }
 
       return input
@@ -65,7 +79,7 @@ function All({basesLocales, commune, limit, offset, count}) {
       </Pane>
 
       <Pane flex={1} overflowY='scroll'>
-        <PublicBasesLocalesList
+        <CSRPublicBasesLocalesList
           basesLocales={basesLocales}
           searchInput={input}
           onFilter={handleInput} />
@@ -76,9 +90,9 @@ function All({basesLocales, commune, limit, offset, count}) {
           marginX='auto'
           page={currentPage}
           totalPages={totalPages}
-          onPreviousPage={() => handlePageChange(currentPage - 1)}
+          onPreviousPage={async () => handlePageChange(currentPage - 1)}
           onPageChange={handlePageChange}
-          onNextPage={() => handlePageChange(currentPage + 1)}
+          onNextPage={async () => handlePageChange(currentPage + 1)}
         />
       )}
 
@@ -86,7 +100,7 @@ function All({basesLocales, commune, limit, offset, count}) {
         <Paragraph size={300} color='muted'>
           Vous pouvez également créer une nouvelle Base Adresse Locale.
         </Paragraph>
-        <Link href='/new' passHref>
+        <Link legacyBehavior href='/new' passHref>
           <Button marginTop={10} appearance='primary' is='a'>
             Créer une nouvelle Base Adresse Locale
           </Button>
@@ -108,20 +122,6 @@ All.getInitialProps = async ({query}) => {
     commune: query.commune || '',
     basesLocales: result ? sortBalByUpdate(result.results) : []
   }
-}
-
-All.defaultProps = {
-  offset: 0,
-  limit: 20,
-  count: 0
-}
-
-All.propTypes = {
-  basesLocales: PropTypes.array.isRequired,
-  commune: PropTypes.string.isRequired,
-  offset: PropTypes.number,
-  limit: PropTypes.number,
-  count: PropTypes.number
 }
 
 export default All

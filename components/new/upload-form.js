@@ -185,7 +185,6 @@ function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, ha
         const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
         if (response.isValid) {
           Router.push(
-            `/bal?balId=${bal._id}`,
             `/bal/${bal._id}`
           )
         } else {

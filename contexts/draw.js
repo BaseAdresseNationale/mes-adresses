@@ -30,10 +30,10 @@ export function DrawContextProvider(props) {
     if (drawEnabled) {
       if (data) { // Edition mode
         setModeId('editing')
-        setHint(null)
+        setHint('Modifier le tracé de la voie directement depuis la carte.')
       } else { // Creation mode
         setModeId('drawLineString')
-        setHint('Indiquez le début de la voie')
+        setHint('Cliquez sur la carte pour indiquer le début de la voie, puis ajouter de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie.')
       }
     } else { // Reset states
       setModeId(null)

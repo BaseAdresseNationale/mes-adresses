@@ -5,9 +5,10 @@ function AddressEditorControl({isAddressFormOpen, isDisabled, handleAddressForm}
   return (
     <Tooltip position={Position.LEFT} content={isAddressFormOpen ? 'Annuler' : 'Créer une adresse'}>
       {isAddressFormOpen ? (
-        <IconButton icon={CrossIcon} onClick={() => handleAddressForm(false)} />
+        <IconButton height={29} width={29} icon={CrossIcon} onClick={() => handleAddressForm(false)} />
       ) : (
         <IconButton
+          height={29} width={29}
           icon={AddIcon}
           disabled={isDisabled}
           intent='success'

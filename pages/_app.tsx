@@ -1,27 +1,32 @@
-import {useState} from 'react'
-import PropTypes from 'prop-types'
+import React, {useState} from 'react'
 import Head from 'next/head'
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
 
-import {getCommune} from '@/lib/geo-api'
-import {getBaseLocale, getVoies, getToponymes, getCommuneExtras} from '@/lib/bal-api'
-
 import {LocalStorageContextProvider} from '@/contexts/local-storage'
 import {HelpContextProvider} from '@/contexts/help'
 import {TokenContextProvider} from '@/contexts/token'
 
-import ErrorPage from '@/pages/_error'
-
-import Editor from '@/layouts/editor'
+import ErrorPage from './_error'
 
 import Header from '@/components/header'
 import IEWarning from '@/components/ie-warning'
 import Help from '@/components/help'
 import useMatomoTracker from '@/hooks/matomo-tracker'
+import Editor from '@/layouts/editor'
 
-function App({error, Component, pageProps, query}) {
+interface _AppProps {
+  Component: any;
+  pageProps: any;
+  error?: any;
+  router: any;
+}
+
+function App(props: _AppProps) {
+  const {Component, pageProps, error, router} = props
+  const {query} = router
+
   const [isMobileWarningDisplayed, setIsMobileWarningDisplayed] = useState(false)
 
   useMatomoTracker({
@@ -43,7 +48,9 @@ function App({error, Component, pageProps, query}) {
           title='Attention'
           confirmLabel='Continuer'
           hasCancel={false}
-          onCloseComplete={() => setIsMobileWarningDisplayed(false)}
+          onCloseComplete={() => {
+            setIsMobileWarningDisplayed(false)
+          }}
         >
           <Paragraph marginTop='default'>
             Afin de profiter d’une meilleure expérience, il est recommandé d’utiliser cet outil sur un écran plus grand 🖥
@@ -92,76 +99,6 @@ function App({error, Component, pageProps, query}) {
       `}</style>
     </>
   )
-}
-
-App.getInitialProps = async ({Component, ctx}) => {
-  const {query} = ctx
-
-  let pageProps = {}
-
-  let baseLocale
-  let commune
-  let voies
-  let toponymes
-
-  try {
-    if (query.balId) {
-      baseLocale = await getBaseLocale(query.balId)
-
-      const communeExtras = await getCommuneExtras(baseLocale.commune)
-      const geoCommune = await getCommune(baseLocale.commune, {
-        fields: 'contour'
-      })
-
-      commune = {...geoCommune, ...communeExtras}
-      voies = await getVoies(query.balId)
-      toponymes = await getToponymes(query.balId)
-    }
-
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps({
-        ...ctx,
-        baseLocale,
-        commune,
-        voies,
-        toponymes
-      })
-    }
-  } catch {
-    return {
-      pageProps,
-      error: {
-        statusCode: 404
-      }
-    }
-  }
-
-  return {
-    pageProps: {
-      baseLocale,
-      commune,
-      voies,
-      toponymes,
-      ...pageProps
-    },
-    query
-  }
-}
-
-App.propTypes = {
-  error: PropTypes.shape({
-    statusCode: PropTypes.number
-  }),
-  Component: PropTypes.any.isRequired,
-  pageProps: PropTypes.object.isRequired,
-  query: PropTypes.object,
-  geojson: PropTypes.object
-}
-
-App.defaultProps = {
-  query: {},
-  error: null,
-  geojson: null
 }
 
 export default App

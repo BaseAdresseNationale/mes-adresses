@@ -36,7 +36,6 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
 
   const onBalSelect = bal => {
     Router.push(
-      `/bal?balId=${bal._id}`,
       `/bal/${bal._id}`
     )
   }
