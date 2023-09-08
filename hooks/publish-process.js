@@ -32,32 +32,15 @@ export default function usePublishProcess(commune) {
     }
   }
 
-  const updateStatus = async status => {
+  const handleChangeStatus = async status => {
     const updated = await updateBaseLocale(baseLocale._id, {status}, token)
     await reloadBaseLocale()
 
     return updated
   }
 
-  const handleChangeStatus = async status => {
-    const isMassDeletionDetected = await checkMassDeletion()
-    if (status === 'ready-to-publish' && isMassDeletionDetected) {
-      setMassDeletionConfirm(() => (async () => {
-        const updated = await updateStatus(status)
-        setIsHabilitationProcessDisplayed(updated)
-      }))
-    } else {
-      return updateStatus(status)
-    }
-  }
-
   const handleShowHabilitationProcess = async () => {
-    let isReadyToPublish = ['published', 'ready-to-publish', 'replaced'].includes(baseLocale.status)
-
-    if (baseLocale.status === 'draft') {
-      const updated = await handleChangeStatus('ready-to-publish')
-      isReadyToPublish = Boolean(updated)
-    }
+    const isReadyToPublish = ['draft', 'published', 'ready-to-publish', 'replaced'].includes(baseLocale.status)
 
     if (isReadyToPublish && (!habilitation || !isHabilitationValid) && !commune.isCOM) {
       const habilitation = await createHabilitation(token, baseLocale._id)

@@ -14,6 +14,7 @@ import ValidateAuthentication from '@/components/habilitation-process/validate-a
 import StrategySelection from '@/components/habilitation-process/strategy-selection'
 import AcceptedDialog from '@/components/habilitation-process/accepted-dialog'
 import RejectedDialog from '@/components/habilitation-process/rejected-dialog'
+import usePublishProcess from '@/hooks/publish-process'
 
 function getStep(habilitation) {
   if (habilitation.status !== 'pending') {
@@ -32,6 +33,7 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handlePu
   const [isLoading, setIsLoading] = useState(false)
   const [isConflicted, setIsConflicted] = useState(false)
   const [isLoadingPublish, setIsLoadingPublish] = useState(false)
+  const {handleChangeStatus} = usePublishProcess(commune)
 
   const {reloadHabilitation} = useContext(BalDataContext)
 
@@ -112,6 +114,14 @@ function HabilitationProcess({token, baseLocale, commune, habilitation, handlePu
     handleClose()
   }
 
+  // We want to change the BAL status from draft to ready-to-publish
+  // only if the habilitation is accepted
+  useEffect(() => {
+    if (baseLocale.status === 'draft' && habilitation.status === 'accepted') {
+      handleChangeStatus('ready-to-publish')
+    }
+  }, [handleChangeStatus, baseLocale, habilitation])
+
   useEffect(() => {
     const step = getStep(habilitation)
     if (step === 2) {
@@ -187,7 +197,13 @@ HabilitationProcess.propTypes = {
   token: PropTypes.string.isRequired,
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    sync: PropTypes.object
+    sync: PropTypes.object,
+    status: PropTypes.oneOf([
+      'replaced',
+      'published',
+      'ready-to-publish',
+      'draft',
+    ]).isRequired
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,
