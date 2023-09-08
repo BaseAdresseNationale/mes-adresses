@@ -5,6 +5,7 @@ import Tuto from '@/components/help/tuto'
 import Unauthorized from '@/components/help/tuto/unauthorized'
 import Problems from '@/components/help/help-tabs/problems'
 import {VideoContainer, PEERTUBE_LINK} from '@/components/help/video-container'
+import {getComputedStatus} from '@/lib/statuses'
 
 function Publication() {
   return (
@@ -107,7 +108,7 @@ function Publication() {
         <Pane display='flex' flexDirection='column' gap={16} marginTop={8}>
           <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
             <Pane height={32} marginTop={4}>
-              <StatusBadge status='published' sync={{isPaused: false, status: 'synced'}} />
+              <StatusBadge {...getComputedStatus('published', {isPaused: false, status: 'synced'})} />
             </Pane>
             <Text>
               Votre Base Adresse Locale est à jour avec la Base Adresse Nationale. Toutes ses adresses sont prises en compte.
@@ -116,7 +117,7 @@ function Publication() {
 
           <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
             <Pane height={38}>
-              <StatusBadge status='published' sync={{isPaused: false, status: 'outdated'}} />
+              <StatusBadge {...getComputedStatus('published', {isPaused: false, status: 'outdated'})} />
             </Pane>
             <Text>
               Des modifications ont été détectées, la Base Adresse Nationale sera automatiquement mise à jour d’ici quelques heures.
@@ -125,7 +126,7 @@ function Publication() {
 
           <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
             <Pane height={32} marginTop={4}>
-              <StatusBadge status='published' sync={{isPaused: true, status: 'synced'}} />
+              <StatusBadge {...getComputedStatus('published', {isPaused: true, status: 'synced'})} />
             </Pane>
             <Text>
               Vous avez suspendus les mises à jour de votre Base Adresse Locale. Aucune modification ne sera transmise à la Base Adresse Nationale. Vous pouvez relancer les mises à jours à tout moment.
@@ -134,7 +135,7 @@ function Publication() {
 
           <Pane display='grid' gridTemplateColumns='160px 1fr' gap={8}>
             <Pane height={32} marginTop={4}>
-              <StatusBadge status='replaced' sync={{isPaused: true, status: 'conflict'}} />
+              <StatusBadge {...getComputedStatus('replaced', {isPaused: true, status: 'conflict'})} />
             </Pane>
             <Text>
               Une autre Base Adresse Locale a remplacé la votre, impossible de mettre à jour automatiquement vos adresses. Vous pouvez forcer la mise à jour afin de remplacer la Base Adresse Locale actuellement en place.
@@ -147,7 +148,7 @@ function Publication() {
         <ListItem listStyleType='none'>
           En mode
           <Pane display='inline-flex' width={172} height={28} margin={4}>
-            <StatusBadge status='ready-to-publish' />
+            <StatusBadge {...getComputedStatus('ready-to-publish')} />
           </Pane>
           il vous est possible de revenir au mode brouillon en cliquant sur
           <Button

@@ -35,7 +35,15 @@ export const BalDataContextProvider = React.memo(({
 
   const {token} = useContext(TokenContext)
 
-  const [habilitation, reloadHabilitation, isHabilitationValid, habilitationIsLoading, isHabilitationProcessDisplayed, setIsHabilitationProcessDisplayed] = useHabilitation(initialBaseLocale, token)
+  const {
+    habilitation,
+    reloadHabilitation,
+    isHabilitationValid,
+    habilitationStatus,
+    habilitationIsLoading,
+    isHabilitationProcessDisplayed,
+    setIsHabilitationProcessDisplayed
+  } = useHabilitation(initialBaseLocale, token)
 
   const reloadParcelles = useCallback(async () => {
     const parcelles = await getParcelles(baseLocale._id)
@@ -152,6 +160,7 @@ export const BalDataContextProvider = React.memo(({
     baseLocale,
     habilitation,
     isHabilitationValid,
+    habilitationStatus,
     parcelles,
     voie: voie || initialVoie,
     toponyme: toponyme || initialToponyme,
@@ -184,6 +193,7 @@ export const BalDataContextProvider = React.memo(({
     reloadBaseLocale,
     habilitation,
     isHabilitationValid,
+    habilitationStatus,
     reloadHabilitation,
     voie,
     numeros,

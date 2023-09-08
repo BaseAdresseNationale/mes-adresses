@@ -7,8 +7,9 @@ import StatusBadge from '@/components/status-badge'
 import BANSync from '@/components/sub-header/bal-status/ban-sync'
 import Publication from '@/components/sub-header/bal-status/publication'
 import RefreshSyncBadge from '@/components/sub-header/bal-status/refresh-sync-badge'
+import {getComputedStatus} from '@/lib/statuses'
 
-function BALStatus({baseLocale, commune, token, isHabilitationValid, isRefrehSyncStat, handlePublication, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
+function BALStatus({baseLocale, commune, token, isHabilitationValid, habilitationStatus, isRefrehSyncStat, handlePublication, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
   const handlePause = async () => {
     await pauseSync(baseLocale._id, token)
     await reloadBaseLocale()
@@ -19,13 +20,15 @@ function BALStatus({baseLocale, commune, token, isHabilitationValid, isRefrehSyn
     await reloadBaseLocale()
   }
 
+  const computedStatus = getComputedStatus(baseLocale.status, baseLocale.sync, habilitationStatus)
+
   return (
     <>
       <Pane height={28} marginRight={8}>
         {isRefrehSyncStat ? (
           <RefreshSyncBadge />
         ) : (
-          <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
+          <StatusBadge {...computedStatus} />
         )}
       </Pane>
 
@@ -36,14 +39,15 @@ function BALStatus({baseLocale, commune, token, isHabilitationValid, isRefrehSyn
             commune={commune}
             handleSync={handlePublication}
             togglePause={baseLocale.sync.isPaused ? handleResumeSync : handlePause}
+            computedStatus={computedStatus}
           />
         ) : (
           baseLocale.status !== 'demo' && (
             <Publication
-              baseLocale={baseLocale}
               status={baseLocale.status}
               handleBackToDraft={() => handleChangeStatus('draft')}
               onPublish={handleHabilitation}
+              cta={computedStatus.cta}
             />
           )
         )
@@ -80,6 +84,7 @@ BALStatus.propTypes = {
   commune: PropTypes.object.isRequired,
   token: PropTypes.string,
   isHabilitationValid: PropTypes.bool.isRequired,
+  habilitationStatus: PropTypes.string,
   isRefrehSyncStat: PropTypes.bool.isRequired,
   handlePublication: PropTypes.func.isRequired,
   handleChangeStatus: PropTypes.func.isRequired,

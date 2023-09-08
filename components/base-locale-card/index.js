@@ -9,6 +9,7 @@ import {getCommune} from '@/lib/geo-api'
 
 import StatusBadge from '@/components/status-badge'
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
+import {getComputedStatus} from '@/lib/statuses'
 
 function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStatus, isDefaultOpen, onSelect, onRemove, onHide}) {
   const {nom, _updated} = baseLocale
@@ -94,7 +95,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStat
             borderRadius={5}
             alignItems='center'
           >
-            <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
+            <StatusBadge {...getComputedStatus(baseLocale.status, baseLocale.sync)} />
           </Pane>
         </Pane>
 

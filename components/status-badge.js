@@ -1,11 +1,7 @@
 import PropTypes from 'prop-types'
 import {Pane, Badge, Position, Tooltip, Icon} from 'evergreen-ui'
 
-import {computeStatus} from '@/lib/statuses'
-
-function StatusBadge({status, sync}) {
-  const {color, label, content, icon} = computeStatus(status, sync)
-
+function StatusBadge({color, label, content, icon}) {
   return (
     <Tooltip
       position={Position.BOTTOM_RIGHT}
@@ -27,21 +23,10 @@ function StatusBadge({status, sync}) {
 }
 
 StatusBadge.propTypes = {
-  status: PropTypes.oneOf([
-    'replaced',
-    'published',
-    'ready-to-publish',
-    'draft',
-    'demo',
-  ]).isRequired,
-  sync: PropTypes.shape({
-    isPaused: PropTypes.bool.isRequired,
-    status: PropTypes.oneOf([
-      'synced',
-      'outdated',
-      'conflict'
-    ]),
-  })
+  color: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  icon: PropTypes.object.isRequired
 }
 
 export default StatusBadge

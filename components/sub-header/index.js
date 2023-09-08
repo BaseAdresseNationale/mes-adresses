@@ -22,6 +22,7 @@ const SubHeader = React.memo(({commune, setIsTrashOpen}) => {
     habilitation,
     reloadBaseLocale,
     isHabilitationValid,
+    habilitationStatus,
     voie,
     toponyme,
     isRefrehSyncStat,
@@ -80,6 +81,7 @@ const SubHeader = React.memo(({commune, setIsTrashOpen}) => {
               commune={commune}
               token={token}
               isHabilitationValid={isHabilitationValid}
+              habilitationStatus={habilitationStatus}
               isRefrehSyncStat={isRefrehSyncStat}
               handlePublication={handlePublication}
               handleChangeStatus={handleChangeStatus}

@@ -7,6 +7,7 @@ import {getBaseLocale} from '@/lib/bal-api'
 import StatusBadge from '@/components/status-badge'
 import TextWrapper from '@/components/text-wrapper'
 import AuthenticatedUser from '@/components/habilitation-process/authenticated-user'
+import {getComputedStatus} from '@/lib/statuses'
 
 function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicted}) {
   const [isBALCertified, setIsBALCertified] = useState(false)
@@ -53,7 +54,7 @@ function AcceptedDialog({baseLocaleId, commune, strategy, expiresAt, isConflicte
             height={20}
             width='fit-content'
           >
-            <StatusBadge status='ready-to-publish' sync={null} />
+            <StatusBadge {...getComputedStatus('ready-to-publish', null)} />
           </Pane>
 
           <UnorderedList marginTop={16}>

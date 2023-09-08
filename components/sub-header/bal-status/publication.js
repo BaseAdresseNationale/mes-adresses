@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {Button, Menu, Popover, Position, EditIcon, UploadIcon, CaretDownIcon} from 'evergreen-ui'
 
-function Publication({status, handleBackToDraft, onPublish}) {
+function Publication({status, handleBackToDraft, onPublish, cta}) {
   return (
     status === 'ready-to-publish' ? (
       <Popover
@@ -35,7 +35,7 @@ function Publication({status, handleBackToDraft, onPublish}) {
         appearance='primary'
         onClick={onPublish}
       >
-        Publier
+        {cta || 'Publier'}
       </Button>
     )
   )
@@ -46,7 +46,8 @@ Publication.propTypes = {
     'draft', 'ready-to-publish', 'published', 'replaced'
   ]).isRequired,
   handleBackToDraft: PropTypes.func.isRequired,
-  onPublish: PropTypes.func.isRequired
+  onPublish: PropTypes.func.isRequired,
+  cta: PropTypes.string
 }
 
 export default Publication
