@@ -6,7 +6,7 @@ import {Pane, Link, Text, HomeIcon} from 'evergreen-ui'
 function BaseLocalLink({baseLocale}) {
   return useMemo(() => (
     <>
-      <NextLink href='/'>
+      <NextLink legacyBehavior href='/'>
         <Link href='/'>
           <HomeIcon style={{verticalAlign: 'middle', color: '#000'}} />
         </Link>
@@ -33,7 +33,7 @@ function Breadcrumbs({baseLocale, commune, voie, toponyme, ...props}) {
       <BaseLocalLink baseLocale={baseLocale} />
       <Text color='muted'>{' > '}</Text>
 
-      <NextLink href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
+      <NextLink legacyBehavior href={`/bal?balId=${baseLocale._id}`} as={`/bal/${baseLocale._id}`}>
         <Link href={`/bal/${baseLocale._id}`}>
           {commune.nom}
         </Link>
