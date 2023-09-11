@@ -58,15 +58,15 @@ function VoieEditor({initialValue, closeForm}) {
 
       if (initialValue?._id === voie._id && router.query.idVoie) {
         setVoie(voie)
-
         // Reload voie trace
         if (!isEqual(initialValue.trace, data?.geometry) || body.typeNumerotation !== initialValue.typeNumerotation) {
           reloadTiles()
         }
       } else {
-        await reloadVoies()
         reloadTiles()
       }
+
+      await reloadVoies()
 
       setIsLoading(false)
       closeForm()

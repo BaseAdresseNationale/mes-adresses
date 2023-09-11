@@ -74,9 +74,9 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
 
       if (initialValue?._id === toponyme._id && router.query.idToponyme) {
         setToponyme(toponyme)
-      } else {
-        await reloadToponymes()
       }
+
+      await reloadToponymes()
 
       if (xor(initialValue?.parcelles, body.parcelles).length > 0) {
         await reloadParcelles()
