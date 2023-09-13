@@ -1,5 +1,12 @@
 const {Router} = require('express')
 const geo = require('../geo.json')
+const url = require('url')
+
+const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
+
+const redirection = {
+  '/dashboard': `${ADRESSE_URL}/deploiement-bal`,
+}
 
 module.exports = app => {
   const router = new Router()
@@ -68,6 +75,15 @@ module.exports = app => {
   })
 
   router.get('*', (req, res) => {
+    const pathRedirect = redirection[req.path]
+    if (pathRedirect) {
+      const urlRedirect = url.format({
+        pathname: pathRedirect,
+        query: req.query
+      })
+      res.redirect(urlRedirect)
+    }
+
     app.render(req, res, req.params[0], req.query)
   })
 
