@@ -8,6 +8,7 @@ const createRoutes = require('./routes')
 const port = process.env.PORT || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({dev})
+const nextAppRequestHandler = app.getRequestHandler()
 
 app.prepare().then(() => {
   const server = express()
@@ -17,7 +18,12 @@ app.prepare().then(() => {
   }
 
   server.use(express.static('public')) // Serve favicon.ico
+
   server.use('/', createRoutes(app))
+
+  server.use(async (req, res) => {
+    await nextAppRequestHandler(req, res)
+  })
 
   server.listen(port, err => {
     if (err) {
