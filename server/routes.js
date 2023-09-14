@@ -35,13 +35,6 @@ module.exports = app => {
     })
   })
 
-  router.get('/dashboard/departement/:codeDepartement', (req, res) => {
-    app.render(req, res, '/dashboard/departement', {
-      ...req.query,
-      codeDepartement: req.params.codeDepartement
-    })
-  })
-
   // Redirection des URL modifiées depuis le passage en mono-commmune
   router.get('/bal/:balId/communes/:codeCommune/voies/:idVoie', (req, res) => {
     const {balId, idVoie} = req.params
@@ -65,10 +58,6 @@ module.exports = app => {
     }
 
     return res.send(geo[location])
-  })
-
-  router.get('*', (req, res) => {
-    app.render(req, res, req.params[0], req.query)
   })
 
   return router
