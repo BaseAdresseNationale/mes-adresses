@@ -280,7 +280,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       />
 
       {token && (
-        <Pane position='absolute' zIndex={1} top={90} right={10} >
+        <Pane position='absolute' zIndex={1} top={100} right={15} >
           <AddressEditorControl
             isAddressFormOpen={isAddressFormOpen}
             handleAddressForm={handleAddressForm}
@@ -289,7 +289,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         </Pane>
       )}
 
-      <Pane position='absolute' zIndex={1} top={125} right={10} >
+      <Pane position='absolute' zIndex={1} top={140} right={15} >
         <ImageControl map={map} communeNom={commune.nom} isToponymesDisplayed={isLabelsDisplayed} setIsToponymeDisplayed={setIsLabelsDisplayed} />
       </Pane>
 
@@ -304,7 +304,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           ref={handleMapRef}
           mapLib={maplibregl}
           reuseMap
-          {...viewport}
+          viewState={viewport}
           mapStyle={mapStyle}
           width='100%'
           height='100%'
@@ -313,7 +313,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           interactiveLayerIds={interactiveLayerIds}
           getCursor={handleCursor}
           onClick={onClick}
-          onMove={({viewState}) => setViewport(viewState)}
           onHover={handleHover}
           onMouseLeave={handleMouseLeave}
           onMouseOut={handleMouseLeave}

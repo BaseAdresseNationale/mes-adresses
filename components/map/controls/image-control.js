@@ -146,7 +146,7 @@ function ImageControl({map, communeNom, isToponymesDisplayed, setIsToponymeDispl
       }
     >
       <Tooltip position={Position.LEFT} content='Prendre une photo de la carte'>
-        <IconButton height={29} width={29} icon={CameraIcon} />
+        <IconButton icon={CameraIcon} />
       </Tooltip>
     </Popover>
   )
