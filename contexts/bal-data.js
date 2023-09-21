@@ -19,9 +19,9 @@ import useHabilitation from '@/hooks/habilitation'
 
 const BalDataContext = React.createContext()
 
-export const BalDataContextProvider = React.memo(({
+export function BalDataContextProvider({
   initialBaseLocale, initialVoie, initialToponyme, initialVoies, initialToponymes, initialNumeros, ...props
-}) => {
+}) {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, _setEditingId] = useState(null)
   const [parcelles, setParcelles] = useState([])
@@ -209,7 +209,7 @@ export const BalDataContextProvider = React.memo(({
   return (
     <BalDataContext.Provider value={value} {...props} />
   )
-})
+}
 
 BalDataContextProvider.propTypes = {
   initialBaseLocale: PropTypes.shape({

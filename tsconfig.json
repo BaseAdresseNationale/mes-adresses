@@ -10,7 +10,7 @@
       "allowJs": true,
       "skipLibCheck": true,
       "strict": false,
-      "forceConsistentCasingInFileNames": true,
+      "forceConsistentCasingInFileNames": false,
       "noEmit": true,
       "incremental": true,
       "esModuleInterop": true,
@@ -43,7 +43,11 @@
         ],
         "@/pages/*": [
           "pages/*"
-        ]
+        ],
+        "@/types/*": [
+          "types/*"
+        ],
+        "react": [ "./node_modules/@types/react" ]
       }
     },
     "include": [

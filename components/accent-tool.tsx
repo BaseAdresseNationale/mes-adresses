@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import React from 'react'
 import {Popover, Button, Pane} from 'evergreen-ui'
 
 const ACCENTS = [
@@ -50,10 +50,18 @@ const ACCENTS = [
   'L·L'
 ]
 
-function AccentTool({input, handleAccent, updateCaret, forwadedRef, isDisabled}) {
+interface AccentToolProps {
+  input: string;
+  handleAccent: (event: any) => void;
+  updateCaret: () => void;
+  forwadedRef: {current: {selectionStart: number; selectionEnd: number}};
+  isDisabled?: boolean;
+}
+
+function AccentTool({input, handleAccent, updateCaret, forwadedRef, isDisabled = false}: AccentToolProps) {
   const handleClick = event => {
     const {selectionStart, selectionEnd} = forwadedRef.current
-    const valueWithAccent = {target: {value: input.slice(0, selectionStart) + event.target.value + input.slice(selectionEnd)}}
+    const valueWithAccent = {target: {value: `${input.slice(0, selectionStart)}${(event.target.value as string)}${input.slice(selectionEnd)}`}}
 
     handleAccent(valueWithAccent)
     updateCaret()
@@ -76,18 +84,6 @@ function AccentTool({input, handleAccent, updateCaret, forwadedRef, isDisabled})
       <Button type='button' disabled={isDisabled}>É</Button>
     </Popover>
   )
-}
-
-AccentTool.propTypes = {
-  input: PropTypes.string.isRequired,
-  handleAccent: PropTypes.func.isRequired,
-  updateCaret: PropTypes.func.isRequired,
-  forwadedRef: PropTypes.object.isRequired,
-  isDisabled: PropTypes.bool
-}
-
-AccentTool.defaultProps = {
-  isDisabled: false
 }
 
 export default AccentTool

@@ -4,13 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "node server",
-    "dev-next": "next dev",
-    "build-next": "next build",
-    "start": "NODE_ENV=production node server",
-    "build-available-flags": "node scripts/build-available-flags",
-    "build": "yarn build-available-flags && yarn build-next",
-    "build:geo": "node scripts/build-geo"
+    "dev": "next dev",
+    "start": "next start",
+    "build": "yarn build-available-flags && next build",
+    "build-available-flags": "node scripts/build-available-flags"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -25,10 +22,10 @@
     "@turf/length": "^6.5.0",
     "@turf/line-slice": "^6.5.0",
     "@turf/nearest-point-on-line": "^6.5.0",
+    "@types/react": "^18.2.22",
     "babel-plugin-lodash": "^3.3.4",
     "chart.js": "^4.2.1",
     "chartjs-adapter-date-fns": "^3.0.0",
-    "compression": "^1.7.4",
     "date-fns": "2.29.3",
     "eslint-config-next": "^13.2.4",
     "evergreen-ui": "6.13.0",
@@ -59,7 +56,6 @@
     "@babel/core": "^7.21.4",
     "@babel/eslint-parser": "^7.21.3",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
-    "@types/react": "^18.2.0",
     "dotenv": "^16.0.3",
     "eslint": "^7.32.0",
     "eslint-config-xo-nextjs": "^3.2.0",
@@ -83,7 +79,8 @@
       "import/extensions": "off",
       "node/prefer-global/process": "off",
       "unicorn/no-array-for-each": "off",
-      "unicorn/prefer-switch": "off"
+      "unicorn/prefer-switch": "off",
+      "unicorn/filename-case": "off"
     }
   },
   "engines": {

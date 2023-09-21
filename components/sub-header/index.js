@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
@@ -14,7 +14,7 @@ import SettingsMenu from '@/components/sub-header/settings-menu'
 import BALStatus from '@/components/sub-header/bal-status'
 import MassDeletionDialog from '@/components/mass-deletion-dialog'
 
-const SubHeader = React.memo(({commune}) => {
+function SubHeader({commune}) {
   const {
     baseLocale,
     habilitation,
@@ -102,7 +102,7 @@ const SubHeader = React.memo(({commune}) => {
       )}
     </>
   )
-})
+}
 
 SubHeader.propTypes = {
   commune: PropTypes.shape({

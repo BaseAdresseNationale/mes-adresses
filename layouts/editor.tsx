@@ -1,5 +1,4 @@
 import {useState, useMemo, useContext} from 'react'
-import PropTypes from 'prop-types'
 
 import {DrawerContextProvider} from '@/contexts/drawer'
 import {DrawContextProvider} from '@/contexts/draw'
@@ -19,8 +18,23 @@ import DrawerContent from '@/components/drawer-content'
 import AddressEditor from '@/components/bal/address-editor'
 import DemoWarning from '@/components/demo-warning'
 import Overlay from '@/components/overlay'
+import {BaseLocaleType} from 'types/base-locale'
+import {CommmuneType} from 'types/commune'
+import {getBaseLocale, getCommuneExtras, getToponymes, getVoies} from '@/lib/bal-api'
+import {getCommune} from '@/lib/geo-api'
 
-function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}) {
+interface EditorProps {
+  baseLocale: BaseLocaleType;
+  commune: CommmuneType;
+  voie: any;
+  toponyme: any;
+  voies: any[];
+  toponymes: any[];
+  numeros: any[];
+  children: React.ReactNode;
+}
+
+function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros, children}: EditorProps) {
   const [isHidden, setIsHidden] = useState(false)
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
   const {tokenIsChecking} = useContext(TokenContext)
@@ -88,7 +102,9 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
                   )}
 
                   {isAddressFormOpen ? (
-                    <AddressEditor commune={commune} closeForm={() => setIsAddressFormOpen(false)} />
+                    <AddressEditor commune={commune} closeForm={() => {
+                      setIsAddressFormOpen(false)
+                    }} />
                   ) : (
                     children
                   )}
@@ -102,18 +118,24 @@ function Editor({baseLocale, commune, voie, toponyme, voies, toponymes, numeros,
   )
 }
 
-Editor.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
-  }).isRequired,
-  commune: PropTypes.object.isRequired,
-  voie: PropTypes.object,
-  toponyme: PropTypes.object,
-  voies: PropTypes.array,
-  toponymes: PropTypes.array,
-  numeros: PropTypes.array,
-  children: PropTypes.node.isRequired
+export async function getBaseEditorProps(balId: string) {
+  const baseLocale = await getBaseLocale(balId)
+
+  const communeExtras = await getCommuneExtras(baseLocale.commune)
+  const geoCommune = await getCommune(baseLocale.commune, {
+    fields: 'contour'
+  })
+
+  const commune = {...geoCommune, ...communeExtras}
+  const voies = await getVoies(balId)
+  const toponymes = await getToponymes(balId)
+
+  return {
+    baseLocale,
+    commune,
+    voies,
+    toponymes
+  }
 }
 
 export default Editor

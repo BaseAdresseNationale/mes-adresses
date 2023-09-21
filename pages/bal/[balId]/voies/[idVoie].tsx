@@ -1,5 +1,4 @@
 import React, {useEffect, useContext} from 'react'
-import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
 import {getNumeros, getVoie} from '@/lib/bal-api'
@@ -8,14 +7,20 @@ import TokenContext from '@/contexts/token'
 import BalDataContext from '@/contexts/bal-data'
 
 import useHelp from '@/hooks/help'
-import useFormState from '@/hooks/form-state'
+import useFormState from '@/hooks/useFormState'
 
 import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
+import {CommmuneType} from '@/types/commune'
+import {getBaseEditorProps} from '@/layouts/editor'
 
-const Voie = React.memo(({commune}) => {
-  const [isFormOpen, handleEditing, editedNumero, reset] = useFormState()
+interface VoiePageProps {
+  commune: CommmuneType;
+}
+
+function VoiePage({commune}: VoiePageProps) {
+  const {isFormOpen, handleEditing, editedNumero, reset} = useFormState()
 
   useHelp(3)
 
@@ -53,20 +58,32 @@ const Voie = React.memo(({commune}) => {
       </Pane>
     </>
   )
-})
+}
 
-Voie.getInitialProps = async ({query}) => {
-  const voie = await getVoie(query.idVoie)
-  const numeros = await getNumeros(voie._id)
+export async function getServerSideProps({params}) {
+  const {idVoie, balId} = params
+  try {
+    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId as string)
+    const voie = await getVoie(idVoie)
+    const numeros = await getNumeros(voie._id)
 
-  return {
-    voie,
-    numeros
+    return {
+      props: {
+        baseLocale,
+        commune,
+        voies,
+        toponymes,
+        voie,
+        numeros
+      }
+    }
+  } catch {
+    return {
+      error: {
+        statusCode: 404
+      }
+    }
   }
 }
 
-Voie.propTypes = {
-  commune: PropTypes.object.isRequired
-}
-
-export default Voie
+export default VoiePage

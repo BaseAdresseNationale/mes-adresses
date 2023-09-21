@@ -1,8 +1,10 @@
 export type CommmuneType = {
-    nom: string;
+  nom: string;
+  code: string;
+  departement: {
     code: string;
-    departement:  {
-        code: string;
-        nom: string;
-    }
+    nom: string;
+  };
+  isCOM: boolean;
+  hasCadastre: boolean;
 }
