@@ -1,8 +1,7 @@
 import {useState, useMemo, useEffect, useCallback, useContext, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useRouter} from 'next/router'
-import MapGl, {Source, Layer} from 'react-map-gl'
-import maplibregl from 'maplibre-gl'
+import MapGl, {Source, Layer} from 'react-map-gl/maplibre'
 import {Pane, Alert} from 'evergreen-ui'
 
 import MapContext, {SOURCE_TILE_ID} from '@/contexts/map'
@@ -302,7 +301,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       <Pane display='flex' flex={1}>
         <MapGl
           ref={handleMapRef}
-          mapLib={maplibregl}
           reuseMap
           {...viewport}
           mapStyle={mapStyle}

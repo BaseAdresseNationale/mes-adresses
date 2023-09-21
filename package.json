@@ -41,7 +41,7 @@
     "immutable": "^4.3.0",
     "lodash": "^4.17.21",
     "mapbox-gl": "npm:empty-npm-package@1.0.0",
-    "maplibre-gl": "^2.3.0",
+    "maplibre-gl": "^3.3.1",
     "next": "^13.4.19",
     "prop-types": "^15.8.1",
     "randomcolor": "^0.6.2",
@@ -59,6 +59,7 @@
     "@babel/core": "^7.21.4",
     "@babel/eslint-parser": "^7.21.3",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@types/react": "^18.2.0",
     "dotenv": "^16.0.3",
     "eslint": "^7.32.0",
     "eslint-config-xo-nextjs": "^3.2.0",
@@ -66,7 +67,6 @@
   },
   "xo": {
     "extends": "xo-nextjs",
-    "parser": "@babel/eslint-parser",
     "semicolon": false,
     "space": 2,
     "envs": [

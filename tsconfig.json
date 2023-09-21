@@ -14,7 +14,7 @@
       "noEmit": true,
       "incremental": true,
       "esModuleInterop": true,
-      "module": "esnext",
+      "module": "NodeNext",
       "isolatedModules": true,
       "jsx": "preserve",
       "resolveJsonModule": true,
