@@ -2,8 +2,6 @@ import React, {useContext} from 'react'
 import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
 
-import {getBaseLocaleCsvUrl, getListVoiesCsvUrl} from '@/lib/bal-api'
-
 import usePublishProcess from '@/hooks/publish-process'
 
 import BalDataContext from '@/contexts/bal-data'
@@ -16,7 +14,7 @@ import SettingsMenu from '@/components/sub-header/settings-menu'
 import BALStatus from '@/components/sub-header/bal-status'
 import MassDeletionDialog from '@/components/mass-deletion-dialog'
 
-const SubHeader = React.memo(({commune, setIsTrashOpen}) => {
+const SubHeader = React.memo(({commune}) => {
   const {
     baseLocale,
     habilitation,
@@ -30,9 +28,6 @@ const SubHeader = React.memo(({commune, setIsTrashOpen}) => {
     setIsHabilitationProcessDisplayed
   } = useContext(BalDataContext)
   const {token, tokenIsChecking} = useContext(TokenContext)
-
-  const csvBalUrl = getBaseLocaleCsvUrl(baseLocale._id)
-  const csvVoiesUrl = getListVoiesCsvUrl(baseLocale._id)
   const isAdmin = Boolean(token)
 
   const {
@@ -74,7 +69,7 @@ const SubHeader = React.memo(({commune, setIsTrashOpen}) => {
         />
         { !tokenIsChecking && !habilitationIsLoading && (
           <Pane marginLeft='auto' display='flex' alignItems='center'>
-            <SettingsMenu isAdmin={isAdmin} csvBalUrl={csvBalUrl} csvVoiesUrl={csvVoiesUrl} setIsTrashOpen={setIsTrashOpen} />
+            <SettingsMenu isAdmin={isAdmin} />
             <BALStatus
               baseLocale={baseLocale}
               commune={commune}
@@ -115,7 +110,6 @@ SubHeader.propTypes = {
     code: PropTypes.string.isRequired,
     isCOM: PropTypes.bool.isRequired
   }).isRequired,
-  setIsTrashOpen: PropTypes.func.isRequired
 }
 
 export default SubHeader
