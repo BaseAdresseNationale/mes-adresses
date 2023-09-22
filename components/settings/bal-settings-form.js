@@ -2,7 +2,6 @@ import React, {useState, useContext, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 import {
   Pane,
-  Heading,
   TextInputField,
   TextInput,
   IconButton,
@@ -31,7 +30,7 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const BALSettings = React.memo(({baseLocale}) => {
+const BALSettingsForm = React.memo(({baseLocale}) => {
   const {token, emails, reloadEmails} = useContext(TokenContext)
   const {reloadBaseLocale} = useContext(BalDataContext)
 
@@ -105,129 +104,108 @@ const BALSettings = React.memo(({baseLocale}) => {
   }, [formHasChanged])
 
   return (
-    <Pane>
-      <Pane
-        flexShrink={0}
-        elevation={0}
-        background='white'
-        padding={16}
-        display='flex'
-        alignItems='center'
-        minHeight={64}
-      >
-        <Pane>
-          <Heading>Paramètres de la Base Adresse Locale</Heading>
-        </Pane>
-      </Pane>
+    <FormContainer onSubmit={onSubmit} display='flex' flexDirection='column' justifyContent='space-between'>
+      <Pane>
+        <FormInput>
+          <TextInputField
+            required
+            name='nom'
+            id='nom'
+            value={nomInput}
+            maxWidth={600}
+            marginBottom={0}
+            disabled={isLoading || baseLocale.status === 'demo'}
+            label='Nom'
+            placeholder='Nom'
+            onChange={onNomInputChange}
+          />
+        </FormInput>
 
-      <Pane
-        display='flex'
-        flex={1}
-        flexDirection='column'
-        overflowY='scroll'
-      >
-        <FormContainer onSubmit={onSubmit}>
-          <FormInput>
-            <TextInputField
-              required
-              name='nom'
-              id='nom'
-              value={nomInput}
-              maxWidth={600}
-              marginBottom={0}
-              disabled={isLoading || baseLocale.status === 'demo'}
-              label='Nom'
-              placeholder='Nom'
-              onChange={onNomInputChange}
-            />
-          </FormInput>
-
-          <FormInput>
-            <Label display='block' marginBottom={4}>
-              Adresses email
-              {' '}
-              <span title='This field is required.'>*</span>
-            </Label>
-            {balEmails.map(email => (
-              <Pane key={email} display='flex' marginBottom={8}>
-                <TextInput
-                  readOnly
-                  disabled
-                  type='email'
-                  display='block'
-                  width='100%'
-                  maxWidth={400}
-                  value={email}
-                />
-                {balEmails.length > 1 && (
-                  <IconButton
-                    type='button'
-                    icon={DeleteIcon}
-                    marginLeft={4}
-                    appearance='minimal'
-                    intent='danger'
-                    onClick={() => onRemoveEmail(email)}
-                  />
-                )}
-              </Pane>
-
-            ))}
-
-            <Pane display='flex' marginBottom={0}>
+        <FormInput>
+          <Label display='block' marginBottom={4}>
+            Adresses email
+            {' '}
+            <span title='This field is required.'>*</span>
+          </Label>
+          {balEmails.map(email => (
+            <Pane key={email} display='flex' marginBottom={8}>
               <TextInput
-                display='block'
+                readOnly
+                disabled
                 type='email'
+                display='block'
                 width='100%'
-                placeholder='Ajouter une adresse email…'
                 maxWidth={400}
-                isInvalid={Boolean(error && error.includes('mail'))}
                 value={email}
-                disabled={baseLocale.status === 'demo'}
-                onChange={onEmailChange}
               />
-
-              {email && !balEmails.includes(email) && (
+              {balEmails.length > 1 && (
                 <IconButton
-                  type='submit'
-                  icon={AddIcon}
+                  type='button'
+                  icon={DeleteIcon}
                   marginLeft={4}
-                  disabled={!email}
                   appearance='minimal'
-                  intent='default'
-                  onClick={onAddEmail}
+                  intent='danger'
+                  onClick={() => onRemoveEmail(email)}
                 />
               )}
-
             </Pane>
-          </FormInput>
-          {error && (
-            <Alert marginBottom={16} intent='danger' title='Erreur'>
-              {error}
-            </Alert>
-          )}
 
-          {isRenewTokenWarningShown && (
-            <RenewTokenDialog
-              token={token}
-              emails={emails}
-              baseLocaleId={baseLocale._id}
-              isShown={isRenewTokenWarningShown}
-              setIsShown={setIsRenewTokenWarningShown}
-              setError={setError}
+          ))}
+
+          <Pane display='flex' marginBottom={0}>
+            <TextInput
+              display='block'
+              type='email'
+              width='100%'
+              placeholder='Ajouter une adresse email…'
+              maxWidth={400}
+              isInvalid={Boolean(error && error.includes('mail'))}
+              value={email}
+              disabled={baseLocale.status === 'demo'}
+              onChange={onEmailChange}
             />
-          )}
 
-          <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanges} isLoading={isLoading}>
-            {isLoading ? 'En cours…' : 'Enregistrer les changements'}
-          </Button>
+            {email && !balEmails.includes(email) && (
+              <IconButton
+                type='submit'
+                icon={AddIcon}
+                marginLeft={4}
+                disabled={!email}
+                appearance='minimal'
+                intent='default'
+                onClick={onAddEmail}
+              />
+            )}
 
-        </FormContainer>
+          </Pane>
+        </FormInput>
+        {error && (
+          <Alert marginBottom={16} intent='danger' title='Erreur'>
+            {error}
+          </Alert>
+        )}
+
+        {isRenewTokenWarningShown && (
+          <RenewTokenDialog
+            token={token}
+            emails={emails}
+            baseLocaleId={baseLocale._id}
+            isShown={isRenewTokenWarningShown}
+            setIsShown={setIsRenewTokenWarningShown}
+            setError={setError}
+          />
+        )}
       </Pane>
-    </Pane>
+
+      <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanges} isLoading={isLoading} width='fit-content'>
+        {isLoading ? 'En cours…' : 'Enregistrer les changements'}
+      </Button>
+
+    </FormContainer>
   )
 })
 
-BALSettings.propTypes = {
+BALSettingsForm.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
@@ -235,4 +213,4 @@ BALSettings.propTypes = {
   }).isRequired
 }
 
-export default BALSettings
+export default BALSettingsForm

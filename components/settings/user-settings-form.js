@@ -2,17 +2,16 @@ import {useContext, useState} from 'react'
 import LocalStorageContext from '@/contexts/local-storage'
 import PropTypes from 'prop-types'
 import {
-  Pane,
-  Heading,
   Button,
   Checkbox,
-  toaster
+  toaster,
+  Pane
 } from 'evergreen-ui'
 
 import FormContainer from '@/components/form-container'
 import FormInput from '@/components/form-input'
 
-function UserSettings() {
+function UserSettingsForm() {
   const {userSettings, setUserSettings} = useContext(LocalStorageContext)
   const [userSettingsForm, setUserSettingsForm] = useState(userSettings)
 
@@ -25,49 +24,28 @@ function UserSettings() {
   }
 
   return (
-    <Pane>
-      <Pane
-        flexShrink={0}
-        elevation={0}
-        background='white'
-        padding={16}
-        display='flex'
-        alignItems='center'
-        minHeight={64}
-      >
-        <Pane>
-          <Heading>Préférences utilisateur</Heading>
-        </Pane>
+    <FormContainer onSubmit={onSubmit} display='flex' flexDirection='column' justifyContent='space-between'>
+      <Pane>
+        <FormInput>
+          <Checkbox
+            name='colorblind-mode'
+            id='colorblind-mode'
+            label='Activer le mode daltonien'
+            checked={userSettingsForm?.colorblindMode}
+            onChange={() => setUserSettingsForm(settings => ({...settings, colorblindMode: !settings?.colorblindMode}))}
+          />
+        </FormInput>
       </Pane>
 
-      <Pane
-        display='flex'
-        flex={1}
-        flexDirection='column'
-        overflowY='scroll'
-      >
-        <FormContainer onSubmit={onSubmit}>
-          <FormInput>
-            <Checkbox
-              name='colorblind-mode'
-              id='colorblind-mode'
-              label='Activer le mode daltonien'
-              checked={userSettingsForm?.colorblindMode}
-              onChange={() => setUserSettingsForm(settings => ({...settings, colorblindMode: !settings?.colorblindMode}))}
-            />
-          </FormInput>
+      <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanged()} width='fit-content'>
+        Enregistrer les changements
+      </Button>
 
-          <Button height={40} marginTop={8} type='submit' appearance='primary' disabled={!hasChanged()}>
-            Enregistrer les changements
-          </Button>
-
-        </FormContainer>
-      </Pane>
-    </Pane>
+    </FormContainer>
   )
 }
 
-UserSettings.propTypes = {
+UserSettingsForm.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
@@ -75,4 +53,4 @@ UserSettings.propTypes = {
   }).isRequired
 }
 
-export default UserSettings
+export default UserSettingsForm

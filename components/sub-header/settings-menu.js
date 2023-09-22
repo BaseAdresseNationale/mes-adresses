@@ -1,11 +1,11 @@
 import {useContext} from 'react'
 import PropTypes from 'prop-types'
-import {Popover, Menu, Position, Button, CogIcon, DownloadIcon, TrashIcon, SettingsIcon} from 'evergreen-ui'
+import {Popover, Menu, Position, Button, DownloadIcon, TrashIcon, MenuIcon, CogIcon} from 'evergreen-ui'
 
-import SettingsContext from '@/contexts/settings'
+import DrawerContext from '@/contexts/drawer'
 
-function SettingsMenu({isAdmin, csvBalUrl, csvVoiesUrl, setIsTrashOpen}) {
-  const {setSettingsDisplayed} = useContext(SettingsContext)
+function SettingsMenu({isAdmin}) {
+  const {setDrawerDisplayed} = useContext(DrawerContext)
 
   return (
     <Popover
@@ -13,44 +13,26 @@ function SettingsMenu({isAdmin, csvBalUrl, csvVoiesUrl, setIsTrashOpen}) {
       content={
         <Menu>
           <Menu.Group>
-            <Menu.Item icon={DownloadIcon} is='a' href={csvBalUrl} color='inherit' textDecoration='none'>
-              Télécharger Base Locale CSV
+            <Menu.Item icon={DownloadIcon} onSelect={() => setDrawerDisplayed('downloads')}>
+              Téléchargements
             </Menu.Item>
-            <Menu.Item icon={DownloadIcon} is='a' href={csvVoiesUrl} color='inherit' textDecoration='none'>
-              Télécharger liste des voies CSV
+            <Menu.Item icon={CogIcon} onSelect={() => setDrawerDisplayed('settings')}>
+              Paramètres
             </Menu.Item>
+            {isAdmin && (<Menu.Item icon={TrashIcon} onSelect={() => setDrawerDisplayed('trash')}>
+              Voir la corbeille
+            </Menu.Item>)}
           </Menu.Group>
-          {isAdmin && (
-            <>
-              <Menu.Divider />
-              <Menu.Group>
-                <Menu.Item icon={TrashIcon} onSelect={() => setIsTrashOpen(true)}>
-                  Voir la corbeille
-                </Menu.Item>
-              </Menu.Group>
-            </>)}
-          <Menu.Divider />
-          <Menu.Group>
-            <Menu.Item icon={SettingsIcon} onSelect={() => setSettingsDisplayed('user-settings')}>
-              Préférences utilisateur
-            </Menu.Item>
-            {isAdmin && (
-              <Menu.Item icon={CogIcon} onSelect={() => setSettingsDisplayed('bal-settings')}>
-                Gérer les droits
-              </Menu.Item>
-            )}
-          </Menu.Group>
-
         </Menu>
       }
     >
       <Button
         height={24}
-        iconAfter={CogIcon}
+        iconBefore={MenuIcon}
         appearance='minimal'
         marginRight={16}
       >
-        Paramètres
+        Menu
       </Button>
     </Popover>
   )
@@ -58,9 +40,6 @@ function SettingsMenu({isAdmin, csvBalUrl, csvVoiesUrl, setIsTrashOpen}) {
 
 SettingsMenu.propTypes = {
   isAdmin: PropTypes.bool.isRequired,
-  csvBalUrl: PropTypes.string.isRequired,
-  csvVoiesUrl: PropTypes.string.isRequired,
-  setIsTrashOpen: PropTypes.func.isRequired
 }
 
 export default SettingsMenu

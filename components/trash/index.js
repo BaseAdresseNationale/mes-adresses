@@ -1,5 +1,5 @@
 import {useState, useEffect, useMemo} from 'react'
-import {Pane, Tablist, Tab} from 'evergreen-ui'
+import {Pane, Tablist, Tab, TrashIcon, Heading} from 'evergreen-ui'
 
 import useTrash from '@/hooks/trash'
 
@@ -48,39 +48,54 @@ function Trash() {
   }, [selectedTabIndex, voiesDeleted, toponymesDeleted, setRestoreVoie, onRemoveVoie, onRestoreToponyme, onRemoveToponyme, onRemoveNumeros])
 
   return (
-    <Pane
-      position='relative'
-      display='flex'
-      flexDirection='column'
-      height='100%'
-      width='100%'
-      overflow='hidden'
-    >
-      {restoreVoie ? (
-        <RestoreVoie voie={restoreVoie} onRestoreVoie={onRestoreVoie} onClose={() => setRestoreVoie(null)} />
-      ) : (
-        <>
-          <Pane flexShrink={0} elevation={0} width='100%' display='flex' padding={10}>
-            <Tablist>
-              {TABS.map(
-                (tab, index) => (
-                  <Tab
-                    key={tab}
-                    isSelected={selectedTabIndex === index}
-                    onSelect={() => setSelectedTabIndex(index)}
-                  >
-                    {tab}
-                  </Tab>
-                )
-              )}
-            </Tablist>
-          </Pane>
+    <Pane>
+      <Pane
+        flexShrink={0}
+        elevation={0}
+        background='white'
+        padding={16}
+        display='flex'
+        alignItems='center'
+        minHeight={64}
+      >
+        <Pane display='flex' alignItems='center'>
+          <TrashIcon />
+          <Heading paddingLeft={5}>Corbeille</Heading>
+        </Pane>
+      </Pane>
+      <Pane
+        position='relative'
+        display='flex'
+        flexDirection='column'
+        height='100%'
+        width='100%'
+        overflow='hidden'
+      >
+        {restoreVoie ? (
+          <RestoreVoie voie={restoreVoie} onRestoreVoie={onRestoreVoie} onClose={() => setRestoreVoie(null)} />
+        ) : (
+          <>
+            <Pane flexShrink={0} elevation={0} width='100%' display='flex' padding={10}>
+              <Tablist>
+                {TABS.map(
+                  (tab, index) => (
+                    <Tab
+                      key={tab}
+                      isSelected={selectedTabIndex === index}
+                      onSelect={() => setSelectedTabIndex(index)}
+                    >
+                      {tab}
+                    </Tab>
+                  )
+                )}
+              </Tablist>
+            </Pane>
 
-          <ItemsDeletedList {...propsDeletedList} />
-        </>
-      )}
+            <ItemsDeletedList {...propsDeletedList} />
+          </>
+        )}
 
-      <style jsx>{`
+        <style jsx>{`
         .tab {
           width: 100%;
           height: 100%;
@@ -100,6 +115,7 @@ function Trash() {
           background: #E4E7EB;
         }
       `}</style>
+      </Pane>
     </Pane>
   )
 }
