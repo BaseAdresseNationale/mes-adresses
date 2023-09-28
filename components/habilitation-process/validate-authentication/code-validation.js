@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
-import NextImage from 'next/image'
+import NextImage from 'next/legacy/image'
 import {Pane, Heading, Text, Link, TextInput, IconButton, TickIcon} from 'evergreen-ui'
 
 import FormInput from '@/components/form-input'

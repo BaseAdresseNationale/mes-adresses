@@ -7,13 +7,13 @@
     "dev": "next dev",
     "start": "next start",
     "build": "yarn build-available-flags && next build",
+    "analyze": "ANALYZE=true next build",
     "build-available-flags": "node scripts/build-available-flags"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
     "@ban-team/shared-data": "^1.2.0",
     "@ban-team/validateur-bal": "^2.16.0",
-    "@next/bundle-analyzer": "12.3.4",
     "@turf/bbox": "^6.5.0",
     "@turf/buffer": "^6.5.0",
     "@turf/center": "^6.5.0",
@@ -22,13 +22,10 @@
     "@turf/length": "^6.5.0",
     "@turf/line-slice": "^6.5.0",
     "@turf/nearest-point-on-line": "^6.5.0",
-    "@types/react": "^18.2.22",
-    "babel-plugin-lodash": "^3.3.4",
     "chart.js": "^4.2.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "2.29.3",
-    "eslint-config-next": "^13.2.4",
-    "evergreen-ui": "6.13.0",
+    "evergreen-ui": "^7.1.9",
     "express": "4.18.2",
     "fs-extra": "^11.1.1",
     "fuse.js": "^6.6.2",
@@ -56,8 +53,12 @@
     "@babel/core": "^7.21.4",
     "@babel/eslint-parser": "^7.21.3",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@next/bundle-analyzer": "^13.5.3",
+    "@types/react": "^18.2.23",
+    "babel-plugin-lodash": "^3.3.4",
     "dotenv": "^16.0.3",
     "eslint": "^7.32.0",
+    "eslint-config-next": "^13.5.3",
     "eslint-config-xo-nextjs": "^3.2.0",
     "xo": "^0.39.1"
   },
@@ -80,7 +81,8 @@
       "node/prefer-global/process": "off",
       "unicorn/no-array-for-each": "off",
       "unicorn/prefer-switch": "off",
-      "unicorn/filename-case": "off"
+      "unicorn/filename-case": "off",
+      "node/no-unsupported-features/es-syntax": "off"
     }
   },
   "engines": {

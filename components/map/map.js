@@ -163,7 +163,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         setEditingId(voie._id)
       } else {
         router.push(
-          `/bal/voie?balId=${balId}&idVoie=${idVoie}`,
           `/bal/${balId}/voies/${idVoie}`
         )
       }

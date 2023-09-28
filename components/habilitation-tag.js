@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import NextImage from 'next/image'
+import NextImage from 'next/legacy/image'
 import {Pane, Tooltip} from 'evergreen-ui'
 
 function HabilitationTag({communeName, isHabilitationValid}) {

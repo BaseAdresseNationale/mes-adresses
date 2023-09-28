@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import NextImage from 'next/image'
+import NextImage from 'next/legacy/image'
 import {Pane, Heading, Strong, Text, UnorderedList, ListItem} from 'evergreen-ui'
 
 function FranceConnect({isDisabled, handleStrategy}) {

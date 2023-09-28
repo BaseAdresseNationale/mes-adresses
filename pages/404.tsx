@@ -1,3 +1,4 @@
+import React from 'react'
 import Link from 'next/link'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, RouteIcon} from 'evergreen-ui'
 

@@ -34,10 +34,7 @@ function ToponymesList({toponymes, onEnableEditing, onRemove, balId, addButton})
   }
 
   const onSelect = id => {
-    router.push(
-      `/bal/toponyme?balId=${balId}&idToponyme=${id}`,
-      `/bal/${balId}/toponymes/${id}`
-    )
+    router.push(`/bal/${balId}/toponymes/${id}`)
   }
 
   const [filtered, setFilter] = useFuse(toponymes, 200, {

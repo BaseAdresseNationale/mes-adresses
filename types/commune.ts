@@ -7,4 +7,11 @@ export type CommmuneType = {
   };
   isCOM: boolean;
   hasCadastre: boolean;
+  contour: {
+    type: string;
+    coordinates: number[][][];
+  };
+  hasOpenMapTiles: boolean;
+  hasOrtho: boolean;
+  hasPlanIGN: boolean;
 }

@@ -1,12 +1,13 @@
+import React from 'react'
 import dynamic from 'next/dynamic'
-import {Pane, Button, Spinner, Heading, PlusIcon} from 'evergreen-ui'
+import {Pane, Button, Heading, PlusIcon, Spinner} from 'evergreen-ui'
 import Link from 'next/link'
 
 import Main from '@/layouts/main'
 
 import BALRecovery from '@/components/bal-recovery/bal-recovery'
 
-const UserBasesLocales = dynamic(() => import('@/components/user-bases-locales'), { // eslint-disable-line node/no-unsupported-features/es-syntax
+const CSRUserBasesLocales = dynamic(() => import('../components/user-bases-locales.js') as any, {
   ssr: false,
   loading: () => (
     <Pane height='100%' display='flex' flex={1} alignItems='center' justifyContent='center'>
@@ -27,7 +28,7 @@ function Index() {
         </Link>
       </Heading>
 
-      <UserBasesLocales />
+      <CSRUserBasesLocales />
 
       <Pane padding={22}>
         <BALRecovery />

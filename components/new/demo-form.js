@@ -45,7 +45,6 @@ function DemoForm({defaultCommune}) {
       addBalAccess(bal._id, bal.token)
 
       Router.push(
-        `/bal?balId=${bal._id}`,
         `/bal/${bal._id}`
       )
     } catch (error) {

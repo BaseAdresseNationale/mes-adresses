@@ -24,12 +24,11 @@ function BasesLocalesList({basesLocales, sortBal}) {
     return getHiddenBal(balId)
   }, [getHiddenBal])
 
-  const onBalSelect = useCallback(bal => {
+  const onBalSelect = bal => {
     Router.push(
-      `/bal?balId=${bal._id}`,
       `/bal/${bal._id}`
     )
-  }, [])
+  }
 
   const [filtered, onFilter] = useFuse(basesLocales, 200, {
     keys: [

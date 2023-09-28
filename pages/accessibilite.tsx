@@ -1,5 +1,6 @@
+import React from 'react'
 import {useRouter} from 'next/router'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 
 import {Pane, Heading, Paragraph, Text, Strong, UnorderedList, ListItem, DeleteIcon, Button, EnvelopeIcon, Link} from 'evergreen-ui'
 
@@ -50,7 +51,9 @@ function Accessibilite() {
         <Heading is='h3' size={800} color='#2952CC'>Information et contact</Heading>
         <Paragraph width='100%' lineHeight='200%'>Si vous n’arrivez pas à accéder à un contenu ou à un service, vous pouvez contacter notre équipe pour être orienté vers une alternative accessible ou obtenir le contenu sous une autre forme.</Paragraph>
         <Button
-          onClick={() => router.push('mailto:adresse@data.gouv.fr')}
+          onClick={async () => {
+            await router.push('mailto:adresse@data.gouv.fr')
+          }}
           appearance='primary'
           iconBefore={EnvelopeIcon}
         >

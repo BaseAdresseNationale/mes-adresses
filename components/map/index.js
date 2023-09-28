@@ -4,7 +4,7 @@ import {Pane} from 'evergreen-ui'
 
 import MapLoader from '@/components/map/loader'
 
-const Map = dynamic(() => import('./map'), { // eslint-disable-line node/no-unsupported-features/es-syntax
+const Map = dynamic(() => import('./map'), {
   ssr: false,
   loading: props => (
     <MapLoader {...props} />

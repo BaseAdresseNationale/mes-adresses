@@ -33,11 +33,7 @@ export function TokenContextProvider({balId, _token, ...props}) {
       setTokenIsChecking(true)
       if (_token) {
         addBalAccess(balId, _token)
-
-        Router.replace(
-          `/bal?balId=${balId}`,
-          `/bal/${balId}`
-        )
+        Router.push(`/bal/${balId}`)
       } else {
         verify(getBalToken(balId))
       }

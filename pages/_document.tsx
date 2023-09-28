@@ -1,8 +1,8 @@
-import NextDocument, {Html, Head, Main, NextScript} from 'next/document'
+import NextDocument, {Html, Head, Main, NextScript, DocumentContext} from 'next/document'
 import {extractStyles} from 'evergreen-ui'
 
-class Document extends NextDocument {
-  static async getInitialProps(ctx) {
+class Document extends NextDocument<{css: string; hydrationScript: JSX.Element}> {
+  static async getInitialProps(ctx: DocumentContext) {
     const initialProps = await NextDocument.getInitialProps(ctx)
     const {css, hydrationScript} = extractStyles()
 

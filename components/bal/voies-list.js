@@ -35,10 +35,7 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
   }
 
   const onSelect = id => {
-    router.push(
-      `/bal/voie?balId=${balId}&idVoie=${id}`,
-      `/bal/${balId}/voies/${id}`
-    )
+    router.push(`/bal/${balId}/voies/${id}`)
   }
 
   const [filtered, setFilter] = useFuse(voies, 200, {

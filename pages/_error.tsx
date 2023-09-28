@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types'
+import React from 'react'
 import Link from 'next/link'
 import {Pane, Heading, Button, Icon, ArrowLeftIcon, ErrorIcon, Alert, Text} from 'evergreen-ui'
 
@@ -6,7 +6,11 @@ import Main from '@/layouts/main'
 
 import Custom404 from '@/pages/404'
 
-function CustomError({statusCode}) {
+interface CustomErrorProps {
+  statusCode: number;
+}
+
+function CustomError({statusCode}: CustomErrorProps) {
   if (statusCode === 404) {
     return <Custom404 />
   }
@@ -38,13 +42,9 @@ function CustomError({statusCode}) {
   )
 }
 
-CustomError.propTypes = {
-  statusCode: PropTypes.number.isRequired
-}
-
-CustomError.getInitialProps = ({res, err}) => {
+export async function getServerSideProps({res, err}) {
   const statusCode = res ? res.statusCode : (err ? err.statusCode : 404)
-  return {statusCode}
+  return {props: {statusCode}}
 }
 
 export default CustomError

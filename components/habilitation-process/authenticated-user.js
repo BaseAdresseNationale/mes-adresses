@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import NextImage from 'next/image'
+import NextImage from 'next/legacy/image'
 import {Pane, Text, Strong} from 'evergreen-ui'
 
 function AuthenticatedUser({type, title, subtitle}) {

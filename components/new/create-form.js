@@ -48,7 +48,6 @@ function CreateForm({namePlaceholder, commune, nom, onNomChange, email, onEmailC
       }
 
       Router.push(
-        `/bal?balId=${bal._id}`,
         `/bal/${bal._id}`
       )
     }
