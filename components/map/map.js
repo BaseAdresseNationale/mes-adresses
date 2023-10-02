@@ -18,8 +18,8 @@ import EditableMarker from '@/components/map/editable-marker'
 import NumerosMarkers from '@/components/map/numeros-markers'
 import ToponymeMarker from '@/components/map/toponyme-marker'
 import PopupFeature from '@/components/map/popup-feature/popup-feature'
-import Draw from '@/components/map/draw'
 import NavControl from '@/components/map/controls/nav-control'
+import DrawControl from './controls/draw-control'
 import StyleControl from '@/components/map/controls/style-control'
 import AddressEditorControl from '@/components/map/controls/address-editor-control'
 import ImageControl from '@/components/map/controls/image-control'
@@ -276,6 +276,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
+      {map && <DrawControl map={map} drawEnabled={drawEnabled} isMapLoaded={isMapLoaded} />}
 
       {token && (
         <Pane position='absolute' zIndex={1} top={90} right={10} >
@@ -363,7 +364,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
             <PopupFeature feature={featureHovered} commune={commune} />
           )}
 
-          <Draw />
         </MapGl>
       </Pane>
     </Pane>

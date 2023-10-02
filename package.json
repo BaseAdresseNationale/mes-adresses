@@ -14,6 +14,7 @@
     "@babel/runtime": "^7.21.0",
     "@ban-team/shared-data": "^1.2.0",
     "@ban-team/validateur-bal": "^2.16.0",
+    "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@turf/bbox": "^6.5.0",
     "@turf/buffer": "^6.5.0",
     "@turf/center": "^6.5.0",
