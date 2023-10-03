@@ -16,10 +16,12 @@ function DrawControl({map, isMapLoaded}) {
       if (drawEnabled) {
         if (modeId === 'drawLineString') {
           draw.changeMode('draw_line_string')
-        } else if (modeId === 'editing') {
+        } else if (modeId === 'editing' && data) {
           if (data.id) {
+            // SI LE MODE_ID PASSE EN MODE EDITING ON PASSE EN MODE DIRECT_SELECT
             draw.changeMode('direct_select', {featureId: data.id})
           } else {
+            // SI UNE LINE_STRING EXISTE DEJA, ON LA SET ET PASSE EN MODE EDITION
             const featureIds = draw.add(data)
             draw.changeMode('direct_select', {featureId: featureIds[0]})
           }
