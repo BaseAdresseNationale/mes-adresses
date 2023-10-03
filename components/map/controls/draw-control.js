@@ -17,22 +17,29 @@ function DrawControl({map, isMapLoaded}) {
         if (modeId === 'drawLineString') {
           draw.changeMode('draw_line_string')
         } else if (modeId === 'editing') {
-          draw.changeMode('direct_select', {featureId: data.id})
+          if (data.id) {
+            draw.changeMode('direct_select', {featureId: data.id})
+          } else {
+            const featureIds = draw.add(data)
+            draw.changeMode('direct_select', {featureId: featureIds[0]})
+          }
         }
       } else {
         draw.changeMode('simple_select')
       }
     }
-  }, [drawEnabled, map, isMapLoaded, modeId])
+  }, [drawEnabled, map, isMapLoaded, modeId, data])
 
   useEffect(() => {
     map?.addControl(draw)
 
     map?.on('draw.create', onCreate)
+    map?.on('draw.update', onCreate)
     map?.on('draw.modechange', onModeChange)
 
     return () => {
       map?.off('draw.create', onCreate)
+      map?.off('draw.update', onCreate)
       map?.off('draw.modechange', onModeChange)
     }
   }, [map, onCreate, onModeChange])
