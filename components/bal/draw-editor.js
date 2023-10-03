@@ -1,32 +1,15 @@
-import {useContext, useCallback, useMemo} from 'react'
+import {useContext, useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {isEqual} from 'lodash'
-import {Pane, Heading, Button, Alert, EditIcon, EraserIcon} from 'evergreen-ui'
+import {Pane, Heading, Button, Alert, EraserIcon} from 'evergreen-ui'
 
 import DrawContext from '@/contexts/draw'
 
-function DrawEditor({trace}) {
+function DrawEditor() {
   const {hint, data, setData} = useContext(DrawContext)
-
-  const handleCancel = useCallback(() => {
-    setData({
-      type: 'Feature',
-      properties: {},
-      geometry: trace
-    })
-  }, [setData, trace])
 
   const handleDelete = useCallback(() => {
     setData(null)
   }, [setData])
-
-  const isModified = useMemo(() => {
-    if (data && trace) {
-      return !isEqual(data.geometry.coordinates, trace.coordinates, isEqual)
-    }
-
-    return false
-  }, [data, trace])
 
   return (
     <Pane borderLeft='default' paddingX={12} marginBottom={12}>
@@ -41,17 +24,6 @@ function DrawEditor({trace}) {
       >
         {hint}
       </Alert>
-
-      {isModified && (
-        <Button
-          type='button'
-          marginY={8} marginRight={12}
-          iconBefore={EditIcon}
-          onClick={handleCancel}
-        >
-          Annuler les modifications
-        </Button>
-      )}
 
       {data && (
         <Button
@@ -68,14 +40,6 @@ function DrawEditor({trace}) {
 
     </Pane>
   )
-}
-
-DrawEditor.defaultProps = {
-  trace: null
-}
-
-DrawEditor.propTypes = {
-  trace: PropTypes.object
 }
 
 export default DrawEditor
