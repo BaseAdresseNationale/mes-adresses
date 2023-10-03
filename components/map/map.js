@@ -293,7 +293,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       </Pane>
 
       {hint && (
-        <Pane zIndex={1} position='fixed' alignSelf='center' top={130} >
+        <Pane zIndex={1} position='fixed' alignSelf='center' top={130} maxWidth='50%' >
           <Alert title={hint} />
         </Pane>
       )}

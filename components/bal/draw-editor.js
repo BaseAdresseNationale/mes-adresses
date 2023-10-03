@@ -6,7 +6,7 @@ import {Pane, Heading, Button, Alert, EditIcon, EraserIcon} from 'evergreen-ui'
 import DrawContext from '@/contexts/draw'
 
 function DrawEditor({trace}) {
-  const {modeId, data, setData} = useContext(DrawContext)
+  const {hint, data, setData} = useContext(DrawContext)
 
   const handleCancel = useCallback(() => {
     setData({
@@ -39,9 +39,7 @@ function DrawEditor({trace}) {
         intent='none'
         title='Utilisez la carte pour dessiner le tracer de la voie'
       >
-        {modeId === 'drawLineString' ?
-          'Cliquez sur la carte pour indiquer le début de la voie, puis ajouter de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie.' :
-          'Modifier le tracé de la voie directement depuis la carte.'}
+        {hint}
       </Alert>
 
       {isModified && (
