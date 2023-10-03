@@ -9,33 +9,52 @@ const draw = new MapboxDraw({
 })
 
 function DrawControl({map, isMapLoaded}) {
-  const {drawEnabled, setData} = useContext(DrawContext)
+  const {drawEnabled, data, setData, modeId} = useContext(DrawContext)
 
   useEffect(() => {
     if (isMapLoaded) {
       if (drawEnabled) {
-        draw.changeMode('draw_line_string')
+        if (modeId === 'drawLineString') {
+          draw.changeMode('draw_line_string')
+        } else if (modeId === 'editing') {
+          draw.changeMode('direct_select', {featureId: data.id})
+        }
       } else {
         draw.changeMode('simple_select')
       }
     }
-  }, [drawEnabled, map, isMapLoaded])
+  }, [drawEnabled, map, isMapLoaded, modeId])
 
   useEffect(() => {
     map?.addControl(draw)
 
-    map?.on('draw.create', updateArea)
-  }, [map, updateArea])
+    map?.on('draw.create', onCreate)
+    map?.on('draw.modechange', onModeChange)
 
-  const updateArea = useCallback(e => {
-    console.log(e)
-    const data = draw.getAll()
-    if (data) {
-      setData(data[0])
+    return () => {
+      map?.off('draw.create', onCreate)
+      map?.off('draw.modechange', onModeChange)
     }
+  }, [map, onCreate, onModeChange])
 
-    console.log(data)
+  useEffect(() => {
+    if (!data && isMapLoaded) {
+      draw.deleteAll()
+    }
+  }, [data, isMapLoaded])
+
+  const onModeChange = useCallback(({mode}) => {
+    const {features} = draw.getAll()
+    if (mode === 'simple_select' && features.length > 0) {
+      draw.changeMode('direct_select', {featureId: features[0].id})
+    }
   }, [])
+
+  const onCreate = useCallback(({features}) => {
+    if (features) {
+      setData(features[0])
+    }
+  }, [setData])
 
   return null
 }
