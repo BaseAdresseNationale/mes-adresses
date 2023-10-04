@@ -360,7 +360,8 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
             />
           )}
 
-          {(featureHovered !== null && viewport.zoom > 14) && (
+          {(featureHovered !== null && viewport.zoom > 14 &&
+            (featureHovered.sourceLayer === LAYERS_SOURCE.VOIES_POINTS || featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS)) && (
             <PopupFeature feature={featureHovered} commune={commune} />
           )}
 

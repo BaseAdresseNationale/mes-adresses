@@ -59,7 +59,9 @@ function useHovered(map) {
       // Highlight hovered features
       map.setFeatureState({source, id, sourceLayer}, {hover: true})
       handleRelatedFeatures(map, feature, true)
-      if (sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS || sourceLayer === LAYERS_SOURCE.VOIES_POINTS) {
+      if (sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
+        sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
+        sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS) {
         setFeatureHovered(feature)
       }
     }
