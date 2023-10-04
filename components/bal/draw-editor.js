@@ -1,5 +1,4 @@
 import {useContext, useCallback} from 'react'
-import PropTypes from 'prop-types'
 import {Pane, Heading, Button, Alert, EraserIcon} from 'evergreen-ui'
 
 import DrawContext from '@/contexts/draw'
