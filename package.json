@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
+    "@next/bundle-analyzer": "^13.5.3",
     "@ban-team/shared-data": "^1.2.0",
     "@ban-team/validateur-bal": "^2.16.0",
     "@mapbox/mapbox-gl-draw": "^1.4.3",
@@ -54,7 +55,6 @@
     "@babel/core": "^7.21.4",
     "@babel/eslint-parser": "^7.21.3",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
-    "@next/bundle-analyzer": "^13.5.3",
     "@types/react": "^18.2.23",
     "babel-plugin-lodash": "^3.3.4",
     "dotenv": "^16.0.3",
