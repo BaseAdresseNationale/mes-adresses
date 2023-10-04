@@ -172,15 +172,15 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     setIsContextMenuDisplayed(null)
   }, [router, balId, setEditingId, isEditing, voie, handleParcelle])
 
-  // UseEffect(() => {
-  //   if (modeId === 'drawLineString') {
-  //     setCursor('crosshair')
-  //   } else if (featureHovered) {
-  //     setCursor('pointer')
-  //   } else {
-  //     setCursor('default')
-  //   }
-  // }, [modeId, featureHovered])
+  useEffect(() => {
+    if (modeId === 'drawLineString') {
+      setCursor('crosshair')
+    } else if (featureHovered) {
+      setCursor('pointer')
+    } else {
+      setCursor('default')
+    }
+  }, [modeId, featureHovered])
 
   // Hide current voie's or toponyme's numeros
   useEffect(() => {
