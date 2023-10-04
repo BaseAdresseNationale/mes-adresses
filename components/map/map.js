@@ -86,6 +86,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   const {isParcelleSelectionEnabled, handleParcelle} = useContext(ParcellesContext)
 
   const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true)
+  const [cursor, setCursor] = useState('default')
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null)
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle))
 
@@ -171,13 +172,15 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     setIsContextMenuDisplayed(null)
   }, [router, balId, setEditingId, isEditing, voie, handleParcelle])
 
-  const handleCursor = useCallback(({isHovering}) => {
-    if (modeId === 'drawLineString') {
-      return 'crosshair'
-    }
-
-    return isHovering ? 'pointer' : 'default'
-  }, [modeId])
+  // UseEffect(() => {
+  //   if (modeId === 'drawLineString') {
+  //     setCursor('crosshair')
+  //   } else if (featureHovered) {
+  //     setCursor('pointer')
+  //   } else {
+  //     setCursor('default')
+  //   }
+  // }, [modeId, featureHovered])
 
   // Hide current voie's or toponyme's numeros
   useEffect(() => {
@@ -309,10 +312,10 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           {...settings}
           {...interactionProps}
           interactiveLayerIds={interactiveLayerIds}
-          getCursor={handleCursor}
+          cursor={cursor}
           onClick={onClick}
           onMove={({viewState}) => setViewport(viewState)}
-          onHover={handleHover}
+          onMouseMove={handleHover}
           onMouseLeave={handleMouseLeave}
           onMouseOut={handleMouseLeave}
           onViewportChange={setViewport}
