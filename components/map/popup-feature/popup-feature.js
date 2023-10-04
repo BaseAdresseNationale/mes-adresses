@@ -11,7 +11,6 @@ function PopupFeature({feature, commune}) {
       latitude={feature.geometry.coordinates[1]}
       closeButton={false}
       anchor='bottom'
-      style={{padding: '5px', margin: '5px'}}
     >
       {(feature.sourceLayer === LAYERS_SOURCE.VOIES_POINTS) && (
         <PopupFeatureVoie feature={feature} commune={commune} />
