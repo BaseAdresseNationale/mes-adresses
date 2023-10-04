@@ -16,25 +16,21 @@ import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 import CommuneTab from '@/components/bal/commune-tab'
 import {CommmuneType} from '@/types/commune'
-import {BaseLocaleType} from '@/types/base-locale'
 import {getBaseEditorProps} from '@/layouts/editor'
 
 const TABS = ['Commune', 'Voies', 'Toponymes']
 
 interface BaseLocalePageProps {
-  baseLocale: BaseLocaleType;
   commune: CommmuneType;
-  voies: any[];
-  toponymes: any[];
 }
 
-function BaseLocalePage({baseLocale, commune, voies, toponymes}: BaseLocalePageProps) {
+function BaseLocalePage({commune}: BaseLocalePageProps) {
   const [editedItem, setEditedItem] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [toConvert, setToConvert] = useState(null)
   const [onConvertLoading, setOnConvertLoading] = useState(false)
   const [selectedTabIndex, setSelectedTabIndex] = useState(1)
-
+  const {voies, toponymes, baseLocale} = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
   const {reloadTiles} = useContext(MapContext)
 
@@ -257,11 +253,10 @@ export async function getServerSideProps({params}) {
 
   try {
     const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId as string)
-
     return {
       props: {
-        baseLocale,
         commune,
+        baseLocale,
         voies,
         toponymes
       }
