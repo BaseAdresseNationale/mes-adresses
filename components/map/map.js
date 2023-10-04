@@ -160,13 +160,9 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
       ((feature.sourceLayer === LAYERS_SOURCE.VOIES_POINTS || feature.sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS) && feature.properties.id))
     ) {
       const idVoie = feature.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ? feature.properties.idVoie : feature.properties.id
-      if (feature.layer.id === VOIE_TRACE_LINE && voie && idVoie === voie._id) {
-        setEditingId(voie._id)
-      } else {
-        router.push(
-          `/bal/${balId}/voies/${idVoie}`
-        )
-      }
+      router.push(
+        `/bal/${balId}/voies/${idVoie}`
+      )
     }
 
     setIsContextMenuDisplayed(null)
