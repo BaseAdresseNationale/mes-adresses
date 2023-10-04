@@ -12,7 +12,9 @@ export const LAYER_COMMUNE = {
       ['zoom'],
       11,
       0.8,
-      13,
+      12,
+      0.5,
+      14,
       0
     ]
   }
