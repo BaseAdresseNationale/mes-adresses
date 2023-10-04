@@ -72,7 +72,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     map,
     isTileSourceLoaded,
     handleMapRef,
-    handleStyleData,
     style,
     setStyle,
     defaultStyle,
@@ -316,7 +315,6 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           interactiveLayerIds={interactiveLayerIds}
           cursor={cursor}
           onClick={onClick}
-          onStyleData={handleStyleData}
           onMove={({viewState}) => setViewport(viewState)}
           onMouseMove={handleHover}
           onMouseLeave={handleMouseLeave}
