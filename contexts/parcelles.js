@@ -97,10 +97,10 @@ export function ParcellesContextProvider(props) {
 
   // Toggle all cadastre layers visiblity
   useEffect(() => {
-    if (map && map.getSource('cadastre') && isStyleLoaded) {
+    if (map && map.getSource('cadastre') && isStyleLoaded && isCadastreDisplayed) {
       toggleCadastreVisibility()
     }
-  }, [map, isStyleLoaded, toggleCadastreVisibility])
+  }, [map, isStyleLoaded, toggleCadastreVisibility, isCadastreDisplayed])
 
   // Updates highlighted parcelles when parcelles changes
   // or when selection is enabled/disabled
@@ -113,10 +113,10 @@ export function ParcellesContextProvider(props) {
 
   // Reset isStyleLoaded when selection is disabled
   useEffect(() => {
-    if (!isParcelleSelectionEnabled) {
+    if (!isParcelleSelectionEnabled && isStyleLoaded) {
       setSelectedParcelles([])
     }
-  }, [isParcelleSelectionEnabled])
+  }, [isParcelleSelectionEnabled, isStyleLoaded])
 
   useEffect(() => {
     if (isStyleLoaded) {

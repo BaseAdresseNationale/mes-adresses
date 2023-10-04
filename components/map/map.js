@@ -72,6 +72,7 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
     map,
     isTileSourceLoaded,
     handleMapRef,
+    handleStyleData,
     style,
     setStyle,
     defaultStyle,
@@ -210,14 +211,14 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
     setStyle(style => {
-      if (modeId && communeHasOrtho) {
+      if (drawEnabled && communeHasOrtho) {
         prevStyle.current = style
         return 'ortho'
       }
 
       return prevStyle.current
     })
-  }, [modeId, setStyle, communeHasOrtho])
+  }, [drawEnabled, setStyle, communeHasOrtho])
 
   useEffect(() => {
     if (isStyleLoaded) {
@@ -309,11 +310,13 @@ function Map({commune, isAddressFormOpen, handleAddressForm}) {
           mapStyle={mapStyle}
           width='100%'
           height='100%'
+          styleDiffing={false}
           {...settings}
           {...interactionProps}
           interactiveLayerIds={interactiveLayerIds}
           cursor={cursor}
           onClick={onClick}
+          onStyleData={handleStyleData}
           onMove={({viewState}) => setViewport(viewState)}
           onMouseMove={handleHover}
           onMouseLeave={handleMouseLeave}

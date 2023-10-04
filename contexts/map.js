@@ -62,8 +62,15 @@ export function MapContextProvider(props) {
     }
   }, [])
 
+  const handleStyleData = () => {
+    setIsStyleLoaded(false)
+    map?.once('style.load', () => {
+      setIsStyleLoaded(true)
+    })
+  }
+
   const value = useMemo(() => ({
-    map, setMap, handleMapRef,
+    map, setMap, handleMapRef, handleStyleData,
     isTileSourceLoaded, reloadTiles,
     style, setStyle, defaultStyle,
     isStyleLoaded,
@@ -76,6 +83,7 @@ export function MapContextProvider(props) {
     isTileSourceLoaded,
     reloadTiles,
     handleMapRef,
+    handleStyleData,
     isStyleLoaded,
     style,
     viewport,
