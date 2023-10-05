@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect, useContext} from 'react'
-import {Pane, Heading, Table, Button, Alert, AddIcon} from 'evergreen-ui'
+import {Pane, Heading, Table, Button, Alert, AddIcon, LockIcon} from 'evergreen-ui'
 
 import {batchNumeros, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
 
@@ -17,6 +17,7 @@ import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 import {CommmuneType} from '@/types/commune'
 import {BaseLocaleType} from '@/types/base-locale'
 import {getBaseEditorProps} from '@/layouts/editor'
+import BALRecoveryContext from '@/contexts/bal-recovery'
 
 interface ToponymePageProps {
   baseLocale: BaseLocaleType;
@@ -30,6 +31,7 @@ function ToponymePage({baseLocale, commune}: ToponymePageProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const {token} = useContext(TokenContext)
+  const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
 
   const {
     toponyme,
@@ -121,17 +123,17 @@ function ToponymePage({baseLocale, commune}: ToponymePageProps) {
           >
             <Heading>Liste des numéros</Heading>
             <Pane marginLeft='auto'>
-              {token && (
-                <Button
-                  iconBefore={AddIcon}
-                  appearance='primary'
-                  intent='success'
-                  disabled={isEditing}
-                  onClick={onEnableAdding}
-                >
-                  Ajouter des numéros
-                </Button>
-              )}
+              <Button
+                iconBefore={token ? AddIcon : LockIcon}
+                appearance='primary'
+                intent='success'
+                disabled={token && isEditing}
+                onClick={token ? onEnableAdding : () => {
+                  setIsRecoveryDisplayed(true)
+                }}
+              >
+                Ajouter des numéros
+              </Button>
             </Pane>
           </Pane>
         )}

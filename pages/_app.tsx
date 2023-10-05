@@ -15,6 +15,7 @@ import IEWarning from '@/components/ie-warning'
 import Help from '@/components/help'
 import useMatomoTracker from '@/hooks/matomo-tracker'
 import Editor from '@/layouts/editor'
+import {BALRecoveryProvider} from '@/contexts/bal-recovery'
 
 interface _AppProps {
   Component: any;
@@ -67,26 +68,28 @@ function App(props: _AppProps) {
       <LocalStorageContextProvider>
         <TokenContextProvider balId={query.balId} _token={query.token}>
           <HelpContextProvider>
+            <BALRecoveryProvider balId={query.balId}>
 
-            <Help />
+              <Help />
 
-            <Pane height='100%' width='100%' display='flex' flexDirection='column'>
-              <Header />
-              {error ? (
-                <ErrorPage statusCode={error.statusCode} />
-              ) : (
-                <>
-                  <IEWarning />
-                  {query.balId ? (
-                    <Editor {...pageProps}>
+              <Pane height='100%' width='100%' display='flex' flexDirection='column'>
+                <Header />
+                {error ? (
+                  <ErrorPage statusCode={error.statusCode} />
+                ) : (
+                  <>
+                    <IEWarning />
+                    {query.balId ? (
+                      <Editor {...pageProps}>
+                        <Component {...pageProps} />
+                      </Editor>
+                    ) : (
                       <Component {...pageProps} />
-                    </Editor>
-                  ) : (
-                    <Component {...pageProps} />
-                  )}
-                </>
-              )}
-            </Pane>
+                    )}
+                  </>
+                )}
+              </Pane>
+            </BALRecoveryProvider>
           </HelpContextProvider>
         </TokenContextProvider>
       </LocalStorageContextProvider>

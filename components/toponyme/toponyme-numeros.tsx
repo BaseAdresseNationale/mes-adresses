@@ -1,16 +1,22 @@
 import React, {useState, useMemo, useCallback} from 'react'
-import PropTypes from 'prop-types'
 import {groupBy} from 'lodash'
 import {Heading, Table, EditIcon, Tooltip, CommentIcon, WarningSignIcon, Position} from 'evergreen-ui'
+import {NumeroType} from '@/types/numero'
 
-function ToponymeNumeros({numeros, handleSelect, isEditable}) {
+interface ToponymeNumerosProps {
+  numeros: NumeroType[];
+  handleSelect: (id: string) => void;
+  isEditable: boolean;
+}
+
+function ToponymeNumeros({numeros, handleSelect, isEditable}: ToponymeNumerosProps) {
   const [hovered, setHovered] = useState(null)
 
-  const numerosByVoie = useMemo(() => {
+  const numerosByVoie: Record<string, NumeroType[]> = useMemo(() => {
     return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
   }, [numeros])
 
-  const handleClick = useCallback(id => {
+  const handleClick = useCallback((id: string) => {
     if (isEditable) {
       handleSelect(id)
     }
@@ -18,7 +24,7 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
 
   return (
     <>
-      {Object.keys(numerosByVoie).sort((a, b) => a > b).map(nomVoie => (
+      {Object.keys(numerosByVoie).sort((a, b) => a > b ? 1 : -1).map(nomVoie => (
         <React.Fragment key={nomVoie}>
           <Table.Cell style={{padding: 0}} backgroundColor='white'>
             <Heading padding='1em' width='100%'>
@@ -29,13 +35,19 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
             </Table.TextCell>
           </Table.Cell>
 
-          {numerosByVoie[nomVoie].map(({_id, numero, suffixe, positions, comment}) => (
+          {numerosByVoie[nomVoie].map(({_id, numero, suffixe, positions, comment}: NumeroType) => (
             <Table.Row
               key={_id}
               style={{cursor: 'pointer', backgroundColor: hovered === _id ? '#E4E7EB' : '#f5f6f7'}}
-              onMouseEnter={() => setHovered(_id)}
-              onMouseLeave={() => setHovered(null)}
-              onClick={() => handleClick(_id)}
+              onMouseEnter={() => {
+                setHovered(_id)
+              }}
+              onMouseLeave={() => {
+                setHovered(null)
+              }}
+              onClick={() => {
+                handleClick(_id)
+              }}
             >
               <Table.Cell data-browsable>
                 <Table.TextCell data-editable flex='0 1 1'>
@@ -73,12 +85,6 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}) {
       ))}
     </>
   )
-}
-
-ToponymeNumeros.propTypes = {
-  numeros: PropTypes.array.isRequired,
-  handleSelect: PropTypes.func.isRequired,
-  isEditable: PropTypes.bool
 }
 
 export default ToponymeNumeros

@@ -1,7 +1,6 @@
 import {useState, useCallback, useMemo, useContext} from 'react'
-import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon} from 'evergreen-ui'
+import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon, LockIcon} from 'evergreen-ui'
 
 import {normalizeSort} from '@/lib/normalize'
 import {batchNumeros, softRemoveMultipleNumero, softRemoveNumero} from '@/lib/bal-api'
@@ -15,13 +14,23 @@ import TableRow from '@/components/table-row'
 import DeleteWarning from '@/components/delete-warning'
 import GroupedActions from '@/components/grouped-actions'
 import InfiniteScrollList from '@/components/infinite-scroll-list'
+import {NumeroType} from '@/types/numero'
+import BALRecoveryContext from '@/contexts/bal-recovery'
 
-function NumerosList({token, voieId, numeros, handleEditing}) {
+interface NumerosListProps {
+  token?: string;
+  voieId: string;
+  numeros: NumeroType[];
+  handleEditing: (id?: string) => void;
+}
+
+function NumerosList({token = null, voieId, numeros, handleEditing}: NumerosListProps) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
 
   const {baseLocale, isEditing, reloadNumeros, reloadParcelles, toponymes, refreshBALSync} = useContext(BalDataContext)
   const {reloadTiles} = useContext(MapContext)
+  const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
 
   const [isDisabled, setIsDisabled] = useState(false)
 
@@ -78,7 +87,7 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
     if (isAllSelected) {
       setSelectedNumerosIds([])
     } else {
-      setSelectedNumerosIds(filtered.map(({_id}) => _id))
+      setSelectedNumerosIds(filtered.map(({_id}: NumeroType) => _id) as string[])
     }
   }
 
@@ -126,16 +135,18 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
           <Heading>Liste des numéros</Heading>
         </Pane>
 
-        {token && (
-          <Pane marginLeft='auto'>
-            <Button
-              iconBefore={AddIcon}
-              appearance='primary'
-              intent='success'
-              onClick={handleEditing}
-            >Ajouter un numéro</Button>
-          </Pane>
-        )}
+        <Pane marginLeft='auto'>
+          <Button
+            iconBefore={token ? AddIcon : LockIcon}
+            appearance='primary'
+            intent='success'
+            onClick={token ? () => {
+              handleEditing()
+            } : () => {
+              setIsRecoveryDisplayed(true)
+            }}
+          >Ajouter un numéro</Button>
+        </Pane>
       </Pane>
 
       {isGroupedActionsShown && (
@@ -143,7 +154,9 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
           idVoie={voieId}
           numeros={numeros}
           selectedNumerosIds={selectedNumerosIds}
-          resetSelectedNumerosIds={() => setSelectedNumerosIds([])}
+          resetSelectedNumerosIds={() => {
+            setSelectedNumerosIds([])
+          }}
           setIsRemoveWarningShown={setIsRemoveWarningShown}
           isAllSelectedCertifie={isAllSelectedCertifie}
           onSubmit={onMultipleEdit}
@@ -157,7 +170,9 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
             Êtes vous bien sûr de vouloir supprimer tous les numéros sélectionnés ?
           </Paragraph>
         )}
-        onCancel={() => setIsRemoveWarningShown(false)}
+        onCancel={() => {
+          setIsRemoveWarningShown(false)
+        }}
         onConfirm={onMultipleRemove}
         isDisabled={isDisabled}
       />
@@ -187,23 +202,31 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(numero => (
+          {((numero: NumeroType) => (
             <TableRow
               key={numero._id}
               label={numero.numeroComplet}
               secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
               complement={getToponymeName(numero.toponyme)}
-              handleSelect={filtered.length > 1 ? () => handleSelect(numero._id) : null}
+              handleSelect={filtered.length > 1 ? () => {
+                handleSelect(numero._id)
+              } : null}
               isSelected={selectedNumerosIds.includes(numero._id)}
-              isEditingEnabled={Boolean(!isEditing && token)}
+              isEditing={isEditing}
+              isAdmin={Boolean(token)}
               notifications={{
                 certification: numero.certifie ? 'Cette adresse est certifiée par la commune' : null,
                 comment: numero.comment,
                 warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
               }}
               actions={{
-                onRemove: () => onRemove(numero._id),
-                onEdit: () => handleEditing(numero._id)
+                onRemove: async () => onRemove(numero._id),
+                onEdit: () => {
+                  handleEditing(numero._id)
+                }
+              }}
+              openRecoveryDialog={() => {
+                setIsRecoveryDisplayed(true)
               }}
             />
           ))}
@@ -211,17 +234,6 @@ function NumerosList({token, voieId, numeros, handleEditing}) {
       </Table>
     </>
   )
-}
-
-NumerosList.defaultProps = {
-  token: null
-}
-
-NumerosList.propTypes = {
-  token: PropTypes.string,
-  voieId: PropTypes.string.isRequired,
-  numeros: PropTypes.array.isRequired,
-  handleEditing: PropTypes.func.isRequired
 }
 
 export default NumerosList

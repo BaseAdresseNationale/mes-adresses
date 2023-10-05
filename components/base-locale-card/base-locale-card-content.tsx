@@ -1,5 +1,4 @@
-import {useState, useMemo, useContext} from 'react'
-import PropTypes from 'prop-types'
+import React, {useState, useMemo, useContext} from 'react'
 import {format} from 'date-fns'
 import {fr} from 'date-fns/locale'
 import {Pane, Button, Tooltip, Text, UserIcon, InfoSignIcon, TrashIcon, EditIcon, KeyIcon, EyeOffIcon} from 'evergreen-ui'
@@ -9,8 +8,23 @@ import LocalStorageContext from '@/contexts/local-storage'
 import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 import CertificationCount from '@/components/certification-count'
 import HabilitationTag from '../habilitation-tag'
+import {HabilitationType} from '@/types/habilitation'
+import {BaseLocaleType} from '@/types/base-locale'
+import {APIGeoCommuneType} from '@/types/api-geo'
 
-function BaseLocaleCardContent({isAdmin, baseLocale, commune, habilitation, isShownHabilitationStatus, userEmail, onSelect, onRemove, onHide}) {
+interface BaseLocaleCardContentProps {
+  baseLocale: BaseLocaleType;
+  commune: APIGeoCommuneType;
+  habilitation: HabilitationType;
+  isAdmin: boolean;
+  userEmail: string;
+  onSelect: () => void;
+  onRemove: () => void;
+  onHide: () => void;
+  isShownHabilitationStatus: boolean;
+}
+
+function BaseLocaleCardContent({isAdmin, baseLocale, commune, habilitation, isShownHabilitationStatus, userEmail, onSelect, onRemove, onHide}: BaseLocaleCardContentProps) {
   const {status, _created, emails} = baseLocale
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false)
 
@@ -47,13 +61,13 @@ function BaseLocaleCardContent({isAdmin, baseLocale, commune, habilitation, isSh
 
         {commune && (<Pane flex={1} textAlign='center' margin='auto'>
           <Text display='block'>Adresses certifiées</Text>
-          <CertificationCount nbNumeros={commune.nbNumeros} nbNumerosCertifies={commune.nbNumerosCertifies} />
+          <CertificationCount nbNumeros={baseLocale.nbNumeros} nbNumerosCertifies={baseLocale.nbNumerosCertifies} />
         </Pane>
         )}
 
         {emails && isAdmin && (
           <Pane flex={1} textAlign='center' padding='8px' display='flex' flexDirection='row' justifyContent='center' margin='auto'>
-            <Text>{emails.length < 2 ? '1 Administrateur' : emails.length + ' Administrateurs'}</Text>
+            <Text>{emails.length < 2 ? '1 Administrateur' : `${emails.length} Administrateurs`}</Text>
             <Tooltip
               content={
                 emails.map(email => (
@@ -111,8 +125,13 @@ function BaseLocaleCardContent({isAdmin, baseLocale, commune, habilitation, isSh
                 isShown={isBALRecoveryShown}
                 defaultEmail={userEmail}
                 baseLocaleId={baseLocale._id}
-                onClose={() => setIsBALRecoveryShown(false)} />
-              <Button iconAfter={KeyIcon} marginRight='8px' onClick={() => setIsBALRecoveryShown(true)}>Récupérer l’accès</Button>
+                onClose={() => {
+                  setIsBALRecoveryShown(false)
+                }} />
+              <Button iconAfter={KeyIcon} marginRight='8px' onClick={() => {
+                setIsBALRecoveryShown(true)
+              }}
+              >Récupérer l’accès</Button>
             </>
           )}
         </Pane>
@@ -123,41 +142,6 @@ function BaseLocaleCardContent({isAdmin, baseLocale, commune, habilitation, isSh
       )}
     </>
   )
-}
-
-BaseLocaleCardContent.defaultProps = {
-  isAdmin: false,
-  userEmail: null,
-  onRemove: null,
-  onHide: null,
-  onSelect: null,
-  isShownHabilitationStatus: false
-}
-
-BaseLocaleCardContent.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    emails: PropTypes.array,
-    _created: PropTypes.string.isRequired,
-    status: PropTypes.oneOf([
-      'draft', 'ready-to-publish', 'replaced', 'published', 'demo'
-    ])
-  }).isRequired,
-  commune: PropTypes.shape({
-    nom: PropTypes.string.isRequired,
-    nbNumeros: PropTypes.number.isRequired,
-    nbNumerosCertifies: PropTypes.number.isRequired,
-  }),
-  habilitation: PropTypes.shape({
-    status: PropTypes.string.isRequired,
-    expiresAt: PropTypes.string,
-  }),
-  isAdmin: PropTypes.bool,
-  userEmail: PropTypes.string,
-  onSelect: PropTypes.func,
-  onHide: PropTypes.func,
-  onRemove: PropTypes.func,
-  isShownHabilitationStatus: PropTypes.bool
 }
 
 export default BaseLocaleCardContent

@@ -1,13 +1,36 @@
 import React, {useCallback} from 'react'
-import PropTypes from 'prop-types'
-import {Table, Checkbox} from 'evergreen-ui'
+import {Table, Checkbox, IconButton, LockIcon} from 'evergreen-ui'
 
 import TableRowActions from '@/components/table-row/table-row-actions'
 import TableRowEditShortcut from '@/components/table-row/table-row-edit-shortcut'
 import TableRowNotifications from '@/components/table-row/table-row-notifications'
 
-const TableRow = React.memo(({label, nomAlt, complement, secondary, notifications, isSelected, isEditingEnabled, handleSelect, actions}) => {
+interface TableRowProps {
+  label: string;
+  nomAlt?: string;
+  complement?: string;
+  secondary?: string;
+  handleSelect?: () => void;
+  isSelected?: boolean;
+  isEditing: boolean;
+  isAdmin: boolean;
+  notifications?: any;
+  actions?: {
+    onSelect?: () => void;
+    onEdit: () => void;
+    onRemove: () => void;
+    extra?: {
+      callback: () => void;
+      icon: any;
+      text: string;
+    };
+  };
+  openRecoveryDialog?: () => void;
+}
+
+function TableRow({label, nomAlt, complement, secondary, notifications, isSelected = false, isEditing, isAdmin, handleSelect, openRecoveryDialog, actions}: TableRowProps) {
   const {onSelect, onEdit} = actions
+  const isEditingEnabled = !isEditing && isAdmin
 
   const onClick = useCallback(e => {
     if (e.target.closest('[data-editable]') && isEditingEnabled) {
@@ -49,33 +72,14 @@ const TableRow = React.memo(({label, nomAlt, complement, secondary, notification
       {isEditingEnabled && actions && (
         <TableRowActions {...actions} />
       )}
+
+      {!isAdmin && (
+        <Table.TextCell flex='0 1 1'>
+          <IconButton onClick={openRecoveryDialog} type='button' height={24} icon={LockIcon} appearance='minimal' />
+        </Table.TextCell>
+      )}
     </Table.Row>
   )
-})
-
-TableRow.propTypes = {
-  label: PropTypes.string.isRequired,
-  nomAlt: PropTypes.object,
-  complement: PropTypes.string,
-  secondary: PropTypes.string,
-  handleSelect: PropTypes.func,
-  isSelected: PropTypes.bool,
-  isEditingEnabled: PropTypes.bool,
-  notifications: PropTypes.object,
-  actions: PropTypes.shape({
-    onSelect: PropTypes.func,
-    onEdit: PropTypes.func,
-  }).isRequired
-}
-
-TableRow.defaultProps = {
-  complement: null,
-  nomAlt: null,
-  secondary: null,
-  notifications: null,
-  handleSelect: null,
-  isSelected: false,
-  isEditingEnabled: false
 }
 
 export default TableRow

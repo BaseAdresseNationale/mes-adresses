@@ -20,17 +20,21 @@ export type BaseLocaleSyncType = {
 
 export type BaseLocaleType = {
   _id: string;
-  status: BaseLocaleStatus;
   nom: string;
-  _habilitation: string;
-  sync?: BaseLocaleSyncType;
+  emails: string[];
+  commune: string;
   token?: string;
+  status: BaseLocaleStatus;
+  _created: string;
+  _updated: string;
+  _deleted: string;
+  _habilitation?: string;
+  sync?: BaseLocaleSyncType;
+
+  // Computed fields
   nbNumeros: number;
   nbNumerosCertifies: number;
   isAllCertified: boolean;
   commentedNumeros?: any[];
-  _created: string;
-  _updated: string;
-  _deleted: string;
 }
 

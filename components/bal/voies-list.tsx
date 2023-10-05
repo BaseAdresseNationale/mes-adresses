@@ -1,7 +1,6 @@
 import {useContext, useMemo, useState} from 'react'
-import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Table, KeyTabIcon, Paragraph, Pane} from 'evergreen-ui'
+import {Table, KeyTabIcon, Paragraph, Pane, Button, AddIcon, LockIcon} from 'evergreen-ui'
 import {useRouter} from 'next/router'
 
 import {normalizeSort} from '@/lib/normalize'
@@ -17,8 +16,19 @@ import CommentsContent from '@/components/comments-content'
 import DeleteWarning from '@/components/delete-warning'
 
 import InfiniteScrollList from '../infinite-scroll-list'
+import {VoieType} from '@/types/voie'
 
-function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addButton}) {
+interface VoiesListProps {
+  voies: VoieType[];
+  onRemove: () => Promise<void>;
+  onEnableEditing: (id: string) => void;
+  balId: string;
+  setToConvert: (id: string) => void;
+  openRecoveryDialog: () => void;
+  openForm: () => void;
+}
+
+function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, openRecoveryDialog, openForm}: VoiesListProps) {
   const {token} = useContext(TokenContext)
   const [toRemove, setToRemove] = useState(null)
   const {isEditing, reloadVoies} = useContext(BalDataContext)
@@ -34,8 +44,8 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
     setIsDisabled(false)
   }
 
-  const onSelect = id => {
-    router.push(`/bal/${balId}/voies/${id}`)
+  const onSelect = (id: string) => {
+    void router.push(`/bal/${balId}/voies/${id}`)
   }
 
   const [filtered, setFilter] = useFuse(voies, 200, {
@@ -57,7 +67,9 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
             Êtes vous bien sûr de vouloir supprimer cette voie ainsi que tous ses numéros ?
           </Paragraph>
         )}
-        onCancel={() => setToRemove(null)}
+        onCancel={() => {
+          setToRemove(null)
+        }}
         onConfirm={handleRemove}
         isDisabled={isDisabled}
       />
@@ -70,7 +82,23 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
         alignItems='center'
         minHeight={50}
       >
-        {addButton}
+        <Pane marginLeft='auto'>
+          <Button
+            iconBefore={token ? AddIcon : LockIcon}
+            appearance='primary'
+            intent='success'
+            disabled={token && isEditing}
+            onClick={() => {
+              if (token) {
+                openForm()
+              } else {
+                openRecoveryDialog()
+              }
+            }}
+          >
+            Ajouter une voie
+          </Button>
+        </Pane>
       </Pane>
       <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
         <Table.Head>
@@ -89,20 +117,29 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {voie => (
+          {(voie: VoieType) => (
             <TableRow
               key={voie._id}
               label={voie.nom}
               nomAlt={voie.nomAlt}
-              isEditingEnabled={Boolean(!isEditing && token)}
+              isAdmin={Boolean(token)}
+              isEditing={Boolean(isEditing)}
               actions={{
-                onSelect: () => onSelect(voie._id),
-                onEdit: () => onEnableEditing(voie._id),
-                onRemove: () => setToRemove(voie._id),
+                onSelect: () => {
+                  onSelect(voie._id)
+                },
+                onEdit: () => {
+                  onEnableEditing(voie._id)
+                },
+                onRemove: () => {
+                  setToRemove(voie._id)
+                },
                 extra: voie.nbNumeros === 0 ? {
-                  callback: () => setToConvert(voie._id),
+                  callback: () => {
+                    setToConvert(voie._id)
+                  },
                   icon: KeyTabIcon,
-                  text: 'Convertir en toponyme',
+                  text: 'Convertir en toponyme'
                 } : null
               }}
               notifications={{
@@ -110,21 +147,13 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, addBu
                 comment: voie.commentedNumeros.length > 0 ? <CommentsContent comments={voie.commentedNumeros} /> : null,
                 warning: voie.nbNumeros === 0 ? 'Cette voie ne contient aucun numéro' : null
               }}
+              openRecoveryDialog={openRecoveryDialog}
             />
           )}
         </InfiniteScrollList>
       </Table>
     </>
   )
-}
-
-VoiesList.propTypes = {
-  voies: PropTypes.array.isRequired,
-  onRemove: PropTypes.func.isRequired,
-  onEnableEditing: PropTypes.func.isRequired,
-  balId: PropTypes.string.isRequired,
-  setToConvert: PropTypes.func.isRequired,
-  addButton: PropTypes.object
 }
 
 export default VoiesList

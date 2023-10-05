@@ -1,15 +1,20 @@
-import {useContext, useEffect} from 'react'
-import PropTypes from 'prop-types'
-import {Pane, Button, ChevronRightIcon, CrossIcon, ChevronLeftIcon} from 'evergreen-ui'
-
-import useWindowSize from '@/hooks/window-size'
+import React, {useContext, useEffect} from 'react'
+import {Pane, Button, ChevronRightIcon, CrossIcon, ChevronLeftIcon, PaneProps} from 'evergreen-ui'
 
 import BalDataContext from '@/contexts/bal-data'
+import useWindowSize from '@/hooks/useWindowSize'
 
-function Sidebar({isHidden, size, onToggle, top, bottom, ...props}) {
-  const {innerWidth} = useWindowSize()
+interface SidebarProps extends PaneProps {
+  isHidden: boolean;
+  size: number;
+  onToggle: (isHidden: boolean) => void;
+  top: number;
+  bottom: number;
+}
+
+function Sidebar({isHidden = false, size, onToggle, top, bottom = 0, ...props}: SidebarProps) {
   const {setEditingId, isEditing, setIsEditing} = useContext(BalDataContext)
-
+  const {isMobile} = useWindowSize()
   const handleClick = () => {
     if (isEditing) {
       setEditingId(null)
@@ -37,7 +42,7 @@ function Sidebar({isHidden, size, onToggle, top, bottom, ...props}) {
       bottom={bottom}
       zIndex={2}
     >
-      {innerWidth > 800 && (
+      {!isMobile && (
         <Pane
           background='white'
           position='absolute'
@@ -47,7 +52,6 @@ function Sidebar({isHidden, size, onToggle, top, bottom, ...props}) {
           <Button
             height={50}
             paddingX={8}
-            elevation={0}
             borderRadius={0}
             onClick={handleClick}
           >
@@ -73,20 +77,6 @@ function Sidebar({isHidden, size, onToggle, top, bottom, ...props}) {
       />
     </Pane>
   )
-}
-
-Sidebar.propTypes = {
-  isHidden: PropTypes.bool,
-  bottom: PropTypes.number,
-  children: PropTypes.node.isRequired,
-  size: PropTypes.number.isRequired,
-  onToggle: PropTypes.func.isRequired,
-  top: PropTypes.number.isRequired
-}
-
-Sidebar.defaultProps = {
-  isHidden: false,
-  bottom: 0
 }
 
 export default Sidebar

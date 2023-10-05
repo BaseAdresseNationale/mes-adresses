@@ -1,7 +1,6 @@
 import {useContext, useMemo, useState} from 'react'
-import PropTypes from 'prop-types'
 import {sortBy} from 'lodash'
-import {Table, Paragraph, Pane} from 'evergreen-ui'
+import {Table, Paragraph, Pane, Button, AddIcon, LockIcon} from 'evergreen-ui'
 import {useRouter} from 'next/router'
 
 import {normalizeSort} from '@/lib/normalize'
@@ -16,8 +15,18 @@ import TableRow from '@/components/table-row'
 import DeleteWarning from '@/components/delete-warning'
 import InfiniteScrollList from '@/components/infinite-scroll-list'
 import CommentsContent from '@/components/comments-content'
+import {ToponymeType} from '@/types/toponyme'
 
-function ToponymesList({toponymes, onEnableEditing, onRemove, balId, addButton}) {
+interface ToponymesListProps {
+  toponymes: ToponymeType[];
+  onRemove: () => Promise<void>;
+  onEnableEditing: (id: string) => void;
+  balId: string;
+  openRecoveryDialog: () => void;
+  openForm: () => void;
+}
+
+function ToponymesList({toponymes, onEnableEditing, onRemove, balId, openForm, openRecoveryDialog}: ToponymesListProps) {
   const {token} = useContext(TokenContext)
   const [toRemove, setToRemove] = useState(null)
   const [isDisabled, setIsDisabled] = useState(false)
@@ -33,8 +42,8 @@ function ToponymesList({toponymes, onEnableEditing, onRemove, balId, addButton})
     setIsDisabled(false)
   }
 
-  const onSelect = id => {
-    router.push(`/bal/${balId}/toponymes/${id}`)
+  const onSelect = (id: string) => {
+    void router.push(`/bal/${balId}/toponymes/${id}`)
   }
 
   const [filtered, setFilter] = useFuse(toponymes, 200, {
@@ -57,7 +66,9 @@ function ToponymesList({toponymes, onEnableEditing, onRemove, balId, addButton})
           </Paragraph>
         )}
         isDisabled={isDisabled}
-        onCancel={() => setToRemove(null)}
+        onCancel={() => {
+          setToRemove(null)
+        }}
         onConfirm={handleRemove}
       />
       <Pane
@@ -69,7 +80,23 @@ function ToponymesList({toponymes, onEnableEditing, onRemove, balId, addButton})
         alignItems='center'
         minHeight={50}
       >
-        {addButton}
+        <Pane marginLeft='auto'>
+          <Button
+            iconBefore={token ? AddIcon : LockIcon}
+            appearance='primary'
+            intent='success'
+            disabled={token && isEditing}
+            onClick={() => {
+              if (token) {
+                openForm()
+              } else {
+                openRecoveryDialog()
+              }
+            }}
+          >
+            Ajouter un toponyme
+          </Button>
+        </Pane>
       </Pane>
       <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
         <Table.Head>
@@ -88,36 +115,36 @@ function ToponymesList({toponymes, onEnableEditing, onRemove, balId, addButton})
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {toponyme => (
+          {(toponyme: ToponymeType) => (
             <TableRow
               key={toponyme._id}
               label={toponyme.nom}
               nomAlt={toponyme.nomAlt}
-              isEditingEnabled={Boolean(!isEditing && token)}
+              isAdmin={Boolean(token)}
+              isEditing={Boolean(isEditing)}
               notifications={{
                 warning: toponyme.positions.length === 0 ? 'Ce toponyme n’a pas de position' : null,
                 comment: toponyme.commentedNumeros.length > 0 ? <CommentsContent comments={toponyme.commentedNumeros} /> : null,
                 certification: toponyme.isAllCertified ? 'Toutes les adresses de ce toponyme sont certifiées par la commune' : null
               }}
               actions={{
-                onSelect: () => onSelect(toponyme._id),
-                onEdit: () => onEnableEditing(toponyme._id),
-                onRemove: () => setToRemove(toponyme._id)
+                onSelect: () => {
+                  onSelect(toponyme._id)
+                },
+                onEdit: () => {
+                  onEnableEditing(toponyme._id)
+                },
+                onRemove: () => {
+                  setToRemove(toponyme._id)
+                }
               }}
+              openRecoveryDialog={openRecoveryDialog}
             />
           )}
         </InfiniteScrollList>
       </Table>
     </>
   )
-}
-
-ToponymesList.propTypes = {
-  toponymes: PropTypes.array.isRequired,
-  onRemove: PropTypes.func,
-  onEnableEditing: PropTypes.func.isRequired,
-  balId: PropTypes.string.isRequired,
-  addButton: PropTypes.object
 }
 
 export default ToponymesList
