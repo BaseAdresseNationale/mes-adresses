@@ -8,7 +8,8 @@
     "start": "next start",
     "build": "yarn build-available-flags && next build",
     "analyze": "ANALYZE=true next build",
-    "build-available-flags": "node scripts/build-available-flags"
+    "build-available-flags": "node scripts/build-available-flags",
+    "push-staging": "./scripts/push-staging.sh"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
