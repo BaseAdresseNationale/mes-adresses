@@ -1,5 +1,5 @@
-import React, {useState, useCallback, useContext} from 'react'
-import {Pane, Heading, Text, Paragraph, Button, AddIcon, Tablist, Tab} from 'evergreen-ui'
+import React, {useState, useCallback, useContext, useEffect} from 'react'
+import {Pane, Heading, Text, Paragraph, Button, Tablist, Tab} from 'evergreen-ui'
 
 import {populateCommune, convertVoieToToponyme} from '@/lib/bal-api'
 
@@ -17,6 +17,7 @@ import ToponymeEditor from '@/components/bal/toponyme-editor'
 import CommuneTab from '@/components/bal/commune-tab'
 import {CommmuneType} from '@/types/commune'
 import {getBaseEditorProps} from '@/layouts/editor'
+import BALRecoveryContext from '@/contexts/bal-recovery'
 
 const TABS = ['Commune', 'Voies', 'Toponymes']
 
@@ -29,10 +30,11 @@ function BaseLocalePage({commune}: BaseLocalePageProps) {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [toConvert, setToConvert] = useState(null)
   const [onConvertLoading, setOnConvertLoading] = useState(false)
-  const [selectedTabIndex, setSelectedTabIndex] = useState(1)
-  const {voies, toponymes, baseLocale} = useContext(BalDataContext)
   const {token} = useContext(TokenContext)
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0)
+  const {voies, toponymes, baseLocale} = useContext(BalDataContext)
   const {reloadTiles} = useContext(MapContext)
+  const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
 
   const {
     refreshBALSync,
@@ -44,6 +46,12 @@ function BaseLocalePage({commune}: BaseLocalePageProps) {
   } = useContext(BalDataContext)
 
   useHelp(selectedTabIndex)
+
+  useEffect(() => {
+    if (token) {
+      setSelectedTabIndex(1)
+    }
+  }, [token])
 
   const onPopulate = useCallback(async () => {
     setIsEditing(true)
@@ -99,19 +107,12 @@ function BaseLocalePage({commune}: BaseLocalePageProps) {
             onEnableEditing={onEdit}
             setToConvert={setToConvert}
             onRemove={onRemove}
-            addButton={token && <Pane marginLeft='auto'>
-              <Button
-                iconBefore={AddIcon}
-                appearance='primary'
-                intent='success'
-                disabled={isEditing}
-                onClick={() => {
-                  setIsFormOpen(true)
-                }}
-              >
-                Ajouter une voie
-              </Button>
-            </Pane>}
+            openRecoveryDialog={() => {
+              setIsRecoveryDisplayed(true)
+            }}
+            openForm={() => {
+              setIsFormOpen(true)
+            }}
           />
         )
       case 2:
@@ -121,23 +122,20 @@ function BaseLocalePage({commune}: BaseLocalePageProps) {
             balId={baseLocale._id}
             onEnableEditing={onEdit}
             onRemove={onRemove}
-            addButton={token && <Pane marginLeft='auto'>
-              <Button
-                iconBefore={AddIcon}
-                appearance='primary'
-                intent='success'
-                disabled={isEditing}
-                onClick={() => {
-                  setIsFormOpen(true)
-                }}
-              >
-                Ajouter un toponyme
-              </Button>
-            </Pane>}
+            openRecoveryDialog={() => {
+              setIsRecoveryDisplayed(true)
+            }}
+            openForm={() => {
+              setIsFormOpen(true)
+            }}
           />
         )
       default:
-        return <CommuneTab commune={commune} />
+        return (
+          <CommuneTab commune={commune} openRecoveryDialog={() => {
+            setIsRecoveryDisplayed(true)
+          }} />
+        )
     }
   }
 
@@ -156,7 +154,6 @@ function BaseLocalePage({commune}: BaseLocalePageProps) {
         }}
         onConfirm={onConvert}
       />
-
       <Pane
         display='flex'
         flexDirection='column'

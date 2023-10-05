@@ -1,5 +1,7 @@
 import {useState, useEffect} from 'react'
 
+const MOBILE_WIDTH = 768
+
 const initialValue = {
   innerHeight: null,
   innerWidth: null,
@@ -18,9 +20,12 @@ function getSize() {
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState(initialValue)
+  const [isMobile, setIsMobile] = useState(false)
 
   const onResize = () => {
-    setWindowSize(getSize())
+    const size = getSize()
+    setWindowSize(size)
+    setIsMobile(size.innerWidth >= MOBILE_WIDTH)
   }
 
   useEffect(() => {
@@ -34,7 +39,7 @@ function useWindowSize() {
     }
   }, [])
 
-  return windowSize
+  return {windowSize, isMobile}
 }
 
 export default useWindowSize

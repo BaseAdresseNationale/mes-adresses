@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import {Pane, Tooltip, Button, Position, EditIcon} from 'evergreen-ui'
+import {Pane} from 'evergreen-ui'
 
 import {pauseSync, resumeSync} from '@/lib/bal-api'
 
@@ -29,7 +29,7 @@ function BALStatus({baseLocale, commune, token, isHabilitationValid, isRefrehSyn
         )}
       </Pane>
 
-      {token ? (
+      {token && (
         baseLocale.sync && isHabilitationValid ? (
           <BANSync
             baseLocale={baseLocale}
@@ -47,21 +47,6 @@ function BALStatus({baseLocale, commune, token, isHabilitationValid, isRefrehSyn
             />
           )
         )
-      ) : (
-        <Tooltip
-          content='Vous n’êtes pas identifié comme administrateur de cette base adresse locale, vous ne pouvez donc pas l’éditer.'
-          position={Position.BOTTOM_RIGHT}
-        >
-          <Button
-            height={24}
-            marginRight={8}
-            appearance='primary'
-            intent='danger'
-            iconBefore={EditIcon}
-          >
-            Édition impossible
-          </Button>
-        </Tooltip>
       )}
     </>
   )

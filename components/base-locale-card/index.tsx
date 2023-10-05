@@ -1,19 +1,34 @@
-import {useState, useEffect} from 'react'
-import PropTypes from 'prop-types'
+import React, {useState, useEffect} from 'react'
 import {formatDistanceToNow} from 'date-fns'
 import {fr} from 'date-fns/locale'
-import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon} from 'evergreen-ui'
+import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon, Link} from 'evergreen-ui'
 
-import {getBaseLocale, getHabilitation} from '@/lib/bal-api'
+import {getHabilitation} from '@/lib/bal-api'
 import {getCommune} from '@/lib/geo-api'
 
 import StatusBadge from '@/components/status-badge'
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
+import {BaseLocaleType} from '@/types/base-locale'
+import {APIGeoCommuneType} from '@/types/api-geo'
+import {HabilitationType} from '@/types/habilitation'
 
-function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStatus, isDefaultOpen, onSelect, onRemove, onHide}) {
+const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
+
+interface BaseLocaleCardProps {
+  baseLocale: BaseLocaleType;
+  isAdmin: boolean;
+  userEmail: string;
+  onRemove: () => void;
+  onHide: () => void;
+  onSelect: () => void;
+  isDefaultOpen: boolean;
+  isShownHabilitationStatus: boolean;
+}
+
+function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStatus, isDefaultOpen, onSelect, onRemove, onHide}: BaseLocaleCardProps) {
   const {nom, _updated} = baseLocale
-  const [commune, setCommune] = useState()
-  const [habilitation, setHabilitation] = useState(null)
+  const [commune, setCommune] = useState<APIGeoCommuneType>()
+  const [habilitation, setHabilitation] = useState<HabilitationType | null>(null)
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
 
   const majDate = formatDistanceToNow(new Date(_updated), {locale: fr})
@@ -24,10 +39,9 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStat
 
   useEffect(() => {
     const fetchCommune = async () => {
-      const communeBal = await getBaseLocale(baseLocale._id)
-      const communeGeo = await getCommune(baseLocale.commune)
+      const commune: APIGeoCommuneType = await getCommune(baseLocale.commune)
 
-      setCommune({...communeBal, ...communeGeo})
+      setCommune(commune)
     }
 
     const fetchHabilitation = async () => {
@@ -36,15 +50,15 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStat
       }
 
       try {
-        const habilitation = await getHabilitation(baseLocale.token, baseLocale._id)
+        const habilitation: HabilitationType = await getHabilitation(baseLocale.token, baseLocale._id)
         setHabilitation(habilitation)
       } catch {
         setHabilitation(null)
       }
     }
 
-    fetchCommune()
-    fetchHabilitation()
+    void fetchCommune()
+    void fetchHabilitation()
   }, [baseLocale])
 
   return (
@@ -79,7 +93,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStat
                 </Text>
 
                 {commune && (
-                  <Text fontStyle='italic'> {commune.nom} {commune.codeDepartement ? `(${commune.codeDepartement})` : ''}</Text>
+                  <Link onClick={e => e.stopPropagation()} href={`${ADRESSE_URL}/commune/${commune.code}`} fontStyle='italic'> {commune.nom} {commune.codeDepartement ? `(${commune.codeDepartement})` : ''}</Link>
                 )}
               </Pane>
             </Pane>
@@ -115,37 +129,6 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStat
       )}
     </Card>
   )
-}
-
-BaseLocaleCard.defaultProps = {
-  isAdmin: false,
-  userEmail: null,
-  onRemove: null,
-  onHide: null,
-  onSelect: null,
-  isDefaultOpen: false,
-  isShownHabilitationStatus: false
-}
-
-BaseLocaleCard.propTypes = {
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    token: PropTypes.string,
-    nom: PropTypes.string.isRequired,
-    commune: PropTypes.string.isRequired,
-    _updated: PropTypes.string,
-    status: PropTypes.oneOf([
-      'draft', 'ready-to-publish', 'replaced', 'published', 'demo'
-    ]),
-    sync: PropTypes.object
-  }).isRequired,
-  isDefaultOpen: PropTypes.bool,
-  isAdmin: PropTypes.bool,
-  userEmail: PropTypes.string,
-  onSelect: PropTypes.func,
-  onHide: PropTypes.func,
-  onRemove: PropTypes.func,
-  isShownHabilitationStatus: PropTypes.bool
 }
 
 export default BaseLocaleCard
