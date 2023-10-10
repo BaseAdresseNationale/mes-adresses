@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { NumeroDto } from '../models/NumeroDto';
+import type { Numero } from '../models/Numero';
+import type { UpdateNumeroDto } from '../models/UpdateNumeroDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -12,18 +13,49 @@ export class NumerosService {
 
     /**
      * @param numeroId
-     * @returns NumeroDto Numero trouvé.
+     * @param token
+     * @returns Numero
      * @throws ApiError
      */
-    public static numerosControllerFind(
+    public static numeroControllerFind(
         numeroId: string,
-    ): CancelablePromise<NumeroDto> {
+        token?: string,
+    ): CancelablePromise<Numero> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/numeros/{numeroId}',
             path: {
                 'numeroId': numeroId,
             },
+            headers: {
+                'Token': token,
+            },
+        });
+    }
+
+    /**
+     * @param numeroId
+     * @param requestBody
+     * @param token
+     * @returns Numero
+     * @throws ApiError
+     */
+    public static numeroControllerUpdate(
+        numeroId: string,
+        requestBody: UpdateNumeroDto,
+        token?: string,
+    ): CancelablePromise<Numero> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/numeros/{numeroId}',
+            path: {
+                'numeroId': numeroId,
+            },
+            headers: {
+                'Token': token,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 

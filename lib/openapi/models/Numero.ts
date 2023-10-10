@@ -3,11 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { ObjectId } from './ObjectId';
 import type { Position } from './Position';
 
-export type NumeroDto = {
-    _id: string;
-    _bal: string;
+export type Numero = {
+    _id: ObjectId;
+    _bal: ObjectId;
     numero: number;
     commune: string;
     suffixe: string;

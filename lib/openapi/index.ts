@@ -7,8 +7,10 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
-export type { NumeroDto } from './models/NumeroDto';
+export type { Numero } from './models/Numero';
+export type { ObjectId } from './models/ObjectId';
 export type { Point } from './models/Point';
 export type { Position } from './models/Position';
+export type { UpdateNumeroDto } from './models/UpdateNumeroDto';
 
 export { NumerosService } from './services/NumerosService';

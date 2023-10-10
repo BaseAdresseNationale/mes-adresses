@@ -3,8 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type Point = {
-    type: Record<string, any>;
-    coordinates: Record<string, any>;
+export type ObjectId = {
 };
 
