@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import PropTypes from 'prop-types'
-import {Autocomplete, SearchInput} from 'evergreen-ui'
+import {Autocomplete, Position, SearchInput} from 'evergreen-ui'
 import {useDebouncedCallback} from 'use-debounce'
 
 import {searchCommunes} from '@/lib/geo-api'
@@ -25,6 +25,7 @@ function CommuneSearch({placeholder, innerRef, initialSelectedItem, onSelect, ..
       items={communes}
       itemToString={item => item ? `${item.nom} ${item.departement ? `(${item.departement.nom} - ${item.departement.code})` : ''}` : ''}
       onChange={onSelect}
+      position={Position.BOTTOM_LEFT}
     >
       {({getInputProps, getRef, inputValue}) => {
         return (
