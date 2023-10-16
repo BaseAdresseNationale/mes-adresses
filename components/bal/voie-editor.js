@@ -100,7 +100,7 @@ function VoieEditor({initialValue, closeForm}) {
 
   return (
     <Form editingId={initialValue?._id} unmountForm={onUnmount} closeForm={closeForm} onFormSubmit={onFormSubmit}>
-      <Pane maxHeight={400} overflowY='scroll'>
+      <Pane>
         <FormInput>
           <AssistedTextField
             forwadedRef={ref}
