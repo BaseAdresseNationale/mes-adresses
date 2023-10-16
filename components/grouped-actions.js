@@ -7,6 +7,7 @@ import {normalizeSort} from '@/lib/normalize'
 import {positionsTypesList} from '@/lib/positions-types-list'
 
 import BalDataContext from '@/contexts/bal-data'
+import MapContext from '@/contexts/map'
 
 import {useInput, useCheckboxInput} from '@/hooks/input'
 
@@ -24,6 +25,7 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
   const [comment, onCommentChange] = useInput('')
   const [removeAllComments, onRemoveAllCommentsChange] = useCheckboxInput(false)
   const [certifie, setCertifie] = useState(null)
+  const {reloadTiles} = useContext(MapContext)
 
   const selectedNumeros = numeros.filter(({_id}) => selectedNumerosIds.includes(_id))
 
@@ -108,8 +110,9 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
 
     setIsLoading(false)
     setIsShown(false)
+    reloadTiles()
     resetSelectedNumerosIds()
-  }, [comment, selectedVoieId, certifie, hasUniqToponyme, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds, idVoie])
+  }, [comment, selectedVoieId, certifie, hasUniqToponyme, selectedToponymeId, onSubmit, positionType, removeAllComments, resetSelectedNumerosIds, baseLocale, selectedNumerosIds, idVoie, reloadTiles])
 
   useEffect(() => {
     if (!isShown) {
