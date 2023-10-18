@@ -1,7 +1,11 @@
-import PropTypes from 'prop-types'
 import {Pane} from 'evergreen-ui'
+import React from 'react'
 
-function FormInput({children}) {
+interface FormInputProps {
+  children: React.ReactNode;
+}
+
+function FormInput({children}: FormInputProps) {
   return (
     <Pane background='white' padding={8} borderRadius={8} marginBottom={8} width='100%'>
       {children}
@@ -9,7 +13,4 @@ function FormInput({children}) {
   )
 }
 
-FormInput.propTypes = {
-  children: PropTypes.node.isRequired
-}
 export default FormInput
