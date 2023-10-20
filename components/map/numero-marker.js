@@ -17,7 +17,7 @@ function NumeroMarker({numero, style, isContextMenuDisplayed, onEnableEditing, r
   const completNumero = numero.numeroComplet || computeCompletNumero(numero.numero, numero.suffixe)
 
   return (
-    <Marker longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false} onClick={e => onEnableEditing(e, numero._id)}>
+    <Marker anchor='left' offset={[-4, 14]} longitude={coordinates[0]} latitude={coordinates[1]} captureDrag={false} onClick={e => onEnableEditing(e, numero._id)}>
       <Pane {...style} paddingX={4}>
         <Text color='white' marginLeft={8} marginRight={4}>
           {completNumero}
