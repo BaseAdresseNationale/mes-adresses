@@ -1,11 +1,26 @@
 import {useEffect, useState} from 'react'
 
-export default function useMatomoTracker({siteId, trackerUrl, trackingEnabled}, pageProps) {
+interface MatomoTrackerParams {
+  siteId: string;
+  trackerUrl: string;
+  trackingEnabled: boolean;
+}
+
+declare global {
+  interface Window {
+    Matomo: {
+      addTracker: () => void;
+    };
+    _paq: any[];
+  }
+}
+
+export default function useMatomoTracker({siteId, trackerUrl, trackingEnabled}: MatomoTrackerParams, pageProps) {
   const [matomoState, setMatomoState] = useState(null)
 
   // Load matomo script
   useEffect(() => {
-    if (!trackingEnabled) {
+    if (!trackingEnabled || !trackerUrl || !siteId) {
       return
     }
 
@@ -18,7 +33,7 @@ export default function useMatomoTracker({siteId, trackerUrl, trackingEnabled}, 
     })
 
     firstScriptElem.parentNode.insertBefore(matomoScriptElem, firstScriptElem)
-  }, [trackerUrl, trackingEnabled])
+  }, [trackerUrl, trackingEnabled, siteId])
 
   // Init matomo tracker with site configuration
   useEffect(() => {
