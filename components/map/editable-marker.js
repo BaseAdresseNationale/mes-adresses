@@ -65,13 +65,11 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
   }, [markers, updateMarker, suggestedMarkerNumero, setSuggestedNumero])
 
   const onDrag = useCallback((event, idx) => {
-    if (idx === 0) {
-      const {_id, type} = markers[idx]
-      const coords = [event.lngLat.lng, event.lngLat.lat]
-      const suggestion = computeSuggestedNumero(coords)
-      setSuggestedMarkerNumero(suggestion)
-      updateMarker(_id, {longitude: event.lngLat.lng, latitude: event.lngLat.lat, type})
-    }
+    const {_id, type} = markers[idx]
+    const coords = [event.lngLat.lng, event.lngLat.lat]
+    const suggestion = computeSuggestedNumero(coords)
+    setSuggestedMarkerNumero(suggestion)
+    updateMarker(_id, {longitude: event.lngLat.lng, latitude: event.lngLat.lat, type})
   }, [setSuggestedMarkerNumero, computeSuggestedNumero, markers, updateMarker])
 
   useEffect(() => {
