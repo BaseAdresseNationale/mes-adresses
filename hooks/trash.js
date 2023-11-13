@@ -1,7 +1,8 @@
 
 import {useCallback, useContext, useState} from 'react'
+import {groupBy} from 'lodash'
 
-import {getVoies, getToponymes, restoreToponyme, removeToponyme, removeVoie, restoreVoie, removeMultipleNumeros} from '@/lib/bal-api'
+import {getVoies, getNumerosByBal, getToponymes, restoreToponyme, removeToponyme, removeVoie, restoreVoie, removeMultipleNumeros} from '@/lib/bal-api'
 
 import BalDataContext from '@/contexts/bal-data'
 import MapContext from '@/contexts/map'
@@ -22,9 +23,22 @@ function useTrash() {
   const [toponymesDeleted, setToponymesDeleted] = useState([])
 
   const reloadVoiesDeleted = useCallback(async () => {
-    const res = await getVoies(baseLocale._id, true)
-    setVoiesDeleted(res)
-  }, [baseLocale._id, setVoiesDeleted])
+    const numerosDeleted = await getNumerosByBal(baseLocale._id, token, true)
+    const voies = await getVoies(baseLocale._id)
+    const numerosDeletedByVoie = groupBy(numerosDeleted, 'voie')
+
+    const result = []
+    for (const voieId in numerosDeletedByVoie) {
+      if (Object.hasOwnProperty.call(numerosDeletedByVoie, voieId)) {
+        const voieNumerosDeleted = numerosDeletedByVoie[voieId]
+        const voie = voies.find(({_id}) => _id === voieId)
+        voie.numeros = voieNumerosDeleted
+        result.push(voie)
+      }
+    }
+
+    setVoiesDeleted(result)
+  }, [baseLocale._id, token, setVoiesDeleted])
 
   const reloadToponymesDelete = useCallback(async () => {
     const res = await getToponymes(baseLocale._id, true)
