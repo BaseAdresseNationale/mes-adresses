@@ -1,7 +1,8 @@
 
 import {useCallback, useContext, useState} from 'react'
 
-import {getAllDeleted, restoreToponyme, removeToponyme, removeVoie, restoreVoie, removeMultipleNumeros} from '@/lib/bal-api'
+import {restoreToponyme, removeToponyme, removeVoie, restoreVoie, removeMultipleNumeros} from '@/lib/bal-api'
+import {BasesLocalesService} from '@/lib/openapi'
 
 import BalDataContext from '@/contexts/bal-data'
 import MapContext from '@/contexts/map'
@@ -22,7 +23,7 @@ function useTrash() {
   const [toponymesDeleted, setToponymesDeleted] = useState([])
 
   const reloadAllDeleted = useCallback(async () => {
-    const res = await getAllDeleted(baseLocale._id)
+    const res = await BasesLocalesService.findAllDeleted(baseLocale._id)
     setToponymesDeleted(res.toponymes)
     setVoiesDeleted(res.voies)
   }, [baseLocale._id])

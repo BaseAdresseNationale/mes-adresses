@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 
 import {getBaseLocale} from '@/lib/bal-api'
+import {OpenAPI} from '@/lib/openapi'
 
 import LocalStorageContext from '@/contexts/local-storage'
+
+OpenAPI.BASE = process.env.NEXT_PUBLIC_MES_ADRESSES_API_URL
 
 const TokenContext = React.createContext()
 
