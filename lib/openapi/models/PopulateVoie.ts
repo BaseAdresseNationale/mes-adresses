@@ -19,9 +19,19 @@ export type PopulateVoie = {
     nomAlt: Record<string, any>;
     centroid: FeaturePoint;
     centroidTiles: Array<string>;
-    typeNumerotation: Record<string, any>;
+    typeNumerotation: PopulateVoie.typeNumerotation;
     trace: LineString;
     traceTiles: Array<string>;
     numeros: Array<Numero>;
 };
+
+export namespace PopulateVoie {
+
+    export enum typeNumerotation {
+        NUMERIQUE = 'numerique',
+        METRIQUE = 'metrique',
+    }
+
+
+}
 

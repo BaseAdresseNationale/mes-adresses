@@ -5,6 +5,6 @@
 
 export type Point = {
     type: string;
-    coordinates: Record<string, any>;
+    coordinates: Array<number>;
 };
 

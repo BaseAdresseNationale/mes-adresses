@@ -5,6 +5,6 @@
 
 export type LineString = {
     type: string;
-    coordinates: Array<string>;
+    coordinates: Array<any[]>;
 };
 
