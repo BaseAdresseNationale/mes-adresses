@@ -17,16 +17,14 @@ function Trash() {
     onRemoveToponyme,
     onRestoreToponyme,
     onRestoreVoie,
-    reloadVoiesDeleted,
-    reloadToponymesDelete
+    reloadAllDeleted,
   } = useTrash()
   const [selectedTabIndex, setSelectedTabIndex] = useState(0)
   const [restoreVoie, setRestoreVoie] = useState(null)
 
   useEffect(() => {
-    reloadVoiesDeleted()
-    reloadToponymesDelete()
-  }, [reloadVoiesDeleted, reloadToponymesDelete])
+    reloadAllDeleted()
+  }, [reloadAllDeleted])
 
   const propsDeletedList = useMemo(() => {
     if (selectedTabIndex === 0) {
