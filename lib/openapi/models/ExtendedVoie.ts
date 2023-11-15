@@ -18,7 +18,7 @@ export type ExtendedVoie = {
     nomAlt: Record<string, any>;
     centroid: FeaturePoint;
     centroidTiles: Array<string>;
-    typeNumerotation: Record<string, any>;
+    typeNumerotation: ExtendedVoie.typeNumerotation;
     trace: LineString;
     traceTiles: Array<string>;
     nbNumeros: number;
@@ -27,4 +27,14 @@ export type ExtendedVoie = {
     commentedNumeros: Array<string>;
     bbox: Record<string, any>;
 };
+
+export namespace ExtendedVoie {
+
+    export enum typeNumerotation {
+        NUMERIQUE = 'numerique',
+        METRIQUE = 'metrique',
+    }
+
+
+}
 

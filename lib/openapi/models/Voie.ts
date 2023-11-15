@@ -18,8 +18,18 @@ export type Voie = {
     nomAlt: Record<string, any>;
     centroid: FeaturePoint;
     centroidTiles: Array<string>;
-    typeNumerotation: Record<string, any>;
+    typeNumerotation: Voie.typeNumerotation;
     trace: LineString;
     traceTiles: Array<string>;
 };
+
+export namespace Voie {
+
+    export enum typeNumerotation {
+        NUMERIQUE = 'numerique',
+        METRIQUE = 'metrique',
+    }
+
+
+}
 
