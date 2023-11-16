@@ -16,6 +16,8 @@ import Help from '@/components/help'
 import useMatomoTracker from '@/hooks/matomo-tracker'
 import Editor from '@/layouts/editor'
 import {BALRecoveryProvider} from '@/contexts/bal-recovery'
+import {OpenAPIConfigProvider} from '@/contexts/open-api-config'
+import {BalDataContextProvider} from '@/contexts/bal-data'
 
 interface _AppProps {
   Component: any;
@@ -36,8 +38,14 @@ function App(props: _AppProps) {
     trackerUrl: process.env.NEXT_PUBLIC_MATOMO_TRACKER_URL
   }, pageProps)
 
+  // Temporary fix to remove the prefix "v2" from the base url
+  const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split('/').slice(0, -1).join('/')
+
   return (
-    <>
+    <OpenAPIConfigProvider baseConfig={{
+      BASE: openAPIBase
+    }}
+    >
       <Head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
         <title>mes-adresses.data.gouv.fr</title>
@@ -80,9 +88,19 @@ function App(props: _AppProps) {
                   <>
                     <IEWarning />
                     {query.balId ? (
-                      <Editor {...pageProps}>
-                        <Component {...pageProps} />
-                      </Editor>
+                      <BalDataContextProvider
+                        initialBaseLocale={pageProps.baseLocale}
+                        initialVoie={pageProps.voie}
+                        initialToponyme={pageProps.toponyme}
+                        initialVoies={pageProps.voies}
+                        initialToponymes={pageProps.toponymes}
+                        initialNumeros={pageProps.numeros}
+                      >
+                        <Editor {...pageProps}>
+                          <Component {...pageProps} />
+                        </Editor>
+                      </BalDataContextProvider>
+
                     ) : (
                       <Component {...pageProps} />
                     )}
@@ -100,7 +118,7 @@ function App(props: _AppProps) {
           max-width: fit-content;
         }
       `}</style>
-    </>
+    </OpenAPIConfigProvider>
   )
 }
 
