@@ -1,62 +1,63 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "lib": [
-        "dom",
-        "dom.iterable",
-        "esnext"
-      ],
-      "moduleResolution": "NodeNext",
-      "allowJs": true,
-      "skipLibCheck": true,
-      "strict": false,
-      "forceConsistentCasingInFileNames": false,
-      "noEmit": true,
-      "incremental": true,
-      "esModuleInterop": true,
-      "module": "NodeNext",
-      "isolatedModules": true,
-      "jsx": "preserve",
-      "resolveJsonModule": true,
-      "baseUrl": ".",
-      "paths": {
-        "@/components/*": [
-          "components/*"
-        ],
-        "@/lib/*": [
-          "lib/*"
-        ],
-        "@/layouts/*": [
-          "layouts/*"
-        ],
-        "@/styles/*": [
-          "styles/*"
-        ],
-        "@/contexts/*": [
-          "contexts/*"
-        ],
-        "@/hooks/*": [
-          "hooks/*"
-        ],
-        "@/server/*": [
-          "server/*"
-        ],
-        "@/pages/*": [
-          "pages/*"
-        ],
-        "@/types/*": [
-          "types/*"
-        ],
-        "react": [ "./node_modules/@types/react" ]
-      }
-    },
-    "include": [
-      "next-env.d.ts",
-      "**/*.ts",
-      "**/*.tsx"
+  "compilerOptions": {
+    "target": "ES6",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
-    "exclude": [
-      "node_modules"
-    ]
-  }
-  
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": false,
+    "noEmit": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/lib/*": [
+        "lib/*"
+      ],
+      "@/layouts/*": [
+        "layouts/*"
+      ],
+      "@/styles/*": [
+        "styles/*"
+      ],
+      "@/contexts/*": [
+        "contexts/*"
+      ],
+      "@/hooks/*": [
+        "hooks/*"
+      ],
+      "@/server/*": [
+        "server/*"
+      ],
+      "@/pages/*": [
+        "pages/*"
+      ],
+      "@/types/*": [
+        "types/*"
+      ],
+      "react": [
+        "./node_modules/@types/react"
+      ]
+    },
+    "moduleResolution": "node"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
