@@ -20,7 +20,7 @@ function ItemsListDelete({itemsDeleted, model, onRestore, onRemove, onRemoveNume
   const actions = item => {
     const actions = [
       {
-        label: 'Restorer ' + (model === 'voie' ? (item._deleted ? 'voie' : 'numero(s)') : 'toponyme'),
+        label: 'Restaurer ' + (model === 'voie' ? (item._deleted ? 'voie' : 'numero(s)') : 'toponyme'),
         callback: () => onRestore(item),
         icon: AddIcon,
         intent: 'none'
