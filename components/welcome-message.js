@@ -24,6 +24,7 @@ function WelcomeMessage() {
       confirmLabel='Commencer l’adressage'
       hasCancel={false}
       onConfirm={() => setWasWelcomed(true)}
+      onCloseComplete={() => setWasWelcomed(true)}
     >
       <Paragraph textAlign='center'>
         Vous souhaitez <Strong>mettre à jour les adresses</Strong> de votre commune ? Vous êtes au <Strong>bon endroit</Strong> ! 🎉
