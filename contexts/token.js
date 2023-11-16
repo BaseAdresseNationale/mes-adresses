@@ -3,16 +3,15 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 
 import {getBaseLocale} from '@/lib/bal-api'
-import {OpenAPI} from '@/lib/openapi'
 
 import LocalStorageContext from '@/contexts/local-storage'
-
-OpenAPI.BASE = process.env.NEXT_PUBLIC_MES_ADRESSES_API_URL
+import OpenAPIConfigContext from '@/contexts/open-api-config'
 
 const TokenContext = React.createContext()
 
 export function TokenContextProvider({balId, _token, ...props}) {
   const {getBalToken, addBalAccess} = useContext(LocalStorageContext)
+  const setOpenAPIConfig = useContext(OpenAPIConfigContext)
 
   const [tokenIsChecking, setTokenIsChecking] = useState(false)
   const [token, setToken] = useState(null)
@@ -24,12 +23,13 @@ export function TokenContextProvider({balId, _token, ...props}) {
     if (baseLocale.token) {
       setToken(baseLocale.token)
       setEmails(baseLocale.emails)
+      setOpenAPIConfig({TOKEN: baseLocale.token})
     } else {
       setToken(null)
     }
 
     setTokenIsChecking(false)
-  }, [balId])
+  }, [balId, setOpenAPIConfig])
 
   useEffect(() => {
     if (balId) {
