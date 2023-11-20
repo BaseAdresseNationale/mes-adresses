@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ExtentedToponyme } from '../models/ExtentedToponyme';
+import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
 import type { NumeroPopulate } from '../models/NumeroPopulate';
 import type { Toponyme } from '../models/Toponyme';
-import type { UpdateToponymeDto } from '../models/UpdateToponymeDto';
+import type { UpdateToponymeDTO } from '../models/UpdateToponymeDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -16,12 +16,12 @@ export class ToponymesService {
     /**
      * Find Toponyme by id
      * @param toponymeId
-     * @returns ExtentedToponyme
+     * @returns ExtentedToponymeDTO
      * @throws ApiError
      */
     public static findToponyme(
         toponymeId: string,
-    ): CancelablePromise<ExtentedToponyme> {
+    ): CancelablePromise<ExtentedToponymeDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/toponymes/{toponymeId}',
@@ -40,7 +40,7 @@ export class ToponymesService {
      */
     public static updateToponyme(
         toponymeId: string,
-        requestBody: UpdateToponymeDto,
+        requestBody: UpdateToponymeDTO,
     ): CancelablePromise<Toponyme> {
         return __request(OpenAPI, {
             method: 'PUT',

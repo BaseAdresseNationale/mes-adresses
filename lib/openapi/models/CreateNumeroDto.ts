@@ -6,7 +6,7 @@
 import type { ObjectId } from './ObjectId';
 import type { Position } from './Position';
 
-export type CreateNumeroDto = {
+export type CreateNumeroDTO = {
     numero: number;
     suffixe?: string | null;
     comment?: string | null;

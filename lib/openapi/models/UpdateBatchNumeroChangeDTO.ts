@@ -5,7 +5,7 @@
 
 import type { ObjectId } from './ObjectId';
 
-export type UpdateBatchNumeroChnageDto = {
+export type UpdateBatchNumeroChangeDTO = {
     comment?: string | null;
     toponyme?: ObjectId | null;
     voie?: ObjectId;

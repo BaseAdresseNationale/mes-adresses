@@ -3,11 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { FeaturePoint } from './FeaturePoint';
-import type { LineString } from './LineString';
 import type { ObjectId } from './ObjectId';
+import type { Position } from './Position';
 
-export type ExtendedVoie = {
+export type ExtentedToponymeDTO = {
     _id: ObjectId;
     _created: string;
     _updated: string;
@@ -16,25 +15,12 @@ export type ExtendedVoie = {
     nom: string;
     commune: string;
     nomAlt: Record<string, any>;
-    centroid: FeaturePoint;
-    centroidTiles: Array<string>;
-    typeNumerotation: ExtendedVoie.typeNumerotation;
-    trace: LineString;
-    traceTiles: Array<string>;
+    parcelles: Array<string>;
+    positions: Array<Position>;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
     commentedNumeros: Array<string>;
     bbox: Record<string, any>;
 };
-
-export namespace ExtendedVoie {
-
-    export enum typeNumerotation {
-        NUMERIQUE = 'numerique',
-        METRIQUE = 'metrique',
-    }
-
-
-}
 
