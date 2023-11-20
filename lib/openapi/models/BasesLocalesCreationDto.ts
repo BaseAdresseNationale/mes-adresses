@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type BasesLocalesCreationDto = {
+export type BasesLocalesCreationDTO = {
     date: string;
     createdBAL: Record<string, any>;
 };

@@ -3,8 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BaseLocale } from '../models/BaseLocale';
-import type { BasesLocalesCreationDto } from '../models/BasesLocalesCreationDto';
-import type { BasesLocalesStatusDto } from '../models/BasesLocalesStatusDto';
+import type { BasesLocalesCreationDTO } from '../models/BasesLocalesCreationDTO';
+import type { BasesLocalesStatusDTO } from '../models/BasesLocalesStatusDTO';
 import type { CodeCommuneDTO } from '../models/CodeCommuneDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -37,10 +37,10 @@ export class StatsService {
 
     /**
      * Find all Bals status
-     * @returns BasesLocalesStatusDto
+     * @returns BasesLocalesStatusDTO
      * @throws ApiError
      */
-    public static findBalsStatusStats(): CancelablePromise<Array<BasesLocalesStatusDto>> {
+    public static findBalsStatusStats(): CancelablePromise<Array<BasesLocalesStatusDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/stats/bals/status',
@@ -51,13 +51,13 @@ export class StatsService {
      * Find all created Bals between date
      * @param from
      * @param to
-     * @returns BasesLocalesCreationDto
+     * @returns BasesLocalesCreationDTO
      * @throws ApiError
      */
     public static findBalsCreationStats(
         from: string,
         to: string,
-    ): CancelablePromise<Array<BasesLocalesCreationDto>> {
+    ): CancelablePromise<Array<BasesLocalesCreationDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/stats/bals/creations',

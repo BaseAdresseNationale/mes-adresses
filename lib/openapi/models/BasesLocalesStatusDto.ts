@@ -5,7 +5,7 @@
 
 import type { ObjectId } from './ObjectId';
 
-export type BasesLocalesStatusDto = {
+export type BasesLocalesStatusDTO = {
     status: ObjectId;
     count: number;
 };

@@ -6,18 +6,18 @@ import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
 import type { CreateBaseLocaleDTO } from '../models/CreateBaseLocaleDTO';
 import type { CreateDemoBaseLocaleDTO } from '../models/CreateDemoBaseLocaleDTO';
-import type { CreateToponymeDto } from '../models/CreateToponymeDto';
-import type { CreateVoieDto } from '../models/CreateVoieDto';
-import type { DeleteBatchNumeroDto } from '../models/DeleteBatchNumeroDto';
-import type { ExtendedBaseLocale } from '../models/ExtendedBaseLocale';
-import type { ExtentedToponyme } from '../models/ExtentedToponyme';
+import type { CreateToponymeDTO } from '../models/CreateToponymeDTO';
+import type { CreateVoieDTO } from '../models/CreateVoieDTO';
+import type { DeleteBatchNumeroDTO } from '../models/DeleteBatchNumeroDTO';
+import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
+import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
 import type { ImportFileBaseLocaleDTO } from '../models/ImportFileBaseLocaleDTO';
 import type { PageBaseLocaleDTO } from '../models/PageBaseLocaleDTO';
 import type { RecoverBaseLocaleDTO } from '../models/RecoverBaseLocaleDTO';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateBaseLocaleDemoDTO } from '../models/UpdateBaseLocaleDemoDTO';
 import type { UpdateBaseLocaleDTO } from '../models/UpdateBaseLocaleDTO';
-import type { UpdateBatchNumeroDto } from '../models/UpdateBatchNumeroDto';
+import type { UpdateBatchNumeroDTO } from '../models/UpdateBatchNumeroDTO';
 import type { Voie } from '../models/Voie';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -96,12 +96,12 @@ export class BasesLocalesService {
     /**
      * Find Base_Locale by id
      * @param baseLocaleId
-     * @returns ExtendedBaseLocale
+     * @returns ExtendedBaseLocaleDTO
      * @throws ApiError
      */
     public static findBaseLocale(
         baseLocaleId: string,
-    ): CancelablePromise<ExtendedBaseLocale> {
+    ): CancelablePromise<ExtendedBaseLocaleDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}',
@@ -352,7 +352,7 @@ export class BasesLocalesService {
      */
     public static updateNumeros(
         baseLocaleId: string,
-        requestBody: UpdateBatchNumeroDto,
+        requestBody: UpdateBatchNumeroDTO,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -374,7 +374,7 @@ export class BasesLocalesService {
      */
     public static deleteNumeros(
         baseLocaleId: string,
-        requestBody: DeleteBatchNumeroDto,
+        requestBody: DeleteBatchNumeroDTO,
     ): CancelablePromise<void> {
         return __request(OpenAPI, {
             method: 'DELETE',
@@ -396,7 +396,7 @@ export class BasesLocalesService {
      */
     public static softDeleteNumeros(
         baseLocaleId: string,
-        requestBody: DeleteBatchNumeroDto,
+        requestBody: DeleteBatchNumeroDTO,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -436,7 +436,7 @@ export class BasesLocalesService {
      */
     public static createVoie(
         baseLocaleId: string,
-        requestBody: CreateVoieDto,
+        requestBody: CreateVoieDTO,
     ): CancelablePromise<Array<Voie>> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -452,12 +452,12 @@ export class BasesLocalesService {
     /**
      * Find all Toponymes in Bal
      * @param baseLocaleId
-     * @returns ExtentedToponyme
+     * @returns ExtentedToponymeDTO
      * @throws ApiError
      */
     public static findBaseLocaleToponymes(
         baseLocaleId: string,
-    ): CancelablePromise<Array<ExtentedToponyme>> {
+    ): CancelablePromise<Array<ExtentedToponymeDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}/toponymes',
@@ -476,7 +476,7 @@ export class BasesLocalesService {
      */
     public static createToponyme(
         baseLocaleId: string,
-        requestBody: CreateToponymeDto,
+        requestBody: CreateToponymeDTO,
     ): CancelablePromise<Array<Toponyme>> {
         return __request(OpenAPI, {
             method: 'POST',

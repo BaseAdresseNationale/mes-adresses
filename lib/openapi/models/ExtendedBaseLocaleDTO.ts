@@ -6,7 +6,7 @@
 import type { ObjectId } from './ObjectId';
 import type { Sync } from './Sync';
 
-export type ExtendedBaseLocale = {
+export type ExtendedBaseLocaleDTO = {
     _id: ObjectId;
     _created: string;
     _updated: string;
@@ -14,7 +14,7 @@ export type ExtendedBaseLocale = {
     nom: string;
     emails: Array<string>;
     token: string;
-    status: ExtendedBaseLocale.status;
+    status: ExtendedBaseLocaleDTO.status;
     _habilitation: string;
     commune: string;
     enableComplement: boolean;
@@ -25,7 +25,7 @@ export type ExtendedBaseLocale = {
     commentedNumeros: Array<string>;
 };
 
-export namespace ExtendedBaseLocale {
+export namespace ExtendedBaseLocaleDTO {
 
     export enum status {
         DRAFT = 'draft',

@@ -5,7 +5,7 @@
 
 import type { LineString } from './LineString';
 
-export type CreateVoieDto = {
+export type CreateVoieDTO = {
     nom: string;
     nomAlt?: Record<string, any> | null;
     typeNumerotation?: Record<string, any>;

@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type DeleteBatchNumeroDto = {
+export type DeleteBatchNumeroDTO = {
     numerosIds: Array<any[]>;
 };
 
