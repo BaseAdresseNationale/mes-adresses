@@ -86,7 +86,10 @@
       "unicorn/no-array-for-each": "off",
       "unicorn/prefer-switch": "off",
       "unicorn/filename-case": "off",
-      "node/no-unsupported-features/es-syntax": "off"
+      "node/no-unsupported-features/es-syntax": "off",
+      "capitalized-comments": "off",
+      "@typescript-eslint/ban-tslint-comment": "off",
+      "unicorn/no-abusive-eslint-disable": "off"
     }
   },
   "engines": {
