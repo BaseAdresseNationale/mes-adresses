@@ -91,7 +91,7 @@ function DemoWarning({baseLocale, communeName}: DemoWarningProps) {
             label='Nom de la Base Adresse Locale'
             placeholder={communeName}
             onChange={e => {
-              setNom(e.target.value)
+              setNom(e.target.value as string)
             }}
           />
 
