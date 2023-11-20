@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { Numero } from '../models/Numero';
-import type { UpdateNumeroDto } from '../models/UpdateNumeroDto';
+import type { UpdateNumeroDTO } from '../models/UpdateNumeroDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -38,7 +38,7 @@ export class NumerosService {
      */
     public static updateNumero(
         numeroId: string,
-        requestBody: UpdateNumeroDto,
+        requestBody: UpdateNumeroDTO,
     ): CancelablePromise<Numero> {
         return __request(OpenAPI, {
             method: 'PUT',

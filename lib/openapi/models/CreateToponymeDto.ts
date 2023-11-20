@@ -5,7 +5,7 @@
 
 import type { Position } from './Position';
 
-export type CreateToponymeDto = {
+export type CreateToponymeDTO = {
     nom: string;
     nomAlt?: Record<string, any> | null;
     parcelles?: Array<string> | null;

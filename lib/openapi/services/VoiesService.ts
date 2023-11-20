@@ -2,12 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CreateNumeroDto } from '../models/CreateNumeroDto';
-import type { ExtendedVoie } from '../models/ExtendedVoie';
+import type { CreateNumeroDTO } from '../models/CreateNumeroDTO';
+import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { Numero } from '../models/Numero';
-import type { RestoreVoieDto } from '../models/RestoreVoieDto';
+import type { RestoreVoieDTO } from '../models/RestoreVoieDTO';
 import type { Toponyme } from '../models/Toponyme';
-import type { UpdateVoieDto } from '../models/UpdateVoieDto';
+import type { UpdateVoieDTO } from '../models/UpdateVoieDTO';
 import type { Voie } from '../models/Voie';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -19,12 +19,12 @@ export class VoiesService {
     /**
      * Find Voie by id
      * @param voieId
-     * @returns ExtendedVoie
+     * @returns ExtendedVoieDTO
      * @throws ApiError
      */
     public static findVoie(
         voieId: string,
-    ): CancelablePromise<ExtendedVoie> {
+    ): CancelablePromise<ExtendedVoieDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/voies/{voieId}',
@@ -43,7 +43,7 @@ export class VoiesService {
      */
     public static updateVoie(
         voieId: string,
-        requestBody: UpdateVoieDto,
+        requestBody: UpdateVoieDTO,
     ): CancelablePromise<Voie> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -101,7 +101,7 @@ export class VoiesService {
      */
     public static restoreVoie(
         voieId: string,
-        requestBody: RestoreVoieDto,
+        requestBody: RestoreVoieDTO,
     ): CancelablePromise<Voie> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -146,7 +146,7 @@ export class VoiesService {
      */
     public static createNumero(
         voieId: string,
-        requestBody: CreateNumeroDto,
+        requestBody: CreateNumeroDTO,
     ): CancelablePromise<Numero> {
         return __request(OpenAPI, {
             method: 'POST',

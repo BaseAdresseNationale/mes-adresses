@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type RestoreVoieDto = {
+export type RestoreVoieDTO = {
     numerosIds: Array<any[]> | null;
 };
 

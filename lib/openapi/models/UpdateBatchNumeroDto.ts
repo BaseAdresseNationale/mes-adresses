@@ -3,10 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { UpdateBatchNumeroChnageDto } from './UpdateBatchNumeroChnageDto';
+import type { UpdateBatchNumeroChangeDTO } from './UpdateBatchNumeroChangeDTO';
 
-export type UpdateBatchNumeroDto = {
-    numerosIds: Array<any[]>;
-    changes: UpdateBatchNumeroChnageDto;
+export type UpdateBatchNumeroDTO = {
+    numerosIds?: Array<any[]> | null;
+    changes: UpdateBatchNumeroChangeDTO;
 };
 
