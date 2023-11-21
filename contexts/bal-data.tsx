@@ -5,6 +5,7 @@ import {toaster} from 'evergreen-ui'
 import {BaseLocale, HabilitationDTO, Numero, Toponyme, Voie, BasesLocalesService, VoiesService, ToponymesService, Sync, UpdateBatchNumeroDTO} from '@/lib/openapi'
 import TokenContext from '@/contexts/token'
 import useHabilitation from '@/hooks/habilitation'
+import {ChildrenProps} from '@/types/context'
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -39,14 +40,13 @@ interface BALDataContextType {
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null)
 
-interface BalDataContextProviderProps {
+interface BalDataContextProviderProps extends ChildrenProps {
   initialBaseLocale: BaseLocale;
   initialVoie: Voie;
   initialToponyme: Toponyme;
   initialVoies: Voie[];
   initialToponymes: Toponyme[];
   initialNumeros: Numero[];
-  children: React.ReactNode;
 }
 
 export function BalDataContextProvider({
@@ -108,7 +108,7 @@ export function BalDataContextProvider({
 
   const refreshBALSync = useCallback(async () => {
     const {sync}: {sync: Sync} = baseLocale
-    if (isHabilitationValid && sync && sync.status === 'synced' && !sync.isPaused && !isRefrehSyncStat) {
+    if (isHabilitationValid && sync && sync.status === Sync.status.SYNCED && !sync.isPaused && !isRefrehSyncStat) {
       setIsRefrehSyncStat(true)
       setTimeout(async () => {
         await reloadBaseLocale()

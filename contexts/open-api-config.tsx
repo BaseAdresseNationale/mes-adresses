@@ -1,11 +1,11 @@
 import {OpenAPI, OpenAPIConfig} from '@/lib/openapi'
+import {ChildrenProps} from '@/types/context'
 import React, {useCallback} from 'react'
 
 const OpenAPIConfigContext = React.createContext<(config: Partial<OpenAPIConfig>) => void | null>(null)
 
-interface OpenAPIConfigProviderProps {
+interface OpenAPIConfigProviderProps extends ChildrenProps {
   baseConfig?: Partial<OpenAPIConfig>;
-  children: React.ReactNode;
 }
 
 export function OpenAPIConfigProvider({baseConfig, ...props}: OpenAPIConfigProviderProps) {

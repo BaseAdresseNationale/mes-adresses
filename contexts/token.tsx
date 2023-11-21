@@ -5,6 +5,7 @@ import Router from 'next/router'
 import LocalStorageContext from '@/contexts/local-storage'
 import OpenAPIConfigContext from '@/contexts/open-api-config'
 import {BasesLocalesService} from '@/lib/openapi'
+import {ChildrenProps} from '@/types/context'
 
 interface TokenContextType {
   token: string | null;
@@ -15,10 +16,9 @@ interface TokenContextType {
 
 const TokenContext = React.createContext<TokenContextType | null>(null)
 
-interface TokenContextProviderProps {
+interface TokenContextProviderProps extends ChildrenProps {
   balId: string | null;
   _token: string | null;
-  children: React.ReactNode;
 }
 
 export function TokenContextProvider({balId, _token, ...props}: TokenContextProviderProps) {

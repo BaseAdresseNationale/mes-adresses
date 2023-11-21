@@ -1,15 +1,29 @@
+import {Voie, LineString} from '@/lib/openapi'
+import {ChildrenProps} from '@/types/context'
 import React, {useState, useEffect, useMemo, useCallback} from 'react'
 
-const DrawContext = React.createContext()
+interface DrawContextType {
+  drawEnabled: boolean;
+  enableDraw: (voie: Voie) => void;
+  disableDraw: () => void;
+  modeId: string | null;
+  setModeId: (value: string) => void;
+  hint: string | null;
+  setHint: (value: string) => void;
+  data: GeoJSON.Feature<LineString> | null;
+  setData: (value: GeoJSON.Feature<LineString> | null) => void;
+}
 
-export function DrawContextProvider(props) {
-  const [drawEnabled, setDrawEnabled] = useState(false)
-  const [modeId, setModeId] = useState(null)
-  const [hint, setHint] = useState(null)
-  const [data, setData] = useState(null)
-  const [voie, setVoie] = useState(null)
+const DrawContext = React.createContext<DrawContextType | null>(null)
 
-  const enableDraw = useCallback(voie => {
+export function DrawContextProvider(props: ChildrenProps) {
+  const [drawEnabled, setDrawEnabled] = useState<boolean>(false)
+  const [modeId, setModeId] = useState<string | null>(null)
+  const [hint, setHint] = useState<string | null>(null)
+  const [data, setData] = useState<GeoJSON.Feature<LineString> | null>(null)
+  const [voie, setVoie] = useState<Voie | null>(null)
+
+  const enableDraw = useCallback((voie: Voie) => {
     setVoie(voie)
     setDrawEnabled(true)
   }, [])
@@ -46,7 +60,9 @@ export function DrawContextProvider(props) {
   const value = useMemo(() => ({
     drawEnabled,
     enableDraw,
-    disableDraw: () => setDrawEnabled(false),
+    disableDraw: () => {
+      setDrawEnabled(false)
+    },
     modeId,
     setModeId,
     hint,

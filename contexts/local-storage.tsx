@@ -2,6 +2,7 @@ import React, {useCallback, useMemo} from 'react'
 
 import {useLocalStorage} from '@/hooks/local-storage'
 import {BasesLocalesService} from '@/lib/openapi'
+import {ChildrenProps} from '@/types/context'
 
 interface LocalStorageContextType {
   balAccess: Record<string, string>;
@@ -31,11 +32,7 @@ const CERTIFICATION_AUTO_KEY = 'certificationAutoAlert'
 const VISIBILITY_KEY = 'hidden-bal'
 const USER_SETTINGS = 'user-settings'
 
-interface LocalStorageContextProviderProps {
-  children: React.ReactNode;
-}
-
-export function LocalStorageContextProvider(props: LocalStorageContextProviderProps) {
+export function LocalStorageContextProvider(props: ChildrenProps) {
   const [balAccess, , getBalToken, addBalAccess, removeBalAccess] = useLocalStorage(STORAGE_KEY) // Do not assign a default value
   const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY)
   const [recoveryEmailSent, setRecoveryEmailSent] = useLocalStorage(RECOVERY_EMAIL)

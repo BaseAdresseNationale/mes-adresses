@@ -24,7 +24,7 @@ export type { ExtentedToponymeDTO } from './models/ExtentedToponymeDTO';
 export type { FeaturePoint } from './models/FeaturePoint';
 export type { HabilitationDTO } from './models/HabilitationDTO';
 export type { ImportFileBaseLocaleDTO } from './models/ImportFileBaseLocaleDTO';
-export type { LineString } from './models/LineString';
+export { LineString } from './models/LineString';
 export type { Numero } from './models/Numero';
 export type { NumeroPopulate } from './models/NumeroPopulate';
 export type { ObjectId } from './models/ObjectId';
