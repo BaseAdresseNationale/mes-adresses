@@ -2,29 +2,43 @@ import React, {useState, useCallback, useEffect, useContext, useMemo} from 'reac
 import PropTypes from 'prop-types'
 import Router from 'next/router'
 
-import {getBaseLocale} from '@/lib/bal-api'
-
 import LocalStorageContext from '@/contexts/local-storage'
 import OpenAPIConfigContext from '@/contexts/open-api-config'
+import {BasesLocalesService} from '@/lib/openapi'
 
-const TokenContext = React.createContext()
+interface TokenContextType {
+  token: string | null;
+  emails: string[] | null;
+  tokenIsChecking: boolean;
+  reloadEmails: () => Promise<void>;
+}
 
-export function TokenContextProvider({balId, _token, ...props}) {
+const TokenContext = React.createContext<TokenContextType | null>(null)
+
+interface TokenContextProviderProps {
+  balId: string | null;
+  _token: string | null;
+  children: React.ReactNode;
+}
+
+export function TokenContextProvider({balId, _token, ...props}: TokenContextProviderProps) {
   const {getBalToken, addBalAccess} = useContext(LocalStorageContext)
   const setOpenAPIConfig = useContext(OpenAPIConfigContext)
 
-  const [tokenIsChecking, setTokenIsChecking] = useState(false)
-  const [token, setToken] = useState(null)
-  const [emails, setEmails] = useState(null)
+  const [tokenIsChecking, setTokenIsChecking] = useState<boolean>(false)
+  const [token, setToken] = useState<string>(null)
+  const [emails, setEmails] = useState<string[]>(null)
 
-  const verify = useCallback(async token => {
-    const baseLocale = await getBaseLocale(balId, token)
+  const verify = useCallback(async (token: string) => {
+    setOpenAPIConfig({TOKEN: token})
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId)
 
     if (baseLocale.token) {
       setToken(baseLocale.token)
       setEmails(baseLocale.emails)
       setOpenAPIConfig({TOKEN: baseLocale.token})
     } else {
+      setOpenAPIConfig({TOKEN: null})
       setToken(null)
     }
 
@@ -36,15 +50,17 @@ export function TokenContextProvider({balId, _token, ...props}) {
       setTokenIsChecking(true)
       if (_token) {
         addBalAccess(balId, _token)
-        Router.push(`/bal/${balId}`)
+        void Router.push(`/bal/${balId}`)
       } else {
-        verify(getBalToken(balId))
+        const token: string = getBalToken(balId)
+        void verify(token)
       }
     }
   }, [verify, balId, _token, addBalAccess, getBalToken])
 
   const reloadEmails = useCallback(async () => {
-    verify(getBalToken(balId))
+    const token: string = getBalToken(balId)
+    await verify(token)
   }, [verify, balId, getBalToken])
 
   const value = useMemo(() => ({

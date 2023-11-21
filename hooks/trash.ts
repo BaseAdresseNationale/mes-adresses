@@ -1,4 +1,3 @@
-
 import {useCallback, useContext, useState} from 'react'
 
 import {BasesLocalesService, DeleteBatchNumeroDTO, PopulateVoie, RestoreVoieDTO, Toponyme, ToponymesService, VoiesService} from '@/lib/openapi'

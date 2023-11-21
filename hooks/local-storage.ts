@@ -1,7 +1,15 @@
 import {useState, useEffect, useCallback} from 'react'
 
-export function useLocalStorage(key, value) {
-  const [data, setData] = useState()
+type UseLocalStorageType = [
+  data: any,
+  storeData: (value: any) => void,
+  getIndex: (index: string) => any,
+  addIndex: (index: string, value: any) => void,
+  removeIndex: (index: string) => void
+]
+
+export function useLocalStorage(key: string, value: any = undefined): UseLocalStorageType {
+  const [data, setData] = useState<any>()
 
   // Initializes with data already stored if none is provided
   useEffect(() => {
@@ -13,7 +21,7 @@ export function useLocalStorage(key, value) {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const storeData = useCallback(value => {
+  const storeData = useCallback((value: any) => {
     localStorage.setItem(key, JSON.stringify(value))
     setData(value)
   }, [key, setData])
@@ -26,9 +34,9 @@ export function useLocalStorage(key, value) {
       storeData(null)
       return null
     }
-  }, [])
+  }, [key, storeData])
 
-  const getIndex = useCallback(index => {
+  const getIndex = useCallback((index: string | number) => {
     const data = getData()
 
     return data ? data[index] : null
@@ -43,8 +51,9 @@ export function useLocalStorage(key, value) {
     })
   }, [getData, storeData])
 
-  const removeIndex = useCallback(index => {
+  const removeIndex = useCallback((index: string | number) => {
     const data = getData()
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete data[index]
 
     storeData(data)
