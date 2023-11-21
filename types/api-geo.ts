@@ -7,4 +7,4 @@ export type APIGeoCommuneType = {
   nom: string;
   population: number;
   siren: string;
-}
+};
