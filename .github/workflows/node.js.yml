@@ -2,13 +2,21 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+
+env:
+  NEXT_PUBLIC_EDITEUR_URL: https://mes-adresses.data.gouv.fr
+  NEXT_PUBLIC_BAL_API_URL: https://api-bal.adresse.data.gouv.fr/v1
+  NEXT_PUBLIC_MES_ADRESSES_API_URL: https://api-bal.adresse.data.gouv.fr/
+  NEXT_PUBLIC_GEO_API_URL: https://geo.api.gouv.fr
+  NEXT_PUBLIC_ADRESSE_URL: https://adresse.data.gouv.fr
+  NEXT_PUBLIC_API_BAN_URL: https://plateforme.adresse.data.gouv.fr
+  NEXT_PUBLIC_BAN_API_DEPOT: https://plateforme-bal.adresse.data.gouv.fr/api-depot
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,11 +24,11 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn
-    - run: yarn lint
-    - run: yarn build
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn
+      - run: yarn lint
+      - run: yarn build
