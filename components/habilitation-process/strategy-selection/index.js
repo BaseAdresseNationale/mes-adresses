@@ -5,7 +5,7 @@ import {Pane, Strong, Alert, Text, Heading, PeopleIcon, TimeIcon, LogInIcon, Uno
 import FranceConnect from '@/components/habilitation-process/strategy-selection/france-connect'
 import CodeEmail from '@/components/habilitation-process/strategy-selection/code-email'
 
-const StrategySelection = React.memo(({franceconnectAuthenticationUrl, emailCommune, handleStrategy}) => {
+const StrategySelection = React.memo(function StrategySelection({franceconnectAuthenticationUrl, emailCommune, handleStrategy}) {
   const [hovered, setHovered] = useState()
 
   return (
