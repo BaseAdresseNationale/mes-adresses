@@ -4,8 +4,6 @@
 
 Il est disponible en ligne à l'adresse [mes-adresses.data.gouv.fr](https://mes-adresses.data.gouv.fr).
 
-[![XO code style](https://badgen.net/badge/code%20style/XO/cyan)](https://github.com/xojs/xo)
-
 ## Guide
 
 https://adresse.data.gouv.fr/data/docs/guide-mes-adresses-v4.0.pdf
