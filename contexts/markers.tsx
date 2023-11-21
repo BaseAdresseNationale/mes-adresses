@@ -2,13 +2,34 @@ import React, {useState, useCallback, useContext, useMemo} from 'react'
 import {uniqueId} from 'lodash'
 
 import MapContext from '@/contexts/map'
+import {Position} from '@/lib/openapi'
+import {ChildrenProps} from '@/types/context'
 
-const MarkersContext = React.createContext()
+interface Marker {
+  _id?: string;
+  type?: Position.type;
+  latitude?: number;
+  longitude?: number;
+}
 
-export function MarkersContextProvider(props) {
-  const [markers, setMarkers] = useState([])
-  const [overrideText, setOverrideText] = useState(null)
-  const [suggestedNumero, setSuggestedNumero] = useState(null)
+interface MarkersContextType {
+  markers: Marker[];
+  addMarker: (value: Partial<Marker>) => void;
+  removeMarker: (id: string) => void;
+  updateMarker: (id: string, value: Partial<Marker>) => void;
+  overrideText: string | null;
+  setOverrideText: (value: string) => void;
+  disableMarkers: () => void;
+  suggestedNumero: number | null;
+  setSuggestedNumero: (value: number) => void;
+}
+
+const MarkersContext = React.createContext<MarkersContextType | null>(null)
+
+export function MarkersContextProvider(props: ChildrenProps) {
+  const [markers, setMarkers] = useState<Marker[]>([])
+  const [overrideText, setOverrideText] = useState<string | null>(null)
+  const [suggestedNumero, setSuggestedNumero] = useState<number | null>(null)
 
   const {viewport} = useContext(MapContext)
 
@@ -18,8 +39,8 @@ export function MarkersContextProvider(props) {
     setSuggestedNumero(null)
   }, [])
 
-  const addMarker = useCallback(data => {
-    let marker = {...data}
+  const addMarker = useCallback((data: Partial<Marker>) => {
+    let marker: Marker = {...data}
     setMarkers(prevMarkers => {
       if (!marker.latitude || !marker.longitude) {
         const {latitude, longitude} = viewport
@@ -30,14 +51,14 @@ export function MarkersContextProvider(props) {
     })
   }, [viewport])
 
-  const removeMarker = useCallback(markerId => {
+  const removeMarker = useCallback((markerId: string) => {
     setMarkers(prevMarkers => {
       const filtre = prevMarkers.filter(marker => marker._id !== markerId)
       return filtre
     })
   }, [])
 
-  const updateMarker = useCallback((markerId, data) => {
+  const updateMarker = useCallback((markerId: string, data: Partial<Marker>) => {
     setMarkers(markers => {
       return markers.map(marker => {
         if (marker._id === markerId) {
@@ -51,11 +72,10 @@ export function MarkersContextProvider(props) {
 
   const value = useMemo(() => ({
     markers,
-    overrideText,
-    setMarkers,
     addMarker,
     removeMarker,
     updateMarker,
+    overrideText,
     setOverrideText,
     disableMarkers,
     suggestedNumero,
@@ -67,7 +87,7 @@ export function MarkersContextProvider(props) {
     removeMarker,
     updateMarker,
     disableMarkers,
-    suggestedNumero,
+    suggestedNumero
   ])
 
   return (

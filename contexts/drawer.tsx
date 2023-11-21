@@ -1,3 +1,4 @@
+import {ChildrenProps} from '@/types/context'
 import React, {useState, useMemo} from 'react'
 
 enum DrawerDisplayedEnum {
@@ -14,7 +15,7 @@ interface DrawerContextType {
 
 const DrawerContext = React.createContext<DrawerContextType | null>(null)
 
-export function DrawerContextProvider(props) {
+export function DrawerContextProvider(props: ChildrenProps) {
   const [drawerDisplayed, setDrawerDisplayed] = useState<DrawerDisplayedEnum>(DrawerDisplayedEnum.NONE)
 
   const value = useMemo(() => ({

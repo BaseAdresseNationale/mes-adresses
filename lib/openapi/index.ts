@@ -31,7 +31,7 @@ export type { ObjectId } from './models/ObjectId';
 export type { PageBaseLocaleDTO } from './models/PageBaseLocaleDTO';
 export type { Point } from './models/Point';
 export { PopulateVoie } from './models/PopulateVoie';
-export type { Position } from './models/Position';
+export { Position } from './models/Position';
 export type { RecoverBaseLocaleDTO } from './models/RecoverBaseLocaleDTO';
 export type { RestoreVoieDTO } from './models/RestoreVoieDTO';
 export { Sync } from './models/Sync';
