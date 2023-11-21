@@ -1,0 +1,32 @@
+import React, {useState, useMemo} from 'react'
+
+enum DrawerDisplayedEnum {
+  NONE = '',
+  DOWNLOADS = 'downloads',
+  SETTING = 'setting',
+  TRASH = 'trash'
+}
+
+interface DrawerContextType {
+  drawerDisplayed: DrawerDisplayedEnum;
+  setDrawerDisplayed: (value: DrawerDisplayedEnum) => void;
+}
+
+const DrawerContext = React.createContext<DrawerContextType | null>(null)
+
+export function DrawerContextProvider(props) {
+  const [drawerDisplayed, setDrawerDisplayed] = useState<DrawerDisplayedEnum>(DrawerDisplayedEnum.NONE)
+
+  const value = useMemo(() => ({
+    drawerDisplayed,
+    setDrawerDisplayed
+  }), [drawerDisplayed])
+
+  return (
+    <DrawerContext.Provider value={value} {...props} />
+  )
+}
+
+export const DrawerContextConsumer = DrawerContext.Consumer
+
+export default DrawerContext
