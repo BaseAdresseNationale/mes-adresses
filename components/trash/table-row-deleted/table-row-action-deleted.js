@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Table, Popover, Menu, Position, IconButton, MoreIcon} from 'evergreen-ui'
 
-const TableRowActions = React.memo(({actions}) => {
+const TableRowActions = React.memo(function TableRowActions({actions}) {
   return (
     <Table.TextCell flex='0 1 1'>
       <Popover

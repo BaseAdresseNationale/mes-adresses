@@ -30,7 +30,7 @@ const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort())
 }
 
-const BALSettingsForm = React.memo(({baseLocale}) => {
+const BALSettingsForm = React.memo(function BALSettingsForm({baseLocale}) {
   const {token, emails, reloadEmails} = useContext(TokenContext)
   const {reloadBaseLocale} = useContext(BalDataContext)
 
