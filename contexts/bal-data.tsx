@@ -1,81 +1,117 @@
 import React, {useState, useMemo, useCallback, useEffect, useContext} from 'react'
-import PropTypes from 'prop-types'
 import {union} from 'lodash'
 import {toaster} from 'evergreen-ui'
 
-import {
-  getParcelles,
-  getNumeros,
-  getVoies,
-  getBaseLocale,
-  getToponymes,
-  getNumerosToponyme,
-  certifyBAL
-} from '@/lib/bal-api'
-
+import {BaseLocale, HabilitationDTO, Numero, Toponyme, Voie, BasesLocalesService, VoiesService, ToponymesService, Sync, UpdateBatchNumeroDTO} from '@/lib/openapi'
 import TokenContext from '@/contexts/token'
-
 import useHabilitation from '@/hooks/habilitation'
 
-const BalDataContext = React.createContext()
+interface BALDataContextType {
+  isEditing: boolean;
+  setIsEditing: (isEditing: boolean) => void;
+  editingId: string | null;
+  setEditingId: (isEditing: string | null) => void;
+  editingItem: Voie | Toponyme | Numero;
+  baseLocale: BaseLocale;
+  reloadBaseLocale: () => void;
+  habilitation: HabilitationDTO;
+  reloadHabilitation: () => Promise<void>;
+  isHabilitationValid: boolean;
+  parcelles: Array<Toponyme | Numero>;
+  reloadParcelles: () => Promise<void>;
+  voie: Voie;
+  setVoie: (voie: Voie) => void;
+  toponyme: Toponyme;
+  setToponyme: (Toponyme: Toponyme) => void;
+  numeros: Numero[];
+  reloadNumeros: () => Promise<void>;
+  voies: Voie[];
+  reloadVoies: () => Promise<void>;
+  toponymes: Toponyme[];
+  reloadToponymes: () => Promise<void>;
+  isRefrehSyncStat: boolean;
+  refreshBALSync: () => Promise<void>;
+  certifyAllNumeros: () => Promise<void>;
+  habilitationIsLoading: boolean;
+  isHabilitationProcessDisplayed: boolean;
+  setIsHabilitationProcessDisplayed: (isHabilitationProcessDisplayed: boolean) => void;
+}
+
+const BalDataContext = React.createContext<BALDataContextType | null>(null)
+
+interface BalDataContextProviderProps {
+  initialBaseLocale: BaseLocale;
+  initialVoie: Voie;
+  initialToponyme: Toponyme;
+  initialVoies: Voie[];
+  initialToponymes: Toponyme[];
+  initialNumeros: Numero[];
+  children: React.ReactNode;
+}
 
 export function BalDataContextProvider({
-  initialBaseLocale, initialVoie, initialToponyme, initialVoies, initialToponymes, initialNumeros, ...props
-}) {
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingId, _setEditingId] = useState(null)
-  const [parcelles, setParcelles] = useState([])
-  const [numeros, setNumeros] = useState(initialNumeros)
-  const [voies, setVoies] = useState(initialVoies)
-  const [toponymes, setToponymes] = useState(initialToponymes)
-  const [voie, setVoie] = useState(initialVoie)
-  const [toponyme, setToponyme] = useState(initialToponyme)
-  const [baseLocale, setBaseLocale] = useState(initialBaseLocale)
-  const [isRefrehSyncStat, setIsRefrehSyncStat] = useState(false)
+  initialBaseLocale,
+  initialVoie,
+  initialToponyme,
+  initialVoies,
+  initialToponymes,
+  initialNumeros,
+  ...props
+}: BalDataContextProviderProps) {
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [editingId, _setEditingId] = useState<string>(null)
+  const [parcelles, setParcelles] = useState<Array<Numero | Toponyme>>([])
+  const [numeros, setNumeros] = useState<Numero[]>(initialNumeros)
+  const [voies, setVoies] = useState<Voie[]>(initialVoies)
+  const [toponymes, setToponymes] = useState<Toponyme[]>(initialToponymes)
+  const [voie, setVoie] = useState<Voie>(initialVoie)
+  const [toponyme, setToponyme] = useState<Toponyme>(initialToponyme)
+  const [baseLocale, setBaseLocale] = useState<BaseLocale>(initialBaseLocale)
+  const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false)
 
   const {token} = useContext(TokenContext)
 
   const [habilitation, reloadHabilitation, isHabilitationValid, habilitationIsLoading, isHabilitationProcessDisplayed, setIsHabilitationProcessDisplayed] = useHabilitation(initialBaseLocale, token)
 
   const reloadParcelles = useCallback(async () => {
-    const parcelles = await getParcelles(baseLocale._id)
+    const parcelles: Array<Toponyme | Numero> = await BasesLocalesService.findBaseLocaleParcelles(baseLocale._id as string)
     setParcelles(parcelles)
   }, [baseLocale._id])
 
   const reloadVoies = useCallback(async () => {
-    const voies = await getVoies(baseLocale._id)
+    const voies: Voie[] = await BasesLocalesService.findBaseLocaleVoies(baseLocale._id as string)
     setVoies(voies)
   }, [baseLocale._id])
 
   const reloadToponymes = useCallback(async () => {
-    const toponymes = await getToponymes(baseLocale._id)
+    const toponymes: Toponyme[] = await BasesLocalesService.findBaseLocaleToponymes(baseLocale._id as string)
     setToponymes(toponymes)
   }, [baseLocale._id])
 
   const reloadNumeros = useCallback(async () => {
-    let numeros
+    let numeros: Numero[]
     if (voie) {
-      numeros = await getNumeros(voie._id, token)
+      numeros = await VoiesService.findVoieNumeros(voie._id as string)
     } else if (toponyme) {
-      numeros = await getNumerosToponyme(toponyme._id, token)
+      numeros = await ToponymesService.findToponymeNumeros(toponyme._id as string)
     }
 
     if (numeros) {
       setNumeros(numeros)
     }
-  }, [voie, toponyme, token])
+  }, [voie, toponyme])
 
   const reloadBaseLocale = useCallback(async () => {
-    const bal = await getBaseLocale(baseLocale._id)
+    const bal = await BasesLocalesService.findBaseLocale(baseLocale._id as string)
     setBaseLocale(bal)
   }, [baseLocale._id])
 
   const refreshBALSync = useCallback(async () => {
-    const {sync} = baseLocale
+    const {sync}: {sync: Sync} = baseLocale
     if (isHabilitationValid && sync && sync.status === 'synced' && !sync.isPaused && !isRefrehSyncStat) {
       setIsRefrehSyncStat(true)
-      setTimeout(() => {
-        reloadBaseLocale()
+      setTimeout(async () => {
+        await reloadBaseLocale()
         setIsRefrehSyncStat(false)
         toaster.notify('De nouvelles modifications ont été détectées', {
           description: 'Elles seront automatiquement transmises dans la Base Adresses Nationale d’ici quelques heures.',
@@ -85,7 +121,7 @@ export function BalDataContextProvider({
     }
   }, [baseLocale, isHabilitationValid, isRefrehSyncStat, reloadBaseLocale])
 
-  const setEditingId = useCallback(editingId => {
+  const setEditingId = useCallback((editingId: string) => {
     if (token) {
       _setEditingId(editingId)
       setIsEditing(Boolean(editingId))
@@ -107,16 +143,21 @@ export function BalDataContextProvider({
   }, [editingId, numeros, voie, toponyme, voies, toponymes])
 
   const certifyAllNumeros = useCallback(async () => {
-    await certifyBAL(baseLocale._id, token, {certifie: true})
+    const updateBatchNumeroDTO: UpdateBatchNumeroDTO = {
+      numerosIds: [],
+      changes: {
+        certifie: true
+      }
+    }
+    await BasesLocalesService.updateNumeros(baseLocale._id as string, updateBatchNumeroDTO)
     await reloadNumeros()
     await reloadVoies()
     await reloadToponymes()
     await reloadBaseLocale()
 
-    refreshBALSync()
-  }, [baseLocale._id, token, reloadNumeros, reloadVoies, reloadToponymes, reloadBaseLocale, refreshBALSync])
+    await refreshBALSync()
+  }, [baseLocale._id, reloadNumeros, reloadVoies, reloadToponymes, reloadBaseLocale, refreshBALSync])
 
-  // Update states on client side load
   useEffect(() => {
     setVoie(initialVoie)
   }, [initialVoie])
@@ -140,8 +181,10 @@ export function BalDataContextProvider({
   }, [initialNumeros])
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     reloadParcelles()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const value = useMemo(() => ({
     isEditing,
@@ -205,28 +248,9 @@ export function BalDataContextProvider({
     setIsHabilitationProcessDisplayed
   ])
 
-  return (
-    <BalDataContext.Provider value={value} {...props} />
-  )
+  return <BalDataContext.Provider value={value} {...props} />
 }
 
-BalDataContextProvider.propTypes = {
-  initialBaseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired
-  }).isRequired,
-  initialVoie: PropTypes.object,
-  initialToponyme: PropTypes.object,
-  initialVoies: PropTypes.array,
-  initialToponymes: PropTypes.array,
-  initialNumeros: PropTypes.array
-}
-
-BalDataContextProvider.defaultProps = {
-  initialVoie: null,
-  initialToponyme: null,
-  initialVoies: null,
-  initialToponymes: null,
-  initialNumeros: null
-}
+export const BalDataContextConsumer = BalDataContext.Consumer
 
 export default BalDataContext

@@ -22,6 +22,7 @@ export { ExtendedBaseLocaleDTO } from './models/ExtendedBaseLocaleDTO';
 export { ExtendedVoieDTO } from './models/ExtendedVoieDTO';
 export type { ExtentedToponymeDTO } from './models/ExtentedToponymeDTO';
 export type { FeaturePoint } from './models/FeaturePoint';
+export type { HabilitationDTO } from './models/HabilitationDTO';
 export type { ImportFileBaseLocaleDTO } from './models/ImportFileBaseLocaleDTO';
 export type { LineString } from './models/LineString';
 export type { Numero } from './models/Numero';

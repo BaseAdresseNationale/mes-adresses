@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { HabilitationDTO } from '../models/HabilitationDTO';
 import type { ValidatePinCodeDTO } from '../models/ValidatePinCodeDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -13,12 +14,12 @@ export class HabilitationService {
     /**
      * Find habiliation
      * @param baseLocaleId
-     * @returns any
+     * @returns HabilitationDTO
      * @throws ApiError
      */
     public static findHabilitation(
         baseLocaleId: string,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<HabilitationDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}/habilitation',
@@ -31,12 +32,12 @@ export class HabilitationService {
     /**
      * Create habiliation
      * @param baseLocaleId
-     * @returns any
+     * @returns HabilitationDTO
      * @throws ApiError
      */
     public static createHabilitation(
         baseLocaleId: string,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<HabilitationDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/habilitation',

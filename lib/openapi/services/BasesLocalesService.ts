@@ -333,7 +333,7 @@ export class BasesLocalesService {
      */
     public static findAllDeleted(
         baseLocaleId: string,
-    ): CancelablePromise<Array<AllDeletedInBalDTO>> {
+    ): CancelablePromise<AllDeletedInBalDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}/all/deleted',

@@ -4,6 +4,6 @@
 /* eslint-disable */
 
 export type RestoreVoieDTO = {
-    numerosIds: Array<any[]> | null;
+    numerosIds: Array<string> | null;
 };
 
