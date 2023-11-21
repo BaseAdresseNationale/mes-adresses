@@ -9,13 +9,13 @@ function isEmail(email) {
   return regexp.test(String(email).toLowerCase())
 }
 
-const AnnuaireServicePublic = React.memo(() => (
+const AnnuaireServicePublic = React.memo(function AnnuaireServicePublic () {
   <OrderedList>
     <ListItem>Rendez vous sur <Link href='https://lannuaire.service-public.fr/'>lannuaire.service-public.fr</Link></ListItem>
     <ListItem>Consultez la fiche annuaire de votre commune</ListItem>
     <ListItem>Cliquer sur le lien «Demander une mise à jour de cette page», visible en bas de page</ListItem>
   </OrderedList>
-))
+})
 
 function CodeEmail({emailCommune, handleStrategy}) {
   const isValidEmail = isEmail(emailCommune)

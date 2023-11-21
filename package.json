@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "start": "next start",
-    "lint": "eslint --ext .ts,.tsx .",
+    "lint": "eslint --ext .js,.ts,.tsx .",
     "build": "yarn build-available-flags && next build",
     "analyze": "ANALYZE=true next build",
     "build-available-flags": "node scripts/build-available-flags",
