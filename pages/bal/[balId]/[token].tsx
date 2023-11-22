@@ -5,7 +5,7 @@ export async function getServerSideProps({params}) {
   const {balId, token} = params
 
   try {
-    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId as string)
+    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId)
 
     return {
       props: {

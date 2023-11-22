@@ -174,7 +174,7 @@ function ToponymePage({baseLocale, commune}: ToponymePageProps) {
 export async function getServerSideProps({params}) {
   const {idToponyme, balId} = params
   try {
-    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId as string)
+    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId)
     const toponyme = await getToponyme(idToponyme)
     const numeros = await getNumerosToponyme(toponyme._id)
 

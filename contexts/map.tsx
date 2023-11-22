@@ -48,7 +48,7 @@ export function MapContextProvider(props: ChildrenProps) {
   const {baseLocale} = useContext(BalContext)
   const {userSettings} = useContext(LocalStorageContext)
 
-  const balTilesUrl = `${BAL_API_URL}/bases-locales/${baseLocale._id as string}/tiles/{z}/{x}/{y}.pbf${userSettings?.colorblindMode ? '?colorblindMode=true' : ''}`
+  const balTilesUrl = `${BAL_API_URL}/bases-locales/${baseLocale._id}/tiles/{z}/{x}/{y}.pbf${userSettings?.colorblindMode ? '?colorblindMode=true' : ''}`
 
   useEffect(() => {
     map?.on('load', () => {

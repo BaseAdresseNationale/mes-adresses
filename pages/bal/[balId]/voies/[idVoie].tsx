@@ -65,7 +65,7 @@ function VoiePage({commune}: VoiePageProps) {
 export async function getServerSideProps({params}) {
   const {idVoie, balId} = params
   try {
-    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId as string)
+    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId)
     const voie = await getVoie(idVoie)
     const numeros = await getNumeros(voie._id)
 

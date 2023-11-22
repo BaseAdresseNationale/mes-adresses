@@ -22,7 +22,7 @@ export default function useFormState() {
   // Open form when numero is selected from map
   useEffect(() => {
     if (editingId && numeros.map(({_id}) => _id).includes(editingId)) {
-      handleEditing(editingId as string)
+      handleEditing(editingId)
     }
     // HandleEditing has been removed from the list
     // to avoid being retriggered by `numeros` update when form is sumbitted

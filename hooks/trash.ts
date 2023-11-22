@@ -29,13 +29,13 @@ function useTrash(): UseTrashType {
   const [toponymesDeleted, setToponymesDeleted] = useState<Toponyme[]>([])
 
   const reloadAllDeleted = useCallback(async () => {
-    const {toponymes, voies} = await BasesLocalesService.findAllDeleted(baseLocale._id as string)
+    const {toponymes, voies} = await BasesLocalesService.findAllDeleted(baseLocale._id)
     setToponymesDeleted(toponymes)
     setVoiesDeleted(voies)
   }, [baseLocale._id])
 
   const onRemoveVoie = useCallback(async (voie: PopulateVoie) => {
-    await VoiesService.deleteVoie(voie._id as string)
+    await VoiesService.deleteVoie(voie._id)
     await reloadAllDeleted()
   }, [reloadAllDeleted])
 
@@ -43,7 +43,7 @@ function useTrash(): UseTrashType {
     const restoreVoieDTO: RestoreVoieDTO = {
       numerosIds: selectedNumerosIds
     }
-    const res = await VoiesService.restoreVoie(voie._id as string, restoreVoieDTO)
+    const res = await VoiesService.restoreVoie(voie._id, restoreVoieDTO)
     if (res) {
       await reloadVoies()
       await reloadNumeros()
@@ -58,17 +58,17 @@ function useTrash(): UseTrashType {
     const deleteBatchNumeroDTO: DeleteBatchNumeroDTO = {
       numerosIds: voie.numeros.map(({_id}) => String(_id))
     }
-    await BasesLocalesService.deleteNumeros(baseLocale._id as string, deleteBatchNumeroDTO)
+    await BasesLocalesService.deleteNumeros(baseLocale._id, deleteBatchNumeroDTO)
     await reloadAllDeleted()
   }, [baseLocale._id, reloadAllDeleted])
 
   const onRemoveToponyme = useCallback(async (toponyme: Toponyme) => {
-    await ToponymesService.deleteToponyme(toponyme._id as string)
+    await ToponymesService.deleteToponyme(toponyme._id)
     await reloadAllDeleted()
   }, [reloadAllDeleted])
 
   const onRestoreToponyme = useCallback(async (toponyme: Toponyme) => {
-    const res = await ToponymesService.restoreToponyme(toponyme._id as string)
+    const res = await ToponymesService.restoreToponyme(toponyme._id)
 
     if (res) {
       await reloadParcelles()

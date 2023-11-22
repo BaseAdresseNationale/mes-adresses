@@ -87,7 +87,7 @@ function NumerosList({token = null, voieId, numeros, handleEditing}: NumerosList
     if (isAllSelected) {
       setSelectedNumerosIds([])
     } else {
-      setSelectedNumerosIds(filtered.map(({_id}: NumeroType) => _id) as string[])
+      setSelectedNumerosIds(filtered.map(({_id}: NumeroType) => _id))
     }
   }
 
