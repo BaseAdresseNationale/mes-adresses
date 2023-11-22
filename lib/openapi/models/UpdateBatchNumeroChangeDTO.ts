@@ -3,12 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ObjectId } from './ObjectId';
-
 export type UpdateBatchNumeroChangeDTO = {
     comment?: string | null;
-    toponyme?: ObjectId | null;
-    voie?: ObjectId;
+    toponyme?: string | null;
+    voie?: string;
     positionType?: Record<string, any>;
     certifie?: boolean;
 };

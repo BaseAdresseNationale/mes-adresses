@@ -27,7 +27,6 @@ export type { ImportFileBaseLocaleDTO } from './models/ImportFileBaseLocaleDTO';
 export { LineString } from './models/LineString';
 export type { Numero } from './models/Numero';
 export type { NumeroPopulate } from './models/NumeroPopulate';
-export type { ObjectId } from './models/ObjectId';
 export type { PageBaseLocaleDTO } from './models/PageBaseLocaleDTO';
 export type { Point } from './models/Point';
 export { PopulateVoie } from './models/PopulateVoie';

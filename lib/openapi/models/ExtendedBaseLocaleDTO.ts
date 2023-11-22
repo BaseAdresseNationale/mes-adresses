@@ -3,11 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ObjectId } from './ObjectId';
 import type { Sync } from './Sync';
 
 export type ExtendedBaseLocaleDTO = {
-    _id: ObjectId;
+    _id: string;
     _created: string;
     _updated: string;
     _deleted: string;

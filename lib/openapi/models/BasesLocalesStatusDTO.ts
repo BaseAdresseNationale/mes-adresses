@@ -3,10 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ObjectId } from './ObjectId';
-
 export type BasesLocalesStatusDTO = {
-    status: ObjectId;
+    status: string;
     count: number;
 };
 

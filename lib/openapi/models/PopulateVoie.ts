@@ -6,14 +6,13 @@
 import type { FeaturePoint } from './FeaturePoint';
 import type { LineString } from './LineString';
 import type { Numero } from './Numero';
-import type { ObjectId } from './ObjectId';
 
 export type PopulateVoie = {
-    _id: ObjectId;
+    _id: string;
     _created: string;
     _updated: string;
     _deleted: string;
-    _bal: ObjectId;
+    _bal: string;
     nom: string;
     commune: string;
     nomAlt: Record<string, any>;

@@ -3,15 +3,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ObjectId } from './ObjectId';
 import type { Position } from './Position';
 
 export type Toponyme = {
-    _id: ObjectId;
+    _id: string;
     _created: string;
     _updated: string;
     _deleted: string;
-    _bal: ObjectId;
+    _bal: string;
     nom: string;
     commune: string;
     nomAlt: Record<string, any>;
