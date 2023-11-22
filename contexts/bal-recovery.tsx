@@ -7,30 +7,39 @@ interface BALRecoveryContextType {
   setIsRecoveryDisplayed: (value: boolean) => void;
 }
 
-const BALRecoveryContext = React.createContext<BALRecoveryContextType | null>(null)
+const BALRecoveryContext = React.createContext<BALRecoveryContextType | null>(
+  null
+);
 
 interface BALRecoveryProviderProps extends ChildrenProps {
   balId: string;
 }
 
 export function BALRecoveryProvider({balId, ...props}: BALRecoveryProviderProps) {
-  const [isRecoveryDisplayed, setIsRecoveryDisplayed] = useState(false)
+  const [isRecoveryDisplayed, setIsRecoveryDisplayed] = useState(false);
 
-  const value = useMemo(() => ({
-    isRecoveryDisplayed,
-    setIsRecoveryDisplayed
-  }), [isRecoveryDisplayed])
+  const value = useMemo(
+    () => ({
+      isRecoveryDisplayed,
+      setIsRecoveryDisplayed,
+    }),
+    [isRecoveryDisplayed]
+  );
 
   return (
     <>
-      <RecoverBALAlert isShown={isRecoveryDisplayed} onClose={() => {
-        setIsRecoveryDisplayed(false)
-      }} baseLocaleId={balId} />
+      <RecoverBALAlert
+        isShown={isRecoveryDisplayed}
+        onClose={() => {
+          setIsRecoveryDisplayed(false);
+        }}
+        baseLocaleId={balId}
+      />
       <BALRecoveryContext.Provider value={value} {...props} />
     </>
-  )
+  );
 }
 
-export const BALRecoveryConsumer = BALRecoveryContext.Consumer
+export const BALRecoveryConsumer = BALRecoveryContext.Consumer;
 
-export default BALRecoveryContext
+export default BALRecoveryContext;

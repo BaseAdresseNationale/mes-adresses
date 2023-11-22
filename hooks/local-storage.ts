@@ -53,7 +53,6 @@ export function useLocalStorage(key: string, value: any = undefined): UseLocalSt
 
   const removeIndex = useCallback((index: string | number) => {
     const data = getData()
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete data[index]
 
     storeData(data)
