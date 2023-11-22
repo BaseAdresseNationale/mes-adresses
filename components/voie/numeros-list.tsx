@@ -14,13 +14,13 @@ import TableRow from '@/components/table-row'
 import DeleteWarning from '@/components/delete-warning'
 import GroupedActions from '@/components/grouped-actions'
 import InfiniteScrollList from '@/components/infinite-scroll-list'
-import {NumeroType} from '@/types/numero'
 import BALRecoveryContext from '@/contexts/bal-recovery'
+import { Numero, NumeroPopulate } from '@/lib/openapi'
 
 interface NumerosListProps {
   token?: string;
   voieId: string;
-  numeros: NumeroType[];
+  numeros: Array<Numero | NumeroPopulate>;
   handleEditing: (id?: string) => void;
 }
 
@@ -87,7 +87,7 @@ function NumerosList({token = null, voieId, numeros, handleEditing}: NumerosList
     if (isAllSelected) {
       setSelectedNumerosIds([])
     } else {
-      setSelectedNumerosIds(filtered.map(({_id}: NumeroType) => _id))
+      setSelectedNumerosIds(filtered.map(({_id}) => _id))
     }
   }
 
@@ -202,7 +202,7 @@ function NumerosList({token = null, voieId, numeros, handleEditing}: NumerosList
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {((numero: NumeroType) => (
+          {((numero: Numero | NumeroPopulate) => (
             <TableRow
               key={numero._id}
               label={numero.numeroComplet}

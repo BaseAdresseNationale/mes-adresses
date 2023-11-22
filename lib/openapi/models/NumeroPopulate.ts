@@ -13,6 +13,7 @@ export type NumeroPopulate = {
     _deleted: string;
     _bal: string;
     numero: number;
+    numeroComplet: string;
     commune: string;
     suffixe: string;
     comment: string;

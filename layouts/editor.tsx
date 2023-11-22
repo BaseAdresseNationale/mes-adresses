@@ -18,10 +18,10 @@ import DrawerContent from '@/components/drawer-content'
 import AddressEditor from '@/components/bal/address-editor'
 import DemoWarning from '@/components/demo-warning'
 import Overlay from '@/components/overlay'
-import {BaseLocaleStatus} from 'types/base-locale'
 import {getBaseLocale, getCommuneExtras, getToponymes, getVoies} from '@/lib/bal-api'
 import {getCommune} from '@/lib/geo-api'
 import {CommmuneType} from '@/types/commune'
+import { BaseLocale } from '@/lib/openapi'
 
 interface EditorProps {
   children: React.ReactNode;
@@ -34,7 +34,7 @@ function Editor({children, commune}: EditorProps) {
   const {tokenIsChecking} = useContext(TokenContext)
   const {baseLocale} = useContext(BalDataContext)
 
-  const isDemo = baseLocale.status === BaseLocaleStatus.DEMO
+  const isDemo = baseLocale.status === BaseLocale.status.DEMO
 
   const leftOffset = useMemo(() => {
     return isHidden ? 0 : 500

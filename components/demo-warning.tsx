@@ -7,10 +7,10 @@ import BalDataContext from '@/contexts/bal-data'
 
 import {useInput} from '@/hooks/input'
 import useFocus from '@/hooks/focus'
-import {BaseLocaleType} from '@/types/base-locale'
+import { ExtendedBaseLocaleDTO } from '@/lib/openapi'
 
 interface DemoWarningProps {
-  baseLocale: BaseLocaleType;
+  baseLocale: ExtendedBaseLocaleDTO;
   communeName: string;
 }
 

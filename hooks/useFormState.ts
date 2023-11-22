@@ -1,6 +1,7 @@
 import {useState, useCallback, useEffect, useContext} from 'react'
 
 import BalDataContext from '@/contexts/bal-data'
+import { Numero, NumeroPopulate } from '@/lib/openapi'
 
 export default function useFormState() {
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -9,7 +10,7 @@ export default function useFormState() {
   const {numeros, editingId} = useContext(BalDataContext)
 
   const handleEditing = useCallback((numeroId?: string) => {
-    const editedNumero = numeros.find(numero => numero._id === numeroId) || null
+    const editedNumero = numeros.find(({_id}) => _id === numeroId) || null
     setEditedINumero(editedNumero)
     setIsFormOpen(true)
   }, [numeros])

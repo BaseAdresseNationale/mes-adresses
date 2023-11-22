@@ -2,7 +2,7 @@ import React, {useState, useMemo, useCallback, useEffect, useContext} from 'reac
 import {union} from 'lodash'
 import {toaster} from 'evergreen-ui'
 
-import {BaseLocale, HabilitationDTO, Numero, Toponyme, Voie, BasesLocalesService, VoiesService, ToponymesService, Sync, UpdateBatchNumeroDTO, NumeroPopulate} from '@/lib/openapi'
+import {HabilitationDTO, Numero, Toponyme, Voie, BasesLocalesService, VoiesService, ToponymesService, Sync, UpdateBatchNumeroDTO, NumeroPopulate, ExtendedBaseLocaleDTO, ExtentedToponymeDTO, ExtendedVoieDTO} from '@/lib/openapi'
 import TokenContext from '@/contexts/token'
 import useHabilitation from '@/hooks/habilitation'
 import {ChildrenProps} from '@/types/context'
@@ -13,7 +13,7 @@ interface BALDataContextType {
   editingId: string | null;
   setEditingId: (isEditing: string | null) => void;
   editingItem: Voie | Toponyme | Numero;
-  baseLocale: BaseLocale;
+  baseLocale: ExtendedBaseLocaleDTO;
   reloadBaseLocale: () => void;
   habilitation: HabilitationDTO;
   reloadHabilitation: () => Promise<void>;
@@ -24,11 +24,11 @@ interface BALDataContextType {
   setVoie: (voie: Voie) => void;
   toponyme: Toponyme;
   setToponyme: (Toponyme: Toponyme) => void;
-  numeros: Numero[] | NumeroPopulate[];
+  numeros: Array<Numero | NumeroPopulate>;
   reloadNumeros: () => Promise<void>;
-  voies: Voie[];
+  voies: ExtendedVoieDTO[];
   reloadVoies: () => Promise<void>;
-  toponymes: Toponyme[];
+  toponymes: ExtentedToponymeDTO[];
   reloadToponymes: () => Promise<void>;
   isRefrehSyncStat: boolean;
   refreshBALSync: () => Promise<void>;
@@ -41,11 +41,11 @@ interface BALDataContextType {
 const BalDataContext = React.createContext<BALDataContextType | null>(null)
 
 interface BalDataContextProviderProps extends ChildrenProps {
-  initialBaseLocale: BaseLocale;
+  initialBaseLocale: ExtendedBaseLocaleDTO;
   initialVoie: Voie;
   initialToponyme: Toponyme;
-  initialVoies: Voie[];
-  initialToponymes: Toponyme[];
+  initialVoies: ExtendedVoieDTO[];
+  initialToponymes: ExtentedToponymeDTO[];
   initialNumeros: Numero[];
 }
 
@@ -61,12 +61,12 @@ export function BalDataContextProvider({
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [editingId, _setEditingId] = useState<string>(null)
   const [parcelles, setParcelles] = useState<Array<Numero | Toponyme>>([])
-  const [numeros, setNumeros] = useState<Numero[] | NumeroPopulate[]>(initialNumeros)
-  const [voies, setVoies] = useState<Voie[]>(initialVoies)
-  const [toponymes, setToponymes] = useState<Toponyme[]>(initialToponymes)
+  const [numeros, setNumeros] = useState<Array<Numero | NumeroPopulate>>(initialNumeros)
+  const [voies, setVoies] = useState<ExtendedVoieDTO[]>(initialVoies)
+  const [toponymes, setToponymes] = useState<ExtentedToponymeDTO[]>(initialToponymes)
   const [voie, setVoie] = useState<Voie>(initialVoie)
   const [toponyme, setToponyme] = useState<Toponyme>(initialToponyme)
-  const [baseLocale, setBaseLocale] = useState<BaseLocale>(initialBaseLocale)
+  const [baseLocale, setBaseLocale] = useState<ExtendedBaseLocaleDTO>(initialBaseLocale)
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false)
 
   const {token} = useContext(TokenContext)
@@ -79,12 +79,12 @@ export function BalDataContextProvider({
   }, [baseLocale._id])
 
   const reloadVoies = useCallback(async () => {
-    const voies: Voie[] = await BasesLocalesService.findBaseLocaleVoies(baseLocale._id)
+    const voies: ExtendedVoieDTO[] = await BasesLocalesService.findBaseLocaleVoies(baseLocale._id)
     setVoies(voies)
   }, [baseLocale._id])
 
   const reloadToponymes = useCallback(async () => {
-    const toponymes: Toponyme[] = await BasesLocalesService.findBaseLocaleToponymes(baseLocale._id)
+    const toponymes: ExtentedToponymeDTO[] = await BasesLocalesService.findBaseLocaleToponymes(baseLocale._id)
     setToponymes(toponymes)
   }, [baseLocale._id])
 
