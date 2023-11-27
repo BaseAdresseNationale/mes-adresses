@@ -8,14 +8,13 @@ import LocalStorageContext from '@/contexts/local-storage'
 import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 import CertificationCount from '@/components/certification-count'
 import HabilitationTag from '../habilitation-tag'
-import {HabilitationType} from '@/types/habilitation'
 import {APIGeoCommuneType} from '@/types/api-geo'
-import { ExtendedBaseLocaleDTO } from '@/lib/openapi'
+import { ExtendedBaseLocaleDTO, HabilitationDTO } from '@/lib/openapi'
 
 interface BaseLocaleCardContentProps {
   baseLocale: ExtendedBaseLocaleDTO;
   commune: APIGeoCommuneType;
-  habilitation: HabilitationType;
+  habilitation: HabilitationDTO;
   isAdmin: boolean;
   userEmail: string;
   onSelect: () => void;
@@ -34,8 +33,8 @@ function BaseLocaleCardContent({isAdmin, baseLocale, commune, habilitation, isSh
   }, [baseLocale._id, getBalToken])
 
   const createDate = format(new Date(_created), 'PPP', {locale: fr})
-  const isDeletable = status === 'draft' || status === 'demo'
-  const tooltipContent = status === 'ready-to-publish' ?
+  const isDeletable = status === ExtendedBaseLocaleDTO.status.DRAFT || status === ExtendedBaseLocaleDTO.status.DEMO
+  const tooltipContent = status === ExtendedBaseLocaleDTO.status.READY_TO_PUBLISH ?
     'Vous ne pouvez pas supprimer une Base Adresse Locale lorsqu’elle est prête à être publiée' :
     'Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr'
 

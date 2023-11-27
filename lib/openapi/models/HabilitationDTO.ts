@@ -3,16 +3,29 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { Strategy } from './Strategy';
+
 export type HabilitationDTO = {
     _id: string;
     codeCommune: string;
     emailCommune: string;
     franceconnectAuthenticationUrl: string;
-    strategy: Record<string, any>;
+    strategy: Strategy;
     client: string;
-    status: Record<string, any>;
+    status: HabilitationDTO.status;
     createdAt: string;
     updatedAt: string;
     expiresAt: string;
 };
+
+export namespace HabilitationDTO {
+
+    export enum status {
+        PENDING = 'pending',
+        ACCEPTED = 'accepted',
+        REJECTED = 'rejected',
+    }
+
+
+}
 
