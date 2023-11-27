@@ -23,6 +23,8 @@ const MAX_SIZE = 10 * 1024 * 1024
 
 const VALIDATEUR_LINK_TEXT = <Text>Pour obtenir un rapport détaillé des erreurs qui ont été détectées, consultez <a href={`${ADRESSE_URL}/bases-locales/validateur`} target='_blank' rel='noreferrer'>le validateur de Bases Adresses Locales <ShareIcon verticalAlign='middle' /></a>.</Text>
 
+const PROFILE_RELAX = 'relax';
+
 function getFileExtension(name) {
   const pos = name.lastIndexOf('.')
   if (pos > 0) {
@@ -75,7 +77,7 @@ function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, ha
       }
 
       // Detect multi communes
-      const validationReport = await validate(file, {profile: '1.3-relax'})
+      const validationReport = await validate(file, {profile: PROFILE_RELAX})
       const communes = extractCommuneFromCSV(validationReport.rows)
 
       if (communes[0]) {
