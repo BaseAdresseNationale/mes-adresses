@@ -1,10 +1,10 @@
 import React, {useState, useMemo, useCallback} from 'react'
 import {groupBy} from 'lodash'
 import {Heading, Table, EditIcon, Tooltip, CommentIcon, WarningSignIcon, Position} from 'evergreen-ui'
-import {NumeroType} from '@/types/numero'
+import { Numero } from '@/lib/openapi';
 
 interface ToponymeNumerosProps {
-  numeros: NumeroType[];
+  numeros: Numero[];
   handleSelect: (id: string) => void;
   isEditable: boolean;
 }
@@ -12,7 +12,7 @@ interface ToponymeNumerosProps {
 function ToponymeNumeros({numeros, handleSelect, isEditable}: ToponymeNumerosProps) {
   const [hovered, setHovered] = useState(null)
 
-  const numerosByVoie: Record<string, NumeroType[]> = useMemo(() => {
+  const numerosByVoie: Record<string, Numero[]> = useMemo(() => {
     return groupBy(numeros.sort((a, b) => a.numero - b.numero), d => d.voie.nom)
   }, [numeros])
 
@@ -35,7 +35,7 @@ function ToponymeNumeros({numeros, handleSelect, isEditable}: ToponymeNumerosPro
             </Table.TextCell>
           </Table.Cell>
 
-          {numerosByVoie[nomVoie].map(({_id, numero, suffixe, positions, comment}: NumeroType) => (
+          {numerosByVoie[nomVoie].map(({_id, numero, suffixe, positions, comment}: Numero) => (
             <Table.Row
               key={_id}
               style={{cursor: 'pointer', backgroundColor: hovered === _id ? '#E4E7EB' : '#f5f6f7'}}
