@@ -4,12 +4,14 @@
 /* eslint-disable */
 import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
+import type { BatchNumeroResponseDTO } from '../models/BatchNumeroResponseDTO';
 import type { CreateBaseLocaleDTO } from '../models/CreateBaseLocaleDTO';
 import type { CreateDemoBaseLocaleDTO } from '../models/CreateDemoBaseLocaleDTO';
 import type { CreateToponymeDTO } from '../models/CreateToponymeDTO';
 import type { CreateVoieDTO } from '../models/CreateVoieDTO';
 import type { DeleteBatchNumeroDTO } from '../models/DeleteBatchNumeroDTO';
 import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
+import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
 import type { ImportFileBaseLocaleDTO } from '../models/ImportFileBaseLocaleDTO';
 import type { PageBaseLocaleDTO } from '../models/PageBaseLocaleDTO';
@@ -347,13 +349,13 @@ export class BasesLocalesService {
      * Multi update numeros
      * @param baseLocaleId
      * @param requestBody
-     * @returns any
+     * @returns BatchNumeroResponseDTO
      * @throws ApiError
      */
     public static updateNumeros(
         baseLocaleId: string,
         requestBody: UpdateBatchNumeroDTO,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<BatchNumeroResponseDTO> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v2/bases-locales/{baseLocaleId}/numeros/batch',
@@ -391,13 +393,13 @@ export class BasesLocalesService {
      * Multi soft delete numeros
      * @param baseLocaleId
      * @param requestBody
-     * @returns any
+     * @returns BatchNumeroResponseDTO
      * @throws ApiError
      */
     public static softDeleteNumeros(
         baseLocaleId: string,
         requestBody: DeleteBatchNumeroDTO,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<BatchNumeroResponseDTO> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v2/bases-locales/{baseLocaleId}/numeros/batch/soft-delete',
@@ -412,12 +414,12 @@ export class BasesLocalesService {
     /**
      * Find all Voie in Bal
      * @param baseLocaleId
-     * @returns any
+     * @returns ExtendedVoieDTO
      * @throws ApiError
      */
     public static findBaseLocaleVoies(
         baseLocaleId: string,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<Array<ExtendedVoieDTO>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}/voies',
