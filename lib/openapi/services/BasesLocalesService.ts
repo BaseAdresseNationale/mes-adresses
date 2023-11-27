@@ -274,12 +274,12 @@ export class BasesLocalesService {
     /**
      * Find Base_Locale parcelles
      * @param baseLocaleId
-     * @returns any
+     * @returns string
      * @throws ApiError
      */
     public static findBaseLocaleParcelles(
         baseLocaleId: string,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<Array<string>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}/parcelles',

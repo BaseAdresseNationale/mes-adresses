@@ -1,12 +1,13 @@
 import React, {useCallback, useState, useMemo, useEffect, useContext} from 'react'
 import BalContext from '@/contexts/bal-data'
 import LocalStorageContext from '@/contexts/local-storage'
-import type {MapRef, ViewState} from 'react-map-gl/maplibre'
+import type { ViewState } from 'react-map-gl/maplibre'
+import type { Map as MaplibreMap, VectorTileSource } from 'maplibre-gl';
 import {ChildrenProps} from '@/types/context'
 
 interface MapContextType {
-  map: MapRef | null;
-  setMap: (value: MapRef | null) => void;
+  map: MaplibreMap | null;
+  setMap: (value: MaplibreMap | null) => void;
   handleMapRef: (ref: any) => void;
   isTileSourceLoaded: boolean;
   reloadTiles: () => void;
@@ -37,7 +38,7 @@ export const BAL_API_URL = process.env.NEXT_PUBLIC_BAL_API_URL || 'https://api-b
 export const SOURCE_TILE_ID = 'tiles'
 
 export function MapContextProvider(props: ChildrenProps) {
-  const [map, setMap] = useState<MapRef | null>(null)
+  const [map, setMap] = useState<MaplibreMap | null>(null)
   const [style, setStyle] = useState<string>(defaultStyle)
   const [viewport, setViewport] = useState<Partial<ViewState>>(defaultViewport)
   const [isCadastreDisplayed, setIsCadastreDisplayed] = useState<boolean>(false)
@@ -66,16 +67,14 @@ export function MapContextProvider(props: ChildrenProps) {
 
   const reloadTiles = useCallback(() => {
     if (map && isTileSourceLoaded) {
-      // Fix BUG VectorTileSource
-      const source: any = map.getSource(SOURCE_TILE_ID)
-      // Remplace les tuiles avec de nouvelles tuiles
+      const source: VectorTileSource = map.getSource(SOURCE_TILE_ID) as VectorTileSource;
       source.setTiles([balTilesUrl])
     }
   }, [map, isTileSourceLoaded, balTilesUrl])
 
   const handleMapRef = useCallback(ref => {
     if (ref) {
-      const map: MapRef = ref.getMap()
+      const map: MaplibreMap = ref.getMap()
       setMap(map)
       map.on('styledataloading', () => {
         setIsStyleLoaded(false)

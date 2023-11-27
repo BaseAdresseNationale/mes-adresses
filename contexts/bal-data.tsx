@@ -18,7 +18,7 @@ interface BALDataContextType {
   habilitation: HabilitationDTO;
   reloadHabilitation: () => Promise<void>;
   isHabilitationValid: boolean;
-  parcelles: Array<Toponyme | Numero>;
+  parcelles: Array<string>;
   reloadParcelles: () => Promise<void>;
   voie: Voie;
   setVoie: (voie: Voie) => void;
@@ -60,7 +60,7 @@ export function BalDataContextProvider({
 }: BalDataContextProviderProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [editingId, _setEditingId] = useState<string>(null)
-  const [parcelles, setParcelles] = useState<Array<Numero | Toponyme>>([])
+  const [parcelles, setParcelles] = useState<Array<string>>([])
   const [numeros, setNumeros] = useState<Array<Numero | NumeroPopulate>>(initialNumeros)
   const [voies, setVoies] = useState<ExtendedVoieDTO[]>(initialVoies)
   const [toponymes, setToponymes] = useState<ExtentedToponymeDTO[]>(initialToponymes)
@@ -74,7 +74,7 @@ export function BalDataContextProvider({
   const [habilitation, reloadHabilitation, isHabilitationValid, habilitationIsLoading, isHabilitationProcessDisplayed, setIsHabilitationProcessDisplayed] = useHabilitation(initialBaseLocale, token)
 
   const reloadParcelles = useCallback(async () => {
-    const parcelles: Array<Toponyme | Numero> = await BasesLocalesService.findBaseLocaleParcelles(baseLocale._id)
+    const parcelles: Array<string> = await BasesLocalesService.findBaseLocaleParcelles(baseLocale._id)
     setParcelles(parcelles)
   }, [baseLocale._id])
 
