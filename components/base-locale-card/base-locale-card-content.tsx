@@ -9,11 +9,11 @@ import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 import CertificationCount from '@/components/certification-count'
 import HabilitationTag from '../habilitation-tag'
 import {HabilitationType} from '@/types/habilitation'
-import {BaseLocaleType} from '@/types/base-locale'
 import {APIGeoCommuneType} from '@/types/api-geo'
+import { ExtendedBaseLocaleDTO } from '@/lib/openapi'
 
 interface BaseLocaleCardContentProps {
-  baseLocale: BaseLocaleType;
+  baseLocale: ExtendedBaseLocaleDTO;
   commune: APIGeoCommuneType;
   habilitation: HabilitationType;
   isAdmin: boolean;

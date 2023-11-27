@@ -8,10 +8,10 @@ import {searchBasesLocales} from '@/lib/bal-api'
 import {sortBalByUpdate} from '@/lib/sort-bal'
 
 import Main from '@/layouts/main'
-import {BaseLocaleType} from '@/types/base-locale'
+import { BaseLocale } from '@/lib/openapi/index.js'
 
 interface PublicBasesLocalesListProps {
-  basesLocales: BaseLocaleType[];
+  basesLocales: BaseLocale[];
   searchInput: string;
   onFilter: (value: string) => void;
 }
@@ -26,7 +26,7 @@ const CSRPublicBasesLocalesList: React.ComponentType<PublicBasesLocalesListProps
 })
 
 interface AllPageProps {
-  basesLocales: BaseLocaleType[];
+  basesLocales: BaseLocale[];
   commune: string;
   offset: number;
   limit: number;

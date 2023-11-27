@@ -8,14 +8,14 @@ import {getCommune} from '@/lib/geo-api'
 
 import StatusBadge from '@/components/status-badge'
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
-import {BaseLocaleType} from '@/types/base-locale'
 import {APIGeoCommuneType} from '@/types/api-geo'
 import {HabilitationType} from '@/types/habilitation'
+import { ExtendedBaseLocaleDTO } from '@/lib/openapi'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
 interface BaseLocaleCardProps {
-  baseLocale: BaseLocaleType;
+  baseLocale: ExtendedBaseLocaleDTO;
   isAdmin: boolean;
   userEmail: string;
   onRemove: () => void;

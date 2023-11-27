@@ -15,12 +15,12 @@ import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
 import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
 import {CommmuneType} from '@/types/commune'
-import {BaseLocaleType} from '@/types/base-locale'
 import {getBaseEditorProps} from '@/layouts/editor'
 import BALRecoveryContext from '@/contexts/bal-recovery'
+import { BaseLocale } from '@/lib/openapi'
 
 interface ToponymePageProps {
-  baseLocale: BaseLocaleType;
+  baseLocale: BaseLocale;
   commune: CommmuneType;
 }
 
