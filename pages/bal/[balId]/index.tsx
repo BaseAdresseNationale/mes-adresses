@@ -15,14 +15,14 @@ import VoieEditor from '@/components/bal/voie-editor'
 import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 import CommuneTab from '@/components/bal/commune-tab'
-import {CommmuneType} from '@/types/commune'
+import {CommuneType} from '@/types/commune'
 import {getBaseEditorProps} from '@/layouts/editor'
 import BALRecoveryContext from '@/contexts/bal-recovery'
 
 const TABS = ['Commune', 'Voies', 'Toponymes']
 
 interface BaseLocalePageProps {
-  commune: CommmuneType;
+  commune: CommuneType;
 }
 
 function BaseLocalePage({commune}: BaseLocalePageProps) {

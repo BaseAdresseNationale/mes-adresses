@@ -7,10 +7,10 @@ import TokenContext from '@/contexts/token'
 import CertificationInfos from './certification-infos'
 import HabilitationInfos from './habilitation-infos'
 import ReadOnlyInfos from './read-only-infos'
-import {CommmuneType} from '@/types/commune'
+import {CommuneType} from '@/types/commune'
 
 interface CommuneTabProps {
-  commune: CommmuneType;
+  commune: CommuneType;
   openRecoveryDialog: () => void;
 }
 

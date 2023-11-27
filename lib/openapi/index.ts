@@ -12,6 +12,7 @@ export { BaseLocale } from './models/BaseLocale';
 export type { BasesLocalesCreationDTO } from './models/BasesLocalesCreationDTO';
 export type { BasesLocalesStatusDTO } from './models/BasesLocalesStatusDTO';
 export type { CodeCommuneDTO } from './models/CodeCommuneDTO';
+export type { CommuneExtraDTO } from './models/CommuneExtraDTO';
 export type { CreateBaseLocaleDTO } from './models/CreateBaseLocaleDTO';
 export type { CreateDemoBaseLocaleDTO } from './models/CreateDemoBaseLocaleDTO';
 export type { CreateNumeroDTO } from './models/CreateNumeroDTO';

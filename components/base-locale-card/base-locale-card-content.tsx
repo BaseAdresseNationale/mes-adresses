@@ -8,12 +8,12 @@ import LocalStorageContext from '@/contexts/local-storage'
 import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
 import CertificationCount from '@/components/certification-count'
 import HabilitationTag from '../habilitation-tag'
-import {APIGeoCommuneType} from '@/types/api-geo'
 import { ExtendedBaseLocaleDTO, HabilitationDTO } from '@/lib/openapi'
+import { CommuneApiGeoType } from '@/lib/geo-api/type'
 
 interface BaseLocaleCardContentProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: APIGeoCommuneType;
+  commune: CommuneApiGeoType;
   habilitation: HabilitationDTO;
   isAdmin: boolean;
   userEmail: string;

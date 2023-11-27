@@ -4,12 +4,12 @@ import {fr} from 'date-fns/locale'
 import {Heading, Card, Pane, Text, ChevronRightIcon, ChevronDownIcon, Link} from 'evergreen-ui'
 
 import {getHabilitation} from '@/lib/bal-api'
-import {getCommune} from '@/lib/geo-api'
+import {ApiGeoService} from '@/lib/geo-api'
 
 import StatusBadge from '@/components/status-badge'
 import BaseLocaleCardContent from '@/components/base-locale-card/base-locale-card-content'
-import {APIGeoCommuneType} from '@/types/api-geo'
 import { ExtendedBaseLocaleDTO, HabilitationDTO } from '@/lib/openapi'
+import { CommuneApiGeoType } from '@/lib/geo-api/type'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
@@ -26,7 +26,7 @@ interface BaseLocaleCardProps {
 
 function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStatus, isDefaultOpen, onSelect, onRemove, onHide}: BaseLocaleCardProps) {
   const {nom, _updated} = baseLocale
-  const [commune, setCommune] = useState<APIGeoCommuneType>()
+  const [commune, setCommune] = useState<CommuneApiGeoType>()
   const [habilitation, setHabilitation] = useState<HabilitationDTO | null>(null)
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false)
 
@@ -38,7 +38,7 @@ function BaseLocaleCard({baseLocale, isAdmin, userEmail, isShownHabilitationStat
 
   useEffect(() => {
     const fetchCommune = async () => {
-      const commune: APIGeoCommuneType = await getCommune(baseLocale.commune)
+      const commune: CommuneApiGeoType = await ApiGeoService.getCommune(baseLocale.commune)
 
       setCommune(commune)
     }

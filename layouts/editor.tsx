@@ -18,14 +18,15 @@ import DrawerContent from '@/components/drawer-content'
 import AddressEditor from '@/components/bal/address-editor'
 import DemoWarning from '@/components/demo-warning'
 import Overlay from '@/components/overlay'
-import {getBaseLocale, getCommuneExtras, getToponymes, getVoies} from '@/lib/bal-api'
-import {getCommune} from '@/lib/geo-api'
-import {CommmuneType} from '@/types/commune'
-import { BaseLocale } from '@/lib/openapi'
+import {getBaseLocale, getToponymes, getVoies} from '@/lib/bal-api'
+import {ApiGeoService} from '@/lib/geo-api'
+import {CommuneType} from '@/types/commune'
+import { BaseLocale, CommuneExtraDTO, CommuneService } from '@/lib/openapi'
+import { CommuneApiGeoType } from '@/lib/geo-api/type'
 
 interface EditorProps {
   children: React.ReactNode;
-  commune: CommmuneType;
+  commune: CommuneType;
 }
 
 function Editor({children, commune}: EditorProps) {
@@ -107,12 +108,12 @@ function Editor({children, commune}: EditorProps) {
 export async function getBaseEditorProps(balId: string) {
   const baseLocale = await getBaseLocale(balId)
 
-  const communeExtras = await getCommuneExtras(baseLocale.commune)
-  const geoCommune = await getCommune(baseLocale.commune, {
+  const communeExtras: CommuneExtraDTO = await CommuneService.findCommune(baseLocale.commune)
+  const geoCommune: CommuneApiGeoType = await ApiGeoService.getCommune(baseLocale.commune, {
     fields: 'contour'
   })
 
-  const commune = {...geoCommune, ...communeExtras}
+  const commune: CommuneType = {...geoCommune, ...communeExtras}
   const voies = await getVoies(balId)
   const toponymes = await getToponymes(balId)
 

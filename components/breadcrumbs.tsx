@@ -1,12 +1,12 @@
 import React from 'react'
 import NextLink from 'next/link'
 import {Pane, Text, HomeIcon, Link} from 'evergreen-ui'
-import {CommmuneType} from '@/types/commune'
+import {CommuneType} from '@/types/commune'
 import { BaseLocale, Toponyme, Voie } from '@/lib/openapi'
 
 interface BreadcrumbsProps {
   baseLocale: BaseLocale;
-  commune: CommmuneType;
+  commune: CommuneType;
   voie?: Voie;
   toponyme?: Toponyme;
 }

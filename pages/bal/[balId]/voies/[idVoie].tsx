@@ -12,12 +12,12 @@ import useFormState from '@/hooks/useFormState'
 import NumeroEditor from '@/components/bal/numero-editor'
 import VoieHeading from '@/components/voie/voie-heading'
 import NumerosList from '@/components/voie/numeros-list'
-import {CommmuneType} from '@/types/commune'
+import {CommuneType} from '@/types/commune'
 import {getBaseEditorProps} from '@/layouts/editor'
 // Import BALRecoveryContext from '@/contexts/bal-recovery'
 
 interface VoiePageProps {
-  commune: CommmuneType;
+  commune: CommuneType;
 }
 
 function VoiePage({commune}: VoiePageProps) {

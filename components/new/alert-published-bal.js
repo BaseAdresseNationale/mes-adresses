@@ -4,7 +4,7 @@ import Router from 'next/router'
 import {uniq} from 'lodash'
 import {Pane, Dialog, Alert, Paragraph, Strong} from 'evergreen-ui'
 
-import {getCommune} from '@/lib/geo-api'
+import {ApiGeoService} from '@/lib/geo-api'
 
 import LocalStorageContext from '@/contexts/local-storage'
 
@@ -25,7 +25,7 @@ function AlertPublishedBAL({isShown, userEmail, onClose, onConfirm, basesLocales
 
   useEffect(() => {
     const fetchCommune = async code => {
-      const commune = await getCommune(code)
+      const commune = await ApiGeoService.getCommune(code)
       if (commune) {
         setCommuneLabel(commune.nom)
       }

@@ -14,14 +14,14 @@ import NumeroEditor from '@/components/bal/numero-editor'
 import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
 import AddNumeros from '@/components/toponyme/add-numeros'
 import ToponymeHeading from '@/components/toponyme/toponyme-heading'
-import {CommmuneType} from '@/types/commune'
+import {CommuneType} from '@/types/commune'
 import {getBaseEditorProps} from '@/layouts/editor'
 import BALRecoveryContext from '@/contexts/bal-recovery'
 import { BaseLocale } from '@/lib/openapi'
 
 interface ToponymePageProps {
   baseLocale: BaseLocale;
-  commune: CommmuneType;
+  commune: CommuneType;
 }
 
 function ToponymePage({baseLocale, commune}: ToponymePageProps) {

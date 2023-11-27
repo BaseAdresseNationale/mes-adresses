@@ -2,7 +2,7 @@ import React, {useState, useContext, useRef, useEffect} from 'react'
 import {Pane, TabNavigation, Tab, Heading, Paragraph, Button, ArrowLeftIcon} from 'evergreen-ui'
 import Link from 'next/link'
 
-import {getCommune} from '../lib/geo-api'
+import {ApiGeoService} from '../lib/geo-api'
 
 import LocalStorageContext from '../contexts/local-storage'
 
@@ -13,14 +13,14 @@ import Main from '../layouts/main'
 import CreateForm from '../components/new/create-form'
 import UploadForm from '../components/new/upload-form'
 import DemoForm from '../components/new/demo-form'
-import {CommmuneType} from '../types/commune'
+import {CommuneType} from '../types/commune'
 
 interface IndexPageProps {
-  defaultCommune?: CommmuneType;
+  defaultCommune?: CommuneType;
   isDemo: boolean;
 }
 
-const getSuggestedBALName = (commune?: CommmuneType) => {
+const getSuggestedBALName = (commune?: CommuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null
 }
 
@@ -133,7 +133,7 @@ function IndexPage({defaultCommune, isDemo}: IndexPageProps) {
 export async function getServerSideProps({query}) {
   let defaultCommune = null
   if (query.commune) {
-    defaultCommune = await getCommune(query.commune, {
+    defaultCommune = await ApiGeoService.getCommune(query.commune, {
       fields: 'departement'
     })
   }
