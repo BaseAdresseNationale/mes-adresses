@@ -18,6 +18,10 @@ import Editor from '@/layouts/editor'
 import {BALRecoveryProvider} from '@/contexts/bal-recovery'
 import {OpenAPIConfigProvider} from '@/contexts/open-api-config'
 import {BalDataContextProvider} from '@/contexts/bal-data'
+import { OpenAPI } from '@/lib/openapi'
+
+const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split('/').slice(0, -1).join('/')
+Object.assign(OpenAPI, { BASE: openAPIBase })
 
 function App(props: AppProps) {
   const {Component, pageProps, router: {query}} = props
@@ -30,14 +34,9 @@ function App(props: AppProps) {
     trackerUrl: process.env.NEXT_PUBLIC_MATOMO_TRACKER_URL
   }, pageProps)
 
-  // Temporary fix to remove the prefix "v2" from the base url
-  const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split('/').slice(0, -1).join('/')
 
   return (
-    <OpenAPIConfigProvider baseConfig={{
-      BASE: openAPIBase
-    }}
-    >
+    <>
       <Head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
         <title>mes-adresses.data.gouv.fr</title>
@@ -106,8 +105,9 @@ function App(props: AppProps) {
           max-width: fit-content;
         }
       `}</style>
-    </OpenAPIConfigProvider>
+    </>
   )
 }
+
 
 export default App

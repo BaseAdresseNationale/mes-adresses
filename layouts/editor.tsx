@@ -18,11 +18,10 @@ import DrawerContent from '@/components/drawer-content'
 import AddressEditor from '@/components/bal/address-editor'
 import DemoWarning from '@/components/demo-warning'
 import Overlay from '@/components/overlay'
-import {getBaseLocale, getToponymes, getVoies} from '@/lib/bal-api'
 import {ApiGeoService} from '@/lib/geo-api'
 import {CommuneType} from '@/types/commune'
-import { BaseLocale, CommuneExtraDTO, CommuneService } from '@/lib/openapi'
-import { CommuneApiGeoType } from '@/lib/geo-api/type'
+import {BaseLocale, BasesLocalesService, CommuneExtraDTO, CommuneService, ExtendedBaseLocaleDTO, Toponyme, Voie} from '@/lib/openapi'
+import {CommuneApiGeoType} from '@/lib/geo-api/type'
 
 interface EditorProps {
   children: React.ReactNode;
@@ -105,8 +104,15 @@ function Editor({children, commune}: EditorProps) {
   )
 }
 
-export async function getBaseEditorProps(balId: string) {
-  const baseLocale = await getBaseLocale(balId)
+export interface BaseEditorReturn {
+  baseLocale: ExtendedBaseLocaleDTO;
+  commune: CommuneType;
+  voies: Voie[];
+  toponymes: Toponyme[];
+}
+
+export async function getBaseEditorProps(balId: string): Promise<BaseEditorReturn> {
+  const baseLocale: ExtendedBaseLocaleDTO = await BasesLocalesService.findBaseLocale(balId)
 
   const communeExtras: CommuneExtraDTO = await CommuneService.findCommune(baseLocale.commune)
   const geoCommune: CommuneApiGeoType = await ApiGeoService.getCommune(baseLocale.commune, {
@@ -114,8 +120,8 @@ export async function getBaseEditorProps(balId: string) {
   })
 
   const commune: CommuneType = {...geoCommune, ...communeExtras}
-  const voies = await getVoies(balId)
-  const toponymes = await getToponymes(balId)
+  const voies: Voie[] = await BasesLocalesService.findBaseLocaleVoies(balId)
+  const toponymes: Toponyme[] = await BasesLocalesService.findBaseLocaleToponymes(balId)
 
   return {
     baseLocale,

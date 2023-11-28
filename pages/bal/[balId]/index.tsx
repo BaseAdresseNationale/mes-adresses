@@ -16,8 +16,9 @@ import ToponymesList from '@/components/bal/toponymes-list'
 import ToponymeEditor from '@/components/bal/toponyme-editor'
 import CommuneTab from '@/components/bal/commune-tab'
 import {CommuneType} from '@/types/commune'
-import {getBaseEditorProps} from '@/layouts/editor'
+import {BaseEditorReturn, getBaseEditorProps} from '@/layouts/editor'
 import BALRecoveryContext from '@/contexts/bal-recovery'
+import { Toponyme, Voie } from '@/lib/openapi'
 
 const TABS = ['Commune', 'Voies', 'Toponymes']
 
@@ -26,16 +27,16 @@ interface BaseLocalePageProps {
 }
 
 function BaseLocalePage({commune}: BaseLocalePageProps) {
-  const [editedItem, setEditedItem] = useState(null)
-  const [isFormOpen, setIsFormOpen] = useState(false)
-  const [toConvert, setToConvert] = useState(null)
-  const [onConvertLoading, setOnConvertLoading] = useState(false)
+  const [editedItem, setEditedItem] = useState<Voie | Toponyme | null>(null)
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(false)
+  const [toConvert, setToConvert] = useState<string | null>(null)
+  const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false)
+  const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0)
+
   const {token} = useContext(TokenContext)
-  const [selectedTabIndex, setSelectedTabIndex] = useState(0)
   const {voies, toponymes, baseLocale} = useContext(BalDataContext)
   const {reloadTiles} = useContext(MapContext)
   const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
-
   const {
     refreshBALSync,
     reloadVoies,
@@ -87,7 +88,7 @@ function BaseLocalePage({commune}: BaseLocalePageProps) {
     setToConvert(null)
   }, [reloadVoies, refreshBALSync, reloadToponymes, reloadTiles, reloadParcelles, toConvert, token])
 
-  const onEdit = useCallback(id => {
+  const onEdit = useCallback((id: string) => {
     if (id) {
       setEditedItem([...voies, ...toponymes].find(({_id}) => _id === id))
       setIsFormOpen(true)
@@ -249,7 +250,7 @@ export async function getServerSideProps({params}) {
   const {balId} = params
 
   try {
-    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId)
+    const {baseLocale, commune, voies, toponymes}: BaseEditorReturn = await getBaseEditorProps(balId)
     return {
       props: {
         commune,
@@ -258,7 +259,8 @@ export async function getServerSideProps({params}) {
         toponymes
       }
     }
-  } catch {
+  } catch (e) {
+    console.log(e)
     return {
       error: {
         statusCode: 404

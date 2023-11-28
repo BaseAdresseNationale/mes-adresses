@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import Router from 'next/router'
 
 import LocalStorageContext from '@/contexts/local-storage'
-import OpenAPIConfigContext from '@/contexts/open-api-config'
 import {BasesLocalesService} from '@/lib/openapi'
 import {ChildrenProps} from '@/types/context'
+import { OpenAPI } from '@/lib/openapi'
 
 interface TokenContextType {
   token: string | null;
@@ -23,27 +23,26 @@ interface TokenContextProviderProps extends ChildrenProps {
 
 export function TokenContextProvider({balId, _token, ...props}: TokenContextProviderProps) {
   const {getBalToken, addBalAccess} = useContext(LocalStorageContext)
-  const setOpenAPIConfig = useContext(OpenAPIConfigContext)
 
   const [tokenIsChecking, setTokenIsChecking] = useState<boolean>(false)
   const [token, setToken] = useState<string>(null)
   const [emails, setEmails] = useState<string[]>(null)
 
   const verify = useCallback(async (token: string) => {
-    setOpenAPIConfig({TOKEN: token})
+    Object.assign(OpenAPI, { TOKEN: token })
     const baseLocale = await BasesLocalesService.findBaseLocale(balId)
 
     if (baseLocale.token) {
       setToken(baseLocale.token)
       setEmails(baseLocale.emails)
-      setOpenAPIConfig({TOKEN: baseLocale.token})
+      Object.assign(OpenAPI, { TOKEN: baseLocale.token })
     } else {
-      setOpenAPIConfig({TOKEN: null})
+      Object.assign(OpenAPI, { TOKEN: null })
       setToken(null)
     }
 
     setTokenIsChecking(false)
-  }, [balId, setOpenAPIConfig])
+  }, [balId, OpenAPI])
 
   useEffect(() => {
     if (balId) {
