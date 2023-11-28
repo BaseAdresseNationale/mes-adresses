@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 import Head from 'next/head'
+import { AppProps } from 'next/app';
+
 import {Pane, Dialog, Paragraph} from 'evergreen-ui'
 
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -7,8 +9,6 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import {LocalStorageContextProvider} from '@/contexts/local-storage'
 import {HelpContextProvider} from '@/contexts/help'
 import {TokenContextProvider} from '@/contexts/token'
-
-import ErrorPage from './_error'
 
 import Header from '@/components/header'
 import IEWarning from '@/components/ie-warning'
@@ -19,16 +19,8 @@ import {BALRecoveryProvider} from '@/contexts/bal-recovery'
 import {OpenAPIConfigProvider} from '@/contexts/open-api-config'
 import {BalDataContextProvider} from '@/contexts/bal-data'
 
-interface _AppProps {
-  Component: any;
-  pageProps: any;
-  error?: any;
-  router: any;
-}
-
-function App(props: _AppProps) {
-  const {Component, pageProps, error, router} = props
-  const {query} = router
+function App(props: AppProps) {
+  const {Component, pageProps, router: {query}} = props
 
   const [isMobileWarningDisplayed, setIsMobileWarningDisplayed] = useState(false)
 
@@ -74,17 +66,14 @@ function App(props: _AppProps) {
       </Pane>
 
       <LocalStorageContextProvider>
-        <TokenContextProvider balId={query.balId} _token={query.token}>
+        <TokenContextProvider balId={query.balId as string} _token={query.token as string}>
           <HelpContextProvider>
-            <BALRecoveryProvider balId={query.balId}>
+            <BALRecoveryProvider balId={query.balId as string}>
 
               <Help />
 
               <Pane height='100%' width='100%' display='flex' flexDirection='column'>
                 <Header />
-                {error ? (
-                  <ErrorPage statusCode={error.statusCode} />
-                ) : (
                   <>
                     <IEWarning />
                     {query.balId ? (
@@ -105,7 +94,6 @@ function App(props: _AppProps) {
                       <Component {...pageProps} />
                     )}
                   </>
-                )}
               </Pane>
             </BALRecoveryProvider>
           </HelpContextProvider>
