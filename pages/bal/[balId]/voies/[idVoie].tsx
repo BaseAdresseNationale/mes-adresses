@@ -1,46 +1,52 @@
-import React, {useEffect, useContext} from 'react'
-import {Pane} from 'evergreen-ui'
+import React, { useEffect, useContext } from "react";
+import { Pane } from "evergreen-ui";
 
-import {getNumeros, getVoie} from '@/lib/bal-api'
+import TokenContext from "@/contexts/token";
+import BalDataContext from "@/contexts/bal-data";
 
-import TokenContext from '@/contexts/token'
-import BalDataContext from '@/contexts/bal-data'
+import useHelp from "@/hooks/help";
+import useFormState from "@/hooks/useFormState";
 
-import useHelp from '@/hooks/help'
-import useFormState from '@/hooks/useFormState'
-
-import NumeroEditor from '@/components/bal/numero-editor'
-import VoieHeading from '@/components/voie/voie-heading'
-import NumerosList from '@/components/voie/numeros-list'
-import {CommuneType} from '@/types/commune'
-import {getBaseEditorProps} from '@/layouts/editor'
+import NumeroEditor from "@/components/bal/numero-editor";
+import VoieHeading from "@/components/voie/voie-heading";
+import NumerosList from "@/components/voie/numeros-list";
+import { CommuneType } from "@/types/commune";
+import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi";
 // Import BALRecoveryContext from '@/contexts/bal-recovery'
 
 interface VoiePageProps {
   commune: CommuneType;
 }
 
-function VoiePage({commune}: VoiePageProps) {
-  const {isFormOpen, handleEditing, editedNumero, reset} = useFormState()
+function VoiePage({ commune }: VoiePageProps) {
+  const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
   // Const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
 
-  useHelp(3)
+  useHelp(3);
 
-  const {token} = useContext(TokenContext)
-  const {voie, numeros, reloadNumeros} = useContext(BalDataContext)
+  const { token } = useContext(TokenContext);
+  const { voie, numeros, reloadNumeros } = useContext(BalDataContext);
 
   // Load protected fields (ex: 'comment')
   useEffect(() => {
     if (token) {
-      reloadNumeros()
+      reloadNumeros();
     }
-  }, [token, reloadNumeros])
+  }, [token, reloadNumeros]);
 
   return (
     <>
       <VoieHeading voie={voie} />
 
-      <Pane position='relative' display='flex' flexDirection='column' height='100%' width='100%' overflow='hidden'>
+      <Pane
+        position="relative"
+        display="flex"
+        flexDirection="column"
+        height="100%"
+        width="100%"
+        overflow="hidden"
+      >
         {isFormOpen && (
           <NumeroEditor
             hasPreview
@@ -59,15 +65,16 @@ function VoiePage({commune}: VoiePageProps) {
         />
       </Pane>
     </>
-  )
+  );
 }
 
-export async function getServerSideProps({params}) {
-  const {idVoie, balId} = params
+export async function getServerSideProps({ params }) {
+  const { idVoie, balId }: { idVoie: string; balId: string } = params;
   try {
-    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId)
-    const voie = await getVoie(idVoie)
-    const numeros = await getNumeros(voie._id)
+    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
+      await getBaseEditorProps(balId);
+    const voie: ExtendedVoieDTO = await VoiesService.findVoie(idVoie);
+    const numeros: Numero[] = await VoiesService.findVoieNumeros(idVoie);
 
     return {
       props: {
@@ -76,16 +83,16 @@ export async function getServerSideProps({params}) {
         voies,
         toponymes,
         voie,
-        numeros
-      }
-    }
+        numeros,
+      },
+    };
   } catch {
     return {
       error: {
-        statusCode: 404
-      }
-    }
+        statusCode: 404,
+      },
+    };
   }
 }
 
-export default VoiePage
+export default VoiePage;

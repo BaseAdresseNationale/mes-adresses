@@ -1,44 +1,52 @@
-import {useState, useMemo, useContext} from 'react'
+import { useState, useMemo, useContext } from "react";
 
-import {DrawerContextProvider} from '@/contexts/drawer'
-import {DrawContextProvider} from '@/contexts/draw'
-import {MarkersContextProvider} from '@/contexts/markers'
-import {MapContextProvider} from '@/contexts/map'
-import TokenContext from '@/contexts/token'
-import BalDataContext from '@/contexts/bal-data'
-import {ParcellesContextProvider} from '@/contexts/parcelles'
+import { DrawerContextProvider } from "@/contexts/drawer";
+import { DrawContextProvider } from "@/contexts/draw";
+import { MarkersContextProvider } from "@/contexts/markers";
+import { MapContextProvider } from "@/contexts/map";
+import TokenContext from "@/contexts/token";
+import BalDataContext from "@/contexts/bal-data";
+import { ParcellesContextProvider } from "@/contexts/parcelles";
 
-import Sidebar from '@/layouts/sidebar'
+import Sidebar from "@/layouts/sidebar";
 
-import SubHeader from '@/components/sub-header'
-import Map from '@/components/map'
-import WelcomeMessage from '@/components/welcome-message'
-import CertificationMessage from '@/components/certification-message'
-import DrawerContent from '@/components/drawer-content'
-import AddressEditor from '@/components/bal/address-editor'
-import DemoWarning from '@/components/demo-warning'
-import Overlay from '@/components/overlay'
-import {ApiGeoService} from '@/lib/geo-api'
-import {CommuneType} from '@/types/commune'
-import {BaseLocale, BasesLocalesService, CommuneExtraDTO, CommuneService, ExtendedBaseLocaleDTO, Toponyme, Voie} from '@/lib/openapi'
-import {CommuneApiGeoType} from '@/lib/geo-api/type'
+import SubHeader from "@/components/sub-header";
+import Map from "@/components/map";
+import WelcomeMessage from "@/components/welcome-message";
+import CertificationMessage from "@/components/certification-message";
+import DrawerContent from "@/components/drawer-content";
+import AddressEditor from "@/components/bal/address-editor";
+import DemoWarning from "@/components/demo-warning";
+import Overlay from "@/components/overlay";
+import { ApiGeoService } from "@/lib/geo-api";
+import { CommuneType } from "@/types/commune";
+import {
+  BaseLocale,
+  BasesLocalesService,
+  CommuneExtraDTO,
+  CommuneService,
+  ExtendedBaseLocaleDTO,
+  ExtendedVoieDTO,
+  ExtentedToponymeDTO,
+} from "@/lib/openapi";
+import { CommuneApiGeoType } from "@/lib/geo-api/type";
 
 interface EditorProps {
   children: React.ReactNode;
   commune: CommuneType;
 }
 
-function Editor({children, commune}: EditorProps) {
-  const [isHidden, setIsHidden] = useState(false)
-  const [isAddressFormOpen, setIsAddressFormOpen] = useState(false)
-  const {tokenIsChecking} = useContext(TokenContext)
-  const {baseLocale} = useContext(BalDataContext)
+function Editor({ children, commune }: EditorProps) {
+  const [isHidden, setIsHidden] = useState(false);
+  const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
+  const { tokenIsChecking } = useContext(TokenContext);
+  const { baseLocale } = useContext(BalDataContext);
 
-  const isDemo = baseLocale.status === BaseLocale.status.DEMO
+  const isDemo = baseLocale.status === BaseLocale.status.DEMO;
 
   const leftOffset = useMemo(() => {
-    return isHidden ? 0 : 500
-  }, [isHidden])
+    return isHidden ? 0 : 500;
+  }, [isHidden]);
 
   return (
     <MapContextProvider>
@@ -46,11 +54,11 @@ function Editor({children, commune}: EditorProps) {
         <MarkersContextProvider>
           <ParcellesContextProvider>
             <BalDataContext.Consumer>
-              {({habilitationIsLoading}) => (
+              {({ habilitationIsLoading }) =>
                 (tokenIsChecking || habilitationIsLoading) && (
-                  <Overlay text='Chargement de la Base Adresse Locale' />
+                  <Overlay text="Chargement de la Base Adresse Locale" />
                 )
-              )}
+              }
             </BalDataContext.Consumer>
 
             <DrawerContextProvider>
@@ -73,25 +81,31 @@ function Editor({children, commune}: EditorProps) {
               isHidden={isHidden}
               size={500}
               elevation={2}
-              background='tint2'
-              display='flex'
-              flexDirection='column'
+              background="tint2"
+              display="flex"
+              flexDirection="column"
               onToggle={setIsHidden}
             >
               <>
                 {isDemo && (
-                  <DemoWarning baseLocale={baseLocale} communeName={commune.nom} />
+                  <DemoWarning
+                    baseLocale={baseLocale}
+                    communeName={commune.nom}
+                  />
                 )}
 
                 <WelcomeMessage />
-                {baseLocale.status === 'published' && (
+                {baseLocale.status === BaseLocale.status.PUBLISHED && (
                   <CertificationMessage balId={baseLocale._id} />
                 )}
 
                 {isAddressFormOpen ? (
-                  <AddressEditor commune={commune} closeForm={() => {
-                    setIsAddressFormOpen(false)
-                  }} />
+                  <AddressEditor
+                    commune={commune}
+                    closeForm={() => {
+                      setIsAddressFormOpen(false);
+                    }}
+                  />
                 ) : (
                   children
                 )}
@@ -101,34 +115,44 @@ function Editor({children, commune}: EditorProps) {
         </MarkersContextProvider>
       </DrawContextProvider>
     </MapContextProvider>
-  )
+  );
 }
 
-export interface BaseEditorReturn {
+export interface BaseEditorProps {
   baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
-  voies: Voie[];
-  toponymes: Toponyme[];
+  voies: ExtendedVoieDTO[];
+  toponymes: ExtentedToponymeDTO[];
 }
 
-export async function getBaseEditorProps(balId: string): Promise<BaseEditorReturn> {
-  const baseLocale: ExtendedBaseLocaleDTO = await BasesLocalesService.findBaseLocale(balId)
+export async function getBaseEditorProps(
+  balId: string
+): Promise<BaseEditorProps> {
+  const baseLocale: ExtendedBaseLocaleDTO =
+    await BasesLocalesService.findBaseLocale(balId);
 
-  const communeExtras: CommuneExtraDTO = await CommuneService.findCommune(baseLocale.commune)
-  const geoCommune: CommuneApiGeoType = await ApiGeoService.getCommune(baseLocale.commune, {
-    fields: 'contour'
-  })
+  const communeExtras: CommuneExtraDTO = await CommuneService.findCommune(
+    baseLocale.commune
+  );
+  const geoCommune: CommuneApiGeoType = await ApiGeoService.getCommune(
+    baseLocale.commune,
+    {
+      fields: "contour",
+    }
+  );
 
-  const commune: CommuneType = {...geoCommune, ...communeExtras}
-  const voies: Voie[] = await BasesLocalesService.findBaseLocaleVoies(balId)
-  const toponymes: Toponyme[] = await BasesLocalesService.findBaseLocaleToponymes(balId)
+  const commune: CommuneType = { ...geoCommune, ...communeExtras };
+  const voies: ExtendedVoieDTO[] =
+    await BasesLocalesService.findBaseLocaleVoies(balId);
+  const toponymes: ExtentedToponymeDTO[] =
+    await BasesLocalesService.findBaseLocaleToponymes(balId);
 
   return {
     baseLocale,
     commune,
     voies,
-    toponymes
-  }
+    toponymes,
+  };
 }
 
-export default Editor
+export default Editor;

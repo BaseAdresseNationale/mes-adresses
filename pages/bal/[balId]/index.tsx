@@ -9,8 +9,6 @@ import {
   Tab,
 } from "evergreen-ui";
 
-import { populateCommune, convertVoieToToponyme } from "@/lib/bal-api";
-
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
@@ -24,9 +22,14 @@ import ToponymesList from "@/components/bal/toponymes-list";
 import ToponymeEditor from "@/components/bal/toponyme-editor";
 import CommuneTab from "@/components/bal/commune-tab";
 import { CommuneType } from "@/types/commune";
-import { BaseEditorReturn, getBaseEditorProps } from "@/layouts/editor";
+import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
-import { Toponyme, Voie } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  Toponyme,
+  Voie,
+  VoiesService,
+} from "@/lib/openapi";
 
 const TABS = ["Commune", "Voies", "Toponymes"];
 
@@ -65,7 +68,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const onPopulate = useCallback(async () => {
     setIsEditing(true);
 
-    await populateCommune(baseLocale._id, token);
+    await BasesLocalesService.populateBaseLocale(baseLocale._id);
     await reloadVoies();
 
     setIsEditing(false);
@@ -79,20 +82,22 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
   const onConvert = useCallback(async () => {
     setOnConvertLoading(true);
-    const res = await convertVoieToToponyme(toConvert, token);
-    if (!res.error) {
+    try {
+      const toponyme: Toponyme =
+        await VoiesService.convertToToponyme(toConvert);
+
       await reloadVoies();
       await reloadToponymes();
       await reloadParcelles();
       reloadTiles();
       refreshBALSync();
-      setOnConvertLoading(false);
       // Select the tab topnyme after conversion
       setSelectedTabIndex(2);
-      setEditedItem(res);
+      setEditedItem(toponyme);
       setIsFormOpen(true);
-    }
+    } catch {}
 
+    setOnConvertLoading(false);
     setToConvert(null);
   }, [
     reloadVoies,
@@ -295,7 +300,7 @@ export async function getServerSideProps({ params }) {
   const { balId } = params;
 
   try {
-    const { baseLocale, commune, voies, toponymes }: BaseEditorReturn =
+    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
     return {
       props: {

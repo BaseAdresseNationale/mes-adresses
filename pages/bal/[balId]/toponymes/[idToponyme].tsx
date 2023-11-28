@@ -1,105 +1,119 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react'
-import {Pane, Heading, Table, Button, Alert, AddIcon, LockIcon} from 'evergreen-ui'
+import React, { useState, useCallback, useEffect, useContext } from "react";
+import {
+  Pane,
+  Heading,
+  Table,
+  Button,
+  Alert,
+  AddIcon,
+  LockIcon,
+} from "evergreen-ui";
 
-import {batchNumeros, getToponyme, getNumerosToponyme} from '@/lib/bal-api'
+import TokenContext from "@/contexts/token";
+import BalDataContext from "@/contexts/bal-data";
 
-import TokenContext from '@/contexts/token'
-import BalDataContext from '@/contexts/bal-data'
+import useHelp from "@/hooks/help";
+import useFuse from "@/hooks/fuse";
+import useFormState from "@/hooks/useFormState";
 
-import useHelp from '@/hooks/help'
-import useFuse from '@/hooks/fuse'
-import useFormState from '@/hooks/useFormState'
-
-import NumeroEditor from '@/components/bal/numero-editor'
-import ToponymeNumeros from '@/components/toponyme/toponyme-numeros'
-import AddNumeros from '@/components/toponyme/add-numeros'
-import ToponymeHeading from '@/components/toponyme/toponyme-heading'
-import {CommuneType} from '@/types/commune'
-import {getBaseEditorProps} from '@/layouts/editor'
-import BALRecoveryContext from '@/contexts/bal-recovery'
-import { BaseLocale } from '@/lib/openapi'
+import NumeroEditor from "@/components/bal/numero-editor";
+import ToponymeNumeros from "@/components/toponyme/toponyme-numeros";
+import AddNumeros from "@/components/toponyme/add-numeros";
+import ToponymeHeading from "@/components/toponyme/toponyme-heading";
+import { CommuneType } from "@/types/commune";
+import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import BALRecoveryContext from "@/contexts/bal-recovery";
+import {
+  BaseLocale,
+  BasesLocalesService,
+  ExtentedToponymeDTO,
+  NumeroPopulate,
+  ToponymesService,
+  UpdateBatchNumeroDTO,
+} from "@/lib/openapi";
 
 interface ToponymePageProps {
   baseLocale: BaseLocale;
   commune: CommuneType;
 }
 
-function ToponymePage({baseLocale, commune}: ToponymePageProps) {
-  const {isFormOpen, handleEditing, editedNumero, reset} = useFormState()
+function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
+  const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
 
-  const [error, setError] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const {token} = useContext(TokenContext)
-  const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
+  const { token } = useContext(TokenContext);
+  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
 
-  const {
-    toponyme,
-    numeros,
-    reloadNumeros,
-    isEditing,
-    setIsEditing
-  } = useContext(BalDataContext)
+  const { toponyme, numeros, reloadNumeros, isEditing, setIsEditing } =
+    useContext(BalDataContext);
 
-  useHelp(2)
+  useHelp(2);
   const [filtered, setFilter] = useFuse(numeros, 200, {
-    keys: [
-      'numero'
-    ]
-  })
+    keys: ["numero"],
+  });
 
-  const onAdd = async numeros => {
-    setIsLoading(true)
+  const onAdd = async (numeros) => {
+    setIsLoading(true);
 
     try {
-      await batchNumeros(baseLocale._id, {
+      const payload: UpdateBatchNumeroDTO = {
         numerosIds: numeros,
-        changes: {toponyme: toponyme._id}
-      }, token)
+        changes: { toponyme: toponyme._id },
+      };
+      await BasesLocalesService.updateNumeros(baseLocale._id, payload);
 
-      await reloadNumeros()
+      await reloadNumeros();
     } catch (error: unknown) {
-      setError((error as any).message)
+      setError((error as any).message);
     }
 
-    setIsLoading(false)
-    reset()
+    setIsLoading(false);
+    reset();
 
-    setIsEditing(false)
-  }
+    setIsEditing(false);
+  };
 
   const onEnableAdding = () => {
-    handleEditing()
-    setIsEditing(true)
-  }
+    handleEditing();
+    setIsEditing(true);
+  };
 
   const onCancel = useCallback(() => {
     if (isFormOpen) {
-      setIsEditing(false)
+      setIsEditing(false);
     }
 
-    reset()
-    setError(null)
-  }, [isFormOpen, reset, setIsEditing])
+    reset();
+    setError(null);
+  }, [isFormOpen, reset, setIsEditing]);
 
   useEffect(() => {
     return () => {
-      setIsEditing(false)
-    }
-  }, [setIsEditing])
+      setIsEditing(false);
+    };
+  }, [setIsEditing]);
 
   // Load protected fields (ex: 'comment')
   useEffect(() => {
     if (token) {
-      reloadNumeros()
+      reloadNumeros();
     }
-  }, [token, reloadNumeros])
+  }, [token, reloadNumeros]);
 
   return (
     <>
       <ToponymeHeading toponyme={toponyme} commune={commune} />
 
-      <Pane position='relative' display='flex' flexDirection='column' height='100%' width='100%' overflow='hidden'>
+      <Pane
+        position="relative"
+        display="flex"
+        flexDirection="column"
+        height="100%"
+        width="100%"
+        overflow="hidden"
+      >
         {editedNumero && (
           <NumeroEditor
             hasPreview
@@ -110,27 +124,35 @@ function ToponymePage({baseLocale, commune}: ToponymePageProps) {
         )}
 
         {token && isFormOpen && isEditing && !editedNumero ? (
-          <AddNumeros isLoading={isLoading} onSubmit={onAdd} onCancel={onCancel} />
+          <AddNumeros
+            isLoading={isLoading}
+            onSubmit={onAdd}
+            onCancel={onCancel}
+          />
         ) : (
           <Pane
             flexShrink={0}
             elevation={0}
-            backgroundColor='white'
+            backgroundColor="white"
             padding={16}
-            display='flex'
-            alignItems='center'
+            display="flex"
+            alignItems="center"
             minHeight={64}
           >
             <Heading>Liste des numéros</Heading>
-            <Pane marginLeft='auto'>
+            <Pane marginLeft="auto">
               <Button
                 iconBefore={token ? AddIcon : LockIcon}
-                appearance='primary'
-                intent='success'
+                appearance="primary"
+                intent="success"
                 disabled={token && isEditing}
-                onClick={token ? onEnableAdding : () => {
-                  setIsRecoveryDisplayed(true)
-                }}
+                onClick={
+                  token
+                    ? onEnableAdding
+                    : () => {
+                        setIsRecoveryDisplayed(true);
+                      }
+                }
               >
                 Ajouter des numéros
               </Button>
@@ -139,17 +161,17 @@ function ToponymePage({baseLocale, commune}: ToponymePageProps) {
         )}
 
         {error && (
-          <Alert marginY={5} intent='danger' title='Erreur'>
+          <Alert marginY={5} intent="danger" title="Erreur">
             {error}
           </Alert>
         )}
 
-        <Pane flex={1} overflowY='scroll'>
+        <Pane flex={1} overflowY="scroll">
           <Table>
             {!isEditing && (
               <Table.Head>
                 <Table.SearchHeaderCell
-                  placeholder='Rechercher un numéro'
+                  placeholder="Rechercher un numéro"
                   onChange={setFilter}
                 />
               </Table.Head>
@@ -157,26 +179,33 @@ function ToponymePage({baseLocale, commune}: ToponymePageProps) {
 
             {filtered.length === 0 && (
               <Table.Row>
-                <Table.TextCell color='muted' fontStyle='italic'>
+                <Table.TextCell color="muted" fontStyle="italic">
                   Aucun numéro
                 </Table.TextCell>
               </Table.Row>
             )}
 
-            <ToponymeNumeros numeros={filtered} handleSelect={handleEditing} isEditable={token && !isEditing} />
+            <ToponymeNumeros
+              numeros={filtered}
+              handleSelect={handleEditing}
+              isEditable={token && !isEditing}
+            />
           </Table>
         </Pane>
       </Pane>
     </>
-  )
+  );
 }
 
-export async function getServerSideProps({params}) {
-  const {idToponyme, balId} = params
+export async function getServerSideProps({ params }) {
+  const { idToponyme, balId }: { idToponyme: string; balId: string } = params;
   try {
-    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId)
-    const toponyme = await getToponyme(idToponyme)
-    const numeros = await getNumerosToponyme(toponyme._id)
+    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
+      await getBaseEditorProps(balId);
+    const toponyme: ExtentedToponymeDTO =
+      await ToponymesService.findToponyme(idToponyme);
+    const numeros: NumeroPopulate[] =
+      await ToponymesService.findToponymeNumeros(idToponyme);
 
     return {
       props: {
@@ -185,16 +214,16 @@ export async function getServerSideProps({params}) {
         voies,
         toponymes,
         toponyme,
-        numeros
-      }
-    }
+        numeros,
+      },
+    };
   } catch {
     return {
       error: {
-        statusCode: 404
-      }
-    }
+        statusCode: 404,
+      },
+    };
   }
 }
 
-export default ToponymePage
+export default ToponymePage;
