@@ -1,6 +1,6 @@
-import RecoverBALAlert from '@/components/bal-recovery/recover-bal-alert'
-import {ChildrenProps} from '@/types/context'
-import React, {useState, useMemo} from 'react'
+import RecoverBALAlert from "@/components/bal-recovery/recover-bal-alert";
+import { ChildrenProps } from "@/types/context";
+import React, { useState, useMemo } from "react";
 
 interface BALRecoveryContextType {
   isRecoveryDisplayed: boolean;
@@ -15,7 +15,10 @@ interface BALRecoveryProviderProps extends ChildrenProps {
   balId: string;
 }
 
-export function BALRecoveryProvider({balId, ...props}: BALRecoveryProviderProps) {
+export function BALRecoveryProvider({
+  balId,
+  ...props
+}: BALRecoveryProviderProps) {
   const [isRecoveryDisplayed, setIsRecoveryDisplayed] = useState(false);
 
   const value = useMemo(

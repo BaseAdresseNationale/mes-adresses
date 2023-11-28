@@ -1,5 +1,5 @@
-import {ChildrenProps} from '@/types/context'
-import React, {useState, useMemo} from 'react'
+import { ChildrenProps } from "@/types/context";
+import React, { useState, useMemo } from "react";
 
 interface HelpContextType {
   showHelp: boolean;
@@ -8,24 +8,25 @@ interface HelpContextType {
   setSelectedIndex: (value: number) => void;
 }
 
-const HelpContext = React.createContext<HelpContextType | null>(null)
+const HelpContext = React.createContext<HelpContextType | null>(null);
 
 export function HelpContextProvider(props: ChildrenProps) {
-  const [showHelp, setShowHelp] = useState<boolean>(false)
-  const [selectedIndex, setSelectedIndex] = useState<number>(0)
+  const [showHelp, setShowHelp] = useState<boolean>(false);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
-  const value = useMemo(() => ({
-    showHelp,
-    setShowHelp,
-    selectedIndex,
-    setSelectedIndex
-  }), [showHelp, selectedIndex])
+  const value = useMemo(
+    () => ({
+      showHelp,
+      setShowHelp,
+      selectedIndex,
+      setSelectedIndex,
+    }),
+    [showHelp, selectedIndex]
+  );
 
-  return (
-    <HelpContext.Provider value={value} {...props} />
-  )
+  return <HelpContext.Provider value={value} {...props} />;
 }
 
-export const HelpContextConsumer = HelpContext.Consumer
+export const HelpContextConsumer = HelpContext.Consumer;
 
-export default HelpContext
+export default HelpContext;
