@@ -52,7 +52,7 @@ function BALStatus({
             }
           />
         ) : (
-          baseLocale.status !== "demo" && (
+          baseLocale.status === "draft" && (
             <Button
               marginRight={8}
               height={24}
