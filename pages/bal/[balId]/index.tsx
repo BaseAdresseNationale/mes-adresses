@@ -310,8 +310,7 @@ export async function getServerSideProps({ params }) {
         toponymes,
       },
     };
-  } catch (e) {
-    console.log(e);
+  } catch {
     return {
       error: {
         statusCode: 404,
