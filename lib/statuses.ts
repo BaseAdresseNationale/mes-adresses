@@ -82,11 +82,22 @@ const STATUSES: { [key: string]: StatusType } = {
     intent: "danger",
     icon: LabTestIcon,
   },
+  "waiting-habilitation": {
+    label: "En attente d'habilitation",
+    title:
+      "Cette Base Adresse Locale a besoin d'une habilitation pour alimenter la Base Adresse Nationale",
+    content:
+      "De nouvelles modifications ont été détectées mais vous n'êtes pas habilité, les moficiations ne seront pas répercutées dans la Base Adresse Nationale.",
+    color: "yellow",
+    intent: "none",
+    icon: TimeIcon,
+  },
 };
 
 export function computeStatus(
   balStatus: BaseLocale.status,
-  sync: Sync
+  sync: Sync,
+  isHabilitationValid: boolean
 ): StatusType {
   if (
     balStatus === BaseLocale.status.REPLACED ||
@@ -100,6 +111,9 @@ export function computeStatus(
   }
 
   if (balStatus === BaseLocale.status.PUBLISHED) {
+    if (sync.status === Sync.status.OUTDATED && !isHabilitationValid) {
+      return STATUSES["waiting-habilitation"];
+    }
     return STATUSES[sync.status];
   }
   return STATUSES[balStatus];

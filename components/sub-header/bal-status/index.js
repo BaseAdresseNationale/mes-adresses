@@ -33,7 +33,11 @@ function BALStatus({
         {isRefrehSyncStat ? (
           <RefreshSyncBadge />
         ) : (
-          <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
+          <StatusBadge
+            status={baseLocale.status}
+            sync={baseLocale.sync}
+            isHabilitationValid={isHabilitationValid}
+          />
         )}
       </Pane>
 

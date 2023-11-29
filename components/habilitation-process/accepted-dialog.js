@@ -15,7 +15,6 @@ import {
 
 import { getBaseLocale } from "@/lib/bal-api";
 
-import StatusBadge from "@/components/status-badge";
 import TextWrapper from "@/components/text-wrapper";
 import AuthenticatedUser from "@/components/habilitation-process/authenticated-user";
 
