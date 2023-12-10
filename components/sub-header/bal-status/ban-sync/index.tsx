@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import {
   Popover,
   Pane,
@@ -18,6 +17,7 @@ import { CommuneType } from "@/types/commune";
 interface BANSyncProps {
   baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
+  isHabilitationValid: boolean;
   handleSync: () => void;
   togglePause: () => void;
 }
@@ -25,12 +25,14 @@ interface BANSyncProps {
 function BANSync({
   baseLocale,
   commune,
+  isHabilitationValid,
   handleSync,
   togglePause,
 }: BANSyncProps) {
   const { intent, title, content } = computeStatus(
     baseLocale.status,
-    baseLocale.sync
+    baseLocale.sync,
+    isHabilitationValid
   );
 
   return (

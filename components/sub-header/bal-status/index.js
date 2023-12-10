@@ -50,6 +50,7 @@ function BALStatus({
             togglePause={
               baseLocale.sync.isPaused ? handleResumeSync : handlePause
             }
+            isHabilitationValid={isHabilitationValid}
           />
         ) : (
           baseLocale.status === "draft" && (
