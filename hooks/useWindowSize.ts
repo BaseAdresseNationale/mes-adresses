@@ -25,7 +25,7 @@ function useWindowSize() {
   const onResize = () => {
     const size = getSize()
     setWindowSize(size)
-    setIsMobile(size.innerWidth >= MOBILE_WIDTH)
+    setIsMobile(size.innerWidth <= MOBILE_WIDTH)
   }
 
   useEffect(() => {

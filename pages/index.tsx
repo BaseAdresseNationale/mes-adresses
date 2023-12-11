@@ -57,17 +57,10 @@ function Index() {
               setIsRecoveryDisplayed(true);
             }}
           >
-            {isMobile ? "Récupérer une Base Adresse Locale" : "Récupérer"}
+            {isMobile ? 'Récupérer' : 'Récupérer une Base Adresse Locale'}
           </Button>
-          <Button
-            iconBefore={PlusIcon}
-            is={Link}
-            marginX={8}
-            marginY={4}
-            href="/new"
-            appearance="primary"
-          >
-            {isMobile ? "Créer une Base Adresse Locale" : "Créer"}
+          <Button iconBefore={PlusIcon} is={Link} marginX={8} marginY={4} href='/new' appearance='primary'>
+            {isMobile ? 'Créer' : 'Créer une Base Adresse Locale'}
           </Button>
         </Pane>
       </Heading>
