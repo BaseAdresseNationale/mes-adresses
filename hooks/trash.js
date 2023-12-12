@@ -1,7 +1,8 @@
 
 import {useCallback, useContext, useState} from 'react'
 
-import {getVoiesDeleted, getToponymesDeleted, restoreToponyme, removeToponyme, removeVoie, restoreVoie, removeMultipleNumeros} from '@/lib/bal-api'
+import {restoreToponyme, removeToponyme, removeVoie, restoreVoie, removeMultipleNumeros} from '@/lib/bal-api'
+import {BasesLocalesService} from '@/lib/openapi'
 
 import BalDataContext from '@/contexts/bal-data'
 import MapContext from '@/contexts/map'
@@ -21,49 +22,44 @@ function useTrash() {
   const [voiesDeleted, setVoiesDeleted] = useState([])
   const [toponymesDeleted, setToponymesDeleted] = useState([])
 
-  const reloadVoiesDeleted = useCallback(async () => {
-    const res = await getVoiesDeleted(baseLocale._id)
-    setVoiesDeleted(res)
-  }, [baseLocale._id, setVoiesDeleted])
-
-  const reloadToponymesDelete = useCallback(async () => {
-    const res = await getToponymesDeleted(baseLocale._id)
-    setToponymesDeleted(res)
-  }, [baseLocale._id, setToponymesDeleted])
+  const reloadAllDeleted = useCallback(async () => {
+    const res = await BasesLocalesService.findAllDeleted(baseLocale._id)
+    setToponymesDeleted(res.toponymes)
+    setVoiesDeleted(res.voies)
+  }, [baseLocale._id])
 
   const onRemoveVoie = useCallback(async voie => {
     const res = await removeVoie(voie._id, token)
     if (res) {
-      await reloadVoiesDeleted()
+      await reloadAllDeleted()
     }
-  }, [token, reloadVoiesDeleted])
+  }, [token, reloadAllDeleted])
 
   const onRestoreVoie = useCallback(async (voie, selectedNumerosIds) => {
     const res = await restoreVoie(voie._id, {numerosIds: selectedNumerosIds}, token)
-
     if (res) {
       await reloadVoies()
       await reloadNumeros()
       await reloadParcelles()
       reloadTiles()
-      await reloadVoiesDeleted()
+      await reloadAllDeleted()
       await refreshBALSync()
     }
-  }, [token, reloadNumeros, reloadParcelles, reloadVoies, reloadTiles, refreshBALSync, reloadVoiesDeleted])
+  }, [token, reloadNumeros, reloadParcelles, reloadVoies, reloadTiles, refreshBALSync, reloadAllDeleted])
 
   const onRemoveNumeros = useCallback(async voie => {
     const res = await removeMultipleNumeros(baseLocale._id, {numerosIds: voie.numeros.map(n => n._id)}, token)
     if (res) {
-      await reloadVoiesDeleted()
+      await reloadAllDeleted()
     }
-  }, [token, reloadVoiesDeleted, removeMultipleNumeros])
+  }, [baseLocale._id, token, reloadAllDeleted])
 
   const onRemoveToponyme = useCallback(async toponyme => {
     const res = await removeToponyme(toponyme._id, token)
     if (res) {
-      await reloadToponymesDelete()
+      await reloadAllDeleted()
     }
-  }, [token, reloadToponymesDelete])
+  }, [token, reloadAllDeleted])
 
   const onRestoreToponyme = useCallback(async toponyme => {
     const res = await restoreToponyme(toponyme._id, token)
@@ -73,9 +69,9 @@ function useTrash() {
       await reloadToponymes()
       reloadTiles()
       await refreshBALSync()
-      await reloadToponymesDelete()
+      await reloadAllDeleted()
     }
-  }, [token, reloadParcelles, reloadToponymes, reloadTiles, refreshBALSync, reloadToponymesDelete])
+  }, [token, reloadParcelles, reloadToponymes, reloadTiles, refreshBALSync, reloadAllDeleted])
 
   return {
     voiesDeleted,
@@ -85,8 +81,7 @@ function useTrash() {
     onRemoveNumeros,
     onRemoveToponyme,
     onRestoreToponyme,
-    reloadVoiesDeleted,
-    reloadToponymesDelete,
+    reloadAllDeleted,
   }
 }
 

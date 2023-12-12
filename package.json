@@ -6,17 +6,19 @@
   "scripts": {
     "dev": "next dev",
     "start": "next start",
+    "lint": "eslint --ext .js,.ts,.tsx .",
     "build": "yarn build-available-flags && next build",
     "analyze": "ANALYZE=true next build",
     "build-available-flags": "node scripts/build-available-flags",
+    "generate:openapi": "openapi --input http://localhost:5000/api-json --output ./lib/openapi",
     "push-staging": "./scripts/push-staging.sh"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
-    "@next/bundle-analyzer": "^13.5.3",
     "@ban-team/shared-data": "^1.2.0",
     "@ban-team/validateur-bal": "^2.16.0",
     "@mapbox/mapbox-gl-draw": "^1.4.3",
+    "@next/bundle-analyzer": "^13.5.3",
     "@turf/bbox": "^6.5.0",
     "@turf/buffer": "^6.5.0",
     "@turf/center": "^6.5.0",
@@ -61,31 +63,10 @@
     "dotenv": "^16.0.3",
     "eslint": "^7.32.0",
     "eslint-config-next": "^13.5.3",
-    "eslint-config-xo-nextjs": "^3.2.0",
-    "xo": "^0.39.1"
-  },
-  "xo": {
-    "extends": "xo-nextjs",
-    "semicolon": false,
-    "space": 2,
-    "envs": [
-      "browser",
-      "es2021"
-    ],
-    "rules": {
-      "camelcase": "warn",
-      "unicorn/catch-error-name": "off",
-      "react/jsx-sort-props": "off",
-      "import/no-anonymous-default-export": "off",
-      "unicorn/prevent-abbreviations": "off",
-      "comma-dangle": "off",
-      "import/extensions": "off",
-      "node/prefer-global/process": "off",
-      "unicorn/no-array-for-each": "off",
-      "unicorn/prefer-switch": "off",
-      "unicorn/filename-case": "off",
-      "node/no-unsupported-features/es-syntax": "off"
-    }
+    "eslint-config-prettier": "^9.0.0",
+    "openapi-typescript-codegen": "^0.25.0",
+    "prettier": "^3.1.0",
+    "typescript": "5.2.2"
   },
   "engines": {
     "node": ">=14 <17"

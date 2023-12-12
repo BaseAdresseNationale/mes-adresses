@@ -67,7 +67,6 @@ export function BalDataContextProvider({
 
   const reloadBaseLocale = useCallback(async () => {
     const bal = await getBaseLocale(baseLocale._id)
-
     setBaseLocale(bal)
   }, [baseLocale._id])
 
