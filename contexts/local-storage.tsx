@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 
 import { useLocalStorage } from "@/hooks/local-storage";
-import { BasesLocalesService } from "@/lib/openapi";
+import { BasesLocalesService, OpenAPI } from "@/lib/openapi";
 import { ChildrenProps } from "@/types/context";
 
 interface LocalStorageContextType {
@@ -51,7 +51,11 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
   const [userSettings, setUserSettings] = useLocalStorage(USER_SETTINGS);
 
   const removeBAL = useCallback(async (balId: string) => {
+    const token: string = getBalToken(balId)    
+    console.log(token)
+    Object.assign(OpenAPI, { TOKEN: token });
     await BasesLocalesService.deleteBaseLocale(balId);
+    Object.assign(OpenAPI, { TOKEN: null });
     removeBalAccess(balId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
