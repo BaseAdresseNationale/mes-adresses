@@ -43,6 +43,9 @@ function App(props: AppProps) {
     pageProps
   );
 
+  // Temporary fix to remove the prefix "v2" from the base url
+  const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split('/').slice(0, -1).join('/')
+
   return (
     <>
       <Head>
