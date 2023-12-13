@@ -52,7 +52,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
 
   const removeBAL = useCallback(async (balId: string) => {
     const token: string = getBalToken(balId)    
-    console.log(token)
     Object.assign(OpenAPI, { TOKEN: token });
     await BasesLocalesService.deleteBaseLocale(balId);
     Object.assign(OpenAPI, { TOKEN: null });
