@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useContext } from "react";
-import PropTypes from "prop-types";
 import Router from "next/router";
 import { uniq } from "lodash";
 import { Pane, Dialog, Alert, Paragraph, Strong } from "evergreen-ui";

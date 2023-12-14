@@ -22,12 +22,16 @@ import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
 import CommuneSearchField from "@/components/commune-search/commune-search-field";
 import AlertOtherBal from "@/components/new/alert-other-bal";
+import AlertPublishedBal from "@/components/new/alert-published-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import {
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
   PageBaseLocaleDTO,
 } from "@/lib/openapi";
+import { getCurrentRevision } from "@/lib/ban-api-depot";
+import { Revision } from "@/types/revision.type";
+import revision from "../sub-header/bal-status/ban-sync/ban-history/revision";
 
 interface CreateFormProps {
   namePlaceholder: string;
@@ -52,8 +56,11 @@ function CreateForm({
 
   const [isLoading, setIsLoading] = useState(false);
   const [populate, onPopulateChange] = useCheckboxInput(true);
-  const [isShown, setIsShown] = useState(false);
+  const [isShownAlertOtherBal, setIsShownAlertOtherBal] = useState(false);
+  const [isShownAlertPublishedBal, setIsShownAlertPublishedBal] =
+    useState(false);
   const [userBALs, setUserBALs] = useState<ExtendedBaseLocaleDTO[]>([]);
+  const [publishedRevision, setPublishedRevision] = useState<Revision>(null);
   const [ref, setRef] = useState<HTMLInputElement>();
   const [setError] = useError(null);
 
@@ -85,15 +92,27 @@ function CreateForm({
     e.preventDefault();
     setIsLoading(true);
 
+    // CHECK OTHER BAL PUBLISH
     try {
-      await checkUserBALs();
+      const currentRevision: Revision = await getCurrentRevision(commune.code);
+
+      if (currentRevision) {
+        setIsShownAlertPublishedBal(true);
+        setPublishedRevision(currentRevision);
+        return;
+      }
+    } catch {}
+
+    // CHECK OTHER BAL IN MES_ADRESSES
+    try {
+      await checkOtherBALs();
     } catch (error) {
       setError(error.message);
       setIsLoading(false);
     }
   };
 
-  const checkUserBALs = async () => {
+  const checkOtherBALs = async () => {
     const response: PageBaseLocaleDTO =
       await BasesLocalesService.searchBaseLocale(
         10,
@@ -105,26 +124,36 @@ function CreateForm({
 
     if (response.results.length > 0) {
       setUserBALs(response.results);
-      setIsShown(true);
+      setIsShownAlertOtherBal(true);
     } else {
       createNewBal();
     }
   };
 
   const onCancel = () => {
-    setIsShown(false);
+    setIsShownAlertPublishedBal(false);
+    setIsShownAlertOtherBal(false);
     setIsLoading(false);
   };
 
   return (
     <Pane overflowY="scroll" marginY={32}>
       <FormContainer onSubmit={onSubmit}>
-        {userBALs.length > 0 && (
+        {isShownAlertOtherBal && (
           <AlertOtherBal
-            isShown={isShown}
+            isShown={isShownAlertOtherBal}
             userEmail={email}
             basesLocales={userBALs}
-            updateBAL={() => checkUserBALs()}
+            updateBAL={() => checkOtherBALs()}
+            onConfirm={createNewBal}
+            onClose={() => onCancel()}
+          />
+        )}
+
+        {isShownAlertPublishedBal && (
+          <AlertPublishedBal
+            isShown={isShownAlertPublishedBal}
+            revision={publishedRevision}
             onConfirm={createNewBal}
             onClose={() => onCancel()}
           />
