@@ -16,6 +16,9 @@ import { BasesLocalesService, ExtendedBaseLocaleDTO } from "@/lib/openapi";
 import { Client, ContextRevision, Revision } from "@/types/revision.type";
 import { ClientRevisionEnum } from "./create-form";
 import AlertPublishedBALApiDepot from "./alert-published-bal/alert-puslished-bal-api-depot";
+import AlertPublishedBALMesAdresses from "./alert-published-bal/alert-puslished-bal-mes-adresses";
+import AlertPublishedBALFormulaire from "./alert-published-bal/alert-puslished-bal-formulaire";
+import AlertPublishedBALMoissoneur from "./alert-published-bal/alert-puslished-bal-moissoneur";
 
 interface AlertPublishedBALProps {
   isShown: boolean;
@@ -31,30 +34,20 @@ function AlertPublishedBAL({
   onConfirm,
 }: AlertPublishedBALProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  console.log(revision);
+
   const getAlertComponent: React.FunctionComponent = useCallback(() => {
     const client: Client = revision.client as Client;
     if (client.id) {
-      if (
-        client.id === ClientRevisionEnum.MES_ADRESSES ||
-        client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION ||
-        client.id === ClientRevisionEnum.MOINSSONEUR_BAL
-      ) {
-        return <p>coucou</p>;
-        // setClientRevision(client?.id);
+      console.log(client.id);
+      if (client.id === ClientRevisionEnum.MES_ADRESSES) {
+        return <AlertPublishedBALMesAdresses revision={revision} />;
+      } else if (client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION) {
+        return <AlertPublishedBALFormulaire revision={revision} />;
+      } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {
+        return <AlertPublishedBALMoissoneur revision={revision} />;
       } else {
         return <AlertPublishedBALApiDepot revision={revision} />;
       }
-
-      // if (
-      //   client.id === ClientRevisionEnum.MES_ADRESSES ||
-      //   client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION ||
-      //   client.id === ClientRevisionEnum.MOINSSONEUR_BAL
-      // ) {
-      //   setClientRevision(client?.id);
-      // } else {
-      //   setClientRevision(ClientRevisionEnum.API_DEPOT);
-      // }
     }
     return null;
   }, [revision]);
