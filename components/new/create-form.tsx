@@ -30,8 +30,15 @@ import {
   PageBaseLocaleDTO,
 } from "@/lib/openapi";
 import { getCurrentRevision } from "@/lib/ban-api-depot";
-import { Revision } from "@/types/revision.type";
-import revision from "../sub-header/bal-status/ban-sync/ban-history/revision";
+import { Client, Revision } from "@/types/revision.type";
+
+export enum ClientRevisionEnum {
+  API_DEPOT = "api-depot",
+  FORMULAIRE_PUBLICATION = "formulaire-publication",
+  GUICHET_ADRESSES = "guichet-adresse",
+  MES_ADRESSES = "mes-adresses",
+  MOINSSONEUR_BAL = "moissonneur-bal",
+}
 
 interface CreateFormProps {
   namePlaceholder: string;
@@ -94,12 +101,14 @@ function CreateForm({
 
     // CHECK OTHER BAL PUBLISH
     try {
-      const currentRevision: Revision = await getCurrentRevision(commune.code);
-
-      if (currentRevision) {
-        setIsShownAlertPublishedBal(true);
-        setPublishedRevision(currentRevision);
-        return;
+      const revision: Revision = await getCurrentRevision(commune.code);
+      if (revision) {
+        const client: Client = revision.client as Client;
+        if (client.id !== ClientRevisionEnum.GUICHET_ADRESSES) {
+          setIsShownAlertPublishedBal(true);
+          setPublishedRevision(revision);
+          return;
+        }
       }
     } catch {}
 

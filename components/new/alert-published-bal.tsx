@@ -14,6 +14,8 @@ import BaseLocaleCard from "@/components/base-locale-card";
 import DeleteWarning from "@/components/delete-warning";
 import { BasesLocalesService, ExtendedBaseLocaleDTO } from "@/lib/openapi";
 import { Client, ContextRevision, Revision } from "@/types/revision.type";
+import { ClientRevisionEnum } from "./create-form";
+import AlertPublishedBALApiDepot from "./alert-published-bal/alert-puslished-bal-api-depot";
 
 interface AlertPublishedBALProps {
   isShown: boolean;
@@ -29,25 +31,32 @@ function AlertPublishedBAL({
   onConfirm,
 }: AlertPublishedBALProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [organisation, setOrganisation] = useState<string | null>(null);
-  const [emails, setEmails] = useState<string[]>([]);
   console.log(revision);
-
-  useEffect(() => {
-    async function refreshOrganisationContact() {
-      const client: Client = revision.client as Client;
-      const context: ContextRevision = revision.context;
-      if (client?.id === "mes-adresses") {
-        if (context.extras?.balId) {
-          const bal: ExtendedBaseLocaleDTO =
-            await BasesLocalesService.findBaseLocale(context.extras?.balId);
-          console.log(bal);
-          setOrganisation(bal.nom);
-          // setEmails(bal.emails);
-        }
+  const getAlertComponent: React.FunctionComponent = useCallback(() => {
+    const client: Client = revision.client as Client;
+    if (client.id) {
+      if (
+        client.id === ClientRevisionEnum.MES_ADRESSES ||
+        client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION ||
+        client.id === ClientRevisionEnum.MOINSSONEUR_BAL
+      ) {
+        return <p>coucou</p>;
+        // setClientRevision(client?.id);
+      } else {
+        return <AlertPublishedBALApiDepot revision={revision} />;
       }
+
+      // if (
+      //   client.id === ClientRevisionEnum.MES_ADRESSES ||
+      //   client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION ||
+      //   client.id === ClientRevisionEnum.MOINSSONEUR_BAL
+      // ) {
+      //   setClientRevision(client?.id);
+      // } else {
+      //   setClientRevision(ClientRevisionEnum.API_DEPOT);
+      // }
     }
-    refreshOrganisationContact();
+    return null;
   }, [revision]);
 
   const handleConfirmation = () => {
@@ -71,23 +80,7 @@ function AlertPublishedBAL({
         onConfirm={handleConfirmation}
         onCloseComplete={onClose}
       >
-        <Pane>
-          <Paragraph marginTop={16}>
-            Attention, votre Base Adresse Locale (BAL) est actuellement déjà
-            gérée par <b>{organisation}</b> [nom de l’organisme partenaire].
-            Vous n’avez pas nécessairement besoin de créer une BAL si votre
-            commune a noué un partenariat avec cet organisme.
-          </Paragraph>
-          <Paragraph marginTop={16}>
-            En cas de doute, merci de prendre attache auprès de cet organisme en
-            contactant : {emails.join(",")} [Email de contact du partenaire]
-          </Paragraph>
-          <Paragraph marginTop={16}>
-            La commune reste toutefois l’autorité compétente en matière
-            d’adressage, et vous pouvez décider à tout moment de reprendre la
-            main sur la publication de votre BAL
-          </Paragraph>
-        </Pane>
+        {getAlertComponent}
       </Dialog>
     </>
   );
