@@ -6,7 +6,7 @@
 import type { UpdateBatchNumeroChangeDTO } from './UpdateBatchNumeroChangeDTO';
 
 export type UpdateBatchNumeroDTO = {
-    numerosIds: Array<string>;
+    numerosIds?: Array<string> | null;
     changes: UpdateBatchNumeroChangeDTO;
 };
 
