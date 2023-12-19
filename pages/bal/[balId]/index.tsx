@@ -7,6 +7,7 @@ import {
   Button,
   Tablist,
   Tab,
+  toaster,
 } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
@@ -85,7 +86,6 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     try {
       const toponyme: Toponyme =
         await VoiesService.convertToToponyme(toConvert);
-
       await reloadVoies();
       await reloadToponymes();
       await reloadParcelles();
@@ -95,7 +95,12 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
       setSelectedTabIndex(2);
       setEditedItem(toponyme);
       setIsFormOpen(true);
-    } catch {}
+      toaster.success("La voie a bien été convertie en toponyme");
+    } catch (error) {
+      toaster.danger("La voie n’a pas pu être convertie en toponyme", {
+        description: error.message,
+      });
+    }
 
     setOnConvertLoading(false);
     setToConvert(null);

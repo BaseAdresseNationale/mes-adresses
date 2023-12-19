@@ -53,7 +53,7 @@ function UserBasesLocales() {
   }
 
   return (
-    <Pane display='flex' flexDirection='column' flex={1} justifyContent='center'>
+    <Pane display='flex' flexDirection='column' flex={1} justifyContent='flex-start'>
       {basesLocales.length > 0 ? (
         <BasesLocalesList basesLocales={basesLocales} />
       ) : (
