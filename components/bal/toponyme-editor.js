@@ -120,12 +120,12 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
             placeholder='Nom du toponyme'
             value={nom}
             onChange={onNomChange}
-            validationMessage={getValidationMessages('nom', 0)}
+            validationMessage={getValidationMessages('nom')}
           />
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessages={getValidationMessages('nomAlt')}
+            validationMessages={getValidationMessages('lang_alt')}
             handleLanguages={setNomAlt}
           />
         </FormInput>
@@ -134,7 +134,7 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
           <PositionEditor
             initialPositions={initialValue?.positions}
             isToponyme
-            validationMessage={getValidationMessages('positions', 0)}
+            validationMessage={getValidationMessages('positions')}
           />
         </FormInput>
 

@@ -16,10 +16,10 @@ import CommentsContent from '@/components/comments-content'
 import DeleteWarning from '@/components/delete-warning'
 
 import InfiniteScrollList from '../infinite-scroll-list'
-import {VoieType} from '@/types/voie'
+import { ExtendedVoieDTO } from '@/lib/openapi'
 
 interface VoiesListProps {
-  voies: VoieType[];
+  voies: ExtendedVoieDTO[];
   onRemove: () => Promise<void>;
   onEnableEditing: (id: string) => void;
   balId: string;
@@ -117,7 +117,7 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, openR
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(voie: VoieType) => (
+          {(voie: ExtendedVoieDTO) => (
             <TableRow
               key={voie._id}
               label={voie.nom}

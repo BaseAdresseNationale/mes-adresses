@@ -1,11 +1,12 @@
-import {getBaseEditorProps} from '@/layouts/editor'
-import BaseLocalePage from './index'
+import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import BaseLocalePage from "./index";
 
-export async function getServerSideProps({params}) {
-  const {balId, token} = params
+export async function getServerSideProps({ params }) {
+  const { balId, token }: { balId: string; token: string } = params;
 
   try {
-    const {baseLocale, commune, voies, toponymes} = await getBaseEditorProps(balId as string)
+    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
+      await getBaseEditorProps(balId);
 
     return {
       props: {
@@ -13,16 +14,16 @@ export async function getServerSideProps({params}) {
         commune,
         voies,
         toponymes,
-        token
-      }
-    }
+        token,
+      },
+    };
   } catch {
     return {
       error: {
-        statusCode: 404
-      }
-    }
+        statusCode: 404,
+      },
+    };
   }
 }
 
-export default BaseLocalePage
+export default BaseLocalePage;

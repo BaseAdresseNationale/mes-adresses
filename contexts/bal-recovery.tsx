@@ -1,4 +1,5 @@
 import RecoverBALAlert from "@/components/bal-recovery/recover-bal-alert";
+import { ChildrenProps } from "@/types/context";
 import React, { useState, useMemo } from "react";
 
 interface BALRecoveryContextType {
@@ -10,9 +11,8 @@ const BALRecoveryContext = React.createContext<BALRecoveryContextType | null>(
   null
 );
 
-interface BALRecoveryProviderProps {
+interface BALRecoveryProviderProps extends ChildrenProps {
   balId: string;
-  children: React.ReactNode;
 }
 
 export function BALRecoveryProvider({

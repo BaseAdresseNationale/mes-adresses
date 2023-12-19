@@ -109,7 +109,7 @@ function VoieEditor({initialValue, closeForm}) {
             placeholder='Nom de la voie'
             value={nom}
             onChange={onNomChange}
-            validationMessage={getValidationMessages('nom', 0)}
+            validationMessage={getValidationMessages('nom')}
           />
 
           <Checkbox
@@ -121,7 +121,7 @@ function VoieEditor({initialValue, closeForm}) {
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessages={getValidationMessages('nomAlt')}
+            validationMessages={getValidationMessages('lang_alt')}
             handleLanguages={setNomAlt}
           />
         </FormInput>

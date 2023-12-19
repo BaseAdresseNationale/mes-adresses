@@ -15,10 +15,10 @@ import TableRow from '@/components/table-row'
 import DeleteWarning from '@/components/delete-warning'
 import InfiniteScrollList from '@/components/infinite-scroll-list'
 import CommentsContent from '@/components/comments-content'
-import {ToponymeType} from '@/types/toponyme'
+import { ExtentedToponymeDTO } from '@/lib/openapi'
 
 interface ToponymesListProps {
-  toponymes: ToponymeType[];
+  toponymes: ExtentedToponymeDTO[];
   onRemove: () => Promise<void>;
   onEnableEditing: (id: string) => void;
   balId: string;
@@ -115,7 +115,7 @@ function ToponymesList({toponymes, onEnableEditing, onRemove, balId, openForm, o
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(toponyme: ToponymeType) => (
+          {(toponyme: ExtentedToponymeDTO) => (
             <TableRow
               key={toponyme._id}
               label={toponyme.nom}

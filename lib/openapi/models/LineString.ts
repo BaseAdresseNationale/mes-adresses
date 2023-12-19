@@ -4,7 +4,16 @@
 /* eslint-disable */
 
 export type LineString = {
-    type: string;
-    coordinates: Array<any[]>;
+    type: LineString.type;
+    coordinates: Array<Array<number>>;
 };
+
+export namespace LineString {
+
+    export enum type {
+        LINE_STRING = 'LineString',
+    }
+
+
+}
 

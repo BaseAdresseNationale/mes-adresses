@@ -3,12 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ObjectId } from './ObjectId';
-
 export type Sync = {
     status: Sync.status;
     isPaused: boolean;
-    lastUploadedRevisionId: ObjectId;
+    lastUploadedRevisionId: string;
     currentUpdated: string;
 };
 

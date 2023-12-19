@@ -4,6 +4,6 @@
 /* eslint-disable */
 
 export type DeleteBatchNumeroDTO = {
-    numerosIds: Array<any[]>;
+    numerosIds: Array<string>;
 };
 

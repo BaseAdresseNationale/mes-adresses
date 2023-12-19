@@ -7,7 +7,7 @@ import TableRowNotifications from '@/components/table-row/table-row-notification
 
 interface TableRowProps {
   label: string;
-  nomAlt?: string;
+  nomAlt?: Record<string, any>;
   complement?: string;
   secondary?: string;
   handleSelect?: () => void;

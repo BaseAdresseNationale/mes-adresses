@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ObjectId = {
+export type SendPinCodeResponseDTO = {
+    code: number;
+    message: string;
 };
 

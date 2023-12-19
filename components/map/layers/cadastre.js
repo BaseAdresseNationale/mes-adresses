@@ -1,8 +1,29 @@
+export const SOURCE = 'cadastre'
+
+export const SOURCE_LAYER = {
+  BATIMENTS: 'batiments',
+  PARCELLES: 'parcelles',
+  SECTIONS: 'sections'
+}
+
+export const LAYER = {
+  BATIMENTS_FILL: 'batiments-fill',
+  BATIMENTS_LINE: 'batiments-line',
+  PARCELLES: 'parcelles',
+  PARCELLES_FILL: 'parcelles-fill',
+  PARCELLES_SELECTED: 'parcelles-selected',
+  PARCELLE_HIGHLIGHTED: 'parcelle-highlighted',
+  SECTIONS: 'sections',
+  CODE_SECTION: 'code-section',
+  CODE_PARCELLES: 'code-parcelles'
+
+}
+
 export const cadastreLayers = [{
-  id: 'batiments-fill',
+  id: LAYER.BATIMENTS_FILL,
   type: 'fill',
-  source: 'cadastre',
-  'source-layer': 'batiments',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.BATIMENTS,
   minzoom: 16,
   layout: {
     visibility: 'none'
@@ -12,10 +33,10 @@ export const cadastreLayers = [{
   }
 },
 {
-  id: 'batiments-line',
+  id: LAYER.BATIMENTS_LINE,
   type: 'line',
-  source: 'cadastre',
-  'source-layer': 'batiments',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.BATIMENTS,
   minzoom: 16,
   maxzoom: 22,
   layout: {
@@ -27,10 +48,10 @@ export const cadastreLayers = [{
   }
 },
 {
-  id: 'parcelles',
+  id: LAYER.PARCELLES,
   type: 'line',
-  source: 'cadastre',
-  'source-layer': 'parcelles',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.PARCELLES,
   minzoom: 16,
   maxzoom: 24,
   layout: {
@@ -55,10 +76,10 @@ export const cadastreLayers = [{
   }
 },
 {
-  id: 'parcelles-fill',
+  id: LAYER.PARCELLES_FILL,
   type: 'fill',
-  source: 'cadastre',
-  'source-layer': 'parcelles',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.PARCELLES,
   layout: {
     visibility: 'none'
   },
@@ -80,10 +101,10 @@ export const cadastreLayers = [{
   }
 },
 {
-  id: 'parcelles-selected',
+  id: LAYER.PARCELLES_SELECTED,
   type: 'fill',
-  source: 'cadastre',
-  'source-layer': 'parcelles',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.PARCELLES,
   layout: {
     visibility: 'none'
   },
@@ -98,10 +119,10 @@ export const cadastreLayers = [{
   }
 },
 {
-  id: 'parcelle-highlighted',
+  id: LAYER.PARCELLE_HIGHLIGHTED,
   type: 'fill',
-  source: 'cadastre',
-  'source-layer': 'parcelles',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.PARCELLES,
   layout: {
     visibility: 'none'
   },
@@ -128,10 +149,10 @@ export const cadastreLayers = [{
   }
 },
 {
-  id: 'sections',
+  id: LAYER.SECTIONS,
   type: 'line',
-  source: 'cadastre',
-  'source-layer': 'sections',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.SECTIONS,
   minzoom: 12,
   maxzoom: 24,
   layout: {
@@ -144,10 +165,10 @@ export const cadastreLayers = [{
   }
 },
 {
-  id: 'code-section',
+  id: LAYER.CODE_SECTION,
   type: 'symbol',
-  source: 'cadastre',
-  'source-layer': 'sections',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.SECTIONS,
   minzoom: 12.5,
   maxzoom: 16,
   layout: {
@@ -161,10 +182,10 @@ export const cadastreLayers = [{
   }
 },
 {
-  id: 'code-parcelles',
+  id: LAYER.CODE_PARCELLES,
   type: 'symbol',
-  source: 'cadastre',
-  'source-layer': 'parcelles',
+  source: SOURCE,
+  'source-layer': SOURCE_LAYER.PARCELLES,
   minzoom: 16,
   filter: [
     'all'

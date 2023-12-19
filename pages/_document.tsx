@@ -1,23 +1,32 @@
-import NextDocument, {Html, Head, Main, NextScript, DocumentContext} from 'next/document'
-import {extractStyles} from 'evergreen-ui'
+import NextDocument, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+} from "next/document";
+import { extractStyles } from "evergreen-ui";
 
-class Document extends NextDocument<{css: string; hydrationScript: JSX.Element}> {
+class Document extends NextDocument<{
+  css: string;
+  hydrationScript: JSX.Element;
+}> {
   static async getInitialProps(ctx: DocumentContext) {
-    const initialProps = await NextDocument.getInitialProps(ctx)
-    const {css, hydrationScript} = extractStyles()
+    const initialProps = await NextDocument.getInitialProps(ctx);
+    const { css, hydrationScript } = extractStyles();
 
     return {
       ...initialProps,
       css,
-      hydrationScript
-    }
+      hydrationScript,
+    };
   }
 
   render() {
-    const {css, hydrationScript} = this.props
+    const { css, hydrationScript } = this.props;
 
     return (
-      <Html lang='fr'>
+      <Html lang="fr">
         <Head>
           <style>{`
             html {
@@ -39,7 +48,7 @@ class Document extends NextDocument<{css: string; hydrationScript: JSX.Element}>
             }
           `}</style>
           {/* eslint-disable-next-line react/no-danger */}
-          <style dangerouslySetInnerHTML={{__html: css}} />
+          <style dangerouslySetInnerHTML={{ __html: css }} />
         </Head>
         <body>
           <Main />
@@ -47,8 +56,8 @@ class Document extends NextDocument<{css: string; hydrationScript: JSX.Element}>
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
 
-export default Document
+export default Document;

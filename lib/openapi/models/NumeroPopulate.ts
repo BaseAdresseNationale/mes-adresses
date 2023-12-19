@@ -3,21 +3,21 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ObjectId } from './ObjectId';
 import type { Position } from './Position';
 import type { Voie } from './Voie';
 
 export type NumeroPopulate = {
-    _id: ObjectId;
+    _id: string;
     _created: string;
     _updated: string;
     _deleted: string;
-    _bal: ObjectId;
+    _bal: string;
     numero: number;
+    numeroComplet: string;
     commune: string;
     suffixe: string;
     comment: string;
-    toponyme: ObjectId;
+    toponyme: string;
     voie: Voie;
     parcelles: Array<string>;
     certifie: boolean;
