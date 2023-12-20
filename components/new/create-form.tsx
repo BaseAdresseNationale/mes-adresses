@@ -6,12 +6,9 @@ import {
   ChangeEventHandler,
   Dispatch,
   SetStateAction,
-  Ref,
 } from "react";
 import Router from "next/router";
 import { Pane, TextInputField, Checkbox, Button, PlusIcon } from "evergreen-ui";
-
-import { createBaseLocale, populateCommune } from "@/lib/bal-api";
 
 import LocalStorageContext from "@/contexts/local-storage";
 
@@ -27,6 +24,7 @@ import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import {
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
+  OpenAPI,
   PageBaseLocaleDTO,
 } from "@/lib/openapi";
 import { ApiDepotService } from "@/lib/api-depot";
@@ -61,11 +59,12 @@ function CreateForm({
 }: CreateFormProps) {
   const { addBalAccess } = useContext(LocalStorageContext);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [populate, onPopulateChange] = useCheckboxInput(true);
-  const [isShownAlertOtherBal, setIsShownAlertOtherBal] = useState(false);
+  const [isShownAlertOtherBal, setIsShownAlertOtherBal] =
+    useState<boolean>(false);
   const [isShownAlertPublishedBal, setIsShownAlertPublishedBal] =
-    useState(false);
+    useState<boolean>(false);
   const [userBALs, setUserBALs] = useState<ExtendedBaseLocaleDTO[]>([]);
   const [publishedRevision, setPublishedRevision] = useState<Revision>(null);
   const [ref, setRef] = useState<HTMLInputElement>();
@@ -79,7 +78,7 @@ function CreateForm({
 
   const createNewBal = useCallback(async () => {
     if (commune) {
-      const bal = await createBaseLocale({
+      const bal = await BasesLocalesService.createBaseLocale({
         nom,
         emails: [email],
         commune: commune.code,
@@ -88,7 +87,8 @@ function CreateForm({
       addBalAccess(bal._id, bal.token);
 
       if (populate) {
-        await populateCommune(bal._id, bal.token);
+        Object.assign(OpenAPI, { TOKEN: bal.token });
+        await BasesLocalesService.populateBaseLocale(bal._id);
       }
 
       Router.push(`/bal/${bal._id}`);
