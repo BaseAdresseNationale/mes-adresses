@@ -190,16 +190,7 @@ export function BalDataContextProvider({
   }, [editingId, numeros, voie, toponyme, voies, toponymes]);
 
   const certifyAllNumeros = useCallback(async () => {
-    const updateBatchNumeroDTO: UpdateBatchNumeroDTO = {
-      numerosIds: [],
-      changes: {
-        certifie: true,
-      },
-    };
-    await BasesLocalesService.updateNumeros(
-      baseLocale._id,
-      updateBatchNumeroDTO
-    );
+    await BasesLocalesService.certifyAllNumeros(baseLocale._id);
     await reloadNumeros();
     await reloadVoies();
     await reloadToponymes();

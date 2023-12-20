@@ -346,6 +346,24 @@ export class BasesLocalesService {
     }
 
     /**
+     * Certify all numeros in Bal
+     * @param baseLocaleId
+     * @returns BatchNumeroResponseDTO
+     * @throws ApiError
+     */
+    public static certifyAllNumeros(
+        baseLocaleId: string,
+    ): CancelablePromise<BatchNumeroResponseDTO> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v2/bases-locales/{baseLocaleId}/numeros/certify-all',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+
+    /**
      * Multi update numeros
      * @param baseLocaleId
      * @param requestBody

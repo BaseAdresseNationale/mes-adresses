@@ -3,10 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { UpdateBatchNumeroChangeDTO } from './UpdateBatchNumeroChangeDTO';
+import type { UpdateBatchNumeroChangeDTO } from "./UpdateBatchNumeroChangeDTO";
 
 export type UpdateBatchNumeroDTO = {
-    numerosIds?: Array<string> | null;
-    changes: UpdateBatchNumeroChangeDTO;
+  numerosIds: Array<string>;
+  changes: UpdateBatchNumeroChangeDTO;
 };
-

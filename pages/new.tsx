@@ -21,14 +21,14 @@ import Main from "../layouts/main";
 import CreateForm from "../components/new/create-form";
 import UploadForm from "../components/new/upload-form";
 import DemoForm from "../components/new/demo-form";
-import { CommuneApiGeoType } from "@/lib/geo-api/type";
+import { CommuneType } from "../types/commune";
 
 interface IndexPageProps {
-  defaultCommune?: CommuneApiGeoType;
+  defaultCommune?: CommuneType;
   isDemo: boolean;
 }
 
-const getSuggestedBALName = (commune?: CommuneApiGeoType) => {
+const getSuggestedBALName = (commune?: CommuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null;
 };
 
@@ -49,8 +49,7 @@ function IndexPage({ defaultCommune, isDemo }: IndexPageProps) {
     suggestedBALName.current.suggested
   );
   const [email, onEmailChange] = useInput("");
-  const [selectedCommune, setSelectedCommune] =
-    useState<CommuneApiGeoType | null>(defaultCommune);
+  const [selectedCommune, setSelectedCommune] = useState(defaultCommune);
 
   const [index, setIndex] = useState(0);
 
