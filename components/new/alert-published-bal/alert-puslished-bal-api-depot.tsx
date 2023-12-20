@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useMemo } from "react";
 import { Pane, Paragraph, Strong } from "evergreen-ui";
 
-import { Revision } from "@/types/revision.type";
+import { Client, Revision } from "@/lib/api-depot/types";
 
 interface AlertAlertPublishedBALApiDepotProps {
   revision: Revision;
@@ -10,19 +10,17 @@ interface AlertAlertPublishedBALApiDepotProps {
 function AlertPublishedBALApiDepot({
   revision,
 }: AlertAlertPublishedBALApiDepotProps) {
-  useEffect(() => {}, [revision]);
+
+  const client: Client = useMemo(() => {
+    return revision.client as Client
+  }, [revision])
 
   return (
     <Pane>
       <Paragraph marginTop={16}>
-        Attention, votre Base Adresse Locale (BAL) est actuellement déjà gérée
-        par <Strong>[nom de l’organisme partenaire]</Strong>. Vous n’avez pas
-        nécessairement besoin de créer une BAL si votre commune a noué un
-        partenariat avec cet organisme.
-      </Paragraph>
-      <Paragraph marginTop={16}>
-        En cas de doute, merci de prendre attache auprès de cet organisme en
-        contactant : <Strong>[Email de contact du partenaire]</Strong>
+        Une Base Adresse Locale est déjà déposée par <Strong>{client.chefDeFile}</Strong>. En
+        cas de doute, merci de prendre attache auprès de cet organisme en
+        contactant : <Strong>{client.chefDeFileEmailContact}</Strong>
       </Paragraph>
       <Paragraph marginTop={16}>
         La commune reste toutefois l’autorité compétente en matière d’adressage,

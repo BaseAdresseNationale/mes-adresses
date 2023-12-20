@@ -4,20 +4,10 @@ import Router from "next/router";
 import { uniq } from "lodash";
 import { Pane, Dialog, Alert, Paragraph, Strong } from "evergreen-ui";
 
-import { ApiGeoService } from "@/lib/geo-api";
-
-import LocalStorageContext from "@/contexts/local-storage";
-
-import useError from "@/hooks/error";
-
-import BaseLocaleCard from "@/components/base-locale-card";
-import DeleteWarning from "@/components/delete-warning";
-import { BasesLocalesService, ExtendedBaseLocaleDTO } from "@/lib/openapi";
-import { Client, ContextRevision, Revision } from "@/types/revision.type";
+import { Client, Revision } from "@/lib/api-depot/types";
 import { ClientRevisionEnum } from "./create-form";
 import AlertPublishedBALApiDepot from "./alert-published-bal/alert-puslished-bal-api-depot";
 import AlertPublishedBALMesAdresses from "./alert-published-bal/alert-puslished-bal-mes-adresses";
-import AlertPublishedBALFormulaire from "./alert-published-bal/alert-puslished-bal-formulaire";
 import AlertPublishedBALMoissoneur from "./alert-published-bal/alert-puslished-bal-moissoneur";
 
 interface AlertPublishedBALProps {
@@ -41,8 +31,6 @@ function AlertPublishedBAL({
       console.log(client.id);
       if (client.id === ClientRevisionEnum.MES_ADRESSES) {
         return <AlertPublishedBALMesAdresses revision={revision} />;
-      } else if (client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION) {
-        return <AlertPublishedBALFormulaire revision={revision} />;
       } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {
         return <AlertPublishedBALMoissoneur revision={revision} />;
       } else {

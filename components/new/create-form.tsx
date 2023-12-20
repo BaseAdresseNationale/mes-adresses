@@ -29,8 +29,8 @@ import {
   ExtendedBaseLocaleDTO,
   PageBaseLocaleDTO,
 } from "@/lib/openapi";
-import { getCurrentRevision } from "@/lib/ban-api-depot";
-import { Client, Revision } from "@/types/revision.type";
+import { ApiDepotService } from "@/lib/api-depot";
+import { Client, Revision } from "@/lib/api-depot/types";
 
 export enum ClientRevisionEnum {
   API_DEPOT = "api-depot",
@@ -95,16 +95,40 @@ function CreateForm({
     }
   }, [email, nom, populate, commune, addBalAccess]);
 
+  const isExceptionClientId = (revision) => {
+    // ID DES ORGANISATION BETA.GOUV QUI ONT INITIALISER DES BALS
+    const exceptionSourceId: string[] = ["5e26cf6a8b4c415807c44294"];
+
+    const client: Client = revision.client as Client;
+    if (
+      client.id === ClientRevisionEnum.GUICHET_ADRESSES ||
+      client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION
+    ) {
+      return true;
+    } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {
+      const sourceId: string = revision.context.extras.sourceId;
+      if (sourceId) {
+        const id: string[] = sourceId.split("-");
+        if (exceptionSourceId.includes(id[1])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     // CHECK OTHER BAL PUBLISH
     try {
-      const revision: Revision = await getCurrentRevision(commune.code);
+      const revision: Revision = await ApiDepotService.getCurrentRevision(
+        commune.code
+      );
       if (revision) {
-        const client: Client = revision.client as Client;
-        if (client.id !== ClientRevisionEnum.GUICHET_ADRESSES) {
+        if (!isExceptionClientId(revision)) {
           setIsShownAlertPublishedBal(true);
           setPublishedRevision(revision);
           return;

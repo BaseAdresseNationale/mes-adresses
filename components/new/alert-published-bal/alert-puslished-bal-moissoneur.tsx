@@ -1,11 +1,8 @@
-import { useState, useEffect, useCallback, useContext } from "react";
-import { Link, Pane, Paragraph, Strong } from "evergreen-ui";
+import { useState, useEffect } from "react";
+import { Link, Pane, Paragraph } from "evergreen-ui";
 import { DataGouvService } from "@/lib/data-gouv/data-gouv";
-import { Dataset } from "@/lib/data-gouv/types";
-import { Revision } from "@/types/revision.type";
-
-const ADRESSE_URL =
-  process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
+import { Dataset, Organization } from "@/lib/data-gouv/types";
+import { Revision } from "@/lib/api-depot/types";
 
 interface AlertPublishedBALMoissoneurProps {
   revision: Revision;
@@ -14,27 +11,42 @@ interface AlertPublishedBALMoissoneurProps {
 function AlertPublishedBALMoissoneur({
   revision,
 }: AlertPublishedBALMoissoneurProps) {
-  const [url, setUrl] = useState<string | null>(null);
+  const [organization, setOrganization] = useState<Organization | null>(null);
 
   useEffect(() => {
-    const loadDataset = async () => {
+    const loadOrganization = async () => {
       if (revision.context.extras.sourceId) {
         const sourceId: string = revision.context.extras.sourceId;
         const id: string[] = sourceId.split("-");
         const dataset: Dataset = await DataGouvService.findDataset(id[1]);
 
-        setUrl(`${dataset.organization.page}#/datasets`);
+        setOrganization(dataset.organization);
       }
     };
 
-    loadDataset();
+    loadOrganization();
   }, [revision]);
 
   return (
     <Pane>
-      <Link onClick={(e) => e.stopPropagation()} href={url} fontStyle="italic">
-        Lien organisation data.gouv
-      </Link>
+      <Paragraph marginTop={16}>
+        Une Base Adresse Locale est déjà déposée par{" "}
+        <Link
+          onClick={(e) => e.stopPropagation()}
+          href={`${organization.page}/#/information`}
+          fontStyle="italic"
+        >
+          {organization.name}
+        </Link>{" "}
+        pour votre commune.
+      </Paragraph>
+      <Paragraph marginTop={16}>
+        Nous recommandons de prendre contact avec cet organisme.
+      </Paragraph>
+      <Paragraph marginTop={16}>
+        Toutefois, la commune étant compétente en matière d’adressage, vous
+        pouvez prendre la main directement via Mes Adresses.
+      </Paragraph>
     </Pane>
   );
 }

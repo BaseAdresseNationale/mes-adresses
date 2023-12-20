@@ -30,9 +30,22 @@ export type FileRevision = {
 
 export type Client = {
   id: string;
-  mandataire: string;
   nom: string;
   _id: string;
+  mandataire: string;
+  chefDeFile?: string;
+  chefDeFileEmailContact?: string;
+};
+
+export type ChefDeFile = {
+  _id: string;
+  nom: string;
+  email?: string;
+  perimetre?: string[];
+  signataireCharte: boolean;
+  _createdAt: Date;
+  _updatedAt: Date;
+  emailContact: string;
 };
 
 export type Revision = {

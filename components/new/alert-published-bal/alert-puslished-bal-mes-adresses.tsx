@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useContext } from "react";
-import { Revision } from "@/types/revision.type";
-import { Link, Pane, Paragraph, Strong } from "evergreen-ui";
+import { useState, useEffect, useCallback, useContext, useMemo } from "react";
+import { Revision } from "@/lib/api-depot/types";
+import { Button, Link, Pane, Paragraph, Strong } from "evergreen-ui";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -12,27 +12,32 @@ interface AlertPublishedBALMesAdressesProps {
 function AlertPublishedBALMesAdresses({
   revision,
 }: AlertPublishedBALMesAdressesProps) {
-  const [balId, setBalId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const initBalId = async () => {
-      if (revision.context.extras.balId) {
-        setBalId(revision.context.extras.balId);
-      }
-    };
-
-    initBalId();
+  const balId: string | null = useMemo(() => {
+    return revision.context?.extras?.balId || null;
   }, [revision]);
 
   return (
     <Pane>
-      <Link
-        onClick={(e) => e.stopPropagation()}
-        href={`/bal/${balId}`}
-        fontStyle="italic"
-      >
-        Link consultation
-      </Link>
+      <Paragraph marginTop={16}>
+        Une Base Adresse Locale pour votre commune est déjà publiée via l’outil
+        Mes Adresses.
+      </Paragraph>
+      <Paragraph marginTop={16}>
+        Plutôt que de créer une nouvelle BAL, nous vous recommendons de
+        poursuivre l’adressage depuis celle existante.
+      </Paragraph>
+      {balId && (
+        <Button
+          is="a"
+          appearance="minimal"
+          height={30}
+          href={`/bal/${balId}`}
+          target="_blank"
+          fontSize="0.8em"
+        >
+          Lien Consultation
+        </Button>
+      )}
     </Pane>
   );
 }
