@@ -1,6 +1,8 @@
 import { useState, useCallback } from "react";
 
-export function useInput(initialValue: string) {
+export function useInput(
+  initialValue?: string
+): [string, (e: any) => void, (forcedValue: any) => void] {
   const [value, setValue] = useState<string>(initialValue || "");
 
   const onChange = useCallback((e) => {
@@ -18,7 +20,7 @@ export function useInput(initialValue: string) {
 }
 
 export function useCheckboxInput(
-  initialValue: boolean
+  initialValue?: boolean
 ): [boolean, (e: any) => void] {
   const [checked, setChecked] = useState<boolean>(initialValue || false);
 

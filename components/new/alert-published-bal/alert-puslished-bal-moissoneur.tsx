@@ -29,20 +29,30 @@ function AlertPublishedBALMoissoneur({
 
   return (
     <Pane>
-      <Paragraph marginTop={16}>
-        Une Base Adresse Locale est déjà déposée par{" "}
-        <Link
-          onClick={(e) => e.stopPropagation()}
-          href={`${organization.page}/#/information`}
-          fontStyle="italic"
-        >
-          {organization.name}
-        </Link>{" "}
-        pour votre commune.
-      </Paragraph>
-      <Paragraph marginTop={16}>
-        Nous recommandons de prendre contact avec cet organisme.
-      </Paragraph>
+      {organization ? (
+        <>
+          <Paragraph marginTop={16}>
+            Une Base Adresse Locale est déjà déposée par{" "}
+            <Link
+              target="_blank"
+              onClick={(e) => e.stopPropagation()}
+              href={`${organization.page}/#/information`}
+              fontStyle="italic"
+            >
+              {organization.name}
+            </Link>{" "}
+            pour votre commune.
+          </Paragraph>
+          <Paragraph marginTop={16}>
+            Nous recommandons de prendre contact avec cet organisme.
+          </Paragraph>
+        </>
+      ) : (
+        <Paragraph marginTop={16}>
+          Une Base Adresse Locale a déjà été déposé pour votre commune
+        </Paragraph>
+      )}
+
       <Paragraph marginTop={16}>
         Toutefois, la commune étant compétente en matière d’adressage, vous
         pouvez prendre la main directement via Mes Adresses.

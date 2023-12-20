@@ -28,7 +28,6 @@ function AlertPublishedBAL({
   const getAlertComponent: React.FunctionComponent = useCallback(() => {
     const client: Client = revision.client as Client;
     if (client.id) {
-      console.log(client.id);
       if (client.id === ClientRevisionEnum.MES_ADRESSES) {
         return <AlertPublishedBALMesAdresses revision={revision} />;
       } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {

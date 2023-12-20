@@ -27,16 +27,18 @@ function AlertPublishedBALMesAdresses({
         poursuivre l’adressage depuis celle existante.
       </Paragraph>
       {balId && (
-        <Button
-          is="a"
-          appearance="minimal"
-          height={30}
-          href={`/bal/${balId}`}
-          target="_blank"
-          fontSize="0.8em"
-        >
-          Lien Consultation
-        </Button>
+        <Paragraph marginTop={16}>
+          <Button
+            is="a"
+            appearance="primary"
+            height={30}
+            href={`/bal/${balId}`}
+            target="_blank"
+            fontSize="0.8em"
+          >
+            Lien Consultation
+          </Button>
+        </Paragraph>
       )}
     </Pane>
   );

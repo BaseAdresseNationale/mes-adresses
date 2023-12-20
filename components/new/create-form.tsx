@@ -38,6 +38,29 @@ export enum ClientRevisionEnum {
   MOINSSONEUR_BAL = "moissonneur-bal",
 }
 
+export function isExceptionClientId(revision) {
+  // ID DES ORGANISATION BETA.GOUV QUI ONT INITIALISER DES BALS
+  const exceptionSourceId: string[] = ["5e26cf6a8b4c415807c44294"];
+
+  const client: Client = revision.client as Client;
+  if (
+    client.id === ClientRevisionEnum.GUICHET_ADRESSES ||
+    client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION
+  ) {
+    return true;
+  } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {
+    const sourceId: string = revision.context.extras.sourceId;
+    if (sourceId) {
+      const id: string[] = sourceId.split("-");
+      if (exceptionSourceId.includes(id[1])) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 interface CreateFormProps {
   namePlaceholder: string;
   commune: CommuneApiGeoType;
@@ -95,29 +118,6 @@ function CreateForm({
     }
   }, [email, nom, populate, commune, addBalAccess]);
 
-  const isExceptionClientId = (revision) => {
-    // ID DES ORGANISATION BETA.GOUV QUI ONT INITIALISER DES BALS
-    const exceptionSourceId: string[] = ["5e26cf6a8b4c415807c44294"];
-
-    const client: Client = revision.client as Client;
-    if (
-      client.id === ClientRevisionEnum.GUICHET_ADRESSES ||
-      client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION
-    ) {
-      return true;
-    } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {
-      const sourceId: string = revision.context.extras.sourceId;
-      if (sourceId) {
-        const id: string[] = sourceId.split("-");
-        if (exceptionSourceId.includes(id[1])) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  };
-
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -127,12 +127,10 @@ function CreateForm({
       const revision: Revision = await ApiDepotService.getCurrentRevision(
         commune.code
       );
-      if (revision) {
-        if (!isExceptionClientId(revision)) {
-          setIsShownAlertPublishedBal(true);
-          setPublishedRevision(revision);
-          return;
-        }
+      if (revision && !isExceptionClientId(revision)) {
+        setIsShownAlertPublishedBal(true);
+        setPublishedRevision(revision);
+        return;
       }
     } catch {}
 

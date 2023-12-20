@@ -42,6 +42,10 @@ import {
   OpenAPI,
   PageBaseLocaleDTO,
 } from "@/lib/openapi";
+import { isExceptionClientId } from "./create-form";
+import { ApiDepotService } from "@/lib/api-depot";
+import { Revision } from "@/lib/api-depot/types";
+import AlertPublishedBAL from "./alert-published-bal";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -98,7 +102,6 @@ function extractCommuneFromCSV(rows: any[]): CommuneRow[] {
 
 interface UploadFormProps {
   namePlaceholder: string;
-  commune: CommuneApiGeoType;
   handleCommune: Dispatch<SetStateAction<CommuneApiGeoType>>;
   nom: string;
   onNomChange: ChangeEventHandler<HTMLInputElement>;
@@ -120,13 +123,18 @@ function UploadForm({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [focusRef] = useFocus(true);
   const [userBALs, setUserBALs] = useState<ExtendedBaseLocaleDTO[]>([]);
-  const [isShown, setIsShown] = useState<boolean>(false);
   const [communes, setCommunes] = useState<CommuneRow[] | null>(null);
   const [selectedCodeCommune, setSelectedCodeCommune] = useState<string | null>(
     null
   );
   const [validationReport, setValidationReport] = useState<any | null>(null);
   const [invalidRowsCount, setInvalidRowsCount] = useState<number | null>(null);
+
+  const [isShownAlertOtherBal, setIsShownAlertOtherBal] =
+    useState<boolean>(false);
+  const [isShownAlertPublishedBal, setIsShownAlertPublishedBal] =
+    useState<boolean>(false);
+  const [publishedRevision, setPublishedRevision] = useState<Revision>(null);
 
   const { addBalAccess } = useContext(LocalStorageContext);
 
@@ -197,7 +205,8 @@ function UploadForm({
 
   const resetForm = () => {
     setFile(null);
-    setIsShown(false);
+    setIsShownAlertPublishedBal(false);
+    setIsShownAlertOtherBal(false);
     setIsLoading(false);
     setCommunes(null);
     handleCommune(null);
@@ -220,17 +229,27 @@ function UploadForm({
     e.preventDefault();
     setIsLoading(true);
 
+    // CHECK OTHER BAL PUBLISH
     try {
-      await checkUserBALs();
+      const revision: Revision =
+        await ApiDepotService.getCurrentRevision(selectedCodeCommune);
+      if (revision && !isExceptionClientId(revision)) {
+        setIsShownAlertPublishedBal(true);
+        setPublishedRevision(revision);
+        return;
+      }
+    } catch {}
+
+    // CHECK OTHER BAL IN MES_ADRESSES
+    try {
+      await checkOtherBALs();
     } catch (error) {
       setError(error.message);
       setIsLoading(false);
     }
   };
 
-  const checkUserBALs = useCallback(async () => {
-    const userBALs = [];
-
+  const checkOtherBALs = useCallback(async () => {
     const response: PageBaseLocaleDTO =
       await BasesLocalesService.searchBaseLocale(
         10,
@@ -241,14 +260,8 @@ function UploadForm({
       );
 
     if (response.results.length > 0) {
-      userBALs.push(...response.results);
-    }
-
-    if (userBALs.length > 0) {
-      const uniqUserBALs = uniqBy(userBALs, "_id");
-
-      setUserBALs(uniqUserBALs);
-      setIsShown(true);
+      setUserBALs(response.results);
+      setIsShownAlertOtherBal(true);
     } else {
       createNewBal(selectedCodeCommune);
     }
@@ -302,12 +315,21 @@ function UploadForm({
     <>
       <Pane marginY={32} flex={1} overflowY="scroll">
         <FormContainer onSubmit={onSubmit}>
-          {userBALs.length > 0 && (
+          {isShownAlertOtherBal && (
             <AlertOtherBAL
-              isShown={isShown}
+              isShown={isShownAlertOtherBal}
               userEmail={email}
               basesLocales={userBALs}
-              updateBAL={() => checkUserBALs()}
+              updateBAL={() => checkOtherBALs()}
+              onConfirm={() => createNewBal(selectedCodeCommune)}
+              onClose={() => onCancel()}
+            />
+          )}
+
+          {isShownAlertPublishedBal && (
+            <AlertPublishedBAL
+              isShown={isShownAlertPublishedBal}
+              revision={publishedRevision}
               onConfirm={() => createNewBal(selectedCodeCommune)}
               onClose={() => onCancel()}
             />
