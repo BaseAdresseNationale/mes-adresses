@@ -144,7 +144,6 @@ export function BalDataContextProvider({
   const refreshBALSync = useCallback(async () => {
     const { sync }: { sync: Sync } = baseLocale;
     if (
-      isHabilitationValid &&
       sync &&
       sync.status === Sync.status.SYNCED &&
       !sync.isPaused &&
@@ -161,7 +160,8 @@ export function BalDataContextProvider({
         });
       }, 30000); // Maximum interval between CRON job
     }
-  }, [baseLocale, isHabilitationValid, isRefrehSyncStat, reloadBaseLocale]);
+
+  }, [baseLocale, isRefrehSyncStat, reloadBaseLocale]);
 
   const setEditingId = useCallback(
     (editingId: string) => {
