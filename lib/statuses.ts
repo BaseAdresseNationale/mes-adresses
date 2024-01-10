@@ -111,7 +111,7 @@ export function computeStatus(
   }
 
   if (balStatus === BaseLocale.status.PUBLISHED) {
-    if (!isHabilitationValid) {
+    if (sync.status === Sync.status.OUTDATED && !isHabilitationValid) {
       return STATUSES["waiting-habilitation"];
     }
     return STATUSES[sync.status];
