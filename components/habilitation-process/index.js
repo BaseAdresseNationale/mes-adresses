@@ -6,11 +6,7 @@ import { Dialog, Pane, Text, Spinner, toaster } from "evergreen-ui";
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
 
-<<<<<<< HEAD
 import { ApiDepotService } from "@/lib/api-depot";
-=======
-import { getRevisions } from "@/lib/ban-api-depot";
->>>>>>> master
 import {
   sendAuthenticationCode,
   validateAuthenticationCode,
@@ -22,7 +18,6 @@ import ValidateAuthentication from "@/components/habilitation-process/validate-a
 import StrategySelection from "@/components/habilitation-process/strategy-selection";
 import AcceptedDialog from "@/components/habilitation-process/accepted-dialog";
 import RejectedDialog from "@/components/habilitation-process/rejected-dialog";
-import usePublishProcess from "@/hooks/publish-process";
 
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {
@@ -49,7 +44,6 @@ function HabilitationProcess({
   const [isLoading, setIsLoading] = useState(false);
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
-  const { handleChangeStatus } = usePublishProcess(commune);
 
   const { reloadHabilitation } = useContext(BalDataContext);
 
