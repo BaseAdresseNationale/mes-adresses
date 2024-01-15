@@ -14,6 +14,24 @@ import { request as __request } from '../core/request';
 export class HabilitationService {
 
     /**
+     * Find habiliation is Valid
+     * @param baseLocaleId
+     * @returns boolean
+     * @throws ApiError
+     */
+    public static findIsValid(
+        baseLocaleId: string,
+    ): CancelablePromise<boolean> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/habilitation/is-valid',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+
+    /**
      * Find habiliation
      * @param baseLocaleId
      * @returns HabilitationDTO
