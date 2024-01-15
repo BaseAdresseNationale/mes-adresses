@@ -16,7 +16,11 @@ import { ApiGeoService } from "@/lib/geo-api";
 
 import StatusBadge from "@/components/status-badge";
 import BaseLocaleCardContent from "@/components/base-locale-card/base-locale-card-content";
-import { ExtendedBaseLocaleDTO, HabilitationDTO } from "@/lib/openapi";
+import {
+  ExtendedBaseLocaleDTO,
+  HabilitationDTO,
+  HabilitationService,
+} from "@/lib/openapi";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 
 const ADRESSE_URL =
@@ -48,6 +52,8 @@ function BaseLocaleCard({
   const [habilitation, setHabilitation] = useState<HabilitationDTO | null>(
     null
   );
+  const [isHabilitationValid, setIsHabilitationValid] =
+    useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false);
 
   const majDate = formatDistanceToNow(new Date(_updated), { locale: fr });
@@ -65,24 +71,41 @@ function BaseLocaleCard({
       setCommune(commune);
     };
 
-    const fetchHabilitation = async () => {
-      if (!baseLocale.token) {
-        return;
+    const fetchHabilitationIsValid = async () => {
+      try {
+        const isValid: boolean = await HabilitationService.findIsValid(
+          baseLocale._id
+        );
+        setHabilitation(null);
+        setIsHabilitationValid(isValid);
+      } catch {
+        setHabilitation(null);
       }
+    };
 
+    const fetchHabilitation = async () => {
       try {
         const habilitation: HabilitationDTO = await getHabilitation(
           baseLocale.token,
           baseLocale._id
         );
         setHabilitation(habilitation);
+
+        const isAccepted = habilitation.status === "accepted";
+        const isExpired = new Date(habilitation.expiresAt) < new Date();
+        setIsHabilitationValid(isAccepted && !isExpired);
       } catch {
         setHabilitation(null);
+        setIsHabilitationValid(false);
       }
     };
 
     void fetchCommune();
-    void fetchHabilitation();
+    if (!baseLocale.token) {
+      void fetchHabilitationIsValid();
+    } else {
+      void fetchHabilitation();
+    }
   }, [baseLocale]);
 
   return (
@@ -156,7 +179,11 @@ function BaseLocaleCard({
             borderRadius={5}
             alignItems="center"
           >
-            <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
+            <StatusBadge
+              status={baseLocale.status}
+              sync={baseLocale.sync}
+              isHabilitationValid={isHabilitationValid}
+            />
           </Pane>
         </Pane>
       </Pane>

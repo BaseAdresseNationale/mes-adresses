@@ -58,9 +58,7 @@ function BaseLocaleCardContent({
     status === ExtendedBaseLocaleDTO.status.DRAFT ||
     status === ExtendedBaseLocaleDTO.status.DEMO;
   const tooltipContent =
-    status === ExtendedBaseLocaleDTO.status.READY_TO_PUBLISH
-      ? "Vous ne pouvez pas supprimer une Base Adresse Locale lorsqu’elle est prête à être publiée"
-      : "Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr";
+    "Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr";
 
   const isHabilitationValid = useMemo(() => {
     if (!habilitation || !commune) {

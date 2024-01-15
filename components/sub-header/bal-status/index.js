@@ -1,23 +1,31 @@
-import PropTypes from 'prop-types'
-import {Pane} from 'evergreen-ui'
+import PropTypes from "prop-types";
+import { Pane, Button } from "evergreen-ui";
 
-import {pauseSync, resumeSync} from '@/lib/bal-api'
+import { pauseSync, resumeSync } from "@/lib/bal-api";
 
-import StatusBadge from '@/components/status-badge'
-import BANSync from '@/components/sub-header/bal-status/ban-sync'
-import Publication from '@/components/sub-header/bal-status/publication'
-import RefreshSyncBadge from '@/components/sub-header/bal-status/refresh-sync-badge'
+import StatusBadge from "@/components/status-badge";
+import BANSync from "@/components/sub-header/bal-status/ban-sync";
+import RefreshSyncBadge from "@/components/sub-header/bal-status/refresh-sync-badge";
 
-function BALStatus({baseLocale, commune, token, isHabilitationValid, isRefrehSyncStat, handlePublication, handleChangeStatus, handleHabilitation, reloadBaseLocale}) {
+function BALStatus({
+  baseLocale,
+  commune,
+  token,
+  isHabilitationValid,
+  isRefrehSyncStat,
+  handlePublication,
+  handleHabilitation,
+  reloadBaseLocale,
+}) {
   const handlePause = async () => {
-    await pauseSync(baseLocale._id, token)
-    await reloadBaseLocale()
-  }
+    await pauseSync(baseLocale._id, token);
+    await reloadBaseLocale();
+  };
 
   const handleResumeSync = async () => {
-    await resumeSync(baseLocale._id, token)
-    await reloadBaseLocale()
-  }
+    await resumeSync(baseLocale._id, token);
+    await reloadBaseLocale();
+  };
 
   return (
     <>
@@ -25,42 +33,50 @@ function BALStatus({baseLocale, commune, token, isHabilitationValid, isRefrehSyn
         {isRefrehSyncStat ? (
           <RefreshSyncBadge />
         ) : (
-          <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
+          <StatusBadge
+            status={baseLocale.status}
+            sync={baseLocale.sync}
+            isHabilitationValid={isHabilitationValid}
+          />
         )}
       </Pane>
 
-      {token && (
-        baseLocale.sync && isHabilitationValid ? (
+      {token &&
+        (baseLocale.sync && isHabilitationValid ? (
           <BANSync
             baseLocale={baseLocale}
             commune={commune}
             handleSync={handlePublication}
-            togglePause={baseLocale.sync.isPaused ? handleResumeSync : handlePause}
+            togglePause={
+              baseLocale.sync.isPaused ? handleResumeSync : handlePause
+            }
+            isHabilitationValid={isHabilitationValid}
           />
         ) : (
-          baseLocale.status !== 'demo' && (
-            <Publication
-              baseLocale={baseLocale}
-              status={baseLocale.status}
-              handleBackToDraft={() => handleChangeStatus('draft')}
-              onPublish={handleHabilitation}
-            />
+          baseLocale.status === "draft" && (
+            <Button
+              marginRight={8}
+              height={24}
+              appearance="primary"
+              onClick={handleHabilitation}
+            >
+              Publier
+            </Button>
           )
-        )
-      )}
+        ))}
     </>
-  )
+  );
 }
 
 BALStatus.defaultProps = {
-  token: null
-}
+  token: null,
+};
 
 BALStatus.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
-    sync: PropTypes.object
+    sync: PropTypes.object,
   }).isRequired,
   commune: PropTypes.object.isRequired,
   token: PropTypes.string,
@@ -69,7 +85,7 @@ BALStatus.propTypes = {
   handlePublication: PropTypes.func.isRequired,
   handleChangeStatus: PropTypes.func.isRequired,
   handleHabilitation: PropTypes.func.isRequired,
-  reloadBaseLocale: PropTypes.func.isRequired
-}
+  reloadBaseLocale: PropTypes.func.isRequired,
+};
 
-export default BALStatus
+export default BALStatus;

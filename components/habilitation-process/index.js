@@ -6,7 +6,11 @@ import { Dialog, Pane, Text, Spinner, toaster } from "evergreen-ui";
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
 
+<<<<<<< HEAD
 import { ApiDepotService } from "@/lib/api-depot";
+=======
+import { getRevisions } from "@/lib/ban-api-depot";
+>>>>>>> master
 import {
   sendAuthenticationCode,
   validateAuthenticationCode,
@@ -137,14 +141,6 @@ function HabilitationProcess({
     handleClose();
   };
 
-  // We want to change the BAL status from draft to ready-to-publish
-  // only if the habilitation is accepted
-  useEffect(() => {
-    if (baseLocale.status === "draft" && habilitation.status === "accepted") {
-      handleChangeStatus("ready-to-publish");
-    }
-  }, [handleChangeStatus, baseLocale, habilitation]);
-
   useEffect(() => {
     const step = getStep(habilitation);
     if (step === 2) {
@@ -237,12 +233,7 @@ HabilitationProcess.propTypes = {
   baseLocale: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     sync: PropTypes.object,
-    status: PropTypes.oneOf([
-      "replaced",
-      "published",
-      "ready-to-publish",
-      "draft",
-    ]).isRequired,
+    status: PropTypes.oneOf(["replaced", "published", "draft"]).isRequired,
   }).isRequired,
   commune: PropTypes.shape({
     code: PropTypes.string.isRequired,

@@ -1,11 +1,17 @@
-import PropTypes from "prop-types";
 import { Pane, Badge, Position, Tooltip, Icon } from "evergreen-ui";
 
 import { computeStatus } from "@/lib/statuses";
+import { BaseLocale, Sync } from "@/lib/openapi";
 
-function StatusBadge({ status, sync }) {
+interface StatusBadgeProps {
+  status: BaseLocale.status;
+  sync: Sync;
+  isHabilitationValid: boolean;
+}
+
+function StatusBadge({ status, sync, isHabilitationValid }: StatusBadgeProps) {
   const { color, label, content, icon, textColor } =
-    computeStatus(status, sync) || {};
+    computeStatus(status, sync, isHabilitationValid) || {};
 
   return (
     <Tooltip position={Position.BOTTOM_RIGHT} content={content}>
@@ -23,19 +29,5 @@ function StatusBadge({ status, sync }) {
     </Tooltip>
   );
 }
-
-StatusBadge.propTypes = {
-  status: PropTypes.oneOf([
-    "replaced",
-    "published",
-    "ready-to-publish",
-    "draft",
-    "demo",
-  ]).isRequired,
-  sync: PropTypes.shape({
-    isPaused: PropTypes.bool.isRequired,
-    status: PropTypes.oneOf(["synced", "outdated", "conflict"]),
-  }),
-};
 
 export default StatusBadge;
