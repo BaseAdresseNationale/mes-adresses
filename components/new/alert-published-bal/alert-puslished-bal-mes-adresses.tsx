@@ -36,7 +36,7 @@ function AlertPublishedBALMesAdresses({
             target="_blank"
             fontSize="0.8em"
           >
-            Lien Consultation
+            Lien Base adresse locale
           </Button>
         </Paragraph>
       )}
