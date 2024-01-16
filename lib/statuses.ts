@@ -87,7 +87,7 @@ const STATUSES: { [key: string]: StatusType } = {
     title:
       "Cette Base Adresse Locale a besoin d'une habilitation pour alimenter la Base Adresse Nationale",
     content:
-      "De nouvelles modifications ont été détectées mais vous n'êtes pas habilité, les moficiations ne seront pas répercutées dans la Base Adresse Nationale.",
+      "De nouvelles modifications ont été détectées mais vous n'êtes pas habilité, les modifications ne seront pas répercutées dans la Base Adresse Nationale.",
     color: "yellow",
     intent: "none",
     icon: TimeIcon,
