@@ -20,6 +20,8 @@ import {
   PageBaseLocaleDTO,
 } from "@/lib/openapi";
 
+const LIMIT_BY_PAGE = 20;
+
 interface PublicBasesLocalesListProps {
   basesLocales: BaseLocale[];
   searchInput: string;
@@ -51,26 +53,23 @@ const CSRPublicBasesLocalesList: React.ComponentType<PublicBasesLocalesListProps
 interface AllPageProps {
   basesLocales: BaseLocale[];
   commune: string;
-  offset: number;
-  limit: number;
+  currentPage:  number,
   count: number;
 }
 
 function All({
   basesLocales,
   commune,
-  limit = 20,
-  offset = 0,
+  currentPage,
   count = 0,
 }: AllPageProps) {
   const router: NextRouter = useRouter();
-  const totalPages: number = Math.ceil(count / limit);
-  const currentPage: number = Math.ceil((offset - 1) / limit) + 1;
+  const totalPages: number = Math.ceil(count / LIMIT_BY_PAGE);
 
   const [input, setInput] = useState<string>(commune || "");
 
   const onFilter = async (value: string) => {
-    const query = { page: currentPage, limit, commune: undefined };
+    const query = { page: currentPage, commune: undefined };
 
     if (value.length > 0) {
       query.commune = value;
@@ -82,7 +81,7 @@ function All({
   const handlePageChange = async (page: number) => {
     await router.push({
       pathname: "/all",
-      query: { page, limit },
+      query: { page },
     });
   };
 
@@ -123,9 +122,9 @@ function All({
           marginX="auto"
           page={currentPage}
           totalPages={totalPages}
-          onPreviousPage={async () => handlePageChange(currentPage - 1)}
+          onPreviousPage={async () => handlePageChange(currentPage)}
           onPageChange={handlePageChange}
-          onNextPage={async () => handlePageChange(currentPage + 1)}
+          onNextPage={async () => handlePageChange(currentPage)}
         />
       )}
 
@@ -145,10 +144,12 @@ function All({
 
 All.getInitialProps = async ({ query }) => {
   let result: PageBaseLocaleDTO;
+  const currentPage = query.page || 1
+
   try {
     result = await BasesLocalesService.searchBaseLocale(
-      query.limit,
-      query.offset,
+      LIMIT_BY_PAGE,
+      (currentPage - 1) * LIMIT_BY_PAGE,
       query.deleted,
       query.commune,
       query.email,
@@ -158,9 +159,8 @@ All.getInitialProps = async ({ query }) => {
 
   return {
     basesLocales: result ? sortBalByUpdate(result.results) : [],
+    currentPage,
     commune: query.commune || "",
-    offset: result ? result.offset : 0,
-    limit: result ? result.limit : 20,
     count: result ? result.count : 0,
   };
 };
