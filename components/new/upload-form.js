@@ -16,6 +16,7 @@ import FormInput from '@/components/form-input'
 import Uploader from '@/components/uploader'
 import SelectCommune from '@/components/select-commune'
 import AlertPublishedBAL from '@/components/new/alert-published-bal'
+import { BasesLocalesService, OpenAPI } from '@/lib/openapi'
 
 const ADRESSE_URL = process.env.NEXT_PUBLIC_ADRESSE_URL || 'https://adresse.data.gouv.fr'
 
@@ -182,7 +183,11 @@ function UploadForm({namePlaceholder, nom, onNomChange, email, onEmailChange, ha
   useEffect(() => {
     async function upload() {
       try {
-        const response = await uploadBaseLocaleCsv(bal._id, file, bal.token)
+
+        Object.assign(OpenAPI, { TOKEN: bal.token });
+        const response = await BasesLocalesService.uploadCsvBalFile(bal._id, {
+          file,
+        });
         if (response.isValid) {
           Router.push(
             `/bal/${bal._id}`
