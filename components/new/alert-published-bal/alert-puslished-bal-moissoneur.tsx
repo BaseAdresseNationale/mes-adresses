@@ -32,7 +32,7 @@ function AlertPublishedBALMoissoneur({
       {organization ? (
         <>
           <Paragraph marginTop={16}>
-            Une Base Adresse Locale est déjà déposée par {organization.name} pour votre commune.
+            Une Base Adresse Locale est déjà gérée par {organization.name} pour votre commune.
           </Paragraph>
           <Paragraph marginTop={16}>
             Nous recommandons de prendre contact avec cet organisme.
