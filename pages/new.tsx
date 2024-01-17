@@ -22,9 +22,12 @@ import CreateForm from "../components/new/create-form";
 import UploadForm from "../components/new/upload-form";
 import DemoForm from "../components/new/demo-form";
 import { CommuneType } from "../types/commune";
+import { ApiBalAdminService } from "@/lib/bal-admin";
+import { BALWidgetConfig } from "@/lib/bal-admin/type";
 
 interface IndexPageProps {
   defaultCommune?: CommuneType;
+  widgetConfig: BALWidgetConfig
   isDemo: boolean;
 }
 
@@ -32,7 +35,7 @@ const getSuggestedBALName = (commune?: CommuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null;
 };
 
-function IndexPage({ defaultCommune, isDemo }: IndexPageProps) {
+function IndexPage({ defaultCommune, widgetConfig, isDemo }: IndexPageProps) {
   const { balAccess } = useContext(LocalStorageContext);
 
   const suggestedBALName = useRef<{
@@ -107,6 +110,7 @@ function IndexPage({ defaultCommune, isDemo }: IndexPageProps) {
                 <CreateForm
                   namePlaceholder={suggestedBALName.current.suggested}
                   commune={selectedCommune}
+                  widgetConfig={widgetConfig}
                   nom={nom}
                   onNomChange={onNomChange}
                   email={email}
@@ -116,6 +120,7 @@ function IndexPage({ defaultCommune, isDemo }: IndexPageProps) {
               ) : (
                 <UploadForm
                   namePlaceholder={suggestedBALName.current.suggested}
+                  widgetConfig={widgetConfig}
                   nom={nom}
                   onNomChange={onNomChange}
                   email={email}
@@ -162,10 +167,11 @@ export async function getServerSideProps({ query }) {
       fields: "departement",
     });
   }
-
+  const widgetConfig: BALWidgetConfig = await ApiBalAdminService.getBALWidgetConfig()
   return {
     props: {
       defaultCommune,
+      widgetConfig,
       isDemo: query.demo === "1",
     },
   };

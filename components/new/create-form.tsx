@@ -29,6 +29,7 @@ import {
 } from "@/lib/openapi";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Client, Revision } from "@/lib/api-depot/types";
+import { BALWidgetConfig } from "@/lib/bal-admin/type";
 
 export enum ClientRevisionEnum {
   API_DEPOT = "api-depot",
@@ -38,10 +39,7 @@ export enum ClientRevisionEnum {
   MOINSSONEUR_BAL = "moissonneur-bal",
 }
 
-export function isExceptionClientId(revision) {
-  // ID DES ORGANISATION BETA.GOUV QUI ONT INITIALISER DES BALS
-  const exceptionSourceId: string[] = ["5e26cf6a8b4c415807c44294"];
-
+export function isExceptionClientId(revision: Revision, widgetConfig: BALWidgetConfig) {
   const client: Client = revision.client as Client;
   if (
     client.id === ClientRevisionEnum.GUICHET_ADRESSES ||
@@ -50,10 +48,17 @@ export function isExceptionClientId(revision) {
     return true;
   } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {
     const sourceId: string = revision.context.extras.sourceId;
-    if (sourceId) {
-      const id: string[] = sourceId.split("-");
-      if (exceptionSourceId.includes(id[1])) {
-        return true;
+    const exceptionSourceId: string[] = widgetConfig?.communes?.outdatedHarvestSources
+    if (sourceId && exceptionSourceId) {
+      if (exceptionSourceId.includes(sourceId)) {
+        return true
+      }
+    }
+  } else {
+    const exceptionClientId: string[] = widgetConfig?.communes?.outdatedApiDepotClients
+    if (exceptionClientId) {
+      if (exceptionClientId.includes(client._id)) {
+        return true
       }
     }
   }
@@ -64,6 +69,7 @@ export function isExceptionClientId(revision) {
 interface CreateFormProps {
   namePlaceholder: string;
   commune: CommuneApiGeoType;
+  widgetConfig: BALWidgetConfig;
   handleCommune: Dispatch<SetStateAction<CommuneApiGeoType>>;
   nom: string;
   onNomChange: ChangeEventHandler<HTMLInputElement>;
@@ -74,6 +80,7 @@ interface CreateFormProps {
 function CreateForm({
   namePlaceholder,
   commune,
+  widgetConfig,
   handleCommune,
   nom,
   onNomChange,
@@ -127,7 +134,7 @@ function CreateForm({
       const revision: Revision = await ApiDepotService.getCurrentRevision(
         commune.code
       );
-      if (revision && !isExceptionClientId(revision)) {
+      if (revision && !isExceptionClientId(revision, widgetConfig)) {
         setIsShownAlertPublishedBal(true);
         setPublishedRevision(revision);
         return;

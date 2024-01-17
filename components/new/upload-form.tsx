@@ -46,6 +46,7 @@ import { isExceptionClientId } from "./create-form";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";
 import AlertPublishedBAL from "./alert-published-bal";
+import { BALWidgetConfig } from "@/lib/bal-admin/type";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -102,6 +103,7 @@ function extractCommuneFromCSV(rows: any[]): CommuneRow[] {
 
 interface UploadFormProps {
   namePlaceholder: string;
+  widgetConfig: BALWidgetConfig;
   handleCommune: Dispatch<SetStateAction<CommuneApiGeoType>>;
   nom: string;
   onNomChange: ChangeEventHandler<HTMLInputElement>;
@@ -112,6 +114,7 @@ interface UploadFormProps {
 function UploadForm({
   namePlaceholder = "Nom",
   nom,
+  widgetConfig,
   onNomChange,
   email,
   onEmailChange,
@@ -233,7 +236,7 @@ function UploadForm({
     try {
       const revision: Revision =
         await ApiDepotService.getCurrentRevision(selectedCodeCommune);
-      if (revision && !isExceptionClientId(revision)) {
+      if (revision && !isExceptionClientId(revision, widgetConfig)) {
         setIsShownAlertPublishedBal(true);
         setPublishedRevision(revision);
         return;
