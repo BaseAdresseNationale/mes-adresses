@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import { Pane, Button } from "evergreen-ui";
 
+import usePublishProcess from '@/hooks/publish-process'
+
 import { pauseSync, resumeSync } from "@/lib/bal-api";
 
 import StatusBadge from "@/components/status-badge";
@@ -17,6 +19,10 @@ function BALStatus({
   handleHabilitation,
   reloadBaseLocale,
 }) {
+  const {
+    handleShowHabilitationProcess,
+  } = usePublishProcess(commune)
+
   const handlePause = async () => {
     await pauseSync(baseLocale._id, token);
     await reloadBaseLocale();
@@ -53,7 +59,18 @@ function BALStatus({
             isHabilitationValid={isHabilitationValid}
           />
         ) : (
-          baseLocale.status === "draft" && (
+          <>
+          {baseLocale.status === "published" && baseLocale.sync?.status == 'outdated' && !isHabilitationValid && (
+            <Button
+              marginRight={8}
+              height={24}
+              appearance="primary"
+              onClick={handleShowHabilitationProcess}
+            >
+              Habiliter la BAL
+            </Button>
+          )}
+          {baseLocale.status === "draft" && (
             <Button
               marginRight={8}
               height={24}
@@ -62,7 +79,8 @@ function BALStatus({
             >
               Publier
             </Button>
-          )
+          )}
+          </>
         ))}
     </>
   );

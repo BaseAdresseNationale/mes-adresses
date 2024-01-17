@@ -19,14 +19,15 @@ export default function useHabilitation(baseLocale, token) {
       const isExpired = new Date(habilitation.expiresAt) < new Date()
 
       if (baseLocale.sync && isFirstLoad.current) {
+        const description = 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Habiliter la Base Adresse Locale" pour renouveler l’habilitation.'
         if (!isAccepted) {
           toaster.danger('Aucune habilitation valide trouvée', {
-            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" ou "Habiliter la Base Adresse Locale" pour renouveler l’habilitation.',
+            description,
             duration: 10
           })
         } else if (isExpired) {
           toaster.danger('L’habilitaton est expirée', {
-            description: 'Les prochaines modifications ne seront pas prises en compte dans la Base Adresse Nationale. Cliquez sur "Publier" ou "Habiliter la Base Adresse Locale" pour renouveler l’habilitation.',
+            description,
             duration: 10
           })
         }
