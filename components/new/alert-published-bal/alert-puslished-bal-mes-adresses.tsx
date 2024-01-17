@@ -30,13 +30,11 @@ function AlertPublishedBALMesAdresses({
         <Paragraph marginTop={16}>
           <Button
             is="a"
-            appearance="primary"
             height={30}
             href={`/bal/${balId}`}
             target="_blank"
-            fontSize="0.8em"
           >
-            Lien Base adresse locale
+            Accéder à la Base Adresse Locale
           </Button>
         </Paragraph>
       )}

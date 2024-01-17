@@ -18,9 +18,8 @@ function AlertPublishedBALApiDepot({
   return (
     <Pane>
       <Paragraph marginTop={16}>
-        Une Base Adresse Locale est déjà déposée par <Strong>{client.chefDeFile}</Strong>. En
-        cas de doute, merci de prendre attache auprès de cet organisme en
-        contactant : <Strong>{client.chefDeFileEmailContact}</Strong>
+        Une Base Adresse Locale est déjà déposée par <Strong>{client.chefDeFile}</Strong>.
+        Nous vous recommandons de prendre contact avec <Strong>{client.chefDeFileEmailContact}</Strong> avant de poursuivre la création de votre BAL
       </Paragraph>
       <Paragraph marginTop={16}>
         La commune reste toutefois l’autorité compétente en matière d’adressage,
