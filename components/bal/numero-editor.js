@@ -250,13 +250,15 @@ function NumeroEditor({initialVoieId, initialValue, commune, hasPreview, closeFo
 
         <Comment input={comment} onChange={onCommentChange} />
 
-        <CertificationButton
+      </Pane>
+
+      <CertificationButton
           isCertified={initialValue?.certifie || false}
           isLoading={isLoading}
           onConfirm={setCertifie}
           onCancel={closeForm}
         />
-      </Pane>
+
     </Form>
   )
 }

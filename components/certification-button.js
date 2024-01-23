@@ -20,7 +20,7 @@ function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
   }, [isLoading, isCertified])
 
   return (
-    <>
+    <div className="certification-button-wrapper">
       <Button
         isLoading={isLoading}
         type='submit'
@@ -48,7 +48,7 @@ function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
 
       <Button
         disabled={isLoading}
-        appearance='minimal'
+        appearance='default'
         marginLeft={8}
         marginTop={16}
         display='inline-flex'
@@ -56,7 +56,15 @@ function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
       >
         Annuler
       </Button>
-    </>
+
+      <style jsx>{`
+        .certification-button-wrapper {
+          position: sticky;
+          bottom: 0;
+          display: flex;
+        }
+      `}</style>
+    </div>
   )
 }
 
