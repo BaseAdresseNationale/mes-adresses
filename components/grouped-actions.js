@@ -221,14 +221,12 @@ function GroupedActions({idVoie, numeros, selectedNumerosIds, resetSelectedNumer
                 />
               )}
 
-              <Pane display='flex' justifyContent='end' paddingBottom={16}>
-                <CertificationButton
-                  isLoading={isLoading}
-                  isCertified={isAllSelectedCertifie}
-                  onConfirm={setCertifie}
-                  onCancel={onFormCancel}
-                />
-              </Pane>
+              <CertificationButton
+                isLoading={isLoading}
+                isCertified={isAllSelectedCertifie}
+                onConfirm={setCertifie}
+                onCancel={onFormCancel}
+              />
             </FormContainer>
           </Pane>
         </Dialog>

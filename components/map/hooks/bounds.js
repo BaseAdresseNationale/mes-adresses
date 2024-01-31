@@ -14,7 +14,9 @@ function useBounds(commune, voie, toponyme) {
   const router = useRouter()
 
   const setBoundsItem = useCallback(item => {
-    if (map && item && item.bbox) {
+    if (map && item && item.trace) {
+      setBounds(bbox(item.trace))
+    } else if (map && item && item.bbox) {
       setBounds(item.bbox)
     }
   }, [map, setBounds])

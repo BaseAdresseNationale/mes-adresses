@@ -20,43 +20,59 @@ function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
   }, [isLoading, isCertified])
 
   return (
-    <>
-      <Button
-        isLoading={isLoading}
-        type='submit'
-        appearance='primary'
-        intent='success'
-        marginTop={16}
-        marginLeft={8}
-        iconAfter={EndorsedIcon}
-        onClick={() => onConfirm(isCertified ? null : true)}
-      >
-        {submitCertificationLabel}
-      </Button>
+    <div className="certification-button-wrapper">
+      <div>
+        <Button
+          isLoading={isLoading}
+          type='submit'
+          appearance='primary'
+          intent='success'
+          iconAfter={EndorsedIcon}
+          onClick={() => onConfirm(isCertified ? null : true)}
+        >
+          {submitCertificationLabel}
+        </Button>
+      </div>
 
-      <Button
-        isLoading={isLoading}
-        type='submit'
-        appearance='default'
-        intent={isCertified ? 'danger' : 'success'}
-        marginTop={16}
-        marginLeft={8}
-        onClick={() => onConfirm(isCertified ? false : null)}
-      >
-        {submitLabel}
-      </Button>
+      <div>
+        <Button
+          isLoading={isLoading}
+          type='submit'
+          appearance='default'
+          intent={isCertified ? 'danger' : 'success'}
+          onClick={() => onConfirm(isCertified ? false : null)}
+        >
+          {submitLabel}
+        </Button>
+      </div>
 
-      <Button
-        disabled={isLoading}
-        appearance='minimal'
-        marginLeft={8}
-        marginTop={16}
-        display='inline-flex'
-        onClick={onCancel}
-      >
-        Annuler
-      </Button>
-    </>
+      <div>
+        <Button
+          disabled={isLoading}
+          appearance='default'
+          display='inline-flex'
+          onClick={onCancel}
+        >
+          Annuler
+        </Button>
+      </div>
+
+      <style jsx>{`
+        .certification-button-wrapper {
+          position: sticky;
+          bottom: 0;
+          display: flex;
+          padding: 10px;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .certification-button-wrapper > div {
+          box-shadow: 0 0 1px rgba(67, 90, 111, 0.3), 0 5px 8px -4px rgba(67, 90, 111, 0.47);
+          margin-left: 8px;
+        }
+      `}</style>
+    </div>
   )
 }
 

@@ -104,7 +104,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({baseLocale}) {
   }, [formHasChanged])
 
   return (
-    <FormContainer onSubmit={onSubmit} display='flex' flexDirection='column' justifyContent='space-between'>
+    <FormContainer onSubmit={onSubmit} display='flex' flexDirection='column'>
       <Pane>
         <FormInput>
           <TextInputField
