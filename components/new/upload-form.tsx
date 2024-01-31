@@ -103,7 +103,8 @@ function extractCommuneFromCSV(rows: any[]): CommuneRow[] {
 
 interface UploadFormProps {
   namePlaceholder: string;
-  widgetConfig: BALWidgetConfig;
+  outdatedApiDepotClients: string[];
+  outdatedHarvestSources: string[];
   handleCommune: Dispatch<SetStateAction<CommuneApiGeoType>>;
   nom: string;
   onNomChange: ChangeEventHandler<HTMLInputElement>;
@@ -114,7 +115,8 @@ interface UploadFormProps {
 function UploadForm({
   namePlaceholder = "Nom",
   nom,
-  widgetConfig,
+  outdatedApiDepotClients,
+  outdatedHarvestSources,
   onNomChange,
   email,
   onEmailChange,
@@ -236,7 +238,7 @@ function UploadForm({
     try {
       const revision: Revision =
         await ApiDepotService.getCurrentRevision(selectedCodeCommune);
-      if (revision && !isExceptionClientId(revision, widgetConfig)) {
+      if (revision && !isExceptionClientId(revision, outdatedApiDepotClients, outdatedHarvestSources)) {
         setIsShownAlertPublishedBal(true);
         setPublishedRevision(revision);
         return;

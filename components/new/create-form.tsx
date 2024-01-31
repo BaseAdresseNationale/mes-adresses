@@ -29,37 +29,27 @@ import {
 } from "@/lib/openapi";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Client, Revision } from "@/lib/api-depot/types";
-import { BALWidgetConfig } from "@/lib/bal-admin/type";
 
 export enum ClientRevisionEnum {
   API_DEPOT = "api-depot",
   FORMULAIRE_PUBLICATION = "formulaire-publication",
   GUICHET_ADRESSES = "guichet-adresse",
   MES_ADRESSES = "mes-adresses",
-  MOINSSONEUR_BAL = "moissonneur-bal",
+  MOISSONNEUR_BAL = "moissonneur-bal",
 }
 
-export function isExceptionClientId(revision: Revision, widgetConfig: BALWidgetConfig) {
+export function isExceptionClientId(revision: Revision, outdatedApiDepotClients: string[], outdatedHarvestSources: string[]) {
   const client: Client = revision.client as Client;
-  if (
-    client.id === ClientRevisionEnum.GUICHET_ADRESSES ||
-    client.id === ClientRevisionEnum.FORMULAIRE_PUBLICATION
-  ) {
-    return true;
-  } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {
+  if (client.id === ClientRevisionEnum.MOISSONNEUR_BAL) {
     const sourceId: string = revision.context.extras.sourceId;
-    const exceptionSourceId: string[] = widgetConfig?.communes?.outdatedHarvestSources
-    if (sourceId && exceptionSourceId) {
-      if (exceptionSourceId.includes(sourceId)) {
+    if (sourceId && outdatedHarvestSources) {
+      if (outdatedHarvestSources.includes(sourceId)) {
         return true
       }
     }
   } else {
-    const exceptionClientId: string[] = widgetConfig?.communes?.outdatedApiDepotClients
-    if (exceptionClientId) {
-      if (exceptionClientId.includes(client._id)) {
-        return true
-      }
+    if (outdatedApiDepotClients.includes(client._id)) {
+      return true
     }
   }
 
@@ -69,7 +59,8 @@ export function isExceptionClientId(revision: Revision, widgetConfig: BALWidgetC
 interface CreateFormProps {
   namePlaceholder: string;
   commune: CommuneApiGeoType;
-  widgetConfig: BALWidgetConfig;
+  outdatedApiDepotClients: string[];
+  outdatedHarvestSources: string[];
   handleCommune: Dispatch<SetStateAction<CommuneApiGeoType>>;
   nom: string;
   onNomChange: ChangeEventHandler<HTMLInputElement>;
@@ -80,7 +71,8 @@ interface CreateFormProps {
 function CreateForm({
   namePlaceholder,
   commune,
-  widgetConfig,
+  outdatedApiDepotClients,
+  outdatedHarvestSources,
   handleCommune,
   nom,
   onNomChange,
@@ -134,7 +126,7 @@ function CreateForm({
       const revision: Revision = await ApiDepotService.getCurrentRevision(
         commune.code
       );
-      if (revision && !isExceptionClientId(revision, widgetConfig)) {
+      if (revision && !isExceptionClientId(revision, outdatedApiDepotClients, outdatedHarvestSources)) {
         setIsShownAlertPublishedBal(true);
         setPublishedRevision(revision);
         return;

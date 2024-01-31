@@ -19,12 +19,12 @@ function AlertPublishedBALApiDepot({
     <Pane>
       <Paragraph marginTop={16}>
         Une Base Adresse Locale est déjà gérée par <Strong>{client.chefDeFile}</Strong>.
-        Nous vous recommandons de prendre contact avec <Strong>{client.chefDeFileEmailContact}</Strong> avant de poursuivre la création de votre BAL
+        Nous vous recommandons de prendre contact avec <Strong>{client.chefDeFileEmailContact}</Strong> avant de poursuivre la création de votre BAL.
       </Paragraph>
       <Paragraph marginTop={16}>
         La commune reste toutefois l’autorité compétente en matière d’adressage,
         et vous pouvez décider à tout moment de reprendre la main sur la
-        publication de votre BAL
+        publication de votre BAL.
       </Paragraph>
     </Pane>
   );

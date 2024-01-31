@@ -27,7 +27,8 @@ import { BALWidgetConfig } from "@/lib/bal-admin/type";
 
 interface IndexPageProps {
   defaultCommune?: CommuneType;
-  widgetConfig: BALWidgetConfig
+  outdatedApiDepotClients: string[];
+  outdatedHarvestSources: string[];
   isDemo: boolean;
 }
 
@@ -35,7 +36,7 @@ const getSuggestedBALName = (commune?: CommuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null;
 };
 
-function IndexPage({ defaultCommune, widgetConfig, isDemo }: IndexPageProps) {
+function IndexPage({ defaultCommune, outdatedApiDepotClients, outdatedHarvestSources, isDemo }: IndexPageProps) {
   const { balAccess } = useContext(LocalStorageContext);
 
   const suggestedBALName = useRef<{
@@ -110,7 +111,8 @@ function IndexPage({ defaultCommune, widgetConfig, isDemo }: IndexPageProps) {
                 <CreateForm
                   namePlaceholder={suggestedBALName.current.suggested}
                   commune={selectedCommune}
-                  widgetConfig={widgetConfig}
+                  outdatedApiDepotClients={outdatedApiDepotClients}
+                  outdatedHarvestSources={outdatedHarvestSources}
                   nom={nom}
                   onNomChange={onNomChange}
                   email={email}
@@ -120,7 +122,8 @@ function IndexPage({ defaultCommune, widgetConfig, isDemo }: IndexPageProps) {
               ) : (
                 <UploadForm
                   namePlaceholder={suggestedBALName.current.suggested}
-                  widgetConfig={widgetConfig}
+                  outdatedApiDepotClients={outdatedApiDepotClients}
+                  outdatedHarvestSources={outdatedHarvestSources}
                   nom={nom}
                   onNomChange={onNomChange}
                   email={email}
@@ -167,14 +170,26 @@ export async function getServerSideProps({ query }) {
       fields: "departement",
     });
   }
-  const widgetConfig: BALWidgetConfig = await ApiBalAdminService.getBALWidgetConfig()
-  return {
-    props: {
-      defaultCommune,
-      widgetConfig,
-      isDemo: query.demo === "1",
-    },
-  };
+  try {
+    const widgetConfig: BALWidgetConfig = await ApiBalAdminService.getBALWidgetConfig()
+    return {
+      props: {
+        defaultCommune,
+        outdatedApiDepotClients: widgetConfig?.communes?.outdatedApiDepotClients || [],
+        outdatedHarvestSources: widgetConfig?.communes?.outdatedHarvestSources || [],
+        isDemo: query.demo === "1",
+      }
+    }  
+  } catch {
+    return {
+      props: {
+        defaultCommune,
+        outdatedApiDepotClients: [],
+        outdatedHarvestSources: [],
+        isDemo: query.demo === "1",
+      },
+    }
+  }
 }
 
-export default IndexPage;
+export default IndexPage

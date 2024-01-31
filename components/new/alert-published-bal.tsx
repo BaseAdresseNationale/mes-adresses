@@ -27,14 +27,12 @@ function AlertPublishedBAL({
 
   const getAlertComponent: React.FunctionComponent = useCallback(() => {
     const client: Client = revision.client as Client;
-    if (client.id) {
-      if (client.id === ClientRevisionEnum.MES_ADRESSES) {
-        return <AlertPublishedBALMesAdresses revision={revision} />;
-      } else if (client.id === ClientRevisionEnum.MOINSSONEUR_BAL) {
-        return <AlertPublishedBALMoissoneur revision={revision} />;
-      } else {
-        return <AlertPublishedBALApiDepot revision={revision} />;
-      }
+    if (client.id === ClientRevisionEnum.MES_ADRESSES) {
+      return <AlertPublishedBALMesAdresses revision={revision} />;
+    } else if (client.id === ClientRevisionEnum.MOISSONNEUR_BAL) {
+      return <AlertPublishedBALMoissoneur revision={revision} />;
+    } else {
+      return <AlertPublishedBALApiDepot revision={revision} />;
     }
     return null;
   }, [revision]);
