@@ -36,7 +36,12 @@ const getSuggestedBALName = (commune?: CommuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null;
 };
 
-function IndexPage({ defaultCommune, outdatedApiDepotClients, outdatedHarvestSources, isDemo }: IndexPageProps) {
+function IndexPage({
+  defaultCommune,
+  outdatedApiDepotClients,
+  outdatedHarvestSources,
+  isDemo,
+}: IndexPageProps) {
   const { balAccess } = useContext(LocalStorageContext);
 
   const suggestedBALName = useRef<{
@@ -171,15 +176,18 @@ export async function getServerSideProps({ query }) {
     });
   }
   try {
-    const widgetConfig: BALWidgetConfig = await ApiBalAdminService.getBALWidgetConfig()
+    const widgetConfig: BALWidgetConfig =
+      await ApiBalAdminService.getBALWidgetConfig();
     return {
       props: {
         defaultCommune,
-        outdatedApiDepotClients: widgetConfig?.communes?.outdatedApiDepotClients || [],
-        outdatedHarvestSources: widgetConfig?.communes?.outdatedHarvestSources || [],
+        outdatedApiDepotClients:
+          widgetConfig?.communes?.outdatedApiDepotClients || [],
+        outdatedHarvestSources:
+          widgetConfig?.communes?.outdatedHarvestSources || [],
         isDemo: query.demo === "1",
-      }
-    }  
+      },
+    };
   } catch {
     return {
       props: {
@@ -188,8 +196,8 @@ export async function getServerSideProps({ query }) {
         outdatedHarvestSources: [],
         isDemo: query.demo === "1",
       },
-    }
+    };
   }
 }
 
-export default IndexPage
+export default IndexPage;
