@@ -170,8 +170,9 @@ function Publication() {
               />
             </Pane>
             <Text>
-              Des modifications ont été détectées, la Base Adresse Nationale
-              sera automatiquement mise à jour d’ici quelques heures.
+              L&apos;habilitation de la Base Adresse Locale est expirée.
+              Il vous faut renouveler celle-ci pour que les nouvelles
+              modifications remontent dans la Base Adresse Nationale.
             </Text>
           </Pane>
 
