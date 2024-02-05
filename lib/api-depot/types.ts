@@ -34,7 +34,7 @@ export type Client = {
   _id: string;
   mandataire: string;
   chefDeFile?: string;
-  chefDeFileEmailContact?: string;
+  chefDeFileEmail?: string;
 };
 
 export type ChefDeFile = {
