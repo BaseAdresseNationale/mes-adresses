@@ -6,7 +6,7 @@ import { Dialog, Pane, Text, Spinner, toaster } from "evergreen-ui";
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
 
-import { getRevisions } from "@/lib/ban-api-depot";
+import { ApiDepotService } from "@/lib/api-depot";
 import {
   sendAuthenticationCode,
   validateAuthenticationCode,
@@ -18,7 +18,6 @@ import ValidateAuthentication from "@/components/habilitation-process/validate-a
 import StrategySelection from "@/components/habilitation-process/strategy-selection";
 import AcceptedDialog from "@/components/habilitation-process/accepted-dialog";
 import RejectedDialog from "@/components/habilitation-process/rejected-dialog";
-import usePublishProcess from "@/hooks/publish-process";
 
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {
@@ -45,7 +44,6 @@ function HabilitationProcess({
   const [isLoading, setIsLoading] = useState(false);
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
-  const { handleChangeStatus } = usePublishProcess(commune);
 
   const { reloadHabilitation } = useContext(BalDataContext);
 
@@ -88,7 +86,7 @@ function HabilitationProcess({
   // Checks revisions to warn of a conflict
   const checkConflictingRevision = useCallback(async () => {
     try {
-      const revisions = await getRevisions(commune.code);
+      const revisions = await ApiDepotService.getRevisions(commune.code);
       setIsConflicted(revisions.length > 0);
     } catch (error) {
       console.log(

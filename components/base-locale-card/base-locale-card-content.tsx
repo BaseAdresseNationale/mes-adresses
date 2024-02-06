@@ -24,14 +24,14 @@ import { CommuneApiGeoType } from "@/lib/geo-api/type";
 
 interface BaseLocaleCardContentProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneApiGeoType;
-  habilitation: HabilitationDTO;
+  commune?: CommuneApiGeoType;
+  habilitation?: HabilitationDTO;
   isAdmin: boolean;
   userEmail: string;
-  onSelect: () => void;
-  onRemove: () => void;
-  onHide: () => void;
-  isShownHabilitationStatus: boolean;
+  onSelect?: () => void;
+  onRemove?: (e: any) => void;
+  onHide?: () => void;
+  isShownHabilitationStatus?: boolean;
 }
 
 function BaseLocaleCardContent({

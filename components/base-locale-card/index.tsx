@@ -29,12 +29,12 @@ const ADRESSE_URL =
 interface BaseLocaleCardProps {
   baseLocale: ExtendedBaseLocaleDTO;
   isAdmin: boolean;
-  userEmail: string;
-  onRemove: () => void;
-  onHide: () => void;
-  onSelect: () => void;
-  isDefaultOpen: boolean;
-  isShownHabilitationStatus: boolean;
+  userEmail?: string;
+  onRemove?: (e: any) => void;
+  onHide?: () => void;
+  onSelect?: () => void;
+  isDefaultOpen?: boolean;
+  isShownHabilitationStatus?: boolean;
 }
 
 function BaseLocaleCard({

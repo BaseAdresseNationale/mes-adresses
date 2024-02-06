@@ -15,4 +15,5 @@ export type CommuneApiGeoType = {
   codesPostaux?: string[];
   population?: number;
   siren?: string;
-}
+  _score: number;
+};

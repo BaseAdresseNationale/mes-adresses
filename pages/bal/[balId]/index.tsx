@@ -73,7 +73,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     await reloadVoies();
 
     setIsEditing(false);
-  }, [baseLocale._id, reloadVoies, setIsEditing, token]);
+  }, [baseLocale._id, reloadVoies, setIsEditing]);
 
   const onRemove = useCallback(async () => {
     await reloadParcelles();
@@ -111,7 +111,6 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     reloadTiles,
     reloadParcelles,
     toConvert,
-    token,
   ]);
 
   const onEdit = useCallback(
