@@ -17,7 +17,6 @@ import {
   VoiesService,
   ToponymesService,
   Sync,
-  UpdateBatchNumeroDTO,
   NumeroPopulate,
   ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
@@ -96,14 +95,14 @@ export function BalDataContextProvider({
 
   const { token } = useContext(TokenContext);
 
-  const [
+  const {
     habilitation,
     reloadHabilitation,
-    isHabilitationValid,
-    habilitationIsLoading,
+    isValid: isHabilitationValid,
+    isLoading: habilitationIsLoading,
     isHabilitationProcessDisplayed,
     setIsHabilitationProcessDisplayed,
-  ] = useHabilitation(initialBaseLocale, token);
+  } = useHabilitation(initialBaseLocale, token);
 
   const reloadParcelles = useCallback(async () => {
     const parcelles: Array<string> =
@@ -160,7 +159,6 @@ export function BalDataContextProvider({
         });
       }, 30000); // Maximum interval between CRON job
     }
-
   }, [baseLocale, isRefrehSyncStat, reloadBaseLocale]);
 
   const setEditingId = useCallback(
@@ -190,9 +188,7 @@ export function BalDataContextProvider({
   }, [editingId, numeros, voie, toponyme, voies, toponymes]);
 
   const certifyAllNumeros = useCallback(async () => {
-    await BasesLocalesService.certifyAllNumeros(
-      baseLocale._id,
-    );
+    await BasesLocalesService.certifyAllNumeros(baseLocale._id);
     await reloadNumeros();
     await reloadVoies();
     await reloadToponymes();
