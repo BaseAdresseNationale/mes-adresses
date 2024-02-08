@@ -147,21 +147,33 @@ function ToponymeEditor({initialValue, commune, closeForm}) {
         )}
       </Pane>
 
-      <Pane>
-        <Button isLoading={isLoading} type='submit' appearance='primary' intent='success'>
+      <div className='toponyme-editor-controls'>
+        <Button isLoading={isLoading} type='submit' appearance='primary' intent='success' boxShadow="0 0 1px rgba(67, 90, 111, 0.3), 0 5px 8px -4px rgba(67, 90, 111, 0.47)">
           {submitLabel}
         </Button>
 
         <Button
           disabled={isLoading}
-          appearance='minimal'
+          appearance='default'
           marginLeft={8}
           display='inline-flex'
           onClick={onFormCancel}
+          boxShadow="0 0 1px rgba(67, 90, 111, 0.3), 0 5px 8px -4px rgba(67, 90, 111, 0.47)"
         >
           Annuler
         </Button>
-      </Pane>
+      </div>
+
+      <style jsx>{`
+        .toponyme-editor-controls {
+          position: sticky;
+          bottom: 0;
+          display: flex;
+          padding: 10px;
+          align-items: center;
+          justify-content: center;
+        }
+      `}</style>
     </Form>
   )
 }
