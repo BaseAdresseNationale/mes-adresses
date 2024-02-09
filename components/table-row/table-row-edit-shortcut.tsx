@@ -79,7 +79,7 @@ function TableRowEditShortcut({
   return isSelectable ? (
     <Tooltip
       showDelay={500}
-      content={hoveredEdit ? "Modifier" : "Consulter"}
+      content={hoveredEdit ? "Modifier le libellé" : "Consulter les numéros"}
       position={Position.BOTTOM}
     >
       {CellComponent}
