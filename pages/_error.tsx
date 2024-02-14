@@ -50,15 +50,7 @@ function CustomError({ statusCode }: CustomErrorProps) {
           marginBottom={16}
         >
           <Text>
-            Si vous rencontrez cette page, merci de le signaler à notre support
-            à l’adresse courriel :{" "}
-            <a
-              href={`mailto:adresse@data.gouv.fr?subject=Une erreur est survenue - code ${statusCode}`}
-            >
-              adresse@data.gouv.fr
-            </a>
-            . Nous vous prions de bien vouloir nous excuser pour la gêne
-            occasionnée.
+            {`Indisponibilité temporaire, merci d'actualiser la page ou de réessayer ultérieurement.`}
           </Text>
         </Alert>
         <Link legacyBehavior href="/" passHref>
