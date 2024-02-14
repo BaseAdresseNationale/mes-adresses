@@ -34,7 +34,7 @@ function AlertPublishedBALMesAdresses({
             href={`/bal/${balId}`}
             target="_blank"
           >
-            Accéder à la Base Adresse Locale
+            Accéder à la Base Adresse Locale existante
           </Button>
         </Paragraph>
       )}
