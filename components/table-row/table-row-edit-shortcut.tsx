@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
-import {Pane, Table, EditIcon, Text} from 'evergreen-ui'
+import React, { useState } from "react";
+import { Pane, Table, EditIcon, Text, Tooltip, Position } from "evergreen-ui";
 
-import LanguagePreview from '../bal/language-preview'
+import LanguagePreview from "../bal/language-preview";
 
 interface TableRowEditShortcutProps {
   label: string;
@@ -12,31 +12,43 @@ interface TableRowEditShortcutProps {
   isSelectable: boolean;
 }
 
-function TableRowEditShortcut({label, nomAlt, complement, colors = {}, isEditingEnabled, isSelectable}: TableRowEditShortcutProps) {
-  const [hovered, setHovered] = useState(false)
+function TableRowEditShortcut({
+  label,
+  nomAlt,
+  complement,
+  colors = {},
+  isEditingEnabled,
+  isSelectable,
+}: TableRowEditShortcutProps) {
+  const [hoveredEdit, setHoveredEdit] = useState(false);
 
-  return (
+  const CellComponent = (
     <Table.Cell
       data-browsable
-      style={isSelectable ? {cursor: 'pointer', backgroundColor: hovered ? '#E4E7EB' : '#fff'} : null}
-      onMouseEnter={() => {
-        setHovered(isSelectable)
-      }}
-      onMouseLeave={() => {
-        setHovered(false)
-      }}
+      className={`table-row-edit-shortcut${isSelectable ? " selectable" : ""}`}
     >
       <Table.TextCell
         data-editable
-        flex='0 1 1'
-        style={{cursor: isEditingEnabled ? 'text' : 'pointer'}}
-        className='edit-cell'
+        flex="0 1 1"
+        height="100%"
+        style={{ cursor: isSelectable ? "pointer" : "default" }}
+        className="edit-cell"
+        onMouseEnter={() => {
+          setHoveredEdit(isEditingEnabled);
+        }}
+        onMouseLeave={() => {
+          setHoveredEdit(false);
+        }}
       >
         <Pane padding={1} fontSize={15}>
-          <Text color={colors.label ? colors.label : 'default'}>{label}</Text>
-          {complement && <Text color={colors.complement ? colors.complement : 'default'}><i>{` - ${complement}`}</i></Text>}
+          <Text color={colors.label ? colors.label : "default"}>{label}</Text>
+          {complement && (
+            <Text color={colors.complement ? colors.complement : "default"}>
+              <i>{` - ${complement}`}</i>
+            </Text>
+          )}
           {isEditingEnabled && (
-            <span className='pencil-icon'>
+            <span className="pencil-icon">
               <EditIcon marginBottom={-4} marginLeft={8} />
             </span>
           )}
@@ -50,6 +62,10 @@ function TableRowEditShortcut({label, nomAlt, complement, colors = {}, isEditing
       </Table.TextCell>
 
       <style global jsx>{`
+        .table-row-edit-shortcut.selectable:hover {
+          background-color: #e4e7eb;
+          cursor: pointer;
+        }
         .edit-cell .pencil-icon {
           display: none;
         }
@@ -57,9 +73,21 @@ function TableRowEditShortcut({label, nomAlt, complement, colors = {}, isEditing
         .edit-cell:hover .pencil-icon {
           display: inline-block;
         }
-        `}</style>
+      `}</style>
     </Table.Cell>
-  )
+  );
+
+  return isSelectable ? (
+    <Tooltip
+      showDelay={500}
+      content={hoveredEdit ? "Modifier le libellé" : "Consulter les numéros"}
+      position={Position.BOTTOM}
+    >
+      {CellComponent}
+    </Tooltip>
+  ) : (
+    CellComponent
+  );
 }
 
-export default TableRowEditShortcut
+export default TableRowEditShortcut;
