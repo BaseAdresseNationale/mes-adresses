@@ -30,6 +30,7 @@ function TableRowEditShortcut({
       <Table.TextCell
         data-editable
         flex="0 1 1"
+        height="100%"
         style={{ cursor: isSelectable ? "pointer" : "default" }}
         className="edit-cell"
         onMouseEnter={() => {
