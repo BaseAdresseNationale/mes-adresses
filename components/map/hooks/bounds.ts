@@ -5,7 +5,7 @@ import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 import { useRouter } from "next/router";
 import { CommuneType } from "@/types/commune";
-import { Toponyme, Voie } from "@/lib/openapi";
+import { Numero, Toponyme, Voie } from "@/lib/openapi";
 
 function useBounds(commune: CommuneType, voie: Voie, toponyme: Toponyme) {
   const communeBounds = useMemo(
@@ -32,28 +32,33 @@ function useBounds(commune: CommuneType, voie: Voie, toponyme: Toponyme) {
   );
 
   useEffect(() => {
-    // Get bounds on page load and when edit
     const { idVoie, idToponyme } = router.query;
-    const bounds = communeBounds;
+    if (!isTileSourceLoaded) {
+      return;
+    }
 
-    if (isTileSourceLoaded) {
-      if (idVoie) {
-        setBoundsItem(voie);
-      } else if (idToponyme) {
-        setBoundsItem(toponyme);
-      } else if (editingItem) {
-        setBoundsItem(editingItem);
-      } else if (!wasCenteredOnCommuneOnce) {
-        setBounds(bounds);
-        setWasCenteredOnCommuneOnce(true);
-      }
+    if (idVoie) {
+      setBoundsItem(voie);
+    } else if (idToponyme) {
+      setBoundsItem(toponyme);
+    }
+  }, [router.query, voie, toponyme, setBoundsItem, isTileSourceLoaded]);
+
+  useEffect(() => {
+    const bounds = communeBounds;
+    if (!isTileSourceLoaded) {
+      return;
+    }
+
+    if (editingItem) {
+      setBoundsItem(editingItem);
+    } else if (!wasCenteredOnCommuneOnce) {
+      setBounds(bounds);
+      setWasCenteredOnCommuneOnce(true);
     }
   }, [
     communeBounds,
-    router.query,
     isTileSourceLoaded,
-    voie,
-    toponyme,
     editingItem,
     setBoundsItem,
     wasCenteredOnCommuneOnce,
