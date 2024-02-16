@@ -5,7 +5,7 @@ import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 import { useRouter } from "next/router";
 import { CommuneType } from "@/types/commune";
-import { Numero, Toponyme, Voie } from "@/lib/openapi";
+import { Toponyme, Voie } from "@/lib/openapi";
 
 function useBounds(commune: CommuneType, voie: Voie, toponyme: Toponyme) {
   const communeBounds = useMemo(
