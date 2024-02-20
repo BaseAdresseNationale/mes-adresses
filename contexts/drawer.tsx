@@ -1,9 +1,9 @@
 import { ChildrenProps } from "@/types/context";
 import React, { useState, useMemo } from "react";
 
-enum DrawerDisplayedEnum {
+export enum DrawerDisplayedEnum {
   NONE = "",
-  DOWNLOADS = "downloads",
+  DOWNLOAD = "download",
   SETTING = "setting",
   TRASH = "trash",
 }

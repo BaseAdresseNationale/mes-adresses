@@ -10,11 +10,13 @@ export class ExportCsvService {
 
     /**
      * Get Bal csv file
+     * @param withComment
      * @param baseLocaleId
      * @returns any
      * @throws ApiError
      */
     public static getCsvBal(
+        withComment: boolean,
         baseLocaleId: string,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -22,6 +24,9 @@ export class ExportCsvService {
             url: '/v2/bases-locales/{baseLocaleId}/csv',
             path: {
                 'baseLocaleId': baseLocaleId,
+            },
+            query: {
+                'withComment': withComment,
             },
         });
     }
