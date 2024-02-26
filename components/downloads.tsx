@@ -1,4 +1,4 @@
-import { Pane, Heading, Link, DownloadIcon, Checkbox } from "evergreen-ui";
+import { Pane, Heading, Link, DownloadIcon, Checkbox, Alert, Button, Text, Label } from "evergreen-ui";
 import { useContext, useState } from "react";
 import { ExportCsvService } from "@/lib/openapi";
 import TokenContext from "@/contexts/token";
@@ -53,18 +53,31 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
             <Link
               style={{ cursor: "pointer" }}
               onClick={downloadBalCsv}
-              marginRight="10px"
+              marginRight={12}
             >
               Base Adresse Locale (format CSV)
             </Link>
             {token && (
-              <Checkbox
-                checked={withComment}
-                label="Avec commentaires"
-                onChange={(e) => setWithComment(e.target.checked)}
-              />
+              <>
+                <Checkbox
+                  checked={withComment}
+                  onChange={(e) => setWithComment(e.target.checked)}
+                />
+                <Text 
+                  marginLeft={6} 
+                >
+                  Avec commentaires
+                </Text> 
+              </>
             )}
           </Pane>
+          { withComment &&
+            <Alert marginLeft={-30} marginRight={10} hasIcon={false}>
+              <Text is="p" textAlign="center">
+                Attention, si vous avez renseigné des informations à caractère personnel dans vos commentaires, celle-ci seront présentes dans l’export de votre Base Adresse Locale.
+              </Text>
+            </Alert>
+          }
         </Pane>
         <Pane is="li" marginBottom={10}>
           <Link style={{ cursor: "pointer" }} onClick={downloadVoieCsv}>
