@@ -8,8 +8,7 @@ on:
 
 env:
   NEXT_PUBLIC_EDITEUR_URL: https://mes-adresses.data.gouv.fr
-  NEXT_PUBLIC_BAL_API_URL: https://api-bal.adresse.data.gouv.fr/v1
-  NEXT_PUBLIC_MES_ADRESSES_API_URL: https://api-bal.adresse.data.gouv.fr/
+  NEXT_PUBLIC_BAL_API_URL: https://api-bal.adresse.data.gouv.fr/v2
   NEXT_PUBLIC_GEO_API_URL: https://geo.api.gouv.fr
   NEXT_PUBLIC_ADRESSE_URL: https://adresse.data.gouv.fr
   NEXT_PUBLIC_API_BAN_URL: https://plateforme.adresse.data.gouv.fr
