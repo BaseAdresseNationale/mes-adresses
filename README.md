@@ -8,12 +8,18 @@ Il est disponible en ligne à l'adresse [mes-adresses.data.gouv.fr](https://mes-
 
 https://adresse.data.gouv.fr/data/docs/guide-mes-adresses-v4.0.pdf
 
+## Documentation
+
+https://adresse-data-gouv-fr.gitbook.io/bal/mes-adresses
+
 ## Pré-requis
 
 - [Node.js](https://nodejs.org) 14+
 - [yarn](https://www.yarnpkg.com)
 
-## Installation
+## Utilisation
+
+### Installation
 
 Installation des dépendances Node.js
 
@@ -21,12 +27,21 @@ Installation des dépendances Node.js
 $ yarn
 ```
 
-## Drapeaux disponible pour les langues régionales
+Créer la liste des drapeaux disponibles pour les langues régionales
+
 ```
 $ yarn build-available-flags
 ```
 
-## Développement
+Créer les variables d'environnement
+
+```bash
+cp .env.sample .env
+```
+
+On pourra ensuite éditer les variables d'environnement dans le fichier `.env` si nécessaire.
+
+### Développement
 
 Lancer le serveur de développement :
 
@@ -34,7 +49,7 @@ Lancer le serveur de développement :
 $ yarn dev
 ```
 
-## Production
+### Production
 
 Créer une version de production :
 
@@ -48,6 +63,14 @@ Démarrer le serveur (port 3000 par défaut) :
 $ yarn start
 ```
 
+### Linter
+
+Rapport du linter (eslint) :
+
+```
+$ yarn lint
+```
+
 ## Configuration
 
 Cette application utilise des variables d'environnement pour sa configuration.
@@ -58,6 +81,14 @@ Elles peuvent être définies classiquement ou en créant un fichier `.env` sur 
 | `NEXT_PUBLIC_BAL_API_URL` | URL de base de l’API BAL             |
 | `NEXT_PUBLIC_GEO_API_URL` | URL de base de l’API Géo             |
 | `NEXT_PUBLIC_ADRESSE_URL` | URL de base du site adresse.data.gouv.fr |
+| `NEXT_PUBLIC_EDITEUR_URL` | URL de base pour les redirection sur l'éditeur mes-adresses |
+| `NEXT_PUBLIC_API_BAN_URL` | URL de base de ban plateforme |
+| `NEXT_PUBLIC_BAN_API_DEPOT` | URL de base de l'api de depot |
+| `NEXT_PUBLIC_PEERTUBE` | URL du peertube |
+| `NEXT_PUBLIC_MATOMO_TRACKER_URL` | URL du matomo |
+| `NEXT_PUBLIC_MATOMO_SITE_ID` | Id du site sur matomo |
+| `NEXT_PUBLIC_BAL_ADMIN_URL` | URL de base de bal admin |
+| `PORT` | Port de l'application |
 
 Toutes ces variables ont des valeurs par défaut que vous trouverez dans le fichier `.env.sample`.
 
