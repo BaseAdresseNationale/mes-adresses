@@ -74,7 +74,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
           { withComment &&
             <Alert marginLeft={-30} marginRight={10} hasIcon={false}>
               <Text is="p" textAlign="center">
-                Attention, si vous avez renseigné des informations à caractère personnel dans vos commentaires, celle-ci seront présentes dans l’export de votre Base Adresse Locale.
+                Attention, si vous avez renseigné des informations à caractère personnel dans vos commentaires, celles-ci seront présentes dans l’export de votre Base Adresse Locale.
               </Text>
             </Alert>
           }
