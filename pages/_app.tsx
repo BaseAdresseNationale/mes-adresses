@@ -18,6 +18,7 @@ import Editor from "@/layouts/editor";
 import { BALRecoveryProvider } from "@/contexts/bal-recovery";
 import { BalDataContextProvider } from "@/contexts/bal-data";
 import { OpenAPI } from "@/lib/openapi";
+import { SignalementContextProvider } from "@/contexts/signalement";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -99,9 +100,11 @@ function App(props: AppProps) {
                       initialToponymes={pageProps.toponymes}
                       initialNumeros={pageProps.numeros}
                     >
-                      <Editor {...pageProps}>
-                        <Component {...pageProps} />
-                      </Editor>
+                      <SignalementContextProvider>
+                        <Editor {...pageProps}>
+                          <Component {...pageProps} />
+                        </Editor>
+                      </SignalementContextProvider>
                     </BalDataContextProvider>
                   ) : (
                     <Component {...pageProps} />
