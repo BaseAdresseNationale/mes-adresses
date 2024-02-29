@@ -74,9 +74,9 @@ export class BasesLocalesService {
      * @throws ApiError
      */
     public static searchBaseLocale(
-        limit?: number,
-        offset?: number,
-        deleted?: boolean,
+        limit?: string,
+        offset?: string,
+        deleted?: string,
         commune?: string,
         email?: string,
         status?: string,

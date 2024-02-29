@@ -55,6 +55,7 @@ export { CommuneService } from './services/CommuneService';
 export { ExportCsvService } from './services/ExportCsvService';
 export { HabilitationService } from './services/HabilitationService';
 export { NumerosService } from './services/NumerosService';
+export { SignalementService } from './services/SignalementService';
 export { StatsService } from './services/StatsService';
 export { TilesService } from './services/TilesService';
 export { ToponymesService } from './services/ToponymesService';
