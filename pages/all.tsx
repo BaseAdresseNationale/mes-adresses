@@ -53,16 +53,11 @@ const CSRPublicBasesLocalesList: React.ComponentType<PublicBasesLocalesListProps
 interface AllPageProps {
   basesLocales: BaseLocale[];
   commune: string;
-  currentPage:  number,
+  currentPage: number;
   count: number;
 }
 
-function All({
-  basesLocales,
-  commune,
-  currentPage,
-  count = 0,
-}: AllPageProps) {
+function All({ basesLocales, commune, currentPage, count = 0 }: AllPageProps) {
   const router: NextRouter = useRouter();
   const totalPages: number = Math.ceil(count / LIMIT_BY_PAGE);
 
@@ -144,12 +139,12 @@ function All({
 
 All.getInitialProps = async ({ query }) => {
   let result: PageBaseLocaleDTO;
-  const currentPage = query.page || 1
+  const currentPage = query.page || 1;
 
   try {
     result = await BasesLocalesService.searchBaseLocale(
-      LIMIT_BY_PAGE,
-      (currentPage - 1) * LIMIT_BY_PAGE,
+      String(LIMIT_BY_PAGE),
+      String((currentPage - 1) * LIMIT_BY_PAGE),
       query.deleted,
       query.commune,
       query.email,

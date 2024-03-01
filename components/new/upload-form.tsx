@@ -238,7 +238,14 @@ function UploadForm({
     try {
       const revision: Revision =
         await ApiDepotService.getCurrentRevision(selectedCodeCommune);
-      if (revision && !isExceptionClientId(revision, outdatedApiDepotClients, outdatedHarvestSources)) {
+      if (
+        revision &&
+        !isExceptionClientId(
+          revision,
+          outdatedApiDepotClients,
+          outdatedHarvestSources
+        )
+      ) {
         setIsShownAlertPublishedBal(true);
         setPublishedRevision(revision);
         return;
@@ -257,9 +264,9 @@ function UploadForm({
   const checkOtherBALs = useCallback(async () => {
     const response: PageBaseLocaleDTO =
       await BasesLocalesService.searchBaseLocale(
-        10,
-        0,
-        false,
+        "10",
+        "0",
+        "false",
         selectedCodeCommune,
         email
       );

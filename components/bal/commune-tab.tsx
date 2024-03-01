@@ -10,6 +10,7 @@ import SignalementsInfos from "./signalement-infos";
 import ReadOnlyInfos from "./read-only-infos";
 import { CommuneType } from "@/types/commune";
 import { BaseLocale } from "@/lib/openapi";
+import SignalementContext from "@/contexts/signalement";
 
 interface CommuneTabProps {
   commune: CommuneType;
@@ -19,15 +20,16 @@ interface CommuneTabProps {
 function CommuneTab({ commune, openRecoveryDialog }: CommuneTabProps) {
   const { baseLocale } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
+  const { signalements } = useContext(SignalementContext);
 
   return (
     <Pane overflowY="auto">
       {!token && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
+      {signalements.length > 0 && (
+        <SignalementsInfos balId={baseLocale._id} signalements={signalements} />
+      )}
       {token && baseLocale.status !== BaseLocale.status.DEMO && (
         <HabilitationInfos commune={commune} />
-      )}
-      {token && baseLocale.status === BaseLocale.status.PUBLISHED && (
-        <SignalementsInfos />
       )}
       <CertificationInfos openRecoveryDialog={!token && openRecoveryDialog} />
     </Pane>

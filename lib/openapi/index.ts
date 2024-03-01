@@ -7,6 +7,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { _UpdateSignalementDTO } from './models/_UpdateSignalementDTO';
 export type { AllDeletedInBalDTO } from './models/AllDeletedInBalDTO';
 export { BaseLocale } from './models/BaseLocale';
 export type { BasesLocalesCreationDTO } from './models/BasesLocalesCreationDTO';
