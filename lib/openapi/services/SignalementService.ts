@@ -2,6 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { _UpdateSignalementDTO } from '../models/_UpdateSignalementDTO';
+
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -23,6 +25,23 @@ export class SignalementService {
             path: {
                 'codeCommune': codeCommune,
             },
+        });
+    }
+
+    /**
+     * Update a given signalement
+     * @param requestBody
+     * @returns any[]
+     * @throws ApiError
+     */
+    public static updateSignalement(
+        requestBody: _UpdateSignalementDTO,
+    ): CancelablePromise<any[]> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v2/signalements',
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 
