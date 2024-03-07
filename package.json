@@ -11,7 +11,10 @@
     "analyze": "ANALYZE=true next build",
     "build-available-flags": "node scripts/build-available-flags",
     "generate:openapi": "openapi --input http://localhost:5000/api-json --output ./lib/openapi",
-    "push-staging": "./scripts/push-staging.sh"
+    "push-staging": "./scripts/push-staging.sh",
+    "docker:build": "docker buildx build --platform=linux/amd64 -t mes-adresses .",
+    "docker:push": "docker tag mes-adresses rg.fr-par.scw.cloud/tmp-poc/mes-adresses:latest && docker push rg.fr-par.scw.cloud/tmp-poc/mes-adresses:latest"
+
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -69,6 +72,6 @@
     "typescript": "5.2.2"
   },
   "engines": {
-    "node": ">=14 <17"
+    "node": ">=14"
   }
 }

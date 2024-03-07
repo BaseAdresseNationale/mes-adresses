@@ -19,7 +19,9 @@ import { BALRecoveryProvider } from "@/contexts/bal-recovery";
 import { BalDataContextProvider } from "@/contexts/bal-data";
 import { OpenAPI } from "@/lib/openapi";
 
-const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
+const BAL_API_URL = process.env.NEXT_PUBLIC_BAL_API_URL || "https://api-bal.adresse.data.gouv.fr/v2"
+
+const openAPIBase = BAL_API_URL.split("/")
   .slice(0, -1)
   .join("/");
 Object.assign(OpenAPI, { BASE: openAPIBase });

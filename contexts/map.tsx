@@ -41,7 +41,7 @@ const defaultStyle = "vector";
 
 export const BAL_API_URL =
   process.env.NEXT_PUBLIC_BAL_API_URL ||
-  "https://api-bal.adresse.data.gouv.fr/v1";
+  "https://api-bal.adresse.data.gouv.fr/v2";
 
 export const SOURCE_TILE_ID = "tiles";
 
