@@ -1,32 +1,43 @@
-import {useMemo} from 'react'
-import PropTypes from 'prop-types'
-import {Button, EndorsedIcon} from 'evergreen-ui'
+import { useMemo } from "react";
+import { Button, EndorsedIcon } from "evergreen-ui";
 
-function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
+interface CertificationButtonProps {
+  isLoading: boolean;
+  isCertified: boolean;
+  onConfirm: (certified: boolean | null) => void;
+  onCancel: () => void;
+}
+
+function CertificationButton({
+  isLoading,
+  onConfirm,
+  onCancel,
+  isCertified,
+}: CertificationButtonProps) {
   const submitCertificationLabel = useMemo(() => {
     if (isLoading) {
-      return 'En cours…'
+      return "En cours…";
     }
 
-    return isCertified ? 'Enregistrer' : 'Certifier et enregistrer'
-  }, [isLoading, isCertified])
+    return isCertified ? "Enregistrer" : "Certifier et enregistrer";
+  }, [isLoading, isCertified]);
 
   const submitLabel = useMemo(() => {
     if (isLoading) {
-      return 'En cours…'
+      return "En cours…";
     }
 
-    return isCertified ? 'Ne plus certifier et enregistrer' : 'Enregistrer'
-  }, [isLoading, isCertified])
+    return isCertified ? "Ne plus certifier et enregistrer" : "Enregistrer";
+  }, [isLoading, isCertified]);
 
   return (
     <div className="certification-button-wrapper">
       <div>
         <Button
           isLoading={isLoading}
-          type='submit'
-          appearance='primary'
-          intent='success'
+          type="submit"
+          appearance="primary"
+          intent="success"
           iconAfter={EndorsedIcon}
           onClick={() => onConfirm(isCertified ? null : true)}
         >
@@ -37,9 +48,9 @@ function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
       <div>
         <Button
           isLoading={isLoading}
-          type='submit'
-          appearance='default'
-          intent={isCertified ? 'danger' : 'success'}
+          type="submit"
+          appearance="default"
+          intent={isCertified ? "danger" : "success"}
           onClick={() => onConfirm(isCertified ? false : null)}
         >
           {submitLabel}
@@ -49,8 +60,9 @@ function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
       <div>
         <Button
           disabled={isLoading}
-          appearance='default'
-          display='inline-flex'
+          type="button"
+          appearance="default"
+          display="inline-flex"
           onClick={onCancel}
         >
           Annuler
@@ -68,19 +80,14 @@ function CertificationButton({isLoading, onConfirm, onCancel, isCertified}) {
         }
 
         .certification-button-wrapper > div {
-          box-shadow: 0 0 1px rgba(67, 90, 111, 0.3), 0 5px 8px -4px rgba(67, 90, 111, 0.47);
+          box-shadow:
+            0 0 1px rgba(67, 90, 111, 0.3),
+            0 5px 8px -4px rgba(67, 90, 111, 0.47);
           margin-left: 8px;
         }
       `}</style>
     </div>
-  )
+  );
 }
 
-CertificationButton.propTypes = {
-  isLoading: PropTypes.bool.isRequired,
-  isCertified: PropTypes.bool.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
-}
-
-export default CertificationButton
+export default CertificationButton;

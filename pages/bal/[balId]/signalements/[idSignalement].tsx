@@ -1,62 +1,72 @@
-import React, { useContext, useEffect } from "react";
-import { Pane } from "evergreen-ui";
+import React, { useState } from "react";
+import { Pane, Tab, Tablist } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import SignalementViewer from "@/components/signalement/signalement-viewer";
 import ProtectedPage from "@/layouts/protected-page";
 import {
   SignalementService,
   ToponymesService,
   VoiesService,
 } from "@/lib/openapi";
-import NumeroEditor from "@/components/bal/numero-editor";
 import MapContext from "@/contexts/map";
 import { useRouter } from "next/router";
+import SignalementEditor from "@/components/signalement/signalement-editor";
+import SignalementViewer from "@/components/signalement/signalement-viewer";
 
 function SignalementPage({ signalement, existingLocation, commune }) {
-  const { viewport, setViewport } = useContext(MapContext);
+  const [activeTab, setActiveTab] = useState(1);
   const router = useRouter();
-  useEffect(() => {
-    const firstPosition = existingLocation?.positions?.[0];
 
-    if (firstPosition) {
-      setViewport({
-        ...viewport,
-        longitude: firstPosition.point.coordinates[0],
-        latitude: firstPosition.point.coordinates[1],
-        zoom: 18,
-      });
-    }
-  }, []);
+  const handleClose = () => {
+    router.push(`/bal/${router.query.balId}/signalements`);
+  };
 
   const handleSignalementProcessed = async () => {
     await SignalementService.updateSignalement({ id: signalement._id });
-    router.push(`/bal/${router.query.balId}/signalements`);
+    handleClose();
   };
 
   return (
     <ProtectedPage>
-      <Pane
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        width="100%"
-        overflow="scroll"
-      >
-        <SignalementViewer signalement={signalement} />
-        <Pane position="relative" height="100%">
-          <NumeroEditor
-            hasPreview
-            initialValue={existingLocation}
-            initialVoieId={existingLocation.voie?._id}
-            commune={commune}
-            closeForm={handleSignalementProcessed}
+      <Tablist margin={10}>
+        {["Infos", "Editeur"].map((tab, index) => (
+          <Tab
+            key={tab}
+            isSelected={activeTab === index}
+            onSelect={() => setActiveTab(index)}
+          >
+            {tab}
+          </Tab>
+        ))}
+      </Tablist>
+      <Pane overflow="scroll" height="100%">
+        {activeTab === 0 && (
+          <SignalementViewer
+            existingLocation={existingLocation}
+            signalement={signalement}
           />
-        </Pane>
+        )}
+        {activeTab === 1 && (
+          <SignalementEditor
+            existingLocation={existingLocation}
+            signalement={signalement}
+            handleSubmit={handleSignalementProcessed}
+            handleClose={handleClose}
+            commune={commune}
+          />
+        )}
       </Pane>
     </ProtectedPage>
   );
 }
+
+const mapSignalementPositions = (positions) => {
+  return positions.map((p) => ({
+    point: p.position,
+    source: "signalement",
+    type: p.positionType,
+  }));
+};
 
 export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
@@ -72,6 +82,9 @@ export async function getServerSideProps({ params }) {
     const signalement = signalements.find(
       (signalement) => signalement._id === params.idSignalement
     );
+    signalement.changesRequested.positions = mapSignalementPositions(
+      signalement.changesRequested.positions
+    );
 
     let existingLocation = null;
     if (signalement.type === "LOCATION_TO_UPDATE") {
@@ -84,16 +97,6 @@ export async function getServerSideProps({ params }) {
           (toponyme) => toponyme._id === signalement.existingLocation.nom
         );
       } else if (signalement.existingLocation.type === "NUMERO") {
-        const existingToponyme =
-          signalement.existingLocation.toponyme.type === "VOIE"
-            ? voies.find(
-                (voie) => voie.nom === signalement.existingLocation.toponyme.nom
-              )
-            : toponymes.find(
-                (toponyme) =>
-                  toponyme.nom === signalement.existingLocation.toponyme.nom
-              );
-
         if (signalement.existingLocation.toponyme.type === "VOIE") {
           const voie = voies.find(
             (voie) => voie.nom === signalement.existingLocation.toponyme.nom
