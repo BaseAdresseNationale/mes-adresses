@@ -6,14 +6,53 @@ import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
 import { SignalementService } from "@/lib/openapi";
+import { toaster } from "evergreen-ui";
 
-function SignalementsPage({ signalements }) {
+function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
+  const [signalements, setSignalements] = useState<any>(initialSignalements);
   const [selectedSignalements, setSelectedSignalements] = useState<string[]>(
     []
   );
   const router = useRouter();
+
+  const updateSignalements = async () => {
+    const signalements = await SignalementService.getSignalements(
+      baseLocale.commune
+    );
+    setSignalements(signalements);
+  };
+
   const handleSelectSignalement = (id) => {
     router.push(`/bal/${router.query.balId}/signalements/${id}`);
+  };
+
+  const handleIgnoreSignalement = async (id) => {
+    try {
+      await SignalementService.updateSignalement({ id });
+      toaster.success("Le signalement a bien été ignoré");
+    } catch (error) {
+      toaster.danger("Une erreur est survenue", {
+        description: error.message,
+      });
+    }
+
+    await updateSignalements();
+  };
+
+  const handleToggleSelect = (ids: string[]) => {
+    if (ids.length === signalements.length) {
+      setSelectedSignalements(ids);
+    } else if (ids.length === 0) {
+      setSelectedSignalements([]);
+    } else {
+      for (const id of ids) {
+        if (!selectedSignalements.includes(id)) {
+          setSelectedSignalements([...selectedSignalements, id]);
+        } else {
+          setSelectedSignalements(selectedSignalements.filter((s) => s !== id));
+        }
+      }
+    }
   };
 
   return (
@@ -43,16 +82,8 @@ function SignalementsPage({ signalements }) {
           signalements={signalements}
           selectedSignalements={selectedSignalements}
           onSelect={handleSelectSignalement}
-          onToggleSelect={(id) => {
-            if (selectedSignalements.includes(id)) {
-              setSelectedSignalements(
-                selectedSignalements.filter((s) => s !== id)
-              );
-            } else {
-              setSelectedSignalements([...selectedSignalements, id]);
-            }
-          }}
-          onIgnore={() => {}}
+          onToggleSelect={handleToggleSelect}
+          onIgnore={handleIgnoreSignalement}
         />
       </Pane>
     </ProtectedPage>

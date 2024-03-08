@@ -89,7 +89,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
       <Marker
         key={marker._id}
         {...marker}
-        draggable
+        draggable={!marker.isDisabled}
         offsetLeft={(-size / 2) + ((size / 100) * 15)} // Calculates the difference of width between the SVG size and its container
         offsetTop={-size + 1}
         onDrag={e => onDrag(e, idx)}
@@ -113,7 +113,7 @@ function EditableMarker({size, style, idVoie, isToponyme, viewport}) {
 
           <MapMarkerIcon
             filter='drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))'
-            color={style === 'vector' ? 'info' : 'success'}
+            color={marker.isDisabled ? 'muted' : style === 'vector' ? 'info' : 'success'}
             size={size}
           />
         </Pane>

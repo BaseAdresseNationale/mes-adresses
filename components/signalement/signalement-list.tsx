@@ -24,7 +24,7 @@ interface SignalementListProps {
   selectedSignalements: string[];
   onSelect: (id: string) => void;
   onIgnore: (id: string) => void;
-  onToggleSelect: (id: string) => void;
+  onToggleSelect: (ids: string[]) => void;
 }
 
 function SignalementList({
@@ -48,9 +48,26 @@ function SignalementList({
     [filtered]
   );
 
+  const isAllSelected = useMemo(() => {
+    const isAllSignalementsSelected =
+      filtered.length === selectedSignalements.length && filtered.length > 0;
+
+    return isAllSignalementsSelected;
+  }, [selectedSignalements, filtered]);
+
   return (
     <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
       <Table.Head>
+        <Table.Cell flex="0 1 1">
+          <Checkbox
+            checked={isAllSelected}
+            onChange={() =>
+              onToggleSelect(
+                isAllSelected ? [] : signalements.map(({ _id }) => _id)
+              )
+            }
+          />
+        </Table.Cell>
         <Table.SearchHeaderCell
           placeholder="Rechercher un signalement"
           onChange={setFilter}
@@ -71,7 +88,7 @@ function SignalementList({
             <Table.Cell flex="0 1 40px">
               <Checkbox
                 checked={selectedSignalements.includes(signalement._id)}
-                onChange={() => onToggleSelect(signalement._id)}
+                onChange={() => onToggleSelect([signalement._id])}
               />
             </Table.Cell>
             <Table.TextCell flex="2">{signalement.label}</Table.TextCell>
