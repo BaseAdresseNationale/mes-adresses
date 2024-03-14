@@ -8,10 +8,11 @@ import {
 } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
-import MapGl, { Source, Layer } from "react-map-gl/maplibre";
+import MapGl, { Source, Layer, Marker } from "react-map-gl/maplibre";
 import { Pane, Alert } from "evergreen-ui";
 
 import MapContext, { SOURCE_TILE_ID } from "@/contexts/map";
+import MarkersContext from "@/contexts/markers";
 import TokenContext from "@/contexts/token";
 import DrawContext from "@/contexts/draw";
 import ParcellesContext from "@/contexts/parcelles";
@@ -34,6 +35,7 @@ import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
 import NumerosMarkers from "@/components/map/numeros-markers";
 import ToponymeMarker from "@/components/map/toponyme-marker";
+import MapMarker from "@/components/map/map-marker";
 import PopupFeature from "@/components/map/popup-feature/popup-feature";
 import NavControl from "@/components/map/controls/nav-control";
 import DrawControl from "./controls/draw-control";
@@ -42,6 +44,7 @@ import AddressEditorControl from "@/components/map/controls/address-editor-contr
 import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
+import SignalementContext from "@/contexts/signalement";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -315,6 +318,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
       .color;
   }, [map, voie, isMapLoaded]);
 
+  const {markers} = useContext(MarkersContext)
+
   return (
     <Pane display="flex" flexDirection="column" flex={1}>
       <StyleControl
@@ -419,6 +424,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
               viewport={viewport}
             />
           )}
+
+          {markers.filter((marker) => marker.isMapMarker).map((marker) => <MapMarker key={marker._id} marker={marker} />)}
 
           {featureHovered !== null &&
             viewport.zoom > 14 &&

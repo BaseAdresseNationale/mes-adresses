@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Heading, Pane } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
@@ -7,13 +7,57 @@ import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
 import { SignalementService } from "@/lib/openapi";
 import { toaster } from "evergreen-ui";
+import MarkersContext from "@/contexts/markers";
+import { Signalement } from "@/lib/api-signalement/types";
+import { getSignalementLabel } from "@/lib/utils/signalement";
 
 function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
-  const [signalements, setSignalements] = useState<any>(initialSignalements);
+  const [signalements, setSignalements] =
+    useState<Signalement[]>(initialSignalements);
   const [selectedSignalements, setSelectedSignalements] = useState<string[]>(
     []
   );
   const router = useRouter();
+  const { addMarker, disableMarkers } = useContext(MarkersContext);
+
+  useEffect(() => {
+    const markerPositions = signalements
+      .reduce((acc, cur) => {
+        const signalementPositions = cur.changesRequested.positions.map(
+          (position) => {
+            return {
+              signalementId: cur._id,
+              label: getSignalementLabel(cur, { withoutDate: true }),
+              position: position.position,
+              positionType: position.positionType,
+            };
+          }
+        );
+
+        return [...acc, ...signalementPositions];
+      }, [])
+      .map(({ position, positionType, signalementId, label }) => {
+        return {
+          type: positionType,
+          isMapMarker: true,
+          label,
+          longitude: position.coordinates[0],
+          latitude: position.coordinates[1],
+          color: "warning",
+          onClick: () => {
+            handleSelectSignalement(signalementId);
+          },
+        };
+      });
+
+    markerPositions.forEach((position) => {
+      addMarker(position);
+    });
+
+    return () => {
+      disableMarkers();
+    };
+  }, [signalements]);
 
   const updateSignalements = async () => {
     const signalements = await SignalementService.getSignalements(

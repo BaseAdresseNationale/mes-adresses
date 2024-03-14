@@ -48,7 +48,8 @@ function SignalementEditor({
   const numeroInputRef = useRef<HTMLDivElement>(null);
   const positionsInputRef = useRef<HTMLDivElement>(null);
   const parcellesInputRef = useRef<HTMLDivElement>(null);
-  const { markers, addMarker, removeMarker } = useContext(MarkersContext);
+  const { markers, addMarker, removeMarker, disableMarkers } =
+    useContext(MarkersContext);
 
   const [changes, setChanges] = useState(
     detectChanges(signalement, existingLocation)
@@ -90,14 +91,19 @@ function SignalementEditor({
         changes.positions
           ? addMarker({
               _id: position._id,
+              color: "warning",
+              label: "Modification demandée",
               longitude: position.point.coordinates[0],
               latitude: position.point.coordinates[1],
               type: position.type,
-              isDisabled: true,
             })
           : removeMarker(position._id);
       });
     }
+
+    return () => {
+      disableMarkers();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positions, changes.positions]);
 

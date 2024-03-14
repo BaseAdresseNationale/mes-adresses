@@ -7,10 +7,13 @@ import { ChildrenProps } from "@/types/context";
 
 export interface Marker {
   _id?: string;
+  label?: string;
   type?: Position.type;
   latitude?: number;
   longitude?: number;
   isDisabled?: boolean;
+  onClick?: () => void;
+  color?: string;
 }
 
 interface MarkersContextType {

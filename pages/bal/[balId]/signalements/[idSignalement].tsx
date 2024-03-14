@@ -8,7 +8,6 @@ import {
   ToponymesService,
   VoiesService,
 } from "@/lib/openapi";
-import MapContext from "@/contexts/map";
 import { useRouter } from "next/router";
 import SignalementEditor from "@/components/signalement/signalement-editor";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
