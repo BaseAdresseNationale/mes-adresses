@@ -1,3 +1,5 @@
+import { Signalement } from "../api-signalement/types";
+
 export const getExistingLocationLabel = (existingLocation) => {
   let label = "";
   switch (existingLocation.type) {
@@ -19,13 +21,20 @@ export const getExistingLocationLabel = (existingLocation) => {
   return label;
 };
 
-export const getSignalementLabel = (signalement) => {
+export const getSignalementLabel = (
+  signalement: Signalement,
+  opts?: { withoutDate: boolean }
+) => {
   let label = "";
   switch (signalement.type) {
     case "LOCATION_TO_UPDATE":
       label = `Demande de modification sur le ${getExistingLocationLabel(
         signalement.existingLocation
-      )} - ${new Date(signalement._created).toLocaleDateString()}`;
+      )}${
+        opts?.withoutDate
+          ? ""
+          : `- ${new Date(signalement._created).toLocaleDateString()}`
+      }`;
       break;
     case "LOCATION_TO_CREATE":
       label = "Demande de création";
