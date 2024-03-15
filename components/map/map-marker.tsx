@@ -9,11 +9,11 @@ interface MapMarkerProps {
 }
 
 function MapMarker({ size = 32, marker }: MapMarkerProps) {
-  const { isDisabled, label, color } = marker;
+  const { label, color } = marker;
   return (
     <Marker
       {...marker}
-      draggable={!isDisabled}
+      style={marker.onClick ? { cursor: "pointer" } : {}}
       offsetLeft={-size / 2 + (size / 100) * 15} // Calculates the difference of width between the SVG size and its container
       offsetTop={-size + 1}
     >

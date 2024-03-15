@@ -64,12 +64,7 @@ function PositionItem({
           <Small>{getPositionName(marker.type)}</Small>
         </Heading>
       )}
-      <Icon
-        icon={MapMarkerIcon}
-        size={22}
-        margin="auto"
-        color={marker.isDisabled ? "muted" : "info"}
-      />
+      <Icon icon={MapMarkerIcon} size={22} margin="auto" color={marker.color} />
       <Heading size={100} marginY="auto">
         <Small>{marker.latitude && marker.latitude.toFixed(6)}</Small>
       </Heading>

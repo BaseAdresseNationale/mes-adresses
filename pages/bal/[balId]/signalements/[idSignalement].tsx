@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Pane, Tab, Tablist } from "evergreen-ui";
+import React, { useContext, useState } from "react";
+import { Button, Pane, Tab, Tablist } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
@@ -11,6 +11,12 @@ import {
 import { useRouter } from "next/router";
 import SignalementEditor from "@/components/signalement/signalement-editor";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
+import { SignalementTypeEnum } from "@/lib/api-signalement/types";
+import NumeroEditor from "@/components/bal/numero-editor";
+import { softRemoveNumero } from "@/lib/bal-api";
+import BalDataContext from "@/contexts/bal-data";
+import MapContext from "@/contexts/map";
+import TokenContext from "@/contexts/token";
 
 function SignalementPage({ signalement, existingLocation, commune }) {
   const [activeTab, setActiveTab] = useState(1);
@@ -23,6 +29,24 @@ function SignalementPage({ signalement, existingLocation, commune }) {
   const handleSignalementProcessed = async () => {
     await SignalementService.updateSignalement({ id: signalement._id });
     handleClose();
+  };
+
+  const { reloadNumeros, reloadParcelles, refreshBALSync } =
+    useContext(BalDataContext);
+  const { reloadTiles } = useContext(MapContext);
+  const { token } = useContext(TokenContext);
+
+  const handleRemove = async (idNumero) => {
+    await onRemove(idNumero);
+    await handleSignalementProcessed();
+  };
+
+  const onRemove = async (idNumero) => {
+    await softRemoveNumero(idNumero, token);
+    await reloadNumeros();
+    await reloadParcelles();
+    reloadTiles();
+    refreshBALSync();
   };
 
   return (
@@ -46,13 +70,50 @@ function SignalementPage({ signalement, existingLocation, commune }) {
           />
         )}
         {activeTab === 1 && (
-          <SignalementEditor
-            existingLocation={existingLocation}
-            signalement={signalement}
-            handleSubmit={handleSignalementProcessed}
-            handleClose={handleClose}
-            commune={commune}
-          />
+          <>
+            {signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE && (
+              <Pane position="relative" height="100%">
+                <NumeroEditor
+                  hasPreview
+                  initialValue={signalement.changesRequested}
+                  initialVoieId={existingLocation._id}
+                  commune={commune}
+                  closeForm={handleClose}
+                  onSubmitted={handleSignalementProcessed}
+                />
+              </Pane>
+            )}
+            {signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE && (
+              <SignalementEditor
+                existingLocation={existingLocation}
+                signalement={signalement}
+                handleSubmit={handleSignalementProcessed}
+                handleClose={handleClose}
+                commune={commune}
+              />
+            )}
+            {signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE && (
+              <Pane position="relative" height="100%">
+                <Button
+                  type="button"
+                  intent="danger"
+                  onClick={() => handleRemove(existingLocation._id)}
+                >
+                  Supprimer
+                </Button>
+                <Pane position="relative" height="100%">
+                  <NumeroEditor
+                    hasPreview
+                    initialValue={existingLocation}
+                    initialVoieId={existingLocation.voie?._id}
+                    commune={commune}
+                    closeForm={handleClose}
+                    onSubmitted={handleSignalementProcessed}
+                  />
+                </Pane>
+              </Pane>
+            )}
+          </>
         )}
       </Pane>
     </ProtectedPage>
@@ -81,12 +142,18 @@ export async function getServerSideProps({ params }) {
     const signalement = signalements.find(
       (signalement) => signalement._id === params.idSignalement
     );
-    signalement.changesRequested.positions = mapSignalementPositions(
-      signalement.changesRequested.positions
-    );
+
+    if (signalement.changesRequested.positions) {
+      signalement.changesRequested.positions = mapSignalementPositions(
+        signalement.changesRequested.positions
+      );
+    }
 
     let existingLocation = null;
-    if (signalement.type === "LOCATION_TO_UPDATE") {
+    if (
+      signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE ||
+      signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE
+    ) {
       if (signalement.existingLocation.type === "VOIE") {
         existingLocation = voies.find(
           (voie) => voie._id === signalement.existingLocation.nom
@@ -127,6 +194,10 @@ export async function getServerSideProps({ params }) {
           existingLocation.toponyme = toponyme;
         }
       }
+    } else if (signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE) {
+      existingLocation = voies.find(
+        (voie) => voie.nom === signalement.existingLocation.nom
+      );
     }
 
     return {
