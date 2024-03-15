@@ -57,7 +57,7 @@ function SignalementEditor({
   const [refsInitialized, setRefsInitialized] = useState(false);
   const [numeroEditorValue, setNumeroEditorValue] = useState(existingLocation);
 
-  const { numero, suffixe, nomVoie, positions, parcelles } =
+  const { numero, suffixe, positions, parcelles, nomVoie } =
     signalement.changesRequested;
 
   useEffect(() => {
@@ -91,8 +91,10 @@ function SignalementEditor({
         changes.positions
           ? addMarker({
               _id: position._id,
+              isMapMarker: true,
+              isDisabled: true,
               color: "warning",
-              label: "Modification demandée",
+              label: `${position.type} - ${numero}${suffixe ? suffixe : ""}`,
               longitude: position.point.coordinates[0],
               latitude: position.point.coordinates[1],
               type: position.type,
@@ -170,7 +172,7 @@ function SignalementEditor({
               <div />
 
               {markers
-                .filter(({ isDisabled }) => isDisabled)
+                .filter(({ isMapMarker }) => isMapMarker)
                 .map((marker) => (
                   <PositionItem key={marker._id} marker={marker} />
                 ))}

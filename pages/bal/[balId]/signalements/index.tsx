@@ -8,7 +8,7 @@ import ProtectedPage from "@/layouts/protected-page";
 import { SignalementService } from "@/lib/openapi";
 import { toaster } from "evergreen-ui";
 import MarkersContext from "@/contexts/markers";
-import { Signalement } from "@/lib/api-signalement/types";
+import { Signalement, SignalementTypeEnum } from "@/lib/api-signalement/types";
 import { getSignalementLabel } from "@/lib/utils/signalement";
 
 function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
@@ -23,22 +23,24 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   useEffect(() => {
     const markerPositions = signalements
       .reduce((acc, cur) => {
-        const signalementPositions = cur.changesRequested.positions.map(
-          (position) => {
-            return {
-              signalementId: cur._id,
-              label: getSignalementLabel(cur, { withoutDate: true }),
-              position: position.position,
-              positionType: position.positionType,
-            };
-          }
-        );
+        let position;
+        if (cur.type === SignalementTypeEnum.LOCATION_TO_CREATE) {
+          position = cur.changesRequested?.positions[0]?.position;
+        } else {
+          position = cur.existingLocation.position;
+        }
 
-        return [...acc, ...signalementPositions];
+        return [
+          ...acc,
+          {
+            signalementId: cur._id,
+            label: getSignalementLabel(cur, { withoutDate: true }),
+            position: position,
+          },
+        ];
       }, [])
-      .map(({ position, positionType, signalementId, label }) => {
+      .map(({ position, signalementId, label }) => {
         return {
-          type: positionType,
           isMapMarker: true,
           label,
           longitude: position.coordinates[0],

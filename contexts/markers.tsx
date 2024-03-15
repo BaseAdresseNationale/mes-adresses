@@ -14,6 +14,7 @@ export interface Marker {
   isDisabled?: boolean;
   onClick?: () => void;
   color?: string;
+  isMapMarker?: boolean;
 }
 
 interface MarkersContextType {

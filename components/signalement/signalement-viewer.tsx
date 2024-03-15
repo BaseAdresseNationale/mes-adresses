@@ -1,6 +1,7 @@
-import { Alert, Heading, Pane, Paragraph } from "evergreen-ui";
+import { Pane, Paragraph } from "evergreen-ui";
 import React from "react";
 import { positionsTypesList } from "@/lib/positions-types-list";
+import { SignalementTypeEnum } from "@/lib/api-signalement/types";
 
 interface SignalementViewerProps {
   signalement: any;
@@ -18,19 +19,9 @@ function SignalementViewer({
   const { numero, suffixe, nomVoie, positions, parcelles } =
     signalement.changesRequested;
 
-  console.log("existingLocation", existingLocation);
-
-  const {
-    numero: existingNumero,
-    suffixe: existingSuffixe,
-    nomVoie: existingNomVoie,
-    positions: existingPositions,
-    parcelles: existingParcelles,
-  } = existingLocation;
-
   return (
     <Pane padding={16}>
-      {existingLocation && (
+      {signalement.type !== SignalementTypeEnum.LOCATION_TO_CREATE && (
         <Paragraph
           background="white"
           padding={8}
@@ -41,10 +32,11 @@ function SignalementViewer({
           <h3>Adresse existante</h3>
           <h4>Adresse : </h4>
           <div>
-            {existingNumero} {existingSuffixe} {nomVoie}
+            {existingLocation.numero} {existingLocation.suffixe}{" "}
+            {existingLocation.nomVoie}
           </div>
           <h4>Positions : </h4>
-          {existingPositions.map(({ point, type }, index) => {
+          {existingLocation.positions.map(({ point, type }, index) => {
             return (
               <React.Fragment key={index}>
                 <span>{getPositionTypeLabel(type)}</span> :{" "}
@@ -55,41 +47,62 @@ function SignalementViewer({
           })}
           <h4>Parcelles : </h4>
           <div className="parcelles-wrapper">
-            {existingParcelles.map((parcelle) => (
+            {existingLocation.parcelles.map((parcelle) => (
               <div key={parcelle}>{parcelle}</div>
             ))}
           </div>
         </Paragraph>
       )}
-      <Paragraph
-        background="white"
-        padding={8}
-        borderRadius={8}
-        marginBottom={8}
-        width="100%"
-      >
-        <h3>Modifications demandées</h3>
-        <h4>Adresse : </h4>
-        <div>
-          {numero} {suffixe} {nomVoie}
-        </div>
-        <h4>Positions : </h4>
-        {positions.map(({ point, type }, index) => {
-          return (
-            <React.Fragment key={index}>
-              <span>{getPositionTypeLabel(type)}</span> : {point.coordinates[0]}
-              , {point.coordinates[1]}
-              <br />
-            </React.Fragment>
-          ); // eslint-disable-line react/no-array-index-key
-        })}
-        <h4>Parcelles : </h4>
-        <div className="parcelles-wrapper">
-          {parcelles.map((parcelle) => (
-            <div key={parcelle}>{parcelle}</div>
-          ))}
-        </div>
-      </Paragraph>
+      {(signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE ||
+        signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE) && (
+        <Paragraph
+          background="white"
+          padding={8}
+          borderRadius={8}
+          marginBottom={8}
+          width="100%"
+        >
+          {signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE && (
+            <h3>Modifications demandées</h3>
+          )}
+          {signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE && (
+            <h3>Création demandée</h3>
+          )}
+          <h4>Adresse : </h4>
+          <div>
+            {numero} {suffixe} {nomVoie}
+          </div>
+          <h4>Positions : </h4>
+          {positions.map(({ point, type }, index) => {
+            return (
+              <React.Fragment key={index}>
+                <span>{getPositionTypeLabel(type)}</span> :{" "}
+                {point.coordinates[0]}, {point.coordinates[1]}
+                <br />
+              </React.Fragment>
+            ); // eslint-disable-line react/no-array-index-key
+          })}
+          <h4>Parcelles : </h4>
+          <div className="parcelles-wrapper">
+            {parcelles.map((parcelle) => (
+              <div key={parcelle}>{parcelle}</div>
+            ))}
+          </div>
+        </Paragraph>
+      )}
+
+      {signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE && (
+        <Paragraph
+          background="white"
+          padding={8}
+          borderRadius={8}
+          marginBottom={8}
+          width="100%"
+        >
+          <h4>Commentaire : </h4>
+          <div>{signalement.comment}</div>
+        </Paragraph>
+      )}
 
       <Paragraph
         background="white"

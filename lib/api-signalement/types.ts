@@ -1,6 +1,7 @@
 export enum SignalementTypeEnum {
   LOCATION_TO_UPDATE = "LOCATION_TO_UPDATE",
   LOCATION_TO_CREATE = "LOCATION_TO_CREATE",
+  LOCATION_TO_DELETE = "LOCATION_TO_DELETE",
   OTHER = "OTHER",
 }
 
@@ -17,13 +18,19 @@ export type SignalementExistingLocation = {
   toponyme?: {
     nom: string;
   };
+  position?: PositionCoordinates;
+};
+
+type PositionCoordinates = {
+  type: "Point";
+  coordinates: number[];
 };
 
 export type SignalementChangesRequested = {
   numero: number;
   suffixe?: string;
   positions: {
-    position: { type: "Point"; coordinates: number[] };
+    position: PositionCoordinates;
     positionType: string;
   }[];
   parcelles: string[];

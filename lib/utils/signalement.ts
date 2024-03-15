@@ -1,4 +1,4 @@
-import { Signalement } from "../api-signalement/types";
+import { Signalement, SignalementTypeEnum } from "../api-signalement/types";
 
 export const getExistingLocationLabel = (existingLocation) => {
   let label = "";
@@ -9,10 +9,10 @@ export const getExistingLocationLabel = (existingLocation) => {
       }${existingLocation.toponyme.nom}`;
       break;
     case "VOIE":
-      label = "Demande de création";
+      label = "";
       break;
     case "TOPONYME":
-      label = "Demande de création";
+      label = "";
       break;
     default:
       label = "";
@@ -21,14 +21,20 @@ export const getExistingLocationLabel = (existingLocation) => {
   return label;
 };
 
+const getRequestedLocationLabel = (changesRequested) => {
+  return `${changesRequested.numero} ${
+    changesRequested.suffixe ? `${changesRequested.suffixe} ` : ""
+  }${changesRequested.nomVoie}`;
+};
+
 export const getSignalementLabel = (
   signalement: Signalement,
   opts?: { withoutDate: boolean }
 ) => {
   let label = "";
   switch (signalement.type) {
-    case "LOCATION_TO_UPDATE":
-      label = `Demande de modification sur le ${getExistingLocationLabel(
+    case SignalementTypeEnum.LOCATION_TO_UPDATE:
+      label = `Demande de modification : ${getExistingLocationLabel(
         signalement.existingLocation
       )}${
         opts?.withoutDate
@@ -36,8 +42,23 @@ export const getSignalementLabel = (
           : `- ${new Date(signalement._created).toLocaleDateString()}`
       }`;
       break;
-    case "LOCATION_TO_CREATE":
-      label = "Demande de création";
+    case SignalementTypeEnum.LOCATION_TO_CREATE:
+      label = `Demande de creation : ${getRequestedLocationLabel(
+        signalement.changesRequested
+      )}${
+        opts?.withoutDate
+          ? ""
+          : `- ${new Date(signalement._created).toLocaleDateString()}`
+      }`;
+      break;
+    case SignalementTypeEnum.LOCATION_TO_DELETE:
+      label = `Demande de suppression : ${getExistingLocationLabel(
+        signalement.existingLocation
+      )}${
+        opts?.withoutDate
+          ? ""
+          : `- ${new Date(signalement._created).toLocaleDateString()}`
+      }`;
       break;
     default:
       label = "Autre demande";

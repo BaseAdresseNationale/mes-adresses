@@ -142,7 +142,7 @@ function NumeroEditor({
         const voie = await getEditedVoie();
 
         // Add or edit a numero
-        const submit = initialValue
+        const submit = initialValue._id
           ? async () =>
               editNumero(initialValue._id, { voie: voie._id, ...body }, token)
           : async () => addNumero(voie._id, body, token);
@@ -283,7 +283,7 @@ function NumeroEditor({
           </FormInput>
         </Pane>
 
-        <FormInput ref={refs["numero"]}>
+        <FormInput ref={refs?.numero}>
           <Pane display="flex" alignItems="flex-start">
             <TextInputField
               ref={ref}
@@ -326,7 +326,7 @@ function NumeroEditor({
           </Pane>
         </FormInput>
 
-        <FormInput ref={refs["positions"]}>
+        <FormInput ref={refs?.positions}>
           <PositionEditor
             initialPositions={initialValue?.positions}
             validationMessage={getValidationMessage("positions")}
@@ -334,7 +334,7 @@ function NumeroEditor({
         </FormInput>
 
         {commune.hasCadastre ? (
-          <FormInput ref={refs["parcelles"]}>
+          <FormInput ref={refs?.parcelles}>
             <SelectParcelles initialParcelles={initialValue?.parcelles} />
           </FormInput>
         ) : (
