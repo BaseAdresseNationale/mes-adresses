@@ -148,9 +148,9 @@ All.getInitialProps = async ({ query }) => {
 
   try {
     result = await BasesLocalesService.searchBaseLocale(
-      LIMIT_BY_PAGE,
-      (currentPage - 1) * LIMIT_BY_PAGE,
-      query.deleted,
+      String(LIMIT_BY_PAGE),
+      String((currentPage - 1) * LIMIT_BY_PAGE),
+      'false',
       query.commune,
       query.email,
       query.status

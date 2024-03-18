@@ -145,9 +145,9 @@ function CreateForm({
   const checkOtherBALs = async () => {
     const response: PageBaseLocaleDTO =
       await BasesLocalesService.searchBaseLocale(
-        10,
-        0,
-        false,
+        '10',
+        '0',
+        'false',
         commune.code,
         email
       );
