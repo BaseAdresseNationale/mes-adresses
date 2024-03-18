@@ -1,13 +1,9 @@
 import { useState, useCallback, useContext, useEffect } from "react";
 import { xor, sortBy } from "lodash";
-import { Pane, SelectField, TextInputField } from "evergreen-ui";
-
-import { addVoie, addNumero, editNumero } from "@/lib/bal-api";
+import { Pane, SelectField, TextInputField, toaster } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
-import { computeCompletNumero } from "@/lib/utils/numero";
 
-import TokenContext from "@/contexts/token";
 import MarkersContext from "@/contexts/markers";
 import BalDataContext from "@/contexts/bal-data";
 import ParcellesContext from "@/contexts/parcelles";
@@ -26,7 +22,7 @@ import SelectParcelles from "@/components/bal/numero-editor/select-parcelles";
 import NumeroVoieSelector from "@/components/bal/numero-editor/numero-voie-selector";
 import AddressPreview from "@/components/bal/address-preview";
 import DisabledFormInput from "@/components/disabled-form-input";
-import { Numero, NumeroPopulate } from "@/lib/openapi";
+import { BasesLocalesService, Numero, NumeroPopulate, NumerosService, VoiesService } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
@@ -56,9 +52,8 @@ function NumeroEditor({
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe);
   const [comment, onCommentChange] = useInput(initialValue?.comment);
-  const [getValidationMessage, setValidationMessages] = useValidationMessage();
+  const {getValidationMessages, setValidationMessages} = useValidationMessage();
 
-  const { token } = useContext(TokenContext);
   const {
     baseLocale,
     voies,
@@ -74,20 +69,21 @@ function NumeroEditor({
 
   const [ref] = useFocus(true);
 
-  const getEditedVoie = useCallback(async () => {
+  const getOrCreateVoie = useCallback(async () => {
     if (nomVoie) {
-      const { validationMessages, ...newVoie } = await addVoie(
-        baseLocale._id,
-        { nom: nomVoie },
-        token
-      );
-      setValidationMessages(validationMessages);
-
-      return newVoie;
+      try {
+        const newVoie = await BasesLocalesService.createVoie(baseLocale._id, { nom: nomVoie })
+        setVoieId(newVoie._id)
+        return newVoie
+      } catch (error) {
+        if (error.status === 400) {
+          setValidationMessages(error.body.message);
+        }
+      }
     }
 
     return { _id: voieId };
-  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages]);
+  }, [baseLocale._id, nomVoie, voieId, setValidationMessages]);
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -127,19 +123,24 @@ function NumeroEditor({
   const onFormSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-
       setIsLoading(true);
       try {
         const body = getNumeroBody();
-        const voie = await getEditedVoie();
+        const voie = await getOrCreateVoie();
+  
+        try {
+          if (initialValue) {
+            await NumerosService.updateNumero(initialValue._id, { voie: voie._id, ...body })
+          } else {
+            await VoiesService.createNumero(voie._id, body)
+          }
+        } catch (error) {
+          if (error.status === 400) {
+            setValidationMessages(error.body.message);
+          }
+        }
 
-        // Add or edit a numero
-        const submit = initialValue
-          ? async () =>
-              editNumero(initialValue._id, { voie: voie._id, ...body }, token)
-          : async () => addNumero(voie._id, body, token);
-        const { validationMessages } = await submit();
-        setValidationMessages(validationMessages);
+        toaster.success("Le numéro a bien été créé");
 
         await reloadNumeros();
         reloadTiles();
@@ -154,14 +155,16 @@ function NumeroEditor({
         setIsLoading(false);
         refreshBALSync();
         closeForm();
-      } catch {
+      } catch (error) {
         setIsLoading(false);
+        toaster.danger("Le numéro n'a pas été créé", {
+          description: error.message,
+        });
       }
     },
     [
-      token,
       getNumeroBody,
-      getEditedVoie,
+      getOrCreateVoie,
       closeForm,
       reloadNumeros,
       refreshBALSync,
@@ -221,7 +224,7 @@ function NumeroEditor({
             voies={voies}
             nomVoie={nomVoie}
             mode={voieId ? "selection" : "creation"}
-            validationMessage={getValidationMessage("nom")}
+            validationMessage={getValidationMessages("nom")}
             handleVoie={setVoieId}
             handleNomVoie={onNomVoieChange}
           />
@@ -278,7 +281,7 @@ function NumeroEditor({
               onWheel={(e) => e.target.blur()}
               placeholder="Numéro"
               onChange={onNumeroChange}
-              validationMessage={getValidationMessage("numero")}
+              validationMessage={getValidationMessages("numero")}
             />
 
             <TextInputField
@@ -295,7 +298,7 @@ function NumeroEditor({
               marginBottom={0}
               placeholder="Suffixe"
               onChange={onSuffixeChange}
-              validationMessage={getValidationMessage("suffixe")}
+              validationMessage={getValidationMessages("suffixe")}
             />
           </Pane>
         </FormInput>
@@ -303,7 +306,7 @@ function NumeroEditor({
         <FormInput>
           <PositionEditor
             initialPositions={initialValue?.positions}
-            validationMessage={getValidationMessage("positions")}
+            validationMessage={getValidationMessages("positions")}
           />
         </FormInput>
 

@@ -26,7 +26,7 @@ import LanguesRegionalesForm from '@/components/langues-regionales-form'
 function ToponymeEditor({initialValue, commune, closeForm}) {
   const [isLoading, setIsLoading] = useState(false)
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || '')
-  const [getValidationMessages, setValidationMessages] = useValidationMessage(null)
+  const {getValidationMessages, setValidationMessages} = useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt)
 
   const {token} = useContext(TokenContext)
