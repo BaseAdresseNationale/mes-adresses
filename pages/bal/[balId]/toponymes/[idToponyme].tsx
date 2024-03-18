@@ -117,6 +117,7 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
         {editedNumero && (
           <NumeroEditor
             hasPreview
+            initialVoieId={editedNumero.voie.id}
             initialValue={editedNumero}
             commune={commune}
             closeForm={onCancel}

@@ -24,6 +24,7 @@
     "@turf/center": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@turf/difference": "6.5.0",
+    "@turf/helpers": "^6.5.0",
     "@turf/length": "^6.5.0",
     "@turf/line-slice": "^6.5.0",
     "@turf/nearest-point-on-line": "^6.5.0",
