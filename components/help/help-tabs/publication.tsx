@@ -21,6 +21,7 @@ import {
   VideoContainer,
   PEERTUBE_LINK,
 } from "@/components/help/video-container";
+import { BaseLocale, Sync } from "@/lib/openapi";
 
 function Publication() {
   return (
@@ -55,7 +56,7 @@ function Publication() {
 
           <ListItem>
             Une fois votre authentification confirmée, votre Base Adresse Locale
-            obtiendra une habilitation valable 6 mois.
+            obtiendra une habilitation valable 1 an.
           </ListItem>
         </OrderedList>
       </Tuto>
@@ -152,8 +153,8 @@ function Publication() {
           <Pane display="grid" gridTemplateColumns="160px 1fr" gap={8}>
             <Pane height={32} marginTop={4}>
               <StatusBadge
-                status="published"
-                sync={{ isPaused: false, status: "synced" }}
+                status={BaseLocale.status.PUBLISHED}
+                sync={{ isPaused: false, status: Sync.status.SYNCED }}
               />
             </Pane>
             <Text>
@@ -165,22 +166,22 @@ function Publication() {
           <Pane display="grid" gridTemplateColumns="160px 1fr" gap={8}>
             <Pane height={38}>
               <StatusBadge
-                status="published"
-                sync={{ isPaused: false, status: "outdated" }}
+                status={BaseLocale.status.PUBLISHED}
+                sync={{ isPaused: false, status: Sync.status.OUTDATED }}
               />
             </Pane>
             <Text>
-              L&apos;habilitation de la Base Adresse Locale est expirée.
-              Il vous faut renouveler celle-ci pour que les nouvelles
-              modifications remontent dans la Base Adresse Nationale.
+              L&apos;habilitation de la Base Adresse Locale est expirée. Il vous
+              faut renouveler celle-ci pour que les nouvelles modifications
+              remontent dans la Base Adresse Nationale.
             </Text>
           </Pane>
 
           <Pane display="grid" gridTemplateColumns="160px 1fr" gap={8}>
             <Pane height={32} marginTop={4}>
               <StatusBadge
-                status="published"
-                sync={{ isPaused: true, status: "synced" }}
+                status={BaseLocale.status.PUBLISHED}
+                sync={{ isPaused: true, status: Sync.status.SYNCED }}
               />
             </Pane>
             <Text>
@@ -193,8 +194,8 @@ function Publication() {
           <Pane display="grid" gridTemplateColumns="160px 1fr" gap={8}>
             <Pane height={32} marginTop={4}>
               <StatusBadge
-                status="replaced"
-                sync={{ isPaused: true, status: "conflict" }}
+                status={BaseLocale.status.REPLACED}
+                sync={{ isPaused: true, status: Sync.status.CONFLICT }}
               />
             </Pane>
             <Text>

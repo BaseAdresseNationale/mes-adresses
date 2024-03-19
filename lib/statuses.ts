@@ -96,7 +96,7 @@ const STATUSES: { [key: string]: StatusType } = {
 
 export function computeStatus(
   balStatus: BaseLocale.status,
-  sync: Sync,
+  sync: Partial<Sync>,
   isHabilitationValid: boolean
 ): StatusType {
   if (

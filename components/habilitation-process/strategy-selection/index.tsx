@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import {
   Pane,
   Strong,
@@ -16,12 +15,18 @@ import {
 import FranceConnect from "@/components/habilitation-process/strategy-selection/france-connect";
 import CodeEmail from "@/components/habilitation-process/strategy-selection/code-email";
 
+interface StrategySelectionProps {
+  franceconnectAuthenticationUrl: string | null;
+  emailCommune: string | null;
+  handleStrategy: (strategy: string) => void;
+}
+
 const StrategySelection = React.memo(function StrategySelection({
-  franceconnectAuthenticationUrl,
-  emailCommune,
+  franceconnectAuthenticationUrl = null,
+  emailCommune = null,
   handleStrategy,
-}) {
-  const [hovered, setHovered] = useState();
+}: StrategySelectionProps) {
+  const [hovered, setHovered] = useState("");
 
   return (
     <Pane marginBottom={-16}>
@@ -58,7 +63,7 @@ const StrategySelection = React.memo(function StrategySelection({
 
             <ListItem icon={TimeIcon}>
               <Text size={400}>
-                Elle est valable <Strong size={400}>6 mois</Strong>.
+                Elle est valable <Strong size={400}>1 an</Strong>.
               </Text>
             </ListItem>
 
@@ -133,16 +138,5 @@ const StrategySelection = React.memo(function StrategySelection({
     </Pane>
   );
 });
-
-StrategySelection.defaultProps = {
-  franceconnectAuthenticationUrl: null,
-  emailCommune: null,
-};
-
-StrategySelection.propTypes = {
-  franceconnectAuthenticationUrl: PropTypes.string,
-  emailCommune: PropTypes.string,
-  handleStrategy: PropTypes.func.isRequired,
-};
 
 export default StrategySelection;
