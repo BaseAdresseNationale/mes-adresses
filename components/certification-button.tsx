@@ -6,6 +6,7 @@ interface CertificationButtonProps {
   isCertified: boolean;
   onConfirm: (certified: boolean | null) => void;
   onCancel: () => void;
+  children?: React.ReactNode;
 }
 
 function CertificationButton({
@@ -13,6 +14,7 @@ function CertificationButton({
   onConfirm,
   onCancel,
   isCertified,
+  children,
 }: CertificationButtonProps) {
   const submitCertificationLabel = useMemo(() => {
     if (isLoading) {
@@ -57,6 +59,8 @@ function CertificationButton({
         </Button>
       </div>
 
+      {children && <div>{children}</div>}
+
       <div>
         <Button
           disabled={isLoading}
@@ -72,18 +76,20 @@ function CertificationButton({
       <style jsx>{`
         .certification-button-wrapper {
           position: sticky;
+          width: 100%;
           bottom: 0;
           display: flex;
-          padding: 10px;
           align-items: center;
           justify-content: center;
+          flex-wrap: wrap;
+          padding: 10px 0;
         }
 
         .certification-button-wrapper > div {
           box-shadow:
             0 0 1px rgba(67, 90, 111, 0.3),
             0 5px 8px -4px rgba(67, 90, 111, 0.47);
-          margin-left: 8px;
+          margin: 8px 0 0 8px;
         }
       `}</style>
     </div>

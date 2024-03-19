@@ -39,6 +39,7 @@ interface NumeroEditorProps {
   closeForm: () => void;
   onSubmitted?: () => void;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
+  certificationBtnChildren?: React.ReactNode;
 }
 
 function NumeroEditor({
@@ -49,6 +50,7 @@ function NumeroEditor({
   closeForm,
   onSubmitted,
   refs,
+  certificationBtnChildren,
 }: NumeroEditorProps) {
   const [voieId, setVoieId] = useState(
     initialVoieId || (initialValue?.voie as unknown as Voie)._id
@@ -349,7 +351,9 @@ function NumeroEditor({
         isLoading={isLoading}
         onConfirm={setCertifie}
         onCancel={closeForm}
-      />
+      >
+        {certificationBtnChildren}
+      </CertificationButton>
     </Form>
   );
 }
