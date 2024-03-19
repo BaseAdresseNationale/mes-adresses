@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Button, Pane, Tab, Tablist } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
@@ -13,10 +13,7 @@ import SignalementEditor from "@/components/signalement/signalement-editor";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
 import { SignalementTypeEnum } from "@/lib/api-signalement/types";
 import NumeroEditor from "@/components/bal/numero-editor";
-import { softRemoveNumero } from "@/lib/bal-api";
-import BalDataContext from "@/contexts/bal-data";
-import MapContext from "@/contexts/map";
-import TokenContext from "@/contexts/token";
+import SignalementDeleteNumeroEditor from "@/components/signalement/signalement-delete-numero-editor";
 
 function SignalementPage({ signalement, existingLocation, commune }) {
   const [activeTab, setActiveTab] = useState(1);
@@ -29,24 +26,6 @@ function SignalementPage({ signalement, existingLocation, commune }) {
   const handleSignalementProcessed = async () => {
     await SignalementService.updateSignalement({ id: signalement._id });
     handleClose();
-  };
-
-  const { reloadNumeros, reloadParcelles, refreshBALSync } =
-    useContext(BalDataContext);
-  const { reloadTiles } = useContext(MapContext);
-  const { token } = useContext(TokenContext);
-
-  const handleRemove = async (idNumero) => {
-    await onRemove(idNumero);
-    await handleSignalementProcessed();
-  };
-
-  const onRemove = async (idNumero) => {
-    await softRemoveNumero(idNumero, token);
-    await reloadNumeros();
-    await reloadParcelles();
-    reloadTiles();
-    refreshBALSync();
   };
 
   return (
@@ -93,25 +72,12 @@ function SignalementPage({ signalement, existingLocation, commune }) {
               />
             )}
             {signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE && (
-              <Pane position="relative" height="100%">
-                <Button
-                  type="button"
-                  intent="danger"
-                  onClick={() => handleRemove(existingLocation._id)}
-                >
-                  Supprimer
-                </Button>
-                <Pane position="relative" height="100%">
-                  <NumeroEditor
-                    hasPreview
-                    initialValue={existingLocation}
-                    initialVoieId={existingLocation.voie?._id}
-                    commune={commune}
-                    closeForm={handleClose}
-                    onSubmitted={handleSignalementProcessed}
-                  />
-                </Pane>
-              </Pane>
+              <SignalementDeleteNumeroEditor
+                existingLocation={existingLocation}
+                handleClose={handleClose}
+                commune={commune}
+                handleSubmit={handleSignalementProcessed}
+              />
             )}
           </>
         )}
