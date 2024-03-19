@@ -5,8 +5,8 @@ import { BaseLocale, Sync } from "@/lib/openapi";
 
 interface StatusBadgeProps {
   status: BaseLocale.status;
-  sync: Sync;
-  isHabilitationValid: boolean;
+  sync: Partial<Sync>;
+  isHabilitationValid?: boolean;
 }
 
 function StatusBadge({ status, sync, isHabilitationValid }: StatusBadgeProps) {
