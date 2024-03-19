@@ -6,9 +6,15 @@ import {
   useContext,
   useRef,
 } from "react";
-import PropTypes from "prop-types";
 import { useRouter } from "next/router";
-import MapGl, { Source, Layer, Marker } from "react-map-gl/maplibre";
+import MapGl, {
+  Source,
+  Layer,
+  ViewState,
+  SourceProps,
+  LayerProps,
+  LngLatBoundsLike,
+} from "react-map-gl/maplibre";
 import { Pane, Alert } from "evergreen-ui";
 
 import MapContext, { SOURCE_TILE_ID } from "@/contexts/map";
@@ -44,7 +50,9 @@ import AddressEditorControl from "@/components/map/controls/address-editor-contr
 import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
-import SignalementContext from "@/contexts/signalement";
+import { CommuneType } from "@/types/commune";
+import { Numero } from "@/lib/openapi";
+import { QuerySourceFeatureOptions } from "maplibre-gl";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -81,10 +89,16 @@ function getBaseStyle(style) {
 
 function generateNewStyle(style) {
   const baseStyle = getBaseStyle(style);
-  return baseStyle.updateIn(["layers"], (arr) => arr.push(...LAYERS));
+  return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
 }
 
-function Map({ commune, isAddressFormOpen, handleAddressForm }) {
+interface MapProps {
+  commune: CommuneType;
+  isAddressFormOpen: boolean;
+  handleAddressForm: () => void;
+}
+
+function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const router = useRouter();
   const {
     map,
@@ -104,7 +118,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
   const { isParcelleSelectionEnabled, handleParcelle } =
     useContext(ParcellesContext);
 
-  const [isLabelsDisplayed, setIsLabelsDisplayed] = useState(true);
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle));
@@ -254,7 +267,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
 
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
-    setStyle((style) => {
+    setStyle((style: string) => {
       if (drawEnabled && communeHasOrtho) {
         prevStyle.current = style;
         return "ortho";
@@ -272,23 +285,23 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
 
   useEffect(() => {
     if (map && bounds) {
-      const camera = map.cameraForBounds(bounds, {
+      const camera = map.cameraForBounds(bounds as LngLatBoundsLike, {
         padding: 100,
       });
 
       if (camera) {
-        setViewport((viewport) => ({
+        setViewport((viewport: ViewState) => ({
           ...viewport,
           bearing: camera.bearing,
-          longitude: camera.center.lng,
-          latitude: camera.center.lat,
+          longitude: (camera.center as any).lng,
+          latitude: (camera.center as any).lat,
           zoom: camera.zoom,
         }));
       }
     }
   }, [map, bounds, setViewport]);
 
-  const sourceTiles = useMemo(() => {
+  const sourceTiles: SourceProps = useMemo(() => {
     return {
       id: SOURCE_TILE_ID,
       type: "vector",
@@ -297,7 +310,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
     };
   }, [balTilesUrl]);
 
-  const sourceCommune = useMemo(() => {
+  const sourceCommune: SourceProps = useMemo(() => {
     return {
       id: SOURCE_COMMUNE_ID,
       type: "geojson",
@@ -311,14 +324,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
     }
 
     const featuresList = map?.querySourceFeatures(SOURCE_TILE_ID, {
-      sourceLayer: [LAYERS_SOURCE.VOIES_POINTS],
+      sourceLayer: LAYERS_SOURCE.VOIES_POINTS,
     });
 
     return featuresList?.find((feature) => feature.id === voie._id)?.properties
       .color;
   }, [map, voie, isMapLoaded]);
 
-  const {markers} = useContext(MarkersContext)
+  const { markers } = useContext(MarkersContext);
 
   return (
     <Pane display="flex" flexDirection="column" flex={1}>
@@ -329,13 +342,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
-      {map && (
-        <DrawControl
-          map={map}
-          drawEnabled={drawEnabled}
-          isMapLoaded={isMapLoaded}
-        />
-      )}
+      {map && <DrawControl map={map} isMapLoaded={isMapLoaded} />}
 
       {token && (
         <Pane position="absolute" zIndex={1} top={90} right={10}>
@@ -387,18 +394,20 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
           <NavControl onViewportChange={setViewport} />
 
           <Source {...sourceCommune}>
-            <Layer {...LAYER_COMMUNE} />
+            <Layer {...(LAYER_COMMUNE as LayerProps)} />
           </Source>
 
           <Source {...sourceTiles}>
             {Object.values(tilesLayers).map((layer) => (
-              <Layer key={layer.id} {...layer} />
+              <Layer key={layer.id} {...(layer as LayerProps)} />
             ))}
           </Source>
 
           {(voie || toponyme) && !modeId && numeros && (
             <NumerosMarkers
-              numeros={numeros.filter(({ _id }) => _id !== editingId)}
+              numeros={
+                numeros.filter(({ _id }) => _id !== editingId) as Numero[]
+              }
               isContextMenuDisplayed={isContextMenuDisplayed}
               setIsContextMenuDisplayed={setIsContextMenuDisplayed}
               color={selectedVoieColor}
@@ -425,7 +434,11 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
             />
           )}
 
-          {markers.filter((marker) => marker.isMapMarker).map((marker) => <MapMarker key={marker._id} marker={marker} />)}
+          {markers
+            .filter((marker) => marker.isMapMarker)
+            .map((marker) => (
+              <MapMarker key={marker._id} marker={marker} />
+            ))}
 
           {featureHovered !== null &&
             viewport.zoom > 14 &&
@@ -438,15 +451,5 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }) {
     </Pane>
   );
 }
-
-Map.propTypes = {
-  commune: PropTypes.shape({
-    nom: PropTypes.string.isRequired,
-    hasOrtho: PropTypes.bool.isRequired,
-    contour: PropTypes.object.isRequired,
-  }).isRequired,
-  isAddressFormOpen: PropTypes.bool.isRequired,
-  handleAddressForm: PropTypes.func.isRequired,
-};
 
 export default Map;

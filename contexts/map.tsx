@@ -18,11 +18,11 @@ interface MapContextType {
   isTileSourceLoaded: boolean;
   reloadTiles: () => void;
   style: string;
-  setStyle: (value: string) => void;
+  setStyle: React.Dispatch<React.SetStateAction<string>>;
   defaultStyle: string;
   isStyleLoaded: boolean;
   viewport: Partial<ViewState>;
-  setViewport: (value: Partial<ViewState>) => void;
+  setViewport: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
   isCadastreDisplayed: boolean;
   setIsCadastreDisplayed: (value: boolean) => void;
   balTilesUrl: string;

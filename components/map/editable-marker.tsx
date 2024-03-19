@@ -1,5 +1,5 @@
 import { useState, useCallback, useContext, useEffect, useMemo } from "react";
-import { Marker } from "react-map-gl";
+import { Marker, ViewState } from "react-map-gl";
 import { Pane, MapMarkerIcon, Text } from "evergreen-ui";
 import nearestPointOnLine from "@turf/nearest-point-on-line";
 import length from "@turf/length";
@@ -16,10 +16,7 @@ interface EditableMarkerProps {
   style?: string;
   idVoie?: string;
   isToponyme: boolean;
-  viewport: {
-    latitude: number;
-    longitude: number;
-  };
+  viewport: Partial<ViewState>;
 }
 
 function EditableMarker({
