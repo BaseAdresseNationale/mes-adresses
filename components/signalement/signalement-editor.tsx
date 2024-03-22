@@ -1,22 +1,38 @@
-import { Badge, Pane, Paragraph, Strong } from "evergreen-ui";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Badge,
+  Button,
+  Pane,
+  Paragraph,
+  Strong,
+  toaster,
+} from "evergreen-ui";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import ReactDOM from "react-dom";
 import NumeroEditor from "../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import SignalementCard from "./signalement-card";
 import MarkersContext from "@/contexts/markers";
 import PositionItem from "../bal/position-item";
+import { VoiesService } from "@/lib/openapi";
 
 interface SignalementEditorProps {
   signalement: any;
   existingLocation: any;
-  handleSubmit: () => void;
+  handleSubmit: () => Promise<void>;
   handleClose: () => void;
   commune: CommuneType;
 }
 
 const detectChanges = (signalement, existingLocation) => {
-  const { numero, suffixe, positions, parcelles } =
+  const { numero, suffixe, positions, parcelles, nomVoie } =
     signalement.changesRequested;
 
   const numeroComplet = `${numero}${suffixe ? suffixe : ""}`;
@@ -28,6 +44,7 @@ const detectChanges = (signalement, existingLocation) => {
   } = existingLocation;
 
   return {
+    voie: nomVoie !== existingLocation.nomVoie,
     numero: numeroComplet !== existingNumeroComplet,
     positions:
       JSON.stringify(positions.map(({ point, type }) => ({ point, type }))) !==
@@ -45,9 +62,21 @@ function SignalementEditor({
   handleClose,
   commune,
 }: SignalementEditorProps) {
+  const voieInputRef = useRef<HTMLDivElement>(null);
   const numeroInputRef = useRef<HTMLDivElement>(null);
   const positionsInputRef = useRef<HTMLDivElement>(null);
   const parcellesInputRef = useRef<HTMLDivElement>(null);
+
+  const refs = useMemo(
+    () => ({
+      voie: voieInputRef,
+      numero: numeroInputRef,
+      positions: positionsInputRef,
+      parcelles: parcellesInputRef,
+    }),
+    []
+  );
+
   const { markers, addMarker, removeMarker, disableMarkers } =
     useContext(MarkersContext);
 
@@ -55,35 +84,25 @@ function SignalementEditor({
     detectChanges(signalement, existingLocation)
   );
   const [refsInitialized, setRefsInitialized] = useState(false);
+  const [voieWillBeRenamed, setVoieWillBeRenamed] = useState(false);
   const [numeroEditorValue, setNumeroEditorValue] = useState(existingLocation);
 
   const { numero, suffixe, positions, parcelles, nomVoie } =
     signalement.changesRequested;
 
   useEffect(() => {
-    if (numeroInputRef.current) {
-      changes.numero
-        ? (numeroInputRef.current.style.border = "solid red 2px")
-        : (numeroInputRef.current.style.border = "none");
-    }
-    if (positionsInputRef.current) {
-      changes.positions
-        ? (positionsInputRef.current.style.border = "solid red 2px")
-        : (positionsInputRef.current.style.border = "none");
-    }
-    if (parcellesInputRef.current) {
-      changes.parcelles
-        ? (parcellesInputRef.current.style.border = "solid red 2px")
-        : (parcellesInputRef.current.style.border = "none");
-    }
-    if (
-      numeroInputRef.current &&
-      positionsInputRef.current &&
-      parcellesInputRef.current
-    ) {
+    const refKeys = Object.keys(refs);
+    refKeys.forEach((key) => {
+      if (refs[key].current) {
+        changes[key]
+          ? (refs[key].current.style.border = "solid #f3b346 2px")
+          : (refs[key].current.style.border = "none");
+      }
+    });
+    if (refKeys.every((key) => Boolean(refs[key].current))) {
       setRefsInitialized(true);
     }
-  }, [numeroInputRef, positionsInputRef, parcellesInputRef, changes]);
+  }, [refs, changes]);
 
   useEffect(() => {
     if (positions) {
@@ -127,6 +146,20 @@ function SignalementEditor({
     setChanges({ ...changes, [key]: false });
   };
 
+  const onSubmitted = useCallback(async () => {
+    if (voieWillBeRenamed) {
+      try {
+        await VoiesService.updateVoie(existingLocation.voie._id, {
+          nom: nomVoie,
+        });
+      } catch (e) {
+        toaster.danger("Le renommage de la voie a échoué.");
+        console.error(e);
+      }
+    }
+    await handleSubmit();
+  }, [voieWillBeRenamed, handleSubmit, existingLocation, nomVoie]);
+
   return (
     <Pane position="relative" height="100%">
       <NumeroEditor
@@ -135,13 +168,46 @@ function SignalementEditor({
         initialVoieId={numeroEditorValue.voie?._id}
         commune={commune}
         closeForm={handleClose}
-        onSubmitted={handleSubmit}
-        refs={{
-          numero: numeroInputRef,
-          positions: positionsInputRef,
-          parcelles: parcellesInputRef,
-        }}
+        onSubmitted={onSubmitted}
+        onVoieChanged={() => handleRefuseChange("voie")}
+        refs={refs}
       />
+      {refsInitialized &&
+        changes.voie &&
+        ReactDOM.createPortal(
+          voieWillBeRenamed ? (
+            <Alert
+              intent="success"
+              hasIcon={false}
+              marginTop={10}
+              title="Modification prise en compte"
+            >
+              <Pane display="flex" flexDirection="column" marginTop={10}>
+                <Paragraph>
+                  Après l&apos;enregistrement, la voie &quot;
+                  {existingLocation.voie.nom}&quot; sera renommée en &quot;
+                  {nomVoie}&quot;.
+                </Paragraph>
+                <Pane marginTop={10}>
+                  <Button
+                    onClick={() => setVoieWillBeRenamed(false)}
+                    type="button"
+                  >
+                    Annuler
+                  </Button>
+                </Pane>
+              </Pane>
+            </Alert>
+          ) : (
+            <SignalementCard
+              onAccept={() => setVoieWillBeRenamed(true)}
+              onRefuse={() => handleRefuseChange("voie")}
+            >
+              <Paragraph>{nomVoie}</Paragraph>
+            </SignalementCard>
+          ),
+          refs.voie.current
+        )}
       {refsInitialized &&
         changes.numero &&
         ReactDOM.createPortal(
@@ -153,7 +219,7 @@ function SignalementEditor({
               {numero} {suffixe}
             </Paragraph>
           </SignalementCard>,
-          numeroInputRef.current
+          refs.numero.current
         )}
       {refsInitialized &&
         changes.positions &&
@@ -178,7 +244,7 @@ function SignalementEditor({
                 ))}
             </Pane>
           </SignalementCard>,
-          positionsInputRef.current
+          refs.positions.current
         )}
       {refsInitialized &&
         changes.parcelles &&
@@ -199,7 +265,7 @@ function SignalementEditor({
               </Badge>
             ))}
           </SignalementCard>,
-          parcellesInputRef.current
+          refs.parcelles.current
         )}
     </Pane>
   );

@@ -7,7 +7,7 @@ import { Numero } from "@/lib/openapi";
 interface SignalementCreateNumeroEditorProps {
   signalement: any;
   initialVoieId: string;
-  handleSubmit: () => void;
+  handleSubmit: () => Promise<void>;
   handleClose: () => void;
   commune: CommuneType;
 }
