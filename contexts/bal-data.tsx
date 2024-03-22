@@ -82,6 +82,8 @@ export function BalDataContextProvider({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editingId, _setEditingId] = useState<string>(null);
   const [parcelles, setParcelles] = useState<Array<string>>([]);
+  // Numero SI VoiesService.findVoieNumeros
+  // NumeroPopulate SI ToponymesService.findToponymeNumeros
   const [numeros, setNumeros] =
     useState<Array<Numero | NumeroPopulate>>(initialNumeros);
   const [voies, setVoies] = useState<ExtendedVoieDTO[]>(initialVoies);

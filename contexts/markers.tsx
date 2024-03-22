@@ -17,8 +17,6 @@ interface MarkersContextType {
   addMarker: (value: Partial<Marker>) => void;
   removeMarker: (id: string) => void;
   updateMarker: (id: string, value: Partial<Marker>) => void;
-  overrideText: string | null;
-  setOverrideText: (value: string) => void;
   disableMarkers: () => void;
   suggestedNumero: number | null;
   setSuggestedNumero: (value: number) => void;
@@ -28,14 +26,12 @@ const MarkersContext = React.createContext<MarkersContextType | null>(null);
 
 export function MarkersContextProvider(props: ChildrenProps) {
   const [markers, setMarkers] = useState<Marker[]>([]);
-  const [overrideText, setOverrideText] = useState<string | null>(null);
   const [suggestedNumero, setSuggestedNumero] = useState<number | null>(null);
 
   const { viewport } = useContext(MapContext);
 
   const disableMarkers = useCallback(() => {
     setMarkers([]);
-    setOverrideText(null);
     setSuggestedNumero(null);
   }, []);
 
@@ -82,15 +78,12 @@ export function MarkersContextProvider(props: ChildrenProps) {
       addMarker,
       removeMarker,
       updateMarker,
-      overrideText,
-      setOverrideText,
       disableMarkers,
       suggestedNumero,
       setSuggestedNumero,
     }),
     [
       markers,
-      overrideText,
       addMarker,
       removeMarker,
       updateMarker,
