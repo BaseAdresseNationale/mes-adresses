@@ -1,6 +1,5 @@
 import { Button, Pane } from "evergreen-ui";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useContext } from "react";
 import NumeroEditor from "../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import BalDataContext from "@/contexts/bal-data";
@@ -21,7 +20,6 @@ function SignalementDeleteNumeroEditor({
   handleClose,
   commune,
 }: SignalementDeleteNumeroEditorProps) {
-  const editorControlRef = useRef<HTMLDivElement>(null);
   const { reloadNumeros, reloadParcelles, refreshBALSync } =
     useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
