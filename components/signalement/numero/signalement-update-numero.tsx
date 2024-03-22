@@ -16,14 +16,14 @@ import React, {
   useState,
 } from "react";
 import ReactDOM from "react-dom";
-import NumeroEditor from "../bal/numero-editor";
+import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
-import SignalementCard from "./signalement-card";
+import SignalementCard from "../signalement-card";
 import MarkersContext from "@/contexts/markers";
-import PositionItem from "../bal/position-item";
+import PositionItem from "../../bal/position-item";
 import { VoiesService } from "@/lib/openapi";
 
-interface SignalementEditorProps {
+interface SignalementUpdateNumeroProps {
   signalement: any;
   existingLocation: any;
   handleSubmit: () => Promise<void>;
@@ -55,13 +55,13 @@ const detectChanges = (signalement, existingLocation) => {
   };
 };
 
-function SignalementEditor({
+function SignalementUpdateNumero({
   signalement,
   existingLocation,
   handleSubmit,
   handleClose,
   commune,
-}: SignalementEditorProps) {
+}: SignalementUpdateNumeroProps) {
   const voieInputRef = useRef<HTMLDivElement>(null);
   const numeroInputRef = useRef<HTMLDivElement>(null);
   const positionsInputRef = useRef<HTMLDivElement>(null);
@@ -271,4 +271,4 @@ function SignalementEditor({
   );
 }
 
-export default SignalementEditor;
+export default SignalementUpdateNumero;

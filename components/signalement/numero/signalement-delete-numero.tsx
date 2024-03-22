@@ -1,25 +1,25 @@
 import { Button, Pane } from "evergreen-ui";
 import React, { useContext } from "react";
-import NumeroEditor from "../bal/numero-editor";
+import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 import { softRemoveNumero } from "@/lib/bal-api";
 import TokenContext from "@/contexts/token";
 
-interface SignalementDeleteNumeroEditorProps {
+interface SignalementDeleteNumeroProps {
   existingLocation: any;
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
   commune: CommuneType;
 }
 
-function SignalementDeleteNumeroEditor({
+function SignalementDeleteNumero({
   existingLocation,
   handleSubmit,
   handleClose,
   commune,
-}: SignalementDeleteNumeroEditorProps) {
+}: SignalementDeleteNumeroProps) {
   const { reloadNumeros, reloadParcelles, refreshBALSync } =
     useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
@@ -62,4 +62,4 @@ function SignalementDeleteNumeroEditor({
   );
 }
 
-export default SignalementDeleteNumeroEditor;
+export default SignalementDeleteNumero;

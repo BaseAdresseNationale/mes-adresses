@@ -39,6 +39,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
           },
         ];
       }, [])
+      .filter((signalement) => signalement.position)
       .map(({ position, signalementId, label }) => {
         return {
           isMapMarker: true,
