@@ -9,7 +9,7 @@ import TokenContext from "@/contexts/token";
 
 interface SignalementDeleteNumeroEditorProps {
   existingLocation: any;
-  handleSubmit: () => void;
+  handleSubmit: () => Promise<void>;
   handleClose: () => void;
   commune: CommuneType;
 }

@@ -40,6 +40,7 @@ interface NumeroEditorProps {
   onSubmitted?: () => void;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
   certificationBtnChildren?: React.ReactNode;
+  onVoieChanged?: () => void;
 }
 
 function NumeroEditor({
@@ -51,6 +52,7 @@ function NumeroEditor({
   onSubmitted,
   refs,
   certificationBtnChildren,
+  onVoieChanged,
 }: NumeroEditorProps) {
   const [voieId, setVoieId] = useState(
     initialVoieId || (initialValue?.voie as unknown as Voie)._id
@@ -192,6 +194,20 @@ function NumeroEditor({
     ]
   );
 
+  const handleVoieIdChange = useCallback((voieId) => {
+    setVoieId(voieId);
+    if (onVoieChanged) {
+      onVoieChanged();
+    }
+  }, []);
+
+  const handleNomVoieChange = useCallback((nomVoie) => {
+    onNomVoieChange(nomVoie);
+    if (onVoieChanged) {
+      onVoieChanged();
+    }
+  }, []);
+
   useEffect(() => {
     onNumeroChange({ target: { value: initialValue?.numero.toString() } });
     onSuffixeChange({ target: { value: initialValue?.suffixe } });
@@ -241,15 +257,15 @@ function NumeroEditor({
       )}
 
       <Pane paddingTop={hasPreview ? 36 : 0}>
-        <FormInput>
+        <FormInput ref={refs?.voie}>
           <NumeroVoieSelector
             voieId={voieId}
             voies={voies}
             nomVoie={nomVoie}
             mode={voieId ? "selection" : "creation"}
             validationMessage={getValidationMessage("nom")}
-            handleVoie={setVoieId}
-            handleNomVoie={onNomVoieChange}
+            handleVoie={handleVoieIdChange}
+            handleNomVoie={handleNomVoieChange}
           />
         </FormInput>
 

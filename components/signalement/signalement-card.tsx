@@ -12,7 +12,12 @@ function SignalementCard({
   children,
 }: SignalementCardProps) {
   return (
-    <Alert hasIcon={false} marginTop={10} title="Modification demandée : ">
+    <Alert
+      intent="warning"
+      hasIcon={false}
+      marginTop={10}
+      title="Modification demandée : "
+    >
       <Pane display="flex" flexDirection="column" marginTop={10}>
         {children}
         <Pane marginTop={10}>

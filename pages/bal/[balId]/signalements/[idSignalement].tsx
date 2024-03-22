@@ -12,7 +12,6 @@ import { useRouter } from "next/router";
 import SignalementEditor from "@/components/signalement/signalement-editor";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
 import { SignalementTypeEnum } from "@/lib/api-signalement/types";
-import NumeroEditor from "@/components/bal/numero-editor";
 import SignalementDeleteNumeroEditor from "@/components/signalement/signalement-delete-numero-editor";
 import SignalementCreateNumeroEditor from "@/components/signalement/signalement-create-numero-editor";
 
