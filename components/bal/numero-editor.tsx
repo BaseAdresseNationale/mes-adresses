@@ -33,7 +33,7 @@ const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
 interface NumeroEditorProps {
   initialVoieId?: string;
-  initialValue: Numero;
+  initialValue: Partial<Numero>;
   commune: CommuneType;
   hasPreview?: boolean;
   closeForm: () => void;

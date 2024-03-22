@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Pane, Tab, Tablist } from "evergreen-ui";
+import { Pane, Tab, Tablist } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
@@ -14,6 +14,7 @@ import SignalementViewer from "@/components/signalement/signalement-viewer";
 import { SignalementTypeEnum } from "@/lib/api-signalement/types";
 import NumeroEditor from "@/components/bal/numero-editor";
 import SignalementDeleteNumeroEditor from "@/components/signalement/signalement-delete-numero-editor";
+import SignalementCreateNumeroEditor from "@/components/signalement/signalement-create-numero-editor";
 
 function SignalementPage({ signalement, existingLocation, commune }) {
   const [activeTab, setActiveTab] = useState(1);
@@ -51,16 +52,13 @@ function SignalementPage({ signalement, existingLocation, commune }) {
         {activeTab === 1 && (
           <>
             {signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE && (
-              <Pane position="relative" height="100%">
-                <NumeroEditor
-                  hasPreview
-                  initialValue={signalement.changesRequested}
-                  initialVoieId={existingLocation._id}
-                  commune={commune}
-                  closeForm={handleClose}
-                  onSubmitted={handleSignalementProcessed}
-                />
-              </Pane>
+              <SignalementCreateNumeroEditor
+                signalement={signalement}
+                initialVoieId={existingLocation._id}
+                handleClose={handleClose}
+                commune={commune}
+                handleSubmit={handleSignalementProcessed}
+              />
             )}
             {signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE && (
               <SignalementEditor
