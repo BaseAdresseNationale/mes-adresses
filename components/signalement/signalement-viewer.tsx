@@ -16,46 +16,55 @@ function SignalementViewer({
   signalement,
   existingLocation,
 }: SignalementViewerProps) {
-  const { numero, suffixe, nomVoie, positions, parcelles } =
+  const { numero, suffixe, nomVoie, positions, parcelles, nom } =
     signalement.changesRequested;
 
   return (
     <Pane padding={16}>
       {signalement.type !== SignalementTypeEnum.LOCATION_TO_CREATE && (
         <Paragraph
+          is="div"
           background="white"
           padding={8}
           borderRadius={8}
           marginBottom={8}
           width="100%"
         >
-          <h3>Adresse existante</h3>
-          <h4>Adresse : </h4>
+          <h3>Lieu existant</h3>
           <div>
             {existingLocation.numero} {existingLocation.suffixe}{" "}
-            {existingLocation.nomVoie}
+            {existingLocation.nomVoie} {existingLocation.nom}
           </div>
-          <h4>Positions : </h4>
-          {existingLocation.positions.map(({ point, type }, index) => {
-            return (
-              <React.Fragment key={index}>
-                <span>{getPositionTypeLabel(type)}</span> :{" "}
-                {point.coordinates[0]}, {point.coordinates[1]}
-                <br />
-              </React.Fragment>
-            ); // eslint-disable-line react/no-array-index-key
-          })}
-          <h4>Parcelles : </h4>
-          <div className="parcelles-wrapper">
-            {existingLocation.parcelles.map((parcelle) => (
-              <div key={parcelle}>{parcelle}</div>
-            ))}
-          </div>
+          {existingLocation.positions && (
+            <>
+              <h4>Positions : </h4>
+              {existingLocation.positions.map(({ point, type }, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <span>{getPositionTypeLabel(type)}</span> :{" "}
+                    {point.coordinates[0]}, {point.coordinates[1]}
+                    <br />
+                  </React.Fragment>
+                ); // eslint-disable-line react/no-array-index-key
+              })}
+            </>
+          )}
+          {existingLocation.parcelles && (
+            <>
+              <h4>Parcelles : </h4>
+              <div className="parcelles-wrapper">
+                {existingLocation.parcelles.map((parcelle) => (
+                  <div key={parcelle}>{parcelle}</div>
+                ))}
+              </div>
+            </>
+          )}
         </Paragraph>
       )}
       {(signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE ||
         signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE) && (
         <Paragraph
+          is="div"
           background="white"
           padding={8}
           borderRadius={8}
@@ -68,26 +77,33 @@ function SignalementViewer({
           {signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE && (
             <h3>Création demandée</h3>
           )}
-          <h4>Adresse : </h4>
           <div>
-            {numero} {suffixe} {nomVoie}
+            {numero} {suffixe} {nomVoie} {nom}
           </div>
-          <h4>Positions : </h4>
-          {positions.map(({ point, type }, index) => {
-            return (
-              <React.Fragment key={index}>
-                <span>{getPositionTypeLabel(type)}</span> :{" "}
-                {point.coordinates[0]}, {point.coordinates[1]}
-                <br />
-              </React.Fragment>
-            ); // eslint-disable-line react/no-array-index-key
-          })}
-          <h4>Parcelles : </h4>
-          <div className="parcelles-wrapper">
-            {parcelles.map((parcelle) => (
-              <div key={parcelle}>{parcelle}</div>
-            ))}
-          </div>
+          {positions && (
+            <>
+              <h4>Positions : </h4>
+              {positions.map(({ point, type }, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <span>{getPositionTypeLabel(type)}</span> :{" "}
+                    {point.coordinates[0]}, {point.coordinates[1]}
+                    <br />
+                  </React.Fragment>
+                ); // eslint-disable-line react/no-array-index-key
+              })}
+            </>
+          )}
+          {parcelles && (
+            <>
+              <h4>Parcelles : </h4>
+              <div className="parcelles-wrapper">
+                {parcelles.map((parcelle) => (
+                  <div key={parcelle}>{parcelle}</div>
+                ))}
+              </div>
+            </>
+          )}
         </Paragraph>
       )}
 

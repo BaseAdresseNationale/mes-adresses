@@ -1,10 +1,10 @@
 import { Button, Pane } from "evergreen-ui";
 import React from "react";
-import NumeroEditor from "../bal/numero-editor";
+import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import { Numero } from "@/lib/openapi";
 
-interface SignalementCreateNumeroEditorProps {
+interface SignalementCreateNumeroProps {
   signalement: any;
   initialVoieId: string;
   handleSubmit: () => Promise<void>;
@@ -12,13 +12,13 @@ interface SignalementCreateNumeroEditorProps {
   commune: CommuneType;
 }
 
-function SignalementCreateNumeroEditor({
+function SignalementCreateNumero({
   signalement,
   initialVoieId,
   handleSubmit,
   handleClose,
   commune,
-}: SignalementCreateNumeroEditorProps) {
+}: SignalementCreateNumeroProps) {
   return (
     <Pane position="relative" height="100%">
       <NumeroEditor
@@ -38,4 +38,4 @@ function SignalementCreateNumeroEditor({
   );
 }
 
-export default SignalementCreateNumeroEditor;
+export default SignalementCreateNumero;

@@ -9,11 +9,12 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import { useRouter } from "next/router";
-import SignalementEditor from "@/components/signalement/signalement-editor";
+import SignalementUpdateNumero from "@/components/signalement/numero/signalement-update-numero";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
 import { SignalementTypeEnum } from "@/lib/api-signalement/types";
-import SignalementDeleteNumeroEditor from "@/components/signalement/signalement-delete-numero-editor";
-import SignalementCreateNumeroEditor from "@/components/signalement/signalement-create-numero-editor";
+import SignalementDeleteNumero from "@/components/signalement/numero/signalement-delete-numero";
+import SignalementCreateNumero from "@/components/signalement/numero/signalement-create-numero";
+import SignalementUpdateVoie from "@/components/signalement/voie/signalement-update-voie";
 
 function SignalementPage({ signalement, existingLocation, commune }) {
   const [activeTab, setActiveTab] = useState(1);
@@ -51,7 +52,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
         {activeTab === 1 && (
           <>
             {signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE && (
-              <SignalementCreateNumeroEditor
+              <SignalementCreateNumero
                 signalement={signalement}
                 initialVoieId={existingLocation._id}
                 handleClose={handleClose}
@@ -59,17 +60,26 @@ function SignalementPage({ signalement, existingLocation, commune }) {
                 handleSubmit={handleSignalementProcessed}
               />
             )}
-            {signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE && (
-              <SignalementEditor
-                existingLocation={existingLocation}
-                signalement={signalement}
-                handleSubmit={handleSignalementProcessed}
-                handleClose={handleClose}
-                commune={commune}
-              />
-            )}
+            {signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE &&
+              (existingLocation.type === "NUMERO" ? (
+                <SignalementUpdateNumero
+                  existingLocation={existingLocation}
+                  signalement={signalement}
+                  handleSubmit={handleSignalementProcessed}
+                  handleClose={handleClose}
+                  commune={commune}
+                />
+              ) : (
+                <SignalementUpdateVoie
+                  existingLocation={existingLocation}
+                  signalement={signalement}
+                  handleSubmit={handleSignalementProcessed}
+                  handleClose={handleClose}
+                  commune={commune}
+                />
+              ))}
             {signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE && (
-              <SignalementDeleteNumeroEditor
+              <SignalementDeleteNumero
                 existingLocation={existingLocation}
                 handleClose={handleClose}
                 commune={commune}
@@ -119,11 +129,11 @@ export async function getServerSideProps({ params }) {
     ) {
       if (signalement.existingLocation.type === "VOIE") {
         existingLocation = voies.find(
-          (voie) => voie._id === signalement.existingLocation.nom
+          (voie) => voie.nom === signalement.existingLocation.nom
         );
       } else if (signalement.existingLocation.type === "TOPONYME") {
         existingLocation = toponymes.find(
-          (toponyme) => toponyme._id === signalement.existingLocation.nom
+          (toponyme) => toponyme.nom === signalement.existingLocation.nom
         );
       } else if (signalement.existingLocation.type === "NUMERO") {
         if (signalement.existingLocation.toponyme.type === "VOIE") {

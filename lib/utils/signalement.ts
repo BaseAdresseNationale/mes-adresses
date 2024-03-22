@@ -9,10 +9,10 @@ export const getExistingLocationLabel = (existingLocation) => {
       }${existingLocation.toponyme.nom}`;
       break;
     case "VOIE":
-      label = "";
+      label = existingLocation.nom;
       break;
     case "TOPONYME":
-      label = "";
+      label = existingLocation.nom;
       break;
     default:
       label = "";
