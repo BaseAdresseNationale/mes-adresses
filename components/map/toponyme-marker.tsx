@@ -18,7 +18,7 @@ import { ExtentedToponymeDTO, ToponymesService } from "@/lib/openapi";
 
 interface ToponymeMarkerProps {
   initialToponyme: ExtentedToponymeDTO;
-  isContextMenuDisplayed: string;
+  isContextMenuDisplayed: boolean;
   setIsContextMenuDisplayed: Dispatch<SetStateAction<string>>;
 }
 

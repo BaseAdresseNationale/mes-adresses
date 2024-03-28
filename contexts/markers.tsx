@@ -5,11 +5,16 @@ import MapContext from "@/contexts/map";
 import { Position } from "@/lib/openapi";
 import { ChildrenProps } from "@/types/context";
 
-interface Marker {
+export interface Marker {
   _id?: string;
+  label?: string;
   type?: Position.type;
   latitude?: number;
   longitude?: number;
+  isDisabled?: boolean;
+  onClick?: () => void;
+  color?: string;
+  isMapMarker?: boolean;
 }
 
 interface MarkersContextType {
