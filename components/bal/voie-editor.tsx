@@ -39,7 +39,8 @@ function VoieEditor({
     initialValue ? initialValue.typeNumerotation === "metrique" : false
   );
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : "");
-  const [getValidationMessages, setValidationMessages] = useValidationMessage();
+  const { getValidationMessage, setValidationMessages } =
+    useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
   const { token } = useContext(TokenContext);
   const { baseLocale, refreshBALSync, reloadVoies, setVoie } =
@@ -162,7 +163,7 @@ function VoieEditor({
             placeholder="Nom de la voie"
             value={nom}
             onChange={onNomChange}
-            validationMessage={getValidationMessages("nom")}
+            validationMessage={getValidationMessage("nom")}
           />
 
           <Checkbox
@@ -174,7 +175,7 @@ function VoieEditor({
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessages={getValidationMessages("lang_alt")}
+            validationMessages={getValidationMessage("lang_alt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>

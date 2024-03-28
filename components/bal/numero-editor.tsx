@@ -66,7 +66,8 @@ function NumeroEditor({
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe);
   const [comment, onCommentChange] = useInput(initialValue?.comment);
-  const [getValidationMessage, setValidationMessages] = useValidationMessage();
+  const { getValidationMessage, setValidationMessages } =
+    useValidationMessage();
 
   const { token } = useContext(TokenContext);
   const {

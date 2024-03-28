@@ -213,7 +213,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
       >
         {isFormOpen && selectedTabIndex === 1 && (
           <VoieEditor
-            initialValue={editedItem}
+            initialValue={editedItem as Voie}
             closeForm={() => {
               onEdit(null);
             }}
@@ -221,7 +221,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
         )}
         {isFormOpen && selectedTabIndex === 2 && (
           <ToponymeEditor
-            initialValue={editedItem}
+            initialValue={editedItem as Toponyme}
             commune={commune}
             closeForm={() => {
               onEdit(null);

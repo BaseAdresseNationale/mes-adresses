@@ -137,10 +137,9 @@ function EditableMarker({
   return markers.map((marker, idx) => (
     <Marker
       key={marker._id}
-      {...marker}
+      {...(marker as { latitude: number; longitude: number } & typeof Marker)}
       draggable={!marker.isDisabled}
-      offsetLeft={-size / 2 + (size / 100) * 15} // Calculates the difference of width between the SVG size and its container
-      offsetTop={-size + 1}
+      offset={[-size / 2 + (size / 100) * 15, -size + 1]}
       onDrag={(e) => onDrag(e, idx)}
       onDragEnd={(e) => onDragEnd(e, idx)}
     >

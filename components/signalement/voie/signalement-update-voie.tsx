@@ -1,5 +1,5 @@
 import { Pane, Paragraph } from "evergreen-ui";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";

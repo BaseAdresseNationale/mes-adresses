@@ -52,7 +52,6 @@ import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
 import { CommuneType } from "@/types/commune";
 import { Numero } from "@/lib/openapi";
-import { QuerySourceFeatureOptions } from "maplibre-gl";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -373,11 +372,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       <Pane display="flex" flex={1}>
         <MapGl
           ref={handleMapRef}
-          reuseMap
           {...viewport}
-          mapStyle={mapStyle}
-          width="100%"
-          height="100%"
+          mapStyle={mapStyle as any}
           styleDiffing={false}
           {...settings}
           {...interactionProps}
@@ -388,7 +384,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           onMouseMove={handleHover}
           onMouseLeave={handleMouseLeave}
           onMouseOut={handleMouseLeave}
-          onViewportChange={setViewport}
           dragRotate={false}
         >
           <NavControl onViewportChange={setViewport} />

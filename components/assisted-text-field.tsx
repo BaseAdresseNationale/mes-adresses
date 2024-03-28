@@ -1,19 +1,44 @@
-import PropTypes from 'prop-types'
-import {Pane, TextInputField} from 'evergreen-ui'
+import PropTypes from "prop-types";
+import { Pane, TextInputField } from "evergreen-ui";
 
-import useCaretPosition from '@/hooks/caret-position'
-import AccentTool from '@/components/accent-tool'
+import useCaretPosition from "@/hooks/caret-position";
+import AccentTool from "@/components/accent-tool";
 
-function AssistedTextField({label, forwadedRef, placeholder, value, validationMessage, onChange, isDisabled, isRequired, exitFocus}) {
-  const {updateCaretPosition} = useCaretPosition({initialValue: value, ref: forwadedRef})
+interface AssistedTextFieldProps {
+  label: string;
+  placeholder?: string;
+  value: string;
+  validationMessage?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  forwadedRef: React.RefObject<HTMLInputElement>;
+  isDisabled?: boolean;
+  isRequired?: boolean;
+  exitFocus: () => void;
+}
 
-  const handleChangeAccent = e => {
-    onChange(e)
-    updateCaretPosition()
-  }
+function AssistedTextField({
+  label,
+  forwadedRef,
+  placeholder,
+  value,
+  validationMessage,
+  onChange,
+  isDisabled,
+  isRequired,
+  exitFocus,
+}: AssistedTextFieldProps) {
+  const { updateCaretPosition } = useCaretPosition({
+    initialValue: value,
+    ref: forwadedRef,
+  });
+
+  const handleChangeAccent = (e) => {
+    onChange(e);
+    updateCaretPosition();
+  };
 
   return (
-    <Pane display='flex' alignItems='flex-start'>
+    <Pane display="flex" alignItems="flex-start">
       <TextInputField
         ref={forwadedRef}
         required={isRequired}
@@ -29,9 +54,9 @@ function AssistedTextField({label, forwadedRef, placeholder, value, validationMe
         onBlur={exitFocus}
       />
       <Pane
-        display='flex'
-        flexDirection='column'
-        justifyContent='center'
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
         marginLeft={8}
         marginTop={label.length > 0 ? 26 : 8}
       >
@@ -44,15 +69,15 @@ function AssistedTextField({label, forwadedRef, placeholder, value, validationMe
         />
       </Pane>
     </Pane>
-  )
+  );
 }
 
 AssistedTextField.defaultProps = {
-  placeholder: '',
+  placeholder: "",
   isDisabled: false,
   validationMessage: null,
-  isRequired: true
-}
+  isRequired: true,
+};
 
 AssistedTextField.propTypes = {
   label: PropTypes.string.isRequired,
@@ -63,7 +88,7 @@ AssistedTextField.propTypes = {
   forwadedRef: PropTypes.object.isRequired,
   isDisabled: PropTypes.bool,
   isRequired: PropTypes.bool,
-  exitFocus: PropTypes.func.isRequired
-}
+  exitFocus: PropTypes.func.isRequired,
+};
 
-export default AssistedTextField
+export default AssistedTextField;

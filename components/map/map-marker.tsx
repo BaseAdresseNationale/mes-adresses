@@ -12,10 +12,9 @@ function MapMarker({ size = 32, marker }: MapMarkerProps) {
   const { label, color } = marker;
   return (
     <Marker
-      {...marker}
+      {...(marker as { latitude: number; longitude: number } & typeof Marker)}
       style={marker.onClick ? { cursor: "pointer" } : {}}
-      offsetLeft={-size / 2 + (size / 100) * 15} // Calculates the difference of width between the SVG size and its container
-      offsetTop={-size + 1}
+      offset={[-size / 2 + (size / 100) * 15, -size + 1]}
     >
       <Pane>
         <Text
