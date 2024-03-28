@@ -22,9 +22,10 @@ import SignalementCard from "../signalement-card";
 import MarkersContext from "@/contexts/markers";
 import PositionItem from "../../bal/position-item";
 import { VoiesService } from "@/lib/openapi";
+import { Signalement } from "@/lib/api-signalement/types";
 
 interface SignalementUpdateNumeroProps {
-  signalement: any;
+  signalement: Signalement;
   existingLocation: any;
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
@@ -41,10 +42,11 @@ const detectChanges = (signalement, existingLocation) => {
     numeroComplet: existingNumeroComplet,
     positions: existingPositions,
     parcelles: existingParcelles,
+    voie: existingVoie,
   } = existingLocation;
 
   return {
-    voie: nomVoie !== existingLocation.nomVoie,
+    voie: nomVoie !== existingVoie?.nom,
     numero: numeroComplet !== existingNumeroComplet,
     positions:
       JSON.stringify(positions.map(({ point, type }) => ({ point, type }))) !==
@@ -122,9 +124,6 @@ function SignalementUpdateNumero({
       });
     }
 
-    return () => {
-      disableMarkers();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positions, changes.positions]);
 
@@ -159,8 +158,6 @@ function SignalementUpdateNumero({
     }
     await handleSubmit();
   }, [voieWillBeRenamed, handleSubmit, existingLocation, nomVoie]);
-
-  console.log("refs", refs);
 
   return (
     <Pane position="relative" height="100%">

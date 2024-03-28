@@ -17,22 +17,20 @@ interface SignalementUpdateToponymeProps {
 }
 
 const detectChanges = (signalement, existingLocation: Toponyme) => {
-  const { nom, positions, parcelles } = signalement.changesRequested;
+  const { nom } = signalement.changesRequested;
 
-  const {
-    nom: existingNom,
-    positions: existingPositions,
-    parcelles: existingParcelles,
-  } = existingLocation;
+  const { nom: existingNom } = existingLocation;
 
   return {
     nom: existingNom !== nom,
-    positions:
-      JSON.stringify(positions.map(({ point, type }) => ({ point, type }))) !==
-      JSON.stringify(
-        existingPositions.map(({ point, type }) => ({ point, type }))
-      ),
-    parcelles: JSON.stringify(parcelles) !== JSON.stringify(existingParcelles),
+    positions: false,
+    parcelles: false,
+    // positions:
+    //   JSON.stringify(positions.map(({ point, type }) => ({ point, type }))) !==
+    //   JSON.stringify(
+    //     existingPositions.map(({ point, type }) => ({ point, type }))
+    //   ),
+    // parcelles: JSON.stringify(parcelles) !== JSON.stringify(existingParcelles),
   };
 };
 

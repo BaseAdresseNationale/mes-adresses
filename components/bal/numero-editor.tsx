@@ -61,11 +61,13 @@ function NumeroEditor({
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme);
   const [isLoading, setIsLoading] = useState(false);
   const [certifie, setCertifie] = useState(initialValue?.certifie || false);
-  const [numero, onNumeroChange] = useInput(initialValue?.numero.toString());
+  const [numero, onNumeroChange] = useInput(
+    initialValue?.numero.toString() || ""
+  );
   const [nomVoie, onNomVoieChange] = useState("");
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
-  const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe);
-  const [comment, onCommentChange] = useInput(initialValue?.comment);
+  const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe || "");
+  const [comment, onCommentChange] = useInput(initialValue?.comment || "");
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
 

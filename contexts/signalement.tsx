@@ -10,9 +10,10 @@ import { BaseLocale, SignalementService } from "@/lib/openapi";
 import { ChildrenProps } from "@/types/context";
 import BalDataContext from "./bal-data";
 import TokenContext from "./token";
+import { Signalement } from "@/lib/api-signalement/types";
 
 interface SignalementContextType {
-  signalements: any[];
+  signalements: Signalement[];
 }
 
 const SignalementContext = React.createContext<SignalementContextType | null>(
