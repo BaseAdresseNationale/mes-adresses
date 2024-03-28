@@ -3,9 +3,10 @@ import React from "react";
 import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import { Numero } from "@/lib/openapi";
+import { Signalement } from "@/lib/api-signalement/types";
 
 interface SignalementCreateNumeroProps {
-  signalement: any;
+  signalement: Signalement;
   initialVoieId: string;
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
@@ -23,7 +24,7 @@ function SignalementCreateNumero({
     <Pane position="relative" height="100%">
       <NumeroEditor
         hasPreview
-        initialValue={signalement.changesRequested as Numero}
+        initialValue={signalement.changesRequested as unknown as Numero}
         initialVoieId={initialVoieId}
         commune={commune}
         closeForm={handleClose}

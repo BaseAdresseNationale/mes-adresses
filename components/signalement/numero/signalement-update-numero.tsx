@@ -22,10 +22,18 @@ import SignalementCard from "../signalement-card";
 import MarkersContext from "@/contexts/markers";
 import PositionItem from "../../bal/position-item";
 import { VoiesService } from "@/lib/openapi";
-import { Signalement } from "@/lib/api-signalement/types";
+import {
+  MapedSignalementPosition,
+  Signalement,
+  SignalementChangesRequested,
+} from "@/lib/api-signalement/types";
 
 interface SignalementUpdateNumeroProps {
-  signalement: Signalement;
+  signalement: Omit<Signalement, "changesRequested"> & {
+    changesRequested: Omit<SignalementChangesRequested, "positions"> & {
+      positions: MapedSignalementPosition[];
+    };
+  };
   existingLocation: any;
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
@@ -79,8 +87,7 @@ function SignalementUpdateNumero({
     []
   );
 
-  const { markers, addMarker, removeMarker, disableMarkers } =
-    useContext(MarkersContext);
+  const { markers, addMarker, removeMarker } = useContext(MarkersContext);
 
   const [changes, setChanges] = useState(
     detectChanges(signalement, existingLocation)
