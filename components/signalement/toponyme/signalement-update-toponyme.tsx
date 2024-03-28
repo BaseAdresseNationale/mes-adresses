@@ -1,29 +1,14 @@
-import {
-  Alert,
-  Badge,
-  Button,
-  Pane,
-  Paragraph,
-  Strong,
-  toaster,
-} from "evergreen-ui";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Badge, Pane, Paragraph, Strong } from "evergreen-ui";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";
+import ToponymeEditor from "@/components/bal/toponyme-editor";
+import { Toponyme } from "@/lib/openapi";
+import PositionItem from "@/components/bal/position-item";
 import MarkersContext from "@/contexts/markers";
-import PositionItem from "../../bal/position-item";
-import { VoiesService } from "@/lib/openapi";
 
-interface SignalementUpdateNumeroProps {
+interface SignalementUpdateToponymeProps {
   signalement: any;
   existingLocation: any;
   handleSubmit: () => Promise<void>;
@@ -31,21 +16,17 @@ interface SignalementUpdateNumeroProps {
   commune: CommuneType;
 }
 
-const detectChanges = (signalement, existingLocation) => {
-  const { numero, suffixe, positions, parcelles, nomVoie } =
-    signalement.changesRequested;
-
-  const numeroComplet = `${numero}${suffixe ? suffixe : ""}`;
+const detectChanges = (signalement, existingLocation: Toponyme) => {
+  const { nom, positions, parcelles } = signalement.changesRequested;
 
   const {
-    numeroComplet: existingNumeroComplet,
+    nom: existingNom,
     positions: existingPositions,
     parcelles: existingParcelles,
   } = existingLocation;
 
   return {
-    voie: nomVoie !== existingLocation.nomVoie,
-    numero: numeroComplet !== existingNumeroComplet,
+    nom: existingNom !== nom,
     positions:
       JSON.stringify(positions.map(({ point, type }) => ({ point, type }))) !==
       JSON.stringify(
@@ -55,22 +36,22 @@ const detectChanges = (signalement, existingLocation) => {
   };
 };
 
-function SignalementUpdateNumero({
+function SignalementUpdateToponyme({
   signalement,
   existingLocation,
   handleSubmit,
   handleClose,
   commune,
-}: SignalementUpdateNumeroProps) {
-  const voieInputRef = useRef<HTMLDivElement>(null);
-  const numeroInputRef = useRef<HTMLDivElement>(null);
+}: SignalementUpdateToponymeProps) {
+  const { nom, positions, parcelles } = signalement.changesRequested;
+
+  const nomInputRef = useRef<HTMLDivElement>(null);
   const positionsInputRef = useRef<HTMLDivElement>(null);
   const parcellesInputRef = useRef<HTMLDivElement>(null);
 
   const refs = useMemo(
     () => ({
-      voie: voieInputRef,
-      numero: numeroInputRef,
+      nom: nomInputRef,
       positions: positionsInputRef,
       parcelles: parcellesInputRef,
     }),
@@ -84,11 +65,7 @@ function SignalementUpdateNumero({
     detectChanges(signalement, existingLocation)
   );
   const [refsInitialized, setRefsInitialized] = useState(false);
-  const [voieWillBeRenamed, setVoieWillBeRenamed] = useState(false);
-  const [numeroEditorValue, setNumeroEditorValue] = useState(existingLocation);
-
-  const { numero, suffixe, positions, parcelles, nomVoie } =
-    signalement.changesRequested;
+  const [editorValue, setEditorValue] = useState(existingLocation);
 
   useEffect(() => {
     const refKeys = Object.keys(refs);
@@ -113,7 +90,7 @@ function SignalementUpdateNumero({
               isMapMarker: true,
               isDisabled: true,
               color: "warning",
-              label: `${position.type} - ${numero}${suffixe ? suffixe : ""}`,
+              label: `${position.type} - ${nom}`,
               longitude: position.point.coordinates[0],
               latitude: position.point.coordinates[1],
               type: position.type,
@@ -129,16 +106,7 @@ function SignalementUpdateNumero({
   }, [positions, changes.positions]);
 
   const handleAcceptChange = (key: string, value: any) => {
-    if (key === "numero") {
-      setNumeroEditorValue({
-        ...numeroEditorValue,
-        numero: value[0],
-        suffixe: value[1],
-      });
-    } else {
-      setNumeroEditorValue({ ...numeroEditorValue, [key]: value });
-    }
-
+    setEditorValue({ ...editorValue, [key]: value });
     setChanges({ ...changes, [key]: false });
   };
 
@@ -146,82 +114,25 @@ function SignalementUpdateNumero({
     setChanges({ ...changes, [key]: false });
   };
 
-  const onSubmitted = useCallback(async () => {
-    if (voieWillBeRenamed) {
-      try {
-        await VoiesService.updateVoie(existingLocation.voie._id, {
-          nom: nomVoie,
-        });
-      } catch (e) {
-        toaster.danger("Le renommage de la voie a échoué.");
-        console.error(e);
-      }
-    }
-    await handleSubmit();
-  }, [voieWillBeRenamed, handleSubmit, existingLocation, nomVoie]);
-
-  console.log("refs", refs);
-
   return (
     <Pane position="relative" height="100%">
-      <NumeroEditor
-        hasPreview
-        initialValue={numeroEditorValue}
-        initialVoieId={numeroEditorValue.voie?._id}
+      <ToponymeEditor
         commune={commune}
+        initialValue={editorValue}
         closeForm={handleClose}
-        onSubmitted={onSubmitted}
-        onVoieChanged={() => handleRefuseChange("voie")}
         refs={refs}
+        onSubmitted={handleSubmit}
       />
       {refsInitialized &&
-        changes.voie &&
-        ReactDOM.createPortal(
-          voieWillBeRenamed ? (
-            <Alert
-              intent="success"
-              hasIcon={false}
-              marginTop={10}
-              title="Modification prise en compte"
-            >
-              <Pane display="flex" flexDirection="column" marginTop={10}>
-                <Paragraph>
-                  Après l&apos;enregistrement, la voie &quot;
-                  {existingLocation.voie.nom}&quot; sera renommée en &quot;
-                  {nomVoie}&quot;.
-                </Paragraph>
-                <Pane marginTop={10}>
-                  <Button
-                    onClick={() => setVoieWillBeRenamed(false)}
-                    type="button"
-                  >
-                    Annuler
-                  </Button>
-                </Pane>
-              </Pane>
-            </Alert>
-          ) : (
-            <SignalementCard
-              onAccept={() => setVoieWillBeRenamed(true)}
-              onRefuse={() => handleRefuseChange("voie")}
-            >
-              <Paragraph>{nomVoie}</Paragraph>
-            </SignalementCard>
-          ),
-          refs.voie.current
-        )}
-      {refsInitialized &&
-        changes.numero &&
+        changes.nom &&
         ReactDOM.createPortal(
           <SignalementCard
-            onAccept={() => handleAcceptChange("numero", [numero, suffixe])}
-            onRefuse={() => handleRefuseChange("numero")}
+            onAccept={() => handleAcceptChange("nom", nom)}
+            onRefuse={() => handleRefuseChange("nom")}
           >
-            <Paragraph>
-              {numero} {suffixe}
-            </Paragraph>
+            <Paragraph>{nom}</Paragraph>
           </SignalementCard>,
-          refs.numero.current
+          refs.nom.current
         )}
       {refsInitialized &&
         changes.positions &&
@@ -273,4 +184,4 @@ function SignalementUpdateNumero({
   );
 }
 
-export default SignalementUpdateNumero;
+export default SignalementUpdateToponyme;
