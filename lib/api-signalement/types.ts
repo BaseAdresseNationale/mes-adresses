@@ -1,3 +1,5 @@
+import { Position } from "../openapi/models/Position";
+
 export enum SignalementTypeEnum {
   LOCATION_TO_UPDATE = "LOCATION_TO_UPDATE",
   LOCATION_TO_CREATE = "LOCATION_TO_CREATE",
@@ -25,6 +27,7 @@ export type SignalementExistingLocation = {
     nom: string;
   };
   position?: PositionCoordinates;
+  nom?: string;
 };
 
 type PositionCoordinates = {
@@ -40,7 +43,8 @@ export type SignalementChangesRequested = {
     positionType: string;
   }[];
   parcelles: string[];
-  nomVoie: string;
+  nomVoie?: string;
+  nom?: string;
 };
 
 export type Signalement = {
@@ -54,4 +58,11 @@ export type Signalement = {
   existingLocation?: SignalementExistingLocation;
   changesRequested: SignalementChangesRequested;
   processedAt?: Date;
+};
+
+export type MapedSignalementPosition = {
+  _id: string;
+  point: PositionCoordinates;
+  source: "signalement";
+  type: Position.type;
 };

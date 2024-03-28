@@ -4,6 +4,7 @@ import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
 import {
+  Position,
   SignalementService,
   ToponymesService,
   VoiesService,
@@ -12,6 +13,8 @@ import { useRouter } from "next/router";
 import SignalementUpdateNumero from "@/components/signalement/numero/signalement-update-numero";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
 import {
+  MapedSignalementPosition,
+  Signalement,
   SignalementExistingPositionTypeEnum,
   SignalementTypeEnum,
 } from "@/lib/api-signalement/types";
@@ -107,12 +110,14 @@ function SignalementPage({ signalement, existingLocation, commune }) {
   );
 }
 
-const mapSignalementPositions = (positions) => {
+const mapSignalementPositions = (
+  positions: Signalement["changesRequested"]["positions"]
+): MapedSignalementPosition[] => {
   return positions.map((p) => ({
     _id: uniqueId(),
     point: p.position,
     source: "signalement",
-    type: p.positionType,
+    type: p.positionType as Position.type,
   }));
 };
 
