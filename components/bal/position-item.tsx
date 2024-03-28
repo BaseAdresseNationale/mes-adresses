@@ -78,6 +78,7 @@ function PositionItem({
         icon={TrashIcon}
         intent="danger"
         onClick={removeMarker}
+        {...(!onRemove && { style: { visibility: "hidden" } })}
       />
     </>
   );

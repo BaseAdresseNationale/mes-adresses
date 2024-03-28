@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Heading, Pane } from "evergreen-ui";
+import {
+  Button,
+  Dialog,
+  Heading,
+  Pane,
+  Paragraph,
+  TrashIcon,
+} from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
@@ -17,6 +24,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   const [selectedSignalements, setSelectedSignalements] = useState<string[]>(
     []
   );
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
 
@@ -86,6 +94,21 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
     await updateSignalements();
   };
 
+  const handleIgnoreSignalements = async () => {
+    try {
+      for (const id of selectedSignalements) {
+        await SignalementService.updateSignalement({ id });
+      }
+      toaster.success("Les signalements ont bien été ignorés");
+    } catch (error) {
+      toaster.danger("Une erreur est survenue", {
+        description: error.message,
+      });
+    }
+
+    await updateSignalements();
+  };
+
   const handleToggleSelect = (ids: string[]) => {
     if (ids.length === signalements.length) {
       setSelectedSignalements(ids);
@@ -125,6 +148,55 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
         width="100%"
         overflow="hidden"
       >
+        {selectedSignalements.length > 1 && (
+          <Pane padding={16}>
+            <Pane marginBottom={5}>
+              <Heading>Actions groupées</Heading>
+            </Pane>
+            <Pane>
+              <Dialog
+                isShown={showWarningDialog}
+                intent="success"
+                title="Confirmer l'action groupée"
+                hasFooter={false}
+                onCloseComplete={() => setShowWarningDialog(false)}
+              >
+                <Pane marginX="-32px" marginBottom="-8px">
+                  <Paragraph marginBottom={8} marginLeft={32} color="muted">
+                    Êtes-vous sûr de vouloir ignorer ces signalements ?
+                  </Paragraph>
+                </Pane>
+
+                <Pane display="flex" justifyContent="flex-end">
+                  <Button
+                    marginRight={16}
+                    appearance="primary"
+                    onClick={async () => {
+                      await handleIgnoreSignalements();
+                      setShowWarningDialog(false);
+                    }}
+                  >
+                    Confirmer
+                  </Button>
+                  <Button
+                    appearance="default"
+                    onClick={() => setShowWarningDialog(false)}
+                  >
+                    Annuler
+                  </Button>
+                </Pane>
+              </Dialog>
+              <Button
+                marginLeft={16}
+                iconBefore={TrashIcon}
+                intent="danger"
+                onClick={() => setShowWarningDialog(true)}
+              >
+                Ignorer les signalements
+              </Button>
+            </Pane>
+          </Pane>
+        )}
         <SignalementList
           signalements={signalements}
           selectedSignalements={selectedSignalements}

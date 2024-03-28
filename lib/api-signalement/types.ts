@@ -5,6 +5,12 @@ export enum SignalementTypeEnum {
   OTHER = "OTHER",
 }
 
+export enum SignalementExistingPositionTypeEnum {
+  NUMERO = "NUMERO",
+  VOIE = "VOIE",
+  TOPONYME = "TOPONYME",
+}
+
 export type SignalementAuthor = {
   firstName: string;
   lastName: string;
@@ -12,7 +18,7 @@ export type SignalementAuthor = {
 };
 
 export type SignalementExistingLocation = {
-  type: "NUMERO" | "VOIE" | "TOPONYME";
+  type: SignalementExistingPositionTypeEnum;
   numero: number;
   suffixe?: string;
   toponyme?: {

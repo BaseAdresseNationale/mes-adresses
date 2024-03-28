@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Pane, Tab, Tablist } from "evergreen-ui";
-
+import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
 import {
@@ -11,10 +11,14 @@ import {
 import { useRouter } from "next/router";
 import SignalementUpdateNumero from "@/components/signalement/numero/signalement-update-numero";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
-import { SignalementTypeEnum } from "@/lib/api-signalement/types";
+import {
+  SignalementExistingPositionTypeEnum,
+  SignalementTypeEnum,
+} from "@/lib/api-signalement/types";
 import SignalementDeleteNumero from "@/components/signalement/numero/signalement-delete-numero";
 import SignalementCreateNumero from "@/components/signalement/numero/signalement-create-numero";
 import SignalementUpdateVoie from "@/components/signalement/voie/signalement-update-voie";
+import SignalementUpdateToponyme from "@/components/signalement/toponyme/signalement-update-toponyme";
 
 function SignalementPage({ signalement, existingLocation, commune }) {
   const [activeTab, setActiveTab] = useState(1);
@@ -61,7 +65,8 @@ function SignalementPage({ signalement, existingLocation, commune }) {
               />
             )}
             {signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE &&
-              (existingLocation.type === "NUMERO" ? (
+              (signalement.existingLocation.type ===
+              SignalementExistingPositionTypeEnum.NUMERO ? (
                 <SignalementUpdateNumero
                   existingLocation={existingLocation}
                   signalement={signalement}
@@ -69,8 +74,17 @@ function SignalementPage({ signalement, existingLocation, commune }) {
                   handleClose={handleClose}
                   commune={commune}
                 />
-              ) : (
+              ) : signalement.existingLocation.type ===
+                SignalementExistingPositionTypeEnum.VOIE ? (
                 <SignalementUpdateVoie
+                  existingLocation={existingLocation}
+                  signalement={signalement}
+                  handleSubmit={handleSignalementProcessed}
+                  handleClose={handleClose}
+                  commune={commune}
+                />
+              ) : (
+                <SignalementUpdateToponyme
                   existingLocation={existingLocation}
                   signalement={signalement}
                   handleSubmit={handleSignalementProcessed}
@@ -95,6 +109,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
 
 const mapSignalementPositions = (positions) => {
   return positions.map((p) => ({
+    _id: uniqueId(),
     point: p.position,
     source: "signalement",
     type: p.positionType,
@@ -127,16 +142,28 @@ export async function getServerSideProps({ params }) {
       signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE ||
       signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE
     ) {
-      if (signalement.existingLocation.type === "VOIE") {
+      if (
+        signalement.existingLocation.type ===
+        SignalementExistingPositionTypeEnum.VOIE
+      ) {
         existingLocation = voies.find(
           (voie) => voie.nom === signalement.existingLocation.nom
         );
-      } else if (signalement.existingLocation.type === "TOPONYME") {
+      } else if (
+        signalement.existingLocation.type ===
+        SignalementExistingPositionTypeEnum.TOPONYME
+      ) {
         existingLocation = toponymes.find(
           (toponyme) => toponyme.nom === signalement.existingLocation.nom
         );
-      } else if (signalement.existingLocation.type === "NUMERO") {
-        if (signalement.existingLocation.toponyme.type === "VOIE") {
+      } else if (
+        signalement.existingLocation.type ===
+        SignalementExistingPositionTypeEnum.NUMERO
+      ) {
+        if (
+          signalement.existingLocation.toponyme.type ===
+          SignalementExistingPositionTypeEnum.VOIE
+        ) {
           const voie = voies.find(
             (voie) => voie.nom === signalement.existingLocation.toponyme.nom
           );
