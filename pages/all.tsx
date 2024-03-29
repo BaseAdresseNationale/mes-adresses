@@ -32,7 +32,7 @@ const CSRPublicBasesLocalesList: React.ComponentType<PublicBasesLocalesListProps
   dynamic(
     () =>
       import(
-        "../components/bases-locales-list/public-bases-locales-list.js"
+        "../components/bases-locales-list/public-bases-locales-list.tsx"
       ) as any,
     {
       ssr: false,

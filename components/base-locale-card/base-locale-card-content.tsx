@@ -21,6 +21,7 @@ import CertificationCount from "@/components/certification-count";
 import HabilitationTag from "../habilitation-tag";
 import { ExtendedBaseLocaleDTO, HabilitationDTO } from "@/lib/openapi";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
+import useWindowSize from "@/hooks/useWindowSize";
 
 interface BaseLocaleCardContentProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -30,7 +31,7 @@ interface BaseLocaleCardContentProps {
   userEmail: string;
   onSelect?: () => void;
   onRemove?: (e: any) => void;
-  onHide?: () => void;
+  onHide?: (e: any) => void;
   isShownHabilitationStatus?: boolean;
 }
 
@@ -46,6 +47,7 @@ function BaseLocaleCardContent({
   onHide,
 }: BaseLocaleCardContentProps) {
   const { status, _created, emails } = baseLocale;
+  const { isMobile } = useWindowSize();
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false);
 
   const { getBalToken } = useContext(LocalStorageContext);
@@ -77,10 +79,15 @@ function BaseLocaleCardContent({
         borderTop
         flex={3}
         display="flex"
-        flexDirection="row"
         paddingTop="1em"
+        flexDirection={isMobile ? "column" : "row"}
       >
-        <Pane flex={1} textAlign="center" margin="auto">
+        <Pane
+          flex={1}
+          textAlign="center"
+          margin="auto"
+          {...(isMobile && { marginBottom: 10 })}
+        >
           <Text>
             Créée le{" "}
             <Pane>
@@ -96,6 +103,7 @@ function BaseLocaleCardContent({
             flex={1}
             textAlign="center"
             margin="auto"
+            {...(isMobile && { marginBottom: 10 })}
           >
             <Text marginRight={5}>
               {isHabilitationValid ? "BAL habilitée" : "BAL non habilitée"}
@@ -108,7 +116,12 @@ function BaseLocaleCardContent({
         )}
 
         {commune && (
-          <Pane flex={1} textAlign="center" margin="auto">
+          <Pane
+            flex={1}
+            textAlign="center"
+            margin="auto"
+            {...(isMobile && { marginBottom: 10 })}
+          >
             <Text display="block">Adresses certifiées</Text>
             <CertificationCount
               nbNumeros={baseLocale.nbNumeros}
@@ -210,7 +223,9 @@ function BaseLocaleCardContent({
             <Button
               appearance="primary"
               iconAfter={EditIcon}
-              marginRight="8px"
+              marginLeft={8}
+              marginRight={8}
+              flexShrink={0}
               onClick={onSelect}
               disabled={!onSelect}
             >

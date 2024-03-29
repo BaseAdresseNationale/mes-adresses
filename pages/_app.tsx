@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import { AppProps } from "next/app";
 
-import { Pane, Dialog, Paragraph } from "evergreen-ui";
+import { Pane } from "evergreen-ui";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -37,9 +37,6 @@ function App(props: AppProps) {
     router: { query },
   } = props;
 
-  const [isMobileWarningDisplayed, setIsMobileWarningDisplayed] =
-    useState(false);
-
   useMatomoTracker(
     {
       trackingEnabled: process.env.NODE_ENV === "production",
@@ -55,28 +52,6 @@ function App(props: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>mes-adresses.data.gouv.fr</title>
       </Head>
-
-      <Pane>
-        <Dialog
-          isShown={isMobileWarningDisplayed}
-          title="Attention"
-          confirmLabel="Continuer"
-          hasCancel={false}
-          onCloseComplete={() => {
-            setIsMobileWarningDisplayed(false);
-          }}
-        >
-          <Paragraph marginTop="default">
-            Afin de profiter d’une meilleure expérience, il est recommandé
-            d’utiliser cet outil sur un écran plus grand 🖥
-          </Paragraph>
-          <Paragraph marginTop="default">
-            Une version mobile est en cours de développement pour toujours avoir
-            sa Base Adresse Locale à portée de main 💪🏻
-          </Paragraph>
-          <Paragraph marginTop="default">Merci de votre patience 🙏</Paragraph>
-        </Dialog>
-      </Pane>
 
       <LocalStorageContextProvider>
         <TokenContextProvider

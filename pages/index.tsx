@@ -16,7 +16,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 
 const CSRUserBasesLocales = dynamic(
-  () => import("../components/user-bases-locales.js") as any,
+  () => import("../components/user-bases-locales.tsx") as any,
   {
     ssr: false,
     loading: () => (
@@ -48,7 +48,7 @@ function Index() {
         flexShrink="0"
       >
         Mes Bases Adresse Locales
-        <Pane>
+        <Pane display="flex" justifyContent="flex-end">
           <Button
             iconBefore={SwapHorizontalIcon}
             marginX={8}
@@ -57,10 +57,17 @@ function Index() {
               setIsRecoveryDisplayed(true);
             }}
           >
-            {isMobile ? 'Récupérer' : 'Récupérer une Base Adresse Locale'}
+            {isMobile ? "Récupérer" : "Récupérer une Base Adresse Locale"}
           </Button>
-          <Button iconBefore={PlusIcon} is={Link} marginX={8} marginY={4} href='/new' appearance='primary'>
-            {isMobile ? 'Créer' : 'Créer une Base Adresse Locale'}
+          <Button
+            iconBefore={PlusIcon}
+            is={Link}
+            marginX={8}
+            marginY={4}
+            href="/new"
+            appearance="primary"
+          >
+            {isMobile ? "Créer" : "Créer une Base Adresse Locale"}
           </Button>
         </Pane>
       </Heading>

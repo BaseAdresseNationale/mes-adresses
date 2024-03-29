@@ -1,8 +1,15 @@
-import React, {useContext, useEffect} from 'react'
-import {Pane, Button, ChevronRightIcon, CrossIcon, ChevronLeftIcon, PaneProps} from 'evergreen-ui'
+import React, { useContext, useEffect } from "react";
+import {
+  Pane,
+  Button,
+  ChevronRightIcon,
+  CrossIcon,
+  ChevronLeftIcon,
+  PaneProps,
+} from "evergreen-ui";
 
-import BalDataContext from '@/contexts/bal-data'
-import useWindowSize from '@/hooks/useWindowSize'
+import BalDataContext from "@/contexts/bal-data";
+import useWindowSize from "@/hooks/useWindowSize";
 
 interface SidebarProps extends PaneProps {
   isHidden: boolean;
@@ -12,71 +19,72 @@ interface SidebarProps extends PaneProps {
   bottom: number;
 }
 
-function Sidebar({isHidden = false, size, onToggle, top, bottom = 0, ...props}: SidebarProps) {
-  const {setEditingId, isEditing, setIsEditing} = useContext(BalDataContext)
-  const {isMobile} = useWindowSize()
+function Sidebar({
+  isHidden = false,
+  size,
+  onToggle,
+  top,
+  bottom = 0,
+  ...props
+}: SidebarProps) {
+  const { setEditingId, isEditing, setIsEditing } = useContext(BalDataContext);
+  const { isMobile } = useWindowSize();
   const handleClick = () => {
     if (isEditing) {
-      setEditingId(null)
-      setIsEditing(false)
+      setEditingId(null);
+      setIsEditing(false);
     } else {
-      onToggle(!isHidden)
+      onToggle(!isHidden);
     }
-  }
+  };
 
   useEffect(() => {
-    if (isEditing && isHidden) { // Force opening sidebar when editing
-      onToggle(false)
+    if (isEditing && isHidden) {
+      // Force opening sidebar when editing
+      onToggle(false);
     }
-  }, [isEditing, isHidden, onToggle])
+  }, [isEditing, isHidden, onToggle]);
 
   return (
     <Pane
-      position='fixed'
+      position="fixed"
       width={size}
-      transition='left 0.3s'
-      maxWidth='100vw'
+      transition="left 0.3s"
+      maxWidth="100vw"
       left={isHidden ? -size : 0}
-      right='auto'
+      right="auto"
       top={top}
       bottom={bottom}
       zIndex={2}
     >
-      {!isMobile && (
-        <Pane
-          background='white'
-          position='absolute'
-          left={size}
-          top={15}
-        >
-          <Button
-            height={50}
-            paddingX={8}
-            borderRadius={0}
-            onClick={handleClick}
-          >
-            {isHidden ? (
-              <ChevronRightIcon />
-            ) : (isEditing ? (
-              <CrossIcon />
-            ) : (
-              <ChevronLeftIcon />
-            ))}
-          </Button>
-        </Pane>
-      )}
+      <Pane
+        background="white"
+        position="absolute"
+        top={15}
+        {...(isMobile && !isHidden ? { right: 0 } : { left: size })}
+      >
+        <Button height={50} paddingX={8} borderRadius={0} onClick={handleClick}>
+          {isHidden ? (
+            <ChevronRightIcon />
+          ) : isEditing ? (
+            <CrossIcon />
+          ) : (
+            <ChevronLeftIcon />
+          )}
+        </Button>
+      </Pane>
 
       <Pane
-        height='100%'
-        maxHeight='100%'
+        height="100%"
+        maxHeight="100%"
         width={size}
-        maxWidth='100%'
+        maxWidth="100%"
         flex={1}
-        overflow='hidden'
+        overflow="hidden"
         {...props}
       />
     </Pane>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;
