@@ -3,12 +3,8 @@ import { Pane, Tab, Tablist } from "evergreen-ui";
 import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
-import {
-  Position,
-  SignalementService,
-  ToponymesService,
-  VoiesService,
-} from "@/lib/openapi";
+import { Position, ToponymesService, VoiesService } from "@/lib/openapi";
+import { DefaultService as SignalementService } from "@/lib/openapi-signalement";
 import { useRouter } from "next/router";
 import SignalementUpdateNumero from "@/components/signalement/numero/signalement-update-numero";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
@@ -128,7 +124,7 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementService.getSignalements(
+    const signalements = await SignalementService.getSignalementsByCodeCommune(
       baseLocale.commune
     );
 

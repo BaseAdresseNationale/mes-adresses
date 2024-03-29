@@ -7,7 +7,6 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
-export type { _UpdateSignalementDTO } from './models/_UpdateSignalementDTO';
 export type { AllDeletedInBalDTO } from './models/AllDeletedInBalDTO';
 export { BaseLocale } from './models/BaseLocale';
 export type { BasesLocalesCreationDTO } from './models/BasesLocalesCreationDTO';
@@ -56,7 +55,6 @@ export { CommuneService } from './services/CommuneService';
 export { ExportCsvService } from './services/ExportCsvService';
 export { HabilitationService } from './services/HabilitationService';
 export { NumerosService } from './services/NumerosService';
-export { SignalementService } from './services/SignalementService';
 export { StatsService } from './services/StatsService';
 export { TilesService } from './services/TilesService';
 export { ToponymesService } from './services/ToponymesService';

@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type _UpdateSignalementDTO = {
-    id: string;
+export type Point = {
+    type: string;
+    coordinates: Array<number>;
 };
 

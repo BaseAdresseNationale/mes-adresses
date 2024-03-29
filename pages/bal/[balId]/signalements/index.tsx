@@ -12,7 +12,7 @@ import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
-import { SignalementService } from "@/lib/openapi";
+import { DefaultService as SignalementService } from "@/lib/openapi-signalement";
 import { toaster } from "evergreen-ui";
 import MarkersContext from "@/contexts/markers";
 import { Signalement, SignalementTypeEnum } from "@/lib/api-signalement/types";
@@ -71,7 +71,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   }, [signalements]);
 
   const updateSignalements = async () => {
-    const signalements = await SignalementService.getSignalements(
+    const signalements = await SignalementService.getSignalementsByCodeCommune(
       baseLocale.commune
     );
     setSignalements(signalements);
@@ -216,7 +216,7 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementService.getSignalements(
+    const signalements = await SignalementService.getSignalementsByCodeCommune(
       baseLocale.commune
     );
 

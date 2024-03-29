@@ -6,7 +6,8 @@ import React, {
   useMemo,
 } from "react";
 
-import { BaseLocale, SignalementService } from "@/lib/openapi";
+import { BaseLocale } from "@/lib/openapi";
+import { DefaultService as SignalementService } from "@/lib/openapi-signalement";
 import { ChildrenProps } from "@/types/context";
 import BalDataContext from "./bal-data";
 import TokenContext from "./token";
@@ -26,7 +27,7 @@ export function SignalementContextProvider(props: ChildrenProps) {
   const { token } = useContext(TokenContext);
 
   const fetchSignalements = useCallback(async () => {
-    const signalements = await SignalementService.getSignalements(
+    const signalements = await SignalementService.getSignalementsByCodeCommune(
       baseLocale.commune
     );
     setSignalements(signalements);

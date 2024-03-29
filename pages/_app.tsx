@@ -18,12 +18,16 @@ import Editor from "@/layouts/editor";
 import { BALRecoveryProvider } from "@/contexts/bal-recovery";
 import { BalDataContextProvider } from "@/contexts/bal-data";
 import { OpenAPI } from "@/lib/openapi";
+import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
   .join("/");
 Object.assign(OpenAPI, { BASE: openAPIBase });
+
+const openAPIBaseSignalement = process.env.NEXT_PUBLIC_API_SIGNALEMENT;
+Object.assign(OpenAPISignalement, { BASE: openAPIBaseSignalement });
 
 function App(props: AppProps) {
   const {

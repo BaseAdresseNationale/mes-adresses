@@ -457,7 +457,7 @@ export class BasesLocalesService {
     public static createVoie(
         baseLocaleId: string,
         requestBody: CreateVoieDTO,
-    ): CancelablePromise<Array<Voie>> {
+    ): CancelablePromise<Voie> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/voies',
