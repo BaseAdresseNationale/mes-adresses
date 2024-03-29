@@ -45,7 +45,7 @@ function BALStatus({
 
   return (
     <>
-      <Pane height={28} marginRight={8}>
+      <Pane height={28} marginRight={8} flexShrink={0}>
         {isRefrehSyncStat ? (
           <RefreshSyncBadge />
         ) : (

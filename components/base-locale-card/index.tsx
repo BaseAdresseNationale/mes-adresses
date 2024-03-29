@@ -28,10 +28,10 @@ const ADRESSE_URL =
 
 interface BaseLocaleCardProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  isAdmin: boolean;
+  isAdmin?: boolean;
   userEmail?: string;
   onRemove?: (e: any) => void;
-  onHide?: () => void;
+  onHide?: (e: any) => void;
   onSelect?: () => void;
   isDefaultOpen?: boolean;
   isShownHabilitationStatus?: boolean;
@@ -117,74 +117,55 @@ function BaseLocaleCard({
       background={baseLocale.status === "demo" ? "#E4E7EB" : "tint1"}
     >
       <Pane
-        padding={6}
-        display="grid"
-        gridAutoFlow="row"
+        display="flex"
+        justifyContent="space-between"
         cursor="pointer"
-        alignItems="center"
         onClick={handleIsOpen}
+        padding={6}
       >
-        <Pane
-          display="flex"
-          flexFlow="wrap"
-          justifyContent="space-between"
-          alignItems="center"
-          gap="1em 4em"
-        >
-          <Pane
-            display="grid"
-            flex={3}
-            gridTemplateColumns="20px 0.8fr 0.4fr"
-            minWidth="400px"
-          >
+        <Pane>
+          <Pane display="flex">
             {isOpen ? (
-              <ChevronDownIcon size={20} />
+              <ChevronDownIcon size={20} marginRight={10} />
             ) : (
-              <ChevronRightIcon size={20} />
+              <ChevronRightIcon size={20} marginRight={10} />
             )}
-
-            <Pane>
-              <Heading fontSize="18px">{nom}</Heading>
-              <Pane>
-                <Text fontSize={12} fontStyle="italic">
-                  {_updated
-                    ? "Dernière mise à jour il y a " + majDate
-                    : "Jamais mise à jour"}{" "}
-                  -
-                </Text>
-
-                {commune && (
-                  <Link
-                    onClick={(e) => e.stopPropagation()}
-                    href={`${ADRESSE_URL}/commune/${commune.code}`}
-                    fontStyle="italic"
-                  >
-                    {" "}
-                    {commune.nom}{" "}
-                    {commune.codeDepartement
-                      ? `(${commune.codeDepartement})`
-                      : ""}
-                  </Link>
-                )}
-              </Pane>
-            </Pane>
+            <Heading fontSize="18px">{nom}</Heading>
           </Pane>
+          <Pane marginLeft={30}>
+            <Text fontSize={12} fontStyle="italic">
+              {_updated
+                ? "Dernière mise à jour il y a " + majDate
+                : "Jamais mise à jour"}{" "}
+              -
+            </Text>
 
-          <Pane
-            display="flex"
-            flex={1}
-            justifyContent="center"
-            height="40px"
-            minWidth="200px"
-            borderRadius={5}
-            alignItems="center"
-          >
-            <StatusBadge
-              status={baseLocale.status}
-              sync={baseLocale.sync}
-              isHabilitationValid={isHabilitationValid}
-            />
+            {commune && (
+              <Link
+                onClick={(e) => e.stopPropagation()}
+                href={`${ADRESSE_URL}/commune/${commune.code}`}
+                fontStyle="italic"
+              >
+                {" "}
+                {commune.nom}{" "}
+                {commune.codeDepartement ? `(${commune.codeDepartement})` : ""}
+              </Link>
+            )}
           </Pane>
+        </Pane>
+
+        <Pane
+          height={40}
+          minWidth={120}
+          borderRadius={5}
+          width="25%"
+          marginLeft={5}
+        >
+          <StatusBadge
+            status={baseLocale.status}
+            sync={baseLocale.sync}
+            isHabilitationValid={isHabilitationValid}
+          />
         </Pane>
       </Pane>
 
