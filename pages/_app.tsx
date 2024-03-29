@@ -20,6 +20,7 @@ import { BalDataContextProvider } from "@/contexts/bal-data";
 import { OpenAPI } from "@/lib/openapi";
 import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
+import PWAMetadata from "@/components/pwa-metadata";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -51,6 +52,7 @@ function App(props: AppProps) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>mes-adresses.data.gouv.fr</title>
+        <PWAMetadata />
       </Head>
 
       <LocalStorageContextProvider>

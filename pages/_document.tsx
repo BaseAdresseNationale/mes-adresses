@@ -7,6 +7,7 @@ import NextDocument, {
 } from "next/document";
 import { extractStyles } from "evergreen-ui";
 
+
 class Document extends NextDocument<{
   css: string;
   hydrationScript: JSX.Element;
