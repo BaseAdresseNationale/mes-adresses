@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "contributors": [
+    "Jérôme Desboeufs <jerome.desboeufs@data.gouv.fr>",
+    "Théophile Merlière <theophile.merliere@data.gouv.fr>",
+    "Guillaume Fay <guillaume.fay@beta.gouv.fr>",
+    "Fabien Tafforeau <fabien.tafforeau@beta.gouv.fr>"
+  ],
+  "author": "Équipe Adresse <adresse@data.gouv.fr>",
   "scripts": {
     "dev": "next dev",
     "start": "next start",
