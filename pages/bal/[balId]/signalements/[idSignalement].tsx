@@ -4,13 +4,15 @@ import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
 import { Position, ToponymesService, VoiesService } from "@/lib/openapi";
-import { DefaultService as SignalementService } from "@/lib/openapi-signalement";
+import {
+  Signalement,
+  DefaultService as SignalementService,
+} from "@/lib/openapi-signalement";
 import { useRouter } from "next/router";
 import SignalementUpdateNumero from "@/components/signalement/numero/signalement-update-numero";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
 import {
   MapedSignalementPosition,
-  Signalement,
   SignalementExistingPositionTypeEnum,
   SignalementTypeEnum,
 } from "@/lib/api-signalement/types";

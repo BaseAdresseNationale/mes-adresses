@@ -1,4 +1,5 @@
-import { Signalement, SignalementTypeEnum } from "../api-signalement/types";
+import { SignalementTypeEnum } from "../api-signalement/types";
+import { Signalement } from "../openapi-signalement";
 
 export const getExistingLocationLabel = (existingLocation) => {
   let label = "";

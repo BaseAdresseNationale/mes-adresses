@@ -3,13 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { Position } from './Position';
-
 export type ChangesRequested = {
     numero: number;
-    suffix?: string | null;
-    position?: Position | null;
-    voie?: string | null;
-    toponyme?: string | null;
+    suffixe?: string | null;
+    positions?: Array<string> | null;
+    parcelles?: Array<string> | null;
+    nomVoie?: string | null;
+    nom?: string | null;
 };
 

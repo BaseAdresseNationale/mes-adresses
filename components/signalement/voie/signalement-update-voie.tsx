@@ -4,11 +4,12 @@ import ReactDOM from "react-dom";
 import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";
 import VoieEditor from "@/components/bal/voie-editor";
-import { Signalement } from "@/lib/api-signalement/types";
+import { Signalement } from "@/lib/openapi-signalement";
+import { Voie } from "@/lib/openapi";
 
 interface SignalementUpdateVoieProps {
   signalement: Signalement;
-  existingLocation: any;
+  existingLocation: Voie;
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
   commune: CommuneType;

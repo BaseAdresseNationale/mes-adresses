@@ -3,8 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type Point = {
-    type: string;
-    coordinates: Array<number>;
+export type ObjectId = {
 };
 

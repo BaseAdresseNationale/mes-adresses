@@ -7,19 +7,16 @@ import ToponymeEditor from "@/components/bal/toponyme-editor";
 import { Toponyme } from "@/lib/openapi";
 import PositionItem from "@/components/bal/position-item";
 import MarkersContext from "@/contexts/markers";
-import {
-  MapedSignalementPosition,
-  Signalement,
-  SignalementChangesRequested,
-} from "@/lib/api-signalement/types";
+import { MapedSignalementPosition } from "@/lib/api-signalement/types";
+import { ChangesRequested, Signalement } from "@/lib/openapi-signalement";
 
 interface SignalementUpdateToponymeProps {
   signalement: Omit<Signalement, "changesRequested"> & {
-    changesRequested: Omit<SignalementChangesRequested, "positions"> & {
+    changesRequested: Omit<ChangesRequested, "positions"> & {
       positions: MapedSignalementPosition[];
     };
   };
-  existingLocation: any;
+  existingLocation: Toponyme;
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
   commune: CommuneType;

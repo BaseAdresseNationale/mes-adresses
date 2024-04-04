@@ -175,7 +175,7 @@ function VoieEditor({
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessages={getValidationMessage("lang_alt")}
+            validationMessage={getValidationMessage("lang_alt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>

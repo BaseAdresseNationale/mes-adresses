@@ -26,14 +26,21 @@ import SelectParcelles from "@/components/bal/numero-editor/select-parcelles";
 import NumeroVoieSelector from "@/components/bal/numero-editor/numero-voie-selector";
 import AddressPreview from "@/components/bal/address-preview";
 import DisabledFormInput from "@/components/disabled-form-input";
-import { Numero, Voie } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  Numero,
+  NumeroPopulate,
+  NumerosService,
+  Voie,
+  VoiesService,
+} from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
 interface NumeroEditorProps {
   initialVoieId?: string;
-  initialValue: Partial<Numero>;
+  initialValue?: Numero | NumeroPopulate;
   commune: CommuneType;
   hasPreview?: boolean;
   closeForm: () => void;
@@ -90,18 +97,15 @@ function NumeroEditor({
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
-      const { validationMessages, ...newVoie } = await addVoie(
-        baseLocale._id,
-        { nom: nomVoie },
-        token
-      );
-      setValidationMessages(validationMessages);
+      const newVoie = await BasesLocalesService.createVoie(baseLocale._id, {
+        nom: nomVoie,
+      });
 
       return newVoie;
     }
 
     return { _id: voieId };
-  }, [baseLocale._id, nomVoie, voieId, token, setValidationMessages]);
+  }, [baseLocale._id, nomVoie, voieId]);
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -148,14 +152,14 @@ function NumeroEditor({
 
         const voie = await getEditedVoie();
 
-        // Add or edit a numero
-        const submit = initialValue._id
-          ? async () =>
-              editNumero(initialValue._id, { voie: voie._id, ...body }, token)
-          : async () => addNumero(voie._id, body, token);
-
-        const { validationMessages } = await submit();
-        setValidationMessages(validationMessages);
+        if (initialValue._id) {
+          await NumerosService.updateNumero(initialValue._id, {
+            voie: voie._id,
+            ...body,
+          });
+        } else {
+          await VoiesService.createNumero(voie._id, body);
+        }
 
         await reloadNumeros();
 
@@ -172,16 +176,16 @@ function NumeroEditor({
           onSubmitted();
         }
 
-        setIsLoading(false);
         refreshBALSync();
         closeForm();
       } catch (error) {
         console.error(error);
+        setValidationMessages(error);
+      } finally {
         setIsLoading(false);
       }
     },
     [
-      token,
       getNumeroBody,
       getEditedVoie,
       closeForm,

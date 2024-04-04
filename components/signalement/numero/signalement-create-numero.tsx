@@ -3,7 +3,7 @@ import React from "react";
 import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import { Numero } from "@/lib/openapi";
-import { Signalement } from "@/lib/api-signalement/types";
+import { Signalement } from "@/lib/openapi-signalement";
 
 interface SignalementCreateNumeroProps {
   signalement: Signalement;

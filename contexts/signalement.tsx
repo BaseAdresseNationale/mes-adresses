@@ -7,11 +7,13 @@ import React, {
 } from "react";
 
 import { BaseLocale } from "@/lib/openapi";
-import { DefaultService as SignalementService } from "@/lib/openapi-signalement";
+import {
+  Signalement,
+  DefaultService as SignalementService,
+} from "@/lib/openapi-signalement";
 import { ChildrenProps } from "@/types/context";
 import BalDataContext from "./bal-data";
 import TokenContext from "./token";
-import { Signalement } from "@/lib/api-signalement/types";
 
 interface SignalementContextType {
   signalements: Signalement[];

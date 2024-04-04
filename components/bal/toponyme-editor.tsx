@@ -1,5 +1,4 @@
 import { useState, useMemo, useContext, useCallback, useEffect } from "react";
-import PropTypes from "prop-types";
 import { xor } from "lodash";
 import { Pane, Button } from "evergreen-ui";
 import router from "next/router";
@@ -175,7 +174,7 @@ function ToponymeEditor({
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessages={getValidationMessage("lang_alt")}
+            validationMessage={getValidationMessage("lang_alt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>

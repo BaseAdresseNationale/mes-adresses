@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { Pane, TextInputField } from "evergreen-ui";
 
 import useCaretPosition from "@/hooks/caret-position";
@@ -19,12 +18,12 @@ interface AssistedTextFieldProps {
 function AssistedTextField({
   label,
   forwadedRef,
-  placeholder,
+  placeholder = "",
   value,
-  validationMessage,
+  validationMessage = null,
   onChange,
-  isDisabled,
-  isRequired,
+  isDisabled = false,
+  isRequired = true,
   exitFocus,
 }: AssistedTextFieldProps) {
   const { updateCaretPosition } = useCaretPosition({
@@ -71,24 +70,5 @@ function AssistedTextField({
     </Pane>
   );
 }
-
-AssistedTextField.defaultProps = {
-  placeholder: "",
-  isDisabled: false,
-  validationMessage: null,
-  isRequired: true,
-};
-
-AssistedTextField.propTypes = {
-  label: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
-  value: PropTypes.string.isRequired,
-  validationMessage: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-  forwadedRef: PropTypes.object.isRequired,
-  isDisabled: PropTypes.bool,
-  isRequired: PropTypes.bool,
-  exitFocus: PropTypes.func.isRequired,
-};
 
 export default AssistedTextField;

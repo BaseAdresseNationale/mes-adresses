@@ -21,20 +21,17 @@ import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";
 import MarkersContext from "@/contexts/markers";
 import PositionItem from "../../bal/position-item";
-import { VoiesService } from "@/lib/openapi";
-import {
-  MapedSignalementPosition,
-  Signalement,
-  SignalementChangesRequested,
-} from "@/lib/api-signalement/types";
+import { Numero, Voie, VoiesService } from "@/lib/openapi";
+import { MapedSignalementPosition } from "@/lib/api-signalement/types";
+import { ChangesRequested, Signalement } from "@/lib/openapi-signalement";
 
 interface SignalementUpdateNumeroProps {
   signalement: Omit<Signalement, "changesRequested"> & {
-    changesRequested: Omit<SignalementChangesRequested, "positions"> & {
+    changesRequested: Omit<ChangesRequested, "positions"> & {
       positions: MapedSignalementPosition[];
     };
   };
-  existingLocation: any;
+  existingLocation: Numero & { voie: Voie };
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
   commune: CommuneType;

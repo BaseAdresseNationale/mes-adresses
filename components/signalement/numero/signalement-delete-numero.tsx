@@ -6,9 +6,10 @@ import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 import { softRemoveNumero } from "@/lib/bal-api";
 import TokenContext from "@/contexts/token";
+import { Numero, Voie } from "@/lib/openapi";
 
 interface SignalementDeleteNumeroProps {
-  existingLocation: any;
+  existingLocation: Numero & { voie: Voie };
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
   commune: CommuneType;
