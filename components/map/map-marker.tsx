@@ -9,12 +9,14 @@ interface MapMarkerProps {
 }
 
 function MapMarker({ size = 32, marker }: MapMarkerProps) {
-  const { label, color } = marker;
+  const { _id, label, color, latitude, longitude, onClick } = marker;
   return (
     <Marker
-      {...(marker as { latitude: number; longitude: number } & typeof Marker)}
-      style={marker.onClick ? { cursor: "pointer" } : {}}
-      offset={[-size / 2 + (size / 100) * 15, -size + 1]}
+      key={_id}
+      longitude={longitude}
+      latitude={latitude}
+      style={onClick ? { cursor: "pointer" } : {}}
+      onClick={onClick}
     >
       <Pane>
         <Text

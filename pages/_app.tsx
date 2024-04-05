@@ -95,7 +95,7 @@ function App(props: AppProps) {
                 <Header />
                 <>
                   <IEWarning />
-                  {query.balId ? (
+                  {query.balId && pageProps ? (
                     <BalDataContextProvider
                       initialBaseLocale={pageProps.baseLocale}
                       initialVoie={pageProps.voie}

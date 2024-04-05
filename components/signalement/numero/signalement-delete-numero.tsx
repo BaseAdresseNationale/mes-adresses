@@ -48,16 +48,19 @@ function SignalementDeleteNumero({
         commune={commune}
         closeForm={handleClose}
         onSubmitted={handleSubmit}
-        certificationBtnChildren={
-          <Button
-            type="button"
-            appearance="primary"
-            intent="danger"
-            onClick={() => handleRemove(existingLocation._id)}
-          >
-            Supprimer
-          </Button>
-        }
+        certificationBtnProps={{
+          onConfirm: undefined,
+          children: (
+            <Button
+              type="button"
+              appearance="primary"
+              intent="danger"
+              onClick={() => handleRemove(existingLocation._id)}
+            >
+              Supprimer
+            </Button>
+          ),
+        }}
       />
     </Pane>
   );

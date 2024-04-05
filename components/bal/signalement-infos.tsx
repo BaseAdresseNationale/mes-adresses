@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import NextLink from "next/link";
-import { Pane, Text, Heading, Button, Link } from "evergreen-ui";
+import { Pane, Text, Heading, Link } from "evergreen-ui";
+import { Signalement } from "@/lib/openapi-signalement";
 
 interface SignalementInfosProps {
   balId: string;
-  signalements: any[];
+  signalements: Signalement[];
 }
 
 function SignalementInfos({ balId, signalements }: SignalementInfosProps) {

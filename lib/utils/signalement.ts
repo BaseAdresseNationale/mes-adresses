@@ -1,18 +1,30 @@
-import { Signalement } from "../openapi-signalement";
+import {
+  ChangesRequested,
+  ExistingLocation,
+  ExistingNumero,
+  ExistingToponyme,
+  ExistingVoie,
+  Signalement,
+} from "../openapi-signalement";
 
-export const getExistingLocationLabel = (existingLocation) => {
+export const getExistingLocationLabel = (
+  existingLocation: ExistingNumero | ExistingToponyme | ExistingVoie
+) => {
   let label = "";
   switch (existingLocation.type) {
-    case "NUMERO":
-      label = `${existingLocation.numero} ${
-        existingLocation.suffixe ? `${existingLocation.suffixe} ` : ""
-      }${existingLocation.toponyme.nom}`;
+    case ExistingLocation.type.NUMERO:
+      const existingNumero = existingLocation as ExistingNumero;
+      label = `${existingNumero.numero} ${
+        existingNumero.suffixe ? `${existingNumero.suffixe} ` : ""
+      }${existingNumero.toponyme.nom}`;
       break;
     case "VOIE":
-      label = existingLocation.nom;
+      const existingVoie = existingLocation as ExistingVoie;
+      label = existingVoie.nom;
       break;
     case "TOPONYME":
-      label = existingLocation.nom;
+      const existingToponyme = existingLocation as ExistingToponyme;
+      label = existingToponyme.nom;
       break;
     default:
       label = "";
@@ -21,7 +33,7 @@ export const getExistingLocationLabel = (existingLocation) => {
   return label;
 };
 
-const getRequestedLocationLabel = (changesRequested) => {
+const getRequestedLocationLabel = (changesRequested: ChangesRequested) => {
   return `${changesRequested.numero} ${
     changesRequested.suffixe ? `${changesRequested.suffixe} ` : ""
   }${changesRequested.nomVoie}`;

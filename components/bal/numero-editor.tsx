@@ -2,8 +2,6 @@ import { useState, useCallback, useContext, useEffect } from "react";
 import { xor, sortBy } from "lodash";
 import { Pane, SelectField, TextInputField } from "evergreen-ui";
 
-import { addVoie, addNumero, editNumero } from "@/lib/bal-api";
-
 import { normalizeSort } from "@/lib/normalize";
 import { computeCompletNumero } from "@/lib/utils/numero";
 
@@ -20,7 +18,9 @@ import MapContext from "@/contexts/map";
 import Comment from "@/components/comment";
 import Form from "@/components/form";
 import FormInput from "@/components/form-input";
-import CertificationButton from "@/components/certification-button";
+import CertificationButton, {
+  CertificationButtonProps,
+} from "@/components/certification-button";
 import PositionEditor from "@/components/bal/position-editor";
 import SelectParcelles from "@/components/bal/numero-editor/select-parcelles";
 import NumeroVoieSelector from "@/components/bal/numero-editor/numero-voie-selector";
@@ -46,7 +46,7 @@ interface NumeroEditorProps {
   closeForm: () => void;
   onSubmitted?: () => void;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
-  certificationBtnChildren?: React.ReactNode;
+  certificationBtnProps?: Partial<CertificationButtonProps>;
   onVoieChanged?: () => void;
 }
 
@@ -58,7 +58,7 @@ function NumeroEditor({
   closeForm,
   onSubmitted,
   refs,
-  certificationBtnChildren,
+  certificationBtnProps,
   onVoieChanged,
 }: NumeroEditorProps) {
   const [voieId, setVoieId] = useState(
@@ -374,9 +374,8 @@ function NumeroEditor({
         isLoading={isLoading}
         onConfirm={setCertifie}
         onCancel={closeForm}
-      >
-        {certificationBtnChildren}
-      </CertificationButton>
+        {...certificationBtnProps}
+      />
     </Form>
   );
 }

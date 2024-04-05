@@ -29,11 +29,13 @@ function SignalementCreateNumero({
         commune={commune}
         closeForm={handleClose}
         onSubmitted={handleSubmit}
-        certificationBtnChildren={
-          <Button type="button" intent="danger" onClick={handleSubmit}>
-            Ignorer
-          </Button>
-        }
+        certificationBtnProps={{
+          children: (
+            <Button type="button" intent="danger" onClick={handleSubmit}>
+              Ignorer
+            </Button>
+          ),
+        }}
       />
     </Pane>
   );

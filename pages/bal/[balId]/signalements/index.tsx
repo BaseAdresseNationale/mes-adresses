@@ -38,7 +38,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
         if (cur.type === Signalement.type.LOCATION_TO_CREATE) {
           position = cur.changesRequested?.positions[0]?.point;
         } else {
-          position = (cur.existingLocation as ExistingNumero).position;
+          position = (cur.existingLocation as ExistingNumero).position?.point;
         }
 
         return [
@@ -234,9 +234,7 @@ export async function getServerSideProps({ params }) {
     };
   } catch {
     return {
-      error: {
-        statusCode: 404,
-      },
+      notFound: true,
     };
   }
 }

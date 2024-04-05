@@ -3,7 +3,13 @@ import { Pane, Tab, Tablist } from "evergreen-ui";
 import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
-import { ToponymesService, VoiesService } from "@/lib/openapi";
+import {
+  Numero,
+  Toponyme,
+  ToponymesService,
+  Voie,
+  VoiesService,
+} from "@/lib/openapi";
 import {
   ExistingLocation,
   Signalement,
@@ -17,7 +23,16 @@ import SignalementCreateNumero from "@/components/signalement/numero/signalement
 import SignalementUpdateVoie from "@/components/signalement/voie/signalement-update-voie";
 import SignalementUpdateToponyme from "@/components/signalement/toponyme/signalement-update-toponyme";
 
-function SignalementPage({ signalement, existingLocation, commune }) {
+interface SignalementPageProps extends BaseEditorProps {
+  signalement: Signalement;
+  existingLocation: Voie | Toponyme | Numero;
+}
+
+function SignalementPage({
+  signalement,
+  existingLocation,
+  commune,
+}: SignalementPageProps) {
   const [activeTab, setActiveTab] = useState(1);
   const router = useRouter();
 
@@ -26,7 +41,9 @@ function SignalementPage({ signalement, existingLocation, commune }) {
   };
 
   const handleSignalementProcessed = async () => {
-    await SignalementService.updateSignalement({ id: signalement._id });
+    await SignalementService.updateSignalement({
+      id: signalement._id as string,
+    });
     handleClose();
   };
 
@@ -65,7 +82,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
               (signalement.existingLocation.type ===
               ExistingLocation.type.NUMERO ? (
                 <SignalementUpdateNumero
-                  existingLocation={existingLocation}
+                  existingLocation={existingLocation as Numero & { voie: Voie }}
                   signalement={signalement}
                   handleSubmit={handleSignalementProcessed}
                   handleClose={handleClose}
@@ -74,7 +91,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
               ) : signalement.existingLocation.type ===
                 ExistingLocation.type.VOIE ? (
                 <SignalementUpdateVoie
-                  existingLocation={existingLocation}
+                  existingLocation={existingLocation as Voie}
                   signalement={signalement}
                   handleSubmit={handleSignalementProcessed}
                   handleClose={handleClose}
@@ -82,7 +99,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
                 />
               ) : (
                 <SignalementUpdateToponyme
-                  existingLocation={existingLocation}
+                  existingLocation={existingLocation as Toponyme}
                   signalement={signalement}
                   handleSubmit={handleSignalementProcessed}
                   handleClose={handleClose}
@@ -91,7 +108,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
               ))}
             {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
               <SignalementDeleteNumero
-                existingLocation={existingLocation}
+                existingLocation={existingLocation as Numero & { voie: Voie }}
                 handleClose={handleClose}
                 commune={commune}
                 handleSubmit={handleSignalementProcessed}
@@ -161,7 +178,9 @@ export async function getServerSideProps({ params }) {
               : `${signalement.existingLocation.numero}`;
             return numeroComplet === existingLocationNumeroComplet;
           });
-          existingLocation.voie = voie;
+          if (existingLocation) {
+            existingLocation.voie = voie;
+          }
         } else {
           const toponyme = toponymes.find(
             (toponyme) =>
@@ -177,13 +196,19 @@ export async function getServerSideProps({ params }) {
               : `${signalement.existingLocation.numero}`;
             return numeroComplet === existingLocationNumeroComplet;
           });
-          existingLocation.toponyme = toponyme;
+          if (existingLocation) {
+            existingLocation.toponyme = toponyme;
+          }
         }
       }
     } else if (signalement.type === Signalement.type.LOCATION_TO_CREATE) {
       existingLocation = voies.find(
         (voie) => voie.nom === signalement.existingLocation.nom
       );
+    }
+
+    if (!existingLocation) {
+      throw new Error("Existing location not found");
     }
 
     return {
@@ -196,11 +221,10 @@ export async function getServerSideProps({ params }) {
         existingLocation,
       },
     };
-  } catch {
+  } catch (err) {
+    console.error(err);
     return {
-      error: {
-        statusCode: 404,
-      },
+      notFound: true,
     };
   }
 }

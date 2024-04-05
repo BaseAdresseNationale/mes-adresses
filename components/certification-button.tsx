@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { Button, EndorsedIcon } from "evergreen-ui";
 
-interface CertificationButtonProps {
+export interface CertificationButtonProps {
   isLoading: boolean;
   isCertified: boolean;
-  onConfirm: (certified: boolean | null) => void;
+  onConfirm?: (certified: boolean | null) => void;
   onCancel: () => void;
   children?: React.ReactNode;
 }
@@ -34,30 +34,34 @@ function CertificationButton({
 
   return (
     <div className="certification-button-wrapper">
-      <div>
-        <Button
-          isLoading={isLoading}
-          type="submit"
-          appearance="primary"
-          intent="success"
-          iconAfter={EndorsedIcon}
-          onClick={() => onConfirm(isCertified ? null : true)}
-        >
-          {submitCertificationLabel}
-        </Button>
-      </div>
+      {onConfirm && (
+        <div>
+          <Button
+            isLoading={isLoading}
+            type="submit"
+            appearance="primary"
+            intent="success"
+            iconAfter={EndorsedIcon}
+            onClick={() => onConfirm(isCertified ? null : true)}
+          >
+            {submitCertificationLabel}
+          </Button>
+        </div>
+      )}
 
-      <div>
-        <Button
-          isLoading={isLoading}
-          type="submit"
-          appearance="default"
-          intent={isCertified ? "danger" : "success"}
-          onClick={() => onConfirm(isCertified ? false : null)}
-        >
-          {submitLabel}
-        </Button>
-      </div>
+      {onConfirm && (
+        <div>
+          <Button
+            isLoading={isLoading}
+            type="submit"
+            appearance="default"
+            intent={isCertified ? "danger" : "success"}
+            onClick={() => onConfirm(isCertified ? false : null)}
+          >
+            {submitLabel}
+          </Button>
+        </div>
+      )}
 
       {children && <div>{children}</div>}
 
