@@ -12,10 +12,13 @@ import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
-import { DefaultService as SignalementService } from "@/lib/openapi-signalement";
+import {
+  ExistingNumero,
+  Signalement,
+  DefaultService as SignalementService,
+} from "@/lib/openapi-signalement";
 import { toaster } from "evergreen-ui";
 import MarkersContext from "@/contexts/markers";
-import { Signalement, SignalementTypeEnum } from "@/lib/api-signalement/types";
 import { getSignalementLabel } from "@/lib/utils/signalement";
 
 function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
@@ -32,10 +35,10 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
     const markerPositions = signalements
       .reduce((acc, cur) => {
         let position;
-        if (cur.type === SignalementTypeEnum.LOCATION_TO_CREATE) {
-          position = cur.changesRequested?.positions[0]?.position;
+        if (cur.type === Signalement.type.LOCATION_TO_CREATE) {
+          position = cur.changesRequested?.positions[0]?.point;
         } else {
-          position = cur.existingLocation.position;
+          position = (cur.existingLocation as ExistingNumero).position;
         }
 
         return [

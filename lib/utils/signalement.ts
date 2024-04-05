@@ -1,4 +1,3 @@
-import { SignalementTypeEnum } from "../api-signalement/types";
 import { Signalement } from "../openapi-signalement";
 
 export const getExistingLocationLabel = (existingLocation) => {
@@ -34,7 +33,7 @@ export const getSignalementLabel = (
 ) => {
   let label = "";
   switch (signalement.type) {
-    case SignalementTypeEnum.LOCATION_TO_UPDATE:
+    case Signalement.type.LOCATION_TO_UPDATE:
       label = `Demande de modification : ${getExistingLocationLabel(
         signalement.existingLocation
       )}${
@@ -43,7 +42,7 @@ export const getSignalementLabel = (
           : `- ${new Date(signalement._created).toLocaleDateString()}`
       }`;
       break;
-    case SignalementTypeEnum.LOCATION_TO_CREATE:
+    case Signalement.type.LOCATION_TO_CREATE:
       label = `Demande de creation : ${getRequestedLocationLabel(
         signalement.changesRequested
       )}${
@@ -52,7 +51,7 @@ export const getSignalementLabel = (
           : `- ${new Date(signalement._created).toLocaleDateString()}`
       }`;
       break;
-    case SignalementTypeEnum.LOCATION_TO_DELETE:
+    case Signalement.type.LOCATION_TO_DELETE:
       label = `Demande de suppression : ${getExistingLocationLabel(
         signalement.existingLocation
       )}${

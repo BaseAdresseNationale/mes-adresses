@@ -21,16 +21,14 @@ import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";
 import MarkersContext from "@/contexts/markers";
 import PositionItem from "../../bal/position-item";
-import { Numero, Voie, VoiesService } from "@/lib/openapi";
-import { MapedSignalementPosition } from "@/lib/api-signalement/types";
-import { ChangesRequested, Signalement } from "@/lib/openapi-signalement";
+import { Numero, Position, Voie, VoiesService } from "@/lib/openapi";
+import {
+  Signalement,
+  Position as PositionSignalement,
+} from "@/lib/openapi-signalement";
 
 interface SignalementUpdateNumeroProps {
-  signalement: Omit<Signalement, "changesRequested"> & {
-    changesRequested: Omit<ChangesRequested, "positions"> & {
-      positions: MapedSignalementPosition[];
-    };
-  };
+  signalement: Signalement;
   existingLocation: Numero & { voie: Voie };
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
@@ -112,7 +110,7 @@ function SignalementUpdateNumero({
 
   useEffect(() => {
     if (positions) {
-      positions.forEach((position) => {
+      positions.forEach((position: PositionSignalement & { _id: string }) => {
         changes.positions
           ? addMarker({
               _id: position._id,
@@ -122,7 +120,7 @@ function SignalementUpdateNumero({
               label: `${position.type} - ${numero}${suffixe ? suffixe : ""}`,
               longitude: position.point.coordinates[0],
               latitude: position.point.coordinates[1],
-              type: position.type,
+              type: position.type as unknown as Position.type,
             })
           : removeMarker(position._id);
       });

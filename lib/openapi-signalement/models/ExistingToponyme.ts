@@ -3,11 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ExistingLocation = {
-    type: ExistingLocation.type;
+export type ExistingToponyme = {
+    type: ExistingToponyme.type;
+    nom: string;
 };
 
-export namespace ExistingLocation {
+export namespace ExistingToponyme {
 
     export enum type {
         NUMERO = 'NUMERO',

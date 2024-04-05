@@ -3,19 +3,15 @@ import { Pane, Tab, Tablist } from "evergreen-ui";
 import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
-import { Position, ToponymesService, VoiesService } from "@/lib/openapi";
+import { ToponymesService, VoiesService } from "@/lib/openapi";
 import {
+  ExistingLocation,
   Signalement,
   DefaultService as SignalementService,
 } from "@/lib/openapi-signalement";
 import { useRouter } from "next/router";
 import SignalementUpdateNumero from "@/components/signalement/numero/signalement-update-numero";
 import SignalementViewer from "@/components/signalement/signalement-viewer";
-import {
-  MapedSignalementPosition,
-  SignalementExistingPositionTypeEnum,
-  SignalementTypeEnum,
-} from "@/lib/api-signalement/types";
 import SignalementDeleteNumero from "@/components/signalement/numero/signalement-delete-numero";
 import SignalementCreateNumero from "@/components/signalement/numero/signalement-create-numero";
 import SignalementUpdateVoie from "@/components/signalement/voie/signalement-update-voie";
@@ -56,7 +52,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
         )}
         {activeTab === 1 && (
           <>
-            {signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE && (
+            {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
               <SignalementCreateNumero
                 signalement={signalement}
                 initialVoieId={existingLocation._id}
@@ -65,9 +61,9 @@ function SignalementPage({ signalement, existingLocation, commune }) {
                 handleSubmit={handleSignalementProcessed}
               />
             )}
-            {signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE &&
+            {signalement.type === Signalement.type.LOCATION_TO_UPDATE &&
               (signalement.existingLocation.type ===
-              SignalementExistingPositionTypeEnum.NUMERO ? (
+              ExistingLocation.type.NUMERO ? (
                 <SignalementUpdateNumero
                   existingLocation={existingLocation}
                   signalement={signalement}
@@ -76,7 +72,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
                   commune={commune}
                 />
               ) : signalement.existingLocation.type ===
-                SignalementExistingPositionTypeEnum.VOIE ? (
+                ExistingLocation.type.VOIE ? (
                 <SignalementUpdateVoie
                   existingLocation={existingLocation}
                   signalement={signalement}
@@ -93,7 +89,7 @@ function SignalementPage({ signalement, existingLocation, commune }) {
                   commune={commune}
                 />
               ))}
-            {signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE && (
+            {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
               <SignalementDeleteNumero
                 existingLocation={existingLocation}
                 handleClose={handleClose}
@@ -107,17 +103,6 @@ function SignalementPage({ signalement, existingLocation, commune }) {
     </ProtectedPage>
   );
 }
-
-const mapSignalementPositions = (
-  positions: Signalement["changesRequested"]["positions"]
-): MapedSignalementPosition[] => {
-  return positions.map((p) => ({
-    _id: uniqueId(),
-    point: p.position,
-    source: "signalement",
-    type: p.positionType as Position.type,
-  }));
-};
 
 export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
@@ -135,37 +120,35 @@ export async function getServerSideProps({ params }) {
     );
 
     if (signalement.changesRequested.positions) {
-      signalement.changesRequested.positions = mapSignalementPositions(
-        signalement.changesRequested.positions
-      );
+      signalement.changesRequested.positions =
+        signalement.changesRequested.positions.map((p) => ({
+          ...p,
+          _id: uniqueId(),
+          source: "signalement",
+        }));
     }
 
     let existingLocation = null;
     if (
-      signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE ||
-      signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE
+      signalement.type === Signalement.type.LOCATION_TO_UPDATE ||
+      signalement.type === Signalement.type.LOCATION_TO_DELETE
     ) {
-      if (
-        signalement.existingLocation.type ===
-        SignalementExistingPositionTypeEnum.VOIE
-      ) {
+      if (signalement.existingLocation.type === ExistingLocation.type.VOIE) {
         existingLocation = voies.find(
           (voie) => voie.nom === signalement.existingLocation.nom
         );
       } else if (
-        signalement.existingLocation.type ===
-        SignalementExistingPositionTypeEnum.TOPONYME
+        signalement.existingLocation.type === ExistingLocation.type.TOPONYME
       ) {
         existingLocation = toponymes.find(
           (toponyme) => toponyme.nom === signalement.existingLocation.nom
         );
       } else if (
-        signalement.existingLocation.type ===
-        SignalementExistingPositionTypeEnum.NUMERO
+        signalement.existingLocation.type === ExistingLocation.type.NUMERO
       ) {
         if (
           signalement.existingLocation.toponyme.type ===
-          SignalementExistingPositionTypeEnum.VOIE
+          ExistingLocation.type.VOIE
         ) {
           const voie = voies.find(
             (voie) => voie.nom === signalement.existingLocation.toponyme.nom
@@ -197,7 +180,7 @@ export async function getServerSideProps({ params }) {
           existingLocation.toponyme = toponyme;
         }
       }
-    } else if (signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE) {
+    } else if (signalement.type === Signalement.type.LOCATION_TO_CREATE) {
       existingLocation = voies.find(
         (voie) => voie.nom === signalement.existingLocation.nom
       );

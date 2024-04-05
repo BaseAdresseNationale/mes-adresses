@@ -1,7 +1,7 @@
 import { Pane, Paragraph } from "evergreen-ui";
 import React from "react";
 import { positionsTypesList } from "@/lib/positions-types-list";
-import { SignalementTypeEnum } from "@/lib/api-signalement/types";
+import { Signalement } from "@/lib/openapi-signalement";
 
 interface SignalementViewerProps {
   signalement: any;
@@ -21,7 +21,7 @@ function SignalementViewer({
 
   return (
     <Pane padding={16}>
-      {signalement.type !== SignalementTypeEnum.LOCATION_TO_CREATE && (
+      {signalement.type !== Signalement.type.LOCATION_TO_CREATE && (
         <Paragraph
           is="div"
           background="white"
@@ -61,8 +61,8 @@ function SignalementViewer({
           )}
         </Paragraph>
       )}
-      {(signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE ||
-        signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE) && (
+      {(signalement.type === Signalement.type.LOCATION_TO_UPDATE ||
+        signalement.type === Signalement.type.LOCATION_TO_CREATE) && (
         <Paragraph
           is="div"
           background="white"
@@ -71,10 +71,10 @@ function SignalementViewer({
           marginBottom={8}
           width="100%"
         >
-          {signalement.type === SignalementTypeEnum.LOCATION_TO_UPDATE && (
+          {signalement.type === Signalement.type.LOCATION_TO_UPDATE && (
             <h3>Modifications demandées</h3>
           )}
-          {signalement.type === SignalementTypeEnum.LOCATION_TO_CREATE && (
+          {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
             <h3>Création demandée</h3>
           )}
           <div>
@@ -107,7 +107,7 @@ function SignalementViewer({
         </Paragraph>
       )}
 
-      {signalement.type === SignalementTypeEnum.LOCATION_TO_DELETE && (
+      {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
         <Paragraph
           background="white"
           padding={8}
