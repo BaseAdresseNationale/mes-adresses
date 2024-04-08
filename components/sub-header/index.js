@@ -85,11 +85,11 @@ function SubHeader({commune}) {
         )}
       </Pane>
 
-      {isAdmin && isHabilitationProcessDisplayed && commune.isCOM && (
+      {isAdmin && isHabilitationProcessDisplayed && (
         <COMDialog baseLocaleId={baseLocale._id} handleClose={() => setIsHabilitationProcessDisplayed(false)} />
       )}
 
-      {isAdmin && habilitation && isHabilitationProcessDisplayed && !commune.isCOM && (
+      {isAdmin && habilitation && isHabilitationProcessDisplayed && (
         <HabilitationProcess
           token={token}
           baseLocale={baseLocale}

@@ -238,7 +238,7 @@ HabilitationProcess.propTypes = {
     emailCommune: PropTypes.string,
     franceconnectAuthenticationUrl: PropTypes.string.isRequired,
     strategy: PropTypes.shape({
-      type: PropTypes.oneOf(["email", "franceconnect"]),
+      type: PropTypes.oneOf(["email", "franceconnect", "internal"]),
     }),
   }).isRequired,
   handlePublication: PropTypes.func.isRequired,
