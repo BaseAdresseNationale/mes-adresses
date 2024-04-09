@@ -238,7 +238,14 @@ function UploadForm({
     try {
       const revision: Revision =
         await ApiDepotService.getCurrentRevision(selectedCodeCommune);
-      if (revision && !isExceptionClientId(revision, outdatedApiDepotClients, outdatedHarvestSources)) {
+      if (
+        revision &&
+        !isExceptionClientId(
+          revision,
+          outdatedApiDepotClients,
+          outdatedHarvestSources
+        )
+      ) {
         setIsShownAlertPublishedBal(true);
         setPublishedRevision(revision);
         return;
@@ -287,8 +294,13 @@ function UploadForm({
     async function upload() {
       try {
         Object.assign(OpenAPI, { TOKEN: bal.token });
+        // Force content type to be text/csv
+        // To fix application/vnd.ms-excel issue on Windows and Firefox
+        const blobFile = new Blob([file as Blob], {
+          type: "text/csv",
+        });
         const response = await BasesLocalesService.uploadCsvBalFile(bal._id, {
-          file,
+          file: blobFile,
         });
         if (response.isValid) {
           Router.push(`/bal/${bal._id}`);
