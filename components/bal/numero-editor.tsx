@@ -5,7 +5,6 @@ import { Pane, SelectField, TextInputField } from "evergreen-ui";
 import { normalizeSort } from "@/lib/normalize";
 import { computeCompletNumero } from "@/lib/utils/numero";
 
-import TokenContext from "@/contexts/token";
 import MarkersContext from "@/contexts/markers";
 import BalDataContext from "@/contexts/bal-data";
 import ParcellesContext from "@/contexts/parcelles";
@@ -62,7 +61,7 @@ function NumeroEditor({
   onVoieChanged,
 }: NumeroEditorProps) {
   const [voieId, setVoieId] = useState(
-    initialVoieId || (initialValue?.voie as unknown as Voie)._id
+    initialVoieId || (initialValue?.voie as unknown as Voie)?._id
   );
   const [selectedNomToponyme, setSelectedNomToponyme] = useState("");
   const [toponymeId, setToponymeId] = useState(initialValue?.toponyme);
@@ -78,7 +77,6 @@ function NumeroEditor({
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
 
-  const { token } = useContext(TokenContext);
   const {
     baseLocale,
     voies,
@@ -152,7 +150,7 @@ function NumeroEditor({
 
         const voie = await getEditedVoie();
 
-        if (initialValue._id) {
+        if (initialValue?._id) {
           await NumerosService.updateNumero(initialValue._id, {
             voie: voie._id,
             ...body,

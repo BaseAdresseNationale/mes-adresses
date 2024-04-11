@@ -26,8 +26,9 @@ const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .join("/");
 Object.assign(OpenAPI, { BASE: openAPIBase });
 
-const openAPIBaseSignalement = process.env.NEXT_PUBLIC_API_SIGNALEMENT;
-Object.assign(OpenAPISignalement, { BASE: openAPIBaseSignalement });
+Object.assign(OpenAPISignalement, {
+  BASE: process.env.NEXT_PUBLIC_API_SIGNALEMENT,
+});
 
 function App(props: AppProps) {
   const {

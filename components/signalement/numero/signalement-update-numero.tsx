@@ -82,7 +82,8 @@ function SignalementUpdateNumero({
     []
   );
 
-  const { markers, addMarker, removeMarker } = useContext(MarkersContext);
+  const { markers, addMarker, removeMarker, disableMarkers } =
+    useContext(MarkersContext);
 
   const [changes, setChanges] = useState(
     detectChanges(signalement, existingLocation)
@@ -126,6 +127,9 @@ function SignalementUpdateNumero({
       });
     }
 
+    return () => {
+      disableMarkers();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positions, changes.positions]);
 

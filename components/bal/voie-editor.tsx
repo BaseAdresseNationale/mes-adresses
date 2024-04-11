@@ -22,7 +22,7 @@ import LanguesRegionalesForm from "@/components/langues-regionales-form";
 import { Voie } from "@/lib/openapi";
 
 interface VoieEditorProps {
-  initialValue: Voie;
+  initialValue?: Voie;
   closeForm: () => void;
   formInputRef?: React.RefObject<HTMLDivElement>;
   onSubmitted?: () => void;
@@ -141,7 +141,7 @@ function VoieEditor({
 
   useEffect(() => {
     onNomChange({ target: { value: initialValue?.nom } });
-  }, [initialValue.nom, onNomChange]);
+  }, [initialValue?.nom, onNomChange]);
 
   const onUnmount = useCallback(() => {
     disableDraw();

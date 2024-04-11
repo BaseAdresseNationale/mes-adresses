@@ -36,6 +36,13 @@ export function SignalementContextProvider(props: ChildrenProps) {
   }, [baseLocale.commune]);
 
   useEffect(() => {
+    const isSignalementEnabled = Boolean(
+      process.env.NEXT_PUBLIC_API_SIGNALEMENT
+    );
+    if (!isSignalementEnabled) {
+      return;
+    }
+
     const canGetSignalement =
       baseLocale.status === BaseLocale.status.PUBLISHED && Boolean(token);
 
