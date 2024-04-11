@@ -18,11 +18,17 @@ import Editor from "@/layouts/editor";
 import { BALRecoveryProvider } from "@/contexts/bal-recovery";
 import { BalDataContextProvider } from "@/contexts/bal-data";
 import { OpenAPI } from "@/lib/openapi";
+import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
+import { SignalementContextProvider } from "@/contexts/signalement";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
   .join("/");
 Object.assign(OpenAPI, { BASE: openAPIBase });
+
+Object.assign(OpenAPISignalement, {
+  BASE: process.env.NEXT_PUBLIC_API_SIGNALEMENT,
+});
 
 function App(props: AppProps) {
   const {
@@ -90,7 +96,7 @@ function App(props: AppProps) {
                 <Header />
                 <>
                   <IEWarning />
-                  {query.balId ? (
+                  {query.balId && pageProps ? (
                     <BalDataContextProvider
                       initialBaseLocale={pageProps.baseLocale}
                       initialVoie={pageProps.voie}
@@ -99,9 +105,11 @@ function App(props: AppProps) {
                       initialToponymes={pageProps.toponymes}
                       initialNumeros={pageProps.numeros}
                     >
-                      <Editor {...pageProps}>
-                        <Component {...pageProps} />
-                      </Editor>
+                      <SignalementContextProvider>
+                        <Editor {...pageProps}>
+                          <Component {...pageProps} />
+                        </Editor>
+                      </SignalementContextProvider>
                     </BalDataContextProvider>
                   ) : (
                     <Component {...pageProps} />

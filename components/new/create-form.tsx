@@ -38,18 +38,22 @@ export enum ClientRevisionEnum {
   MOISSONNEUR_BAL = "moissonneur-bal",
 }
 
-export function isExceptionClientId(revision: Revision, outdatedApiDepotClients: string[], outdatedHarvestSources: string[]) {
+export function isExceptionClientId(
+  revision: Revision,
+  outdatedApiDepotClients: string[],
+  outdatedHarvestSources: string[]
+) {
   const client: Client = revision.client as Client;
   if (client.id === ClientRevisionEnum.MOISSONNEUR_BAL) {
     const sourceId: string = revision.context.extras.sourceId;
     if (sourceId && outdatedHarvestSources) {
       if (outdatedHarvestSources.includes(sourceId)) {
-        return true
+        return true;
       }
     }
   } else {
     if (outdatedApiDepotClients.includes(client._id)) {
-      return true
+      return true;
     }
   }
 
@@ -126,7 +130,14 @@ function CreateForm({
       const revision: Revision = await ApiDepotService.getCurrentRevision(
         commune.code
       );
-      if (revision && !isExceptionClientId(revision, outdatedApiDepotClients, outdatedHarvestSources)) {
+      if (
+        revision &&
+        !isExceptionClientId(
+          revision,
+          outdatedApiDepotClients,
+          outdatedHarvestSources
+        )
+      ) {
         setIsShownAlertPublishedBal(true);
         setPublishedRevision(revision);
         return;
@@ -145,9 +156,9 @@ function CreateForm({
   const checkOtherBALs = async () => {
     const response: PageBaseLocaleDTO =
       await BasesLocalesService.searchBaseLocale(
-        10,
-        0,
-        false,
+        "10",
+        "0",
+        "false",
         commune.code,
         email
       );
