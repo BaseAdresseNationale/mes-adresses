@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pane, Tab, Tablist } from "evergreen-ui";
+import { Heading, Pane, Paragraph, Tab, Tablist } from "evergreen-ui";
 import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
@@ -25,7 +25,7 @@ import SignalementUpdateToponyme from "@/components/signalement/toponyme/signale
 
 interface SignalementPageProps extends BaseEditorProps {
   signalement: Signalement;
-  existingLocation: Voie | Toponyme | Numero;
+  existingLocation: Voie | Toponyme | Numero | null;
 }
 
 function SignalementPage({
@@ -49,74 +49,89 @@ function SignalementPage({
 
   return (
     <ProtectedPage>
-      <Tablist margin={10}>
-        {["Infos", "Editeur"].map((tab, index) => (
-          <Tab
-            key={tab}
-            isSelected={activeTab === index}
-            onSelect={() => setActiveTab(index)}
-          >
-            {tab}
-          </Tab>
-        ))}
-      </Tablist>
-      <Pane overflow="scroll" height="100%">
-        {activeTab === 0 && (
-          <SignalementViewer
-            existingLocation={existingLocation}
-            signalement={signalement}
-          />
-        )}
-        {activeTab === 1 && (
-          <>
-            {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
-              <SignalementCreateNumero
+      {existingLocation ? (
+        <>
+          <Tablist margin={10}>
+            {["Infos", "Editeur"].map((tab, index) => (
+              <Tab
+                key={tab}
+                isSelected={activeTab === index}
+                onSelect={() => setActiveTab(index)}
+              >
+                {tab}
+              </Tab>
+            ))}
+          </Tablist>
+          <Pane overflow="scroll" height="100%">
+            {activeTab === 0 && (
+              <SignalementViewer
+                existingLocation={existingLocation}
                 signalement={signalement}
-                initialVoieId={existingLocation._id}
-                handleClose={handleClose}
-                commune={commune}
-                handleSubmit={handleSignalementProcessed}
               />
             )}
-            {signalement.type === Signalement.type.LOCATION_TO_UPDATE &&
-              (signalement.existingLocation.type ===
-              ExistingLocation.type.NUMERO ? (
-                <SignalementUpdateNumero
-                  existingLocation={existingLocation as Numero & { voie: Voie }}
-                  signalement={signalement}
-                  handleSubmit={handleSignalementProcessed}
-                  handleClose={handleClose}
-                  commune={commune}
-                />
-              ) : signalement.existingLocation.type ===
-                ExistingLocation.type.VOIE ? (
-                <SignalementUpdateVoie
-                  existingLocation={existingLocation as Voie}
-                  signalement={signalement}
-                  handleSubmit={handleSignalementProcessed}
-                  handleClose={handleClose}
-                  commune={commune}
-                />
-              ) : (
-                <SignalementUpdateToponyme
-                  existingLocation={existingLocation as Toponyme}
-                  signalement={signalement}
-                  handleSubmit={handleSignalementProcessed}
-                  handleClose={handleClose}
-                  commune={commune}
-                />
-              ))}
-            {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
-              <SignalementDeleteNumero
-                existingLocation={existingLocation as Numero & { voie: Voie }}
-                handleClose={handleClose}
-                commune={commune}
-                handleSubmit={handleSignalementProcessed}
-              />
+            {activeTab === 1 && (
+              <>
+                {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
+                  <SignalementCreateNumero
+                    signalement={signalement}
+                    initialVoieId={existingLocation._id}
+                    handleClose={handleClose}
+                    commune={commune}
+                    handleSubmit={handleSignalementProcessed}
+                  />
+                )}
+                {signalement.type === Signalement.type.LOCATION_TO_UPDATE &&
+                  (signalement.existingLocation.type ===
+                  ExistingLocation.type.NUMERO ? (
+                    <SignalementUpdateNumero
+                      existingLocation={
+                        existingLocation as Numero & { voie: Voie }
+                      }
+                      signalement={signalement}
+                      handleSubmit={handleSignalementProcessed}
+                      handleClose={handleClose}
+                      commune={commune}
+                    />
+                  ) : signalement.existingLocation.type ===
+                    ExistingLocation.type.VOIE ? (
+                    <SignalementUpdateVoie
+                      existingLocation={existingLocation as Voie}
+                      signalement={signalement}
+                      handleSubmit={handleSignalementProcessed}
+                      handleClose={handleClose}
+                      commune={commune}
+                    />
+                  ) : (
+                    <SignalementUpdateToponyme
+                      existingLocation={existingLocation as Toponyme}
+                      signalement={signalement}
+                      handleSubmit={handleSignalementProcessed}
+                      handleClose={handleClose}
+                      commune={commune}
+                    />
+                  ))}
+                {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
+                  <SignalementDeleteNumero
+                    existingLocation={
+                      existingLocation as Numero & { voie: Voie }
+                    }
+                    handleClose={handleClose}
+                    commune={commune}
+                    handleSubmit={handleSignalementProcessed}
+                  />
+                )}
+              </>
             )}
-          </>
-        )}
-      </Pane>
+          </Pane>
+        </>
+      ) : (
+        <Pane padding={20}>
+          <Heading>Erreur :</Heading>
+          <Paragraph>
+            Impossible de trouver la localisation du signalement.
+          </Paragraph>
+        </Pane>
+      )}
     </ProtectedPage>
   );
 }
@@ -208,7 +223,7 @@ export async function getServerSideProps({ params }) {
     }
 
     if (!existingLocation) {
-      throw new Error("Existing location not found");
+      existingLocation = null;
     }
 
     return {
