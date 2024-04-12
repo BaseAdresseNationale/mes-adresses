@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 
 export function useInput(
   initialValue?: string
-): [string, (e: any) => void, (forcedValue: any) => void] {
+): [string, (e: any) => void, (forcedValue?: any) => void] {
   const [value, setValue] = useState<string>(initialValue || "");
 
   const onChange = useCallback((e) => {

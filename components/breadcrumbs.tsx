@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import NextLink from "next/link";
-import { Pane, Text, HomeIcon, Link } from "evergreen-ui";
+import { Pane, Text, HomeIcon, Link, PaneProps } from "evergreen-ui";
 import { CommuneType } from "@/types/commune";
 import { BaseLocale, Toponyme, Voie } from "@/lib/openapi";
 import { useRouter } from "next/router";
@@ -8,13 +8,13 @@ import { capitalize } from "lodash";
 import SignalementContext from "@/contexts/signalement";
 import { getSignalementLabel } from "@/lib/utils/signalement";
 
-interface BreadcrumbsProps {
+type BreadcrumbsProps = {
   baseLocale: BaseLocale;
   commune: CommuneType;
   voie?: Voie;
   toponyme?: Toponyme;
   [x: string]: any;
-}
+} & PaneProps;
 
 function Breadcrumbs({
   baseLocale,

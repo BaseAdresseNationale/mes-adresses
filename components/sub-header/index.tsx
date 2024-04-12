@@ -14,11 +14,11 @@ import BALStatus from "@/components/sub-header/bal-status";
 import MassDeletionDialog from "@/components/mass-deletion-dialog";
 import { CommuneType } from "@/types/commune";
 
-interface SubHeader {
+interface SubHeaderProps {
   commune: CommuneType;
 }
 
-function SubHeader({ commune }) {
+function SubHeader({ commune }: SubHeaderProps) {
   const {
     baseLocale,
     habilitation,
@@ -94,19 +94,17 @@ function SubHeader({ commune }) {
         />
       )}
 
-      {isAdmin &&
-        habilitation &&
-        isHabilitationProcessDisplayed && (
-          <HabilitationProcess
-            token={token}
-            baseLocale={baseLocale}
-            commune={commune}
-            habilitation={habilitation}
-            resetHabilitationProcess={handleShowHabilitationProcess}
-            handleClose={() => setIsHabilitationProcessDisplayed(false)}
-            handlePublication={handlePublication}
-          />
-        )}
+      {isAdmin && habilitation && isHabilitationProcessDisplayed && (
+        <HabilitationProcess
+          token={token}
+          baseLocale={baseLocale}
+          commune={commune}
+          habilitation={habilitation}
+          resetHabilitationProcess={handleShowHabilitationProcess}
+          handleClose={() => setIsHabilitationProcessDisplayed(false)}
+          handlePublication={handlePublication}
+        />
+      )}
     </>
   );
 }

@@ -1,10 +1,9 @@
 import { useState, useContext, Dispatch, SetStateAction } from "react";
 import { toaster } from "evergreen-ui";
 
-import { createHabilitation, sync, updateBaseLocale } from "@/lib/bal-api";
 import { getBANCommune } from "@/lib/api-ban";
 import BalDataContext from "@/contexts/bal-data";
-import TokenContext from "@/contexts/token";
+import { BasesLocalesService, HabilitationService } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
 import { BaseLocale } from "@/lib/openapi";
 
@@ -31,7 +30,6 @@ export default function usePublishProcess(
     isHabilitationValid,
     setIsHabilitationProcessDisplayed,
   } = useContext(BalDataContext);
-  const { token } = useContext(TokenContext);
 
   const checkMassDeletion = async () => {
     try {
@@ -50,7 +48,9 @@ export default function usePublishProcess(
   };
 
   const handleChangeStatus = async (status: BaseLocale.status) => {
-    const updated = await updateBaseLocale(baseLocale._id, { status }, token);
+    const updated = await BasesLocalesService.updateBaseLocale(baseLocale._id, {
+      status,
+    });
     await reloadBaseLocale();
 
     return updated;
@@ -68,7 +68,9 @@ export default function usePublishProcess(
       (!habilitation || !isHabilitationValid) &&
       !commune.isCOM
     ) {
-      const habilitation = await createHabilitation(token, baseLocale._id);
+      const habilitation = await HabilitationService.createHabilitation(
+        baseLocale._id
+      );
 
       if (habilitation) {
         await reloadHabilitation();
@@ -79,7 +81,7 @@ export default function usePublishProcess(
   };
 
   const handleSync = async () => {
-    await sync(baseLocale._id, token);
+    await BasesLocalesService.publishBaseLocale();
     await reloadBaseLocale();
   };
 
