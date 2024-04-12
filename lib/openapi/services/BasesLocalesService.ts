@@ -497,7 +497,7 @@ export class BasesLocalesService {
     public static createToponyme(
         baseLocaleId: string,
         requestBody: CreateToponymeDTO,
-    ): CancelablePromise<Array<Toponyme>> {
+    ): CancelablePromise<Toponyme> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/toponymes',

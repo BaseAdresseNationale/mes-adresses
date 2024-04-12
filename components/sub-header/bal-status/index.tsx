@@ -2,13 +2,15 @@ import { Pane, Button } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
 
-import { pauseSync, resumeSync } from "@/lib/bal-api";
-
 import StatusBadge from "@/components/status-badge";
 import BANSync from "@/components/sub-header/bal-status/ban-sync";
 import RefreshSyncBadge from "@/components/sub-header/bal-status/refresh-sync-badge";
 import { CommuneType } from "@/types/commune";
-import { ExtendedBaseLocaleDTO, Sync } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  ExtendedBaseLocaleDTO,
+  Sync,
+} from "@/lib/openapi";
 
 interface BALStatusProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -34,12 +36,12 @@ function BALStatus({
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
   const handlePause = async () => {
-    await pauseSync(baseLocale._id, token);
+    await BasesLocalesService.pauseBaseLocale();
     await reloadBaseLocale();
   };
 
   const handleResumeSync = async () => {
-    await resumeSync(baseLocale._id, token);
+    await BasesLocalesService.resumeBaseLocale();
     await reloadBaseLocale();
   };
 

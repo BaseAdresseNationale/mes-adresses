@@ -4,9 +4,8 @@ import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
-import { softRemoveNumero } from "@/lib/bal-api";
 import TokenContext from "@/contexts/token";
-import { Numero, Voie } from "@/lib/openapi";
+import { Numero, NumerosService, Voie } from "@/lib/openapi";
 
 interface SignalementDeleteNumeroProps {
   existingLocation: Numero & { voie: Voie };
@@ -27,7 +26,7 @@ function SignalementDeleteNumero({
   const { token } = useContext(TokenContext);
 
   const onRemove = async (idNumero) => {
-    await softRemoveNumero(idNumero, token);
+    await NumerosService.softDeleteNumero(idNumero);
     await reloadNumeros();
     await reloadParcelles();
     reloadTiles();

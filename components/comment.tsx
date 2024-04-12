@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { Textarea, Label } from "evergreen-ui";
 
 import FormInput from "@/components/form-input";

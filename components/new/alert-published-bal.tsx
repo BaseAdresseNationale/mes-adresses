@@ -1,8 +1,6 @@
-import { useState, useEffect, useCallback, useContext } from "react";
-import PropTypes from "prop-types";
-import Router from "next/router";
-import { uniq } from "lodash";
-import { Pane, Dialog, Alert, Paragraph, Strong } from "evergreen-ui";
+import { useState, useCallback } from "react";
+
+import { Dialog } from "evergreen-ui";
 
 import { Client, Revision } from "@/lib/api-depot/types";
 import { ClientRevisionEnum } from "./create-form";

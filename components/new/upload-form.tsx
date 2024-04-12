@@ -85,8 +85,8 @@ function extractCommuneCodeFromRow({ parsedValues, additionalValues }): string {
 }
 
 type CommuneRow = {
-  code: any;
-  nom: any;
+  code: string;
+  nom: string;
 };
 
 function extractCommuneFromCSV(rows: any[]): CommuneRow[] {

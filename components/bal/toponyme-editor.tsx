@@ -3,8 +3,6 @@ import { xor } from "lodash";
 import { Pane, Button } from "evergreen-ui";
 import router from "next/router";
 
-import { addToponyme, editToponyme } from "@/lib/bal-api";
-
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 import MarkersContext from "@/contexts/markers";
@@ -21,11 +19,11 @@ import PositionEditor from "@/components/bal/position-editor";
 import SelectParcelles from "@/components/bal/numero-editor/select-parcelles";
 import DisabledFormInput from "@/components/disabled-form-input";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
-import { Toponyme } from "@/lib/openapi";
+import { BasesLocalesService, Toponyme, ToponymesService } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
 
 interface ToponymeEditorProps {
-  initialValue: Toponyme;
+  initialValue?: Toponyme;
   commune: CommuneType;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
   closeForm: () => void;
@@ -85,11 +83,12 @@ function ToponymeEditor({
 
       try {
         // Add or edit a toponyme
+
         const submit = initialValue
-          ? async () => editToponyme(initialValue._id, body, token)
-          : async () => addToponyme(baseLocale._id, body, token);
-        const { validationMessages, ...toponyme } = await submit();
-        setValidationMessages(validationMessages);
+          ? async () => ToponymesService.updateToponyme(initialValue._id, body)
+          : async () =>
+              BasesLocalesService.createToponyme(baseLocale._id, body);
+        const toponyme = await submit();
 
         refreshBALSync();
 
@@ -109,12 +108,12 @@ function ToponymeEditor({
 
         setIsLoading(false);
         closeForm();
-      } catch {
+      } catch (err) {
+        setValidationMessages(err);
         setIsLoading(false);
       }
     },
     [
-      token,
       baseLocale._id,
       initialValue,
       nom,

@@ -11,7 +11,6 @@ import {
   Link,
 } from "evergreen-ui";
 
-import { getHabilitation } from "@/lib/bal-api";
 import { ApiGeoService } from "@/lib/geo-api";
 
 import StatusBadge from "@/components/status-badge";
@@ -85,10 +84,8 @@ function BaseLocaleCard({
 
     const fetchHabilitation = async () => {
       try {
-        const habilitation: HabilitationDTO = await getHabilitation(
-          baseLocale.token,
-          baseLocale._id
-        );
+        const habilitation: HabilitationDTO =
+          await HabilitationService.findHabilitation(baseLocale._id);
         setHabilitation(habilitation);
 
         const isAccepted = habilitation.status === "accepted";

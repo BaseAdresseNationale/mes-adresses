@@ -3,8 +3,6 @@ import router from "next/router";
 import { isEqual } from "lodash";
 import { Pane, Button, Checkbox } from "evergreen-ui";
 
-import { addVoie, editVoie } from "@/lib/bal-api";
-
 import BalDataContext from "@/contexts/bal-data";
 import DrawContext from "@/contexts/draw";
 import TokenContext from "@/contexts/token";
@@ -19,7 +17,13 @@ import FormInput from "@/components/form-input";
 import AssistedTextField from "@/components/assisted-text-field";
 import DrawEditor from "@/components/bal/draw-editor";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
-import { Voie } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  CreateVoieDTO,
+  UpdateVoieDTO,
+  Voie,
+  VoiesService,
+} from "@/lib/openapi";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -66,11 +70,15 @@ function VoieEditor({
 
         // Add or edit a voie
         const submit = initialValue
-          ? async () => editVoie(initialValue._id, body, token)
-          : async () => addVoie(baseLocale._id, body, token);
-        const { validationMessages, ...voie } = await submit();
+          ? async () =>
+              VoiesService.updateVoie(initialValue._id, body as UpdateVoieDTO)
+          : async () =>
+              BasesLocalesService.createVoie(
+                baseLocale._id,
+                body as CreateVoieDTO
+              );
 
-        setValidationMessages(validationMessages);
+        const voie = await submit();
 
         refreshBALSync();
 
@@ -95,7 +103,8 @@ function VoieEditor({
 
         setIsLoading(false);
         closeForm();
-      } catch {
+      } catch (err) {
+        setValidationMessages(err);
         setIsLoading(false);
       }
     },
@@ -105,7 +114,6 @@ function VoieEditor({
       nom,
       isMetric,
       data,
-      token,
       nomAlt,
       closeForm,
       setValidationMessages,
