@@ -3,6 +3,7 @@ import { Marker, ViewState } from "react-map-gl";
 import { Pane, MapMarkerIcon, Text } from "evergreen-ui";
 import nearestPointOnLine from "@turf/nearest-point-on-line";
 import length from "@turf/length";
+import * as helpers from "@turf/helpers";
 import lineSlice from "@turf/line-slice";
 import { Coord } from "@turf/helpers";
 
@@ -27,19 +28,9 @@ function EditableMarker({
   viewport,
 }: EditableMarkerProps) {
   const { map } = useContext(MapContext);
-  const {
-    markers,
-    updateMarker,
-    overrideText,
-    suggestedNumero,
-    setSuggestedNumero,
-  } = useContext(MarkersContext);
+  const { markers, updateMarker, completeNumero, setSuggestedNumero } =
+    useContext(MarkersContext);
   const { isEditing } = useContext(BalDataContext);
-
-  const [suggestedMarkerNumero, setSuggestedMarkerNumero] =
-    useState(suggestedNumero);
-
-  const numberToDisplay = overrideText || suggestedMarkerNumero;
 
   const voie = useMemo(() => {
     if (idVoie) {
@@ -52,31 +43,11 @@ function EditableMarker({
 
   const computeSuggestedNumero = useCallback(
     (coordinates) => {
-      if (
-        !isToponyme &&
-        !overrideText &&
-        voie &&
-        voie.properties.originalGeometry
-      ) {
+      if (!isToponyme && voie && voie.properties.originalGeometry) {
         // Is suggestion needed
         const geometry = JSON.parse(voie.properties.originalGeometry);
-        const point = {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "Point",
-            coordinates,
-          },
-        } as Coord;
-        const from = {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "Point",
-            coordinates: geometry.coordinates[0],
-          },
-        } as Coord;
-
+        const point = helpers.point(coordinates);
+        const from = helpers.point(geometry.coordinates[0]);
         const to = nearestPointOnLine({ type: "Feature", geometry }, point, {
           units: "kilometers",
         });
@@ -85,18 +56,7 @@ function EditableMarker({
         return Number(slicedLine.toFixed());
       }
     },
-    [isToponyme, overrideText, voie]
-  );
-
-  const onDragEnd = useCallback(
-    (event, idx) => {
-      const { lng, lat } = event.lngLat;
-      const { _id, type } = markers[idx];
-
-      setSuggestedNumero(suggestedMarkerNumero);
-      updateMarker(_id, { longitude: lng, latitude: lat, type });
-    },
-    [markers, updateMarker, suggestedMarkerNumero, setSuggestedNumero]
+    [isToponyme, voie]
   );
 
   const onDrag = useCallback(
@@ -104,31 +64,29 @@ function EditableMarker({
       const { _id, type } = markers[idx];
       const coords = [event.lngLat.lng, event.lngLat.lat];
       const suggestion = computeSuggestedNumero(coords);
-      setSuggestedMarkerNumero(suggestion);
+      setSuggestedNumero(suggestion);
       updateMarker(_id, {
         longitude: event.lngLat.lng,
         latitude: event.lngLat.lat,
         type,
       });
     },
-    [setSuggestedMarkerNumero, computeSuggestedNumero, markers, updateMarker]
+    [setSuggestedNumero, computeSuggestedNumero, markers, updateMarker]
   );
 
   useEffect(() => {
-    if (isEditing && !overrideText) {
-      const { longitude, latitude } = viewport;
+    if (isEditing) {
       const coordinates =
         markers.length > 0
           ? [markers[0].longitude, markers[0].latitude]
-          : [longitude, latitude];
+          : [viewport.longitude, viewport.latitude];
       const suggestion = computeSuggestedNumero(coordinates);
-      setSuggestedMarkerNumero(suggestion);
       setSuggestedNumero(suggestion);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEditing,
-    markers,
-    overrideText,
+    markers.length,
     viewport,
     setSuggestedNumero,
     computeSuggestedNumero,
@@ -156,8 +114,8 @@ function EditableMarker({
           fontSize={10}
           whiteSpace="nowrap"
         >
-          {numberToDisplay
-            ? `${numberToDisplay} - ${marker.type}`
+          {completeNumero
+            ? `${completeNumero} - ${marker.type}`
             : `${marker.type}`}
         </Text>
 

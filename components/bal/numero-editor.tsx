@@ -70,6 +70,7 @@ function NumeroEditor({
   const [numero, onNumeroChange] = useInput(
     initialValue?.numero.toString() || ""
   );
+  const [numeroWasEdited, setNumeroWasEdited] = useState<boolean>(false);
   const [nomVoie, onNomVoieChange] = useState("");
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe || "");
@@ -87,7 +88,7 @@ function NumeroEditor({
     reloadVoies,
   } = useContext(BalDataContext);
   const { selectedParcelles } = useContext(ParcellesContext);
-  const { markers, suggestedNumero, setOverrideText } =
+  const { markers, suggestedNumero, setCompleteNumero } =
     useContext(MarkersContext);
   const { reloadTiles } = useContext(MapContext);
 
@@ -199,6 +200,35 @@ function NumeroEditor({
     ]
   );
 
+  useEffect(() => {
+    onNumeroChange({ target: { value: initialValue?.numero.toString() } });
+    onSuffixeChange({ target: { value: initialValue?.suffixe } });
+    setCompleteNumero(
+      computeCompletNumero(initialValue?.numero, initialValue?.suffixe)
+    );
+  }, [initialValue?.numero, initialValue?.suffixe, onNumeroChange, onSuffixeChange, setCompleteNumero]);
+
+  useEffect(() => {
+    if (suggestedNumero && !numeroWasEdited && !initialValue) {
+      onNumeroChange({ target: { value: suggestedNumero } });
+      setCompleteNumero(computeCompletNumero(suggestedNumero, suffixe));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onNumeroChange, setCompleteNumero, suggestedNumero, numeroWasEdited]);
+
+  const handleChangeNumero = (event) => {
+    setNumeroWasEdited(true);
+    onNumeroChange(event);
+    const value: string = event.target.value;
+    setCompleteNumero(computeCompletNumero(value, suffixe));
+  };
+
+  const handleChangeSuffixe = (event) => {
+    onSuffixeChange(event);
+    const value: string = event.target.value;
+    setCompleteNumero(computeCompletNumero(numero, value));
+  };
+
   const handleVoieIdChange = useCallback((voieId) => {
     setVoieId(voieId);
     if (onVoieChanged) {
@@ -212,20 +242,6 @@ function NumeroEditor({
       onVoieChanged();
     }
   }, []);
-
-  useEffect(() => {
-    onNumeroChange({ target: { value: initialValue?.numero.toString() } });
-    onSuffixeChange({ target: { value: initialValue?.suffixe } });
-  }, [
-    initialValue?.numero,
-    initialValue?.suffixe,
-    onNumeroChange,
-    onSuffixeChange,
-  ]);
-
-  useEffect(() => {
-    setOverrideText(numero ? computeCompletNumero(numero, suffixe) : null);
-  }, [setOverrideText, numero, suffixe]);
 
   useEffect(() => {
     let nom = null;
@@ -326,7 +342,7 @@ function NumeroEditor({
               placeholder={`Numéro${
                 suggestedNumero ? ` recommandé : ${suggestedNumero}` : ""
               }`}
-              onChange={onNumeroChange}
+              onChange={handleChangeNumero}
               validationMessage={getValidationMessage("numero")}
             />
 
@@ -343,7 +359,7 @@ function NumeroEditor({
               value={suffixe}
               marginBottom={0}
               placeholder="Suffixe"
-              onChange={onSuffixeChange}
+              onChange={handleChangeSuffixe}
               validationMessage={getValidationMessage("suffixe")}
             />
           </Pane>
