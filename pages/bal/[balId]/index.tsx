@@ -31,8 +31,7 @@ import {
   Voie,
   VoiesService,
 } from "@/lib/openapi";
-
-const TABS = ["Commune", "Voies", "Toponymes"];
+import SignalementContext from "@/contexts/signalement";
 
 interface BaseLocalePageProps {
   commune: CommuneType;
@@ -57,6 +56,8 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     isEditing,
     setIsEditing,
   } = useContext(BalDataContext);
+
+  const { signalements } = useContext(SignalementContext);
 
   useHelp(selectedTabIndex);
 
@@ -212,7 +213,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
       >
         {isFormOpen && selectedTabIndex === 1 && (
           <VoieEditor
-            initialValue={editedItem}
+            initialValue={editedItem as Voie}
             closeForm={() => {
               onEdit(null);
             }}
@@ -220,7 +221,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
         )}
         {isFormOpen && selectedTabIndex === 2 && (
           <ToponymeEditor
-            initialValue={editedItem}
+            initialValue={editedItem as Toponyme}
             commune={commune}
             closeForm={() => {
               onEdit(null);
@@ -236,15 +237,28 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
           padding={10}
         >
           <Tablist>
-            {TABS.map((tab, index) => (
+            {[
+              {
+                label: "Commune",
+                notif: signalements.length,
+              },
+              {
+                label: "Voies",
+              },
+              {
+                label: "Toponymes",
+              },
+            ].map(({ label, notif }, index) => (
               <Tab
-                key={tab}
+                key={label}
+                position="relative"
                 isSelected={selectedTabIndex === index}
                 onSelect={() => {
                   setSelectedTabIndex(index);
                 }}
               >
-                {tab}
+                {label}
+                {notif > 0 && <span className="tab-notif">{notif}</span>}
               </Tab>
             ))}
           </Tablist>
@@ -295,6 +309,17 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
         .tab .selected:hover {
           background: #e4e7eb;
         }
+
+        .tab-notif {
+          position: absolute;
+          top: -10px;
+          right: -5px;
+          background: red;
+          color: white;
+          font-size: 10px;
+          padding: 2px 6px;
+          border-radius: 50%;
+        }
       `}</style>
     </>
   );
@@ -316,9 +341,7 @@ export async function getServerSideProps({ params }) {
     };
   } catch {
     return {
-      error: {
-        statusCode: 404,
-      },
+      notFound: true,
     };
   }
 }

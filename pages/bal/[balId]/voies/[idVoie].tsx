@@ -88,9 +88,7 @@ export async function getServerSideProps({ params }) {
     };
   } catch {
     return {
-      error: {
-        statusCode: 404,
-      },
+      notFound: true,
     };
   }
 }
