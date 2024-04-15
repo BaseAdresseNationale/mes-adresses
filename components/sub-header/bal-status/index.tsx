@@ -70,7 +70,8 @@ function BALStatus({
           />
         ) : (
           <>
-            {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
+            {(baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED ||
+              baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED) &&
               baseLocale.sync?.status !== Sync.status.SYNCED &&
               !isHabilitationValid && (
                 <Button
