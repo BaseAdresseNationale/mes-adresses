@@ -21,7 +21,7 @@ function ListNumerosDeleted({
   numeros,
   selectedNumerosIds,
   setSelectedNumerosIds,
-}) {
+}: ListNumerosDeletedProps) {
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: ["numero"],
   });
