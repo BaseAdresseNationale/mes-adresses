@@ -35,7 +35,7 @@ RevisionUser.propTypes = {
   }).isRequired,
   habilitation: PropTypes.shape({
     strategy: PropTypes.shape({
-      type: PropTypes.oneOf(['email', 'franceconnect']).isRequired
+      type: PropTypes.oneOf(['email', 'franceconnect', 'internal']).isRequired
     })
   })
 }

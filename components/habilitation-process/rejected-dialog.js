@@ -22,7 +22,7 @@ function RejectedDialog({communeName, strategyType}) {
 
 RejectedDialog.propTypes = {
   communeName: PropTypes.string,
-  strategyType: PropTypes.oneOf(['email', 'franceconnect'])
+  strategyType: PropTypes.oneOf(['email', 'franceconnect', 'internal'])
 }
 
 export default RejectedDialog
