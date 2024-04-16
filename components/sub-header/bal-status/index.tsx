@@ -36,12 +36,12 @@ function BALStatus({
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
   const handlePause = async () => {
-    await BasesLocalesService.pauseBaseLocale();
+    await BasesLocalesService.pauseBaseLocale(baseLocale._id);
     await reloadBaseLocale();
   };
 
   const handleResumeSync = async () => {
-    await BasesLocalesService.resumeBaseLocale();
+    await BasesLocalesService.resumeBaseLocale(baseLocale._id);
     await reloadBaseLocale();
   };
 

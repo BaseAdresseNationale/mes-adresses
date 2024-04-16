@@ -103,16 +103,18 @@ function HabilitationProcess({
     }
   }, [commune.code]);
 
-  const handleValidationCode = async (code) => {
+  const handleValidationCode = async (code: string) => {
     setIsLoading(true);
-    const { validated, message } =
-      await HabilitationService.validePinCodeHabilitation(baseLocale._id, code);
+    const { validated, error } =
+      await HabilitationService.validePinCodeHabilitation(baseLocale._id, {
+        code,
+      });
 
-    console.log("validated", validated, message);
-
-    if (!validated) {
-      handleClose();
-    } else {
+    if (error) {
+      toaster.danger("Le code n’est pas valide", {
+        description: error,
+      });
+    } else if (validated) {
       checkConflictingRevision();
       setStep(2);
     }
