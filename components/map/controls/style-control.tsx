@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Pane, SelectMenu, Button, Position, LayersIcon } from "evergreen-ui";
 
-import CadastreControl from "@/components/map/controls/cadastre-control.js";
+import CadastreControl from "@/components/map/controls/cadastre-control";
 import { CommuneType } from "@/types/commune";
 
 interface StyleControlProps {

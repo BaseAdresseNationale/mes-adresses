@@ -94,7 +94,7 @@ function generateNewStyle(style) {
 export interface MapProps {
   commune: CommuneType;
   isAddressFormOpen: boolean;
-  handleAddressForm: () => void;
+  handleAddressForm: (open: boolean) => void;
 }
 
 function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {

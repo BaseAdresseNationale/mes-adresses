@@ -1,15 +1,17 @@
 import { FileRejection, useDropzone } from "react-dropzone";
 import { Pane, Spinner, Paragraph, PaneProps } from "evergreen-ui";
+import { DragEventHandler } from "react";
 
 interface UploaderProps {
   file: File | null;
   maxSize: number;
   placeholder: string;
-  onDrop: ([file]: [File]) => Promise<void>;
+  onDrop: ([file]: [any]) => Promise<void>;
   onDropRejected: (rejectedFiles: FileRejection[]) => void;
   height?: number;
   isLoading?: boolean;
   loadingLabel?: string;
+  disabled?: boolean;
 }
 
 function Uploader({
@@ -22,7 +24,7 @@ function Uploader({
   isLoading,
   loadingLabel = "Chargement…",
   ...props
-}: UploaderProps & PaneProps) {
+}: UploaderProps & Omit<PaneProps, "onDrop">) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     maxSize,
     onDrop,

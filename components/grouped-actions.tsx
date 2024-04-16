@@ -24,13 +24,12 @@ import { useInput, useCheckboxInput } from "@/hooks/input";
 
 import Comment from "@/components/comment";
 import CertificationButton from "@/components/certification-button";
-import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
-import { Numero, UpdateBatchNumeroChangeDTO } from "@/lib/openapi";
+import { Numero, NumeroPopulate } from "@/lib/openapi";
 
 interface GroupedActionsProps {
   idVoie: string;
-  numeros: Numero[];
+  numeros: (Numero | NumeroPopulate)[];
   selectedNumerosIds: string[];
   resetSelectedNumerosIds: () => void;
   setIsRemoveWarningShown: (value: boolean) => void;

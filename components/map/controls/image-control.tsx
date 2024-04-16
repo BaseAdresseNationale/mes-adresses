@@ -57,7 +57,11 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
   useEffect(() => {
     if (map) {
       if (map.getLayer(NUMEROS_POINT)) {
-        map.setLayerZoomRange(NUMEROS_POINT, ZOOM.ALL.min, adresseLayerZoom[0]);
+        map.setLayerZoomRange(
+          NUMEROS_POINT,
+          ZOOM.ALL.minZoom,
+          adresseLayerZoom[0]
+        );
       }
 
       if (map.getLayer(NUMEROS_LABEL)) {

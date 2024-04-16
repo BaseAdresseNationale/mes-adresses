@@ -108,20 +108,16 @@ function HabilitationProcess({
     const { validated, message } =
       await HabilitationService.validePinCodeHabilitation(baseLocale._id, code);
 
-    if (!remainingAttempts) {
-      // Habilitation rejected
-      if (validated === "false") {
-        handleClose();
-      }
+    console.log("validated", validated, message);
 
-      // Habilitation accepted
-      if (status === "accepted") {
-        checkConflictingRevision();
-        setStep(2);
-      }
-
-      await reloadHabilitation();
+    if (!validated) {
+      handleClose();
+    } else {
+      checkConflictingRevision();
+      setStep(2);
     }
+
+    await reloadHabilitation();
 
     setIsLoading(false);
   };
@@ -245,7 +241,7 @@ HabilitationProcess.propTypes = {
     emailCommune: PropTypes.string,
     franceconnectAuthenticationUrl: PropTypes.string.isRequired,
     strategy: PropTypes.shape({
-      type: PropTypes.oneOf(["email", "franceconnect", 'internal']),
+      type: PropTypes.oneOf(["email", "franceconnect", "internal"]),
     }),
   }).isRequired,
   handlePublication: PropTypes.func.isRequired,
