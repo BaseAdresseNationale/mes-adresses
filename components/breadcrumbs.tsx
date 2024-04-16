@@ -13,6 +13,7 @@ interface BreadcrumbsProps {
   commune: CommuneType;
   voie?: Voie;
   toponyme?: Toponyme;
+  [x: string]: any;
 }
 
 function Breadcrumbs({
