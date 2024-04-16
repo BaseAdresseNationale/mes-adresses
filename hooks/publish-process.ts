@@ -81,7 +81,7 @@ export default function usePublishProcess(
   };
 
   const handleSync = async () => {
-    await BasesLocalesService.publishBaseLocale();
+    await BasesLocalesService.publishBaseLocale(baseLocale._id);
     await reloadBaseLocale();
   };
 
