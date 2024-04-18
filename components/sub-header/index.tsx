@@ -87,7 +87,7 @@ function SubHeader({ commune }: SubHeaderProps) {
         )}
       </Pane>
 
-      {isAdmin && isHabilitationProcessDisplayed && (
+      {isAdmin && isHabilitationProcessDisplayed && commune.isCOM && (
         <COMDialog
           baseLocaleId={baseLocale._id}
           handleClose={() => setIsHabilitationProcessDisplayed(false)}
