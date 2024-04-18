@@ -20,7 +20,7 @@ interface SelectParcellesProps {
 }
 
 function SelectParcelles({
-  initialParcelles,
+  initialParcelles = [],
   isToponyme,
 }: SelectParcellesProps) {
   const { isCadastreDisplayed, setIsCadastreDisplayed } =
@@ -42,7 +42,7 @@ function SelectParcelles({
     return () => {
       setIsParcelleSelectionEnabled(false);
     };
-  }, [initialParcelles, setSelectedParcelles, setIsParcelleSelectionEnabled]);
+  }, []);
 
   return (
     <Pane display="flex" flexDirection="column">
