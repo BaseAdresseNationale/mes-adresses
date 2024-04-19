@@ -46,7 +46,7 @@ import { isExceptionClientId } from "./create-form";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";
 import AlertPublishedBAL from "./alert-published-bal";
-import { BALWidgetConfig } from "@/lib/bal-admin/type";
+import LayoutContext from "@/contexts/layout";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -122,6 +122,7 @@ function UploadForm({
   onEmailChange,
   handleCommune,
 }: UploadFormProps) {
+  const { isMobile } = useContext(LayoutContext);
   const [bal, setBal] = useState<BaseLocale | null>(null);
   const [file, setFile] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -352,7 +353,7 @@ function UploadForm({
             />
           )}
 
-          <Pane display="flex" flexDirection="row">
+          <Pane display="flex" flexDirection={isMobile ? "column" : "row"}>
             <Pane flex={1} maxWidth={600}>
               <FormInput>
                 <TextInputField
@@ -386,7 +387,7 @@ function UploadForm({
               </FormInput>
             </Pane>
 
-            <Pane flex={1} marginLeft={16}>
+            <Pane flex={1} marginLeft={isMobile ? 0 : 16}>
               <FormInput>
                 <FormField label="Fichier CSV" />
                 <Uploader
@@ -486,6 +487,7 @@ function UploadForm({
         margin={16}
         title="Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?"
         marginY={16}
+        hasIcon={isMobile ? false : true}
       >
         <Text>
           Utilisez notre formulaire de dépôt afin de publier vos adresses dans
@@ -498,8 +500,9 @@ function UploadForm({
             is="a"
             href="https://adresse.data.gouv.fr/bases-locales/publication"
           >
-            Accéder au formulaire de dépôt d’une Base Adresse Locale sur
-            adresse.data.gouv.fr
+            {isMobile
+              ? "Accéder au formulaire"
+              : "Accéder au formulaire de dépôt d’une Base Adresse Locale sur adresse.data.gouv.fr"}
           </Button>
         </Pane>
       </Alert>

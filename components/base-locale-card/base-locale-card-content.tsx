@@ -21,7 +21,7 @@ import CertificationCount from "@/components/certification-count";
 import HabilitationTag from "../habilitation-tag";
 import { ExtendedBaseLocaleDTO, HabilitationDTO } from "@/lib/openapi";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
-import useWindowSize from "@/hooks/useWindowSize";
+import LayoutContext from "@/contexts/layout";
 
 interface BaseLocaleCardContentProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -47,7 +47,7 @@ function BaseLocaleCardContent({
   onHide,
 }: BaseLocaleCardContentProps) {
   const { status, _created, emails } = baseLocale;
-  const { isMobile } = useWindowSize();
+  const { isMobile } = useContext(LayoutContext);
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false);
 
   const { getBalToken } = useContext(LocalStorageContext);
@@ -199,14 +199,14 @@ function BaseLocaleCardContent({
                   disabled={!onRemove}
                   onClick={onRemove}
                 >
-                  Supprimer définitivement
+                  {isMobile ? "Supprimer" : "Supprimer définitivement"}
                 </Button>
               ) : (
                 <Tooltip content={tooltipContent}>
                   {/* Button disabled props prevents pointer-events. Button is wrap in <Pane> to allow tooltip content to display => https://evergreen.segment.com/components/buttons#disabled_state */}
                   <Pane>
                     <Button disabled iconAfter={TrashIcon}>
-                      Supprimer définitivement
+                      {isMobile ? "Supprimer" : "Supprimer définitivement"}
                     </Button>
                   </Pane>
                 </Tooltip>
@@ -214,7 +214,7 @@ function BaseLocaleCardContent({
 
             {onHide && (
               <Button iconAfter={EyeOffIcon} onClick={onHide}>
-                Masquer de la liste
+                {isMobile ? "Masquer" : "Masquer de la liste"}
               </Button>
             )}
           </Pane>
@@ -229,7 +229,7 @@ function BaseLocaleCardContent({
               onClick={onSelect}
               disabled={!onSelect}
             >
-              Gérer les adresses
+              {isMobile ? "Gérer" : "Gérer les adresses"}
             </Button>
           ) : (
             <>

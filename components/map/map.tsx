@@ -196,7 +196,17 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const onClick = useCallback(
     (event) => {
-      const feature = event?.features[0];
+      const features = map
+        .queryRenderedFeatures(event.point)
+        .filter(({ source, sourceLayer }) => {
+          return (
+            source === "cadastre" ||
+            sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
+            sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
+            sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS
+          );
+        });
+      const feature = features && features[0];
 
       if (feature?.source === "cadastre") {
         handleParcelle(feature.properties.id);
@@ -381,6 +391,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           cursor={cursor}
           onClick={onClick}
           onMove={({ viewState }) => setViewport(viewState)}
+          onTouchEnd={onClick}
           onMouseMove={handleHover}
           onMouseLeave={handleMouseLeave}
           onMouseOut={handleMouseLeave}

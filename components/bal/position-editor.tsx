@@ -13,6 +13,7 @@ import MarkersContext from "@/contexts/markers";
 import InputLabel from "@/components/input-label";
 import PositionItem from "./position-item";
 import { Position } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 interface PositionEditorProps {
   initialPositions: any[];
@@ -25,6 +26,7 @@ function PositionEditor({
   isToponyme,
   validationMessage,
 }: PositionEditorProps) {
+  const { isMobile, setIsMapFullscreen } = useContext(LayoutContext);
   const { markers, addMarker, updateMarker, removeMarker, disableMarkers } =
     useContext(MarkersContext);
 
@@ -32,7 +34,8 @@ function PositionEditor({
     addMarker({
       type: isToponyme ? Position.type.SEGMENT : Position.type.ENTR_E,
     });
-  }, [isToponyme, addMarker]);
+    isMobile && setIsMapFullscreen(true);
+  }, [isToponyme, addMarker, isMobile, setIsMapFullscreen]);
 
   useEffect(() => {
     if (initialPositions) {

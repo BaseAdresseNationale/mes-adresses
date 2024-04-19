@@ -7,13 +7,17 @@ import {
   Tablist,
   Tab,
   Link,
+  Button,
+  CrossIcon,
 } from "evergreen-ui";
 
 import HelpContext from "@/contexts/help";
 
 import HelpTabs, { TABS } from "@/components/help/help-tabs";
+import LayoutContext from "@/contexts/layout";
 
 function Help() {
+  const { isMobile } = useContext(LayoutContext);
   const { showHelp, setShowHelp, selectedIndex, setSelectedIndex } =
     useContext(HelpContext);
 
@@ -26,6 +30,7 @@ function Help() {
         flexDirection: "column",
       }}
       onCloseComplete={() => setShowHelp(false)}
+      {...(isMobile && { width: "100%" })}
     >
       <Pane zIndex={1} flexShrink={0} elevation={0} backgroundColor="white">
         <Pane padding={16} borderBottom="muted">
@@ -63,6 +68,18 @@ function Help() {
           <a href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</a>
         </Paragraph>
       </Pane>
+      {isMobile && (
+        <Button
+          onClick={() => setShowHelp(false)}
+          position="absolute"
+          top="15px"
+          right="20px"
+          border="none"
+          zIndex={1}
+        >
+          <CrossIcon />
+        </Button>
+      )}
     </SideSheet>
   );
 }

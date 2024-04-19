@@ -23,7 +23,7 @@ import {
   Voie,
   VoiesService,
 } from "@/lib/openapi";
-import ToasterContext from "@/contexts/toaster";
+import LayoutContext from "@/contexts/layout";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -51,7 +51,7 @@ function VoieEditor({
   const { drawEnabled, data, enableDraw, disableDraw } =
     useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
-  const { toaster } = useContext(ToasterContext);
+  const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
 
   const onFormSubmit = useCallback(

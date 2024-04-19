@@ -97,6 +97,24 @@ const StrategySelection = React.memo(function StrategySelection({
         textAlign="center"
       >
         <Pane
+          onMouseEnter={() => setHovered("email")}
+          onMouseLeave={() => setHovered(null)}
+          elevation={hovered === "email" ? 3 : 0}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          background="white"
+          padding={16}
+          borderRadius={8}
+          height={415}
+          flex={1}
+        >
+          <CodeEmail
+            emailCommune={emailCommune}
+            handleStrategy={() => handleStrategy("email")}
+          />
+        </Pane>
+        <Pane
           onMouseEnter={() => setHovered("france-connect")}
           onMouseLeave={() => setHovered(null)}
           elevation={hovered === "france-connect" ? 3 : 0}
@@ -113,25 +131,6 @@ const StrategySelection = React.memo(function StrategySelection({
           <FranceConnect
             handleStrategy={() => handleStrategy("france-connect")}
             isDisabled={!franceconnectAuthenticationUrl}
-          />
-        </Pane>
-
-        <Pane
-          onMouseEnter={() => setHovered("email")}
-          onMouseLeave={() => setHovered(null)}
-          elevation={hovered === "email" ? 3 : 0}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          background="white"
-          padding={16}
-          borderRadius={8}
-          height={415}
-          flex={1}
-        >
-          <CodeEmail
-            emailCommune={emailCommune}
-            handleStrategy={() => handleStrategy("email")}
           />
         </Pane>
       </Pane>

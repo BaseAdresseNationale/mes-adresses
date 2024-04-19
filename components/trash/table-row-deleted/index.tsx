@@ -1,7 +1,7 @@
-import { Table } from "evergreen-ui";
+import { Pane, Table, Text } from "evergreen-ui";
 
 import TableRowDeleteActions from "@/components/trash/table-row-deleted/table-row-action-deleted";
-import TableRowEditShortcut from "@/components/table-row/table-row-edit-shortcut";
+import LanguagePreview from "@/components/bal/language-preview";
 
 interface TableRowProps {
   label: string;
@@ -20,16 +20,24 @@ function TableRow({
 }: TableRowProps) {
   return (
     <Table.Row paddingRight={8} minHeight={48}>
-      <TableRowEditShortcut
-        label={label}
-        nomAlt={nomAlt}
-        complement={complement}
-        isSelectable={false}
-        isEditingEnabled={false}
-        colors={{
-          label: isDeleted ? "danger" : "default",
-        }}
-      />
+      <Table.Cell>
+        <Table.TextCell data-editable flex="0 1 1" height="100%">
+          <Pane padding={1} fontSize={15}>
+            <Text color={isDeleted ? "danger" : "default"}>{label}</Text>
+            {complement && (
+              <Text>
+                <i>{` - ${complement}`}</i>
+              </Text>
+            )}
+          </Pane>
+
+          {nomAlt && (
+            <Pane marginTop={4}>
+              <LanguagePreview nomAlt={nomAlt} />
+            </Pane>
+          )}
+        </Table.TextCell>
+      </Table.Cell>
 
       {actions && <TableRowDeleteActions actions={actions} />}
     </Table.Row>

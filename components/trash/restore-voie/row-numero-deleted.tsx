@@ -1,10 +1,10 @@
-import { Table, Checkbox } from "evergreen-ui";
+import { Table, Checkbox, Pane, Text } from "evergreen-ui";
 
-import TableRowEditShortcut from "@/components/table-row/table-row-edit-shortcut";
+import LanguagePreview from "@/components/bal/language-preview";
 
 interface RowNumerosDeletedProps {
   label: string;
-  nomAlt?: string;
+  nomAlt?: Record<string, string>;
   complement?: string;
   secondary?: string;
   isSelected: boolean;
@@ -26,14 +26,24 @@ function RowNumerosDeleted({
           <Checkbox checked={isSelected} onChange={handleSelect} />
         </Table.Cell>
       )}
+      <Table.Cell>
+        <Table.TextCell data-editable flex="0 1 1" height="100%">
+          <Pane padding={1} fontSize={15}>
+            <Text>{label}</Text>
+            {complement && (
+              <Text>
+                <i>{` - ${complement}`}</i>
+              </Text>
+            )}
+          </Pane>
 
-      <TableRowEditShortcut
-        label={label}
-        nomAlt={nomAlt}
-        complement={complement}
-        isSelectable={false}
-        isEditingEnabled={false}
-      />
+          {nomAlt && (
+            <Pane marginTop={4}>
+              <LanguagePreview nomAlt={nomAlt} />
+            </Pane>
+          )}
+        </Table.TextCell>
+      </Table.Cell>
 
       {secondary && <Table.TextCell flex="0 1 1">{secondary}</Table.TextCell>}
     </Table.Row>

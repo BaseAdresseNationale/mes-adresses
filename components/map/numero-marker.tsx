@@ -54,7 +54,8 @@ function NumeroMarker({
       <Pane
         {...style}
         paddingX={4}
-        onClick={(e) => onEnableEditing(numero._id)}
+        onClick={() => onEnableEditing(numero._id)}
+        onTouchEnd={() => onEnableEditing(numero._id)}
         onContextMenu={() => onEnableMenu(numero._id)}
       >
         <Text color="white" marginLeft={8} marginRight={4}>

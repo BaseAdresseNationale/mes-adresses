@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext } from "react";
+import { useState, useContext, useMemo } from "react";
 
 import { DrawerContextProvider } from "@/contexts/drawer";
 import { DrawContextProvider } from "@/contexts/draw";
@@ -30,6 +30,8 @@ import {
   ExtentedToponymeDTO,
 } from "@/lib/openapi";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
+import { MobileControls } from "@/components/mobile-layout/mobile-controls";
+import LayoutContext from "@/contexts/layout";
 
 interface EditorProps {
   children: React.ReactNode;
@@ -37,16 +39,15 @@ interface EditorProps {
 }
 
 function Editor({ children, commune }: EditorProps) {
-  const [isHidden, setIsHidden] = useState(false);
+  const { isMobile, isMapFullscreen, setIsMapFullscreen } =
+    useContext(LayoutContext);
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
   const { tokenIsChecking } = useContext(TokenContext);
   const { baseLocale } = useContext(BalDataContext);
 
   const isDemo = baseLocale.status === BaseLocale.status.DEMO;
 
-  const leftOffset = useMemo(() => {
-    return isHidden ? 0 : 500;
-  }, [isHidden]);
+  const sidebarWidth = isMobile ? window.innerWidth : 500;
 
   return (
     <MapContextProvider>
@@ -67,33 +68,26 @@ function Editor({ children, commune }: EditorProps) {
             </DrawerContextProvider>
 
             <Map
-              top={116}
-              bottom={isDemo ? 50 : 0}
-              left={leftOffset}
+              top={isMobile ? 150 : 116}
+              bottom={isDemo || isMobile ? 50 : 0}
+              left={isMapFullscreen ? 0 : sidebarWidth}
               commune={commune}
               isAddressFormOpen={isAddressFormOpen}
               handleAddressForm={setIsAddressFormOpen}
             />
 
             <Sidebar
-              top={116}
+              size={sidebarWidth}
+              top={isMobile ? 150 : 116}
               bottom={isDemo ? 50 : 0}
-              isHidden={isHidden}
-              size={500}
+              isHidden={isMapFullscreen}
               elevation={2}
               background="tint2"
               display="flex"
               flexDirection="column"
-              onToggle={setIsHidden}
+              onToggle={setIsMapFullscreen}
             >
               <>
-                {isDemo && (
-                  <DemoWarning
-                    baseLocale={baseLocale}
-                    communeName={commune.nom}
-                  />
-                )}
-
                 <WelcomeMessage />
                 {baseLocale.status === BaseLocale.status.PUBLISHED && (
                   <CertificationMessage balId={baseLocale._id} />
@@ -111,6 +105,16 @@ function Editor({ children, commune }: EditorProps) {
                 )}
               </>
             </Sidebar>
+            {isMobile && (
+              <MobileControls
+                isDemo={isDemo}
+                onToggle={setIsMapFullscreen}
+                isHidden={isMapFullscreen}
+              />
+            )}
+            {isDemo && (
+              <DemoWarning baseLocale={baseLocale} communeName={commune.nom} />
+            )}
           </ParcellesContextProvider>
         </MarkersContextProvider>
       </DrawContextProvider>

@@ -87,8 +87,8 @@ const STATUSES: { [key: string]: StatusType } = {
     content:
       "Base Adresse Locale de démonstration, aucune adresse ne sera transmise à la Base Adresse Nationale",
     label: "Démonstration",
-    color: "neutral",
-    textColor: "white",
+    color: "orange",
+    textColor: "black",
     intent: "danger",
     icon: LabTestIcon,
   },

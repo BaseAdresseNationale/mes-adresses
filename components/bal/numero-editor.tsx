@@ -34,7 +34,7 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
-import ToasterContext from "@/contexts/toaster";
+import LayoutContext from "@/contexts/layout";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -76,7 +76,7 @@ function NumeroEditor({
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe || "");
   const [comment, onCommentChange] = useInput(initialValue?.comment || "");
-  const { toaster } = useContext(ToasterContext);
+  const { toaster } = useContext(LayoutContext);
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
 

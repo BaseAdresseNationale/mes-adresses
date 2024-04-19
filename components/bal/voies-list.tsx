@@ -24,7 +24,7 @@ import DeleteWarning from "@/components/delete-warning";
 
 import InfiniteScrollList from "../infinite-scroll-list";
 import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi";
-import ToasterContext from "@/contexts/toaster";
+import LayoutContext from "@/contexts/layout";
 
 interface VoiesListProps {
   voies: ExtendedVoieDTO[];
@@ -48,7 +48,7 @@ function VoiesList({
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const { isEditing, reloadVoies } = useContext(BalDataContext);
-  const { toaster } = useContext(ToasterContext);
+  const { toaster } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const router = useRouter();
 

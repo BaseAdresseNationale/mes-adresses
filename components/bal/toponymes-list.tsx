@@ -22,7 +22,7 @@ import DeleteWarning from "@/components/delete-warning";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import CommentsContent from "@/components/comments-content";
 import { ExtentedToponymeDTO, Numero, ToponymesService } from "@/lib/openapi";
-import ToasterContext from "@/contexts/toaster";
+import LayoutContext from "@/contexts/layout";
 
 interface ToponymesListProps {
   toponymes: ExtentedToponymeDTO[];
@@ -45,7 +45,7 @@ function ToponymesList({
   const [toRemove, setToRemove] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const { isEditing, reloadToponymes } = useContext(BalDataContext);
-  const { toaster } = useContext(ToasterContext);
+  const { toaster } = useContext(LayoutContext);
   const router = useRouter();
 
   const handleRemove = async () => {

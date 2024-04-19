@@ -55,15 +55,13 @@ function Breadcrumbs({
         <HomeIcon style={{ verticalAlign: "middle", color: "#000" }} />
       </NextLink>
       <Text color="muted">{" > "}</Text>
-      <Text>{baseLocale.nom || "Base Adresse Locale"}</Text>
-      <Text color="muted">{" > "}</Text>
 
-      {!innerPath && <Text>{commune.nom}</Text>}
+      {!innerPath && <Text>{baseLocale.nom || commune.nom}</Text>}
 
       {innerPath && (
         <>
           <Link is={NextLink} href={`/bal/${baseLocale._id}`}>
-            {commune.nom}
+            {baseLocale.nom || commune.nom}
           </Link>
 
           <Text color="muted">{" > "}</Text>
