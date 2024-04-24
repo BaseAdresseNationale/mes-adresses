@@ -177,9 +177,10 @@ function NumeroEditor({
 
         refreshBALSync();
         closeForm();
-      } catch (error) {
-        console.error(error);
-        setValidationMessages(error);
+      } catch (err) {
+        if (err.status === 400) {
+          setValidationMessages(err.body.message);
+        }
       } finally {
         setIsLoading(false);
       }

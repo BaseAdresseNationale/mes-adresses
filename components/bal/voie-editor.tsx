@@ -104,7 +104,9 @@ function VoieEditor({
         setIsLoading(false);
         closeForm();
       } catch (err) {
-        setValidationMessages(err);
+        if (err.status === 400) {
+          setValidationMessages(err.body.message);
+        }
         setIsLoading(false);
       }
     },
