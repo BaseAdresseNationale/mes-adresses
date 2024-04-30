@@ -34,6 +34,7 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
+import { toasterWrapper } from "@/lib/utils/toaster";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -152,12 +153,23 @@ function NumeroEditor({
         const voie = await getEditedVoie();
 
         if (initialValue?._id) {
-          await NumerosService.updateNumero(initialValue._id, {
-            voie: voie._id,
-            ...body,
-          });
+          const updateNumero = toasterWrapper(
+            () =>
+              NumerosService.updateNumero(initialValue._id, {
+                voie: voie._id,
+                ...body,
+              }),
+            "Le numéro a bien été modifié",
+            "Le numéro n’a pas pu être modifié"
+          );
+          await updateNumero();
         } else {
-          await VoiesService.createNumero(voie._id, body);
+          const createNumero = toasterWrapper(
+            () => VoiesService.createNumero(voie._id, body),
+            "Le numéro a bien été ajouté",
+            "Le numéro n’a pas pu être ajouté"
+          );
+          await createNumero();
         }
 
         await reloadNumeros();
@@ -207,7 +219,13 @@ function NumeroEditor({
     setCompleteNumero(
       computeCompletNumero(initialValue?.numero, initialValue?.suffixe)
     );
-  }, [initialValue?.numero, initialValue?.suffixe, onNumeroChange, onSuffixeChange, setCompleteNumero]);
+  }, [
+    initialValue?.numero,
+    initialValue?.suffixe,
+    onNumeroChange,
+    onSuffixeChange,
+    setCompleteNumero,
+  ]);
 
   useEffect(() => {
     if (suggestedNumero && !numeroWasEdited && !initialValue) {

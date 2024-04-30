@@ -24,6 +24,7 @@ import {
   Voie,
   VoiesService,
 } from "@/lib/openapi";
+import { toasterWrapper } from "@/lib/utils/toaster";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -70,13 +71,24 @@ function VoieEditor({
 
         // Add or edit a voie
         const submit = initialValue
-          ? async () =>
-              VoiesService.updateVoie(initialValue._id, body as UpdateVoieDTO)
-          : async () =>
-              BasesLocalesService.createVoie(
-                baseLocale._id,
-                body as CreateVoieDTO
-              );
+          ? toasterWrapper(
+              async () =>
+                VoiesService.updateVoie(
+                  initialValue._id,
+                  body as UpdateVoieDTO
+                ),
+              "La voie a bien été modifiée",
+              "La voie n’a pas pu être modifiée"
+            )
+          : toasterWrapper(
+              async () =>
+                BasesLocalesService.createVoie(
+                  baseLocale._id,
+                  body as CreateVoieDTO
+                ),
+              "La voie a bien été ajoutée",
+              "La voie n’a pas pu être ajoutée"
+            );
 
         const voie = await submit();
 

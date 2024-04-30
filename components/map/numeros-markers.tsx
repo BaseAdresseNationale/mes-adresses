@@ -8,6 +8,7 @@ import useError from "@/hooks/error";
 
 import NumeroMarker from "@/components/map/numero-marker";
 import { Numero, NumerosService } from "@/lib/openapi";
+import { toaster } from "evergreen-ui";
 
 interface NumerosMarkersProps {
   numeros: Numero[];
@@ -89,8 +90,12 @@ function NumerosMarkers({
         await reloadParcelles();
         reloadTiles();
         refreshBALSync();
+        toaster.success("Le numéro a bien été archivé");
       } catch (error) {
         setError(error.message);
+        toaster.danger("Le numéro n’a pas pu être archivé", {
+          description: error.message,
+        });
       }
 
       setIsContextMenuDisplayed(null);

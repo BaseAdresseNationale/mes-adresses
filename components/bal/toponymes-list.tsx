@@ -22,6 +22,7 @@ import DeleteWarning from "@/components/delete-warning";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import CommentsContent from "@/components/comments-content";
 import { ExtentedToponymeDTO, Numero, ToponymesService } from "@/lib/openapi";
+import { toasterWrapper } from "@/lib/utils/toaster";
 
 interface ToponymesListProps {
   toponymes: ExtentedToponymeDTO[];
@@ -48,7 +49,12 @@ function ToponymesList({
 
   const handleRemove = async () => {
     setIsDisabled(true);
-    await ToponymesService.softDeleteToponyme(toRemove);
+    const softDeleteToponyme = toasterWrapper(
+      () => ToponymesService.softDeleteToponyme(toRemove),
+      "Le toponyme a bien été archivé",
+      "Le toponyme n’a pas pu être archivé"
+    );
+    await softDeleteToponyme();
     await reloadToponymes();
     await onRemove();
     setToRemove(null);

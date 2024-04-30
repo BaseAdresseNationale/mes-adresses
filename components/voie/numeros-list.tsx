@@ -9,6 +9,7 @@ import {
   Checkbox,
   AddIcon,
   LockIcon,
+  toaster,
 } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
@@ -131,33 +132,51 @@ function NumerosList({
 
   const onRemove = useCallback(
     async (idNumero) => {
-      await NumerosService.softDeleteNumero(idNumero);
-      await reloadNumeros();
-      await reloadParcelles();
-      reloadTiles();
-      refreshBALSync();
+      try {
+        await NumerosService.softDeleteNumero(idNumero);
+        await reloadNumeros();
+        await reloadParcelles();
+        reloadTiles();
+        refreshBALSync();
+        toaster.success("Le numéro a bien été archivé");
+      } catch (error) {
+        console.error(error);
+        toaster.danger("Le numéro n’a pas pu être archivé", {
+          description: error.message,
+        });
+      }
     },
     [reloadNumeros, reloadParcelles, refreshBALSync, reloadTiles]
   );
 
   const onMultipleRemove = async () => {
     setIsDisabled(true);
-    await BasesLocalesService.softDeleteNumeros(baseLocale._id, {
-      numerosIds: selectedNumerosIds,
-    });
+    try {
+      await BasesLocalesService.softDeleteNumeros(baseLocale._id, {
+        numerosIds: selectedNumerosIds,
+      });
 
-    await reloadNumeros();
-    await reloadParcelles();
-    reloadTiles();
-    refreshBALSync();
+      await reloadNumeros();
+      await reloadParcelles();
+      reloadTiles();
+      refreshBALSync();
 
-    setSelectedNumerosIds([]);
-    setIsRemoveWarningShown(false);
-    setIsDisabled(false);
+      setSelectedNumerosIds([]);
+      setIsRemoveWarningShown(false);
+      toaster.success("Les numéros ont bien été archivés");
+    } catch (error) {
+      console.error(error);
+      toaster.danger("Les numéros n’ont pas pu être archivés", {
+        description: error.message,
+      });
+    } finally {
+      setIsDisabled(false);
+    }
   };
 
   const onMultipleEdit = async (balId, body) => {
     await BasesLocalesService.updateNumeros(balId, body);
+    toaster.success("Les numéros ont bien été modifiés");
 
     await reloadNumeros();
     refreshBALSync();

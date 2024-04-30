@@ -21,6 +21,7 @@ import DisabledFormInput from "@/components/disabled-form-input";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
 import { BasesLocalesService, Toponyme, ToponymesService } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
+import { toasterWrapper } from "@/lib/utils/toaster";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -83,11 +84,18 @@ function ToponymeEditor({
 
       try {
         // Add or edit a toponyme
-
         const submit = initialValue
-          ? async () => ToponymesService.updateToponyme(initialValue._id, body)
-          : async () =>
-              BasesLocalesService.createToponyme(baseLocale._id, body);
+          ? toasterWrapper(
+              () => ToponymesService.updateToponyme(initialValue._id, body),
+              "Le toponyme a bien été modifé",
+              "Le toponyme n’a pas pu être modifié"
+            )
+          : toasterWrapper(
+              () => BasesLocalesService.createToponyme(baseLocale._id, body),
+              "Le toponyme a bien été ajouté",
+              "Le toponyme n’a pas pu être ajouté"
+            );
+
         const toponyme = await submit();
 
         refreshBALSync();

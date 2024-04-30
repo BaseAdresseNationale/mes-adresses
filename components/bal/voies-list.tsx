@@ -24,6 +24,7 @@ import DeleteWarning from "@/components/delete-warning";
 
 import InfiniteScrollList from "../infinite-scroll-list";
 import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi";
+import { toasterWrapper } from "@/lib/utils/toaster";
 
 interface VoiesListProps {
   voies: ExtendedVoieDTO[];
@@ -52,7 +53,12 @@ function VoiesList({
 
   const handleRemove = async () => {
     setIsDisabled(true);
-    await VoiesService.softDeleteVoie(toRemove);
+    const softDeleteVoie = toasterWrapper(
+      () => VoiesService.softDeleteVoie(toRemove),
+      "La voie a bien été archivée",
+      "La voie n’a pas pu être archivée"
+    );
+    await softDeleteVoie();
     await reloadVoies();
     await onRemove();
     setToRemove(null);
