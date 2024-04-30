@@ -20,6 +20,7 @@ import { BalDataContextProvider } from "@/contexts/bal-data";
 import { OpenAPI } from "@/lib/openapi";
 import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
+import { ToasterContextProvider } from "@/contexts/toaster";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -53,48 +54,50 @@ function App(props: AppProps) {
         <title>mes-adresses.data.gouv.fr</title>
       </Head>
 
-      <LocalStorageContextProvider>
-        <TokenContextProvider
-          balId={query.balId as string}
-          _token={query.token as string}
-        >
-          <HelpContextProvider>
-            <BALRecoveryProvider balId={query.balId as string}>
-              <Help />
+      <ToasterContextProvider>
+        <LocalStorageContextProvider>
+          <TokenContextProvider
+            balId={query.balId as string}
+            _token={query.token as string}
+          >
+            <HelpContextProvider>
+              <BALRecoveryProvider balId={query.balId as string}>
+                <Help />
 
-              <Pane
-                height="100%"
-                width="100%"
-                display="flex"
-                flexDirection="column"
-              >
-                <Header />
-                <>
-                  <IEWarning />
-                  {query.balId && pageProps ? (
-                    <BalDataContextProvider
-                      initialBaseLocale={pageProps.baseLocale}
-                      initialVoie={pageProps.voie}
-                      initialToponyme={pageProps.toponyme}
-                      initialVoies={pageProps.voies}
-                      initialToponymes={pageProps.toponymes}
-                      initialNumeros={pageProps.numeros}
-                    >
-                      <SignalementContextProvider>
-                        <Editor {...pageProps}>
-                          <Component {...pageProps} />
-                        </Editor>
-                      </SignalementContextProvider>
-                    </BalDataContextProvider>
-                  ) : (
-                    <Component {...pageProps} />
-                  )}
-                </>
-              </Pane>
-            </BALRecoveryProvider>
-          </HelpContextProvider>
-        </TokenContextProvider>
-      </LocalStorageContextProvider>
+                <Pane
+                  height="100%"
+                  width="100%"
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Header />
+                  <>
+                    <IEWarning />
+                    {query.balId && pageProps ? (
+                      <BalDataContextProvider
+                        initialBaseLocale={pageProps.baseLocale}
+                        initialVoie={pageProps.voie}
+                        initialToponyme={pageProps.toponyme}
+                        initialVoies={pageProps.voies}
+                        initialToponymes={pageProps.toponymes}
+                        initialNumeros={pageProps.numeros}
+                      >
+                        <SignalementContextProvider>
+                          <Editor {...pageProps}>
+                            <Component {...pageProps} />
+                          </Editor>
+                        </SignalementContextProvider>
+                      </BalDataContextProvider>
+                    ) : (
+                      <Component {...pageProps} />
+                    )}
+                  </>
+                </Pane>
+              </BALRecoveryProvider>
+            </HelpContextProvider>
+          </TokenContextProvider>
+        </LocalStorageContextProvider>
+      </ToasterContextProvider>
       {/* ⚠️ This is needed to expand Evergreen’Tootip width
       It select all Tooltip components with 'appearance: card' propertie */}
       <style jsx global>{`

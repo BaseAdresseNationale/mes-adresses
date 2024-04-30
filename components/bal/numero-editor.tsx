@@ -34,7 +34,7 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
-import { toasterWrapper } from "@/lib/utils/toaster";
+import ToasterContext from "@/contexts/toaster";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -76,6 +76,7 @@ function NumeroEditor({
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe || "");
   const [comment, onCommentChange] = useInput(initialValue?.comment || "");
+  const { toaster } = useContext(ToasterContext);
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
 
@@ -159,7 +160,7 @@ function NumeroEditor({
         const voie = await getEditedVoie();
 
         if (initialValue?._id) {
-          const updateNumero = toasterWrapper(
+          const updateNumero = toaster(
             () =>
               NumerosService.updateNumero(initialValue._id, {
                 voie: voie._id,
@@ -173,7 +174,7 @@ function NumeroEditor({
           );
           await updateNumero();
         } else {
-          const createNumero = toasterWrapper(
+          const createNumero = toaster(
             () => VoiesService.createNumero(voie._id, body),
             "Le numéro a bien été ajouté",
             "Le numéro n’a pas pu être ajouté",
@@ -220,6 +221,7 @@ function NumeroEditor({
       initialVoieId,
       reloadTiles,
       onSubmitted,
+      toaster,
     ]
   );
 

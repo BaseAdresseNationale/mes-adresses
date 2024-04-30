@@ -20,7 +20,7 @@ import DisabledFormInput from "@/components/disabled-form-input";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
 import { BasesLocalesService, Toponyme, ToponymesService } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
-import { toasterWrapper } from "@/lib/utils/toaster";
+import ToasterContext from "@/contexts/toaster";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -41,6 +41,7 @@ function ToponymeEditor({
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || "");
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
+  const { toaster } = useContext(ToasterContext);
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
 
   const {
@@ -83,7 +84,7 @@ function ToponymeEditor({
       try {
         // Add or edit a toponyme
         const submit = initialValue
-          ? toasterWrapper(
+          ? toaster(
               () => ToponymesService.updateToponyme(initialValue._id, body),
               "Le toponyme a bien été modifé",
               "Le toponyme n’a pas pu être modifié",
@@ -91,7 +92,7 @@ function ToponymeEditor({
                 setValidationMessages(error.body.message);
               }
             )
-          : toasterWrapper(
+          : toaster(
               () => BasesLocalesService.createToponyme(baseLocale._id, body),
               "Le toponyme a bien été ajouté",
               "Le toponyme n’a pas pu être ajouté",
@@ -139,6 +140,7 @@ function ToponymeEditor({
       reloadParcelles,
       setValidationMessages,
       onSubmitted,
+      toaster,
     ]
   );
 

@@ -23,7 +23,7 @@ import {
   Voie,
   VoiesService,
 } from "@/lib/openapi";
-import { toasterWrapper } from "@/lib/utils/toaster";
+import ToasterContext from "@/contexts/toaster";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -51,6 +51,7 @@ function VoieEditor({
   const { drawEnabled, data, enableDraw, disableDraw } =
     useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
+  const { toaster } = useContext(ToasterContext);
   const [ref, setIsFocus] = useFocus(true);
 
   const onFormSubmit = useCallback(
@@ -69,7 +70,7 @@ function VoieEditor({
 
         // Add or edit a voie
         const submit = initialValue
-          ? toasterWrapper(
+          ? toaster(
               async () =>
                 VoiesService.updateVoie(
                   initialValue._id,
@@ -81,7 +82,7 @@ function VoieEditor({
                 setValidationMessages(err.body.message);
               }
             )
-          : toasterWrapper(
+          : toaster(
               async () =>
                 BasesLocalesService.createVoie(
                   baseLocale._id,
@@ -138,6 +139,7 @@ function VoieEditor({
       refreshBALSync,
       reloadTiles,
       onSubmitted,
+      toaster,
     ]
   );
 
