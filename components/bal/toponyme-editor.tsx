@@ -3,7 +3,6 @@ import { xor } from "lodash";
 import { Pane, Button } from "evergreen-ui";
 import router from "next/router";
 
-import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 import MarkersContext from "@/contexts/markers";
 import ParcellesContext from "@/contexts/parcelles";
@@ -44,7 +43,6 @@ function ToponymeEditor({
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
 
-  const { token } = useContext(TokenContext);
   const {
     baseLocale,
     setToponyme,
@@ -88,12 +86,18 @@ function ToponymeEditor({
           ? toasterWrapper(
               () => ToponymesService.updateToponyme(initialValue._id, body),
               "Le toponyme a bien été modifé",
-              "Le toponyme n’a pas pu être modifié"
+              "Le toponyme n’a pas pu être modifié",
+              (error) => {
+                setValidationMessages(error.body.message);
+              }
             )
           : toasterWrapper(
               () => BasesLocalesService.createToponyme(baseLocale._id, body),
               "Le toponyme a bien été ajouté",
-              "Le toponyme n’a pas pu être ajouté"
+              "Le toponyme n’a pas pu être ajouté",
+              (error) => {
+                setValidationMessages(error.body.message);
+              }
             );
 
         const toponyme = await submit();
@@ -114,12 +118,10 @@ function ToponymeEditor({
           await onSubmitted();
         }
 
-        setIsLoading(false);
         closeForm();
       } catch (err) {
-        if (err.status === 400) {
-          setValidationMessages(err.body.message);
-        }
+        console.error(err);
+      } finally {
         setIsLoading(false);
       }
     },

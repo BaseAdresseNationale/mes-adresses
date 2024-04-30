@@ -5,7 +5,6 @@ import { Pane, Button, Checkbox } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
 import DrawContext from "@/contexts/draw";
-import TokenContext from "@/contexts/token";
 import MapContext from "@/contexts/map";
 
 import { useInput, useCheckboxInput } from "@/hooks/input";
@@ -47,7 +46,6 @@ function VoieEditor({
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
-  const { token } = useContext(TokenContext);
   const { baseLocale, refreshBALSync, reloadVoies, setVoie } =
     useContext(BalDataContext);
   const { drawEnabled, data, enableDraw, disableDraw } =
@@ -78,7 +76,10 @@ function VoieEditor({
                   body as UpdateVoieDTO
                 ),
               "La voie a bien été modifiée",
-              "La voie n’a pas pu être modifiée"
+              "La voie n’a pas pu être modifiée",
+              (err) => {
+                setValidationMessages(err.body.message);
+              }
             )
           : toasterWrapper(
               async () =>
@@ -87,7 +88,10 @@ function VoieEditor({
                   body as CreateVoieDTO
                 ),
               "La voie a bien été ajoutée",
-              "La voie n’a pas pu être ajoutée"
+              "La voie n’a pas pu être ajoutée",
+              (err) => {
+                setValidationMessages(err.body.message);
+              }
             );
 
         const voie = await submit();
@@ -113,12 +117,10 @@ function VoieEditor({
           onSubmitted();
         }
 
-        setIsLoading(false);
         closeForm();
       } catch (err) {
-        if (err.status === 400) {
-          setValidationMessages(err.body.message);
-        }
+        console.error(err);
+      } finally {
         setIsLoading(false);
       }
     },

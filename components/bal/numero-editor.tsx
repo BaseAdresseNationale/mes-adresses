@@ -97,15 +97,21 @@ function NumeroEditor({
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
-      const newVoie = await BasesLocalesService.createVoie(baseLocale._id, {
-        nom: nomVoie,
-      });
-
-      return newVoie;
+      try {
+        const newVoie = await BasesLocalesService.createVoie(baseLocale._id, {
+          nom: nomVoie,
+        });
+        return newVoie;
+      } catch (err) {
+        if (err.status === 400) {
+          setValidationMessages(err.body.message);
+        }
+        throw err;
+      }
     }
 
     return { _id: voieId };
-  }, [baseLocale._id, nomVoie, voieId]);
+  }, [baseLocale._id, nomVoie, voieId, setValidationMessages]);
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -160,14 +166,20 @@ function NumeroEditor({
                 ...body,
               }),
             "Le numéro a bien été modifié",
-            "Le numéro n’a pas pu être modifié"
+            "Le numéro n’a pas pu être modifié",
+            (err) => {
+              setValidationMessages(err.body.message);
+            }
           );
           await updateNumero();
         } else {
           const createNumero = toasterWrapper(
             () => VoiesService.createNumero(voie._id, body),
             "Le numéro a bien été ajouté",
-            "Le numéro n’a pas pu être ajouté"
+            "Le numéro n’a pas pu être ajouté",
+            (err) => {
+              setValidationMessages(err.body.message);
+            }
           );
           await createNumero();
         }
@@ -190,9 +202,7 @@ function NumeroEditor({
         refreshBALSync();
         closeForm();
       } catch (err) {
-        if (err.status === 400) {
-          setValidationMessages(err.body.message);
-        }
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
