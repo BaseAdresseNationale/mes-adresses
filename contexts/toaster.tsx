@@ -1,3 +1,4 @@
+import CustomToast from "@/components/custom-toast";
 import { ChildrenProps } from "@/types/context";
 import { Alert, Pane } from "evergreen-ui";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
@@ -11,9 +12,16 @@ interface ToasterContextType {
     onValidationError?: (error: any) => void
   ) => () => Promise<any>;
   toasts: { intent: "success" | "danger"; title: string; message?: string }[];
+  pushToast: (
+    intent: "success" | "danger",
+    title: string,
+    message?: string
+  ) => void;
 }
 
 const ToasterContext = React.createContext<ToasterContextType | null>(null);
+
+const TOAST_DURATION = 3000;
 
 export function ToasterContextProvider(props: ChildrenProps) {
   const [isClientSide, setIsClientSide] = useState(false);
@@ -26,7 +34,8 @@ export function ToasterContextProvider(props: ChildrenProps) {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setToasts((toasts) => toasts.slice(1));
-    }, 5000);
+    }, TOAST_DURATION);
+
     return () => clearTimeout(timeout);
   }, [toasts]);
 
@@ -47,7 +56,11 @@ export function ToasterContextProvider(props: ChildrenProps) {
         } else {
           setToasts((toasts) => [
             ...toasts,
-            { intent: "danger", title: errorMessage, message: error.message },
+            {
+              intent: "danger",
+              title: errorMessage,
+              message: error.message,
+            },
           ]);
         }
       }
@@ -55,12 +68,20 @@ export function ToasterContextProvider(props: ChildrenProps) {
     [setToasts]
   );
 
+  const pushToast = useCallback(
+    (intent, title, message) => {
+      setToasts((toasts) => [...toasts, { intent, title, message }]);
+    },
+    [setToasts]
+  );
+
   const value = useMemo(
     () => ({
       toaster,
+      pushToast,
       toasts,
     }),
-    [toaster, toasts]
+    [toaster, toasts, pushToast]
   );
 
   return (
@@ -69,19 +90,12 @@ export function ToasterContextProvider(props: ChildrenProps) {
         document.body &&
         ReactDOM.createPortal(
           <Pane>
-            {toasts.map((toast, index) => (
-              <Alert
-                key={index}
-                intent={toast.intent}
-                title={toast.title}
-                position="fixed"
-                top={20}
-                left="50%"
-                transform="translateX(-50%)"
-                transition="top 0.3s"
-              >
-                {toast.message}
-              </Alert>
+            {toasts.map(({ intent, title, message }, index) => (
+              <CustomToast key={index} duration={TOAST_DURATION}>
+                <Alert intent={intent} title={title}>
+                  {message}
+                </Alert>
+              </CustomToast>
             ))}
           </Pane>,
           document.body
