@@ -19,6 +19,7 @@ import {
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
   HabilitationService,
+  OpenAPI,
 } from "@/lib/openapi";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 
@@ -84,6 +85,7 @@ function BaseLocaleCard({
 
     const fetchHabilitation = async () => {
       try {
+        Object.assign(OpenAPI, { TOKEN: baseLocale.token });
         const habilitation: HabilitationDTO =
           await HabilitationService.findHabilitation(baseLocale._id);
         setHabilitation(habilitation);
@@ -98,6 +100,7 @@ function BaseLocaleCard({
     };
 
     void fetchCommune();
+
     if (!baseLocale.token) {
       void fetchHabilitationIsValid();
     } else {

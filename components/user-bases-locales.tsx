@@ -24,10 +24,14 @@ function UserBasesLocales() {
       );
       const basesLocales = await Promise.all(
         map(balsToLoad, async (id) => {
+          const token = balAccess[id];
           try {
             const baseLocale = await BasesLocalesService.findBaseLocale(id);
 
-            return baseLocale;
+            return {
+              ...baseLocale,
+              token,
+            };
           } catch {
             console.log(`Impossible de récupérer la bal ${id}`);
           }
