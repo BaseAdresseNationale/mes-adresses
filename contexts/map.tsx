@@ -24,7 +24,7 @@ interface MapContextType {
   viewport: Partial<ViewState>;
   setViewport: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
   isCadastreDisplayed: boolean;
-  setIsCadastreDisplayed: (value: boolean) => void;
+  setIsCadastreDisplayed: React.Dispatch<React.SetStateAction<boolean>>;
   balTilesUrl: string;
   isMapLoaded: boolean;
 }

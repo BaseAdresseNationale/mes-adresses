@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
     "forceConsistentCasingInFileNames": false,
+    "allowImportingTsExtensions": true,
     "noEmit": true,
     "incremental": true,
     "esModuleInterop": true,
@@ -19,45 +16,19 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@/components/*": [
-        "components/*"
-      ],
-      "@/lib/*": [
-        "lib/*"
-      ],
-      "@/layouts/*": [
-        "layouts/*"
-      ],
-      "@/styles/*": [
-        "styles/*"
-      ],
-      "@/contexts/*": [
-        "contexts/*"
-      ],
-      "@/hooks/*": [
-        "hooks/*"
-      ],
-      "@/server/*": [
-        "server/*"
-      ],
-      "@/pages/*": [
-        "pages/*"
-      ],
-      "@/types/*": [
-        "types/*"
-      ],
-      "react": [
-        "./node_modules/@types/react"
-      ]
+      "@/components/*": ["components/*"],
+      "@/lib/*": ["lib/*"],
+      "@/layouts/*": ["layouts/*"],
+      "@/styles/*": ["styles/*"],
+      "@/contexts/*": ["contexts/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/server/*": ["server/*"],
+      "@/pages/*": ["pages/*"],
+      "@/types/*": ["types/*"],
+      "react": ["./node_modules/@types/react"]
     },
     "moduleResolution": "node"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

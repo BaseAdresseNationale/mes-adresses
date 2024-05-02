@@ -4,6 +4,6 @@
 /* eslint-disable */
 
 export type ValidatePinCodeDTO = {
-    code: number;
+    code: string;
 };
 

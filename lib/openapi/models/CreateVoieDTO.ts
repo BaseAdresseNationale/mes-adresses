@@ -8,7 +8,17 @@ import type { LineString } from './LineString';
 export type CreateVoieDTO = {
     nom: string;
     nomAlt?: Record<string, any> | null;
-    typeNumerotation?: Record<string, any>;
+    typeNumerotation?: CreateVoieDTO.typeNumerotation;
     trace?: LineString;
 };
+
+export namespace CreateVoieDTO {
+
+    export enum typeNumerotation {
+        NUMERIQUE = 'numerique',
+        METRIQUE = 'metrique',
+    }
+
+
+}
 

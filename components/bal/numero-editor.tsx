@@ -34,6 +34,7 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
+import ToasterContext from "@/contexts/toaster";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -75,6 +76,7 @@ function NumeroEditor({
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe || "");
   const [comment, onCommentChange] = useInput(initialValue?.comment || "");
+  const { toaster } = useContext(ToasterContext);
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
 
@@ -96,15 +98,21 @@ function NumeroEditor({
 
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
-      const newVoie = await BasesLocalesService.createVoie(baseLocale._id, {
-        nom: nomVoie,
-      });
-
-      return newVoie;
+      try {
+        const newVoie = await BasesLocalesService.createVoie(baseLocale._id, {
+          nom: nomVoie,
+        });
+        return newVoie;
+      } catch (err) {
+        if (err.status === 400) {
+          setValidationMessages(err.body.message);
+        }
+        throw err;
+      }
     }
 
     return { _id: voieId };
-  }, [baseLocale._id, nomVoie, voieId]);
+  }, [baseLocale._id, nomVoie, voieId, setValidationMessages]);
 
   const getNumeroBody = useCallback(() => {
     const body = {
@@ -152,12 +160,29 @@ function NumeroEditor({
         const voie = await getEditedVoie();
 
         if (initialValue?._id) {
-          await NumerosService.updateNumero(initialValue._id, {
-            voie: voie._id,
-            ...body,
-          });
+          const updateNumero = toaster(
+            () =>
+              NumerosService.updateNumero(initialValue._id, {
+                voie: voie._id,
+                ...body,
+              }),
+            "Le numéro a bien été modifié",
+            "Le numéro n’a pas pu être modifié",
+            (err) => {
+              setValidationMessages(err.body.message);
+            }
+          );
+          await updateNumero();
         } else {
-          await VoiesService.createNumero(voie._id, body);
+          const createNumero = toaster(
+            () => VoiesService.createNumero(voie._id, body),
+            "Le numéro a bien été ajouté",
+            "Le numéro n’a pas pu être ajouté",
+            (err) => {
+              setValidationMessages(err.body.message);
+            }
+          );
+          await createNumero();
         }
 
         await reloadNumeros();
@@ -177,9 +202,8 @@ function NumeroEditor({
 
         refreshBALSync();
         closeForm();
-      } catch (error) {
-        console.error(error);
-        setValidationMessages(error);
+      } catch (err) {
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -197,6 +221,7 @@ function NumeroEditor({
       initialVoieId,
       reloadTiles,
       onSubmitted,
+      toaster,
     ]
   );
 
@@ -206,7 +231,13 @@ function NumeroEditor({
     setCompleteNumero(
       computeCompletNumero(initialValue?.numero, initialValue?.suffixe)
     );
-  }, [initialValue?.numero, initialValue?.suffixe, onNumeroChange, onSuffixeChange, setCompleteNumero]);
+  }, [
+    initialValue?.numero,
+    initialValue?.suffixe,
+    onNumeroChange,
+    onSuffixeChange,
+    setCompleteNumero,
+  ]);
 
   useEffect(() => {
     if (suggestedNumero && !numeroWasEdited && !initialValue) {

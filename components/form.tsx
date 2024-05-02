@@ -7,9 +7,9 @@ import useKeyEvent from "@/hooks/key-event";
 import FormContainer from "@/components/form-container";
 
 interface FormProps {
-  editingId: string | null;
+  editingId?: string | null;
   unmountForm?: () => void;
-  closeForm: () => void;
+  closeForm?: () => void;
   onFormSubmit: (e: any) => Promise<void>;
   children: React.ReactNode;
 }

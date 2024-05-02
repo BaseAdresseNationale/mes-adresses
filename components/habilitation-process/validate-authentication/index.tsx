@@ -1,11 +1,12 @@
 import { Pane, Button, ChevronLeftIcon } from "evergreen-ui";
 
 import CodeValidation from "@/components/habilitation-process/validate-authentication/code-validation";
+import { SendPinCodeResponseDTO } from "@/lib/openapi";
 
 interface ValidateAuthenticationProps {
   emailCommune: string;
   validatePinCode: (code: string) => Promise<void>;
-  resendCode: () => Promise<void>;
+  resendCode: () => Promise<SendPinCodeResponseDTO>;
   onCancel: () => void;
 }
 

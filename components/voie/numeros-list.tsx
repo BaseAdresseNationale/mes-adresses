@@ -1,21 +1,35 @@
-import {useState, useCallback, useMemo, useContext} from 'react'
-import {sortBy} from 'lodash'
-import {Pane, Paragraph, Heading, Button, Table, Checkbox, AddIcon, LockIcon} from 'evergreen-ui'
+import { useState, useCallback, useMemo, useContext } from "react";
+import { sortBy } from "lodash";
+import {
+  Pane,
+  Paragraph,
+  Heading,
+  Button,
+  Table,
+  Checkbox,
+  AddIcon,
+  LockIcon,
+  toaster,
+} from "evergreen-ui";
 
-import {normalizeSort} from '@/lib/normalize'
-import {batchNumeros, softRemoveMultipleNumero, softRemoveNumero} from '@/lib/bal-api'
+import { normalizeSort } from "@/lib/normalize";
 
-import BalDataContext from '@/contexts/bal-data'
-import MapContext from '@/contexts/map'
+import BalDataContext from "@/contexts/bal-data";
+import MapContext from "@/contexts/map";
 
-import useFuse from '@/hooks/fuse'
+import useFuse from "@/hooks/fuse";
 
-import TableRow from '@/components/table-row'
-import DeleteWarning from '@/components/delete-warning'
-import GroupedActions from '@/components/grouped-actions'
-import InfiniteScrollList from '@/components/infinite-scroll-list'
-import BALRecoveryContext from '@/contexts/bal-recovery'
-import { Numero, NumeroPopulate } from '@/lib/openapi'
+import TableRow from "@/components/table-row";
+import DeleteWarning from "@/components/delete-warning";
+import GroupedActions from "@/components/grouped-actions";
+import InfiniteScrollList from "@/components/infinite-scroll-list";
+import BALRecoveryContext from "@/contexts/bal-recovery";
+import {
+  BasesLocalesService,
+  Numero,
+  NumeroPopulate,
+  NumerosService,
+} from "@/lib/openapi";
 
 interface NumerosListProps {
   token?: string;
@@ -24,128 +38,182 @@ interface NumerosListProps {
   handleEditing: (id?: string) => void;
 }
 
-function NumerosList({token = null, voieId, numeros, handleEditing}: NumerosListProps) {
-  const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false)
-  const [selectedNumerosIds, setSelectedNumerosIds] = useState([])
+function NumerosList({
+  token = null,
+  voieId,
+  numeros,
+  handleEditing,
+}: NumerosListProps) {
+  const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false);
+  const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
 
-  const {baseLocale, isEditing, reloadNumeros, reloadParcelles, toponymes, refreshBALSync} = useContext(BalDataContext)
-  const {reloadTiles} = useContext(MapContext)
-  const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
+  const {
+    baseLocale,
+    isEditing,
+    reloadNumeros,
+    reloadParcelles,
+    toponymes,
+    refreshBALSync,
+  } = useContext(BalDataContext);
+  const { reloadTiles } = useContext(MapContext);
+  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
 
-  const [isDisabled, setIsDisabled] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const [filtered, setFilter] = useFuse(numeros, 200, {
-    keys: [
-      'numeroComplet'
-    ]
-  })
+    keys: ["numeroComplet"],
+  });
 
-  const scrollableItems = useMemo(() => (
-    sortBy(filtered, n => {
-      normalizeSort(n.numeroComplet)
-    })
-  ), [filtered])
+  const scrollableItems = useMemo(
+    () =>
+      sortBy(filtered, (n) => {
+        normalizeSort(n.numeroComplet);
+      }),
+    [filtered]
+  );
 
-  const isGroupedActionsShown = useMemo(() => (
-    token && numeros && selectedNumerosIds.length > 1
-  ), [token, numeros, selectedNumerosIds])
+  const isGroupedActionsShown = useMemo(
+    () => token && numeros && selectedNumerosIds.length > 1,
+    [token, numeros, selectedNumerosIds]
+  );
 
-  const noFilter = numeros && filtered.length === numeros.length
+  const noFilter = numeros && filtered.length === numeros.length;
 
   const isAllSelected = useMemo(() => {
-    const isAllNumerosSelected = noFilter && (selectedNumerosIds.length === numeros.length)
-    const isAllFilteredNumerosSelected = !noFilter && (filtered.length === selectedNumerosIds.length)
+    const isAllNumerosSelected =
+      noFilter && selectedNumerosIds.length === numeros.length;
+    const isAllFilteredNumerosSelected =
+      !noFilter && filtered.length === selectedNumerosIds.length;
 
-    return isAllNumerosSelected || isAllFilteredNumerosSelected
-  }, [numeros, noFilter, selectedNumerosIds, filtered])
+    return isAllNumerosSelected || isAllFilteredNumerosSelected;
+  }, [numeros, noFilter, selectedNumerosIds, filtered]);
 
   const isAllSelectedCertifie = useMemo(() => {
-    const filteredNumeros = numeros?.filter(numero => selectedNumerosIds.includes(numero._id))
-    const filteredCertifieNumeros = filteredNumeros?.filter(numero => numero.certifie)
+    const filteredNumeros = numeros?.filter((numero) =>
+      selectedNumerosIds.includes(numero._id)
+    );
+    const filteredCertifieNumeros = filteredNumeros?.filter(
+      (numero) => numero.certifie
+    );
 
-    return filteredCertifieNumeros?.length === selectedNumerosIds.length
-  }, [numeros, selectedNumerosIds])
+    return filteredCertifieNumeros?.length === selectedNumerosIds.length;
+  }, [numeros, selectedNumerosIds]);
 
-  const getToponymeName = useCallback(toponymeId => {
-    if (toponymeId) {
-      const toponyme = toponymes.find(({_id}) => _id === toponymeId)
-      return toponyme?.nom
-    }
-  }, [toponymes])
-
-  const handleSelect = useCallback(id => {
-    setSelectedNumerosIds(selectedNumero => {
-      if (selectedNumero.includes(id)) {
-        return selectedNumerosIds.filter(f => f !== id)
+  const getToponymeName = useCallback(
+    (toponymeId) => {
+      if (toponymeId) {
+        const toponyme = toponymes.find(({ _id }) => _id === toponymeId);
+        return toponyme?.nom;
       }
+    },
+    [toponymes]
+  );
 
-      return [...selectedNumerosIds, id]
-    })
-  }, [selectedNumerosIds])
+  const handleSelect = useCallback(
+    (id) => {
+      setSelectedNumerosIds((selectedNumero) => {
+        if (selectedNumero.includes(id)) {
+          return selectedNumerosIds.filter((f) => f !== id);
+        }
+
+        return [...selectedNumerosIds, id];
+      });
+    },
+    [selectedNumerosIds]
+  );
 
   const handleSelectAll = () => {
     if (isAllSelected) {
-      setSelectedNumerosIds([])
+      setSelectedNumerosIds([]);
     } else {
-      setSelectedNumerosIds(filtered.map(({_id}) => _id))
+      setSelectedNumerosIds(filtered.map(({ _id }) => _id));
     }
-  }
+  };
 
-  const onRemove = useCallback(async idNumero => {
-    await softRemoveNumero(idNumero, token)
-    await reloadNumeros()
-    await reloadParcelles()
-    reloadTiles()
-    refreshBALSync()
-  }, [reloadNumeros, reloadParcelles, refreshBALSync, token, reloadTiles])
+  const onRemove = useCallback(
+    async (idNumero) => {
+      try {
+        await NumerosService.softDeleteNumero(idNumero);
+        await reloadNumeros();
+        await reloadParcelles();
+        reloadTiles();
+        refreshBALSync();
+        toaster.success("Le numéro a bien été archivé");
+      } catch (error) {
+        console.error(error);
+        toaster.danger("Le numéro n’a pas pu être archivé", {
+          description: error.message,
+        });
+      }
+    },
+    [reloadNumeros, reloadParcelles, refreshBALSync, reloadTiles]
+  );
 
   const onMultipleRemove = async () => {
-    setIsDisabled(true)
-    await softRemoveMultipleNumero(baseLocale._id, {numerosIds: selectedNumerosIds}, token)
+    setIsDisabled(true);
+    try {
+      await BasesLocalesService.softDeleteNumeros(baseLocale._id, {
+        numerosIds: selectedNumerosIds,
+      });
 
-    await reloadNumeros()
-    await reloadParcelles()
-    reloadTiles()
-    refreshBALSync()
+      await reloadNumeros();
+      await reloadParcelles();
+      reloadTiles();
+      refreshBALSync();
 
-    setSelectedNumerosIds([])
-    setIsRemoveWarningShown(false)
-    setIsDisabled(false)
-  }
+      setSelectedNumerosIds([]);
+      setIsRemoveWarningShown(false);
+      toaster.success("Les numéros ont bien été archivés");
+    } catch (error) {
+      console.error(error);
+      toaster.danger("Les numéros n’ont pas pu être archivés", {
+        description: error.message,
+      });
+    } finally {
+      setIsDisabled(false);
+    }
+  };
 
   const onMultipleEdit = async (balId, body) => {
-    await batchNumeros(balId, body, token)
+    await BasesLocalesService.updateNumeros(balId, body);
+    toaster.success("Les numéros ont bien été modifiés");
 
-    await reloadNumeros()
-    refreshBALSync()
-  }
+    await reloadNumeros();
+    refreshBALSync();
+  };
 
   return (
     <>
       <Pane
         flexShrink={0}
         elevation={0}
-        backgroundColor='white'
+        backgroundColor="white"
         padding={16}
-        display='flex'
-        alignItems='center'
+        display="flex"
+        alignItems="center"
         minHeight={64}
       >
         <Pane>
           <Heading>Liste des numéros</Heading>
         </Pane>
 
-        <Pane marginLeft='auto'>
+        <Pane marginLeft="auto">
           <Button
             iconBefore={token ? AddIcon : LockIcon}
-            appearance='primary'
-            intent='success'
-            onClick={token ? () => {
-              handleEditing()
-            } : () => {
-              setIsRecoveryDisplayed(true)
-            }}
-          >Ajouter un numéro</Button>
+            appearance="primary"
+            intent="success"
+            onClick={
+              token
+                ? () => {
+                    handleEditing();
+                  }
+                : () => {
+                    setIsRecoveryDisplayed(true);
+                  }
+            }
+          >
+            Ajouter un numéro
+          </Button>
         </Pane>
       </Pane>
 
@@ -155,7 +223,7 @@ function NumerosList({token = null, voieId, numeros, handleEditing}: NumerosList
           numeros={numeros}
           selectedNumerosIds={selectedNumerosIds}
           resetSelectedNumerosIds={() => {
-            setSelectedNumerosIds([])
+            setSelectedNumerosIds([]);
           }}
           setIsRemoveWarningShown={setIsRemoveWarningShown}
           isAllSelectedCertifie={isAllSelectedCertifie}
@@ -165,75 +233,85 @@ function NumerosList({token = null, voieId, numeros, handleEditing}: NumerosList
 
       <DeleteWarning
         isShown={isRemoveWarningShown}
-        content={(
+        content={
           <Paragraph>
-            Êtes vous bien sûr de vouloir supprimer tous les numéros sélectionnés ?
+            Êtes vous bien sûr de vouloir supprimer tous les numéros
+            sélectionnés ?
           </Paragraph>
-        )}
+        }
         onCancel={() => {
-          setIsRemoveWarningShown(false)
+          setIsRemoveWarningShown(false);
         }}
         onConfirm={onMultipleRemove}
         isDisabled={isDisabled}
       />
 
-      <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
+      <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
           {numeros && token && filtered.length > 1 && (
-            <Table.Cell flex='0 1 1'>
-              <Checkbox
-                checked={isAllSelected}
-                onChange={handleSelectAll}
-              />
+            <Table.Cell flex="0 1 1">
+              <Checkbox checked={isAllSelected} onChange={handleSelectAll} />
             </Table.Cell>
           )}
           <Table.SearchHeaderCell
-            placeholder='Rechercher un numéro'
+            placeholder="Rechercher un numéro"
             onChange={setFilter}
           />
         </Table.Head>
 
         {filtered.length === 0 && (
           <Table.Row>
-            <Table.TextCell color='muted' fontStyle='italic'>
+            <Table.TextCell color="muted" fontStyle="italic">
               Aucun numéro
             </Table.TextCell>
           </Table.Row>
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {((numero: Numero | NumeroPopulate) => (
+          {(numero: Numero | NumeroPopulate) => (
             <TableRow
               key={numero._id}
               label={numero.numeroComplet}
-              secondary={numero.positions.length > 1 ? `${numero.positions.length} positions` : null}
+              secondary={
+                numero.positions.length > 1
+                  ? `${numero.positions.length} positions`
+                  : null
+              }
               complement={getToponymeName(numero.toponyme)}
-              handleSelect={filtered.length > 1 ? () => {
-                handleSelect(numero._id)
-              } : null}
+              handleSelect={
+                filtered.length > 1
+                  ? () => {
+                      handleSelect(numero._id);
+                    }
+                  : null
+              }
               isSelected={selectedNumerosIds.includes(numero._id)}
               isEditing={isEditing}
               isAdmin={Boolean(token)}
               notifications={{
-                certification: numero.certifie ? 'Cette adresse est certifiée par la commune' : null,
+                certification: numero.certifie
+                  ? "Cette adresse est certifiée par la commune"
+                  : null,
                 comment: numero.comment,
-                warning: numero.positions.some(p => p.type === 'inconnue') ? 'Le type d’une position est inconnu' : null
+                warning: numero.positions.some((p) => p.type === "inconnue")
+                  ? "Le type d’une position est inconnu"
+                  : null,
               }}
               actions={{
                 onRemove: async () => onRemove(numero._id),
                 onEdit: () => {
-                  handleEditing(numero._id)
-                }
+                  handleEditing(numero._id);
+                },
               }}
               openRecoveryDialog={() => {
-                setIsRecoveryDisplayed(true)
+                setIsRecoveryDisplayed(true);
               }}
             />
-          ))}
+          )}
         </InfiniteScrollList>
       </Table>
     </>
-  )
+  );
 }
 
-export default NumerosList
+export default NumerosList;

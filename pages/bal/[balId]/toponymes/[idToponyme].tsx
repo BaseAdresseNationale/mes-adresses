@@ -7,6 +7,7 @@ import {
   Alert,
   AddIcon,
   LockIcon,
+  toaster,
 } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
@@ -63,7 +64,7 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
         changes: { toponyme: toponyme._id },
       };
       await BasesLocalesService.updateNumeros(baseLocale._id, payload);
-
+      toaster.success("Les numéros ont bien été modifiés");
       await reloadNumeros();
     } catch (error: unknown) {
       setError((error as any).message);

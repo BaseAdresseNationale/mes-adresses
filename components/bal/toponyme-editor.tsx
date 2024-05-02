@@ -3,9 +3,6 @@ import { xor } from "lodash";
 import { Pane, Button } from "evergreen-ui";
 import router from "next/router";
 
-import { addToponyme, editToponyme } from "@/lib/bal-api";
-
-import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 import MarkersContext from "@/contexts/markers";
 import ParcellesContext from "@/contexts/parcelles";
@@ -21,11 +18,12 @@ import PositionEditor from "@/components/bal/position-editor";
 import SelectParcelles from "@/components/bal/numero-editor/select-parcelles";
 import DisabledFormInput from "@/components/disabled-form-input";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
-import { Toponyme } from "@/lib/openapi";
+import { BasesLocalesService, Toponyme, ToponymesService } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
+import ToasterContext from "@/contexts/toaster";
 
 interface ToponymeEditorProps {
-  initialValue: Toponyme;
+  initialValue?: Toponyme;
   commune: CommuneType;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
   closeForm: () => void;
@@ -43,9 +41,9 @@ function ToponymeEditor({
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || "");
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
+  const { toaster } = useContext(ToasterContext);
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
 
-  const { token } = useContext(TokenContext);
   const {
     baseLocale,
     setToponyme,
@@ -86,10 +84,24 @@ function ToponymeEditor({
       try {
         // Add or edit a toponyme
         const submit = initialValue
-          ? async () => editToponyme(initialValue._id, body, token)
-          : async () => addToponyme(baseLocale._id, body, token);
-        const { validationMessages, ...toponyme } = await submit();
-        setValidationMessages(validationMessages);
+          ? toaster(
+              () => ToponymesService.updateToponyme(initialValue._id, body),
+              "Le toponyme a bien été modifé",
+              "Le toponyme n’a pas pu être modifié",
+              (error) => {
+                setValidationMessages(error.body.message);
+              }
+            )
+          : toaster(
+              () => BasesLocalesService.createToponyme(baseLocale._id, body),
+              "Le toponyme a bien été ajouté",
+              "Le toponyme n’a pas pu être ajouté",
+              (error) => {
+                setValidationMessages(error.body.message);
+              }
+            );
+
+        const toponyme = await submit();
 
         refreshBALSync();
 
@@ -107,14 +119,14 @@ function ToponymeEditor({
           await onSubmitted();
         }
 
-        setIsLoading(false);
         closeForm();
-      } catch {
+      } catch (err) {
+        console.error(err);
+      } finally {
         setIsLoading(false);
       }
     },
     [
-      token,
       baseLocale._id,
       initialValue,
       nom,
@@ -128,6 +140,7 @@ function ToponymeEditor({
       reloadParcelles,
       setValidationMessages,
       onSubmitted,
+      toaster,
     ]
   );
 

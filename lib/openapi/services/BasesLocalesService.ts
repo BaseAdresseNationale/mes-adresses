@@ -293,37 +293,55 @@ export class BasesLocalesService {
 
     /**
      * Publish base locale
+     * @param baseLocaleId
      * @returns BaseLocale
      * @throws ApiError
      */
-    public static publishBaseLocale(): CancelablePromise<BaseLocale> {
+    public static publishBaseLocale(
+        baseLocaleId: string,
+    ): CancelablePromise<BaseLocale> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/exec',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
         });
     }
 
     /**
      * Update isPaused sync BAL to true
+     * @param baseLocaleId
      * @returns BaseLocale
      * @throws ApiError
      */
-    public static pauseBaseLocale(): CancelablePromise<BaseLocale> {
+    public static pauseBaseLocale(
+        baseLocaleId: string,
+    ): CancelablePromise<BaseLocale> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/pause',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
         });
     }
 
     /**
      * Update isPaused sync BAL to false
+     * @param baseLocaleId
      * @returns BaseLocale
      * @throws ApiError
      */
-    public static resumeBaseLocale(): CancelablePromise<BaseLocale> {
+    public static resumeBaseLocale(
+        baseLocaleId: string,
+    ): CancelablePromise<BaseLocale> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/resume',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
         });
     }
 
@@ -497,7 +515,7 @@ export class BasesLocalesService {
     public static createToponyme(
         baseLocaleId: string,
         requestBody: CreateToponymeDTO,
-    ): CancelablePromise<Array<Toponyme>> {
+    ): CancelablePromise<Toponyme> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/toponymes',

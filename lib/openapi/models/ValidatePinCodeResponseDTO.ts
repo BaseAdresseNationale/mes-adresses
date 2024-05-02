@@ -5,6 +5,7 @@
 
 export type ValidatePinCodeResponseDTO = {
     validated: boolean;
-    message?: string | null;
+    error?: string | null;
+    remainingAttempts?: number | null;
 };
 

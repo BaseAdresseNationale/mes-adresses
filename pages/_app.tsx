@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import { AppProps } from "next/app";
 
-import { Pane, Dialog, Paragraph } from "evergreen-ui";
+import { Pane } from "evergreen-ui";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -20,6 +20,7 @@ import { BalDataContextProvider } from "@/contexts/bal-data";
 import { OpenAPI } from "@/lib/openapi";
 import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
+import { ToasterContextProvider } from "@/contexts/toaster";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -37,9 +38,6 @@ function App(props: AppProps) {
     router: { query },
   } = props;
 
-  const [isMobileWarningDisplayed, setIsMobileWarningDisplayed] =
-    useState(false);
-
   useMatomoTracker(
     {
       trackingEnabled: process.env.NODE_ENV === "production",
@@ -56,70 +54,50 @@ function App(props: AppProps) {
         <title>mes-adresses.data.gouv.fr</title>
       </Head>
 
-      <Pane>
-        <Dialog
-          isShown={isMobileWarningDisplayed}
-          title="Attention"
-          confirmLabel="Continuer"
-          hasCancel={false}
-          onCloseComplete={() => {
-            setIsMobileWarningDisplayed(false);
-          }}
-        >
-          <Paragraph marginTop="default">
-            Afin de profiter d’une meilleure expérience, il est recommandé
-            d’utiliser cet outil sur un écran plus grand 🖥
-          </Paragraph>
-          <Paragraph marginTop="default">
-            Une version mobile est en cours de développement pour toujours avoir
-            sa Base Adresse Locale à portée de main 💪🏻
-          </Paragraph>
-          <Paragraph marginTop="default">Merci de votre patience 🙏</Paragraph>
-        </Dialog>
-      </Pane>
+      <ToasterContextProvider>
+        <LocalStorageContextProvider>
+          <TokenContextProvider
+            balId={query.balId as string}
+            _token={query.token as string}
+          >
+            <HelpContextProvider>
+              <BALRecoveryProvider balId={query.balId as string}>
+                <Help />
 
-      <LocalStorageContextProvider>
-        <TokenContextProvider
-          balId={query.balId as string}
-          _token={query.token as string}
-        >
-          <HelpContextProvider>
-            <BALRecoveryProvider balId={query.balId as string}>
-              <Help />
-
-              <Pane
-                height="100%"
-                width="100%"
-                display="flex"
-                flexDirection="column"
-              >
-                <Header />
-                <>
-                  <IEWarning />
-                  {query.balId && pageProps ? (
-                    <BalDataContextProvider
-                      initialBaseLocale={pageProps.baseLocale}
-                      initialVoie={pageProps.voie}
-                      initialToponyme={pageProps.toponyme}
-                      initialVoies={pageProps.voies}
-                      initialToponymes={pageProps.toponymes}
-                      initialNumeros={pageProps.numeros}
-                    >
-                      <SignalementContextProvider>
-                        <Editor {...pageProps}>
-                          <Component {...pageProps} />
-                        </Editor>
-                      </SignalementContextProvider>
-                    </BalDataContextProvider>
-                  ) : (
-                    <Component {...pageProps} />
-                  )}
-                </>
-              </Pane>
-            </BALRecoveryProvider>
-          </HelpContextProvider>
-        </TokenContextProvider>
-      </LocalStorageContextProvider>
+                <Pane
+                  height="100%"
+                  width="100%"
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Header />
+                  <>
+                    <IEWarning />
+                    {query.balId && pageProps ? (
+                      <BalDataContextProvider
+                        initialBaseLocale={pageProps.baseLocale}
+                        initialVoie={pageProps.voie}
+                        initialToponyme={pageProps.toponyme}
+                        initialVoies={pageProps.voies}
+                        initialToponymes={pageProps.toponymes}
+                        initialNumeros={pageProps.numeros}
+                      >
+                        <SignalementContextProvider>
+                          <Editor {...pageProps}>
+                            <Component {...pageProps} />
+                          </Editor>
+                        </SignalementContextProvider>
+                      </BalDataContextProvider>
+                    ) : (
+                      <Component {...pageProps} />
+                    )}
+                  </>
+                </Pane>
+              </BALRecoveryProvider>
+            </HelpContextProvider>
+          </TokenContextProvider>
+        </LocalStorageContextProvider>
+      </ToasterContextProvider>
       {/* ⚠️ This is needed to expand Evergreen’Tootip width
       It select all Tooltip components with 'appearance: card' propertie */}
       <style jsx global>{`

@@ -3,11 +3,8 @@ import router from "next/router";
 import { isEqual } from "lodash";
 import { Pane, Button, Checkbox } from "evergreen-ui";
 
-import { addVoie, editVoie } from "@/lib/bal-api";
-
 import BalDataContext from "@/contexts/bal-data";
 import DrawContext from "@/contexts/draw";
-import TokenContext from "@/contexts/token";
 import MapContext from "@/contexts/map";
 
 import { useInput, useCheckboxInput } from "@/hooks/input";
@@ -19,7 +16,14 @@ import FormInput from "@/components/form-input";
 import AssistedTextField from "@/components/assisted-text-field";
 import DrawEditor from "@/components/bal/draw-editor";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
-import { Voie } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  CreateVoieDTO,
+  UpdateVoieDTO,
+  Voie,
+  VoiesService,
+} from "@/lib/openapi";
+import ToasterContext from "@/contexts/toaster";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -42,12 +46,12 @@ function VoieEditor({
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
-  const { token } = useContext(TokenContext);
   const { baseLocale, refreshBALSync, reloadVoies, setVoie } =
     useContext(BalDataContext);
   const { drawEnabled, data, enableDraw, disableDraw } =
     useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
+  const { toaster } = useContext(ToasterContext);
   const [ref, setIsFocus] = useFocus(true);
 
   const onFormSubmit = useCallback(
@@ -66,11 +70,32 @@ function VoieEditor({
 
         // Add or edit a voie
         const submit = initialValue
-          ? async () => editVoie(initialValue._id, body, token)
-          : async () => addVoie(baseLocale._id, body, token);
-        const { validationMessages, ...voie } = await submit();
+          ? toaster(
+              async () =>
+                VoiesService.updateVoie(
+                  initialValue._id,
+                  body as UpdateVoieDTO
+                ),
+              "La voie a bien été modifiée",
+              "La voie n’a pas pu être modifiée",
+              (err) => {
+                setValidationMessages(err.body.message);
+              }
+            )
+          : toaster(
+              async () =>
+                BasesLocalesService.createVoie(
+                  baseLocale._id,
+                  body as CreateVoieDTO
+                ),
+              "La voie a bien été ajoutée",
+              "La voie n’a pas pu être ajoutée",
+              (err) => {
+                setValidationMessages(err.body.message);
+              }
+            );
 
-        setValidationMessages(validationMessages);
+        const voie = await submit();
 
         refreshBALSync();
 
@@ -93,9 +118,10 @@ function VoieEditor({
           onSubmitted();
         }
 
-        setIsLoading(false);
         closeForm();
-      } catch {
+      } catch (err) {
+        console.error(err);
+      } finally {
         setIsLoading(false);
       }
     },
@@ -105,7 +131,6 @@ function VoieEditor({
       nom,
       isMetric,
       data,
-      token,
       nomAlt,
       closeForm,
       setValidationMessages,
@@ -114,6 +139,7 @@ function VoieEditor({
       refreshBALSync,
       reloadTiles,
       onSubmitted,
+      toaster,
     ]
   );
 

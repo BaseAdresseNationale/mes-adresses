@@ -1,12 +1,12 @@
-import { Button, Pane } from "evergreen-ui";
+import { Button, Pane, toaster } from "evergreen-ui";
 import React, { useContext } from "react";
 import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
-import { softRemoveNumero } from "@/lib/bal-api";
 import TokenContext from "@/contexts/token";
-import { Numero, Voie } from "@/lib/openapi";
+import { Numero, NumerosService, Voie } from "@/lib/openapi";
+import { ca } from "date-fns/locale";
 
 interface SignalementDeleteNumeroProps {
   existingLocation: Numero & { voie: Voie };
@@ -24,14 +24,20 @@ function SignalementDeleteNumero({
   const { reloadNumeros, reloadParcelles, refreshBALSync } =
     useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
-  const { token } = useContext(TokenContext);
 
   const onRemove = async (idNumero) => {
-    await softRemoveNumero(idNumero, token);
-    await reloadNumeros();
-    await reloadParcelles();
-    reloadTiles();
-    refreshBALSync();
+    try {
+      await NumerosService.softDeleteNumero(idNumero);
+      await reloadNumeros();
+      await reloadParcelles();
+      reloadTiles();
+      refreshBALSync();
+      toaster.success("Le numéro a bien été archivé");
+    } catch (e) {
+      toaster.danger("Le numéro n’a pas pu être archivé", {
+        description: e.message,
+      });
+    }
   };
 
   const handleRemove = async (idNumero) => {

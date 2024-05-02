@@ -1,22 +1,30 @@
-import {useContext, useMemo, useState} from 'react'
-import {sortBy} from 'lodash'
-import {Table, KeyTabIcon, Paragraph, Pane, Button, AddIcon, LockIcon} from 'evergreen-ui'
-import {useRouter} from 'next/router'
+import { useContext, useMemo, useState } from "react";
+import { sortBy } from "lodash";
+import {
+  Table,
+  KeyTabIcon,
+  Paragraph,
+  Pane,
+  Button,
+  AddIcon,
+  LockIcon,
+} from "evergreen-ui";
+import { useRouter } from "next/router";
 
-import {normalizeSort} from '@/lib/normalize'
-import {softRemoveVoie} from '@/lib/bal-api'
+import { normalizeSort } from "@/lib/normalize";
 
-import BalDataContext from '@/contexts/bal-data'
-import TokenContext from '@/contexts/token'
+import BalDataContext from "@/contexts/bal-data";
+import TokenContext from "@/contexts/token";
 
-import useFuse from '@/hooks/fuse'
+import useFuse from "@/hooks/fuse";
 
-import TableRow from '@/components/table-row'
-import CommentsContent from '@/components/comments-content'
-import DeleteWarning from '@/components/delete-warning'
+import TableRow from "@/components/table-row";
+import CommentsContent from "@/components/comments-content";
+import DeleteWarning from "@/components/delete-warning";
 
-import InfiniteScrollList from '../infinite-scroll-list'
-import { ExtendedVoieDTO } from '@/lib/openapi'
+import InfiniteScrollList from "../infinite-scroll-list";
+import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi";
+import ToasterContext from "@/contexts/toaster";
 
 interface VoiesListProps {
   voies: ExtendedVoieDTO[];
@@ -28,47 +36,61 @@ interface VoiesListProps {
   openForm: () => void;
 }
 
-function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, openRecoveryDialog, openForm}: VoiesListProps) {
-  const {token} = useContext(TokenContext)
-  const [toRemove, setToRemove] = useState(null)
-  const {isEditing, reloadVoies} = useContext(BalDataContext)
-  const [isDisabled, setIsDisabled] = useState(false)
-  const router = useRouter()
+function VoiesList({
+  voies,
+  onEnableEditing,
+  setToConvert,
+  balId,
+  onRemove,
+  openRecoveryDialog,
+  openForm,
+}: VoiesListProps) {
+  const { token } = useContext(TokenContext);
+  const [toRemove, setToRemove] = useState(null);
+  const { isEditing, reloadVoies } = useContext(BalDataContext);
+  const { toaster } = useContext(ToasterContext);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const router = useRouter();
 
   const handleRemove = async () => {
-    setIsDisabled(true)
-    await softRemoveVoie(toRemove, token)
-    await reloadVoies()
-    await onRemove()
-    setToRemove(null)
-    setIsDisabled(false)
-  }
+    setIsDisabled(true);
+    const softDeleteVoie = toaster(
+      () => VoiesService.softDeleteVoie(toRemove),
+      "La voie a bien été archivée",
+      "La voie n’a pas pu être archivée"
+    );
+    await softDeleteVoie();
+    await reloadVoies();
+    await onRemove();
+    setToRemove(null);
+    setIsDisabled(false);
+  };
 
   const onSelect = (id: string) => {
-    void router.push(`/bal/${balId}/voies/${id}`)
-  }
+    void router.push(`/bal/${balId}/voies/${id}`);
+  };
 
   const [filtered, setFilter] = useFuse(voies, 200, {
-    keys: [
-      'nom'
-    ]
-  })
+    keys: ["nom"],
+  });
 
-  const scrollableItems = useMemo(() => (
-    sortBy(filtered, v => normalizeSort(v.nom))
-  ), [filtered])
+  const scrollableItems = useMemo(
+    () => sortBy(filtered, (v) => normalizeSort(v.nom)),
+    [filtered]
+  );
 
   return (
     <>
       <DeleteWarning
         isShown={Boolean(toRemove)}
-        content={(
+        content={
           <Paragraph>
-            Êtes vous bien sûr de vouloir supprimer cette voie ainsi que tous ses numéros ?
+            Êtes vous bien sûr de vouloir supprimer cette voie ainsi que tous
+            ses numéros ?
           </Paragraph>
-        )}
+        }
         onCancel={() => {
-          setToRemove(null)
+          setToRemove(null);
         }}
         onConfirm={handleRemove}
         isDisabled={isDisabled}
@@ -76,23 +98,23 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, openR
       <Pane
         flexShrink={0}
         elevation={0}
-        backgroundColor='white'
+        backgroundColor="white"
         paddingX={16}
-        display='flex'
-        alignItems='center'
+        display="flex"
+        alignItems="center"
         minHeight={50}
       >
-        <Pane marginLeft='auto'>
+        <Pane marginLeft="auto">
           <Button
             iconBefore={token ? AddIcon : LockIcon}
-            appearance='primary'
-            intent='success'
+            appearance="primary"
+            intent="success"
             disabled={token && isEditing}
             onClick={() => {
               if (token) {
-                openForm()
+                openForm();
               } else {
-                openRecoveryDialog()
+                openRecoveryDialog();
               }
             }}
           >
@@ -100,24 +122,24 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, openR
           </Button>
         </Pane>
       </Pane>
-      <Table display='flex' flex={1} flexDirection='column' overflowY='auto'>
+      <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
           <Table.SearchHeaderCell
-            placeholder='Rechercher une voie'
+            placeholder="Rechercher une voie"
             onChange={setFilter}
           />
         </Table.Head>
 
         {filtered.length === 0 && (
           <Table.Row>
-            <Table.TextCell color='muted' fontStyle='italic'>
+            <Table.TextCell color="muted" fontStyle="italic">
               Aucun résultat
             </Table.TextCell>
           </Table.Row>
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(voie: ExtendedVoieDTO) => (
+          {(voie: ExtendedVoieDTO & { commentedNumeros: Numero[] }) => (
             <TableRow
               key={voie._id}
               label={voie.nom}
@@ -126,26 +148,37 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, openR
               isEditing={Boolean(isEditing)}
               actions={{
                 onSelect: () => {
-                  onSelect(voie._id)
+                  onSelect(voie._id);
                 },
                 onEdit: () => {
-                  onEnableEditing(voie._id)
+                  onEnableEditing(voie._id);
                 },
                 onRemove: () => {
-                  setToRemove(voie._id)
+                  setToRemove(voie._id);
                 },
-                extra: voie.nbNumeros === 0 ? {
-                  callback: () => {
-                    setToConvert(voie._id)
-                  },
-                  icon: KeyTabIcon,
-                  text: 'Convertir en toponyme'
-                } : null
+                extra:
+                  voie.nbNumeros === 0
+                    ? {
+                        callback: () => {
+                          setToConvert(voie._id);
+                        },
+                        icon: KeyTabIcon,
+                        text: "Convertir en toponyme",
+                      }
+                    : null,
               }}
               notifications={{
-                certification: voie.isAllCertified ? 'Toutes les adresses de cette voie sont certifiées par la commune' : null,
-                comment: voie.commentedNumeros.length > 0 ? <CommentsContent comments={voie.commentedNumeros} /> : null,
-                warning: voie.nbNumeros === 0 ? 'Cette voie ne contient aucun numéro' : null
+                certification: voie.isAllCertified
+                  ? "Toutes les adresses de cette voie sont certifiées par la commune"
+                  : null,
+                comment:
+                  voie.commentedNumeros.length > 0 ? (
+                    <CommentsContent comments={voie.commentedNumeros} />
+                  ) : null,
+                warning:
+                  voie.nbNumeros === 0
+                    ? "Cette voie ne contient aucun numéro"
+                    : null,
               }}
               openRecoveryDialog={openRecoveryDialog}
             />
@@ -153,7 +186,7 @@ function VoiesList({voies, onEnableEditing, setToConvert, balId, onRemove, openR
         </InfiniteScrollList>
       </Table>
     </>
-  )
+  );
 }
 
-export default VoiesList
+export default VoiesList;

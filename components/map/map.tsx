@@ -91,10 +91,10 @@ function generateNewStyle(style) {
   return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
 }
 
-interface MapProps {
+export interface MapProps {
   commune: CommuneType;
   isAddressFormOpen: boolean;
-  handleAddressForm: () => void;
+  handleAddressForm: (open: boolean) => void;
 }
 
 function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
@@ -386,7 +386,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           onMouseOut={handleMouseLeave}
           dragRotate={false}
         >
-          <NavControl onViewportChange={setViewport} />
+          <NavControl />
 
           <Source {...sourceCommune}>
             <Layer {...(LAYER_COMMUNE as LayerProps)} />
