@@ -53,7 +53,7 @@ function HabilitationProcess({
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
 
-  const { reloadHabilitation } = useContext(BalDataContext);
+  const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
 
   const sendCode = async () =>
     HabilitationService.sendPinCodeHabilitation(baseLocale._id);
@@ -120,6 +120,7 @@ function HabilitationProcess({
     }
 
     await reloadHabilitation();
+    await reloadBaseLocale();
 
     setIsLoading(false);
   };
