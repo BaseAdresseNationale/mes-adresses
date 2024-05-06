@@ -98,17 +98,22 @@ export class BasesLocalesService {
     /**
      * Find Base_Locale by id
      * @param baseLocaleId
+     * @param isExist
      * @returns ExtendedBaseLocaleDTO
      * @throws ApiError
      */
     public static findBaseLocale(
         baseLocaleId: string,
+        isExist?: boolean,
     ): CancelablePromise<ExtendedBaseLocaleDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}',
             path: {
                 'baseLocaleId': baseLocaleId,
+            },
+            query: {
+                'isExist': isExist,
             },
         });
     }

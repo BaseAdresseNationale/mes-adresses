@@ -26,7 +26,10 @@ function UserBasesLocales() {
         map(balsToLoad, async (id) => {
           const token = balAccess[id];
           try {
-            const baseLocale = await BasesLocalesService.findBaseLocale(id);
+            const baseLocale = await BasesLocalesService.findBaseLocale(
+              id,
+              true
+            );
 
             return {
               ...baseLocale,
