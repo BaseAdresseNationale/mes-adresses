@@ -24,8 +24,6 @@ function TableRow({
         label={label}
         nomAlt={nomAlt}
         complement={complement}
-        isSelectable={false}
-        isEditingEnabled={false}
         colors={{
           label: isDeleted ? "danger" : "default",
         }}

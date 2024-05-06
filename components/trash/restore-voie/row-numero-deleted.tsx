@@ -4,7 +4,7 @@ import TableRowEditShortcut from "@/components/table-row/table-row-edit-shortcut
 
 interface RowNumerosDeletedProps {
   label: string;
-  nomAlt?: string;
+  nomAlt?: Record<string, string>;
   complement?: string;
   secondary?: string;
   isSelected: boolean;
@@ -31,8 +31,6 @@ function RowNumerosDeleted({
         label={label}
         nomAlt={nomAlt}
         complement={complement}
-        isSelectable={false}
-        isEditingEnabled={false}
       />
 
       {secondary && <Table.TextCell flex="0 1 1">{secondary}</Table.TextCell>}
