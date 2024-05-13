@@ -1,4 +1,4 @@
-import { Pane, Button } from "evergreen-ui";
+import { Pane, Button, toaster } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
 
@@ -36,12 +36,36 @@ function BALStatus({
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
   const handlePause = async () => {
-    await BasesLocalesService.pauseBaseLocale(baseLocale._id);
+    try {
+      await BasesLocalesService.pauseBaseLocale(baseLocale._id);
+      toaster.success(
+        "Mise en pause des mises à jour automatiques de la Base Adresses Nationale"
+      );
+    } catch (error: unknown) {
+      toaster.danger(
+        "Impossible de suspendre la mise à jour de la Base Adresses Nationale",
+        {
+          description: (error as any).body.message,
+        }
+      );
+    }
     await reloadBaseLocale();
   };
 
   const handleResumeSync = async () => {
-    await BasesLocalesService.resumeBaseLocale(baseLocale._id);
+    try {
+      await BasesLocalesService.resumeBaseLocale(baseLocale._id);
+      toaster.success(
+        "Reprise de la mise à jour automatique de la Base Adresses Nationale"
+      );
+    } catch (error: unknown) {
+      toaster.danger(
+        "Impossible de reprendre la mise à jour automatique de la Base Adresses Nationale",
+        {
+          description: (error as any).body.message,
+        }
+      );
+    }
     await reloadBaseLocale();
   };
 
