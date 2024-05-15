@@ -6,7 +6,6 @@ import React, {
   useContext,
 } from "react";
 import { union } from "lodash";
-import { toaster } from "evergreen-ui";
 
 import {
   HabilitationDTO,
@@ -26,6 +25,7 @@ import TokenContext from "@/contexts/token";
 import useHabilitation from "@/hooks/habilitation";
 import { ChildrenProps } from "@/types/context";
 import { useRouter } from "next/router";
+import LayoutContext from "./layout";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -94,6 +94,7 @@ export function BalDataContextProvider({
   const [baseLocale, setBaseLocale] =
     useState<ExtendedBaseLocaleDTO>(initialBaseLocale);
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
+  const { pushToast } = useContext(LayoutContext);
 
   const { token } = useContext(TokenContext);
 
@@ -154,14 +155,16 @@ export function BalDataContextProvider({
       setTimeout(async () => {
         await reloadBaseLocale();
         setIsRefrehSyncStat(false);
-        toaster.notify("De nouvelles modifications ont été détectées", {
-          description:
+        pushToast({
+          title: "De nouvelles modifications ont été détectées",
+          message:
             "Elles seront automatiquement transmises dans la Base Adresses Nationale d’ici quelques heures.",
-          duration: 10,
+          intent: "info",
+          duration: 5000,
         });
       }, 30000); // Maximum interval between CRON job
     }
-  }, [baseLocale, isRefrehSyncStat, reloadBaseLocale]);
+  }, [baseLocale, isRefrehSyncStat, reloadBaseLocale, pushToast]);
 
   const setEditingId = useCallback(
     (editingId: string) => {
@@ -239,10 +242,20 @@ export function BalDataContextProvider({
       await reloadBaseLocale();
     }
     // SET RESUME BAL IF HABILITATION FRANCE_CONNECT
-    if (query["france-connect"] === "1" && habilitation?.status === HabilitationDTO.status.ACCEPTED && baseLocale.sync?.isPaused == true) {
+    if (
+      query["france-connect"] === "1" &&
+      habilitation?.status === HabilitationDTO.status.ACCEPTED &&
+      baseLocale.sync?.isPaused == true
+    ) {
       resumeBal();
     }
-  }, [baseLocale._id, baseLocale.sync?.isPaused, habilitation?.status, query, reloadBaseLocale]);
+  }, [
+    baseLocale._id,
+    baseLocale.sync?.isPaused,
+    habilitation?.status,
+    query,
+    reloadBaseLocale,
+  ]);
 
   const value = useMemo(
     () => ({

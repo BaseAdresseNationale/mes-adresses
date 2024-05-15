@@ -1,11 +1,18 @@
 import CustomToast from "@/components/custom-toast";
 import useWindowSize from "@/hooks/useWindowSize";
 import { ChildrenProps } from "@/types/context";
-import { Alert, Pane } from "evergreen-ui";
+import { Alert } from "evergreen-ui";
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
 
-const TOAST_DURATION = 3000;
+const TOAST_DURATION = 2000;
+
+interface Toast {
+  intent: "success" | "danger" | "info" | "warning";
+  title: string;
+  message?: string;
+  duration?: number;
+}
 
 interface LayoutContextType {
   isMobile: boolean;
@@ -17,12 +24,8 @@ interface LayoutContextType {
     errorMessage: string,
     onValidationError?: (error: any) => void
   ) => () => Promise<any>;
-  toasts: { intent: "success" | "danger"; title: string; message?: string }[];
-  pushToast: (
-    intent: "success" | "danger",
-    title: string,
-    message?: string
-  ) => void;
+  toasts: Toast[];
+  pushToast: ({ intent, title, message }: Toast) => void;
 }
 
 const LayoutContext = React.createContext<LayoutContextType | null>(null);
@@ -38,9 +41,11 @@ export function LayoutContextProvider(props: ChildrenProps) {
   }, []);
 
   useEffect(() => {
+    const lastToast = toasts[toasts.length - 1];
+    const timeoutDuration = lastToast?.duration || TOAST_DURATION;
     const timeout = setTimeout(() => {
       setToasts((toasts) => toasts.slice(1));
-    }, TOAST_DURATION);
+    }, timeoutDuration);
 
     return () => clearTimeout(timeout);
   }, [toasts]);
@@ -75,8 +80,8 @@ export function LayoutContextProvider(props: ChildrenProps) {
   );
 
   const pushToast = useCallback(
-    (intent, title, message) => {
-      setToasts((toasts) => [...toasts, { intent, title, message }]);
+    (newToast: Toast) => {
+      setToasts((toasts) => [...toasts, { ...newToast }]);
     },
     [setToasts]
   );
@@ -98,7 +103,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
       {isClientSide &&
         document.body &&
         ReactDOM.createPortal(
-          <Pane>
+          <>
             {toasts.map(({ intent, title, message }, index) => (
               <CustomToast key={index} duration={TOAST_DURATION}>
                 <Alert intent={intent} title={title}>
@@ -106,7 +111,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
                 </Alert>
               </CustomToast>
             ))}
-          </Pane>,
+          </>,
           document.body
         )}
       {props.children}

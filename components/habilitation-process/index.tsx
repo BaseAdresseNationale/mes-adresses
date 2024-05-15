@@ -1,6 +1,6 @@
 import { useState, useCallback, useContext, useEffect } from "react";
 import Router from "next/router";
-import { Dialog, Pane, Text, Spinner, toaster } from "evergreen-ui";
+import { Dialog, Pane, Text, Spinner } from "evergreen-ui";
 
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
@@ -19,6 +19,7 @@ import {
   HabilitationService,
 } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
+import LayoutContext from "@/contexts/layout";
 
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {
@@ -53,6 +54,7 @@ function HabilitationProcess({
   const [isLoading, setIsLoading] = useState(false);
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
+  const { pushToast } = useContext(LayoutContext);
 
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
 
@@ -75,8 +77,10 @@ function HabilitationProcess({
         await sendCode();
         setStep(1);
       } catch (error) {
-        toaster.danger("Le courriel n’a pas pu être envoyé", {
-          description: error.message,
+        pushToast({
+          title: "Le courriel n’a pas pu être envoyé",
+          message: error.message,
+          intent: "danger",
         });
       }
     }
@@ -112,8 +116,10 @@ function HabilitationProcess({
       });
 
     if (error) {
-      toaster.danger("Le code n’est pas valide", {
-        description: error,
+      pushToast({
+        title: "Le code n’est pas valide",
+        message: error,
+        intent: "danger",
       });
     } else if (validated) {
       checkConflictingRevision();

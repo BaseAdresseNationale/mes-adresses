@@ -7,7 +7,6 @@ import {
   Button,
   Alert,
   Label,
-  toaster,
   DeleteIcon,
   AddIcon,
 } from "evergreen-ui";
@@ -24,6 +23,7 @@ import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
 import RenewTokenDialog from "@/components/renew-token-dialog";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual([...listA].sort(), [...listB].sort());
@@ -47,6 +47,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
   const [error, setError] = useState("");
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] =
     useState(false);
+  const { pushToast } = useContext(LayoutContext);
 
   const formHasChanged = useCallback(() => {
     return (
@@ -99,7 +100,10 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
           setIsRenewTokenWarningShown(true);
         }
 
-        toaster.success("La Base Adresse Locale a été modifiée avec succès !");
+        pushToast({
+          title: "La Base Adresse Locale a été modifiée avec succès !",
+          intent: "success",
+        });
       } catch (error) {
         setError(error.message);
       }
@@ -114,6 +118,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
       reloadEmails,
       reloadBaseLocale,
       emails,
+      pushToast,
     ]
   );
 
@@ -207,7 +212,6 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
 
         {isRenewTokenWarningShown && (
           <RenewTokenDialog
-            token={token}
             baseLocaleId={baseLocale._id}
             isShown={isRenewTokenWarningShown}
             setIsShown={setIsRenewTokenWarningShown}

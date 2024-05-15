@@ -7,7 +7,6 @@ import { sortBalByUpdate } from "@/lib/sort-bal";
 import LocalStorageContext from "@/contexts/local-storage";
 
 import useFuse from "@/hooks/fuse";
-import useError from "@/hooks/error";
 
 import DeleteWarning from "@/components/delete-warning";
 import BaseLocaleCard from "@/components/base-locale-card";
@@ -22,8 +21,6 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
     useContext(LocalStorageContext);
 
   const [toRemove, setToRemove] = useState(null);
-
-  const [setError] = useError(null);
 
   const isHidden = useCallback(
     (balId) => {
@@ -41,15 +38,9 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
   });
 
   const onRemove = useCallback(async () => {
-    try {
-      await removeBAL(toRemove);
-    } catch (error) {
-      setError(error.message);
-    }
-
+    await removeBAL(toRemove);
     setToRemove(null);
-    setError(null);
-  }, [setError, toRemove, removeBAL]);
+  }, [toRemove, removeBAL]);
 
   const handleRemove = useCallback((e, balId) => {
     e.stopPropagation();

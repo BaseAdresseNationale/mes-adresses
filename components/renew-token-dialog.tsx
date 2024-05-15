@@ -1,9 +1,9 @@
-import { useState, useCallback } from "react";
-import { Pane, Dialog, Paragraph, Alert, toaster } from "evergreen-ui";
+import { useState, useCallback, useContext } from "react";
+import { Pane, Dialog, Paragraph, Alert } from "evergreen-ui";
 import { BasesLocalesService } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 interface RenewTokenDialogProps {
-  token: string;
   baseLocaleId: string;
   isShown: boolean;
   setIsShown: (isShown: boolean) => void;
@@ -11,28 +11,31 @@ interface RenewTokenDialogProps {
 }
 
 function RenewTokenDialog({
-  token,
   baseLocaleId,
   isShown,
   setIsShown,
   setError,
 }: RenewTokenDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const { toaster } = useContext(LayoutContext);
 
   const handleConfirm = useCallback(async () => {
     setIsLoading(true);
 
-    try {
-      await BasesLocalesService.renewTokenBaseLocale(baseLocaleId);
+    const renewTokenBaseLocale = toaster(
+      () => BasesLocalesService.renewTokenBaseLocale(baseLocaleId),
+      "Les autorisations ont été renouvellé avec succès",
+      "Impossible de renouveller les autorisations",
+      (err) => {
+        setError(err.message);
+      }
+    );
 
-      toaster.success("Les autorisations ont été renouvellé avec succès !");
-    } catch (error) {
-      setError(error.message);
-    }
+    await renewTokenBaseLocale();
 
     setIsLoading(false);
     setIsShown(false);
-  }, [baseLocaleId, setError, setIsShown]);
+  }, [baseLocaleId, setError, setIsShown, toaster]);
 
   return (
     <Pane>
