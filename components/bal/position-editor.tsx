@@ -34,7 +34,9 @@ function PositionEditor({
     addMarker({
       type: isToponyme ? Position.type.SEGMENT : Position.type.ENTR_E,
     });
-    isMobile && setIsMapFullscreen(true);
+    if (isMobile) {
+      setIsMapFullscreen(true);
+    }
   }, [isToponyme, addMarker, isMobile, setIsMapFullscreen]);
 
   useEffect(() => {

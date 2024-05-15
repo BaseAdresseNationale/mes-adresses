@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useCallback, useMemo } from "react";
-import PropTypes from "prop-types";
 import { sortBy } from "lodash";
 import { Pane, Heading, Table, Checkbox } from "evergreen-ui";
 
@@ -21,7 +20,7 @@ function ListNumerosDeleted({
   numeros,
   selectedNumerosIds,
   setSelectedNumerosIds,
-}) {
+}: ListNumerosDeletedProps) {
   const [filtered, setFilter] = useFuse(numeros, 200, {
     keys: ["numero"],
   });

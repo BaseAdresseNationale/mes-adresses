@@ -109,7 +109,7 @@ function Editor({ children, commune }: EditorProps) {
               <MobileControls
                 isDemo={isDemo}
                 onToggle={setIsMapFullscreen}
-                isHidden={isMapFullscreen}
+                isMapFullscreen={isMapFullscreen}
               />
             )}
             {isDemo && (

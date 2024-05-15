@@ -5,7 +5,6 @@ import LanguagePreview from "@/components/bal/language-preview";
 interface RowNumerosDeletedProps {
   label: string;
   nomAlt?: Record<string, string>;
-  complement?: string;
   secondary?: string;
   isSelected: boolean;
   handleSelect: () => void;
@@ -14,7 +13,6 @@ interface RowNumerosDeletedProps {
 function RowNumerosDeleted({
   label,
   nomAlt,
-  complement,
   secondary,
   isSelected,
   handleSelect,
@@ -30,11 +28,6 @@ function RowNumerosDeleted({
         <Table.TextCell data-editable flex="0 1 1" height="100%">
           <Pane padding={1} fontSize={15}>
             <Text>{label}</Text>
-            {complement && (
-              <Text>
-                <i>{` - ${complement}`}</i>
-              </Text>
-            )}
           </Pane>
 
           {nomAlt && (

@@ -2,13 +2,13 @@ import { Button, ListIcon, MapIcon, Pane } from "evergreen-ui";
 
 interface MobileControlsProps {
   onToggle: (showMap: boolean) => void;
-  isHidden: boolean;
+  isMapFullscreen: boolean;
   isDemo: boolean;
 }
 
 export function MobileControls({
   onToggle,
-  isHidden,
+  isMapFullscreen,
   isDemo,
 }: MobileControlsProps) {
   return (
@@ -23,7 +23,7 @@ export function MobileControls({
       zIndex={2}
     >
       <Button
-        isActive={!isHidden}
+        isActive={!isMapFullscreen}
         onClick={() => onToggle(false)}
         height="100%"
         flexGrow={1}
@@ -32,7 +32,7 @@ export function MobileControls({
         <ListIcon />
       </Button>
       <Button
-        isActive={isHidden}
+        isActive={isMapFullscreen}
         onClick={() => onToggle(true)}
         height="100%"
         flexGrow={1}
