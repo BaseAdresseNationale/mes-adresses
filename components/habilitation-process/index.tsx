@@ -54,9 +54,9 @@ function HabilitationProcess({
   const [isLoading, setIsLoading] = useState(false);
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
+  const { pushToast } = useContext(LayoutContext);
 
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
-  const { pushToast } = useContext(LayoutContext);
 
   const sendCode = async () =>
     HabilitationService.sendPinCodeHabilitation(baseLocale._id);
@@ -77,11 +77,11 @@ function HabilitationProcess({
         await sendCode();
         setStep(1);
       } catch (error) {
-        pushToast(
-          "danger",
-          "Le courriel n’a pas pu être envoyé",
-          error.body.message
-        );
+        pushToast({
+          intent: "danger",
+          title: "Le courriel n’a pas pu être envoyé",
+          message: error.body.message,
+        });
       }
     }
 
@@ -114,6 +114,7 @@ function HabilitationProcess({
       await HabilitationService.validePinCodeHabilitation(baseLocale._id, {
         code,
       });
+
       checkConflictingRevision();
       // SET RESUME BAL IF HABILITATION CODE
       if (baseLocale.sync?.isPaused == true) {
@@ -121,7 +122,11 @@ function HabilitationProcess({
       }
       setStep(2);
     } catch (error) {
-      pushToast("danger", "Le code n’est pas valide", error.body.message);
+      pushToast({
+        intent: "danger",
+        title: "Le code n’est pas valide",
+        message: error.body.message,
+      });
     }
 
     await reloadHabilitation();
