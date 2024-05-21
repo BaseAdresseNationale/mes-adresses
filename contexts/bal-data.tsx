@@ -25,6 +25,7 @@ import {
 import TokenContext from "@/contexts/token";
 import useHabilitation from "@/hooks/habilitation";
 import { ChildrenProps } from "@/types/context";
+import { useRouter } from "next/router";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -79,6 +80,7 @@ export function BalDataContextProvider({
   initialNumeros,
   ...props
 }: BalDataContextProviderProps) {
+  const { query } = useRouter();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editingId, _setEditingId] = useState<string>(null);
   const [parcelles, setParcelles] = useState<Array<string>>([]);
@@ -230,6 +232,17 @@ export function BalDataContextProvider({
     reloadParcelles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    async function resumeBal() {
+      await BasesLocalesService.resumeBaseLocale(baseLocale._id);
+      await reloadBaseLocale();
+    }
+    // SET RESUME BAL IF HABILITATION FRANCE_CONNECT
+    if (query["france-connect"] === "1" && habilitation?.status === HabilitationDTO.status.ACCEPTED && baseLocale.sync?.isPaused == true) {
+      resumeBal();
+    }
+  }, [baseLocale._id, baseLocale.sync?.isPaused, habilitation?.status, query, reloadBaseLocale]);
 
   const value = useMemo(
     () => ({
