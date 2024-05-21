@@ -81,7 +81,14 @@ export default function usePublishProcess(
   };
 
   const handleSync = async () => {
-    await BasesLocalesService.publishBaseLocale(baseLocale._id);
+    try {
+      await BasesLocalesService.publishBaseLocale(baseLocale._id);
+      toaster.success("La Base Adresses Nationale a bien été mise à jour !");
+    } catch (error: unknown) {
+      toaster.danger("Impossible de mettre à jour la Base Adresses Nationale", {
+        description: (error as any).body.message,
+      });
+    }
     await reloadBaseLocale();
   };
 
