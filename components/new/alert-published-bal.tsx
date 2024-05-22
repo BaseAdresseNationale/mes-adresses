@@ -32,7 +32,6 @@ function AlertPublishedBAL({
     } else {
       return <AlertPublishedBALApiDepot revision={revision} />;
     }
-    return null;
   }, [revision]);
 
   const handleConfirmation = () => {
@@ -41,24 +40,18 @@ function AlertPublishedBAL({
   };
 
   return (
-    <>
-      <Dialog
-        isShown={isShown}
-        title="Attention, votre Base Adresse Locale (BAL) est déjà publié"
-        width="800px"
-        confirmLabel={
-          isLoading
-            ? "En cours de création…"
-            : "Créer une nouvelle Base Adresse Locale"
-        }
-        cancelLabel="Annuler"
-        isConfirmLoading={isLoading}
-        onConfirm={handleConfirmation}
-        onCloseComplete={onClose}
-      >
-        {getAlertComponent}
-      </Dialog>
-    </>
+    <Dialog
+      isShown={isShown}
+      title="Attention, votre Base Adresse Locale (BAL) est déjà publiée"
+      width="800px"
+      confirmLabel={isLoading ? "Création…" : "Continuer"}
+      cancelLabel="Annuler"
+      isConfirmLoading={isLoading}
+      onConfirm={handleConfirmation}
+      onCloseComplete={onClose}
+    >
+      {getAlertComponent}
+    </Dialog>
   );
 }
 

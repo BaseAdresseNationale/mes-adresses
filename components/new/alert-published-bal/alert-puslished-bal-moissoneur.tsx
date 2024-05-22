@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Link, Pane, Paragraph } from "evergreen-ui";
+import { Button, Pane, Paragraph } from "evergreen-ui";
 import { DataGouvService } from "@/lib/data-gouv/data-gouv";
 import { Dataset, Organization } from "@/lib/data-gouv/types";
 import { Revision } from "@/lib/api-depot/types";
@@ -32,7 +32,8 @@ function AlertPublishedBALMoissoneur({
       {organization ? (
         <>
           <Paragraph marginTop={16}>
-            Une Base Adresse Locale est déjà gérée par {organization.name} pour votre commune.
+            Une Base Adresse Locale est déjà gérée par {organization.name} pour
+            votre commune.
           </Paragraph>
           <Paragraph marginTop={16}>
             Nous recommandons de prendre contact avec cet organisme.
@@ -44,7 +45,7 @@ function AlertPublishedBALMoissoneur({
               href={`${organization.page}/#/information`}
               target="_blank"
             >
-               Page data.gouv {organization.name}
+              Page data.gouv {organization.name}
             </Button>
           </Paragraph>
         </>

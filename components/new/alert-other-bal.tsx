@@ -95,18 +95,14 @@ function AlertOtherBAL({
             : `Vous avez déjà créé une Base Adresse Locale pour ${communeLabel}`
         }
         width="800px"
-        confirmLabel={
-          isLoading
-            ? "En cours de création…"
-            : "Créer une nouvelle Base Adresse Locale"
-        }
+        confirmLabel={isLoading ? "Création..." : "Continuer"}
         cancelLabel="Annuler"
         isConfirmLoading={isLoading}
         onConfirm={handleConfirmation}
         onCloseComplete={onClose}
       >
         <Pane>
-          <Alert margin="1em">
+          <Alert margin="1em" display="block" hasIcon={false}>
             <Paragraph marginTop={8}>
               {uniqCommunes.length > 1 ? (
                 <>
