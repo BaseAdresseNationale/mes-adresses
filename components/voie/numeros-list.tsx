@@ -10,6 +10,8 @@ import {
   AddIcon,
   LockIcon,
   toaster,
+  Text,
+  IconButton,
 } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
@@ -19,7 +21,6 @@ import MapContext from "@/contexts/map";
 
 import useFuse from "@/hooks/fuse";
 
-import TableRow from "@/components/table-row";
 import DeleteWarning from "@/components/delete-warning";
 import GroupedActions from "@/components/grouped-actions";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
@@ -30,6 +31,8 @@ import {
   NumeroPopulate,
   NumerosService,
 } from "@/lib/openapi";
+import TableRowActions from "../table-row/table-row-actions";
+import TableRowNotifications from "../table-row/table-row-notifications";
 
 interface NumerosListProps {
   token?: string;
@@ -182,6 +185,8 @@ function NumerosList({
     refreshBALSync();
   };
 
+  const isEditingEnabled = !isEditing && Boolean(token);
+
   return (
     <>
       <Pane
@@ -269,44 +274,90 @@ function NumerosList({
 
         <InfiniteScrollList items={scrollableItems}>
           {(numero: Numero | NumeroPopulate) => (
-            <TableRow
-              key={numero._id}
-              label={numero.numeroComplet}
-              secondary={
-                numero.positions.length > 1
-                  ? `${numero.positions.length} positions`
-                  : null
-              }
-              complement={getToponymeName(numero.toponyme)}
-              handleSelect={
-                filtered.length > 1
-                  ? () => {
-                      handleSelect(numero._id);
+            <Table.Row key={numero._id} paddingRight={8} minHeight={48}>
+              {isEditingEnabled && (
+                <Table.Cell flex="0 1 1">
+                  <Checkbox
+                    checked={selectedNumerosIds.includes(numero._id)}
+                    onChange={
+                      filtered.length > 1
+                        ? () => {
+                            handleSelect(numero._id);
+                          }
+                        : null
                     }
-                  : null
-              }
-              isSelected={selectedNumerosIds.includes(numero._id)}
-              isEditing={isEditing}
-              isAdmin={Boolean(token)}
-              notifications={{
-                certification: numero.certifie
-                  ? "Cette adresse est certifiée par la commune"
-                  : null,
-                comment: numero.comment,
-                warning: numero.positions.some((p) => p.type === "inconnue")
-                  ? "Le type d’une position est inconnu"
-                  : null,
-              }}
-              actions={{
-                onRemove: async () => onRemove(numero._id),
-                onEdit: () => {
-                  handleEditing(numero._id);
-                },
-              }}
-              openRecoveryDialog={() => {
-                setIsRecoveryDisplayed(true);
-              }}
-            />
+                  />
+                </Table.Cell>
+              )}
+
+              <Table.Cell
+                className="main-table-cell"
+                {...(isEditingEnabled
+                  ? {
+                      onClick: () => {
+                        handleEditing(numero._id);
+                      },
+                      cursor: "pointer",
+                    }
+                  : {
+                      cursor: "default",
+                    })}
+              >
+                <Table.TextCell data-editable flex="0 1 1" height="100%">
+                  <Pane padding={1} fontSize={15}>
+                    <Text>{numero.numeroComplet}</Text>
+                    {getToponymeName(numero.toponyme) && (
+                      <Text>
+                        <i>{` - ${getToponymeName(numero.toponyme)}`}</i>
+                      </Text>
+                    )}
+                  </Pane>
+                </Table.TextCell>
+              </Table.Cell>
+
+              {numero.positions.length > 1 && (
+                <Table.TextCell flex="0 1 1">
+                  {numero.positions.length} positions
+                </Table.TextCell>
+              )}
+
+              <TableRowNotifications
+                certification={
+                  numero.certifie
+                    ? "Cette adresse est certifiée par la commune"
+                    : null
+                }
+                comment={numero.comment}
+                warning={
+                  numero.positions.some((p) => p.type === "inconnue")
+                    ? "Le type d’une position est inconnu"
+                    : null
+                }
+              />
+
+              {isEditingEnabled && (
+                <TableRowActions
+                  onRemove={async () => onRemove(numero._id)}
+                  onEdit={() => {
+                    handleEditing(numero._id);
+                  }}
+                />
+              )}
+
+              {!Boolean(token) && (
+                <Table.TextCell flex="0 1 1">
+                  <IconButton
+                    onClick={() => {
+                      setIsRecoveryDisplayed(true);
+                    }}
+                    type="button"
+                    height={24}
+                    icon={LockIcon}
+                    appearance="minimal"
+                  />
+                </Table.TextCell>
+              )}
+            </Table.Row>
           )}
         </InfiniteScrollList>
       </Table>

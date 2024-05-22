@@ -7,6 +7,8 @@ import {
   Button,
   AddIcon,
   LockIcon,
+  IconButton,
+  Text,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 
@@ -17,12 +19,14 @@ import TokenContext from "@/contexts/token";
 
 import useFuse from "@/hooks/fuse";
 
-import TableRow from "@/components/table-row";
 import DeleteWarning from "@/components/delete-warning";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
-import CommentsContent from "@/components/comments-content";
 import { ExtentedToponymeDTO, Numero, ToponymesService } from "@/lib/openapi";
 import LayoutContext from "@/contexts/layout";
+import LanguagePreview from "./language-preview";
+import TableRowNotifications from "../table-row/table-row-notifications";
+import CommentsContent from "../comments-content";
+import TableRowActions from "../table-row/table-row-actions";
 
 interface ToponymesListProps {
   toponymes: ExtentedToponymeDTO[];
@@ -74,6 +78,8 @@ function ToponymesList({
     () => sortBy(filtered, (v) => normalizeSort(v.nom)),
     [filtered]
   );
+
+  const isEditingEnabled = !isEditing && Boolean(token);
 
   return (
     <>
@@ -135,38 +141,69 @@ function ToponymesList({
 
         <InfiniteScrollList items={scrollableItems}>
           {(toponyme: ExtentedToponymeDTO & { commentedNumeros: Numero[] }) => (
-            <TableRow
-              key={toponyme._id}
-              label={toponyme.nom}
-              nomAlt={toponyme.nomAlt}
-              isAdmin={Boolean(token)}
-              isEditing={Boolean(isEditing)}
-              notifications={{
-                warning:
+            <Table.Row key={toponyme._id} paddingRight={8} minHeight={48}>
+              <Table.Cell
+                onClick={() => onSelect(toponyme._id)}
+                cursor="pointer"
+                className="main-table-cell"
+              >
+                <Table.TextCell data-editable flex="0 1 1" height="100%">
+                  <Pane padding={1} fontSize={15}>
+                    <Text>{toponyme.nom}</Text>
+                  </Pane>
+
+                  {toponyme.nomAlt && (
+                    <Pane marginTop={4}>
+                      <LanguagePreview nomAlt={toponyme.nomAlt} />
+                    </Pane>
+                  )}
+                </Table.TextCell>
+              </Table.Cell>
+
+              <TableRowNotifications
+                warning={
                   toponyme.positions.length === 0
                     ? "Ce toponyme n’a pas de position"
-                    : null,
-                comment:
+                    : null
+                }
+                certification={
+                  toponyme.isAllCertified
+                    ? "Toutes les adresses de ce toponyme sont certifiées par la commune"
+                    : null
+                }
+                comment={
                   toponyme.commentedNumeros.length > 0 ? (
                     <CommentsContent comments={toponyme.commentedNumeros} />
-                  ) : null,
-                certification: toponyme.isAllCertified
-                  ? "Toutes les adresses de ce toponyme sont certifiées par la commune"
-                  : null,
-              }}
-              actions={{
-                onSelect: () => {
-                  onSelect(toponyme._id);
-                },
-                onEdit: () => {
-                  onEnableEditing(toponyme._id);
-                },
-                onRemove: () => {
-                  setToRemove(toponyme._id);
-                },
-              }}
-              openRecoveryDialog={openRecoveryDialog}
-            />
+                  ) : null
+                }
+              />
+
+              {isEditingEnabled && (
+                <TableRowActions
+                  onSelect={() => {
+                    onSelect(toponyme._id);
+                  }}
+                  onEdit={() => {
+                    onEnableEditing(toponyme._id);
+                  }}
+                  onRemove={() => {
+                    setToRemove(toponyme._id);
+                  }}
+                />
+              )}
+
+              {!Boolean(token) && (
+                <Table.TextCell flex="0 1 1">
+                  <IconButton
+                    onClick={openRecoveryDialog}
+                    type="button"
+                    height={24}
+                    icon={LockIcon}
+                    appearance="minimal"
+                  />
+                </Table.TextCell>
+              )}
+            </Table.Row>
           )}
         </InfiniteScrollList>
       </Table>

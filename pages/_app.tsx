@@ -104,6 +104,10 @@ function App(props: AppProps) {
         div[id^="evergreen-tooltip"].ub-max-w_240px.ub-bg-clr_white.ub-box-szg_border-box {
           max-width: fit-content;
         }
+
+        .main-table-cell:hover {
+          background-color: #e4e7eb;
+        }
       `}</style>
     </>
   );
