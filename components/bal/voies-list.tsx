@@ -44,6 +44,10 @@ interface VoiesListProps {
   openForm: () => void;
 }
 
+const fuseOptions = {
+  keys: ["nom"],
+};
+
 function VoiesList({
   voies,
   onEnableEditing,
@@ -79,9 +83,7 @@ function VoiesList({
     void router.push(`/bal/${balId}/voies/${id}`);
   };
 
-  const [filtered, setFilter] = useFuse(voies, 200, {
-    keys: ["nom"],
-  });
+  const [filtered, setFilter] = useFuse(voies, 200, fuseOptions);
 
   const scrollableItems = useMemo(() => {
     const items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>

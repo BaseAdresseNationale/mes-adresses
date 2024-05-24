@@ -61,9 +61,8 @@ function HabilitationInfos({ commune }: HabilitationInfosProps) {
           }
         >
           <Text marginTop={5} is="p">
-            Cette Base Adresse Locale détient une habilitation permettant
-            d&apos;alimenter la Base Adresse Nationale pour la commune de{" "}
-            {commune.nom}. Cette habilitation est valide jusqu&apos;au{" "}
+            Toutes les modifications remonteront automatiquement dans la Base
+            Adresse Nationale jusqu&apos;au{" "}
             <b>{format(new Date(habilitation.expiresAt), "dd/MM/yyyy")}</b>.
           </Text>
         </Alert>

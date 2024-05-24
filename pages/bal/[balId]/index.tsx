@@ -302,6 +302,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
                   onSelect={() => {
                     setSelectedTabIndex(index);
                   }}
+                  key={label}
                 >
                   {label}
                   {notif > 0 && <span className="tab-notif">{notif}</span>}

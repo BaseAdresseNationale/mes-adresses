@@ -40,6 +40,10 @@ interface NumerosListProps {
   handleEditing: (id?: string) => void;
 }
 
+const fuseOptions = {
+  keys: ["numeroComplet"],
+};
+
 function NumerosList({
   token = null,
   voieId,
@@ -63,9 +67,7 @@ function NumerosList({
 
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const [filtered, setFilter] = useFuse(numeros, 200, {
-    keys: ["numeroComplet"],
-  });
+  const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
 
   const scrollableItems = useMemo(
     () =>
