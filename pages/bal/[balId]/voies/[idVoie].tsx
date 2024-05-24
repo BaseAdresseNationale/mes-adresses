@@ -15,7 +15,6 @@ import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import {
   ExtendedVoieDTO,
   Numero,
-  OpenAPI,
   VoieMetas,
   VoiesService,
 } from "@/lib/openapi-api-bal";

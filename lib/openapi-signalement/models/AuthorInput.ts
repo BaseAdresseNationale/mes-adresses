@@ -3,9 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type AuthorDTO = {
-    firstName?: string | null;
-    lastName?: string | null;
+export type AuthorInput = {
     email?: string | null;
 };
 

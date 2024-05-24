@@ -21,7 +21,6 @@ export namespace Position {
         D_LIVRANCE_POSTALE = 'délivrance postale',
         PARCELLE = 'parcelle',
         SEGMENT = 'segment',
-        INCONNUE = 'inconnue',
     }
 
 

@@ -7,10 +7,7 @@ import React, {
 } from "react";
 
 import { BaseLocale } from "@/lib/openapi-api-bal";
-import {
-  Signalement,
-  DefaultService as SignalementService,
-} from "@/lib/openapi-signalement";
+import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
 import { ChildrenProps } from "@/types/context";
 import BalDataContext from "./bal-data";
 import TokenContext from "./token";
@@ -29,16 +26,25 @@ export function SignalementContextProvider(props: ChildrenProps) {
   const { token } = useContext(TokenContext);
 
   const fetchSignalements = useCallback(async () => {
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
+    const paginatedSignalements = await SignalementsService.getSignalements(
+      undefined,
+      undefined,
+      [Signalement.status.PENDING],
+      undefined,
+      undefined,
+      [baseLocale.commune]
     );
-    setSignalements(signalements);
+    setSignalements(paginatedSignalements.data);
   }, [baseLocale.commune]);
 
   useEffect(() => {
-    const isSignalementEnabled = Boolean(
-      process.env.NEXT_PUBLIC_API_SIGNALEMENT
-    );
+    const signalementWhiteList =
+      process.env.NEXT_PUBLIC_SIGNALEMENT_COMMUNES_WHITE_LIST?.split(",") || [];
+
+    const isSignalementEnabled =
+      Boolean(process.env.NEXT_PUBLIC_API_SIGNALEMENT) &&
+      signalementWhiteList.includes(baseLocale.commune);
+
     if (!isSignalementEnabled) {
       return;
     }

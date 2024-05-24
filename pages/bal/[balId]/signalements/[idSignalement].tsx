@@ -1,135 +1,196 @@
-import React, { useState } from "react";
-import { Heading, Pane, Paragraph, Tab, Tablist } from "evergreen-ui";
-import { uniqueId } from "lodash";
+import React, { useCallback, useContext, useEffect } from "react";
+import { Button, Link, Pane, Paragraph, Text } from "evergreen-ui";
+import NextLink from "next/link";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import ProtectedPage from "@/layouts/protected-page";
+import { Numero, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import {
-  Numero,
-  Toponyme,
-  ToponymesService,
-  Voie,
-  VoiesService,
-} from "@/lib/openapi-api-bal";
-import {
-  ExistingLocation,
+  ExistingVoie,
+  NumeroChangesRequestedDTO,
   Signalement,
-  DefaultService as SignalementService,
+  SignalementsService,
 } from "@/lib/openapi-signalement";
+import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api-bal";
 import { useRouter } from "next/router";
-import SignalementUpdateNumero from "@/components/signalement/numero/signalement-update-numero";
-import SignalementViewer from "@/components/signalement/signalement-viewer";
-import SignalementDeleteNumero from "@/components/signalement/numero/signalement-delete-numero";
-import SignalementCreateNumero from "@/components/signalement/numero/signalement-create-numero";
-import SignalementUpdateVoie from "@/components/signalement/voie/signalement-update-voie";
-import SignalementUpdateToponyme from "@/components/signalement/toponyme/signalement-update-toponyme";
+import LayoutContext from "@/contexts/layout";
+import {
+  getExistingLocation,
+  getSignalementLabel,
+} from "@/lib/utils/signalement";
+import { CommuneType } from "@/types/commune";
+import { ObjectId } from "bson";
+import MapContext from "@/contexts/map";
+import BalDataContext from "@/contexts/bal-data";
+import ProtectedPage from "@/layouts/protected-page";
+import SignalementForm from "@/components/signalement/signalement-form/signalement-form";
+import { SignalementViewer } from "@/components/signalement/signalement-viewer/signalement-viewer";
 
 interface SignalementPageProps extends BaseEditorProps {
   signalement: Signalement;
   existingLocation: Voie | Toponyme | Numero | null;
+  requestedToponyme?: Toponyme;
+  commune: CommuneType;
 }
 
 function SignalementPage({
   signalement,
   existingLocation,
+  requestedToponyme,
   commune,
+  baseLocale,
 }: SignalementPageProps) {
-  const [activeTab, setActiveTab] = useState(1);
   const router = useRouter();
+  const { toaster, setBreadcrumbs } = useContext(LayoutContext);
+  const { showTilesLayers, setShowToponymes } = useContext(MapContext);
+  const { refreshBALSync } = useContext(BalDataContext);
 
-  const handleClose = () => {
+  useEffect(() => {
+    showTilesLayers(false);
+    setShowToponymes(false);
+    setBreadcrumbs(
+      <>
+        <Link is={NextLink} href={`/bal/${baseLocale.id}`}>
+          {baseLocale.nom || commune.nom}
+        </Link>
+
+        <Text color="muted">{" > "}</Text>
+        <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>
+          Signalements
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Text>{getSignalementLabel(signalement)}</Text>
+      </>
+    );
+
+    return () => {
+      showTilesLayers(true);
+      setShowToponymes(true);
+      setBreadcrumbs(null);
+    };
+  }, [
+    showTilesLayers,
+    setShowToponymes,
+    setBreadcrumbs,
+    baseLocale,
+    signalement,
+    commune,
+  ]);
+
+  // Mark the signalement as expired if the location is not found
+  // and the signalement is still pending
+  useEffect(() => {
+    const markSignalementAsExpired = async () => {
+      await SignalementsServiceBal.updateSignalements(baseLocale.id, {
+        ids: [signalement.id],
+        status: Signalement.status.EXPIRED,
+      });
+    };
+
+    if (
+      (existingLocation === null || requestedToponyme === null) &&
+      signalement.status === Signalement.status.PENDING
+    ) {
+      markSignalementAsExpired();
+    }
+  }, [existingLocation, signalement, baseLocale, requestedToponyme]);
+
+  const handleClose = useCallback(() => {
     router.push(`/bal/${router.query.balId}/signalements`);
-  };
+  }, [router]);
 
-  const handleSignalementProcessed = async () => {
-    await SignalementService.updateSignalement({
-      id: signalement._id as string,
-    });
-    handleClose();
-  };
+  const getNextSignalement = useCallback(async () => {
+    const nextPaginatedSignalement = await SignalementsService.getSignalements(
+      undefined,
+      1,
+      [Signalement.status.PENDING],
+      undefined,
+      undefined,
+      [commune.code]
+    );
+
+    if (nextPaginatedSignalement.data.length > 0) {
+      return (nextPaginatedSignalement.data as unknown as Signalement[])[0];
+    }
+  }, [commune.code]);
+
+  const handleSubmit = useCallback(
+    async (status: Signalement.status) => {
+      const _updateSignalement = toaster(
+        async () => {
+          await SignalementsServiceBal.updateSignalements(baseLocale.id, {
+            ids: [signalement.id],
+            status,
+          });
+          await refreshBALSync();
+        },
+        status === Signalement.status.PROCESSED
+          ? "Le signalement a bien été pris en compte"
+          : "Le signalement a bien été ignoré",
+        "Une erreur est survenue"
+      );
+
+      await _updateSignalement();
+
+      const nextSignalement = await getNextSignalement();
+
+      if (nextSignalement) {
+        router.push(
+          `/bal/${router.query.balId}/signalements/${nextSignalement.id}`
+        );
+      } else {
+        handleClose();
+      }
+    },
+    [
+      signalement,
+      toaster,
+      handleClose,
+      getNextSignalement,
+      router,
+      baseLocale,
+      refreshBALSync,
+    ]
+  );
 
   return (
     <ProtectedPage>
-      {existingLocation ? (
-        <>
-          <Tablist margin={10}>
-            {["Infos", "Editeur"].map((tab, index) => (
-              <Tab
-                key={tab}
-                isSelected={activeTab === index}
-                onSelect={() => setActiveTab(index)}
-              >
-                {tab}
-              </Tab>
-            ))}
-          </Tablist>
-          <Pane overflow="scroll" height="100%">
-            {activeTab === 0 && (
-              <SignalementViewer
-                existingLocation={existingLocation}
-                signalement={signalement}
-              />
-            )}
-            {activeTab === 1 && (
-              <>
-                {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
-                  <SignalementCreateNumero
-                    signalement={signalement}
-                    initialVoieId={existingLocation.id}
-                    handleClose={handleClose}
-                    commune={commune}
-                    handleSubmit={handleSignalementProcessed}
-                  />
-                )}
-                {signalement.type === Signalement.type.LOCATION_TO_UPDATE &&
-                  (signalement.existingLocation.type ===
-                  ExistingLocation.type.NUMERO ? (
-                    <SignalementUpdateNumero
-                      existingLocation={
-                        existingLocation as Numero & { voie: Voie }
-                      }
-                      signalement={signalement}
-                      handleSubmit={handleSignalementProcessed}
-                      handleClose={handleClose}
-                      commune={commune}
-                    />
-                  ) : signalement.existingLocation.type ===
-                    ExistingLocation.type.VOIE ? (
-                    <SignalementUpdateVoie
-                      existingLocation={existingLocation as Voie}
-                      signalement={signalement}
-                      handleSubmit={handleSignalementProcessed}
-                      handleClose={handleClose}
-                      commune={commune}
-                    />
-                  ) : (
-                    <SignalementUpdateToponyme
-                      existingLocation={existingLocation as Toponyme}
-                      signalement={signalement}
-                      handleSubmit={handleSignalementProcessed}
-                      handleClose={handleClose}
-                      commune={commune}
-                    />
-                  ))}
-                {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
-                  <SignalementDeleteNumero
-                    existingLocation={
-                      existingLocation as Numero & { voie: Voie }
-                    }
-                    handleClose={handleClose}
-                    commune={commune}
-                    handleSubmit={handleSignalementProcessed}
-                  />
-                )}
-              </>
-            )}
-          </Pane>
-        </>
+      {existingLocation && requestedToponyme !== null ? (
+        <Pane overflow="scroll" height="100%">
+          <SignalementForm
+            signalement={signalement}
+            existingLocation={existingLocation}
+            requestedToponyme={requestedToponyme}
+            onClose={handleClose}
+            onSubmit={handleSubmit}
+          />
+        </Pane>
+      ) : signalement.status === Signalement.status.IGNORED ||
+        signalement.status === Signalement.status.PROCESSED ? (
+        <SignalementViewer
+          signalement={signalement}
+          onClose={() =>
+            router.push(`/bal/${router.query.balId}/signalements?tab=archived`)
+          }
+        />
       ) : (
         <Pane padding={20}>
-          <Heading>Erreur :</Heading>
           <Paragraph>
             Impossible de trouver la localisation du signalement.
           </Paragraph>
+          <Paragraph>
+            Il a été marqué comme expiré et n&apos;apparaîtra plus dans la liste
+            des signalements.
+          </Paragraph>
+          <Button
+            is={NextLink}
+            href={`/bal/${router.query.balId}/signalements`}
+            marginTop="1rem"
+            type="button"
+            width="fit-content"
+            alignSelf="center"
+            appearance="primary"
+          >
+            Retour à la liste des signalements
+          </Button>
         </Pane>
       )}
     </ProtectedPage>
@@ -143,21 +204,46 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
+    const signalement = await SignalementsService.getSignalementById(
+      params.idSignalement
     );
 
-    const signalement = signalements.find(
-      (signalement) => signalement._id === params.idSignalement
-    );
+    if (
+      signalement.status === Signalement.status.PROCESSED ||
+      signalement.status === Signalement.status.IGNORED
+    ) {
+      return {
+        props: {
+          baseLocale,
+          commune,
+          voies,
+          toponymes,
+          signalement,
+          existingLocation: null,
+        },
+      };
+    }
 
-    if (signalement.changesRequested.positions) {
-      signalement.changesRequested.positions =
-        signalement.changesRequested.positions.map((p) => ({
-          ...p,
-          _id: uniqueId(),
-          source: "signalement",
-        }));
+    if ((signalement.changesRequested as NumeroChangesRequestedDTO).positions) {
+      (signalement.changesRequested as NumeroChangesRequestedDTO).positions = (
+        signalement.changesRequested as NumeroChangesRequestedDTO
+      ).positions.map((p) => ({
+        ...p,
+        id: new ObjectId().toHexString(),
+      }));
+    }
+
+    let requestedToponyme;
+    if (
+      (signalement.changesRequested as NumeroChangesRequestedDTO).nomComplement
+    ) {
+      requestedToponyme =
+        toponymes.find(
+          (toponyme) =>
+            toponyme.nom ===
+            (signalement.changesRequested as NumeroChangesRequestedDTO)
+              .nomComplement
+        ) || null;
     }
 
     let existingLocation = null;
@@ -165,61 +251,26 @@ export async function getServerSideProps({ params }) {
       signalement.type === Signalement.type.LOCATION_TO_UPDATE ||
       signalement.type === Signalement.type.LOCATION_TO_DELETE
     ) {
-      if (signalement.existingLocation.type === ExistingLocation.type.VOIE) {
-        existingLocation = voies.find(
-          (voie) => voie.nom === signalement.existingLocation.nom
+      try {
+        existingLocation = await getExistingLocation(
+          signalement,
+          voies,
+          toponymes
         );
-      } else if (
-        signalement.existingLocation.type === ExistingLocation.type.TOPONYME
-      ) {
-        existingLocation = toponymes.find(
-          (toponyme) => toponyme.nom === signalement.existingLocation.nom
-        );
-      } else if (
-        signalement.existingLocation.type === ExistingLocation.type.NUMERO
-      ) {
-        if (
-          signalement.existingLocation.toponyme.type ===
-          ExistingLocation.type.VOIE
-        ) {
-          const voie = voies.find(
-            (voie) => voie.nom === signalement.existingLocation.toponyme.nom
-          );
-          const numeros = await VoiesService.findVoieNumeros(voie.id);
-          existingLocation = numeros.find(({ numeroComplet }) => {
-            const existingLocationNumeroComplet = signalement.existingLocation
-              .suffixe
-              ? `${signalement.existingLocation.numero}${signalement.existingLocation.suffixe}`
-              : `${signalement.existingLocation.numero}`;
-            return numeroComplet === existingLocationNumeroComplet;
-          });
-          if (existingLocation) {
-            existingLocation.voie = voie;
-          }
-        } else {
-          const toponyme = toponymes.find(
-            (toponyme) =>
-              toponyme.nom === signalement.existingLocation.toponyme.nom
-          );
-          const numeros = await ToponymesService.findToponymeNumeros(
-            toponyme.id
-          );
-          existingLocation = numeros.find(({ numeroComplet }) => {
-            const existingLocationNumeroComplet = signalement.existingLocation
-              .suffixe
-              ? `${signalement.existingLocation.numero}${signalement.existingLocation.suffixe}`
-              : `${signalement.existingLocation.numero}`;
-            return numeroComplet === existingLocationNumeroComplet;
-          });
-          if (existingLocation) {
-            existingLocation.toponyme = toponyme;
-          }
-        }
+      } catch (err) {
+        console.error(err);
+        existingLocation = null;
       }
     } else if (signalement.type === Signalement.type.LOCATION_TO_CREATE) {
-      existingLocation = voies.find(
-        (voie) => voie.nom === signalement.existingLocation.nom
-      );
+      existingLocation = voies.find((voie) => {
+        if ((signalement.existingLocation as ExistingVoie).banId) {
+          return (
+            voie.banId === (signalement.existingLocation as ExistingVoie).banId
+          );
+        }
+
+        return voie.nom === (signalement.existingLocation as ExistingVoie).nom;
+      });
     }
 
     if (!existingLocation) {
@@ -234,6 +285,7 @@ export async function getServerSideProps({ params }) {
         toponymes,
         signalement,
         existingLocation,
+        ...(requestedToponyme !== undefined ? { requestedToponyme } : {}),
       },
     };
   } catch (err) {

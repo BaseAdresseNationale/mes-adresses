@@ -19,46 +19,83 @@ import MapContext from "@/contexts/map";
 import BalDataContext from "./bal-data";
 
 interface ParcellesContextType {
-  selectedParcelles: string[];
-  setSelectedParcelles: (value: string[]) => void;
+  highlightedParcelles: string[];
+  setHighlightedParcelles: React.Dispatch<React.SetStateAction<string[]>>;
   isParcelleSelectionEnabled: boolean;
-  setIsParcelleSelectionEnabled: (value: boolean) => void;
+  setIsParcelleSelectionEnabled: React.Dispatch<React.SetStateAction<boolean>>;
   hoveredParcelle: { id: string; featureId?: string } | null;
   handleHoveredParcelle: (
     value: { id: string; featureId?: string } | null
   ) => void;
   handleParcelle: (value: string) => void;
+  setShowSelectedParcelles?: React.Dispatch<React.SetStateAction<boolean>>;
+  handleSetFeatureState: (
+    featureId: string,
+    state: { [key: string]: any }
+  ) => void;
+  isDiffMode?: boolean;
+  setIsDiffMode?: React.Dispatch<React.SetStateAction<boolean>>;
+  isCadastreVisible?: boolean;
 }
 
 const ParcellesContext = React.createContext<ParcellesContextType | null>(null);
 
-function getHoveredFeatureId(map: MaplibreMap, id: string): string | undefined {
+function getFeatureId(map: MaplibreMap, id: string): string | undefined {
   const [feature] = map.querySourceFeatures(CADASTRE_SOURCE, {
     sourceLayer: CADASTRE_SOURCE_LAYER.PARCELLES,
     filter: ["==", ["get", "id"], id],
   });
+
   return (feature?.id as string) || undefined;
 }
 
 export function ParcellesContextProvider(props: ChildrenProps) {
   const { map, isCadastreDisplayed, isStyleLoaded } = useContext(MapContext);
-  const { baseLocale, parcelles } = useContext(BalDataContext);
-
+  const { baseLocale, parcelles: selectedParcelles } =
+    useContext(BalDataContext);
+  const [showSelectedParcelles, setShowSelectedParcelles] =
+    useState<boolean>(true);
+  const [isDiffMode, setIsDiffMode] = useState<boolean>(false);
+  const [isCadastreVisible, setIsCadastreVisible] = useState<boolean>(false);
   const [hoveredParcelle, setHoveredParcelle] = useState<{
     id: string;
     featureId?: string;
   } | null>(null);
   const [isParcelleSelectionEnabled, setIsParcelleSelectionEnabled] =
     useState<boolean>(false);
-  const [selectedParcelles, setSelectedParcelles] = useState<string[]>([]);
+  const [highlightedParcelles, setHighlightedParcelles] = useState<string[]>(
+    []
+  );
 
   const prevHoveredParcelle = useRef<string | undefined>();
+
+  useEffect(() => {
+    const isCadastreVisibleCb = (e) => {
+      if (e.isSourceLoaded && e.sourceId === CADASTRE_SOURCE) {
+        setTimeout(() => {
+          setIsCadastreVisible(true);
+        }, 100);
+      }
+    };
+
+    if (isCadastreDisplayed && map) {
+      map.on("sourcedata", isCadastreVisibleCb);
+    } else {
+      setIsCadastreVisible(false);
+    }
+
+    return () => {
+      if (map) {
+        map.off("sourcedata", isCadastreVisibleCb);
+      }
+    };
+  }, [isCadastreDisplayed, map]);
 
   const handleHoveredParcelle = useCallback(
     (hovered: { id: string; featureId?: string } | null) => {
       if (map && hovered) {
         const featureId: string | undefined =
-          hovered.featureId || getHoveredFeatureId(map, hovered.id);
+          hovered.featureId || getFeatureId(map, hovered.id);
 
         if (!hovered.featureId && isCadastreDisplayed) {
           // Handle parcelle from side menu
@@ -93,12 +130,33 @@ export function ParcellesContextProvider(props: ChildrenProps) {
     [map, isCadastreDisplayed]
   );
 
+  const handleSetFeatureState = useCallback(
+    (parcelleId: string, state: { [key: string]: boolean }) => {
+      if (map) {
+        const featureId = getFeatureId(map, parcelleId);
+        if (!featureId) {
+          return;
+        }
+
+        map.setFeatureState(
+          {
+            source: CADASTRE_SOURCE,
+            sourceLayer: CADASTRE_SOURCE_LAYER.PARCELLES,
+            id: featureId,
+          },
+          state
+        );
+      }
+    },
+    [map]
+  );
+
   const handleParcelle = useCallback(
     (parcelle: string) => {
       if (isParcelleSelectionEnabled) {
-        setSelectedParcelles((parcelles: string[]) => {
-          if (selectedParcelles.includes(parcelle)) {
-            return selectedParcelles.filter((id) => id !== parcelle);
+        setHighlightedParcelles((parcelles: string[]) => {
+          if (parcelles.includes(parcelle)) {
+            return parcelles.filter((id) => id !== parcelle);
           }
 
           return [...parcelles, parcelle];
@@ -106,7 +164,7 @@ export function ParcellesContextProvider(props: ChildrenProps) {
         handleHoveredParcelle(null);
       }
     },
-    [selectedParcelles, isParcelleSelectionEnabled, handleHoveredParcelle]
+    [isParcelleSelectionEnabled, handleHoveredParcelle]
   );
 
   const toggleCadastreVisibility = useCallback(() => {
@@ -120,12 +178,10 @@ export function ParcellesContextProvider(props: ChildrenProps) {
   }, [map, isCadastreDisplayed]);
 
   const filterSelectedParcelles = useCallback(() => {
-    if (parcelles.length > 0) {
-      const exps: ExpressionSpecification[] = parcelles.map((id: string) => [
-        "==",
-        ["get", "id"],
-        id,
-      ]);
+    if (selectedParcelles.length > 0 && showSelectedParcelles) {
+      const exps: ExpressionSpecification[] = selectedParcelles.map(
+        (id: string) => ["==", ["get", "id"], id]
+      );
       map.setFilter(CADASTRE_LAYER.PARCELLES_SELECTED, ["any", ...exps]);
     } else {
       map.setFilter(CADASTRE_LAYER.PARCELLES_SELECTED, [
@@ -134,16 +190,21 @@ export function ParcellesContextProvider(props: ChildrenProps) {
         "",
       ]);
     }
-  }, [map, parcelles]);
+  }, [map, selectedParcelles, showSelectedParcelles]);
 
   const filterHighlightedParcelles = useCallback(() => {
-    if (parcelles.length > 0) {
-      const exps: ExpressionSpecification[] = selectedParcelles.map((id) => [
+    if (selectedParcelles.length > 0) {
+      const exps: ExpressionSpecification[] = highlightedParcelles.map((id) => [
         "==",
         ["get", "id"],
         id,
       ]);
-      map.setFilter(CADASTRE_LAYER.PARCELLE_HIGHLIGHTED, ["any", ...exps]);
+      map.setFilter(
+        isDiffMode
+          ? CADASTRE_LAYER.PARCELLE_HIGHLIGHTED_DIFF_MODE
+          : CADASTRE_LAYER.PARCELLE_HIGHLIGHTED,
+        ["any", ...exps]
+      );
     } else {
       map.setFilter(CADASTRE_LAYER.PARCELLE_HIGHLIGHTED, [
         "==",
@@ -151,7 +212,7 @@ export function ParcellesContextProvider(props: ChildrenProps) {
         "",
       ]);
     }
-  }, [map, isParcelleSelectionEnabled, selectedParcelles]);
+  }, [map, selectedParcelles, highlightedParcelles, isDiffMode]);
 
   const reloadParcellesLayers = useCallback(() => {
     // Toggle all cadastre layers visiblity
@@ -217,7 +278,7 @@ export function ParcellesContextProvider(props: ChildrenProps) {
   // Reset isStyleLoaded when selection is disabled
   useEffect(() => {
     if (!isParcelleSelectionEnabled && isStyleLoaded) {
-      setSelectedParcelles([]);
+      setHighlightedParcelles([]);
     }
   }, [isParcelleSelectionEnabled, isStyleLoaded]);
 
@@ -229,20 +290,31 @@ export function ParcellesContextProvider(props: ChildrenProps) {
 
   const value = useMemo(
     () => ({
-      selectedParcelles,
-      setSelectedParcelles,
+      highlightedParcelles,
+      setHighlightedParcelles,
       isParcelleSelectionEnabled,
       setIsParcelleSelectionEnabled,
       handleParcelle,
       hoveredParcelle,
       handleHoveredParcelle,
+      setShowSelectedParcelles,
+      handleSetFeatureState,
+      isDiffMode,
+      setIsDiffMode,
+      isCadastreVisible,
     }),
     [
-      selectedParcelles,
+      highlightedParcelles,
+      setHighlightedParcelles,
       isParcelleSelectionEnabled,
       handleParcelle,
       hoveredParcelle,
       handleHoveredParcelle,
+      setShowSelectedParcelles,
+      handleSetFeatureState,
+      isDiffMode,
+      setIsDiffMode,
+      isCadastreVisible,
     ]
   );
 

@@ -3,6 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ObjectId = {
+export type PaginatedSignalementsDTO = {
+    data: Array<any[]>;
+    page: number;
+    limit: number;
+    total: number;
 };
 
