@@ -30,6 +30,13 @@ function useFuse(source, delay, options, initialValue = null) {
         setFiltered(source);
       }
     }
+
+    if (value) {
+      const results = fuse.search(value);
+      setFiltered(results.map((result) => result.item));
+    } else {
+      setFiltered(source);
+    }
   }, delay);
 
   return [filtered, debouncedCallback];

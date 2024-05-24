@@ -17,6 +17,8 @@ interface ItemsListDeleteProps {
   onRemoveNumeros?: (item: any) => void;
 }
 
+const fuseOptions = { keys: ["nom"] };
+
 function ItemsListDelete({
   itemsDeleted,
   model,
@@ -24,7 +26,7 @@ function ItemsListDelete({
   onRemove,
   onRemoveNumeros,
 }: ItemsListDeleteProps) {
-  const [filtered, setFilter] = useFuse(itemsDeleted, 200, { keys: ["nom"] });
+  const [filtered, setFilter] = useFuse(itemsDeleted, 200, fuseOptions);
 
   const scrollableItems = useMemo(
     () => sortBy(filtered, (v) => normalizeSort(v.nom)),
