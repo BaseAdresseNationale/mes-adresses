@@ -4,7 +4,10 @@ import ReactDOM from "react-dom";
 import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";
 import VoieEditor from "@/components/bal/voie-editor";
-import { Signalement } from "@/lib/openapi-signalement";
+import {
+  Signalement,
+  VoieChangesRequestedDTO,
+} from "@/lib/openapi-signalement";
 import { Voie } from "@/lib/openapi";
 
 interface SignalementUpdateVoieProps {
@@ -21,7 +24,7 @@ function SignalementUpdateVoie({
   handleSubmit,
   handleClose,
 }: SignalementUpdateVoieProps) {
-  const { nom } = signalement.changesRequested;
+  const { nom } = signalement.changesRequested as VoieChangesRequestedDTO;
   const formInputRef = useRef<HTMLDivElement>(null);
 
   const [changes, setChanges] = useState({

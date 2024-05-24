@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type Author = {
-    email?: string | null;
+export type CreateClientDTO = {
+    nom: string;
 };
 
