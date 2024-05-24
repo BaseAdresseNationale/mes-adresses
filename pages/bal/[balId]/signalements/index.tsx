@@ -15,7 +15,7 @@ import ProtectedPage from "@/layouts/protected-page";
 import {
   ExistingNumero,
   Signalement,
-  DefaultService as SignalementService,
+  SignalementsService,
 } from "@/lib/openapi-signalement";
 import MarkersContext from "@/contexts/markers";
 import { getSignalementLabel } from "@/lib/utils/signalement";
@@ -75,10 +75,27 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   }, [signalements]);
 
   const refreshSignalements = async () => {
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
+    const signalements = await SignalementsService.getSignalementsByCodeCommune(
+      baseLocale.commune,
+      undefined,
+      undefined,
+      Signalement.status.PENDING
     );
     setSignalements(signalements);
+  };
+
+  // We use a proxy to avoid exposing the client token in the frontend
+  const updateSignalement = (id: string, status: Signalement.status) => {
+    return fetch("/api/proxy-signalement", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id,
+        status,
+      }),
+    });
   };
 
   const handleSelectSignalement = (id) => {
@@ -86,13 +103,13 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   };
 
   const handleIgnoreSignalement = async (id) => {
-    const updateSignalement = toaster(
-      () => SignalementService.updateSignalement({ id }),
+    const _updateSignalement = toaster(
+      () => updateSignalement(id, Signalement.status.IGNORED),
       "Le signalement a bien été ignoré",
       "Une erreur est survenue"
     );
 
-    await updateSignalement();
+    await _updateSignalement();
     await refreshSignalements();
   };
 
@@ -100,7 +117,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
     const massUpdateSignalements = toaster(
       async () => {
         for (const id of selectedSignalements) {
-          await SignalementService.updateSignalement({ id });
+          await updateSignalement(id, Signalement.status.IGNORED);
         }
       },
       "Les signalements ont bien été ignorés",
@@ -218,7 +235,7 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
+    const signalements = await SignalementsService.getSignalementsByCodeCommune(
       baseLocale.commune
     );
 

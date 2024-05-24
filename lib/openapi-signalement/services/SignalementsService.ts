@@ -10,22 +10,39 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
-export class DefaultService {
+export class SignalementsService {
 
     /**
      * Get all signalements for a given codeCommune
      * @param codeCommune
+     * @param sourceId
+     * @param type
+     * @param status
+     * @param limit
+     * @param page
      * @returns any[]
      * @throws ApiError
      */
     public static getSignalementsByCodeCommune(
         codeCommune: string,
+        sourceId?: string,
+        type?: 'LOCATION_TO_UPDATE' | 'LOCATION_TO_DELETE' | 'LOCATION_TO_CREATE' | 'OTHER',
+        status?: 'PENDING' | 'IGNORED' | 'PROCESSED',
+        limit?: number,
+        page?: number,
     ): CancelablePromise<any[]> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/signalements/{codeCommune}',
             path: {
                 'codeCommune': codeCommune,
+            },
+            query: {
+                'sourceId': sourceId,
+                'type': type,
+                'status': status,
+                'limit': limit,
+                'page': page,
             },
         });
     }

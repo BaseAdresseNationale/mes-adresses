@@ -5,5 +5,17 @@
 
 export type UpdateSignalementDTO = {
     id: string;
+    status: UpdateSignalementDTO.status;
 };
+
+export namespace UpdateSignalementDTO {
+
+    export enum status {
+        PENDING = 'PENDING',
+        IGNORED = 'IGNORED',
+        PROCESSED = 'PROCESSED',
+    }
+
+
+}
 

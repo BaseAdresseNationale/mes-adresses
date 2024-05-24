@@ -6,11 +6,12 @@
 import type { Position } from './Position';
 
 export type ChangesRequested = {
-    numero: number;
+    numero?: number | null;
     suffixe?: string | null;
     positions?: Array<Position> | null;
     parcelles?: Array<string> | null;
     nomVoie?: string | null;
     nom?: string | null;
+    comment?: string | null;
 };
 
