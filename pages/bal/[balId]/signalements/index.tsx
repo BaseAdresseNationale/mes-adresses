@@ -15,7 +15,7 @@ import ProtectedPage from "@/layouts/protected-page";
 import {
   ExistingNumero,
   Signalement,
-  DefaultService as SignalementService,
+  SignalementsService,
 } from "@/lib/openapi-signalement";
 import { toaster } from "evergreen-ui";
 import MarkersContext from "@/contexts/markers";
@@ -74,7 +74,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   }, [signalements]);
 
   const updateSignalements = async () => {
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
+    const signalements = await SignalementsService.getSignalementsByCodeCommune(
       baseLocale.commune
     );
     setSignalements(signalements);
@@ -86,7 +86,19 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
 
   const handleIgnoreSignalement = async (id) => {
     try {
-      await SignalementService.updateSignalement({ id });
+      const response = await fetch("/api/update-signalement", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          status: Signalement.status.IGNORED,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Une erreur est survenue");
+      }
       toaster.success("Le signalement a bien été ignoré");
     } catch (error) {
       toaster.danger("Une erreur est survenue", {
@@ -100,7 +112,19 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   const handleIgnoreSignalements = async () => {
     try {
       for (const id of selectedSignalements) {
-        await SignalementService.updateSignalement({ id });
+        const response = await fetch("/api/update-signalement", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id,
+            status: Signalement.status.IGNORED,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Une erreur est survenue");
+        }
       }
       toaster.success("Les signalements ont bien été ignorés");
     } catch (error) {
@@ -219,7 +243,7 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
+    const signalements = await SignalementsService.getSignalementsByCodeCommune(
       baseLocale.commune
     );
 
