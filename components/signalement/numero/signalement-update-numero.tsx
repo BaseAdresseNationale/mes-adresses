@@ -17,6 +17,7 @@ import { Numero, Position, Voie, VoiesService } from "@/lib/openapi";
 import {
   Signalement,
   Position as PositionSignalement,
+  NumeroChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 import LayoutContext from "@/contexts/layout";
 
@@ -88,7 +89,7 @@ function SignalementUpdateNumero({
   const [numeroEditorValue, setNumeroEditorValue] = useState(existingLocation);
 
   const { numero, suffixe, positions, parcelles, nomVoie } =
-    signalement.changesRequested;
+    signalement.changesRequested as NumeroChangesRequestedDTO;
 
   useEffect(() => {
     const refKeys = Object.keys(refs);
@@ -113,7 +114,7 @@ function SignalementUpdateNumero({
               isMapMarker: true,
               isDisabled: true,
               color: "warning",
-              label: `${position.type} - ${numero}${suffixe ? suffixe : ""}`,
+              label: `${numero}${suffixe ? suffixe : ""} - ${position.type}`,
               longitude: position.point.coordinates[0],
               latitude: position.point.coordinates[1],
               type: position.type as unknown as Position.type,
@@ -121,10 +122,6 @@ function SignalementUpdateNumero({
           : removeMarker(position._id);
       });
     }
-
-    return () => {
-      disableMarkers();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positions, changes.positions]);
 

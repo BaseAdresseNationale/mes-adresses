@@ -1,9 +1,10 @@
 import {
-  ChangesRequested,
+  DeleteNumeroChangesRequestedDTO,
   ExistingLocation,
   ExistingNumero,
   ExistingToponyme,
   ExistingVoie,
+  NumeroChangesRequestedDTO,
   Signalement,
 } from "../openapi-signalement";
 
@@ -33,7 +34,9 @@ export const getExistingLocationLabel = (
   return label;
 };
 
-const getRequestedLocationLabel = (changesRequested: ChangesRequested) => {
+const getRequestedLocationLabel = (
+  changesRequested: NumeroChangesRequestedDTO
+) => {
   return `${changesRequested.numero} ${
     changesRequested.suffixe ? `${changesRequested.suffixe} ` : ""
   }${changesRequested.nomVoie}`;
@@ -51,16 +54,16 @@ export const getSignalementLabel = (
       )}${
         opts?.withoutDate
           ? ""
-          : `- ${new Date(signalement._created).toLocaleDateString()}`
+          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
       }`;
       break;
     case Signalement.type.LOCATION_TO_CREATE:
       label = `Demande de creation : ${getRequestedLocationLabel(
-        signalement.changesRequested
+        signalement.changesRequested as NumeroChangesRequestedDTO
       )}${
         opts?.withoutDate
           ? ""
-          : `- ${new Date(signalement._created).toLocaleDateString()}`
+          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
       }`;
       break;
     case Signalement.type.LOCATION_TO_DELETE:
@@ -69,12 +72,41 @@ export const getSignalementLabel = (
       )}${
         opts?.withoutDate
           ? ""
-          : `- ${new Date(signalement._created).toLocaleDateString()}`
+          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
       }`;
       break;
     default:
-      label = "Autre demande";
+      label = `Autre demande : ${getExistingLocationLabel(
+        signalement.existingLocation
+      )}${
+        opts?.withoutDate
+          ? ""
+          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
+      }`;
   }
 
   return label;
+};
+
+// We use a proxy to avoid exposing the client token in the frontend
+export const updateSignalement = async (
+  id: string,
+  status: Signalement.status
+): Promise<Signalement> => {
+  const response = await fetch("/api/proxy-signalement", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id,
+      status,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update signalement");
+  }
+
+  return response.json();
 };

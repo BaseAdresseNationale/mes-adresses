@@ -3,15 +3,21 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { AuthorDTO } from './AuthorDTO';
-import type { ExistingLocation } from './ExistingLocation';
+import type { AuthorInput } from './AuthorInput';
+import type { DeleteNumeroChangesRequestedDTO } from './DeleteNumeroChangesRequestedDTO';
+import type { ExistingNumero } from './ExistingNumero';
+import type { ExistingToponyme } from './ExistingToponyme';
+import type { ExistingVoie } from './ExistingVoie';
+import type { NumeroChangesRequestedDTO } from './NumeroChangesRequestedDTO';
+import type { ToponymeChangesRequestedDTO } from './ToponymeChangesRequestedDTO';
+import type { VoieChangesRequestedDTO } from './VoieChangesRequestedDTO';
 
 export type CreateSignalementDTO = {
     codeCommune: string;
     type: CreateSignalementDTO.type;
-    author?: AuthorDTO | null;
-    existingLocation?: ExistingLocation | null;
-    changesRequested: Record<string, any> | null;
+    author?: AuthorInput | null;
+    existingLocation?: (ExistingNumero | ExistingVoie | ExistingToponyme) | null;
+    changesRequested: (NumeroChangesRequestedDTO | DeleteNumeroChangesRequestedDTO | ToponymeChangesRequestedDTO | VoieChangesRequestedDTO) | null;
 };
 
 export namespace CreateSignalementDTO {
