@@ -1,5 +1,4 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
 import { Text, Strong, Icon, CaretUpIcon, CaretDownIcon } from "evergreen-ui";
 
 interface TextWrapperProps {

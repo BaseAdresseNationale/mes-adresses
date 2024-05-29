@@ -5,7 +5,6 @@ import React, {
   useContext,
   useMemo,
 } from "react";
-import PropTypes from "prop-types";
 import Router from "next/router";
 
 import LocalStorageContext from "@/contexts/local-storage";
@@ -87,16 +86,6 @@ export function TokenContextProvider({
 
   return <TokenContext.Provider value={value} {...props} />;
 }
-
-TokenContextProvider.propTypes = {
-  balId: PropTypes.string,
-  _token: PropTypes.string,
-};
-
-TokenContextProvider.defaultProps = {
-  balId: null,
-  _token: null,
-};
 
 export const MarkersContextConsumer = TokenContext.Consumer;
 
