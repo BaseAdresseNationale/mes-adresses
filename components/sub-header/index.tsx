@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import ReactDOM from "react-dom";
 import { Pane } from "evergreen-ui";
 
@@ -36,6 +36,10 @@ function SubHeader({ commune }: SubHeaderProps) {
   const { token, tokenIsChecking } = useContext(TokenContext);
   const isAdmin = Boolean(token);
   const { isMobile } = useContext(LayoutContext);
+
+  const handleClose = useCallback(() => {
+    setIsHabilitationProcessDisplayed(false);
+  }, [setIsHabilitationProcessDisplayed]);
 
   const {
     massDeletionConfirm,
@@ -123,10 +127,7 @@ function SubHeader({ commune }: SubHeaderProps) {
       </Pane>
 
       {isAdmin && isHabilitationProcessDisplayed && commune.isCOM && (
-        <COMDialog
-          baseLocaleId={baseLocale._id}
-          handleClose={() => setIsHabilitationProcessDisplayed(false)}
-        />
+        <COMDialog baseLocaleId={baseLocale._id} handleClose={handleClose} />
       )}
 
       {isAdmin && habilitation && isHabilitationProcessDisplayed && (
@@ -135,7 +136,7 @@ function SubHeader({ commune }: SubHeaderProps) {
           commune={commune}
           habilitation={habilitation}
           resetHabilitationProcess={handleShowHabilitationProcess}
-          handleClose={() => setIsHabilitationProcessDisplayed(false)}
+          handleClose={handleClose}
           handlePublication={handlePublication}
         />
       )}
