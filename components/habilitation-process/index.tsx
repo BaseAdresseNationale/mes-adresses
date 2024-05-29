@@ -33,7 +33,6 @@ function getStep(habilitation) {
 }
 
 interface HabilitationProcessProps {
-  token: string;
   baseLocale: BaseLocale;
   commune: CommuneType;
   habilitation: any;
@@ -43,7 +42,6 @@ interface HabilitationProcessProps {
 }
 
 function HabilitationProcess({
-  token,
   baseLocale,
   commune,
   habilitation,

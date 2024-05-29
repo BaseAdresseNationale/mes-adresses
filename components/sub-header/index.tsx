@@ -131,7 +131,6 @@ function SubHeader({ commune }: SubHeaderProps) {
 
       {isAdmin && habilitation && isHabilitationProcessDisplayed && (
         <HabilitationProcess
-          token={token}
           baseLocale={baseLocale}
           commune={commune}
           habilitation={habilitation}
