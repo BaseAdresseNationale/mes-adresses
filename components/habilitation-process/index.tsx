@@ -14,7 +14,11 @@ import ValidateAuthentication from "@/components/habilitation-process/validate-a
 import StrategySelection from "@/components/habilitation-process/strategy-selection";
 import AcceptedDialog from "@/components/habilitation-process/accepted-dialog";
 import RejectedDialog from "@/components/habilitation-process/rejected-dialog";
-import { BaseLocale, HabilitationService } from "@/lib/openapi";
+import {
+  BaseLocale,
+  BasesLocalesService,
+  HabilitationService,
+} from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
 
 function getStep(habilitation) {
@@ -53,7 +57,7 @@ function HabilitationProcess({
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
 
-  const { reloadHabilitation } = useContext(BalDataContext);
+  const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
 
   const sendCode = async () =>
     HabilitationService.sendPinCodeHabilitation(baseLocale._id);
@@ -116,10 +120,15 @@ function HabilitationProcess({
       });
     } else if (validated) {
       checkConflictingRevision();
+      // SET RESUME BAL IF HABILITATION CODE
+      if (baseLocale.sync?.isPaused == true) {
+        await BasesLocalesService.resumeBaseLocale(baseLocale._id);
+      }
       setStep(2);
     }
 
     await reloadHabilitation();
+    await reloadBaseLocale();
 
     setIsLoading(false);
   };
