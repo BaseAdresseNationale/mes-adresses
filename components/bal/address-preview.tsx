@@ -45,16 +45,17 @@ function AddressPreview({
 
   return (
     <Pane
-      position="fixed"
-      width={500}
+      position="sticky"
+      top={-12}
+      marginLeft={-12}
+      marginRight={-12}
       transition="left 0.3s"
       boxSizing="border-box"
-      left={0}
       zIndex={3}
       background="blue300"
       paddingY={8}
       paddingX={12}
-      marginTop={-12}
+      marginTop={-24}
     >
       <Text fontSize={address.length > 110 ? "12px" : "13px"} color="white">
         {address}

@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import Router from "next/router";
 import { Pane, Table } from "evergreen-ui";
 
@@ -51,15 +50,5 @@ function PublicBasesLocalesList({
     </Pane>
   );
 }
-
-PublicBasesLocalesList.propTypes = {
-  searchInput: "",
-};
-
-PublicBasesLocalesList.propTypes = {
-  basesLocales: PropTypes.array.isRequired,
-  searchInput: PropTypes.string,
-  onFilter: PropTypes.func,
-};
 
 export default PublicBasesLocalesList;

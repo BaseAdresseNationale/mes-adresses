@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import {
   Pane,
   Button,
-  Heading,
   PlusIcon,
   Spinner,
   Alert,
@@ -12,8 +11,8 @@ import {
 } from "evergreen-ui";
 import Link from "next/link";
 import Main from "@/layouts/main";
-import useWindowSize from "@/hooks/useWindowSize";
 import BALRecoveryContext from "@/contexts/bal-recovery";
+import LayoutContext from "@/contexts/layout.tsx";
 
 const CSRUserBasesLocales = dynamic(
   () => import("../components/user-bases-locales.tsx") as any,
@@ -34,43 +33,33 @@ const CSRUserBasesLocales = dynamic(
 );
 
 function Index() {
-  const { isMobile } = useWindowSize();
+  const { isMobile } = useContext(LayoutContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
 
   return (
     <Main>
-      <Heading
-        padding={16}
-        size={400}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        flexShrink="0"
-      >
-        Mes Bases Adresse Locales
-        <Pane display="flex" justifyContent="flex-end">
-          <Button
-            iconBefore={SwapHorizontalIcon}
-            marginX={8}
-            marginY={4}
-            onClick={() => {
-              setIsRecoveryDisplayed(true);
-            }}
-          >
-            {isMobile ? "Récupérer" : "Récupérer une Base Adresse Locale"}
-          </Button>
-          <Button
-            iconBefore={PlusIcon}
-            is={Link}
-            marginX={8}
-            marginY={4}
-            href="/new"
-            appearance="primary"
-          >
-            {isMobile ? "Créer" : "Créer une Base Adresse Locale"}
-          </Button>
-        </Pane>
-      </Heading>
+      <Pane padding={16} display="flex" justifyContent="flex-end">
+        <Button
+          iconBefore={SwapHorizontalIcon}
+          marginX={8}
+          marginY={4}
+          onClick={() => {
+            setIsRecoveryDisplayed(true);
+          }}
+        >
+          {isMobile ? "Récupérer" : "Récupérer une Base Adresse Locale"}
+        </Button>
+        <Button
+          iconBefore={PlusIcon}
+          is={Link}
+          marginX={8}
+          marginY={4}
+          href="/new"
+          appearance="primary"
+        >
+          {isMobile ? "Créer" : "Créer une Base Adresse Locale"}
+        </Button>
+      </Pane>
 
       <CSRUserBasesLocales />
 

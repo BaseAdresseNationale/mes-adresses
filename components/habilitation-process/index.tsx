@@ -1,5 +1,4 @@
 import { useState, useCallback, useContext, useEffect } from "react";
-import PropTypes from "prop-types";
 import Router from "next/router";
 import { Dialog, Pane, Text, Spinner, toaster } from "evergreen-ui";
 
@@ -34,7 +33,6 @@ function getStep(habilitation) {
 }
 
 interface HabilitationProcessProps {
-  token: string;
   baseLocale: BaseLocale;
   commune: CommuneType;
   habilitation: any;
@@ -44,7 +42,6 @@ interface HabilitationProcessProps {
 }
 
 function HabilitationProcess({
-  token,
   baseLocale,
   commune,
   habilitation,
@@ -235,29 +232,5 @@ function HabilitationProcess({
     </Dialog>
   );
 }
-
-HabilitationProcess.propTypes = {
-  token: PropTypes.string.isRequired,
-  baseLocale: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    sync: PropTypes.object,
-    status: PropTypes.oneOf(["replaced", "published", "draft"]).isRequired,
-  }).isRequired,
-  commune: PropTypes.shape({
-    code: PropTypes.string.isRequired,
-    nom: PropTypes.string.isRequired,
-  }).isRequired,
-  habilitation: PropTypes.shape({
-    status: PropTypes.string.isRequired,
-    emailCommune: PropTypes.string,
-    franceconnectAuthenticationUrl: PropTypes.string.isRequired,
-    strategy: PropTypes.shape({
-      type: PropTypes.oneOf(["email", "franceconnect", "internal"]),
-    }),
-  }).isRequired,
-  handlePublication: PropTypes.func.isRequired,
-  resetHabilitationProcess: PropTypes.func.isRequired,
-  handleClose: PropTypes.func.isRequired,
-};
 
 export default HabilitationProcess;

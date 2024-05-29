@@ -1,5 +1,4 @@
 import { useContext, useCallback } from "react";
-import PropTypes from "prop-types";
 import {
   Pane,
   Heading,
@@ -13,11 +12,11 @@ import {
 import HelpContext from "@/contexts/help";
 
 import useHelp from "@/hooks/help";
-import useWindowSize from "@/hooks/useWindowSize";
+import LayoutContext from "@/contexts/layout";
 
 interface FooterLinkProps {
   title: string;
-  description: string;
+  description?: string;
   icon: IconComponent;
   link?: string;
   onClick?: () => void;
@@ -56,16 +55,18 @@ function FooterLink({
         </Button>
       )}
 
-      <Paragraph marginTop={4} textAlign="center" fontStyle="italic">
-        <small>{description}</small>
-      </Paragraph>
+      {description && (
+        <Paragraph marginTop={4} textAlign="center" fontStyle="italic">
+          <small>{description}</small>
+        </Paragraph>
+      )}
     </Pane>
   );
 }
 
 function Footer() {
   const { showHelp, setShowHelp, setSelectedIndex } = useContext(HelpContext);
-  const { isMobile } = useWindowSize();
+  const { isMobile } = useContext(LayoutContext);
 
   useHelp(0);
 
@@ -83,28 +84,37 @@ function Footer() {
           </Heading>
         </Pane>
         <Pane
-          display="grid"
+          {...(isMobile
+            ? { display: "flex", flexDirection: "column" }
+            : { display: "grid", gridTemplateColumns: "1fr 1fr 1fr" })}
           justifyContent="space-between"
           alignItems="center"
-          {...(isMobile ? {} : { gridTemplateColumns: "1fr 1fr 1fr" })}
+          overflow="hidden"
         >
           <FooterLink
             title="Guides de l’adressage"
             icon={ManualIcon}
-            description="Pour vous accompagner dans la gestion des adresses de votre commune"
             link="https://adresse.data.gouv.fr/guides"
+            {...(!isMobile && {
+              description:
+                "Pour vous accompagner dans la gestion des adresses de votre commune",
+            })}
           />
           <FooterLink
             title="Guide interactif"
             icon={ManualIcon}
-            description="Le manuel de l’éditeur toujours à porté de main"
             onClick={handleHelp}
+            {...(!isMobile && {
+              description: "Le manuel de l’éditeur toujours à porté de main",
+            })}
           />
           <FooterLink
             title="Accessibilité : non-conforme"
             icon={WalkIcon}
-            description="Consultez la déclaration d’accessibilité"
             link="/accessibilite"
+            {...(!isMobile && {
+              description: "Consultez la déclaration d’accessibilité",
+            })}
           />
         </Pane>
       </Pane>

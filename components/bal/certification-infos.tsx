@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect} from 'react'
+import { useState, useContext, useEffect } from "react";
 import {
   Pane,
   Heading,
@@ -11,92 +11,92 @@ import {
   LightbulbIcon,
   ChevronUpIcon,
   ChevronDownIcon,
-  LockIcon
-} from 'evergreen-ui'
+  LockIcon,
+} from "evergreen-ui";
 
-import BalDataContext from '@/contexts/bal-data'
+import BalDataContext from "@/contexts/bal-data";
 
-import ProgressBar from '@/components/progress-bar'
-import Counter from '@/components/counter'
+import ProgressBar from "@/components/progress-bar";
+import Counter from "@/components/counter";
 
 interface CertificationInfosProps {
   openRecoveryDialog?: () => void;
 }
 
-function CertificationInfos({openRecoveryDialog}: CertificationInfosProps) {
-  const {certifyAllNumeros, baseLocale, reloadBaseLocale} =
-    useContext(BalDataContext)
-  const [isDialogShown, setIsDialogShown] = useState(false)
-  const [isInfosShown, setIsInfosShown] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const {nbNumeros, nbNumerosCertifies} = baseLocale
-  const percentCertified = Math.round((nbNumerosCertifies * 100) / nbNumeros)
+function CertificationInfos({ openRecoveryDialog }: CertificationInfosProps) {
+  const { certifyAllNumeros, baseLocale, reloadBaseLocale } =
+    useContext(BalDataContext);
+  const [isDialogShown, setIsDialogShown] = useState(false);
+  const [isInfosShown, setIsInfosShown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { nbNumeros, nbNumerosCertifies } = baseLocale;
+  const percentCertified = Math.round((nbNumerosCertifies * 100) / nbNumeros);
 
   // Reload base local when the tab is mounted to be sure to have the updated number
   // of certified adresses
   useEffect(() => {
-    reloadBaseLocale()
-  }, [reloadBaseLocale])
+    reloadBaseLocale();
+  }, [reloadBaseLocale]);
 
   const handleCertification = async () => {
-    setIsDialogShown(false)
-    setIsInfosShown(false)
-    setIsLoading(true)
-    await certifyAllNumeros()
-    setIsLoading(false)
-  }
+    setIsDialogShown(false);
+    setIsInfosShown(false);
+    setIsLoading(true);
+    await certifyAllNumeros();
+    setIsLoading(false);
+  };
 
   const handleClose = () => {
-    setIsDialogShown(false)
-    setIsInfosShown(false)
-  }
+    setIsDialogShown(false);
+    setIsInfosShown(false);
+  };
 
   return (
-    <Pane backgroundColor='white' padding={8} borderRadius={10} margin={8}>
+    <Pane backgroundColor="white" padding={8} borderRadius={10} margin={8}>
       {!baseLocale.isAllCertified && (
         <>
           <Heading>Nombre d’adresses certifiées</Heading>
 
           <ProgressBar percent={percentCertified} />
 
-          <Pane display='flex' justifyContent='center'>
+          <Pane display="flex" justifyContent="center">
             <Counter
-              label='Adresses certifiées'
+              label="Adresses certifiées"
               value={nbNumerosCertifies}
-              color='#52BD95'
+              color="#52BD95"
             />
             <Counter
-              label='Adresses non-certifiées'
+              label="Adresses non-certifiées"
               value={nbNumeros - nbNumerosCertifies}
-              color='#c1c4d6'
+              color="#c1c4d6"
             />
           </Pane>
 
           <Pane>
             <Dialog
               isShown={isDialogShown}
-              title='Certification des adresses'
+              title="Certification des adresses"
               onCloseComplete={handleClose}
               footer={
                 <Pane>
                   <Button onClick={handleClose}>Annuler</Button>
                   <Button
                     isLoading={isLoading}
-                    appearance='primary'
+                    appearance="primary"
                     iconAfter={EndorsedIcon}
                     marginLeft={15}
                     onClick={handleCertification}
                   >
-                    Certifier toutes les adresses de ma commune
+                    Certifier
                   </Button>
                 </Pane>
               }
             >
               <Pane>
-                <Pane display='flex' alignItems='center'>
-                  <WarningSignIcon size={65} margin={20} color='warning' />
+                <Pane display="flex" alignItems="center">
+                  <WarningSignIcon size={65} margin={20} color="warning" />
                   <Text size={500}>
-                    Vous vous apprêtez à certifier{' '}
+                    Vous vous apprêtez à certifier{" "}
                     <b>{nbNumeros - nbNumerosCertifies}</b> adresses de votre
                     commune, <b> cette action ne peut pas être annulée</b>
                   </Text>
@@ -104,13 +104,13 @@ function CertificationInfos({openRecoveryDialog}: CertificationInfosProps) {
               </Pane>
             </Dialog>
 
-            <Pane textAlign='center'>
+            <Pane textAlign="center">
               <Button
                 iconBefore={LightbulbIcon}
                 iconAfter={isInfosShown ? ChevronUpIcon : ChevronDownIcon}
-                appearance='minimal'
+                appearance="minimal"
                 onClick={() => {
-                  setIsInfosShown(!isInfosShown)
+                  setIsInfosShown(!isInfosShown);
                 }}
               >
                 En savoir plus sur la certification
@@ -124,13 +124,13 @@ function CertificationInfos({openRecoveryDialog}: CertificationInfosProps) {
         <Pane paddingTop={15}>
           <Alert>
             <Heading size={400}>
-              Pour faciliter la réutilisation des adresses,{' '}
+              Pour faciliter la réutilisation des adresses,{" "}
               <u>il est conseillé de les certifier</u>.
             </Heading>
             <br />
             <Text>
               Il est tout à fait possible de publier une Base Adresse Locale
-              dont l’ensemble des{' '}
+              dont l’ensemble des{" "}
               <u>
                 numéros n’ont pas encore été vérifiés : ils doivent rester
                 non-certifiés.
@@ -156,17 +156,17 @@ function CertificationInfos({openRecoveryDialog}: CertificationInfosProps) {
                 adresses».
               </Text>
             </Pane>
-            <Pane display='flex' justifyContent='end' paddingTop={15}>
+            <Pane display="flex" justifyContent="end" paddingTop={15}>
               <Button
                 isLoading={isLoading}
                 iconBefore={openRecoveryDialog && LockIcon}
-                intent='infos'
-                appearance='primary'
+                intent="infos"
+                appearance="primary"
                 onClick={() => {
                   if (openRecoveryDialog) {
-                    openRecoveryDialog()
+                    openRecoveryDialog();
                   } else {
-                    setIsDialogShown(true)
+                    setIsDialogShown(true);
                   }
                 }}
               >
@@ -178,15 +178,15 @@ function CertificationInfos({openRecoveryDialog}: CertificationInfosProps) {
       )}
 
       {baseLocale.isAllCertified && (
-        <Pane display='flex' alignItems='center' marginY='1em' marginX='4px'>
-          <EndorsedIcon color='success' size={50} />
+        <Pane display="flex" alignItems="center" marginY="1em" marginX="4px">
+          <EndorsedIcon color="success" size={50} />
           <Text size={500} paddingLeft={20}>
             Toutes les adresses sont certifiées par la commune
           </Text>
         </Pane>
       )}
     </Pane>
-  )
+  );
 }
 
-export default CertificationInfos
+export default CertificationInfos;

@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import PropTypes from "prop-types";
 import { Dialog, Pane, Paragraph, Strong, VideoIcon } from "evergreen-ui";
 
 import { PEERTUBE_LINK } from "@/components/help/video-container";

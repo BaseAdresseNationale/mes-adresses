@@ -20,7 +20,7 @@ import DisabledFormInput from "@/components/disabled-form-input";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
 import { BasesLocalesService, Toponyme, ToponymesService } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
-import ToasterContext from "@/contexts/toaster";
+import LayoutContext from "@/contexts/layout";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -41,7 +41,7 @@ function ToponymeEditor({
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || "");
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
-  const { toaster } = useContext(ToasterContext);
+  const { toaster } = useContext(LayoutContext);
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
 
   const {

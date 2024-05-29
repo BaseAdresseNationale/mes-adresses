@@ -24,6 +24,7 @@ function CustomToast({ duration, children }: CustomToastProps) {
   return (
     <Pane
       position="fixed"
+      zIndex={1000}
       left="50%"
       transform="translateX(-50%)"
       top={top}

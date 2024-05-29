@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { Heading, Card } from "evergreen-ui";
 
 interface TutoProps {

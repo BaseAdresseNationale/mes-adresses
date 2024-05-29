@@ -13,6 +13,8 @@ import BANHistory from "@/components/sub-header/bal-status/ban-sync/ban-history"
 import SyncButton from "@/components/sub-header/bal-status/ban-sync/sync-button";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
+import { useContext } from "react";
+import LayoutContext from "@/contexts/layout";
 
 interface BANSyncProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -29,6 +31,7 @@ function BANSync({
   handleSync,
   togglePause,
 }: BANSyncProps) {
+  const { isMobile } = useContext(LayoutContext);
   const { intent, title, content } = computeStatus(
     baseLocale.status,
     baseLocale.sync,
@@ -40,7 +43,7 @@ function BANSync({
       <Popover
         content={
           <Pane
-            width={500}
+            width={isMobile ? "100vw" : 500}
             display="flex"
             flexDirection="column"
             gap={8}
@@ -68,7 +71,7 @@ function BANSync({
         position={Position.BOTTOM_RIGHT}
       >
         <Button height={28} appearance="primary" iconAfter={CaretDownIcon}>
-          Base Adresse Nationale
+          {isMobile ? "Statut" : "Statut de synchronisation"}
         </Button>
       </Popover>
     </Pane>

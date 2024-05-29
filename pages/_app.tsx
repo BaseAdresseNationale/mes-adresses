@@ -20,7 +20,7 @@ import { BalDataContextProvider } from "@/contexts/bal-data";
 import { OpenAPI } from "@/lib/openapi";
 import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
-import { ToasterContextProvider } from "@/contexts/toaster";
+import { LayoutContextProvider } from "@/contexts/layout";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -54,7 +54,7 @@ function App(props: AppProps) {
         <title>mes-adresses.data.gouv.fr</title>
       </Head>
 
-      <ToasterContextProvider>
+      <LayoutContextProvider>
         <LocalStorageContextProvider>
           <TokenContextProvider
             balId={query.balId as string}
@@ -63,7 +63,6 @@ function App(props: AppProps) {
             <HelpContextProvider>
               <BALRecoveryProvider balId={query.balId as string}>
                 <Help />
-
                 <Pane
                   height="100%"
                   width="100%"
@@ -97,12 +96,17 @@ function App(props: AppProps) {
             </HelpContextProvider>
           </TokenContextProvider>
         </LocalStorageContextProvider>
-      </ToasterContextProvider>
+      </LayoutContextProvider>
+
       {/* ⚠️ This is needed to expand Evergreen’Tootip width
       It select all Tooltip components with 'appearance: card' propertie */}
       <style jsx global>{`
         div[id^="evergreen-tooltip"].ub-max-w_240px.ub-bg-clr_white.ub-box-szg_border-box {
           max-width: fit-content;
+        }
+
+        .main-table-cell:hover {
+          background-color: #e4e7eb;
         }
       `}</style>
     </>

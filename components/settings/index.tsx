@@ -1,5 +1,4 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
 import { Pane, Heading, Tablist, Tab, CogIcon } from "evergreen-ui";
 
 import UserSettingsForm from "./user-settings-form";

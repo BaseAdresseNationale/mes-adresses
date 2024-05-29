@@ -52,6 +52,7 @@ import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
 import { CommuneType } from "@/types/commune";
 import { Numero } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -116,6 +117,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   } = useContext(MapContext);
   const { isParcelleSelectionEnabled, handleParcelle } =
     useContext(ParcellesContext);
+  const { isMobile } = useContext(LayoutContext);
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
@@ -196,7 +198,17 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const onClick = useCallback(
     (event) => {
-      const feature = event?.features[0];
+      const features = map
+        .queryRenderedFeatures(event.point)
+        .filter(({ source, sourceLayer }) => {
+          return (
+            source === "cadastre" ||
+            sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
+            sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
+            sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS
+          );
+        });
+      const feature = features && features[0];
 
       if (feature?.source === "cadastre") {
         handleParcelle(feature.properties.id);
@@ -343,7 +355,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       />
       {map && <DrawControl map={map} isMapLoaded={isMapLoaded} />}
 
-      {token && (
+      {token && !isMobile && (
         <Pane position="absolute" zIndex={1} top={90} right={10}>
           <AddressEditorControl
             isAddressFormOpen={isAddressFormOpen}
@@ -353,9 +365,11 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         </Pane>
       )}
 
-      <Pane position="absolute" zIndex={1} top={125} right={10}>
-        <ImageControl map={map} communeNom={commune.nom} />
-      </Pane>
+      {!isMobile && (
+        <Pane position="absolute" zIndex={1} top={125} right={10}>
+          <ImageControl map={map} communeNom={commune.nom} />
+        </Pane>
+      )}
 
       {hint && (
         <Pane
@@ -381,6 +395,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           cursor={cursor}
           onClick={onClick}
           onMove={({ viewState }) => setViewport(viewState)}
+          onTouchEnd={onClick}
           onMouseMove={handleHover}
           onMouseLeave={handleMouseLeave}
           onMouseOut={handleMouseLeave}

@@ -11,19 +11,21 @@ import {
 } from "evergreen-ui";
 
 import DrawerContext, { DrawerDisplayedEnum } from "@/contexts/drawer";
+import LayoutContext from "@/contexts/layout";
 
 interface SettingsMenuProps {
   isAdmin: boolean;
 }
 
 function SettingsMenu({ isAdmin }: SettingsMenuProps) {
+  const { isMobile } = useContext(LayoutContext);
   const { setDrawerDisplayed } = useContext(DrawerContext);
 
   return (
     <Popover
       position={Position.BOTTOM_RIGHT}
       content={
-        <Menu>
+        <Menu {...(isMobile ? { marginLeft: 10 } : {})}>
           <Menu.Group>
             <Menu.Item
               icon={DownloadIcon}
@@ -50,12 +52,10 @@ function SettingsMenu({ isAdmin }: SettingsMenuProps) {
       }
     >
       <Button
-        height={24}
-        iconBefore={MenuIcon}
         appearance="minimal"
-        marginRight={16}
+        {...(!isMobile && { iconAfter: MenuIcon, marginRight: 16, height: 24 })}
       >
-        Menu
+        {isMobile ? <MenuIcon /> : "Menu"}
       </Button>
     </Popover>
   );

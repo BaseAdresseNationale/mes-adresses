@@ -6,13 +6,10 @@ import {
   Heading,
   Paragraph,
   Button,
-  ArrowLeftIcon,
 } from "evergreen-ui";
 import Link from "next/link";
 
 import { ApiGeoService } from "../lib/geo-api";
-
-import LocalStorageContext from "../contexts/local-storage";
 
 import { useInput } from "../hooks/input";
 
@@ -24,6 +21,7 @@ import DemoForm from "../components/new/demo-form";
 import { CommuneType } from "../types/commune";
 import { ApiBalAdminService } from "@/lib/bal-admin";
 import { BALWidgetConfig } from "@/lib/bal-admin/type";
+import LayoutContext from "@/contexts/layout";
 
 interface IndexPageProps {
   defaultCommune?: CommuneType;
@@ -42,7 +40,7 @@ function IndexPage({
   outdatedHarvestSources,
   isDemo,
 }: IndexPageProps) {
-  const { balAccess } = useContext(LocalStorageContext);
+  const { isMobile } = useContext(LayoutContext);
 
   const suggestedBALName = useRef<{
     prev: string | null;
@@ -139,19 +137,9 @@ function IndexPage({
             </Pane>
           </>
         )}
-
-        {balAccess && (
-          <Pane marginLeft={16} marginY={8}>
-            <Link legacyBehavior href="/" passHref>
-              <Button is="a" iconBefore={ArrowLeftIcon}>
-                Retour à la liste de mes Bases Adresses Locales
-              </Button>
-            </Link>
-          </Pane>
-        )}
       </Pane>
 
-      {!isDemo && (
+      {!isDemo && !isMobile && (
         <Pane display="flex" flex={1}>
           <Pane margin="auto" textAlign="center">
             <Heading marginBottom={8}>

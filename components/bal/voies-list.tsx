@@ -8,6 +8,8 @@ import {
   Button,
   AddIcon,
   LockIcon,
+  Text,
+  IconButton,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 
@@ -18,13 +20,15 @@ import TokenContext from "@/contexts/token";
 
 import useFuse from "@/hooks/fuse";
 
-import TableRow from "@/components/table-row";
 import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
 import InfiniteScrollList from "../infinite-scroll-list";
 import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi";
-import ToasterContext from "@/contexts/toaster";
+import LayoutContext from "@/contexts/layout";
+import TableRowActions from "../table-row/table-row-actions";
+import TableRowNotifications from "../table-row/table-row-notifications";
+import LanguagePreview from "./language-preview";
 
 interface VoiesListProps {
   voies: ExtendedVoieDTO[];
@@ -48,7 +52,7 @@ function VoiesList({
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const { isEditing, reloadVoies } = useContext(BalDataContext);
-  const { toaster } = useContext(ToasterContext);
+  const { toaster } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const router = useRouter();
 
@@ -78,6 +82,8 @@ function VoiesList({
     () => sortBy(filtered, (v) => normalizeSort(v.nom)),
     [filtered]
   );
+
+  const isEditingEnabled = !isEditing && Boolean(token);
 
   return (
     <>
@@ -140,48 +146,80 @@ function VoiesList({
 
         <InfiniteScrollList items={scrollableItems}>
           {(voie: ExtendedVoieDTO & { commentedNumeros: Numero[] }) => (
-            <TableRow
-              key={voie._id}
-              label={voie.nom}
-              nomAlt={voie.nomAlt}
-              isAdmin={Boolean(token)}
-              isEditing={Boolean(isEditing)}
-              actions={{
-                onSelect: () => {
-                  onSelect(voie._id);
-                },
-                onEdit: () => {
-                  onEnableEditing(voie._id);
-                },
-                onRemove: () => {
-                  setToRemove(voie._id);
-                },
-                extra:
-                  voie.nbNumeros === 0
-                    ? {
-                        callback: () => {
-                          setToConvert(voie._id);
-                        },
-                        icon: KeyTabIcon,
-                        text: "Convertir en toponyme",
-                      }
-                    : null,
-              }}
-              notifications={{
-                certification: voie.isAllCertified
-                  ? "Toutes les adresses de cette voie sont certifiées par la commune"
-                  : null,
-                comment:
+            <Table.Row key={voie._id} paddingRight={8} minHeight={48}>
+              <Table.Cell
+                onClick={() => onSelect(voie._id)}
+                cursor="pointer"
+                className="main-table-cell"
+              >
+                <Table.TextCell data-editable flex="0 1 1" height="100%">
+                  <Pane padding={1} fontSize={15}>
+                    <Text>{voie.nom}</Text>
+                  </Pane>
+
+                  {voie.nomAlt && (
+                    <Pane marginTop={4}>
+                      <LanguagePreview nomAlt={voie.nomAlt} />
+                    </Pane>
+                  )}
+                </Table.TextCell>
+              </Table.Cell>
+
+              <TableRowNotifications
+                certification={
+                  voie.isAllCertified
+                    ? "Toutes les adresses de cette voie sont certifiées par la commune"
+                    : null
+                }
+                comment={
                   voie.commentedNumeros.length > 0 ? (
                     <CommentsContent comments={voie.commentedNumeros} />
-                  ) : null,
-                warning:
+                  ) : null
+                }
+                warning={
                   voie.nbNumeros === 0
                     ? "Cette voie ne contient aucun numéro"
-                    : null,
-              }}
-              openRecoveryDialog={openRecoveryDialog}
-            />
+                    : null
+                }
+              />
+
+              {isEditingEnabled && (
+                <TableRowActions
+                  onSelect={() => {
+                    onSelect(voie._id);
+                  }}
+                  onEdit={() => {
+                    onEnableEditing(voie._id);
+                  }}
+                  onRemove={() => {
+                    setToRemove(voie._id);
+                  }}
+                  extra={
+                    voie.nbNumeros === 0
+                      ? {
+                          callback: () => {
+                            setToConvert(voie._id);
+                          },
+                          icon: KeyTabIcon,
+                          text: "Convertir en toponyme",
+                        }
+                      : null
+                  }
+                />
+              )}
+
+              {!Boolean(token) && (
+                <Table.TextCell flex="0 1 1">
+                  <IconButton
+                    onClick={openRecoveryDialog}
+                    type="button"
+                    height={24}
+                    icon={LockIcon}
+                    appearance="minimal"
+                  />
+                </Table.TextCell>
+              )}
+            </Table.Row>
           )}
         </InfiniteScrollList>
       </Table>

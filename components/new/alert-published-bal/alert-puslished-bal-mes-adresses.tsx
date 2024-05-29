@@ -1,9 +1,6 @@
-import { useState, useEffect, useCallback, useContext, useMemo } from "react";
+import { useMemo } from "react";
 import { Revision } from "@/lib/api-depot/types";
-import { Button, Link, Pane, Paragraph, Strong } from "evergreen-ui";
-
-const ADRESSE_URL =
-  process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
+import { Button, Pane, Paragraph } from "evergreen-ui";
 
 interface AlertPublishedBALMesAdressesProps {
   revision: Revision;
@@ -28,12 +25,7 @@ function AlertPublishedBALMesAdresses({
       </Paragraph>
       {balId && (
         <Paragraph marginTop={16}>
-          <Button
-            is="a"
-            height={30}
-            href={`/bal/${balId}`}
-            target="_blank"
-          >
+          <Button is="a" height={30} href={`/bal/${balId}`} target="_blank">
             Accéder à la Base Adresse Locale existante
           </Button>
         </Paragraph>

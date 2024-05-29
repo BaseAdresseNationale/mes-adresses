@@ -1,10 +1,16 @@
 import CustomToast from "@/components/custom-toast";
+import useWindowSize from "@/hooks/useWindowSize";
 import { ChildrenProps } from "@/types/context";
 import { Alert, Pane } from "evergreen-ui";
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
 
-interface ToasterContextType {
+const TOAST_DURATION = 3000;
+
+interface LayoutContextType {
+  isMobile: boolean;
+  isMapFullscreen: boolean;
+  setIsMapFullscreen: (value: boolean) => void;
   toaster: (
     fn: () => Promise<any>,
     successMessage: string,
@@ -19,11 +25,11 @@ interface ToasterContextType {
   ) => void;
 }
 
-const ToasterContext = React.createContext<ToasterContextType | null>(null);
+const LayoutContext = React.createContext<LayoutContextType | null>(null);
 
-const TOAST_DURATION = 3000;
-
-export function ToasterContextProvider(props: ChildrenProps) {
+export function LayoutContextProvider(props: ChildrenProps) {
+  const { isMobile } = useWindowSize();
+  const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [isClientSide, setIsClientSide] = useState(false);
   const [toasts, setToasts] = useState([]);
 
@@ -77,15 +83,18 @@ export function ToasterContextProvider(props: ChildrenProps) {
 
   const value = useMemo(
     () => ({
+      isMobile,
+      isMapFullscreen,
+      setIsMapFullscreen,
       toaster,
       pushToast,
       toasts,
     }),
-    [toaster, toasts, pushToast]
+    [isMapFullscreen, isMobile, pushToast, toaster, toasts]
   );
 
   return (
-    <ToasterContext.Provider value={value} {...props}>
+    <LayoutContext.Provider value={value} {...props}>
       {isClientSide &&
         document.body &&
         ReactDOM.createPortal(
@@ -101,8 +110,10 @@ export function ToasterContextProvider(props: ChildrenProps) {
           document.body
         )}
       {props.children}
-    </ToasterContext.Provider>
+    </LayoutContext.Provider>
   );
 }
 
-export default ToasterContext;
+export const LayoutContextConsumer = LayoutContext.Consumer;
+
+export default LayoutContext;

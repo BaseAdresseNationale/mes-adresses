@@ -1,4 +1,5 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
+import ReactDOM from "react-dom";
 import { Pane } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
@@ -13,6 +14,7 @@ import SettingsMenu from "@/components/sub-header/settings-menu";
 import BALStatus from "@/components/sub-header/bal-status";
 import MassDeletionDialog from "@/components/mass-deletion-dialog";
 import { CommuneType } from "@/types/commune";
+import LayoutContext from "@/contexts/layout";
 
 interface SubHeaderProps {
   commune: CommuneType;
@@ -33,6 +35,11 @@ function SubHeader({ commune }: SubHeaderProps) {
   } = useContext(BalDataContext);
   const { token, tokenIsChecking } = useContext(TokenContext);
   const isAdmin = Boolean(token);
+  const { isMobile } = useContext(LayoutContext);
+
+  const handleClose = useCallback(() => {
+    setIsHabilitationProcessDisplayed(false);
+  }, [setIsHabilitationProcessDisplayed]);
 
   const {
     massDeletionConfirm,
@@ -52,7 +59,7 @@ function SubHeader({ commune }: SubHeaderProps) {
 
       <Pane
         position="fixed"
-        top={76}
+        top={isMobile ? 70 : 76}
         left={0}
         height={40}
         width="100%"
@@ -62,46 +69,74 @@ function SubHeader({ commune }: SubHeaderProps) {
         display="flex"
         alignItems="center"
         padding={8}
+        {...(isMobile
+          ? {
+              flexDirection: "column",
+              height: 80,
+              alignItems: "flex-start",
+              justifyContent: "space-around",
+            }
+          : { height: 40 })}
       >
-        <Breadcrumbs
-          baseLocale={baseLocale}
-          commune={commune}
-          voie={voie}
-          toponyme={toponyme}
-          marginLeft={8}
-        />
+        <Pane order={isMobile ? 2 : 1}>
+          <Breadcrumbs
+            baseLocale={baseLocale}
+            commune={commune}
+            voie={voie}
+            toponyme={toponyme}
+            marginLeft={8}
+          />
+        </Pane>
         {!tokenIsChecking && !habilitationIsLoading && (
-          <Pane marginLeft="auto" display="flex" alignItems="center">
-            <SettingsMenu isAdmin={isAdmin} />
-            <BALStatus
-              baseLocale={baseLocale}
-              commune={commune}
-              token={token}
-              isHabilitationValid={isHabilitationValid}
-              isRefrehSyncStat={isRefrehSyncStat}
-              handlePublication={handlePublication}
-              handleHabilitation={handleShowHabilitationProcess}
-              reloadBaseLocale={async () => reloadBaseLocale()}
-            />
+          <Pane
+            display="flex"
+            alignItems="center"
+            width="100%"
+            {...(isMobile
+              ? { order: 1, justifyContent: "space-between" }
+              : { order: 2, justifyContent: "flex-end" })}
+          >
+            {isMobile ? (
+              ReactDOM.createPortal(
+                <SettingsMenu isAdmin={isAdmin} />,
+                document.getElementById("header-menu-wrapper")
+              )
+            ) : (
+              <SettingsMenu isAdmin={isAdmin} />
+            )}
+            <Pane
+              display="flex"
+              {...(isMobile && {
+                justifyContent: "space-between",
+                width: "100%",
+              })}
+            >
+              <BALStatus
+                baseLocale={baseLocale}
+                commune={commune}
+                token={token}
+                isHabilitationValid={isHabilitationValid}
+                isRefrehSyncStat={isRefrehSyncStat}
+                handlePublication={handlePublication}
+                handleHabilitation={handleShowHabilitationProcess}
+                reloadBaseLocale={async () => reloadBaseLocale()}
+              />
+            </Pane>
           </Pane>
         )}
       </Pane>
 
       {isAdmin && isHabilitationProcessDisplayed && commune.isCOM && (
-        <COMDialog
-          baseLocaleId={baseLocale._id}
-          handleClose={() => setIsHabilitationProcessDisplayed(false)}
-        />
+        <COMDialog baseLocaleId={baseLocale._id} handleClose={handleClose} />
       )}
 
       {isAdmin && habilitation && isHabilitationProcessDisplayed && (
         <HabilitationProcess
-          token={token}
           baseLocale={baseLocale}
           commune={commune}
           habilitation={habilitation}
           resetHabilitationProcess={handleShowHabilitationProcess}
-          handleClose={() => setIsHabilitationProcessDisplayed(false)}
+          handleClose={handleClose}
           handlePublication={handlePublication}
         />
       )}
