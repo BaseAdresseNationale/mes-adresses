@@ -1,4 +1,4 @@
-import { useState, useContext, useMemo } from "react";
+import { useState, useContext } from "react";
 
 import { DrawerContextProvider } from "@/contexts/drawer";
 import { DrawContextProvider } from "@/contexts/draw";
@@ -13,7 +13,6 @@ import Sidebar from "@/layouts/sidebar";
 import SubHeader from "@/components/sub-header";
 import Map from "@/components/map";
 import WelcomeMessage from "@/components/welcome-message";
-import CertificationMessage from "@/components/certification-message";
 import DrawerContent from "@/components/drawer-content";
 import AddressEditor from "@/components/bal/address-editor";
 import DemoWarning from "@/components/demo-warning";
@@ -89,9 +88,6 @@ function Editor({ children, commune }: EditorProps) {
             >
               <>
                 <WelcomeMessage />
-                {baseLocale.status === BaseLocale.status.PUBLISHED && (
-                  <CertificationMessage balId={baseLocale._id} />
-                )}
 
                 {isAddressFormOpen ? (
                   <AddressEditor

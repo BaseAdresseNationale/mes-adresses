@@ -14,8 +14,6 @@ interface LocalStorageContextType {
   setWasWelcomed: (value: boolean) => void;
   recoveryEmailSent: Date;
   setRecoveryEmailSent: (value: Date) => void;
-  getInformedAboutCertification: (value: string) => boolean;
-  addInformedAboutCertification: (key: string, value: boolean) => void;
   hiddenBal: Record<string, boolean>;
   getHiddenBal: (value: string) => boolean;
   addHiddenBal: (key: string, value: boolean) => void;
@@ -31,7 +29,6 @@ const LocalStorageContext = React.createContext<LocalStorageContextType | null>(
 const STORAGE_KEY = "bal-access";
 const WELCOMED_KEY = "was-welcomed";
 const RECOVERY_EMAIL = "recovery-email-sent";
-const CERTIFICATION_AUTO_KEY = "certificationAutoAlert";
 const VISIBILITY_KEY = "hidden-bal";
 const USER_SETTINGS = "user-settings";
 
@@ -41,12 +38,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
   const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY);
   const [recoveryEmailSent, setRecoveryEmailSent] =
     useLocalStorage(RECOVERY_EMAIL);
-  const [
-    informedAboutCertification,
-    ,
-    getInformedAboutCertification,
-    addInformedAboutCertification,
-  ] = useLocalStorage(CERTIFICATION_AUTO_KEY);
   const [hiddenBal, , getHiddenBal, addHiddenBal, removeHiddenBal] =
     useLocalStorage(VISIBILITY_KEY);
   const [userSettings, setUserSettings] = useLocalStorage(USER_SETTINGS);
@@ -77,9 +68,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       setWasWelcomed,
       recoveryEmailSent,
       setRecoveryEmailSent,
-      informedAboutCertification,
-      getInformedAboutCertification,
-      addInformedAboutCertification,
       hiddenBal,
       getHiddenBal,
       addHiddenBal,
@@ -96,9 +84,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       setWasWelcomed,
       recoveryEmailSent,
       setRecoveryEmailSent,
-      informedAboutCertification,
-      getInformedAboutCertification,
-      addInformedAboutCertification,
       hiddenBal,
       getHiddenBal,
       addHiddenBal,

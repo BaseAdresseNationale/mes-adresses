@@ -168,7 +168,7 @@ function AcceptedDialog({
                 </Text>
                 <Text is="div" color="muted" marginTop={4}>
                   Notez qu’il est possible de certifier la totalité de vos
-                  adresses depuis le menu « Paramètres ».
+                  adresses depuis l&apos;onglet « Commune ».
                 </Text>
               </Pane>
             </TextWrapper>
