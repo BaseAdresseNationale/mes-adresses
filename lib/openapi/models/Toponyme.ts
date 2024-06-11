@@ -7,6 +7,7 @@ import type { Position } from './Position';
 
 export type Toponyme = {
     _id: string;
+    banId: string;
     _created: string;
     _updated: string;
     _deleted: string;

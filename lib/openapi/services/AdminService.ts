@@ -28,4 +28,16 @@ export class AdminService {
         });
     }
 
+    /**
+     * download email.csv
+     * @returns any
+     * @throws ApiError
+     */
+    public static downloadEmailCsv(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/admin/emails.csv',
+        });
+    }
+
 }

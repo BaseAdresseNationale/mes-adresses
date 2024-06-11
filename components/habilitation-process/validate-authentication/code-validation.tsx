@@ -13,12 +13,11 @@ import {
 
 import FormInput from "@/components/form-input";
 import FormContainer from "@/components/form-container";
-import { SendPinCodeResponseDTO } from "@/lib/openapi";
 
 interface CodeValidationProps {
   email: string;
   handleSubmit: (code: string) => Promise<void>;
-  resendCode: () => Promise<SendPinCodeResponseDTO>;
+  resendCode: () => Promise<void>;
 }
 
 function CodeValidation({

@@ -37,7 +37,6 @@ export { PopulateVoie } from './models/PopulateVoie';
 export { Position } from './models/Position';
 export type { RecoverBaseLocaleDTO } from './models/RecoverBaseLocaleDTO';
 export type { RestoreVoieDTO } from './models/RestoreVoieDTO';
-export type { SendPinCodeResponseDTO } from './models/SendPinCodeResponseDTO';
 export { Strategy } from './models/Strategy';
 export { Sync } from './models/Sync';
 export type { Toponyme } from './models/Toponyme';
@@ -49,7 +48,6 @@ export type { UpdateNumeroDTO } from './models/UpdateNumeroDTO';
 export type { UpdateToponymeDTO } from './models/UpdateToponymeDTO';
 export { UpdateVoieDTO } from './models/UpdateVoieDTO';
 export type { ValidatePinCodeDTO } from './models/ValidatePinCodeDTO';
-export type { ValidatePinCodeResponseDTO } from './models/ValidatePinCodeResponseDTO';
 export { Voie } from './models/Voie';
 
 export { AdminService } from './services/AdminService';
