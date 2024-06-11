@@ -70,7 +70,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
             {
               intent: "danger",
               title: errorMessage,
-              message: error.message,
+              message: error.body?.message,
             },
           ]);
         }

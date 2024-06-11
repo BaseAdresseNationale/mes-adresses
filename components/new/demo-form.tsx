@@ -55,7 +55,7 @@ function DemoForm({ defaultCommune }: DemoFormProps) {
     } catch (error) {
       pushToast({
         title: "Une erreur est survenue",
-        message: error.message,
+        message: error.body?.message,
         intent: "danger",
       });
       setIsLoading(false);

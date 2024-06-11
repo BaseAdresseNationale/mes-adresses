@@ -150,7 +150,7 @@ function CreateForm({
       pushToast({
         title: "Une erreur est survenue",
         intent: "danger",
-        message: error.message,
+        message: error.body?.message,
       });
       setIsLoading(false);
     }

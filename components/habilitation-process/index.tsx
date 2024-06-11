@@ -80,7 +80,7 @@ function HabilitationProcess({
         pushToast({
           intent: "danger",
           title: "Le courriel n’a pas pu être envoyé",
-          message: error.body.message,
+          message: error.body?.message,
         });
       }
     }
