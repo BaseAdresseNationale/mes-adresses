@@ -105,7 +105,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
           intent: "success",
         });
       } catch (error) {
-        setError(error.message);
+        setError(error.body?.message);
       }
 
       setIsLoading(false);
