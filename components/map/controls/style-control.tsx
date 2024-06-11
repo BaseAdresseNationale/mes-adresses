@@ -29,7 +29,7 @@ function StyleControl({
         value: "vector",
         isAvailable: hasOpenMapTiles,
       },
-      { label: "Plan IGN (Bêta)", value: "plan-ign", isAvailable: hasPlanIGN },
+      { label: "Plan IGN", value: "plan-ign", isAvailable: hasPlanIGN },
       { label: "Photographie aérienne", value: "ortho", isAvailable: hasOrtho },
     ].filter(({ isAvailable }) => isAvailable);
   }, [commune]);
