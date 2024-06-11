@@ -106,22 +106,20 @@ function HabilitationProcess({
 
   const handleValidationCode = async (code: string) => {
     setIsLoading(true);
-    const { validated, error } =
+    try {
       await HabilitationService.validePinCodeHabilitation(baseLocale._id, {
         code,
       });
-
-    if (error) {
-      toaster.danger("Le code n’est pas valide", {
-        description: error,
-      });
-    } else if (validated) {
       checkConflictingRevision();
       // SET RESUME BAL IF HABILITATION CODE
       if (baseLocale.sync?.isPaused == true) {
         await BasesLocalesService.resumeBaseLocale(baseLocale._id);
       }
       setStep(2);
+    } catch (error) {
+      toaster.danger("Le code n’est pas valide", {
+        description: error.body.message,
+      });
     }
 
     await reloadHabilitation();
