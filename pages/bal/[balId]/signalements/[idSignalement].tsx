@@ -228,7 +228,7 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementsService.getSignalementsByCodeCommune(
+    const signalements = await SignalementsService.getSignalements(
       baseLocale.commune
     );
 
