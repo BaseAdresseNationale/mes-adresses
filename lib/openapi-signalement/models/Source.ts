@@ -17,9 +17,8 @@ export type Source = {
 export namespace Source {
 
     export enum type {
-        ADMINISTRATION = 'ADMINISTRATION',
-        PARTICULIER = 'PARTICULIER',
-        ENTREPRISE = 'ENTREPRISE',
+        PUBLIC = 'PUBLIC',
+        PRIVATE = 'PRIVATE',
     }
 
 

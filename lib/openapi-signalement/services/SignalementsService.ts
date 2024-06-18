@@ -13,7 +13,7 @@ import { request as __request } from '../core/request';
 export class SignalementsService {
 
     /**
-     * Get all signalements for a given codeCommune
+     * Get signalements
      * @param codeCommune
      * @param sourceId
      * @param type
@@ -23,8 +23,8 @@ export class SignalementsService {
      * @returns any[]
      * @throws ApiError
      */
-    public static getSignalementsByCodeCommune(
-        codeCommune: string,
+    public static getSignalements(
+        codeCommune?: string,
         sourceId?: string,
         type?: 'LOCATION_TO_UPDATE' | 'LOCATION_TO_DELETE' | 'LOCATION_TO_CREATE' | 'OTHER',
         status?: 'PENDING' | 'IGNORED' | 'PROCESSED',
@@ -33,11 +33,9 @@ export class SignalementsService {
     ): CancelablePromise<any[]> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/signalements/{codeCommune}',
-            path: {
-                'codeCommune': codeCommune,
-            },
+            url: '/signalements',
             query: {
+                'codeCommune': codeCommune,
                 'sourceId': sourceId,
                 'type': type,
                 'status': status,
@@ -50,15 +48,20 @@ export class SignalementsService {
     /**
      * Create a new signalement
      * @param requestBody
+     * @param sourceId
      * @returns Signalement
      * @throws ApiError
      */
     public static createSignalement(
         requestBody: CreateSignalementDTO,
+        sourceId?: string,
     ): CancelablePromise<Signalement> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/signalements',
+            query: {
+                'sourceId': sourceId,
+            },
             body: requestBody,
             mediaType: 'application/json',
         });

@@ -26,7 +26,7 @@ export function SignalementContextProvider(props: ChildrenProps) {
   const { token } = useContext(TokenContext);
 
   const fetchSignalements = useCallback(async () => {
-    const signalements = await SignalementsService.getSignalementsByCodeCommune(
+    const signalements = await SignalementsService.getSignalements(
       baseLocale.commune
     );
     setSignalements(signalements);

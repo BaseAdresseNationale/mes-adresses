@@ -18,7 +18,7 @@ export class SourcesService {
      * @throws ApiError
      */
     public static getSources(
-        type?: 'ADMINISTRATION' | 'PARTICULIER' | 'ENTREPRISE',
+        type?: 'PUBLIC' | 'PRIVATE',
     ): CancelablePromise<any[]> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -43,6 +43,24 @@ export class SourcesService {
             url: '/sources',
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+
+    /**
+     * Get source by id
+     * @param id
+     * @returns Source
+     * @throws ApiError
+     */
+    public static getSourceById(
+        id: string,
+    ): CancelablePromise<Source> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/sources/{id}',
+            path: {
+                'id': id,
+            },
         });
     }
 
