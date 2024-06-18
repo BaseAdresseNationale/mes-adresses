@@ -6,6 +6,7 @@
 export type AuthorDTO = {
     firstName?: string | null;
     lastName?: string | null;
-    email?: string | null;
+    email: string;
+    captchaToken: string;
 };
 

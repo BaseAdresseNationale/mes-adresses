@@ -74,7 +74,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   }, [signalements]);
 
   const updateSignalements = async () => {
-    const signalements = await SignalementsService.getSignalementsByCodeCommune(
+    const signalements = await SignalementsService.getSignalements(
       baseLocale.commune
     );
     setSignalements(signalements);
@@ -243,7 +243,7 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementsService.getSignalementsByCodeCommune(
+    const signalements = await SignalementsService.getSignalements(
       baseLocale.commune
     );
 
