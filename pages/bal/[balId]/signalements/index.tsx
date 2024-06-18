@@ -236,7 +236,10 @@ export async function getServerSideProps({ params }) {
       await getBaseEditorProps(balId);
 
     const signalements = await SignalementsService.getSignalements(
-      baseLocale.commune
+      baseLocale.commune,
+      undefined,
+      undefined,
+      Signalement.status.PENDING
     );
 
     return {
