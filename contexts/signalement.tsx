@@ -27,7 +27,10 @@ export function SignalementContextProvider(props: ChildrenProps) {
 
   const fetchSignalements = useCallback(async () => {
     const signalements = await SignalementsService.getSignalements(
-      baseLocale.commune
+      baseLocale.commune,
+      undefined,
+      undefined,
+      Signalement.status.PENDING
     );
     setSignalements(signalements);
   }, [baseLocale.commune]);

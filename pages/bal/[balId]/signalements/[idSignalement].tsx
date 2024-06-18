@@ -228,12 +228,8 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementsService.getSignalements(
-      baseLocale.commune
-    );
-
-    const signalement = signalements.find(
-      (signalement) => signalement._id === params.idSignalement
+    const signalement = await SignalementsService.getSignalementById(
+      params.idSignalement
     );
 
     if (signalement.changesRequested.positions) {
@@ -258,7 +254,8 @@ export async function getServerSideProps({ params }) {
       );
     } else if (signalement.type === Signalement.type.LOCATION_TO_CREATE) {
       existingLocation = voies.find(
-        (voie) => voie.nom === signalement.existingLocation.nom
+        (voie) =>
+          voie.nom === (signalement.existingLocation as ExistingVoie).nom
       );
     }
 
