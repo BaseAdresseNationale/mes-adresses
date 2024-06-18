@@ -75,7 +75,10 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
 
   const updateSignalements = async () => {
     const signalements = await SignalementsService.getSignalements(
-      baseLocale.commune
+      baseLocale.commune,
+      undefined,
+      undefined,
+      Signalement.status.PENDING
     );
     setSignalements(signalements);
   };
@@ -244,7 +247,10 @@ export async function getServerSideProps({ params }) {
       await getBaseEditorProps(balId);
 
     const signalements = await SignalementsService.getSignalements(
-      baseLocale.commune
+      baseLocale.commune,
+      undefined,
+      undefined,
+      Signalement.status.PENDING
     );
 
     return {

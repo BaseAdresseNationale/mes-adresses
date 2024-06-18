@@ -84,4 +84,22 @@ export class SignalementsService {
         });
     }
 
+    /**
+     * Get signalement by id
+     * @param idSignalement
+     * @returns Signalement
+     * @throws ApiError
+     */
+    public static getSignalementById(
+        idSignalement: string,
+    ): CancelablePromise<Signalement> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/signalements/{idSignalement}',
+            path: {
+                'idSignalement': idSignalement,
+            },
+        });
+    }
+
 }
