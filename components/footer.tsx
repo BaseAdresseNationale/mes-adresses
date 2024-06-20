@@ -5,7 +5,6 @@ import {
   Button,
   Paragraph,
   ManualIcon,
-  WalkIcon,
   IconComponent,
 } from "evergreen-ui";
 
@@ -108,14 +107,27 @@ function Footer() {
               description: "Le manuel de l’éditeur toujours à porté de main",
             })}
           />
-          <FooterLink
-            title="Accessibilité : non-conforme"
-            icon={WalkIcon}
-            link="/accessibilite"
-            {...(!isMobile && {
-              description: "Consultez la déclaration d’accessibilité",
-            })}
-          />
+          <Pane display="flex" flexDirection="column" alignItems="center">
+            <Button
+              is="a"
+              appearance="minimal"
+              height={30}
+              href="/mentions-legales"
+              fontSize="0.8em"
+            >
+              Mentions Légales
+            </Button>
+            <Button
+              is="a"
+              appearance="minimal"
+              height={30}
+              href="/accessibilite"
+              target="_blank"
+              fontSize="0.8em"
+            >
+              Accessibilité : non-conforme
+            </Button>
+          </Pane>
         </Pane>
       </Pane>
     </div>
