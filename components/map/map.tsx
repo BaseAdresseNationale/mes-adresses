@@ -121,6 +121,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
+  const [showToponyme, setShowToponyme] = useState(true);
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle));
 
   const { balId } = router.query;
@@ -367,7 +368,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
       {!isMobile && (
         <Pane position="absolute" zIndex={1} top={125} right={10}>
-          <ImageControl map={map} communeNom={commune.nom} />
+          <ImageControl
+            map={map}
+            communeNom={commune.nom}
+            showToponyme={showToponyme}
+            setShowToponyme={setShowToponyme}
+          />
         </Pane>
       )}
 
@@ -424,7 +430,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             />
           )}
 
-          {toponymes &&
+          {showToponyme &&
+            toponymes &&
             viewport.zoom > TOPONYMES_MIN_ZOOM &&
             toponymes.map((toponyme) => (
               <ToponymeMarker

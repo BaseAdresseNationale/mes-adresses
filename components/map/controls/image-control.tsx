@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import type { Map as MaplibreMap } from "maplibre-gl";
 import {
   Tooltip,
@@ -23,9 +23,16 @@ const poiLayersIds = ["poi-level-1", "poi-level-2", "poi-level-3"];
 interface ImageControlProps {
   map: MaplibreMap | null;
   communeNom: string;
+  showToponyme: boolean;
+  setShowToponyme: Dispatch<SetStateAction<boolean>>;
 }
 
-function ImageControl({ map, communeNom }: ImageControlProps) {
+function ImageControl({
+  map,
+  communeNom,
+  showToponyme,
+  setShowToponyme,
+}: ImageControlProps) {
   const [adresseLayerZoom, setAdresseLayerZoom] = useState([
     ZOOM.NUMEROS_ZOOM.maxZoom,
   ]);
@@ -129,6 +136,7 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
   }, [map, poiLayerIsDisplayed]);
 
   const initLayer = () => {
+    setShowToponyme(true);
     setAdresseLayerIsDisplayed(true);
     setVoieLayerIsDisplayed(true);
     setPoiLayerIsDisplayed(true);
@@ -165,7 +173,7 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
           paddingRight={18}
           paddingTop={12}
           width={200}
-          height={210}
+          height={240}
           display="flex"
           flexDirection="column"
         >
@@ -183,6 +191,12 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
             setIsDiplayed={setVoieLayerIsDisplayed}
             zoom={voieLayerZoom}
             setZoom={setVoieLayerZoom}
+          />
+
+          <LayerShowHideZoomControl
+            title="Toponymes"
+            isDiplayed={showToponyme}
+            setIsDiplayed={setShowToponyme}
           />
 
           <LayerShowHideZoomControl
