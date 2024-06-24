@@ -1,7 +1,10 @@
 export const computeCompletNumero = (
-  numero: number | string,
+  numero: number | string | undefined,
   suffixe: string
 ) => {
+  if (!numero) {
+    return null;
+  }
   if (suffixe && Number.isNaN(suffixe)) {
     return `${numero}${suffixe.toLowerCase()}`;
   }

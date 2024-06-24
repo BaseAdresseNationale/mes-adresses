@@ -62,9 +62,11 @@ function EditableMarker({
   const onDrag = useCallback(
     (event, idx) => {
       const { _id, type } = markers[idx];
-      const coords = [event.lngLat.lng, event.lngLat.lat];
-      const suggestion = computeSuggestedNumero(coords);
-      setSuggestedNumero(suggestion);
+      if (idx === 0) {
+        const coords = [event.lngLat.lng, event.lngLat.lat];
+        const suggestion = computeSuggestedNumero(coords);
+        setSuggestedNumero(suggestion);
+      }
       updateMarker(_id, {
         longitude: event.lngLat.lng,
         latitude: event.lngLat.lat,
