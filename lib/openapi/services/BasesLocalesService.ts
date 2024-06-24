@@ -317,12 +317,12 @@ export class BasesLocalesService {
     /**
      * Update isPaused sync BAL to true
      * @param baseLocaleId
-     * @returns BaseLocale
+     * @returns boolean
      * @throws ApiError
      */
     public static pauseBaseLocale(
         baseLocaleId: string,
-    ): CancelablePromise<BaseLocale> {
+    ): CancelablePromise<boolean> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/pause',
@@ -335,12 +335,12 @@ export class BasesLocalesService {
     /**
      * Update isPaused sync BAL to false
      * @param baseLocaleId
-     * @returns BaseLocale
+     * @returns boolean
      * @throws ApiError
      */
     public static resumeBaseLocale(
         baseLocaleId: string,
-    ): CancelablePromise<BaseLocale> {
+    ): CancelablePromise<boolean> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/resume',
