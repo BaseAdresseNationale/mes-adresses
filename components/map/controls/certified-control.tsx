@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import type { Map as MaplibreMap } from "maplibre-gl";
 import { Tooltip, Position, IconButton, EndorsedIcon } from "evergreen-ui";
 import { NUMEROS_LABEL, NUMEROS_POINT } from "../layers/tiles";
+import BalDataContext from "@/contexts/bal-data";
 
 interface CertifiedControlProps {
   map: MaplibreMap | null;
@@ -9,7 +10,7 @@ interface CertifiedControlProps {
 }
 
 function CertifiedControl({ map, style }: CertifiedControlProps) {
-  const [showUncertified, setShowUncertified] = useState(false);
+  const { showUncertified, setShowUncertified } = useContext(BalDataContext);
   const isOrtho = style === "ortho";
 
   const showUncertifiedInLayerNumeroPoint = () => {

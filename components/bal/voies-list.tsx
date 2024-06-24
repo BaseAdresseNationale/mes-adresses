@@ -51,7 +51,8 @@ function VoiesList({
 }: VoiesListProps) {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
-  const { isEditing, reloadVoies } = useContext(BalDataContext);
+  const { isEditing, reloadVoies, showUncertified } =
+    useContext(BalDataContext);
   const { toaster } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const router = useRouter();
@@ -84,7 +85,6 @@ function VoiesList({
   );
 
   const isEditingEnabled = !isEditing && Boolean(token);
-
   return (
     <>
       <DeleteWarning
@@ -169,6 +169,13 @@ function VoiesList({
                 certification={
                   voie.isAllCertified
                     ? "Toutes les adresses de cette voie sont certifiées par la commune"
+                    : null
+                }
+                uncertified={
+                  showUncertified && !voie.isAllCertified
+                    ? `Il y a ${
+                        voie.nbNumeros - voie.nbNumerosCertifies
+                      } adresse(s) non certifiée(s) dans cette voie`
                     : null
                 }
                 comment={

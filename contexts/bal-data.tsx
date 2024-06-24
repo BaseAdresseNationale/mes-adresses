@@ -58,6 +58,8 @@ interface BALDataContextType {
   setIsHabilitationProcessDisplayed: (
     isHabilitationProcessDisplayed: boolean
   ) => void;
+  showUncertified: boolean;
+  setShowUncertified: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null);
@@ -94,7 +96,7 @@ export function BalDataContextProvider({
   const [baseLocale, setBaseLocale] =
     useState<ExtendedBaseLocaleDTO>(initialBaseLocale);
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
-
+  const [showUncertified, setShowUncertified] = useState(false);
   const { token } = useContext(TokenContext);
 
   const {
@@ -239,10 +241,20 @@ export function BalDataContextProvider({
       await reloadBaseLocale();
     }
     // SET RESUME BAL IF HABILITATION FRANCE_CONNECT
-    if (query["france-connect"] === "1" && habilitation?.status === HabilitationDTO.status.ACCEPTED && baseLocale.sync?.isPaused == true) {
+    if (
+      query["france-connect"] === "1" &&
+      habilitation?.status === HabilitationDTO.status.ACCEPTED &&
+      baseLocale.sync?.isPaused == true
+    ) {
       resumeBal();
     }
-  }, [baseLocale._id, baseLocale.sync?.isPaused, habilitation?.status, query, reloadBaseLocale]);
+  }, [
+    baseLocale._id,
+    baseLocale.sync?.isPaused,
+    habilitation?.status,
+    query,
+    reloadBaseLocale,
+  ]);
 
   const value = useMemo(
     () => ({
@@ -274,6 +286,8 @@ export function BalDataContextProvider({
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
+      showUncertified,
+      setShowUncertified,
     }),
     [
       isEditing,
@@ -306,6 +320,8 @@ export function BalDataContextProvider({
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
+      showUncertified,
+      setShowUncertified,
     ]
   );
 

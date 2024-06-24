@@ -13,12 +13,14 @@ interface TableRowNotificationsProps {
   certification?: string;
   comment?: string | React.ReactNode;
   warning?: string;
+  uncertified?: string;
 }
 
 function TableRowNotifications({
   certification,
   comment,
   warning,
+  uncertified,
 }: TableRowNotificationsProps) {
   const { token } = useContext(TokenContext);
 
@@ -36,6 +38,14 @@ function TableRowNotifications({
         <Table.TextCell flex="0 1 1">
           <Tooltip content={certification} position={Position.BOTTOM}>
             <EndorsedIcon color="success" style={{ verticalAlign: "bottom" }} />
+          </Tooltip>
+        </Table.TextCell>
+      )}
+
+      {uncertified && (
+        <Table.TextCell flex="0 1 1">
+          <Tooltip content={uncertified} position={Position.BOTTOM}>
+            <EndorsedIcon color="danger" style={{ verticalAlign: "bottom" }} />
           </Tooltip>
         </Table.TextCell>
       )}
