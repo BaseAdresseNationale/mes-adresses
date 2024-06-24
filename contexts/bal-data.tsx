@@ -53,6 +53,7 @@ interface BALDataContextType {
   isRefrehSyncStat: boolean;
   refreshBALSync: () => Promise<void>;
   certifyAllNumeros: () => Promise<void>;
+  uncertifyAllNumeros: () => Promise<void>;
   habilitationIsLoading: boolean;
   isHabilitationProcessDisplayed: boolean;
   setIsHabilitationProcessDisplayed: (
@@ -206,6 +207,23 @@ export function BalDataContextProvider({
     refreshBALSync,
   ]);
 
+  const uncertifyAllNumeros = useCallback(async () => {
+    await BasesLocalesService.uncertifyAllNumeros(baseLocale._id);
+    await reloadNumeros();
+    await reloadVoies();
+    await reloadToponymes();
+    await reloadBaseLocale();
+
+    await refreshBALSync();
+  }, [
+    baseLocale._id,
+    reloadNumeros,
+    reloadVoies,
+    reloadToponymes,
+    reloadBaseLocale,
+    refreshBALSync,
+  ]);
+
   useEffect(() => {
     setVoie(initialVoie);
   }, [initialVoie]);
@@ -239,10 +257,20 @@ export function BalDataContextProvider({
       await reloadBaseLocale();
     }
     // SET RESUME BAL IF HABILITATION FRANCE_CONNECT
-    if (query["france-connect"] === "1" && habilitation?.status === HabilitationDTO.status.ACCEPTED && baseLocale.sync?.isPaused == true) {
+    if (
+      query["france-connect"] === "1" &&
+      habilitation?.status === HabilitationDTO.status.ACCEPTED &&
+      baseLocale.sync?.isPaused == true
+    ) {
       resumeBal();
     }
-  }, [baseLocale._id, baseLocale.sync?.isPaused, habilitation?.status, query, reloadBaseLocale]);
+  }, [
+    baseLocale._id,
+    baseLocale.sync?.isPaused,
+    habilitation?.status,
+    query,
+    reloadBaseLocale,
+  ]);
 
   const value = useMemo(
     () => ({
@@ -271,6 +299,7 @@ export function BalDataContextProvider({
       setVoie,
       setToponyme,
       certifyAllNumeros,
+      uncertifyAllNumeros,
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
@@ -301,6 +330,7 @@ export function BalDataContextProvider({
       reloadToponymes,
       toponyme,
       certifyAllNumeros,
+      uncertifyAllNumeros,
       isRefrehSyncStat,
       refreshBALSync,
       habilitationIsLoading,
