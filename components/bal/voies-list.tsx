@@ -10,6 +10,10 @@ import {
   LockIcon,
   Text,
   IconButton,
+  EndorsedIcon,
+  Tooltip,
+  FilterIcon,
+  FilterRemoveIcon,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 
@@ -54,6 +58,7 @@ function VoiesList({
   const { isEditing, reloadVoies } = useContext(BalDataContext);
   const { toaster } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
 
   const handleRemove = async () => {
@@ -78,10 +83,15 @@ function VoiesList({
     keys: ["nom"],
   });
 
-  const scrollableItems = useMemo(
-    () => sortBy(filtered, (v) => normalizeSort(v.nom)),
-    [filtered]
-  );
+  const scrollableItems = useMemo(() => {
+    const items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
+      normalizeSort(v.nom)
+    );
+    if (showUncertify) {
+      return items.filter(({ isAllCertified }) => !isAllCertified);
+    }
+    return items;
+  }, [filtered, showUncertify]);
 
   const isEditingEnabled = !isEditing && Boolean(token);
 
@@ -134,6 +144,17 @@ function VoiesList({
             placeholder="Rechercher une voie"
             onChange={setFilter}
           />
+          <Table.HeaderCell flex="unset">
+            <Tooltip content="Voir seulement les voies avec des adresses non certifiées">
+              <Button
+                size="small"
+                iconBefore={showUncertify ? FilterRemoveIcon : FilterIcon}
+                onClick={() => setShowUncertify(!showUncertify)}
+              >
+                Non Certifié
+              </Button>
+            </Tooltip>
+          </Table.HeaderCell>
         </Table.Head>
 
         {filtered.length === 0 && (

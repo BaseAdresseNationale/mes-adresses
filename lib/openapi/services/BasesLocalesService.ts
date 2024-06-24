@@ -369,14 +369,32 @@ export class BasesLocalesService {
     }
 
     /**
+     * Uncertify all numeros in Bal
+     * @param baseLocaleId
+     * @returns any
+     * @throws ApiError
+     */
+    public static uncertifyAllNumeros(
+        baseLocaleId: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v2/bases-locales/{baseLocaleId}/numeros/uncertify-all',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+
+    /**
      * Certify all numeros in Bal
      * @param baseLocaleId
-     * @returns BatchNumeroResponseDTO
+     * @returns any
      * @throws ApiError
      */
     public static certifyAllNumeros(
         baseLocaleId: string,
-    ): CancelablePromise<BatchNumeroResponseDTO> {
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v2/bases-locales/{baseLocaleId}/numeros/certify-all',
