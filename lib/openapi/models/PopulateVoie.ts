@@ -9,6 +9,7 @@ import type { Numero } from './Numero';
 
 export type PopulateVoie = {
     _id: string;
+    banId: string;
     _created: string;
     _updated: string;
     _deleted: string;

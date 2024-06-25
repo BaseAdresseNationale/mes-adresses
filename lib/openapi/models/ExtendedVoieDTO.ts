@@ -8,6 +8,7 @@ import type { LineString } from './LineString';
 
 export type ExtendedVoieDTO = {
     _id: string;
+    banId: string;
     _created: string;
     _updated: string;
     _deleted: string;

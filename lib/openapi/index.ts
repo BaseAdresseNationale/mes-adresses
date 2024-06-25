@@ -37,7 +37,6 @@ export { PopulateVoie } from './models/PopulateVoie';
 export { Position } from './models/Position';
 export type { RecoverBaseLocaleDTO } from './models/RecoverBaseLocaleDTO';
 export type { RestoreVoieDTO } from './models/RestoreVoieDTO';
-export type { SendPinCodeResponseDTO } from './models/SendPinCodeResponseDTO';
 export { Strategy } from './models/Strategy';
 export { Sync } from './models/Sync';
 export type { Toponyme } from './models/Toponyme';

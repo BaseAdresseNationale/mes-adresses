@@ -8,6 +8,7 @@ import type { Voie } from './Voie';
 
 export type NumeroPopulate = {
     _id: string;
+    banId: string;
     _created: string;
     _updated: string;
     _deleted: string;

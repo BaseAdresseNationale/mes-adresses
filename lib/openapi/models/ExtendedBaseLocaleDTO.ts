@@ -7,6 +7,7 @@ import type { Sync } from './Sync';
 
 export type ExtendedBaseLocaleDTO = {
     _id: string;
+    banId: string;
     _created: string;
     _updated: string;
     _deleted: string;

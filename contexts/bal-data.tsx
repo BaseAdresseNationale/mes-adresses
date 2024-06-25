@@ -53,6 +53,7 @@ interface BALDataContextType {
   isRefrehSyncStat: boolean;
   refreshBALSync: () => Promise<void>;
   certifyAllNumeros: () => Promise<void>;
+  uncertifyAllNumeros: () => Promise<void>;
   habilitationIsLoading: boolean;
   isHabilitationProcessDisplayed: boolean;
   setIsHabilitationProcessDisplayed: (
@@ -209,6 +210,23 @@ export function BalDataContextProvider({
     refreshBALSync,
   ]);
 
+  const uncertifyAllNumeros = useCallback(async () => {
+    await BasesLocalesService.uncertifyAllNumeros(baseLocale._id);
+    await reloadNumeros();
+    await reloadVoies();
+    await reloadToponymes();
+    await reloadBaseLocale();
+
+    await refreshBALSync();
+  }, [
+    baseLocale._id,
+    reloadNumeros,
+    reloadVoies,
+    reloadToponymes,
+    reloadBaseLocale,
+    refreshBALSync,
+  ]);
+
   useEffect(() => {
     setVoie(initialVoie);
   }, [initialVoie]);
@@ -284,6 +302,7 @@ export function BalDataContextProvider({
       setVoie,
       setToponyme,
       certifyAllNumeros,
+      uncertifyAllNumeros,
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
@@ -314,6 +333,7 @@ export function BalDataContextProvider({
       reloadToponymes,
       toponyme,
       certifyAllNumeros,
+      uncertifyAllNumeros,
       isRefrehSyncStat,
       refreshBALSync,
       habilitationIsLoading,

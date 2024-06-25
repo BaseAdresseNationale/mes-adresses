@@ -317,12 +317,12 @@ export class BasesLocalesService {
     /**
      * Update isPaused sync BAL to true
      * @param baseLocaleId
-     * @returns BaseLocale
+     * @returns boolean
      * @throws ApiError
      */
     public static pauseBaseLocale(
         baseLocaleId: string,
-    ): CancelablePromise<BaseLocale> {
+    ): CancelablePromise<boolean> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/pause',
@@ -335,12 +335,12 @@ export class BasesLocalesService {
     /**
      * Update isPaused sync BAL to false
      * @param baseLocaleId
-     * @returns BaseLocale
+     * @returns boolean
      * @throws ApiError
      */
     public static resumeBaseLocale(
         baseLocaleId: string,
-    ): CancelablePromise<BaseLocale> {
+    ): CancelablePromise<boolean> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/resume',
@@ -369,14 +369,32 @@ export class BasesLocalesService {
     }
 
     /**
+     * Uncertify all numeros in Bal
+     * @param baseLocaleId
+     * @returns any
+     * @throws ApiError
+     */
+    public static uncertifyAllNumeros(
+        baseLocaleId: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v2/bases-locales/{baseLocaleId}/numeros/uncertify-all',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+
+    /**
      * Certify all numeros in Bal
      * @param baseLocaleId
-     * @returns BatchNumeroResponseDTO
+     * @returns any
      * @throws ApiError
      */
     public static certifyAllNumeros(
         baseLocaleId: string,
-    ): CancelablePromise<BatchNumeroResponseDTO> {
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v2/bases-locales/{baseLocaleId}/numeros/certify-all',
