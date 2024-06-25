@@ -247,11 +247,16 @@ export async function getServerSideProps({ params }) {
       signalement.type === Signalement.type.LOCATION_TO_DELETE ||
       signalement.type === Signalement.type.OTHER
     ) {
-      existingLocation = await getExistingLocation(
-        signalement,
-        voies,
-        toponymes
-      );
+      try {
+        existingLocation = await getExistingLocation(
+          signalement,
+          voies,
+          toponymes
+        );
+      } catch (err) {
+        console.error(err);
+        existingLocation = null;
+      }
     } else if (signalement.type === Signalement.type.LOCATION_TO_CREATE) {
       existingLocation = voies.find(
         (voie) =>
