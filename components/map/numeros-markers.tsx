@@ -4,11 +4,9 @@ import { css } from "glamor";
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 
-import useError from "@/hooks/error";
-
 import NumeroMarker from "@/components/map/numero-marker";
 import { Numero, NumerosService } from "@/lib/openapi";
-import { toaster } from "evergreen-ui";
+import LayoutContext from "@/contexts/layout";
 
 interface NumerosMarkersProps {
   numeros: Numero[];
@@ -23,7 +21,7 @@ function NumerosMarkers({
   setIsContextMenuDisplayed,
   color,
 }: NumerosMarkersProps) {
-  const [setError] = useError();
+  const { toaster } = useContext(LayoutContext);
 
   const {
     setEditingId,
@@ -84,29 +82,27 @@ function NumerosMarkers({
 
   const removeAddress = useCallback(
     async (numeroId: string) => {
-      try {
-        await NumerosService.softDeleteNumero(numeroId);
-        await reloadNumeros();
-        await reloadParcelles();
-        reloadTiles();
-        refreshBALSync();
-        toaster.success("Le numéro a bien été archivé");
-      } catch (error) {
-        setError(error.message);
-        toaster.danger("Le numéro n’a pas pu être archivé", {
-          description: error.message,
-        });
-      }
+      const softDeleteNumero = toaster(
+        () => NumerosService.softDeleteNumero(numeroId),
+        "Le numéro a bien été archivé",
+        "Le numéro n’a pas pu être archivé"
+      );
+
+      await softDeleteNumero();
+      await reloadNumeros();
+      await reloadParcelles();
+      reloadTiles();
+      refreshBALSync();
 
       setIsContextMenuDisplayed(null);
     },
     [
       reloadNumeros,
       reloadParcelles,
-      setError,
       setIsContextMenuDisplayed,
       refreshBALSync,
       reloadTiles,
+      toaster,
     ]
   );
 

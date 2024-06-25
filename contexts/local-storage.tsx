@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 
 import { useLocalStorage } from "@/hooks/local-storage";
 import { BasesLocalesService, OpenAPI } from "@/lib/openapi";
 import { ChildrenProps } from "@/types/context";
-import { toaster } from "evergreen-ui";
+import LayoutContext from "./layout";
 
 interface LocalStorageContextType {
   balAccess: Record<string, string>;
@@ -38,6 +38,7 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
   const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY);
   const [recoveryEmailSent, setRecoveryEmailSent] =
     useLocalStorage(RECOVERY_EMAIL);
+  const { toaster } = useContext(LayoutContext);
   const [hiddenBal, , getHiddenBal, addHiddenBal, removeHiddenBal] =
     useLocalStorage(VISIBILITY_KEY);
   const [userSettings, setUserSettings] = useLocalStorage(USER_SETTINGS);
@@ -45,16 +46,18 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
   const removeBAL = useCallback(async (balId: string) => {
     const token: string = getBalToken(balId);
     Object.assign(OpenAPI, { TOKEN: token });
-    try {
-      await BasesLocalesService.deleteBaseLocale(balId);
-      Object.assign(OpenAPI, { TOKEN: null });
-      removeBalAccess(balId);
-      toaster.success("La Base Adresse Locale a bien été supprimée");
-    } catch (error) {
-      toaster.danger("La Base Adresse Locale n’a pas pu être supprimée", {
-        description: error.message,
-      });
-    }
+
+    const deleteBaseLocale = toaster(
+      async () => {
+        await BasesLocalesService.deleteBaseLocale(balId);
+        Object.assign(OpenAPI, { TOKEN: null });
+        removeBalAccess(balId);
+      },
+      "La Base Adresse Locale a bien été supprimée",
+      "La Base Adresse Locale n’a pas pu être supprimée"
+    );
+
+    await deleteBaseLocale();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

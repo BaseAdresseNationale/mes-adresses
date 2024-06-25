@@ -1,11 +1,11 @@
 import { useState, useContext, Dispatch, SetStateAction } from "react";
-import { toaster } from "evergreen-ui";
 
 import { getBANCommune } from "@/lib/api-ban";
 import BalDataContext from "@/contexts/bal-data";
 import { BasesLocalesService, HabilitationService } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
 import { BaseLocale } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 interface UsePublishProcess {
   massDeletionConfirm: null | (() => void);
@@ -31,17 +31,19 @@ export default function usePublishProcess(
     setIsHabilitationProcessDisplayed,
   } = useContext(BalDataContext);
 
+  const { toaster, pushToast } = useContext(LayoutContext);
+
   const checkMassDeletion = async () => {
     try {
       const communeBAN = await getBANCommune(commune.code);
       return (baseLocale.nbNumeros / communeBAN.nbNumeros) * 100 <= 50;
     } catch (error) {
-      toaster.danger(
-        "Impossible de récupérer les données de la Base Adresse Nationale",
-        {
-          description: error,
-        }
-      );
+      pushToast({
+        title: "Erreur",
+        message:
+          "Impossible de récupérer les données de la Base Adresse Nationale",
+        intent: "danger",
+      });
 
       return false;
     }
@@ -68,12 +70,20 @@ export default function usePublishProcess(
       (!habilitation || !isHabilitationValid) &&
       !commune.isCOM
     ) {
-      const habilitation = await HabilitationService.createHabilitation(
-        baseLocale._id
-      );
+      try {
+        const habilitation = await HabilitationService.createHabilitation(
+          baseLocale._id
+        );
 
-      if (habilitation) {
-        await reloadHabilitation();
+        if (habilitation) {
+          await reloadHabilitation();
+        }
+      } catch (err) {
+        pushToast({
+          title: "Erreur",
+          message: "Impossible de créer un processus d'habilitation",
+          intent: "danger",
+        });
       }
     }
 
@@ -81,14 +91,12 @@ export default function usePublishProcess(
   };
 
   const handleSync = async () => {
-    try {
-      await BasesLocalesService.publishBaseLocale(baseLocale._id);
-      toaster.success("La Base Adresses Nationale a bien été mise à jour !");
-    } catch (error: unknown) {
-      toaster.danger("Impossible de mettre à jour la Base Adresses Nationale", {
-        description: (error as any).body.message,
-      });
-    }
+    const publishBaseLocale = toaster(
+      () => BasesLocalesService.publishBaseLocale(baseLocale._id),
+      "La Base Adresses Nationale a bien été mise à jour",
+      "Impossible de mettre à jour la Base Adresses Nationale"
+    );
+    await publishBaseLocale();
     await reloadBaseLocale();
   };
 

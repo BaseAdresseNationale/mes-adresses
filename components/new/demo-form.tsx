@@ -5,12 +5,12 @@ import { Pane, Checkbox, Button, Alert, PlusIcon } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 
 import { useCheckboxInput } from "@/hooks/input";
-import useError from "@/hooks/error";
 
 import FormInput from "@/components/form-input";
 import CommuneSearchField from "@/components/commune-search/commune-search-field";
 import { CommuneType } from "@/types/commune";
 import { BasesLocalesService } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 interface DemoFormProps {
   defaultCommune: CommuneType;
@@ -20,7 +20,7 @@ function DemoForm({ defaultCommune }: DemoFormProps) {
   const { addBalAccess } = useContext(LocalStorageContext);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [setError] = useError();
+  const { pushToast } = useContext(LayoutContext);
 
   const [populate, onPopulateChange] = useCheckboxInput(true);
   const [codeCommune, setCodeCommune] = useState(
@@ -53,7 +53,11 @@ function DemoForm({ defaultCommune }: DemoFormProps) {
 
       Router.push(`/bal/${bal._id}`);
     } catch (error) {
-      setError(error);
+      pushToast({
+        title: "Une erreur est survenue",
+        message: error.body?.message,
+        intent: "danger",
+      });
       setIsLoading(false);
     }
   };

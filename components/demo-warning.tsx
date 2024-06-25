@@ -6,7 +6,6 @@ import {
   Dialog,
   TextInputField,
   WarningSignIcon,
-  toaster,
 } from "evergreen-ui";
 
 import { BasesLocalesService } from "@/lib/openapi/services/BasesLocalesService";
@@ -29,7 +28,7 @@ function DemoWarning({ baseLocale, communeName }: DemoWarningProps) {
   const [nom, setNom] = useState(`Adresses de ${communeName}`);
   const [email, onEmailChange] = useInput();
   const [ref, setIsFocus] = useFocus();
-  const { isMobile } = useContext(LayoutContext);
+  const { isMobile, pushToast } = useContext(LayoutContext);
 
   const { reloadBaseLocale } = useContext(BalDataContext);
 
@@ -46,15 +45,17 @@ function DemoWarning({ baseLocale, communeName }: DemoWarningProps) {
 
         await reloadBaseLocale();
       } catch (error: unknown) {
-        toaster.danger("Impossible de conserver cette Base Adresse Locale", {
-          description: (error as any).message,
+        pushToast({
+          title: "Erreur",
+          message: "Impossible de conserver cette Base Adresse Locale",
+          intent: "danger",
         });
       }
 
       setIsShown(false);
       setIsLoading(false);
     },
-    [baseLocale._id, email, nom, reloadBaseLocale]
+    [baseLocale._id, email, nom, reloadBaseLocale, pushToast]
   );
 
   return (

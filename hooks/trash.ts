@@ -11,7 +11,7 @@ import {
 } from "@/lib/openapi";
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
-import { toaster } from "evergreen-ui";
+import LayoutContext from "@/contexts/layout";
 
 interface UseTrashType {
   voiesDeleted: PopulateVoie[];
@@ -37,6 +37,7 @@ function useTrash(): UseTrashType {
     refreshBALSync,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
+  const { toaster } = useContext(LayoutContext);
   const [voiesDeleted, setVoiesDeleted] = useState<PopulateVoie[]>([]);
   const [toponymesDeleted, setToponymesDeleted] = useState<Toponyme[]>([]);
 
@@ -50,17 +51,15 @@ function useTrash(): UseTrashType {
 
   const onRemoveVoie = useCallback(
     async (voie: PopulateVoie) => {
-      try {
-        await VoiesService.deleteVoie(voie._id);
-        toaster.success("La voie a bien été supprimée");
-      } catch (error) {
-        toaster.danger("La voie n’a pas pu être supprimée", {
-          description: error.message,
-        });
-      }
+      const deleteVoie = toaster(
+        () => VoiesService.deleteVoie(voie._id),
+        "La voie a bien été supprimée",
+        "La voie n’a pas pu être supprimée"
+      );
+      await deleteVoie();
       await reloadAllDeleted();
     },
-    [reloadAllDeleted]
+    [toaster, reloadAllDeleted]
   );
 
   const onRestoreVoie = useCallback(
@@ -68,15 +67,12 @@ function useTrash(): UseTrashType {
       const restoreVoieDTO: RestoreVoieDTO = {
         numerosIds: selectedNumerosIds,
       };
-      let res;
-      try {
-        res = await VoiesService.restoreVoie(voie._id, restoreVoieDTO);
-        toaster.success("La voie a bien été restaurée");
-      } catch (error) {
-        toaster.danger("La voie n’a pas pu être restaurée", {
-          description: error.message,
-        });
-      }
+      const restoreVoie = toaster(
+        () => VoiesService.restoreVoie(voie._id, restoreVoieDTO),
+        "La voie a bien été restaurée",
+        "La voie n’a pas pu être restaurée"
+      );
+      const res = await restoreVoie();
       if (res) {
         await reloadVoies();
         await reloadNumeros();
@@ -93,6 +89,7 @@ function useTrash(): UseTrashType {
       reloadTiles,
       refreshBALSync,
       reloadAllDeleted,
+      toaster,
     ]
   );
 
@@ -101,48 +98,42 @@ function useTrash(): UseTrashType {
       const deleteBatchNumeroDTO: DeleteBatchNumeroDTO = {
         numerosIds: voie.numeros.map(({ _id }) => String(_id)),
       };
-      try {
-        await BasesLocalesService.deleteNumeros(
-          baseLocale._id,
-          deleteBatchNumeroDTO
-        );
-        toaster.success("Les numéros ont bien été supprimés");
-      } catch (error) {
-        toaster.danger("Les numéros n’ont pas pu être supprimés", {
-          description: error.message,
-        });
-      }
+      const deleteNumeros = toaster(
+        () =>
+          BasesLocalesService.deleteNumeros(
+            baseLocale._id,
+            deleteBatchNumeroDTO
+          ),
+        "Les numéros ont bien été supprimés",
+        "Les numéros n’ont pas pu être supprimés"
+      );
+      await deleteNumeros();
       await reloadAllDeleted();
     },
-    [baseLocale._id, reloadAllDeleted]
+    [baseLocale._id, reloadAllDeleted, toaster]
   );
 
   const onRemoveToponyme = useCallback(
     async (toponyme: Toponyme) => {
-      try {
-        await ToponymesService.deleteToponyme(toponyme._id);
-        toaster.success("Le toponyme a bien été supprimé");
-      } catch (error) {
-        toaster.danger("Le toponyme n’a pas pu être supprimé", {
-          description: error.message,
-        });
-      }
+      const deleteToponyme = toaster(
+        () => ToponymesService.deleteToponyme(toponyme._id),
+        "Le toponyme a bien été supprimé",
+        "Le toponyme n’a pas pu être supprimé"
+      );
+      await deleteToponyme();
       await reloadAllDeleted();
     },
-    [reloadAllDeleted]
+    [reloadAllDeleted, toaster]
   );
 
   const onRestoreToponyme = useCallback(
     async (toponyme: Toponyme) => {
-      let res;
-      try {
-        res = await ToponymesService.restoreToponyme(toponyme._id);
-        toaster.success("Le toponyme a bien été restauré");
-      } catch (error) {
-        toaster.danger("Le toponyme n’a pas pu être restauré", {
-          description: error.message,
-        });
-      }
+      const restoreToponyme = toaster(
+        () => ToponymesService.restoreToponyme(toponyme._id),
+        "Le toponyme a bien été restauré",
+        "Le toponyme n’a pas pu être restauré"
+      );
+      const res = await restoreToponyme();
       if (res) {
         await reloadParcelles();
         await reloadToponymes();
@@ -157,6 +148,7 @@ function useTrash(): UseTrashType {
       reloadTiles,
       refreshBALSync,
       reloadAllDeleted,
+      toaster,
     ]
   );
 

@@ -1,13 +1,15 @@
 import { useContext, useState } from "react";
 import LocalStorageContext from "@/contexts/local-storage";
-import { Button, Checkbox, toaster, Pane } from "evergreen-ui";
+import { Button, Checkbox, Pane } from "evergreen-ui";
 
 import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
+import LayoutContext from "@/contexts/layout";
 
 function UserSettingsForm() {
   const { userSettings, setUserSettings } = useContext(LocalStorageContext);
   const [userSettingsForm, setUserSettingsForm] = useState(userSettings);
+  const { pushToast } = useContext(LayoutContext);
 
   const hasChanged = () =>
     JSON.stringify(userSettingsForm) !== JSON.stringify(userSettings);
@@ -15,9 +17,10 @@ function UserSettingsForm() {
   const onSubmit = (e) => {
     e.preventDefault();
     setUserSettings(userSettingsForm);
-    toaster.success(
-      "Les préférences utilisateurs ont été enregistrées avec succès !"
-    );
+    pushToast({
+      title: "Les préférences utilisateurs ont été enregistrées avec succès",
+      intent: "success",
+    });
   };
 
   return (

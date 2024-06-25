@@ -7,7 +7,6 @@ import {
   Button,
   Tablist,
   Tab,
-  toaster,
 } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
@@ -32,6 +31,7 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import SignalementContext from "@/contexts/signalement";
+import LayoutContext from "@/contexts/layout";
 
 interface BaseLocalePageProps {
   commune: CommuneType;
@@ -45,6 +45,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
 
   const { token } = useContext(TokenContext);
+  const { toaster } = useContext(LayoutContext);
   const { voies, toponymes, baseLocale } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
@@ -84,24 +85,25 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
   const onConvert = useCallback(async () => {
     setOnConvertLoading(true);
-    try {
-      const toponyme: Toponyme =
-        await VoiesService.convertToToponyme(toConvert);
-      await reloadVoies();
-      await reloadToponymes();
-      await reloadParcelles();
-      reloadTiles();
-      refreshBALSync();
-      // Select the tab topnyme after conversion
-      setSelectedTabIndex(2);
-      setEditedItem(toponyme);
-      setIsFormOpen(true);
-      toaster.success("La voie a bien été convertie en toponyme");
-    } catch (error) {
-      toaster.danger("La voie n’a pas pu être convertie en toponyme", {
-        description: error.message,
-      });
-    }
+    const convertToponyme = toaster(
+      async () => {
+        const toponyme: Toponyme =
+          await VoiesService.convertToToponyme(toConvert);
+        await reloadVoies();
+        await reloadToponymes();
+        await reloadParcelles();
+        reloadTiles();
+        refreshBALSync();
+        // Select the tab topnyme after conversion
+        setSelectedTabIndex(2);
+        setEditedItem(toponyme);
+        setIsFormOpen(true);
+      },
+      "La voie a bien été convertie en toponyme",
+      "La voie n’a pas pu être convertie en toponyme"
+    );
+
+    await convertToponyme();
 
     setOnConvertLoading(false);
     setToConvert(null);
@@ -112,6 +114,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     reloadTiles,
     reloadParcelles,
     toConvert,
+    toaster,
   ]);
 
   const onEdit = useCallback(

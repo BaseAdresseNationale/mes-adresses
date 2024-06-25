@@ -7,8 +7,6 @@ import { ApiGeoService } from "@/lib/geo-api";
 
 import LocalStorageContext from "@/contexts/local-storage";
 
-import useError from "@/hooks/error";
-
 import BaseLocaleCard from "@/components/base-locale-card";
 import DeleteWarning from "@/components/delete-warning";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
@@ -37,8 +35,6 @@ function AlertOtherBAL({
   const uniqCommunes = uniq(basesLocales.map(({ commune }) => commune));
   const [toRemove, setToRemove] = useState(null);
 
-  const [setError] = useError(null);
-
   useEffect(() => {
     const fetchCommune = async (code) => {
       const commune = await ApiGeoService.getCommune(code);
@@ -55,14 +51,10 @@ function AlertOtherBAL({
   };
 
   const onRemove = useCallback(async () => {
-    try {
-      await removeBAL(toRemove);
-      setToRemove(null);
-      updateBAL();
-    } catch (error) {
-      setError(error.message);
-    }
-  }, [toRemove, updateBAL, removeBAL, setError]);
+    await removeBAL(toRemove);
+    setToRemove(null);
+    updateBAL();
+  }, [toRemove, updateBAL, removeBAL]);
 
   const handleConfirmation = () => {
     setIsLoading(true);
