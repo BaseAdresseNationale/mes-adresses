@@ -1,6 +1,6 @@
 import { useState, useCallback, useContext, useEffect } from "react";
 import Router from "next/router";
-import { Dialog, Pane, Text, Spinner, toaster } from "evergreen-ui";
+import { Dialog, Pane, Text, Spinner } from "evergreen-ui";
 
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
@@ -19,6 +19,7 @@ import {
   HabilitationService,
 } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
+import LayoutContext from "@/contexts/layout";
 
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {
@@ -55,6 +56,7 @@ function HabilitationProcess({
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
 
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
+  const { pushToast } = useContext(LayoutContext);
 
   const sendCode = async () =>
     HabilitationService.sendPinCodeHabilitation(baseLocale._id);
@@ -75,9 +77,11 @@ function HabilitationProcess({
         await sendCode();
         setStep(1);
       } catch (error) {
-        toaster.danger("Le courriel n’a pas pu être envoyé", {
-          description: error.message,
-        });
+        pushToast(
+          "danger",
+          "Le courriel n’a pas pu être envoyé",
+          error.body.message
+        );
       }
     }
 
@@ -97,9 +101,9 @@ function HabilitationProcess({
       const revisions = await ApiDepotService.getRevisions(commune.code);
       setIsConflicted(revisions.length > 0);
     } catch (error) {
-      console.log(
-        "Impossible de récupérer les révisions pour cette commune. Error :",
-        error
+      console.error(
+        "ERROR: Impossible de récupérer les révisions pour cette commune",
+        error.body
       );
     }
   }, [commune.code]);
@@ -117,9 +121,7 @@ function HabilitationProcess({
       }
       setStep(2);
     } catch (error) {
-      toaster.danger("Le code n’est pas valide", {
-        description: error.body.message,
-      });
+      pushToast("danger", "Le code n’est pas valide", error.body.message);
     }
 
     await reloadHabilitation();
