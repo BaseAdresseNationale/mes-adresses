@@ -75,13 +75,13 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   }, [signalements]);
 
   const refreshSignalements = async () => {
-    const signalements = await SignalementsService.getSignalements(
+    const paginatedSignalements = await SignalementsService.getSignalements(
       baseLocale.commune,
       undefined,
       undefined,
       Signalement.status.PENDING
     );
-    setSignalements(signalements);
+    setSignalements(paginatedSignalements.data);
   };
 
   // We use a proxy to avoid exposing the client token in the frontend

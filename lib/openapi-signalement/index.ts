@@ -19,6 +19,7 @@ export { ExistingNumero } from './models/ExistingNumero';
 export { ExistingToponyme } from './models/ExistingToponyme';
 export { ExistingVoie } from './models/ExistingVoie';
 export type { ObjectId } from './models/ObjectId';
+export type { PaginatedSignalementsDTO } from './models/PaginatedSignalementsDTO';
 export type { Point } from './models/Point';
 export { Position } from './models/Position';
 export { Signalement } from './models/Signalement';

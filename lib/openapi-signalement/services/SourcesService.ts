@@ -48,18 +48,18 @@ export class SourcesService {
 
     /**
      * Get source by id
-     * @param id
+     * @param idSource
      * @returns Source
      * @throws ApiError
      */
     public static getSourceById(
-        id: string,
+        idSource: string,
     ): CancelablePromise<Source> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/sources/{id}',
+            url: '/sources/{idSource}',
             path: {
-                'id': id,
+                'idSource': idSource,
             },
         });
     }
