@@ -51,7 +51,7 @@ export const getSignalementLabel = (
       )}${
         opts?.withoutDate
           ? ""
-          : `- ${new Date(signalement._created).toLocaleDateString()}`
+          : ` - ${new Date(signalement._createdAt).toLocaleDateString()}`
       }`;
       break;
     case Signalement.type.LOCATION_TO_CREATE:
@@ -60,7 +60,7 @@ export const getSignalementLabel = (
       )}${
         opts?.withoutDate
           ? ""
-          : `- ${new Date(signalement._created).toLocaleDateString()}`
+          : ` - ${new Date(signalement._createdAt).toLocaleDateString()}`
       }`;
       break;
     case Signalement.type.LOCATION_TO_DELETE:
@@ -69,11 +69,17 @@ export const getSignalementLabel = (
       )}${
         opts?.withoutDate
           ? ""
-          : `- ${new Date(signalement._created).toLocaleDateString()}`
+          : ` - ${new Date(signalement._createdAt).toLocaleDateString()}`
       }`;
       break;
     default:
-      label = "Autre demande";
+      label = `Autre demande : ${getExistingLocationLabel(
+        signalement.existingLocation
+      )}${
+        opts?.withoutDate
+          ? ""
+          : ` - ${new Date(signalement._createdAt).toLocaleDateString()}`
+      }`;
   }
 
   return label;

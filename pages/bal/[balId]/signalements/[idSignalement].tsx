@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Heading, Pane, Paragraph, Tab, Tablist } from "evergreen-ui";
+import React, { useMemo, useState } from "react";
+import { Heading, Pane, Paragraph, Tab, Tablist, toaster } from "evergreen-ui";
 import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
@@ -12,8 +12,11 @@ import {
 } from "@/lib/openapi";
 import {
   ExistingLocation,
+  ExistingNumero,
+  ExistingToponyme,
+  ExistingVoie,
   Signalement,
-  DefaultService as SignalementService,
+  SignalementsService,
 } from "@/lib/openapi-signalement";
 import { useRouter } from "next/router";
 import SignalementUpdateNumero from "@/components/signalement/numero/signalement-update-numero";
@@ -33,7 +36,9 @@ function SignalementPage({
   existingLocation,
   commune,
 }: SignalementPageProps) {
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(
+    signalement.type === Signalement.type.OTHER ? 0 : 1
+  );
   const router = useRouter();
 
   const handleClose = () => {
@@ -41,18 +46,43 @@ function SignalementPage({
   };
 
   const handleSignalementProcessed = async () => {
-    await SignalementService.updateSignalement({
-      id: signalement._id as string,
-    });
-    handleClose();
+    try {
+      const response = await fetch("/api/update-signalement", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: signalement._id,
+          status: Signalement.status.PROCESSED,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Une erreur est survenue");
+      }
+      handleClose();
+      toaster.success("Le signalement a bien été pris en compte");
+    } catch (error) {
+      toaster.danger("Une erreur est survenue", {
+        description: error.message,
+      });
+    }
   };
+
+  const tabs = useMemo(() => {
+    if (signalement.type === Signalement.type.OTHER) {
+      return ["Infos"];
+    }
+
+    return ["Infos", "Editeur"];
+  }, [signalement]);
 
   return (
     <ProtectedPage>
       {existingLocation ? (
         <>
           <Tablist margin={10}>
-            {["Infos", "Editeur"].map((tab, index) => (
+            {tabs.map((tab, index) => (
               <Tab
                 key={tab}
                 isSelected={activeTab === index}
@@ -65,8 +95,8 @@ function SignalementPage({
           <Pane overflow="scroll" height="100%">
             {activeTab === 0 && (
               <SignalementViewer
-                existingLocation={existingLocation}
                 signalement={signalement}
+                existingLocation={existingLocation}
               />
             )}
             {activeTab === 1 && (
@@ -136,6 +166,61 @@ function SignalementPage({
   );
 }
 
+async function getExistingLocation(
+  signalement: Signalement,
+  voies: Voie[],
+  toponymes: Toponyme[]
+) {
+  let existingLocation = null;
+  if (signalement.existingLocation.type === ExistingLocation.type.VOIE) {
+    existingLocation = voies.find(
+      (voie) => voie.nom === (signalement.existingLocation as ExistingVoie).nom
+    );
+  } else if (
+    signalement.existingLocation.type === ExistingLocation.type.TOPONYME
+  ) {
+    existingLocation = toponymes.find(
+      (toponyme) =>
+        toponyme.nom === (signalement.existingLocation as ExistingToponyme).nom
+    );
+  } else if (
+    signalement.existingLocation.type === ExistingLocation.type.NUMERO
+  ) {
+    const existingNumero = signalement.existingLocation as ExistingNumero;
+    if (existingNumero.toponyme.type === ExistingLocation.type.VOIE) {
+      const voie = voies.find(
+        (voie) => voie.nom === existingNumero.toponyme.nom
+      );
+      const numeros = await VoiesService.findVoieNumeros(voie._id);
+      existingLocation = numeros.find(({ numeroComplet }) => {
+        const existingLocationNumeroComplet = existingNumero.suffixe
+          ? `${existingNumero.numero}${existingNumero.suffixe}`
+          : `${existingNumero.numero}`;
+        return numeroComplet === existingLocationNumeroComplet;
+      });
+      if (existingLocation) {
+        existingLocation.voie = voie;
+      }
+    } else {
+      const toponyme = toponymes.find(
+        (toponyme) => toponyme.nom === existingNumero.toponyme.nom
+      );
+      const numeros = await ToponymesService.findToponymeNumeros(toponyme._id);
+      existingLocation = numeros.find(({ numeroComplet }) => {
+        const existingLocationNumeroComplet = existingNumero.suffixe
+          ? `${existingNumero.numero}${existingNumero.suffixe}`
+          : `${existingNumero.numero}`;
+        return numeroComplet === existingLocationNumeroComplet;
+      });
+      if (existingLocation) {
+        existingLocation.toponyme = toponyme;
+      }
+    }
+  }
+
+  return existingLocation;
+}
+
 export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
 
@@ -143,12 +228,8 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
-    );
-
-    const signalement = signalements.find(
-      (signalement) => signalement._id === params.idSignalement
+    const signalement = await SignalementsService.getSignalementById(
+      params.idSignalement
     );
 
     if (signalement.changesRequested.positions) {
@@ -163,62 +244,23 @@ export async function getServerSideProps({ params }) {
     let existingLocation = null;
     if (
       signalement.type === Signalement.type.LOCATION_TO_UPDATE ||
-      signalement.type === Signalement.type.LOCATION_TO_DELETE
+      signalement.type === Signalement.type.LOCATION_TO_DELETE ||
+      signalement.type === Signalement.type.OTHER
     ) {
-      if (signalement.existingLocation.type === ExistingLocation.type.VOIE) {
-        existingLocation = voies.find(
-          (voie) => voie.nom === signalement.existingLocation.nom
+      try {
+        existingLocation = await getExistingLocation(
+          signalement,
+          voies,
+          toponymes
         );
-      } else if (
-        signalement.existingLocation.type === ExistingLocation.type.TOPONYME
-      ) {
-        existingLocation = toponymes.find(
-          (toponyme) => toponyme.nom === signalement.existingLocation.nom
-        );
-      } else if (
-        signalement.existingLocation.type === ExistingLocation.type.NUMERO
-      ) {
-        if (
-          signalement.existingLocation.toponyme.type ===
-          ExistingLocation.type.VOIE
-        ) {
-          const voie = voies.find(
-            (voie) => voie.nom === signalement.existingLocation.toponyme.nom
-          );
-          const numeros = await VoiesService.findVoieNumeros(voie._id);
-          existingLocation = numeros.find(({ numeroComplet }) => {
-            const existingLocationNumeroComplet = signalement.existingLocation
-              .suffixe
-              ? `${signalement.existingLocation.numero}${signalement.existingLocation.suffixe}`
-              : `${signalement.existingLocation.numero}`;
-            return numeroComplet === existingLocationNumeroComplet;
-          });
-          if (existingLocation) {
-            existingLocation.voie = voie;
-          }
-        } else {
-          const toponyme = toponymes.find(
-            (toponyme) =>
-              toponyme.nom === signalement.existingLocation.toponyme.nom
-          );
-          const numeros = await ToponymesService.findToponymeNumeros(
-            toponyme._id
-          );
-          existingLocation = numeros.find(({ numeroComplet }) => {
-            const existingLocationNumeroComplet = signalement.existingLocation
-              .suffixe
-              ? `${signalement.existingLocation.numero}${signalement.existingLocation.suffixe}`
-              : `${signalement.existingLocation.numero}`;
-            return numeroComplet === existingLocationNumeroComplet;
-          });
-          if (existingLocation) {
-            existingLocation.toponyme = toponyme;
-          }
-        }
+      } catch (err) {
+        console.error(err);
+        existingLocation = null;
       }
     } else if (signalement.type === Signalement.type.LOCATION_TO_CREATE) {
       existingLocation = voies.find(
-        (voie) => voie.nom === signalement.existingLocation.nom
+        (voie) =>
+          voie.nom === (signalement.existingLocation as ExistingVoie).nom
       );
     }
 
