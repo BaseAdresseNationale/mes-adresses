@@ -4,8 +4,6 @@
 /* eslint-disable */
 
 export type Author = {
-    firstName?: string | null;
-    lastName?: string | null;
-    email: string;
+    email?: string | null;
 };
 

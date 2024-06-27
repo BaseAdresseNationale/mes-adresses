@@ -5,6 +5,7 @@
 
 export type ExistingToponyme = {
     type: ExistingToponyme.type;
+    banId?: string | null;
     nom: string;
 };
 

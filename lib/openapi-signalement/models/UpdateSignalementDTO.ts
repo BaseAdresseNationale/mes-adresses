@@ -4,7 +4,6 @@
 /* eslint-disable */
 
 export type UpdateSignalementDTO = {
-    id: string;
     status: UpdateSignalementDTO.status;
 };
 

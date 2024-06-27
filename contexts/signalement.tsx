@@ -26,13 +26,13 @@ export function SignalementContextProvider(props: ChildrenProps) {
   const { token } = useContext(TokenContext);
 
   const fetchSignalements = useCallback(async () => {
-    const signalements = await SignalementsService.getSignalements(
+    const paginatedSignalements = await SignalementsService.getSignalements(
       baseLocale.commune,
       undefined,
       undefined,
       Signalement.status.PENDING
     );
-    setSignalements(signalements);
+    setSignalements(paginatedSignalements.data);
   }, [baseLocale.commune]);
 
   useEffect(() => {
