@@ -143,32 +143,6 @@ function SignalementViewer({
         </Paragraph>
       )}
 
-      {signalement.author && (
-        <Paragraph
-          background="white"
-          padding={8}
-          borderRadius={8}
-          marginBottom={8}
-          width="100%"
-        >
-          <h3>Auteur du signalement</h3>
-          <Pane display="flex">
-            <Pane marginRight={20}>
-              <h4>Nom</h4>
-              <div>{signalement.author?.lastName}</div>
-            </Pane>
-            <Pane marginRight={20}>
-              <h4>Prénom</h4>
-              <div>{signalement.author?.firstName}</div>
-            </Pane>
-            <Pane>
-              <h4>Email</h4>
-              <div>{signalement.author?.email}</div>
-            </Pane>
-          </Pane>
-        </Paragraph>
-      )}
-
       <style jsx>{`
         h3,
         h4,
