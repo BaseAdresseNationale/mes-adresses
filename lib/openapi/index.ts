@@ -48,7 +48,6 @@ export type { UpdateNumeroDTO } from './models/UpdateNumeroDTO';
 export type { UpdateToponymeDTO } from './models/UpdateToponymeDTO';
 export { UpdateVoieDTO } from './models/UpdateVoieDTO';
 export type { ValidatePinCodeDTO } from './models/ValidatePinCodeDTO';
-export type { ValidatePinCodeResponseDTO } from './models/ValidatePinCodeResponseDTO';
 export { Voie } from './models/Voie';
 
 export { AdminService } from './services/AdminService';

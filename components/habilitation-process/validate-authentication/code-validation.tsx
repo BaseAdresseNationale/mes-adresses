@@ -17,7 +17,7 @@ import FormContainer from "@/components/form-container";
 interface CodeValidationProps {
   email: string;
   handleSubmit: (code: string) => Promise<void>;
-  resendCode: () => Promise<any>;
+  resendCode: () => Promise<void>;
 }
 
 function CodeValidation({

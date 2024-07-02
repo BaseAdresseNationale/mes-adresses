@@ -4,7 +4,6 @@
 /* eslint-disable */
 import type { HabilitationDTO } from '../models/HabilitationDTO';
 import type { ValidatePinCodeDTO } from '../models/ValidatePinCodeDTO';
-import type { ValidatePinCodeResponseDTO } from '../models/ValidatePinCodeResponseDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -88,13 +87,13 @@ export class HabilitationService {
      * Valide pin code of habiliation
      * @param baseLocaleId
      * @param requestBody
-     * @returns ValidatePinCodeResponseDTO
+     * @returns any
      * @throws ApiError
      */
     public static validePinCodeHabilitation(
         baseLocaleId: string,
         requestBody: ValidatePinCodeDTO,
-    ): CancelablePromise<ValidatePinCodeResponseDTO> {
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/habilitation/email/validate-pin-code',
