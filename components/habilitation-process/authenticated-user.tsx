@@ -4,10 +4,9 @@ import { Pane, Text, Strong } from "evergreen-ui";
 interface AuthenticatedUserProps {
   type: "elu" | "mairie";
   title: string;
-  subtitle: string;
 }
 
-function AuthenticatedUser({ type, title, subtitle }: AuthenticatedUserProps) {
+function AuthenticatedUser({ type, title }: AuthenticatedUserProps) {
   return (
     <Pane display="flex" flexDirection="column" alignItems="center" gap={8}>
       <Pane
@@ -34,10 +33,7 @@ function AuthenticatedUser({ type, title, subtitle }: AuthenticatedUserProps) {
         justifyContent="center"
       >
         Vous êtes identifié comme :&nbsp;
-        <Strong fontSize="18px">
-          {" "}
-          {title} {subtitle}
-        </Strong>
+        <Strong fontSize="18px"> {title}</Strong>
       </Text>
     </Pane>
   );
