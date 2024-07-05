@@ -17,6 +17,7 @@ import { Numero, Position, Voie, VoiesService } from "@/lib/openapi";
 import {
   Signalement,
   Position as PositionSignalement,
+  NumeroChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 import LayoutContext from "@/contexts/layout";
 
@@ -88,7 +89,7 @@ function SignalementUpdateNumero({
   const [numeroEditorValue, setNumeroEditorValue] = useState(existingLocation);
 
   const { numero, suffixe, positions, parcelles, nomVoie } =
-    signalement.changesRequested;
+    signalement.changesRequested as NumeroChangesRequestedDTO;
 
   useEffect(() => {
     const refKeys = Object.keys(refs);

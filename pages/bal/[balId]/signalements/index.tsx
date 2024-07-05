@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
 import {
   ExistingNumero,
+  NumeroChangesRequestedDTO,
   Signalement,
   SignalementsService,
 } from "@/lib/openapi-signalement";
@@ -21,9 +22,13 @@ import MarkersContext from "@/contexts/markers";
 import { getSignalementLabel } from "@/lib/utils/signalement";
 import LayoutContext from "@/contexts/layout";
 
-function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
-  const [signalements, setSignalements] =
-    useState<Signalement[]>(initialSignalements);
+function SignalementsPage({
+  baseLocale,
+  paginatedSignalements: initialSignalements,
+}) {
+  const [signalements, setSignalements] = useState<Signalement[]>(
+    initialSignalements.data
+  );
   const [selectedSignalements, setSelectedSignalements] = useState<string[]>(
     []
   );
@@ -37,7 +42,8 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
       .reduce((acc, cur) => {
         let position;
         if (cur.type === Signalement.type.LOCATION_TO_CREATE) {
-          position = cur.changesRequested?.positions[0]?.point;
+          position = (cur.changesRequested as NumeroChangesRequestedDTO)
+            ?.positions[0]?.point;
         } else {
           position = (cur.existingLocation as ExistingNumero).position?.point;
         }
@@ -45,7 +51,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
         return [
           ...acc,
           {
-            signalementId: cur._id,
+            signalementId: cur.id,
             label: getSignalementLabel(cur, { withoutDate: true }),
             position: position,
           },
@@ -81,7 +87,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
       undefined,
       Signalement.status.PENDING
     );
-    setSignalements(paginatedSignalements.data);
+    setSignalements(paginatedSignalements.data as unknown as Signalement[]);
   };
 
   // We use a proxy to avoid exposing the client token in the frontend
@@ -235,7 +241,7 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementsService.getSignalements(
+    const paginatedSignalements = await SignalementsService.getSignalements(
       baseLocale.commune,
       undefined,
       undefined,
@@ -248,7 +254,7 @@ export async function getServerSideProps({ params }) {
         commune,
         voies,
         toponymes,
-        signalements,
+        paginatedSignalements,
       },
     };
   } catch {

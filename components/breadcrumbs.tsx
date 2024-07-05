@@ -38,7 +38,7 @@ function Breadcrumbs({
   if (innerPath === "signalements" && router.query.idSignalement) {
     const signalementId = router.query.idSignalement;
     const signalement = signalements.find(
-      (signalement) => signalement._id === signalementId
+      (signalement) => signalement.id === signalementId
     );
     signalementLabel = signalement && getSignalementLabel(signalement);
   }

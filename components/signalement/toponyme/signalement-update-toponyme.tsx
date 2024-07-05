@@ -10,6 +10,7 @@ import MarkersContext from "@/contexts/markers";
 import {
   Signalement,
   Position as PositionSignalement,
+  ToponymeChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 
 interface SignalementUpdateToponymeProps {
@@ -45,7 +46,8 @@ function SignalementUpdateToponyme({
   handleClose,
   commune,
 }: SignalementUpdateToponymeProps) {
-  const { nom, positions, parcelles } = signalement.changesRequested;
+  const { nom, positions, parcelles } =
+    signalement.changesRequested as ToponymeChangesRequestedDTO;
 
   const nomInputRef = useRef<HTMLDivElement>(null);
   const positionsInputRef = useRef<HTMLDivElement>(null);

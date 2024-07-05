@@ -84,11 +84,11 @@ function SignalementList({
 
       <InfiniteScrollList items={scrollableItems}>
         {(signalement) => (
-          <Table.Row key={signalement._id} paddingRight={8} minHeight={48}>
+          <Table.Row key={signalement.id} paddingRight={8} minHeight={48}>
             <Table.Cell flex="0 1 40px">
               <Checkbox
-                checked={selectedSignalements.includes(signalement._id)}
-                onChange={() => onToggleSelect([signalement._id])}
+                checked={selectedSignalements.includes(signalement.id)}
+                onChange={() => onToggleSelect([signalement.id])}
               />
             </Table.Cell>
             <Table.TextCell flex="2">{signalement.label}</Table.TextCell>
@@ -100,14 +100,14 @@ function SignalementList({
                     <Menu.Group>
                       <Menu.Item
                         icon={SendToMapIcon}
-                        onSelect={() => onSelect(signalement._id)}
+                        onSelect={() => onSelect(signalement.id)}
                       >
                         Traiter
                       </Menu.Item>
                       <Menu.Item
                         icon={TrashIcon}
                         intent="danger"
-                        onSelect={() => onIgnore(signalement._id)}
+                        onSelect={() => onIgnore(signalement.id)}
                       >
                         Ignorer
                       </Menu.Item>

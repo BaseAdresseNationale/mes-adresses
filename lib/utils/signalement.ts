@@ -1,9 +1,10 @@
 import {
-  ChangesRequested,
+  DeleteNumeroChangesRequestedDTO,
   ExistingLocation,
   ExistingNumero,
   ExistingToponyme,
   ExistingVoie,
+  NumeroChangesRequestedDTO,
   Signalement,
 } from "../openapi-signalement";
 
@@ -33,7 +34,9 @@ export const getExistingLocationLabel = (
   return label;
 };
 
-const getRequestedLocationLabel = (changesRequested: ChangesRequested) => {
+const getRequestedLocationLabel = (
+  changesRequested: NumeroChangesRequestedDTO
+) => {
   return `${changesRequested.numero} ${
     changesRequested.suffixe ? `${changesRequested.suffixe} ` : ""
   }${changesRequested.nomVoie}`;
@@ -51,16 +54,16 @@ export const getSignalementLabel = (
       )}${
         opts?.withoutDate
           ? ""
-          : ` - ${new Date(signalement._createdAt).toLocaleDateString()}`
+          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
       }`;
       break;
     case Signalement.type.LOCATION_TO_CREATE:
       label = `Demande de creation : ${getRequestedLocationLabel(
-        signalement.changesRequested
+        signalement.changesRequested as NumeroChangesRequestedDTO
       )}${
         opts?.withoutDate
           ? ""
-          : ` - ${new Date(signalement._createdAt).toLocaleDateString()}`
+          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
       }`;
       break;
     case Signalement.type.LOCATION_TO_DELETE:
@@ -69,7 +72,7 @@ export const getSignalementLabel = (
       )}${
         opts?.withoutDate
           ? ""
-          : ` - ${new Date(signalement._createdAt).toLocaleDateString()}`
+          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
       }`;
       break;
     default:
@@ -78,7 +81,7 @@ export const getSignalementLabel = (
       )}${
         opts?.withoutDate
           ? ""
-          : ` - ${new Date(signalement._createdAt).toLocaleDateString()}`
+          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
       }`;
   }
 

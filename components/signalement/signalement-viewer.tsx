@@ -1,7 +1,11 @@
 import { Pane, Paragraph } from "evergreen-ui";
 import React from "react";
 import { positionsTypesList } from "@/lib/positions-types-list";
-import { Signalement } from "@/lib/openapi-signalement";
+import {
+  NumeroChangesRequestedDTO,
+  Signalement,
+  ToponymeChangesRequestedDTO,
+} from "@/lib/openapi-signalement";
 import { Numero, Toponyme, Voie } from "@/lib/openapi";
 
 interface SignalementViewerProps {
@@ -26,7 +30,8 @@ function SignalementViewer({
   existingLocation,
 }: SignalementViewerProps) {
   const { numero, suffixe, nomVoie, positions, parcelles, nom } =
-    signalement.changesRequested;
+    signalement.changesRequested as NumeroChangesRequestedDTO &
+      ToponymeChangesRequestedDTO;
 
   return (
     <Pane padding={16}>

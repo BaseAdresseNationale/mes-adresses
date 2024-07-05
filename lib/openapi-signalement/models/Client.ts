@@ -3,13 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { ObjectId } from './ObjectId';
-
 export type Client = {
-    _id: ObjectId;
-    _createdAt: number;
-    _updatedAt: number;
-    _deletedAt?: number | null;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt?: string | null;
     nom: string;
+    processedSignalements?: Array<string> | null;
 };
 

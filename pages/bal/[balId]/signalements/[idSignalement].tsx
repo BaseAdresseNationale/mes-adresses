@@ -15,6 +15,7 @@ import {
   ExistingNumero,
   ExistingToponyme,
   ExistingVoie,
+  NumeroChangesRequestedDTO,
   Signalement,
   SignalementsService,
 } from "@/lib/openapi-signalement";
@@ -53,7 +54,7 @@ function SignalementPage({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: signalement._id,
+          id: signalement.id,
           status: Signalement.status.PROCESSED,
         }),
       });
@@ -232,13 +233,14 @@ export async function getServerSideProps({ params }) {
       params.idSignalement
     );
 
-    if (signalement.changesRequested.positions) {
-      signalement.changesRequested.positions =
-        signalement.changesRequested.positions.map((p) => ({
-          ...p,
-          _id: uniqueId(),
-          source: "signalement",
-        }));
+    if ((signalement.changesRequested as NumeroChangesRequestedDTO).positions) {
+      (signalement.changesRequested as NumeroChangesRequestedDTO).positions = (
+        signalement.changesRequested as NumeroChangesRequestedDTO
+      ).positions.map((p) => ({
+        ...p,
+        _id: uniqueId(),
+        source: "signalement",
+      }));
     }
 
     let existingLocation = null;
