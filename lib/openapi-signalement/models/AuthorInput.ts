@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type ObjectId = {
+export type AuthorInput = {
+    email?: string | null;
 };
 
