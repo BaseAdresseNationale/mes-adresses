@@ -58,8 +58,19 @@ function HabilitationProcess({
 
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
 
-  const sendCode = async () =>
-    HabilitationService.sendPinCodeHabilitation(baseLocale._id);
+  const sendCode = async () => {
+    try {
+      await HabilitationService.sendPinCodeHabilitation(baseLocale._id);
+
+      return true;
+    } catch (error) {
+      pushToast({
+        intent: "danger",
+        title: "Le courriel n’a pas pu être envoyé",
+        message: error.body?.message,
+      });
+    }
+  };
 
   const redirectToFranceConnect = () => {
     const redirectUrl = encodeURIComponent(
@@ -73,15 +84,9 @@ function HabilitationProcess({
   const handleStrategy = async (selectedStrategy) => {
     setIsLoading(true);
     if (selectedStrategy === "email") {
-      try {
-        await sendCode();
+      const codeSent = await sendCode();
+      if (codeSent) {
         setStep(1);
-      } catch (error) {
-        pushToast({
-          intent: "danger",
-          title: "Le courriel n’a pas pu être envoyé",
-          message: error.body?.message,
-        });
       }
     }
 

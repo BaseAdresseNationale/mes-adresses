@@ -5,7 +5,7 @@ import CodeValidation from "@/components/habilitation-process/validate-authentic
 interface ValidateAuthenticationProps {
   emailCommune: string;
   validatePinCode: (code: string) => Promise<void>;
-  resendCode: () => Promise<void>;
+  resendCode: () => Promise<boolean>;
   onCancel: () => void;
 }
 
