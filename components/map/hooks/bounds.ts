@@ -4,19 +4,18 @@ import type { LngLatBoundsLike, Map, VectorTileSource } from "maplibre-gl";
 
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import { CommuneType } from "@/types/commune";
 import { Toponyme, Voie } from "@/lib/openapi";
 import { ViewState } from "react-map-gl";
 
 function useBounds(
   map: Map,
+  router: NextRouter,
   commune: CommuneType,
   voie: Voie,
   toponyme: Toponyme
 ) {
-  const router = useRouter();
-
   const communeBbox: number[] = useMemo(
     () => (commune.contour ? bbox(commune.contour) : null),
     [commune.contour]
@@ -31,7 +30,6 @@ function useBounds(
 
   const bboxForItem = useCallback(
     (item) => {
-      console.log(item);
       if (map && item && item.trace) {
         return bbox(item.trace);
       } else if (map && item && item.bbox) {
