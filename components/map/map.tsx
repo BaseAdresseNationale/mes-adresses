@@ -139,7 +139,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune]);
 
   const [handleHover, handleMouseLeave, featureHovered] = useHovered(map);
-  const bounds = useBounds(commune, voie, toponyme);
+  const bounds = useBounds(map, commune, voie, toponyme);
 
   const prevStyle = useRef(defaultStyle);
 
@@ -386,6 +386,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       <Pane display="flex" flex={1}>
         <MapGl
           ref={handleMapRef}
+          hash={true}
           {...viewport}
           mapStyle={mapStyle as any}
           styleDiffing={false}

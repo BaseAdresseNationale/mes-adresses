@@ -1,68 +1,71 @@
 import { useMemo, useContext, useState, useEffect, useCallback } from "react";
 import bbox from "@turf/bbox";
+import type { LngLatBoundsLike, Map, VectorTileSource } from "maplibre-gl";
 
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 import { useRouter } from "next/router";
 import { CommuneType } from "@/types/commune";
 import { Toponyme, Voie } from "@/lib/openapi";
+import { ViewState } from "react-map-gl";
 
-function useBounds(commune: CommuneType, voie: Voie, toponyme: Toponyme) {
-  const communeBounds = useMemo(
+function useBounds(
+  map: Map,
+  commune: CommuneType,
+  voie: Voie,
+  toponyme: Toponyme
+) {
+  const router = useRouter();
+
+  const communeBbox: number[] = useMemo(
     () => (commune.contour ? bbox(commune.contour) : null),
     [commune.contour]
   );
+
+  const [bounds, setBounds] = useState<number[]>(communeBbox);
+
   const { editingItem } = useContext(BalDataContext);
-  const { map, isTileSourceLoaded } = useContext(MapContext);
+
   const [wasCenteredOnCommuneOnce, setWasCenteredOnCommuneOnce] =
     useState(false);
-  const [bounds, setBounds] = useState(communeBounds);
 
-  const router = useRouter();
-
-  const setBoundsItem = useCallback(
+  const bboxForItem = useCallback(
     (item) => {
+      console.log(item);
       if (map && item && item.trace) {
-        setBounds(bbox(item.trace));
+        return bbox(item.trace);
       } else if (map && item && item.bbox) {
-        setBounds(item.bbox);
+        return item.bbox;
       }
     },
-    [map, setBounds]
+    [map]
   );
 
   useEffect(() => {
-    const { idVoie, idToponyme } = router.query;
-    if (!isTileSourceLoaded) {
-      return;
-    }
-
-    if (idVoie) {
-      setBoundsItem(voie);
-    } else if (idToponyme) {
-      setBoundsItem(toponyme);
-    }
-  }, [router.query, voie, toponyme, setBoundsItem, isTileSourceLoaded]);
-
-  useEffect(() => {
-    const bounds = communeBounds;
-    if (!isTileSourceLoaded) {
+    if (!map) {
       return;
     }
 
     if (editingItem) {
-      setBoundsItem(editingItem);
+      setBounds(bboxForItem(editingItem));
     } else if (!wasCenteredOnCommuneOnce) {
-      setBounds(bounds);
+      setBounds(communeBbox);
       setWasCenteredOnCommuneOnce(true);
     }
-  }, [
-    communeBounds,
-    isTileSourceLoaded,
-    editingItem,
-    setBoundsItem,
-    wasCenteredOnCommuneOnce,
-  ]);
+  }, [editingItem, wasCenteredOnCommuneOnce, map, bboxForItem, communeBbox]);
+
+  useEffect(() => {
+    const { idVoie, idToponyme } = router.query;
+    if (!map) {
+      return;
+    }
+
+    if (idVoie) {
+      setBounds(bboxForItem(voie));
+    } else if (idToponyme) {
+      setBounds(bboxForItem(toponyme));
+    }
+  }, [router.query, voie, toponyme, map, bboxForItem]);
 
   return bounds;
 }
