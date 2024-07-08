@@ -33,6 +33,7 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import SignalementContext from "@/contexts/signalement";
+import LayoutContext from "@/contexts/layout";
 
 interface BaseLocalePageProps {
   commune: CommuneType;
@@ -47,6 +48,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
   const { token } = useContext(TokenContext);
   const { voies, toponymes, baseLocale } = useContext(BalDataContext);
+  const { isMobile } = useContext(LayoutContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const {
@@ -266,7 +268,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
                   {notif > 0 && <span className="tab-notif">{notif}</span>}
                 </Tab>
               );
-              return tooltip ? (
+              return isMobile && tooltip ? (
                 <Tooltip content={tooltip} key={label}>
                   {tab}
                 </Tooltip>
