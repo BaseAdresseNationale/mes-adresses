@@ -26,7 +26,10 @@ import RenewTokenDialog from "@/components/renew-token-dialog";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi";
 
 const mailHasChanged = (listA, listB) => {
-  return !isEqual([...listA].sort(), [...listB].sort());
+  return !isEqual(
+    [...listA].sort((a, b) => a.localeCompare(b)),
+    [...listB].sort((a, b) => a.localeCompare(b))
+  );
 };
 
 interface BALSettingsFormProps {
