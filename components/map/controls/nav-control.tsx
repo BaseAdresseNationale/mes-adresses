@@ -1,19 +1,10 @@
 import { NavigationControl, NavigationControlProps } from "react-map-gl";
 import { Pane } from "evergreen-ui";
-import { Viewport } from "maplibre-gl";
 
-type NavControlProps = {
-  // onViewportChange: (viewport: Viewport) => void;
-} & NavigationControlProps;
-
-function NavControl(props: NavControlProps) {
+function NavControl(props: NavigationControlProps) {
   return (
     <Pane position="absolute" top={16} right={46} zIndex={2}>
-      <NavigationControl
-        showCompass={false}
-        // onViewportChange={onViewportChange}
-        {...props}
-      />
+      <NavigationControl showCompass={false} {...props} />
     </Pane>
   );
 }
