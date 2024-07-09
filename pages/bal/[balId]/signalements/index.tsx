@@ -17,9 +17,9 @@ import {
   Signalement,
   DefaultService as SignalementService,
 } from "@/lib/openapi-signalement";
-import { toaster } from "evergreen-ui";
 import MarkersContext from "@/contexts/markers";
 import { getSignalementLabel } from "@/lib/utils/signalement";
+import LayoutContext from "@/contexts/layout";
 
 function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   const [signalements, setSignalements] =
@@ -30,6 +30,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
+  const { toaster } = useContext(LayoutContext);
 
   useEffect(() => {
     const markerPositions = signalements
@@ -73,7 +74,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
     };
   }, [signalements]);
 
-  const updateSignalements = async () => {
+  const refreshSignalements = async () => {
     const signalements = await SignalementService.getSignalementsByCodeCommune(
       baseLocale.commune
     );
@@ -85,31 +86,29 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   };
 
   const handleIgnoreSignalement = async (id) => {
-    try {
-      await SignalementService.updateSignalement({ id });
-      toaster.success("Le signalement a bien été ignoré");
-    } catch (error) {
-      toaster.danger("Une erreur est survenue", {
-        description: error.message,
-      });
-    }
+    const updateSignalement = toaster(
+      () => SignalementService.updateSignalement({ id }),
+      "Le signalement a bien été ignoré",
+      "Une erreur est survenue"
+    );
 
-    await updateSignalements();
+    await updateSignalement();
+    await refreshSignalements();
   };
 
   const handleIgnoreSignalements = async () => {
-    try {
-      for (const id of selectedSignalements) {
-        await SignalementService.updateSignalement({ id });
-      }
-      toaster.success("Les signalements ont bien été ignorés");
-    } catch (error) {
-      toaster.danger("Une erreur est survenue", {
-        description: error.message,
-      });
-    }
+    const massUpdateSignalements = toaster(
+      async () => {
+        for (const id of selectedSignalements) {
+          await SignalementService.updateSignalement({ id });
+        }
+      },
+      "Les signalements ont bien été ignorés",
+      "Une erreur est survenue"
+    );
 
-    await updateSignalements();
+    await massUpdateSignalements();
+    await refreshSignalements();
   };
 
   const handleToggleSelect = (ids: string[]) => {

@@ -1,5 +1,5 @@
 import { useCallback, useState, useContext } from "react";
-import { Dialog, Label, Paragraph, TextInput, toaster } from "evergreen-ui";
+import { Dialog, Label, Paragraph, TextInput } from "evergreen-ui";
 
 import { validateEmail } from "@/lib/utils/email";
 
@@ -11,6 +11,7 @@ import {
 
 import { useInput } from "@/hooks/input";
 import { BasesLocalesService } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 const hasBeenSentRecently = (sentAt) => {
   const now = new Date();
@@ -35,6 +36,7 @@ function RecoverBALAlert({
 }: RecoverBALAlertProps) {
   const { recoveryEmailSent, setRecoveryEmailSent } =
     useContext(LocalStorageContext);
+  const { toaster, pushToast } = useContext(LayoutContext);
 
   const [isLoading, setIsLoading] = useState(false);
   const [email, onEmailChange, resetEmail] = useInput(defaultEmail);
@@ -52,19 +54,26 @@ function RecoverBALAlert({
     if (hasBeenSentRecently(recoveryEmailSent)) {
       setIsLoading(false);
       onClose();
-      return toaster.warning("Un email a déjà été envoyé, merci de patienter.");
+      pushToast({
+        title: "Un email a déjà été envoyé, merci de patienter.",
+        intent: "warning",
+      });
+      return;
     }
 
-    try {
-      await BasesLocalesService.recoveryBasesLocales({
-        email,
-        id: baseLocaleId,
-      });
-      setRecoveryEmailSent(now);
-      toaster.success(`Un email a été envoyé à l’adresse ${email}`);
-    } catch (error) {
-      toaster.danger(error.message);
-    }
+    const recoveryBasesLocales = toaster(
+      async () => {
+        await BasesLocalesService.recoveryBasesLocales({
+          email,
+          id: baseLocaleId,
+        });
+        setRecoveryEmailSent(now);
+      },
+      `Un email a été envoyé à l’adresse ${email}`,
+      "Une erreur est survenue"
+    );
+
+    await recoveryBasesLocales();
 
     resetEmail();
 
@@ -77,6 +86,8 @@ function RecoverBALAlert({
     resetEmail,
     onClose,
     setRecoveryEmailSent,
+    toaster,
+    pushToast,
   ]);
 
   return (

@@ -9,7 +9,6 @@ import {
   Checkbox,
   AddIcon,
   LockIcon,
-  toaster,
   Text,
   IconButton,
 } from "evergreen-ui";
@@ -33,6 +32,7 @@ import {
 } from "@/lib/openapi";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
+import LayoutContext from "@/contexts/layout";
 
 interface NumerosListProps {
   token?: string;
@@ -49,6 +49,7 @@ function NumerosList({
 }: NumerosListProps) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false);
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
+  const { toaster } = useContext(LayoutContext);
 
   const {
     baseLocale,
@@ -135,54 +136,56 @@ function NumerosList({
 
   const onRemove = useCallback(
     async (idNumero) => {
-      try {
-        await NumerosService.softDeleteNumero(idNumero);
-        await reloadNumeros();
-        await reloadParcelles();
-        reloadTiles();
-        refreshBALSync();
-        toaster.success("Le numéro a bien été archivé");
-      } catch (error) {
-        console.error(error);
-        toaster.danger("Le numéro n’a pas pu être archivé", {
-          description: error.message,
-        });
-      }
+      const softDeleteNumero = toaster(
+        async () => {
+          await NumerosService.softDeleteNumero(idNumero);
+          await reloadNumeros();
+          await reloadParcelles();
+          reloadTiles();
+          refreshBALSync();
+        },
+        "Le numéro a bien été archivé",
+        "Le numéro n’a pas pu être archivé"
+      );
+      await softDeleteNumero();
     },
-    [reloadNumeros, reloadParcelles, refreshBALSync, reloadTiles]
+    [reloadNumeros, reloadParcelles, refreshBALSync, reloadTiles, toaster]
   );
 
   const onMultipleRemove = async () => {
     setIsDisabled(true);
-    try {
-      await BasesLocalesService.softDeleteNumeros(baseLocale._id, {
-        numerosIds: selectedNumerosIds,
-      });
+    const softDeleteNumeros = toaster(
+      async () => {
+        await BasesLocalesService.softDeleteNumeros(baseLocale._id, {
+          numerosIds: selectedNumerosIds,
+        });
 
-      await reloadNumeros();
-      await reloadParcelles();
-      reloadTiles();
-      refreshBALSync();
+        await reloadNumeros();
+        await reloadParcelles();
+        reloadTiles();
+        refreshBALSync();
 
-      setSelectedNumerosIds([]);
-      setIsRemoveWarningShown(false);
-      toaster.success("Les numéros ont bien été archivés");
-    } catch (error) {
-      console.error(error);
-      toaster.danger("Les numéros n’ont pas pu être archivés", {
-        description: error.message,
-      });
-    } finally {
-      setIsDisabled(false);
-    }
+        setSelectedNumerosIds([]);
+        setIsRemoveWarningShown(false);
+      },
+      "Les numéros ont bien été archivés",
+      "Les numéros n’ont pas pu être archivés"
+    );
+    await softDeleteNumeros();
+    setIsDisabled(false);
   };
 
   const onMultipleEdit = async (balId, body) => {
-    await BasesLocalesService.updateNumeros(balId, body);
-    toaster.success("Les numéros ont bien été modifiés");
-
-    await reloadNumeros();
-    refreshBALSync();
+    const updateNumeros = toaster(
+      async () => {
+        await BasesLocalesService.updateNumeros(balId, body);
+        await reloadNumeros();
+        refreshBALSync();
+      },
+      "Les numéros ont bien été modifiés",
+      "Les numéros n’ont pas pu être modifiés"
+    );
+    await updateNumeros();
   };
 
   const isEditingEnabled = !isEditing && Boolean(token);
