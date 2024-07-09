@@ -1,12 +1,4 @@
-import {
-  Alert,
-  Badge,
-  Button,
-  Pane,
-  Paragraph,
-  Strong,
-  toaster,
-} from "evergreen-ui";
+import { Alert, Badge, Button, Pane, Paragraph, Strong } from "evergreen-ui";
 import React, {
   useCallback,
   useContext,
@@ -26,6 +18,7 @@ import {
   Signalement,
   Position as PositionSignalement,
 } from "@/lib/openapi-signalement";
+import LayoutContext from "@/contexts/layout";
 
 interface SignalementUpdateNumeroProps {
   signalement: Signalement;
@@ -84,6 +77,8 @@ function SignalementUpdateNumero({
 
   const { markers, addMarker, removeMarker, disableMarkers } =
     useContext(MarkersContext);
+
+  const { pushToast } = useContext(LayoutContext);
 
   const [changes, setChanges] = useState(
     detectChanges(signalement, existingLocation)
@@ -158,12 +153,15 @@ function SignalementUpdateNumero({
           nom: nomVoie,
         });
       } catch (e) {
-        toaster.danger("Le renommage de la voie a échoué.");
+        pushToast({
+          title: "Le renommage de la voie a échoué",
+          intent: "danger",
+        });
         console.error(e);
       }
     }
     await handleSubmit();
-  }, [voieWillBeRenamed, handleSubmit, existingLocation, nomVoie]);
+  }, [voieWillBeRenamed, handleSubmit, existingLocation, nomVoie, pushToast]);
 
   return (
     <Pane position="relative" height="100%">
