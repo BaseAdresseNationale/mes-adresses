@@ -21,7 +21,7 @@ function Comment({
         Commentaire
       </Label>
       <Textarea
-        placeholder="Cette note ne sera pas diffusée, mais ne doit pas contenir d'informations personnelles conformément au RGPD"
+        placeholder="Cette note est confidentielle et ne sera pas diffusée."
         value={input}
         disabled={isDisabled}
         onChange={input.length < limit ? onChange : () => {}}
