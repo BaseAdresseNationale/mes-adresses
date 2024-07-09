@@ -7,7 +7,6 @@ import {
   Alert,
   AddIcon,
   LockIcon,
-  toaster,
 } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
@@ -32,6 +31,7 @@ import {
   ToponymesService,
   UpdateBatchNumeroDTO,
 } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 interface ToponymePageProps {
   baseLocale: BaseLocale;
@@ -46,6 +46,7 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
 
   const { token } = useContext(TokenContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const { pushToast } = useContext(LayoutContext);
 
   const { toponyme, numeros, reloadNumeros, isEditing, setIsEditing } =
     useContext(BalDataContext);
@@ -64,8 +65,11 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
         changes: { toponyme: toponyme._id },
       };
       await BasesLocalesService.updateNumeros(baseLocale._id, payload);
-      toaster.success("Les numéros ont bien été modifiés");
       await reloadNumeros();
+      pushToast({
+        title: "Les numéros ont bien été modifiés",
+        intent: "success",
+      });
     } catch (error: unknown) {
       setError((error as any).message);
     }

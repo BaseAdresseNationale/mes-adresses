@@ -13,7 +13,6 @@ import { Pane, TextInputField, Checkbox, Button, PlusIcon } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 
 import { useCheckboxInput } from "@/hooks/input";
-import useError from "@/hooks/error";
 
 import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
@@ -29,6 +28,7 @@ import {
 } from "@/lib/openapi";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Client, Revision } from "@/lib/api-depot/types";
+import LayoutContext from "@/contexts/layout";
 
 export enum ClientRevisionEnum {
   API_DEPOT = "api-depot",
@@ -84,7 +84,7 @@ function CreateForm({
   onEmailChange,
 }: CreateFormProps) {
   const { addBalAccess } = useContext(LocalStorageContext);
-
+  const { pushToast } = useContext(LayoutContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [populate, onPopulateChange] = useCheckboxInput(true);
   const [isShownAlertOtherBal, setIsShownAlertOtherBal] =
@@ -94,7 +94,6 @@ function CreateForm({
   const [userBALs, setUserBALs] = useState<ExtendedBaseLocaleDTO[]>([]);
   const [publishedRevision, setPublishedRevision] = useState<Revision>(null);
   const [ref, setRef] = useState<HTMLInputElement>();
-  const [setError] = useError(null);
 
   useEffect(() => {
     if (ref) {
@@ -148,7 +147,11 @@ function CreateForm({
     try {
       await checkOtherBALs();
     } catch (error) {
-      setError(error.message);
+      pushToast({
+        title: "Une erreur est survenue",
+        intent: "danger",
+        message: error.body?.message,
+      });
       setIsLoading(false);
     }
   };

@@ -35,7 +35,7 @@ function ItemsListDelete({
     const actions = [
       {
         label:
-          "Restaurer " +
+          "Voir " +
           (model === "voie"
             ? item._deleted
               ? "voie"
