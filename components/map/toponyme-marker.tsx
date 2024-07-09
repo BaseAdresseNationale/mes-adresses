@@ -13,8 +13,8 @@ import { css } from "glamor";
 import MarkersContext from "@/contexts/markers";
 import BalDataContext from "@/contexts/bal-data";
 
-import useError from "@/hooks/error";
 import { ExtentedToponymeDTO, ToponymesService } from "@/lib/openapi";
+import LayoutContext from "@/contexts/layout";
 
 interface ToponymeMarkerProps {
   initialToponyme: ExtentedToponymeDTO;
@@ -27,7 +27,6 @@ function ToponymeMarker({
   isContextMenuDisplayed,
   setIsContextMenuDisplayed,
 }: ToponymeMarkerProps) {
-  const [setError] = useError();
   const router: NextRouter = useRouter();
 
   const balId: string = router.query.balId as string;
@@ -42,6 +41,8 @@ function ToponymeMarker({
     voie,
     toponyme,
   } = useContext(BalDataContext);
+
+  const { toaster } = useContext(LayoutContext);
 
   const onEnableEditing = useCallback(
     (e) => {
@@ -85,17 +86,21 @@ function ToponymeMarker({
   const deleteToponyme = async () => {
     const id: string = initialToponyme._id;
 
-    try {
-      await ToponymesService.softDeleteToponyme(id);
-      await reloadToponymes();
-      await reloadParcelles();
+    const softDeleteToponyme = toaster(
+      async () => {
+        await ToponymesService.softDeleteToponyme(id);
+        await reloadToponymes();
+        await reloadParcelles();
 
-      if (id === toponyme?._id) {
-        return router.push(`/bal/${balId}`);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
+        if (id === toponyme?._id) {
+          return router.push(`/bal/${balId}`);
+        }
+      },
+      "Le toponyme a été supprimé",
+      "Une erreur est survenue"
+    );
+
+    await softDeleteToponyme();
 
     setIsContextMenuDisplayed(null);
   };

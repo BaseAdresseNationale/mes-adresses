@@ -7,7 +7,6 @@ import {
   Button,
   Tablist,
   Tab,
-  toaster,
   Tooltip,
 } from "evergreen-ui";
 
@@ -47,6 +46,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
 
   const { token } = useContext(TokenContext);
+  const { toaster } = useContext(LayoutContext);
   const { voies, toponymes, baseLocale } = useContext(BalDataContext);
   const { isMobile } = useContext(LayoutContext);
   const { reloadTiles } = useContext(MapContext);
@@ -87,24 +87,25 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
   const onConvert = useCallback(async () => {
     setOnConvertLoading(true);
-    try {
-      const toponyme: Toponyme =
-        await VoiesService.convertToToponyme(toConvert);
-      await reloadVoies();
-      await reloadToponymes();
-      await reloadParcelles();
-      reloadTiles();
-      refreshBALSync();
-      // Select the tab topnyme after conversion
-      setSelectedTabIndex(2);
-      setEditedItem(toponyme);
-      setIsFormOpen(true);
-      toaster.success("La voie a bien été convertie en toponyme");
-    } catch (error) {
-      toaster.danger("La voie n’a pas pu être convertie en toponyme", {
-        description: error.message,
-      });
-    }
+    const convertToponyme = toaster(
+      async () => {
+        const toponyme: Toponyme =
+          await VoiesService.convertToToponyme(toConvert);
+        await reloadVoies();
+        await reloadToponymes();
+        await reloadParcelles();
+        reloadTiles();
+        refreshBALSync();
+        // Select the tab topnyme after conversion
+        setSelectedTabIndex(2);
+        setEditedItem(toponyme);
+        setIsFormOpen(true);
+      },
+      "La voie a bien été convertie en toponyme",
+      "La voie n’a pas pu être convertie en toponyme"
+    );
+
+    await convertToponyme();
 
     setOnConvertLoading(false);
     setToConvert(null);
@@ -115,6 +116,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     reloadTiles,
     reloadParcelles,
     toConvert,
+    toaster,
   ]);
 
   const onEdit = useCallback(

@@ -73,13 +73,11 @@ function AcceptedDialog({
             <AuthenticatedUser
               type="elu"
               title={`${prenom} ${nomMarital || nomNaissance}`}
-              subtitle={typeMandat.replace(/-/g, " ")}
             />
           ) : (
             <AuthenticatedUser
               type="mairie"
-              title="la mairie de"
-              subtitle={`${commune.nom} (${commune.code})`}
+              title={`la mairie de ${commune.nom} (${commune.code})`}
             />
           )}
         </Pane>
