@@ -7,6 +7,7 @@ import {
   Button,
   Tablist,
   Tab,
+  Tooltip,
 } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
@@ -47,6 +48,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const { token } = useContext(TokenContext);
   const { toaster } = useContext(LayoutContext);
   const { voies, toponymes, baseLocale } = useContext(BalDataContext);
+  const { isMobile } = useContext(LayoutContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const {
@@ -247,23 +249,35 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
               },
               {
                 label: "Voies",
+                tooltip:
+                  "Renseignez ici les voies, places et lieux-dits numérotés.",
               },
               {
                 label: "Toponymes",
+                tooltip:
+                  "Renseignez ici les voies, places et lieux-dits sans numeros, les compléments d'adresse et points d'intérêts.",
               },
-            ].map(({ label, notif }, index) => (
-              <Tab
-                key={label}
-                position="relative"
-                isSelected={selectedTabIndex === index}
-                onSelect={() => {
-                  setSelectedTabIndex(index);
-                }}
-              >
-                {label}
-                {notif > 0 && <span className="tab-notif">{notif}</span>}
-              </Tab>
-            ))}
+            ].map(({ label, notif, tooltip }, index) => {
+              const tab = (
+                <Tab
+                  position="relative"
+                  isSelected={selectedTabIndex === index}
+                  onSelect={() => {
+                    setSelectedTabIndex(index);
+                  }}
+                >
+                  {label}
+                  {notif > 0 && <span className="tab-notif">{notif}</span>}
+                </Tab>
+              );
+              return isMobile && tooltip ? (
+                <Tooltip content={tooltip} key={label}>
+                  {tab}
+                </Tooltip>
+              ) : (
+                tab
+              );
+            })}
           </Tablist>
         </Pane>
 
