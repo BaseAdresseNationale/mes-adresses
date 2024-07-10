@@ -67,12 +67,12 @@ function PositionItem({
       <Icon icon={MapMarkerIcon} size={22} margin="auto" color={marker.color} />
       <Heading size={100} marginY="auto">
         <Small>
-          {marker.latitude == undefined && marker.latitude.toFixed(6)}
+          {marker.latitude !== undefined && marker.latitude.toFixed(6)}
         </Small>
       </Heading>
       <Heading size={100} marginY="auto">
         <Small>
-          {marker.longitude == undefined && marker.longitude.toFixed(6)}
+          {marker.longitude !== undefined && marker.longitude.toFixed(6)}
         </Small>
       </Heading>
       <IconButton
