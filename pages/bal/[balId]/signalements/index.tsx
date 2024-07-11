@@ -19,7 +19,10 @@ import {
   SignalementsService,
 } from "@/lib/openapi-signalement";
 import MarkersContext from "@/contexts/markers";
-import { getSignalementLabel } from "@/lib/utils/signalement";
+import {
+  getSignalementLabel,
+  updateSignalement,
+} from "@/lib/utils/signalement";
 import LayoutContext from "@/contexts/layout";
 
 function SignalementsPage({
@@ -88,20 +91,6 @@ function SignalementsPage({
       Signalement.status.PENDING
     );
     setSignalements(paginatedSignalements.data as unknown as Signalement[]);
-  };
-
-  // We use a proxy to avoid exposing the client token in the frontend
-  const updateSignalement = (id: string, status: Signalement.status) => {
-    return fetch("/api/proxy-signalement", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id,
-        status,
-      }),
-    });
   };
 
   const handleSelectSignalement = (id) => {

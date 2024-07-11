@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { Heading, Pane, Paragraph, Tab, Tablist, toaster } from "evergreen-ui";
+import React, { useContext, useMemo, useState } from "react";
+import { Heading, Pane, Paragraph, Tab, Tablist } from "evergreen-ui";
 import { uniqueId } from "lodash";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import ProtectedPage from "@/layouts/protected-page";
@@ -26,6 +26,9 @@ import SignalementDeleteNumero from "@/components/signalement/numero/signalement
 import SignalementCreateNumero from "@/components/signalement/numero/signalement-create-numero";
 import SignalementUpdateVoie from "@/components/signalement/voie/signalement-update-voie";
 import SignalementUpdateToponyme from "@/components/signalement/toponyme/signalement-update-toponyme";
+import LayoutContext from "@/contexts/layout";
+import { updateSignalement } from "@/lib/utils/signalement";
+import MapContext from "@/contexts/map";
 
 interface SignalementPageProps extends BaseEditorProps {
   signalement: Signalement;
@@ -41,33 +44,21 @@ function SignalementPage({
     signalement.type === Signalement.type.OTHER ? 0 : 1
   );
   const router = useRouter();
+  const { toaster } = useContext(LayoutContext);
 
   const handleClose = () => {
     router.push(`/bal/${router.query.balId}/signalements`);
   };
 
   const handleSignalementProcessed = async () => {
-    try {
-      const response = await fetch("/api/update-signalement", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: signalement.id,
-          status: Signalement.status.PROCESSED,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Une erreur est survenue");
-      }
-      handleClose();
-      toaster.success("Le signalement a bien été pris en compte");
-    } catch (error) {
-      toaster.danger("Une erreur est survenue", {
-        description: error.message,
-      });
-    }
+    const _updateSignalement = toaster(
+      () => updateSignalement(signalement.id, Signalement.status.PROCESSED),
+      "Le signalement a bien été pris en compte",
+      "Une erreur est survenue"
+    );
+
+    await _updateSignalement();
+    handleClose();
   };
 
   const tabs = useMemo(() => {
