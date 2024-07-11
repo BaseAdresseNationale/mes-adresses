@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { sortBy } from "lodash";
 import {
   Table,
   Popover,
@@ -11,8 +10,6 @@ import {
   TrashIcon,
   Checkbox,
 } from "evergreen-ui";
-
-import { normalizeSort } from "@/lib/normalize";
 
 import useFuse from "@/hooks/fuse";
 
@@ -39,21 +36,21 @@ function SignalementList({
     [signalements]
   );
 
-  const [filtered, setFilter] = useFuse(signalementWithLabel, 200, {
-    keys: ["label"],
-  });
-
-  const scrollableItems = useMemo(
-    () => sortBy(filtered, (s) => normalizeSort(s.label)),
-    [filtered]
+  const [signalementsList, setSignalementsList] = useFuse(
+    signalementWithLabel,
+    200,
+    {
+      keys: ["label"],
+    }
   );
 
   const isAllSelected = useMemo(() => {
     const isAllSignalementsSelected =
-      filtered.length === selectedSignalements.length && filtered.length > 0;
+      signalementsList.length === selectedSignalements.length &&
+      signalementsList.length > 0;
 
     return isAllSignalementsSelected;
-  }, [selectedSignalements, filtered]);
+  }, [selectedSignalements, signalementsList]);
 
   return (
     <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
@@ -70,11 +67,11 @@ function SignalementList({
         </Table.Cell>
         <Table.SearchHeaderCell
           placeholder="Rechercher un signalement"
-          onChange={setFilter}
+          onChange={setSignalementsList}
         />
       </Table.Head>
 
-      {filtered.length === 0 && (
+      {signalementsList.length === 0 && (
         <Table.Row>
           <Table.TextCell color="muted" fontStyle="italic">
             Aucun résultat
@@ -82,7 +79,7 @@ function SignalementList({
         </Table.Row>
       )}
 
-      <InfiniteScrollList items={scrollableItems}>
+      <InfiniteScrollList items={signalementsList}>
         {(signalement) => (
           <Table.Row key={signalement.id} paddingRight={8} minHeight={48}>
             <Table.Cell flex="0 1 40px">

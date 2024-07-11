@@ -87,3 +87,26 @@ export const getSignalementLabel = (
 
   return label;
 };
+
+// We use a proxy to avoid exposing the client token in the frontend
+export const updateSignalement = async (
+  id: string,
+  status: Signalement.status
+): Promise<Signalement> => {
+  const response = await fetch("/api/proxy-signalement", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id,
+      status,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update signalement");
+  }
+
+  return response.json();
+};

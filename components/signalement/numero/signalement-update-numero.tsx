@@ -122,10 +122,6 @@ function SignalementUpdateNumero({
           : removeMarker(position._id);
       });
     }
-
-    return () => {
-      disableMarkers();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positions, changes.positions]);
 

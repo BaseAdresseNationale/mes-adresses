@@ -11,8 +11,14 @@ OpenAPI.TOKEN = process.env.SIGNALEMENT_CLIENT_TOKEN;
 async function proxySignalement(
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<Signalement> {
-  return SignalementsService.updateSignalement(req.body);
+): Promise<void> {
+  const { id, ...rest } = req.body;
+  try {
+    const signalement = await SignalementsService.updateSignalement(id, rest);
+    res.status(200).json(signalement);
+  } catch (error: any) {
+    res.status(error.status).json(error.body);
+  }
 }
 
 export default proxySignalement;
