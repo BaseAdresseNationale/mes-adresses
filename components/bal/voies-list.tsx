@@ -141,7 +141,7 @@ function VoiesList({
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
           <Table.SearchHeaderCell
-            placeholder="Rechercher une voie"
+            placeholder="Rechercher une voie, une place, un lieu-dit..."
             onChange={setFilter}
           />
           <Table.HeaderCell flex="unset">
