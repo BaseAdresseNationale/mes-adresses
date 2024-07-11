@@ -249,13 +249,34 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
               },
               {
                 label: "Voies",
-                tooltip:
-                  "Renseignez ici les voies, places et lieux-dits numérotés.",
+                tooltip: (
+                  <>
+                    <p className="custom-tooltip-content">
+                      Liste des dénominations officielles auxquelles sont
+                      rattachés des numéros.
+                    </p>
+                    <p className="custom-tooltip-content">
+                      Exemple :
+                      <br /> 1, <b>Le Voisinet</b>, Breux-sur-Avre
+                    </p>
+                  </>
+                ),
               },
               {
                 label: "Toponymes",
-                tooltip:
-                  "Renseignez ici les voies, places et lieux-dits sans numeros, les compléments d'adresse et points d'intérêts.",
+                tooltip: (
+                  <>
+                    <p className="custom-tooltip-content">
+                      La liste des voies et lieux-dits qui ne sont pas
+                      numérotés.
+                    </p>
+                    <p className="custom-tooltip-content">
+                      Exemple :
+                      <br /> 1, Chemin de Boël, <b>Le Voisinet</b>,
+                      Breux-sur-Avre
+                    </p>
+                  </>
+                ),
               },
             ].map(({ label, notif, tooltip }, index) => {
               const tab = (
@@ -270,8 +291,13 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
                   {notif > 0 && <span className="tab-notif">{notif}</span>}
                 </Tab>
               );
-              return isMobile && tooltip ? (
-                <Tooltip content={tooltip} key={label}>
+              return !isMobile && tooltip ? (
+                <Tooltip
+                  content={tooltip}
+                  key={label}
+                  position="top-left"
+                  showDelay={500}
+                >
                   {tab}
                 </Tooltip>
               ) : (
