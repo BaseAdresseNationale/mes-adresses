@@ -267,7 +267,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
                 tooltip: (
                   <>
                     <p className="custom-tooltip-content">
-                      La liste des voies et lieux-dits qui ne sont pas
+                      Liste des voies et lieux-dits qui ne sont pas
                       numérotés.
                     </p>
                     <p className="custom-tooltip-content">
