@@ -257,7 +257,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
                     </p>
                     <p className="custom-tooltip-content">
                       Exemple :
-                      <br /> 1, <b>Le Voisinet</b>, Breux-sur-Avre
+                      <br /> 1 <b>Le Voisinet</b>, Breux-sur-Avre
                     </p>
                   </>
                 ),
@@ -272,7 +272,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
                     </p>
                     <p className="custom-tooltip-content">
                       Exemple :
-                      <br /> 1, Chemin de Boël, <b>Le Voisinet</b>,
+                      <br /> 1 Chemin de Boël, <b>Le Voisinet</b>,
                       Breux-sur-Avre
                     </p>
                   </>
