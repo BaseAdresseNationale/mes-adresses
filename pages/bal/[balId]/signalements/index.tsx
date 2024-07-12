@@ -124,17 +124,11 @@ function SignalementsPage({
   };
 
   const handleToggleSelect = (ids: string[]) => {
-    if (ids.length === signalements.length) {
-      setSelectedSignalements(ids);
-    } else if (ids.length === 0) {
-      setSelectedSignalements([]);
-    } else {
-      for (const id of ids) {
-        if (!selectedSignalements.includes(id)) {
-          setSelectedSignalements([...selectedSignalements, id]);
-        } else {
-          setSelectedSignalements(selectedSignalements.filter((s) => s !== id));
-        }
+    for (const id of ids) {
+      if (!selectedSignalements.includes(id)) {
+        setSelectedSignalements([...selectedSignalements, id]);
+      } else {
+        setSelectedSignalements(selectedSignalements.filter((s) => s !== id));
       }
     }
   };
@@ -215,6 +209,7 @@ function SignalementsPage({
           signalements={signalements}
           selectedSignalements={selectedSignalements}
           onSelect={handleSelectSignalement}
+          setSelectedSignalements={setSelectedSignalements}
           onToggleSelect={handleToggleSelect}
           onIgnore={handleIgnoreSignalement}
         />

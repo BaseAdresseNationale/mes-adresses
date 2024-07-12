@@ -19,6 +19,7 @@ import { getSignalementLabel } from "@/lib/utils/signalement";
 interface SignalementListProps {
   signalements: any[];
   selectedSignalements: string[];
+  setSelectedSignalements: (ids: string[]) => void;
   onSelect: (id: string) => void;
   onIgnore: (id: string) => void;
   onToggleSelect: (ids: string[]) => void;
@@ -27,6 +28,7 @@ interface SignalementListProps {
 function SignalementList({
   signalements,
   selectedSignalements,
+  setSelectedSignalements,
   onSelect,
   onIgnore,
   onToggleSelect,
@@ -59,8 +61,8 @@ function SignalementList({
           <Checkbox
             checked={isAllSelected}
             onChange={() =>
-              onToggleSelect(
-                isAllSelected ? [] : signalements.map(({ _id }) => _id)
+              setSelectedSignalements(
+                isAllSelected ? [] : signalements.map(({ id }) => id)
               )
             }
           />
