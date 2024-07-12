@@ -114,7 +114,7 @@ function SignalementUpdateNumero({
               isMapMarker: true,
               isDisabled: true,
               color: "warning",
-              label: `${position.type} - ${numero}${suffixe ? suffixe : ""}`,
+              label: `${numero}${suffixe ? suffixe : ""} - ${position.type}`,
               longitude: position.point.coordinates[0],
               latitude: position.point.coordinates[1],
               type: position.type as unknown as Position.type,
