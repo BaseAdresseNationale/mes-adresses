@@ -5,8 +5,8 @@
 
 export type UpdateBatchNumeroChangeDTO = {
     comment?: string | null;
-    toponyme?: string | null;
-    voie?: string;
+    toponymeId?: string | null;
+    voieId?: string;
     positionType?: Record<string, any>;
     certifie?: boolean;
 };

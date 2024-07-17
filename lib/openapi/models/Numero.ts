@@ -3,25 +3,28 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { BaseLocale } from './BaseLocale';
 import type { Position } from './Position';
+import type { Toponyme } from './Toponyme';
+import type { Voie } from './Voie';
 
 export type Numero = {
-    _id: string;
-    banId: string;
-    _created: string;
-    _updated: string;
-    _deleted: string;
-    _bal: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+    balId: string;
+    voieId: string;
+    toponymeId: string;
     numero: number;
-    numeroComplet: string;
-    commune: string;
     suffixe: string;
+    numeroComplet: string;
     comment: string;
-    toponyme: string;
-    voie: string;
     parcelles: Array<string>;
     certifie: boolean;
     positions: Array<Position>;
-    tiles: Array<string>;
+    baseLocale: BaseLocale;
+    voie: Voie;
+    toponyme: Toponyme;
 };
 

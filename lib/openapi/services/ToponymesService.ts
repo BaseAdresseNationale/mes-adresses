@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
-import type { NumeroPopulate } from '../models/NumeroPopulate';
+import type { Numero } from '../models/Numero';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateToponymeDTO } from '../models/UpdateToponymeDTO';
 
@@ -110,12 +110,12 @@ export class ToponymesService {
     /**
      * Find all numeros which belong to the toponyme
      * @param toponymeId
-     * @returns NumeroPopulate
+     * @returns Numero
      * @throws ApiError
      */
     public static findToponymeNumeros(
         toponymeId: string,
-    ): CancelablePromise<Array<NumeroPopulate>> {
+    ): CancelablePromise<Array<Numero>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/toponymes/{toponymeId}/numeros',

@@ -3,8 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type Point = {
-    type: string;
-    coordinates: Array<number>;
+export type ValidatePinCodeResponseDTO = {
+    validated: boolean;
+    error?: string | null;
+    remainingAttempts?: number | null;
 };
 

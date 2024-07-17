@@ -3,20 +3,22 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { BaseLocale } from './BaseLocale';
+import type { Numero } from './Numero';
 import type { Position } from './Position';
 
 export type ExtentedToponymeDTO = {
-    _id: string;
-    banId: string;
-    _created: string;
-    _updated: string;
-    _deleted: string;
-    _bal: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+    balId: string;
     nom: string;
-    commune: string;
     nomAlt: Record<string, any>;
     parcelles: Array<string>;
     positions: Array<Position>;
+    baseLocale: BaseLocale;
+    numeros: Array<Numero>;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;

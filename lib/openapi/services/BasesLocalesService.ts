@@ -98,22 +98,17 @@ export class BasesLocalesService {
     /**
      * Find Base_Locale by id
      * @param baseLocaleId
-     * @param isExist
      * @returns ExtendedBaseLocaleDTO
      * @throws ApiError
      */
     public static findBaseLocale(
         baseLocaleId: string,
-        isExist?: boolean,
     ): CancelablePromise<ExtendedBaseLocaleDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}',
             path: {
                 'baseLocaleId': baseLocaleId,
-            },
-            query: {
-                'isExist': isExist,
             },
         });
     }
@@ -317,12 +312,12 @@ export class BasesLocalesService {
     /**
      * Update isPaused sync BAL to true
      * @param baseLocaleId
-     * @returns boolean
+     * @returns BaseLocale
      * @throws ApiError
      */
     public static pauseBaseLocale(
         baseLocaleId: string,
-    ): CancelablePromise<boolean> {
+    ): CancelablePromise<BaseLocale> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/pause',
@@ -335,12 +330,12 @@ export class BasesLocalesService {
     /**
      * Update isPaused sync BAL to false
      * @param baseLocaleId
-     * @returns boolean
+     * @returns BaseLocale
      * @throws ApiError
      */
     public static resumeBaseLocale(
         baseLocaleId: string,
-    ): CancelablePromise<boolean> {
+    ): CancelablePromise<BaseLocale> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/sync/resume',
@@ -369,32 +364,14 @@ export class BasesLocalesService {
     }
 
     /**
-     * Uncertify all numeros in Bal
-     * @param baseLocaleId
-     * @returns any
-     * @throws ApiError
-     */
-    public static uncertifyAllNumeros(
-        baseLocaleId: string,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/v2/bases-locales/{baseLocaleId}/numeros/uncertify-all',
-            path: {
-                'baseLocaleId': baseLocaleId,
-            },
-        });
-    }
-
-    /**
      * Certify all numeros in Bal
      * @param baseLocaleId
-     * @returns any
+     * @returns BatchNumeroResponseDTO
      * @throws ApiError
      */
     public static certifyAllNumeros(
         baseLocaleId: string,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<BatchNumeroResponseDTO> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v2/bases-locales/{baseLocaleId}/numeros/certify-all',

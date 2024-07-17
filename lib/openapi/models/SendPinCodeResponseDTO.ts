@@ -3,8 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type CommuneBalDTO = {
-    codeCommune: string;
-    balId?: string | null;
+export type SendPinCodeResponseDTO = {
+    code: number;
+    message: string;
 };
 

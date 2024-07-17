@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { PopulateVoie } from './PopulateVoie';
 import type { Toponyme } from './Toponyme';
+import type { Voie } from './Voie';
 
 export type AllDeletedInBalDTO = {
-    voies: Array<PopulateVoie>;
+    voies: Array<Voie>;
     toponymes: Array<Toponyme>;
 };
 

@@ -3,7 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { HabilitationDTO } from '../models/HabilitationDTO';
+import type { SendPinCodeResponseDTO } from '../models/SendPinCodeResponseDTO';
 import type { ValidatePinCodeDTO } from '../models/ValidatePinCodeDTO';
+import type { ValidatePinCodeResponseDTO } from '../models/ValidatePinCodeResponseDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -68,12 +70,12 @@ export class HabilitationService {
     /**
      * Send pin code of habilitation
      * @param baseLocaleId
-     * @returns any
+     * @returns SendPinCodeResponseDTO
      * @throws ApiError
      */
     public static sendPinCodeHabilitation(
         baseLocaleId: string,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<SendPinCodeResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/habilitation/email/send-pin-code',
@@ -87,13 +89,13 @@ export class HabilitationService {
      * Valide pin code of habiliation
      * @param baseLocaleId
      * @param requestBody
-     * @returns any
+     * @returns ValidatePinCodeResponseDTO
      * @throws ApiError
      */
     public static validePinCodeHabilitation(
         baseLocaleId: string,
         requestBody: ValidatePinCodeDTO,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<ValidatePinCodeResponseDTO> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/{baseLocaleId}/habilitation/email/validate-pin-code',

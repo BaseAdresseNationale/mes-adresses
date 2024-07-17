@@ -3,12 +3,21 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { Point } from './Point';
+import type { BaseLocale } from './BaseLocale';
+import type { Numero } from './Numero';
+import type { Toponyme } from './Toponyme';
 
 export type Position = {
+    id: number;
+    balId: string;
+    toponymeId: string;
+    numeroId: string;
     type: Position.type;
     source: string;
-    point: Point;
+    point: Record<string, any>;
+    toponyme: Toponyme;
+    numero: Numero;
+    baseLocale: BaseLocale;
 };
 
 export namespace Position {
