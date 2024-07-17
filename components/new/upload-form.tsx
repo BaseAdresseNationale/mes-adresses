@@ -202,7 +202,7 @@ function UploadForm({
             emails: [email],
           });
 
-        addBalAccess(baseLocale._id, baseLocale.token);
+        addBalAccess(baseLocale.id, baseLocale.token);
         setBal(baseLocale);
       }
     },
@@ -300,11 +300,11 @@ function UploadForm({
         const blobFile = new Blob([file as Blob], {
           type: "text/csv",
         });
-        const response = await BasesLocalesService.uploadCsvBalFile(bal._id, {
+        const response = await BasesLocalesService.uploadCsvBalFile(bal.id, {
           file: blobFile,
         });
         if (response.isValid) {
-          Router.push(`/bal/${bal._id}`);
+          Router.push(`/bal/${bal.id}`);
         } else {
           onError(VALIDATEUR_LINK_TEXT);
         }

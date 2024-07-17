@@ -9,10 +9,10 @@ interface MapMarkerProps {
 }
 
 function MapMarker({ size = 32, marker }: MapMarkerProps) {
-  const { _id, label, color, latitude, longitude, onClick } = marker;
+  const { id, label, color, latitude, longitude, onClick } = marker;
   return (
     <Marker
-      key={_id}
+      key={id}
       longitude={longitude}
       latitude={latitude}
       style={onClick ? { cursor: "pointer" } : {}}

@@ -50,11 +50,11 @@ function ToponymeMarker({
 
       if (!isEditing) {
         if (voie || initialToponyme !== toponyme) {
-          router.push(`/bal/${balId}/toponymes/${initialToponyme._id}`);
+          router.push(`/bal/${balId}/toponymes/${initialToponyme.id}`);
         }
 
-        if (!voie && initialToponyme._id === toponyme?._id) {
-          setEditingId(toponyme._id);
+        if (!voie && initialToponyme.id === toponyme?.id) {
+          setEditingId(toponyme.id);
         }
       }
     },
@@ -84,7 +84,7 @@ function ToponymeMarker({
   );
 
   const deleteToponyme = async () => {
-    const id: string = initialToponyme._id;
+    const id: string = initialToponyme.id;
 
     const softDeleteToponyme = toaster(
       async () => {
@@ -92,7 +92,7 @@ function ToponymeMarker({
         await reloadToponymes();
         await reloadParcelles();
 
-        if (id === toponyme?._id) {
+        if (id === toponyme?.id) {
           return router.push(`/bal/${balId}`);
         }
       },
@@ -109,7 +109,7 @@ function ToponymeMarker({
     return null;
   }
 
-  if (markers.length > 0 && editingId === initialToponyme._id) {
+  if (markers.length > 0 && editingId === initialToponyme.id) {
     return null;
   }
 
@@ -120,7 +120,7 @@ function ToponymeMarker({
       <Pane
         {...markerStyle}
         onClick={onEnableEditing}
-        onContextMenu={() => setIsContextMenuDisplayed(initialToponyme._id)}
+        onContextMenu={() => setIsContextMenuDisplayed(initialToponyme.id)}
       >
         <Text color="white" paddingLeft={8} paddingRight={10}>
           {initialToponyme.nom}

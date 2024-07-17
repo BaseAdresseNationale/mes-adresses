@@ -30,7 +30,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
   );
 
   const onBalSelect = (bal) => {
-    Router.push(`/bal/${bal._id}`);
+    Router.push(`/bal/${bal.id}`);
   };
 
   const [filtered, onFilter] = useFuse(basesLocales, 200, {
@@ -88,16 +88,16 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
           )}
           <Table.Body background="tint1">
             {sortBalByUpdate(filtered)
-              .filter(({ _id }) => Boolean(!isHidden(_id)))
+              .filter(({ id }) => Boolean(!isHidden(id)))
               .map((bal) => (
                 <BaseLocaleCard
-                  key={bal._id}
+                  key={bal.id}
                   isAdmin
                   baseLocale={bal}
                   isDefaultOpen={basesLocales.length === 1}
                   onSelect={() => onBalSelect(bal)}
-                  onRemove={(e) => handleRemove(e, bal._id)}
-                  onHide={(e) => handleHide(e, bal._id)}
+                  onRemove={(e) => handleRemove(e, bal.id)}
+                  onHide={(e) => handleHide(e, bal.id)}
                   isShownHabilitationStatus
                 />
               ))}

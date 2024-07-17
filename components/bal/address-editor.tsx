@@ -43,7 +43,7 @@ function AddressEditor({ commune, closeForm }: AddressEditorProps) {
           <ToponymeEditor commune={commune} closeForm={closeForm} />
         ) : (
           <NumeroEditor
-            initialVoieId={voie?._id}
+            initialVoieId={voie?.id}
             commune={commune}
             hasPreview
             closeForm={closeForm}

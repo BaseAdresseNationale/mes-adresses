@@ -43,16 +43,16 @@ function useTrash(): UseTrashType {
 
   const reloadAllDeleted = useCallback(async () => {
     const { toponymes, voies } = await BasesLocalesService.findAllDeleted(
-      baseLocale._id
+      baseLocale.id
     );
     setToponymesDeleted(toponymes);
     setVoiesDeleted(voies);
-  }, [baseLocale._id]);
+  }, [baseLocale.id]);
 
   const onRemoveVoie = useCallback(
     async (voie: PopulateVoie) => {
       const deleteVoie = toaster(
-        () => VoiesService.deleteVoie(voie._id),
+        () => VoiesService.deleteVoie(voie.id),
         "La voie a bien été supprimée",
         "La voie n’a pas pu être supprimée"
       );
@@ -68,7 +68,7 @@ function useTrash(): UseTrashType {
         numerosIds: selectedNumerosIds,
       };
       const restoreVoie = toaster(
-        () => VoiesService.restoreVoie(voie._id, restoreVoieDTO),
+        () => VoiesService.restoreVoie(voie.id, restoreVoieDTO),
         "La voie a bien été restaurée",
         "La voie n’a pas pu être restaurée"
       );
@@ -96,12 +96,12 @@ function useTrash(): UseTrashType {
   const onRemoveNumeros = useCallback(
     async (voie: PopulateVoie) => {
       const deleteBatchNumeroDTO: DeleteBatchNumeroDTO = {
-        numerosIds: voie.numeros.map(({ _id }) => String(_id)),
+        numerosIds: voie.numeros.map(({ id }) => String(id)),
       };
       const deleteNumeros = toaster(
         () =>
           BasesLocalesService.deleteNumeros(
-            baseLocale._id,
+            baseLocale.id,
             deleteBatchNumeroDTO
           ),
         "Les numéros ont bien été supprimés",
@@ -110,13 +110,13 @@ function useTrash(): UseTrashType {
       await deleteNumeros();
       await reloadAllDeleted();
     },
-    [baseLocale._id, reloadAllDeleted, toaster]
+    [baseLocale.id, reloadAllDeleted, toaster]
   );
 
   const onRemoveToponyme = useCallback(
     async (toponyme: Toponyme) => {
       const deleteToponyme = toaster(
-        () => ToponymesService.deleteToponyme(toponyme._id),
+        () => ToponymesService.deleteToponyme(toponyme.id),
         "Le toponyme a bien été supprimé",
         "Le toponyme n’a pas pu être supprimé"
       );
@@ -129,7 +129,7 @@ function useTrash(): UseTrashType {
   const onRestoreToponyme = useCallback(
     async (toponyme: Toponyme) => {
       const restoreToponyme = toaster(
-        () => ToponymesService.restoreToponyme(toponyme._id),
+        () => ToponymesService.restoreToponyme(toponyme.id),
         "Le toponyme a bien été restauré",
         "Le toponyme n’a pas pu être restauré"
       );

@@ -46,16 +46,16 @@ function BaseLocaleCardContent({
   onRemove,
   onHide,
 }: BaseLocaleCardContentProps) {
-  const { status, _created, emails } = baseLocale;
+  const { status, createdAt, emails } = baseLocale;
   const { isMobile } = useContext(LayoutContext);
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false);
 
   const { getBalToken } = useContext(LocalStorageContext);
   const hasToken = useMemo(() => {
-    return Boolean(getBalToken(baseLocale._id));
-  }, [baseLocale._id, getBalToken]);
+    return Boolean(getBalToken(baseLocale.id));
+  }, [baseLocale.id, getBalToken]);
 
-  const createDate = format(new Date(_created), "PPP", { locale: fr });
+  const createDate = format(new Date(createdAt), "PPP", { locale: fr });
   const isDeletable =
     status === ExtendedBaseLocaleDTO.status.DRAFT ||
     status === ExtendedBaseLocaleDTO.status.DEMO;
@@ -236,7 +236,7 @@ function BaseLocaleCardContent({
               <RecoverBALAlert
                 isShown={isBALRecoveryShown}
                 defaultEmail={userEmail}
-                baseLocaleId={baseLocale._id}
+                baseLocaleId={baseLocale.id}
                 onClose={() => {
                   setIsBALRecoveryShown(false);
                 }}

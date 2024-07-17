@@ -141,9 +141,9 @@ function ToponymesList({
 
         <InfiniteScrollList items={scrollableItems}>
           {(toponyme: ExtentedToponymeDTO & { commentedNumeros: Numero[] }) => (
-            <Table.Row key={toponyme._id} paddingRight={8} minHeight={48}>
+            <Table.Row key={toponyme.id} paddingRight={8} minHeight={48}>
               <Table.Cell
-                onClick={() => onSelect(toponyme._id)}
+                onClick={() => onSelect(toponyme.id)}
                 cursor="pointer"
                 className="main-table-cell"
               >
@@ -181,13 +181,13 @@ function ToponymesList({
               {isEditingEnabled && (
                 <TableRowActions
                   onSelect={() => {
-                    onSelect(toponyme._id);
+                    onSelect(toponyme.id);
                   }}
                   onEdit={() => {
-                    onEnableEditing(toponyme._id);
+                    onEnableEditing(toponyme.id);
                   }}
                   onRemove={() => {
-                    setToRemove(toponyme._id);
+                    setToRemove(toponyme.id);
                   }}
                 />
               )}

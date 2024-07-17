@@ -49,9 +49,9 @@ function DemoForm({ defaultCommune }: DemoFormProps) {
         populate,
       });
 
-      addBalAccess(bal._id, bal.token);
+      addBalAccess(bal.id, bal.token);
 
-      Router.push(`/bal/${bal._id}`);
+      Router.push(`/bal/${bal.id}`);
     } catch (error) {
       pushToast({
         title: "Une erreur est survenue",

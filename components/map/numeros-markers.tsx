@@ -108,10 +108,10 @@ function NumerosMarkers({
 
   return numeros.map((numero) => (
     <NumeroMarker
-      key={numero._id}
+      key={numero.id}
       numero={numero}
       style={markerStyle(color)}
-      isContextMenuDisplayed={numero._id === isContextMenuDisplayed}
+      isContextMenuDisplayed={numero.id === isContextMenuDisplayed}
       removeAddress={removeAddress}
       onEnableEditing={onEnableEditing}
       onEnableMenu={onEnableMenu}

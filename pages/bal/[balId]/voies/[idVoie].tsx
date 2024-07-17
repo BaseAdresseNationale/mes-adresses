@@ -50,7 +50,7 @@ function VoiePage({ commune }: VoiePageProps) {
         {isFormOpen && (
           <NumeroEditor
             hasPreview
-            initialVoieId={voie._id}
+            initialVoieId={voie.id}
             initialValue={editedNumero}
             commune={commune}
             closeForm={reset}
@@ -59,7 +59,7 @@ function VoiePage({ commune }: VoiePageProps) {
 
         <NumerosList
           token={token}
-          voieId={voie._id}
+          voieId={voie.id}
           numeros={numeros}
           handleEditing={handleEditing}
         />

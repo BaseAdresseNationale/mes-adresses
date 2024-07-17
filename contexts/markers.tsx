@@ -6,7 +6,7 @@ import { Position } from "@/lib/openapi";
 import { ChildrenProps } from "@/types/context";
 
 export interface Marker {
-  _id?: string;
+  id?: string;
   label?: string;
   type?: Position.type;
   latitude?: number;
@@ -53,7 +53,7 @@ export function MarkersContextProvider(props: ChildrenProps) {
           marker = { ...marker, longitude, latitude };
         }
 
-        return [...prevMarkers, { _id: uniqueId(), ...marker }];
+        return [...prevMarkers, { id: uniqueId(), ...marker }];
       });
     },
     [viewport]
@@ -61,7 +61,7 @@ export function MarkersContextProvider(props: ChildrenProps) {
 
   const removeMarker = useCallback((markerId: string) => {
     setMarkers((prevMarkers) => {
-      const filtre = prevMarkers.filter((marker) => marker._id !== markerId);
+      const filtre = prevMarkers.filter((marker) => marker.id !== markerId);
       return filtre;
     });
   }, []);
@@ -70,8 +70,8 @@ export function MarkersContextProvider(props: ChildrenProps) {
     (markerId: string, data: Partial<Marker>) => {
       setMarkers((markers) => {
         return markers.map((marker) => {
-          if (marker._id === markerId) {
-            return { _id: markerId, ...data };
+          if (marker.id === markerId) {
+            return { id: markerId, ...data };
           }
 
           return marker;

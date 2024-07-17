@@ -50,7 +50,7 @@ export default function usePublishProcess(
   };
 
   const handleChangeStatus = async (status: BaseLocale.status) => {
-    const updated = await BasesLocalesService.updateBaseLocale(baseLocale._id, {
+    const updated = await BasesLocalesService.updateBaseLocale(baseLocale.id, {
       status,
     });
     await reloadBaseLocale();
@@ -72,7 +72,7 @@ export default function usePublishProcess(
     ) {
       try {
         const habilitation = await HabilitationService.createHabilitation(
-          baseLocale._id
+          baseLocale.id
         );
 
         if (habilitation) {
@@ -92,7 +92,7 @@ export default function usePublishProcess(
 
   const handleSync = async () => {
     const publishBaseLocale = toaster(
-      () => BasesLocalesService.publishBaseLocale(baseLocale._id),
+      () => BasesLocalesService.publishBaseLocale(baseLocale.id),
       "La Base Adresses Nationale a bien été mise à jour",
       "Impossible de mettre à jour la Base Adresses Nationale"
     );

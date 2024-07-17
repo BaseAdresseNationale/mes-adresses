@@ -63,7 +63,7 @@ function ListNumerosDeleted({
     if (isAllSelected) {
       setSelectedNumerosIds([]);
     } else {
-      setSelectedNumerosIds(filtered.map(({ _id }) => _id));
+      setSelectedNumerosIds(filtered.map(({ id }) => id));
     }
   };
 
@@ -107,15 +107,15 @@ function ListNumerosDeleted({
         <InfiniteScrollList items={scrollableItems}>
           {(numero) => (
             <RowNumeroDeleted
-              key={String(numero._id)}
+              key={String(numero.id)}
               label={`${numero.numeroComplet}`}
               secondary={
                 numero.positions.length > 1
                   ? `${numero.positions.length} positions`
                   : null
               }
-              handleSelect={() => handleSelect(numero._id)}
-              isSelected={selectedNumerosIds.includes(numero._id)}
+              handleSelect={() => handleSelect(numero.id)}
+              isSelected={selectedNumerosIds.includes(numero.id)}
             />
           )}
         </InfiniteScrollList>

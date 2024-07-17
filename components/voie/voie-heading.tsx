@@ -27,7 +27,7 @@ function VoieHeading({ voie }: VoieHeadingProps) {
   }, [isEditing, token]);
 
   useEffect(() => {
-    if (editingId === voie._id) {
+    if (editingId === voie.id) {
       onEnableVoieEditing();
     }
   }, [voie, editingId, onEnableVoieEditing]);
@@ -61,7 +61,7 @@ function VoieHeading({ voie }: VoieHeadingProps) {
             )}
           </Pane>
           {numeros && (
-            <Text padding={editingId === voie._id ? 16 : 0}>
+            <Text padding={editingId === voie.id ? 16 : 0}>
               {numeros.length} numéro{numeros.length > 1 ? "s" : ""}
             </Text>
           )}

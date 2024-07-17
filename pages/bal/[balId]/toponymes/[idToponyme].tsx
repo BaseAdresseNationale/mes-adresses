@@ -27,7 +27,7 @@ import {
   BaseLocale,
   BasesLocalesService,
   ExtentedToponymeDTO,
-  NumeroPopulate,
+  Numero,
   ToponymesService,
   UpdateBatchNumeroDTO,
 } from "@/lib/openapi";
@@ -62,9 +62,9 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
     try {
       const payload: UpdateBatchNumeroDTO = {
         numerosIds: numeros,
-        changes: { toponyme: toponyme._id },
+        changes: { toponymeId: toponyme.id },
       };
-      await BasesLocalesService.updateNumeros(baseLocale._id, payload);
+      await BasesLocalesService.updateNumeros(baseLocale.id, payload);
       await reloadNumeros();
       pushToast({
         title: "Les numéros ont bien été modifiés",
@@ -209,7 +209,7 @@ export async function getServerSideProps({ params }) {
       await getBaseEditorProps(balId);
     const toponyme: ExtentedToponymeDTO =
       await ToponymesService.findToponyme(idToponyme);
-    const numeros: NumeroPopulate[] =
+    const numeros: Numero[] =
       await ToponymesService.findToponymeNumeros(idToponyme);
 
     return {
