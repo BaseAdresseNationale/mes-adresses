@@ -14,6 +14,7 @@ export type Numero = {
     updatedAt: string;
     deletedAt: string;
     balId: string;
+    banId: string;
     voieId: string;
     toponymeId: string;
     numero: number;

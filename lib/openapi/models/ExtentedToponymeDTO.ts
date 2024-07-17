@@ -13,6 +13,7 @@ export type ExtentedToponymeDTO = {
     updatedAt: string;
     deletedAt: string;
     balId: string;
+    banId: string;
     nom: string;
     nomAlt: Record<string, any>;
     parcelles: Array<string>;

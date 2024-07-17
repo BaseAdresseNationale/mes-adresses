@@ -15,6 +15,7 @@ export type BaseLocale = {
     updatedAt: string;
     deletedAt: string;
     nom: string;
+    banId: string;
     commune: string;
     emails: Array<string>;
     token: string;
