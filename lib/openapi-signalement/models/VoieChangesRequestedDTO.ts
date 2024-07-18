@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type Author = {
-    email?: string | null;
+export type VoieChangesRequestedDTO = {
+    nom: string;
+    comment?: string | null;
 };
 
