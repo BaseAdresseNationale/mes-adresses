@@ -1,9 +1,7 @@
 name: Playwright Tests
 on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+  deployment_status:
+    types: [success]
 jobs:
   test:
     timeout-minutes: 60
