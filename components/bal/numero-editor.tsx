@@ -114,7 +114,7 @@ function NumeroEditor({
 
   const getNumeroBody = useCallback(() => {
     const body = {
-      toponyme: toponymeId,
+      toponymeId,
       numero: Number(numero),
       suffixe: suffixe?.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,

@@ -72,6 +72,7 @@ function ToponymeEditor({
       if (markers) {
         markers.forEach((marker) => {
           body.positions.push({
+            id: marker.id,
             point: {
               type: "Point",
               coordinates: [marker.longitude, marker.latitude],
