@@ -209,8 +209,7 @@ export function BalDataContextProvider({
   ]);
 
   const uncertifyAllNumeros = useCallback(async () => {
-    console.log("UNCERTIFY ALL NUMEROS");
-    // await BasesLocalesService.uncertifyAllNumeros(baseLocale.id);
+    await BasesLocalesService.uncertifyAllNumeros(baseLocale.id);
     await reloadNumeros();
     await reloadVoies();
     await reloadToponymes();

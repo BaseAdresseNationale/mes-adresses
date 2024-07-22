@@ -42,11 +42,11 @@ function PositionEditor({
   useEffect(() => {
     if (initialPositions) {
       const positions = initialPositions.map((position) => ({
+        id: position.id,
         longitude: position.point.coordinates[0],
         latitude: position.point.coordinates[1],
         type: position.type,
       }));
-
       positions.forEach((position) => addMarker(position));
     } else {
       handleAddMarker();

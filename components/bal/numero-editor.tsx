@@ -4,6 +4,7 @@ import { Pane, SelectField, TextInputField } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
 import { computeCompletNumero } from "@/lib/utils/numero";
+import { Types } from "mongoose";
 
 import MarkersContext from "@/contexts/markers";
 import BalDataContext from "@/contexts/bal-data";
@@ -125,6 +126,7 @@ function NumeroEditor({
       const positions = [];
       markers.forEach((marker) => {
         positions.push({
+          id: marker.id,
           point: {
             type: "Point",
             coordinates: [marker.longitude, marker.latitude],
