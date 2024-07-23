@@ -62,21 +62,6 @@ function NumeroMarker({
           {completNumero}
         </Text>
 
-        {numero.positions.find((position) => position.type === "inconnue") && (
-          <Tooltip
-            content="Le type d’une position est inconnu"
-            position={Position.BOTTOM_RIGHT}
-          >
-            <WarningSignIcon
-              color="warning"
-              size={13}
-              marginX={4}
-              marginBottom={2}
-              style={{ verticalAlign: "middle" }}
-            />
-          </Tooltip>
-        )}
-
         {numero.certifie && (
           <Tooltip
             content="Cette adresse est certifiée par la commune"
