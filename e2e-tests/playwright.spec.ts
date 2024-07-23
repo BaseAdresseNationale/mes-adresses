@@ -63,7 +63,7 @@ test.describe("BAL page - Edition", () => {
   });
 
   // test("Create a new toponyme", async ({ page }) => {
-  //   await page.waitForSelector("text^=Adresses de Cangey");
+  //   await page.waitForSelector("text^=Adresses de Cangey")
   // });
 });
 
