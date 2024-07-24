@@ -10,11 +10,11 @@ import type { Voie } from './Voie';
 
 export type Numero = {
     id: string;
+    banId: string;
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
     balId: string;
-    banId: string;
     voieId: string;
     toponymeId: string;
     numero: number;

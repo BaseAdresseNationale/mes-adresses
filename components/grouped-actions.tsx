@@ -134,7 +134,7 @@ function GroupedActions({
       setIsLoading(true);
 
       const changes = {
-        voie: idVoie === selectedVoieId ? null : selectedVoieId,
+        voieId: idVoie === selectedVoieId ? null : selectedVoieId,
         comment: commentCondition(comment),
         certifie: getIsCertifie(certifie),
       } as any;

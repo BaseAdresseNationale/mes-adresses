@@ -24,12 +24,7 @@ import DeleteWarning from "@/components/delete-warning";
 import GroupedActions from "@/components/grouped-actions";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import BALRecoveryContext from "@/contexts/bal-recovery";
-import {
-  BasesLocalesService,
-  Numero,
-  NumeroPopulate,
-  NumerosService,
-} from "@/lib/openapi";
+import { BasesLocalesService, Numero, NumerosService } from "@/lib/openapi";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
@@ -37,7 +32,7 @@ import LayoutContext from "@/contexts/layout";
 interface NumerosListProps {
   token?: string;
   voieId: string;
-  numeros: Array<Numero | NumeroPopulate>;
+  numeros: Array<Numero>;
   handleEditing: (id?: string) => void;
 }
 
@@ -276,7 +271,7 @@ function NumerosList({
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(numero: Numero | NumeroPopulate) => (
+          {(numero: Numero) => (
             <Table.Row key={numero.id} paddingRight={8} minHeight={48}>
               {isEditingEnabled && (
                 <Table.Cell flex="0 1 1">

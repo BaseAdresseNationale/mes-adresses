@@ -243,7 +243,7 @@ function SignalementUpdateNumero({
               {markers
                 .filter(({ isMapMarker }) => isMapMarker)
                 .map((marker) => (
-                  <PositionItem key={marker._id} marker={marker} />
+                  <PositionItem key={marker.id} marker={marker} />
                 ))}
             </Pane>
           </SignalementCard>,

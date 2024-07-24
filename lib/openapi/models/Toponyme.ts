@@ -9,11 +9,11 @@ import type { Position } from './Position';
 
 export type Toponyme = {
     id: string;
+    banId: string;
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
     balId: string;
-    banId: string;
     nom: string;
     nomAlt: Record<string, any>;
     parcelles: Array<string>;

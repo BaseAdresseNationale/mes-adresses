@@ -8,12 +8,12 @@ import type { Numero } from './Numero';
 import type { Toponyme } from './Toponyme';
 
 export type Position = {
-    id: number;
-    balId: string;
+    id: string;
     toponymeId: string;
     numeroId: string;
     type: Position.type;
     source: string;
+    createdAt: string;
     point: Record<string, any>;
     toponyme: Toponyme;
     numero: Numero;

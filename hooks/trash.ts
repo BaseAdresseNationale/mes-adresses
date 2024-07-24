@@ -3,10 +3,10 @@ import { useCallback, useContext, useState } from "react";
 import {
   BasesLocalesService,
   DeleteBatchNumeroDTO,
-  PopulateVoie,
   RestoreVoieDTO,
   Toponyme,
   ToponymesService,
+  Voie,
   VoiesService,
 } from "@/lib/openapi";
 import BalDataContext from "@/contexts/bal-data";
@@ -14,15 +14,12 @@ import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";
 
 interface UseTrashType {
-  voiesDeleted: PopulateVoie[];
+  voiesDeleted: Voie[];
   toponymesDeleted: Toponyme[];
   reloadAllDeleted: () => Promise<void>;
-  onRemoveVoie: (voie: PopulateVoie) => Promise<void>;
-  onRestoreVoie: (
-    voie: PopulateVoie,
-    selectedNumerosIds: string[]
-  ) => Promise<void>;
-  onRemoveNumeros: (voie: PopulateVoie) => Promise<void>;
+  onRemoveVoie: (voie: Voie) => Promise<void>;
+  onRestoreVoie: (voie: Voie, selectedNumerosIds: string[]) => Promise<void>;
+  onRemoveNumeros: (voie: Voie) => Promise<void>;
   onRemoveToponyme: (toponyme: Toponyme) => Promise<void>;
   onRestoreToponyme: (toponyme: Toponyme) => Promise<void>;
 }
@@ -38,7 +35,7 @@ function useTrash(): UseTrashType {
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
-  const [voiesDeleted, setVoiesDeleted] = useState<PopulateVoie[]>([]);
+  const [voiesDeleted, setVoiesDeleted] = useState<Voie[]>([]);
   const [toponymesDeleted, setToponymesDeleted] = useState<Toponyme[]>([]);
 
   const reloadAllDeleted = useCallback(async () => {
@@ -50,7 +47,7 @@ function useTrash(): UseTrashType {
   }, [baseLocale.id]);
 
   const onRemoveVoie = useCallback(
-    async (voie: PopulateVoie) => {
+    async (voie: Voie) => {
       const deleteVoie = toaster(
         () => VoiesService.deleteVoie(voie.id),
         "La voie a bien été supprimée",
@@ -63,7 +60,7 @@ function useTrash(): UseTrashType {
   );
 
   const onRestoreVoie = useCallback(
-    async (voie: PopulateVoie, selectedNumerosIds: string[]) => {
+    async (voie: Voie, selectedNumerosIds: string[]) => {
       const restoreVoieDTO: RestoreVoieDTO = {
         numerosIds: selectedNumerosIds,
       };
@@ -94,7 +91,7 @@ function useTrash(): UseTrashType {
   );
 
   const onRemoveNumeros = useCallback(
-    async (voie: PopulateVoie) => {
+    async (voie: Voie) => {
       const deleteBatchNumeroDTO: DeleteBatchNumeroDTO = {
         numerosIds: voie.numeros.map(({ id }) => String(id)),
       };

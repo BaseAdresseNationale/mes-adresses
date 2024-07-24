@@ -11,11 +11,11 @@ import type { Voie } from './Voie';
 
 export type ExtendedBaseLocaleDTO = {
     id: string;
+    banId: string;
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
     nom: string;
-    banId: string;
     commune: string;
     emails: Array<string>;
     token: string;

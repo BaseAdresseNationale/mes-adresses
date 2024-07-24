@@ -8,11 +8,11 @@ import type { Numero } from './Numero';
 
 export type Voie = {
     id: string;
+    banId: string;
     createdAt: string;
     updatedAt: string;
     deletedAt: string;
     balId: string;
-    banId: string;
     nom: string;
     nomAlt: Record<string, any>;
     typeNumerotation: Voie.typeNumerotation;
