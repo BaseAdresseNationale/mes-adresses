@@ -1,8 +1,8 @@
 name: Playwright Tests
-on: deployment_status
+on:
+  deployment_status:
 jobs:
   test:
-    if: ${{ github.event.deployment_status.state == 'success' }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
