@@ -35,12 +35,11 @@ function ItemsListDelete({
     const actions = [
       {
         label:
-          "Voir " +
-          (model === "voie"
+          model === "voie"
             ? item.deletedAt
-              ? "voie"
-              : "numero(s)"
-            : "toponyme"),
+              ? "Restaurer voie"
+              : "Voir numero(s)"
+            : "Restaurer toponyme",
         callback: () => onRestore(item),
         icon: AddIcon,
         intent: "none",

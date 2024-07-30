@@ -16,7 +16,6 @@ function UserBasesLocales() {
 
   const getUserBals = useCallback(async () => {
     setIsLoading(true);
-    console.log("getUserBals", balAccess);
     if (balAccess) {
       const balsToLoad = filter(
         Object.keys(balAccess),
