@@ -74,7 +74,7 @@ function SignalementPage({
                 {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
                   <SignalementCreateNumero
                     signalement={signalement}
-                    initialVoieId={existingLocation._id}
+                    initialVoieId={existingLocation.id}
                     handleClose={handleClose}
                     commune={commune}
                     handleSubmit={handleSignalementProcessed}
@@ -185,7 +185,7 @@ export async function getServerSideProps({ params }) {
           const voie = voies.find(
             (voie) => voie.nom === signalement.existingLocation.toponyme.nom
           );
-          const numeros = await VoiesService.findVoieNumeros(voie._id);
+          const numeros = await VoiesService.findVoieNumeros(voie.id);
           existingLocation = numeros.find(({ numeroComplet }) => {
             const existingLocationNumeroComplet = signalement.existingLocation
               .suffixe
@@ -202,7 +202,7 @@ export async function getServerSideProps({ params }) {
               toponyme.nom === signalement.existingLocation.toponyme.nom
           );
           const numeros = await ToponymesService.findToponymeNumeros(
-            toponyme._id
+            toponyme.id
           );
           existingLocation = numeros.find(({ numeroComplet }) => {
             const existingLocationNumeroComplet = signalement.existingLocation

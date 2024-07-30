@@ -88,7 +88,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
       setIsLoading(true);
 
       try {
-        await BasesLocalesService.updateBaseLocale(baseLocale._id, {
+        await BasesLocalesService.updateBaseLocale(baseLocale.id, {
           nom: nomInput.trim(),
           emails: balEmails,
         });
@@ -114,10 +114,9 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
       setIsLoading(false);
     },
     [
-      baseLocale._id,
+      baseLocale.id,
       nomInput,
       balEmails,
-      token,
       reloadEmails,
       reloadBaseLocale,
       emails,
@@ -215,7 +214,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
 
         {isRenewTokenWarningShown && (
           <RenewTokenDialog
-            baseLocaleId={baseLocale._id}
+            baseLocaleId={baseLocale.id}
             isShown={isRenewTokenWarningShown}
             setIsShown={setIsRenewTokenWarningShown}
             setError={setError}

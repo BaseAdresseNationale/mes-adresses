@@ -72,6 +72,7 @@ function ToponymeEditor({
       if (markers) {
         markers.forEach((marker) => {
           body.positions.push({
+            id: marker.id,
             point: {
               type: "Point",
               coordinates: [marker.longitude, marker.latitude],
@@ -85,7 +86,7 @@ function ToponymeEditor({
         // Add or edit a toponyme
         const submit = initialValue
           ? toaster(
-              () => ToponymesService.updateToponyme(initialValue._id, body),
+              () => ToponymesService.updateToponyme(initialValue.id, body),
               "Le toponyme a bien été modifé",
               "Le toponyme n’a pas pu être modifié",
               (error) => {
@@ -93,7 +94,7 @@ function ToponymeEditor({
               }
             )
           : toaster(
-              () => BasesLocalesService.createToponyme(baseLocale._id, body),
+              () => BasesLocalesService.createToponyme(baseLocale.id, body),
               "Le toponyme a bien été ajouté",
               "Le toponyme n’a pas pu être ajouté",
               (error) => {
@@ -105,7 +106,7 @@ function ToponymeEditor({
 
         refreshBALSync();
 
-        if (initialValue?._id === toponyme._id && router.query.idToponyme) {
+        if (initialValue?.id === toponyme.id && router.query.idToponyme) {
           setToponyme(toponyme);
         }
 
@@ -127,7 +128,7 @@ function ToponymeEditor({
       }
     },
     [
-      baseLocale._id,
+      baseLocale.id,
       initialValue,
       nom,
       nomAlt,
@@ -168,7 +169,7 @@ function ToponymeEditor({
 
   return (
     <Form
-      editingId={initialValue?._id}
+      editingId={initialValue?.id}
       closeForm={closeForm}
       onFormSubmit={onFormSubmit}
     >

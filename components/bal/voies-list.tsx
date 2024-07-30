@@ -167,9 +167,9 @@ function VoiesList({
 
         <InfiniteScrollList items={scrollableItems}>
           {(voie: ExtendedVoieDTO & { commentedNumeros: Numero[] }) => (
-            <Table.Row key={voie._id} paddingRight={8} minHeight={48}>
+            <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
               <Table.Cell
-                onClick={() => onSelect(voie._id)}
+                onClick={() => onSelect(voie.id)}
                 cursor="pointer"
                 className="main-table-cell"
               >
@@ -207,19 +207,19 @@ function VoiesList({
               {isEditingEnabled && (
                 <TableRowActions
                   onSelect={() => {
-                    onSelect(voie._id);
+                    onSelect(voie.id);
                   }}
                   onEdit={() => {
-                    onEnableEditing(voie._id);
+                    onEnableEditing(voie.id);
                   }}
                   onRemove={() => {
-                    setToRemove(voie._id);
+                    setToRemove(voie.id);
                   }}
                   extra={
                     voie.nbNumeros === 0
                       ? {
                           callback: () => {
-                            setToConvert(voie._id);
+                            setToConvert(voie.id);
                           },
                           icon: KeyTabIcon,
                           text: "Convertir en toponyme",

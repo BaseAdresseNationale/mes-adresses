@@ -85,7 +85,7 @@ function HiddenBal() {
         ) : (
           <Pane background="#E4E7EB">
             {basesLocales.map((bal) => (
-              <Pane key={bal._id} display="flex" alignItems="center">
+              <Pane key={bal.id} display="flex" alignItems="center">
                 <Pane flex={1}>
                   <BaseLocaleCard
                     isAdmin
@@ -99,7 +99,7 @@ function HiddenBal() {
                   alignItems="center"
                   cursor="pointer"
                   margin={16}
-                  onClick={() => removeHiddenBal(bal._id)}
+                  onClick={() => removeHiddenBal(bal.id)}
                 >
                   <UndoIcon size={24} />
                   <Text size={300}>Ne plus masquer</Text>

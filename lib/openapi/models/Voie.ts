@@ -3,24 +3,23 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { FeaturePoint } from './FeaturePoint';
-import type { LineString } from './LineString';
+import type { BaseLocale } from './BaseLocale';
+import type { Numero } from './Numero';
 
 export type Voie = {
-    _id: string;
+    id: string;
     banId: string;
-    _created: string;
-    _updated: string;
-    _deleted: string;
-    _bal: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+    balId: string;
     nom: string;
-    commune: string;
     nomAlt: Record<string, any>;
-    centroid: FeaturePoint;
-    centroidTiles: Array<string>;
     typeNumerotation: Voie.typeNumerotation;
-    trace: LineString;
-    traceTiles: Array<string>;
+    centroid: Record<string, any>;
+    trace: Record<string, any>;
+    baseLocale: BaseLocale;
+    numeros: Array<Numero>;
 };
 
 export namespace Voie {

@@ -8,7 +8,7 @@ import {
   IconComponent,
 } from "evergreen-ui";
 
-import { BaseLocale, Sync } from "./openapi";
+import { BaseLocale, BaseLocaleSync } from "./openapi";
 
 type StatusType = {
   label: string;
@@ -96,19 +96,19 @@ const STATUSES: { [key: string]: StatusType } = {
 
 export function computeStatus(
   balStatus: BaseLocale.status,
-  sync: Partial<Sync>,
+  sync: Partial<BaseLocaleSync>,
   isHabilitationValid: boolean
 ): StatusType {
   if (
     balStatus === BaseLocale.status.REPLACED ||
-    sync?.status === Sync.status.CONFLICT
+    sync?.status === BaseLocaleSync.status.CONFLICT
   ) {
     return STATUSES.conflict;
   }
 
   if (
     balStatus === BaseLocale.status.PUBLISHED &&
-    sync.status === Sync.status.OUTDATED &&
+    sync.status === BaseLocaleSync.status.OUTDATED &&
     !isHabilitationValid
   ) {
     return STATUSES["waiting-habilitation"];

@@ -28,7 +28,7 @@ function AddNumeros({ onSubmit, onCancel, isLoading }: AddNumerosProps) {
     if (idVoie) {
       const numeros = await VoiesService.findVoieNumeros(idVoie);
       setVoieNumeros(numeros);
-      setSelectedVoieNumeros(numeros.map(({ _id }) => _id));
+      setSelectedVoieNumeros(numeros.map(({ id }) => id));
     }
   };
 
@@ -37,7 +37,7 @@ function AddNumeros({ onSubmit, onCancel, isLoading }: AddNumerosProps) {
       if (selectedVoieNumeros.length === voieNumeros.length) {
         setSelectedVoieNumeros([]);
       } else {
-        setSelectedVoieNumeros(voieNumeros.map(({ _id }) => _id));
+        setSelectedVoieNumeros(voieNumeros.map(({ id }) => id));
       }
     } else {
       setSelectedVoieNumeros((selectedNumeros) => {
@@ -55,7 +55,7 @@ function AddNumeros({ onSubmit, onCancel, isLoading }: AddNumerosProps) {
       const numeros =
         selectedVoieNumeros.length > 0
           ? selectedVoieNumeros
-          : voieNumeros.map(({ _id }) => _id);
+          : voieNumeros.map(({ id }) => id);
 
       await onSubmit(numeros);
     },
@@ -89,9 +89,9 @@ function AddNumeros({ onSubmit, onCancel, isLoading }: AddNumerosProps) {
             : "Sélectionner tous les numéros",
         value: "toggle",
       };
-      const numeros = voieNumeros.map(({ _id, numero, suffixe }) => ({
+      const numeros = voieNumeros.map(({ id, numero, suffixe }) => ({
         label: `${numero}${suffixe ? suffixe : ""}`,
-        value: _id,
+        value: id,
       }));
 
       options = [toggleFullSelect, ...numeros];
@@ -113,13 +113,11 @@ function AddNumeros({ onSubmit, onCancel, isLoading }: AddNumerosProps) {
               onChange={(e) => handleSelectVoie(e.target.value)}
             >
               {!selectedVoieId && <option>- Sélectionnez une voie -</option>}
-              {sortBy(voies, (v) => normalizeSort(v.nom)).map(
-                ({ _id, nom }) => (
-                  <option key={_id} value={_id}>
-                    {nom}
-                  </option>
-                )
-              )}
+              {sortBy(voies, (v) => normalizeSort(v.nom)).map(({ id, nom }) => (
+                <option key={id} value={id}>
+                  {nom}
+                </option>
+              ))}
             </SelectField>
           </FormInput>
         </Pane>

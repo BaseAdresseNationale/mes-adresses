@@ -26,7 +26,7 @@ function CommuneTab({ commune, openRecoveryDialog }: CommuneTabProps) {
     <Pane overflowY="auto">
       {!token && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
       {signalements.length > 0 && (
-        <SignalementsInfos balId={baseLocale._id} signalements={signalements} />
+        <SignalementsInfos balId={baseLocale.id} signalements={signalements} />
       )}
       {token && baseLocale.status !== BaseLocale.status.DEMO && (
         <HabilitationInfos commune={commune} />

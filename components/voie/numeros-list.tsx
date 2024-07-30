@@ -24,12 +24,7 @@ import DeleteWarning from "@/components/delete-warning";
 import GroupedActions from "@/components/grouped-actions";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import BALRecoveryContext from "@/contexts/bal-recovery";
-import {
-  BasesLocalesService,
-  Numero,
-  NumeroPopulate,
-  NumerosService,
-} from "@/lib/openapi";
+import { BasesLocalesService, Numero, NumerosService } from "@/lib/openapi";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
@@ -37,7 +32,7 @@ import LayoutContext from "@/contexts/layout";
 interface NumerosListProps {
   token?: string;
   voieId: string;
-  numeros: Array<Numero | NumeroPopulate>;
+  numeros: Array<Numero>;
   handleEditing: (id?: string) => void;
 }
 
@@ -94,7 +89,7 @@ function NumerosList({
 
   const isAllSelectedCertifie = useMemo(() => {
     const filteredNumeros = numeros?.filter((numero) =>
-      selectedNumerosIds.includes(numero._id)
+      selectedNumerosIds.includes(numero.id)
     );
     const filteredCertifieNumeros = filteredNumeros?.filter(
       (numero) => numero.certifie
@@ -106,7 +101,7 @@ function NumerosList({
   const getToponymeName = useCallback(
     (toponymeId) => {
       if (toponymeId) {
-        const toponyme = toponymes.find(({ _id }) => _id === toponymeId);
+        const toponyme = toponymes.find(({ id }) => id === toponymeId);
         return toponyme?.nom;
       }
     },
@@ -130,7 +125,7 @@ function NumerosList({
     if (isAllSelected) {
       setSelectedNumerosIds([]);
     } else {
-      setSelectedNumerosIds(filtered.map(({ _id }) => _id));
+      setSelectedNumerosIds(filtered.map(({ id }) => id));
     }
   };
 
@@ -156,7 +151,7 @@ function NumerosList({
     setIsDisabled(true);
     const softDeleteNumeros = toaster(
       async () => {
-        await BasesLocalesService.softDeleteNumeros(baseLocale._id, {
+        await BasesLocalesService.softDeleteNumeros(baseLocale.id, {
           numerosIds: selectedNumerosIds,
         });
 
@@ -276,16 +271,16 @@ function NumerosList({
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(numero: Numero | NumeroPopulate) => (
-            <Table.Row key={numero._id} paddingRight={8} minHeight={48}>
+          {(numero: Numero) => (
+            <Table.Row key={numero.id} paddingRight={8} minHeight={48}>
               {isEditingEnabled && (
                 <Table.Cell flex="0 1 1">
                   <Checkbox
-                    checked={selectedNumerosIds.includes(numero._id)}
+                    checked={selectedNumerosIds.includes(numero.id)}
                     onChange={
                       filtered.length > 1
                         ? () => {
-                            handleSelect(numero._id);
+                            handleSelect(numero.id);
                           }
                         : null
                     }
@@ -298,7 +293,7 @@ function NumerosList({
                 {...(isEditingEnabled
                   ? {
                       onClick: () => {
-                        handleEditing(numero._id);
+                        handleEditing(numero.id);
                       },
                       cursor: "pointer",
                     }
@@ -309,9 +304,9 @@ function NumerosList({
                 <Table.TextCell data-editable flex="0 1 1" height="100%">
                   <Pane padding={1} fontSize={15}>
                     <Text>{numero.numeroComplet}</Text>
-                    {getToponymeName(numero.toponyme) && (
+                    {getToponymeName(numero.toponymeId) && (
                       <Text>
-                        <i>{` - ${getToponymeName(numero.toponyme)}`}</i>
+                        <i>{` - ${getToponymeName(numero.toponymeId)}`}</i>
                       </Text>
                     )}
                   </Pane>
@@ -340,9 +335,9 @@ function NumerosList({
 
               {isEditingEnabled && (
                 <TableRowActions
-                  onRemove={async () => onRemove(numero._id)}
+                  onRemove={async () => onRemove(numero.id)}
                   onEdit={() => {
-                    handleEditing(numero._id);
+                    handleEditing(numero.id);
                   }}
                 />
               )}

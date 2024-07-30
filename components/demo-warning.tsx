@@ -38,7 +38,7 @@ function DemoWarning({ baseLocale, communeName }: DemoWarningProps) {
       setIsLoading(true);
 
       try {
-        await BasesLocalesService.updateBaseLocaleDemoToDraft(baseLocale._id, {
+        await BasesLocalesService.updateBaseLocaleDemoToDraft(baseLocale.id, {
           nom: nom ? nom.trim() : null,
           email,
         });
@@ -55,7 +55,7 @@ function DemoWarning({ baseLocale, communeName }: DemoWarningProps) {
       setIsShown(false);
       setIsLoading(false);
     },
-    [baseLocale._id, email, nom, reloadBaseLocale, pushToast]
+    [baseLocale.id, email, nom, reloadBaseLocale, pushToast]
   );
 
   return (

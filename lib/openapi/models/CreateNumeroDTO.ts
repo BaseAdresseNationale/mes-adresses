@@ -9,7 +9,7 @@ export type CreateNumeroDTO = {
     numero: number;
     suffixe?: string | null;
     comment?: string | null;
-    toponyme?: string | null;
+    toponymeId?: string | null;
     parcelles?: Array<string>;
     certifie?: boolean;
     positions: Array<Position>;

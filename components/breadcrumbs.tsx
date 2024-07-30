@@ -60,14 +60,14 @@ function Breadcrumbs({
 
       {innerPath && (
         <>
-          <Link is={NextLink} href={`/bal/${baseLocale._id}`}>
+          <Link is={NextLink} href={`/bal/${baseLocale.id}`}>
             {baseLocale.nom || commune.nom}
           </Link>
 
           <Text color="muted">{" > "}</Text>
           {signalementLabel ? (
             <>
-              <Link is={NextLink} href={`/bal/${baseLocale._id}/signalements`}>
+              <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>
                 {innerPathLabel}
               </Link>
               <Text color="muted">{" > "}</Text>

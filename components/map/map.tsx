@@ -148,24 +148,24 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       // Filter positions of voie or toponyme
       if (voie) {
         if (drawEnabled) {
-          map.setFilter(VOIE_TRACE_LINE, ["!=", ["get", "id"], voie._id]);
+          map.setFilter(VOIE_TRACE_LINE, ["!=", ["get", "id"], voie.id]);
         } else {
           map.setFilter(VOIE_TRACE_LINE, null);
         }
 
-        map.setFilter(NUMEROS_POINT, ["!=", ["get", "idVoie"], voie._id]);
-        map.setFilter(NUMEROS_LABEL, ["!=", ["get", "idVoie"], voie._id]);
-        map.setFilter(VOIE_LABEL, ["!=", ["get", "id"], voie._id]);
+        map.setFilter(NUMEROS_POINT, ["!=", ["get", "idVoie"], voie.id]);
+        map.setFilter(NUMEROS_LABEL, ["!=", ["get", "idVoie"], voie.id]);
+        map.setFilter(VOIE_LABEL, ["!=", ["get", "id"], voie.id]);
       } else if (toponyme) {
         map.setFilter(NUMEROS_POINT, [
           "!=",
           ["get", "idToponyme"],
-          toponyme._id,
+          toponyme.id,
         ]);
         map.setFilter(NUMEROS_LABEL, [
           "!=",
           ["get", "idToponyme"],
-          toponyme._id,
+          toponyme.id,
         ]);
       } else {
         // Remove filter
@@ -347,7 +347,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       sourceLayer: LAYERS_SOURCE.VOIES_POINTS,
     });
 
-    return featuresList?.find((feature) => feature.id === voie._id)?.properties
+    return featuresList?.find((feature) => feature.id === voie.id)?.properties
       .color;
   }, [map, voie, isMapLoaded]);
 
@@ -425,9 +425,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
           {(voie || toponyme) && !modeId && numeros && (
             <NumerosMarkers
-              numeros={
-                numeros.filter(({ _id }) => _id !== editingId) as Numero[]
-              }
+              numeros={numeros.filter(({ id }) => id !== editingId) as Numero[]}
               isContextMenuDisplayed={isContextMenuDisplayed}
               setIsContextMenuDisplayed={setIsContextMenuDisplayed}
               color={selectedVoieColor}
@@ -438,9 +436,9 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             viewport.zoom > TOPONYMES_MIN_ZOOM &&
             toponymes.map((toponyme) => (
               <ToponymeMarker
-                key={toponyme._id}
+                key={toponyme.id}
                 initialToponyme={toponyme}
-                isContextMenuDisplayed={toponyme._id === isContextMenuDisplayed}
+                isContextMenuDisplayed={toponyme.id === isContextMenuDisplayed}
                 setIsContextMenuDisplayed={setIsContextMenuDisplayed}
               />
             ))}
@@ -448,7 +446,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           {isEditing && (
             <EditableMarker
               style={style || defaultStyle}
-              idVoie={voie?._id}
+              idVoie={voie?.id}
               isToponyme={Boolean(toponyme)}
               viewport={viewport}
             />
@@ -457,7 +455,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           {markers
             .filter((marker) => marker.isMapMarker)
             .map((marker) => (
-              <MapMarker key={marker._id} marker={marker} />
+              <MapMarker key={marker.id} marker={marker} />
             ))}
 
           {featureHovered !== null &&

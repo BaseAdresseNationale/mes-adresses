@@ -54,9 +54,9 @@ function NumeroMarker({
       <Pane
         {...style}
         paddingX={4}
-        onClick={() => onEnableEditing(numero._id)}
-        onTouchEnd={() => onEnableEditing(numero._id)}
-        onContextMenu={() => onEnableMenu(numero._id)}
+        onClick={() => onEnableEditing(numero.id)}
+        onTouchEnd={() => onEnableEditing(numero.id)}
+        onContextMenu={() => onEnableMenu(numero.id)}
       >
         <Text color="white" marginLeft={8} marginRight={4}>
           {completNumero}
@@ -100,7 +100,7 @@ function NumeroMarker({
               <Menu.Item
                 icon={TrashIcon}
                 intent="danger"
-                onSelect={() => removeAddress(numero._id)}
+                onSelect={() => removeAddress(numero.id)}
               >
                 Supprimer
               </Menu.Item>

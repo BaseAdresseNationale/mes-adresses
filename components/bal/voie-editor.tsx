@@ -72,10 +72,7 @@ function VoieEditor({
         const submit = initialValue
           ? toaster(
               async () =>
-                VoiesService.updateVoie(
-                  initialValue._id,
-                  body as UpdateVoieDTO
-                ),
+                VoiesService.updateVoie(initialValue.id, body as UpdateVoieDTO),
               "La voie a bien été modifiée",
               "La voie n’a pas pu être modifiée",
               (err) => {
@@ -85,7 +82,7 @@ function VoieEditor({
           : toaster(
               async () =>
                 BasesLocalesService.createVoie(
-                  baseLocale._id,
+                  baseLocale.id,
                   body as CreateVoieDTO
                 ),
               "La voie a bien été ajoutée",
@@ -99,7 +96,7 @@ function VoieEditor({
 
         refreshBALSync();
 
-        if (initialValue?._id === voie._id && router.query.idVoie) {
+        if (initialValue?.id === voie.id && router.query.idVoie) {
           setVoie(voie);
           // Reload voie trace
           if (
@@ -126,7 +123,7 @@ function VoieEditor({
       }
     },
     [
-      baseLocale._id,
+      baseLocale.id,
       initialValue,
       nom,
       isMetric,
@@ -175,7 +172,7 @@ function VoieEditor({
 
   return (
     <Form
-      editingId={initialValue?._id}
+      editingId={initialValue?.id}
       unmountForm={onUnmount}
       closeForm={closeForm}
       onFormSubmit={onFormSubmit}

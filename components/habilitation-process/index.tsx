@@ -60,7 +60,7 @@ function HabilitationProcess({
 
   const sendCode = async () => {
     try {
-      await HabilitationService.sendPinCodeHabilitation(baseLocale._id);
+      await HabilitationService.sendPinCodeHabilitation(baseLocale.id);
 
       return true;
     } catch (error) {
@@ -116,14 +116,14 @@ function HabilitationProcess({
   const handleValidationCode = async (code: string) => {
     setIsLoading(true);
     try {
-      await HabilitationService.validePinCodeHabilitation(baseLocale._id, {
+      await HabilitationService.validePinCodeHabilitation(baseLocale.id, {
         code,
       });
 
       checkConflictingRevision();
       // SET RESUME BAL IF HABILITATION CODE
       if (baseLocale.sync?.isPaused == true) {
-        await BasesLocalesService.resumeBaseLocale(baseLocale._id);
+        await BasesLocalesService.resumeBaseLocale(baseLocale.id);
       }
       setStep(2);
     } catch (error) {
@@ -214,7 +214,7 @@ function HabilitationProcess({
         {step === 2 && habilitation.status === "accepted" && (
           <AcceptedDialog
             {...habilitation}
-            baseLocaleId={baseLocale._id}
+            baseLocaleId={baseLocale.id}
             commune={commune}
             isConflicted={isConflicted}
           />

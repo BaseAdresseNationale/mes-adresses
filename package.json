@@ -17,7 +17,7 @@
     "build": "yarn build-available-flags && next build",
     "analyze": "ANALYZE=true next build",
     "build-available-flags": "node scripts/build-available-flags",
-    "generate:openapi": "openapi --input http://localhost:5001/api-json --output ./lib/openapi",
+    "generate:openapi": "openapi --input http://localhost:5000/api-json --output ./lib/openapi",
     "generate:openapi:signalement": "openapi --input http://localhost:5005/api-json --output ./lib/openapi-signalement",
     "push-staging": "./scripts/push-staging.sh"
   },
@@ -49,6 +49,7 @@
     "lodash": "^4.17.21",
     "mapbox-gl": "npm:empty-npm-package@1.0.0",
     "maplibre-gl": "^3.3.1",
+    "mongoose": "^8.5.1",
     "next": "^13.5.6",
     "randomcolor": "^0.6.2",
     "react": "^18.2.0",

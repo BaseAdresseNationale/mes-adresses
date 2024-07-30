@@ -46,7 +46,7 @@ function SignalementDeleteNumero({
       <NumeroEditor
         hasPreview
         initialValue={existingLocation}
-        initialVoieId={existingLocation.voie?._id}
+        initialVoieId={existingLocation.voie?.id}
         commune={commune}
         closeForm={handleClose}
         onSubmitted={handleSubmit}
@@ -57,7 +57,7 @@ function SignalementDeleteNumero({
               type="button"
               appearance="primary"
               intent="danger"
-              onClick={() => handleRemove(existingLocation._id)}
+              onClick={() => handleRemove(existingLocation.id)}
             >
               Supprimer
             </Button>

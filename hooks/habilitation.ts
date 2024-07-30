@@ -39,7 +39,7 @@ export default function useHabilitation(
     if (token) {
       try {
         const habilitation: HabilitationDTO =
-          await HabilitationService.findHabilitation(baseLocale._id);
+          await HabilitationService.findHabilitation(baseLocale.id);
         setHabilitation(habilitation);
         // SET IF HABILITATION IS VALID
         if (habilitation) {
@@ -54,7 +54,7 @@ export default function useHabilitation(
         setIsValid(false);
       }
     }
-  }, [baseLocale._id, token]);
+  }, [baseLocale.id, token]);
 
   useEffect(() => {
     async function handleReloadHabilitation() {

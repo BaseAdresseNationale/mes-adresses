@@ -3,19 +3,22 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { BaseLocale } from './BaseLocale';
+import type { Numero } from './Numero';
 import type { Position } from './Position';
 
 export type Toponyme = {
-    _id: string;
+    id: string;
     banId: string;
-    _created: string;
-    _updated: string;
-    _deleted: string;
-    _bal: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+    balId: string;
     nom: string;
-    commune: string;
     nomAlt: Record<string, any>;
     parcelles: Array<string>;
     positions: Array<Position>;
+    baseLocale: BaseLocale;
+    numeros: Array<Numero>;
 };
 

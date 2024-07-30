@@ -59,7 +59,7 @@ export function MapContextProvider(props: ChildrenProps) {
   const { userSettings } = useContext(LocalStorageContext);
 
   const balTilesUrl = `${BAL_API_URL}/bases-locales/${
-    baseLocale._id
+    baseLocale.id
   }/tiles/{z}/{x}/{y}.pbf${
     userSettings?.colorblindMode ? "?colorblindMode=true" : ""
   }`;

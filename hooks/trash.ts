@@ -3,10 +3,10 @@ import { useCallback, useContext, useState } from "react";
 import {
   BasesLocalesService,
   DeleteBatchNumeroDTO,
-  PopulateVoie,
   RestoreVoieDTO,
   Toponyme,
   ToponymesService,
+  Voie,
   VoiesService,
 } from "@/lib/openapi";
 import BalDataContext from "@/contexts/bal-data";
@@ -14,15 +14,12 @@ import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";
 
 interface UseTrashType {
-  voiesDeleted: PopulateVoie[];
+  voiesDeleted: Voie[];
   toponymesDeleted: Toponyme[];
   reloadAllDeleted: () => Promise<void>;
-  onRemoveVoie: (voie: PopulateVoie) => Promise<void>;
-  onRestoreVoie: (
-    voie: PopulateVoie,
-    selectedNumerosIds: string[]
-  ) => Promise<void>;
-  onRemoveNumeros: (voie: PopulateVoie) => Promise<void>;
+  onRemoveVoie: (voie: Voie) => Promise<void>;
+  onRestoreVoie: (voie: Voie, selectedNumerosIds: string[]) => Promise<void>;
+  onRemoveNumeros: (voie: Voie) => Promise<void>;
   onRemoveToponyme: (toponyme: Toponyme) => Promise<void>;
   onRestoreToponyme: (toponyme: Toponyme) => Promise<void>;
 }
@@ -38,21 +35,21 @@ function useTrash(): UseTrashType {
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
-  const [voiesDeleted, setVoiesDeleted] = useState<PopulateVoie[]>([]);
+  const [voiesDeleted, setVoiesDeleted] = useState<Voie[]>([]);
   const [toponymesDeleted, setToponymesDeleted] = useState<Toponyme[]>([]);
 
   const reloadAllDeleted = useCallback(async () => {
     const { toponymes, voies } = await BasesLocalesService.findAllDeleted(
-      baseLocale._id
+      baseLocale.id
     );
     setToponymesDeleted(toponymes);
     setVoiesDeleted(voies);
-  }, [baseLocale._id]);
+  }, [baseLocale.id]);
 
   const onRemoveVoie = useCallback(
-    async (voie: PopulateVoie) => {
+    async (voie: Voie) => {
       const deleteVoie = toaster(
-        () => VoiesService.deleteVoie(voie._id),
+        () => VoiesService.deleteVoie(voie.id),
         "La voie a bien été supprimée",
         "La voie n’a pas pu être supprimée"
       );
@@ -63,12 +60,12 @@ function useTrash(): UseTrashType {
   );
 
   const onRestoreVoie = useCallback(
-    async (voie: PopulateVoie, selectedNumerosIds: string[]) => {
+    async (voie: Voie, selectedNumerosIds: string[]) => {
       const restoreVoieDTO: RestoreVoieDTO = {
         numerosIds: selectedNumerosIds,
       };
       const restoreVoie = toaster(
-        () => VoiesService.restoreVoie(voie._id, restoreVoieDTO),
+        () => VoiesService.restoreVoie(voie.id, restoreVoieDTO),
         "La voie a bien été restaurée",
         "La voie n’a pas pu être restaurée"
       );
@@ -94,14 +91,14 @@ function useTrash(): UseTrashType {
   );
 
   const onRemoveNumeros = useCallback(
-    async (voie: PopulateVoie) => {
+    async (voie: Voie) => {
       const deleteBatchNumeroDTO: DeleteBatchNumeroDTO = {
-        numerosIds: voie.numeros.map(({ _id }) => String(_id)),
+        numerosIds: voie.numeros.map(({ id }) => String(id)),
       };
       const deleteNumeros = toaster(
         () =>
           BasesLocalesService.deleteNumeros(
-            baseLocale._id,
+            baseLocale.id,
             deleteBatchNumeroDTO
           ),
         "Les numéros ont bien été supprimés",
@@ -110,13 +107,13 @@ function useTrash(): UseTrashType {
       await deleteNumeros();
       await reloadAllDeleted();
     },
-    [baseLocale._id, reloadAllDeleted, toaster]
+    [baseLocale.id, reloadAllDeleted, toaster]
   );
 
   const onRemoveToponyme = useCallback(
     async (toponyme: Toponyme) => {
       const deleteToponyme = toaster(
-        () => ToponymesService.deleteToponyme(toponyme._id),
+        () => ToponymesService.deleteToponyme(toponyme.id),
         "Le toponyme a bien été supprimé",
         "Le toponyme n’a pas pu être supprimé"
       );
@@ -129,7 +126,7 @@ function useTrash(): UseTrashType {
   const onRestoreToponyme = useCallback(
     async (toponyme: Toponyme) => {
       const restoreToponyme = toaster(
-        () => ToponymesService.restoreToponyme(toponyme._id),
+        () => ToponymesService.restoreToponyme(toponyme.id),
         "Le toponyme a bien été restauré",
         "Le toponyme n’a pas pu être restauré"
       );

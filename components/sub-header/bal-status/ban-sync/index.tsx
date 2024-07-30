@@ -54,7 +54,7 @@ function BANSync({
             </Alert>
 
             <BANHistory
-              baseLocaleId={baseLocale._id}
+              baseLocaleId={baseLocale.id}
               syncStatus={baseLocale.sync.status}
               commune={commune}
             />

@@ -9,8 +9,8 @@ export type UpdateNumeroDTO = {
     numero?: number;
     suffixe?: string | null;
     comment?: string | null;
-    toponyme?: string | null;
-    voie?: string;
+    toponymeId?: string | null;
+    voieId?: string;
     parcelles?: Array<string>;
     certifie?: boolean;
     positions?: Array<Position>;

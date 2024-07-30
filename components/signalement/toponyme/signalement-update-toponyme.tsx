@@ -88,7 +88,7 @@ function SignalementUpdateToponyme({
       positions.forEach((position: PositionSignalement & { _id: string }) => {
         changes.positions
           ? addMarker({
-              _id: position._id,
+              id: position._id,
               isMapMarker: true,
               isDisabled: true,
               color: "warning",
@@ -155,7 +155,7 @@ function SignalementUpdateToponyme({
               {markers
                 .filter(({ isMapMarker }) => isMapMarker)
                 .map((marker) => (
-                  <PositionItem key={marker._id} marker={marker} />
+                  <PositionItem key={marker.id} marker={marker} />
                 ))}
             </Pane>
           </SignalementCard>,

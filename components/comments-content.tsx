@@ -4,7 +4,7 @@ const COMMENTS_LIMIT = 10;
 
 interface CommentsContentProps {
   comments: {
-    _id: string;
+    id: string;
     numero: number;
     suffixe: string;
     comment: string;
@@ -23,10 +23,10 @@ function CommentsContent({ comments }: CommentsContentProps) {
           Commentaire{`${comments.length > 0 ? "s" : ""}`} :
         </Text>
       </Pane>
-      {filteredComments.map(({ _id, numero, suffixe, comment }) => (
+      {filteredComments.map(({ id, numero, suffixe, comment }) => (
         <Pane
           color="white"
-          key={_id}
+          key={id}
           whiteSpace="nowrap"
           overflow="hidden"
           textOverflow="ellipsis"
