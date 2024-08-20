@@ -19,7 +19,12 @@ import LocalStorageContext from "@/contexts/local-storage";
 import RecoverBALAlert from "@/components/bal-recovery/recover-bal-alert";
 import CertificationCount from "@/components/certification-count";
 import HabilitationTag from "../habilitation-tag";
-import { ExtendedBaseLocaleDTO, HabilitationDTO } from "@/lib/openapi";
+import {
+  BaseLocale,
+  ExtendedBaseLocaleDTO,
+  HabilitationDTO,
+  BaseLocaleSync,
+} from "@/lib/openapi";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import LayoutContext from "@/contexts/layout";
 
@@ -220,17 +225,33 @@ function BaseLocaleCardContent({
           </Pane>
 
           {hasToken ? (
-            <Button
-              appearance="primary"
-              iconAfter={EditIcon}
-              marginLeft={8}
-              marginRight={8}
-              flexShrink={0}
-              onClick={onSelect}
-              disabled={!onSelect}
-            >
-              {isMobile ? "Gérer" : "Gérer les adresses"}
-            </Button>
+            <div>
+              {baseLocale.status === BaseLocale.status.PUBLISHED &&
+                baseLocale.sync?.status === BaseLocaleSync.status.OUTDATED &&
+                !isHabilitationValid && (
+                  <Button
+                    appearance="primary"
+                    marginLeft={8}
+                    marginRight={8}
+                    flexShrink={0}
+                    onClick={onSelect}
+                    disabled={!onSelect}
+                  >
+                    {isMobile ? "Habiliter" : "Habiliter la BAL"}
+                  </Button>
+                )}
+              <Button
+                appearance="primary"
+                iconAfter={EditIcon}
+                marginLeft={8}
+                marginRight={8}
+                flexShrink={0}
+                onClick={onSelect}
+                disabled={!onSelect}
+              >
+                {isMobile ? "Gérer" : "Gérer les adresses"}
+              </Button>
+            </div>
           ) : (
             <>
               <RecoverBALAlert
