@@ -97,6 +97,7 @@ function BaseLocaleCard({
         setHabilitation(null);
         setIsHabilitationValid(false);
       }
+      Object.assign(OpenAPI, { TOKEN: null });
     };
 
     void fetchCommune();

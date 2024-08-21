@@ -63,9 +63,12 @@ export function TokenContextProvider({
         addBalAccess(balId, _token);
         void Router.push(`/bal/${balId}`);
       } else {
-        const token: string = getBalToken(balId);
-        void verify(token);
+        const tokenStorage: string = getBalToken(balId);
+        void verify(tokenStorage);
       }
+    } else {
+      Object.assign(OpenAPI, { TOKEN: null });
+      setToken(null);
     }
   }, [verify, balId, _token, addBalAccess, getBalToken]);
 
