@@ -134,10 +134,13 @@ function GroupedActions({
       setIsLoading(true);
 
       const changes = {
-        voieId: idVoie === selectedVoieId ? null : selectedVoieId,
         comment: commentCondition(comment),
         certifie: getIsCertifie(certifie),
       } as any;
+
+      if (idVoie !== selectedVoieId) {
+        changes.voieId = selectedVoieId;
+      }
 
       if (hasUniqToponyme) {
         changes.toponymeId =
