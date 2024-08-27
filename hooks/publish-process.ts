@@ -10,7 +10,6 @@ import LayoutContext from "@/contexts/layout";
 interface UsePublishProcess {
   massDeletionConfirm: null | (() => void);
   setMassDeletionConfirm: Dispatch<SetStateAction<() => void>>;
-  handleChangeStatus: (status: BaseLocale.status) => Promise<any>;
   handleShowHabilitationProcess: () => Promise<void>;
   handlePublication: () => Promise<void>;
 }
@@ -47,15 +46,6 @@ export default function usePublishProcess(
 
       return false;
     }
-  };
-
-  const handleChangeStatus = async (status: BaseLocale.status) => {
-    const updated = await BasesLocalesService.updateBaseLocale(baseLocale.id, {
-      status,
-    });
-    await reloadBaseLocale();
-
-    return updated;
   };
 
   const handleShowHabilitationProcess = async () => {
@@ -113,7 +103,6 @@ export default function usePublishProcess(
   return {
     massDeletionConfirm,
     setMassDeletionConfirm,
-    handleChangeStatus,
     handleShowHabilitationProcess,
     handlePublication,
   };

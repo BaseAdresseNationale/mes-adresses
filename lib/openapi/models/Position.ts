@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { BaseLocale } from './BaseLocale';
 import type { Numero } from './Numero';
 import type { Toponyme } from './Toponyme';
 
@@ -13,11 +12,10 @@ export type Position = {
     numeroId: string;
     type: Position.type;
     source: string;
-    createdAt: string;
+    rank: number;
     point: Record<string, any>;
     toponyme: Toponyme;
     numero: Numero;
-    baseLocale: BaseLocale;
 };
 
 export namespace Position {

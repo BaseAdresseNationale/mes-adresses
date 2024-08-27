@@ -35,7 +35,7 @@ export type { RestoreVoieDTO } from './models/RestoreVoieDTO';
 export { Strategy } from './models/Strategy';
 export type { Toponyme } from './models/Toponyme';
 export type { UpdateBaseLocaleDemoDTO } from './models/UpdateBaseLocaleDemoDTO';
-export { UpdateBaseLocaleDTO } from './models/UpdateBaseLocaleDTO';
+export type { UpdateBaseLocaleDTO } from './models/UpdateBaseLocaleDTO';
 export type { UpdateBatchNumeroChangeDTO } from './models/UpdateBatchNumeroChangeDTO';
 export type { UpdateBatchNumeroDTO } from './models/UpdateBatchNumeroDTO';
 export type { UpdateNumeroDTO } from './models/UpdateNumeroDTO';

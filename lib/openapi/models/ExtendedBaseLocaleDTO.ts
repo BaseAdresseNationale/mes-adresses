@@ -5,7 +5,6 @@
 
 import type { BaseLocaleSync } from './BaseLocaleSync';
 import type { Numero } from './Numero';
-import type { Position } from './Position';
 import type { Toponyme } from './Toponyme';
 import type { Voie } from './Voie';
 
@@ -25,7 +24,6 @@ export type ExtendedBaseLocaleDTO = {
     voies: Array<Voie>;
     toponymes: Array<Toponyme>;
     numeros: Array<Numero>;
-    positions: Array<Position>;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
