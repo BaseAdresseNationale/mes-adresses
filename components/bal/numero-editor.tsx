@@ -4,7 +4,6 @@ import { Pane, SelectField, TextInputField } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
 import { computeCompletNumero } from "@/lib/utils/numero";
-import { Types } from "mongoose";
 
 import MarkersContext from "@/contexts/markers";
 import BalDataContext from "@/contexts/bal-data";
@@ -30,7 +29,6 @@ import {
   BasesLocalesService,
   Numero,
   NumerosService,
-  Voie,
   VoiesService,
 } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";

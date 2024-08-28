@@ -39,7 +39,7 @@ interface BALSettingsFormProps {
 const BALSettingsForm = React.memo(function BALSettingsForm({
   baseLocale,
 }: BALSettingsFormProps) {
-  const { token, emails, reloadEmails } = useContext(TokenContext);
+  const { emails, reloadEmails } = useContext(TokenContext);
   const { reloadBaseLocale } = useContext(BalDataContext);
 
   const [isLoading, setIsLoading] = useState(false);

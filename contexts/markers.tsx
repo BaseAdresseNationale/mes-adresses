@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useContext, useMemo } from "react";
-import { uniqueId } from "lodash";
 import { Types } from "mongoose";
 
 import MapContext from "@/contexts/map";
