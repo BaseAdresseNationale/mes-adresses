@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext, useMemo } from "react";
-import { Types } from "mongoose";
+import { uniqueId } from "lodash";
 
 import MapContext from "@/contexts/map";
 import { Position } from "@/lib/openapi";
@@ -53,10 +53,7 @@ export function MarkersContextProvider(props: ChildrenProps) {
           marker = { ...marker, longitude, latitude };
         }
 
-        return [
-          ...prevMarkers,
-          { id: new Types.ObjectId().toHexString(), ...marker },
-        ];
+        return [...prevMarkers, { id: uniqueId(), ...marker }];
       });
     },
     [viewport]
