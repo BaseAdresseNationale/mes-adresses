@@ -4,7 +4,7 @@ import { computeCompletNumero } from "@/lib/utils/numero";
 import { CommuneType } from "@/types/commune";
 
 const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
-  const completNumero = computeCompletNumero(numero, suffixe);
+  const completNumero = computeCompletNumero(numero, suffixe) || "";
   if (toponyme) {
     return `${completNumero} ${voie}, ${toponyme} - ${commune.nom} (${commune.code})`;
   }
