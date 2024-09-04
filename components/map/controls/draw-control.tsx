@@ -34,7 +34,10 @@ function DrawControl({ map, isMapLoaded }: DrawControlProps) {
   useEffect(() => {
     if (isMapLoaded) {
       if (drawEnabled) {
-        if (modeId === "drawLineString") {
+        console.log("A ==>", modeId);
+        if (modeId === "drawPolygon") {
+          draw.changeMode("draw_polygon");
+        } else if (modeId === "drawLineString") {
           draw.changeMode("draw_line_string");
         } else if (modeId === "editing" && data) {
           if (data.id) {

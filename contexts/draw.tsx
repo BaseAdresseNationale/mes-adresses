@@ -6,6 +6,8 @@ interface DrawContextType {
   drawEnabled: boolean;
   enableDraw: (voie: Voie) => void;
   disableDraw: () => void;
+  enableDrawPolygon: () => void;
+  disableDrawPolygon: () => void;
   modeId: string | null;
   setModeId: (value: string) => void;
   hint: string | null;
@@ -28,6 +30,16 @@ export function DrawContextProvider(props: ChildrenProps) {
     setDrawEnabled(true);
   }, []);
 
+  const enableDrawPolygon = useCallback(() => {
+    setDrawEnabled(true);
+    setModeId("drawPolygon");
+  }, []);
+
+  const disableDrawPolygon = useCallback(() => {
+    setDrawEnabled(false);
+    setModeId("drawPolygon");
+  }, []);
+
   useEffect(() => {
     if (voie?.trace) {
       setData({
@@ -42,16 +54,22 @@ export function DrawContextProvider(props: ChildrenProps) {
 
   useEffect(() => {
     if (drawEnabled) {
-      if (data) {
-        // Edition mode
-        setModeId("editing");
-        setHint("Modifier le tracé de la voie directement depuis la carte.");
+      if (modeId === "drawPolygon") {
+        if (data) {
+          console.log("CREATE FEATURE", data);
+        }
       } else {
-        // Creation mode
-        setModeId("drawLineString");
-        setHint(
-          "Cliquez sur la carte pour indiquer le début de la voie, puis ajouter de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie."
-        );
+        if (data) {
+          // Edition mode
+          setModeId("editing");
+          setHint("Modifier le tracé de la voie directement depuis la carte.");
+        } else {
+          // Creation mode
+          setModeId("drawLineString");
+          setHint(
+            "Cliquez sur la carte pour indiquer le début de la voie, puis ajouter de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie."
+          );
+        }
       }
     } else {
       // Reset states
@@ -60,7 +78,7 @@ export function DrawContextProvider(props: ChildrenProps) {
       setVoie(null);
       setData(null);
     }
-  }, [drawEnabled, data]);
+  }, [drawEnabled, data, modeId]);
 
   const value = useMemo(
     () => ({
@@ -69,6 +87,8 @@ export function DrawContextProvider(props: ChildrenProps) {
       disableDraw: () => {
         setDrawEnabled(false);
       },
+      enableDrawPolygon,
+      disableDrawPolygon,
       modeId,
       setModeId,
       hint,
@@ -76,7 +96,15 @@ export function DrawContextProvider(props: ChildrenProps) {
       data,
       setData,
     }),
-    [enableDraw, drawEnabled, modeId, hint, data]
+    [
+      enableDraw,
+      enableDrawPolygon,
+      disableDrawPolygon,
+      drawEnabled,
+      modeId,
+      hint,
+      data,
+    ]
   );
 
   return <DrawContext.Provider value={value} {...props} />;
