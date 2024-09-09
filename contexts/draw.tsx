@@ -20,6 +20,9 @@ const DrawContext = React.createContext<DrawContextType | null>(null);
 
 export function DrawContextProvider(props: ChildrenProps) {
   const [drawEnabled, setDrawEnabled] = useState<boolean>(false);
+  const [modeInterne, setModeInterne] = useState<
+    "drawPolygon" | "drawLineString"
+  >(null);
   const [modeId, setModeId] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [data, setData] = useState<GeoJSON.Feature<LineString> | null>(null);
@@ -28,16 +31,19 @@ export function DrawContextProvider(props: ChildrenProps) {
   const enableDraw = useCallback((voie: Voie) => {
     setVoie(voie);
     setDrawEnabled(true);
+    setModeInterne("drawLineString");
   }, []);
 
   const enableDrawPolygon = useCallback(() => {
     setDrawEnabled(true);
     setModeId("drawPolygon");
+    setModeInterne("drawPolygon");
   }, []);
 
   const disableDrawPolygon = useCallback(() => {
     setDrawEnabled(false);
     setModeId("drawPolygon");
+    setModeInterne(null);
   }, []);
 
   useEffect(() => {
@@ -54,15 +60,17 @@ export function DrawContextProvider(props: ChildrenProps) {
 
   useEffect(() => {
     if (drawEnabled) {
-      if (modeId === "drawPolygon") {
+      if (modeInterne === "drawPolygon") {
         if (data) {
-          console.log("CREATE FEATURE", data);
+          setModeId("editing");
+          setHint("Modifier le polygone directement depuis la carte.");
         }
       } else {
         if (data) {
           // Edition mode
+          console.log("caca");
           setModeId("editing");
-          setHint("Modifier le tracé de la voie directement depuis la carte.");
+          setHint("Modifier le tracé de directement depuis la carte.");
         } else {
           // Creation mode
           setModeId("drawLineString");
@@ -78,7 +86,7 @@ export function DrawContextProvider(props: ChildrenProps) {
       setVoie(null);
       setData(null);
     }
-  }, [drawEnabled, data, modeId]);
+  }, [modeInterne, drawEnabled, data, modeId]);
 
   const value = useMemo(
     () => ({
