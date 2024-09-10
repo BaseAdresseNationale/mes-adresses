@@ -73,11 +73,11 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const onPopulate = useCallback(async () => {
     setIsEditing(true);
 
-    await BasesLocalesService.populateBaseLocale(baseLocale._id);
+    await BasesLocalesService.populateBaseLocale(baseLocale.id);
     await reloadVoies();
 
     setIsEditing(false);
-  }, [baseLocale._id, reloadVoies, setIsEditing]);
+  }, [baseLocale.id, reloadVoies, setIsEditing]);
 
   const onRemove = useCallback(async () => {
     await reloadParcelles();
@@ -120,9 +120,9 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   ]);
 
   const onEdit = useCallback(
-    (id: string) => {
-      if (id) {
-        setEditedItem([...voies, ...toponymes].find(({ _id }) => _id === id));
+    (idItem: string) => {
+      if (idItem) {
+        setEditedItem([...voies, ...toponymes].find(({ id }) => id === idItem));
         setIsFormOpen(true);
       } else {
         setEditedItem(null);
@@ -138,7 +138,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
         return (
           <VoiesList
             voies={voies}
-            balId={baseLocale._id}
+            balId={baseLocale.id}
             onEnableEditing={onEdit}
             setToConvert={setToConvert}
             onRemove={onRemove}
@@ -154,7 +154,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
         return (
           <ToponymesList
             toponymes={toponymes}
-            balId={baseLocale._id}
+            balId={baseLocale.id}
             onEnableEditing={onEdit}
             onRemove={onRemove}
             openRecoveryDialog={() => {
@@ -267,8 +267,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
                 tooltip: (
                   <>
                     <p className="custom-tooltip-content">
-                      Liste des voies et lieux-dits qui ne sont pas
-                      numérotés.
+                      Liste des voies et lieux-dits qui ne sont pas numérotés.
                     </p>
                     <p className="custom-tooltip-content">
                       Exemple :

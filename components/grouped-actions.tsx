@@ -25,11 +25,11 @@ import { useInput, useCheckboxInput } from "@/hooks/input";
 import Comment from "@/components/comment";
 import CertificationButton from "@/components/certification-button";
 import FormInput from "@/components/form-input";
-import { Numero, NumeroPopulate } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi";
 
 interface GroupedActionsProps {
   idVoie: string;
-  numeros: (Numero | NumeroPopulate)[];
+  numeros: Numero[];
   selectedNumerosIds: string[];
   resetSelectedNumerosIds: () => void;
   setIsRemoveWarningShown: (value: boolean) => void;
@@ -57,8 +57,8 @@ function GroupedActions({
   const [certifie, setCertifie] = useState(null);
   const { reloadTiles } = useContext(MapContext);
 
-  const selectedNumeros = numeros.filter(({ _id }) =>
-    selectedNumerosIds.includes(_id)
+  const selectedNumeros = numeros.filter(({ id }) =>
+    selectedNumerosIds.includes(id)
   );
 
   const selectedNumerosUniqType = uniq(
@@ -70,7 +70,7 @@ function GroupedActions({
   const hasComment = selectedNumeros.some((numero) => numero.comment);
 
   const selectedNumerosUniqVoie = uniq(
-    selectedNumeros.map((numero) => numero.voie)
+    selectedNumeros.map((numero) => numero.voieId)
   );
 
   // Returns a unique position type, if selected numeros have only one and the same position type
@@ -86,7 +86,7 @@ function GroupedActions({
     getDefaultPositionType()
   );
   const selectedNumerosUniqToponyme = uniq(
-    selectedNumeros.map((numero) => numero.toponyme)
+    selectedNumeros.map((numero) => numero.toponymeId)
   );
   const hasUniqToponyme = selectedNumerosUniqToponyme.length === 1;
 
@@ -134,13 +134,16 @@ function GroupedActions({
       setIsLoading(true);
 
       const changes = {
-        voie: idVoie === selectedVoieId ? null : selectedVoieId,
         comment: commentCondition(comment),
         certifie: getIsCertifie(certifie),
       } as any;
 
+      if (idVoie !== selectedVoieId) {
+        changes.voieId = selectedVoieId;
+      }
+
       if (hasUniqToponyme) {
-        changes.toponyme =
+        changes.toponymeId =
           selectedToponymeId === "" ? null : selectedToponymeId;
       }
 
@@ -148,7 +151,7 @@ function GroupedActions({
         changes.positionType = positionType;
       }
 
-      await onSubmit(baseLocale._id, {
+      await onSubmit(baseLocale.id, {
         numerosIds: selectedNumerosIds,
         changes,
       });
@@ -219,8 +222,8 @@ function GroupedActions({
                   onChange={(event) => setSelectedVoieId(event.target.value)}
                 >
                   {sortBy(voies, (v) => normalizeSort(v.nom)).map(
-                    ({ _id, nom }) => (
-                      <option key={_id} value={_id}>
+                    ({ id, nom }) => (
+                      <option key={id} value={id}>
                         {nom}
                       </option>
                     )
@@ -254,8 +257,8 @@ function GroupedActions({
                         : "- Choisir un toponyme -"}
                     </option>
                     {sortBy(toponymes, (t) => normalizeSort(t.nom)).map(
-                      ({ _id, nom }) => (
-                        <option key={_id} value={_id}>
+                      ({ id, nom }) => (
+                        <option key={id} value={id}>
                           {nom}
                         </option>
                       )

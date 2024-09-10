@@ -52,7 +52,7 @@ export function isExceptionClientId(
       }
     }
   } else {
-    if (outdatedApiDepotClients.includes(client._id)) {
+    if (outdatedApiDepotClients.includes(client.id)) {
       return true;
     }
   }
@@ -109,14 +109,14 @@ function CreateForm({
         commune: commune.code,
       });
 
-      addBalAccess(bal._id, bal.token);
+      addBalAccess(bal.id, bal.token);
 
       if (populate) {
         Object.assign(OpenAPI, { TOKEN: bal.token });
-        await BasesLocalesService.populateBaseLocale(bal._id);
+        await BasesLocalesService.populateBaseLocale(bal.id);
       }
 
-      Router.push(`/bal/${bal._id}`);
+      Router.push(`/bal/${bal.id}`);
     }
   }, [email, nom, populate, commune, addBalAccess]);
 

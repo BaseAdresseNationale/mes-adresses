@@ -20,7 +20,7 @@ function PopupFeatureVoie({ feature, commune }: PopupFeatureNumeroProps) {
   const { voies } = useContext(BalDataContext);
 
   const voie = useMemo(() => {
-    return voies.find((v) => v._id === feature.properties?.id);
+    return voies.find((v) => v.id === feature.properties?.id);
   }, [feature.properties?.id, voies]);
 
   return (

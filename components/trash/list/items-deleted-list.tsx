@@ -35,12 +35,11 @@ function ItemsListDelete({
     const actions = [
       {
         label:
-          "Voir " +
-          (model === "voie"
-            ? item._deleted
-              ? "voie"
-              : "numero(s)"
-            : "toponyme"),
+          model === "voie"
+            ? item.deletedAt
+              ? "Restaurer voie"
+              : "Voir numero(s)"
+            : "Restaurer toponyme",
         callback: () => onRestore(item),
         icon: AddIcon,
         intent: "none",
@@ -48,7 +47,7 @@ function ItemsListDelete({
       {
         label: "Supprimer",
         callback: () =>
-          item._deleted ? onRemove(item) : onRemoveNumeros(item),
+          item.deletedAt ? onRemove(item) : onRemoveNumeros(item),
         icon: TrashIcon,
         intent: "danger",
       },
@@ -58,7 +57,7 @@ function ItemsListDelete({
 
   const complement = (item) => {
     if (model === "voie" && item.numeros) {
-      if (item._deleted) {
+      if (item.deletedAt) {
         return (
           "voie" +
           (item.numeros.length > 0
@@ -95,11 +94,11 @@ function ItemsListDelete({
       <InfiniteScrollList items={scrollableItems}>
         {(item) => (
           <TableRowDeleted
-            key={item._id}
+            key={item.id}
             label={item.nom}
             nomAlt={item.nomAlt}
             complement={complement(item)}
-            isDeleted={item._deleted !== null}
+            isDeleted={item.deletedAt !== null}
             actions={actions(item)}
           />
         )}

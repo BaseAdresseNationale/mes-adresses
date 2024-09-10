@@ -24,7 +24,7 @@ function DrawerContent() {
       {...(isMobile && { width: "100%" })}
     >
       {drawerDisplayed === DrawerDisplayedEnum.DOWNLOAD && (
-        <Downloads baseLocaleId={baseLocale._id} />
+        <Downloads baseLocaleId={baseLocale.id} />
       )}
       {drawerDisplayed === DrawerDisplayedEnum.SETTING && (
         <Settings baseLocale={baseLocale} isAdmin={isAdmin} />

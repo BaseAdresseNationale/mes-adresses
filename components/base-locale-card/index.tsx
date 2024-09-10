@@ -47,7 +47,7 @@ function BaseLocaleCard({
   onRemove,
   onHide,
 }: BaseLocaleCardProps) {
-  const { nom, _updated } = baseLocale;
+  const { nom, updatedAt } = baseLocale;
   const [commune, setCommune] = useState<CommuneApiGeoType>();
   const [habilitation, setHabilitation] = useState<HabilitationDTO | null>(
     null
@@ -56,7 +56,7 @@ function BaseLocaleCard({
     useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false);
 
-  const majDate = formatDistanceToNow(new Date(_updated), { locale: fr });
+  const majDate = formatDistanceToNow(new Date(updatedAt), { locale: fr });
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
@@ -74,7 +74,7 @@ function BaseLocaleCard({
     const fetchHabilitationIsValid = async () => {
       try {
         const isValid: boolean = await HabilitationService.findIsValid(
-          baseLocale._id
+          baseLocale.id
         );
         setHabilitation(null);
         setIsHabilitationValid(isValid);
@@ -87,7 +87,7 @@ function BaseLocaleCard({
       try {
         Object.assign(OpenAPI, { TOKEN: baseLocale.token });
         const habilitation: HabilitationDTO =
-          await HabilitationService.findHabilitation(baseLocale._id);
+          await HabilitationService.findHabilitation(baseLocale.id);
         setHabilitation(habilitation);
 
         const isAccepted = habilitation.status === "accepted";
@@ -135,7 +135,7 @@ function BaseLocaleCard({
           </Pane>
           <Pane marginLeft={30}>
             <Text fontSize={12} fontStyle="italic">
-              {_updated
+              {updatedAt
                 ? "Dernière mise à jour il y a " + majDate
                 : "Jamais mise à jour"}{" "}
               -

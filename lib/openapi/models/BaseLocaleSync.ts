@@ -3,14 +3,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type Sync = {
-    status: Sync.status;
+export type BaseLocaleSync = {
+    status: BaseLocaleSync.status;
     isPaused: boolean;
     lastUploadedRevisionId: string;
     currentUpdated: string;
 };
 
-export namespace Sync {
+export namespace BaseLocaleSync {
 
     export enum status {
         OUTDATED = 'outdated',

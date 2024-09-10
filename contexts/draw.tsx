@@ -33,7 +33,7 @@ export function DrawContextProvider(props: ChildrenProps) {
       setData({
         type: "Feature",
         properties: {},
-        geometry: voie.trace,
+        geometry: voie.trace as LineString,
       });
     } else {
       setData(null);

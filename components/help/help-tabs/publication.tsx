@@ -21,7 +21,7 @@ import {
   VideoContainer,
   PEERTUBE_LINK,
 } from "@/components/help/video-container";
-import { BaseLocale, Sync } from "@/lib/openapi";
+import { BaseLocale, BaseLocaleSync } from "@/lib/openapi";
 
 function Publication() {
   return (
@@ -154,7 +154,7 @@ function Publication() {
             <Pane height={32} marginTop={4}>
               <StatusBadge
                 status={BaseLocale.status.PUBLISHED}
-                sync={{ isPaused: false, status: Sync.status.SYNCED }}
+                sync={{ isPaused: false, status: BaseLocaleSync.status.SYNCED }}
               />
             </Pane>
             <Text>
@@ -167,7 +167,10 @@ function Publication() {
             <Pane height={38}>
               <StatusBadge
                 status={BaseLocale.status.PUBLISHED}
-                sync={{ isPaused: false, status: Sync.status.OUTDATED }}
+                sync={{
+                  isPaused: false,
+                  status: BaseLocaleSync.status.OUTDATED,
+                }}
               />
             </Pane>
             <Text>
@@ -181,7 +184,7 @@ function Publication() {
             <Pane height={32} marginTop={4}>
               <StatusBadge
                 status={BaseLocale.status.PUBLISHED}
-                sync={{ isPaused: true, status: Sync.status.SYNCED }}
+                sync={{ isPaused: true, status: BaseLocaleSync.status.SYNCED }}
               />
             </Pane>
             <Text>
@@ -195,7 +198,10 @@ function Publication() {
             <Pane height={32} marginTop={4}>
               <StatusBadge
                 status={BaseLocale.status.REPLACED}
-                sync={{ isPaused: true, status: Sync.status.CONFLICT }}
+                sync={{
+                  isPaused: true,
+                  status: BaseLocaleSync.status.CONFLICT,
+                }}
               />
             </Pane>
             <Text>

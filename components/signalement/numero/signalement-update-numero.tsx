@@ -109,7 +109,7 @@ function SignalementUpdateNumero({
       positions.forEach((position: PositionSignalement & { _id: string }) => {
         changes.positions
           ? addMarker({
-              _id: position._id,
+              id: position._id,
               isMapMarker: true,
               isDisabled: true,
               color: "warning",
@@ -149,7 +149,7 @@ function SignalementUpdateNumero({
   const onSubmitted = useCallback(async () => {
     if (voieWillBeRenamed) {
       try {
-        await VoiesService.updateVoie(existingLocation.voie._id, {
+        await VoiesService.updateVoie(existingLocation.voie.id, {
           nom: nomVoie,
         });
       } catch (e) {
@@ -168,7 +168,7 @@ function SignalementUpdateNumero({
       <NumeroEditor
         hasPreview
         initialValue={numeroEditorValue}
-        initialVoieId={numeroEditorValue.voie?._id}
+        initialVoieId={numeroEditorValue.voie?.id}
         commune={commune}
         closeForm={handleClose}
         onSubmitted={onSubmitted}
@@ -243,7 +243,7 @@ function SignalementUpdateNumero({
               {markers
                 .filter(({ isMapMarker }) => isMapMarker)
                 .map((marker) => (
-                  <PositionItem key={marker._id} marker={marker} />
+                  <PositionItem key={marker.id} marker={marker} />
                 ))}
             </Pane>
           </SignalementCard>,

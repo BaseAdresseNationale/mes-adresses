@@ -28,9 +28,7 @@ import DisabledFormInput from "@/components/disabled-form-input";
 import {
   BasesLocalesService,
   Numero,
-  NumeroPopulate,
   NumerosService,
-  Voie,
   VoiesService,
 } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
@@ -40,7 +38,7 @@ const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
 interface NumeroEditorProps {
   initialVoieId?: string;
-  initialValue?: Numero | NumeroPopulate;
+  initialValue?: Numero;
   commune: CommuneType;
   hasPreview?: boolean;
   closeForm: () => void;
@@ -61,11 +59,9 @@ function NumeroEditor({
   certificationBtnProps,
   onVoieChanged,
 }: NumeroEditorProps) {
-  const [voieId, setVoieId] = useState(
-    initialVoieId || (initialValue?.voie as unknown as Voie)?._id
-  );
+  const [voieId, setVoieId] = useState(initialVoieId || initialValue?.voieId);
   const [selectedNomToponyme, setSelectedNomToponyme] = useState("");
-  const [toponymeId, setToponymeId] = useState(initialValue?.toponyme);
+  const [toponymeId, setToponymeId] = useState(initialValue?.toponymeId);
   const [isLoading, setIsLoading] = useState(false);
   const [certifie, setCertifie] = useState(initialValue?.certifie || false);
   const [numero, onNumeroChange] = useInput(
@@ -99,7 +95,7 @@ function NumeroEditor({
   const getEditedVoie = useCallback(async () => {
     if (nomVoie) {
       try {
-        const newVoie = await BasesLocalesService.createVoie(baseLocale._id, {
+        const newVoie = await BasesLocalesService.createVoie(baseLocale.id, {
           nom: nomVoie,
         });
         return newVoie;
@@ -111,12 +107,12 @@ function NumeroEditor({
       }
     }
 
-    return { _id: voieId };
-  }, [baseLocale._id, nomVoie, voieId, setValidationMessages]);
+    return { id: voieId };
+  }, [baseLocale.id, nomVoie, voieId, setValidationMessages]);
 
   const getNumeroBody = useCallback(() => {
     const body = {
-      toponyme: toponymeId,
+      toponymeId,
       numero: Number(numero),
       suffixe: suffixe?.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
@@ -128,6 +124,7 @@ function NumeroEditor({
       const positions = [];
       markers.forEach((marker) => {
         positions.push({
+          id: marker.id,
           point: {
             type: "Point",
             coordinates: [marker.longitude, marker.latitude],
@@ -159,11 +156,11 @@ function NumeroEditor({
 
         const voie = await getEditedVoie();
 
-        if (initialValue?._id) {
+        if (initialValue?.id) {
           const updateNumero = toaster(
             () =>
-              NumerosService.updateNumero(initialValue._id, {
-                voie: voie._id,
+              NumerosService.updateNumero(initialValue.id, {
+                voieId: voie.id,
                 ...body,
               }),
             "Le numéro a bien été modifié",
@@ -175,7 +172,7 @@ function NumeroEditor({
           await updateNumero();
         } else {
           const createNumero = toaster(
-            () => VoiesService.createNumero(voie._id, body),
+            () => VoiesService.createNumero(voie.id, body),
             "Le numéro a bien été ajouté",
             "Le numéro n’a pas pu être ajouté",
             (err) => {
@@ -192,7 +189,7 @@ function NumeroEditor({
           await reloadParcelles();
         }
 
-        if (initialVoieId !== voie._id) {
+        if (initialVoieId !== voie.id) {
           reloadVoies();
         }
 
@@ -277,7 +274,7 @@ function NumeroEditor({
   useEffect(() => {
     let nom = null;
     if (voieId) {
-      nom = voies.find((voie) => voie._id === voieId).nom;
+      nom = voies.find((voie) => voie.id === voieId).nom;
     }
 
     setSelectedNomVoie(nom);
@@ -286,7 +283,7 @@ function NumeroEditor({
   useEffect(() => {
     let nom = null;
     if (toponymeId) {
-      nom = toponymes.find((toponyme) => toponyme._id === toponymeId).nom;
+      nom = toponymes.find((toponyme) => toponyme.id === toponymeId).nom;
     }
 
     setSelectedNomToponyme(nom);
@@ -294,7 +291,7 @@ function NumeroEditor({
 
   return (
     <Form
-      editingId={initialValue?._id}
+      editingId={initialValue?.id}
       closeForm={closeForm}
       onFormSubmit={onFormSubmit}
     >
@@ -338,13 +335,13 @@ function NumeroEditor({
               }}
             >
               <option value={null}>
-                {initialValue?.toponyme
+                {initialValue?.toponymeId
                   ? REMOVE_TOPONYME_LABEL
                   : "- Choisir un toponyme -"}
               </option>
               {sortBy(toponymes, (t) => normalizeSort(t.nom)).map(
-                ({ _id, nom }) => (
-                  <option key={_id} value={_id}>
+                ({ id, nom }) => (
+                  <option key={id} value={id}>
                     {nom}
                   </option>
                 )

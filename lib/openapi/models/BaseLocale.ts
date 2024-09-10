@@ -3,22 +3,27 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { Sync } from './Sync';
+import type { BaseLocaleSync } from './BaseLocaleSync';
+import type { Numero } from './Numero';
+import type { Toponyme } from './Toponyme';
+import type { Voie } from './Voie';
 
 export type BaseLocale = {
-    _id: string;
+    id: string;
     banId: string;
-    _created: string;
-    _updated: string;
-    _deleted: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
     nom: string;
+    commune: string;
     emails: Array<string>;
     token: string;
     status: BaseLocale.status;
-    _habilitation: string;
-    commune: string;
-    enableComplement: boolean;
-    sync: Sync;
+    habilitationId: string;
+    sync: BaseLocaleSync;
+    voies: Array<Voie>;
+    toponymes: Array<Toponyme>;
+    numeros: Array<Numero>;
 };
 
 export namespace BaseLocale {

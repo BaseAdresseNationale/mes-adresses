@@ -3,12 +3,19 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { Point } from './Point';
+import type { Numero } from './Numero';
+import type { Toponyme } from './Toponyme';
 
 export type Position = {
+    id: string;
+    toponymeId: string;
+    numeroId: string;
     type: Position.type;
     source: string;
-    point: Point;
+    rank: number;
+    point: Record<string, any>;
+    toponyme: Toponyme;
+    numero: Numero;
 };
 
 export namespace Position {
