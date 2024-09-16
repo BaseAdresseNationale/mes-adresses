@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext, useMemo } from "react";
-import { ObjectId } from "mongodb";
+import { ObjectId } from "bson";
 
 import MapContext from "@/contexts/map";
 import { Position } from "@/lib/openapi";
