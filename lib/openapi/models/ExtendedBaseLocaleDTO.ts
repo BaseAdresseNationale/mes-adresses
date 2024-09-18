@@ -27,7 +27,6 @@ export type ExtendedBaseLocaleDTO = {
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
-    commentedNumeros: Array<string>;
 };
 
 export namespace ExtendedBaseLocaleDTO {
