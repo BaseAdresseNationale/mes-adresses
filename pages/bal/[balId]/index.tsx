@@ -26,13 +26,16 @@ import { CommuneType } from "@/types/commune";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
+  BaseLocale,
   BasesLocalesService,
+  BaseLocaleSync,
   Toponyme,
   Voie,
   VoiesService,
 } from "@/lib/openapi";
 import SignalementContext from "@/contexts/signalement";
 import LayoutContext from "@/contexts/layout";
+import usePublishProcess from "@/hooks/publish-process";
 
 interface BaseLocalePageProps {
   commune: CommuneType;
@@ -47,10 +50,12 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
   const { token } = useContext(TokenContext);
   const { toaster } = useContext(LayoutContext);
-  const { voies, toponymes, baseLocale } = useContext(BalDataContext);
+  const { voies, toponymes, baseLocale, isHabilitationValid } =
+    useContext(BalDataContext);
   const { isMobile } = useContext(LayoutContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const { handleShowHabilitationProcess } = usePublishProcess(commune);
   const {
     refreshBALSync,
     reloadVoies,
@@ -63,6 +68,17 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const { signalements } = useContext(SignalementContext);
 
   useHelp(selectedTabIndex);
+
+  useEffect(() => {
+    if (
+      token &&
+      baseLocale.status === BaseLocale.status.PUBLISHED &&
+      baseLocale.sync?.status === BaseLocaleSync.status.OUTDATED &&
+      !isHabilitationValid
+    ) {
+      handleShowHabilitationProcess();
+    }
+  }, [baseLocale.status, baseLocale.sync?.status, isHabilitationValid, token]);
 
   useEffect(() => {
     if (token) {
