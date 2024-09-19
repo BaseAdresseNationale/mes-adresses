@@ -23,8 +23,8 @@ export type ExtendedVoieDTO = {
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
-    commentedNumeros: Array<string>;
-    bbox: Record<string, any>;
+    comments: Array<string>;
+    bbox: Array<number>;
 };
 
 export namespace ExtendedVoieDTO {
