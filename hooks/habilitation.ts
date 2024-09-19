@@ -32,7 +32,7 @@ export default function useHabilitation(
   );
   const [isHabilitationProcessDisplayed, setIsHabilitationProcessDisplayed] =
     useState<boolean>(query["france-connect"] === "1");
-  const [isValid, setIsValid] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const reloadHabilitation = useCallback(async () => {

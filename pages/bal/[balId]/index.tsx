@@ -50,7 +50,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
   const { token } = useContext(TokenContext);
   const { toaster } = useContext(LayoutContext);
-  const { voies, toponymes, baseLocale, isHabilitationValid } =
+  const { voies, toponymes, baseLocale, habilitation, isHabilitationValid } =
     useContext(BalDataContext);
   const { isMobile } = useContext(LayoutContext);
   const { reloadTiles } = useContext(MapContext);
@@ -74,6 +74,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
       token &&
       baseLocale.status === BaseLocale.status.PUBLISHED &&
       baseLocale.sync?.status === BaseLocaleSync.status.OUTDATED &&
+      habilitation &&
       !isHabilitationValid
     ) {
       handleShowHabilitationProcess();
