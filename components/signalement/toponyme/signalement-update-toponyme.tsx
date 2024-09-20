@@ -10,6 +10,7 @@ import MarkersContext from "@/contexts/markers";
 import {
   Signalement,
   Position as PositionSignalement,
+  ToponymeChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 
 interface SignalementUpdateToponymeProps {
@@ -21,20 +22,22 @@ interface SignalementUpdateToponymeProps {
 }
 
 const detectChanges = (signalement, existingLocation: Toponyme) => {
-  const { nom } = signalement.changesRequested;
+  const { nom, positions, parcelles } = signalement.changesRequested;
 
-  const { nom: existingNom } = existingLocation;
+  const {
+    nom: existingNom,
+    positions: existingPositions,
+    parcelles: existingParcelles,
+  } = existingLocation;
 
   return {
     nom: existingNom !== nom,
-    positions: false,
-    parcelles: false,
-    // positions:
-    //   JSON.stringify(positions.map(({ point, type }) => ({ point, type }))) !==
-    //   JSON.stringify(
-    //     existingPositions.map(({ point, type }) => ({ point, type }))
-    //   ),
-    // parcelles: JSON.stringify(parcelles) !== JSON.stringify(existingParcelles),
+    positions:
+      JSON.stringify(positions.map(({ point, type }) => ({ point, type }))) !==
+      JSON.stringify(
+        existingPositions.map(({ point, type }) => ({ point, type }))
+      ),
+    parcelles: JSON.stringify(parcelles) !== JSON.stringify(existingParcelles),
   };
 };
 
@@ -45,7 +48,8 @@ function SignalementUpdateToponyme({
   handleClose,
   commune,
 }: SignalementUpdateToponymeProps) {
-  const { nom, positions, parcelles } = signalement.changesRequested;
+  const { nom, positions, parcelles } =
+    signalement.changesRequested as ToponymeChangesRequestedDTO;
 
   const nomInputRef = useRef<HTMLDivElement>(null);
   const positionsInputRef = useRef<HTMLDivElement>(null);
