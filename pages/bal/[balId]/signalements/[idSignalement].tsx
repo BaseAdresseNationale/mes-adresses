@@ -183,10 +183,11 @@ async function getExistingLocation(
         (voie) => voie.nom === existingNumero.toponyme.nom
       );
       const numeros = await VoiesService.findVoieNumeros(voie.id);
-      existingLocation = numeros.find(({ numeroComplet }) => {
+      existingLocation = numeros.find(({ numero, suffixe }) => {
         const existingLocationNumeroComplet = existingNumero.suffixe
           ? `${existingNumero.numero}${existingNumero.suffixe}`
           : `${existingNumero.numero}`;
+        const numeroComplet = suffixe ? `${numero}${suffixe}` : `${numero}`;
         return numeroComplet === existingLocationNumeroComplet;
       });
       if (existingLocation) {
@@ -197,10 +198,11 @@ async function getExistingLocation(
         (toponyme) => toponyme.nom === existingNumero.toponyme.nom
       );
       const numeros = await ToponymesService.findToponymeNumeros(toponyme.id);
-      existingLocation = numeros.find(({ numeroComplet }) => {
+      existingLocation = numeros.find(({ numero, suffixe }) => {
         const existingLocationNumeroComplet = existingNumero.suffixe
           ? `${existingNumero.numero}${existingNumero.suffixe}`
           : `${existingNumero.numero}`;
+        const numeroComplet = suffixe ? `${numero}${suffixe}` : `${numero}`;
         return numeroComplet === existingLocationNumeroComplet;
       });
       if (existingLocation) {
