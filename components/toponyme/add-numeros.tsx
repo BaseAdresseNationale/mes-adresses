@@ -1,14 +1,7 @@
-import { useState, useCallback, useContext, useMemo } from "react";
-import { sortBy } from "lodash";
-import { SelectField, SelectMenu, Pane, Button, Text } from "evergreen-ui";
-
-import { normalizeSort } from "@/lib/normalize";
-
-import BalDataContext from "@/contexts/bal-data";
+import { useState, useCallback } from "react";
+import { Pane, Button, Text } from "evergreen-ui";
 
 import Form from "@/components/form";
-import FormInput from "@/components/form-input";
-import { Numero, VoiesService } from "@/lib/openapi";
 import AddNumerosWithVoie from "./add-numeros-with-voie";
 import AddNumerosWithPolygon from "./add-numeros-with-polygon";
 

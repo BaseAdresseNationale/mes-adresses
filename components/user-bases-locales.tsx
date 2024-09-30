@@ -5,7 +5,7 @@ import { Pane, Spinner, Button, PlusIcon } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import HiddenBal from "@/components/hidden-bal";
 import BasesLocalesList from "@/components/bases-locales-list";
-import { BasesLocalesService } from "@/lib/openapi";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi";
 
 function UserBasesLocales() {
   const { balAccess, hiddenBal, getHiddenBal } =
@@ -21,7 +21,7 @@ function UserBasesLocales() {
         Object.keys(balAccess),
         (id) => !getHiddenBal(id)
       );
-      const basesLocales = await Promise.all(
+      const basesLocales: BaseLocale[] = await Promise.all(
         map(balsToLoad, async (id) => {
           const token = balAccess[id];
           try {
@@ -40,7 +40,13 @@ function UserBasesLocales() {
         })
       );
 
-      const findedBasesLocales = basesLocales.filter((bal) => Boolean(bal));
+      const findedBasesLocales = basesLocales
+        .filter((bal) => Boolean(bal))
+        .sort((balA, balB) => {
+          const dateA = new Date(balA?.updatedAt);
+          const dateB = new Date(balB?.updatedAt);
+          return dateB.getTime() - dateA.getTime();
+        });
       setBasesLocales(findedBasesLocales);
     }
 

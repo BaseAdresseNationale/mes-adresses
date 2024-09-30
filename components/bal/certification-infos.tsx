@@ -35,7 +35,8 @@ function CertificationInfos({ openRecoveryDialog }: CertificationInfosProps) {
   const [isInfosShown, setIsInfosShown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { nbNumeros, nbNumerosCertifies } = baseLocale;
-  const percentCertified = Math.round((nbNumerosCertifies * 100) / nbNumeros);
+  const percentCertified =
+    nbNumeros > 0 ? Math.round((nbNumerosCertifies * 100) / nbNumeros) : 0;
 
   // Reload base local when the tab is mounted to be sure to have the updated number
   // of certified adresses

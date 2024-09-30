@@ -81,19 +81,26 @@ function CertificationButton({
         .certification-button-wrapper {
           position: sticky;
           width: 100%;
-          bottom: 0;
+          bottom: -12px;
+          // bottom: 0;
           display: flex;
           align-items: center;
           justify-content: center;
           flex-wrap: wrap;
           padding: 10px 0;
+
+          background-color: #e6e8f0;
+
+          // background-color: white;
+          // border-radius: 8px;
+          // border: 1px solid #c1c4d6;
         }
 
         .certification-button-wrapper > div {
           box-shadow:
             0 0 1px rgba(67, 90, 111, 0.3),
             0 5px 8px -4px rgba(67, 90, 111, 0.47);
-          margin: 8px 0 0 8px;
+          margin: 4px;
         }
       `}</style>
     </div>
