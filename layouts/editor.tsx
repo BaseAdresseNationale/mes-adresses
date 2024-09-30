@@ -129,7 +129,7 @@ export async function getBaseEditorProps(
   balId: string
 ): Promise<BaseEditorProps> {
   const baseLocale: ExtendedBaseLocaleDTO =
-    await BasesLocalesService.findBaseLocale(balId);
+    await BasesLocalesService.findBaseLocale(balId, true);
 
   const communeExtras: CommuneExtraDTO = await CommuneService.findCommune(
     baseLocale.commune
