@@ -56,7 +56,7 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
     keys: ["numero"],
   });
 
-  const onAdd = async (numeros) => {
+  const onAdd = async (numeros: string[]) => {
     setIsLoading(true);
 
     try {
