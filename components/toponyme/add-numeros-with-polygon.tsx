@@ -30,6 +30,7 @@ function AddNumerosWithPolygon({
   numerosIds,
   setNumerosIds,
 }: AddNumerosWithPolygonProps) {
+  const [numerosSelected, setNumerosSelected] = useState<Numero[]>([]);
   const { baseLocale } = useContext(BalDataContext);
   const { enableDrawPolygon, disableDrawPolygon, data, setHint, setModeId } =
     useContext(DrawContext);
@@ -52,6 +53,7 @@ function AddNumerosWithPolygon({
           polygon: data.geometry.coordinates[0] as unknown as number[][],
         }
       );
+      setNumerosSelected(numeros);
       setNumerosIds(numeros.map(({ id }) => id));
     }
 
@@ -59,19 +61,34 @@ function AddNumerosWithPolygon({
       setModeId("editing");
       searchNumeros();
     }
-  }, [baseLocale.id, data, setModeId, setNumerosIds]);
+  }, [baseLocale.id, data, setModeId, setNumerosIds, setNumerosSelected]);
 
   const selectedNumerosCount = useMemo(() => {
-    if (numerosIds.length === 0) {
+    if (numerosSelected.length === 0) {
       return "Aucun numéro n’est sélectionné";
     }
 
-    if (numerosIds.length === 1) {
+    if (numerosSelected.length === 1) {
       return "1 numéro est sélectionné";
     }
 
-    return `${numerosIds.length} numéros sont sélectionnés`;
-  }, [numerosIds.length]);
+    return `${numerosSelected.length} numéros sont sélectionnés`;
+  }, [numerosSelected.length]);
+
+  const numeroOptions = useMemo(() => {
+    return numerosSelected.map(({ id, numero, suffixe }) => ({
+      label: `${numero}${suffixe ? suffixe : ""}`,
+      value: id,
+    }));
+  }, [numerosSelected]);
+
+  const handleSelectNumero = ({ value }) => {
+    setNumerosIds((selectedNumeros) => {
+      return selectedNumeros.includes(value)
+        ? selectedNumeros.filter((id) => id !== value)
+        : [...selectedNumeros, value];
+    });
+  };
 
   return (
     <Pane>
@@ -88,16 +105,46 @@ function AddNumerosWithPolygon({
             title="Modifier le polygone directement depuis la carte pour changer les numeros sélectionés."
             marginBottom={8}
           />
+
           <Pane
-            backgroundColor="white"
-            padding={8}
             display="flex"
-            alignItems="center"
             justifyContent="space-between"
-            marginBottom={8}
-            borderRadius={8}
+            alignItems="center"
+            marginY={8}
           >
-            {selectedNumerosCount}
+            <SelectMenu
+              isMultiSelect
+              hasFilter={false}
+              title="Sélection des numéros"
+              options={numeroOptions}
+              selected={numerosIds}
+              emptyView={
+                <Pane
+                  height="100%"
+                  paddingX="1em"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  textAlign="center"
+                >
+                  <Text size={300}>
+                    Aucun numéro n’est disponible pour cette voie
+                  </Text>
+                </Pane>
+              }
+              onSelect={handleSelectNumero}
+              onDeselect={handleSelectNumero}
+            >
+              <Button marginTop={0} type="button">
+                Sélectionner les numéros
+              </Button>
+            </SelectMenu>
+
+            {numerosSelected.length > 0 && (
+              <Text size={300} fontStyle="italic" color="#2E56CD">
+                {selectedNumerosCount}
+              </Text>
+            )}
           </Pane>
         </>
       )}

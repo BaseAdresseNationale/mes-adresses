@@ -68,7 +68,6 @@ export function DrawContextProvider(props: ChildrenProps) {
       } else {
         if (data) {
           // Edition mode
-          console.log("caca");
           setModeId("editing");
           setHint("Modifier le tracé de directement depuis la carte.");
         } else {
