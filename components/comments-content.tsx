@@ -1,14 +1,10 @@
 import { Pane, Text } from "evergreen-ui";
+import { uniqueId } from "lodash";
 
 const COMMENTS_LIMIT = 10;
 
 interface CommentsContentProps {
-  comments: {
-    id: string;
-    numero: number;
-    suffixe: string;
-    comment: string;
-  }[];
+  comments: string[];
 }
 
 function CommentsContent({ comments }: CommentsContentProps) {
@@ -23,18 +19,15 @@ function CommentsContent({ comments }: CommentsContentProps) {
           Commentaire{`${comments.length > 0 ? "s" : ""}`} :
         </Text>
       </Pane>
-      {filteredComments.map(({ id, numero, suffixe, comment }) => (
+      {filteredComments.map((comment) => (
         <Pane
           color="white"
-          key={id}
+          key={uniqueId()}
           whiteSpace="nowrap"
           overflow="hidden"
           textOverflow="ellipsis"
         >
-          <Text color="white">
-            • {numero}
-            {suffixe} : {comment}
-          </Text>
+          <Text color="white">{comment}</Text>
         </Pane>
       ))}
       {nbComments > COMMENTS_LIMIT && (
