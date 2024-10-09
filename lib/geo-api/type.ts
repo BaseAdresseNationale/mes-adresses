@@ -17,3 +17,10 @@ export type CommuneApiGeoType = {
   siren?: string;
   _score: number;
 };
+
+export type CommuneDelegueeApiGeoType = {
+  nom: string;
+  code: string;
+  chefLieu: string;
+  type: string;
+};

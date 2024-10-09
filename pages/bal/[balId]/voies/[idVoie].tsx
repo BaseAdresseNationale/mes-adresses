@@ -37,7 +37,7 @@ function VoiePage({ commune }: VoiePageProps) {
 
   return (
     <>
-      <VoieHeading voie={voie} />
+      <VoieHeading voie={voie} commune={commune} />
 
       <Pane
         position="relative"

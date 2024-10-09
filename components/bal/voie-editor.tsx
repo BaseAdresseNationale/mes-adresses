@@ -24,9 +24,12 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
+import SelectCommune from "../select-commune";
 
 interface VoieEditorProps {
   initialValue?: Voie;
+  commune: CommuneType;
   closeForm: () => void;
   formInputRef?: React.RefObject<HTMLDivElement>;
   onSubmitted?: () => void;
@@ -34,6 +37,7 @@ interface VoieEditorProps {
 
 function VoieEditor({
   initialValue,
+  commune,
   closeForm,
   formInputRef,
   onSubmitted,
@@ -43,6 +47,9 @@ function VoieEditor({
     initialValue ? initialValue.typeNumerotation === "metrique" : false
   );
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : "");
+  const [communeDeleguee, setCommuneDeleguee] = useState(
+    initialValue ? initialValue.communeDeleguee : ""
+  );
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
@@ -65,9 +72,10 @@ function VoieEditor({
           nom,
           nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
           typeNumerotation: isMetric ? "metrique" : "numerique",
+          communeDeleguee: communeDeleguee,
           trace: data ? data.geometry : null,
         };
-
+        console.log(body);
         // Add or edit a voie
         const submit = initialValue
           ? toaster(
@@ -124,6 +132,7 @@ function VoieEditor({
     },
     [
       baseLocale.id,
+      communeDeleguee,
       initialValue,
       nom,
       isMetric,
@@ -188,6 +197,16 @@ function VoieEditor({
             onChange={onNomChange}
             validationMessage={getValidationMessage("nom")}
           />
+
+          {commune.communesDeleguees && (
+            <SelectCommune
+              communes={commune.communesDeleguees}
+              selectedCodeCommune={communeDeleguee}
+              setSelectedCodeCommune={setCommuneDeleguee}
+              withOptionNull={true}
+              label="Commune déléguée"
+            />
+          )}
 
           <Checkbox
             checked={isMetric}

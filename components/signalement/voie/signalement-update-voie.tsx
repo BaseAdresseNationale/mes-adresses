@@ -20,6 +20,7 @@ function SignalementUpdateVoie({
   existingLocation,
   handleSubmit,
   handleClose,
+  commune,
 }: SignalementUpdateVoieProps) {
   const { nom } = signalement.changesRequested;
   const formInputRef = useRef<HTMLDivElement>(null);
@@ -52,6 +53,7 @@ function SignalementUpdateVoie({
     <Pane position="relative" height="100%">
       <VoieEditor
         initialValue={editorValue}
+        commune={commune}
         closeForm={handleClose}
         formInputRef={formInputRef}
         onSubmitted={handleSubmit}

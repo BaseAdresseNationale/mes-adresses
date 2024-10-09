@@ -235,6 +235,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
       >
         {isFormOpen && selectedTabIndex === 1 && (
           <VoieEditor
+            commune={commune}
             initialValue={editedItem as Voie}
             closeForm={() => {
               onEdit(null);

@@ -7,12 +7,14 @@ import BalDataContext from "@/contexts/bal-data";
 import VoieEditor from "@/components/bal/voie-editor";
 import LanguagePreview from "../bal/language-preview";
 import { Voie } from "@/lib/openapi";
+import { CommuneType } from "@/types/commune";
 
 interface VoieHeadingProps {
+  commune: CommuneType;
   voie: Voie;
 }
 
-function VoieHeading({ voie }: VoieHeadingProps) {
+function VoieHeading({ commune, voie }: VoieHeadingProps) {
   const [hovered, setHovered] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -34,7 +36,11 @@ function VoieHeading({ voie }: VoieHeadingProps) {
 
   return isFormOpen ? (
     <Pane background="tint1" padding={0}>
-      <VoieEditor initialValue={voie} closeForm={() => setIsFormOpen(false)} />
+      <VoieEditor
+        initialValue={voie}
+        commune={commune}
+        closeForm={() => setIsFormOpen(false)}
+      />
     </Pane>
   ) : (
     <Pane display="flex" flexDirection="column" background="tint1" padding={16}>

@@ -15,6 +15,7 @@ export type Voie = {
     balId: string;
     nom: string;
     nomAlt: Record<string, any>;
+    communeDeleguee: string;
     typeNumerotation: Voie.typeNumerotation;
     centroid: Record<string, any>;
     trace: Record<string, any>;
