@@ -15,6 +15,7 @@ export type ExtendedVoieDTO = {
     balId: string;
     nom: string;
     nomAlt: Record<string, any>;
+    communeDeleguee: string;
     typeNumerotation: ExtendedVoieDTO.typeNumerotation;
     centroid: Record<string, any>;
     trace: Record<string, any>;
