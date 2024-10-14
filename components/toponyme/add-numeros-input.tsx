@@ -17,7 +17,7 @@ function AddNumerosInput({ numerosIds, setNumerosIds }: AddNumerosProps) {
     <Pane>
       <Pane marginBottom="8px">
         <Pane marginBottom="8px">
-          <Text marginBottom="8px">Ajouter des numéros avec</Text>
+          <Text marginBottom="8px">Associer des numéros</Text>
         </Pane>
         <Pane display="flex" alignItems="center" justifyContent="space-between">
           <Button

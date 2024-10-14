@@ -159,7 +159,7 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
                       }
                 }
               >
-                Ajouter des numéros
+                Associer des numéros
               </Button>
             </Pane>
           </Pane>
