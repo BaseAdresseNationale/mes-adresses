@@ -280,14 +280,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
     setStyle((style: string) => {
-      if (drawEnabled && communeHasOrtho && modeId !== "drawPolygon") {
+      if (drawEnabled && communeHasOrtho) {
         prevStyle.current = style;
         return "ortho";
       }
 
       return prevStyle.current;
     });
-  }, [drawEnabled, modeId, setStyle, communeHasOrtho]);
+  }, [drawEnabled, setStyle, communeHasOrtho]);
 
   useEffect(() => {
     if (isStyleLoaded) {

@@ -4,6 +4,7 @@ import { Pane, Button, Text } from "evergreen-ui";
 import Form from "@/components/form";
 import AddNumerosWithVoie from "./add-numeros-with-voie";
 import AddNumerosWithPolygon from "./add-numeros-with-polygon";
+import AddNumerosInput from "./add-numeros-input";
 
 interface AddNumerosProps {
   onSubmit: (numeros: string[]) => Promise<void>;
@@ -12,7 +13,6 @@ interface AddNumerosProps {
 }
 
 function AddNumeros({ onSubmit, onCancel, isLoading }: AddNumerosProps) {
-  const [typeSelection, setTypeSelection] = useState<"voie" | "polygon">(null);
   const [numerosIds, setNumerosIds] = useState<string[]>([]);
 
   const handleSubmit = useCallback(
@@ -25,41 +25,18 @@ function AddNumeros({ onSubmit, onCancel, isLoading }: AddNumerosProps) {
 
   return (
     <Pane>
-      <Pane backgroundColor="white" padding="8px">
-        <Pane marginBottom="8px">
-          <Text marginBottom="8px">Ajouter des numéros avec</Text>
-        </Pane>
-        <Pane display="flex" alignItems="center" justifyContent="space-between">
-          <Button
-            marginTop={0}
-            type="button"
-            onClick={() => setTypeSelection("voie")}
-          >
-            Sélectionnez via voie
-          </Button>
-          <Text>ou</Text>
-          <Button
-            marginTop={0}
-            type="button"
-            onClick={() => setTypeSelection("polygon")}
-          >
-            Sélectionnez via polygon
-          </Button>
-        </Pane>
-      </Pane>
       <Form onFormSubmit={handleSubmit}>
-        {typeSelection == "voie" && (
-          <AddNumerosWithVoie
+        <Pane
+          backgroundColor="white"
+          padding={8}
+          marginBottom={8}
+          borderRadius={8}
+        >
+          <AddNumerosInput
             numerosIds={numerosIds}
             setNumerosIds={setNumerosIds}
           />
-        )}
-        {typeSelection == "polygon" && (
-          <AddNumerosWithPolygon
-            numerosIds={numerosIds}
-            setNumerosIds={setNumerosIds}
-          />
-        )}
+        </Pane>
         <Pane display="flex" justifyContent="end">
           <Button
             isLoading={isLoading}
