@@ -17,8 +17,7 @@ function AlertPublishedBALMoissoneur({
     const loadOrganization = async () => {
       if (revision.context.extras.sourceId) {
         const sourceId: string = revision.context.extras.sourceId;
-        const id: string[] = sourceId.split("-");
-        const dataset: Dataset = await DataGouvService.findDataset(id[1]);
+        const dataset: Dataset = await DataGouvService.findDataset(sourceId);
 
         setOrganization(dataset.organization);
       }
