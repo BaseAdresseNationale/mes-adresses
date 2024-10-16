@@ -25,7 +25,7 @@ function AddNumerosInput({ numerosIds, setNumerosIds }: AddNumerosProps) {
             type="button"
             onClick={() => setTypeSelection("voie")}
           >
-            Sélectionnez via voie
+            Avec une voie
           </Button>
           <Text>ou</Text>
           <Button
@@ -33,7 +33,7 @@ function AddNumerosInput({ numerosIds, setNumerosIds }: AddNumerosProps) {
             type="button"
             onClick={() => setTypeSelection("polygon")}
           >
-            Sélectionnez via polygon
+            En dessinant le contour
           </Button>
         </Pane>
       </Pane>{" "}
