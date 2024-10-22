@@ -53,6 +53,7 @@ import useHovered from "@/components/map/hooks/hovered";
 import { CommuneType } from "@/types/commune";
 import { Numero } from "@/lib/openapi";
 import LayoutContext from "@/contexts/layout";
+import SelectNumeroControl from "./controls/select-numero-control";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -147,7 +148,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     if (map && isTileSourceLoaded) {
       // Filter positions of voie or toponyme
       if (voie) {
-        if (drawEnabled) {
+        if (drawEnabled && modeId !== "drawPolygon") {
           map.setFilter(VOIE_TRACE_LINE, ["!=", ["get", "id"], voie.id]);
         } else {
           map.setFilter(VOIE_TRACE_LINE, null);
@@ -377,6 +378,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       {!isMobile && (
         <Pane position="absolute" zIndex={1} top={125} right={10}>
           <ImageControl map={map} communeNom={commune.nom} />
+        </Pane>
+      )}
+
+      {!isMobile && (
+        <Pane position="absolute" zIndex={1} top={160} right={10}>
+          <SelectNumeroControl />
         </Pane>
       )}
 
