@@ -1,15 +1,28 @@
 import { Pane, Paragraph } from "evergreen-ui";
 import React from "react";
 import { positionsTypesList } from "@/lib/positions-types-list";
-import { Signalement } from "@/lib/openapi-signalement";
+import {
+  NumeroChangesRequestedDTO,
+  Signalement,
+  ToponymeChangesRequestedDTO,
+} from "@/lib/openapi-signalement";
+import { Numero, Toponyme, Voie } from "@/lib/openapi";
 
 interface SignalementViewerProps {
-  signalement: any;
-  existingLocation?: any;
+  signalement: Signalement;
+  existingLocation?: Voie | Toponyme | Numero;
 }
 
 const getPositionTypeLabel = (positionType: string) => {
   return positionsTypesList.find((p) => p.value === positionType)?.name;
+};
+
+const getExistingLocationLabel = (existingLocation) => {
+  if (existingLocation.numeroComplet) {
+    return `${existingLocation.numeroComplet} ${existingLocation.voie.nom}`;
+  }
+
+  return existingLocation.nom;
 };
 
 function SignalementViewer({
@@ -17,7 +30,8 @@ function SignalementViewer({
   existingLocation,
 }: SignalementViewerProps) {
   const { numero, suffixe, nomVoie, positions, parcelles, nom } =
-    signalement.changesRequested;
+    signalement.changesRequested as NumeroChangesRequestedDTO &
+      ToponymeChangesRequestedDTO;
 
   return (
     <Pane padding={16}>
@@ -30,32 +44,33 @@ function SignalementViewer({
           marginBottom={8}
           width="100%"
         >
-          <h3>Lieu existant</h3>
-          <div>
-            {existingLocation.numero} {existingLocation.suffixe}{" "}
-            {existingLocation.nomVoie} {existingLocation.nom}
-          </div>
-          {existingLocation.positions && (
+          <h3>Lieu concerné</h3>
+          <div>{getExistingLocationLabel(existingLocation)}</div>
+          {(existingLocation as Numero | Toponyme).positions?.length > 0 && (
             <>
-              <h4>Positions : </h4>
-              {existingLocation.positions.map(({ point, type }, index) => {
-                return (
-                  <React.Fragment key={index}>
-                    <span>{getPositionTypeLabel(type)}</span> :{" "}
-                    {point.coordinates[0]}, {point.coordinates[1]}
-                    <br />
-                  </React.Fragment>
-                ); // eslint-disable-line react/no-array-index-key
-              })}
+              <h5>Positions : </h5>
+              {(existingLocation as Numero | Toponyme).positions.map(
+                ({ point, type }, index) => {
+                  return (
+                    <React.Fragment key={index}>
+                      <span>{getPositionTypeLabel(type)}</span> :{" "}
+                      {point.coordinates[0]}, {point.coordinates[1]}
+                      <br />
+                    </React.Fragment>
+                  ); // eslint-disable-line react/no-array-index-key
+                }
+              )}
             </>
           )}
-          {existingLocation.parcelles && (
+          {(existingLocation as Numero | Toponyme).parcelles?.length > 0 && (
             <>
-              <h4>Parcelles : </h4>
+              <h5>Parcelles : </h5>
               <div className="parcelles-wrapper">
-                {existingLocation.parcelles.map((parcelle) => (
-                  <div key={parcelle}>{parcelle}</div>
-                ))}
+                {(existingLocation as Numero | Toponyme).parcelles.map(
+                  (parcelle) => (
+                    <div key={parcelle}>{parcelle}</div>
+                  )
+                )}
               </div>
             </>
           )}
@@ -80,9 +95,9 @@ function SignalementViewer({
           <div>
             {numero} {suffixe} {nomVoie} {nom}
           </div>
-          {positions && (
+          {positions?.length > 0 && (
             <>
-              <h4>Positions : </h4>
+              <h5>Positions : </h5>
               {positions.map(({ point, type }, index) => {
                 return (
                   <React.Fragment key={index}>
@@ -94,9 +109,9 @@ function SignalementViewer({
               })}
             </>
           )}
-          {parcelles && (
+          {parcelles?.length > 0 && (
             <>
-              <h4>Parcelles : </h4>
+              <h5>Parcelles : </h5>
               <div className="parcelles-wrapper">
                 {parcelles.map((parcelle) => (
                   <div key={parcelle}>{parcelle}</div>
@@ -107,7 +122,7 @@ function SignalementViewer({
         </Paragraph>
       )}
 
-      {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
+      {signalement.changesRequested.comment && (
         <Paragraph
           background="white"
           padding={8}
@@ -115,38 +130,28 @@ function SignalementViewer({
           marginBottom={8}
           width="100%"
         >
-          <h4>Commentaire : </h4>
-          <div>{signalement.comment}</div>
+          <h3>Commentaire</h3>
+          <div>{signalement.changesRequested.comment}</div>
         </Paragraph>
       )}
 
-      <Paragraph
-        background="white"
-        padding={8}
-        borderRadius={8}
-        marginBottom={8}
-        width="100%"
-      >
-        <h3>Auteur du signalement</h3>
-        <Pane display="flex">
-          <Pane marginRight={20}>
-            <h4>Nom</h4>
-            <div>{signalement.author?.lastName}</div>
-          </Pane>
-          <Pane marginRight={20}>
-            <h4>Prénom</h4>
-            <div>{signalement.author?.firstName}</div>
-          </Pane>
-          <Pane>
-            <h4>Email</h4>
-            <div>{signalement.author?.email}</div>
-          </Pane>
-        </Pane>
-      </Paragraph>
+      {signalement.source && (
+        <Paragraph
+          background="white"
+          padding={8}
+          borderRadius={8}
+          marginBottom={8}
+          width="100%"
+        >
+          <h3>Source du signalement</h3>
+          <div>{signalement.source.nom}</div>
+        </Paragraph>
+      )}
 
       <style jsx>{`
         h3,
-        h4 {
+        h4,
+        h5 {
           margin: 4px 0;
         }
         .parcelles-wrapper {

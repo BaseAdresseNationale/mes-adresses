@@ -7,10 +7,7 @@ import React, {
 } from "react";
 
 import { BaseLocale } from "@/lib/openapi";
-import {
-  Signalement,
-  DefaultService as SignalementService,
-} from "@/lib/openapi-signalement";
+import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
 import { ChildrenProps } from "@/types/context";
 import BalDataContext from "./bal-data";
 import TokenContext from "./token";
@@ -29,10 +26,13 @@ export function SignalementContextProvider(props: ChildrenProps) {
   const { token } = useContext(TokenContext);
 
   const fetchSignalements = useCallback(async () => {
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
+    const paginatedSignalements = await SignalementsService.getSignalements(
+      baseLocale.commune,
+      undefined,
+      undefined,
+      Signalement.status.PENDING
     );
-    setSignalements(signalements);
+    setSignalements(paginatedSignalements.data);
   }, [baseLocale.commune]);
 
   useEffect(() => {

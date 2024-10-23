@@ -14,16 +14,24 @@ import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
 import {
   ExistingNumero,
+  NumeroChangesRequestedDTO,
   Signalement,
-  DefaultService as SignalementService,
+  SignalementsService,
 } from "@/lib/openapi-signalement";
 import MarkersContext from "@/contexts/markers";
-import { getSignalementLabel } from "@/lib/utils/signalement";
+import {
+  getSignalementLabel,
+  updateSignalement,
+} from "@/lib/utils/signalement";
 import LayoutContext from "@/contexts/layout";
 
-function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
-  const [signalements, setSignalements] =
-    useState<Signalement[]>(initialSignalements);
+function SignalementsPage({
+  baseLocale,
+  paginatedSignalements: initialSignalements,
+}) {
+  const [signalements, setSignalements] = useState<Signalement[]>(
+    initialSignalements.data
+  );
   const [selectedSignalements, setSelectedSignalements] = useState<string[]>(
     []
   );
@@ -37,7 +45,8 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
       .reduce((acc, cur) => {
         let position;
         if (cur.type === Signalement.type.LOCATION_TO_CREATE) {
-          position = cur.changesRequested?.positions[0]?.point;
+          position = (cur.changesRequested as NumeroChangesRequestedDTO)
+            ?.positions[0]?.point;
         } else {
           position = (cur.existingLocation as ExistingNumero).position?.point;
         }
@@ -45,7 +54,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
         return [
           ...acc,
           {
-            signalementId: cur._id,
+            signalementId: cur.id,
             label: getSignalementLabel(cur, { withoutDate: true }),
             position: position,
           },
@@ -75,10 +84,13 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   }, [signalements]);
 
   const refreshSignalements = async () => {
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
+    const paginatedSignalements = await SignalementsService.getSignalements(
+      baseLocale.commune,
+      undefined,
+      undefined,
+      Signalement.status.PENDING
     );
-    setSignalements(signalements);
+    setSignalements(paginatedSignalements.data as unknown as Signalement[]);
   };
 
   const handleSelectSignalement = (id) => {
@@ -86,13 +98,13 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   };
 
   const handleIgnoreSignalement = async (id) => {
-    const updateSignalement = toaster(
-      () => SignalementService.updateSignalement({ id }),
+    const _updateSignalement = toaster(
+      () => updateSignalement(id, Signalement.status.IGNORED),
       "Le signalement a bien été ignoré",
       "Une erreur est survenue"
     );
 
-    await updateSignalement();
+    await _updateSignalement();
     await refreshSignalements();
   };
 
@@ -100,7 +112,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
     const massUpdateSignalements = toaster(
       async () => {
         for (const id of selectedSignalements) {
-          await SignalementService.updateSignalement({ id });
+          await updateSignalement(id, Signalement.status.IGNORED);
         }
       },
       "Les signalements ont bien été ignorés",
@@ -112,17 +124,11 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   };
 
   const handleToggleSelect = (ids: string[]) => {
-    if (ids.length === signalements.length) {
-      setSelectedSignalements(ids);
-    } else if (ids.length === 0) {
-      setSelectedSignalements([]);
-    } else {
-      for (const id of ids) {
-        if (!selectedSignalements.includes(id)) {
-          setSelectedSignalements([...selectedSignalements, id]);
-        } else {
-          setSelectedSignalements(selectedSignalements.filter((s) => s !== id));
-        }
+    for (const id of ids) {
+      if (!selectedSignalements.includes(id)) {
+        setSelectedSignalements([...selectedSignalements, id]);
+      } else {
+        setSelectedSignalements(selectedSignalements.filter((s) => s !== id));
       }
     }
   };
@@ -203,6 +209,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
           signalements={signalements}
           selectedSignalements={selectedSignalements}
           onSelect={handleSelectSignalement}
+          setSelectedSignalements={setSelectedSignalements}
           onToggleSelect={handleToggleSelect}
           onIgnore={handleIgnoreSignalement}
         />
@@ -218,8 +225,11 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
+    const paginatedSignalements = await SignalementsService.getSignalements(
+      baseLocale.commune,
+      undefined,
+      undefined,
+      Signalement.status.PENDING
     );
 
     return {
@@ -228,7 +238,7 @@ export async function getServerSideProps({ params }) {
         commune,
         voies,
         toponymes,
-        signalements,
+        paginatedSignalements,
       },
     };
   } catch {

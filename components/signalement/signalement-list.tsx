@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { sortBy } from "lodash";
 import {
   Table,
   Popover,
@@ -12,8 +11,6 @@ import {
   Checkbox,
 } from "evergreen-ui";
 
-import { normalizeSort } from "@/lib/normalize";
-
 import useFuse from "@/hooks/fuse";
 
 import InfiniteScrollList from "../infinite-scroll-list";
@@ -22,6 +19,7 @@ import { getSignalementLabel } from "@/lib/utils/signalement";
 interface SignalementListProps {
   signalements: any[];
   selectedSignalements: string[];
+  setSelectedSignalements: (ids: string[]) => void;
   onSelect: (id: string) => void;
   onIgnore: (id: string) => void;
   onToggleSelect: (ids: string[]) => void;
@@ -30,6 +28,7 @@ interface SignalementListProps {
 function SignalementList({
   signalements,
   selectedSignalements,
+  setSelectedSignalements,
   onSelect,
   onIgnore,
   onToggleSelect,
@@ -39,21 +38,21 @@ function SignalementList({
     [signalements]
   );
 
-  const [filtered, setFilter] = useFuse(signalementWithLabel, 200, {
-    keys: ["label"],
-  });
-
-  const scrollableItems = useMemo(
-    () => sortBy(filtered, (s) => normalizeSort(s.label)),
-    [filtered]
+  const [signalementsList, setSignalementsList] = useFuse(
+    signalementWithLabel,
+    200,
+    {
+      keys: ["label"],
+    }
   );
 
   const isAllSelected = useMemo(() => {
     const isAllSignalementsSelected =
-      filtered.length === selectedSignalements.length && filtered.length > 0;
+      signalementsList.length === selectedSignalements.length &&
+      signalementsList.length > 0;
 
     return isAllSignalementsSelected;
-  }, [selectedSignalements, filtered]);
+  }, [selectedSignalements, signalementsList]);
 
   return (
     <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
@@ -62,19 +61,19 @@ function SignalementList({
           <Checkbox
             checked={isAllSelected}
             onChange={() =>
-              onToggleSelect(
-                isAllSelected ? [] : signalements.map(({ _id }) => _id)
+              setSelectedSignalements(
+                isAllSelected ? [] : signalements.map(({ id }) => id)
               )
             }
           />
         </Table.Cell>
         <Table.SearchHeaderCell
           placeholder="Rechercher un signalement"
-          onChange={setFilter}
+          onChange={setSignalementsList}
         />
       </Table.Head>
 
-      {filtered.length === 0 && (
+      {signalementsList.length === 0 && (
         <Table.Row>
           <Table.TextCell color="muted" fontStyle="italic">
             Aucun résultat
@@ -82,13 +81,13 @@ function SignalementList({
         </Table.Row>
       )}
 
-      <InfiniteScrollList items={scrollableItems}>
+      <InfiniteScrollList items={signalementsList}>
         {(signalement) => (
-          <Table.Row key={signalement._id} paddingRight={8} minHeight={48}>
+          <Table.Row key={signalement.id} paddingRight={8} minHeight={48}>
             <Table.Cell flex="0 1 40px">
               <Checkbox
-                checked={selectedSignalements.includes(signalement._id)}
-                onChange={() => onToggleSelect([signalement._id])}
+                checked={selectedSignalements.includes(signalement.id)}
+                onChange={() => onToggleSelect([signalement.id])}
               />
             </Table.Cell>
             <Table.TextCell flex="2">{signalement.label}</Table.TextCell>
@@ -100,14 +99,14 @@ function SignalementList({
                     <Menu.Group>
                       <Menu.Item
                         icon={SendToMapIcon}
-                        onSelect={() => onSelect(signalement._id)}
+                        onSelect={() => onSelect(signalement.id)}
                       >
                         Traiter
                       </Menu.Item>
                       <Menu.Item
                         icon={TrashIcon}
                         intent="danger"
-                        onSelect={() => onIgnore(signalement._id)}
+                        onSelect={() => onIgnore(signalement.id)}
                       >
                         Ignorer
                       </Menu.Item>
