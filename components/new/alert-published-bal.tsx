@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 
 import { Dialog } from "evergreen-ui";
 
-import { Client, Revision } from "@/lib/api-depot/types";
+import { PublicClient, Revision } from "@/lib/api-depot/types";
 import { ClientRevisionEnum } from "./create-form";
 import AlertPublishedBALApiDepot from "./alert-published-bal/alert-puslished-bal-api-depot";
 import AlertPublishedBALMesAdresses from "./alert-published-bal/alert-puslished-bal-mes-adresses";
@@ -24,10 +24,10 @@ function AlertPublishedBAL({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getAlertComponent: React.FunctionComponent = useCallback(() => {
-    const client: Client = revision.client as Client;
-    if (client.id === ClientRevisionEnum.MES_ADRESSES) {
+    const client: PublicClient = revision.client;
+    if (client.specId === ClientRevisionEnum.MES_ADRESSES) {
       return <AlertPublishedBALMesAdresses revision={revision} />;
-    } else if (client.id === ClientRevisionEnum.MOISSONNEUR_BAL) {
+    } else if (client.specId === ClientRevisionEnum.MOISSONNEUR_BAL) {
       return <AlertPublishedBALMoissoneur revision={revision} />;
     } else {
       return <AlertPublishedBALApiDepot revision={revision} />;

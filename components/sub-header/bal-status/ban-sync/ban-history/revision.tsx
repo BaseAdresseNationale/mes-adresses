@@ -4,7 +4,7 @@ import { Pane, Text, StatusIndicator, Strong, Badge } from "evergreen-ui";
 
 import RevisionUser from "@/components/sub-header/bal-status/ban-sync/ban-history/revision-user";
 import { CommuneType } from "@/types/commune";
-import { Client, Revision as RevisionType } from "@/lib/api-depot/types";
+import { Revision as RevisionType } from "@/lib/api-depot/types";
 
 function getIndicatorColor(isCurrent, isUserBAL) {
   if (isCurrent) {
@@ -42,9 +42,9 @@ function Revision({ baseLocaleId, commune, revision }: RevisionProps) {
       />
 
       <Pane>
-        {(revision.client as Client)?.nom && (
+        {revision.client?.nom && (
           <Text>
-            via <Strong>{(revision.client as Client).nom}</Strong>
+            via <Strong>{revision.client.nom}</Strong>
           </Text>
         )}
       </Pane>
