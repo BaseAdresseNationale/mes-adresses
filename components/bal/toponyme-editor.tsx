@@ -176,12 +176,6 @@ function ToponymeEditor({
     ]
   );
 
-  const onAdd = async (numeros: string[]) => {
-    console.log(numeros);
-  };
-
-  const onCancel = useCallback(() => {}, []);
-
   const onFormCancel = useCallback(
     (e) => {
       e.preventDefault();
