@@ -25,9 +25,9 @@ function AlertPublishedBAL({
 
   const getAlertComponent: React.FunctionComponent = useCallback(() => {
     const client: PublicClient = revision.client;
-    if (client.specId === ClientRevisionEnum.MES_ADRESSES) {
+    if (client.legacyId === ClientRevisionEnum.MES_ADRESSES) {
       return <AlertPublishedBALMesAdresses revision={revision} />;
-    } else if (client.specId === ClientRevisionEnum.MOISSONNEUR_BAL) {
+    } else if (client.legacyId === ClientRevisionEnum.MOISSONNEUR_BAL) {
       return <AlertPublishedBALMoissoneur revision={revision} />;
     } else {
       return <AlertPublishedBALApiDepot revision={revision} />;

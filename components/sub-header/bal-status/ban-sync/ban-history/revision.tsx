@@ -22,7 +22,7 @@ interface RevisionProps {
 
 function Revision({ baseLocaleId, commune, revision }: RevisionProps) {
   const isUserBAL = revision.context.extras?.balId === baseLocaleId;
-  const indicatorColor = getIndicatorColor(revision.current, isUserBAL);
+  const indicatorColor = getIndicatorColor(revision.isCurrent, isUserBAL);
 
   return (
     <Pane

@@ -44,7 +44,7 @@ export function isExceptionClientId(
   outdatedHarvestSources: string[]
 ) {
   const client: PublicClient = revision.client;
-  if (client.specId === ClientRevisionEnum.MOISSONNEUR_BAL) {
+  if (client.legacyId === ClientRevisionEnum.MOISSONNEUR_BAL) {
     const sourceId: string = revision.context.extras.sourceId;
     if (sourceId && outdatedHarvestSources) {
       if (outdatedHarvestSources.includes(sourceId)) {
