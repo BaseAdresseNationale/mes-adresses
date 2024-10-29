@@ -14,8 +14,10 @@ import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
 import type { ImportFileBaseLocaleDTO } from '../models/ImportFileBaseLocaleDTO';
+import type { Numero } from '../models/Numero';
 import type { PageBaseLocaleDTO } from '../models/PageBaseLocaleDTO';
 import type { RecoverBaseLocaleDTO } from '../models/RecoverBaseLocaleDTO';
+import type { SearchNumeroDTO } from '../models/SearchNumeroDTO';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateBaseLocaleDemoDTO } from '../models/UpdateBaseLocaleDemoDTO';
 import type { UpdateBaseLocaleDTO } from '../models/UpdateBaseLocaleDTO';
@@ -365,6 +367,28 @@ export class BasesLocalesService {
             path: {
                 'baseLocaleId': baseLocaleId,
             },
+        });
+    }
+
+    /**
+     * Search numero
+     * @param baseLocaleId
+     * @param requestBody
+     * @returns Numero
+     * @throws ApiError
+     */
+    public static searchNumeros(
+        baseLocaleId: string,
+        requestBody: SearchNumeroDTO,
+    ): CancelablePromise<Array<Numero>> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v2/bases-locales/{baseLocaleId}/numeros',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 
