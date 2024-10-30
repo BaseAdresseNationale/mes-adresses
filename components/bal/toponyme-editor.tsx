@@ -18,9 +18,15 @@ import PositionEditor from "@/components/bal/position-editor";
 import SelectParcelles from "@/components/bal/numero-editor/select-parcelles";
 import DisabledFormInput from "@/components/disabled-form-input";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
-import { BasesLocalesService, Toponyme, ToponymesService } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  Toponyme,
+  ToponymesService,
+  UpdateBatchNumeroDTO,
+} from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
+import AddNumerosInput from "../toponyme/add-numeros-input";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -43,6 +49,7 @@ function ToponymeEditor({
     useValidationMessage();
   const { toaster } = useContext(LayoutContext);
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
+  const [numerosIds, setNumerosIds] = useState<string[]>([]);
 
   const {
     baseLocale,
@@ -50,10 +57,26 @@ function ToponymeEditor({
     reloadToponymes,
     refreshBALSync,
     reloadParcelles,
+    reloadNumeros,
   } = useContext(BalDataContext);
   const { markers } = useContext(MarkersContext);
   const { selectedParcelles } = useContext(ParcellesContext);
   const [ref, setIsFocus] = useFocus(true);
+
+  const updateNumerosToponyme = useCallback(
+    async (toponymeId: string) => {
+      setIsLoading(true);
+      const payload: UpdateBatchNumeroDTO = {
+        numerosIds,
+        changes: { toponymeId },
+      };
+      await BasesLocalesService.updateNumeros(baseLocale.id, payload);
+      await reloadNumeros();
+
+      setIsLoading(false);
+    },
+    [baseLocale.id, numerosIds, reloadNumeros]
+  );
 
   const onFormSubmit = useCallback(
     async (e) => {
@@ -94,7 +117,14 @@ function ToponymeEditor({
               }
             )
           : toaster(
-              () => BasesLocalesService.createToponyme(baseLocale.id, body),
+              async () => {
+                const toponyme = await BasesLocalesService.createToponyme(
+                  baseLocale.id,
+                  body
+                );
+                await updateNumerosToponyme(toponyme.id);
+                return toponyme;
+              },
               "Le toponyme a bien été ajouté",
               "Le toponyme n’a pas pu être ajouté",
               (error) => {
@@ -142,6 +172,7 @@ function ToponymeEditor({
       setValidationMessages,
       onSubmitted,
       toaster,
+      updateNumerosToponyme,
     ]
   );
 
@@ -192,6 +223,15 @@ function ToponymeEditor({
             handleLanguages={setNomAlt}
           />
         </FormInput>
+
+        {!initialValue && (
+          <FormInput>
+            <AddNumerosInput
+              numerosIds={numerosIds}
+              setNumerosIds={setNumerosIds}
+            />
+          </FormInput>
+        )}
 
         <FormInput ref={refs?.positions}>
           <PositionEditor

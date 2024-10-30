@@ -147,7 +147,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     if (map && isTileSourceLoaded) {
       // Filter positions of voie or toponyme
       if (voie) {
-        if (drawEnabled) {
+        if (drawEnabled && modeId !== "drawPolygon") {
           map.setFilter(VOIE_TRACE_LINE, ["!=", ["get", "id"], voie.id]);
         } else {
           map.setFilter(VOIE_TRACE_LINE, null);

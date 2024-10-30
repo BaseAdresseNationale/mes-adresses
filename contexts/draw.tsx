@@ -6,6 +6,8 @@ interface DrawContextType {
   drawEnabled: boolean;
   enableDraw: (voie: Voie) => void;
   disableDraw: () => void;
+  enableDrawPolygon: () => void;
+  disableDrawPolygon: () => void;
   modeId: string | null;
   setModeId: (value: string) => void;
   hint: string | null;
@@ -18,6 +20,9 @@ const DrawContext = React.createContext<DrawContextType | null>(null);
 
 export function DrawContextProvider(props: ChildrenProps) {
   const [drawEnabled, setDrawEnabled] = useState<boolean>(false);
+  const [modeInterne, setModeInterne] = useState<
+    "drawPolygon" | "drawLineString"
+  >(null);
   const [modeId, setModeId] = useState<string | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [data, setData] = useState<GeoJSON.Feature<LineString> | null>(null);
@@ -26,6 +31,19 @@ export function DrawContextProvider(props: ChildrenProps) {
   const enableDraw = useCallback((voie: Voie) => {
     setVoie(voie);
     setDrawEnabled(true);
+    setModeInterne("drawLineString");
+  }, []);
+
+  const enableDrawPolygon = useCallback(() => {
+    setDrawEnabled(true);
+    setModeId("drawPolygon");
+    setModeInterne("drawPolygon");
+  }, []);
+
+  const disableDrawPolygon = useCallback(() => {
+    setDrawEnabled(false);
+    setModeId("drawPolygon");
+    setModeInterne(null);
   }, []);
 
   useEffect(() => {
@@ -42,16 +60,23 @@ export function DrawContextProvider(props: ChildrenProps) {
 
   useEffect(() => {
     if (drawEnabled) {
-      if (data) {
-        // Edition mode
-        setModeId("editing");
-        setHint("Modifier le tracé de la voie directement depuis la carte.");
+      if (modeInterne === "drawPolygon") {
+        if (data) {
+          setModeId("editing");
+          setHint("Modifier le polygone directement depuis la carte.");
+        }
       } else {
-        // Creation mode
-        setModeId("drawLineString");
-        setHint(
-          "Cliquez sur la carte pour indiquer le début de la voie, puis ajouter de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie."
-        );
+        if (data) {
+          // Edition mode
+          setModeId("editing");
+          setHint("Modifier le tracé de directement depuis la carte.");
+        } else {
+          // Creation mode
+          setModeId("drawLineString");
+          setHint(
+            "Cliquez sur la carte pour indiquer le début de la voie, puis ajouter de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie."
+          );
+        }
       }
     } else {
       // Reset states
@@ -60,7 +85,7 @@ export function DrawContextProvider(props: ChildrenProps) {
       setVoie(null);
       setData(null);
     }
-  }, [drawEnabled, data]);
+  }, [modeInterne, drawEnabled, data, modeId]);
 
   const value = useMemo(
     () => ({
@@ -69,6 +94,8 @@ export function DrawContextProvider(props: ChildrenProps) {
       disableDraw: () => {
         setDrawEnabled(false);
       },
+      enableDrawPolygon,
+      disableDrawPolygon,
       modeId,
       setModeId,
       hint,
@@ -76,7 +103,15 @@ export function DrawContextProvider(props: ChildrenProps) {
       data,
       setData,
     }),
-    [enableDraw, drawEnabled, modeId, hint, data]
+    [
+      enableDraw,
+      enableDrawPolygon,
+      disableDrawPolygon,
+      drawEnabled,
+      modeId,
+      hint,
+      data,
+    ]
   );
 
   return <DrawContext.Provider value={value} {...props} />;
