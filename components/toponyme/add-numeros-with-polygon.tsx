@@ -38,7 +38,7 @@ function AddNumerosWithPolygon({
   useEffect(() => {
     enableDrawPolygon();
     setHint(
-      "Cliquez sur la carte pour dessiner un polygon. Une fois terminé, cliquez sur le dernier point afin de fermer le poligon. Les numeros dans le poligone seront selectionné"
+      "Cliquez sur la carte pour dessiner un polygon. Une fois terminé, cliquez sur le dernier point afin de fermer le polygone. Les numeros dans le polygone seront selectionné"
     );
     return () => {
       disableDrawPolygon();
@@ -95,7 +95,7 @@ function AddNumerosWithPolygon({
       {data === null ? (
         <Alert
           intent="none"
-          title="Cliquez sur la carte pour dessiner un polygon. Une fois terminé, cliquez sur le dernier point afin de fermer le poligon. Les numeros dans le poligone seront selectionné"
+          title="Cliquez sur la carte pour dessiner un polygon. Une fois terminé, cliquez sur le dernier point afin de fermer le polygone. Les numeros dans le polygone seront selectionné"
           marginBottom={32}
         />
       ) : (
