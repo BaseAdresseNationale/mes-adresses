@@ -27,7 +27,7 @@ function ToponymeNumeros({
   const numerosByVoie: Record<string, Numero[]> = useMemo(() => {
     return groupBy(
       numeros.sort((a, b) => a.numero - b.numero),
-      (d) => d.voie.nom
+      (d) => d.voie?.nom
     );
   }, [numeros]);
 

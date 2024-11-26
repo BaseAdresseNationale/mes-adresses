@@ -14,7 +14,7 @@ https://adresse-data-gouv-fr.gitbook.io/bal/mes-adresses
 
 ## Pré-requis
 
-- [Node.js](https://nodejs.org) 14+
+- [Node.js](https://nodejs.org) 22
 - [yarn](https://www.yarnpkg.com)
 
 ## Utilisation
@@ -76,19 +76,19 @@ $ yarn lint
 Cette application utilise des variables d'environnement pour sa configuration.
 Elles peuvent être définies classiquement ou en créant un fichier `.env` sur la base du modèle `.env.sample`.
 
-| Nom de la variable   | Description                                                                 |
-| -------------------- | --------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_BAL_API_URL` | URL de base de l’API BAL             |
-| `NEXT_PUBLIC_GEO_API_URL` | URL de base de l’API Géo             |
-| `NEXT_PUBLIC_ADRESSE_URL` | URL de base du site adresse.data.gouv.fr |
-| `NEXT_PUBLIC_EDITEUR_URL` | URL de base pour les redirection sur l'éditeur mes-adresses |
-| `NEXT_PUBLIC_API_BAN_URL` | URL de base de ban plateforme |
-| `NEXT_PUBLIC_BAN_API_DEPOT` | URL de base de l'api de depot |
-| `NEXT_PUBLIC_PEERTUBE` | URL du peertube |
-| `NEXT_PUBLIC_MATOMO_TRACKER_URL` | URL du matomo |
-| `NEXT_PUBLIC_MATOMO_SITE_ID` | Id du site sur matomo |
-| `NEXT_PUBLIC_BAL_ADMIN_URL` | URL de base de bal admin |
-| `PORT` | Port de l'application |
+| Nom de la variable               | Description                                                 |
+| -------------------------------- | ----------------------------------------------------------- |
+| `NEXT_PUBLIC_BAL_API_URL`        | URL de base de l’API BAL                                    |
+| `NEXT_PUBLIC_GEO_API_URL`        | URL de base de l’API Géo                                    |
+| `NEXT_PUBLIC_ADRESSE_URL`        | URL de base du site adresse.data.gouv.fr                    |
+| `NEXT_PUBLIC_EDITEUR_URL`        | URL de base pour les redirection sur l'éditeur mes-adresses |
+| `NEXT_PUBLIC_API_BAN_URL`        | URL de base de ban plateforme                               |
+| `NEXT_PUBLIC_BAN_API_DEPOT`      | URL de base de l'api de depot                               |
+| `NEXT_PUBLIC_PEERTUBE`           | URL du peertube                                             |
+| `NEXT_PUBLIC_MATOMO_TRACKER_URL` | URL du matomo                                               |
+| `NEXT_PUBLIC_MATOMO_SITE_ID`     | Id du site sur matomo                                       |
+| `NEXT_PUBLIC_BAL_ADMIN_URL`      | URL de base de bal admin                                    |
+| `PORT`                           | Port de l'application                                       |
 
 Toutes ces variables ont des valeurs par défaut que vous trouverez dans le fichier `.env.sample`.
 

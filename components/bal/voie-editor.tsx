@@ -75,7 +75,7 @@ function VoieEditor({
           communeDeleguee: communeDeleguee,
           trace: data ? data.geometry : null,
         };
-        console.log(body);
+
         // Add or edit a voie
         const submit = initialValue
           ? toaster(
@@ -198,7 +198,7 @@ function VoieEditor({
             validationMessage={getValidationMessage("nom")}
           />
 
-          {commune.communesDeleguees && (
+          {commune.communesDeleguees?.length > 0 && (
             <SelectCommune
               communes={commune.communesDeleguees}
               selectedCodeCommune={communeDeleguee}

@@ -19,13 +19,13 @@ export type ExtendedVoieDTO = {
     typeNumerotation: ExtendedVoieDTO.typeNumerotation;
     centroid: Record<string, any>;
     trace: Record<string, any>;
+    bbox: Array<string>;
     baseLocale: BaseLocale;
     numeros: Array<Numero>;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
-    commentedNumeros: Array<string>;
-    bbox: Record<string, any>;
+    comments: Array<string>;
 };
 
 export namespace ExtendedVoieDTO {

@@ -1,4 +1,4 @@
-import { Pane, Select, SelectField } from "evergreen-ui";
+import { Pane, SelectField } from "evergreen-ui";
 
 interface SelectCommuneProps {
   communes: {
