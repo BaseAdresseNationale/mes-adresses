@@ -45,6 +45,7 @@ export { UpdateVoieDTO } from './models/UpdateVoieDTO';
 export type { ValidatePinCodeDTO } from './models/ValidatePinCodeDTO';
 export { Voie } from './models/Voie';
 
+export { AdminService } from './services/AdminService';
 export { BasesLocalesService } from './services/BasesLocalesService';
 export { CommuneService } from './services/CommuneService';
 export { ExportCsvService } from './services/ExportCsvService';
