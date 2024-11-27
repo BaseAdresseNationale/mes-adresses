@@ -8,7 +8,7 @@ import {
   IconComponent,
 } from "evergreen-ui";
 
-import { BaseLocale, BaseLocaleSync } from "./openapi";
+import { BaseLocale, BaseLocaleSync } from "./openapi-api-bal";
 
 type StatusType = {
   label: string;

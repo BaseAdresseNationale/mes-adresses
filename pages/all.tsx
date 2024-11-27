@@ -18,7 +18,7 @@ import {
   BaseLocale,
   BasesLocalesService,
   PageBaseLocaleDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 
 const LIMIT_BY_PAGE = 20;
 

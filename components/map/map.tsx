@@ -51,7 +51,7 @@ import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
 import { CommuneType } from "@/types/commune";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 const TOPONYMES_MIN_ZOOM = 13;

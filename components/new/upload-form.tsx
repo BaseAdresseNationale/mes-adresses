@@ -41,7 +41,7 @@ import {
   ExtendedBaseLocaleDTO,
   OpenAPI,
   PageBaseLocaleDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { isExceptionClientId } from "./create-form";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";

@@ -8,7 +8,7 @@ import {
   ToponymesService,
   Voie,
   VoiesService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";

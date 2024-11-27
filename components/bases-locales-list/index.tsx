@@ -10,7 +10,7 @@ import useFuse from "@/hooks/fuse";
 
 import DeleteWarning from "@/components/delete-warning";
 import BaseLocaleCard from "@/components/base-locale-card";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface BasesLocalesListProps {
   basesLocales: ExtendedBaseLocaleDTO[];
