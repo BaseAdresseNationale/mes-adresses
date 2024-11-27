@@ -28,7 +28,10 @@ import {
   ExtendedVoieDTO,
   ExtentedToponymeDTO,
 } from "@/lib/openapi";
-import { CommuneApiGeoType } from "@/lib/geo-api/type";
+import {
+  CommuneApiGeoType,
+  CommuneDelegueeApiGeoType,
+} from "@/lib/geo-api/type";
 import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
 
@@ -142,6 +145,14 @@ export async function getBaseEditorProps(
   );
 
   const commune: CommuneType = { ...geoCommune, ...communeExtras };
+
+  const communesDeleguees: CommuneDelegueeApiGeoType[] =
+    await ApiGeoService.getCommunesDeleguee();
+  commune.communesDeleguees = communesDeleguees.filter(
+    ({ chefLieu, type }) =>
+      chefLieu === commune.code && type === "commune-deleguee"
+  );
+
   const voies: ExtendedVoieDTO[] =
     await BasesLocalesService.findBaseLocaleVoies(balId);
   const toponymes: ExtentedToponymeDTO[] =
