@@ -3,19 +3,20 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type Strategy = {
-    type: Strategy.type;
+export type StrategyDTO = {
+    type: StrategyDTO.type;
     pinCode: string;
     pinCodeExpiration: string;
     remainingAttempts: number;
     createdAt: string;
 };
 
-export namespace Strategy {
+export namespace StrategyDTO {
 
     export enum type {
         EMAIL = 'email',
         FRANCECONNECT = 'franceconnect',
+        INTERNAL = 'internal',
     }
 
 

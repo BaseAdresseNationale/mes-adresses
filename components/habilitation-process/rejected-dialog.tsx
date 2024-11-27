@@ -1,19 +1,19 @@
 import { Alert, Text } from "evergreen-ui";
-import { Strategy } from "@/lib/openapi";
+import { StrategyDTO } from "@/lib/openapi";
 
 interface RejectedDialogProps {
   communeName: string;
-  strategyType: Strategy.type;
+  strategyType: StrategyDTO.type;
 }
 
 function RejectedDialog({ communeName, strategyType }: RejectedDialogProps) {
   return (
     <Alert intent="danger" title="Votre demande d’habilitation a été rejetée">
       <Text>
-        {strategyType === "email" &&
+        {strategyType === StrategyDTO.type.EMAIL &&
           "Vous avez dépassé le nombre maximum de tentatives autorisé."}
 
-        {strategyType === "franceconnect" &&
+        {strategyType === StrategyDTO.type.FRANCECONNECT &&
           `Vous n’avez pas été identifié comme un élu de la commune de ${communeName}.`}
       </Text>
     </Alert>

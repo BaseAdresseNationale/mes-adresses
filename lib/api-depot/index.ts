@@ -1,5 +1,5 @@
 /* eslint no-restricted-imports: off */
-import { Revision, Client, ChefDeFile } from "./types";
+import { Revision } from "./types";
 
 const BAN_API_DEPOT: string =
   process.env.NEXT_PUBLIC_BAN_API_DEPOT ||
@@ -26,5 +26,4 @@ export class ApiDepotService {
   ): Promise<Revision> {
     return this.request(`/communes/${codeCommune}/current-revision`);
   }
-
 }
