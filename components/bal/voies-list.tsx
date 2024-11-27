@@ -10,7 +10,6 @@ import {
   LockIcon,
   Text,
   IconButton,
-  EndorsedIcon,
   Tooltip,
   FilterIcon,
   FilterRemoveIcon,
@@ -193,8 +192,8 @@ function VoiesList({
                     : null
                 }
                 comment={
-                  voie.comments.length > 0 ? (
-                    <CommentsContent comments={voie.comments} />
+                  voie.commentedNumeros.length > 0 ? (
+                    <CommentsContent comments={voie.commentedNumeros} />
                   ) : null
                 }
                 warning={

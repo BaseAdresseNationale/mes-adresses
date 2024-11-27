@@ -6,6 +6,13 @@ import React, {
   useMemo,
 } from "react";
 import Router from "next/router";
+import {
+  getCookie,
+  getCookies,
+  setCookie,
+  deleteCookie,
+  hasCookie,
+} from "cookies-next";
 
 import LocalStorageContext from "@/contexts/local-storage";
 import { BasesLocalesService } from "@/lib/openapi";
@@ -45,10 +52,12 @@ export function TokenContextProvider({
       if (baseLocale.token) {
         setToken(baseLocale.token);
         setEmails(baseLocale.emails);
+        setCookie("token", baseLocale.token);
         Object.assign(OpenAPI, { TOKEN: baseLocale.token });
       } else {
         Object.assign(OpenAPI, { TOKEN: null });
         setToken(null);
+        deleteCookie("token");
       }
 
       setTokenIsChecking(false);
@@ -69,6 +78,7 @@ export function TokenContextProvider({
     } else {
       Object.assign(OpenAPI, { TOKEN: null });
       setToken(null);
+      deleteCookie("token");
     }
   }, [verify, balId, _token, addBalAccess, getBalToken]);
 

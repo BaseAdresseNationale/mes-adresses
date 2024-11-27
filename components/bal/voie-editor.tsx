@@ -24,6 +24,7 @@ import {
   VoiesService,
 } from "@/lib/openapi";
 import LayoutContext from "@/contexts/layout";
+import Comment from "../comment";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -43,6 +44,9 @@ function VoieEditor({
     initialValue ? initialValue.typeNumerotation === "metrique" : false
   );
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : "");
+  const [comment, onCommentChange] = useInput(
+    initialValue ? initialValue.comment : ""
+  );
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
@@ -66,6 +70,7 @@ function VoieEditor({
           nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
           typeNumerotation: isMetric ? "metrique" : "numerique",
           trace: data ? data.geometry : null,
+          comment: comment ? comment : null,
         };
 
         // Add or edit a voie
@@ -126,6 +131,7 @@ function VoieEditor({
       baseLocale.id,
       initialValue,
       nom,
+      comment,
       isMetric,
       data,
       nomAlt,
@@ -202,6 +208,8 @@ function VoieEditor({
             handleLanguages={setNomAlt}
           />
         </FormInput>
+
+        <Comment input={comment} onChange={onCommentChange} />
 
         {isMetric && <DrawEditor />}
       </Pane>
