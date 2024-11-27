@@ -25,7 +25,7 @@ import { useInput, useCheckboxInput } from "@/hooks/input";
 import Comment from "@/components/comment";
 import CertificationButton from "@/components/certification-button";
 import FormInput from "@/components/form-input";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 
 interface GroupedActionsProps {
   idVoie: string;

@@ -32,7 +32,7 @@ import {
   Toponyme,
   Voie,
   VoiesService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import SignalementContext from "@/contexts/signalement";
 import LayoutContext from "@/contexts/layout";
 import usePublishProcess from "@/hooks/publish-process";

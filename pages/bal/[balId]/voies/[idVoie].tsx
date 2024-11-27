@@ -12,7 +12,7 @@ import VoieHeading from "@/components/voie/voie-heading";
 import NumerosList from "@/components/voie/numeros-list";
 import { CommuneType } from "@/types/commune";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi";
+import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi-api-bal";
 // Import BALRecoveryContext from '@/contexts/bal-recovery'
 
 interface VoiePageProps {

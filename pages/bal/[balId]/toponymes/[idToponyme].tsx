@@ -30,7 +30,7 @@ import {
   Numero,
   ToponymesService,
   UpdateBatchNumeroDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface ToponymePageProps {

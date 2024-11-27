@@ -27,7 +27,7 @@ import {
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
   ExtentedToponymeDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";

@@ -14,7 +14,7 @@ import { normalizeSort } from "@/lib/normalize";
 import BalDataContext from "@/contexts/bal-data";
 
 import FormInput from "@/components/form-input";
-import { VoiesService } from "@/lib/openapi";
+import { VoiesService } from "@/lib/openapi-api-bal";
 
 interface AddNumerosWithVoieProps {
   numerosIds: string[];

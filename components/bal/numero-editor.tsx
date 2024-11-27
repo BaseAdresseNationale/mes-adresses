@@ -30,7 +30,7 @@ import {
   Numero,
   NumerosService,
   VoiesService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
 

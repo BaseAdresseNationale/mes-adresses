@@ -21,7 +21,11 @@ import useFuse from "@/hooks/fuse";
 
 import DeleteWarning from "@/components/delete-warning";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
-import { ExtentedToponymeDTO, Numero, ToponymesService } from "@/lib/openapi";
+import {
+  ExtentedToponymeDTO,
+  Numero,
+  ToponymesService,
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import LanguagePreview from "./language-preview";
 import TableRowNotifications from "../table-row/table-row-notifications";

@@ -1,7 +1,7 @@
 import { Pane, Badge, Position, Tooltip, Icon } from "evergreen-ui";
 
 import { computeStatus } from "@/lib/statuses";
-import { BaseLocale, BaseLocaleSync } from "@/lib/openapi";
+import { BaseLocale, BaseLocaleSync } from "@/lib/openapi-api-bal";
 
 interface StatusBadgeProps {
   status: BaseLocale.status;

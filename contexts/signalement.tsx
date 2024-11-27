@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from "react";
 
-import { BaseLocale } from "@/lib/openapi";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 import {
   Signalement,
   DefaultService as SignalementService,

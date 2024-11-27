@@ -24,7 +24,11 @@ import DeleteWarning from "@/components/delete-warning";
 import GroupedActions from "@/components/grouped-actions";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import BALRecoveryContext from "@/contexts/bal-recovery";
-import { BasesLocalesService, Numero, NumerosService } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  Numero,
+  NumerosService,
+} from "@/lib/openapi-api-bal";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";

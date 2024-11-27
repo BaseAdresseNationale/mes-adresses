@@ -19,7 +19,7 @@ import {
   ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
   ExtendedVoieDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
 import useHabilitation from "@/hooks/habilitation";
 import { ChildrenProps } from "@/types/context";

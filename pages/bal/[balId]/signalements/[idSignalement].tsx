@@ -9,7 +9,7 @@ import {
   ToponymesService,
   Voie,
   VoiesService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import {
   ExistingLocation,
   Signalement,

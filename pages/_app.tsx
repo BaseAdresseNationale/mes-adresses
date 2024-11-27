@@ -17,7 +17,7 @@ import useMatomoTracker from "@/hooks/matomo-tracker";
 import Editor from "@/layouts/editor";
 import { BALRecoveryProvider } from "@/contexts/bal-recovery";
 import { BalDataContextProvider } from "@/contexts/bal-data";
-import { OpenAPI } from "@/lib/openapi";
+import { OpenAPI } from "@/lib/openapi-api-bal";
 import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
 import { LayoutContextProvider } from "@/contexts/layout";
