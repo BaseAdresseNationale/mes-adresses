@@ -147,7 +147,7 @@ export async function getBaseEditorProps(
   const commune: CommuneType = { ...geoCommune, ...communeExtras };
 
   const communesDeleguees: CommuneDelegueeApiGeoType[] =
-    await ApiGeoService.getCommunesDeleguee();
+    await ApiGeoService.getCommunesDeleguee(baseLocale.commune);
   commune.communesDeleguees = communesDeleguees.filter(
     ({ chefLieu, type }) =>
       chefLieu === commune.code && type === "commune-deleguee"

@@ -57,11 +57,9 @@ export class ApiGeoService {
     );
   }
 
-  public static async getCommunesDeleguee(): Promise<
-    CommuneDelegueeApiGeoType[]
-  > {
-    return this.request(
-      `/communes_associees_deleguees?fields=nom,code,chefLieu,type`
-    );
+  public static async getCommunesDeleguee(
+    chefLieu: string
+  ): Promise<CommuneDelegueeApiGeoType[]> {
+    return this.request(`/communes_associees_deleguees?chefLieu=${chefLieu}`);
   }
 }
