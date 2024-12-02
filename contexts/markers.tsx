@@ -2,7 +2,7 @@ import React, { useState, useCallback, useContext, useMemo } from "react";
 import { ObjectId } from "bson";
 
 import MapContext from "@/contexts/map";
-import { Position } from "@/lib/openapi";
+import { Position } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
 
 export interface Marker {

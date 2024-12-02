@@ -1,4 +1,4 @@
-import { Voie, LineString } from "@/lib/openapi";
+import { Voie, LineString } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 

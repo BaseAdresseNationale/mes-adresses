@@ -11,7 +11,7 @@ import {
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
   HabilitationService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 
 interface UseHabilitationType {
   habilitation: HabilitationDTO | null;

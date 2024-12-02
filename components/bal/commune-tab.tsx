@@ -9,7 +9,7 @@ import HabilitationInfos from "./habilitation-infos";
 import SignalementsInfos from "./signalement-infos";
 import ReadOnlyInfos from "./read-only-infos";
 import { CommuneType } from "@/types/commune";
-import { BaseLocale } from "@/lib/openapi";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 import SignalementContext from "@/contexts/signalement";
 
 interface CommuneTabProps {

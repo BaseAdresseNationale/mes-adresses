@@ -21,7 +21,7 @@ import {
   VideoContainer,
   PEERTUBE_LINK,
 } from "@/components/help/video-container";
-import { BaseLocale, BaseLocaleSync } from "@/lib/openapi";
+import { BaseLocale, BaseLocaleSync } from "@/lib/openapi-api-bal";
 
 function Publication() {
   return (

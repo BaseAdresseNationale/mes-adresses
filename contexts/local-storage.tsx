@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo } from "react";
 
 import { useLocalStorage } from "@/hooks/local-storage";
-import { BasesLocalesService, OpenAPI } from "@/lib/openapi";
+import { BasesLocalesService, OpenAPI } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
 import LayoutContext from "./layout";
 

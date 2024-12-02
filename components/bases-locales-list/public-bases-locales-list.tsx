@@ -2,7 +2,7 @@ import Router from "next/router";
 import { Pane, Table } from "evergreen-ui";
 
 import BaseLocaleCard from "@/components/base-locale-card";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface PublicBasesLocalesListProps {
   basesLocales: ExtendedBaseLocaleDTO[];

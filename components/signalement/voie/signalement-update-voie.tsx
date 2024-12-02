@@ -5,7 +5,7 @@ import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";
 import VoieEditor from "@/components/bal/voie-editor";
 import { Signalement } from "@/lib/openapi-signalement";
-import { Voie } from "@/lib/openapi";
+import { Voie } from "@/lib/openapi-api-bal";
 
 interface SignalementUpdateVoieProps {
   signalement: Signalement;

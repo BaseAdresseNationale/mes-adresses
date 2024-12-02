@@ -24,7 +24,7 @@ import {
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
   BaseLocaleSync,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import LayoutContext from "@/contexts/layout";
 
