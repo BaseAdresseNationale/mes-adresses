@@ -1,7 +1,7 @@
-import React, { useEffect, useContext } from "react";
+import React from "react";
 import { Heading, Pane, Text } from "evergreen-ui";
 
-import { ExtendedVoieDTO } from "@/lib/openapi";
+import { ExtendedVoieDTO } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
 interface HeaderSideBarProps {

@@ -1,14 +1,8 @@
-import React, { useEffect, useContext, useState, useCallback } from "react";
-import { Heading, Pane, Paragraph, Text } from "evergreen-ui";
+import React, { useContext, useState, useCallback } from "react";
+import { Pane, Paragraph } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import {
-  ExtendedVoieDTO,
-  Numero,
-  Toponyme,
-  Voie,
-  VoiesService,
-} from "@/lib/openapi";
+import { Toponyme, Voie, VoiesService } from "@/lib/openapi-api-bal";
 
 import BalDataContext from "@/contexts/bal-data";
 
@@ -161,7 +155,7 @@ function VoiesPage({ commune }: VoiesPageProps) {
 
 export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
-  console.log("ICI");
+
   try {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);

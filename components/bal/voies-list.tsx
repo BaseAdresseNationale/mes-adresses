@@ -166,7 +166,7 @@ function VoiesList({
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(voie: ExtendedVoieDTO & { commentedNumeros: Numero[] }) => (
+          {(voie: ExtendedVoieDTO) => (
             <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
               <Table.Cell
                 onClick={() => onSelect(voie.id)}

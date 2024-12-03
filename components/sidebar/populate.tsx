@@ -1,11 +1,7 @@
-import React, { useEffect, useContext, useCallback } from "react";
-import { Button, Heading, Pane, Paragraph, Text } from "evergreen-ui";
+import React, { useContext, useCallback } from "react";
+import { Button, Pane, Paragraph } from "evergreen-ui";
 
-import {
-  BaseLocale,
-  BasesLocalesService,
-  ExtendedVoieDTO,
-} from "@/lib/openapi";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import BalDataContext from "@/contexts/bal-data";
 

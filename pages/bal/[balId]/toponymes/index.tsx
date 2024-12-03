@@ -1,14 +1,8 @@
-import React, { useEffect, useContext, useState, useCallback } from "react";
-import { Heading, Pane, Paragraph, Text } from "evergreen-ui";
+import React, { useContext, useState, useCallback } from "react";
+import { Pane } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import {
-  ExtendedVoieDTO,
-  Numero,
-  Toponyme,
-  Voie,
-  VoiesService,
-} from "@/lib/openapi";
+import { Toponyme } from "@/lib/openapi-api-bal";
 
 import BalDataContext from "@/contexts/bal-data";
 

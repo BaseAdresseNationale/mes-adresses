@@ -128,24 +128,20 @@ export interface BaseEditorProps {
 export async function getBaseEditorProps(
   balId: string
 ): Promise<BaseEditorProps> {
-  const baseLocale: ExtendedBaseLocaleDTO =
-    await BasesLocalesService.findBaseLocale(balId, true);
+  const [baseLocale, voies, toponymes] = await Promise.all([
+    BasesLocalesService.findBaseLocale(balId, true),
+    BasesLocalesService.findBaseLocaleVoies(balId),
+    BasesLocalesService.findBaseLocaleToponymes(balId),
+  ]);
 
-  const communeExtras: CommuneExtraDTO = await CommuneService.findCommune(
-    baseLocale.commune
-  );
-  const geoCommune: CommuneApiGeoType = await ApiGeoService.getCommune(
-    baseLocale.commune,
-    {
+  const [communeExtras, geoCommune] = await Promise.all([
+    CommuneService.findCommune(baseLocale.commune),
+    ApiGeoService.getCommune(baseLocale.commune, {
       fields: "contour",
-    }
-  );
+    }),
+  ]);
 
   const commune: CommuneType = { ...geoCommune, ...communeExtras };
-  const voies: ExtendedVoieDTO[] =
-    await BasesLocalesService.findBaseLocaleVoies(balId);
-  const toponymes: ExtentedToponymeDTO[] =
-    await BasesLocalesService.findBaseLocaleToponymes(balId);
 
   return {
     baseLocale,

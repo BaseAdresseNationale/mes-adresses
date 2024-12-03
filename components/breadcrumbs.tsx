@@ -29,10 +29,12 @@ function Breadcrumbs({
   const balEditorPath = router.pathname.split("[balId]")[1];
   const innerPathSplitted = balEditorPath?.split("/");
   const innerPath = innerPathSplitted[1];
-  const innerPathLabel =
-    voie?.nom ||
-    toponyme?.nom ||
-    (innerPath === "[token]" ? "" : capitalize(innerPath));
+  const innerPathLabel = innerPath === "[token]" ? "" : capitalize(innerPath);
+
+  let secondInnerPathLabel;
+  if (innerPath === "voies" || innerPath === "toponymes") {
+    secondInnerPathLabel = voie?.nom || toponyme?.nom;
+  }
 
   let signalementLabel;
   if (innerPath === "signalements" && router.query.idSignalement) {
@@ -74,7 +76,23 @@ function Breadcrumbs({
               <Text>{signalementLabel}</Text>
             </>
           ) : (
-            <Text>{innerPathLabel}</Text>
+            <>
+              {secondInnerPathLabel ? (
+                <>
+                  <Link
+                    is={NextLink}
+                    href={`/bal/${baseLocale.id}/${innerPath}`}
+                  >
+                    {innerPathLabel}
+                  </Link>
+
+                  <Text color="muted">{" > "}</Text>
+                  <Text>{secondInnerPathLabel}</Text>
+                </>
+              ) : (
+                <Text>{innerPathLabel}</Text>
+              )}
+            </>
           )}
         </>
       )}
