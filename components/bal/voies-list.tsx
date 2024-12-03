@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { sortBy } from "lodash";
 import {
   Table,
@@ -14,6 +14,7 @@ import {
   Tooltip,
   FilterIcon,
   FilterRemoveIcon,
+  UndoIcon,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 
@@ -28,11 +29,14 @@ import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
 import InfiniteScrollList from "../infinite-scroll-list";
-import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi-api-bal";
+import { ExtendedVoieDTO, VoiesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LanguagePreview from "./language-preview";
+import { useLocalStorage } from "@/hooks/local-storage";
+
+const LIST_SCROLL_TOP = "list-scroll-top";
 
 interface VoiesListProps {
   voies: ExtendedVoieDTO[];
@@ -53,6 +57,7 @@ function VoiesList({
   openRecoveryDialog,
   openForm,
 }: VoiesListProps) {
+  const scrollListRef = useRef<HTMLInputElement>(null);
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const { isEditing, reloadVoies } = useContext(BalDataContext);
@@ -60,6 +65,13 @@ function VoiesList({
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
+  const [initialScroll] = useState(router.query.initialScroll);
+
+  useEffect(() => {
+    // ON SUPPRIME LE QUERY PARAMS INITIAL SCROLL DE L'URL
+    delete router.query.initialScroll;
+    router.push(router);
+  }, []);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -76,6 +88,10 @@ function VoiesList({
   };
 
   const onSelect = (id: string) => {
+    // AJOUTER LE SCROLL COURANT SUR LA FUTUR ROUTE PRECEDENTE
+    router.query.initialScroll = String(scrollListRef.current.scrollTop);
+    void router.push(router);
+    // ON VA SUR LA PAGE DE LA VOIE
     void router.push(`/bal/${balId}/voies/${id}`);
   };
 
@@ -165,7 +181,11 @@ function VoiesList({
           </Table.Row>
         )}
 
-        <InfiniteScrollList items={scrollableItems}>
+        <InfiniteScrollList
+          items={scrollableItems}
+          ref={scrollListRef}
+          initialScroll={initialScroll}
+        >
           {(voie: ExtendedVoieDTO) => (
             <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
               <Table.Cell
