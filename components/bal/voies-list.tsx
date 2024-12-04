@@ -89,10 +89,10 @@ function VoiesList({
     setIsDisabled(false);
   };
 
-  const onSelect = (id: string) => {
+  const onSelect = async (id: string) => {
     // AJOUTER LE SCROLL COURANT SUR LA FUTUR ROUTE PRECEDENTE
     router.query.initialScroll = String(scrollListRef.current.scrollTop);
-    void router.push(router);
+    await router.push(router);
     // ON VA SUR LA PAGE DE LA VOIE
     void router.push(`/bal/${balId}/voies/${id}`);
   };

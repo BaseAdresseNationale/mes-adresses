@@ -159,13 +159,6 @@ function VoiesPage({ commune }: VoiesPageProps) {
   );
 }
 
-// VoiesPage.getInitialProps = async ({ query }: NextPageContext) => {
-//   console.log("GET INITIAL PROPS", query.balId);
-//   const balId: string = query.balId as string;
-//   const props: BaseBalProps = await getBalProps(balId);
-//   return { props };
-// };
-
 export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
   console.log("GET SERVER SIDE PROPS");
