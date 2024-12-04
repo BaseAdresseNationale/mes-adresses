@@ -1,4 +1,11 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { sortBy } from "lodash";
 import {
   Table,
@@ -28,15 +35,15 @@ import useFuse from "@/hooks/fuse";
 import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
-import InfiniteScrollList from "../infinite-scroll-list";
 import { ExtendedVoieDTO, VoiesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LanguagePreview from "./language-preview";
-import { useLocalStorage } from "@/hooks/local-storage";
+import PaginationList from "../pagination-list";
 
-const LIST_SCROLL_TOP = "list-scroll-top";
+export const QUERY_SEARCH = "search";
+export const QUERY_PAGE = "page";
 
 interface VoiesListProps {
   voies: ExtendedVoieDTO[];
@@ -57,7 +64,6 @@ function VoiesList({
   openRecoveryDialog,
   openForm,
 }: VoiesListProps) {
-  const scrollListRef = useRef<HTMLInputElement>(null);
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const { isEditing, reloadVoies } = useContext(BalDataContext);
@@ -65,15 +71,20 @@ function VoiesList({
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
-  const [initialScroll] = useState<number>(
-    parseInt(router.query.initialScroll as string, 10)
+  const [page, setPage] = useState<number>(
+    Number(router.query?.page as string) || 1
   );
 
-  useEffect(() => {
-    // ON SUPPRIME LE QUERY PARAMS INITIAL SCROLL DE L'URL
-    delete router.query.initialScroll;
-    router.push(router);
-  }, []);
+  const search: string = router.query?.search as string;
+
+  const [filtered, setFilter] = useFuse(
+    voies,
+    200,
+    {
+      keys: ["nom"],
+    },
+    search
+  );
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -90,16 +101,27 @@ function VoiesList({
   };
 
   const onSelect = async (id: string) => {
-    // AJOUTER LE SCROLL COURANT SUR LA FUTUR ROUTE PRECEDENTE
-    router.query.initialScroll = String(scrollListRef.current.scrollTop);
-    await router.push(router);
-    // ON VA SUR LA PAGE DE LA VOIE
     void router.push(`/bal/${balId}/voies/${id}`);
   };
 
-  const [filtered, setFilter] = useFuse(voies, 200, {
-    keys: ["nom"],
-  });
+  const changePage = useCallback(
+    (change: number) => {
+      router.query[QUERY_PAGE] = String(change);
+      router.push(router, undefined, { shallow: true });
+      setPage(change);
+    },
+    [setPage, router]
+  );
+
+  const changeFilter = useCallback(
+    (change: string) => {
+      router.query[QUERY_SEARCH] = change;
+      router.push(router, undefined, { shallow: true });
+      setFilter(change);
+      changePage(1);
+    },
+    [setFilter, router, changePage]
+  );
 
   const scrollableItems = useMemo(() => {
     const items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
@@ -160,7 +182,8 @@ function VoiesList({
         <Table.Head>
           <Table.SearchHeaderCell
             placeholder="Rechercher une voie, une place, un lieu-dit..."
-            onChange={setFilter}
+            onChange={changeFilter}
+            value={search}
           />
           <Table.HeaderCell flex="unset">
             <Tooltip content="Voir seulement les voies avec des adresses non certifiées">
@@ -183,10 +206,10 @@ function VoiesList({
           </Table.Row>
         )}
 
-        <InfiniteScrollList
+        <PaginationList
           items={scrollableItems}
-          ref={scrollListRef}
-          initialScroll={initialScroll}
+          page={page}
+          setPage={changePage}
         >
           {(voie: ExtendedVoieDTO) => (
             <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
@@ -264,7 +287,7 @@ function VoiesList({
               )}
             </Table.Row>
           )}
-        </InfiniteScrollList>
+        </PaginationList>
       </Table>
     </>
   );
