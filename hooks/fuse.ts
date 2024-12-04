@@ -3,7 +3,7 @@ import Fuse from "fuse.js";
 
 import { useDebouncedCallback } from "use-debounce";
 
-function useFuse(source, delay, options) {
+function useFuse(source, delay, options, initialValue = null) {
   const [filtered, setFiltered] = useState(source || []);
 
   const fuse = useMemo(() => {
@@ -15,7 +15,11 @@ function useFuse(source, delay, options) {
 
   useEffect(() => {
     setFiltered(source);
-  }, [source]);
+    if (initialValue) {
+      const results = fuse.search(initialValue);
+      setFiltered(results.map((result) => result.item));
+    }
+  }, [source, initialValue]);
 
   const debouncedCallback = useDebouncedCallback((value) => {
     if (fuse) {
