@@ -1,7 +1,12 @@
 import React, { useContext, useState, useCallback } from "react";
 import { Pane, Paragraph } from "evergreen-ui";
 
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import {
+  BaseBalProps,
+  BaseEditorProps,
+  getBalProps,
+  getBaseEditorProps,
+} from "@/layouts/editor";
 import { Toponyme, Voie, VoiesService } from "@/lib/openapi-api-bal";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -18,6 +23,7 @@ import VoieEditor from "@/components/bal/voie-editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import PopulateSideBar from "@/components/sidebar/populate";
 import TokenContext from "@/contexts/token";
+import { NextPageContext } from "next";
 
 interface VoiesPageProps {
   commune: CommuneType;
@@ -153,9 +159,16 @@ function VoiesPage({ commune }: VoiesPageProps) {
   );
 }
 
+// VoiesPage.getInitialProps = async ({ query }: NextPageContext) => {
+//   console.log("GET INITIAL PROPS", query.balId);
+//   const balId: string = query.balId as string;
+//   const props: BaseBalProps = await getBalProps(balId);
+//   return { props };
+// };
+
 export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
-
+  console.log("GET SERVER SIDE PROPS");
   try {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);

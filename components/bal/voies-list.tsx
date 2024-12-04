@@ -65,7 +65,9 @@ function VoiesList({
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
-  const [initialScroll] = useState(router.query.initialScroll);
+  const [initialScroll] = useState<number>(
+    parseInt(router.query.initialScroll as string, 10)
+  );
 
   useEffect(() => {
     // ON SUPPRIME LE QUERY PARAMS INITIAL SCROLL DE L'URL
