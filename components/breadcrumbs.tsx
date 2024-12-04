@@ -81,7 +81,7 @@ function Breadcrumbs({
                 <>
                   <Link
                     is={NextLink}
-                    href={`/bal/${baseLocale.id}/${innerPath}`}
+                    href={`/bal/${baseLocale.id}?selectedTab=${innerPath}`}
                   >
                     {innerPathLabel}
                   </Link>

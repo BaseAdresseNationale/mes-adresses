@@ -18,19 +18,19 @@ export enum TabsEnum {
 }
 
 interface TabsSideBarProps {
+  selectedTab: TabsEnum;
   balId: string;
-  tabSelected: TabsEnum;
 }
 
-function TabsSideBar({ balId, tabSelected }: TabsSideBarProps) {
+function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
   const { isMobile } = useContext(LayoutContext);
   const { signalements } = useContext(SignalementContext);
 
   const urlByTab = useMemo(() => {
     return {
       commune: `/bal/${balId}`,
-      voies: `/bal/${balId}/voies`,
-      toponymes: `/bal/${balId}/toponymes`,
+      voies: `/bal/${balId}?selectedTab=voies`,
+      toponymes: `/bal/${balId}?selectedTab=toponymes`,
     };
   }, [balId]);
 
@@ -83,11 +83,11 @@ function TabsSideBar({ balId, tabSelected }: TabsSideBarProps) {
             },
           ].map(({ label, notif, tooltip, key }) => {
             const tab = (
-              <Link href={urlByTab[key]}>
+              <Link href={urlByTab[key]} shallow>
                 <Tab
                   key={key}
                   position="relative"
-                  isSelected={tabSelected === key}
+                  isSelected={selectedTab === key}
                 >
                   {label}
                   {notif > 0 && <span className="tab-notif">{notif}</span>}

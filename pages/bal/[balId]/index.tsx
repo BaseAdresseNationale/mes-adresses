@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect } from "react";
-import { Pane } from "evergreen-ui";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Pane, Paragraph } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
@@ -11,21 +11,48 @@ import { CommuneType } from "@/types/commune";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import TabsSideBar, { TabsEnum } from "@/components/sidebar/tabs";
-import { BaseLocale, BaseLocaleSync } from "@/lib/openapi-api-bal";
+import {
+  BaseLocale,
+  BaseLocaleSync,
+  Toponyme,
+  Voie,
+  VoiesService,
+} from "@/lib/openapi-api-bal";
 import usePublishProcess from "@/hooks/publish-process";
 import HeaderSideBar from "@/components/sidebar/header";
 import PopulateSideBar from "@/components/sidebar/populate";
+import { useRouter } from "next/router";
+import VoieEditor from "@/components/bal/voie-editor";
+import ToponymeEditor from "@/components/bal/toponyme-editor";
+import VoiesList from "@/components/bal/voies-list";
+import MapContext from "@/contexts/map";
+import LayoutContext from "@/contexts/layout";
+import ToponymesList from "@/components/bal/toponymes-list";
+import ConvertVoieWarning from "@/components/convert-voie-warning";
 
 interface BaseLocalePageProps {
+  selectedTab: TabsEnum;
   commune: CommuneType;
 }
 
 function BaseLocalePage({ commune }: BaseLocalePageProps) {
+  const [editedItem, setEditedItem] = useState<Voie | Toponyme | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
+  const [toConvert, setToConvert] = useState<string | null>(null);
+  const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
+
   const { token } = useContext(TokenContext);
-  const { voies, baseLocale, habilitation, isHabilitationValid } =
+  const { voies, toponymes, baseLocale, habilitation, isHabilitationValid } =
     useContext(BalDataContext);
+  const { toaster } = useContext(LayoutContext);
+  const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
+  const { refreshBALSync, reloadVoies, reloadToponymes, reloadParcelles } =
+    useContext(BalDataContext);
+  const router = useRouter();
+  const selectedTab: TabsEnum =
+    (router.query.selectedTab as TabsEnum) || TabsEnum.COMMUNE;
 
   useHelp(TabsEnum.COMMUNE);
 
@@ -41,8 +68,76 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     }
   }, [baseLocale.status, baseLocale.sync?.status, isHabilitationValid, token]);
 
+  const onRemove = useCallback(async () => {
+    await reloadParcelles();
+    reloadTiles();
+    refreshBALSync();
+  }, [refreshBALSync, reloadTiles, reloadParcelles]);
+
+  const onConvert = useCallback(async () => {
+    setOnConvertLoading(true);
+    const convertToponyme = toaster(
+      async () => {
+        const toponyme: Toponyme =
+          await VoiesService.convertToToponyme(toConvert);
+        await reloadVoies();
+        await reloadToponymes();
+        await reloadParcelles();
+        reloadTiles();
+        refreshBALSync();
+        // Select the tab topnyme after conversion
+        router.query.selectedTab = TabsEnum.TOPONYMES;
+        await router.push(router, undefined, { shallow: true });
+        setEditedItem(toponyme);
+        setIsFormOpen(true);
+      },
+      "La voie a bien été convertie en toponyme",
+      "La voie n’a pas pu être convertie en toponyme"
+    );
+
+    await convertToponyme();
+
+    setOnConvertLoading(false);
+    setToConvert(null);
+  }, [
+    router,
+    reloadVoies,
+    refreshBALSync,
+    reloadToponymes,
+    reloadTiles,
+    reloadParcelles,
+    toConvert,
+    toaster,
+  ]);
+
+  const onEdit = useCallback(
+    (idItem: string) => {
+      if (idItem) {
+        setEditedItem([...voies, ...toponymes].find(({ id }) => id === idItem));
+        setIsFormOpen(true);
+      } else {
+        setEditedItem(null);
+        setIsFormOpen(false);
+      }
+    },
+    [voies, toponymes]
+  );
+
   return (
     <>
+      <ConvertVoieWarning
+        isShown={Boolean(toConvert)}
+        content={
+          <Paragraph>
+            Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
+          </Paragraph>
+        }
+        isLoading={onConvertLoading}
+        onCancel={() => {
+          setToConvert(null);
+        }}
+        onConfirm={onConvert}
+      />
       <HeaderSideBar commune={commune} voies={voies} />
       <Pane
         position="relative"
@@ -52,14 +147,65 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
         width="100%"
         overflow="hidden"
       >
-        <TabsSideBar balId={baseLocale.id} tabSelected={TabsEnum.COMMUNE} />
+        {isFormOpen && selectedTab === TabsEnum.VOIES && (
+          <VoieEditor
+            initialValue={editedItem as Voie}
+            closeForm={() => {
+              onEdit(null);
+            }}
+          />
+        )}
+        {isFormOpen && selectedTab === TabsEnum.TOPONYMES && (
+          <ToponymeEditor
+            initialValue={editedItem as Toponyme}
+            commune={commune}
+            closeForm={() => {
+              onEdit(null);
+            }}
+          />
+        )}
 
-        <CommuneTab
-          commune={commune}
-          openRecoveryDialog={() => {
-            setIsRecoveryDisplayed(true);
-          }}
-        />
+        <TabsSideBar selectedTab={selectedTab} balId={baseLocale.id} />
+
+        {selectedTab === TabsEnum.COMMUNE && (
+          <CommuneTab
+            commune={commune}
+            openRecoveryDialog={() => {
+              setIsRecoveryDisplayed(true);
+            }}
+          />
+        )}
+
+        {selectedTab === TabsEnum.VOIES && (
+          <VoiesList
+            voies={voies}
+            balId={baseLocale.id}
+            onEnableEditing={onEdit}
+            setToConvert={setToConvert}
+            onRemove={onRemove}
+            openRecoveryDialog={() => {
+              setIsRecoveryDisplayed(true);
+            }}
+            openForm={() => {
+              setIsFormOpen(true);
+            }}
+          />
+        )}
+
+        {selectedTab === TabsEnum.TOPONYMES && (
+          <ToponymesList
+            toponymes={toponymes}
+            balId={baseLocale.id}
+            onEnableEditing={onEdit}
+            onRemove={onRemove}
+            openRecoveryDialog={() => {
+              setIsRecoveryDisplayed(true);
+            }}
+            openForm={() => {
+              setIsFormOpen(true);
+            }}
+          />
+        )}
 
         {token && voies && voies.length === 0 && (
           <PopulateSideBar commune={commune} baseLocale={baseLocale} />
