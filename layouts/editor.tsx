@@ -22,13 +22,11 @@ import { CommuneType } from "@/types/commune";
 import {
   BaseLocale,
   BasesLocalesService,
-  CommuneExtraDTO,
   CommuneService,
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
   ExtentedToponymeDTO,
 } from "@/lib/openapi-api-bal";
-import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
 
@@ -118,36 +116,11 @@ function Editor({ children, commune }: EditorProps) {
   );
 }
 
-export interface BaseBalProps {
-  baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
-}
-
 export interface BaseEditorProps {
   baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
   voies: ExtendedVoieDTO[];
   toponymes: ExtentedToponymeDTO[];
-}
-
-export async function getBalProps(balId: string): Promise<BaseBalProps> {
-  const [baseLocale] = await Promise.all([
-    BasesLocalesService.findBaseLocale(balId, true),
-  ]);
-
-  const [communeExtras, geoCommune] = await Promise.all([
-    CommuneService.findCommune(baseLocale.commune),
-    ApiGeoService.getCommune(baseLocale.commune, {
-      fields: "contour",
-    }),
-  ]);
-
-  const commune: CommuneType = { ...geoCommune, ...communeExtras };
-
-  return {
-    baseLocale,
-    commune,
-  };
 }
 
 export async function getBaseEditorProps(
