@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { useContext, useMemo } from "react";
 import { Pane, Tablist, Tab, Tooltip } from "evergreen-ui";
 import Link from "next/link";
 
@@ -83,7 +77,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
             },
           ].map(({ label, notif, tooltip, key }) => {
             const tab = (
-              <Link href={urlByTab[key]} shallow>
+              <Link href={urlByTab[key]} shallow style={{ margin: "0 5px" }}>
                 <Tab
                   key={key}
                   position="relative"

@@ -28,8 +28,12 @@ function Breadcrumbs({
 
   const balEditorPath = router.pathname.split("[balId]")[1];
   const innerPathSplitted = balEditorPath?.split("/");
-  const innerPath = innerPathSplitted[1];
-  const innerPathLabel = innerPath === "[token]" ? "" : capitalize(innerPath);
+  let innerPath = innerPathSplitted[1];
+  const selectedTab: string = router.query.selectedTab as string;
+  if (!innerPath && selectedTab) {
+    innerPath = selectedTab;
+  }
+  let innerPathLabel = innerPath === "[token]" ? "" : capitalize(innerPath);
 
   let secondInnerPathLabel;
   if (innerPath === "voies" || innerPath === "toponymes") {
