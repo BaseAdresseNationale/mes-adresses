@@ -24,6 +24,7 @@ import {
 } from "@/lib/openapi-api-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
+import { canFetchSignalements } from "@/lib/utils/signalement";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -121,14 +122,7 @@ function BaseLocaleCard({
     if (!baseLocale.token) {
       void fetchHabilitationIsValid();
     } else {
-      const signalementWhiteList =
-        process.env.NEXT_PUBLIC_SIGNALEMENT_COMMUNES_WHITE_LIST?.split(",") ||
-        [];
-      if (
-        baseLocale.status === BaseLocale.status.PUBLISHED &&
-        process.env.NEXT_PUBLIC_API_SIGNALEMENT &&
-        signalementWhiteList.includes(baseLocale.commune)
-      ) {
+      if (canFetchSignalements(baseLocale, baseLocale.token)) {
         void fetchPendingSignalementsCount();
       }
       void fetchHabilitation();

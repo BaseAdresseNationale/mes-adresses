@@ -1,4 +1,5 @@
 import {
+  BaseLocale,
   Numero,
   Toponyme,
   ToponymesService,
@@ -215,4 +216,20 @@ export const detectChanges = (
     parcelles: JSON.stringify(parcelles) !== JSON.stringify(existingParcelles),
     complement: nomComplement && nomComplement !== existingToponyme?.nom,
   };
+};
+
+export const canFetchSignalements = (baseLocale: BaseLocale, token: string) => {
+  const noSignalementWhiteList =
+    process.env.NEXT_PUBLIC_SIGNALEMENT_COMMUNES_WHITE_LIST === undefined;
+
+  const signalementWhiteList =
+    process.env.NEXT_PUBLIC_SIGNALEMENT_COMMUNES_WHITE_LIST?.split(",") || [];
+
+  return (
+    baseLocale.status === BaseLocale.status.PUBLISHED &&
+    Boolean(token) &&
+    process.env.NEXT_PUBLIC_API_SIGNALEMENT !== undefined &&
+    (noSignalementWhiteList ||
+      signalementWhiteList.includes(baseLocale.commune))
+  );
 };
