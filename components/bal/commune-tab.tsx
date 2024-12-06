@@ -20,13 +20,16 @@ interface CommuneTabProps {
 function CommuneTab({ commune, openRecoveryDialog }: CommuneTabProps) {
   const { baseLocale } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
-  const { signalements } = useContext(SignalementContext);
+  const { signalementCounts } = useContext(SignalementContext);
 
   return (
     <Pane overflowY="auto">
       {!token && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
-      {signalements.length > 0 && (
-        <SignalementsInfos balId={baseLocale.id} signalements={signalements} />
+      {(signalementCounts.pending > 0 || signalementCounts.archived > 0) && (
+        <SignalementsInfos
+          balId={baseLocale.id}
+          signalementCounts={signalementCounts}
+        />
       )}
       {token && baseLocale.status !== BaseLocale.status.DEMO && (
         <HabilitationInfos commune={commune} />

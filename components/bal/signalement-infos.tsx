@@ -1,18 +1,30 @@
 import React from "react";
 import { Pane, Heading, Button, Alert } from "evergreen-ui";
-import { Signalement } from "@/lib/openapi-signalement";
 import { useRouter } from "next/navigation";
+import { SignalementCounts } from "@/contexts/signalement";
 
 interface SignalementInfosProps {
   balId: string;
-  signalements: Signalement[];
+  signalementCounts: SignalementCounts;
 }
 
-function SignalementInfos({ balId, signalements }: SignalementInfosProps) {
+function SignalementInfos({ balId, signalementCounts }: SignalementInfosProps) {
   const router = useRouter();
   const onClick = () => {
     router.push(`/bal/${balId}/signalements`);
   };
+
+  const signalementBtn = (
+    <Button
+      type="button"
+      onClick={onClick}
+      width="fit-content"
+      alignSelf="center"
+      appearance="primary"
+    >
+      Consulter les signalements
+    </Button>
+  );
 
   return (
     <Pane
@@ -24,26 +36,21 @@ function SignalementInfos({ balId, signalements }: SignalementInfosProps) {
       margin={8}
     >
       <Heading marginBottom={15}>Signalements</Heading>
-      <Alert
-        intent="info"
-        title={
-          <Pane fontWeight="normal">
-            Vous avez reçu <b>{signalements.length}</b>{" "}
-            {signalements.length > 1 ? "propositions" : "proposition"}.
-          </Pane>
-        }
-      >
-        <Button
-          marginTop="1rem"
-          type="button"
-          onClick={onClick}
-          width="fit-content"
-          alignSelf="center"
-          appearance="primary"
+      {signalementCounts.pending > 0 ? (
+        <Alert
+          intent="info"
+          title={
+            <Pane fontWeight="normal">
+              Vous avez reçu <b>{signalementCounts.pending}</b>{" "}
+              {signalementCounts.pending > 1 ? "propositions" : "proposition"}.
+            </Pane>
+          }
         >
-          Consulter les signalements
-        </Button>
-      </Alert>
+          <Pane marginTop="1rem">{signalementBtn}</Pane>
+        </Alert>
+      ) : (
+        <Pane>{signalementBtn}</Pane>
+      )}
     </Pane>
   );
 }
