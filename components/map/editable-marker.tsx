@@ -1,11 +1,10 @@
-import { useState, useCallback, useContext, useEffect, useMemo } from "react";
+import { useCallback, useContext, useEffect, useMemo } from "react";
 import { Marker, ViewState } from "react-map-gl";
 import { Pane, MapMarkerIcon, Text } from "evergreen-ui";
 import nearestPointOnLine from "@turf/nearest-point-on-line";
 import length from "@turf/length";
 import * as helpers from "@turf/helpers";
 import lineSlice from "@turf/line-slice";
-import { Coord } from "@turf/helpers";
 
 import MapContext from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
@@ -94,47 +93,49 @@ function EditableMarker({
     computeSuggestedNumero,
   ]);
 
-  return markers.map((marker, idx) => (
-    <Marker
-      key={marker.id}
-      longitude={marker.longitude}
-      latitude={marker.latitude}
-      draggable
-      onDrag={(e) => onDrag(e, idx)}
-      onDragEnd={(e) => onDrag(e, idx)}
-    >
-      <Pane>
-        <Text
-          position="absolute"
-          top={-30}
-          transform={`translate(calc(-50% + ${size / 2}px), -5px)`} // Place label on top of marker
-          borderRadius={20}
-          backgroundColor="rgba(0, 0, 0, 0.7)"
-          color="white"
-          paddingX={8}
-          paddingY={1}
-          fontSize={10}
-          whiteSpace="nowrap"
-        >
-          {completeNumero
-            ? `${completeNumero} - ${marker.type}`
-            : `${marker.type}`}
-        </Text>
+  return markers
+    .filter((marker) => !marker.isMapMarker)
+    .map((marker, idx) => (
+      <Marker
+        key={marker.id}
+        longitude={marker.longitude}
+        latitude={marker.latitude}
+        draggable
+        onDrag={(e) => onDrag(e, idx)}
+        onDragEnd={(e) => onDrag(e, idx)}
+      >
+        <Pane>
+          <Text
+            position="absolute"
+            top={-30}
+            transform={`translate(calc(-50% + ${size / 2}px), -5px)`} // Place label on top of marker
+            borderRadius={20}
+            backgroundColor="rgba(0, 0, 0, 0.7)"
+            color="white"
+            paddingX={8}
+            paddingY={1}
+            fontSize={10}
+            whiteSpace="nowrap"
+          >
+            {completeNumero
+              ? `${completeNumero} - ${marker.type}`
+              : `${marker.type}`}
+          </Text>
 
-        <MapMarkerIcon
-          filter="drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))"
-          color={
-            marker.isDisabled
-              ? "muted"
-              : style === "vector"
-                ? "info"
-                : "success"
-          }
-          size={size}
-        />
-      </Pane>
-    </Marker>
-  ));
+          <MapMarkerIcon
+            filter="drop-shadow(1px 2px 1px rgba(0, 0, 0, .3))"
+            color={
+              marker.isDisabled
+                ? "muted"
+                : style === "vector"
+                  ? "info"
+                  : "success"
+            }
+            size={size}
+          />
+        </Pane>
+      </Marker>
+    ));
 }
 
 export default EditableMarker;

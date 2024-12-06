@@ -41,6 +41,10 @@ interface ToponymesListProps {
   openForm: () => void;
 }
 
+const fuseOptions = {
+  keys: ["nom"],
+};
+
 function ToponymesList({
   toponymes,
   onEnableEditing,
@@ -74,9 +78,7 @@ function ToponymesList({
     void router.push(`/bal/${balId}/toponymes/${id}`);
   };
 
-  const [filtered, setFilter] = useFuse(toponymes, 200, {
-    keys: ["nom"],
-  });
+  const [filtered, setFilter] = useFuse(toponymes, 200, fuseOptions);
 
   const scrollableItems = useMemo(
     () => sortBy(filtered, (v) => normalizeSort(v.nom)),

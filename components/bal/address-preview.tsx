@@ -1,31 +1,14 @@
 import { Pane, Text } from "evergreen-ui";
 
-import { computeCompletNumero } from "@/lib/utils/numero";
 import { CommuneType } from "@/types/commune";
-
-const getAddressPreview = (numero, suffixe, toponyme, voie, commune) => {
-  const completNumero = computeCompletNumero(numero, suffixe) || "";
-  if (toponyme) {
-    return `${completNumero} ${voie}, ${toponyme} - ${commune.nom} (${commune.code})`;
-  }
-
-  if (voie) {
-    return `${completNumero} ${voie} - ${commune.nom} (${commune.code})`;
-  }
-
-  if (!voie && !toponyme) {
-    return `${completNumero} - ${commune.nom} (${commune.code})`;
-  }
-
-  return `${completNumero} ${voie} - ${commune.nom} (${commune.code})`;
-};
+import { getAddressPreview } from "@/lib/utils/address";
 
 interface AddressPreviewProps {
   numero: string | number;
   suffixe?: string;
-  selectedNomToponyme: string;
-  voie: string;
-  commune: CommuneType;
+  selectedNomToponyme?: string;
+  voie?: string;
+  commune?: CommuneType;
 }
 
 function AddressPreview({
@@ -38,9 +21,9 @@ function AddressPreview({
   const address = getAddressPreview(
     numero,
     suffixe,
+    commune,
     selectedNomToponyme,
-    voie,
-    commune
+    voie
   );
 
   return (
