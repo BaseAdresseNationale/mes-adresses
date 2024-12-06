@@ -18,7 +18,7 @@ interface TabsSideBarProps {
 
 function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
   const { isMobile } = useContext(LayoutContext);
-  const { signalements } = useContext(SignalementContext);
+  const { signalementCounts } = useContext(SignalementContext);
 
   return (
     <>
@@ -34,7 +34,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
             {
               key: TabsEnum.COMMUNE,
               label: "Commune",
-              notif: signalements.length,
+              notif: signalementCounts.pending,
               href: `/bal/${balId}?selectedTab=${TabsEnum.COMMUNE}`,
             },
             {
