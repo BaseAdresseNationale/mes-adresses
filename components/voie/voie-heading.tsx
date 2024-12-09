@@ -65,6 +65,11 @@ function VoieHeading({ voie }: VoieHeadingProps) {
               {numeros.length} numéro{numeros.length > 1 ? "s" : ""}
             </Text>
           )}
+          {voie.comment && (
+            <Text color="gray" fontStyle="italic">
+              {voie.comment}
+            </Text>
+          )}
         </Pane>
         {voie.nomAlt && <LanguagePreview nomAlt={voie.nomAlt} />}
       </Heading>

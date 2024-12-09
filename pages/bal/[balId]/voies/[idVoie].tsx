@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { Pane } from "evergreen-ui";
+import * as cookie from "cookie";
 
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
@@ -12,7 +13,12 @@ import VoieHeading from "@/components/voie/voie-heading";
 import NumerosList from "@/components/voie/numeros-list";
 import { CommuneType } from "@/types/commune";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi-api-bal";
+import {
+  ExtendedVoieDTO,
+  Numero,
+  OpenAPI,
+  VoiesService,
+} from "@/lib/openapi-api-bal";
 // Import BALRecoveryContext from '@/contexts/bal-recovery'
 
 interface VoiePageProps {
@@ -21,7 +27,6 @@ interface VoiePageProps {
 
 function VoiePage({ commune }: VoiePageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
-  // Const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
 
   useHelp(3);
 
@@ -68,8 +73,14 @@ function VoiePage({ commune }: VoiePageProps) {
   );
 }
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, req }) {
   const { idVoie, balId }: { idVoie: string; balId: string } = params;
+
+  const parsedCookies = cookie.parse(req.headers.cookie);
+  if (parsedCookies.token) {
+    Object.assign(OpenAPI, { TOKEN: parsedCookies.token });
+  }
+
   try {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
