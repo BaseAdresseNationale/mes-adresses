@@ -22,7 +22,7 @@ import {
   UpdateVoieDTO,
   Voie,
   VoiesService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
 

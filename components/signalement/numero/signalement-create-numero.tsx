@@ -2,7 +2,7 @@ import { Button, Pane } from "evergreen-ui";
 import React from "react";
 import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 import { Signalement } from "@/lib/openapi-signalement";
 
 interface SignalementCreateNumeroProps {

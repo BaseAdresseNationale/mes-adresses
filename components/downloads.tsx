@@ -1,6 +1,16 @@
-import { Pane, Heading, Link, DownloadIcon, Checkbox, Alert, Button, Text, Label } from "evergreen-ui";
+import {
+  Pane,
+  Heading,
+  Link,
+  DownloadIcon,
+  Checkbox,
+  Alert,
+  Button,
+  Text,
+  Label,
+} from "evergreen-ui";
 import { useContext, useState } from "react";
-import { ExportCsvService } from "@/lib/openapi";
+import { ExportCsvService } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
 
 interface DownloadsProps {
@@ -63,21 +73,19 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
                   checked={withComment}
                   onChange={(e) => setWithComment(e.target.checked)}
                 />
-                <Text 
-                  marginLeft={6} 
-                >
-                  Avec commentaires
-                </Text> 
+                <Text marginLeft={6}>Avec commentaires</Text>
               </>
             )}
           </Pane>
-          { withComment &&
+          {withComment && (
             <Alert marginLeft={-30} marginRight={10} hasIcon={false}>
               <Text is="p" textAlign="center">
-                Attention, si vous avez renseigné des informations à caractère personnel dans vos commentaires, celles-ci seront présentes dans l’export de votre Base Adresse Locale.
+                Attention, si vous avez renseigné des informations à caractère
+                personnel dans vos commentaires, celles-ci seront présentes dans
+                l’export de votre Base Adresse Locale.
               </Text>
             </Alert>
-          }
+          )}
         </Pane>
         <Pane is="li" marginBottom={10}>
           <Link style={{ cursor: "pointer" }} onClick={downloadVoieCsv}>

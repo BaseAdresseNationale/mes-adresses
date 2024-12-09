@@ -1,6 +1,6 @@
 import React from "react";
 import { Pane, Text, Strong } from "evergreen-ui";
-import { HabilitationDTO } from "@/lib/openapi";
+import { HabilitationDTO } from "@/lib/openapi-api-bal";
 
 interface RevisionUserProps {
   communeName: string;

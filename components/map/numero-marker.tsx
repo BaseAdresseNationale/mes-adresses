@@ -13,7 +13,7 @@ import {
 import { Tooltip } from "evergreen-ui/commonjs/tooltip";
 
 import { computeCompletNumero } from "@/lib/utils/numero";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 
 interface NumeroMarkerProps {
   numero: Numero;

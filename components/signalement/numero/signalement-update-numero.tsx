@@ -13,7 +13,7 @@ import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";
 import MarkersContext from "@/contexts/markers";
 import PositionItem from "../../bal/position-item";
-import { Numero, Position, Voie, VoiesService } from "@/lib/openapi";
+import { Numero, Position, Voie, VoiesService } from "@/lib/openapi-api-bal";
 import {
   Signalement,
   Position as PositionSignalement,

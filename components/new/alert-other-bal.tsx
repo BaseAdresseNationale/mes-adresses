@@ -9,7 +9,7 @@ import LocalStorageContext from "@/contexts/local-storage";
 
 import BaseLocaleCard from "@/components/base-locale-card";
 import DeleteWarning from "@/components/delete-warning";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface AlertOtherBALProps {
   isShown: boolean;

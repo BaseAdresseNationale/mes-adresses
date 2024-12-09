@@ -6,7 +6,7 @@ import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 import { NextRouter, useRouter } from "next/router";
 import { CommuneType } from "@/types/commune";
-import { Toponyme, Voie } from "@/lib/openapi";
+import { Toponyme, Voie } from "@/lib/openapi-api-bal";
 import { ViewState } from "react-map-gl";
 
 function useBounds(

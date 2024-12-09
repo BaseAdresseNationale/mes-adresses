@@ -1,12 +1,5 @@
 import React, { useEffect, useContext } from "react";
 import { Pane } from "evergreen-ui";
-import {
-  getCookie,
-  getCookies,
-  setCookie,
-  deleteCookie,
-  hasCookie,
-} from "cookies-next";
 import * as cookie from "cookie";
 
 import TokenContext from "@/contexts/token";
@@ -20,7 +13,13 @@ import VoieHeading from "@/components/voie/voie-heading";
 import NumerosList from "@/components/voie/numeros-list";
 import { CommuneType } from "@/types/commune";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import { ExtendedVoieDTO, Numero, OpenAPI, VoiesService } from "@/lib/openapi";
+import {
+  ExtendedVoieDTO,
+  Numero,
+  OpenAPI,
+  VoiesService,
+} from "@/lib/openapi-api-bal";
+// Import BALRecoveryContext from '@/contexts/bal-recovery'
 
 interface VoiePageProps {
   commune: CommuneType;

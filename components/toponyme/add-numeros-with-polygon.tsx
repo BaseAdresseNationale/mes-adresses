@@ -18,7 +18,7 @@ import {
 } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
-import { BasesLocalesService, Numero } from "@/lib/openapi";
+import { BasesLocalesService, Numero } from "@/lib/openapi-api-bal";
 import DrawContext from "@/contexts/draw";
 
 interface AddNumerosWithPolygonProps {

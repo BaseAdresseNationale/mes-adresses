@@ -10,7 +10,7 @@ import {
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
   BaseLocaleSync,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 
 interface BALStatusProps {
   baseLocale: ExtendedBaseLocaleDTO;

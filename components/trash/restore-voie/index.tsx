@@ -3,7 +3,7 @@ import { Pane, Heading, Button, AddIcon, CrossIcon } from "evergreen-ui";
 
 import ListNumerosDeleted from "@/components/trash/restore-voie/list-numeros-deleted";
 import LanguagePreview from "@/components/bal/language-preview";
-import { Numero, Voie } from "@/lib/openapi";
+import { Numero, Voie } from "@/lib/openapi-api-bal";
 
 interface RestoreVoieProps {
   voie: Voie & { numeros: Numero[] };

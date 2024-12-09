@@ -4,7 +4,7 @@ import NumeroEditor from "../../bal/numero-editor";
 import { CommuneType } from "@/types/commune";
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
-import { Numero, NumerosService, Voie } from "@/lib/openapi";
+import { Numero, NumerosService, Voie } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface SignalementDeleteNumeroProps {

@@ -27,7 +27,7 @@ import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
 import InfiniteScrollList from "../infinite-scroll-list";
-import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi";
+import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";

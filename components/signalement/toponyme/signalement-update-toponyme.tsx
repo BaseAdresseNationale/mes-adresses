@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { CommuneType } from "@/types/commune";
 import SignalementCard from "../signalement-card";
 import ToponymeEditor from "@/components/bal/toponyme-editor";
-import { Position, Toponyme } from "@/lib/openapi";
+import { Position, Toponyme } from "@/lib/openapi-api-bal";
 import PositionItem from "@/components/bal/position-item";
 import MarkersContext from "@/contexts/markers";
 import {
