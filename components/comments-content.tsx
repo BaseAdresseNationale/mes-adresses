@@ -30,7 +30,7 @@ function CommentsContent({
           </Pane>
         ) : (
           <Text color="white">
-            Commentaire {`${commentedNumeros.length > 0 ? "s" : ""}`}
+            Commentaire{`${commentedNumeros.length > 0 ? "s" : ""}`}
           </Text>
         )}
       </Pane>
