@@ -25,7 +25,7 @@ import {
   ExtendedBaseLocaleDTO,
   OpenAPI,
   PageBaseLocaleDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Client, Revision } from "@/lib/api-depot/types";
 import LayoutContext from "@/contexts/layout";

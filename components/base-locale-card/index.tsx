@@ -20,7 +20,7 @@ import {
   HabilitationDTO,
   HabilitationService,
   OpenAPI,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 
 const ADRESSE_URL =

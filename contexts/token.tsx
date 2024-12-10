@@ -8,9 +8,9 @@ import React, {
 import Router from "next/router";
 
 import LocalStorageContext from "@/contexts/local-storage";
-import { BasesLocalesService } from "@/lib/openapi";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
-import { OpenAPI } from "@/lib/openapi";
+import { OpenAPI } from "@/lib/openapi-api-bal";
 
 interface TokenContextType {
   token: string | null;

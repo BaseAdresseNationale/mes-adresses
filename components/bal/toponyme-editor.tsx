@@ -23,7 +23,7 @@ import {
   Toponyme,
   ToponymesService,
   UpdateBatchNumeroDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
 import SelectCommune from "../select-commune";

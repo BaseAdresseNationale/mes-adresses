@@ -2,9 +2,12 @@ import { useState, useContext, Dispatch, SetStateAction } from "react";
 
 import { getBANCommune } from "@/lib/api-ban";
 import BalDataContext from "@/contexts/bal-data";
-import { BasesLocalesService, HabilitationService } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  HabilitationService,
+} from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
-import { BaseLocale } from "@/lib/openapi";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface UsePublishProcess {

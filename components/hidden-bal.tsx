@@ -8,7 +8,7 @@ import {
   UndoIcon,
   Spinner,
 } from "evergreen-ui";
-import { BasesLocalesService } from "@/lib/openapi";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
 
 import LocalStorageContext from "@/contexts/local-storage";
 

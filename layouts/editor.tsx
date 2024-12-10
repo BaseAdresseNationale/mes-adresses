@@ -27,7 +27,7 @@ import {
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
   ExtentedToponymeDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import {
   CommuneApiGeoType,
   CommuneDelegueeApiGeoType,

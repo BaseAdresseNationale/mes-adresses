@@ -6,7 +6,7 @@ import BalDataContext from "@/contexts/bal-data";
 
 import ToponymeEditor from "@/components/bal/toponyme-editor";
 import LanguagePreview from "../bal/language-preview";
-import { Toponyme } from "@/lib/openapi";
+import { Toponyme } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
 interface ToponymeHeadingProps {

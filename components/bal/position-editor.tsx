@@ -12,7 +12,7 @@ import MarkersContext from "@/contexts/markers";
 
 import InputLabel from "@/components/input-label";
 import PositionItem from "./position-item";
-import { Position } from "@/lib/openapi";
+import { Position } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface PositionEditorProps {

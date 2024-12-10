@@ -9,7 +9,7 @@ import {
   WarningSignIcon,
   Position,
 } from "evergreen-ui";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 
 interface ToponymeNumerosProps {
   numeros: Numero[];

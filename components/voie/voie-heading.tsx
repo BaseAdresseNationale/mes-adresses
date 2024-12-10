@@ -6,8 +6,8 @@ import BalDataContext from "@/contexts/bal-data";
 
 import VoieEditor from "@/components/bal/voie-editor";
 import LanguagePreview from "../bal/language-preview";
-import { Voie } from "@/lib/openapi";
 import { CommuneType } from "@/types/commune";
+import { Voie } from "@/lib/openapi-api-bal";
 
 interface VoieHeadingProps {
   commune: CommuneType;

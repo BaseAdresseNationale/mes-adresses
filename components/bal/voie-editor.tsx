@@ -22,7 +22,7 @@ import {
   UpdateVoieDTO,
   Voie,
   VoiesService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import SelectCommune from "../select-commune";
