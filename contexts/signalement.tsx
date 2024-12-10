@@ -43,7 +43,7 @@ export function SignalementContextProvider(props: ChildrenProps) {
     const archivedCount = await SignalementsService.getSignalements(
       1,
       undefined,
-      [Signalement.status.PROCESSED, Signalement.status.EXPIRED],
+      [Signalement.status.PROCESSED, Signalement.status.IGNORED],
       undefined,
       undefined,
       [baseLocale.commune]
