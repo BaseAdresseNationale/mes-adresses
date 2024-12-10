@@ -9,6 +9,7 @@ import type { RestoreVoieDTO } from '../models/RestoreVoieDTO';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateVoieDTO } from '../models/UpdateVoieDTO';
 import type { Voie } from '../models/Voie';
+import type { VoieMetas } from '../models/VoieMetas';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -68,6 +69,24 @@ export class VoiesService {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v2/voies/{voieId}',
+            path: {
+                'voieId': voieId,
+            },
+        });
+    }
+
+    /**
+     * Find Voie Metas by id
+     * @param voieId
+     * @returns VoieMetas
+     * @throws ApiError
+     */
+    public static findVoieMetas(
+        voieId: string,
+    ): CancelablePromise<VoieMetas> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/voies/{voieId}/metas',
             path: {
                 'voieId': voieId,
             },

@@ -39,6 +39,7 @@ interface BALDataContextType {
   isHabilitationValid: boolean;
   parcelles: Array<string>;
   reloadParcelles: () => Promise<void>;
+  setVoies: React.Dispatch<React.SetStateAction<ExtendedVoieDTO[]>>;
   voie: Voie;
   setVoie: (voie: Voie) => void;
   toponyme: Toponyme;
@@ -298,6 +299,7 @@ export function BalDataContextProvider({
       reloadToponymes,
       reloadBaseLocale,
       setVoie,
+      setVoies,
       setToponyme,
       certifyAllNumeros,
       uncertifyAllNumeros,
@@ -326,6 +328,7 @@ export function BalDataContextProvider({
       initialToponymes,
       voies,
       toponymes,
+      setVoies,
       reloadNumeros,
       reloadVoies,
       reloadToponymes,

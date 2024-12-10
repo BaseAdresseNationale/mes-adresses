@@ -9,6 +9,7 @@ import {
   Tab,
   Tooltip,
 } from "evergreen-ui";
+import { keyBy } from "lodash";
 
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
@@ -32,6 +33,9 @@ import {
   Toponyme,
   Voie,
   VoiesService,
+  VoieMetas,
+  ExtendedVoieDTO,
+  OpenAPI,
 } from "@/lib/openapi-api-bal";
 import SignalementContext from "@/contexts/signalement";
 import LayoutContext from "@/contexts/layout";
@@ -50,8 +54,14 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
   const { token } = useContext(TokenContext);
   const { toaster } = useContext(LayoutContext);
-  const { voies, toponymes, baseLocale, habilitation, isHabilitationValid } =
-    useContext(BalDataContext);
+  const {
+    voies,
+    toponymes,
+    baseLocale,
+    habilitation,
+    isHabilitationValid,
+    setVoies,
+  } = useContext(BalDataContext);
   const { isMobile } = useContext(LayoutContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
@@ -68,6 +78,25 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const { signalements } = useContext(SignalementContext);
 
   useHelp(selectedTabIndex);
+
+  useEffect(() => {
+    async function addCommentsToVoies() {
+      try {
+        const voieMetas: VoieMetas[] =
+          await BasesLocalesService.findVoieMetasByBal(baseLocale.id);
+        const voiesMetasByVoieId = keyBy(voieMetas, "id");
+        setVoies((voies: ExtendedVoieDTO[]) =>
+          voies.map((v) => ({ ...v, ...voiesMetasByVoieId[v.id] }))
+        );
+      } catch (e) {
+        console.error("Impossible de charger les commentaires de voies", e);
+      }
+    }
+
+    if (OpenAPI.TOKEN) {
+      addCommentsToVoies();
+    }
+  }, [baseLocale.id, setVoies, OpenAPI.TOKEN]);
 
   useEffect(() => {
     if (

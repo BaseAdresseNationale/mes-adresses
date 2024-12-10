@@ -1,6 +1,5 @@
 import React, { useEffect, useContext } from "react";
 import { Pane } from "evergreen-ui";
-import * as cookie from "cookie";
 
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
@@ -75,11 +74,6 @@ function VoiePage({ commune }: VoiePageProps) {
 
 export async function getServerSideProps({ params, req }) {
   const { idVoie, balId }: { idVoie: string; balId: string } = params;
-
-  const parsedCookies = cookie.parse(req.headers.cookie);
-  if (parsedCookies.token) {
-    Object.assign(OpenAPI, { TOKEN: parsedCookies.token });
-  }
 
   try {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
