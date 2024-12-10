@@ -21,7 +21,6 @@ function TableRowNotifications({
   warning,
 }: TableRowNotificationsProps) {
   const { token } = useContext(TokenContext);
-
   return (
     <>
       {comment && token && (

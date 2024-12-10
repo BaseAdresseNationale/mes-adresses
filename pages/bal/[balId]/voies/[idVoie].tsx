@@ -12,7 +12,13 @@ import VoieHeading from "@/components/voie/voie-heading";
 import NumerosList from "@/components/voie/numeros-list";
 import { CommuneType } from "@/types/commune";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi-api-bal";
+import {
+  ExtendedVoieDTO,
+  Numero,
+  OpenAPI,
+  VoieMetas,
+  VoiesService,
+} from "@/lib/openapi-api-bal";
 // Import BALRecoveryContext from '@/contexts/bal-recovery'
 
 interface VoiePageProps {
@@ -21,19 +27,27 @@ interface VoiePageProps {
 
 function VoiePage({ commune }: VoiePageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
-  // Const {setIsRecoveryDisplayed} = useContext(BALRecoveryContext)
 
   useHelp(3);
 
   const { token } = useContext(TokenContext);
-  const { voie, numeros, reloadNumeros } = useContext(BalDataContext);
+  const { voie, setVoie, numeros, reloadNumeros } = useContext(BalDataContext);
 
-  // Load protected fields (ex: 'comment')
   useEffect(() => {
+    async function addCommentsToVoies() {
+      try {
+        const voieMetas: VoieMetas = await VoiesService.findVoieMetas(voie.id);
+        setVoie({ ...voie, ...voieMetas });
+      } catch (e) {
+        console.error("Impossible de charger les commentaires de voie", e);
+      }
+    }
+
     if (token) {
+      addCommentsToVoies();
       reloadNumeros();
     }
-  }, [token, reloadNumeros]);
+  }, [token]);
 
   return (
     <>
@@ -68,8 +82,9 @@ function VoiePage({ commune }: VoiePageProps) {
   );
 }
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, req }) {
   const { idVoie, balId }: { idVoie: string; balId: string } = params;
+
   try {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);

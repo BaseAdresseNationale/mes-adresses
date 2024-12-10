@@ -10,7 +10,6 @@ import {
   LockIcon,
   Text,
   IconButton,
-  EndorsedIcon,
   Tooltip,
   FilterIcon,
   FilterRemoveIcon,
@@ -166,7 +165,7 @@ function VoiesList({
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(voie: ExtendedVoieDTO & { commentedNumeros: Numero[] }) => (
+          {(voie: ExtendedVoieDTO) => (
             <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
               <Table.Cell
                 onClick={() => onSelect(voie.id)}
@@ -193,8 +192,11 @@ function VoiesList({
                     : null
                 }
                 comment={
-                  voie.comments.length > 0 ? (
-                    <CommentsContent comments={voie.comments} />
+                  voie.commentedNumeros?.length > 0 ? (
+                    <CommentsContent
+                      mainComment={voie.comment}
+                      commentedNumeros={voie.commentedNumeros}
+                    />
                   ) : null
                 }
                 warning={

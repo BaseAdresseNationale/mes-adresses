@@ -23,6 +23,7 @@ import type { UpdateBaseLocaleDemoDTO } from '../models/UpdateBaseLocaleDemoDTO'
 import type { UpdateBaseLocaleDTO } from '../models/UpdateBaseLocaleDTO';
 import type { UpdateBatchNumeroDTO } from '../models/UpdateBatchNumeroDTO';
 import type { Voie } from '../models/Voie';
+import type { VoieMetas } from '../models/VoieMetas';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -531,6 +532,24 @@ export class BasesLocalesService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+
+    /**
+     * Find all Metas Voie in Bal
+     * @param baseLocaleId
+     * @returns VoieMetas
+     * @throws ApiError
+     */
+    public static findVoieMetasByBal(
+        baseLocaleId: string,
+    ): CancelablePromise<Array<VoieMetas>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/voies/metas',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
         });
     }
 
