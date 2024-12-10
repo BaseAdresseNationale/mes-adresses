@@ -5,8 +5,7 @@ import { CommuneType } from "@/types/commune";
 import { BaseLocale, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import { useRouter } from "next/router";
 import { capitalize } from "lodash";
-import SignalementContext from "@/contexts/signalement";
-import { getSignalementLabel } from "@/lib/utils/signalement";
+import LayoutContext from "@/contexts/layout";
 
 type BreadcrumbsProps = {
   baseLocale: BaseLocale;
@@ -24,7 +23,7 @@ function Breadcrumbs({
   ...props
 }: BreadcrumbsProps) {
   const router = useRouter();
-  const { signalements } = useContext(SignalementContext);
+  const { breadcrumbs } = useContext(LayoutContext);
 
   const balEditorPath = router.pathname.split("[balId]")[1];
   const innerPathSplitted = balEditorPath?.split("/");
@@ -33,15 +32,6 @@ function Breadcrumbs({
     voie?.nom ||
     toponyme?.nom ||
     (innerPath === "[token]" ? "" : capitalize(innerPath));
-
-  let signalementLabel;
-  if (innerPath === "signalements" && router.query.idSignalement) {
-    const signalementId = router.query.idSignalement;
-    const signalement = signalements.find(
-      (signalement) => signalement._id === signalementId
-    );
-    signalementLabel = signalement && getSignalementLabel(signalement);
-  }
 
   return (
     <Pane
@@ -58,26 +48,18 @@ function Breadcrumbs({
 
       {!innerPath && <Text>{baseLocale.nom || commune.nom}</Text>}
 
-      {innerPath && (
+      {breadcrumbs ? (
+        breadcrumbs
+      ) : innerPath ? (
         <>
           <Link is={NextLink} href={`/bal/${baseLocale.id}`}>
             {baseLocale.nom || commune.nom}
           </Link>
 
           <Text color="muted">{" > "}</Text>
-          {signalementLabel ? (
-            <>
-              <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>
-                {innerPathLabel}
-              </Link>
-              <Text color="muted">{" > "}</Text>
-              <Text>{signalementLabel}</Text>
-            </>
-          ) : (
-            <Text>{innerPathLabel}</Text>
-          )}
+          <Text>{innerPathLabel}</Text>
         </>
-      )}
+      ) : null}
     </Pane>
   );
 }

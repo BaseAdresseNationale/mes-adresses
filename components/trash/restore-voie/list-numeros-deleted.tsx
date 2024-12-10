@@ -16,14 +16,16 @@ interface ListNumerosDeletedProps {
   setSelectedNumerosIds: Dispatch<SetStateAction<string[]>>;
 }
 
+const fuseOptions = {
+  keys: ["numero"],
+};
+
 function ListNumerosDeleted({
   numeros,
   selectedNumerosIds,
   setSelectedNumerosIds,
 }: ListNumerosDeletedProps) {
-  const [filtered, setFilter] = useFuse(numeros, 200, {
-    keys: ["numero"],
-  });
+  const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
 
   const scrollableItems = useMemo(
     () =>

@@ -16,6 +16,10 @@ interface BasesLocalesListProps {
   basesLocales: ExtendedBaseLocaleDTO[];
 }
 
+const fuseOptions = {
+  keys: ["nom", "commune"],
+};
+
 function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
   const { removeBAL, getHiddenBal, addHiddenBal } =
     useContext(LocalStorageContext);
@@ -33,9 +37,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
     Router.push(`/bal/${bal.id}`);
   };
 
-  const [filtered, onFilter] = useFuse(basesLocales, 200, {
-    keys: ["nom", "commune"],
-  });
+  const [filtered, onFilter] = useFuse(basesLocales, 200, fuseOptions);
 
   const onRemove = useCallback(async () => {
     await removeBAL(toRemove);

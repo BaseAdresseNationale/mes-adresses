@@ -65,7 +65,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     setIsEditing,
   } = useContext(BalDataContext);
 
-  const { signalements } = useContext(SignalementContext);
+  const { signalementCounts } = useContext(SignalementContext);
 
   useHelp(selectedTabIndex);
 
@@ -262,7 +262,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
             {[
               {
                 label: "Commune",
-                notif: signalements.length,
+                notif: signalementCounts.pending,
               },
               {
                 label: "Voies",
@@ -302,6 +302,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
                   onSelect={() => {
                     setSelectedTabIndex(index);
                   }}
+                  key={label}
                 >
                   {label}
                   {notif > 0 && <span className="tab-notif">{notif}</span>}
