@@ -71,10 +71,7 @@ function VoiesList({
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
-  const [page, setPage] = useState<number>(
-    Number(router.query?.page as string) || 1
-  );
-
+  let page = Number(router.query?.page as string) || 1;
   const search: string = router.query?.search as string;
 
   const [filtered, setFilter] = useFuse(
@@ -108,9 +105,9 @@ function VoiesList({
     (change: number) => {
       router.query[QUERY_PAGE] = String(change);
       router.push(router, undefined, { shallow: true });
-      setPage(change);
+      page = change;
     },
-    [setPage, router]
+    [, router]
   );
 
   const changeFilter = useCallback(

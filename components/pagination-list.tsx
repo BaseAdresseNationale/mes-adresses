@@ -32,6 +32,8 @@ function PaginationList({
           page={page}
           totalPages={Math.ceil(items?.length / LIMIT)}
           onPageChange={(newPage) => setPage(newPage)}
+          onPreviousPage={() => setPage(page - 1)}
+          onNextPage={() => setPage(page + 1)}
         ></Pagination>
       )}
     </Pane>
