@@ -16,6 +16,7 @@ import {
   ExtendedVoieDTO,
   Numero,
   OpenAPI,
+  VoieMetas,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 // Import BALRecoveryContext from '@/contexts/bal-recovery'
@@ -30,14 +31,23 @@ function VoiePage({ commune }: VoiePageProps) {
   useHelp(3);
 
   const { token } = useContext(TokenContext);
-  const { voie, numeros, reloadNumeros } = useContext(BalDataContext);
+  const { voie, setVoie, numeros, reloadNumeros } = useContext(BalDataContext);
 
-  // Load protected fields (ex: 'comment')
   useEffect(() => {
+    async function addCommentsToVoies() {
+      try {
+        const voieMetas: VoieMetas = await VoiesService.findVoieMetas(voie.id);
+        setVoie({ ...voie, ...voieMetas });
+      } catch (e) {
+        console.error("Impossible de charger les commentaires de voie", e);
+      }
+    }
+
     if (token) {
+      addCommentsToVoies();
       reloadNumeros();
     }
-  }, [token, reloadNumeros]);
+  }, [token]);
 
   return (
     <>

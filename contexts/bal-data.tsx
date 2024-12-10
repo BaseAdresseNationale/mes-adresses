@@ -41,7 +41,7 @@ interface BALDataContextType {
   reloadParcelles: () => Promise<void>;
   setVoies: React.Dispatch<React.SetStateAction<ExtendedVoieDTO[]>>;
   voie: Voie;
-  setVoie: (voie: Voie) => void;
+  setVoie: React.Dispatch<React.SetStateAction<Voie>>;
   toponyme: Toponyme;
   setToponyme: (Toponyme: Toponyme) => void;
   numeros: Array<Numero>;

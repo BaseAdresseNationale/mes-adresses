@@ -144,7 +144,7 @@ function ToponymesList({
         )}
 
         <InfiniteScrollList items={scrollableItems}>
-          {(toponyme: ExtentedToponymeDTO) => (
+          {(toponyme: ExtentedToponymeDTO & { commentedNumeros: Numero[] }) => (
             <Table.Row key={toponyme.id} paddingRight={8} minHeight={48}>
               <Table.Cell
                 onClick={() => onSelect(toponyme.id)}
@@ -178,7 +178,9 @@ function ToponymesList({
                 comment={
                   toponyme.commentedNumeros.length > 0 ? (
                     <CommentsContent
-                      commentedNumeros={toponyme.commentedNumeros}
+                      commentedNumeros={(
+                        toponyme.commentedNumeros as Numero[]
+                      ).map(({ comment }) => comment)}
                     />
                   ) : null
                 }

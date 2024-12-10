@@ -93,10 +93,10 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
       }
     }
 
-    if (OpenAPI.TOKEN) {
+    if (token) {
       addCommentsToVoies();
     }
-  }, [baseLocale.id, setVoies, OpenAPI.TOKEN]);
+  }, [token]);
 
   useEffect(() => {
     if (
