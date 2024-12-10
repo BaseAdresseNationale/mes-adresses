@@ -1,4 +1,11 @@
-import { useContext, useMemo, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { sortBy } from "lodash";
 import {
   Table,
@@ -14,6 +21,7 @@ import {
   Tooltip,
   FilterIcon,
   FilterRemoveIcon,
+  UndoIcon,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 
@@ -27,12 +35,15 @@ import useFuse from "@/hooks/fuse";
 import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
-import InfiniteScrollList from "../infinite-scroll-list";
-import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi-api-bal";
+import { ExtendedVoieDTO, VoiesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LanguagePreview from "./language-preview";
+import PaginationList from "../pagination-list";
+
+export const QUERY_SEARCH = "search";
+export const QUERY_PAGE = "page";
 
 interface VoiesListProps {
   voies: ExtendedVoieDTO[];
@@ -60,6 +71,17 @@ function VoiesList({
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
+  let page = Number(router.query?.page as string) || 1;
+  const search: string = router.query?.search as string;
+
+  const [filtered, setFilter] = useFuse(
+    voies,
+    200,
+    {
+      keys: ["nom"],
+    },
+    search
+  );
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -75,13 +97,28 @@ function VoiesList({
     setIsDisabled(false);
   };
 
-  const onSelect = (id: string) => {
+  const onSelect = async (id: string) => {
     void router.push(`/bal/${balId}/voies/${id}`);
   };
 
-  const [filtered, setFilter] = useFuse(voies, 200, {
-    keys: ["nom"],
-  });
+  const changePage = useCallback(
+    (change: number) => {
+      router.query[QUERY_PAGE] = String(change);
+      router.push(router, undefined, { shallow: true });
+      page = change;
+    },
+    [, router]
+  );
+
+  const changeFilter = useCallback(
+    (change: string) => {
+      router.query[QUERY_SEARCH] = change;
+      router.push(router, undefined, { shallow: true });
+      setFilter(change);
+      changePage(1);
+    },
+    [setFilter, router, changePage]
+  );
 
   const scrollableItems = useMemo(() => {
     const items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
@@ -142,7 +179,8 @@ function VoiesList({
         <Table.Head>
           <Table.SearchHeaderCell
             placeholder="Rechercher une voie, une place, un lieu-dit..."
-            onChange={setFilter}
+            onChange={changeFilter}
+            value={search}
           />
           <Table.HeaderCell flex="unset">
             <Tooltip content="Voir seulement les voies avec des adresses non certifiées">
@@ -165,8 +203,12 @@ function VoiesList({
           </Table.Row>
         )}
 
-        <InfiniteScrollList items={scrollableItems}>
-          {(voie: ExtendedVoieDTO & { commentedNumeros: Numero[] }) => (
+        <PaginationList
+          items={scrollableItems}
+          page={page}
+          setPage={changePage}
+        >
+          {(voie: ExtendedVoieDTO) => (
             <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
               <Table.Cell
                 onClick={() => onSelect(voie.id)}
@@ -242,7 +284,7 @@ function VoiesList({
               )}
             </Table.Row>
           )}
-        </InfiniteScrollList>
+        </PaginationList>
       </Table>
     </>
   );

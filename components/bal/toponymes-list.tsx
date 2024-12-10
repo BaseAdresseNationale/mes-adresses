@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { sortBy } from "lodash";
 import {
   Table,
@@ -31,6 +31,8 @@ import LanguagePreview from "./language-preview";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import CommentsContent from "../comments-content";
 import TableRowActions from "../table-row/table-row-actions";
+import { QUERY_PAGE, QUERY_SEARCH } from "./voies-list";
+import PaginationList from "../pagination-list";
 
 interface ToponymesListProps {
   toponymes: ExtentedToponymeDTO[];
@@ -55,6 +57,11 @@ function ToponymesList({
   const { isEditing, reloadToponymes } = useContext(BalDataContext);
   const { toaster } = useContext(LayoutContext);
   const router = useRouter();
+  const [page, setPage] = useState<number>(
+    Number(router.query?.page as string) || 1
+  );
+
+  const search: string = router.query?.search as string;
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -74,9 +81,33 @@ function ToponymesList({
     void router.push(`/bal/${balId}/toponymes/${id}`);
   };
 
-  const [filtered, setFilter] = useFuse(toponymes, 200, {
-    keys: ["nom"],
-  });
+  const [filtered, setFilter] = useFuse(
+    toponymes,
+    200,
+    {
+      keys: ["nom"],
+    },
+    search
+  );
+
+  const changePage = useCallback(
+    (change: number) => {
+      router.query[QUERY_PAGE] = String(change);
+      router.push(router, undefined, { shallow: true });
+      setPage(change);
+    },
+    [setPage, router]
+  );
+
+  const changeFilter = useCallback(
+    (change: string) => {
+      router.query[QUERY_SEARCH] = change;
+      router.push(router, undefined, { shallow: true });
+      setFilter(change);
+      changePage(1);
+    },
+    [setFilter, router, changePage]
+  );
 
   const scrollableItems = useMemo(
     () => sortBy(filtered, (v) => normalizeSort(v.nom)),
@@ -131,7 +162,8 @@ function ToponymesList({
         <Table.Head>
           <Table.SearchHeaderCell
             placeholder="Rechercher un toponyme"
-            onChange={setFilter}
+            onChange={changeFilter}
+            value={search}
           />
         </Table.Head>
 
@@ -143,7 +175,11 @@ function ToponymesList({
           </Table.Row>
         )}
 
-        <InfiniteScrollList items={scrollableItems}>
+        <PaginationList
+          items={scrollableItems}
+          page={page}
+          setPage={changePage}
+        >
           {(toponyme: ExtentedToponymeDTO & { commentedNumeros: Numero[] }) => (
             <Table.Row key={toponyme.id} paddingRight={8} minHeight={48}>
               <Table.Cell
@@ -209,7 +245,7 @@ function ToponymesList({
               )}
             </Table.Row>
           )}
-        </InfiniteScrollList>
+        </PaginationList>
       </Table>
     </>
   );
