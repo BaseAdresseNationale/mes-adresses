@@ -20,14 +20,6 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
   const { isMobile } = useContext(LayoutContext);
   const { signalements } = useContext(SignalementContext);
 
-  const urlByTab = useMemo(() => {
-    return {
-      commune: `/bal/${balId}`,
-      voies: `/bal/${balId}?selectedTab=voies`,
-      toponymes: `/bal/${balId}?selectedTab=toponymes`,
-    };
-  }, [balId]);
-
   return (
     <>
       <Pane
@@ -43,6 +35,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
               key: TabsEnum.COMMUNE,
               label: "Commune",
               notif: signalements.length,
+              href: `/bal/${balId}`,
             },
             {
               key: TabsEnum.VOIES,
@@ -59,6 +52,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
                   </p>
                 </>
               ),
+              href: `/bal/${balId}?selectedTab=voies`,
             },
             {
               key: TabsEnum.TOPONYMES,
@@ -74,10 +68,11 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
                   </p>
                 </>
               ),
+              href: `/bal/${balId}?selectedTab=toponymes`,
             },
-          ].map(({ label, notif, tooltip, key }) => {
+          ].map(({ label, notif, tooltip, key, href }) => {
             const tab = (
-              <Link href={urlByTab[key]} shallow style={{ margin: "0 5px" }}>
+              <Link href={href} shallow style={{ margin: "0 5px" }}>
                 <Tab
                   key={key}
                   position="relative"

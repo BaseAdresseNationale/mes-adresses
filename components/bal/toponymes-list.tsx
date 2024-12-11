@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { sortBy } from "lodash";
 import {
   Table,
@@ -17,10 +17,7 @@ import { normalizeSort } from "@/lib/normalize";
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
 
-import useFuse from "@/hooks/fuse";
-
 import DeleteWarning from "@/components/delete-warning";
-import InfiniteScrollList from "@/components/infinite-scroll-list";
 import {
   ExtentedToponymeDTO,
   Numero,
@@ -31,8 +28,8 @@ import LanguagePreview from "./language-preview";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import CommentsContent from "../comments-content";
 import TableRowActions from "../table-row/table-row-actions";
-import { QUERY_PAGE, QUERY_SEARCH } from "./voies-list";
 import PaginationList from "../pagination-list";
+import { useSearchPagination } from "@/hooks/search-pagination";
 
 interface ToponymesListProps {
   toponymes: ExtentedToponymeDTO[];
@@ -57,11 +54,8 @@ function ToponymesList({
   const { isEditing, reloadToponymes } = useContext(BalDataContext);
   const { toaster } = useContext(LayoutContext);
   const router = useRouter();
-  const [page, setPage] = useState<number>(
-    Number(router.query?.page as string) || 1
-  );
-
-  const search: string = router.query?.search as string;
+  const [page, changePage, search, changeFilter, filtered] =
+    useSearchPagination(toponymes);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -80,34 +74,6 @@ function ToponymesList({
   const onSelect = (id: string) => {
     void router.push(`/bal/${balId}/toponymes/${id}`);
   };
-
-  const [filtered, setFilter] = useFuse(
-    toponymes,
-    200,
-    {
-      keys: ["nom"],
-    },
-    search
-  );
-
-  const changePage = useCallback(
-    (change: number) => {
-      router.query[QUERY_PAGE] = String(change);
-      router.push(router, undefined, { shallow: true });
-      setPage(change);
-    },
-    [setPage, router]
-  );
-
-  const changeFilter = useCallback(
-    (change: string) => {
-      router.query[QUERY_SEARCH] = change;
-      router.push(router, undefined, { shallow: true });
-      setFilter(change);
-      changePage(1);
-    },
-    [setFilter, router, changePage]
-  );
 
   const scrollableItems = useMemo(
     () => sortBy(filtered, (v) => normalizeSort(v.nom)),
