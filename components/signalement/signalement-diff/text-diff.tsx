@@ -1,6 +1,8 @@
 import { Paragraph, Text } from "evergreen-ui";
 import React from "react";
 import fastDiff from "fast-diff";
+import { signalementTypeMap } from "../signalement-type-badge";
+import { Signalement } from "@/lib/openapi-signalement";
 
 interface TextDiffProps {
   from?: string;
@@ -23,6 +25,10 @@ function TextDiff({ from, to }: TextDiffProps) {
                     <Text
                       is="del"
                       fontWeight="bold"
+                      backgroundColor={
+                        signalementTypeMap[Signalement.type.LOCATION_TO_DELETE]
+                          .backgroundColor
+                      }
                       key={index}
                       {...(diffStr[index + 1]?.[0] === fastDiff.INSERT
                         ? { marginRight: 4 }
@@ -36,6 +42,10 @@ function TextDiff({ from, to }: TextDiffProps) {
                     <Text
                       is="ins"
                       fontWeight="bold"
+                      backgroundColor={
+                        signalementTypeMap[Signalement.type.LOCATION_TO_CREATE]
+                          .backgroundColor
+                      }
                       key={index}
                       {...(diffStr[index + 1]?.[0] === fastDiff.DELETE
                         ? { marginRight: 4 }

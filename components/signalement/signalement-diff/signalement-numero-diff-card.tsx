@@ -26,8 +26,7 @@ interface SignalementNumeroDiffCardProps {
     from?: string;
     to: string;
   };
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  onClick?: () => void;
   backgroundColor?: string;
   isActive?: boolean;
 }
@@ -39,8 +38,7 @@ export function SignalementNumeroDiffCard({
   positions,
   parcelles,
   complement,
-  onMouseEnter,
-  onMouseLeave,
+  onClick,
   backgroundColor,
   isActive,
 }: SignalementNumeroDiffCardProps) {
@@ -49,8 +47,7 @@ export function SignalementNumeroDiffCard({
       title={title}
       backgroundColor={backgroundColor}
       isActive={isActive}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onClick={onClick}
     >
       <Pane
         marginTop={8}

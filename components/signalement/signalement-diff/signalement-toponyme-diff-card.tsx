@@ -20,8 +20,7 @@ interface SignalementToponymeDiffCardProps {
   };
   backgroundColor?: string;
   isActive?: boolean;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  onClick?: () => void;
 }
 
 export function SignalementToponymeDiffCard({
@@ -31,16 +30,14 @@ export function SignalementToponymeDiffCard({
   positions,
   parcelles,
   isActive,
-  onMouseEnter,
-  onMouseLeave,
+  onClick,
 }: SignalementToponymeDiffCardProps) {
   return (
     <AccordionCard
       title={title}
       backgroundColor={backgroundColor}
       isActive={isActive}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onClick={onClick}
     >
       <Pane padding={8} borderRadius={8} className="glass-pane">
         <TextDiff from={nom.from} to={nom.to} />

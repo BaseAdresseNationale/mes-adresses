@@ -40,7 +40,7 @@ const defaultViewport: Partial<ViewState> = {
   zoom: 6,
 };
 
-const defaultStyle = "vector";
+export const defaultStyle = "vector";
 
 export const BAL_API_URL =
   process.env.NEXT_PUBLIC_BAL_API_URL ||

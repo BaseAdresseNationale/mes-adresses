@@ -18,11 +18,12 @@ import {
 } from "@/lib/utils/signalement";
 import { CommuneType } from "@/types/commune";
 import { ObjectId } from "bson";
-import MapContext from "@/contexts/map";
+import MapContext, { defaultStyle } from "@/contexts/map";
 import BalDataContext from "@/contexts/bal-data";
 import ProtectedPage from "@/layouts/protected-page";
 import SignalementForm from "@/components/signalement/signalement-form/signalement-form";
 import { SignalementViewer } from "@/components/signalement/signalement-viewer/signalement-viewer";
+import SignalementContext from "@/contexts/signalement";
 
 interface SignalementPageProps extends BaseEditorProps {
   signalement: Signalement;
@@ -39,13 +40,14 @@ function SignalementPage({
   baseLocale,
 }: SignalementPageProps) {
   const router = useRouter();
+  const { fetchPendingSignalements, updateSignalements } =
+    useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const { showTilesLayers, setShowToponymes } = useContext(MapContext);
+  const { setStyle } = useContext(MapContext);
   const { refreshBALSync } = useContext(BalDataContext);
 
   useEffect(() => {
-    showTilesLayers(false);
-    setShowToponymes(false);
+    setStyle("ortho");
     setBreadcrumbs(
       <>
         <Link is={NextLink} href={`/bal/${baseLocale.id}`}>
@@ -62,18 +64,10 @@ function SignalementPage({
     );
 
     return () => {
-      showTilesLayers(true);
-      setShowToponymes(true);
+      setStyle(defaultStyle);
       setBreadcrumbs(null);
     };
-  }, [
-    showTilesLayers,
-    setShowToponymes,
-    setBreadcrumbs,
-    baseLocale,
-    signalement,
-    commune,
-  ]);
+  }, [setStyle, setBreadcrumbs, baseLocale, signalement, commune]);
 
   // Mark the signalement as expired if the location is not found
   // and the signalement is still pending
@@ -98,28 +92,16 @@ function SignalementPage({
   }, [router]);
 
   const getNextSignalement = useCallback(async () => {
-    const nextPaginatedSignalement = await SignalementsService.getSignalements(
-      undefined,
-      1,
-      [Signalement.status.PENDING],
-      undefined,
-      undefined,
-      [commune.code]
-    );
+    const signalements = await fetchPendingSignalements(1);
 
-    if (nextPaginatedSignalement.data.length > 0) {
-      return (nextPaginatedSignalement.data as unknown as Signalement[])[0];
-    }
-  }, [commune.code]);
+    return signalements[0];
+  }, [fetchPendingSignalements]);
 
   const handleSubmit = useCallback(
     async (status: Signalement.status) => {
       const _updateSignalement = toaster(
         async () => {
-          await SignalementsServiceBal.updateSignalements(baseLocale.id, {
-            ids: [signalement.id],
-            status,
-          });
+          await updateSignalements([signalement.id], status);
           await refreshBALSync();
         },
         status === Signalement.status.PROCESSED
@@ -146,8 +128,8 @@ function SignalementPage({
       handleClose,
       getNextSignalement,
       router,
-      baseLocale,
       refreshBALSync,
+      updateSignalements,
     ]
   );
 
@@ -157,6 +139,7 @@ function SignalementPage({
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
+            baseLocale={baseLocale}
             existingLocation={existingLocation}
             requestedToponyme={requestedToponyme}
             onClose={handleClose}
@@ -166,6 +149,7 @@ function SignalementPage({
       ) : signalement.status === Signalement.status.IGNORED ||
         signalement.status === Signalement.status.PROCESSED ? (
         <SignalementViewer
+          baseLocale={baseLocale}
           signalement={signalement}
           onClose={() =>
             router.push(`/bal/${router.query.balId}/signalements?tab=archived`)

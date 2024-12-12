@@ -4,7 +4,12 @@ import {
   NumeroChangesRequestedDTO,
   Signalement,
 } from "@/lib/openapi-signalement";
-import { Numero, Toponyme, Voie } from "@/lib/openapi-api-bal";
+import {
+  ExtendedBaseLocaleDTO,
+  Numero,
+  Toponyme,
+  Voie,
+} from "@/lib/openapi-api-bal";
 import Form from "../../form";
 import SignalementCreateNumero from "./numero/signalement-create-numero";
 import SignalementUpdateNumero from "./numero/signalement-update-numero";
@@ -13,9 +18,12 @@ import SignalementUpdateToponyme from "./toponyme/signalement-update-toponyme";
 import SignalementDeleteNumero from "./numero/signalement-delete-numero";
 import MapContext from "@/contexts/map";
 import { SignalementHeader } from "../signalement-header";
+import SignalementContext from "@/contexts/signalement";
+import { Paragraph } from "evergreen-ui";
 
 interface SignalementFormProps {
   signalement: Signalement;
+  baseLocale: ExtendedBaseLocaleDTO;
   existingLocation: Voie | Toponyme | Numero;
   requestedToponyme?: Toponyme;
   onSubmit: (status: Signalement.status) => Promise<void>;
@@ -24,16 +32,22 @@ interface SignalementFormProps {
 
 function SignalementForm({
   signalement,
+  baseLocale,
   existingLocation,
   requestedToponyme,
   onSubmit,
   onClose,
 }: SignalementFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { setViewport } = useContext(MapContext);
+  const { map } = useContext(MapContext);
+  const { pendingSignalementsCount } = useContext(SignalementContext);
 
   // Point the map to the location of the signalement
   useEffect(() => {
+    if (!map) {
+      return;
+    }
+
     let pointTo = null;
 
     if ((existingLocation as Numero).positions?.length > 0) {
@@ -61,13 +75,18 @@ function SignalementForm({
     }
 
     if (pointTo) {
-      setViewport({
-        latitude: pointTo.latitude,
-        longitude: pointTo.longitude,
-        zoom: 20,
+      map.flyTo({
+        center: [pointTo.longitude, pointTo.latitude],
+        offset: [0, 0],
+        zoom:
+          signalement.type === Signalement.type.LOCATION_TO_CREATE ||
+          signalement.existingLocation.type === ExistingLocation.type.NUMERO
+            ? 20
+            : 16.5,
+        screenSpeed: 2,
       });
     }
-  }, [existingLocation, signalement.changesRequested, setViewport]);
+  }, [existingLocation, signalement, map]);
 
   const handleSubmit = async (status: Signalement.status) => {
     try {
@@ -98,7 +117,7 @@ function SignalementForm({
         return Promise.resolve();
       }}
     >
-      <SignalementHeader signalement={signalement} />
+      <SignalementHeader signalement={signalement} baseLocale={baseLocale} />
 
       {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
         <SignalementCreateNumero
@@ -152,6 +171,10 @@ function SignalementForm({
           isLoading={isLoading}
         />
       )}
+      <Paragraph textAlign="center">
+        Il reste {pendingSignalementsCount} signalement
+        {pendingSignalementsCount === 1 ? "" : "s"} à traiter
+      </Paragraph>
     </Form>
   );
 }

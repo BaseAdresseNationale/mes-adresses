@@ -20,7 +20,7 @@ interface SignalementListProps {
   selectedSignalements: string[];
   setSelectedSignalements: (ids: string[]) => void;
   onSelect: (id: string) => void;
-  onIgnore: (id: string) => void;
+  onIgnore: (id: string) => Promise<void>;
   onToggleSelect: (ids: string[]) => void;
   filters: {
     type: Signalement.type[];
@@ -112,6 +112,7 @@ function SignalementList({
             isShown={showFilters}
           >
             <Button
+              className="filter-button"
               size="small"
               iconBefore={hasActiveFilters ? FilterRemoveIcon : FilterIcon}
               onClick={() => setShowFilters((prev) => !prev)}

@@ -5,17 +5,13 @@ import {
   Icon,
   Pane,
 } from "evergreen-ui";
-import TextDiff from "./text-diff";
-import { SignalementPositionDiff } from "./signalement-position-diff";
-import { SignalementParcelleDiff } from "./signalement-parcelle-diff";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 interface AccordionCardProps {
   title: string;
   backgroundColor?: string;
   isActive?: boolean;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  onClick?: () => void;
   children: React.ReactNode;
 }
 
@@ -23,19 +19,11 @@ export function AccordionCard({
   title,
   backgroundColor,
   isActive,
-  onMouseEnter,
-  onMouseLeave,
+  onClick,
   children,
 }: AccordionCardProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
-
-  const handleMouseEnter = () => {
-    onMouseEnter && onMouseEnter();
-  };
-
-  const handleMouseLeave = () => {
-    onMouseLeave && onMouseLeave();
-  };
+  const [hover, setHover] = useState(false);
 
   return (
     <Pane
@@ -44,23 +32,22 @@ export function AccordionCard({
       borderRadius={8}
       marginBottom={8}
       width="100%"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      {...(isActive ? { elevation: 3 } : {})}
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      {...(isActive || hover ? { elevation: 3 } : {})}
     >
       <Pane
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         userSelect="none"
-        {...(onMouseEnter ? { cursor: "pointer" } : {})}
+        {...(onClick ? { cursor: "pointer" } : {})}
       >
         <Heading is="h3" marginBottom={8}>
           {title}
         </Heading>
-        {onMouseEnter && (
-          <Icon icon={isActive ? CaretDownIcon : CaretRightIcon} />
-        )}
+        {onClick && <Icon icon={isActive ? CaretDownIcon : CaretRightIcon} />}
       </Pane>
       <Pane
         overflow="hidden"

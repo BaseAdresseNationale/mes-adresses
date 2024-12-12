@@ -9,12 +9,12 @@ import { getPositionName } from "@/lib/positions-types-list";
 import { ActiveCardEnum, SignalementDiff } from "@/lib/utils/signalement";
 import { useContext, useEffect, useState } from "react";
 
-export type SignalementMapDiffExistingLocation = {
+export type SignalementMapDiffUpdateExistingLocation = {
   positions: any[];
   parcelles: string[];
 };
 
-export type SignalementMapDiffChangesRequested = {
+export type SignalementMapDiffUpdateChangesRequested = {
   positions: any[];
   parcelles: string[];
 };
@@ -26,37 +26,28 @@ const mapInitialPositions = (positions: any[]) =>
       signalementTypeMap[Signalement.type.LOCATION_TO_CREATE].foregroundColor,
   }));
 
-export function useSignalementMapDiff(
-  existingLocation: SignalementMapDiffExistingLocation,
-  changesRequested: SignalementMapDiffChangesRequested
+export function useSignalementMapDiffUpdate(
+  existingLocation: SignalementMapDiffUpdateExistingLocation,
+  changesRequested: SignalementMapDiffUpdateChangesRequested
 ) {
   const { positions, parcelles } = changesRequested;
   const { positions: existingPositions, parcelles: existingParcelles } =
     existingLocation;
 
-  const [activeCard, setActiveCard] = useState<ActiveCardEnum>(
-    ActiveCardEnum.CHANGES
-  );
+  const [activeCard, setActiveCard] = useState<ActiveCardEnum>();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { map, isStyleLoaded, setIsCadastreDisplayed } = useContext(MapContext);
+  const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
   const {
-    isCadastreVisible,
     setHighlightedParcelles,
     setShowSelectedParcelles,
     handleSetFeatureState,
     setIsDiffMode,
   } = useContext(ParcellesContext);
 
-  const [positionsToDisplay, setPositionsToDisplay] = useState<any[]>(
-    mapInitialPositions(positions)
-  );
+  const [positionsToDisplay, setPositionsToDisplay] = useState<any[]>([]);
 
   useEffect(() => {
-    setPositionsToDisplay(mapInitialPositions(positions));
-  }, [positions]);
-
-  useEffect(() => {
-    if (isStyleLoaded) {
+    if (isStyleLoaded && parcelles?.length > 0) {
       setIsCadastreDisplayed(true);
       setShowSelectedParcelles(false);
       setIsDiffMode(true);
@@ -69,14 +60,29 @@ export function useSignalementMapDiff(
       };
     }
   }, [
-    map,
     isStyleLoaded,
     setIsCadastreDisplayed,
-    parcelles,
     setHighlightedParcelles,
     setShowSelectedParcelles,
     setIsDiffMode,
+    parcelles,
   ]);
+
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    const initCb = () => {
+      setPositionsToDisplay(mapInitialPositions(positions));
+      setActiveCard(ActiveCardEnum.CHANGES);
+    };
+    map.once("moveend", initCb);
+
+    return () => {
+      map.off("moveend", initCb);
+    };
+  }, [map, positions]);
 
   useEffect(() => {
     if (positionsToDisplay?.length > 0) {
@@ -99,10 +105,6 @@ export function useSignalementMapDiff(
   }, [positionsToDisplay, addMarker, disableMarkers]);
 
   useEffect(() => {
-    if (!isCadastreVisible) {
-      return;
-    }
-
     switch (activeCard) {
       case ActiveCardEnum.INITIAL:
         setPositionsToDisplay(
@@ -164,7 +166,6 @@ export function useSignalementMapDiff(
         break;
     }
   }, [
-    isCadastreVisible,
     activeCard,
     parcelles,
     positions,
