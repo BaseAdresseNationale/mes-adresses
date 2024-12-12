@@ -13,7 +13,8 @@ import { SignalementFormButtons } from "../signalement-form-buttons";
 import { ActiveCardEnum, detectChanges } from "@/lib/utils/signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
 import { signalementTypeMap } from "../../signalement-type-badge";
-import { useSignalementMapDiff } from "@/hooks/useSignalementMapDiff";
+import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
+import { Alert } from "evergreen-ui";
 
 interface SignalementUpdateNumeroProps {
   signalement: Signalement;
@@ -47,7 +48,7 @@ function SignalementUpdateNumero({
     voie: existingVoie,
   } = existingLocation;
 
-  const { activeCard, setActiveCard } = useSignalementMapDiff(
+  const { activeCard, setActiveCard } = useSignalementMapDiffUpdate(
     { positions: existingPositions, parcelles: existingParcelles },
     { positions, parcelles }
   );
@@ -90,7 +91,7 @@ function SignalementUpdateNumero({
         parcelles={{
           to: existingParcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.INITIAL);
         }}
       />
@@ -123,7 +124,7 @@ function SignalementUpdateNumero({
           from: existingParcelles,
           to: parcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.CHANGES);
         }}
       />
@@ -145,10 +146,15 @@ function SignalementUpdateNumero({
         parcelles={{
           to: parcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.FINAL);
         }}
       />
+      {changes.voie && (
+        <Alert intent="warning" title="Attention">
+          Le renommage de la voie affectera toutes les adresses de cette voie.
+        </Alert>
+      )}
       <SignalementFormButtons
         onAccept={onAccept}
         onReject={handleReject}

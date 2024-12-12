@@ -32,4 +32,25 @@ export class SignalementsService {
         });
     }
 
+    /**
+     * Get author by signalement id
+     * @param idSignalement
+     * @param baseLocaleId
+     * @returns any
+     * @throws ApiError
+     */
+    public static getAuthor(
+        idSignalement: string,
+        baseLocaleId: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/signalements/{baseLocaleId}/{idSignalement}/author',
+            path: {
+                'idSignalement': idSignalement,
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+
 }

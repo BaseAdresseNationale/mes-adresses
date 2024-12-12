@@ -14,20 +14,27 @@ import SignalementViewerCreateNumero from "./numero/signalement-viewer-create-nu
 import SignalementViewerUpdateVoie from "./voie/signalement-viewer-update-voie";
 import SignalementViewerUpdateToponyme from "./toponyme/signalement-viewer-update-toponyme";
 import SignalementViewerDeleteNumero from "./numero/signalement-viewer-delete-numero";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface SignalementViewerProps {
+  baseLocale: ExtendedBaseLocaleDTO;
   signalement: Signalement;
   onClose: () => void;
 }
 
 export function SignalementViewer({
   signalement,
+  baseLocale,
   onClose,
 }: SignalementViewerProps) {
-  const { setViewport } = useContext(MapContext);
+  const { map } = useContext(MapContext);
 
   // Point the map to the location of the signalement
   useEffect(() => {
+    if (!map) {
+      return;
+    }
+
     let pointTo = null;
     const { changesRequested, existingLocation } = signalement;
 
@@ -46,13 +53,19 @@ export function SignalementViewer({
       };
     }
 
-    pointTo &&
-      setViewport({
-        latitude: pointTo.latitude,
-        longitude: pointTo.longitude,
-        zoom: 20,
+    if (pointTo) {
+      map.flyTo({
+        center: [pointTo.longitude, pointTo.latitude],
+        offset: [0, 0],
+        zoom:
+          signalement.type === Signalement.type.LOCATION_TO_CREATE ||
+          signalement.existingLocation.type === ExistingLocation.type.NUMERO
+            ? 20
+            : 16.5,
+        screenSpeed: 2,
       });
-  }, [signalement, setViewport]);
+    }
+  }, [signalement, map]);
 
   return (
     <Form
@@ -63,7 +76,7 @@ export function SignalementViewer({
         return Promise.resolve();
       }}
     >
-      <SignalementHeader signalement={signalement} />
+      <SignalementHeader signalement={signalement} baseLocale={baseLocale} />
 
       {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
         <SignalementViewerCreateNumero signalement={signalement} />

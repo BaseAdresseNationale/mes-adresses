@@ -7,7 +7,7 @@ import {
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
 import { signalementTypeMap } from "../../signalement-type-badge";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
-import { useSignalementMapDiff } from "@/hooks/useSignalementMapDiff";
+import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 
 interface SignalementViewerUpdateNumeroProps {
   signalement: Signalement;
@@ -35,7 +35,7 @@ function SignalementViewerUpdateNumero({
     [existingPosition]
   );
 
-  const { activeCard, setActiveCard } = useSignalementMapDiff(
+  const { activeCard, setActiveCard } = useSignalementMapDiffUpdate(
     { positions: existingPositions, parcelles: existingParcelles },
     { positions, parcelles }
   );
@@ -62,7 +62,7 @@ function SignalementViewerUpdateNumero({
         parcelles={{
           to: existingParcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.INITIAL);
         }}
       />
@@ -95,7 +95,7 @@ function SignalementViewerUpdateNumero({
           from: existingParcelles,
           to: parcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.CHANGES);
         }}
       />
@@ -119,7 +119,7 @@ function SignalementViewerUpdateNumero({
         parcelles={{
           to: parcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.FINAL);
         }}
       />

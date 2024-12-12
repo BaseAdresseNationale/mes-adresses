@@ -48,12 +48,13 @@ export function SignalementParcelleDiff({
       </Text>
 
       {showDiff ? (
-        <Pane display="flex">
+        <Pane display="flex" flexWrap="wrap">
           {parcelleDiff(parcelles, existingParcelles).map(
             ({ parcelle, diff }) => (
               <Badge
                 key={parcelle}
                 marginLeft={4}
+                marginBottom={4}
                 display="flex"
                 alignItems="center"
                 width="fit-content"

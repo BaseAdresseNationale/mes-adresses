@@ -1,13 +1,10 @@
-import React, { useContext, useEffect } from "react";
-import MapContext from "@/contexts/map";
+import React from "react";
 import { Numero, NumerosService } from "@/lib/openapi-api-bal";
 import { SignalementFormButtons } from "../signalement-form-buttons";
-import { getPositionName } from "@/lib/positions-types-list";
-import MarkersContext from "@/contexts/markers";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import ParcellesContext from "@/contexts/parcelles";
 import { signalementTypeMap } from "../../signalement-type-badge";
 import { Signalement } from "@/lib/openapi-signalement";
+import { useSignalementMapDiffDeletion } from "../../hooks/useSignalementMapDiffDeletion";
 
 interface SignalementDeleteNumeroProps {
   existingLocation: Numero;
@@ -24,55 +21,9 @@ function SignalementDeleteNumero({
   handleClose,
   isLoading,
 }: SignalementDeleteNumeroProps) {
-  const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { isStyleLoaded, setIsCadastreDisplayed } = useContext(MapContext);
-  const { setHighlightedParcelles, setShowSelectedParcelles, setIsDiffMode } =
-    useContext(ParcellesContext);
-
   const { numero, suffixe, voie, parcelles, positions } = existingLocation;
 
-  useEffect(() => {
-    if (isStyleLoaded && parcelles?.length > 0) {
-      setIsCadastreDisplayed(true);
-      setShowSelectedParcelles(false);
-      setHighlightedParcelles(parcelles);
-      setIsDiffMode(true);
-
-      return () => {
-        setIsCadastreDisplayed(false);
-        setShowSelectedParcelles(true);
-        setHighlightedParcelles([]);
-        setIsDiffMode(false);
-      };
-    }
-  }, [
-    isStyleLoaded,
-    setIsCadastreDisplayed,
-    parcelles,
-    setHighlightedParcelles,
-    setShowSelectedParcelles,
-    setIsDiffMode,
-  ]);
-
-  useEffect(() => {
-    if (positions.length > 0) {
-      positions.forEach((position) => {
-        addMarker({
-          id: position.id,
-          isMapMarker: true,
-          isDisabled: true,
-          color: "gray",
-          label: getPositionName(position.type),
-          longitude: position.point.coordinates[0],
-          latitude: position.point.coordinates[1],
-        });
-      });
-    }
-
-    return () => {
-      disableMarkers();
-    };
-  }, [positions, addMarker, disableMarkers]);
+  useSignalementMapDiffDeletion(existingLocation);
 
   const onAccept = async () => {
     await NumerosService.softDeleteNumero(existingLocation.id);

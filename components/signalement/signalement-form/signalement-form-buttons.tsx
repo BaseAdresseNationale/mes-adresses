@@ -1,6 +1,7 @@
 import { DelayBar } from "@/components/delay-bar";
+import SignalementContext from "@/contexts/signalement";
 import { BanCircleIcon, Button, EndorsedIcon, Pane } from "evergreen-ui";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
 interface SignalementFormButtonsProps {
   isLoading: boolean;
@@ -9,7 +10,7 @@ interface SignalementFormButtonsProps {
   onClose: () => void;
 }
 
-const CONFIRMATION_DELAY = 5000;
+const CONFIRMATION_DELAY = 8000;
 
 export function SignalementFormButtons({
   isLoading,
@@ -21,6 +22,7 @@ export function SignalementFormButtons({
     "accept" | "reject" | null
   >(null);
   const timeOutRef = useRef<NodeJS.Timeout | null>(null);
+  const { pendingSignalementsCount } = useContext(SignalementContext);
 
   const handleActionToConfirm = (action: "accept" | "reject") => {
     setActionToConfirm(action);
@@ -84,8 +86,10 @@ export function SignalementFormButtons({
                       iconAfter: BanCircleIcon,
                     })}
               >
-                {actionToConfirm === "accept" ? "Accepter" : "Refuser"} et
-                passer au suivant
+                {actionToConfirm === "accept" ? "Accepter" : "Refuser"} et{" "}
+                {pendingSignalementsCount > 1
+                  ? "passer au suivant"
+                  : "terminer"}
               </Button>
             </Pane>
             <Pane
@@ -149,7 +153,7 @@ export function SignalementFormButtons({
               display="inline-flex"
               onClick={onClose}
             >
-              Annuler
+              Retour
             </Button>
           </Pane>
         </>

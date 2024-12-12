@@ -6,7 +6,7 @@ import {
 } from "@/lib/openapi-signalement";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
 import { signalementTypeMap } from "../../signalement-type-badge";
-import { useSignalementMapDiff } from "@/hooks/useSignalementMapDiff";
+import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
 
 interface SignalementViewerUpdateToponymeProps {
@@ -32,7 +32,7 @@ function SignalementViewerUpdateToponyme({
     [existingPosition]
   );
 
-  const { activeCard, setActiveCard } = useSignalementMapDiff(
+  const { activeCard, setActiveCard } = useSignalementMapDiffUpdate(
     { positions: existingPositions, parcelles: existingParcelles },
     { positions, parcelles }
   );
@@ -51,7 +51,7 @@ function SignalementViewerUpdateToponyme({
         parcelles={{
           to: existingParcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.INITIAL);
         }}
       />
@@ -74,7 +74,7 @@ function SignalementViewerUpdateToponyme({
           from: existingParcelles,
           to: parcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.CHANGES);
         }}
       />
@@ -92,7 +92,7 @@ function SignalementViewerUpdateToponyme({
         parcelles={{
           to: parcelles,
         }}
-        onMouseEnter={() => {
+        onClick={() => {
           setActiveCard(ActiveCardEnum.FINAL);
         }}
       />

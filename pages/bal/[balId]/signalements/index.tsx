@@ -15,13 +15,13 @@ import {
   Tablist,
   TrashIcon,
   Text,
+  Badge,
 } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
-import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api-bal";
 import {
   ExistingNumero,
   NumeroChangesRequestedDTO,
@@ -37,6 +37,8 @@ import SignalementTypeBadge, {
 import useFuse from "@/hooks/fuse";
 import MapContext from "@/contexts/map";
 import bbox from "@turf/bbox";
+import SignalementContext from "@/contexts/signalement";
+import SignalementJoyRide from "@/components/signalement/signalement-joyride";
 
 const fuseOptions = {
   keys: ["label"],
@@ -46,19 +48,20 @@ interface SignalementsPageProps extends BaseEditorProps {
   paginatedSignalements: { data: Signalement[] };
 }
 
-const tabs = [
-  { label: "En cours", key: "pending" },
-  { label: "Archivés", key: "archived" },
-];
-
 function SignalementsPage({
-  baseLocale,
   commune,
   paginatedSignalements: initialSignalements,
 }: SignalementsPageProps) {
   const [signalements, setSignalements] = useState<Signalement[]>(
     initialSignalements.data
   );
+  const {
+    pendingSignalementsCount,
+    archivedSignalementsCount,
+    updateSignalements,
+    fetchPendingSignalements,
+    fetchArchivedSignalements,
+  } = useContext(SignalementContext);
   const [selectedSignalements, setSelectedSignalements] = useState<string[]>(
     []
   );
@@ -66,7 +69,7 @@ function SignalementsPage({
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { toaster } = useContext(LayoutContext);
-  const { showTilesLayers, setShowToponymes, setViewport } =
+  const { showTilesLayers, setShowToponymes, map, isStyleLoaded } =
     useContext(MapContext);
   const [activeTabIndex, setActiveTabIndex] = useState(
     router.query.tab === "archived" ? 1 : 0
@@ -75,55 +78,67 @@ function SignalementsPage({
     type: [],
   });
 
-  const fetchSignalements = useCallback(
-    async (
-      status: Signalement.status[] = [Signalement.status.PENDING],
-      types?: Signalement.type[]
-    ) => {
-      const paginatedSignalements = await SignalementsService.getSignalements(
-        100,
-        undefined,
-        status,
-        types,
-        undefined,
-        [baseLocale.commune]
-      );
-      setSignalements(paginatedSignalements.data as unknown as Signalement[]);
+  const tabs = [
+    { label: "En cours", key: "pending", count: pendingSignalementsCount },
+    {
+      label: `Archivé${archivedSignalementsCount > 1 ? "s" : ""}`,
+      key: "archived",
+      count: archivedSignalementsCount,
     },
-    [baseLocale.commune]
-  );
+  ];
 
-  // Set viewport to commune
+  // Fly to commune
   useEffect(() => {
+    if (!map) {
+      return;
+    }
+
     const communeBbox: number[] = bbox(commune.contour);
     if (communeBbox) {
-      setViewport({
-        latitude: (communeBbox[1] + communeBbox[3]) / 2,
-        longitude: (communeBbox[0] + communeBbox[2]) / 2,
+      const center = [
+        (communeBbox[0] + communeBbox[2]) / 2,
+        (communeBbox[1] + communeBbox[3]) / 2,
+      ] as [number, number];
+      map.flyTo({
+        center,
+        offset: [0, 0],
         zoom: 12,
+        screenSpeed: 2,
       });
     }
-  }, [commune, setViewport]);
+  }, [commune, map]);
 
   useEffect(() => {
-    showTilesLayers(false);
-    setShowToponymes(false);
+    if (isStyleLoaded) {
+      showTilesLayers(false);
+      setShowToponymes(false);
+    }
 
     return () => {
       showTilesLayers(true);
       setShowToponymes(true);
     };
-  }, [showTilesLayers, setShowToponymes]);
+  }, [showTilesLayers, setShowToponymes, isStyleLoaded]);
 
   useEffect(() => {
-    const status =
-      activeTabIndex === 0
-        ? [Signalement.status.PENDING]
-        : [Signalement.status.IGNORED, Signalement.status.PROCESSED];
+    const updateSignalements = async () => {
+      setSelectedSignalements([]);
+      let signalements;
+      if (activeTabIndex === 0) {
+        signalements = await fetchPendingSignalements(100, filters.type);
+      } else {
+        signalements = await fetchArchivedSignalements(100, filters.type);
+      }
+      setSignalements(signalements);
+    };
 
-    setSelectedSignalements([]);
-    fetchSignalements(status, filters.type);
-  }, [filters, activeTabIndex, fetchSignalements]);
+    updateSignalements();
+  }, [
+    filters,
+    activeTabIndex,
+    fetchPendingSignalements,
+    fetchArchivedSignalements,
+  ]);
 
   const signalementsWithLabel = useMemo(
     () => signalements.map((s) => ({ ...s, label: getSignalementLabel(s) })),
@@ -200,35 +215,18 @@ function SignalementsPage({
     };
   }, [signalementsList, handleSelectSignalement]);
 
-  const handleIgnoreSignalement = async (id) => {
-    const _updateSignalement = toaster(
-      () =>
-        SignalementsServiceBal.updateSignalements(baseLocale.id, {
-          ids: [id],
-          status: Signalement.status.IGNORED,
-        }),
-      "Le signalement a bien été ignoré",
+  const handleIgnoreSignalements = async (ids: string[]) => {
+    const _updateSignalements = toaster(
+      () => updateSignalements(ids, Signalement.status.IGNORED),
+      ids.length > 1
+        ? "Les signalements ont bien été ignorés"
+        : "Le signalement a bien été ignoré",
       "Une erreur est survenue"
     );
 
-    await _updateSignalement();
-    await fetchSignalements();
-  };
-
-  const handleIgnoreSignalements = async () => {
-    const massUpdateSignalements = toaster(
-      async () => {
-        await SignalementsServiceBal.updateSignalements(baseLocale.id, {
-          ids: selectedSignalements,
-          status: Signalement.status.IGNORED,
-        });
-      },
-      "Les signalements ont bien été ignorés",
-      "Une erreur est survenue"
-    );
-
-    await massUpdateSignalements();
-    await fetchSignalements();
+    await _updateSignalements();
+    const signalements = await fetchPendingSignalements(100, filters.type);
+    setSignalements(signalements);
   };
 
   const handleToggleSelect = (ids: string[]) => {
@@ -267,12 +265,15 @@ function SignalementsPage({
       </Pane>
 
       <Tablist margin={10} marginTop={0}>
-        {tabs.map(({ label, key }, index) => (
+        {tabs.map(({ label, key, count }, index) => (
           <Tab
             key={key}
             isSelected={activeTabIndex === index}
             onSelect={() => handleSelectTab(index)}
           >
+            <Badge color="neutral" marginRight={4}>
+              {count}
+            </Badge>
             {label}
           </Tab>
         ))}
@@ -310,7 +311,7 @@ function SignalementsPage({
                     marginRight={16}
                     appearance="primary"
                     onClick={async () => {
-                      await handleIgnoreSignalements();
+                      await handleIgnoreSignalements(selectedSignalements);
                       setShowWarningDialog(false);
                     }}
                   >
@@ -341,13 +342,14 @@ function SignalementsPage({
           onSelect={handleSelectSignalement}
           setSelectedSignalements={setSelectedSignalements}
           onToggleSelect={handleToggleSelect}
-          onIgnore={handleIgnoreSignalement}
+          onIgnore={(id) => handleIgnoreSignalements([id])}
           filters={filters}
           setFilters={setFilters}
           onSearch={setSignalementsList}
           editionEnabled={activeTabIndex === 0}
         />
       </Pane>
+      <SignalementJoyRide />
     </ProtectedPage>
   );
 }

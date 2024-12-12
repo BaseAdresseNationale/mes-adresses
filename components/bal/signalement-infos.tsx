@@ -1,11 +1,13 @@
 import React from "react";
 import { Pane, Heading, Button, Alert } from "evergreen-ui";
 import { useRouter } from "next/navigation";
-import { SignalementCounts } from "@/contexts/signalement";
 
 interface SignalementInfosProps {
   balId: string;
-  signalementCounts: SignalementCounts;
+  signalementCounts: {
+    pending: number;
+    archived: number;
+  };
 }
 
 function SignalementInfos({ balId, signalementCounts }: SignalementInfosProps) {

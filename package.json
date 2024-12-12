@@ -57,6 +57,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
+    "react-joyride": "^2.9.3",
     "react-map-gl": "^7.1.6",
     "react-map-gl-draw": "1.0.4",
     "react-range": "^1.8.14",

@@ -2,17 +2,49 @@ import { Alert, Pane, Paragraph } from "evergreen-ui";
 import SignalementTypeBadge from "./signalement-type-badge";
 import { Signalement } from "@/lib/openapi-signalement";
 import { getDuration } from "@/lib/utils/date";
+import {
+  ExtendedBaseLocaleDTO,
+  SignalementsService as SignalementsServiceBal,
+} from "@/lib/openapi-api-bal";
+import { useEffect, useState } from "react";
 
 interface SignalementHeaderProps {
   signalement: Signalement;
+  baseLocale: ExtendedBaseLocaleDTO;
 }
 
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
-export function SignalementHeader({ signalement }: SignalementHeaderProps) {
+export function SignalementHeader({
+  signalement,
+  baseLocale,
+}: SignalementHeaderProps) {
+  const [author, setAuthor] = useState<Signalement["author"]>();
+  const {
+    type,
+    createdAt,
+    source,
+    changesRequested,
+    status,
+    processedBy,
+    updatedAt,
+  } = signalement;
+
+  useEffect(() => {
+    const fetchAuthor = async () => {
+      const author = await SignalementsServiceBal.getAuthor(
+        signalement.id,
+        baseLocale.id
+      );
+      setAuthor(author);
+    };
+
+    fetchAuthor();
+  }, [signalement, baseLocale]);
+
   return (
     <Alert
-      title={<SignalementTypeBadge type={signalement.type} />}
+      title={<SignalementTypeBadge type={type} />}
       intent="info"
       padding={8}
       borderRadius={8}
@@ -21,48 +53,55 @@ export function SignalementHeader({ signalement }: SignalementHeaderProps) {
       flexShrink={0}
     >
       <Pane marginTop={8}>
-        {Date.now() - new Date(signalement.createdAt).getTime() >
-        MONTH_IN_MS ? (
+        {Date.now() - new Date(createdAt).getTime() > MONTH_IN_MS ? (
           <Paragraph>
-            Déposée le{" "}
-            <b>{new Date(signalement.createdAt).toLocaleDateString()}</b>{" "}
+            Déposée le <b>{new Date(createdAt).toLocaleDateString()}</b>{" "}
           </Paragraph>
         ) : (
           <Paragraph>
-            Déposée il y a <b>{getDuration(new Date(signalement.createdAt))}</b>{" "}
+            Déposée il y a <b>{getDuration(new Date(createdAt))}</b>{" "}
+          </Paragraph>
+        )}
+        {author && (
+          <Paragraph>
+            par{" "}
+            <b>
+              {author.firstName} {author.lastName}
+            </b>{" "}
+            {author.email && (
+              <a href={`mailto:${author.email}`}>{author.email}</a>
+            )}
           </Paragraph>
         )}
         <Paragraph>
-          via <b>{signalement.source.nom}</b>
+          via <b>{source.nom}</b>
         </Paragraph>
 
-        {signalement.changesRequested.comment && (
+        {changesRequested.comment && (
           <Paragraph marginTop={10}>
             <b>Commentaire : </b>
-            {signalement.changesRequested.comment}
+            {changesRequested.comment}
           </Paragraph>
         )}
 
-        {signalement.status === Signalement.status.PROCESSED && (
+        {status === Signalement.status.PROCESSED && (
           <>
             <Paragraph marginTop={10}>
-              Acceptée le{" "}
-              <b>{new Date(signalement.updatedAt).toLocaleDateString()}</b>
+              Acceptée le <b>{new Date(updatedAt).toLocaleDateString()}</b>
             </Paragraph>
             <Paragraph>
-              via <b>{signalement.processedBy.nom}</b>
+              via <b>{processedBy.nom}</b>
             </Paragraph>
           </>
         )}
 
-        {signalement.status === Signalement.status.IGNORED && (
+        {status === Signalement.status.IGNORED && (
           <>
             <Paragraph marginTop={10}>
-              Refusée le{" "}
-              <b>{new Date(signalement.updatedAt).toLocaleDateString()}</b>
+              Refusée le <b>{new Date(updatedAt).toLocaleDateString()}</b>
             </Paragraph>
             <Paragraph>
-              via <b>{signalement.processedBy.nom}</b>
+              via <b>{processedBy.nom}</b>
             </Paragraph>
           </>
         )}
