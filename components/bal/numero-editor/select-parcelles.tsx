@@ -29,9 +29,9 @@ function SelectParcelles({
     selectedParcelles,
     setSelectedParcelles,
     setIsParcelleSelectionEnabled,
-    hoveredParcelle,
-    handleHoveredParcelle,
-    handleParcelle,
+    hoveredParcelles,
+    handleHoveredParcelles,
+    handleParcelles,
   } = useContext(ParcellesContext);
   const addressType = isToponyme ? "toponyme" : "numéro";
 
@@ -53,17 +53,19 @@ function SelectParcelles({
       {selectedParcelles.length > 0 ? (
         <Pane display="grid" gridTemplateColumns="1fr 1fr 1fr">
           {selectedParcelles.map((parcelle) => {
-            const isHovered = parcelle === hoveredParcelle?.id;
+            const isHovered = hoveredParcelles.some(
+              ({ id }) => id === parcelle
+            );
 
             return (
               <Badge
                 key={parcelle}
                 isInteractive
-                color={parcelle === hoveredParcelle?.id ? "red" : "green"}
+                color={isHovered ? "red" : "green"}
                 margin={4}
-                onClick={() => handleParcelle(parcelle)}
-                onMouseEnter={() => handleHoveredParcelle({ id: parcelle })}
-                onMouseLeave={() => handleHoveredParcelle(null)}
+                onClick={() => handleParcelles([parcelle])}
+                onMouseEnter={() => handleHoveredParcelles([parcelle])}
+                onMouseLeave={() => handleHoveredParcelles([])}
               >
                 {parcelle}
                 {isHovered && (

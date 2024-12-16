@@ -115,7 +115,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     balTilesUrl,
     isMapLoaded,
   } = useContext(MapContext);
-  const { isParcelleSelectionEnabled, handleParcelle } =
+  const { isParcelleSelectionEnabled, handleParcelles } =
     useContext(ParcellesContext);
   const { isMobile } = useContext(LayoutContext);
 
@@ -210,8 +210,15 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         });
       const feature = features && features[0];
 
-      if (feature?.source === "cadastre") {
-        handleParcelle(feature.properties.id);
+      const parcelles = features.filter(
+        ({ source, sourceLayer, layer }) =>
+          source === "cadastre" &&
+          sourceLayer === "parcelles" &&
+          layer?.id === "parcelles-fill"
+      );
+
+      if (parcelles.length > 0) {
+        handleParcelles(parcelles.map(({ properties }) => properties.id));
       } else if (
         feature &&
         !isEditing &&
@@ -230,7 +237,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
       setIsContextMenuDisplayed(null);
     },
-    [router, balId, setEditingId, isEditing, voie, handleParcelle]
+    [router, balId, setEditingId, isEditing, voie, handleParcelles]
   );
 
   useEffect(() => {
