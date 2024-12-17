@@ -5,7 +5,7 @@ const COMMENTS_LIMIT = 10;
 
 interface CommentsContentProps {
   mainComment?: string;
-  commentedNumeros: string[];
+  commentedNumeros?: string[];
 }
 
 function CommentsContent({

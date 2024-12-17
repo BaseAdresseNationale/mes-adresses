@@ -194,7 +194,7 @@ function VoiesList({
                     : null
                 }
                 comment={
-                  voie.commentedNumeros?.length > 0 ? (
+                  voie.comment?.length || voie.commentedNumeros?.length > 0 ? (
                     <CommentsContent
                       mainComment={voie.comment}
                       commentedNumeros={voie.commentedNumeros}

@@ -89,7 +89,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     if (token) {
       addCommentsToVoies();
     }
-  }, [token]);
+  }, [baseLocale.id, setVoies, token]);
 
   useEffect(() => {
     if (
