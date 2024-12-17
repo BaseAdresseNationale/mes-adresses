@@ -52,9 +52,15 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     useContext(BalDataContext);
   const router = useRouter();
   const selectedTab: TabsEnum =
-    (router.query.selectedTab as TabsEnum) || TabsEnum.COMMUNE;
+    (router.query.selectedTab as TabsEnum) || TabsEnum.VOIES;
 
-  useHelp(TabsEnum.COMMUNE);
+  let help: number = 0;
+  if (selectedTab == TabsEnum.VOIES) {
+    help = 1;
+  } else if (selectedTab == TabsEnum.TOPONYMES) {
+    help = 2;
+  }
+  useHelp(help);
 
   useEffect(() => {
     if (

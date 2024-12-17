@@ -35,7 +35,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
               key: TabsEnum.COMMUNE,
               label: "Commune",
               notif: signalements.length,
-              href: `/bal/${balId}`,
+              href: `/bal/${balId}?selectedTab=${TabsEnum.COMMUNE}`,
             },
             {
               key: TabsEnum.VOIES,
@@ -52,7 +52,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
                   </p>
                 </>
               ),
-              href: `/bal/${balId}?selectedTab=voies`,
+              href: `/bal/${balId}?selectedTab=${TabsEnum.VOIES}`,
             },
             {
               key: TabsEnum.TOPONYMES,
@@ -68,11 +68,16 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
                   </p>
                 </>
               ),
-              href: `/bal/${balId}?selectedTab=toponymes`,
+              href: `/bal/${balId}?selectedTab=${TabsEnum.TOPONYMES}`,
             },
           ].map(({ label, notif, tooltip, key, href }) => {
             const tab = (
-              <Link href={href} shallow style={{ margin: "0 5px" }}>
+              <Link
+                href={href}
+                shallow
+                style={{ margin: "0 5px" }}
+                replace={true}
+              >
                 <Tab
                   key={key}
                   position="relative"
