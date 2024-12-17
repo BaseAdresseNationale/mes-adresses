@@ -128,7 +128,11 @@ function SignalementJoyRide() {
       showSkipButton
       locale={locale}
       styles={styles}
-      callback={() => setProductTour({ ...productTour, signalement: true })}
+      callback={(e) => {
+        if (e.lifecycle === "complete") {
+          setProductTour({ ...productTour, signalement: true });
+        }
+      }}
     />
   ) : null;
 }

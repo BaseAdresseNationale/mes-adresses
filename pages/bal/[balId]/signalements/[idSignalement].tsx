@@ -249,7 +249,9 @@ export async function getServerSideProps({ params }) {
       existingLocation = voies.find((voie) => {
         if ((signalement.existingLocation as ExistingVoie).banId) {
           return (
-            voie.banId === (signalement.existingLocation as ExistingVoie).banId
+            voie.banId ===
+              (signalement.existingLocation as ExistingVoie).banId ||
+            voie.nom === (signalement.existingLocation as ExistingVoie).nom
           );
         }
 
