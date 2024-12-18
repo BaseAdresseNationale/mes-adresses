@@ -10,6 +10,7 @@ export type UpdateVoieDTO = {
     nomAlt?: Record<string, any> | null;
     typeNumerotation?: UpdateVoieDTO.typeNumerotation;
     trace?: LineString;
+    comment?: string | null;
 };
 
 export namespace UpdateVoieDTO {

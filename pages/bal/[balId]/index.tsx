@@ -1,4 +1,5 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
+import { keyBy } from "lodash";
 import { Pane, Paragraph } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
@@ -17,6 +18,9 @@ import {
   Toponyme,
   Voie,
   VoiesService,
+  VoieMetas,
+  ExtendedVoieDTO,
+  BasesLocalesService,
 } from "@/lib/openapi-api-bal";
 import usePublishProcess from "@/hooks/publish-process";
 import HeaderSideBar from "@/components/sidebar/header";
@@ -42,9 +46,15 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
 
   const { token } = useContext(TokenContext);
-  const { voies, toponymes, baseLocale, habilitation, isHabilitationValid } =
-    useContext(BalDataContext);
   const { toaster } = useContext(LayoutContext);
+  const {
+    voies,
+    toponymes,
+    baseLocale,
+    habilitation,
+    isHabilitationValid,
+    setVoies,
+  } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
@@ -61,6 +71,25 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
     help = 2;
   }
   useHelp(help);
+
+  useEffect(() => {
+    async function addCommentsToVoies() {
+      try {
+        const voieMetas: VoieMetas[] =
+          await BasesLocalesService.findVoieMetasByBal(baseLocale.id);
+        const voiesMetasByVoieId = keyBy(voieMetas, "id");
+        setVoies((voies: ExtendedVoieDTO[]) =>
+          voies.map((v) => ({ ...v, ...voiesMetasByVoieId[v.id] }))
+        );
+      } catch (e) {
+        console.error("Impossible de charger les commentaires de voies", e);
+      }
+    }
+
+    if (token) {
+      addCommentsToVoies();
+    }
+  }, [baseLocale.id, setVoies, token]);
 
   useEffect(() => {
     if (

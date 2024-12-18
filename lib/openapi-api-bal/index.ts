@@ -44,6 +44,7 @@ export type { UpdateToponymeDTO } from './models/UpdateToponymeDTO';
 export { UpdateVoieDTO } from './models/UpdateVoieDTO';
 export type { ValidatePinCodeDTO } from './models/ValidatePinCodeDTO';
 export { Voie } from './models/Voie';
+export type { VoieMetas } from './models/VoieMetas';
 
 export { BasesLocalesService } from './services/BasesLocalesService';
 export { CommuneService } from './services/CommuneService';

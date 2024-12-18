@@ -179,7 +179,11 @@ function ToponymesList({
                 }
                 comment={
                   toponyme.commentedNumeros.length > 0 ? (
-                    <CommentsContent comments={toponyme.commentedNumeros} />
+                    <CommentsContent
+                      commentedNumeros={(
+                        toponyme.commentedNumeros as Numero[]
+                      ).map(({ comment }) => comment)}
+                    />
                   ) : null
                 }
               />

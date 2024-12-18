@@ -194,8 +194,11 @@ function VoiesList({
                     : null
                 }
                 comment={
-                  voie.comments.length > 0 ? (
-                    <CommentsContent comments={voie.comments} />
+                  voie.comment?.length || voie.commentedNumeros?.length > 0 ? (
+                    <CommentsContent
+                      mainComment={voie.comment}
+                      commentedNumeros={voie.commentedNumeros}
+                    />
                   ) : null
                 }
                 warning={

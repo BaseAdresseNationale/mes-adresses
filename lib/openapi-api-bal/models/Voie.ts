@@ -19,6 +19,7 @@ export type Voie = {
     centroid: Record<string, any>;
     trace: Record<string, any>;
     bbox: Array<string>;
+    comment: string;
     baseLocale: BaseLocale;
     numeros: Array<Numero>;
 };
