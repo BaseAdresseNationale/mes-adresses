@@ -56,11 +56,6 @@ function SignalementForm({
         latitude: position.point.coordinates[1],
         longitude: position.point.coordinates[0],
       };
-    } else if ((existingLocation as Voie).centroid) {
-      pointTo = {
-        latitude: (existingLocation as Voie).centroid.coordinates[1],
-        longitude: (existingLocation as Voie).centroid.coordinates[0],
-      };
     } else if (
       (signalement.changesRequested as NumeroChangesRequestedDTO).positions
         ?.length > 0
@@ -71,6 +66,11 @@ function SignalementForm({
       pointTo = {
         latitude: position.point.coordinates[1],
         longitude: position.point.coordinates[0],
+      };
+    } else if ((existingLocation as Voie).centroid) {
+      pointTo = {
+        latitude: (existingLocation as Voie).centroid.coordinates[1],
+        longitude: (existingLocation as Voie).centroid.coordinates[0],
       };
     }
 
