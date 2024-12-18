@@ -3,9 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type AuthorDTO = {
-    firstName?: string | null;
-    lastName?: string | null;
-    email?: string | null;
+export type PaginatedSignalementsDTO = {
+    data: Array<any[]>;
+    page: number;
+    limit: number;
+    total: number;
 };
 

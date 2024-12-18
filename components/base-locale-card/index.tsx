@@ -16,12 +16,15 @@ import { ApiGeoService } from "@/lib/geo-api";
 import StatusBadge from "@/components/status-badge";
 import BaseLocaleCardContent from "@/components/base-locale-card/base-locale-card-content";
 import {
+  BaseLocale,
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
   HabilitationService,
   OpenAPI,
 } from "@/lib/openapi-api-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
+import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
+import { canFetchSignalements } from "@/lib/utils/signalement";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -52,6 +55,8 @@ function BaseLocaleCard({
   const [habilitation, setHabilitation] = useState<HabilitationDTO | null>(
     null
   );
+  const [pendingSignalementsCount, setPendingSignalementsCount] =
+    useState<number>();
   const [isHabilitationValid, setIsHabilitationValid] =
     useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false);
@@ -100,11 +105,26 @@ function BaseLocaleCard({
       Object.assign(OpenAPI, { TOKEN: null });
     };
 
+    const fetchPendingSignalementsCount = async () => {
+      const paginatedSignalements = await SignalementsService.getSignalements(
+        1,
+        undefined,
+        [Signalement.status.PENDING],
+        undefined,
+        undefined,
+        [baseLocale.commune]
+      );
+      setPendingSignalementsCount(paginatedSignalements.total);
+    };
+
     void fetchCommune();
 
     if (!baseLocale.token) {
       void fetchHabilitationIsValid();
     } else {
+      if (canFetchSignalements(baseLocale, baseLocale.token)) {
+        void fetchPendingSignalementsCount();
+      }
       void fetchHabilitation();
     }
   }, [baseLocale]);
@@ -181,6 +201,7 @@ function BaseLocaleCard({
           onSelect={onSelect}
           onRemove={onRemove}
           onHide={onHide}
+          pendingSignalementsCount={pendingSignalementsCount}
         />
       )}
     </Card>

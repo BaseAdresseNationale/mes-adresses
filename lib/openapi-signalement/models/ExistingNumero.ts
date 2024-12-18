@@ -9,10 +9,13 @@ import type { Position } from './Position';
 
 export type ExistingNumero = {
     type: ExistingNumero.type;
+    banId?: string | null;
     numero: number;
     suffixe: string;
     position: Position;
+    parcelles?: Array<string> | null;
     toponyme: (ExistingVoie | ExistingToponyme);
+    nomComplement?: string;
 };
 
 export namespace ExistingNumero {
