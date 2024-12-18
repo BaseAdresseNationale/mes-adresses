@@ -129,7 +129,11 @@ function SignalementJoyRide() {
       locale={locale}
       styles={styles}
       callback={(e) => {
-        if (e.lifecycle === "complete") {
+        if (
+          e.action === "close" ||
+          e.action === "skip" ||
+          e.status === "finished"
+        ) {
           setProductTour({ ...productTour, signalement: true });
         }
       }}
