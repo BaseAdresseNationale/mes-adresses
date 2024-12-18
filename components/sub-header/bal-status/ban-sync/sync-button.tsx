@@ -48,7 +48,7 @@ function SyncButton({
         </Button>
         <Checkbox
           checked={isManualActionConfirmed}
-          label="Je comprend que ma Base Adresse Locale remplacera celle actuellement synchronisée avec la Base Adresses Nationale"
+          label="Je comprends que ma Base Adresse Locale remplacera celle actuellement synchronisée avec la Base Adresses Nationale"
           onChange={() => setIsManuelActionConfirmed(!isManualActionConfirmed)}
         />
       </Pane>
