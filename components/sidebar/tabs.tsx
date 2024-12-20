@@ -74,6 +74,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
             const tab = (
               <Link
                 href={href}
+                key={key}
                 shallow
                 style={{ margin: "0 5px" }}
                 replace={true}
