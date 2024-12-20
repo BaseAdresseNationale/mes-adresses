@@ -7,6 +7,7 @@ import {
   Position as PositionSignalement,
 } from "@/lib/openapi-signalement";
 import { getPositionName } from "@/lib/positions-types-list";
+import { useMapStyleLoaded } from "./useMapStyleLoaded";
 
 export function useSignalementMapDiffCreation(
   changesRequested: NumeroChangesRequestedDTO
@@ -15,6 +16,7 @@ export function useSignalementMapDiffCreation(
 
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
+  const { isMapLoaded } = useMapStyleLoaded();
   const { setHighlightedParcelles, setShowSelectedParcelles, setIsDiffMode } =
     useContext(ParcellesContext);
 
@@ -42,19 +44,12 @@ export function useSignalementMapDiffCreation(
   ]);
 
   useEffect(() => {
-    if (!map) {
+    if (!isMapLoaded || !map) {
       return;
     }
 
-    const initCb = () => {
-      setHighlightedParcelles(parcelles);
-    };
-    map.once("moveend", initCb);
-
-    return () => {
-      map.off("moveend", initCb);
-    };
-  }, [map, setHighlightedParcelles, parcelles]);
+    setHighlightedParcelles(parcelles);
+  }, [map, setHighlightedParcelles, parcelles, isMapLoaded]);
 
   useEffect(() => {
     if (positions?.length > 0) {

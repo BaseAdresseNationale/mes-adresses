@@ -3,6 +3,7 @@ import MarkersContext from "@/contexts/markers";
 import ParcellesContext from "@/contexts/parcelles";
 import { useContext, useEffect } from "react";
 import { getPositionName } from "@/lib/positions-types-list";
+import { useMapStyleLoaded } from "./useMapStyleLoaded";
 
 export function useSignalementMapDiffDeletion(existingLocation: {
   positions: any[];
@@ -12,6 +13,7 @@ export function useSignalementMapDiffDeletion(existingLocation: {
 
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
+  const { isMapLoaded } = useMapStyleLoaded();
   const { setHighlightedParcelles, setShowSelectedParcelles, setIsDiffMode } =
     useContext(ParcellesContext);
 
@@ -39,19 +41,12 @@ export function useSignalementMapDiffDeletion(existingLocation: {
   ]);
 
   useEffect(() => {
-    if (!map) {
+    if (!isMapLoaded || !map) {
       return;
     }
 
-    const initCb = () => {
-      setHighlightedParcelles(parcelles);
-    };
-    map.once("moveend", initCb);
-
-    return () => {
-      map.off("moveend", initCb);
-    };
-  }, [map, setHighlightedParcelles, parcelles]);
+    setHighlightedParcelles(parcelles);
+  }, [map, setHighlightedParcelles, parcelles, isMapLoaded]);
 
   useEffect(() => {
     if (positions.length > 0) {

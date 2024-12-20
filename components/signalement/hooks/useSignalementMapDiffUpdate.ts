@@ -8,6 +8,7 @@ import { Signalement } from "@/lib/openapi-signalement";
 import { getPositionName } from "@/lib/positions-types-list";
 import { ActiveCardEnum, SignalementDiff } from "@/lib/utils/signalement";
 import { useContext, useEffect, useState } from "react";
+import { useMapStyleLoaded } from "./useMapStyleLoaded";
 
 export type SignalementMapDiffUpdateExistingLocation = {
   positions: any[];
@@ -37,6 +38,7 @@ export function useSignalementMapDiffUpdate(
   const [activeCard, setActiveCard] = useState<ActiveCardEnum>();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
+  const { isMapLoaded } = useMapStyleLoaded();
   const {
     setHighlightedParcelles,
     setShowSelectedParcelles,
@@ -69,20 +71,13 @@ export function useSignalementMapDiffUpdate(
   ]);
 
   useEffect(() => {
-    if (!map) {
+    if (!isMapLoaded || !map) {
       return;
     }
 
-    const initCb = () => {
-      setPositionsToDisplay(mapInitialPositions(positions));
-      setActiveCard(ActiveCardEnum.CHANGES);
-    };
-    map.once("moveend", initCb);
-
-    return () => {
-      map.off("moveend", initCb);
-    };
-  }, [map, positions]);
+    setPositionsToDisplay(mapInitialPositions(positions));
+    setActiveCard(ActiveCardEnum.CHANGES);
+  }, [isMapLoaded, positions, map]);
 
   useEffect(() => {
     if (positionsToDisplay?.length > 0) {
