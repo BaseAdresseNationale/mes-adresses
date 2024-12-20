@@ -27,6 +27,9 @@ interface MapContextType {
   setIsCadastreDisplayed: React.Dispatch<React.SetStateAction<boolean>>;
   balTilesUrl: string;
   isMapLoaded: boolean;
+  showTilesLayers: (show?: boolean) => void;
+  showToponymes: boolean;
+  setShowToponymes: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MapContext = React.createContext<MapContextType | null>(null);
@@ -37,7 +40,7 @@ const defaultViewport: Partial<ViewState> = {
   zoom: 6,
 };
 
-const defaultStyle = "vector";
+export const defaultStyle = "vector";
 
 export const BAL_API_URL =
   process.env.NEXT_PUBLIC_BAL_API_URL ||
@@ -47,6 +50,7 @@ export const SOURCE_TILE_ID = "tiles";
 
 export function MapContextProvider(props: ChildrenProps) {
   const [map, setMap] = useState<MaplibreMap | null>(null);
+  const [showToponymes, setShowToponymes] = useState<boolean>(true);
   const [style, setStyle] = useState<string>(defaultStyle);
   const [viewport, setViewport] = useState<Partial<ViewState>>(defaultViewport);
   const [isCadastreDisplayed, setIsCadastreDisplayed] =
@@ -100,6 +104,26 @@ export function MapContextProvider(props: ChildrenProps) {
     }
   }, []);
 
+  const showTilesLayers = useCallback(
+    (show = true) => {
+      if (map && isMapLoaded) {
+        const tilesLayers = map
+          .getStyle()
+          ?.layers.filter((layer) => (layer as any).source === SOURCE_TILE_ID)
+          .map((layer) => layer.id);
+
+        tilesLayers?.forEach((layerId) => {
+          map.setLayoutProperty(
+            layerId,
+            "visibility",
+            show ? "visible" : "none"
+          );
+        });
+      }
+    },
+    [map, isMapLoaded]
+  );
+
   const value = useMemo(
     () => ({
       map,
@@ -117,6 +141,9 @@ export function MapContextProvider(props: ChildrenProps) {
       setIsCadastreDisplayed,
       balTilesUrl,
       isMapLoaded,
+      showTilesLayers,
+      showToponymes,
+      setShowToponymes,
     }),
     [
       map,
@@ -129,6 +156,9 @@ export function MapContextProvider(props: ChildrenProps) {
       isCadastreDisplayed,
       balTilesUrl,
       isMapLoaded,
+      showTilesLayers,
+      showToponymes,
+      setShowToponymes,
     ]
   );
 

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import { Pane, Tablist, Tab, Tooltip } from "evergreen-ui";
 import Link from "next/link";
 
@@ -18,7 +18,7 @@ interface TabsSideBarProps {
 
 function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
   const { isMobile } = useContext(LayoutContext);
-  const { signalements } = useContext(SignalementContext);
+  const { pendingSignalementsCount } = useContext(SignalementContext);
 
   return (
     <>
@@ -34,7 +34,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
             {
               key: TabsEnum.COMMUNE,
               label: "Commune",
-              notif: signalements.length,
+              notif: pendingSignalementsCount,
               href: `/bal/${balId}?selectedTab=${TabsEnum.COMMUNE}`,
             },
             {
@@ -74,6 +74,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
             const tab = (
               <Link
                 href={href}
+                key={key}
                 shallow
                 style={{ margin: "0 5px" }}
                 replace={true}

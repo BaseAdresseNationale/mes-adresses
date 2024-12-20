@@ -114,6 +114,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     setIsCadastreDisplayed,
     balTilesUrl,
     isMapLoaded,
+    showToponymes,
   } = useContext(MapContext);
   const { isParcelleSelectionEnabled, handleParcelle } =
     useContext(ParcellesContext);
@@ -433,6 +434,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           )}
 
           {toponymes &&
+            showToponymes &&
             viewport.zoom > TOPONYMES_MIN_ZOOM &&
             toponymes.map((toponyme) => (
               <ToponymeMarker
