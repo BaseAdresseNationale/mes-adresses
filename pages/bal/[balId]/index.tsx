@@ -60,6 +60,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
   const { refreshBALSync, reloadVoies, reloadToponymes, reloadParcelles } =
     useContext(BalDataContext);
+
   const router = useRouter();
   const selectedTab: TabsEnum =
     (router.query.selectedTab as TabsEnum) || TabsEnum.VOIES;

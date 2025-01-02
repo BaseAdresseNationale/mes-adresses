@@ -33,7 +33,7 @@ export function TokenContextProvider({
 }: TokenContextProviderProps) {
   const { getBalToken, addBalAccess } = useContext(LocalStorageContext);
 
-  const [tokenIsChecking, setTokenIsChecking] = useState<boolean>(false);
+  const [tokenIsChecking, setTokenIsChecking] = useState<boolean>(true);
   const [token, setToken] = useState<string>(null);
   const [emails, setEmails] = useState<string[]>(null);
 

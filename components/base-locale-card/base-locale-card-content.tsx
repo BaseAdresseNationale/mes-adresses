@@ -38,6 +38,7 @@ interface BaseLocaleCardContentProps {
   onRemove?: (e: any) => void;
   onHide?: (e: any) => void;
   isShownHabilitationStatus?: boolean;
+  pendingSignalementsCount?: number;
 }
 
 function BaseLocaleCardContent({
@@ -50,6 +51,7 @@ function BaseLocaleCardContent({
   onSelect,
   onRemove,
   onHide,
+  pendingSignalementsCount,
 }: BaseLocaleCardContentProps) {
   const { status, createdAt, emails } = baseLocale;
   const { isMobile } = useContext(LayoutContext);
@@ -117,6 +119,20 @@ function BaseLocaleCardContent({
               communeName={commune.nom}
               isHabilitationValid={isHabilitationValid}
             />
+          </Pane>
+        )}
+
+        {Boolean(pendingSignalementsCount) && (
+          <Pane
+            flex={1}
+            textAlign="center"
+            margin="auto"
+            {...(isMobile && { marginBottom: 10 })}
+          >
+            <Text display="block">Signalements</Text>
+            <Text fontWeight="bold" whiteSpace="nowrap">
+              {pendingSignalementsCount}
+            </Text>
           </Pane>
         )}
 

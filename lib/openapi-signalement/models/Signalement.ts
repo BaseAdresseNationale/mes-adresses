@@ -4,23 +4,29 @@
 /* eslint-disable */
 
 import type { Author } from './Author';
-import type { ChangesRequested } from './ChangesRequested';
+import type { Client } from './Client';
+import type { DeleteNumeroChangesRequestedDTO } from './DeleteNumeroChangesRequestedDTO';
 import type { ExistingNumero } from './ExistingNumero';
 import type { ExistingToponyme } from './ExistingToponyme';
 import type { ExistingVoie } from './ExistingVoie';
-import type { ObjectId } from './ObjectId';
+import type { NumeroChangesRequestedDTO } from './NumeroChangesRequestedDTO';
+import type { Source } from './Source';
+import type { ToponymeChangesRequestedDTO } from './ToponymeChangesRequestedDTO';
+import type { VoieChangesRequestedDTO } from './VoieChangesRequestedDTO';
 
 export type Signalement = {
-    _id: ObjectId;
-    _created: string;
-    _updated: string;
-    _deleted?: string | null;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt?: string | null;
     codeCommune: string;
     type: Signalement.type;
     author?: Author | null;
     existingLocation?: (ExistingNumero | ExistingVoie | ExistingToponyme) | null;
-    changesRequested: ChangesRequested;
-    processedAt?: string | null;
+    changesRequested: (NumeroChangesRequestedDTO | DeleteNumeroChangesRequestedDTO | ToponymeChangesRequestedDTO | VoieChangesRequestedDTO);
+    status?: Signalement.status | null;
+    source: Source;
+    processedBy?: Client | null;
 };
 
 export namespace Signalement {
@@ -29,7 +35,13 @@ export namespace Signalement {
         LOCATION_TO_UPDATE = 'LOCATION_TO_UPDATE',
         LOCATION_TO_DELETE = 'LOCATION_TO_DELETE',
         LOCATION_TO_CREATE = 'LOCATION_TO_CREATE',
-        OTHER = 'OTHER',
+    }
+
+    export enum status {
+        PENDING = 'PENDING',
+        IGNORED = 'IGNORED',
+        PROCESSED = 'PROCESSED',
+        EXPIRED = 'EXPIRED',
     }
 
 
