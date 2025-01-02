@@ -21,6 +21,12 @@ export const LAYER = {
   CODE_PARCELLES: "code-parcelles",
 };
 
+const signalementColors = {
+  [SignalementDiff.NEW]: "rgba(218, 244, 246, 1)",
+  [SignalementDiff.DELETED]: "rgba(244, 228, 219, 1)",
+  [SignalementDiff.UNCHANGED]: "rgba(200, 200, 200, 1)",
+};
+
 export const cadastreLayers = [
   {
     id: LAYER.BATIMENTS_FILL,
@@ -136,10 +142,10 @@ export const cadastreLayers = [
       "fill-color": [
         "case",
         ["==", ["feature-state", "diff"], SignalementDiff.DELETED],
-        "rgba(244, 228, 219, 1)",
+        signalementColors[SignalementDiff.DELETED],
         ["==", ["feature-state", "diff"], SignalementDiff.NEW],
-        "rgba(218, 244, 246, 1)",
-        "rgba(200, 200, 200, 1)",
+        signalementColors[SignalementDiff.NEW],
+        signalementColors[SignalementDiff.UNCHANGED],
       ],
       "fill-opacity": 0.7,
     },
