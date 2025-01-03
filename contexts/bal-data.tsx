@@ -59,6 +59,7 @@ interface BALDataContextType {
   setIsHabilitationProcessDisplayed: (
     isHabilitationProcessDisplayed: boolean
   ) => void;
+  reloadVoieNumeros: (voieId: string) => Promise<void>;
 }
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null);
@@ -124,6 +125,11 @@ export function BalDataContextProvider({
       await BasesLocalesService.findBaseLocaleToponymes(baseLocale.id);
     setToponymes(toponymes);
   }, [baseLocale.id]);
+
+  const reloadVoieNumeros = useCallback(async (voieId: string) => {
+    const numeros: Numero[] = await VoiesService.findVoieNumeros(voieId);
+    setNumeros(numeros);
+  }, []);
 
   const reloadNumeros = useCallback(async () => {
     let numeros: Numero[];
@@ -306,6 +312,7 @@ export function BalDataContextProvider({
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
+      reloadVoieNumeros,
     }),
     [
       isEditing,
@@ -340,6 +347,7 @@ export function BalDataContextProvider({
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
+      reloadVoieNumeros,
     ]
   );
 

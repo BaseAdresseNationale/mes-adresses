@@ -18,7 +18,6 @@ import {
   VoieMetas,
   VoiesService,
 } from "@/lib/openapi-api-bal";
-// Import BALRecoveryContext from '@/contexts/bal-recovery'
 
 interface VoiePageProps {
   commune: CommuneType;
@@ -30,7 +29,8 @@ function VoiePage({ commune }: VoiePageProps) {
   useHelp(3);
 
   const { token } = useContext(TokenContext);
-  const { voie, setVoie, numeros, reloadNumeros } = useContext(BalDataContext);
+  const { voie, setVoie, numeros, reloadVoieNumeros } =
+    useContext(BalDataContext);
 
   useEffect(() => {
     async function addCommentsToVoies() {
@@ -44,7 +44,7 @@ function VoiePage({ commune }: VoiePageProps) {
 
     if (token) {
       addCommentsToVoies();
-      reloadNumeros();
+      reloadVoieNumeros(voie.id);
     }
   }, [token]);
 
