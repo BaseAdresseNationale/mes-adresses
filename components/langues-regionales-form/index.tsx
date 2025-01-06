@@ -38,12 +38,6 @@ function LanguesRegionalesForm({
 }: LanguesRegionalesFormProps) {
   const [nomAlt, setNomAlt] = useState(objectToArray(initialValue));
 
-  const getAltValidationMessage = useCallback(() => {
-    if (validationMessage) {
-      return validationMessage.split(" : ")[1]; // Return message without code ISO as prefix
-    }
-  }, [validationMessage]);
-
   const onAddForm = () => {
     setNomAlt((prev) => [...prev, { code: null, value: "", id: uniqueId() }]);
   };
@@ -83,7 +77,7 @@ function LanguesRegionalesForm({
           availableLanguages={languesRegionales.filter(
             ({ code }) => !nomAlt.map(({ code }) => code).includes(code)
           )}
-          validationMessage={getAltValidationMessage()}
+          validationMessage={validationMessage}
           onChange={(value) => onLanguageChange(value, language.id)}
           onDelete={() => onRemoveLanguage(language.id)}
         />

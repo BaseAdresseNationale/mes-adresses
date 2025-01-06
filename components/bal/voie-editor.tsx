@@ -72,7 +72,6 @@ function VoieEditor({
           trace: data ? data.geometry : null,
           comment: comment ? comment : null,
         };
-
         // Add or edit a voie
         const submit = initialValue
           ? toaster(
@@ -204,12 +203,16 @@ function VoieEditor({
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessage={getValidationMessage("lang_alt")}
+            validationMessage={getValidationMessage("langAlt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>
 
-        <Comment input={comment} onChange={onCommentChange} />
+        <Comment
+          input={comment}
+          onChange={onCommentChange}
+          validationMessage={getValidationMessage("comment")}
+        />
 
         {isMetric && <DrawEditor />}
       </Pane>
