@@ -14,7 +14,7 @@ import {
 
 import FranceConnect from "@/components/habilitation-process/strategy-selection/france-connect";
 import CodeEmail from "@/components/habilitation-process/strategy-selection/code-email";
-import { StrategyDTO } from "@/lib/openapi";
+import { StrategyDTO } from "@/lib/openapi-api-bal";
 
 interface StrategySelectionProps {
   franceconnectAuthenticationUrl: string | null;
