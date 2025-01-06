@@ -30,13 +30,17 @@ import {
   Numero,
   ToponymesService,
   UpdateBatchNumeroDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface ToponymePageProps {
   baseLocale: BaseLocale;
   commune: CommuneType;
 }
+
+const fuseOptions = {
+  keys: ["numero"],
+};
 
 function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
@@ -52,9 +56,7 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
     useContext(BalDataContext);
 
   useHelp(2);
-  const [filtered, setFilter] = useFuse(numeros, 200, {
-    keys: ["numero"],
-  });
+  const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
 
   const onAdd = async (numeros: string[]) => {
     setIsLoading(true);

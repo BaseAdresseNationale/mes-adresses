@@ -13,7 +13,7 @@ import { css } from "glamor";
 import MarkersContext from "@/contexts/markers";
 import BalDataContext from "@/contexts/bal-data";
 
-import { ExtentedToponymeDTO, ToponymesService } from "@/lib/openapi";
+import { ExtentedToponymeDTO, ToponymesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface ToponymeMarkerProps {

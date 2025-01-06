@@ -10,11 +10,15 @@ import useFuse from "@/hooks/fuse";
 
 import DeleteWarning from "@/components/delete-warning";
 import BaseLocaleCard from "@/components/base-locale-card";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface BasesLocalesListProps {
   basesLocales: ExtendedBaseLocaleDTO[];
 }
+
+const fuseOptions = {
+  keys: ["nom", "commune"],
+};
 
 function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
   const { removeBAL, getHiddenBal, addHiddenBal } =
@@ -33,9 +37,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
     Router.push(`/bal/${bal.id}`);
   };
 
-  const [filtered, onFilter] = useFuse(basesLocales, 200, {
-    keys: ["nom", "commune"],
-  });
+  const [filtered, onFilter] = useFuse(basesLocales, 200, fuseOptions);
 
   const onRemove = useCallback(async () => {
     await removeBAL(toRemove);

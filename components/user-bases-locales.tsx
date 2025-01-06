@@ -5,7 +5,7 @@ import { Pane, Spinner, Button, PlusIcon } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import HiddenBal from "@/components/hidden-bal";
 import BasesLocalesList from "@/components/bases-locales-list";
-import { BaseLocale, BasesLocalesService } from "@/lib/openapi";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 
 function UserBasesLocales() {
   const { balAccess, hiddenBal, getHiddenBal } =

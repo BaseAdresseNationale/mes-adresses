@@ -30,7 +30,7 @@ import {
   Numero,
   NumerosService,
   VoiesService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
 
@@ -85,7 +85,7 @@ function NumeroEditor({
     refreshBALSync,
     reloadVoies,
   } = useContext(BalDataContext);
-  const { selectedParcelles } = useContext(ParcellesContext);
+  const { highlightedParcelles } = useContext(ParcellesContext);
   const { markers, suggestedNumero, setCompleteNumero } =
     useContext(MarkersContext);
   const { reloadTiles } = useContext(MapContext);
@@ -116,7 +116,7 @@ function NumeroEditor({
       numero: Number(numero),
       suffixe: suffixe?.length > 0 ? suffixe.toLowerCase().trim() : null,
       comment: comment.length > 0 ? comment : null,
-      parcelles: selectedParcelles,
+      parcelles: highlightedParcelles,
       certifie: certifie ?? (initialValue?.certifie || false),
     };
 
@@ -143,7 +143,7 @@ function NumeroEditor({
     certifie,
     toponymeId,
     comment,
-    selectedParcelles,
+    highlightedParcelles,
   ]);
 
   const onFormSubmit = useCallback(

@@ -23,7 +23,7 @@ import {
   Toponyme,
   ToponymesService,
   UpdateBatchNumeroDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
 import AddNumerosInput from "../toponyme/add-numeros-input";
@@ -60,7 +60,7 @@ function ToponymeEditor({
     reloadNumeros,
   } = useContext(BalDataContext);
   const { markers } = useContext(MarkersContext);
-  const { selectedParcelles } = useContext(ParcellesContext);
+  const { highlightedParcelles } = useContext(ParcellesContext);
   const [ref, setIsFocus] = useFocus(true);
 
   const updateNumerosToponyme = useCallback(
@@ -89,7 +89,7 @@ function ToponymeEditor({
         nom,
         nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
         positions: [],
-        parcelles: selectedParcelles,
+        parcelles: highlightedParcelles,
       };
 
       if (markers) {
@@ -163,7 +163,7 @@ function ToponymeEditor({
       nom,
       nomAlt,
       markers,
-      selectedParcelles,
+      highlightedParcelles,
       setToponyme,
       closeForm,
       refreshBALSync,

@@ -1,5 +1,5 @@
 import { Alert, Text } from "evergreen-ui";
-import { StrategyDTO } from "@/lib/openapi";
+import { StrategyDTO } from "@/lib/openapi-api-bal";
 
 interface RejectedDialogProps {
   communeName: string;

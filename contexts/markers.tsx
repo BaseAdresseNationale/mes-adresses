@@ -1,13 +1,20 @@
-import React, { useState, useCallback, useContext, useMemo } from "react";
+import React, {
+  useState,
+  useCallback,
+  useContext,
+  useMemo,
+  ReactNode,
+} from "react";
 import { ObjectId } from "bson";
 
 import MapContext from "@/contexts/map";
-import { Position } from "@/lib/openapi";
+import { Position } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
 
 export interface Marker {
   id?: string;
-  label?: string;
+  tooltip?: string | ReactNode;
+  label?: string | ReactNode;
   type?: Position.type;
   latitude?: number;
   longitude?: number;
@@ -15,6 +22,7 @@ export interface Marker {
   onClick?: () => void;
   color?: string;
   isMapMarker?: boolean;
+  showTooltip?: boolean;
 }
 
 interface MarkersContextType {
@@ -74,7 +82,7 @@ export function MarkersContextProvider(props: ChildrenProps) {
       setMarkers((markers) => {
         return markers.map((marker) => {
           if (marker.id === markerId) {
-            return { id: markerId, ...data };
+            return { id: markerId, ...marker, ...data };
           }
 
           return marker;

@@ -8,7 +8,7 @@ import useFuse from "@/hooks/fuse";
 
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import RowNumeroDeleted from "@/components/trash/restore-voie/row-numero-deleted";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 
 interface ListNumerosDeletedProps {
   numeros: Numero[];
@@ -16,14 +16,16 @@ interface ListNumerosDeletedProps {
   setSelectedNumerosIds: Dispatch<SetStateAction<string[]>>;
 }
 
+const fuseOptions = {
+  keys: ["numero"],
+};
+
 function ListNumerosDeleted({
   numeros,
   selectedNumerosIds,
   setSelectedNumerosIds,
 }: ListNumerosDeletedProps) {
-  const [filtered, setFilter] = useFuse(numeros, 200, {
-    keys: ["numero"],
-  });
+  const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
 
   const scrollableItems = useMemo(
     () =>

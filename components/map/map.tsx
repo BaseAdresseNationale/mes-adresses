@@ -51,7 +51,7 @@ import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
 import { CommuneType } from "@/types/commune";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 const TOPONYMES_MIN_ZOOM = 13;
@@ -114,6 +114,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     setIsCadastreDisplayed,
     balTilesUrl,
     isMapLoaded,
+    showToponymes,
   } = useContext(MapContext);
   const { isParcelleSelectionEnabled, handleParcelle } =
     useContext(ParcellesContext);
@@ -433,6 +434,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           )}
 
           {toponymes &&
+            showToponymes &&
             viewport.zoom > TOPONYMES_MIN_ZOOM &&
             toponymes.map((toponyme) => (
               <ToponymeMarker

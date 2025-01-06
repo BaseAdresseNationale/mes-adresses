@@ -5,6 +5,7 @@
 
 export type ExistingLocation = {
     type: ExistingLocation.type;
+    banId?: string | null;
 };
 
 export namespace ExistingLocation {

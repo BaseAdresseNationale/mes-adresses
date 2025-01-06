@@ -6,7 +6,7 @@ import BalDataContext from "@/contexts/bal-data";
 
 import VoieEditor from "@/components/bal/voie-editor";
 import LanguagePreview from "../bal/language-preview";
-import { Voie } from "@/lib/openapi";
+import { Voie } from "@/lib/openapi-api-bal";
 
 interface VoieHeadingProps {
   voie: Voie;
@@ -63,6 +63,11 @@ function VoieHeading({ voie }: VoieHeadingProps) {
           {numeros && (
             <Text padding={editingId === voie.id ? 16 : 0}>
               {numeros.length} numéro{numeros.length > 1 ? "s" : ""}
+            </Text>
+          )}
+          {voie.comment && (
+            <Text color="gray" fontStyle="italic">
+              {voie.comment}
             </Text>
           )}
         </Pane>

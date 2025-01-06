@@ -9,7 +9,7 @@ import { useCheckboxInput } from "@/hooks/input";
 import FormInput from "@/components/form-input";
 import CommuneSearchField from "@/components/commune-search/commune-search-field";
 import { CommuneType } from "@/types/commune";
-import { BasesLocalesService } from "@/lib/openapi";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface DemoFormProps {

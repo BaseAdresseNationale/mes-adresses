@@ -22,7 +22,7 @@ import { useInput } from "@/hooks/input";
 import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
 import RenewTokenDialog from "@/components/renew-token-dialog";
-import { BaseLocale, BasesLocalesService } from "@/lib/openapi";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 const mailHasChanged = (listA, listB) => {
