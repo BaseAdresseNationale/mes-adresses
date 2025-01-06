@@ -87,6 +87,7 @@ Elles peuvent être définies classiquement ou en créant un fichier `.env` sur 
 | `NEXT_PUBLIC_PEERTUBE`           | URL du peertube                                             |
 | `NEXT_PUBLIC_MATOMO_TRACKER_URL` | URL du matomo                                               |
 | `NEXT_PUBLIC_MATOMO_SITE_ID`     | Id du site sur matomo                                       |
+| `NEXT_PUBLIC_API_SIGNALEMENT`    | URL de l'API signalement                                    |
 | `NEXT_PUBLIC_BAL_ADMIN_URL`      | URL de base de bal admin                                    |
 | `PORT`                           | Port de l'application                                       |
 

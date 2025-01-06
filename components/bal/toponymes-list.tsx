@@ -17,10 +17,7 @@ import { normalizeSort } from "@/lib/normalize";
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
 
-import useFuse from "@/hooks/fuse";
-
 import DeleteWarning from "@/components/delete-warning";
-import InfiniteScrollList from "@/components/infinite-scroll-list";
 import {
   ExtentedToponymeDTO,
   Numero,
@@ -31,6 +28,8 @@ import LanguagePreview from "./language-preview";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import CommentsContent from "../comments-content";
 import TableRowActions from "../table-row/table-row-actions";
+import PaginationList from "../pagination-list";
+import { useSearchPagination } from "@/hooks/search-pagination";
 
 interface ToponymesListProps {
   toponymes: ExtentedToponymeDTO[];
@@ -55,6 +54,8 @@ function ToponymesList({
   const { isEditing, reloadToponymes } = useContext(BalDataContext);
   const { toaster } = useContext(LayoutContext);
   const router = useRouter();
+  const [page, changePage, search, changeFilter, filtered] =
+    useSearchPagination(toponymes);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -73,10 +74,6 @@ function ToponymesList({
   const onSelect = (id: string) => {
     void router.push(`/bal/${balId}/toponymes/${id}`);
   };
-
-  const [filtered, setFilter] = useFuse(toponymes, 200, {
-    keys: ["nom"],
-  });
 
   const scrollableItems = useMemo(
     () => sortBy(filtered, (v) => normalizeSort(v.nom)),
@@ -131,7 +128,8 @@ function ToponymesList({
         <Table.Head>
           <Table.SearchHeaderCell
             placeholder="Rechercher un toponyme"
-            onChange={setFilter}
+            onChange={changeFilter}
+            value={search}
           />
         </Table.Head>
 
@@ -143,7 +141,11 @@ function ToponymesList({
           </Table.Row>
         )}
 
-        <InfiniteScrollList items={scrollableItems}>
+        <PaginationList
+          items={scrollableItems}
+          page={page}
+          setPage={changePage}
+        >
           {(toponyme: ExtentedToponymeDTO & { commentedNumeros: Numero[] }) => (
             <Table.Row key={toponyme.id} paddingRight={8} minHeight={48}>
               <Table.Cell
@@ -177,7 +179,11 @@ function ToponymesList({
                 }
                 comment={
                   toponyme.commentedNumeros.length > 0 ? (
-                    <CommentsContent comments={toponyme.commentedNumeros} />
+                    <CommentsContent
+                      commentedNumeros={(
+                        toponyme.commentedNumeros as Numero[]
+                      ).map(({ comment }) => comment)}
+                    />
                   ) : null
                 }
               />
@@ -209,7 +215,7 @@ function ToponymesList({
               )}
             </Table.Row>
           )}
-        </InfiniteScrollList>
+        </PaginationList>
       </Table>
     </>
   );

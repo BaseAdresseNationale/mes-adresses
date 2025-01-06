@@ -4,20 +4,35 @@ import { uniqueId } from "lodash";
 const COMMENTS_LIMIT = 10;
 
 interface CommentsContentProps {
-  comments: string[];
+  mainComment?: string;
+  commentedNumeros?: string[];
 }
 
-function CommentsContent({ comments }: CommentsContentProps) {
-  const filteredComments = comments.slice(0, COMMENTS_LIMIT);
-  const nbComments = comments.length;
+function CommentsContent({
+  mainComment,
+  commentedNumeros,
+}: CommentsContentProps) {
+  const filteredComments = commentedNumeros.slice(0, COMMENTS_LIMIT);
+  const nbComments = commentedNumeros.length;
   const remainComments = nbComments - COMMENTS_LIMIT;
 
   return (
     <>
       <Pane marginBottom={8}>
-        <Text color="white">
-          Commentaire{`${comments.length > 0 ? "s" : ""}`} :
-        </Text>
+        {mainComment ? (
+          <Pane
+            whiteSpace="nowrap"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            color="white"
+          >
+            <Text color="white">{mainComment}</Text>
+          </Pane>
+        ) : (
+          <Text color="white">
+            Commentaire{`${commentedNumeros.length > 0 ? "s" : ""}`}
+          </Text>
+        )}
       </Pane>
       {filteredComments.map((comment) => (
         <Pane

@@ -5,8 +5,7 @@ import { CommuneType } from "@/types/commune";
 import { BaseLocale, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import { useRouter } from "next/router";
 import { capitalize } from "lodash";
-import SignalementContext from "@/contexts/signalement";
-import { getSignalementLabel } from "@/lib/utils/signalement";
+import LayoutContext from "@/contexts/layout";
 
 type BreadcrumbsProps = {
   baseLocale: BaseLocale;
@@ -24,23 +23,20 @@ function Breadcrumbs({
   ...props
 }: BreadcrumbsProps) {
   const router = useRouter();
-  const { signalements } = useContext(SignalementContext);
+  const { breadcrumbs } = useContext(LayoutContext);
 
   const balEditorPath = router.pathname.split("[balId]")[1];
   const innerPathSplitted = balEditorPath?.split("/");
-  const innerPath = innerPathSplitted[1];
-  const innerPathLabel =
-    voie?.nom ||
-    toponyme?.nom ||
-    (innerPath === "[token]" ? "" : capitalize(innerPath));
+  let innerPath = innerPathSplitted[1];
+  const selectedTab: string = router.query.selectedTab as string;
+  if (!innerPath && selectedTab) {
+    innerPath = selectedTab;
+  }
+  let innerPathLabel = innerPath === "[token]" ? "" : capitalize(innerPath);
 
-  let signalementLabel;
-  if (innerPath === "signalements" && router.query.idSignalement) {
-    const signalementId = router.query.idSignalement;
-    const signalement = signalements.find(
-      (signalement) => signalement._id === signalementId
-    );
-    signalementLabel = signalement && getSignalementLabel(signalement);
+  let secondInnerPathLabel;
+  if (innerPath === "voies" || innerPath === "toponymes") {
+    secondInnerPathLabel = voie?.nom || toponyme?.nom;
   }
 
   return (
@@ -58,26 +54,32 @@ function Breadcrumbs({
 
       {!innerPath && <Text>{baseLocale.nom || commune.nom}</Text>}
 
-      {innerPath && (
+      {breadcrumbs ? (
+        breadcrumbs
+      ) : innerPath ? (
         <>
           <Link is={NextLink} href={`/bal/${baseLocale.id}`}>
             {baseLocale.nom || commune.nom}
           </Link>
 
           <Text color="muted">{" > "}</Text>
-          {signalementLabel ? (
+          {secondInnerPathLabel ? (
             <>
-              <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>
+              <Link
+                is={NextLink}
+                href={`/bal/${baseLocale.id}?selectedTab=${innerPath}`}
+              >
                 {innerPathLabel}
               </Link>
+
               <Text color="muted">{" > "}</Text>
-              <Text>{signalementLabel}</Text>
+              <Text>{secondInnerPathLabel}</Text>
             </>
           ) : (
             <Text>{innerPathLabel}</Text>
           )}
         </>
-      )}
+      ) : null}
     </Pane>
   );
 }

@@ -1,13 +1,11 @@
 import { useMemo, useContext, useState, useEffect, useCallback } from "react";
 import bbox from "@turf/bbox";
-import type { LngLatBoundsLike, Map, VectorTileSource } from "maplibre-gl";
+import type { Map } from "maplibre-gl";
 
 import BalDataContext from "@/contexts/bal-data";
-import MapContext from "@/contexts/map";
-import { NextRouter, useRouter } from "next/router";
+import { NextRouter } from "next/router";
 import { CommuneType } from "@/types/commune";
 import { Toponyme, Voie } from "@/lib/openapi-api-bal";
-import { ViewState } from "react-map-gl";
 
 function useBounds(
   map: Map,

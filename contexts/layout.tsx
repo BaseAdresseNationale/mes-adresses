@@ -26,6 +26,8 @@ interface LayoutContextType {
   ) => () => Promise<any>;
   toasts: Toast[];
   pushToast: ({ intent, title, message }: Toast) => void;
+  breadcrumbs?: React.ReactNode;
+  setBreadcrumbs: (value: React.ReactNode) => void;
 }
 
 const LayoutContext = React.createContext<LayoutContextType | null>(null);
@@ -35,6 +37,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [isClientSide, setIsClientSide] = useState(false);
   const [toasts, setToasts] = useState([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<React.ReactNode>();
 
   useEffect(() => {
     setIsClientSide(true);
@@ -42,6 +45,9 @@ export function LayoutContextProvider(props: ChildrenProps) {
 
   useEffect(() => {
     const lastToast = toasts[toasts.length - 1];
+    if (!lastToast) {
+      return;
+    }
     const timeoutDuration = lastToast?.duration || TOAST_DURATION;
     const timeout = setTimeout(() => {
       setToasts((toasts) => toasts.slice(1));
@@ -76,7 +82,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
         }
       }
     },
-    [setToasts]
+    []
   );
 
   const pushToast = useCallback(
@@ -94,8 +100,10 @@ export function LayoutContextProvider(props: ChildrenProps) {
       toaster,
       pushToast,
       toasts,
+      breadcrumbs,
+      setBreadcrumbs,
     }),
-    [isMapFullscreen, isMobile, pushToast, toaster, toasts]
+    [isMapFullscreen, isMobile, pushToast, toaster, toasts, breadcrumbs]
   );
 
   return (
