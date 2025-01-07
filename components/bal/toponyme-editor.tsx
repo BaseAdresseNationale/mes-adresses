@@ -219,7 +219,7 @@ function ToponymeEditor({
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessage={getValidationMessage("lang_alt")}
+            validationMessage={getValidationMessage("langAlt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>
