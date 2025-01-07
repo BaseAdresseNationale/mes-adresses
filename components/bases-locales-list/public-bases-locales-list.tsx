@@ -2,7 +2,7 @@ import Router from "next/router";
 import { Pane, Table } from "evergreen-ui";
 
 import BaseLocaleCard from "@/components/base-locale-card";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface PublicBasesLocalesListProps {
   basesLocales: ExtendedBaseLocaleDTO[];
@@ -16,7 +16,7 @@ function PublicBasesLocalesList({
   onFilter,
 }: PublicBasesLocalesListProps) {
   const onBalSelect = (bal) => {
-    Router.push(`/bal/${bal._id}`);
+    Router.push(`/bal/${bal.id}`);
   };
 
   return (
@@ -39,7 +39,7 @@ function PublicBasesLocalesList({
         <Table.Body background="tint1">
           {basesLocales.map((bal) => (
             <BaseLocaleCard
-              key={bal._id}
+              key={bal.id}
               baseLocale={bal}
               isDefaultOpen={basesLocales.length === 1}
               onSelect={() => onBalSelect(bal)}

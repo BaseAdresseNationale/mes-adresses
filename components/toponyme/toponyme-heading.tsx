@@ -6,7 +6,7 @@ import BalDataContext from "@/contexts/bal-data";
 
 import ToponymeEditor from "@/components/bal/toponyme-editor";
 import LanguagePreview from "../bal/language-preview";
-import { Toponyme } from "@/lib/openapi";
+import { Toponyme } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
 interface ToponymeHeadingProps {
@@ -29,10 +29,10 @@ function ToponymeHeading({ toponyme, commune }: ToponymeHeadingProps) {
   };
 
   useEffect(() => {
-    if (editingId === toponyme._id) {
+    if (editingId === toponyme.id) {
       setIsFormOpen(true);
     }
-  }, [editingId, toponyme._id]);
+  }, [editingId, toponyme.id]);
 
   return isFormOpen ? (
     <ToponymeEditor
@@ -66,7 +66,7 @@ function ToponymeHeading({ toponyme, commune }: ToponymeHeadingProps) {
             )}
           </Pane>
           {numeros && (
-            <Text padding={editingId === toponyme._id ? 16 : 0}>
+            <Text padding={editingId === toponyme.id ? 16 : 0}>
               {numeros.length} numéro{numeros.length > 1 ? "s" : ""}
             </Text>
           )}

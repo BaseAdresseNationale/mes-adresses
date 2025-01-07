@@ -31,7 +31,7 @@ function PositionItem({
   const onSelect = useCallback(
     (e) => {
       const type = e.target.value;
-      handleChange && handleChange(marker._id, { ...marker, type });
+      handleChange && handleChange(marker.id, { ...marker, type });
     },
     [marker, handleChange]
   );
@@ -39,9 +39,9 @@ function PositionItem({
   const removeMarker = useCallback(
     (e) => {
       e.preventDefault();
-      onRemove(marker._id);
+      onRemove(marker.id);
     },
-    [marker._id, onRemove]
+    [marker.id, onRemove]
   );
 
   return (

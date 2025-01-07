@@ -15,12 +15,11 @@ import {
   BasesLocalesService,
   VoiesService,
   ToponymesService,
-  Sync,
-  NumeroPopulate,
+  BaseLocaleSync,
   ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
   ExtendedVoieDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
 import useHabilitation from "@/hooks/habilitation";
 import { ChildrenProps } from "@/types/context";
@@ -40,11 +39,12 @@ interface BALDataContextType {
   isHabilitationValid: boolean;
   parcelles: Array<string>;
   reloadParcelles: () => Promise<void>;
+  setVoies: React.Dispatch<React.SetStateAction<ExtendedVoieDTO[]>>;
   voie: Voie;
-  setVoie: (voie: Voie) => void;
+  setVoie: React.Dispatch<React.SetStateAction<Voie>>;
   toponyme: Toponyme;
   setToponyme: (Toponyme: Toponyme) => void;
-  numeros: Array<Numero | NumeroPopulate>;
+  numeros: Array<Numero>;
   reloadNumeros: () => Promise<void>;
   voies: ExtendedVoieDTO[];
   reloadVoies: () => Promise<void>;
@@ -59,6 +59,7 @@ interface BALDataContextType {
   setIsHabilitationProcessDisplayed: (
     isHabilitationProcessDisplayed: boolean
   ) => void;
+  reloadVoieNumeros: (voieId: string) => Promise<void>;
 }
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null);
@@ -85,8 +86,7 @@ export function BalDataContextProvider({
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editingId, _setEditingId] = useState<string>(null);
   const [parcelles, setParcelles] = useState<Array<string>>([]);
-  const [numeros, setNumeros] =
-    useState<Array<Numero | NumeroPopulate>>(initialNumeros);
+  const [numeros, setNumeros] = useState<Array<Numero>>(initialNumeros);
   const [voies, setVoies] = useState<ExtendedVoieDTO[]>(initialVoies);
   const [toponymes, setToponymes] =
     useState<ExtentedToponymeDTO[]>(initialToponymes);
@@ -110,28 +110,33 @@ export function BalDataContextProvider({
 
   const reloadParcelles = useCallback(async () => {
     const parcelles: Array<string> =
-      await BasesLocalesService.findBaseLocaleParcelles(baseLocale._id);
+      await BasesLocalesService.findBaseLocaleParcelles(baseLocale.id);
     setParcelles(parcelles);
-  }, [baseLocale._id]);
+  }, [baseLocale.id]);
 
   const reloadVoies = useCallback(async () => {
     const voies: ExtendedVoieDTO[] =
-      await BasesLocalesService.findBaseLocaleVoies(baseLocale._id);
+      await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     setVoies(voies);
-  }, [baseLocale._id]);
+  }, [baseLocale.id]);
 
   const reloadToponymes = useCallback(async () => {
     const toponymes: ExtentedToponymeDTO[] =
-      await BasesLocalesService.findBaseLocaleToponymes(baseLocale._id);
+      await BasesLocalesService.findBaseLocaleToponymes(baseLocale.id);
     setToponymes(toponymes);
-  }, [baseLocale._id]);
+  }, [baseLocale.id]);
+
+  const reloadVoieNumeros = useCallback(async (voieId: string) => {
+    const numeros: Numero[] = await VoiesService.findVoieNumeros(voieId);
+    setNumeros(numeros);
+  }, []);
 
   const reloadNumeros = useCallback(async () => {
-    let numeros: Numero[] | NumeroPopulate[];
+    let numeros: Numero[];
     if (voie) {
-      numeros = await VoiesService.findVoieNumeros(voie._id);
+      numeros = await VoiesService.findVoieNumeros(voie.id);
     } else if (toponyme) {
-      numeros = await ToponymesService.findToponymeNumeros(toponyme._id);
+      numeros = await ToponymesService.findToponymeNumeros(toponyme.id);
     }
 
     if (numeros) {
@@ -140,15 +145,15 @@ export function BalDataContextProvider({
   }, [voie, toponyme]);
 
   const reloadBaseLocale = useCallback(async () => {
-    const bal = await BasesLocalesService.findBaseLocale(baseLocale._id);
+    const bal = await BasesLocalesService.findBaseLocale(baseLocale.id);
     setBaseLocale(bal);
-  }, [baseLocale._id]);
+  }, [baseLocale.id]);
 
   const refreshBALSync = useCallback(async () => {
-    const { sync }: { sync: Sync } = baseLocale;
+    const { sync }: { sync: BaseLocaleSync } = baseLocale;
     if (
       sync &&
-      sync.status === Sync.status.SYNCED &&
+      sync.status === BaseLocaleSync.status.SYNCED &&
       !sync.isPaused &&
       !isRefrehSyncStat
     ) {
@@ -179,22 +184,22 @@ export function BalDataContextProvider({
 
   const editingItem = useMemo(() => {
     if (editingId) {
-      if (voie?._id === editingId) {
+      if (voie?.id === editingId) {
         return voie;
       }
 
-      if (toponyme?._id === editingId) {
+      if (toponyme?.id === editingId) {
         return toponyme;
       }
 
       return union(voies, toponymes, numeros).find(
-        ({ _id }) => _id === editingId
+        ({ id }) => id === editingId
       );
     }
   }, [editingId, numeros, voie, toponyme, voies, toponymes]);
 
   const certifyAllNumeros = useCallback(async () => {
-    await BasesLocalesService.certifyAllNumeros(baseLocale._id);
+    await BasesLocalesService.certifyAllNumeros(baseLocale.id);
     await reloadNumeros();
     await reloadVoies();
     await reloadToponymes();
@@ -202,7 +207,7 @@ export function BalDataContextProvider({
 
     await refreshBALSync();
   }, [
-    baseLocale._id,
+    baseLocale.id,
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
@@ -211,7 +216,7 @@ export function BalDataContextProvider({
   ]);
 
   const uncertifyAllNumeros = useCallback(async () => {
-    await BasesLocalesService.uncertifyAllNumeros(baseLocale._id);
+    await BasesLocalesService.uncertifyAllNumeros(baseLocale.id);
     await reloadNumeros();
     await reloadVoies();
     await reloadToponymes();
@@ -219,7 +224,7 @@ export function BalDataContextProvider({
 
     await refreshBALSync();
   }, [
-    baseLocale._id,
+    baseLocale.id,
     reloadNumeros,
     reloadVoies,
     reloadToponymes,
@@ -256,7 +261,7 @@ export function BalDataContextProvider({
 
   useEffect(() => {
     async function resumeBal() {
-      await BasesLocalesService.resumeBaseLocale(baseLocale._id);
+      await BasesLocalesService.resumeBaseLocale(baseLocale.id);
       await reloadBaseLocale();
     }
     // SET RESUME BAL IF HABILITATION FRANCE_CONNECT
@@ -268,7 +273,7 @@ export function BalDataContextProvider({
       resumeBal();
     }
   }, [
-    baseLocale._id,
+    baseLocale.id,
     baseLocale.sync?.isPaused,
     habilitation?.status,
     query,
@@ -300,12 +305,14 @@ export function BalDataContextProvider({
       reloadToponymes,
       reloadBaseLocale,
       setVoie,
+      setVoies,
       setToponyme,
       certifyAllNumeros,
       uncertifyAllNumeros,
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
+      reloadVoieNumeros,
     }),
     [
       isEditing,
@@ -328,6 +335,7 @@ export function BalDataContextProvider({
       initialToponymes,
       voies,
       toponymes,
+      setVoies,
       reloadNumeros,
       reloadVoies,
       reloadToponymes,
@@ -339,6 +347,7 @@ export function BalDataContextProvider({
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
+      reloadVoieNumeros,
     ]
   );
 

@@ -29,7 +29,7 @@ function PopupFeatureNumero({ feature, commune }: PopupFeatureNumeroProps) {
   }, [feature.properties]);
 
   const voie = useMemo(() => {
-    return voies.find((v) => v._id === feature.properties?.idVoie);
+    return voies.find((v) => v.id === feature.properties?.idVoie);
   }, [feature.properties?.idVoie, voies]);
 
   return (

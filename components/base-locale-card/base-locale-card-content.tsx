@@ -19,7 +19,12 @@ import LocalStorageContext from "@/contexts/local-storage";
 import RecoverBALAlert from "@/components/bal-recovery/recover-bal-alert";
 import CertificationCount from "@/components/certification-count";
 import HabilitationTag from "../habilitation-tag";
-import { ExtendedBaseLocaleDTO, HabilitationDTO } from "@/lib/openapi";
+import {
+  BaseLocale,
+  ExtendedBaseLocaleDTO,
+  HabilitationDTO,
+  BaseLocaleSync,
+} from "@/lib/openapi-api-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import LayoutContext from "@/contexts/layout";
 
@@ -33,6 +38,7 @@ interface BaseLocaleCardContentProps {
   onRemove?: (e: any) => void;
   onHide?: (e: any) => void;
   isShownHabilitationStatus?: boolean;
+  pendingSignalementsCount?: number;
 }
 
 function BaseLocaleCardContent({
@@ -45,17 +51,18 @@ function BaseLocaleCardContent({
   onSelect,
   onRemove,
   onHide,
+  pendingSignalementsCount,
 }: BaseLocaleCardContentProps) {
-  const { status, _created, emails } = baseLocale;
+  const { status, createdAt, emails } = baseLocale;
   const { isMobile } = useContext(LayoutContext);
   const [isBALRecoveryShown, setIsBALRecoveryShown] = useState(false);
 
   const { getBalToken } = useContext(LocalStorageContext);
   const hasToken = useMemo(() => {
-    return Boolean(getBalToken(baseLocale._id));
-  }, [baseLocale._id, getBalToken]);
+    return Boolean(getBalToken(baseLocale.id));
+  }, [baseLocale.id, getBalToken]);
 
-  const createDate = format(new Date(_created), "PPP", { locale: fr });
+  const createDate = format(new Date(createdAt), "PPP", { locale: fr });
   const isDeletable =
     status === ExtendedBaseLocaleDTO.status.DRAFT ||
     status === ExtendedBaseLocaleDTO.status.DEMO;
@@ -112,6 +119,20 @@ function BaseLocaleCardContent({
               communeName={commune.nom}
               isHabilitationValid={isHabilitationValid}
             />
+          </Pane>
+        )}
+
+        {Boolean(pendingSignalementsCount) && (
+          <Pane
+            flex={1}
+            textAlign="center"
+            margin="auto"
+            {...(isMobile && { marginBottom: 10 })}
+          >
+            <Text display="block">Signalements</Text>
+            <Text fontWeight="bold" whiteSpace="nowrap">
+              {pendingSignalementsCount}
+            </Text>
           </Pane>
         )}
 
@@ -220,23 +241,39 @@ function BaseLocaleCardContent({
           </Pane>
 
           {hasToken ? (
-            <Button
-              appearance="primary"
-              iconAfter={EditIcon}
-              marginLeft={8}
-              marginRight={8}
-              flexShrink={0}
-              onClick={onSelect}
-              disabled={!onSelect}
-            >
-              {isMobile ? "Gérer" : "Gérer les adresses"}
-            </Button>
+            <div>
+              {baseLocale.status === BaseLocale.status.PUBLISHED &&
+                baseLocale.sync?.status === BaseLocaleSync.status.OUTDATED &&
+                !isHabilitationValid && (
+                  <Button
+                    appearance="primary"
+                    marginLeft={8}
+                    marginRight={8}
+                    flexShrink={0}
+                    onClick={onSelect}
+                    disabled={!onSelect}
+                  >
+                    {isMobile ? "Habiliter" : "Habiliter la BAL"}
+                  </Button>
+                )}
+              <Button
+                appearance="primary"
+                iconAfter={EditIcon}
+                marginLeft={8}
+                marginRight={8}
+                flexShrink={0}
+                onClick={onSelect}
+                disabled={!onSelect}
+              >
+                {isMobile ? "Gérer" : "Gérer les adresses"}
+              </Button>
+            </div>
           ) : (
             <>
               <RecoverBALAlert
                 isShown={isBALRecoveryShown}
                 defaultEmail={userEmail}
-                baseLocaleId={baseLocale._id}
+                baseLocaleId={baseLocale.id}
                 onClose={() => {
                   setIsBALRecoveryShown(false);
                 }}

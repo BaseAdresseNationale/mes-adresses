@@ -22,8 +22,9 @@ import {
   UpdateVoieDTO,
   Voie,
   VoiesService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import Comment from "../comment";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -43,6 +44,9 @@ function VoieEditor({
     initialValue ? initialValue.typeNumerotation === "metrique" : false
   );
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : "");
+  const [comment, onCommentChange] = useInput(
+    initialValue ? initialValue.comment : ""
+  );
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
@@ -66,16 +70,13 @@ function VoieEditor({
           nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
           typeNumerotation: isMetric ? "metrique" : "numerique",
           trace: data ? data.geometry : null,
+          comment: comment ? comment : null,
         };
-
         // Add or edit a voie
         const submit = initialValue
           ? toaster(
               async () =>
-                VoiesService.updateVoie(
-                  initialValue._id,
-                  body as UpdateVoieDTO
-                ),
+                VoiesService.updateVoie(initialValue.id, body as UpdateVoieDTO),
               "La voie a bien été modifiée",
               "La voie n’a pas pu être modifiée",
               (err) => {
@@ -85,7 +86,7 @@ function VoieEditor({
           : toaster(
               async () =>
                 BasesLocalesService.createVoie(
-                  baseLocale._id,
+                  baseLocale.id,
                   body as CreateVoieDTO
                 ),
               "La voie a bien été ajoutée",
@@ -99,7 +100,7 @@ function VoieEditor({
 
         refreshBALSync();
 
-        if (initialValue?._id === voie._id && router.query.idVoie) {
+        if (initialValue?.id === voie.id && router.query.idVoie) {
           setVoie(voie);
           // Reload voie trace
           if (
@@ -126,9 +127,10 @@ function VoieEditor({
       }
     },
     [
-      baseLocale._id,
+      baseLocale.id,
       initialValue,
       nom,
+      comment,
       isMetric,
       data,
       nomAlt,
@@ -175,7 +177,7 @@ function VoieEditor({
 
   return (
     <Form
-      editingId={initialValue?._id}
+      editingId={initialValue?.id}
       unmountForm={onUnmount}
       closeForm={closeForm}
       onFormSubmit={onFormSubmit}
@@ -201,10 +203,16 @@ function VoieEditor({
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessage={getValidationMessage("lang_alt")}
+            validationMessage={getValidationMessage("langAlt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>
+
+        <Comment
+          input={comment}
+          onChange={onCommentChange}
+          validationMessage={getValidationMessage("comment")}
+        />
 
         {isMetric && <DrawEditor />}
       </Pane>

@@ -9,7 +9,7 @@ import {
   WarningSignIcon,
   Position,
 } from "evergreen-ui";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 
 interface ToponymeNumerosProps {
   numeros: Numero[];
@@ -27,7 +27,7 @@ function ToponymeNumeros({
   const numerosByVoie: Record<string, Numero[]> = useMemo(() => {
     return groupBy(
       numeros.sort((a, b) => a.numero - b.numero),
-      (d) => d.voie.nom
+      (d) => d.voie?.nom
     );
   }, [numeros]);
 
@@ -57,28 +57,28 @@ function ToponymeNumeros({
             </Table.Cell>
 
             {numerosByVoie[nomVoie].map(
-              ({ _id, numero, suffixe, positions, comment }: Numero) => (
+              ({ id, numero, suffixe, positions, comment }: Numero) => (
                 <Table.Row
-                  key={_id}
+                  key={id}
                   style={{
                     cursor: "pointer",
-                    backgroundColor: hovered === _id ? "#E4E7EB" : "#f5f6f7",
+                    backgroundColor: hovered === id ? "#E4E7EB" : "#f5f6f7",
                   }}
                   onMouseEnter={() => {
-                    setHovered(_id);
+                    setHovered(id);
                   }}
                   onMouseLeave={() => {
                     setHovered(null);
                   }}
                   onClick={() => {
-                    handleClick(_id);
+                    handleClick(id);
                   }}
                 >
                   <Table.Cell data-browsable>
                     <Table.TextCell data-editable flex="0 1 1">
                       {numero}
                       {suffixe}{" "}
-                      {hovered === _id && isEditable && (
+                      {hovered === id && isEditable && (
                         <EditIcon marginBottom={-4} marginLeft={8} />
                       )}
                     </Table.TextCell>

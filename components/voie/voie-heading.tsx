@@ -6,7 +6,7 @@ import BalDataContext from "@/contexts/bal-data";
 
 import VoieEditor from "@/components/bal/voie-editor";
 import LanguagePreview from "../bal/language-preview";
-import { Voie } from "@/lib/openapi";
+import { Voie } from "@/lib/openapi-api-bal";
 
 interface VoieHeadingProps {
   voie: Voie;
@@ -27,7 +27,7 @@ function VoieHeading({ voie }: VoieHeadingProps) {
   }, [isEditing, token]);
 
   useEffect(() => {
-    if (editingId === voie._id) {
+    if (editingId === voie.id) {
       onEnableVoieEditing();
     }
   }, [voie, editingId, onEnableVoieEditing]);
@@ -47,7 +47,7 @@ function VoieHeading({ voie }: VoieHeadingProps) {
         <Pane
           marginBottom={8}
           display="flex"
-          flexDirection={voie.nomAlt ? "row" : "column"}
+          flexDirection="column"
           justifyContent="space-between"
         >
           <Pane>
@@ -61,8 +61,13 @@ function VoieHeading({ voie }: VoieHeadingProps) {
             )}
           </Pane>
           {numeros && (
-            <Text padding={editingId === voie._id ? 16 : 0}>
+            <Text padding={editingId === voie.id ? 16 : 0}>
               {numeros.length} numéro{numeros.length > 1 ? "s" : ""}
+            </Text>
+          )}
+          {voie.comment && (
+            <Text color="gray" fontStyle="italic">
+              {voie.comment}
             </Text>
           )}
         </Pane>

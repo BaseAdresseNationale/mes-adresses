@@ -9,8 +9,8 @@ import { CommuneType } from "@/types/commune";
 import {
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
-  Sync,
-} from "@/lib/openapi";
+  BaseLocaleSync,
+} from "@/lib/openapi-api-bal";
 
 interface BALStatusProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -37,7 +37,7 @@ function BALStatus({
 
   const handlePause = async () => {
     try {
-      await BasesLocalesService.pauseBaseLocale(baseLocale._id);
+      await BasesLocalesService.pauseBaseLocale(baseLocale.id);
       toaster.success(
         "Mise en pause des mises à jour automatiques de la Base Adresses Nationale"
       );
@@ -54,7 +54,7 @@ function BALStatus({
 
   const handleResumeSync = async () => {
     try {
-      await BasesLocalesService.resumeBaseLocale(baseLocale._id);
+      await BasesLocalesService.resumeBaseLocale(baseLocale.id);
       toaster.success(
         "Reprise de la mise à jour automatique de la Base Adresses Nationale"
       );
@@ -98,7 +98,7 @@ function BALStatus({
           <>
             {(baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED ||
               baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED) &&
-              baseLocale.sync?.status !== Sync.status.SYNCED &&
+              baseLocale.sync?.status !== BaseLocaleSync.status.SYNCED &&
               !isHabilitationValid && (
                 <Button
                   marginRight={8}

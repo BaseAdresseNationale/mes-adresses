@@ -1,11 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   Button,
   Dialog,
   Heading,
   Pane,
   Paragraph,
+  Tab,
+  Tablist,
   TrashIcon,
+  Text,
+  Badge,
 } from "evergreen-ui";
 
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
@@ -14,16 +24,44 @@ import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
 import {
   ExistingNumero,
+  NumeroChangesRequestedDTO,
   Signalement,
-  DefaultService as SignalementService,
+  SignalementsService,
 } from "@/lib/openapi-signalement";
 import MarkersContext from "@/contexts/markers";
 import { getSignalementLabel } from "@/lib/utils/signalement";
 import LayoutContext from "@/contexts/layout";
+import SignalementTypeBadge, {
+  signalementTypeMap,
+} from "@/components/signalement/signalement-type-badge";
+import useFuse from "@/hooks/fuse";
+import MapContext from "@/contexts/map";
+import bbox from "@turf/bbox";
+import SignalementContext from "@/contexts/signalement";
+import SignalementJoyRide from "@/components/signalement/signalement-joyride";
 
-function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
-  const [signalements, setSignalements] =
-    useState<Signalement[]>(initialSignalements);
+const fuseOptions = {
+  keys: ["label"],
+};
+
+interface SignalementsPageProps extends BaseEditorProps {
+  paginatedSignalements: { data: Signalement[] };
+}
+
+function SignalementsPage({
+  commune,
+  paginatedSignalements: initialSignalements,
+}: SignalementsPageProps) {
+  const [signalements, setSignalements] = useState<Signalement[]>(
+    initialSignalements.data
+  );
+  const {
+    pendingSignalementsCount,
+    archivedSignalementsCount,
+    updateSignalements,
+    fetchPendingSignalements,
+    fetchArchivedSignalements,
+  } = useContext(SignalementContext);
   const [selectedSignalements, setSelectedSignalements] = useState<string[]>(
     []
   );
@@ -31,34 +69,137 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { toaster } = useContext(LayoutContext);
+  const { showTilesLayers, setShowToponymes, map, isStyleLoaded } =
+    useContext(MapContext);
+  const [activeTabIndex, setActiveTabIndex] = useState(
+    router.query.tab === "archived" ? 1 : 0
+  );
+  const [filters, setFilters] = useState<{ type: Signalement.type[] }>({
+    type: [],
+  });
+
+  const tabs = [
+    { label: "En cours", key: "pending", count: pendingSignalementsCount },
+    {
+      label: `Archivé${archivedSignalementsCount > 1 ? "s" : ""}`,
+      key: "archived",
+      count: archivedSignalementsCount,
+    },
+  ];
+
+  // Fly to commune
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    const communeBbox: number[] = bbox(commune.contour);
+    if (communeBbox) {
+      const center = [
+        (communeBbox[0] + communeBbox[2]) / 2,
+        (communeBbox[1] + communeBbox[3]) / 2,
+      ] as [number, number];
+      map.flyTo({
+        center,
+        offset: [0, 0],
+        zoom: 12,
+        screenSpeed: 2,
+      });
+    }
+  }, [commune, map]);
 
   useEffect(() => {
-    const markerPositions = signalements
-      .reduce((acc, cur) => {
-        let position;
-        if (cur.type === Signalement.type.LOCATION_TO_CREATE) {
-          position = cur.changesRequested?.positions[0]?.point;
-        } else {
-          position = (cur.existingLocation as ExistingNumero).position?.point;
-        }
+    if (isStyleLoaded) {
+      showTilesLayers(false);
+      setShowToponymes(false);
+    }
 
-        return [
-          ...acc,
-          {
-            signalementId: cur._id,
-            label: getSignalementLabel(cur, { withoutDate: true }),
-            position: position,
-          },
-        ];
-      }, [])
+    return () => {
+      showTilesLayers(true);
+      setShowToponymes(true);
+    };
+  }, [showTilesLayers, setShowToponymes, isStyleLoaded]);
+
+  useEffect(() => {
+    const updateSignalements = async () => {
+      setSelectedSignalements([]);
+      let signalements;
+      if (activeTabIndex === 0) {
+        signalements = await fetchPendingSignalements(100, filters.type);
+      } else {
+        signalements = await fetchArchivedSignalements(100, filters.type);
+      }
+      setSignalements(signalements);
+    };
+
+    updateSignalements();
+  }, [
+    filters,
+    activeTabIndex,
+    fetchPendingSignalements,
+    fetchArchivedSignalements,
+  ]);
+
+  const signalementsWithLabel = useMemo(
+    () => signalements.map((s) => ({ ...s, label: getSignalementLabel(s) })),
+    [signalements]
+  );
+
+  const [signalementsList, setSignalementsList] = useFuse(
+    signalementsWithLabel,
+    200,
+    fuseOptions
+  );
+
+  const handleSelectSignalement = useCallback(
+    (id) => {
+      router.push(`/bal/${router.query.balId}/signalements/${id}`);
+    },
+    [router]
+  );
+
+  useEffect(() => {
+    const markerPositions = signalementsList
+      .reduce(
+        (
+          acc,
+          { id, label, type, changesRequested, existingLocation, status }
+        ) => {
+          let position;
+          if (type === Signalement.type.LOCATION_TO_CREATE) {
+            position = (changesRequested as NumeroChangesRequestedDTO)
+              ?.positions[0]?.point;
+          } else {
+            position = (existingLocation as ExistingNumero).position?.point;
+          }
+
+          return [
+            ...acc,
+            {
+              signalementId: id,
+              status,
+              label: (
+                <Pane display="flex" flexDirection="column">
+                  <SignalementTypeBadge type={type} />
+                  <Text marginTop={5}>{label}</Text>
+                </Pane>
+              ),
+              type: type,
+              position: position,
+            },
+          ];
+        },
+        []
+      )
       .filter((signalement) => signalement.position)
-      .map(({ position, signalementId, label }) => {
+      .map(({ position, signalementId, label, type }) => {
         return {
+          id: signalementId,
           isMapMarker: true,
-          label,
+          tooltip: label,
           longitude: position.coordinates[0],
           latitude: position.coordinates[1],
-          color: "warning",
+          color: signalementTypeMap[type].color,
           onClick: () => {
             handleSelectSignalement(signalementId);
           },
@@ -72,59 +213,40 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
     return () => {
       disableMarkers();
     };
-  }, [signalements]);
+  }, [signalementsList, handleSelectSignalement]);
 
-  const refreshSignalements = async () => {
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
+  const handleIgnoreSignalements = async (ids: string[]) => {
+    const _updateSignalements = toaster(
+      () => updateSignalements(ids, Signalement.status.IGNORED),
+      ids.length > 1
+        ? "Les signalements ont bien été ignorés"
+        : "Le signalement a bien été ignoré",
+      "Une erreur est survenue"
     );
+
+    await _updateSignalements();
+    const signalements = await fetchPendingSignalements(100, filters.type);
     setSignalements(signalements);
   };
 
-  const handleSelectSignalement = (id) => {
-    router.push(`/bal/${router.query.balId}/signalements/${id}`);
-  };
-
-  const handleIgnoreSignalement = async (id) => {
-    const updateSignalement = toaster(
-      () => SignalementService.updateSignalement({ id }),
-      "Le signalement a bien été ignoré",
-      "Une erreur est survenue"
-    );
-
-    await updateSignalement();
-    await refreshSignalements();
-  };
-
-  const handleIgnoreSignalements = async () => {
-    const massUpdateSignalements = toaster(
-      async () => {
-        for (const id of selectedSignalements) {
-          await SignalementService.updateSignalement({ id });
-        }
-      },
-      "Les signalements ont bien été ignorés",
-      "Une erreur est survenue"
-    );
-
-    await massUpdateSignalements();
-    await refreshSignalements();
-  };
-
   const handleToggleSelect = (ids: string[]) => {
-    if (ids.length === signalements.length) {
-      setSelectedSignalements(ids);
-    } else if (ids.length === 0) {
-      setSelectedSignalements([]);
-    } else {
-      for (const id of ids) {
-        if (!selectedSignalements.includes(id)) {
-          setSelectedSignalements([...selectedSignalements, id]);
-        } else {
-          setSelectedSignalements(selectedSignalements.filter((s) => s !== id));
-        }
+    for (const id of ids) {
+      if (!selectedSignalements.includes(id)) {
+        setSelectedSignalements([...selectedSignalements, id]);
+      } else {
+        setSelectedSignalements(selectedSignalements.filter((s) => s !== id));
       }
     }
+  };
+
+  const handleSelectTab = (index: number) => {
+    setActiveTabIndex(index);
+    router.replace({
+      query: {
+        ...router.query,
+        tab: tabs[index].key,
+      },
+    });
   };
 
   return (
@@ -141,6 +263,21 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
           </Pane>
         </Heading>
       </Pane>
+
+      <Tablist margin={10} marginTop={0}>
+        {tabs.map(({ label, key, count }, index) => (
+          <Tab
+            key={key}
+            isSelected={activeTabIndex === index}
+            onSelect={() => handleSelectTab(index)}
+          >
+            <Badge color="neutral" marginRight={4}>
+              {count}
+            </Badge>
+            {label}
+          </Tab>
+        ))}
+      </Tablist>
 
       <Pane
         position="relative"
@@ -174,7 +311,7 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
                     marginRight={16}
                     appearance="primary"
                     onClick={async () => {
-                      await handleIgnoreSignalements();
+                      await handleIgnoreSignalements(selectedSignalements);
                       setShowWarningDialog(false);
                     }}
                   >
@@ -200,13 +337,19 @@ function SignalementsPage({ baseLocale, signalements: initialSignalements }) {
           </Pane>
         )}
         <SignalementList
-          signalements={signalements}
+          signalements={signalementsList}
           selectedSignalements={selectedSignalements}
           onSelect={handleSelectSignalement}
+          setSelectedSignalements={setSelectedSignalements}
           onToggleSelect={handleToggleSelect}
-          onIgnore={handleIgnoreSignalement}
+          onIgnore={(id) => handleIgnoreSignalements([id])}
+          filters={filters}
+          setFilters={setFilters}
+          onSearch={setSignalementsList}
+          editionEnabled={activeTabIndex === 0}
         />
       </Pane>
+      <SignalementJoyRide />
     </ProtectedPage>
   );
 }
@@ -218,8 +361,13 @@ export async function getServerSideProps({ params }) {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
 
-    const signalements = await SignalementService.getSignalementsByCodeCommune(
-      baseLocale.commune
+    const paginatedSignalements = await SignalementsService.getSignalements(
+      100,
+      undefined,
+      [Signalement.status.PENDING],
+      undefined,
+      undefined,
+      [baseLocale.commune]
     );
 
     return {
@@ -228,7 +376,7 @@ export async function getServerSideProps({ params }) {
         commune,
         voies,
         toponymes,
-        signalements,
+        paginatedSignalements,
       },
     };
   } catch {

@@ -9,7 +9,7 @@ import { useCheckboxInput } from "@/hooks/input";
 import FormInput from "@/components/form-input";
 import CommuneSearchField from "@/components/commune-search/commune-search-field";
 import { CommuneType } from "@/types/commune";
-import { BasesLocalesService } from "@/lib/openapi";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface DemoFormProps {
@@ -49,9 +49,9 @@ function DemoForm({ defaultCommune }: DemoFormProps) {
         populate,
       });
 
-      addBalAccess(bal._id, bal.token);
+      addBalAccess(bal.id, bal.token);
 
-      Router.push(`/bal/${bal._id}`);
+      Router.push(`/bal/${bal.id}`);
     } catch (error) {
       pushToast({
         title: "Une erreur est survenue",

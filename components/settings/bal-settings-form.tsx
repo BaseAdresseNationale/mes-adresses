@@ -22,7 +22,7 @@ import { useInput } from "@/hooks/input";
 import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
 import RenewTokenDialog from "@/components/renew-token-dialog";
-import { BaseLocale, BasesLocalesService } from "@/lib/openapi";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 const mailHasChanged = (listA, listB) => {
@@ -39,7 +39,7 @@ interface BALSettingsFormProps {
 const BALSettingsForm = React.memo(function BALSettingsForm({
   baseLocale,
 }: BALSettingsFormProps) {
-  const { token, emails, reloadEmails } = useContext(TokenContext);
+  const { emails, reloadEmails } = useContext(TokenContext);
   const { reloadBaseLocale } = useContext(BalDataContext);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +88,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
       setIsLoading(true);
 
       try {
-        await BasesLocalesService.updateBaseLocale(baseLocale._id, {
+        await BasesLocalesService.updateBaseLocale(baseLocale.id, {
           nom: nomInput.trim(),
           emails: balEmails,
         });
@@ -114,10 +114,9 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
       setIsLoading(false);
     },
     [
-      baseLocale._id,
+      baseLocale.id,
       nomInput,
       balEmails,
-      token,
       reloadEmails,
       reloadBaseLocale,
       emails,
@@ -215,7 +214,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
 
         {isRenewTokenWarningShown && (
           <RenewTokenDialog
-            baseLocaleId={baseLocale._id}
+            baseLocaleId={baseLocale.id}
             isShown={isRenewTokenWarningShown}
             setIsShown={setIsRenewTokenWarningShown}
             setError={setError}

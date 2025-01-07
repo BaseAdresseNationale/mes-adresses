@@ -1,13 +1,20 @@
-import React, { useState, useCallback, useContext, useMemo } from "react";
-import { uniqueId } from "lodash";
+import React, {
+  useState,
+  useCallback,
+  useContext,
+  useMemo,
+  ReactNode,
+} from "react";
+import { ObjectId } from "bson";
 
 import MapContext from "@/contexts/map";
-import { Position } from "@/lib/openapi";
+import { Position } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
 
 export interface Marker {
-  _id?: string;
-  label?: string;
+  id?: string;
+  tooltip?: string | ReactNode;
+  label?: string | ReactNode;
   type?: Position.type;
   latitude?: number;
   longitude?: number;
@@ -15,6 +22,7 @@ export interface Marker {
   onClick?: () => void;
   color?: string;
   isMapMarker?: boolean;
+  showTooltip?: boolean;
 }
 
 interface MarkersContextType {
@@ -53,7 +61,10 @@ export function MarkersContextProvider(props: ChildrenProps) {
           marker = { ...marker, longitude, latitude };
         }
 
-        return [...prevMarkers, { _id: uniqueId(), ...marker }];
+        return [
+          ...prevMarkers,
+          { id: new ObjectId().toHexString(), ...marker },
+        ];
       });
     },
     [viewport]
@@ -61,7 +72,7 @@ export function MarkersContextProvider(props: ChildrenProps) {
 
   const removeMarker = useCallback((markerId: string) => {
     setMarkers((prevMarkers) => {
-      const filtre = prevMarkers.filter((marker) => marker._id !== markerId);
+      const filtre = prevMarkers.filter((marker) => marker.id !== markerId);
       return filtre;
     });
   }, []);
@@ -70,8 +81,8 @@ export function MarkersContextProvider(props: ChildrenProps) {
     (markerId: string, data: Partial<Marker>) => {
       setMarkers((markers) => {
         return markers.map((marker) => {
-          if (marker._id === markerId) {
-            return { _id: markerId, ...data };
+          if (marker.id === markerId) {
+            return { id: markerId, ...marker, ...data };
           }
 
           return marker;

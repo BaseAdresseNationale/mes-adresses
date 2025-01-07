@@ -9,7 +9,7 @@ import LocalStorageContext from "@/contexts/local-storage";
 
 import BaseLocaleCard from "@/components/base-locale-card";
 import DeleteWarning from "@/components/delete-warning";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface AlertOtherBALProps {
   isShown: boolean;
@@ -47,7 +47,7 @@ function AlertOtherBAL({
   }, [basesLocales]);
 
   const onBalSelect = (bal) => {
-    Router.push(`/bal/${bal._id}`);
+    Router.push(`/bal/${bal.id}`);
   };
 
   const onRemove = useCallback(async () => {
@@ -148,13 +148,13 @@ function AlertOtherBAL({
 
           {basesLocales.map((bal) => (
             <BaseLocaleCard
-              key={bal._id}
+              key={bal.id}
               isAdmin
               userEmail={userEmail}
               isDefaultOpen={basesLocales.length === 1}
               baseLocale={bal}
               onSelect={() => onBalSelect(bal)}
-              onRemove={(e) => handleRemove(e, bal._id)}
+              onRemove={(e) => handleRemove(e, bal.id)}
             />
           ))}
         </Pane>

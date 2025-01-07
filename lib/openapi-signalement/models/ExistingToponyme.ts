@@ -3,9 +3,14 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { Position } from './Position';
+
 export type ExistingToponyme = {
     type: ExistingToponyme.type;
+    banId?: string | null;
     nom: string;
+    position: Position;
+    parcelles?: Array<string> | null;
 };
 
 export namespace ExistingToponyme {

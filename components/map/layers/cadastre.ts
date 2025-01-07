@@ -1,3 +1,5 @@
+import { SignalementDiff } from "@/lib/utils/signalement";
+
 export const SOURCE = "cadastre";
 
 export const SOURCE_LAYER = {
@@ -13,9 +15,16 @@ export const LAYER = {
   PARCELLES_FILL: "parcelles-fill",
   PARCELLES_SELECTED: "parcelles-selected",
   PARCELLE_HIGHLIGHTED: "parcelle-highlighted",
+  PARCELLE_HIGHLIGHTED_DIFF_MODE: "parcelle-highlighted-diff-mode",
   SECTIONS: "sections",
   CODE_SECTION: "code-section",
   CODE_PARCELLES: "code-parcelles",
+};
+
+const signalementColors = {
+  [SignalementDiff.NEW]: "rgba(218, 244, 246, 1)",
+  [SignalementDiff.DELETED]: "rgba(244, 228, 219, 1)",
+  [SignalementDiff.UNCHANGED]: "rgba(200, 200, 200, 1)",
 };
 
 export const cadastreLayers = [
@@ -116,6 +125,27 @@ export const cadastreLayers = [
         ["boolean", ["feature-state", "hover"], false],
         "rgba(209, 67, 67, 1)",
         "rgba(1, 129, 0, 1)",
+      ],
+      "fill-opacity": 0.7,
+    },
+  },
+  {
+    id: LAYER.PARCELLE_HIGHLIGHTED_DIFF_MODE,
+    type: "fill",
+    source: SOURCE,
+    "source-layer": SOURCE_LAYER.PARCELLES,
+    layout: {
+      visibility: "none",
+    },
+    filter: ["==", "id", ""],
+    paint: {
+      "fill-color": [
+        "case",
+        ["==", ["feature-state", "diff"], SignalementDiff.DELETED],
+        signalementColors[SignalementDiff.DELETED],
+        ["==", ["feature-state", "diff"], SignalementDiff.NEW],
+        signalementColors[SignalementDiff.NEW],
+        signalementColors[SignalementDiff.UNCHANGED],
       ],
       "fill-opacity": 0.7,
     },

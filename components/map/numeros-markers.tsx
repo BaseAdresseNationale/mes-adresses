@@ -5,7 +5,7 @@ import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 
 import NumeroMarker from "@/components/map/numero-marker";
-import { Numero, NumerosService } from "@/lib/openapi";
+import { Numero, NumerosService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface NumerosMarkersProps {
@@ -108,10 +108,10 @@ function NumerosMarkers({
 
   return numeros.map((numero) => (
     <NumeroMarker
-      key={numero._id}
+      key={numero.id}
       numero={numero}
       style={markerStyle(color)}
-      isContextMenuDisplayed={numero._id === isContextMenuDisplayed}
+      isContextMenuDisplayed={numero.id === isContextMenuDisplayed}
       removeAddress={removeAddress}
       onEnableEditing={onEnableEditing}
       onEnableMenu={onEnableMenu}

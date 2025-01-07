@@ -3,7 +3,7 @@ import { Pane, Heading, Tablist, Tab, CogIcon } from "evergreen-ui";
 
 import UserSettingsForm from "./user-settings-form";
 import BALSettingsForm from "./bal-settings-form";
-import { BaseLocale } from "@/lib/openapi";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 
 const getSettingsTabs = (hideBalSettings) => {
   const tabs = [

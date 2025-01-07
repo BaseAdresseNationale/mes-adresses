@@ -56,7 +56,7 @@ function Header() {
 
             <Button
               is="a"
-              href={PEERTUBE_LINK}
+              href={`${PEERTUBE_LINK}/w/p/4kx66AESyPc6Er47sgBeFX`}
               target="_blank"
               appearance="minimal"
               marginRight="12px"

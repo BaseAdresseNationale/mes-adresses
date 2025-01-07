@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo } from "react";
 
 import { useLocalStorage } from "@/hooks/local-storage";
-import { BasesLocalesService, OpenAPI } from "@/lib/openapi";
+import { BasesLocalesService, OpenAPI } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
 import LayoutContext from "./layout";
 
@@ -20,6 +20,8 @@ interface LocalStorageContextType {
   removeHiddenBal: (key: string) => void;
   userSettings: Record<string, any>;
   setUserSettings: (value: Record<string, any>) => void;
+  productTour: Record<string, boolean>;
+  setProductTour: (value: Record<string, boolean>) => void;
 }
 
 const LocalStorageContext = React.createContext<LocalStorageContextType | null>(
@@ -31,6 +33,7 @@ const WELCOMED_KEY = "was-welcomed";
 const RECOVERY_EMAIL = "recovery-email-sent";
 const VISIBILITY_KEY = "hidden-bal";
 const USER_SETTINGS = "user-settings";
+const PRODUCT_TOUR = "product-tour";
 
 export function LocalStorageContextProvider(props: ChildrenProps) {
   const [balAccess, , getBalToken, addBalAccess, removeBalAccess] =
@@ -42,6 +45,7 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
   const [hiddenBal, , getHiddenBal, addHiddenBal, removeHiddenBal] =
     useLocalStorage(VISIBILITY_KEY);
   const [userSettings, setUserSettings] = useLocalStorage(USER_SETTINGS);
+  const [productTour, setProductTour] = useLocalStorage(PRODUCT_TOUR);
 
   const removeBAL = useCallback(async (balId: string) => {
     const token: string = getBalToken(balId);
@@ -77,6 +81,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       removeHiddenBal,
       userSettings,
       setUserSettings,
+      productTour,
+      setProductTour,
     }),
     [
       balAccess,
@@ -93,6 +99,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       removeHiddenBal,
       userSettings,
       setUserSettings,
+      productTour,
+      setProductTour,
     ]
   );
 

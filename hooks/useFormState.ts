@@ -10,7 +10,7 @@ export default function useFormState() {
 
   const handleEditing = useCallback(
     (numeroId?: string) => {
-      const editedNumero = numeros.find(({ _id }) => _id === numeroId) || null;
+      const editedNumero = numeros.find(({ id }) => id === numeroId) || null;
       setEditedINumero(editedNumero);
       setIsFormOpen(true);
     },
@@ -24,7 +24,7 @@ export default function useFormState() {
 
   // Open form when numero is selected from map
   useEffect(() => {
-    if (editingId && numeros.map(({ _id }) => _id).includes(editingId)) {
+    if (editingId && numeros.map(({ id }) => id).includes(editingId)) {
       handleEditing(editingId);
     }
     // HandleEditing has been removed from the list

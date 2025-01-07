@@ -8,7 +8,7 @@ import useFuse from "@/hooks/fuse";
 
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import RowNumeroDeleted from "@/components/trash/restore-voie/row-numero-deleted";
-import { Numero } from "@/lib/openapi";
+import { Numero } from "@/lib/openapi-api-bal";
 
 interface ListNumerosDeletedProps {
   numeros: Numero[];
@@ -16,14 +16,16 @@ interface ListNumerosDeletedProps {
   setSelectedNumerosIds: Dispatch<SetStateAction<string[]>>;
 }
 
+const fuseOptions = {
+  keys: ["numero"],
+};
+
 function ListNumerosDeleted({
   numeros,
   selectedNumerosIds,
   setSelectedNumerosIds,
 }: ListNumerosDeletedProps) {
-  const [filtered, setFilter] = useFuse(numeros, 200, {
-    keys: ["numero"],
-  });
+  const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
 
   const scrollableItems = useMemo(
     () =>
@@ -63,7 +65,7 @@ function ListNumerosDeleted({
     if (isAllSelected) {
       setSelectedNumerosIds([]);
     } else {
-      setSelectedNumerosIds(filtered.map(({ _id }) => _id));
+      setSelectedNumerosIds(filtered.map(({ id }) => id));
     }
   };
 
@@ -107,15 +109,15 @@ function ListNumerosDeleted({
         <InfiniteScrollList items={scrollableItems}>
           {(numero) => (
             <RowNumeroDeleted
-              key={String(numero._id)}
+              key={String(numero.id)}
               label={`${numero.numeroComplet}`}
               secondary={
                 numero.positions.length > 1
                   ? `${numero.positions.length} positions`
                   : null
               }
-              handleSelect={() => handleSelect(numero._id)}
-              isSelected={selectedNumerosIds.includes(numero._id)}
+              handleSelect={() => handleSelect(numero.id)}
+              isSelected={selectedNumerosIds.includes(numero.id)}
             />
           )}
         </InfiniteScrollList>

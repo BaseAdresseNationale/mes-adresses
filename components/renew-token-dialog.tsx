@@ -1,6 +1,6 @@
 import { useState, useCallback, useContext } from "react";
 import { Pane, Dialog, Paragraph, Alert } from "evergreen-ui";
-import { BasesLocalesService } from "@/lib/openapi";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface RenewTokenDialogProps {

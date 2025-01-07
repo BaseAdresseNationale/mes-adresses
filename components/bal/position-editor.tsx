@@ -12,7 +12,7 @@ import MarkersContext from "@/contexts/markers";
 
 import InputLabel from "@/components/input-label";
 import PositionItem from "./position-item";
-import { Position } from "@/lib/openapi";
+import { Position } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface PositionEditorProps {
@@ -42,11 +42,11 @@ function PositionEditor({
   useEffect(() => {
     if (initialPositions) {
       const positions = initialPositions.map((position) => ({
+        id: position.id,
         longitude: position.point.coordinates[0],
         latitude: position.point.coordinates[1],
         type: position.type,
       }));
-
       positions.forEach((position) => addMarker(position));
     } else {
       handleAddMarker();
@@ -90,7 +90,7 @@ function PositionEditor({
             .filter(({ isDisabled }) => !isDisabled)
             .map((marker) => (
               <PositionItem
-                key={marker._id}
+                key={marker.id}
                 marker={marker}
                 isRemovable={isToponyme ? false : markers.length === 1}
                 handleChange={updateMarker}

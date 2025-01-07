@@ -135,6 +135,11 @@ function CodeValidation({
           paramètre de votre anti-spams (Mailinblack par exemple)
         </Text>
       </Alert>
+      <Alert
+        title="Le code ne sera plus valable si vous fermez la fenètre"
+        margin={16}
+        textAlign="left"
+      ></Alert>
     </Pane>
   );
 }

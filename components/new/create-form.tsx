@@ -25,7 +25,7 @@ import {
   ExtendedBaseLocaleDTO,
   OpenAPI,
   PageBaseLocaleDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Client, Revision } from "@/lib/api-depot/types";
 import LayoutContext from "@/contexts/layout";
@@ -52,7 +52,7 @@ export function isExceptionClientId(
       }
     }
   } else {
-    if (outdatedApiDepotClients.includes(client._id)) {
+    if (outdatedApiDepotClients.includes(client.id)) {
       return true;
     }
   }
@@ -109,14 +109,14 @@ function CreateForm({
         commune: commune.code,
       });
 
-      addBalAccess(bal._id, bal.token);
+      addBalAccess(bal.id, bal.token);
 
       if (populate) {
         Object.assign(OpenAPI, { TOKEN: bal.token });
-        await BasesLocalesService.populateBaseLocale(bal._id);
+        await BasesLocalesService.populateBaseLocale(bal.id);
       }
 
-      Router.push(`/bal/${bal._id}`);
+      Router.push(`/bal/${bal.id}`);
     }
   }, [email, nom, populate, commune, addBalAccess]);
 

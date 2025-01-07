@@ -3,7 +3,7 @@ import { Pane, Heading, Button, AddIcon, CrossIcon } from "evergreen-ui";
 
 import ListNumerosDeleted from "@/components/trash/restore-voie/list-numeros-deleted";
 import LanguagePreview from "@/components/bal/language-preview";
-import { Numero, Voie } from "@/lib/openapi";
+import { Numero, Voie } from "@/lib/openapi-api-bal";
 
 interface RestoreVoieProps {
   voie: Voie & { numeros: Numero[] };
@@ -17,7 +17,7 @@ function RestoreVoie({ voie, onRestoreVoie, onClose }: RestoreVoieProps) {
   const restaurerText = () => {
     return (
       "Restaurer " +
-      (voie._deleted
+      (voie.deletedAt
         ? "voie" +
           (selectedNumerosIds.length > 0
             ? " avec " + selectedNumerosIds.length + " numero(s)"
@@ -51,7 +51,7 @@ function RestoreVoie({ voie, onRestoreVoie, onClose }: RestoreVoieProps) {
             appearance="primary"
             display="inline-flex"
             onClick={() => handleRestoreVoie()}
-            disabled={!voie._deleted && selectedNumerosIds.length <= 0}
+            disabled={!voie.deletedAt && selectedNumerosIds.length <= 0}
           >
             {restaurerText()}
           </Button>

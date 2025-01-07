@@ -11,7 +11,7 @@ import { computeStatus } from "@/lib/statuses";
 
 import BANHistory from "@/components/sub-header/bal-status/ban-sync/ban-history";
 import SyncButton from "@/components/sub-header/bal-status/ban-sync/sync-button";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import { useContext } from "react";
 import LayoutContext from "@/contexts/layout";
@@ -54,7 +54,7 @@ function BANSync({
             </Alert>
 
             <BANHistory
-              baseLocaleId={baseLocale._id}
+              baseLocaleId={baseLocale.id}
               syncStatus={baseLocale.sync.status}
               commune={commune}
             />

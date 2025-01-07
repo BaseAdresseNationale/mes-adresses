@@ -81,8 +81,8 @@ function NumeroVoieSelector({
             onChange={handleVoieChange}
           >
             {!voieId && <option value="">- Choisir une voie-</option>}
-            {sortBy(voies, (v) => normalizeSort(v.nom)).map(({ _id, nom }) => (
-              <option key={_id} value={_id}>
+            {sortBy(voies, (v) => normalizeSort(v.nom)).map(({ id, nom }) => (
+              <option key={id} value={id}>
                 {nom}
               </option>
             ))}

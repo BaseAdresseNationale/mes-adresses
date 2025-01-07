@@ -8,13 +8,13 @@ import {
   WarningSignIcon,
 } from "evergreen-ui";
 
-import { BasesLocalesService } from "@/lib/openapi/services/BasesLocalesService";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
 
 import BalDataContext from "@/contexts/bal-data";
 
 import { useInput } from "@/hooks/input";
 import useFocus from "@/hooks/focus";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface DemoWarningProps {
@@ -38,7 +38,7 @@ function DemoWarning({ baseLocale, communeName }: DemoWarningProps) {
       setIsLoading(true);
 
       try {
-        await BasesLocalesService.updateBaseLocaleDemoToDraft(baseLocale._id, {
+        await BasesLocalesService.updateBaseLocaleDemoToDraft(baseLocale.id, {
           nom: nom ? nom.trim() : null,
           email,
         });
@@ -55,7 +55,7 @@ function DemoWarning({ baseLocale, communeName }: DemoWarningProps) {
       setIsShown(false);
       setIsLoading(false);
     },
-    [baseLocale._id, email, nom, reloadBaseLocale, pushToast]
+    [baseLocale.id, email, nom, reloadBaseLocale, pushToast]
   );
 
   return (

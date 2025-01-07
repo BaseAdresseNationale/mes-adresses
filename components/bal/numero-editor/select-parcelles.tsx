@@ -26,23 +26,23 @@ function SelectParcelles({
   const { isCadastreDisplayed, setIsCadastreDisplayed } =
     useContext(MapContext);
   const {
-    selectedParcelles,
-    setSelectedParcelles,
+    highlightedParcelles,
+    setHighlightedParcelles,
     setIsParcelleSelectionEnabled,
-    hoveredParcelle,
-    handleHoveredParcelle,
-    handleParcelle,
+    hoveredParcelles,
+    handleHoveredParcelles,
+    handleParcelles,
   } = useContext(ParcellesContext);
   const addressType = isToponyme ? "toponyme" : "numéro";
 
   useEffect(() => {
-    setSelectedParcelles(initialParcelles);
+    setHighlightedParcelles(initialParcelles);
     setIsParcelleSelectionEnabled(true);
 
     return () => {
       setIsParcelleSelectionEnabled(false);
     };
-  }, []);
+  }, [setHighlightedParcelles, setIsParcelleSelectionEnabled]);
 
   return (
     <Pane display="flex" flexDirection="column">
@@ -50,20 +50,21 @@ function SelectParcelles({
         title="Parcelles cadastre"
         help={`Depuis la carte, cliquez sur les parcelles que vous souhaitez ajouter au ${addressType}. En précisant les parcelles associées à cette adresse, vous accélérez sa réutilisation par de nombreux services, DDFiP, opérateurs de courrier, de fibre et de GPS.`}
       />
-      {selectedParcelles.length > 0 ? (
+      {highlightedParcelles.length > 0 ? (
         <Pane display="grid" gridTemplateColumns="1fr 1fr 1fr">
-          {selectedParcelles.map((parcelle) => {
-            const isHovered = parcelle === hoveredParcelle?.id;
-
+          {highlightedParcelles.map((parcelle) => {
+            const isHovered = hoveredParcelles.some(
+              ({ id }) => id === parcelle
+            );
             return (
               <Badge
                 key={parcelle}
                 isInteractive
-                color={parcelle === hoveredParcelle?.id ? "red" : "green"}
+                color={isHovered ? "red" : "green"}
                 margin={4}
-                onClick={() => handleParcelle(parcelle)}
-                onMouseEnter={() => handleHoveredParcelle({ id: parcelle })}
-                onMouseLeave={() => handleHoveredParcelle(null)}
+                onClick={() => handleParcelles([parcelle])}
+                onMouseEnter={() => handleHoveredParcelles([parcelle])}
+                onMouseLeave={() => handleHoveredParcelles([])}
               >
                 {parcelle}
                 {isHovered && (

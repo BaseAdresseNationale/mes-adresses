@@ -2,15 +2,17 @@ import { useState, useContext, Dispatch, SetStateAction } from "react";
 
 import { getBANCommune } from "@/lib/api-ban";
 import BalDataContext from "@/contexts/bal-data";
-import { BasesLocalesService, HabilitationService } from "@/lib/openapi";
+import {
+  BasesLocalesService,
+  HabilitationService,
+} from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
-import { BaseLocale } from "@/lib/openapi";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface UsePublishProcess {
   massDeletionConfirm: null | (() => void);
   setMassDeletionConfirm: Dispatch<SetStateAction<() => void>>;
-  handleChangeStatus: (status: BaseLocale.status) => Promise<any>;
   handleShowHabilitationProcess: () => Promise<void>;
   handlePublication: () => Promise<void>;
 }
@@ -49,15 +51,6 @@ export default function usePublishProcess(
     }
   };
 
-  const handleChangeStatus = async (status: BaseLocale.status) => {
-    const updated = await BasesLocalesService.updateBaseLocale(baseLocale._id, {
-      status,
-    });
-    await reloadBaseLocale();
-
-    return updated;
-  };
-
   const handleShowHabilitationProcess = async () => {
     const isReadyToPublish = [
       BaseLocale.status.DRAFT,
@@ -72,7 +65,7 @@ export default function usePublishProcess(
     ) {
       try {
         const habilitation = await HabilitationService.createHabilitation(
-          baseLocale._id
+          baseLocale.id
         );
 
         if (habilitation) {
@@ -92,7 +85,7 @@ export default function usePublishProcess(
 
   const handleSync = async () => {
     const publishBaseLocale = toaster(
-      () => BasesLocalesService.publishBaseLocale(baseLocale._id),
+      () => BasesLocalesService.publishBaseLocale(baseLocale.id),
       "La Base Adresses Nationale a bien été mise à jour",
       "Impossible de mettre à jour la Base Adresses Nationale"
     );
@@ -113,7 +106,6 @@ export default function usePublishProcess(
   return {
     massDeletionConfirm,
     setMassDeletionConfirm,
-    handleChangeStatus,
     handleShowHabilitationProcess,
     handlePublication,
   };

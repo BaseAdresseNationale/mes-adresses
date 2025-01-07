@@ -10,7 +10,6 @@ import {
   LockIcon,
   Text,
   IconButton,
-  EndorsedIcon,
   Tooltip,
   FilterIcon,
   FilterRemoveIcon,
@@ -22,17 +21,16 @@ import { normalizeSort } from "@/lib/normalize";
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
 
-import useFuse from "@/hooks/fuse";
-
 import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
-import InfiniteScrollList from "../infinite-scroll-list";
-import { ExtendedVoieDTO, Numero, VoiesService } from "@/lib/openapi";
+import { ExtendedVoieDTO, VoiesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LanguagePreview from "./language-preview";
+import PaginationList from "../pagination-list";
+import { useSearchPagination } from "@/hooks/search-pagination";
 
 interface VoiesListProps {
   voies: ExtendedVoieDTO[];
@@ -60,6 +58,8 @@ function VoiesList({
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
+  const [page, changePage, search, changeFilter, filtered] =
+    useSearchPagination(voies);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -75,13 +75,9 @@ function VoiesList({
     setIsDisabled(false);
   };
 
-  const onSelect = (id: string) => {
+  const onSelect = async (id: string) => {
     void router.push(`/bal/${balId}/voies/${id}`);
   };
-
-  const [filtered, setFilter] = useFuse(voies, 200, {
-    keys: ["nom"],
-  });
 
   const scrollableItems = useMemo(() => {
     const items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
@@ -141,8 +137,9 @@ function VoiesList({
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
           <Table.SearchHeaderCell
-            placeholder="Rechercher une voie"
-            onChange={setFilter}
+            placeholder="Rechercher une voie, une place, un lieu-dit..."
+            onChange={changeFilter}
+            value={search}
           />
           <Table.HeaderCell flex="unset">
             <Tooltip content="Voir seulement les voies avec des adresses non certifiées">
@@ -165,11 +162,15 @@ function VoiesList({
           </Table.Row>
         )}
 
-        <InfiniteScrollList items={scrollableItems}>
-          {(voie: ExtendedVoieDTO & { commentedNumeros: Numero[] }) => (
-            <Table.Row key={voie._id} paddingRight={8} minHeight={48}>
+        <PaginationList
+          items={scrollableItems}
+          page={page}
+          setPage={changePage}
+        >
+          {(voie: ExtendedVoieDTO) => (
+            <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
               <Table.Cell
-                onClick={() => onSelect(voie._id)}
+                onClick={() => onSelect(voie.id)}
                 cursor="pointer"
                 className="main-table-cell"
               >
@@ -193,8 +194,11 @@ function VoiesList({
                     : null
                 }
                 comment={
-                  voie.commentedNumeros.length > 0 ? (
-                    <CommentsContent comments={voie.commentedNumeros} />
+                  voie.comment?.length || voie.commentedNumeros?.length > 0 ? (
+                    <CommentsContent
+                      mainComment={voie.comment}
+                      commentedNumeros={voie.commentedNumeros}
+                    />
                   ) : null
                 }
                 warning={
@@ -207,19 +211,19 @@ function VoiesList({
               {isEditingEnabled && (
                 <TableRowActions
                   onSelect={() => {
-                    onSelect(voie._id);
+                    onSelect(voie.id);
                   }}
                   onEdit={() => {
-                    onEnableEditing(voie._id);
+                    onEnableEditing(voie.id);
                   }}
                   onRemove={() => {
-                    setToRemove(voie._id);
+                    setToRemove(voie.id);
                   }}
                   extra={
                     voie.nbNumeros === 0
                       ? {
                           callback: () => {
-                            setToConvert(voie._id);
+                            setToConvert(voie.id);
                           },
                           icon: KeyTabIcon,
                           text: "Convertir en toponyme",
@@ -242,7 +246,7 @@ function VoiesList({
               )}
             </Table.Row>
           )}
-        </InfiniteScrollList>
+        </PaginationList>
       </Table>
     </>
   );

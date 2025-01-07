@@ -27,16 +27,20 @@ import {
   BaseLocale,
   BasesLocalesService,
   ExtentedToponymeDTO,
-  NumeroPopulate,
+  Numero,
   ToponymesService,
   UpdateBatchNumeroDTO,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 interface ToponymePageProps {
   baseLocale: BaseLocale;
   commune: CommuneType;
 }
+
+const fuseOptions = {
+  keys: ["numero"],
+};
 
 function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
@@ -52,19 +56,17 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
     useContext(BalDataContext);
 
   useHelp(2);
-  const [filtered, setFilter] = useFuse(numeros, 200, {
-    keys: ["numero"],
-  });
+  const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
 
-  const onAdd = async (numeros) => {
+  const onAdd = async (numeros: string[]) => {
     setIsLoading(true);
 
     try {
       const payload: UpdateBatchNumeroDTO = {
         numerosIds: numeros,
-        changes: { toponyme: toponyme._id },
+        changes: { toponymeId: toponyme.id },
       };
-      await BasesLocalesService.updateNumeros(baseLocale._id, payload);
+      await BasesLocalesService.updateNumeros(baseLocale.id, payload);
       await reloadNumeros();
       pushToast({
         title: "Les numéros ont bien été modifiés",
@@ -159,7 +161,7 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
                       }
                 }
               >
-                Ajouter des numéros
+                Associer des numéros
               </Button>
             </Pane>
           </Pane>
@@ -209,7 +211,7 @@ export async function getServerSideProps({ params }) {
       await getBaseEditorProps(balId);
     const toponyme: ExtentedToponymeDTO =
       await ToponymesService.findToponyme(idToponyme);
-    const numeros: NumeroPopulate[] =
+    const numeros: Numero[] =
       await ToponymesService.findToponymeNumeros(idToponyme);
 
     return {

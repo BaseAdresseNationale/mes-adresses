@@ -11,7 +11,7 @@ import {
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
   HabilitationService,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 
 interface UseHabilitationType {
   habilitation: HabilitationDTO | null;
@@ -32,14 +32,14 @@ export default function useHabilitation(
   );
   const [isHabilitationProcessDisplayed, setIsHabilitationProcessDisplayed] =
     useState<boolean>(query["france-connect"] === "1");
-  const [isValid, setIsValid] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const reloadHabilitation = useCallback(async () => {
     if (token) {
       try {
         const habilitation: HabilitationDTO =
-          await HabilitationService.findHabilitation(baseLocale._id);
+          await HabilitationService.findHabilitation(baseLocale.id);
         setHabilitation(habilitation);
         // SET IF HABILITATION IS VALID
         if (habilitation) {
@@ -54,7 +54,7 @@ export default function useHabilitation(
         setIsValid(false);
       }
     }
-  }, [baseLocale._id, token]);
+  }, [baseLocale.id, token]);
 
   useEffect(() => {
     async function handleReloadHabilitation() {

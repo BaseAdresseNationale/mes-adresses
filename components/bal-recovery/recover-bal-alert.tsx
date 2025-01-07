@@ -10,7 +10,7 @@ import {
 } from "@/components/help/video-container";
 
 import { useInput } from "@/hooks/input";
-import { BasesLocalesService } from "@/lib/openapi";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 const hasBeenSentRecently = (sentAt) => {

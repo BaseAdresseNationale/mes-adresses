@@ -17,7 +17,7 @@ import useMatomoTracker from "@/hooks/matomo-tracker";
 import Editor from "@/layouts/editor";
 import { BALRecoveryProvider } from "@/contexts/bal-recovery";
 import { BalDataContextProvider } from "@/contexts/bal-data";
-import { OpenAPI } from "@/lib/openapi";
+import { OpenAPI } from "@/lib/openapi-api-bal";
 import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
 import { LayoutContextProvider } from "@/contexts/layout";
@@ -105,8 +105,45 @@ function App(props: AppProps) {
           max-width: fit-content;
         }
 
+        .custom-tooltip-content {
+          color: white;
+          line-height: 24px;
+          font-family:
+            "SF UI Text",
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Helvetica,
+            Arial,
+            sans-serif,
+            "Apple Color Emoji",
+            "Segoe UI Emoji",
+            "Segoe UI Symbol";
+          font-size: 14px;
+          margin: 0 0 5px 0;
+        }
+
         .main-table-cell:hover {
           background-color: #e4e7eb;
+        }
+
+        .glass-pane {
+          /* From https://css.glass */
+          background: rgba(255, 255, 255, 0.8);
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          backdrop-filter: blur(5px);
+          -webkit-backdrop-filter: blur(5px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes delay-bar {
+          0% {
+            width: 100%;
+          }
+          100% {
+            width: 0;
+          }
         }
       `}</style>
     </>

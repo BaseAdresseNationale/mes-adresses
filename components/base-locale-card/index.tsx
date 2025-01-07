@@ -16,12 +16,15 @@ import { ApiGeoService } from "@/lib/geo-api";
 import StatusBadge from "@/components/status-badge";
 import BaseLocaleCardContent from "@/components/base-locale-card/base-locale-card-content";
 import {
+  BaseLocale,
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
   HabilitationService,
   OpenAPI,
-} from "@/lib/openapi";
+} from "@/lib/openapi-api-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
+import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
+import { canFetchSignalements } from "@/lib/utils/signalement";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -47,16 +50,18 @@ function BaseLocaleCard({
   onRemove,
   onHide,
 }: BaseLocaleCardProps) {
-  const { nom, _updated } = baseLocale;
+  const { nom, updatedAt } = baseLocale;
   const [commune, setCommune] = useState<CommuneApiGeoType>();
   const [habilitation, setHabilitation] = useState<HabilitationDTO | null>(
     null
   );
+  const [pendingSignalementsCount, setPendingSignalementsCount] =
+    useState<number>();
   const [isHabilitationValid, setIsHabilitationValid] =
     useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(isAdmin ? isDefaultOpen : false);
 
-  const majDate = formatDistanceToNow(new Date(_updated), { locale: fr });
+  const majDate = formatDistanceToNow(new Date(updatedAt), { locale: fr });
 
   const handleIsOpen = () => {
     setIsOpen(!isOpen);
@@ -74,7 +79,7 @@ function BaseLocaleCard({
     const fetchHabilitationIsValid = async () => {
       try {
         const isValid: boolean = await HabilitationService.findIsValid(
-          baseLocale._id
+          baseLocale.id
         );
         setHabilitation(null);
         setIsHabilitationValid(isValid);
@@ -87,7 +92,7 @@ function BaseLocaleCard({
       try {
         Object.assign(OpenAPI, { TOKEN: baseLocale.token });
         const habilitation: HabilitationDTO =
-          await HabilitationService.findHabilitation(baseLocale._id);
+          await HabilitationService.findHabilitation(baseLocale.id);
         setHabilitation(habilitation);
 
         const isAccepted = habilitation.status === "accepted";
@@ -97,6 +102,19 @@ function BaseLocaleCard({
         setHabilitation(null);
         setIsHabilitationValid(false);
       }
+      Object.assign(OpenAPI, { TOKEN: null });
+    };
+
+    const fetchPendingSignalementsCount = async () => {
+      const paginatedSignalements = await SignalementsService.getSignalements(
+        1,
+        undefined,
+        [Signalement.status.PENDING],
+        undefined,
+        undefined,
+        [baseLocale.commune]
+      );
+      setPendingSignalementsCount(paginatedSignalements.total);
     };
 
     void fetchCommune();
@@ -104,6 +122,9 @@ function BaseLocaleCard({
     if (!baseLocale.token) {
       void fetchHabilitationIsValid();
     } else {
+      if (canFetchSignalements(baseLocale, baseLocale.token)) {
+        void fetchPendingSignalementsCount();
+      }
       void fetchHabilitation();
     }
   }, [baseLocale]);
@@ -134,7 +155,7 @@ function BaseLocaleCard({
           </Pane>
           <Pane marginLeft={30}>
             <Text fontSize={12} fontStyle="italic">
-              {_updated
+              {updatedAt
                 ? "Dernière mise à jour il y a " + majDate
                 : "Jamais mise à jour"}{" "}
               -
@@ -180,6 +201,7 @@ function BaseLocaleCard({
           onSelect={onSelect}
           onRemove={onRemove}
           onHide={onHide}
+          pendingSignalementsCount={pendingSignalementsCount}
         />
       )}
     </Card>

@@ -10,6 +10,7 @@ import {
 
 import BalDataContext from "@/contexts/bal-data";
 import LayoutContext from "@/contexts/layout";
+import { useRouter } from "next/router";
 
 interface SidebarProps extends PaneProps {
   isHidden: boolean;
@@ -27,12 +28,17 @@ function Sidebar({
   bottom = 0,
   ...props
 }: SidebarProps) {
-  const { setEditingId, isEditing, setIsEditing } = useContext(BalDataContext);
+  const { setEditingId, isEditing, setIsEditing, voie, toponyme } =
+    useContext(BalDataContext);
+  const router = useRouter();
   const { isMobile } = useContext(LayoutContext);
+
   const handleClick = () => {
     if (isEditing) {
       setEditingId(null);
       setIsEditing(false);
+    } else if (voie || toponyme) {
+      router.back();
     } else {
       onToggle(!isHidden);
     }
@@ -73,7 +79,7 @@ function Sidebar({
           >
             {isHidden ? (
               <ChevronRightIcon />
-            ) : isEditing ? (
+            ) : isEditing || voie || toponyme ? (
               <CrossIcon />
             ) : (
               <ChevronLeftIcon />
