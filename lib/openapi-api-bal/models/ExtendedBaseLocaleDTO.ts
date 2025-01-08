@@ -15,6 +15,7 @@ export type ExtendedBaseLocaleDTO = {
     updatedAt: string;
     deletedAt: string;
     nom: string;
+    nomAlt: Record<string, any>;
     commune: string;
     emails: Array<string>;
     token: string;
