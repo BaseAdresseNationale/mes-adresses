@@ -24,6 +24,7 @@ import FormInput from "@/components/form-input";
 import RenewTokenDialog from "@/components/renew-token-dialog";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import LanguesRegionalesForm from "../langues-regionales-form";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -45,6 +46,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
   const [isLoading, setIsLoading] = useState(false);
   const [balEmails, setBalEmails] = useState([]);
   const [nomInput, onNomInputChange] = useInput(baseLocale.nom);
+  const [nomAlt, setNomAlt] = useState(baseLocale.nomAlt);
   const [email, onEmailChange, resetEmail] = useInput();
   const [hasChanges, setHasChanges] = useState(false);
   const [error, setError] = useState("");
@@ -54,9 +56,11 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
 
   const formHasChanged = useCallback(() => {
     return (
-      nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails)
+      nomInput !== baseLocale.nom ||
+      !isEqual(baseLocale.nomAlt, nomAlt) ||
+      mailHasChanged(emails || [], balEmails)
     );
-  }, [nomInput, baseLocale.nom, emails, balEmails]);
+  }, [nomInput, baseLocale.nom, baseLocale.nomAlt, nomAlt, emails, balEmails]);
 
   useEffect(() => {
     setBalEmails(emails || []);
@@ -90,6 +94,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
       try {
         await BasesLocalesService.updateBaseLocale(baseLocale.id, {
           nom: nomInput.trim(),
+          nomAlt: nomAlt,
           emails: balEmails,
         });
 
@@ -116,6 +121,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
     [
       baseLocale.id,
       nomInput,
+      nomAlt,
       balEmails,
       reloadEmails,
       reloadBaseLocale,
@@ -149,6 +155,11 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
             label="Nom"
             placeholder="Nom"
             onChange={onNomInputChange}
+          />
+
+          <LanguesRegionalesForm
+            initialValue={nomAlt}
+            handleLanguages={setNomAlt}
           />
         </FormInput>
 
