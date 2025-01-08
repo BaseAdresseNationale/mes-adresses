@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { reduce, uniqueId } from "lodash";
 import { Button, AddIcon } from "evergreen-ui";
 
 import languesRegionales from "@ban-team/shared-data/langues-regionales.json";
 
 import LanguageField from "./language-field";
+import BalDataContext from "@/contexts/bal-data";
 
 function objectToArray(obj) {
   if (obj) {
@@ -25,21 +26,37 @@ function languagesArrayToObj(arr) {
   );
 }
 
+function getInitialValue(initialValue: any, autoOpen: boolean) {
+  if (initialValue) {
+    return objectToArray(initialValue);
+  } else if (autoOpen) {
+    return [{ code: "", value: "", id: uniqueId() }];
+  }
+  return [];
+}
+
 interface LanguesRegionalesFormProps {
   initialValue?: any;
   validationMessage?: string;
   handleLanguages: (value: any) => void;
+  autoOpen?: boolean;
 }
 
 function LanguesRegionalesForm({
   initialValue,
   validationMessage,
   handleLanguages,
+  autoOpen = false,
 }: LanguesRegionalesFormProps) {
-  const [nomAlt, setNomAlt] = useState(objectToArray(initialValue));
+  const { baseLocale } = useContext(BalDataContext);
+  const [nomAlt, setNomAlt] = useState(getInitialValue(initialValue, autoOpen));
 
   const onAddForm = () => {
-    setNomAlt((prev) => [...prev, { code: null, value: "", id: uniqueId() }]);
+    let code: string = null;
+    if (baseLocale.nomAlt && Object.keys(baseLocale.nomAlt).length > 0) {
+      code = Object.keys(baseLocale.nomAlt)[0];
+    }
+    setNomAlt((prev) => [...prev, { code, value: "", id: uniqueId() }]);
   };
 
   const onLanguageChange = useCallback(

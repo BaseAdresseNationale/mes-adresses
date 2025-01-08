@@ -33,6 +33,7 @@ import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";
 import ToponymesList from "@/components/bal/toponymes-list";
 import ConvertVoieWarning from "@/components/convert-voie-warning";
+import CommuneEditor from "@/components/bal/commune-editor";
 
 interface BaseLocalePageProps {
   selectedTab: TabsEnum;
@@ -41,6 +42,7 @@ interface BaseLocalePageProps {
 
 function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const [editedItem, setEditedItem] = useState<Voie | Toponyme | null>(null);
+  const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [toConvert, setToConvert] = useState<string | null>(null);
   const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
@@ -174,7 +176,14 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
         }}
         onConfirm={onConvert}
       />
-      <HeaderSideBar commune={commune} voies={voies} />
+      <HeaderSideBar
+        baseLocale={baseLocale}
+        commune={commune}
+        voies={voies}
+        openForm={() => {
+          setIsCommuneFormOpen(true);
+        }}
+      />
       <Pane
         position="relative"
         display="flex"
@@ -183,6 +192,15 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
         width="100%"
         overflow="hidden"
       >
+        {isCommuneFormOpen && (
+          <CommuneEditor
+            initialValue={baseLocale as BaseLocale}
+            closeForm={() => {
+              setIsCommuneFormOpen(false);
+            }}
+          />
+        )}
+
         {isFormOpen && selectedTab === TabsEnum.VOIES && (
           <VoieEditor
             initialValue={editedItem as Voie}
