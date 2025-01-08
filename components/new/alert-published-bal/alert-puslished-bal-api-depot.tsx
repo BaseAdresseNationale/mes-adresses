@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Pane, Paragraph, Strong } from "evergreen-ui";
 
-import { Client, Revision } from "@/lib/api-depot/types";
+import { PublicClient, Revision } from "@/lib/api-depot/types";
 
 interface AlertAlertPublishedBALApiDepotProps {
   revision: Revision;
@@ -10,8 +10,8 @@ interface AlertAlertPublishedBALApiDepotProps {
 function AlertPublishedBALApiDepot({
   revision,
 }: AlertAlertPublishedBALApiDepotProps) {
-  const client: Client = useMemo(() => {
-    return revision.client as Client;
+  const client: PublicClient = useMemo(() => {
+    return revision.client;
   }, [revision]);
 
   return (

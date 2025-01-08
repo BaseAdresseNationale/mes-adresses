@@ -11,8 +11,8 @@ import {
 
 import { ApiDepotService } from "@/lib/api-depot";
 
-import Revision from "@/components/sub-header/bal-status/ban-sync/ban-history/revision";
-import { Revision as RevisionType } from "@/lib/api-depot/types";
+import RevisionComponent from "@/components/sub-header/bal-status/ban-sync/ban-history/revision";
+import { Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";
 import { BaseLocaleSync } from "@/lib/openapi-api-bal";
 
@@ -23,7 +23,7 @@ interface BANHistoryProps {
 }
 
 function BANHistory({ baseLocaleId, syncStatus, commune }: BANHistoryProps) {
-  const [revisions, setRevisions] = useState<RevisionType[]>();
+  const [revisions, setRevisions] = useState<Revision[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [isLimited, setIsLimited] = useState(true);
 
@@ -66,8 +66,8 @@ function BANHistory({ baseLocaleId, syncStatus, commune }: BANHistoryProps) {
                 {revisions
                   .slice(0, isLimited ? 3 : revisions.length)
                   .map((revision) => (
-                    <Revision
-                      key={revision._id}
+                    <RevisionComponent
+                      key={revision.id}
                       commune={commune}
                       baseLocaleId={baseLocaleId}
                       revision={revision}

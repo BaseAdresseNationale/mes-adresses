@@ -14,11 +14,12 @@ import {
 
 import FranceConnect from "@/components/habilitation-process/strategy-selection/france-connect";
 import CodeEmail from "@/components/habilitation-process/strategy-selection/code-email";
+import { StrategyDTO } from "@/lib/openapi-api-bal";
 
 interface StrategySelectionProps {
   franceconnectAuthenticationUrl: string | null;
   emailCommune: string | null;
-  handleStrategy: (strategy: string) => void;
+  handleStrategy: (strategy: StrategyDTO.type) => void;
 }
 
 const StrategySelection = React.memo(function StrategySelection({
@@ -26,7 +27,7 @@ const StrategySelection = React.memo(function StrategySelection({
   emailCommune = null,
   handleStrategy,
 }: StrategySelectionProps) {
-  const [hovered, setHovered] = useState("");
+  const [hovered, setHovered] = useState<StrategyDTO.type | null>(null);
 
   return (
     <Pane marginBottom={-16}>
@@ -97,9 +98,9 @@ const StrategySelection = React.memo(function StrategySelection({
         textAlign="center"
       >
         <Pane
-          onMouseEnter={() => setHovered("email")}
+          onMouseEnter={() => setHovered(StrategyDTO.type.EMAIL)}
           onMouseLeave={() => setHovered(null)}
-          elevation={hovered === "email" ? 3 : 0}
+          elevation={hovered === StrategyDTO.type.EMAIL ? 3 : 0}
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -111,13 +112,13 @@ const StrategySelection = React.memo(function StrategySelection({
         >
           <CodeEmail
             emailCommune={emailCommune}
-            handleStrategy={() => handleStrategy("email")}
+            handleStrategy={() => handleStrategy(StrategyDTO.type.EMAIL)}
           />
         </Pane>
         <Pane
-          onMouseEnter={() => setHovered("france-connect")}
+          onMouseEnter={() => setHovered(StrategyDTO.type.FRANCECONNECT)}
           onMouseLeave={() => setHovered(null)}
-          elevation={hovered === "france-connect" ? 3 : 0}
+          elevation={hovered === StrategyDTO.type.FRANCECONNECT ? 3 : 0}
           display="flex"
           flexDirection="column"
           justifyContent="space-between"
@@ -129,7 +130,9 @@ const StrategySelection = React.memo(function StrategySelection({
           flex={1}
         >
           <FranceConnect
-            handleStrategy={() => handleStrategy("france-connect")}
+            handleStrategy={() =>
+              handleStrategy(StrategyDTO.type.FRANCECONNECT)
+            }
             isDisabled={!franceconnectAuthenticationUrl}
           />
         </Pane>
