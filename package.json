@@ -27,6 +27,7 @@
     "@ban-team/validateur-bal": "^2.20.0",
     "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@next/bundle-analyzer": "^13.5.3",
+    "@sentry/nextjs": "^8",
     "@turf/bbox": "^6.5.0",
     "@turf/buffer": "^6.5.0",
     "@turf/center": "^6.5.0",

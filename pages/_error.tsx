@@ -15,6 +15,8 @@ import Main from "@/layouts/main";
 
 import Custom404 from "@/pages/404";
 
+import * as Sentry from "@sentry/nextjs";
+
 interface CustomErrorProps {
   statusCode: number;
 }
@@ -64,6 +66,7 @@ function CustomError({ statusCode }: CustomErrorProps) {
 }
 
 export async function getServerSideProps({ res, err }) {
+  await Sentry.captureUnderscoreErrorException({ res, err });
   const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
   return { props: { statusCode } };
 }
