@@ -55,7 +55,10 @@ function LanguesRegionalesForm({
     let code: string = null;
     if (
       baseLocale.communeNomsAlt &&
-      Object.keys(baseLocale.communeNomsAlt).length > 0
+      Object.keys(baseLocale.communeNomsAlt).length > 0 &&
+      !nomAlt.some(
+        ({ code }) => code === Object.keys(baseLocale.communeNomsAlt)[0]
+      )
     ) {
       code = Object.keys(baseLocale.communeNomsAlt)[0];
     }
