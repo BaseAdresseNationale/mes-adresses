@@ -47,7 +47,7 @@ function VoieHeading({ voie }: VoieHeadingProps) {
         <Pane
           marginBottom={8}
           display="flex"
-          flexDirection={voie.nomAlt ? "row" : "column"}
+          flexDirection="column"
           justifyContent="space-between"
         >
           <Pane>

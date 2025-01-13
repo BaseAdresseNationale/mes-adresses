@@ -408,7 +408,11 @@ function NumeroEditor({
           <DisabledFormInput label="Parcelles" />
         )}
 
-        <Comment input={comment} onChange={onCommentChange} />
+        <Comment
+          input={comment}
+          onChange={onCommentChange}
+          validationMessage={getValidationMessage("comment")}
+        />
       </Pane>
 
       <CertificationButton

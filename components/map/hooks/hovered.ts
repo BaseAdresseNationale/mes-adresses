@@ -5,7 +5,7 @@ import { LAYERS_SOURCE } from "@/components/map/layers/tiles";
 
 function useHovered(map) {
   const hovered = useRef<{ id; source; sourceLayer }>();
-  const { handleHoveredParcelle } = useContext(ParcellesContext);
+  const { handleHoveredParcelles } = useContext(ParcellesContext);
   const [featureHovered, setFeatureHovered] = useState(null);
 
   const handleRelatedNumerosPoints = (map, idVoie, isHovered) => {
@@ -61,10 +61,19 @@ function useHovered(map) {
     (event) => {
       const feature = event && event.features && event.features[0];
       if (feature) {
-        const { source, id, sourceLayer, properties } = feature;
+        const { source, id, sourceLayer } = feature;
+
+        const parcelles = event.features.filter(
+          ({ source, sourceLayer, layer }) =>
+            source === "cadastre" &&
+            sourceLayer === "parcelles" &&
+            layer?.id === "parcelles-fill"
+        );
 
         if (source === "cadastre") {
-          handleHoveredParcelle({ featureId: id, id: properties.id });
+          handleHoveredParcelles(
+            parcelles.map(({ properties }) => properties.id)
+          );
         }
 
         if (hovered.current) {
@@ -94,7 +103,7 @@ function useHovered(map) {
         }
       }
     },
-    [map, handleHoveredParcelle]
+    [map, handleHoveredParcelles]
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -105,12 +114,12 @@ function useHovered(map) {
       setFeatureHovered(null);
 
       if (source === "cadastre") {
-        handleHoveredParcelle(null);
+        handleHoveredParcelles([]);
       }
     }
 
     hovered.current = null;
-  }, [map, handleHoveredParcelle]);
+  }, [map, handleHoveredParcelles]);
 
   return [handleHover, handleMouseLeave, featureHovered];
 }
