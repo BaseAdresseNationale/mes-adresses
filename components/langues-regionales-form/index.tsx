@@ -53,8 +53,11 @@ function LanguesRegionalesForm({
 
   const onAddForm = () => {
     let code: string = null;
-    if (baseLocale.nomAlt && Object.keys(baseLocale.nomAlt).length > 0) {
-      code = Object.keys(baseLocale.nomAlt)[0];
+    if (
+      baseLocale.communeNomsAlt &&
+      Object.keys(baseLocale.communeNomsAlt).length > 0
+    ) {
+      code = Object.keys(baseLocale.communeNomsAlt)[0];
     }
     setNomAlt((prev) => [...prev, { code, value: "", id: uniqueId() }]);
   };

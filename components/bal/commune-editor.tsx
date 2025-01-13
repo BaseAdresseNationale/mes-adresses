@@ -23,7 +23,9 @@ interface CommuneEditorProps {
 
 function CommuneEditor({ initialValue, closeForm }: CommuneEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
+  const [communeNomsAlt, setCommuneNomsAlt] = useState(
+    initialValue?.communeNomsAlt
+  );
   const { reloadBaseLocale } = useContext(BalDataContext);
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
@@ -37,14 +39,15 @@ function CommuneEditor({ initialValue, closeForm }: CommuneEditorProps) {
 
       try {
         const body: UpdateBaseLocaleDTO = {
-          nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
+          communeNomsAlt:
+            Object.keys(communeNomsAlt).length > 0 ? communeNomsAlt : null,
         };
-        // Add or edit a voie
+
         const submit = toaster(
           async () =>
             BasesLocalesService.updateBaseLocale(initialValue.id, body),
-          "La bal a bien été modifiée",
-          "La bal n’a pas pu être modifiée",
+          "Le nom de la commune en langue régional a bien été modifié",
+          "Le nom de la commune en langue régional n’a pas pu être modifiée",
           (err) => {
             setValidationMessages(err.body.message);
           }
@@ -61,7 +64,7 @@ function CommuneEditor({ initialValue, closeForm }: CommuneEditorProps) {
     },
     [
       initialValue,
-      nomAlt,
+      communeNomsAlt,
       closeForm,
       setValidationMessages,
       toaster,
@@ -80,7 +83,7 @@ function CommuneEditor({ initialValue, closeForm }: CommuneEditorProps) {
   // Reset validation messages on changes
   useEffect(() => {
     setValidationMessages(null);
-  }, [nomAlt, setValidationMessages]);
+  }, [communeNomsAlt, setValidationMessages]);
 
   return (
     <Form
@@ -90,11 +93,11 @@ function CommuneEditor({ initialValue, closeForm }: CommuneEditorProps) {
     >
       <Pane>
         <FormInput>
-          <Label>Nom régionale de la commune</Label>
+          <Label>Nom en langue régionale de la commune</Label>
           <LanguesRegionalesForm
-            initialValue={initialValue?.nomAlt}
+            initialValue={initialValue?.communeNomsAlt}
             validationMessage={getValidationMessage("langAlt")}
-            handleLanguages={setNomAlt}
+            handleLanguages={setCommuneNomsAlt}
             autoOpen={true}
           />
         </FormInput>

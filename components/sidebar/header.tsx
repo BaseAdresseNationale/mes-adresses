@@ -1,5 +1,12 @@
 import React, { useContext } from "react";
-import { EditIcon, Heading, Pane, Text } from "evergreen-ui";
+import {
+  Button,
+  EditIcon,
+  Heading,
+  IconButton,
+  Pane,
+  Text,
+} from "evergreen-ui";
 
 import { BaseLocale, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
@@ -27,15 +34,18 @@ function HeaderSideBar({
       <Heading>
         {commune.nom} - {commune.code}
         {!isEditing && token && (
-          <EditIcon
-            marginBottom={-2}
-            marginLeft={8}
-            color="black"
+          <IconButton
+            icon={EditIcon}
+            marginTop={-4}
+            size="large"
+            appearance="minimal"
             onClick={openForm}
           />
         )}
       </Heading>
-      {baseLocale.nomAlt && <LanguagePreview nomAlt={baseLocale.nomAlt} />}
+      {baseLocale.communeNomsAlt && (
+        <LanguagePreview nomAlt={baseLocale.communeNomsAlt} />
+      )}
       {voies && (
         <Text>
           {voies.length} voie{voies.length > 1 ? "s" : ""}
