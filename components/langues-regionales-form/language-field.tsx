@@ -21,7 +21,6 @@ interface LanguageFieldProps {
     value: string;
   };
   availableLanguages: Array<{ code: string; label: string }>;
-  validationMessage: string;
   onChange: (value: { code: string; value: string }) => void;
   onDelete: (code: string) => void;
 }
@@ -29,7 +28,6 @@ interface LanguageFieldProps {
 function LanguageField({
   initialValue,
   availableLanguages,
-  validationMessage,
   onChange,
   onDelete,
 }: LanguageFieldProps) {
@@ -105,7 +103,6 @@ function LanguageField({
           isRequired={false}
           placeholder={`Nom en ${codeISO ? languageLabel : "langue régionale"}`}
           value={input}
-          validationMessage={validationMessage}
           onChange={handleLanguageChange}
           isDisabled={!codeISO}
         />

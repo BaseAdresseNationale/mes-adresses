@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { reduce, uniqueId } from "lodash";
-import { Button, AddIcon } from "evergreen-ui";
+import { Button, AddIcon, Text, ErrorIcon, Pane } from "evergreen-ui";
 
 import languesRegionales from "@ban-team/shared-data/langues-regionales.json";
 
@@ -97,7 +97,6 @@ function LanguesRegionalesForm({
           availableLanguages={languesRegionales.filter(
             ({ code }) => !nomAlt.map(({ code }) => code).includes(code)
           )}
-          validationMessage={validationMessage}
           onChange={(value) => onLanguageChange(value, language.id)}
           onDelete={() => onRemoveLanguage(language.id)}
         />
@@ -115,6 +114,20 @@ function LanguesRegionalesForm({
       >
         Ajouter une langue régionale
       </Button>
+
+      <Pane marginTop={8}>
+        {validationMessage && (
+          <Text color="danger" fontStyle="italic">
+            <ErrorIcon
+              size={14}
+              color="danger"
+              marginRight={4}
+              marginBottom={-1}
+            />
+            {validationMessage}
+          </Text>
+        )}
+      </Pane>
     </>
   );
 }
