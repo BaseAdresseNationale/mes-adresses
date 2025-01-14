@@ -96,7 +96,7 @@ function CommuneEditor({ initialValue, closeForm }: CommuneEditorProps) {
           <Label>Nom en langue régionale de la commune</Label>
           <LanguesRegionalesForm
             initialValue={initialValue?.communeNomsAlt}
-            validationMessage={getValidationMessage("langAlt")}
+            validationMessage={getValidationMessage("langue")}
             handleLanguages={setCommuneNomsAlt}
             autoOpen={true}
           />
