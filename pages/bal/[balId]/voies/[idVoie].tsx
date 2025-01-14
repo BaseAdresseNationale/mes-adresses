@@ -71,6 +71,7 @@ function VoiePage({ commune }: VoiePageProps) {
         )}
 
         <NumerosList
+          commune={commune}
           token={token}
           voieId={voie.id}
           numeros={numeros}

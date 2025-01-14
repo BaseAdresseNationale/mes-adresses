@@ -33,6 +33,7 @@ import {
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
+import SelectCommune from "../select-commune";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -69,6 +70,9 @@ function NumeroEditor({
   );
   const [numeroWasEdited, setNumeroWasEdited] = useState<boolean>(false);
   const [nomVoie, onNomVoieChange] = useState("");
+  const [communeDeleguee, setCommuneDeleguee] = useState(
+    initialValue?.communeDeleguee || null
+  );
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe || "");
   const [comment, onCommentChange] = useInput(initialValue?.comment || "");
@@ -118,6 +122,7 @@ function NumeroEditor({
       comment: comment.length > 0 ? comment : null,
       parcelles: highlightedParcelles,
       certifie: certifie ?? (initialValue?.certifie || false),
+      communeDeleguee: communeDeleguee,
     };
 
     if (markers.length > 0) {
@@ -143,6 +148,7 @@ function NumeroEditor({
     certifie,
     toponymeId,
     comment,
+    communeDeleguee,
     highlightedParcelles,
   ]);
 
@@ -349,6 +355,18 @@ function NumeroEditor({
             </SelectField>
           </FormInput>
         </Pane>
+
+        {commune.communesDeleguees?.length > 0 && (
+          <FormInput>
+            <SelectCommune
+              communes={commune.communesDeleguees}
+              selectedCodeCommune={communeDeleguee}
+              setSelectedCodeCommune={setCommuneDeleguee}
+              withOptionNull={true}
+              label="Commune déléguée"
+            />
+          </FormInput>
+        )}
 
         <FormInput ref={refs?.numero}>
           <Pane display="flex" alignItems="flex-start">

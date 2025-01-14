@@ -23,6 +23,7 @@ export type Numero = {
     comment: string;
     parcelles: Array<string>;
     certifie: boolean;
+    communeDeleguee: string;
     positions: Array<Position>;
     baseLocale: BaseLocale;
     voie: Voie;

@@ -29,6 +29,7 @@ import {
 } from "@/lib/openapi-api-bal";
 import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
+import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
 
 interface EditorProps {
   children: React.ReactNode;
@@ -140,6 +141,13 @@ export async function getBaseEditorProps(
   ]);
 
   const commune: CommuneType = { ...geoCommune, ...communeExtras };
+
+  const communesDeleguees: CommuneDelegueeApiGeoType[] =
+    await ApiGeoService.getCommunesDeleguee(baseLocale.commune);
+  commune.communesDeleguees = communesDeleguees.filter(
+    ({ chefLieu, type }) =>
+      chefLieu === commune.code && type === "commune-deleguee"
+  );
 
   return {
     baseLocale,

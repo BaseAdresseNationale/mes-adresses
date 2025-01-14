@@ -9,5 +9,6 @@ export type UpdateBatchNumeroChangeDTO = {
     voieId?: string;
     positionType?: Record<string, any>;
     certifie?: boolean;
+    communeDeleguee?: string;
 };
 

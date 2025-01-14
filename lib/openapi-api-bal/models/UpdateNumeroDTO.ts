@@ -13,6 +13,7 @@ export type UpdateNumeroDTO = {
     voieId?: string;
     parcelles?: Array<string>;
     certifie?: boolean;
+    communeDeleguee?: string;
     positions?: Array<Position>;
 };
 

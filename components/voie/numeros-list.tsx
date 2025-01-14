@@ -32,8 +32,10 @@ import {
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 interface NumerosListProps {
+  commune: CommuneType;
   token?: string;
   voieId: string;
   numeros: Array<Numero>;
@@ -45,6 +47,7 @@ const fuseOptions = {
 };
 
 function NumerosList({
+  commune,
   token = null,
   voieId,
   numeros,
@@ -228,6 +231,7 @@ function NumerosList({
 
       {isGroupedActionsShown && (
         <GroupedActions
+          commune={commune}
           idVoie={voieId}
           numeros={numeros}
           selectedNumerosIds={selectedNumerosIds}
