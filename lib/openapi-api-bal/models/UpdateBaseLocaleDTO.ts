@@ -5,6 +5,7 @@
 
 export type UpdateBaseLocaleDTO = {
     nom?: string;
+    communeNomsAlt?: Record<string, any> | null;
     emails?: Array<string>;
 };
 
