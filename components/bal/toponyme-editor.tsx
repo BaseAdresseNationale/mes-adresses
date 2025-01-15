@@ -223,7 +223,15 @@ function ToponymeEditor({
             validationMessage={getValidationMessage("nom")}
           />
 
-          {commune.communesDeleguees?.length > 0 && (
+          <LanguesRegionalesForm
+            initialValue={initialValue?.nomAlt}
+            validationMessage={getValidationMessage("langAlt")}
+            handleLanguages={setNomAlt}
+          />
+        </FormInput>
+
+        {commune.communesDeleguees?.length > 0 && (
+          <FormInput ref={refs?.nom}>
             <SelectCommune
               communes={commune.communesDeleguees}
               selectedCodeCommune={communeDeleguee}
@@ -231,14 +239,8 @@ function ToponymeEditor({
               withOptionNull={true}
               label="Commune déléguée"
             />
-          )}
-
-          <LanguesRegionalesForm
-            initialValue={initialValue?.nomAlt}
-            validationMessage={getValidationMessage("langAlt")}
-            handleLanguages={setNomAlt}
-          />
-        </FormInput>
+          </FormInput>
+        )}
 
         {!initialValue && (
           <FormInput>
