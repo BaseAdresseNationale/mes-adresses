@@ -100,20 +100,6 @@ function ToponymeNumeros({
                       </Tooltip>
                     </Table.Cell>
                   )}
-
-                  {positions.find((p) => p.type === "inconnue") && (
-                    <Table.TextCell flex="0 1 1">
-                      <Tooltip
-                        content="Le type d’une position est inconnu"
-                        position={Position.BOTTOM}
-                      >
-                        <WarningSignIcon
-                          color="warning"
-                          style={{ verticalAlign: "bottom" }}
-                        />
-                      </Tooltip>
-                    </Table.TextCell>
-                  )}
                 </Table.Row>
               )
             )}
