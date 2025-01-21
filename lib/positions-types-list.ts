@@ -7,7 +7,6 @@ export const positionsTypesList = [
   { value: "parcelle", name: "Parcelle" },
   { value: "segment", name: "Segment" },
   { value: "service technique", name: "Service technique" },
-  { value: "inconnue", name: "Inconnu" },
 ];
 
 export const getPositionName = (value) => {
