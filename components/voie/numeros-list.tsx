@@ -9,7 +9,6 @@ import {
   Checkbox,
   AddIcon,
   LockIcon,
-  Text,
   IconButton,
 } from "evergreen-ui";
 
@@ -33,6 +32,7 @@ import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import NumeroHeading from "./numero-heading";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -62,7 +62,6 @@ function NumerosList({
     isEditing,
     reloadNumeros,
     reloadParcelles,
-    toponymes,
     refreshBALSync,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
@@ -106,16 +105,6 @@ function NumerosList({
 
     return filteredCertifieNumeros?.length === selectedNumerosIds.length;
   }, [numeros, selectedNumerosIds]);
-
-  const getToponymeName = useCallback(
-    (toponymeId) => {
-      if (toponymeId) {
-        const toponyme = toponymes.find(({ id }) => id === toponymeId);
-        return toponyme?.nom;
-      }
-    },
-    [toponymes]
-  );
 
   const handleSelect = useCallback(
     (id) => {
@@ -312,14 +301,7 @@ function NumerosList({
                     })}
               >
                 <Table.TextCell data-editable flex="0 1 1" height="100%">
-                  <Pane padding={1} fontSize={15}>
-                    <Text>{numero.numeroComplet}</Text>
-                    {getToponymeName(numero.toponymeId) && (
-                      <Text>
-                        <i>{` - ${getToponymeName(numero.toponymeId)}`}</i>
-                      </Text>
-                    )}
-                  </Pane>
+                  <NumeroHeading numero={numero} />
                 </Table.TextCell>
               </Table.Cell>
 

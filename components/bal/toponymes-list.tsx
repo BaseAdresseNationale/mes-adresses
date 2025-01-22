@@ -155,7 +155,12 @@ function ToponymesList({
               >
                 <Table.TextCell data-editable flex="0 1 1" height="100%">
                   <Pane padding={1} fontSize={15}>
-                    <Text>{toponyme.nom}</Text>
+                    <Text>
+                      {toponyme.nom}
+                      {toponyme.communeDeleguee && (
+                        <i> - {toponyme.communeDeleguee}</i>
+                      )}
+                    </Text>
                   </Pane>
 
                   {toponyme.nomAlt && (
