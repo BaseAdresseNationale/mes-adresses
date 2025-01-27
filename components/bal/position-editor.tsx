@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useContext } from "react";
+import { useCallback, useEffect, useContext, useMemo } from "react";
 import {
   Strong,
   Pane,
@@ -6,6 +6,8 @@ import {
   Button,
   AddIcon,
   FormField,
+  Alert,
+  Text,
 } from "evergreen-ui";
 
 import MarkersContext from "@/contexts/markers";
@@ -59,23 +61,26 @@ function PositionEditor({
     // Remove addMarker and handleAddMarker from hooks to prevent useEffect running when viewport changing
   }, [initialPositions, disableMarkers]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const msgAlert = useMemo(() => {
+    return markers.length > 1
+      ? "Déplacez les marqueurs sur la carte pour modifier les positions"
+      : markers.length === 1
+        ? `Déplacez le marqueur sur la carte pour positioner le ${
+            isToponyme ? "toponyme" : "numéro"
+          }.`
+        : `Déplacez le marqueur sur la carte pour placer le ${
+            isToponyme ? "toponyme" : "numéro"
+          }.`;
+  }, [markers.length, isToponyme]);
+
   return (
     <FormField label="" validationMessage={validationMessage}>
-      <InputLabel
-        title="Positions"
-        help={
-          markers.length > 1
-            ? "Déplacer les marqueurs sur la carte pour modifier les positions"
-            : markers.length === 1
-              ? `Déplacer le marqueur sur la carte pour déplacer le ${
-                  isToponyme ? "toponyme" : "numéro"
-                }.`
-              : `Déplacer le marqueur sur la carte pour placer le ${
-                  isToponyme ? "toponyme" : "numéro"
-                }.`
-        }
-      />
-
+      <InputLabel title="Positions" help={msgAlert} />
+      <Pane>
+        <Alert marginTop={8} marginBottom={8}>
+          <Text>{msgAlert}</Text>
+        </Alert>
+      </Pane>
       {markers.length > 0 ? (
         <Pane display="grid" gridTemplateColumns="2fr .5fr 1fr 1fr .5fr">
           <Strong fontWeight={400} paddingBottom=".5em">

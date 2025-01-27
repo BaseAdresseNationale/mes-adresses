@@ -318,11 +318,6 @@ function NumerosList({
                     : null
                 }
                 comment={numero.comment}
-                warning={
-                  numero.positions.some((p) => p.type === "inconnue")
-                    ? "Le type d’une position est inconnu"
-                    : null
-                }
               />
 
               {isEditingEnabled && (
