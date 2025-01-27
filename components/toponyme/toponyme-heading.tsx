@@ -57,7 +57,6 @@ function ToponymeHeading({ toponyme, commune }: ToponymeHeadingProps) {
         >
           <Pane>
             {toponyme.nom}
-            {toponyme.communeDeleguee && <i> - {toponyme.communeDeleguee}</i>}
             {!isEditing && token && (
               <EditIcon
                 marginBottom={-2}

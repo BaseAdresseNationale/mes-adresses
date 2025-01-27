@@ -22,12 +22,8 @@ function NumeroHeading({ numero }: NumeroHeadingProps) {
       }
     }
 
-    if (numero.communeDeleguee) {
-      res += `- ${numero.communeDeleguee}`;
-    }
-
     return res;
-  }, [toponymes, numero.toponymeId, numero.communeDeleguee]);
+  }, [toponymes, numero.toponymeId]);
 
   return (
     <Pane padding={1} fontSize={15}>

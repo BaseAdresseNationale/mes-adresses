@@ -33,6 +33,7 @@ import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import NumeroHeading from "./numero-heading";
+import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -126,6 +127,19 @@ function NumerosList({
       setSelectedNumerosIds(filtered.map(({ id }) => id));
     }
   };
+
+  const getCommuneDeleguee = useCallback(
+    (codeCommuneDeleguee) => {
+      const communeDeleguee: CommuneDelegueeApiGeoType =
+        commune.communesDeleguees?.find(
+          ({ code }) => code === codeCommuneDeleguee
+        );
+      return (
+        communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
+      );
+    },
+    [commune]
+  );
 
   const onRemove = useCallback(
     async (idNumero) => {
@@ -312,6 +326,7 @@ function NumerosList({
               )}
 
               <TableRowNotifications
+                communeDeleguee={getCommuneDeleguee(numero.communeDeleguee)}
                 certification={
                   numero.certifie
                     ? "Cette adresse est certifiée par la commune"
