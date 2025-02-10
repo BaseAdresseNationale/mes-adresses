@@ -231,7 +231,7 @@ function ToponymeEditor({
         </FormInput>
 
         {commune.communesDeleguees?.length > 0 && (
-          <FormInput ref={refs?.nom}>
+          <FormInput>
             <SelectCommune
               communes={commune.communesDeleguees}
               selectedCodeCommune={communeDeleguee}
