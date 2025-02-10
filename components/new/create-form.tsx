@@ -27,7 +27,7 @@ import {
   PageBaseLocaleDTO,
 } from "@/lib/openapi-api-bal";
 import { ApiDepotService } from "@/lib/api-depot";
-import { Client, Revision } from "@/lib/api-depot/types";
+import { PublicClient, Revision } from "@/lib/api-depot/types";
 import LayoutContext from "@/contexts/layout";
 
 export enum ClientRevisionEnum {
@@ -43,8 +43,8 @@ export function isExceptionClientId(
   outdatedApiDepotClients: string[],
   outdatedHarvestSources: string[]
 ) {
-  const client: Client = revision.client as Client;
-  if (client.id === ClientRevisionEnum.MOISSONNEUR_BAL) {
+  const client: PublicClient = revision.client;
+  if (client.legacyId === ClientRevisionEnum.MOISSONNEUR_BAL) {
     const sourceId: string = revision.context.extras.sourceId;
     if (sourceId && outdatedHarvestSources) {
       if (outdatedHarvestSources.includes(sourceId)) {

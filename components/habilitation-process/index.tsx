@@ -17,6 +17,7 @@ import {
   BaseLocale,
   BasesLocalesService,
   HabilitationService,
+  StrategyDTO,
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
@@ -83,7 +84,7 @@ function HabilitationProcess({
 
   const handleStrategy = async (selectedStrategy) => {
     setIsLoading(true);
-    if (selectedStrategy === "email") {
+    if (selectedStrategy === StrategyDTO.type.EMAIL) {
       const codeSent = await sendCode();
       if (codeSent) {
         setStep(1);
@@ -91,7 +92,7 @@ function HabilitationProcess({
     }
 
     if (
-      selectedStrategy === "france-connect" &&
+      selectedStrategy === StrategyDTO.type.FRANCECONNECT &&
       habilitation.franceconnectAuthenticationUrl
     ) {
       redirectToFranceConnect();
