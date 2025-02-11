@@ -33,7 +33,7 @@ export { Position } from './models/Position';
 export type { RecoverBaseLocaleDTO } from './models/RecoverBaseLocaleDTO';
 export type { RestoreVoieDTO } from './models/RestoreVoieDTO';
 export type { SearchNumeroDTO } from './models/SearchNumeroDTO';
-export { Strategy } from './models/Strategy';
+export { StrategyDTO } from './models/StrategyDTO';
 export type { Toponyme } from './models/Toponyme';
 export type { UpdateBaseLocaleDemoDTO } from './models/UpdateBaseLocaleDemoDTO';
 export type { UpdateBaseLocaleDTO } from './models/UpdateBaseLocaleDTO';
