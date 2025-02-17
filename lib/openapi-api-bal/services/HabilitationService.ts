@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { HabilitationDTO } from '../models/HabilitationDTO';
+import type { SendPinCodeDTO } from '../models/SendPinCodeDTO';
 import type { ValidatePinCodeDTO } from '../models/ValidatePinCodeDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -68,11 +69,13 @@ export class HabilitationService {
     /**
      * Send pin code of habilitation
      * @param baseLocaleId
+     * @param requestBody
      * @returns any
      * @throws ApiError
      */
     public static sendPinCodeHabilitation(
         baseLocaleId: string,
+        requestBody: SendPinCodeDTO,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -80,6 +83,8 @@ export class HabilitationService {
             path: {
                 'baseLocaleId': baseLocaleId,
             },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 
