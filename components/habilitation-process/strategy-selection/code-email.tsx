@@ -105,7 +105,6 @@ function CodeEmail({
     async function fetchEmailsCommune() {
       const emails = await ApiAnnuraireService.getEmailsCommune(codeCommune);
       setEmailsCommune(emails);
-      console.log(emails);
       if (emails.length > 0) {
         setEmailSelected(emails[0]);
       }
