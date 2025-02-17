@@ -11,7 +11,7 @@ import {
   Spinner,
 } from "evergreen-ui";
 
-import { sortBalByUpdate } from "@/lib/sort-bal";
+import { sortBalByUpdate } from "@/lib/utils/sort-bal.ts";
 
 import Main from "@/layouts/main";
 import {

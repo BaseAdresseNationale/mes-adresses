@@ -2,7 +2,7 @@ import { useState, useCallback, useContext } from "react";
 import Router from "next/router";
 import { Pane, Table, Paragraph } from "evergreen-ui";
 
-import { sortBalByUpdate } from "@/lib/sort-bal";
+import { sortBalByUpdate } from "@/lib/utils/sort-bal";
 
 import LocalStorageContext from "@/contexts/local-storage";
 
