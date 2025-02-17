@@ -19,17 +19,20 @@ import { ApiAnnuraireService } from "@/lib/api-annuaire";
 
 interface StrategySelectionProps {
   codeCommune: string;
+  emailSelected: string;
+  setEmailSelected: React.Dispatch<React.SetStateAction<string>>;
   franceconnectAuthenticationUrl: string | null;
   handleStrategy: (strategy: StrategyDTO.type) => void;
 }
 
 export function StrategySelection({
   codeCommune,
+  emailSelected,
+  setEmailSelected,
   franceconnectAuthenticationUrl = null,
   handleStrategy,
 }: StrategySelectionProps) {
   const [hovered, setHovered] = useState<StrategyDTO.type | null>(null);
-  const [emailSelected, setEmailSelected] = useState<string>(null);
 
   return (
     <Pane marginBottom={-16}>
@@ -113,10 +116,10 @@ export function StrategySelection({
           flex={1}
         >
           <CodeEmail
-          codeCommune={codeCommune}
-           emailSelected={emailSelected}
-           setEmailSelected={setEmailSelected}
-            handleStrategy={() => handleStrategy(StrategyDTO.type.EMAIL, emailSelected)}
+            codeCommune={codeCommune}
+            emailSelected={emailSelected}
+            setEmailSelected={setEmailSelected}
+            handleStrategy={() => handleStrategy(StrategyDTO.type.EMAIL)}
           />
         </Pane>
         <Pane

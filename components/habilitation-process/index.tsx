@@ -55,13 +55,16 @@ function HabilitationProcess({
   const [isLoading, setIsLoading] = useState(false);
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
+  const [emailSelected, setEmailSelected] = useState<string>(null);
   const { pushToast } = useContext(LayoutContext);
 
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
 
-  const sendCode = async (email: string) => {
+  const sendCode = async () => {
     try {
-      await HabilitationService.sendPinCodeHabilitation(baseLocale.id, { email });
+      await HabilitationService.sendPinCodeHabilitation(baseLocale.id, {
+        email: emailSelected,
+      });
 
       return true;
     } catch (error) {
@@ -82,10 +85,10 @@ function HabilitationProcess({
     );
   };
 
-  const handleStrategy = async (selectedStrategy: StrategyDTO.type, email?: string) => {
+  const handleStrategy = async (selectedStrategy: StrategyDTO.type) => {
     setIsLoading(true);
     if (selectedStrategy === StrategyDTO.type.EMAIL) {
-      const codeSent = await sendCode(email);
+      const codeSent = await sendCode();
       if (codeSent) {
         setStep(1);
       }
@@ -196,6 +199,8 @@ function HabilitationProcess({
         {step === 0 && (
           <StrategySelection
             codeCommune={commune.code}
+            emailSelected={emailSelected}
+            setEmailSelected={setEmailSelected}
             franceconnectAuthenticationUrl={
               habilitation.franceconnectAuthenticationUrl
             }
