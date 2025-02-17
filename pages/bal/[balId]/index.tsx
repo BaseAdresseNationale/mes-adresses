@@ -248,6 +248,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
         {selectedTab === TabsEnum.TOPONYMES && (
           <ToponymesList
+            commune={commune}
             toponymes={toponymes}
             balId={baseLocale.id}
             onEnableEditing={onEdit}

@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { sortBy } from "lodash";
 import {
   Table,
@@ -30,8 +30,11 @@ import CommentsContent from "../comments-content";
 import TableRowActions from "../table-row/table-row-actions";
 import PaginationList from "../pagination-list";
 import { useSearchPagination } from "@/hooks/search-pagination";
+import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
+import { CommuneType } from "@/types/commune";
 
 interface ToponymesListProps {
+  commune: CommuneType;
   toponymes: ExtentedToponymeDTO[];
   onRemove: () => Promise<void>;
   onEnableEditing: (id: string) => void;
@@ -41,6 +44,7 @@ interface ToponymesListProps {
 }
 
 function ToponymesList({
+  commune,
   toponymes,
   onEnableEditing,
   onRemove,
@@ -70,6 +74,19 @@ function ToponymesList({
     setToRemove(null);
     setIsDisabled(false);
   };
+
+  const getCommuneDeleguee = useCallback(
+    (codeCommuneDeleguee) => {
+      const communeDeleguee: CommuneDelegueeApiGeoType =
+        commune.communesDeleguees?.find(
+          ({ code }) => code === codeCommuneDeleguee
+        );
+      return (
+        communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
+      );
+    },
+    [commune]
+  );
 
   const onSelect = (id: string) => {
     void router.push(`/bal/${balId}/toponymes/${id}`);
@@ -167,6 +184,7 @@ function ToponymesList({
               </Table.Cell>
 
               <TableRowNotifications
+                communeDeleguee={getCommuneDeleguee(toponyme.communeDeleguee)}
                 warning={
                   toponyme.positions.length === 0
                     ? "Ce toponyme n’a pas de position"

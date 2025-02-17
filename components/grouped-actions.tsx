@@ -26,8 +26,20 @@ import Comment from "@/components/comment";
 import CertificationButton from "@/components/certification-button";
 import FormInput from "@/components/form-input";
 import { Numero } from "@/lib/openapi-api-bal";
+import SelectCommune from "./select-commune";
+import { CommuneType } from "@/types/commune";
+
+const getInitialCommuneDeleguee = (selectedNumeros: Numero[]) => {
+  const selectedNumerosUniqToponyme = uniq(
+    selectedNumeros.map((numero) => numero.communeDeleguee)
+  );
+  return selectedNumerosUniqToponyme.length === 1
+    ? selectedNumeros[0].communeDeleguee
+    : null;
+};
 
 interface GroupedActionsProps {
+  commune: CommuneType;
   idVoie: string;
   numeros: Numero[];
   selectedNumerosIds: string[];
@@ -38,6 +50,7 @@ interface GroupedActionsProps {
 }
 
 function GroupedActions({
+  commune,
   idVoie,
   numeros,
   selectedNumerosIds,
@@ -46,20 +59,23 @@ function GroupedActions({
   isAllSelectedCertifie,
   onSubmit,
 }: GroupedActionsProps) {
+  const selectedNumeros = numeros.filter(({ id }) =>
+    selectedNumerosIds.includes(id)
+  );
+
   const { voies, toponymes, baseLocale } = useContext(BalDataContext);
 
   const [isShown, setIsShown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedVoieId, setSelectedVoieId] = useState(idVoie);
   const [comment, onCommentChange] = useInput("");
+  const [communeDeleguee, setCommuneDeleguee] = useState(
+    getInitialCommuneDeleguee(selectedNumeros)
+  );
   const [removeAllComments, onRemoveAllCommentsChange] =
     useCheckboxInput(false);
   const [certifie, setCertifie] = useState(null);
   const { reloadTiles } = useContext(MapContext);
-
-  const selectedNumeros = numeros.filter(({ id }) =>
-    selectedNumerosIds.includes(id)
-  );
 
   const selectedNumerosUniqType = uniq(
     selectedNumeros.map((numero) => numero.positions[0].type)
@@ -136,6 +152,7 @@ function GroupedActions({
       const changes = {
         comment: commentCondition(comment),
         certifie: getIsCertifie(certifie),
+        communeDeleguee,
       } as any;
 
       if (idVoie !== selectedVoieId) {
@@ -163,6 +180,7 @@ function GroupedActions({
     },
     [
       comment,
+      communeDeleguee,
       selectedVoieId,
       certifie,
       hasUniqToponyme,
@@ -273,6 +291,18 @@ function GroupedActions({
                   modification groupée du toponyme n’est pas possible. Ils
                   doivent être modifiés séparément.
                 </Alert>
+              )}
+
+              {commune.communesDeleguees?.length > 0 && (
+                <FormInput>
+                  <SelectCommune
+                    communes={commune.communesDeleguees}
+                    selectedCodeCommune={communeDeleguee}
+                    setSelectedCodeCommune={setCommuneDeleguee}
+                    withOptionNull={true}
+                    label="Commune déléguée"
+                  />
+                </FormInput>
               )}
 
               <FormInput>

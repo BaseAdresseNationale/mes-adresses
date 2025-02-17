@@ -12,6 +12,7 @@ export type CreateNumeroDTO = {
     toponymeId?: string | null;
     parcelles?: Array<string>;
     certifie?: boolean;
+    communeDeleguee?: string;
     positions: Array<Position>;
 };
 

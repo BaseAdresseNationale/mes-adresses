@@ -9,7 +9,6 @@ import {
   Checkbox,
   AddIcon,
   LockIcon,
-  Text,
   IconButton,
 } from "evergreen-ui";
 
@@ -32,8 +31,12 @@ import {
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
+import NumeroHeading from "./numero-heading";
+import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
 
 interface NumerosListProps {
+  commune: CommuneType;
   token?: string;
   voieId: string;
   numeros: Array<Numero>;
@@ -45,6 +48,7 @@ const fuseOptions = {
 };
 
 function NumerosList({
+  commune,
   token = null,
   voieId,
   numeros,
@@ -59,7 +63,6 @@ function NumerosList({
     isEditing,
     reloadNumeros,
     reloadParcelles,
-    toponymes,
     refreshBALSync,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
@@ -104,16 +107,6 @@ function NumerosList({
     return filteredCertifieNumeros?.length === selectedNumerosIds.length;
   }, [numeros, selectedNumerosIds]);
 
-  const getToponymeName = useCallback(
-    (toponymeId) => {
-      if (toponymeId) {
-        const toponyme = toponymes.find(({ id }) => id === toponymeId);
-        return toponyme?.nom;
-      }
-    },
-    [toponymes]
-  );
-
   const handleSelect = useCallback(
     (id) => {
       setSelectedNumerosIds((selectedNumero) => {
@@ -134,6 +127,19 @@ function NumerosList({
       setSelectedNumerosIds(filtered.map(({ id }) => id));
     }
   };
+
+  const getCommuneDeleguee = useCallback(
+    (codeCommuneDeleguee) => {
+      const communeDeleguee: CommuneDelegueeApiGeoType =
+        commune.communesDeleguees?.find(
+          ({ code }) => code === codeCommuneDeleguee
+        );
+      return (
+        communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
+      );
+    },
+    [commune]
+  );
 
   const onRemove = useCallback(
     async (idNumero) => {
@@ -228,6 +234,7 @@ function NumerosList({
 
       {isGroupedActionsShown && (
         <GroupedActions
+          commune={commune}
           idVoie={voieId}
           numeros={numeros}
           selectedNumerosIds={selectedNumerosIds}
@@ -308,14 +315,7 @@ function NumerosList({
                     })}
               >
                 <Table.TextCell data-editable flex="0 1 1" height="100%">
-                  <Pane padding={1} fontSize={15}>
-                    <Text>{numero.numeroComplet}</Text>
-                    {getToponymeName(numero.toponymeId) && (
-                      <Text>
-                        <i>{` - ${getToponymeName(numero.toponymeId)}`}</i>
-                      </Text>
-                    )}
-                  </Pane>
+                  <NumeroHeading numero={numero} />
                 </Table.TextCell>
               </Table.Cell>
 
@@ -326,6 +326,7 @@ function NumerosList({
               )}
 
               <TableRowNotifications
+                communeDeleguee={getCommuneDeleguee(numero.communeDeleguee)}
                 certification={
                   numero.certifie
                     ? "Cette adresse est certifiée par la commune"
