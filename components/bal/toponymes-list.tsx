@@ -30,7 +30,6 @@ import CommentsContent from "../comments-content";
 import TableRowActions from "../table-row/table-row-actions";
 import PaginationList from "../pagination-list";
 import { useSearchPagination } from "@/hooks/search-pagination";
-import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
 import { CommuneType } from "@/types/commune";
 
 interface ToponymesListProps {
@@ -74,19 +73,6 @@ function ToponymesList({
     setToRemove(null);
     setIsDisabled(false);
   };
-
-  const getCommuneDeleguee = useCallback(
-    (codeCommuneDeleguee) => {
-      const communeDeleguee: CommuneDelegueeApiGeoType =
-        commune.communesDeleguees?.find(
-          ({ code }) => code === codeCommuneDeleguee
-        );
-      return (
-        communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
-      );
-    },
-    [commune]
-  );
 
   const onSelect = (id: string) => {
     void router.push(`/bal/${balId}/toponymes/${id}`);
@@ -184,7 +170,6 @@ function ToponymesList({
               </Table.Cell>
 
               <TableRowNotifications
-                communeDeleguee={getCommuneDeleguee(toponyme.communeDeleguee)}
                 warning={
                   toponyme.positions.length === 0
                     ? "Ce toponyme n’a pas de position"

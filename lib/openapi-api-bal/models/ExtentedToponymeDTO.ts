@@ -16,7 +16,6 @@ export type ExtentedToponymeDTO = {
     balId: string;
     nom: string;
     nomAlt: Record<string, any>;
-    communeDeleguee: string;
     parcelles: Array<string>;
     positions: Array<Position>;
     baseLocale: BaseLocale;
