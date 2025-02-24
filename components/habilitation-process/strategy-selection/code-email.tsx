@@ -11,10 +11,11 @@ import {
   EnvelopeIcon,
   ListItem,
   SelectField,
+  Spinner,
 } from "evergreen-ui";
 
 import TextWrapper from "@/components/text-wrapper";
-import { ApiAnnuraireService } from "@/lib/api-annuaire";
+import { ApiDepotService } from "@/lib/api-depot";
 
 function isEmail(email) {
   const regexp =
@@ -22,7 +23,7 @@ function isEmail(email) {
   return regexp.test(String(email).toLowerCase());
 }
 
-const TextValidEmail = React.memo(function TextValidEmail() {
+function TextValidEmail() {
   return (
     <>
       <Text is="div" marginTop={8} size={400}>
@@ -43,13 +44,9 @@ const TextValidEmail = React.memo(function TextValidEmail() {
       </Alert>
     </>
   );
-});
+}
 
-const TextInvalidEmail = React.memo(function TextInvalidEmail({
-  email,
-}: {
-  email: string;
-}) {
+function TextInvalidEmail({ email }: { email: string }) {
   return (
     <Alert
       intent="danger"
@@ -66,9 +63,9 @@ const TextInvalidEmail = React.memo(function TextInvalidEmail({
       </TextWrapper>
     </Alert>
   );
-});
+}
 
-const AnnuaireServicePublic = React.memo(function AnnuaireServicePublic() {
+function AnnuaireServicePublic() {
   return (
     <OrderedList>
       <ListItem>
@@ -84,7 +81,7 @@ const AnnuaireServicePublic = React.memo(function AnnuaireServicePublic() {
       </ListItem>
     </OrderedList>
   );
-});
+}
 
 interface CodeEmailProps {
   codeCommune: string;
@@ -100,14 +97,17 @@ function CodeEmail({
   handleStrategy,
 }: CodeEmailProps) {
   const [emailsCommune, setEmailsCommune] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchEmailsCommune() {
-      const emails = await ApiAnnuraireService.getEmailsCommune(codeCommune);
+      setIsLoading(true);
+      const emails = await ApiDepotService.getEmailsCommune(codeCommune);
       setEmailsCommune(emails);
       if (emails.length > 0) {
         setEmailSelected(emails[0]);
       }
+      setIsLoading(false);
     }
 
     fetchEmailsCommune();
@@ -116,6 +116,14 @@ function CodeEmail({
   const isValidEmailSelected = useMemo(() => {
     return isEmail(emailSelected);
   }, [emailSelected]);
+
+  if (isLoading) {
+    return (
+      <Pane display="flex" alignItems="center" justifyContent="center" flex={1}>
+        <Spinner />
+      </Pane>
+    );
+  }
 
   return (
     <>

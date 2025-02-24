@@ -65,6 +65,7 @@ function HabilitationProcess({
       await HabilitationService.sendPinCodeHabilitation(baseLocale.id, {
         email: emailSelected,
       });
+      await reloadHabilitation();
 
       return true;
     } catch (error) {
