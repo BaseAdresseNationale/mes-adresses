@@ -27,7 +27,6 @@ import {
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
 import AddNumerosInput from "../toponyme/add-numeros-input";
-import SelectCommune from "../select-commune";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -45,9 +44,6 @@ function ToponymeEditor({
   onSubmitted,
 }: ToponymeEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [communeDeleguee, setCommuneDeleguee] = useState(
-    initialValue ? initialValue.communeDeleguee : ""
-  );
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || "");
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
@@ -92,7 +88,6 @@ function ToponymeEditor({
       const body = {
         nom,
         nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
-        communeDeleguee,
         positions: [],
         parcelles: highlightedParcelles,
       };
@@ -167,7 +162,6 @@ function ToponymeEditor({
       initialValue,
       nom,
       nomAlt,
-      communeDeleguee,
       markers,
       highlightedParcelles,
       setToponyme,
@@ -229,18 +223,6 @@ function ToponymeEditor({
             handleLanguages={setNomAlt}
           />
         </FormInput>
-
-        {commune.communesDeleguees?.length > 0 && (
-          <FormInput>
-            <SelectCommune
-              communes={commune.communesDeleguees}
-              selectedCodeCommune={communeDeleguee}
-              setSelectedCodeCommune={setCommuneDeleguee}
-              withOptionNull={true}
-              label="Commune déléguée"
-            />
-          </FormInput>
-        )}
 
         {!initialValue && (
           <FormInput>
