@@ -15,7 +15,6 @@ import {
 import FranceConnect from "@/components/habilitation-process/strategy-selection/france-connect";
 import CodeEmail from "@/components/habilitation-process/strategy-selection/code-email";
 import { StrategyDTO } from "@/lib/openapi-api-bal";
-import { ApiAnnuraireService } from "@/lib/api-annuaire";
 
 interface StrategySelectionProps {
   codeCommune: string;
