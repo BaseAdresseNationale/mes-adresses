@@ -8,7 +8,7 @@ import {
   ChangeEventHandler,
 } from "react";
 import Router from "next/router";
-import { validate } from "@ban-team/validateur-bal";
+import { validate, ValidateProfile } from "@ban-team/validateur-bal";
 import { uniqBy } from "lodash";
 import {
   Pane,
@@ -133,7 +133,8 @@ function UploadForm({
   const [selectedCodeCommune, setSelectedCodeCommune] = useState<string | null>(
     null
   );
-  const [validationReport, setValidationReport] = useState<any | null>(null);
+  const [validationReport, setValidationReport] =
+    useState<ValidateProfile | null>(null);
   const [invalidRowsCount, setInvalidRowsCount] = useState<number | null>(null);
 
   const [isShownAlertOtherBal, setIsShownAlertOtherBal] =
@@ -149,7 +150,6 @@ function UploadForm({
     setCommunes(null);
     handleCommune(null);
     setSelectedCodeCommune(null);
-
     if (file) {
       if (getFileExtension(file.name).toLowerCase() !== "csv") {
         return onError(
@@ -158,7 +158,9 @@ function UploadForm({
       }
 
       // Detect multi communes
-      const validationReport = await validate(file, { profile: "1.3-relax" });
+      const validationReport: ValidateProfile = (await validate(file, {
+        profile: "1.3-relax",
+      })) as ValidateProfile;
       const communes: CommuneRow[] = extractCommuneFromCSV(
         validationReport.rows
       );
