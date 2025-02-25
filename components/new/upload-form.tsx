@@ -8,7 +8,11 @@ import {
   ChangeEventHandler,
 } from "react";
 import Router from "next/router";
-import { validate, ValidateProfile } from "@ban-team/validateur-bal";
+import {
+  validate,
+  ValidateProfile,
+  ValidateRowType,
+} from "@ban-team/validateur-bal";
 import { uniqBy } from "lodash";
 import {
   Pane,
@@ -89,12 +93,12 @@ type CommuneRow = {
   nom: string;
 };
 
-function extractCommuneFromCSV(rows: any[]): CommuneRow[] {
+function extractCommuneFromCSV(rows: ValidateRowType[]): CommuneRow[] {
   // Get cle_interop and slice it to get the commune's code
   const communes: CommuneRow[] = rows.map(
     ({ parsedValues, additionalValues }) => ({
       code: extractCommuneCodeFromRow({ parsedValues, additionalValues }),
-      nom: parsedValues.commune_nom,
+      nom: parsedValues.commune_nom as string,
     })
   );
 

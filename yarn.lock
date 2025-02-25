@@ -606,10 +606,10 @@
   resolved "https://registry.yarnpkg.com/@ban-team/shared-data/-/shared-data-1.4.1.tgz#befd80777dd8a5f80262d65730f92c3a1c8a0116"
   integrity sha512-dcbwb+6xUE3O/5e7Gz5XrMw6rkI7XvTAXqfSzpFPkf5yteuy8nkLZc8EK4hX3G2nSvOx/hh8mVVCpo+OAZuOwA==
 
-"@ban-team/validateur-bal@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@ban-team/validateur-bal/-/validateur-bal-3.0.2.tgz#6d6876655fc7f1926f9c2e5d8099442a23d03be2"
-  integrity sha512-SIseokvugaITZnlP7SgY4/i5nQmBGgavhVbjiMf4QAiXgkh6XGwY58laIIi9HMZb3HgpDzACV5o9JeLt5P0Fww==
+"@ban-team/validateur-bal@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@ban-team/validateur-bal/-/validateur-bal-3.0.4.tgz#c89342b71423dcbefbf19ed82c4ee49e2594a073"
+  integrity sha512-wQVeZcs4rMA6B08t2qK1KhgcStzbxyzOmIQyHykzbYLFDTM3M97LdyP0JlPcgHPvaH+xeE7BtliPc0391btpVg==
   dependencies:
     "@ban-team/shared-data" "^1.4.1"
     "@etalab/project-legal" "^0.6.0"
