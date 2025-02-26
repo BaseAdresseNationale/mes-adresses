@@ -1,7 +1,7 @@
 import MapContext from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import ParcellesContext from "@/contexts/parcelles";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   NumeroChangesRequestedDTO,
   Position as PositionSignalement,
@@ -13,7 +13,7 @@ export function useSignalementMapDiffCreation(
   changesRequested: NumeroChangesRequestedDTO
 ) {
   const { parcelles, positions } = changesRequested;
-
+  const [initialized, setInitialized] = useState(false);
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
   const { isMapLoaded } = useMapStyleLoaded();
@@ -44,12 +44,13 @@ export function useSignalementMapDiffCreation(
   ]);
 
   useEffect(() => {
-    if (!isMapLoaded || !map) {
+    if (!isMapLoaded || initialized) {
       return;
     }
 
     setHighlightedParcelles(parcelles);
-  }, [map, setHighlightedParcelles, parcelles, isMapLoaded]);
+    setInitialized(true);
+  }, [initialized, setHighlightedParcelles, parcelles, isMapLoaded]);
 
   useEffect(() => {
     if (positions?.length > 0) {
@@ -58,7 +59,7 @@ export function useSignalementMapDiffCreation(
           id: position.id,
           isMapMarker: true,
           isDisabled: true,
-          color: "gray",
+          color: "grey",
           longitude: position.point.coordinates[0],
           latitude: position.point.coordinates[1],
           label: getPositionName(position.type),

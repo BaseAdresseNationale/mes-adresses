@@ -1,7 +1,7 @@
 import { Alert, Pane, Paragraph } from "evergreen-ui";
 import SignalementTypeBadge from "./signalement-type-badge";
 import { Signalement } from "@/lib/openapi-signalement";
-import { getDuration } from "@/lib/utils/date";
+import { getDuration, getLongFormattedDate } from "@/lib/utils/date";
 import {
   ExtendedBaseLocaleDTO,
   SignalementsService as SignalementsServiceBal,
@@ -20,15 +20,8 @@ export function SignalementHeader({
   baseLocale,
 }: SignalementHeaderProps) {
   const [author, setAuthor] = useState<Signalement["author"]>();
-  const {
-    type,
-    createdAt,
-    source,
-    changesRequested,
-    status,
-    processedBy,
-    updatedAt,
-  } = signalement;
+  const { type, createdAt, source, changesRequested, status, updatedAt } =
+    signalement;
 
   useEffect(() => {
     const fetchAuthor = async () => {
@@ -44,6 +37,7 @@ export function SignalementHeader({
 
   return (
     <Alert
+      hasIcon={false}
       title={<SignalementTypeBadge type={type} />}
       intent="info"
       padding={8}
@@ -55,7 +49,7 @@ export function SignalementHeader({
       <Pane marginTop={8}>
         {Date.now() - new Date(createdAt).getTime() > MONTH_IN_MS ? (
           <Paragraph>
-            Déposée le <b>{new Date(createdAt).toLocaleDateString()}</b>{" "}
+            Déposée le <b>{getLongFormattedDate(new Date(createdAt))}</b>{" "}
           </Paragraph>
         ) : (
           <Paragraph>
@@ -79,31 +73,22 @@ export function SignalementHeader({
 
         {changesRequested.comment && (
           <Paragraph marginTop={10}>
-            <b>Commentaire : </b>
-            {changesRequested.comment}
+            Commentaire : <b>{changesRequested.comment}</b>
           </Paragraph>
         )}
 
         {status === Signalement.status.PROCESSED && (
-          <>
-            <Paragraph marginTop={10}>
-              Acceptée le <b>{new Date(updatedAt).toLocaleDateString()}</b>
-            </Paragraph>
-            <Paragraph>
-              via <b>{processedBy.nom}</b>
-            </Paragraph>
-          </>
+          <Paragraph marginTop={10}>
+            Vous avez accepté cette proposition le{" "}
+            <b>{getLongFormattedDate(new Date(updatedAt))}</b>
+          </Paragraph>
         )}
 
         {status === Signalement.status.IGNORED && (
-          <>
-            <Paragraph marginTop={10}>
-              Refusée le <b>{new Date(updatedAt).toLocaleDateString()}</b>
-            </Paragraph>
-            <Paragraph>
-              via <b>{processedBy.nom}</b>
-            </Paragraph>
-          </>
+          <Paragraph marginTop={10}>
+            Vous avez refusé cette proposition le{" "}
+            <b>{getLongFormattedDate(new Date(updatedAt))}</b>
+          </Paragraph>
         )}
       </Pane>
     </Alert>
