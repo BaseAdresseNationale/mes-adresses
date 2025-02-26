@@ -16,3 +16,12 @@ export const getDuration = (start: Date, end: Date = new Date()) => {
   }
   return `${seconds} seconde${seconds > 1 ? "s" : ""}`;
 };
+
+export const getLongFormattedDate = (date: Date) => {
+  return date.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
