@@ -1,10 +1,8 @@
 import { parcelleDiff } from "@/components/signalement/signalement-diff/signalement-parcelle-diff";
 import { positionDiff } from "@/components/signalement/signalement-diff/signalement-position-diff";
-import { signalementTypeMap } from "@/components/signalement/signalement-type-badge";
 import MapContext from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import ParcellesContext from "@/contexts/parcelles";
-import { Signalement } from "@/lib/openapi-signalement";
 import { getPositionName } from "@/lib/positions-types-list";
 import { ActiveCardEnum, SignalementDiff } from "@/lib/utils/signalement";
 import { useContext, useEffect, useState } from "react";
@@ -20,13 +18,6 @@ export type SignalementMapDiffUpdateChangesRequested = {
   parcelles: string[];
 };
 
-const mapInitialPositions = (positions: any[]) =>
-  positions.map((position) => ({
-    ...position,
-    color:
-      signalementTypeMap[Signalement.type.LOCATION_TO_CREATE].foregroundColor,
-  }));
-
 export function useSignalementMapDiffUpdate(
   existingLocation: SignalementMapDiffUpdateExistingLocation,
   changesRequested: SignalementMapDiffUpdateChangesRequested
@@ -34,7 +25,7 @@ export function useSignalementMapDiffUpdate(
   const { positions, parcelles } = changesRequested;
   const { positions: existingPositions, parcelles: existingParcelles } =
     existingLocation;
-
+  const [initialized, setInitialized] = useState(false);
   const [activeCard, setActiveCard] = useState<ActiveCardEnum>();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
@@ -71,13 +62,13 @@ export function useSignalementMapDiffUpdate(
   ]);
 
   useEffect(() => {
-    if (!isMapLoaded || !map) {
+    if (!isMapLoaded || initialized) {
       return;
     }
 
-    setPositionsToDisplay(mapInitialPositions(positions));
     setActiveCard(ActiveCardEnum.CHANGES);
-  }, [isMapLoaded, positions, map]);
+    setInitialized(true);
+  }, [isMapLoaded, initialized]);
 
   useEffect(() => {
     if (positionsToDisplay?.length > 0) {

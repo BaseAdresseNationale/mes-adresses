@@ -192,6 +192,15 @@ export async function getServerSideProps({ params }) {
       params.idSignalement
     );
 
+    if ((signalement.changesRequested as NumeroChangesRequestedDTO).positions) {
+      (signalement.changesRequested as NumeroChangesRequestedDTO).positions = (
+        signalement.changesRequested as NumeroChangesRequestedDTO
+      ).positions.map((p) => ({
+        ...p,
+        id: new ObjectId().toHexString(),
+      }));
+    }
+
     if (
       signalement.status === Signalement.status.PROCESSED ||
       signalement.status === Signalement.status.IGNORED
@@ -206,15 +215,6 @@ export async function getServerSideProps({ params }) {
           existingLocation: null,
         },
       };
-    }
-
-    if ((signalement.changesRequested as NumeroChangesRequestedDTO).positions) {
-      (signalement.changesRequested as NumeroChangesRequestedDTO).positions = (
-        signalement.changesRequested as NumeroChangesRequestedDTO
-      ).positions.map((p) => ({
-        ...p,
-        id: new ObjectId().toHexString(),
-      }));
     }
 
     let requestedToponyme;
