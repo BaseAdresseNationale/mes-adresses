@@ -8,6 +8,7 @@ export type VoieMetas = {
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
+    comment: string;
     commentedNumeros: Array<string>;
 };
 

@@ -10,7 +10,6 @@ import { ApiDepotService } from "@/lib/api-depot";
 import BalDataContext from "@/contexts/bal-data";
 
 import ValidateAuthentication from "@/components/habilitation-process/validate-authentication";
-import StrategySelection from "@/components/habilitation-process/strategy-selection";
 import AcceptedDialog from "@/components/habilitation-process/accepted-dialog";
 import RejectedDialog from "@/components/habilitation-process/rejected-dialog";
 import {
@@ -21,6 +20,7 @@ import {
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
+import { StrategySelection } from "./strategy-selection";
 
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {
@@ -55,13 +55,17 @@ function HabilitationProcess({
   const [isLoading, setIsLoading] = useState(false);
   const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
+  const [emailSelected, setEmailSelected] = useState<string>(null);
   const { pushToast } = useContext(LayoutContext);
 
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
 
   const sendCode = async () => {
     try {
-      await HabilitationService.sendPinCodeHabilitation(baseLocale.id);
+      await HabilitationService.sendPinCodeHabilitation(baseLocale.id, {
+        email: emailSelected,
+      });
+      await reloadHabilitation();
 
       return true;
     } catch (error) {
@@ -82,7 +86,7 @@ function HabilitationProcess({
     );
   };
 
-  const handleStrategy = async (selectedStrategy) => {
+  const handleStrategy = async (selectedStrategy: StrategyDTO.type) => {
     setIsLoading(true);
     if (selectedStrategy === StrategyDTO.type.EMAIL) {
       const codeSent = await sendCode();
@@ -195,10 +199,12 @@ function HabilitationProcess({
       <Pane>
         {step === 0 && (
           <StrategySelection
+            codeCommune={commune.code}
+            emailSelected={emailSelected}
+            setEmailSelected={setEmailSelected}
             franceconnectAuthenticationUrl={
               habilitation.franceconnectAuthenticationUrl
             }
-            emailCommune={habilitation.emailCommune}
             handleStrategy={handleStrategy}
           />
         )}

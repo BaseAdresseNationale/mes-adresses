@@ -26,4 +26,8 @@ export class ApiDepotService {
   ): Promise<Revision> {
     return this.request(`/communes/${codeCommune}/current-revision`);
   }
+
+  public static async getEmailsCommune(codeCommune: string): Promise<string[]> {
+    return this.request(`/communes/${codeCommune}/emails`);
+  }
 }

@@ -17,14 +17,18 @@ import CodeEmail from "@/components/habilitation-process/strategy-selection/code
 import { StrategyDTO } from "@/lib/openapi-api-bal";
 
 interface StrategySelectionProps {
+  codeCommune: string;
+  emailSelected: string;
+  setEmailSelected: React.Dispatch<React.SetStateAction<string>>;
   franceconnectAuthenticationUrl: string | null;
-  emailCommune: string | null;
   handleStrategy: (strategy: StrategyDTO.type) => void;
 }
 
-const StrategySelection = React.memo(function StrategySelection({
+export function StrategySelection({
+  codeCommune,
+  emailSelected,
+  setEmailSelected,
   franceconnectAuthenticationUrl = null,
-  emailCommune = null,
   handleStrategy,
 }: StrategySelectionProps) {
   const [hovered, setHovered] = useState<StrategyDTO.type | null>(null);
@@ -111,7 +115,9 @@ const StrategySelection = React.memo(function StrategySelection({
           flex={1}
         >
           <CodeEmail
-            emailCommune={emailCommune}
+            codeCommune={codeCommune}
+            emailSelected={emailSelected}
+            setEmailSelected={setEmailSelected}
             handleStrategy={() => handleStrategy(StrategyDTO.type.EMAIL)}
           />
         </Pane>
@@ -139,6 +145,4 @@ const StrategySelection = React.memo(function StrategySelection({
       </Pane>
     </Pane>
   );
-});
-
-export default StrategySelection;
+}
