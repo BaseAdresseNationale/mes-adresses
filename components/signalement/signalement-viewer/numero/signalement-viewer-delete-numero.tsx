@@ -27,10 +27,7 @@ function SignalementViewerDeleteNumero({
     <>
       <SignalementNumeroDiffCard
         isActive
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_DELETE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_DELETE}
         title={`Demande de suppression d'adresse ${
           status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
         }`}

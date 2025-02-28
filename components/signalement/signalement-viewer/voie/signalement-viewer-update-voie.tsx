@@ -5,7 +5,6 @@ import {
   VoieChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 import { SignalementVoieDiffCard } from "../../signalement-diff/signalement-voie-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 
 interface SignalementViewerUpdateVoieProps {
   signalement: Signalement;
@@ -40,10 +39,7 @@ function SignalementViewerUpdateVoie({
         nom={{
           to: nom,
         }}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
       />
     </>
   );

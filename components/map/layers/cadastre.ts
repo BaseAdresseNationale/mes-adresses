@@ -24,7 +24,7 @@ export const LAYER = {
 const signalementColors = {
   [SignalementDiff.NEW]: "rgba(218, 244, 246, 1)",
   [SignalementDiff.DELETED]: "rgba(244, 228, 219, 1)",
-  [SignalementDiff.UNCHANGED]: "rgba(200, 200, 200, 1)",
+  [SignalementDiff.UNCHANGED]: "rgba(64, 101, 246, 1)",
 };
 
 export const cadastreLayers = [
