@@ -38,6 +38,7 @@ interface ProductTourProps {
     content: React.ReactNode;
     spotlightPadding?: number;
     placement?: string;
+    callback?: () => void;
   }[];
 }
 
@@ -63,6 +64,8 @@ export default function ProductTour({
           e.status === "finished"
         ) {
           setProductTour({ ...productTour, [localStorageKey]: true });
+        } else if (e.action === "next") {
+          steps[e.index].callback?.();
         }
       }}
     />

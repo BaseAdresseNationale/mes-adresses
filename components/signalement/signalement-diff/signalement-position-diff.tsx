@@ -17,7 +17,7 @@ import React from "react";
 
 interface SignalementPositionDiffProps {
   positions: PositionDTO[] | Position[];
-  existingPositions?: Position[];
+  existingPositions: Position[];
 }
 
 type PositionDiff = PositionDTO & {
@@ -26,7 +26,7 @@ type PositionDiff = PositionDTO & {
 
 export const positionDiff = (
   positions: PositionDTO[],
-  existingPositions?: Position[]
+  existingPositions: Position[]
 ): PositionDiff[] => {
   const deletedPositions = (existingPositions || [])
     .filter(
@@ -61,100 +61,104 @@ export function SignalementPositionDiff({
   positions,
   existingPositions,
 }: SignalementPositionDiffProps) {
-  const showDiff = !!existingPositions;
-  const isPlural = showDiff
-    ? positionDiff(positions as PositionDTO[], existingPositions).length > 1
-    : positions.length > 1;
+  const positionsDiff = positionDiff(
+    positions as PositionDTO[],
+    existingPositions
+  );
 
   return (
     <Pane marginTop={10} padding={8} borderRadius={8} className="glass-pane">
-      <Text fontWeight="bold">Position{isPlural ? "s" : ""}</Text>
-      <Pane display="grid" gridTemplateColumns="3fr 1fr 1fr">
+      <Text fontWeight="bold">
+        Position{positionsDiff.length > 1 ? "s" : ""}
+      </Text>
+      <Pane display="grid" gridTemplateColumns="2fr 2fr" rowGap={6}>
         <Pane />
         <Strong fontWeight={200} fontSize="small">
-          Lat
-        </Strong>
-        <Strong fontWeight={200} fontSize="small">
-          Long
+          Modification proposée
         </Strong>
 
-        {showDiff
-          ? positionDiff(positions as PositionDTO[], existingPositions).map(
-              ({ type, diff, point }, index) => (
-                <React.Fragment key={index}>
-                  {Array.isArray(diff) && diff[0] !== diff[1] ? (
-                    <Badge
-                      display="flex"
-                      alignItems="center"
-                      width="fit-content"
-                      size="small"
-                      color="purple"
-                      marginY={2}
-                    >
-                      {getPositionName(diff[0])}
-                      <ArrowRightIcon marginX={4} />
-                      {getPositionName(diff[1])}
-                    </Badge>
-                  ) : (
-                    <Badge
-                      display="flex"
-                      alignItems="center"
-                      width="fit-content"
-                      size="small"
-                      marginY={2}
-                      {...(diff === SignalementDiff.DELETED
-                        ? { color: "orange" }
-                        : diff === SignalementDiff.NEW
-                          ? { color: "teal" }
-                          : {})}
-                    >
-                      {diff === SignalementDiff.DELETED && (
-                        <MinusIcon marginRight={4} />
-                      )}
-                      {diff === SignalementDiff.NEW && (
-                        <PlusIcon marginRight={4} />
-                      )}
-                      {getPositionName(type)}
-                    </Badge>
-                  )}
-                  <Heading
-                    size={100}
-                    marginY="auto"
-                    {...(diff === SignalementDiff.DELETED
-                      ? { color: "orange" }
-                      : diff === SignalementDiff.NEW
-                        ? { color: "teal" }
-                        : {})}
-                  >
-                    <Small>{point.coordinates[1].toFixed(6)}</Small>
-                  </Heading>
-                  <Heading
-                    size={100}
-                    marginY="auto"
-                    {...(diff === SignalementDiff.DELETED
-                      ? { color: "orange" }
-                      : diff === SignalementDiff.NEW
-                        ? { color: "teal" }
-                        : {})}
-                  >
-                    <Small>{point.coordinates[0].toFixed(6)}</Small>
-                  </Heading>
-                </React.Fragment>
-              )
-            )
-          : positions.map(({ type, point }, index) => (
+        {positionsDiff.map(({ type, diff }, index) => {
+          const positionTypeChanged =
+            Array.isArray(diff) && diff[0] !== diff[1];
+
+          if (positionTypeChanged) {
+            return (
               <React.Fragment key={index}>
-                <Badge width="fit-content" marginY={2}>
+                <Badge
+                  display="flex"
+                  alignItems="center"
+                  width="fit-content"
+                  size="small"
+                  color="purple"
+                  marginY={2}
+                >
+                  {getPositionName(diff[0])}
+                  <ArrowRightIcon marginX={4} />
+                  {getPositionName(diff[1])}
+                </Badge>
+                <Heading size={100} marginY="auto">
+                  <Small>Modification de type</Small>
+                </Heading>
+              </React.Fragment>
+            );
+          } else if (diff === SignalementDiff.DELETED) {
+            return (
+              <React.Fragment key={index}>
+                <Badge
+                  display="flex"
+                  alignItems="center"
+                  width="fit-content"
+                  size="small"
+                  marginY={2}
+                  color="orange"
+                >
+                  <MinusIcon marginRight={4} />
                   {getPositionName(type)}
                 </Badge>
                 <Heading size={100} marginY="auto">
-                  <Small>{point.coordinates[1].toFixed(6)}</Small>
-                </Heading>
-                <Heading size={100} marginY="auto">
-                  <Small>{point.coordinates[0].toFixed(6)}</Small>
+                  <Small>Suppression de position</Small>
                 </Heading>
               </React.Fragment>
-            ))}
+            );
+          } else if (diff === SignalementDiff.NEW) {
+            return (
+              <React.Fragment key={index}>
+                <Badge
+                  display="flex"
+                  alignItems="center"
+                  width="fit-content"
+                  size="small"
+                  marginY={2}
+                  color="teal"
+                >
+                  <PlusIcon marginRight={4} />
+                  {getPositionName(type)}
+                </Badge>
+                <Heading size={100} marginY="auto">
+                  <Small>Ajout de position</Small>
+                </Heading>
+              </React.Fragment>
+            );
+          } else {
+            return (
+              <React.Fragment key={index}>
+                <Badge
+                  display="flex"
+                  alignItems="center"
+                  width="fit-content"
+                  size="small"
+                  marginY={2}
+                  color="blue"
+                >
+                  {getPositionName(type)}
+                </Badge>
+                <Heading size={100} marginY="auto">
+                  <Small>Pas de modification</Small>
+                </Heading>
+              </React.Fragment>
+            );
+          }
+        })}
       </Pane>
     </Pane>
   );

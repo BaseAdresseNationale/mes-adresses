@@ -96,7 +96,7 @@ export function useSignalementMapDiffUpdate(
         setPositionsToDisplay(
           existingPositions.map((position) => ({
             ...position,
-            color: "grey",
+            color: "blue",
           }))
         );
 
@@ -123,7 +123,7 @@ export function useSignalementMapDiffUpdate(
                   : Array.isArray(position.diff) &&
                       position.diff[0] !== position.diff[1]
                     ? "purple"
-                    : "grey",
+                    : "blue",
           }))
         );
         const _parcelleDiff = parcelleDiff(parcelles, existingParcelles);
@@ -136,7 +136,7 @@ export function useSignalementMapDiffUpdate(
         setPositionsToDisplay(
           positions.map((position) => ({
             ...position,
-            color: "grey",
+            color: "blue",
           }))
         );
         if (parcelles?.length > 0) {

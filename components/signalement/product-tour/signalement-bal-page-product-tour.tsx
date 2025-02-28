@@ -23,12 +23,19 @@ const steps = [
       <Pane>
         <Paragraph>
           Pour les visualiser, rendez-vous sur l&apos;onglet commune et cliquez
-          sur &quot;Consulter les signalements&quot;. Nous vous guiderons
-          ensuite à travers les différentes fonctionnalités de cette page.
+          sur <b>Consulter les signalements</b>. Nous vous guiderons ensuite à
+          travers les différentes fonctionnalités de cette page.
         </Paragraph>
       </Pane>
     ),
     spotlightPadding: 15,
+    callback: () => {
+      (
+        document.querySelector(
+          "div[role='tablist'] > a:nth-child(1)"
+        ) as HTMLElement
+      ).click();
+    },
   },
 ];
 
