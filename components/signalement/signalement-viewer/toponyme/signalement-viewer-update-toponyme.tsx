@@ -56,12 +56,9 @@ function SignalementViewerUpdateToponyme({
         }}
       />
       <SignalementToponymeDiffCard
-        title="Modifications demandées"
+        title="Modification demandée"
         isActive={activeCard === ActiveCardEnum.CHANGES}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         nom={{
           from: existingNom,
           to: nom,

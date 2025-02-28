@@ -3,6 +3,10 @@ import TextDiff from "./text-diff";
 import { SignalementPositionDiff } from "./signalement-position-diff";
 import { SignalementParcelleDiff } from "./signalement-parcelle-diff";
 import { AccordionCard } from "./accordion-card";
+import { SignalementPosition } from "./signalement-position";
+import { SignalementParcelle } from "./signalement-parcelle";
+import { signalementTypeMap } from "../signalement-type-badge";
+import { Signalement } from "@/lib/openapi-signalement";
 
 interface SignalementToponymeDiffCardProps {
   title: string;
@@ -18,7 +22,7 @@ interface SignalementToponymeDiffCardProps {
     from?: string[];
     to: string[];
   };
-  backgroundColor?: string;
+  signalementType?: Signalement.type;
   isActive?: boolean;
   onClick?: () => void;
 }
@@ -26,7 +30,7 @@ interface SignalementToponymeDiffCardProps {
 export function SignalementToponymeDiffCard({
   title,
   nom,
-  backgroundColor,
+  signalementType,
   positions,
   parcelles,
   isActive,
@@ -35,21 +39,32 @@ export function SignalementToponymeDiffCard({
   return (
     <AccordionCard
       title={title}
-      backgroundColor={backgroundColor}
+      backgroundColor={signalementTypeMap[signalementType].backgroundColor}
       isActive={isActive}
       onClick={onClick}
     >
       <Pane padding={8} borderRadius={8} className="glass-pane">
         <TextDiff from={nom.from} to={nom.to} />
       </Pane>
-      <SignalementPositionDiff
-        existingPositions={positions.from}
-        positions={positions.to}
-      />
-      <SignalementParcelleDiff
-        parcelles={parcelles.to}
-        existingParcelles={parcelles.from}
-      />
+      {positions.from ? (
+        <SignalementPositionDiff
+          existingPositions={positions.from}
+          positions={positions.to}
+        />
+      ) : (
+        <SignalementPosition positions={positions.to} />
+      )}
+      {parcelles.from ? (
+        <SignalementParcelleDiff
+          parcelles={parcelles.to}
+          existingParcelles={parcelles.from}
+        />
+      ) : (
+        <SignalementParcelle
+          parcelles={parcelles.to}
+          signalementType={signalementType}
+        />
+      )}
     </AccordionCard>
   );
 }

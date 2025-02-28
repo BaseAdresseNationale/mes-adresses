@@ -45,10 +45,7 @@ function SignalementUpdateVoie({
       />
       <SignalementVoieDiffCard
         title="Modification proposée"
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         nom={{
           from: existingNom,
           to: nom,

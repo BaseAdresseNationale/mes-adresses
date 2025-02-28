@@ -67,12 +67,9 @@ function SignalementViewerUpdateNumero({
         }}
       />
       <SignalementNumeroDiffCard
-        title="Modifications demandées"
+        title="Modification demandée"
         isActive={activeCard === ActiveCardEnum.CHANGES}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         numero={{
           from: `${existingNumero}${
             existingSuffixe ? ` ${existingSuffixe}` : ""

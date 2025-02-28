@@ -25,10 +25,7 @@ function SignalementViewerCreateNumero({
     <>
       <SignalementNumeroDiffCard
         isActive
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_CREATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_CREATE}
         title={`Demande de création d'adresse ${
           status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
         }`}
