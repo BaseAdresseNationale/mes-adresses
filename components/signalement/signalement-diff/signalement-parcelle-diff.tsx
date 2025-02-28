@@ -36,49 +36,41 @@ export function SignalementParcelleDiff({
   parcelles,
   existingParcelles,
 }: SignalementParcelleDiffProps) {
-  const showDiff = !!existingParcelles;
-  const isPlural = showDiff
-    ? parcelleDiff(parcelles, existingParcelles).length > 1
-    : parcelles.length > 1;
+  const parcellesDiff = parcelleDiff(parcelles, existingParcelles);
 
   return parcelles.length > 0 ? (
     <Pane marginTop={10} padding={8} borderRadius={8} className="glass-pane">
       <Text is="div" fontWeight="bold" marginBottom={5}>
-        Parcelle{isPlural ? "s" : ""}
+        Parcelle{parcellesDiff.length > 1 ? "s" : ""}
       </Text>
 
-      {showDiff ? (
-        <Pane display="flex" flexWrap="wrap">
-          {parcelleDiff(parcelles, existingParcelles).map(
-            ({ parcelle, diff }) => (
-              <Badge
-                key={parcelle}
-                marginLeft={4}
-                marginBottom={4}
-                display="flex"
-                alignItems="center"
-                width="fit-content"
-                {...(diff === SignalementDiff.DELETED
-                  ? { color: "orange" }
-                  : {})}
-                {...(diff === SignalementDiff.NEW ? { color: "teal" } : {})}
-              >
-                {diff === SignalementDiff.DELETED && (
-                  <MinusIcon marginRight={4} />
-                )}
-                {diff === SignalementDiff.NEW && <PlusIcon marginRight={4} />}
-                {parcelle}
-              </Badge>
-            )
-          )}
-        </Pane>
-      ) : (
-        parcelles.map((parcelle) => (
-          <Badge key={parcelle} marginLeft={4}>
-            {parcelle}
-          </Badge>
-        ))
-      )}
+      <Pane display="flex" flexWrap="wrap">
+        {parcelleDiff(parcelles, existingParcelles).map(
+          ({ parcelle, diff }) => (
+            <Badge
+              key={parcelle}
+              marginLeft={4}
+              marginBottom={4}
+              display="flex"
+              alignItems="center"
+              width="fit-content"
+              color={
+                diff === SignalementDiff.DELETED
+                  ? "orange"
+                  : diff === SignalementDiff.NEW
+                    ? "teal"
+                    : "blue"
+              }
+            >
+              {diff === SignalementDiff.DELETED && (
+                <MinusIcon marginRight={4} />
+              )}
+              {diff === SignalementDiff.NEW && <PlusIcon marginRight={4} />}
+              {parcelle}
+            </Badge>
+          )
+        )}
+      </Pane>
     </Pane>
   ) : null;
 }

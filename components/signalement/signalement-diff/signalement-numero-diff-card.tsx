@@ -3,6 +3,10 @@ import TextDiff from "./text-diff";
 import { SignalementPositionDiff } from "./signalement-position-diff";
 import { SignalementParcelleDiff } from "./signalement-parcelle-diff";
 import { AccordionCard } from "./accordion-card";
+import { SignalementPosition } from "./signalement-position";
+import { Signalement } from "@/lib/openapi-signalement";
+import { signalementTypeMap } from "../signalement-type-badge";
+import { SignalementParcelle } from "./signalement-parcelle";
 
 interface SignalementNumeroDiffCardProps {
   title: string;
@@ -27,7 +31,7 @@ interface SignalementNumeroDiffCardProps {
     to: string;
   };
   onClick?: () => void;
-  backgroundColor?: string;
+  signalementType?: Signalement.type;
   isActive?: boolean;
 }
 
@@ -39,13 +43,15 @@ export function SignalementNumeroDiffCard({
   parcelles,
   complement,
   onClick,
-  backgroundColor,
   isActive,
+  signalementType,
 }: SignalementNumeroDiffCardProps) {
   return (
     <AccordionCard
       title={title}
-      backgroundColor={backgroundColor}
+      backgroundColor={
+        signalementType && signalementTypeMap[signalementType].backgroundColor
+      }
       isActive={isActive}
       onClick={onClick}
     >
@@ -77,14 +83,28 @@ export function SignalementNumeroDiffCard({
           <TextDiff from={complement.from} to={complement.to} />
         </Pane>
       )}
-      <SignalementPositionDiff
-        existingPositions={positions.from}
-        positions={positions.to}
-      />
-      <SignalementParcelleDiff
-        parcelles={parcelles.to}
-        existingParcelles={parcelles.from}
-      />
+      {positions.from ? (
+        <SignalementPositionDiff
+          existingPositions={positions.from}
+          positions={positions.to}
+        />
+      ) : (
+        <SignalementPosition
+          positions={positions.to}
+          signalementType={signalementType}
+        />
+      )}
+      {parcelles.from ? (
+        <SignalementParcelleDiff
+          parcelles={parcelles.to}
+          existingParcelles={parcelles.from}
+        />
+      ) : (
+        <SignalementParcelle
+          parcelles={parcelles.to}
+          signalementType={signalementType}
+        />
+      )}
     </AccordionCard>
   );
 }

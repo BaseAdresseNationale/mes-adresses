@@ -34,10 +34,7 @@ function SignalementDeleteNumero({
     <>
       <SignalementNumeroDiffCard
         isActive
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_DELETE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_DELETE}
         title="Demande de suppression d'adresse"
         numero={{
           to: `${numero}${suffixe ? ` ${suffixe}` : ""}`,

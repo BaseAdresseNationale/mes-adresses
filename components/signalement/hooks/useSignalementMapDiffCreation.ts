@@ -8,6 +8,7 @@ import {
 } from "@/lib/openapi-signalement";
 import { getPositionName } from "@/lib/positions-types-list";
 import { useMapStyleLoaded } from "./useMapStyleLoaded";
+import { SignalementDiff } from "@/lib/utils/signalement";
 
 export function useSignalementMapDiffCreation(
   changesRequested: NumeroChangesRequestedDTO
@@ -17,8 +18,12 @@ export function useSignalementMapDiffCreation(
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
   const { isMapLoaded } = useMapStyleLoaded();
-  const { setHighlightedParcelles, setShowSelectedParcelles, setIsDiffMode } =
-    useContext(ParcellesContext);
+  const {
+    setHighlightedParcelles,
+    setShowSelectedParcelles,
+    setIsDiffMode,
+    handleSetFeatureState,
+  } = useContext(ParcellesContext);
 
   useEffect(() => {
     if (isStyleLoaded && parcelles?.length > 0) {
@@ -49,8 +54,19 @@ export function useSignalementMapDiffCreation(
     }
 
     setHighlightedParcelles(parcelles);
+    parcelles.forEach((parcelle) => {
+      handleSetFeatureState(parcelle, {
+        diff: SignalementDiff.NEW,
+      });
+    });
     setInitialized(true);
-  }, [initialized, setHighlightedParcelles, parcelles, isMapLoaded]);
+  }, [
+    initialized,
+    setHighlightedParcelles,
+    parcelles,
+    isMapLoaded,
+    handleSetFeatureState,
+  ]);
 
   useEffect(() => {
     if (positions?.length > 0) {
@@ -59,7 +75,7 @@ export function useSignalementMapDiffCreation(
           id: position.id,
           isMapMarker: true,
           isDisabled: true,
-          color: "grey",
+          color: "teal",
           longitude: position.point.coordinates[0],
           latitude: position.point.coordinates[1],
           label: getPositionName(position.type),

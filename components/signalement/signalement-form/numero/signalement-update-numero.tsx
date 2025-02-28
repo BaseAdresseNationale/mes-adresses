@@ -98,10 +98,7 @@ function SignalementUpdateNumero({
       <SignalementNumeroDiffCard
         title="Modification proposée"
         isActive={activeCard === ActiveCardEnum.CHANGES}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         numero={{
           from: `${existingNumero}${
             existingSuffixe ? ` ${existingSuffixe}` : ""
