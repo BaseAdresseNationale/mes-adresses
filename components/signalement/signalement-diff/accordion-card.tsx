@@ -44,7 +44,7 @@ export function AccordionCard({
         userSelect="none"
         {...(onClick ? { cursor: "pointer" } : {})}
       >
-        <Heading is="h3" marginBottom={8}>
+        <Heading is="h3" marginY={8}>
           {title}
         </Heading>
         {onClick && <Icon icon={isActive ? CaretDownIcon : CaretRightIcon} />}

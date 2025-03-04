@@ -70,17 +70,19 @@ export function useSignalementMapDiffCreation(
 
   useEffect(() => {
     if (positions?.length > 0) {
-      positions.forEach((position: PositionSignalement & { id: string }) => {
-        addMarker({
-          id: position.id,
-          isMapMarker: true,
-          isDisabled: true,
-          color: "teal",
-          longitude: position.point.coordinates[0],
-          latitude: position.point.coordinates[1],
-          label: getPositionName(position.type),
-        });
-      });
+      positions.forEach(
+        (position: PositionSignalement & { id: string }, index) => {
+          addMarker({
+            id: position.id || index.toString(),
+            isMapMarker: true,
+            isDisabled: true,
+            color: "teal",
+            longitude: position.point.coordinates[0],
+            latitude: position.point.coordinates[1],
+            label: getPositionName(position.type),
+          });
+        }
+      );
     }
 
     return () => {

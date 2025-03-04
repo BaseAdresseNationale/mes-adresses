@@ -6,7 +6,6 @@ import {
 import { Voie, VoiesService } from "@/lib/openapi-api-bal";
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementVoieDiffCard } from "../../signalement-diff/signalement-voie-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 
 interface SignalementUpdateVoieProps {
   signalement: Signalement;

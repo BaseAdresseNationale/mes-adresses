@@ -5,7 +5,6 @@ import {
   ToponymeChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
 
@@ -56,9 +55,14 @@ function SignalementViewerUpdateToponyme({
         }}
       />
       <SignalementToponymeDiffCard
-        title="Modification demandée"
+        title={`Modification ${
+          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
+        }`}
         isActive={activeCard === ActiveCardEnum.CHANGES}
         signalementType={Signalement.type.LOCATION_TO_UPDATE}
+        backgroundColor={
+          status === Signalement.status.PROCESSED ? "#97D7BF" : "#EE9191"
+        }
         nom={{
           from: existingNom,
           to: nom,
@@ -73,24 +77,6 @@ function SignalementViewerUpdateToponyme({
         }}
         onClick={() => {
           setActiveCard(ActiveCardEnum.CHANGES);
-        }}
-      />
-      <SignalementToponymeDiffCard
-        title={`Modification ${
-          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
-        }`}
-        isActive={activeCard === ActiveCardEnum.FINAL}
-        nom={{
-          to: nom,
-        }}
-        positions={{
-          to: positions,
-        }}
-        parcelles={{
-          to: parcelles,
-        }}
-        onClick={() => {
-          setActiveCard(ActiveCardEnum.FINAL);
         }}
       />
     </>

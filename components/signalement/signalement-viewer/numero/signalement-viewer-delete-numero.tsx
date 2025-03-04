@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
 import { ExistingNumero, Signalement } from "@/lib/openapi-signalement";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { useSignalementMapDiffDeletion } from "../../hooks/useSignalementMapDiffDeletion";
 
 interface SignalementViewerDeleteNumeroProps {
