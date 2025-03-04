@@ -8,7 +8,7 @@ import {
 import { useRef, useState } from "react";
 
 interface AccordionCardProps {
-  title: string;
+  title: string | React.ReactNode;
   backgroundColor?: string;
   isActive?: boolean;
   onClick?: () => void;
@@ -44,7 +44,7 @@ export function AccordionCard({
         userSelect="none"
         {...(onClick ? { cursor: "pointer" } : {})}
       >
-        <Heading is="h3" marginY={8}>
+        <Heading is="h3" marginY={8} display="flex">
           {title}
         </Heading>
         {onClick && <Icon icon={isActive ? CaretDownIcon : CaretRightIcon} />}
