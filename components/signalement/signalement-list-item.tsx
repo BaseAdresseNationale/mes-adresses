@@ -10,7 +10,7 @@ import {
   TrashIcon,
   Checkbox,
   Icon,
-  EndorsedIcon,
+  TickCircleIcon,
   BanCircleIcon,
   Tooltip,
 } from "evergreen-ui";
@@ -64,7 +64,7 @@ export function SignalementListItem({
               signalement.updatedAt
             ).toLocaleDateString("fr-FR")}`}
           >
-            <Icon icon={EndorsedIcon} color="green500" />
+            <Icon icon={TickCircleIcon} color="green500" />
           </Tooltip>
         ) : null}
       </Table.Cell>
