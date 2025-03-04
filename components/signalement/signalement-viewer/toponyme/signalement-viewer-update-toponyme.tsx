@@ -7,6 +7,7 @@ import {
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
+import { BanCircleIcon, TickCircleIcon } from "evergreen-ui";
 
 interface SignalementViewerUpdateToponymeProps {
   signalement: Signalement;
@@ -55,14 +56,19 @@ function SignalementViewerUpdateToponyme({
         }}
       />
       <SignalementToponymeDiffCard
-        title={`Modification ${
-          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
-        }`}
+        title={
+          <>
+            Modification{" "}
+            {status === Signalement.status.PROCESSED ? "acceptée" : "refusée"}
+            {status === Signalement.status.PROCESSED ? (
+              <TickCircleIcon size={20} color="success" marginLeft={10} />
+            ) : (
+              <BanCircleIcon size={20} color="danger" marginLeft={10} />
+            )}
+          </>
+        }
         isActive={activeCard === ActiveCardEnum.CHANGES}
         signalementType={Signalement.type.LOCATION_TO_UPDATE}
-        backgroundColor={
-          status === Signalement.status.PROCESSED ? "#97D7BF" : "#EE9191"
-        }
         nom={{
           from: existingNom,
           to: nom,

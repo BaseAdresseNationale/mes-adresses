@@ -9,8 +9,7 @@ import { signalementTypeMap } from "../signalement-type-badge";
 import { SignalementParcelle } from "./signalement-parcelle";
 
 interface SignalementNumeroDiffCardProps {
-  title: string;
-  backgroundColor?: string;
+  title: string | React.ReactNode;
   numero: {
     from?: string;
     to: string;
@@ -46,14 +45,12 @@ export function SignalementNumeroDiffCard({
   onClick,
   isActive,
   signalementType,
-  backgroundColor,
 }: SignalementNumeroDiffCardProps) {
   return (
     <AccordionCard
       title={title}
       backgroundColor={
-        backgroundColor ||
-        (signalementType && signalementTypeMap[signalementType].backgroundColor)
+        signalementType && signalementTypeMap[signalementType].backgroundColor
       }
       isActive={isActive}
       onClick={onClick}
