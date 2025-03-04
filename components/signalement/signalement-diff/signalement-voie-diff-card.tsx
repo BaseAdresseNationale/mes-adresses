@@ -20,7 +20,7 @@ export function SignalementVoieDiffCard({
   return (
     <Pane
       background={
-        signalementTypeMap[signalementType].backgroundColor || "white"
+        signalementType && signalementTypeMap[signalementType].backgroundColor
       }
       padding={8}
       borderRadius={8}

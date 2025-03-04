@@ -23,6 +23,7 @@ interface SignalementToponymeDiffCardProps {
     to: string[];
   };
   signalementType?: Signalement.type;
+  backgroundColor?: string;
   isActive?: boolean;
   onClick?: () => void;
 }
@@ -31,6 +32,7 @@ export function SignalementToponymeDiffCard({
   title,
   nom,
   signalementType,
+  backgroundColor,
   positions,
   parcelles,
   isActive,
@@ -39,7 +41,10 @@ export function SignalementToponymeDiffCard({
   return (
     <AccordionCard
       title={title}
-      backgroundColor={signalementTypeMap[signalementType].backgroundColor}
+      backgroundColor={
+        backgroundColor ||
+        (signalementType && signalementTypeMap[signalementType].backgroundColor)
+      }
       isActive={isActive}
       onClick={onClick}
     >

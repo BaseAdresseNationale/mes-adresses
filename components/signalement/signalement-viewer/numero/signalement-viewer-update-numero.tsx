@@ -5,7 +5,6 @@ import {
   ExistingNumero,
 } from "@/lib/openapi-signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 
@@ -67,9 +66,14 @@ function SignalementViewerUpdateNumero({
         }}
       />
       <SignalementNumeroDiffCard
-        title="Modification demandée"
+        title={`Modification ${
+          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
+        }`}
         isActive={activeCard === ActiveCardEnum.CHANGES}
         signalementType={Signalement.type.LOCATION_TO_UPDATE}
+        backgroundColor={
+          status === Signalement.status.PROCESSED ? "#97D7BF" : "#EE9191"
+        }
         numero={{
           from: `${existingNumero}${
             existingSuffixe ? ` ${existingSuffixe}` : ""
@@ -94,30 +98,6 @@ function SignalementViewerUpdateNumero({
         }}
         onClick={() => {
           setActiveCard(ActiveCardEnum.CHANGES);
-        }}
-      />
-      <SignalementNumeroDiffCard
-        title={`Modification ${
-          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
-        }`}
-        isActive={activeCard === ActiveCardEnum.FINAL}
-        numero={{
-          to: `${numero}${suffixe ? ` ${suffixe}` : ""}`,
-        }}
-        voie={{
-          to: nomVoie,
-        }}
-        complement={{
-          to: nomComplement,
-        }}
-        positions={{
-          to: positions,
-        }}
-        parcelles={{
-          to: parcelles,
-        }}
-        onClick={() => {
-          setActiveCard(ActiveCardEnum.FINAL);
         }}
       />
     </>

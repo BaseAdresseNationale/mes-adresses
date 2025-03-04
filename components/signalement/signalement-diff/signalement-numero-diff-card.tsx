@@ -10,6 +10,7 @@ import { SignalementParcelle } from "./signalement-parcelle";
 
 interface SignalementNumeroDiffCardProps {
   title: string;
+  backgroundColor?: string;
   numero: {
     from?: string;
     to: string;
@@ -45,12 +46,14 @@ export function SignalementNumeroDiffCard({
   onClick,
   isActive,
   signalementType,
+  backgroundColor,
 }: SignalementNumeroDiffCardProps) {
   return (
     <AccordionCard
       title={title}
       backgroundColor={
-        signalementType && signalementTypeMap[signalementType].backgroundColor
+        backgroundColor ||
+        (signalementType && signalementTypeMap[signalementType].backgroundColor)
       }
       isActive={isActive}
       onClick={onClick}

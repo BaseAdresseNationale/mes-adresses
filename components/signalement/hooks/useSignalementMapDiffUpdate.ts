@@ -72,9 +72,9 @@ export function useSignalementMapDiffUpdate(
 
   useEffect(() => {
     if (positionsToDisplay?.length > 0) {
-      positionsToDisplay.forEach((position) => {
+      positionsToDisplay.forEach((position, index) => {
         addMarker({
-          id: position.id,
+          id: position.id || index.toString(),
           isMapMarker: true,
           isDisabled: true,
           color: position.color,

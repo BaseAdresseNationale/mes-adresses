@@ -4,7 +4,6 @@ import {
   Signalement,
 } from "@/lib/openapi-signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { useSignalementMapDiffCreation } from "@/components/signalement/hooks/useSignalementMapDiffCreation";
 
 interface SignalementViewerCreateNumeroProps {
