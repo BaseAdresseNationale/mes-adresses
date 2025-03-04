@@ -1,6 +1,13 @@
-import { Alert, Pane, Paragraph } from "evergreen-ui";
+import {
+  Alert,
+  LockIcon,
+  Pane,
+  Paragraph,
+  Tooltip,
+  UnlockIcon,
+} from "evergreen-ui";
 import SignalementTypeBadge from "./signalement-type-badge";
-import { Signalement } from "@/lib/openapi-signalement";
+import { Signalement, Source } from "@/lib/openapi-signalement";
 import { getDuration, getLongFormattedDate } from "@/lib/utils/date";
 import {
   ExtendedBaseLocaleDTO,
@@ -69,6 +76,15 @@ export function SignalementHeader({
         )}
         <Paragraph>
           via <b>{source.nom}</b>
+          {source.type === Source.type.PRIVATE ? (
+            <Tooltip content="Ce signalement provient d'un acteur de confiance">
+              <LockIcon marginLeft={5} color="success" />
+            </Tooltip>
+          ) : (
+            <Tooltip content="Ce signalement provient d'une source grand public">
+              <UnlockIcon marginLeft={5} color="muted" />
+            </Tooltip>
+          )}
         </Paragraph>
 
         {changesRequested.comment && (

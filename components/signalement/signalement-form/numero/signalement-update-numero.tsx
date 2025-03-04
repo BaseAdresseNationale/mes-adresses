@@ -12,7 +12,6 @@ import {
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { ActiveCardEnum, detectChanges } from "@/lib/utils/signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 import { Alert } from "evergreen-ui";
 

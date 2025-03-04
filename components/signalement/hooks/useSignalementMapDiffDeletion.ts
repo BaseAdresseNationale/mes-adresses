@@ -67,9 +67,9 @@ export function useSignalementMapDiffDeletion(existingLocation: {
 
   useEffect(() => {
     if (positions.length > 0) {
-      positions.forEach((position) => {
+      positions.forEach((position, index) => {
         addMarker({
-          id: position.id,
+          id: position.id || index.toString(),
           isMapMarker: true,
           isDisabled: true,
           color: "orange",
