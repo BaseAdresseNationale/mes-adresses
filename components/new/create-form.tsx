@@ -6,6 +6,7 @@ import {
   ChangeEventHandler,
   Dispatch,
   SetStateAction,
+  useRef,
 } from "react";
 import Router from "next/router";
 import { Pane, TextInputField, Checkbox, Button, PlusIcon } from "evergreen-ui";
@@ -94,12 +95,28 @@ function CreateForm({
   const [userBALs, setUserBALs] = useState<ExtendedBaseLocaleDTO[]>([]);
   const [publishedRevision, setPublishedRevision] = useState<Revision>(null);
   const [ref, setRef] = useState<HTMLInputElement>();
+  const interval = useRef<ReturnType<typeof setInterval> | undefined>();
 
   useEffect(() => {
     if (ref) {
       ref.focus();
     }
   }, [ref]);
+
+  const waitingPopulate = useCallback(async (balId: string) => {
+    async function goPageBalWhenIsPopulate() {
+      const isPopulating =
+        await BasesLocalesService.isPopulatingBaseLocale(balId);
+      if (isPopulating) {
+        clearInterval(interval.current);
+        Router.push(`/bal/${balId}`);
+      }
+    }
+
+    interval.current = setInterval(async () => {
+      await goPageBalWhenIsPopulate();
+    }, 5000);
+  }, []);
 
   const createNewBal = useCallback(async () => {
     if (commune) {
@@ -113,12 +130,19 @@ function CreateForm({
 
       if (populate) {
         Object.assign(OpenAPI, { TOKEN: bal.token });
-        await BasesLocalesService.populateBaseLocale(bal.id);
+        try {
+          await BasesLocalesService.populateBaseLocale(bal.id);
+        } catch (e) {
+          if (e.status === 504) {
+            return waitingPopulate(bal.id);
+          }
+          throw e;
+        }
       }
 
       Router.push(`/bal/${bal.id}`);
     }
-  }, [email, nom, populate, commune, addBalAccess]);
+  }, [commune, nom, email, addBalAccess, populate, waitingPopulate]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
