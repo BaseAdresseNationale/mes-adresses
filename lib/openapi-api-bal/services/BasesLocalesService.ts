@@ -264,6 +264,24 @@ export class BasesLocalesService {
     }
 
     /**
+     * Is populate Base Locale
+     * @param baseLocaleId
+     * @returns boolean
+     * @throws ApiError
+     */
+    public static isPopulatingBaseLocale(
+        baseLocaleId: string,
+    ): CancelablePromise<boolean> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v2/bases-locales/{baseLocaleId}/is_populating',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+
+    /**
      * Renew Base Locale token
      * @param baseLocaleId
      * @returns BaseLocale
