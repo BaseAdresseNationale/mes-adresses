@@ -1,6 +1,6 @@
 import { DelayBar } from "@/components/delay-bar";
 import SignalementContext from "@/contexts/signalement";
-import { BanCircleIcon, Button, EndorsedIcon, Pane } from "evergreen-ui";
+import { BanCircleIcon, Button, Pane, TickCircleIcon } from "evergreen-ui";
 import { useContext, useRef, useState } from "react";
 
 interface SignalementFormButtonsProps {
@@ -78,7 +78,7 @@ export function SignalementFormButtons({
                   ? {
                       intent: "success",
                       appearance: "primary",
-                      iconAfter: EndorsedIcon,
+                      iconAfter: TickCircleIcon,
                     }
                   : {
                       appearance: "default",
@@ -121,7 +121,7 @@ export function SignalementFormButtons({
               onClick={() => handleActionToConfirm("accept")}
               appearance="primary"
               intent="success"
-              iconAfter={EndorsedIcon}
+              iconAfter={TickCircleIcon}
             >
               Accepter
             </Button>

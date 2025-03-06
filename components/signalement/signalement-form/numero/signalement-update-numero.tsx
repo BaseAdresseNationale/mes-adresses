@@ -12,7 +12,6 @@ import {
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { ActiveCardEnum, detectChanges } from "@/lib/utils/signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 import { Alert } from "evergreen-ui";
 
@@ -98,10 +97,7 @@ function SignalementUpdateNumero({
       <SignalementNumeroDiffCard
         title="Modification proposée"
         isActive={activeCard === ActiveCardEnum.CHANGES}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         numero={{
           from: `${existingNumero}${
             existingSuffixe ? ` ${existingSuffixe}` : ""

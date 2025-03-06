@@ -5,9 +5,9 @@ import {
   ExistingNumero,
 } from "@/lib/openapi-signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
+import { BanCircleIcon, TickCircleIcon } from "evergreen-ui";
 
 interface SignalementViewerUpdateNumeroProps {
   signalement: Signalement;
@@ -67,12 +67,19 @@ function SignalementViewerUpdateNumero({
         }}
       />
       <SignalementNumeroDiffCard
-        title="Modifications demandées"
-        isActive={activeCard === ActiveCardEnum.CHANGES}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
+        title={
+          <>
+            Modification{" "}
+            {status === Signalement.status.PROCESSED ? "acceptée" : "refusée"}
+            {status === Signalement.status.PROCESSED ? (
+              <TickCircleIcon size={20} color="success" marginLeft={10} />
+            ) : (
+              <BanCircleIcon size={20} color="danger" marginLeft={10} />
+            )}
+          </>
         }
+        isActive={activeCard === ActiveCardEnum.CHANGES}
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         numero={{
           from: `${existingNumero}${
             existingSuffixe ? ` ${existingSuffixe}` : ""
@@ -97,30 +104,6 @@ function SignalementViewerUpdateNumero({
         }}
         onClick={() => {
           setActiveCard(ActiveCardEnum.CHANGES);
-        }}
-      />
-      <SignalementNumeroDiffCard
-        title={`Modification ${
-          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
-        }`}
-        isActive={activeCard === ActiveCardEnum.FINAL}
-        numero={{
-          to: `${numero}${suffixe ? ` ${suffixe}` : ""}`,
-        }}
-        voie={{
-          to: nomVoie,
-        }}
-        complement={{
-          to: nomComplement,
-        }}
-        positions={{
-          to: positions,
-        }}
-        parcelles={{
-          to: parcelles,
-        }}
-        onClick={() => {
-          setActiveCard(ActiveCardEnum.FINAL);
         }}
       />
     </>
