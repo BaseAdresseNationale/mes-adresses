@@ -107,7 +107,8 @@ function CreateForm({
     async function goPageBalWhenIsPopulate() {
       const isPopulating =
         await BasesLocalesService.isPopulatingBaseLocale(balId);
-      if (isPopulating) {
+
+      if (!isPopulating) {
         clearInterval(interval.current);
         Router.push(`/bal/${balId}`);
       }
