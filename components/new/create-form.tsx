@@ -132,13 +132,9 @@ function CreateForm({
       if (populate) {
         Object.assign(OpenAPI, { TOKEN: bal.token });
         try {
-          await BasesLocalesService.populateBaseLocale(bal.id);
-        } catch (e) {
-          if (e.status === 504) {
-            return waitingPopulate(bal.id);
-          }
-          throw e;
-        }
+          BasesLocalesService.populateBaseLocale(bal.id);
+        } catch {}
+        return waitingPopulate(bal.id);
       }
 
       Router.push(`/bal/${bal.id}`);
