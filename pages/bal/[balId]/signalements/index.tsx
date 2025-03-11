@@ -38,7 +38,7 @@ import useFuse from "@/hooks/fuse";
 import MapContext from "@/contexts/map";
 import bbox from "@turf/bbox";
 import SignalementContext from "@/contexts/signalement";
-import SignalementJoyRide from "@/components/signalement/signalement-joyride";
+import SignalementJoyRide from "@/components/signalement/product-tour/signalement-page-product-tour";
 
 const fuseOptions = {
   keys: ["label"],

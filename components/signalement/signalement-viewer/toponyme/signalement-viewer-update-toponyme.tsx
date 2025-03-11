@@ -5,9 +5,9 @@ import {
   ToponymeChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
+import { BanCircleIcon, TickCircleIcon } from "evergreen-ui";
 
 interface SignalementViewerUpdateToponymeProps {
   signalement: Signalement;
@@ -56,12 +56,19 @@ function SignalementViewerUpdateToponyme({
         }}
       />
       <SignalementToponymeDiffCard
-        title="Modifications demandées"
-        isActive={activeCard === ActiveCardEnum.CHANGES}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
+        title={
+          <>
+            Modification{" "}
+            {status === Signalement.status.PROCESSED ? "acceptée" : "refusée"}
+            {status === Signalement.status.PROCESSED ? (
+              <TickCircleIcon size={20} color="success" marginLeft={10} />
+            ) : (
+              <BanCircleIcon size={20} color="danger" marginLeft={10} />
+            )}
+          </>
         }
+        isActive={activeCard === ActiveCardEnum.CHANGES}
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         nom={{
           from: existingNom,
           to: nom,
@@ -76,24 +83,6 @@ function SignalementViewerUpdateToponyme({
         }}
         onClick={() => {
           setActiveCard(ActiveCardEnum.CHANGES);
-        }}
-      />
-      <SignalementToponymeDiffCard
-        title={`Modification ${
-          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
-        }`}
-        isActive={activeCard === ActiveCardEnum.FINAL}
-        nom={{
-          to: nom,
-        }}
-        positions={{
-          to: positions,
-        }}
-        parcelles={{
-          to: parcelles,
-        }}
-        onClick={() => {
-          setActiveCard(ActiveCardEnum.FINAL);
         }}
       />
     </>

@@ -6,7 +6,6 @@ import {
 } from "@/lib/openapi-signalement";
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { useSignalementMapDiffCreation } from "@/components/signalement/hooks/useSignalementMapDiffCreation";
 
 interface SignalementCreateNumeroProps {
@@ -51,10 +50,7 @@ function SignalementCreateNumero({
     <>
       <SignalementNumeroDiffCard
         isActive
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_CREATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_CREATE}
         title="Demande de création d'adresse"
         numero={{
           to: `${numero}${suffixe ? ` ${suffixe}` : ""}`,

@@ -1,38 +1,7 @@
-import LocalStorageContext from "@/contexts/local-storage";
+import ProductTour from "@/components/product-tour";
 import { Heading, Pane, Paragraph } from "evergreen-ui";
-import { useContext } from "react";
-import Joyride from "react-joyride";
 
-const locale = {
-  skip: "Passer",
-  next: "Suivant",
-  back: "Précédent",
-  last: "Terminer",
-  close: "Fermer",
-};
-
-const styles = {
-  buttonNext: {
-    background: "#3366FF",
-    color: "white",
-    fontSize: 12,
-  },
-  buttonSkip: {
-    fontSize: 12,
-    color: "#696f8c",
-  },
-  buttonBack: {
-    fontSize: 12,
-    color: "#3366FF",
-  },
-  buttonLast: {
-    background: "#3366FF",
-    color: "white",
-    fontSize: 12,
-  },
-};
-
-export const steps = [
+const steps = [
   {
     target: "body",
     placement: "center",
@@ -117,28 +86,6 @@ export const steps = [
   },
 ];
 
-function SignalementJoyRide() {
-  const { productTour, setProductTour } = useContext(LocalStorageContext);
-
-  return !productTour?.signalement ? (
-    <Joyride
-      steps={steps as any}
-      run
-      continuous
-      showSkipButton
-      locale={locale}
-      styles={styles}
-      callback={(e) => {
-        if (
-          e.action === "close" ||
-          e.action === "skip" ||
-          e.status === "finished"
-        ) {
-          setProductTour({ ...productTour, signalement: true });
-        }
-      }}
-    />
-  ) : null;
+export default function SignalementPageProductTour() {
+  return <ProductTour steps={steps} localStorageKey="signalement" />;
 }
-
-export default SignalementJoyRide;

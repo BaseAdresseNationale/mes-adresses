@@ -6,7 +6,6 @@ import {
 import { Toponyme, ToponymesService } from "@/lib/openapi-api-bal";
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 
@@ -69,10 +68,7 @@ function SignalementUpdateToponyme({
       <SignalementToponymeDiffCard
         title="Modification proposée"
         isActive={activeCard === ActiveCardEnum.CHANGES}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         nom={{
           from: existingNom,
           to: nom,

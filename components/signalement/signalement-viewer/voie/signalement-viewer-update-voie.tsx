@@ -5,7 +5,7 @@ import {
   VoieChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 import { SignalementVoieDiffCard } from "../../signalement-diff/signalement-voie-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
+import { BanCircleIcon, TickCircleIcon } from "evergreen-ui";
 
 interface SignalementViewerUpdateVoieProps {
   signalement: Signalement;
@@ -27,23 +27,22 @@ function SignalementViewerUpdateVoie({
         }}
       />
       <SignalementVoieDiffCard
-        title={`Modification ${
-          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
-        }`}
+        title={
+          <>
+            Modification{" "}
+            {status === Signalement.status.PROCESSED ? "acceptée" : "refusée"}
+            {status === Signalement.status.PROCESSED ? (
+              <TickCircleIcon size={20} color="success" marginLeft={10} />
+            ) : (
+              <BanCircleIcon size={20} color="danger" marginLeft={10} />
+            )}
+          </>
+        }
+        signalementType={Signalement.type.LOCATION_TO_UPDATE}
         nom={{
           from: existingNom,
           to: nom,
         }}
-      />
-      <SignalementVoieDiffCard
-        title="Nom de la voie après modification"
-        nom={{
-          to: nom,
-        }}
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_UPDATE]
-            .backgroundColor
-        }
       />
     </>
   );

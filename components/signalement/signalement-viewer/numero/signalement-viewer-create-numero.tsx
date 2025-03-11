@@ -4,8 +4,8 @@ import {
   Signalement,
 } from "@/lib/openapi-signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { useSignalementMapDiffCreation } from "@/components/signalement/hooks/useSignalementMapDiffCreation";
+import { BanCircleIcon, TickCircleIcon } from "evergreen-ui";
 
 interface SignalementViewerCreateNumeroProps {
   signalement: Signalement;
@@ -25,13 +25,18 @@ function SignalementViewerCreateNumero({
     <>
       <SignalementNumeroDiffCard
         isActive
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_CREATE]
-            .backgroundColor
+        signalementType={Signalement.type.LOCATION_TO_CREATE}
+        title={
+          <>
+            Demande de création d&apos;adresse{" "}
+            {status === Signalement.status.PROCESSED ? "acceptée" : "refusée"}
+            {status === Signalement.status.PROCESSED ? (
+              <TickCircleIcon size={20} color="success" marginLeft={10} />
+            ) : (
+              <BanCircleIcon size={20} color="danger" marginLeft={10} />
+            )}
+          </>
         }
-        title={`Demande de création d'adresse ${
-          status === Signalement.status.PROCESSED ? "acceptée" : "refusée"
-        }`}
         numero={{
           to: `${numero}${suffixe ? ` ${suffixe}` : ""}`,
         }}
