@@ -116,7 +116,7 @@ function CreateForm({
 
     interval.current = setInterval(async () => {
       await goPageBalWhenIsPopulate();
-    }, 5000);
+    }, 2000);
   }, []);
 
   const createNewBal = useCallback(async () => {
@@ -131,13 +131,11 @@ function CreateForm({
 
       if (populate) {
         Object.assign(OpenAPI, { TOKEN: bal.token });
-        try {
-          BasesLocalesService.populateBaseLocale(bal.id);
-        } catch {}
-        return waitingPopulate(bal.id);
+        BasesLocalesService.populateBaseLocale(bal.id);
+        waitingPopulate(bal.id);
+      } else {
+        Router.push(`/bal/${bal.id}`);
       }
-
-      Router.push(`/bal/${bal.id}`);
     }
   }, [commune, nom, email, addBalAccess, populate, waitingPopulate]);
 
