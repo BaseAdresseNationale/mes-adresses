@@ -34,6 +34,9 @@ import LayoutContext from "@/contexts/layout";
 import ToponymesList from "@/components/bal/toponymes-list";
 import ConvertVoieWarning from "@/components/convert-voie-warning";
 import CommuneEditor from "@/components/bal/commune-editor";
+import SignalementBalPageProductTour from "@/components/signalement/product-tour/signalement-bal-page-product-tour";
+import SignalementContext from "@/contexts/signalement";
+import LocalStorageContext from "@/contexts/local-storage";
 
 interface BaseLocalePageProps {
   selectedTab: TabsEnum;
@@ -48,6 +51,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
 
   const { token } = useContext(TokenContext);
+  const { wasWelcomed } = useContext(LocalStorageContext);
   const { toaster } = useContext(LayoutContext);
   const {
     voies,
@@ -62,6 +66,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
   const { refreshBALSync, reloadVoies, reloadToponymes, reloadParcelles } =
     useContext(BalDataContext);
+  const { pendingSignalementsCount } = useContext(SignalementContext);
 
   const router = useRouter();
   const selectedTab: TabsEnum =
@@ -184,6 +189,9 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
           setIsCommuneFormOpen(true);
         }}
       />
+      {pendingSignalementsCount > 0 && wasWelcomed && (
+        <SignalementBalPageProductTour />
+      )}
       <Pane
         position="relative"
         display="flex"

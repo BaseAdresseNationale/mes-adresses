@@ -1,29 +1,35 @@
 import { Heading, Pane } from "evergreen-ui";
 import TextDiff from "./text-diff";
+import { Signalement } from "@/lib/openapi-signalement";
+import { signalementTypeMap } from "../signalement-type-badge";
 
 interface SignalementVoieDiffCardProps {
-  title: string;
+  title: string | React.ReactNode;
   nom: {
     from?: string;
     to: string;
   };
-  backgroundColor?: string;
+  signalementType?: Signalement.type;
 }
 
 export function SignalementVoieDiffCard({
   title,
   nom,
-  backgroundColor,
+  signalementType,
 }: SignalementVoieDiffCardProps) {
   return (
     <Pane
-      background={backgroundColor || "white"}
+      background={
+        (signalementType &&
+          signalementTypeMap[signalementType].backgroundColor) ||
+        "white"
+      }
       padding={8}
       borderRadius={8}
       marginBottom={8}
       width="100%"
     >
-      <Heading is="h3" marginBottom={8}>
+      <Heading is="h3" marginY={8} display="flex">
         {title}
       </Heading>
       <Pane padding={8} borderRadius={8} className="glass-pane">

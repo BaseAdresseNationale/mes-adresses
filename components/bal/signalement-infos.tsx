@@ -1,5 +1,5 @@
 import React from "react";
-import { Pane, Heading, Button, Alert } from "evergreen-ui";
+import { Pane, Heading, Button, Alert, Text } from "evergreen-ui";
 import { useRouter } from "next/navigation";
 
 interface SignalementInfosProps {
@@ -41,11 +41,14 @@ function SignalementInfos({ balId, signalementCounts }: SignalementInfosProps) {
       {signalementCounts.pending > 0 ? (
         <Alert
           intent="info"
+          hasIcon={false}
           title={
-            <Pane fontWeight="normal">
-              Vous avez reçu <b>{signalementCounts.pending}</b>{" "}
-              {signalementCounts.pending > 1 ? "propositions" : "proposition"}.
-            </Pane>
+            <Text is="p" marginTop={0}>
+              Des administrés ou des services publics ont proposé{" "}
+              <b>{signalementCounts.pending}</b>{" "}
+              {`amélioration${signalementCounts.pending > 1 ? "s" : ""}`} sur
+              les adresses de votre commune.
+            </Text>
           }
         >
           <Pane marginTop="1rem">{signalementBtn}</Pane>

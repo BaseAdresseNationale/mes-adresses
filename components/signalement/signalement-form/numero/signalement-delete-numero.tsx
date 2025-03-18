@@ -2,7 +2,6 @@ import React from "react";
 import { Numero, NumerosService } from "@/lib/openapi-api-bal";
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
-import { signalementTypeMap } from "../../signalement-type-badge";
 import { Signalement } from "@/lib/openapi-signalement";
 import { useSignalementMapDiffDeletion } from "../../hooks/useSignalementMapDiffDeletion";
 
@@ -34,10 +33,7 @@ function SignalementDeleteNumero({
     <>
       <SignalementNumeroDiffCard
         isActive
-        backgroundColor={
-          signalementTypeMap[Signalement.type.LOCATION_TO_DELETE]
-            .backgroundColor
-        }
+        signalementType={Signalement.type.LOCATION_TO_DELETE}
         title="Demande de suppression d'adresse"
         numero={{
           to: `${numero}${suffixe ? ` ${suffixe}` : ""}`,
