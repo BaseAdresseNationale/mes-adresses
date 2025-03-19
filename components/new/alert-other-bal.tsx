@@ -89,6 +89,7 @@ function AlertOtherBAL({
         width="800px"
         confirmLabel={isLoading ? "Création..." : "Continuer"}
         cancelLabel="Annuler"
+        hasCancel={!isLoading}
         isConfirmLoading={isLoading}
         onConfirm={handleConfirmation}
         onCloseComplete={onClose}
@@ -158,6 +159,24 @@ function AlertOtherBAL({
             />
           ))}
         </Pane>
+        {isLoading && (
+          <Pane
+            position="fixed"
+            left="0"
+            bottom="80px"
+            width="100%"
+            paddingTop={12}
+            paddingLeft={24}
+            paddingRight={24}
+            background="white"
+          >
+            <Alert
+              intent="none"
+              title="Cette operation peut prendre plusieurs minutes"
+              marginTop={12}
+            />
+          </Pane>
+        )}
       </Dialog>
     </>
   );

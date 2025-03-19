@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 
-import { Dialog } from "evergreen-ui";
+import { Alert, Dialog, Pane } from "evergreen-ui";
 
 import { PublicClient, Revision } from "@/lib/api-depot/types";
 import { ClientRevisionEnum } from "./create-form";
@@ -23,7 +23,7 @@ function AlertPublishedBAL({
 }: AlertPublishedBALProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getAlertComponent: React.FunctionComponent = useCallback(() => {
+  const getAlertComponent = useMemo(() => {
     const client: PublicClient = revision.client;
     if (client.legacyId === ClientRevisionEnum.MES_ADRESSES) {
       return <AlertPublishedBALMesAdresses revision={revision} />;
@@ -46,11 +46,32 @@ function AlertPublishedBAL({
       width="800px"
       confirmLabel={isLoading ? "Création…" : "Continuer"}
       cancelLabel="Annuler"
+      hasCancel={!isLoading}
       isConfirmLoading={isLoading}
       onConfirm={handleConfirmation}
       onCloseComplete={onClose}
     >
-      {getAlertComponent}
+      <>
+        {getAlertComponent}
+        {isLoading && (
+          <Pane
+            position="fixed"
+            left="0"
+            bottom="80px"
+            width="100%"
+            paddingTop={12}
+            paddingLeft={24}
+            paddingRight={24}
+            background="white"
+          >
+            <Alert
+              intent="none"
+              title="Cette operation peut prendre plusieurs minutes"
+              marginTop={12}
+            />
+          </Pane>
+        )}
+      </>
     </Dialog>
   );
 }
