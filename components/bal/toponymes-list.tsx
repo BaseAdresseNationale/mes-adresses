@@ -16,6 +16,7 @@ import { normalizeSort } from "@/lib/normalize";
 
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
+import ReadOnlyInfos from "./read-only-infos";
 
 import DeleteWarning from "@/components/delete-warning";
 import {
@@ -100,33 +101,36 @@ function ToponymesList({
         }}
         onConfirm={handleRemove}
       />
-      <Pane
-        flexShrink={0}
-        elevation={0}
-        backgroundColor="white"
-        paddingX={16}
-        display="flex"
-        alignItems="center"
-        minHeight={50}
-      >
-        <Pane marginLeft="auto">
-          <Button
-            iconBefore={token ? AddIcon : LockIcon}
-            appearance="primary"
-            intent="success"
-            disabled={token && isEditing}
-            onClick={() => {
-              if (token) {
-                openForm();
-              } else {
-                openRecoveryDialog();
-              }
-            }}
-          >
-            Ajouter un toponyme
-          </Button>
+      {!token && (
+        <Pane flexShrink={0} elevation={0} backgroundColor="white">
+          <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />
         </Pane>
-      </Pane>
+      )}
+      {token && (
+        <Pane
+          flexShrink={0}
+          elevation={0}
+          backgroundColor="white"
+          paddingX={16}
+          display="flex"
+          alignItems="center"
+          minHeight={50}
+        >
+          <Pane marginLeft="auto">
+            <Button
+              iconBefore={AddIcon}
+              appearance="primary"
+              intent="success"
+              disabled={token && isEditing}
+              onClick={() => {
+                openForm();
+              }}
+            >
+              Ajouter un toponyme
+            </Button>
+          </Pane>
+        </Pane>
+      )}
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
           <Table.SearchHeaderCell

@@ -23,6 +23,7 @@ import TokenContext from "@/contexts/token";
 
 import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
+import ReadOnlyInfos from "./read-only-infos";
 
 import { ExtendedVoieDTO, VoiesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
@@ -107,33 +108,36 @@ function VoiesList({
         onConfirm={handleRemove}
         isDisabled={isDisabled}
       />
-      <Pane
-        flexShrink={0}
-        elevation={0}
-        backgroundColor="white"
-        paddingX={16}
-        display="flex"
-        alignItems="center"
-        minHeight={50}
-      >
-        <Pane marginLeft="auto">
-          <Button
-            iconBefore={token ? AddIcon : LockIcon}
-            appearance="primary"
-            intent="success"
-            disabled={token && isEditing}
-            onClick={() => {
-              if (token) {
-                openForm();
-              } else {
-                openRecoveryDialog();
-              }
-            }}
-          >
-            Ajouter une voie
-          </Button>
+      {!token && (
+        <Pane flexShrink={0} elevation={0} backgroundColor="white">
+          <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />
         </Pane>
-      </Pane>
+      )}
+      {token && (
+        <Pane
+          flexShrink={0}
+          elevation={0}
+          backgroundColor="white"
+          paddingX={16}
+          display="flex"
+          alignItems="center"
+          minHeight={50}
+        >
+          <Pane marginLeft="auto">
+            <Button
+              iconBefore={AddIcon}
+              appearance="primary"
+              intent="success"
+              disabled={token && isEditing}
+              onClick={() => {
+                openForm();
+              }}
+            >
+              Ajouter une voie
+            </Button>
+          </Pane>
+        </Pane>
+      )}
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
           <Table.SearchHeaderCell
