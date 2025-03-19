@@ -9,7 +9,14 @@ import {
   useRef,
 } from "react";
 import Router from "next/router";
-import { Pane, TextInputField, Checkbox, Button, PlusIcon } from "evergreen-ui";
+import {
+  Pane,
+  TextInputField,
+  Checkbox,
+  Button,
+  PlusIcon,
+  Alert,
+} from "evergreen-ui";
 
 import LocalStorageContext from "@/contexts/local-storage";
 
@@ -156,6 +163,7 @@ function CreateForm({
           outdatedHarvestSources
         )
       ) {
+        setIsLoading(false);
         setIsShownAlertPublishedBal(true);
         setPublishedRevision(revision);
         return;
@@ -188,6 +196,7 @@ function CreateForm({
     if (response.results.length > 0) {
       setUserBALs(response.results);
       setIsShownAlertOtherBal(true);
+      setIsLoading(false);
     } else {
       createNewBal();
     }
@@ -289,6 +298,13 @@ function CreateForm({
         >
           {isLoading ? "En cours de création…" : "Créer la Base Adresse Locale"}
         </Button>
+        {isLoading && (
+          <Alert
+            intent="none"
+            title="Cette operation peut prendre plusieurs minutes"
+            marginTop={12}
+          />
+        )}
       </FormContainer>
     </Pane>
   );
