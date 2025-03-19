@@ -165,15 +165,14 @@ function AlertOtherBAL({
             left="0"
             bottom="80px"
             width="100%"
-            paddingTop={12}
-            paddingLeft={24}
-            paddingRight={24}
+            paddingTop={24}
+            paddingLeft={32}
+            paddingRight={32}
             background="white"
           >
             <Alert
               intent="none"
               title="Cette operation peut prendre plusieurs minutes"
-              marginTop={12}
             />
           </Pane>
         )}
