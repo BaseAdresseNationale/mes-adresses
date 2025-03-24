@@ -5,6 +5,8 @@
 
 import type { FieldDTO } from './FieldDTO';
 import type { NotFoundFieldDTO } from './NotFoundFieldDTO';
+import type { ParseErrorDTO } from './ParseErrorDTO';
+import type { ProfileErrorDTO } from './ProfileErrorDTO';
 import type { ProfilesValidationDTO } from './ProfilesValidationDTO';
 import type { ValidateFileDTO } from './ValidateFileDTO';
 import type { ValidateRowDTO } from './ValidateRowDTO';
@@ -15,7 +17,7 @@ export type ValidateProfileDTO = {
     delimiter: string;
     originalFields: Array<string>;
     parseOk: boolean;
-    parseErrors: Array<string>;
+    parseErrors: Array<ParseErrorDTO>;
     parsedRows: Array<string>;
     fields: Array<FieldDTO>;
     notFoundFields: Array<NotFoundFieldDTO>;
@@ -25,18 +27,6 @@ export type ValidateProfileDTO = {
     globalErrors: Array<string>;
     rowsErrors: Array<string>;
     uniqueErrors: Array<string>;
-    code: string;
-    level: ValidateProfileDTO.level;
+    profilErrors: Array<ProfileErrorDTO>;
 };
-
-export namespace ValidateProfileDTO {
-
-    export enum level {
-        E = 'E',
-        W = 'W',
-        I = 'I',
-    }
-
-
-}
 
