@@ -8,11 +8,6 @@ import {
   ChangeEventHandler,
 } from "react";
 import Router from "next/router";
-import {
-  validate,
-  ValidateProfile,
-  ValidateRowType,
-} from "@ban-team/validateur-bal";
 import { uniqBy } from "lodash";
 import {
   Pane,
@@ -51,6 +46,12 @@ import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";
 import AlertPublishedBAL from "./alert-published-bal";
 import LayoutContext from "@/contexts/layout";
+import {
+  FileUploadDTO,
+  ValidateProfileDTO,
+  ValidateRowDTO,
+  ValidateService,
+} from "@/lib/openapi-validateur";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -93,7 +94,7 @@ type CommuneRow = {
   nom: string;
 };
 
-function extractCommuneFromCSV(rows: ValidateRowType[]): CommuneRow[] {
+function extractCommuneFromCSV(rows: ValidateRowDTO[]): CommuneRow[] {
   // Get cle_interop and slice it to get the commune's code
   const communes: CommuneRow[] = rows.map(
     ({ parsedValues, additionalValues }) => ({
@@ -138,7 +139,7 @@ function UploadForm({
     null
   );
   const [validationReport, setValidationReport] =
-    useState<ValidateProfile | null>(null);
+    useState<ValidateProfileDTO | null>(null);
   const [invalidRowsCount, setInvalidRowsCount] = useState<number | null>(null);
 
   const [isShownAlertOtherBal, setIsShownAlertOtherBal] =
@@ -161,10 +162,14 @@ function UploadForm({
         );
       }
 
-      // Detect multi communes
-      const validationReport: ValidateProfile = (await validate(file, {
-        profile: "1.3-relax",
-      })) as ValidateProfile;
+      const body: FileUploadDTO = {
+        file,
+        profile: FileUploadDTO.profile._1_3_RELAX,
+      };
+
+      const validationReport: ValidateProfileDTO =
+        await ValidateService.validateFile(body);
+
       const communes: CommuneRow[] = extractCommuneFromCSV(
         validationReport.rows
       );
@@ -293,6 +298,7 @@ function UploadForm({
         (row) =>
           !row.isValid && extractCommuneCodeFromRow(row) === selectedCodeCommune
       ).length;
+      console.log(invalidRowsCount);
       setInvalidRowsCount(invalidRowsCount);
     }
   }, [selectedCodeCommune, validationReport]);
