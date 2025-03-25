@@ -17,7 +17,7 @@ function DrawEditor() {
       <Alert
         marginTop={8}
         intent="none"
-        title="Utilisez la carte pour dessiner le tracer de la voie"
+        title="Utilisez la carte pour dessiner le tracé de la voie"
       >
         {hint}
       </Alert>

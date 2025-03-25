@@ -74,7 +74,7 @@ export function DrawContextProvider(props: ChildrenProps) {
           // Creation mode
           setModeId("drawLineString");
           setHint(
-            "Cliquez sur la carte pour indiquer le début de la voie, puis ajouter de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie."
+            "Cliquez sur la carte pour indiquer le début de la voie, puis ajoutez de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie."
           );
         }
       }
