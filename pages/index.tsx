@@ -5,8 +5,6 @@ import {
   Button,
   PlusIcon,
   Spinner,
-  Alert,
-  Text,
   SwapHorizontalIcon,
 } from "evergreen-ui";
 import Link from "next/link";
@@ -62,23 +60,6 @@ function Index() {
       </Pane>
 
       <CSRUserBasesLocales />
-
-      <Alert margin={16} hasIcon={false}>
-        <Pane
-          display="flex"
-          justifyContent="center"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Text is="p" textAlign="center">
-            Vous voulez simplement essayer l’éditeur sans créer de Base Adresse
-            Locale ?
-          </Text>
-          <Button appearance="primary" is={Link} href="/new?demo=1">
-            Cliquer ici
-          </Button>
-        </Pane>
-      </Alert>
     </Main>
   );
 }
