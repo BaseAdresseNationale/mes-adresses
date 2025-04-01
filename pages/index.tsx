@@ -36,7 +36,7 @@ function Index() {
 
   return (
     <Main>
-      <Pane padding={16} display="flex" justifyContent="flex-end">
+      <Pane padding={16} display="flex" justifyContent="flex-end" borderBottom>
         <Button
           iconBefore={SwapHorizontalIcon}
           marginX={8}

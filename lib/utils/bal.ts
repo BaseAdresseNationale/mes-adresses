@@ -92,5 +92,6 @@ export const fetchBALInfos = async (baseLocale: ExtendedBaseLocaleDTO) => {
     habilitation,
     isHabilitationValid,
     pendingSignalementsCount,
+    isLoaded: true,
   };
 };

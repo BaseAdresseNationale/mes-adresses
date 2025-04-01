@@ -1,7 +1,7 @@
 const BASE_URL =
   "https://base-adresse-locale-prod-blasons-communes.s3.fr-par.scw.cloud";
 
-const DEFAULT_URL_DISTRICT_FLAG = "/commune/default-logo.svg";
+const DEFAULT_URL_DISTRICT_FLAG = "/static/images/commune-default-flag.svg";
 
 // Fetch the commune flag from a proxy for front-end to avoid CORS issues
 export const getCommuneFlagProxy = async (

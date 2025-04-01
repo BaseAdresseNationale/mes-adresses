@@ -63,6 +63,7 @@
     "react-map-gl-draw": "1.0.4",
     "react-range": "^1.8.14",
     "sharp": "^0.32.6",
+    "styled-components": "^6.1.16",
     "use-debounce": "^9.0.4"
   },
   "devDependencies": {

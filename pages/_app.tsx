@@ -21,6 +21,7 @@ import { OpenAPI } from "@/lib/openapi-api-bal";
 import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
 import { LayoutContextProvider } from "@/contexts/layout";
+import { BALWidgetProvider } from "@/contexts/bal-widget";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -55,51 +56,51 @@ function App(props: AppProps) {
       </Head>
 
       <LayoutContextProvider>
-        <LocalStorageContextProvider>
-          <TokenContextProvider
-            balId={query.balId as string}
-            _token={query.token as string}
-          >
-            <HelpContextProvider>
-              <BALRecoveryProvider balId={query.balId as string}>
-                <Help />
-                <Pane
-                  height="100%"
-                  width="100%"
-                  display="flex"
-                  flexDirection="column"
-                >
-                  <Header />
-                  <>
-                    <IEWarning />
-                    {query.balId && pageProps ? (
-                      <BalDataContextProvider
-                        initialBaseLocale={pageProps.baseLocale}
-                        initialVoie={pageProps.voie}
-                        initialToponyme={pageProps.toponyme}
-                        initialVoies={pageProps.voies}
-                        initialToponymes={pageProps.toponymes}
-                        initialNumeros={pageProps.numeros}
-                      >
-                        <SignalementContextProvider>
-                          <Editor {...pageProps}>
-                            <Component {...pageProps} />
-                          </Editor>
-                        </SignalementContextProvider>
-                      </BalDataContextProvider>
-                    ) : (
-                      <Component {...pageProps} />
-                    )}
-                  </>
-                </Pane>
-              </BALRecoveryProvider>
-            </HelpContextProvider>
-          </TokenContextProvider>
-        </LocalStorageContextProvider>
+        <BALWidgetProvider>
+          <LocalStorageContextProvider>
+            <TokenContextProvider
+              balId={query.balId as string}
+              _token={query.token as string}
+            >
+              <HelpContextProvider>
+                <BALRecoveryProvider balId={query.balId as string}>
+                  <Help />
+                  <Pane
+                    height="100%"
+                    width="100%"
+                    display="flex"
+                    flexDirection="column"
+                  >
+                    <Header />
+                    <>
+                      <IEWarning />
+                      {query.balId && pageProps ? (
+                        <BalDataContextProvider
+                          initialBaseLocale={pageProps.baseLocale}
+                          initialVoie={pageProps.voie}
+                          initialToponyme={pageProps.toponyme}
+                          initialVoies={pageProps.voies}
+                          initialToponymes={pageProps.toponymes}
+                          initialNumeros={pageProps.numeros}
+                        >
+                          <SignalementContextProvider>
+                            <Editor {...pageProps}>
+                              <Component {...pageProps} />
+                            </Editor>
+                          </SignalementContextProvider>
+                        </BalDataContextProvider>
+                      ) : (
+                        <Component {...pageProps} />
+                      )}
+                    </>
+                  </Pane>
+                </BALRecoveryProvider>
+              </HelpContextProvider>
+            </TokenContextProvider>
+          </LocalStorageContextProvider>
+        </BALWidgetProvider>
       </LayoutContextProvider>
 
-      {/* ⚠️ This is needed to expand Evergreen’Tootip width
-      It select all Tooltip components with 'appearance: card' propertie */}
       <style jsx global>{`
         div[id^="evergreen-tooltip"].ub-max-w_240px.ub-bg-clr_white.ub-box-szg_border-box {
           max-width: fit-content;

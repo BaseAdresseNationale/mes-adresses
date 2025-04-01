@@ -7,13 +7,14 @@ import {
   Link,
   Heading,
   Text,
-  IconButton,
   EyeOffIcon,
   TrashIcon,
   ArrowRightIcon,
   Pulsar,
   Button,
   Icon,
+  Tooltip,
+  UserIcon,
 } from "evergreen-ui";
 import NextLink from "next/link";
 import { format } from "date-fns";
@@ -45,6 +46,7 @@ function BaseLocaleCard({
 }: BaseLocaleCardProps) {
   const {
     id,
+    emails,
     status,
     sync,
     nom,
@@ -64,8 +66,6 @@ function BaseLocaleCard({
   const isDeletable =
     status === ExtendedBaseLocaleDTO.status.DRAFT ||
     status === ExtendedBaseLocaleDTO.status.DEMO;
-  const tooltipContent =
-    "Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr";
 
   return (
     <Card
@@ -100,19 +100,22 @@ function BaseLocaleCard({
             isHabilitationValid={isHabilitationValid}
           />
         </Pane>
-        <Pane
-          position="absolute"
-          top={10}
-          right={10}
-          elevation={2}
-          padding={5}
-          borderRadius="50%"
-        >
-          <HabilitationTag
-            communeName={commune.nom}
-            isHabilitationValid={isHabilitationValid}
-          />
-        </Pane>
+        {isShownHabilitationStatus && (
+          <Pane
+            position="absolute"
+            top={10}
+            right={10}
+            elevation={2}
+            padding={5}
+            borderRadius="50%"
+            backgroundColor="white"
+          >
+            <HabilitationTag
+              communeName={commune.nom}
+              isHabilitationValid={isHabilitationValid}
+            />
+          </Pane>
+        )}
       </Pane>
       <Pane
         padding={10}
@@ -148,6 +151,31 @@ function BaseLocaleCard({
               {createDate}
             </Text>
           </Pane>
+
+          {isAdmin && emails && (
+            <Pane marginTop={5} display="flex">
+              <Text display="block" marginRight={5}>
+                Administrateurs :
+              </Text>
+              <Tooltip
+                content={emails.map((email) => (
+                  <Pane key={email} fontFamily="Helvetica Neue" padding=".5em">
+                    <UserIcon
+                      marginRight=".5em"
+                      style={{ verticalAlign: "middle" }}
+                    />
+                    {email}
+                  </Pane>
+                ))}
+                appearance="card"
+              >
+                <Text fontWeight="bold" whiteSpace="nowrap">
+                  {emails.length}
+                </Text>
+              </Tooltip>
+            </Pane>
+          )}
+
           <Pane marginTop={5} display="flex">
             <Text display="block" marginRight={5}>
               Adresses certifiées :
@@ -178,19 +206,37 @@ function BaseLocaleCard({
         justifyContent="space-between"
         borderTop="1px solid #E4E7EB"
       >
-        <Button
-          intent="danger"
-          onClick={onRemove}
-          border={0}
-          flexGrow={1}
-          height="100%"
-          borderRight="1px solid #E4E7EB"
-        >
-          <Icon icon={TrashIcon} />
-        </Button>
+        {isAdmin && isDeletable && (
+          <Button
+            intent="danger"
+            onClick={onRemove}
+            border="0"
+            flexGrow={1}
+            height="100%"
+            borderRight="1px solid #E4E7EB"
+          >
+            <Icon icon={TrashIcon} />
+          </Button>
+        )}
+        {isAdmin && !isDeletable && (
+          <Tooltip content="Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr">
+            <Pane
+              flexGrow={1}
+              borderRight="1px solid #E4E7EB"
+              height="100%"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Button disabled intent="danger" border="0">
+                <Icon icon={TrashIcon} />
+              </Button>
+            </Pane>
+          </Tooltip>
+        )}
         <Button
           onClick={onHide}
-          border={0}
+          border="0"
           flexGrow={1}
           height="100%"
           borderRight="1px solid #E4E7EB"
@@ -200,7 +246,7 @@ function BaseLocaleCard({
         <Button
           is={NextLink}
           href={`/bal/${id}`}
-          border={0}
+          border="0"
           flexGrow={1}
           height="100%"
         >
