@@ -17,18 +17,23 @@ import useMatomoTracker from "@/hooks/matomo-tracker";
 import Editor from "@/layouts/editor";
 import { BALRecoveryProvider } from "@/contexts/bal-recovery";
 import { BalDataContextProvider } from "@/contexts/bal-data";
-import { OpenAPI } from "@/lib/openapi-api-bal";
+import { OpenAPI as OpenAPIBal } from "@/lib/openapi-api-bal";
 import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
+import { OpenAPI as OpenAPIValidateur } from "@/lib/openapi-validateur";
 import { SignalementContextProvider } from "@/contexts/signalement";
 import { LayoutContextProvider } from "@/contexts/layout";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
   .join("/");
-Object.assign(OpenAPI, { BASE: openAPIBase });
+Object.assign(OpenAPIBal, { BASE: openAPIBase });
 
 Object.assign(OpenAPISignalement, {
   BASE: process.env.NEXT_PUBLIC_API_SIGNALEMENT,
+});
+
+Object.assign(OpenAPIValidateur, {
+  BASE: process.env.NEXT_PUBLIC_API_VALIDATEUR,
 });
 
 function App(props: AppProps) {
