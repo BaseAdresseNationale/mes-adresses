@@ -10,8 +10,8 @@ import {
 import Router from "next/router";
 import {
   validate,
-  ValidateProfile,
-  ValidateRowType,
+  ValidateType,
+  ValidateRowFullType,
 } from "@ban-team/validateur-bal";
 import { uniqBy } from "lodash";
 import {
@@ -93,7 +93,7 @@ type CommuneRow = {
   nom: string;
 };
 
-function extractCommuneFromCSV(rows: ValidateRowType[]): CommuneRow[] {
+function extractCommuneFromCSV(rows: ValidateRowFullType[]): CommuneRow[] {
   // Get cle_interop and slice it to get the commune's code
   const communes: CommuneRow[] = rows.map(
     ({ parsedValues, additionalValues }) => ({
@@ -137,8 +137,9 @@ function UploadForm({
   const [selectedCodeCommune, setSelectedCodeCommune] = useState<string | null>(
     null
   );
-  const [validationReport, setValidationReport] =
-    useState<ValidateProfile | null>(null);
+  const [validationReport, setValidationReport] = useState<ValidateType | null>(
+    null
+  );
   const [invalidRowsCount, setInvalidRowsCount] = useState<number | null>(null);
 
   const [isShownAlertOtherBal, setIsShownAlertOtherBal] =
@@ -162,9 +163,9 @@ function UploadForm({
       }
 
       // Detect multi communes
-      const validationReport: ValidateProfile = (await validate(file, {
+      const validationReport = (await validate(file, {
         profile: "1.3-relax",
-      })) as ValidateProfile;
+      })) as ValidateType;
       const communes: CommuneRow[] = extractCommuneFromCSV(
         validationReport.rows
       );
