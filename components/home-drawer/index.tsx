@@ -7,8 +7,10 @@ import {
 } from "evergreen-ui";
 import { useState } from "react";
 import styled from "styled-components";
+import TrainingTab from "./training-tab";
+import NewsTab from "./news-tab";
 
-const TABS = ["Actualités", "Prochains webinaires", "Nos partenaires"];
+const TABS = ["Actualités", "Prochaines formations"];
 
 interface HomeDrawerProps {
   isExpanded: boolean;
@@ -16,10 +18,10 @@ interface HomeDrawerProps {
   drawerWidth: number;
 }
 
-const StyledDrawer = styled.div<{ width: number; isExpanded: boolean }>`
+const StyledDrawer = styled.div<{ width: number; $isExpanded: boolean }>`
   position: absolute;
   top: 0;
-  right: ${(props) => (props.isExpanded ? 0 : -props.width)}px;
+  right: ${(props) => (props.$isExpanded ? 0 : -props.width)}px;
   height: 100%;
   margin-top: 1px;
   width: ${(props) => props.width}px;
@@ -36,7 +38,7 @@ function HomeDrawer({
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <StyledDrawer width={drawerWidth} isExpanded={isExpanded}>
+    <StyledDrawer width={drawerWidth} $isExpanded={isExpanded}>
       <IconButton
         position="absolute"
         top={-2}
@@ -60,6 +62,8 @@ function HomeDrawer({
           </Tab>
         ))}
       </Tablist>
+      {selectedIndex === 0 && <NewsTab />}
+      {selectedIndex === 1 && <TrainingTab />}
     </StyledDrawer>
   );
 }

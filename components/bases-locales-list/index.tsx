@@ -9,11 +9,13 @@ import {
 import {
   Badge,
   Button,
+  ChevronDownIcon,
   EyeOpenIcon,
   Icon,
   Pagination,
   Pane,
   Paragraph,
+  Popover,
   SearchInput,
   Spinner,
 } from "evergreen-ui";
@@ -23,6 +25,7 @@ import DeleteWarning from "@/components/delete-warning";
 import BaseLocaleCard from "@/components/base-locale-card/bal-card";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { fetchBALInfos } from "@/lib/utils/bal";
+import ReactDOM from "react-dom";
 
 interface BasesLocalesListProps {
   basesLocales: ExtendedBaseLocaleDTO[];
@@ -59,9 +62,18 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
   const balsToDisplay = useMemo(
     () =>
       filteredBALs
+        .filter((bal) => !hiddenBal[bal.id])
         .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
         .map(({ id }) => id),
-    [currentPage, filteredBALs]
+    [currentPage, filteredBALs, hiddenBal]
+  );
+
+  const hiddenBalIds = useMemo(
+    () =>
+      Object.keys(hiddenBal).filter(
+        (id) => hiddenBal[id] && baseLocalesWithInfosRef.current[id]
+      ),
+    [hiddenBal]
   );
 
   useEffect(() => {
@@ -131,30 +143,51 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
           onCancel={() => setToRemove(null)}
           onConfirm={onRemove}
         />
-        <Pane
-          display="flex"
-          flexWrap="wrap"
-          gap={16}
-          paddingX={32}
-          paddingY={16}
-          marginTop={12}
-        >
-          <SearchInput
-            onChange={(e) => {
-              onFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            placeholder="Rechercher une Base Adresse Locale"
-          />
-          {Object.keys(hiddenBal).length > 0 && (
-            <Button flexShrink={0} onClick={() => console.log("TODO")}>
-              {Object.keys(hiddenBal).length > 1
-                ? `Afficher les ${Object.keys(hiddenBal).length} BAL masquées`
-                : `Afficher la BAL masquée`}
-              <Icon marginLeft={5} icon={EyeOpenIcon} />
-            </Button>
-          )}
-        </Pane>
+        {ReactDOM.createPortal(
+          <>
+            <SearchInput
+              onChange={(e) => {
+                onFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="Rechercher une Base Adresse Locale"
+            />
+            {hiddenBalIds.length > 0 && (
+              <Popover
+                content={
+                  <Pane display="flex" flexDirection="column" gap={8}>
+                    {hiddenBalIds.map((id) => {
+                      const balName = baseLocalesWithInfosRef.current[id].nom;
+
+                      return (
+                        <Button
+                          onClick={() => addHiddenBal(id, false)}
+                          key={id}
+                          iconAfter={EyeOpenIcon}
+                          appearance="minimal"
+                          width="100%"
+                          display="flex"
+                          justifyContent="space-between"
+                        >
+                          {balName}
+                        </Button>
+                      );
+                    })}
+                  </Pane>
+                }
+              >
+                <Button
+                  iconAfter={ChevronDownIcon}
+                  flexShrink={0}
+                  onClick={() => console.log("TODO")}
+                >
+                  Voir les BAL masquées
+                </Button>
+              </Popover>
+            )}
+          </>,
+          document.getElementById("bal-list-controls")
+        )}
         {isLoading ? (
           <Pane
             height="100%"
@@ -167,7 +200,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
           </Pane>
         ) : (
           <Pane
-            paddingX={16}
+            padding={16}
             display="grid"
             gridTemplateColumns="repeat(auto-fill, minmax(290px, 1fr))"
             gap={8}

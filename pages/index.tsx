@@ -36,27 +36,42 @@ function Index() {
 
   return (
     <Main>
-      <Pane padding={16} display="flex" justifyContent="flex-end" borderBottom>
-        <Button
-          iconBefore={SwapHorizontalIcon}
-          marginX={8}
-          marginY={4}
-          onClick={() => {
-            setIsRecoveryDisplayed(true);
-          }}
-        >
-          {isMobile ? "Récupérer" : "Récupérer une Base Adresse Locale"}
-        </Button>
-        <Button
-          iconBefore={PlusIcon}
-          is={Link}
-          marginX={8}
-          marginY={4}
-          href="/new"
-          appearance="primary"
-        >
-          {isMobile ? "Créer" : "Créer une Base Adresse Locale"}
-        </Button>
+      <Pane
+        padding={16}
+        display="flex"
+        justifyContent="space-between"
+        borderBottom
+      >
+        <Pane
+          id="bal-list-controls"
+          display="flex"
+          flexWrap="wrap"
+          gap={16}
+          alignItems="center"
+        />
+
+        <Pane>
+          <Button
+            iconBefore={SwapHorizontalIcon}
+            marginX={8}
+            marginY={4}
+            onClick={() => {
+              setIsRecoveryDisplayed(true);
+            }}
+          >
+            {isMobile ? "Récupérer" : "Récupérer une Base Adresse Locale"}
+          </Button>
+          <Button
+            iconBefore={PlusIcon}
+            is={Link}
+            marginX={8}
+            marginY={4}
+            href="/new"
+            appearance="primary"
+          >
+            {isMobile ? "Créer" : "Créer une Base Adresse Locale"}
+          </Button>
+        </Pane>
       </Pane>
 
       <CSRUserBasesLocales />

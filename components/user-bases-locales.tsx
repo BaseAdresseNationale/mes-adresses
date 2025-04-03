@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext, useCallback } from "react";
 import Link from "next/link";
-import { map, filter } from "lodash";
 import { Pane, Spinner, Button, PlusIcon } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import BasesLocalesList from "@/components/bases-locales-list";
@@ -11,15 +10,8 @@ import HomeDrawer from "./home-drawer";
 const DRAWER_WIDTH = 410;
 
 function UserBasesLocales() {
-  const { balAccess, getHiddenBal } = useContext(LocalStorageContext);
+  const { balAccess } = useContext(LocalStorageContext);
   const [isHomeDrawerExpanded, setIsHomeDrawerExpanded] = useState(true);
-
-  const isHidden = useCallback(
-    (balId) => {
-      return getHiddenBal(balId);
-    },
-    [getHiddenBal]
-  );
 
   const [isLoading, setIsLoading] = useState(true);
   const [basesLocales, setBasesLocales] = useState([]);
@@ -27,12 +19,8 @@ function UserBasesLocales() {
   const getUserBals = useCallback(async () => {
     setIsLoading(true);
     if (balAccess) {
-      const balsToLoad = filter(
-        Object.keys(balAccess),
-        (id) => !getHiddenBal(id)
-      );
       const basesLocales: BaseLocale[] = await Promise.all(
-        map(balsToLoad, async (id) => {
+        Object.keys(balAccess).map(async (id) => {
           const token = balAccess[id];
           try {
             const baseLocale = await BasesLocalesService.findBaseLocale(
@@ -50,17 +38,13 @@ function UserBasesLocales() {
         })
       );
 
-      const filteredBALs = basesLocales.filter(
-        (bal) => Boolean(bal) && Boolean(!isHidden(bal.id))
-      );
-
-      const orderedBALs = sortBalByUpdate(filteredBALs);
+      const orderedBALs = sortBalByUpdate(basesLocales.filter(Boolean));
 
       setBasesLocales(orderedBALs);
     }
 
     setIsLoading(false);
-  }, [balAccess, getHiddenBal, isHidden]);
+  }, [balAccess]);
 
   useEffect(() => {
     if (balAccess !== undefined) {
@@ -77,7 +61,7 @@ function UserBasesLocales() {
   }
 
   return (
-    <Pane position="relative" display="flex" height="100%">
+    <Pane position="relative" display="flex" height="100%" overflow="hidden">
       <Pane
         display="flex"
         flexDirection="column"

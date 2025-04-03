@@ -1,3 +1,4 @@
+import { ApiBalAdminService } from "@/lib/bal-admin";
 import { useCallback, useEffect, useRef, useState, createContext } from "react";
 import styled, { css } from "styled-components";
 
@@ -116,13 +117,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
   useEffect(() => {
     async function fetchBalWidgetConfig() {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BAL_ADMIN_URL}/api/bal-widget/config`
-        );
-        const data = await response.json();
-        if (response.status !== 200) {
-          throw new Error(data.message);
-        }
+        const data = await ApiBalAdminService.getBALWidgetConfig();
 
         setBalWidgetConfig(data);
       } catch (error) {

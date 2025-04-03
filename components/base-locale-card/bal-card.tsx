@@ -69,57 +69,55 @@ function BaseLocaleCard({
 
   return (
     <Card
+      position="relative"
       display="flex"
       flexDirection="column"
       width={290}
-      height={460}
+      height={430}
       border
       elevation={2}
       margin={12}
     >
+      {Boolean(pendingSignalementsCount) && (
+        <Pane position="absolute" top={0} left={0}>
+          <Pulsar size={16} />
+        </Pane>
+      )}
+      <Pane position="absolute" top={16} left={16} height={20} elevation={2}>
+        <StatusBadge
+          status={status}
+          sync={sync}
+          isHabilitationValid={isHabilitationValid}
+        />
+      </Pane>
+      {isShownHabilitationStatus && (
+        <Pane
+          position="absolute"
+          top={10}
+          right={10}
+          elevation={2}
+          padding={5}
+          borderRadius="50%"
+          backgroundColor="white"
+        >
+          <HabilitationTag
+            communeName={commune.nom}
+            isHabilitationValid={isHabilitationValid}
+          />
+        </Pane>
+      )}
       <Pane
-        position="relative"
-        width="100%"
-        height={160}
+        height={100}
         flexShrink={0}
         backgroundImage={`url(${flag})`}
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         backgroundSize="contain"
-        marginTop={6}
-      >
-        {Boolean(pendingSignalementsCount) && (
-          <Pane position="absolute" top={0} left={0}>
-            <Pulsar size={16} />
-          </Pane>
-        )}
-        <Pane position="absolute" top={16} left={16} height={20} elevation={2}>
-          <StatusBadge
-            status={status}
-            sync={sync}
-            isHabilitationValid={isHabilitationValid}
-          />
-        </Pane>
-        {isShownHabilitationStatus && (
-          <Pane
-            position="absolute"
-            top={10}
-            right={10}
-            elevation={2}
-            padding={5}
-            borderRadius="50%"
-            backgroundColor="white"
-          >
-            <HabilitationTag
-              communeName={commune.nom}
-              isHabilitationValid={isHabilitationValid}
-            />
-          </Pane>
-        )}
-      </Pane>
+        marginTop={50}
+        marginX={10}
+      />
       <Pane
         padding={10}
-        marginTop={20}
         flexGrow={1}
         display="flex"
         flexDirection="column"
@@ -214,6 +212,7 @@ function BaseLocaleCard({
             flexGrow={1}
             height="100%"
             borderRight="1px solid #E4E7EB"
+            title="Supprimer la Base Adresse Locale"
           >
             <Icon icon={TrashIcon} />
           </Button>
@@ -240,6 +239,7 @@ function BaseLocaleCard({
           flexGrow={1}
           height="100%"
           borderRight="1px solid #E4E7EB"
+          title="Masquer la Base Adresse Locale"
         >
           <Icon icon={EyeOffIcon} />
         </Button>
@@ -249,6 +249,7 @@ function BaseLocaleCard({
           border="0"
           flexGrow={1}
           height="100%"
+          title="Accéder à la Base Adresse Locale"
         >
           <Icon icon={ArrowRightIcon} color="info" />
         </Button>
