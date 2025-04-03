@@ -1,56 +1,29 @@
-import {
-  DoubleChevronLeftIcon,
-  DoubleChevronRightIcon,
-  IconButton,
-  Tab,
-  Tablist,
-} from "evergreen-ui";
+import { Tab, Tablist } from "evergreen-ui";
 import { useState } from "react";
 import styled from "styled-components";
 import TrainingTab from "./training-tab";
 import NewsTab from "./news-tab";
 
-const TABS = ["Actualités", "Prochaines formations"];
+const TABS = ["Prochaines formations", "Actualités"];
 
-interface HomeDrawerProps {
-  isExpanded: boolean;
-  setIsExpanded: (isExpanded: boolean) => void;
-  drawerWidth: number;
-}
-
-const StyledDrawer = styled.div<{ width: number; $isExpanded: boolean }>`
-  position: absolute;
-  top: 0;
-  right: ${(props) => (props.$isExpanded ? 0 : -props.width)}px;
+const StyledDrawer = styled.div`
   height: 100%;
-  margin-top: 1px;
-  width: ${(props) => props.width}px;
+  width: 410px;
   background: white;
   border-left: 1px solid #e4e7eb;
   transition: right 0.3s ease;
+  overflow: auto;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 `;
 
-function HomeDrawer({
-  drawerWidth,
-  isExpanded,
-  setIsExpanded,
-}: HomeDrawerProps) {
+function HomeDrawer() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <StyledDrawer width={drawerWidth} $isExpanded={isExpanded}>
-      <IconButton
-        position="absolute"
-        top={-2}
-        left={-32}
-        icon={isExpanded ? DoubleChevronRightIcon : DoubleChevronLeftIcon}
-        onClick={() => setIsExpanded(!isExpanded)}
-        appearance="minimal"
-        background="white"
-        borderBottom="1px solid #E4E7EB"
-        borderLeft="1px solid #E4E7EB"
-        borderTop="1px solid #E4E7EB"
-      />
+    <StyledDrawer>
       <Tablist padding={8}>
         {TABS.map((tab, index) => (
           <Tab
@@ -62,8 +35,8 @@ function HomeDrawer({
           </Tab>
         ))}
       </Tablist>
-      {selectedIndex === 0 && <NewsTab />}
-      {selectedIndex === 1 && <TrainingTab />}
+      {selectedIndex === 0 && <TrainingTab />}
+      {selectedIndex === 1 && <NewsTab />}
     </StyledDrawer>
   );
 }

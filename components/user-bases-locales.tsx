@@ -7,12 +7,8 @@ import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import { sortBalByUpdate } from "@/lib/utils/sort-bal";
 import HomeDrawer from "./home-drawer";
 
-const DRAWER_WIDTH = 410;
-
 function UserBasesLocales() {
   const { balAccess } = useContext(LocalStorageContext);
-  const [isHomeDrawerExpanded, setIsHomeDrawerExpanded] = useState(true);
-
   const [isLoading, setIsLoading] = useState(true);
   const [basesLocales, setBasesLocales] = useState([]);
 
@@ -61,14 +57,13 @@ function UserBasesLocales() {
   }
 
   return (
-    <Pane position="relative" display="flex" height="100%" overflow="hidden">
+    <Pane position="relative" display="flex" overflow="hidden">
       <Pane
         display="flex"
         flexDirection="column"
         flex={1}
         justifyContent="flex-start"
-        marginRight={isHomeDrawerExpanded ? DRAWER_WIDTH : 0}
-        transition="margin-right 0.3s ease"
+        overflowY="auto"
       >
         {basesLocales.length > 0 ? (
           <BasesLocalesList basesLocales={basesLocales} />
@@ -86,11 +81,7 @@ function UserBasesLocales() {
           </Link>
         )}
       </Pane>
-      <HomeDrawer
-        drawerWidth={DRAWER_WIDTH}
-        isExpanded={isHomeDrawerExpanded}
-        setIsExpanded={setIsHomeDrawerExpanded}
-      />
+      <HomeDrawer />
     </Pane>
   );
 }

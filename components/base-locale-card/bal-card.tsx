@@ -134,10 +134,13 @@ function BaseLocaleCard({
           </Text>
           <Link
             href={`${ADRESSE_URL}/commune/${commune.code}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            fontSize={12}
             fontStyle="italic"
+            textDecoration="underline"
           >
-            {commune.nom}{" "}
-            {commune.codeDepartement ? `(${commune.codeDepartement})` : ""}
+            Voir la page de {commune.nom}
           </Link>
         </Pane>
         <Pane display="flex" flexDirection="column">

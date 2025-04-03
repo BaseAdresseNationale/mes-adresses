@@ -41,20 +41,21 @@ function Index() {
         display="flex"
         justifyContent="space-between"
         borderBottom
+        flexWrap="wrap"
+        gap={8}
       >
         <Pane
           id="bal-list-controls"
           display="flex"
           flexWrap="wrap"
-          gap={16}
+          gap={8}
           alignItems="center"
+          order={isMobile ? 1 : 0}
         />
 
-        <Pane>
+        <Pane display="flex" gap={8} flexWrap="wrap" order={isMobile ? 0 : 1}>
           <Button
             iconBefore={SwapHorizontalIcon}
-            marginX={8}
-            marginY={4}
             onClick={() => {
               setIsRecoveryDisplayed(true);
             }}
@@ -64,8 +65,6 @@ function Index() {
           <Button
             iconBefore={PlusIcon}
             is={Link}
-            marginX={8}
-            marginY={4}
             href="/new"
             appearance="primary"
           >

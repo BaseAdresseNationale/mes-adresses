@@ -93,42 +93,54 @@ function TrainingTab() {
     </Pane>
   ) : (
     <StyledWrapper>
-      {nextTrainings.map(
-        ({ id, type, date, startHour, endHour, description }) => (
-          <Pane
-            key={id}
-            is="li"
-            display="flex"
-            flexDirection="column"
-            padding={10}
-            gap={8}
-          >
-            <Badge color={trainingTypeMap[type].color} width="fit-content">
-              {trainingTypeMap[type].label}
-            </Badge>
-            <Heading display="flex" alignItems="center" size={400}>
-              <Icon icon={CalendarIcon} marginRight={5} />
-              <span>{getFullDate(new Date(date))}</span>
-              <Pane marginX={5}>|</Pane>
-              <span>
-                {startHour} - {endHour}
-              </span>
-            </Heading>
-            <Text>{description}</Text>
-            <Button
-              is="a"
-              iconAfter={ArrowRightIcon}
-              href={`${process.env.NEXT_PUBLIC_ADRESSE_URL}/formation-en-ligne#open-event-modal-${id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              alignSelf="flex-end"
-              width="fit-content"
-            >
-              S&apos;inscrire
-            </Button>
-          </Pane>
-        )
+      {nextTrainings.length === 0 && (
+        <Pane
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          flex={1}
+          padding={10}
+        >
+          <Text>Pas de formations à venir</Text>
+        </Pane>
       )}
+      {nextTrainings.length > 0 &&
+        nextTrainings.map(
+          ({ id, type, date, startHour, endHour, description }) => (
+            <Pane
+              key={id}
+              is="li"
+              display="flex"
+              flexDirection="column"
+              padding={10}
+              gap={8}
+            >
+              <Badge color={trainingTypeMap[type].color} width="fit-content">
+                {trainingTypeMap[type].label}
+              </Badge>
+              <Heading display="flex" alignItems="center" size={400}>
+                <Icon icon={CalendarIcon} marginRight={5} />
+                <span>{getFullDate(new Date(date))}</span>
+                <Pane marginX={5}>|</Pane>
+                <span>
+                  {startHour} - {endHour}
+                </span>
+              </Heading>
+              <Text>{description}</Text>
+              <Button
+                is="a"
+                iconAfter={ArrowRightIcon}
+                href={`${process.env.NEXT_PUBLIC_ADRESSE_URL}/formation-en-ligne#open-event-modal-${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                alignSelf="flex-end"
+                width="fit-content"
+              >
+                S&apos;inscrire
+              </Button>
+            </Pane>
+          )
+        )}
       <Button
         is="a"
         iconAfter={ArrowRightIcon}
@@ -137,7 +149,7 @@ function TrainingTab() {
         rel="noopener noreferrer"
         alignSelf="center"
         width="fit-content"
-        marginTop={10}
+        margin={10}
       >
         Voir tous nos évènements
       </Button>

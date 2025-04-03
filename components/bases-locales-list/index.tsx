@@ -131,7 +131,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
 
   return (
     basesLocales.length > 0 && (
-      <Pane display="flex" flexDirection="column" height="100%">
+      <Pane display="flex" flexDirection="column" flex={1}>
         <DeleteWarning
           isShown={Boolean(toRemove)}
           content={
@@ -177,7 +177,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
                 }
               >
                 <Button iconAfter={ChevronDownIcon} flexShrink={0}>
-                  Voir les BAL masquées
+                  BAL masquées
                 </Button>
               </Popover>
             )}
@@ -186,7 +186,6 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
         )}
         {isLoading ? (
           <Pane
-            height="100%"
             display="flex"
             flex={1}
             alignItems="center"
