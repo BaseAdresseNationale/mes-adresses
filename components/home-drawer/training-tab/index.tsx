@@ -87,8 +87,6 @@ function TrainingTab() {
     void fetchNextTrainings();
   }, []);
 
-  console.log("nextTrainings", nextTrainings);
-
   return isLoading ? (
     <Pane display="flex" alignItems="center" justifyContent="center" flex={1}>
       <Spinner />

@@ -176,11 +176,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
                   </Pane>
                 }
               >
-                <Button
-                  iconAfter={ChevronDownIcon}
-                  flexShrink={0}
-                  onClick={() => console.log("TODO")}
-                >
+                <Button iconAfter={ChevronDownIcon} flexShrink={0}>
                   Voir les BAL masquées
                 </Button>
               </Popover>
