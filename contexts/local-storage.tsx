@@ -22,6 +22,8 @@ interface LocalStorageContextType {
   setUserSettings: (value: Record<string, any>) => void;
   productTour: Record<string, boolean>;
   setProductTour: (value: Record<string, boolean>) => void;
+  lastNewsSeen: string;
+  setLastNewsSeen: (value: string) => void;
 }
 
 const LocalStorageContext = React.createContext<LocalStorageContextType | null>(
@@ -34,6 +36,7 @@ const RECOVERY_EMAIL = "recovery-email-sent";
 const VISIBILITY_KEY = "hidden-bal";
 const USER_SETTINGS = "user-settings";
 const PRODUCT_TOUR = "product-tour";
+const LAST_NEWS_SEEN = "last-news-seen";
 
 export function LocalStorageContextProvider(props: ChildrenProps) {
   const [balAccess, , getBalToken, addBalAccess, removeBalAccess] =
@@ -46,6 +49,7 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
     useLocalStorage(VISIBILITY_KEY);
   const [userSettings, setUserSettings] = useLocalStorage(USER_SETTINGS);
   const [productTour, setProductTour] = useLocalStorage(PRODUCT_TOUR);
+  const [lastNewsSeen, setLastNewsSeen] = useLocalStorage(LAST_NEWS_SEEN);
 
   const removeBAL = useCallback(async (balId: string) => {
     const token: string = getBalToken(balId);
@@ -83,6 +87,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       setUserSettings,
       productTour,
       setProductTour,
+      lastNewsSeen,
+      setLastNewsSeen,
     }),
     [
       balAccess,
@@ -101,6 +107,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       setUserSettings,
       productTour,
       setProductTour,
+      lastNewsSeen,
+      setLastNewsSeen,
     ]
   );
 

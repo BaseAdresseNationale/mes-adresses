@@ -5,8 +5,6 @@ import {
   Button,
   PlusIcon,
   Spinner,
-  Alert,
-  Text,
   SwapHorizontalIcon,
 } from "evergreen-ui";
 import Link from "next/link";
@@ -38,47 +36,44 @@ function Index() {
 
   return (
     <Main>
-      <Pane padding={16} display="flex" justifyContent="flex-end">
-        <Button
-          iconBefore={SwapHorizontalIcon}
-          marginX={8}
-          marginY={4}
-          onClick={() => {
-            setIsRecoveryDisplayed(true);
-          }}
-        >
-          {isMobile ? "Récupérer" : "Récupérer une Base Adresse Locale"}
-        </Button>
-        <Button
-          iconBefore={PlusIcon}
-          is={Link}
-          marginX={8}
-          marginY={4}
-          href="/new"
-          appearance="primary"
-        >
-          {isMobile ? "Créer" : "Créer une Base Adresse Locale"}
-        </Button>
+      <Pane
+        padding={16}
+        display="flex"
+        justifyContent="space-between"
+        borderBottom
+        flexWrap="wrap"
+        gap={8}
+      >
+        <Pane
+          id="bal-list-controls"
+          display="flex"
+          flexWrap="wrap"
+          gap={8}
+          alignItems="center"
+          order={isMobile ? 1 : 0}
+        />
+
+        <Pane display="flex" gap={8} flexWrap="wrap" order={isMobile ? 0 : 1}>
+          <Button
+            iconBefore={SwapHorizontalIcon}
+            onClick={() => {
+              setIsRecoveryDisplayed(true);
+            }}
+          >
+            {isMobile ? "Récupérer" : "Récupérer une Base Adresse Locale"}
+          </Button>
+          <Button
+            iconBefore={PlusIcon}
+            is={Link}
+            href="/new"
+            appearance="primary"
+          >
+            {isMobile ? "Créer" : "Créer une Base Adresse Locale"}
+          </Button>
+        </Pane>
       </Pane>
 
       <CSRUserBasesLocales />
-
-      <Alert margin={16} hasIcon={false}>
-        <Pane
-          display="flex"
-          justifyContent="center"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <Text is="p" textAlign="center">
-            Vous voulez simplement essayer l’éditeur sans créer de Base Adresse
-            Locale ?
-          </Text>
-          <Button appearance="primary" is={Link} href="/new?demo=1">
-            Cliquer ici
-          </Button>
-        </Pane>
-      </Alert>
     </Main>
   );
 }
