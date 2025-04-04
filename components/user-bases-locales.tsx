@@ -57,7 +57,7 @@ function UserBasesLocales() {
   }
 
   return (
-    <Pane position="relative" display="flex" overflow="hidden">
+    <Pane position="relative" display="flex" overflow="hidden" flex={1}>
       <Pane
         display="flex"
         flexDirection="column"
