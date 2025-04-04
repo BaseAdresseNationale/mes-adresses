@@ -1,5 +1,5 @@
 /* eslint no-restricted-imports: off */
-import { BALWidgetConfig, EventType } from "./type";
+import { BALWidgetConfig, EventType, EventTypeTypeEnum } from "./type";
 
 const NEXT_PUBLIC_BAL_ADMIN_URL =
   process.env.NEXT_PUBLIC_BAL_ADMIN_URL ||
@@ -27,5 +27,30 @@ export class ApiBalAdminService {
     }
 
     return response.json();
+  }
+
+  public static async fetchNextTrainings(): Promise<EventType[]> {
+    const allEvents = await this.getEvents();
+
+    const upcomingTrainings = allEvents
+      .filter(({ date, endHour, type }) => {
+        const [hour, minute] = endHour.split(":");
+        const eventDate = new Date(date);
+        eventDate.setHours(parseInt(hour), parseInt(minute));
+
+        return (
+          eventDate.getTime() >= Date.now() &&
+          (type === EventTypeTypeEnum.FORMATION ||
+            type === EventTypeTypeEnum.FORMATION_LVL2)
+        );
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+
+        return dateA.getTime() - dateB.getTime();
+      }) as EventType[];
+
+    return upcomingTrainings;
   }
 }

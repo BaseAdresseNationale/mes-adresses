@@ -7,11 +7,10 @@ import {
   useRef,
 } from "react";
 import {
-  Badge,
   Button,
   ChevronDownIcon,
   EyeOpenIcon,
-  Icon,
+  Text,
   Pagination,
   Pane,
   Paragraph,
@@ -62,7 +61,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
   const balsToDisplay = useMemo(
     () =>
       filteredBALs
-        .filter((bal) => !hiddenBal[bal.id])
+        .filter((bal) => !hiddenBal?.[bal.id])
         .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
         .map(({ id }) => id),
     [currentPage, filteredBALs, hiddenBal]
@@ -70,10 +69,15 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
 
   const hiddenBalIds = useMemo(
     () =>
-      Object.keys(hiddenBal).filter(
+      Object.keys(hiddenBal || {}).filter(
         (id) => hiddenBal[id] && baseLocalesWithInfosRef.current[id]
       ),
     [hiddenBal]
+  );
+
+  const totalPages = useMemo(
+    () => Math.ceil(filteredBALs.length / PAGE_SIZE),
+    [filteredBALs]
   );
 
   useEffect(() => {
@@ -184,6 +188,7 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
           </>,
           document.getElementById("bal-list-controls")
         )}
+
         {isLoading ? (
           <Pane
             display="flex"
@@ -194,16 +199,18 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
             <Spinner />
           </Pane>
         ) : (
-          <Pane
-            padding={16}
-            display="grid"
-            gridTemplateColumns="repeat(auto-fill, minmax(290px, 1fr))"
-            gap={8}
-            justifyItems="center"
-            alignItems="center"
-          >
-            {balsToDisplay.length > 0
-              ? balsToDisplay.map((id) => {
+          <Pane display="flex" flex={1}>
+            {balsToDisplay.length > 0 ? (
+              <Pane
+                padding={16}
+                display="grid"
+                gridTemplateColumns="repeat(auto-fill, minmax(290px, 1fr))"
+                gap={8}
+                justifyItems="center"
+                alignItems="center"
+                width="100%"
+              >
+                {balsToDisplay.map((id) => {
                   const bal = baseLocalesWithInfosRef.current[id];
 
                   return (
@@ -216,21 +223,26 @@ function BasesLocalesList({ basesLocales }: BasesLocalesListProps) {
                       onHide={(e) => handleHide(e, bal.id)}
                     />
                   );
-                })
-              : "Aucun résultat"}
+                })}
+              </Pane>
+            ) : (
+              <Text padding={16}>Aucun résultat</Text>
+            )}
           </Pane>
         )}
 
-        <Pane display="flex" justifyContent="center" padding={16}>
-          <Pagination
-            className="home-page-pagination"
-            page={currentPage}
-            totalPages={Math.ceil(filteredBALs.length / PAGE_SIZE)}
-            onPageChange={(newPage) => setCurrentPage(newPage)}
-            onPreviousPage={() => setCurrentPage((cur) => cur - 1)}
-            onNextPage={() => setCurrentPage((cur) => cur + 1)}
-          />
-        </Pane>
+        {totalPages > 1 && (
+          <Pane display="flex" justifyContent="center" padding={16}>
+            <Pagination
+              className="home-page-pagination"
+              page={currentPage}
+              totalPages={totalPages}
+              onPageChange={(newPage) => setCurrentPage(newPage)}
+              onPreviousPage={() => setCurrentPage((cur) => cur - 1)}
+              onNextPage={() => setCurrentPage((cur) => cur + 1)}
+            />
+          </Pane>
+        )}
       </Pane>
     )
   );

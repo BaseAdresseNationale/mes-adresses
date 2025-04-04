@@ -1,4 +1,3 @@
-import { ApiBalAdminService } from "@/lib/bal-admin";
 import { EventType, EventTypeTypeEnum } from "@/lib/bal-admin/type";
 import { getFullDate } from "@/lib/utils/date";
 import {
@@ -9,10 +8,8 @@ import {
   Heading,
   Icon,
   Pane,
-  Spinner,
   Text,
 } from "evergreen-ui";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const StyledWrapper = styled.ul`
@@ -34,29 +31,6 @@ const StyledWrapper = styled.ul`
   }
 `;
 
-function getUpcomingTrainings(allEvents: EventType[]) {
-  const upcomingTrainings = allEvents
-    .filter(({ date, endHour, type }) => {
-      const [hour, minute] = endHour.split(":");
-      const eventDate = new Date(date);
-      eventDate.setHours(parseInt(hour), parseInt(minute));
-
-      return (
-        eventDate.getTime() >= Date.now() &&
-        (type === EventTypeTypeEnum.FORMATION ||
-          type === EventTypeTypeEnum.FORMATION_LVL2)
-      );
-    })
-    .sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-
-      return dateA.getTime() - dateB.getTime();
-    }) as EventType[];
-
-  return upcomingTrainings;
-}
-
 const trainingTypeMap = {
   [EventTypeTypeEnum.FORMATION]: {
     color: "green",
@@ -68,30 +42,12 @@ const trainingTypeMap = {
   },
 };
 
-function TrainingTab() {
-  const [nextTrainings, setNextTrainings] = useState<EventType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+interface TrainingTabProps {
+  nextTrainings: EventType[];
+}
 
-  useEffect(() => {
-    const fetchNextTrainings = async () => {
-      try {
-        const events = await ApiBalAdminService.getEvents();
-        setNextTrainings(getUpcomingTrainings(events));
-      } catch (error) {
-        console.error("Error fetching next trainings:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void fetchNextTrainings();
-  }, []);
-
-  return isLoading ? (
-    <Pane display="flex" alignItems="center" justifyContent="center" flex={1}>
-      <Spinner />
-    </Pane>
-  ) : (
+function TrainingTab({ nextTrainings }: TrainingTabProps) {
+  return (
     <StyledWrapper>
       {nextTrainings.length === 0 && (
         <Pane
