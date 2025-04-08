@@ -126,7 +126,7 @@ function UploadForm({
   onEmailChange,
   handleCommune,
 }: UploadFormProps) {
-  const { isMobile } = useContext(LayoutContext);
+  const { isMobile, pushToast } = useContext(LayoutContext);
   const [bal, setBal] = useState<BaseLocale | null>(null);
   const [file, setFile] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -201,15 +201,24 @@ function UploadForm({
   const createNewBal = useCallback(
     async (codeCommune) => {
       if (!bal) {
-        const baseLocale: BaseLocale =
-          await BasesLocalesService.createBaseLocale({
-            nom,
-            commune: codeCommune,
-            emails: [email],
-          });
+        try {
+          const baseLocale: BaseLocale =
+            await BasesLocalesService.createBaseLocale({
+              nom,
+              commune: codeCommune,
+              emails: [email],
+            });
 
-        addBalAccess(baseLocale.id, baseLocale.token);
-        setBal(baseLocale);
+          addBalAccess(baseLocale.id, baseLocale.token);
+          setBal(baseLocale);
+        } catch (error) {
+          pushToast({
+            title: "Une erreur est survenue",
+            intent: "danger",
+            message: error.body?.message,
+          });
+          setIsLoading(false);
+        }
       }
     },
     [bal, email, nom, addBalAccess]

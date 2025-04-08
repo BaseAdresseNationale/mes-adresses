@@ -128,23 +128,32 @@ function CreateForm({
 
   const createNewBal = useCallback(async () => {
     if (commune) {
-      const bal = await BasesLocalesService.createBaseLocale({
-        nom,
-        emails: [email],
-        commune: commune.code,
-      });
+      try {
+        const bal = await BasesLocalesService.createBaseLocale({
+          nom,
+          emails: [email],
+          commune: commune.code,
+        });
 
-      addBalAccess(bal.id, bal.token);
+        addBalAccess(bal.id, bal.token);
 
-      if (populate) {
-        Object.assign(OpenAPI, { TOKEN: bal.token });
-        BasesLocalesService.populateBaseLocale(bal.id);
-        waitingPopulate(bal.id);
-      } else {
-        Router.push(`/bal/${bal.id}`);
+        if (populate) {
+          Object.assign(OpenAPI, { TOKEN: bal.token });
+          BasesLocalesService.populateBaseLocale(bal.id);
+          waitingPopulate(bal.id);
+        } else {
+          Router.push(`/bal/${bal.id}`);
+        }
+      } catch (error) {
+        pushToast({
+          title: "Une erreur est survenue",
+          intent: "danger",
+          message: error.body?.message,
+        });
+        setIsLoading(false);
       }
     }
-  }, [commune, nom, email, addBalAccess, populate, waitingPopulate]);
+  }, [commune, nom, email, addBalAccess, populate, waitingPopulate, pushToast]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
