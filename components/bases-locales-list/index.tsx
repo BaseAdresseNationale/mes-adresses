@@ -21,7 +21,7 @@ import {
 import LocalStorageContext from "@/contexts/local-storage";
 import useFuse from "@/hooks/fuse";
 import DeleteWarning from "@/components/delete-warning";
-import BaseLocaleCard from "@/components/base-locale-card/bal-card";
+import BaseLocaleCard from "@/components/base-locale-card";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { fetchBALInfos } from "@/lib/utils/bal";
 import ReactDOM from "react-dom";
