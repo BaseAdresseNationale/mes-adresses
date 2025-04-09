@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext, useCallback } from "react";
-import Link from "next/link";
-import { Pane, Spinner, Button, PlusIcon } from "evergreen-ui";
+import { Pane, Spinner } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import BasesLocalesList from "@/components/bases-locales-list";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
@@ -65,21 +64,7 @@ function UserBasesLocales() {
         justifyContent="flex-start"
         overflowY="auto"
       >
-        {basesLocales.length > 0 ? (
-          <BasesLocalesList basesLocales={basesLocales} />
-        ) : (
-          <Link legacyBehavior href="/new" passHref>
-            <Button
-              margin="auto"
-              height={40}
-              appearance="primary"
-              iconBefore={PlusIcon}
-              is="a"
-            >
-              Créer une Base Adresse Locale
-            </Button>
-          </Link>
-        )}
+        <BasesLocalesList basesLocales={basesLocales} />
       </Pane>
       <HomeDrawer />
     </Pane>

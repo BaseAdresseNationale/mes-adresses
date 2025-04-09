@@ -13,10 +13,8 @@ import {
   Pulsar,
   Button,
   Icon,
-  Tooltip,
 } from "evergreen-ui";
 import NextLink from "next/link";
-import { format } from "date-fns";
 import StatusBadge from "@/components/status-badge";
 import { BasesLocalesWithInfos } from "../bases-locales-list";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
@@ -29,8 +27,7 @@ const ADRESSE_URL =
 interface BaseLocaleCardProps {
   baseLocaleWithInfos: BasesLocalesWithInfos;
   isAdmin?: boolean;
-  onRemove?: (e: any) => void;
-  onHide?: (e: any) => void;
+  onRemove: () => void;
   isShownHabilitationStatus?: boolean;
 }
 
@@ -39,7 +36,6 @@ function BaseLocaleCard({
   isAdmin,
   isShownHabilitationStatus,
   onRemove,
-  onHide,
 }: BaseLocaleCardProps) {
   const {
     id,
@@ -47,7 +43,6 @@ function BaseLocaleCard({
     sync,
     nom,
     updatedAt,
-    createdAt,
     flag,
     isHabilitationValid,
     commune,
@@ -57,9 +52,8 @@ function BaseLocaleCard({
   } = baseLocaleWithInfos;
 
   const majDate = formatDistanceToNow(new Date(updatedAt), { locale: fr });
-  const createDate = format(new Date(createdAt), "PPP", { locale: fr });
 
-  const isDeletable =
+  const canHardDelete =
     status === ExtendedBaseLocaleDTO.status.DRAFT ||
     status === ExtendedBaseLocaleDTO.status.DEMO;
 
@@ -69,7 +63,7 @@ function BaseLocaleCard({
       display="flex"
       flexDirection="column"
       width={290}
-      height={430}
+      height={400}
       border
       elevation={2}
       margin={12}
@@ -86,7 +80,7 @@ function BaseLocaleCard({
           isHabilitationValid={isHabilitationValid}
         />
       </Pane>
-      {isShownHabilitationStatus && (
+      {isHabilitationValid && isShownHabilitationStatus && (
         <Pane
           position="absolute"
           top={10}
@@ -170,12 +164,12 @@ function BaseLocaleCard({
         justifyContent="space-between"
         borderTop="1px solid #E4E7EB"
       >
-        {isAdmin && isDeletable && (
+        {isAdmin && canHardDelete && (
           <Button
             intent="danger"
             onClick={onRemove}
             border="0"
-            flexGrow={1}
+            flexShrink={0}
             height="100%"
             borderRight="1px solid #E4E7EB"
             title="Supprimer la Base Adresse Locale"
@@ -183,32 +177,18 @@ function BaseLocaleCard({
             <Icon icon={TrashIcon} />
           </Button>
         )}
-        {isAdmin && !isDeletable && (
-          <Tooltip content="Vous ne pouvez pas supprimer une Base Adresse Locale qui est publiée. Si vous souhaitez la dé-publier, veuillez contacter le support adresse@data.gouv.fr">
-            <Pane
-              flexGrow={1}
-              borderRight="1px solid #E4E7EB"
-              height="100%"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Button disabled intent="danger" border="0">
-                <Icon icon={TrashIcon} />
-              </Button>
-            </Pane>
-          </Tooltip>
+        {isAdmin && !canHardDelete && (
+          <Button
+            onClick={onRemove}
+            border="0"
+            flexShrink={0}
+            height="100%"
+            borderRight="1px solid #E4E7EB"
+            title="Masquer la Base Adresse Locale"
+          >
+            <Icon icon={EyeOffIcon} />
+          </Button>
         )}
-        <Button
-          onClick={onHide}
-          border="0"
-          flexGrow={1}
-          height="100%"
-          borderRight="1px solid #E4E7EB"
-          title="Masquer la Base Adresse Locale"
-        >
-          <Icon icon={EyeOffIcon} />
-        </Button>
         <Button
           is={NextLink}
           href={`/bal/${id}`}
