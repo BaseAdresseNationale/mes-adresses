@@ -215,6 +215,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
           src={process.env.NEXT_PUBLIC_BAL_WIDGET_URL}
           $isOpen={isBalWidgetOpen}
           $isVisible={isWidgetVisible}
+          title="BAL Widget"
         />
       )}
     </BALWidgetContext.Provider>

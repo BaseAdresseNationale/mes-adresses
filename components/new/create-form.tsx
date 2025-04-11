@@ -25,18 +25,9 @@ import { useCheckboxInput } from "@/hooks/input";
 import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
 import CommuneSearchField from "@/components/commune-search/commune-search-field";
-import AlertOtherBal from "@/components/new/alert-other-bal";
-import AlertPublishedBal from "@/components/new/alert-published-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
-import {
-  BasesLocalesService,
-  ExtendedBaseLocaleDTO,
-  OpenAPI,
-  PageBaseLocaleDTO,
-} from "@/lib/openapi-api-bal";
-import { ApiDepotService } from "@/lib/api-depot";
+import { BasesLocalesService, OpenAPI } from "@/lib/openapi-api-bal";
 import { PublicClient, Revision } from "@/lib/api-depot/types";
-import LayoutContext from "@/contexts/layout";
 
 export enum ClientRevisionEnum {
   API_DEPOT = "api-depot",
@@ -83,8 +74,6 @@ interface CreateFormProps {
 function CreateForm({
   namePlaceholder,
   commune,
-  outdatedApiDepotClients,
-  outdatedHarvestSources,
   handleCommune,
   nom,
   onNomChange,
@@ -92,15 +81,8 @@ function CreateForm({
   onEmailChange,
 }: CreateFormProps) {
   const { addBalAccess } = useContext(LocalStorageContext);
-  const { pushToast } = useContext(LayoutContext);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [populate, onPopulateChange] = useCheckboxInput(true);
-  const [isShownAlertOtherBal, setIsShownAlertOtherBal] =
-    useState<boolean>(false);
-  const [isShownAlertPublishedBal, setIsShownAlertPublishedBal] =
-    useState<boolean>(false);
-  const [userBALs, setUserBALs] = useState<ExtendedBaseLocaleDTO[]>([]);
-  const [publishedRevision, setPublishedRevision] = useState<Revision>(null);
   const [ref, setRef] = useState<HTMLInputElement>();
   const interval = useRef<ReturnType<typeof setInterval> | undefined>();
 
@@ -149,88 +131,11 @@ function CreateForm({
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // CHECK OTHER BAL PUBLISH
-    try {
-      const revision: Revision = await ApiDepotService.getCurrentRevision(
-        commune.code
-      );
-      if (
-        revision &&
-        !isExceptionClientId(
-          revision,
-          outdatedApiDepotClients,
-          outdatedHarvestSources
-        )
-      ) {
-        setIsLoading(false);
-        setIsShownAlertPublishedBal(true);
-        setPublishedRevision(revision);
-        return;
-      }
-    } catch {}
-
-    // CHECK OTHER BAL IN MES_ADRESSES
-    try {
-      await checkOtherBALs();
-    } catch (error) {
-      pushToast({
-        title: "Une erreur est survenue",
-        intent: "danger",
-        message: error.body?.message,
-      });
-      setIsLoading(false);
-    }
-  };
-
-  const checkOtherBALs = async () => {
-    const response: PageBaseLocaleDTO =
-      await BasesLocalesService.searchBaseLocale(
-        "10",
-        "0",
-        "false",
-        commune.code,
-        email
-      );
-
-    if (response.results.length > 0) {
-      setUserBALs(response.results);
-      setIsShownAlertOtherBal(true);
-      setIsLoading(false);
-    } else {
-      createNewBal();
-    }
-  };
-
-  const onCancel = () => {
-    setIsShownAlertPublishedBal(false);
-    setIsShownAlertOtherBal(false);
-    setIsLoading(false);
   };
 
   return (
     <Pane overflowY="scroll" marginY={32}>
       <FormContainer onSubmit={onSubmit}>
-        {isShownAlertOtherBal && (
-          <AlertOtherBal
-            isShown={isShownAlertOtherBal}
-            userEmail={email}
-            basesLocales={userBALs}
-            updateBAL={() => checkOtherBALs()}
-            onConfirm={createNewBal}
-            onClose={() => onCancel()}
-          />
-        )}
-
-        {isShownAlertPublishedBal && (
-          <AlertPublishedBal
-            isShown={isShownAlertPublishedBal}
-            revision={publishedRevision}
-            onConfirm={createNewBal}
-            onClose={() => onCancel()}
-          />
-        )}
-
         <FormInput>
           <CommuneSearchField
             required

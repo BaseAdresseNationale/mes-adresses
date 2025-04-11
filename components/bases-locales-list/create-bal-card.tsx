@@ -75,13 +75,13 @@ export const StyledCard = styled(Card)`
   }
 
   .overlay {
-    width: 118px;
+    width: 120px;
     position: absolute;
-    height: 118px;
+    height: 120px;
     border-radius: 50%;
     background: var(--bg-color);
-    top: 106px;
-    left: 82px;
+    top: 120px;
+    left: 84px;
     z-index: 0;
     transition: transform 0.3s ease-out;
   }
@@ -97,7 +97,7 @@ function CreateBaseLocaleCard() {
       margin={12}
       is={NextLink}
       href="/new"
-      title="Créer une nouvelle Base Adresse Locale"
+      title="Ajouter une Base Adresse Locale"
     >
       <div className="overlay" />
       <div className="circle">
@@ -105,7 +105,7 @@ function CreateBaseLocaleCard() {
       </div>
       <Pane marginTop={20} textAlign="center" zIndex={1}>
         <Text size={20} fontWeight={500} className="card-title">
-          Créer une nouvelle Base Adresse Locale
+          Ajouter une Base Adresse Locale
         </Text>
       </Pane>
     </StyledCard>

@@ -15,7 +15,7 @@ interface CommuneSearchFieldProps {
   validationMessage?: string;
   inputHeight?: string | number;
   inputWidth?: string | number;
-  disabled: boolean;
+  disabled?: boolean;
   required: boolean;
   isInvalid?: boolean;
   appearance: string;
