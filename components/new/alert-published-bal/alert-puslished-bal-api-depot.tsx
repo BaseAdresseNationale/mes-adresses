@@ -1,18 +1,18 @@
-import { useMemo } from "react";
 import { Pane, Paragraph, Strong } from "evergreen-ui";
 
 import { PublicClient, Revision } from "@/lib/api-depot/types";
 
 interface AlertAlertPublishedBALApiDepotProps {
   revision: Revision;
+  outdatedApiDepotClients: string[];
 }
 
 function AlertPublishedBALApiDepot({
   revision,
+  outdatedApiDepotClients,
 }: AlertAlertPublishedBALApiDepotProps) {
-  const client: PublicClient = useMemo(() => {
-    return revision.client;
-  }, [revision]);
+  const client: PublicClient = revision.client;
+  const isOutdatedClient = outdatedApiDepotClients.includes(client.id);
 
   return (
     <Pane>

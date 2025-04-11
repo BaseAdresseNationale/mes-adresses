@@ -37,19 +37,13 @@ import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
 import Uploader from "@/components/uploader";
 import SelectCommune from "@/components/select-commune";
-import AlertOtherBAL from "@/components/new/alert-other-bal";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import {
   BaseLocale,
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
   OpenAPI,
-  PageBaseLocaleDTO,
 } from "@/lib/openapi-api-bal";
-import { isExceptionClientId } from "./create-form";
-import { ApiDepotService } from "@/lib/api-depot";
-import { Revision } from "@/lib/api-depot/types";
-import AlertPublishedBAL from "./alert-published-bal";
 import LayoutContext from "@/contexts/layout";
 
 const ADRESSE_URL =
@@ -119,8 +113,6 @@ interface UploadFormProps {
 function UploadForm({
   namePlaceholder = "Nom",
   nom,
-  outdatedApiDepotClients,
-  outdatedHarvestSources,
   onNomChange,
   email,
   onEmailChange,
@@ -132,7 +124,6 @@ function UploadForm({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [focusRef] = useFocus(true);
-  const [userBALs, setUserBALs] = useState<ExtendedBaseLocaleDTO[]>([]);
   const [communes, setCommunes] = useState<CommuneRow[] | null>(null);
   const [selectedCodeCommune, setSelectedCodeCommune] = useState<string | null>(
     null
@@ -140,12 +131,6 @@ function UploadForm({
   const [validationReport, setValidationReport] =
     useState<ValidateProfile | null>(null);
   const [invalidRowsCount, setInvalidRowsCount] = useState<number | null>(null);
-
-  const [isShownAlertOtherBal, setIsShownAlertOtherBal] =
-    useState<boolean>(false);
-  const [isShownAlertPublishedBal, setIsShownAlertPublishedBal] =
-    useState<boolean>(false);
-  const [publishedRevision, setPublishedRevision] = useState<Revision>(null);
 
   const { addBalAccess } = useContext(LocalStorageContext);
 
@@ -217,8 +202,6 @@ function UploadForm({
 
   const resetForm = () => {
     setFile(null);
-    setIsShownAlertPublishedBal(false);
-    setIsShownAlertOtherBal(false);
     setIsLoading(false);
     setCommunes(null);
     handleCommune(null);
@@ -240,51 +223,7 @@ function UploadForm({
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
-    // CHECK OTHER BAL PUBLISH
-    try {
-      const revision: Revision =
-        await ApiDepotService.getCurrentRevision(selectedCodeCommune);
-      if (
-        revision &&
-        !isExceptionClientId(
-          revision,
-          outdatedApiDepotClients,
-          outdatedHarvestSources
-        )
-      ) {
-        setIsShownAlertPublishedBal(true);
-        setPublishedRevision(revision);
-        return;
-      }
-    } catch {}
-
-    // CHECK OTHER BAL IN MES_ADRESSES
-    try {
-      await checkOtherBALs();
-    } catch (error) {
-      setError(error.message);
-      setIsLoading(false);
-    }
   };
-
-  const checkOtherBALs = useCallback(async () => {
-    const response: PageBaseLocaleDTO =
-      await BasesLocalesService.searchBaseLocale(
-        "10",
-        "0",
-        "false",
-        selectedCodeCommune,
-        email
-      );
-
-    if (response.results.length > 0) {
-      setUserBALs(response.results);
-      setIsShownAlertOtherBal(true);
-    } else {
-      createNewBal(selectedCodeCommune);
-    }
-  }, [createNewBal, email, selectedCodeCommune]);
 
   useEffect(() => {
     if (selectedCodeCommune && validationReport) {
@@ -339,26 +278,6 @@ function UploadForm({
     <>
       <Pane marginY={32} flex={1} overflowY="scroll">
         <FormContainer onSubmit={onSubmit}>
-          {isShownAlertOtherBal && (
-            <AlertOtherBAL
-              isShown={isShownAlertOtherBal}
-              userEmail={email}
-              basesLocales={userBALs}
-              updateBAL={() => checkOtherBALs()}
-              onConfirm={() => createNewBal(selectedCodeCommune)}
-              onClose={() => onCancel()}
-            />
-          )}
-
-          {isShownAlertPublishedBal && (
-            <AlertPublishedBAL
-              isShown={isShownAlertPublishedBal}
-              revision={publishedRevision}
-              onConfirm={() => createNewBal(selectedCodeCommune)}
-              onClose={() => onCancel()}
-            />
-          )}
-
           <Pane display="flex" flexDirection={isMobile ? "column" : "row"}>
             <Pane flex={1} maxWidth={600}>
               <FormInput>

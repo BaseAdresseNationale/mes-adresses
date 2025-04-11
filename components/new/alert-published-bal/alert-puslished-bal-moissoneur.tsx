@@ -6,12 +6,17 @@ import { Revision } from "@/lib/api-depot/types";
 
 interface AlertPublishedBALMoissoneurProps {
   revision: Revision;
+  outdatedHarvestSources: string[];
 }
 
 function AlertPublishedBALMoissoneur({
   revision,
+  outdatedHarvestSources,
 }: AlertPublishedBALMoissoneurProps) {
   const [organization, setOrganization] = useState<Organization | null>(null);
+  const isOutdatedSource = outdatedHarvestSources.includes(
+    revision.context.extras.sourceId
+  );
 
   useEffect(() => {
     const loadOrganization = async () => {
