@@ -4,9 +4,9 @@ import { getBANCommune } from "@/lib/api-ban";
 import BalDataContext from "@/contexts/bal-data";
 import {
   BasesLocalesService,
+  CommuneDTO,
   HabilitationService,
 } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import { BaseLocale } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
@@ -18,7 +18,7 @@ interface UsePublishProcess {
 }
 
 export default function usePublishProcess(
-  commune: CommuneType
+  commune: CommuneDTO
 ): UsePublishProcess {
   const [massDeletionConfirm, setMassDeletionConfirm] = useState<
     null | (() => void)

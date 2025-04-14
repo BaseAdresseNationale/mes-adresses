@@ -20,7 +20,7 @@ import NumeroEditor from "@/components/bal/numero-editor";
 import ToponymeNumeros from "@/components/toponyme/toponyme-numeros";
 import AddNumeros from "@/components/toponyme/add-numeros";
 import ToponymeHeading from "@/components/toponyme/toponyme-heading";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
@@ -35,7 +35,7 @@ import LayoutContext from "@/contexts/layout";
 
 interface ToponymePageProps {
   baseLocale: BaseLocale;
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 const fuseOptions = {

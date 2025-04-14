@@ -16,7 +16,7 @@ import {
   getExistingLocation,
   getSignalementLabel,
 } from "@/lib/utils/signalement";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { ObjectId } from "bson";
 import MapContext, { defaultStyle } from "@/contexts/map";
 import BalDataContext from "@/contexts/bal-data";
@@ -29,7 +29,7 @@ interface SignalementPageProps extends BaseEditorProps {
   signalement: Signalement;
   existingLocation: Voie | Toponyme | Numero | null;
   requestedToponyme?: Toponyme;
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 function SignalementPage({

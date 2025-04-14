@@ -7,11 +7,11 @@ import BalDataContext from "@/contexts/bal-data";
 import ToponymeEditor from "@/components/bal/toponyme-editor";
 import LanguagePreview from "../bal/language-preview";
 import { Toponyme } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 
 interface ToponymeHeadingProps {
   toponyme: Toponyme;
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 function ToponymeHeading({ toponyme, commune }: ToponymeHeadingProps) {

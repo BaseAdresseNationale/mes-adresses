@@ -25,18 +25,18 @@ import InfiniteScrollList from "@/components/infinite-scroll-list";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
   BasesLocalesService,
+  CommuneCogDTO,
+  CommuneDTO,
   Numero,
   NumerosService,
 } from "@/lib/openapi-api-bal";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
-import { CommuneType } from "@/types/commune";
 import NumeroHeading from "./numero-heading";
-import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
 
 interface NumerosListProps {
-  commune: CommuneType;
+  commune: CommuneDTO;
   token?: string;
   voieId: string;
   numeros: Array<Numero>;
@@ -130,10 +130,9 @@ function NumerosList({
 
   const getCommuneDeleguee = useCallback(
     (codeCommuneDeleguee) => {
-      const communeDeleguee: CommuneDelegueeApiGeoType =
-        commune.communesDeleguees?.find(
-          ({ code }) => code === codeCommuneDeleguee
-        );
+      const communeDeleguee: CommuneCogDTO = commune.communesDeleguees?.find(
+        ({ code }) => code === codeCommuneDeleguee
+      );
       return (
         communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
       );

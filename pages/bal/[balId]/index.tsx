@@ -8,7 +8,7 @@ import BalDataContext from "@/contexts/bal-data";
 import useHelp from "@/hooks/help";
 
 import CommuneTab from "@/components/bal/commune-tab";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import TabsSideBar, { TabsEnum } from "@/components/sidebar/tabs";
@@ -40,7 +40,7 @@ import LocalStorageContext from "@/contexts/local-storage";
 
 interface BaseLocalePageProps {
   selectedTab: TabsEnum;
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 function BaseLocalePage({ commune }: BaseLocalePageProps) {

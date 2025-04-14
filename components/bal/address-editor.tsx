@@ -5,10 +5,10 @@ import BalDataContext from "@/contexts/bal-data";
 
 import NumeroEditor from "@/components/bal/numero-editor";
 import ToponymeEditor from "@/components/bal/toponyme-editor";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 
 interface AddressEditorProps {
-  commune: CommuneType;
+  commune: CommuneDTO;
   closeForm: () => void;
 }
 

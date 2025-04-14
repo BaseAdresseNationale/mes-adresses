@@ -2,14 +2,14 @@ import { useMemo, useState } from "react";
 import { Pane, SelectMenu, Button, Position, LayersIcon } from "evergreen-ui";
 
 import CadastreControl from "@/components/map/controls/cadastre-control";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 
 interface StyleControlProps {
   style: string;
   handleStyle: (style: string) => void;
   isCadastreDisplayed: boolean;
   handleCadastre: (fn: (show: boolean) => boolean) => void;
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 function StyleControl({

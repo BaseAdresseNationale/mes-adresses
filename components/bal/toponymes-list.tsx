@@ -20,6 +20,7 @@ import ReadOnlyInfos from "./read-only-infos";
 
 import DeleteWarning from "@/components/delete-warning";
 import {
+  CommuneCogDTO,
   ExtentedToponymeDTO,
   Numero,
   ToponymesService,
@@ -31,10 +32,11 @@ import CommentsContent from "../comments-content";
 import TableRowActions from "../table-row/table-row-actions";
 import PaginationList from "../pagination-list";
 import { useSearchPagination } from "@/hooks/search-pagination";
-import { CommuneType } from "@/types/commune";
+import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 
 interface ToponymesListProps {
-  commune: CommuneType;
+  commune: CommuneDTO;
   toponymes: ExtentedToponymeDTO[];
   onRemove: () => Promise<void>;
   onEnableEditing: (id: string) => void;
@@ -74,6 +76,18 @@ function ToponymesList({
     setToRemove(null);
     setIsDisabled(false);
   };
+
+  const getCommuneDeleguee = useCallback(
+    (codeCommuneDeleguee) => {
+      const communeDeleguee: CommuneCogDTO = commune.communesDeleguees?.find(
+        ({ code }) => code === codeCommuneDeleguee
+      );
+      return (
+        communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
+      );
+    },
+    [commune]
+  );
 
   const onSelect = (id: string) => {
     void router.push(`/bal/${balId}/toponymes/${id}`);
@@ -174,6 +188,7 @@ function ToponymesList({
               </Table.Cell>
 
               <TableRowNotifications
+                communeDeleguee={getCommuneDeleguee(toponyme.communeDeleguee)}
                 warning={
                   toponyme.positions.length === 0
                     ? "Ce toponyme n’a pas de position"

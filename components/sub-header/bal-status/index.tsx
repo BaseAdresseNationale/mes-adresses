@@ -5,7 +5,7 @@ import usePublishProcess from "@/hooks/publish-process";
 import StatusBadge from "@/components/status-badge";
 import BANSync from "@/components/sub-header/bal-status/ban-sync";
 import RefreshSyncBadge from "@/components/sub-header/bal-status/refresh-sync-badge";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import {
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
@@ -14,7 +14,7 @@ import {
 
 interface BALStatusProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
+  commune: CommuneDTO;
   token: string;
   isHabilitationValid: boolean;
   isRefrehSyncStat: boolean;

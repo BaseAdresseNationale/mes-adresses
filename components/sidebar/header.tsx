@@ -9,14 +9,14 @@ import {
 } from "evergreen-ui";
 
 import { BaseLocale, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import LanguagePreview from "../bal/language-preview";
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 
 interface HeaderSideBarProps {
   baseLocale: BaseLocale;
-  commune: CommuneType;
+  commune: CommuneDTO;
   voies: ExtendedVoieDTO[];
   openForm: () => void;
 }

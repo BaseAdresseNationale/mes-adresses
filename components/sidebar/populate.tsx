@@ -2,11 +2,11 @@ import React, { useContext, useCallback } from "react";
 import { Button, Pane, Paragraph } from "evergreen-ui";
 
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import BalDataContext from "@/contexts/bal-data";
 
 interface PopulateSideBarProps {
-  commune: CommuneType;
+  commune: CommuneDTO;
   baseLocale: BaseLocale;
 }
 

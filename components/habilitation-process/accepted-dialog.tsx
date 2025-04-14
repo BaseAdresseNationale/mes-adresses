@@ -14,12 +14,12 @@ import {
 
 import TextWrapper from "@/components/text-wrapper";
 import AuthenticatedUser from "@/components/habilitation-process/authenticated-user";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { BasesLocalesService } from "@/lib/openapi-api-bal";
 
 interface AcceptedDialogProps {
   baseLocaleId: string;
-  commune: CommuneType;
+  commune: CommuneDTO;
   strategy: {
     mandat?: {
       nomNaissance: string;

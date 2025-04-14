@@ -6,10 +6,10 @@ import usePublishProcess from "@/hooks/publish-process";
 
 import BalDataContext from "@/contexts/bal-data";
 import HabilitationTag from "../habilitation-tag";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 
 interface HabilitationInfosProps {
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 function HabilitationInfos({ commune }: HabilitationInfosProps) {

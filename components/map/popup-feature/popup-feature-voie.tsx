@@ -1,7 +1,7 @@
 import { useMemo, useContext } from "react";
 import { Pane, Badge, Text, Strong } from "evergreen-ui";
 import BalDataContext from "@/contexts/bal-data";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 
 interface PopupFeatureNumeroProps {
   feature: {
@@ -13,7 +13,7 @@ interface PopupFeatureNumeroProps {
       nom: string;
     };
   };
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 function PopupFeatureVoie({ feature, commune }: PopupFeatureNumeroProps) {

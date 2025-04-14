@@ -17,11 +17,10 @@ import DrawerContent from "@/components/drawer-content";
 import AddressEditor from "@/components/bal/address-editor";
 import DemoWarning from "@/components/demo-warning";
 import Overlay from "@/components/overlay";
-import { ApiGeoService } from "@/lib/geo-api";
-import { CommuneType } from "@/types/commune";
 import {
   BaseLocale,
   BasesLocalesService,
+  CommuneDTO,
   CommuneService,
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
@@ -29,11 +28,11 @@ import {
 } from "@/lib/openapi-api-bal";
 import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
-import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
 
 interface EditorProps {
   children: React.ReactNode;
-  commune: CommuneType;
+  baseLocale: any;
+  commune: CommuneDTO;
 }
 
 function Editor({ children, commune }: EditorProps) {
@@ -70,6 +69,7 @@ function Editor({ children, commune }: EditorProps) {
               bottom={isDemo || isMobile ? 50 : 0}
               left={isMapFullscreen ? 0 : sidebarWidth}
               commune={commune}
+              baseLocale={baseLocale}
               isAddressFormOpen={isAddressFormOpen}
               handleAddressForm={setIsAddressFormOpen}
             />
@@ -119,7 +119,7 @@ function Editor({ children, commune }: EditorProps) {
 
 export interface BaseEditorProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
+  commune: CommuneDTO;
   voies: ExtendedVoieDTO[];
   toponymes: ExtentedToponymeDTO[];
 }
@@ -133,21 +133,7 @@ export async function getBaseEditorProps(
     BasesLocalesService.findBaseLocaleToponymes(balId),
   ]);
 
-  const [communeExtras, geoCommune] = await Promise.all([
-    CommuneService.findCommune(baseLocale.commune),
-    ApiGeoService.getCommune(baseLocale.commune, {
-      fields: "contour",
-    }),
-  ]);
-
-  const commune: CommuneType = { ...geoCommune, ...communeExtras };
-
-  const communesDeleguees: CommuneDelegueeApiGeoType[] =
-    await ApiGeoService.getCommunesDeleguee(baseLocale.commune);
-  commune.communesDeleguees = communesDeleguees.filter(
-    ({ chefLieu, type }) =>
-      chefLieu === commune.code && type === "commune-deleguee"
-  );
+  const commune = await CommuneService.findCommune(baseLocale.commune);
 
   return {
     baseLocale,

@@ -13,13 +13,13 @@ import { ApiDepotService } from "@/lib/api-depot";
 
 import RevisionComponent from "@/components/sub-header/bal-status/ban-sync/ban-history/revision";
 import { Revision } from "@/lib/api-depot/types";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { BaseLocaleSync } from "@/lib/openapi-api-bal";
 
 interface BANHistoryProps {
   baseLocaleId: string;
   syncStatus: BaseLocaleSync.status;
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 function BANHistory({ baseLocaleId, syncStatus, commune }: BANHistoryProps) {

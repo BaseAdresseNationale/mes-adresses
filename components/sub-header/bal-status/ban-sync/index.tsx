@@ -12,13 +12,13 @@ import { computeStatus } from "@/lib/statuses";
 import BANHistory from "@/components/sub-header/bal-status/ban-sync/ban-history";
 import SyncButton from "@/components/sub-header/bal-status/ban-sync/sync-button";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { useContext } from "react";
 import LayoutContext from "@/contexts/layout";
 
 interface BANSyncProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
+  commune: CommuneDTO;
   isHabilitationValid: boolean;
   handleSync: () => void;
   togglePause: () => void;

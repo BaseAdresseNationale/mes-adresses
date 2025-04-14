@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import NextLink from "next/link";
 import { Pane, Text, HomeIcon, Link, PaneProps } from "evergreen-ui";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { BaseLocale, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import { useRouter } from "next/router";
 import { capitalize } from "lodash";
@@ -9,7 +9,7 @@ import LayoutContext from "@/contexts/layout";
 
 type BreadcrumbsProps = {
   baseLocale: BaseLocale;
-  commune: CommuneType;
+  commune: CommuneDTO;
   voie?: Voie;
   toponyme?: Toponyme;
   [x: string]: any;

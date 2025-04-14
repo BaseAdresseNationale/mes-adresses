@@ -49,7 +49,7 @@ interface SignalementsPageProps extends BaseEditorProps {
 }
 
 function SignalementsPage({
-  commune,
+  baseLocale,
   paginatedSignalements: initialSignalements,
 }: SignalementsPageProps) {
   const [signalements, setSignalements] = useState<Signalement[]>(
@@ -93,7 +93,7 @@ function SignalementsPage({
       return;
     }
 
-    const communeBbox: number[] = bbox(commune.contour);
+    const communeBbox: number[] = baseLocale.bbox;
     if (communeBbox) {
       const center = [
         (communeBbox[0] + communeBbox[2]) / 2,
@@ -106,7 +106,7 @@ function SignalementsPage({
         screenSpeed: 2,
       });
     }
-  }, [commune, map]);
+  }, [baseLocale, map]);
 
   useEffect(() => {
     if (isStyleLoaded) {

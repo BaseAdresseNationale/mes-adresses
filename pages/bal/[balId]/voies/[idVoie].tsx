@@ -10,7 +10,7 @@ import useFormState from "@/hooks/useFormState";
 import NumeroEditor from "@/components/bal/numero-editor";
 import VoieHeading from "@/components/voie/voie-heading";
 import NumerosList from "@/components/voie/numeros-list";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import {
   ExtendedVoieDTO,
@@ -20,7 +20,7 @@ import {
 } from "@/lib/openapi-api-bal";
 
 interface VoiePageProps {
-  commune: CommuneType;
+  commune: CommuneDTO;
 }
 
 function VoiePage({ commune }: VoiePageProps) {
