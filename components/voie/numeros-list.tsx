@@ -25,7 +25,7 @@ import InfiniteScrollList from "@/components/infinite-scroll-list";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
   BasesLocalesService,
-  CommuneCogDTO,
+  CommuneAncienneDTO,
   CommuneDTO,
   Numero,
   NumerosService,
@@ -130,9 +130,10 @@ function NumerosList({
 
   const getCommuneDeleguee = useCallback(
     (codeCommuneDeleguee) => {
-      const communeDeleguee: CommuneCogDTO = commune.communesDeleguees?.find(
-        ({ code }) => code === codeCommuneDeleguee
-      );
+      const communeDeleguee: CommuneAncienneDTO =
+        commune.communesDeleguees?.find(
+          ({ code }) => code === codeCommuneDeleguee
+        );
       return (
         communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
       );

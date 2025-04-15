@@ -20,7 +20,7 @@ import ReadOnlyInfos from "./read-only-infos";
 
 import DeleteWarning from "@/components/delete-warning";
 import {
-  CommuneCogDTO,
+  CommuneAncienneDTO,
   ExtentedToponymeDTO,
   Numero,
   ToponymesService,
@@ -79,9 +79,10 @@ function ToponymesList({
 
   const getCommuneDeleguee = useCallback(
     (codeCommuneDeleguee) => {
-      const communeDeleguee: CommuneCogDTO = commune.communesDeleguees?.find(
-        ({ code }) => code === codeCommuneDeleguee
-      );
+      const communeDeleguee: CommuneAncienneDTO =
+        commune.communesDeleguees?.find(
+          ({ code }) => code === codeCommuneDeleguee
+        );
       return (
         communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
       );

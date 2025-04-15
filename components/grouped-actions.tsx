@@ -27,7 +27,6 @@ import CertificationButton from "@/components/certification-button";
 import FormInput from "@/components/form-input";
 import { Numero } from "@/lib/openapi-api-bal";
 import { CommuneDTO } from "@/lib/openapi-api-bal";
-import SelectCommuneAncienne from "./select-commune-ancienne";
 import SelectCommune from "./select-commune";
 
 const getInitialCommuneDeleguee = (selectedNumeros: Numero[]) => {

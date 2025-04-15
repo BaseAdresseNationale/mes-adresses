@@ -4,11 +4,12 @@ import { useDebouncedCallback } from "use-debounce";
 
 import { ApiGeoService } from "@/lib/geo-api";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
+import { CommuneType } from "@/pages/new";
 
 export interface CommuneSearchProps {
   placeholder: string;
   innerRef: Dispatch<any>;
-  initialSelectedItem: CommuneApiGeoType;
+  initialSelectedItem: CommuneType;
   onSelect: Dispatch<SetStateAction<CommuneApiGeoType>>;
   [x: string]: any;
 }
