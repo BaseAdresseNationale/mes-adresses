@@ -77,18 +77,6 @@ function ToponymesList({
     setIsDisabled(false);
   };
 
-  const getCommuneDeleguee = useCallback(
-    (codeCommuneDeleguee) => {
-      const communeDeleguee: CommuneCogDTO = commune.communesDeleguees?.find(
-        ({ code }) => code === codeCommuneDeleguee
-      );
-      return (
-        communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
-      );
-    },
-    [commune]
-  );
-
   const onSelect = (id: string) => {
     void router.push(`/bal/${balId}/toponymes/${id}`);
   };
@@ -188,7 +176,7 @@ function ToponymesList({
               </Table.Cell>
 
               <TableRowNotifications
-                communeDeleguee={getCommuneDeleguee(toponyme.communeDeleguee)}
+                communeDeleguee={toponyme.communeDeleguee}
                 warning={
                   toponyme.positions.length === 0
                     ? "Ce toponyme n’a pas de position"

@@ -26,8 +26,8 @@ import Comment from "@/components/comment";
 import CertificationButton from "@/components/certification-button";
 import FormInput from "@/components/form-input";
 import { Numero } from "@/lib/openapi-api-bal";
-import SelectCommune from "./select-commune";
 import { CommuneDTO } from "@/lib/openapi-api-bal";
+import SelectCommuneAncienne from "./select-commune-ancienne";
 
 const getInitialCommuneDeleguee = (selectedNumeros: Numero[]) => {
   const selectedNumerosUniqToponyme = uniq(
@@ -295,7 +295,7 @@ function GroupedActions({
 
               {commune.communesDeleguees?.length > 0 && (
                 <FormInput>
-                  <SelectCommune
+                  <SelectCommuneAncienne
                     communes={commune.communesDeleguees}
                     selectedCodeCommune={communeDeleguee}
                     setSelectedCodeCommune={setCommuneDeleguee}

@@ -33,7 +33,7 @@ import {
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
-import SelectCommune from "../select-commune";
+import SelectCommuneAncienne from "../select-commune-ancienne";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -358,7 +358,7 @@ function NumeroEditor({
 
         {commune.communesDeleguees?.length > 0 && (
           <FormInput>
-            <SelectCommune
+            <SelectCommuneAncienne
               communes={commune.communesDeleguees}
               selectedCodeCommune={communeDeleguee}
               setSelectedCodeCommune={setCommuneDeleguee}
