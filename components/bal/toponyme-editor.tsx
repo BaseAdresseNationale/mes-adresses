@@ -27,7 +27,7 @@ import {
 import { CommuneDTO } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import AddNumerosInput from "../toponyme/add-numeros-input";
-import SelectCommuneAncienne from "../select-commune-ancienne";
+import SelectCommune from "../select-commune";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -232,7 +232,7 @@ function ToponymeEditor({
 
         {commune.communesDeleguees?.length > 0 && (
           <FormInput>
-            <SelectCommuneAncienne
+            <SelectCommune
               communes={commune.communesDeleguees}
               selectedCodeCommune={communeDeleguee}
               setSelectedCodeCommune={setCommuneDeleguee}

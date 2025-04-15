@@ -128,6 +128,18 @@ function NumerosList({
     }
   };
 
+  const getCommuneDeleguee = useCallback(
+    (codeCommuneDeleguee) => {
+      const communeDeleguee: CommuneCogDTO = commune.communesDeleguees?.find(
+        ({ code }) => code === codeCommuneDeleguee
+      );
+      return (
+        communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
+      );
+    },
+    [commune]
+  );
+
   const onRemove = useCallback(
     async (idNumero) => {
       const softDeleteNumero = toaster(
@@ -313,7 +325,7 @@ function NumerosList({
               )}
 
               <TableRowNotifications
-                communeDeleguee={numero.communeDeleguee}
+                communeDeleguee={getCommuneDeleguee(numero.communeDeleguee)}
                 certification={
                   numero.certifie
                     ? "Cette adresse est certifiée par la commune"
