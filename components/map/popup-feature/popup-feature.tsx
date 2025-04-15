@@ -2,7 +2,7 @@ import { Popup } from "react-map-gl";
 import PopupFeatureVoie from "./popup-feature-voie";
 import PopupFeatureNumero from "./popup-feature-numero";
 import { LAYERS_SOURCE } from "@/components/map/layers/tiles";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
+import { CommuneType } from "@/types/commune";
 
 interface PopupFeatureProps {
   feature: {
@@ -12,7 +12,7 @@ interface PopupFeatureProps {
     };
     properties: any;
   };
-  commune: CommuneDTO;
+  commune: CommuneType;
 }
 
 function PopupFeature({ feature, commune }: PopupFeatureProps) {

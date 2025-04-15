@@ -4,7 +4,7 @@ import { FormField } from "evergreen-ui";
 
 import CommuneSearch from "@/components/commune-search/commune-search";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
-import { CommuneType } from "@/pages/new";
+import { CommuneSimpleType } from "@/pages/new";
 
 let idCounter = 0;
 
@@ -24,7 +24,7 @@ interface CommuneSearchFieldProps {
 
   placeholder: string;
   innerRef: Dispatch<SetStateAction<HTMLInputElement>>;
-  initialSelectedItem: CommuneType;
+  initialSelectedItem: CommuneSimpleType;
   onSelect: Dispatch<SetStateAction<CommuneApiGeoType>>;
   [x: string]: any;
 }

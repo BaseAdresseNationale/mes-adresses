@@ -26,7 +26,6 @@ import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
   BasesLocalesService,
   CommuneAncienneDTO,
-  CommuneDTO,
   Numero,
   NumerosService,
 } from "@/lib/openapi-api-bal";
@@ -34,9 +33,10 @@ import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
 import NumeroHeading from "./numero-heading";
+import { CommuneType } from "@/types/commune";
 
 interface NumerosListProps {
-  commune: CommuneDTO;
+  commune: CommuneType;
   token?: string;
   voieId: string;
   numeros: Array<Numero>;

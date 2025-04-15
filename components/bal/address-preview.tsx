@@ -1,14 +1,14 @@
 import { Pane, Text } from "evergreen-ui";
 
 import { getAddressPreview } from "@/lib/utils/address";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
+import { CommuneType } from "@/types/commune";
 
 interface AddressPreviewProps {
   numero: string | number;
   suffixe?: string;
   selectedNomToponyme?: string;
   voie?: string;
-  commune?: CommuneDTO;
+  commune?: CommuneType;
 }
 
 function AddressPreview({

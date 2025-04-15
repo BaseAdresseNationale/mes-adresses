@@ -18,9 +18,9 @@ import {
   HabilitationService,
   StrategyDTO,
 } from "@/lib/openapi-api-bal";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { StrategySelection } from "./strategy-selection";
+import { CommuneType } from "@/types/commune";
 
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {
@@ -36,7 +36,7 @@ function getStep(habilitation) {
 
 interface HabilitationProcessProps {
   baseLocale: BaseLocale;
-  commune: CommuneDTO;
+  commune: CommuneType;
   habilitation: any;
   handlePublication: () => void;
   resetHabilitationProcess: () => void;

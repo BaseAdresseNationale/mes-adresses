@@ -1,19 +1,25 @@
-import { useContext, useState, useEffect, useCallback } from "react";
+import { useContext, useState, useEffect, useCallback, useMemo } from "react";
 import bbox from "@turf/bbox";
 import type { Map } from "maplibre-gl";
 
 import BalDataContext from "@/contexts/bal-data";
 import { NextRouter } from "next/router";
 import { ExtendedBaseLocaleDTO, Toponyme, Voie } from "@/lib/openapi-api-bal";
+import { CommuneType } from "@/types/commune";
 
 function useBounds(
   map: Map,
   router: NextRouter,
-  baseLocale: ExtendedBaseLocaleDTO,
+  commune: CommuneType,
   voie: Voie,
   toponyme: Toponyme
 ) {
-  const [bounds, setBounds] = useState<number[]>(baseLocale.bbox);
+  const communeBbox: number[] = useMemo(
+    () => (commune.contour ? bbox(commune.contour) : null),
+    [commune.contour]
+  );
+
+  const [bounds, setBounds] = useState<number[]>(communeBbox);
 
   const { editingItem } = useContext(BalDataContext);
 
@@ -39,16 +45,10 @@ function useBounds(
     if (editingItem) {
       setBounds(bboxForItem(editingItem));
     } else if (!wasCenteredOnCommuneOnce) {
-      setBounds(baseLocale.bbox);
+      setBounds(communeBbox);
       setWasCenteredOnCommuneOnce(true);
     }
-  }, [
-    editingItem,
-    wasCenteredOnCommuneOnce,
-    map,
-    bboxForItem,
-    baseLocale.bbox,
-  ]);
+  }, [editingItem, wasCenteredOnCommuneOnce, map, bboxForItem, communeBbox]);
 
   useEffect(() => {
     const { idVoie, idToponyme } = router.query;

@@ -20,7 +20,6 @@ import Overlay from "@/components/overlay";
 import {
   BaseLocale,
   BasesLocalesService,
-  CommuneDTO,
   CommuneService,
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
@@ -28,11 +27,13 @@ import {
 } from "@/lib/openapi-api-bal";
 import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
+import { ApiGeoService } from "@/lib/geo-api";
+import { CommuneType } from "@/types/commune";
 
 interface EditorProps {
   children: React.ReactNode;
-  baseLocale: any;
-  commune: CommuneDTO;
+  baseLocale: ExtendedBaseLocaleDTO;
+  commune: CommuneType;
 }
 
 function Editor({ children, commune }: EditorProps) {
@@ -119,7 +120,7 @@ function Editor({ children, commune }: EditorProps) {
 
 export interface BaseEditorProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneDTO;
+  commune: CommuneType;
   voies: ExtendedVoieDTO[];
   toponymes: ExtentedToponymeDTO[];
 }
@@ -133,7 +134,15 @@ export async function getBaseEditorProps(
     BasesLocalesService.findBaseLocaleToponymes(balId),
   ]);
 
-  const commune = await CommuneService.findCommune(baseLocale.commune);
+  const communeApiBal = await CommuneService.findCommune(baseLocale.commune);
+  const communeApiGeo = await ApiGeoService.getCommune(baseLocale.commune, {
+    fields: "contour",
+  });
+
+  const commune: CommuneType = {
+    ...communeApiBal,
+    contour: communeApiGeo.contour,
+  };
 
   return {
     baseLocale,

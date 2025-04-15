@@ -16,7 +16,6 @@ import {
   getExistingLocation,
   getSignalementLabel,
 } from "@/lib/utils/signalement";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { ObjectId } from "bson";
 import MapContext, { defaultStyle } from "@/contexts/map";
 import BalDataContext from "@/contexts/bal-data";
@@ -24,12 +23,13 @@ import ProtectedPage from "@/layouts/protected-page";
 import SignalementForm from "@/components/signalement/signalement-form/signalement-form";
 import { SignalementViewer } from "@/components/signalement/signalement-viewer/signalement-viewer";
 import SignalementContext from "@/contexts/signalement";
+import { CommuneType } from "@/types/commune";
 
 interface SignalementPageProps extends BaseEditorProps {
   signalement: Signalement;
   existingLocation: Voie | Toponyme | Numero | null;
   requestedToponyme?: Toponyme;
-  commune: CommuneDTO;
+  commune: CommuneType;
 }
 
 function SignalementPage({

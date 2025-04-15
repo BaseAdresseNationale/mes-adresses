@@ -37,7 +37,7 @@ import {
 import { ApiDepotService } from "@/lib/api-depot";
 import { PublicClient, Revision } from "@/lib/api-depot/types";
 import LayoutContext from "@/contexts/layout";
-import { CommuneType } from "@/pages/new";
+import { CommuneSimpleType } from "@/pages/new";
 
 export enum ClientRevisionEnum {
   API_DEPOT = "api-depot",
@@ -71,7 +71,7 @@ export function isExceptionClientId(
 
 interface CreateFormProps {
   namePlaceholder: string;
-  commune: CommuneType;
+  commune: CommuneSimpleType;
   outdatedApiDepotClients: string[];
   outdatedHarvestSources: string[];
   handleCommune: Dispatch<SetStateAction<CommuneApiGeoType>>;

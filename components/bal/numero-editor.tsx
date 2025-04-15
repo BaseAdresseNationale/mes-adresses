@@ -27,20 +27,20 @@ import AddressPreview from "@/components/bal/address-preview";
 import DisabledFormInput from "@/components/disabled-form-input";
 import {
   BasesLocalesService,
-  CommuneDTO,
   Numero,
   NumerosService,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import SelectCommune from "../select-commune";
+import { CommuneType } from "@/types/commune";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
 interface NumeroEditorProps {
   initialVoieId?: string;
   initialValue?: Numero;
-  commune: CommuneDTO;
+  commune: CommuneType;
   hasPreview?: boolean;
   closeForm: () => void;
   onSubmitted?: () => void;

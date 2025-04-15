@@ -26,8 +26,8 @@ import Comment from "@/components/comment";
 import CertificationButton from "@/components/certification-button";
 import FormInput from "@/components/form-input";
 import { Numero } from "@/lib/openapi-api-bal";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
 import SelectCommune from "./select-commune";
+import { CommuneType } from "@/types/commune";
 
 const getInitialCommuneDeleguee = (selectedNumeros: Numero[]) => {
   const selectedNumerosUniqToponyme = uniq(
@@ -39,7 +39,7 @@ const getInitialCommuneDeleguee = (selectedNumeros: Numero[]) => {
 };
 
 interface GroupedActionsProps {
-  commune: CommuneDTO;
+  commune: CommuneType;
   idVoie: string;
   numeros: Numero[];
   selectedNumerosIds: string[];

@@ -13,11 +13,11 @@ import COMDialog from "@/components/habilitation-process/com-dialog";
 import SettingsMenu from "@/components/sub-header/settings-menu";
 import BALStatus from "@/components/sub-header/bal-status";
 import MassDeletionDialog from "@/components/mass-deletion-dialog";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 interface SubHeaderProps {
-  commune: CommuneDTO;
+  commune: CommuneType;
 }
 
 function SubHeader({ commune }: SubHeaderProps) {

@@ -32,11 +32,10 @@ import CommentsContent from "../comments-content";
 import TableRowActions from "../table-row/table-row-actions";
 import PaginationList from "../pagination-list";
 import { useSearchPagination } from "@/hooks/search-pagination";
-import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
+import { CommuneType } from "@/types/commune";
 
 interface ToponymesListProps {
-  commune: CommuneDTO;
+  commune: CommuneType;
   toponymes: ExtentedToponymeDTO[];
   onRemove: () => Promise<void>;
   onEnableEditing: (id: string) => void;

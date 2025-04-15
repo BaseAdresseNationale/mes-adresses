@@ -21,25 +21,25 @@ import DemoForm from "../components/new/demo-form";
 import { ApiBalAdminService } from "@/lib/bal-admin";
 import { BALWidgetConfig } from "@/lib/bal-admin/type";
 import LayoutContext from "@/contexts/layout";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
+import { CommuneType } from "@/types/commune";
 
-export interface CommuneType {
+export interface CommuneSimpleType {
   nom: string;
   code: string;
 }
 
 interface IndexPageProps {
-  defaultCommune?: CommuneDTO;
+  defaultCommune?: CommuneType;
   outdatedApiDepotClients: string[];
   outdatedHarvestSources: string[];
   isDemo: boolean;
 }
 
-const getCommune = (commune?: CommuneDTO): CommuneType => {
+const getCommune = (commune?: CommuneType): CommuneSimpleType => {
   return commune ? { code: commune.code, nom: commune.nom } : null;
 };
 
-const getSuggestedBALName = (commune?: CommuneType) => {
+const getSuggestedBALName = (commune?: CommuneSimpleType) => {
   return commune ? `Adresses de ${commune.nom}` : null;
 };
 
@@ -65,9 +65,8 @@ function IndexPage({
     suggestedBALName.current.suggested
   );
   const [email, onEmailChange] = useInput("");
-  const [selectedCommune, setSelectedCommune] = useState<CommuneType | null>(
-    getCommune(defaultCommune)
-  );
+  const [selectedCommune, setSelectedCommune] =
+    useState<CommuneSimpleType | null>(getCommune(defaultCommune));
 
   const [index, setIndex] = useState(0);
 

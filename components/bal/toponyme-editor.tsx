@@ -24,14 +24,14 @@ import {
   ToponymesService,
   UpdateBatchNumeroDTO,
 } from "@/lib/openapi-api-bal";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import AddNumerosInput from "../toponyme/add-numeros-input";
 import SelectCommune from "../select-commune";
+import { CommuneType } from "@/types/commune";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
-  commune: CommuneDTO;
+  commune: CommuneType;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
   closeForm: () => void;
   onSubmitted?: () => Promise<void>;

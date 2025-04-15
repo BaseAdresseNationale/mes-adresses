@@ -46,9 +46,9 @@ import AddressEditorControl from "@/components/map/controls/address-editor-contr
 import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
-import { CommuneDTO } from "@/lib/openapi-api-bal";
 import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -89,7 +89,7 @@ function generateNewStyle(style) {
 }
 
 export interface MapProps {
-  commune: CommuneDTO;
+  commune: CommuneType;
   baseLocale: ExtendedBaseLocaleDTO;
   isAddressFormOpen: boolean;
   handleAddressForm: (open: boolean) => void;
@@ -142,7 +142,7 @@ function Map({
   const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune]);
 
   const [handleHover, handleMouseLeave, featureHovered] = useHovered(map);
-  const bounds = useBounds(map, router, baseLocale, voie, toponyme);
+  const bounds = useBounds(map, router, commune, voie, toponyme);
 
   const prevStyle = useRef(defaultStyle);
 

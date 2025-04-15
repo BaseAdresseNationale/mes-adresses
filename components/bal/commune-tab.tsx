@@ -8,11 +8,12 @@ import CertificationInfos from "./certification-infos";
 import HabilitationInfos from "./habilitation-infos";
 import SignalementsInfos from "./signalement-infos";
 import ReadOnlyInfos from "./read-only-infos";
-import { BaseLocale, CommuneDTO } from "@/lib/openapi-api-bal";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 import SignalementContext from "@/contexts/signalement";
+import { CommuneType } from "@/types/commune";
 
 interface CommuneTabProps {
-  commune: CommuneDTO;
+  commune: CommuneType;
   openRecoveryDialog: () => void;
 }
 
