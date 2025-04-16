@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import NextLink from "next/link";
 import { Pane, Text, HomeIcon, Link, PaneProps } from "evergreen-ui";
-import { CommuneType } from "@/types/commune";
 import { BaseLocale, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import { useRouter } from "next/router";
 import { capitalize } from "lodash";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 type BreadcrumbsProps = {
   baseLocale: BaseLocale;

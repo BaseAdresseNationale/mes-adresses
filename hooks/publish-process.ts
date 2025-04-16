@@ -6,9 +6,9 @@ import {
   BasesLocalesService,
   HabilitationService,
 } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import { BaseLocale } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 interface UsePublishProcess {
   massDeletionConfirm: null | (() => void);

@@ -20,7 +20,6 @@ import NumeroEditor from "@/components/bal/numero-editor";
 import ToponymeNumeros from "@/components/toponyme/toponyme-numeros";
 import AddNumeros from "@/components/toponyme/add-numeros";
 import ToponymeHeading from "@/components/toponyme/toponyme-heading";
-import { CommuneType } from "@/types/commune";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
@@ -32,6 +31,7 @@ import {
   UpdateBatchNumeroDTO,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 interface ToponymePageProps {
   baseLocale: BaseLocale;

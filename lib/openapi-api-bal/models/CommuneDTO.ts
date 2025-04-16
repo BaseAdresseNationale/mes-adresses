@@ -3,11 +3,16 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type CommuneExtraDTO = {
+import type { CommuneAncienneDTO } from './CommuneAncienneDTO';
+
+export type CommuneDTO = {
+    code: string;
+    nom: string;
     isCOM: boolean;
     hasCadastre: boolean;
     hasOpenMapTiles: boolean;
     hasOrtho: boolean;
     hasPlanIGN: boolean;
+    communesDeleguees: Array<CommuneAncienneDTO>;
 };
 

@@ -1,11 +1,11 @@
-import { useMemo, useContext, useState, useEffect, useCallback } from "react";
+import { useContext, useState, useEffect, useCallback, useMemo } from "react";
 import bbox from "@turf/bbox";
 import type { Map } from "maplibre-gl";
 
 import BalDataContext from "@/contexts/bal-data";
 import { NextRouter } from "next/router";
+import { ExtendedBaseLocaleDTO, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
-import { Toponyme, Voie } from "@/lib/openapi-api-bal";
 
 function useBounds(
   map: Map,

@@ -12,9 +12,9 @@ import { computeStatus } from "@/lib/statuses";
 import BANHistory from "@/components/sub-header/bal-status/ban-sync/ban-history";
 import SyncButton from "@/components/sub-header/bal-status/ban-sync/sync-button";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import { useContext } from "react";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 interface BANSyncProps {
   baseLocale: ExtendedBaseLocaleDTO;

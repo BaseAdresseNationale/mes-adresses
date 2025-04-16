@@ -1,7 +1,7 @@
 import { Pane, Text } from "evergreen-ui";
 
-import { CommuneType } from "@/types/commune";
 import { getAddressPreview } from "@/lib/utils/address";
+import { CommuneType } from "@/types/commune";
 
 interface AddressPreviewProps {
   numero: string | number;

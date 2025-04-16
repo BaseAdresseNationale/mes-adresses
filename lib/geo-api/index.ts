@@ -55,10 +55,4 @@ export class ApiGeoService {
       `/communes/${code.toUpperCase()}?${qs.stringify(options)}`
     );
   }
-
-  public static async getCommunesDeleguee(
-    chefLieu: string
-  ): Promise<CommuneDelegueeApiGeoType[]> {
-    return this.request(`/communes_associees_deleguees?chefLieu=${chefLieu}`);
-  }
 }

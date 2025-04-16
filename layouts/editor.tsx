@@ -17,8 +17,6 @@ import DrawerContent from "@/components/drawer-content";
 import AddressEditor from "@/components/bal/address-editor";
 import DemoWarning from "@/components/demo-warning";
 import Overlay from "@/components/overlay";
-import { ApiGeoService } from "@/lib/geo-api";
-import { CommuneType } from "@/types/commune";
 import {
   BaseLocale,
   BasesLocalesService,
@@ -29,10 +27,12 @@ import {
 } from "@/lib/openapi-api-bal";
 import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
-import { CommuneDelegueeApiGeoType } from "@/lib/geo-api/type";
+import { ApiGeoService } from "@/lib/geo-api";
+import { CommuneType } from "@/types/commune";
 
 interface EditorProps {
   children: React.ReactNode;
+  baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
 }
 
@@ -70,6 +70,7 @@ function Editor({ children, commune }: EditorProps) {
               bottom={isDemo || isMobile ? 50 : 0}
               left={isMapFullscreen ? 0 : sidebarWidth}
               commune={commune}
+              baseLocale={baseLocale}
               isAddressFormOpen={isAddressFormOpen}
               handleAddressForm={setIsAddressFormOpen}
             />
@@ -133,21 +134,15 @@ export async function getBaseEditorProps(
     BasesLocalesService.findBaseLocaleToponymes(balId),
   ]);
 
-  const [communeExtras, geoCommune] = await Promise.all([
-    CommuneService.findCommune(baseLocale.commune),
-    ApiGeoService.getCommune(baseLocale.commune, {
-      fields: "contour",
-    }),
-  ]);
+  const communeApiBal = await CommuneService.findCommune(baseLocale.commune);
+  const communeApiGeo = await ApiGeoService.getCommune(baseLocale.commune, {
+    fields: "contour",
+  });
 
-  const commune: CommuneType = { ...geoCommune, ...communeExtras };
-
-  const communesDeleguees: CommuneDelegueeApiGeoType[] =
-    await ApiGeoService.getCommunesDeleguee(baseLocale.commune);
-  commune.communesDeleguees = communesDeleguees.filter(
-    ({ chefLieu, type }) =>
-      chefLieu === commune.code && type === "commune-deleguee"
-  );
+  const commune: CommuneType = {
+    ...communeApiBal,
+    contour: communeApiGeo.contour,
+  };
 
   return {
     baseLocale,

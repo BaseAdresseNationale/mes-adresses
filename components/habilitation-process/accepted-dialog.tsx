@@ -14,8 +14,8 @@ import {
 
 import TextWrapper from "@/components/text-wrapper";
 import AuthenticatedUser from "@/components/habilitation-process/authenticated-user";
-import { CommuneType } from "@/types/commune";
 import { BasesLocalesService } from "@/lib/openapi-api-bal";
+import { CommuneType } from "@/types/commune";
 
 interface AcceptedDialogProps {
   baseLocaleId: string;

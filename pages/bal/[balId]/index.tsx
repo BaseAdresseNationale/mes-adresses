@@ -8,7 +8,6 @@ import BalDataContext from "@/contexts/bal-data";
 import useHelp from "@/hooks/help";
 
 import CommuneTab from "@/components/bal/commune-tab";
-import { CommuneType } from "@/types/commune";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import TabsSideBar, { TabsEnum } from "@/components/sidebar/tabs";
@@ -37,6 +36,7 @@ import CommuneEditor from "@/components/bal/commune-editor";
 import SignalementBalPageProductTour from "@/components/signalement/product-tour/signalement-bal-page-product-tour";
 import SignalementContext from "@/contexts/signalement";
 import LocalStorageContext from "@/contexts/local-storage";
+import { CommuneType } from "@/types/commune";
 
 interface BaseLocalePageProps {
   selectedTab: TabsEnum;

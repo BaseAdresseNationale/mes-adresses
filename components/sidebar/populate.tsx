@@ -2,8 +2,8 @@ import React, { useContext, useCallback } from "react";
 import { Button, Pane, Paragraph } from "evergreen-ui";
 
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import BalDataContext from "@/contexts/bal-data";
+import { CommuneType } from "@/types/commune";
 
 interface PopulateSideBarProps {
   commune: CommuneType;

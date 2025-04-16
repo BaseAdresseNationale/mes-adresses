@@ -3,8 +3,8 @@ import NextImage from "next/legacy/image";
 import { Pane, Text, StatusIndicator, Strong, Badge } from "evergreen-ui";
 
 import RevisionUser from "@/components/sub-header/bal-status/ban-sync/ban-history/revision-user";
-import { CommuneType } from "@/types/commune";
 import { Revision as RevisionType } from "@/lib/api-depot/types";
+import { CommuneType } from "@/types/commune";
 
 function getIndicatorColor(isCurrent, isUserBAL) {
   if (isCurrent) {

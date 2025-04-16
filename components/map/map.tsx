@@ -33,10 +33,6 @@ import {
   NUMEROS_LABEL,
   LAYERS_SOURCE,
 } from "@/components/map/layers/tiles";
-import {
-  LAYER_COMMUNE,
-  SOURCE_COMMUNE_ID,
-} from "@/components/map/layers/commune";
 import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
 import NumerosMarkers from "@/components/map/numeros-markers";
@@ -50,9 +46,9 @@ import AddressEditorControl from "@/components/map/controls/address-editor-contr
 import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
-import { CommuneType } from "@/types/commune";
-import { Numero } from "@/lib/openapi-api-bal";
+import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -94,11 +90,17 @@ function generateNewStyle(style) {
 
 export interface MapProps {
   commune: CommuneType;
+  baseLocale: ExtendedBaseLocaleDTO;
   isAddressFormOpen: boolean;
   handleAddressForm: (open: boolean) => void;
 }
 
-function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
+function Map({
+  commune,
+  baseLocale,
+  isAddressFormOpen,
+  handleAddressForm,
+}: MapProps) {
   const router = useRouter();
   const {
     map,
@@ -338,11 +340,26 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     };
   }, [balTilesUrl]);
 
-  const sourceCommune: SourceProps = useMemo(() => {
+  const layerCommune: LayerProps = useMemo(() => {
     return {
-      id: SOURCE_COMMUNE_ID,
-      type: "geojson",
-      data: commune.contour,
+      id: "communes-fill",
+      source: "decoupage-administratif",
+      "source-layer": "communes",
+      minzoom: 2,
+      type: "fill",
+      paint: {
+        "fill-color": "#3288bd",
+        "fill-opacity": [
+          "interpolate",
+          ["exponential", 0.5],
+          ["zoom"],
+          13,
+          0.8,
+          14,
+          0,
+        ],
+      },
+      filter: ["==", ["get", "code"], commune.code],
     };
   }, [commune]);
 
@@ -421,9 +438,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         >
           <NavControl />
 
-          <Source {...sourceCommune}>
-            <Layer {...(LAYER_COMMUNE as LayerProps)} />
-          </Source>
+          <Layer {...(layerCommune as LayerProps)} />
 
           <Source {...sourceTiles}>
             {Object.values(tilesLayers).map((layer) => (

@@ -9,10 +9,10 @@ import {
 } from "evergreen-ui";
 
 import { BaseLocale, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import LanguagePreview from "../bal/language-preview";
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
+import { CommuneType } from "@/types/commune";
 
 interface HeaderSideBarProps {
   baseLocale: BaseLocale;
