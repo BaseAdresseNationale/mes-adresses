@@ -18,9 +18,9 @@ import {
   HabilitationService,
   StrategyDTO,
 } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
 import { StrategySelection } from "./strategy-selection";
+import { CommuneType } from "@/types/commune";
 
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {

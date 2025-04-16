@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CommuneExtraDTO } from '../models/CommuneExtraDTO';
+import type { CommuneDTO } from '../models/CommuneDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -13,12 +13,12 @@ export class CommuneService {
     /**
      * Find info commune
      * @param codeCommune
-     * @returns CommuneExtraDTO
+     * @returns CommuneDTO
      * @throws ApiError
      */
     public static findCommune(
         codeCommune: string,
-    ): CancelablePromise<CommuneExtraDTO> {
+    ): CancelablePromise<CommuneDTO> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/commune/{codeCommune}',

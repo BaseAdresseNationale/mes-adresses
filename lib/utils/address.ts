@@ -1,10 +1,10 @@
 import { computeCompletNumero } from "@/lib/utils/numero";
-import { CommuneType } from "@/types/commune";
+import { CommuneDTO } from "../openapi-api-bal";
 
 export const getAddressPreview = (
   numero: string | number,
   suffixe: string,
-  commune?: CommuneType,
+  commune?: CommuneDTO,
   toponyme?: string,
   voie?: string
 ) => {

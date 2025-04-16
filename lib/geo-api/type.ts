@@ -6,7 +6,7 @@ export type CommuneApiGeoType = {
     nom: string;
   };
   contour?: {
-    type: string;
+    type: "Polygon";
     coordinates: number[][][];
   };
   codeDepartement?: string;

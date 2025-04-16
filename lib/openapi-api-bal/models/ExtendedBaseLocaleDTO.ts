@@ -25,6 +25,7 @@ export type ExtendedBaseLocaleDTO = {
     voies: Array<Voie>;
     toponymes: Array<Toponyme>;
     numeros: Array<Numero>;
+    bbox: Array<number>;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;

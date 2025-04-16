@@ -13,8 +13,8 @@ import COMDialog from "@/components/habilitation-process/com-dialog";
 import SettingsMenu from "@/components/sub-header/settings-menu";
 import BALStatus from "@/components/sub-header/bal-status";
 import MassDeletionDialog from "@/components/mass-deletion-dialog";
-import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
+import { CommuneType } from "@/types/commune";
 
 interface SubHeaderProps {
   commune: CommuneType;

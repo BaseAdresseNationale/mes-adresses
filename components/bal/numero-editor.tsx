@@ -31,9 +31,9 @@ import {
   NumerosService,
   VoiesService,
 } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
 import SelectCommune from "../select-commune";
+import { CommuneType } from "@/types/commune";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
