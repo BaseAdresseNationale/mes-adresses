@@ -1,167 +1,205 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
-import {
-  Pane,
-  TabNavigation,
-  Tab,
-  Heading,
-  Paragraph,
-  Button,
-} from "evergreen-ui";
-import Link from "next/link";
-
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { ApiGeoService } from "../lib/geo-api";
-
-import { useInput } from "../hooks/input";
-
 import Main from "../layouts/main";
-
-import CreateForm from "../components/new/create-form";
-import UploadForm from "../components/new/upload-form";
-import DemoForm from "../components/new/demo-form";
 import { ApiBalAdminService } from "@/lib/bal-admin";
 import { BALWidgetConfig } from "@/lib/bal-admin/type";
+import Stepper from "@/components/stepper";
+import SearchCommuneStep from "@/components/new/steps/search-commune-step";
+import ImportDataStep from "@/components/new/steps/import-data-step";
+import BALInfosStep from "@/components/new/steps/bal-infos-step";
+import { Pane } from "evergreen-ui";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
+import LocalStorageContext from "@/contexts/local-storage";
+import Router from "next/router";
+import { useBALDataImport } from "@/hooks/bal-data-import";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import styled from "styled-components";
 
-export interface CommuneSimpleType {
-  nom: string;
-  code: string;
-}
-
-interface IndexPageProps {
+interface NewPageProps {
   defaultCommune?: CommuneType;
   outdatedApiDepotClients: string[];
   outdatedHarvestSources: string[];
-  isDemo: boolean;
 }
 
-const getCommune = (commune?: CommuneType): CommuneSimpleType => {
-  return commune ? { code: commune.code, nom: commune.nom } : null;
-};
-
-const getSuggestedBALName = (commune?: CommuneSimpleType) => {
+const getSuggestedBALName = (commune?: CommuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null;
 };
 
-function IndexPage({
+const StyledStepperContent = styled(Pane)`
+  display: flex;
+  height: 100%;
+
+  > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .illustration {
+    background-image: url("/static/images/illustration-new.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex: 1;
+
+    @media screen and (max-width: 768px) {
+      display: none;
+    }
+  }
+`;
+
+function NewPage({
   defaultCommune,
   outdatedApiDepotClients,
   outdatedHarvestSources,
-  isDemo,
-}: IndexPageProps) {
-  const { isMobile } = useContext(LayoutContext);
-
-  const suggestedBALName = useRef<{
-    prev: string | null;
-    suggested: string | null;
-    used: boolean | undefined;
-  }>({
-    prev: null,
-    suggested: getSuggestedBALName(defaultCommune),
-    used: undefined,
-  });
-
-  const [nom, onNomChange, resetInput] = useInput(
-    suggestedBALName.current.suggested
+}: NewPageProps) {
+  const [currentStepIndex, setCurrentStepIndex] = useState(
+    defaultCommune ? 1 : 0
   );
-  const [email, onEmailChange] = useInput("");
-  const [selectedCommune, setSelectedCommune] =
-    useState<CommuneSimpleType | null>(getCommune(defaultCommune));
 
-  const [index, setIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const { addBalAccess } = useContext(LocalStorageContext);
+  const { pushToast } = useContext(LayoutContext);
+  const [commune, setCommune] = useState<CommuneType | null>(defaultCommune);
+  const [importValue, setImportValue] = useState<"ban" | "file" | "empty">(
+    "ban"
+  );
+  const [csvImportFile, setCsvImportFile] = useState<File | null>(null);
+  const [balName, setBalName] = useState<string | null>(
+    getSuggestedBALName(defaultCommune)
+  );
+  const [adminEmail, setAdminEmail] = useState<string | null>(null);
+  const { importFromCSVFile, importFromBAN } = useBALDataImport();
 
   useEffect(() => {
-    suggestedBALName.current = {
-      prev: suggestedBALName.current.suggested, // Suggestion for previous commune
-      suggested: getSuggestedBALName(selectedCommune), // Current suggestion
-      used: false, // True when current suggestion has been used
-    };
-  }, [selectedCommune]);
-
-  useEffect(() => {
-    const { prev, suggested, used } = suggestedBALName.current;
-    if ((nom === "" && !used) || nom === prev) {
-      resetInput(suggested);
-      suggestedBALName.current = { ...suggestedBALName.current, used: true };
+    if (commune) {
+      setBalName(getSuggestedBALName(commune));
+    } else {
+      setBalName(null);
     }
-  }, [nom, selectedCommune, resetInput]);
+  }, [commune]);
+
+  const steps = useMemo(() => {
+    return [
+      {
+        label: "Choix de la commune",
+        canBrowseNext: Boolean(commune),
+        canBrowseBack: false,
+      },
+      {
+        label: "Import des données",
+        canBrowseNext:
+          importValue === "file"
+            ? Boolean(csvImportFile)
+            : Boolean(importValue),
+        canBrowseBack: !isLoading,
+      },
+      {
+        label: "Informations sur la BAL",
+        canBrowseNext: !isLoading && Boolean(balName) && Boolean(adminEmail),
+        canBrowseBack: !isLoading,
+      },
+    ];
+  }, [commune, importValue, csvImportFile, isLoading, balName, adminEmail]);
+
+  const createNewBal = async (isDemo?: boolean) => {
+    let bal: BaseLocale;
+
+    setIsLoading(true);
+
+    try {
+      if (isDemo) {
+        bal = await BasesLocalesService.createBaseLocaleDemo({
+          commune: commune.code,
+        });
+      } else {
+        bal = await BasesLocalesService.createBaseLocale({
+          nom: balName,
+          emails: [adminEmail],
+          commune: commune.code,
+        });
+      }
+    } catch (err) {
+      pushToast({
+        title: "Erreur",
+        message:
+          "Une erreur est survenue lors de la création de la Base Adresse Locale",
+        intent: "danger",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    addBalAccess(bal.id, bal.token);
+
+    try {
+      if (importValue === "file") {
+        await importFromCSVFile(bal, csvImportFile);
+      } else if (importValue === "ban") {
+        await importFromBAN(bal);
+      }
+    } catch (err) {
+      pushToast({
+        title: "Erreur",
+        message:
+          "Une erreur est survenue lors de l'importation des données dans la Base Adresse Locale",
+        intent: "danger",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    Router.push(`/bal/${bal.id}`);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await createNewBal();
+  };
 
   return (
     <Main>
-      <Pane padding={12}>
-        <Heading size={600} marginBottom={8}>{`Nouvelle Base Adresse Locale ${
-          isDemo ? "de démonstration" : ""
-        }`}</Heading>
-        <Paragraph>
-          {`Sélectionnez une commune pour laquelle vous souhaitez créer ou modifier une Base Adresse Locale ${
-            isDemo ? " de démonstration" : ""
-          }.`}
-        </Paragraph>
-      </Pane>
-
-      <Pane paddingTop={16} flex={1}>
-        {isDemo ? (
-          <DemoForm defaultCommune={defaultCommune} />
-        ) : (
-          <>
-            <TabNavigation display="flex" marginLeft={16}>
-              {["Créer", "Importer un fichier CSV"].map((tab, idx) => (
-                <Tab
-                  key={tab}
-                  id={tab}
-                  isSelected={index === idx}
-                  onSelect={() => {
-                    setIndex(idx);
-                  }}
-                >
-                  {tab}
-                </Tab>
-              ))}
-            </TabNavigation>
-
-            <Pane flex={1} overflowY="scroll">
-              {index === 0 ? (
-                <CreateForm
-                  namePlaceholder={suggestedBALName.current.suggested}
-                  commune={selectedCommune}
+      <Pane flex={1} is="form" onSubmit={handleSubmit}>
+        <Stepper
+          steps={steps}
+          currentStepIndex={currentStepIndex}
+          onStepChange={setCurrentStepIndex}
+        >
+          <StyledStepperContent>
+            <Pane>
+              {currentStepIndex === 0 && (
+                <SearchCommuneStep
+                  commune={commune}
+                  setCommune={setCommune}
                   outdatedApiDepotClients={outdatedApiDepotClients}
                   outdatedHarvestSources={outdatedHarvestSources}
-                  nom={nom}
-                  onNomChange={onNomChange}
-                  email={email}
-                  onEmailChange={onEmailChange}
-                  handleCommune={setSelectedCommune}
                 />
-              ) : (
-                <UploadForm
-                  namePlaceholder={suggestedBALName.current.suggested}
-                  outdatedApiDepotClients={outdatedApiDepotClients}
-                  outdatedHarvestSources={outdatedHarvestSources}
-                  nom={nom}
-                  onNomChange={onNomChange}
-                  email={email}
-                  onEmailChange={onEmailChange}
-                  handleCommune={setSelectedCommune}
+              )}
+              {currentStepIndex === 1 && (
+                <ImportDataStep
+                  commune={commune}
+                  importValue={importValue}
+                  setImportValue={setImportValue}
+                  csvImportFile={csvImportFile}
+                  setCsvImportFile={setCsvImportFile}
+                />
+              )}
+              {currentStepIndex === 2 && (
+                <BALInfosStep
+                  balName={balName}
+                  setBalName={setBalName}
+                  adminEmail={adminEmail}
+                  setAdminEmail={setAdminEmail}
+                  createDemoBAL={() => createNewBal(true)}
+                  isLoading={isLoading}
                 />
               )}
             </Pane>
-          </>
-        )}
+            <Pane className="illustration" />
+          </StyledStepperContent>
+        </Stepper>
       </Pane>
-
-      {!isDemo && !isMobile && (
-        <Pane display="flex" flex={1}>
-          <Pane margin="auto" textAlign="center">
-            <Heading marginBottom={8}>
-              Vous voulez simplement essayer l’éditeur sans créer de Base
-              Adresse Locale ?
-            </Heading>
-            <Link legacyBehavior href="/new?demo=1" passHref>
-              <Button is="a">Essayer l’outil</Button>
-            </Link>
-          </Pane>
-        </Pane>
-      )}
     </Main>
   );
 }
@@ -183,7 +221,6 @@ export async function getServerSideProps({ query }) {
           widgetConfig?.communes?.outdatedApiDepotClients || [],
         outdatedHarvestSources:
           widgetConfig?.communes?.outdatedHarvestSources || [],
-        isDemo: query.demo === "1",
       },
     };
   } catch {
@@ -192,10 +229,9 @@ export async function getServerSideProps({ query }) {
         defaultCommune,
         outdatedApiDepotClients: [],
         outdatedHarvestSources: [],
-        isDemo: query.demo === "1",
       },
     };
   }
 }
 
-export default IndexPage;
+export default NewPage;

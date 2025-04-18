@@ -1,18 +1,15 @@
-import Fullscreen from '@/layouts/fullscreen'
-
-import Footer from '@/components/footer'
+import { Pane } from "evergreen-ui";
 
 interface MainProps {
   children: React.ReactNode;
 }
 
-function Main({children}: MainProps) {
+function Main({ children }: MainProps) {
   return (
-    <Fullscreen>
+    <Pane display="flex" height="calc(100vh - 76px)" flexDirection="column">
       {children}
-      <Footer />
-    </Fullscreen>
-  )
+    </Pane>
+  );
 }
 
-export default Main
+export default Main;
