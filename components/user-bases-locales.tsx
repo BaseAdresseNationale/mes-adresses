@@ -42,10 +42,10 @@ function UserBasesLocales() {
   }, [balAccess]);
 
   useEffect(() => {
-    if (balAccess !== undefined) {
+    if (balAccess !== undefined && basesLocales.length === 0) {
       getUserBals();
     }
-  }, [balAccess, getUserBals]);
+  }, [balAccess, getUserBals, basesLocales]);
 
   if (balAccess === undefined || isLoading) {
     return (
