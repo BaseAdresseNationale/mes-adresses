@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import {
@@ -16,40 +16,102 @@ import {
 } from "evergreen-ui";
 import NextLink from "next/link";
 import StatusBadge from "@/components/status-badge";
-import { BasesLocalesWithInfos } from "../bases-locales-list";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
+import {
+  ExtendedBaseLocaleDTO,
+  HabilitationDTO,
+  HabilitationService,
+  OpenAPI,
+} from "@/lib/openapi-api-bal";
 import CertificationCount from "../certification-count";
 import HabilitationTag from "../habilitation-tag";
+import { canFetchSignalements } from "@/lib/utils/signalement";
+import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
+import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
+import { CommuneApiGeoType } from "@/lib/geo-api/type";
+import { ApiGeoService } from "@/lib/geo-api";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
 
 interface BaseLocaleCardProps {
-  baseLocaleWithInfos: BasesLocalesWithInfos;
-  isAdmin?: boolean;
+  baseLocale: ExtendedBaseLocaleDTO;
   onRemove: () => void;
-  isShownHabilitationStatus?: boolean;
 }
 
-function BaseLocaleCard({
-  baseLocaleWithInfos,
-  isAdmin,
-  isShownHabilitationStatus,
-  onRemove,
-}: BaseLocaleCardProps) {
-  const {
-    id,
-    status,
-    sync,
-    nom,
-    updatedAt,
-    flag,
-    isHabilitationValid,
-    commune,
-    pendingSignalementsCount,
-    nbNumeros,
-    nbNumerosCertifies,
-  } = baseLocaleWithInfos;
+function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
+  const [commune, setCommune] = useState<CommuneApiGeoType | null>(null);
+  const [isHabilitationValid, setIsHabilitationValid] = useState(false);
+  const [pendingSignalementsCount, setPendingSignalementsCount] = useState(0);
+  const [flag, setFlag] = useState<string | null>(null);
+  const { id, status, sync, nom, updatedAt, nbNumeros, nbNumerosCertifies } =
+    baseLocale;
+
+  useEffect(() => {
+    const fetchCommune = async () => {
+      try {
+        const commune: CommuneApiGeoType = await ApiGeoService.getCommune(
+          baseLocale.commune
+        );
+        setCommune(commune);
+      } catch (err) {
+        console.error("Error fetching commune", err);
+        setCommune(null);
+      }
+    };
+
+    const fetchCommuneFlag = async () => {
+      try {
+        const flagUrl = await getCommuneFlagProxy(baseLocale.commune);
+        setFlag(flagUrl);
+      } catch (err) {
+        console.error("Error fetching commune flag", err);
+        setFlag(null);
+      }
+    };
+
+    const fetchIsHabilitationValid = async () => {
+      try {
+        Object.assign(OpenAPI, { TOKEN: baseLocale.token });
+        const habilitation: HabilitationDTO =
+          await HabilitationService.findHabilitation(baseLocale.id);
+        Object.assign(OpenAPI, { TOKEN: null });
+
+        const isAccepted = habilitation.status === "accepted";
+        const isExpired = new Date(habilitation.expiresAt) < new Date();
+
+        setIsHabilitationValid(isAccepted && !isExpired);
+      } catch (err) {
+        console.error("Error fetching habilitation status", err);
+        setIsHabilitationValid(false);
+      } finally {
+        Object.assign(OpenAPI, { TOKEN: null });
+      }
+    };
+
+    const fetchPendingSignalementsCount = async () => {
+      try {
+        const paginatedSignalements = await SignalementsService.getSignalements(
+          1,
+          undefined,
+          [Signalement.status.PENDING],
+          undefined,
+          undefined,
+          [baseLocale.commune]
+        );
+        setPendingSignalementsCount(paginatedSignalements.total);
+      } catch (err) {
+        console.error("Error fetching pending signalements count", err);
+        setPendingSignalementsCount(0);
+      }
+    };
+
+    fetchCommune();
+    fetchCommuneFlag();
+    fetchIsHabilitationValid();
+    if (canFetchSignalements(baseLocale, baseLocale.token)) {
+      fetchPendingSignalementsCount();
+    }
+  }, [baseLocale]);
 
   const majDate = formatDistanceToNow(new Date(updatedAt), { locale: fr });
 
@@ -80,7 +142,7 @@ function BaseLocaleCard({
           isHabilitationValid={isHabilitationValid}
         />
       </Pane>
-      {isHabilitationValid && isShownHabilitationStatus && (
+      {isHabilitationValid && commune && (
         <Pane
           position="absolute"
           top={10}
@@ -122,16 +184,18 @@ function BaseLocaleCard({
               ? "Dernière mise à jour il y a " + majDate
               : "Jamais mise à jour"}{" "}
           </Text>
-          <Link
-            href={`${ADRESSE_URL}/commune/${commune.code}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            fontSize={12}
-            fontStyle="italic"
-            textDecoration="underline"
-          >
-            Voir la page de {commune.nom}
-          </Link>
+          {commune && (
+            <Link
+              href={`${ADRESSE_URL}/commune/${commune.code}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              fontSize={12}
+              fontStyle="italic"
+              textDecoration="underline"
+            >
+              Voir la page de {commune.nom}
+            </Link>
+          )}
         </Pane>
         <Pane display="flex" flexDirection="column">
           <Pane marginTop={5} display="flex">
@@ -164,7 +228,7 @@ function BaseLocaleCard({
         justifyContent="space-between"
         borderTop="1px solid #E4E7EB"
       >
-        {isAdmin && canHardDelete && (
+        {canHardDelete && (
           <Button
             intent="danger"
             onClick={onRemove}
@@ -177,7 +241,7 @@ function BaseLocaleCard({
             <Icon icon={TrashIcon} />
           </Button>
         )}
-        {isAdmin && !canHardDelete && (
+        {!canHardDelete && (
           <Button
             onClick={onRemove}
             border="0"
