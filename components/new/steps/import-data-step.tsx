@@ -3,8 +3,8 @@ import { getFileExtension } from "@/lib/utils/file";
 import { CommuneType } from "@/types/commune";
 import {
   validate,
-  ValidateProfile,
-  ValidateRowType,
+  ValidateType,
+  ValidateRowFullType,
 } from "@ban-team/validateur-bal";
 import {
   Alert,
@@ -37,7 +37,7 @@ function extractCommuneCodeFromRow({ parsedValues, additionalValues }): string {
   );
 }
 
-function extractCommuneFromCSV(rows: ValidateRowType[]): CommuneRow[] {
+function extractCommuneFromCSV(rows: ValidateRowFullType[]): CommuneRow[] {
   // Get cle_interop and slice it to get the commune's code
   const communes: CommuneRow[] = rows.map(
     ({ parsedValues, additionalValues }) => ({
@@ -127,9 +127,9 @@ function ImportDataStep({
       try {
         setIsLoading(true);
         // Detect multi communes
-        const validationReport: ValidateProfile = (await validate(file, {
+        const validationReport: ValidateType = (await validate(file, {
           profile: "1.4",
-        })) as ValidateProfile;
+        })) as ValidateType;
         const communes: CommuneRow[] = extractCommuneFromCSV(
           validationReport.rows
         );
