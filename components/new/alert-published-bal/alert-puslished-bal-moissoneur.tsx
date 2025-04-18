@@ -1,42 +1,66 @@
 import { useState, useEffect } from "react";
-import { Button, Pane, Paragraph } from "evergreen-ui";
+import { Alert, Button, Pane, Paragraph, Spinner } from "evergreen-ui";
 import { DataGouvService } from "@/lib/data-gouv/data-gouv";
 import { Dataset, Organization } from "@/lib/data-gouv/types";
 import { Revision } from "@/lib/api-depot/types";
+import { CommuneType } from "@/types/commune";
 
 interface AlertPublishedBALMoissoneurProps {
+  commune: CommuneType;
   revision: Revision;
+  outdatedHarvestSources: string[];
 }
 
 function AlertPublishedBALMoissoneur({
   revision,
+  outdatedHarvestSources,
+  commune,
 }: AlertPublishedBALMoissoneurProps) {
   const [organization, setOrganization] = useState<Organization | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const isOutdatedSource = outdatedHarvestSources.includes(
+    revision.context.extras.sourceId
+  );
 
   useEffect(() => {
     const loadOrganization = async () => {
+      setIsLoading(true);
       if (revision.context.extras.sourceId) {
-        const sourceId: string = revision.context.extras.sourceId;
-        const dataset: Dataset = await DataGouvService.findDataset(sourceId);
+        try {
+          const sourceId: string = revision.context.extras.sourceId;
+          const dataset: Dataset = await DataGouvService.findDataset(sourceId);
 
-        setOrganization(dataset.organization);
+          setOrganization(dataset.organization);
+        } catch (error) {
+          console.error("Error fetching organization:", error);
+        } finally {
+          setIsLoading(false);
+        }
       }
     };
 
     loadOrganization();
   }, [revision]);
 
-  return (
-    <Pane>
-      {organization ? (
+  return isLoading ? (
+    <Spinner />
+  ) : (
+    <Alert
+      title={`Une Base Adresse Locale a déjà été publiée pour ${commune.nom}`}
+      intent={isOutdatedSource ? "info" : "warning"}
+      marginTop={16}
+    >
+      {organization && (
         <>
           <Paragraph marginTop={16}>
-            Une Base Adresse Locale est déjà gérée par {organization.name} pour
-            votre commune.
+            Une Base Adresse Locale est déjà publiée par {organization.name}{" "}
+            pour {commune.nom}.
           </Paragraph>
-          <Paragraph marginTop={16}>
-            Nous recommandons de prendre contact avec cet organisme.
-          </Paragraph>
+          {!isOutdatedSource && (
+            <Paragraph marginTop={16}>
+              Nous recommandons de prendre contact avec cet organisme.
+            </Paragraph>
+          )}
           <Paragraph marginTop={16}>
             <Button
               is="a"
@@ -48,17 +72,20 @@ function AlertPublishedBALMoissoneur({
             </Button>
           </Paragraph>
         </>
-      ) : (
+      )}
+
+      {isOutdatedSource && (
         <Paragraph marginTop={16}>
-          Une Base Adresse Locale a déjà été déposé pour votre commune
+          La Base Adresse Locale publiée est obsolète. Vous pouvez continuer à
+          l&apos;étape suivante pour la remplacer par la vôtre.
         </Paragraph>
       )}
 
       <Paragraph marginTop={16}>
-        Toutefois, la commune étant compétente en matière d’adressage, vous
-        pouvez prendre la main directement via Mes Adresses.
+        La commune étant compétente en matière d’adressage, vous pouvez prendre
+        la main directement en continuant à l&apos;étape suivante.
       </Paragraph>
-    </Pane>
+    </Alert>
   );
 }
 

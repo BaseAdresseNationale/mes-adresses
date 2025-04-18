@@ -1,36 +1,38 @@
-import { useMemo } from "react";
 import { Revision } from "@/lib/api-depot/types";
-import { Button, Pane, Paragraph } from "evergreen-ui";
+import { CommuneType } from "@/types/commune";
+import { Alert, Button, Paragraph } from "evergreen-ui";
+import NextLink from "next/link";
 
 interface AlertPublishedBALMesAdressesProps {
   revision: Revision;
+  commune: CommuneType;
 }
 
 function AlertPublishedBALMesAdresses({
   revision,
+  commune,
 }: AlertPublishedBALMesAdressesProps) {
-  const balId: string | null = useMemo(() => {
-    return revision.context?.extras?.balId || null;
-  }, [revision]);
+  const publishedBALId = revision.context?.extras?.balId || null;
 
   return (
-    <Pane>
-      <Paragraph marginTop={16}>
-        Une Base Adresse Locale pour votre commune est déjà publiée via l’outil
-        Mes Adresses.
+    <Alert title="Base Adresse Locale déjà publiée" intent="success">
+      <Paragraph marginTop={8}>
+        Une Base Adresse Locale est déjà publiée pour {commune.nom}.
       </Paragraph>
-      <Paragraph marginTop={16}>
-        Plutôt que de créer une nouvelle BAL, nous vous recommendons de
-        poursuivre l’adressage depuis celle existante.
+      <Paragraph marginTop={8}>
+        Si vous en êtes l&apos;administrateur, nous vous recommendons de
+        poursuivre l’adressage depuis cette dernière.
       </Paragraph>
-      {balId && (
-        <Paragraph marginTop={16}>
-          <Button is="a" height={30} href={`/bal/${balId}`} target="_blank">
-            Accéder à la Base Adresse Locale existante
-          </Button>
-        </Paragraph>
-      )}
-    </Pane>
+      <Button
+        marginTop={8}
+        appearance="primary"
+        is={NextLink}
+        height={30}
+        href={`/bal/${publishedBALId}`}
+      >
+        Accéder à la Base Adresse Locale publiée
+      </Button>
+    </Alert>
   );
 }
 

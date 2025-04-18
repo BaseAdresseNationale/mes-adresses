@@ -1,16 +1,14 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Autocomplete, Position, SearchInput } from "evergreen-ui";
 import { useDebouncedCallback } from "use-debounce";
-
 import { ApiGeoService } from "@/lib/geo-api";
-import { CommuneApiGeoType } from "@/lib/geo-api/type";
-import { CommuneSimpleType } from "@/pages/new";
+import { CommuneType } from "@/types/commune";
 
 export interface CommuneSearchProps {
   placeholder: string;
   innerRef: Dispatch<any>;
-  initialSelectedItem: CommuneSimpleType;
-  onSelect: Dispatch<SetStateAction<CommuneApiGeoType>>;
+  initialSelectedItem?: CommuneType;
+  onSelect: Dispatch<SetStateAction<CommuneType>>;
   [x: string]: any;
 }
 

@@ -11,32 +11,29 @@ function HabilitationTag({
   communeName,
   isHabilitationValid,
 }: HabilitationTagProps) {
-  const tag = (
-    <Pane
-      position="relative"
-      width={24}
-      height={24}
-      {...(isHabilitationValid && { cursor: "pointer" })}
-    >
-      <NextImage
-        src={
-          isHabilitationValid
-            ? "/static/images/bal-logo.png"
-            : "/static/images/bal-logo-disabled.png"
-        }
-        alt="Logo Base Adresse Locale"
-        layout="fill"
-      />
-    </Pane>
-  );
-  return isHabilitationValid ? (
-    <Tooltip
-      content={`Base Adresse Locale administrée par la commune de ${communeName}`}
-    >
-      {tag}
+  const tooltipContent = isHabilitationValid
+    ? `Base Adresse Locale administrée par la commune de ${communeName}`
+    : "La Base Adresse Locale n'est pas habilitée";
+
+  return (
+    <Tooltip content={tooltipContent}>
+      <Pane
+        position="relative"
+        width={24}
+        height={24}
+        {...(isHabilitationValid && { cursor: "pointer" })}
+      >
+        <NextImage
+          src={
+            isHabilitationValid
+              ? "/static/images/bal-logo.png"
+              : "/static/images/bal-logo-disabled.png"
+          }
+          alt="Logo Base Adresse Locale"
+          layout="fill"
+        />
+      </Pane>
     </Tooltip>
-  ) : (
-    tag
   );
 }
 
