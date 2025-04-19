@@ -130,7 +130,13 @@ function BasesLocalesList({
             <CreateBaseLocaleCard />
           </Pane>
         ) : (
-          <Pane display="flex" alignItems="center" width="100%" padding={16}>
+          <Pane
+            display="flex"
+            justifyContent="space-around"
+            alignItems="center"
+            width="100%"
+            padding={16}
+          >
             <CreateBaseLocaleCard />
             <WelcomeIllustration />
           </Pane>
