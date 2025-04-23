@@ -1,4 +1,11 @@
-import { Button, Pane, TextInputField, Text, Alert } from "evergreen-ui";
+import {
+  Button,
+  Pane,
+  TextInputField,
+  Text,
+  Alert,
+  Spinner,
+} from "evergreen-ui";
 
 interface BALInfosStepProps {
   balName: string;
@@ -49,16 +56,26 @@ function BALInfosStep({
         </Button>
       </Pane>
       {isLoading && (
-        <Alert
-          title={`Base Adresse Locale en cours de création...`}
-          intent="info"
-          marginTop={16}
-        >
-          <Text marginTop={8}>
-            Votre Base Adresse Locale est en cours de création. Cette opération
-            peut prendre plusieurs minutes.
-          </Text>
-        </Alert>
+        <>
+          <Alert
+            title={`Base Adresse Locale en cours de création...`}
+            intent="info"
+            marginTop={16}
+          >
+            <Text marginTop={8}>
+              Votre Base Adresse Locale est en cours de création. Cette
+              opération peut prendre plusieurs minutes.
+            </Text>
+          </Alert>
+          <Pane
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            flex={1}
+          >
+            <Spinner />
+          </Pane>
+        </>
       )}
     </Pane>
   );

@@ -12,17 +12,12 @@ function HabilitationTag({
   isHabilitationValid,
 }: HabilitationTagProps) {
   const tooltipContent = isHabilitationValid
-    ? `Base Adresse Locale administrée par la commune de ${communeName}`
+    ? `Base Adresse Locale habilitée par la commune de ${communeName}`
     : "La Base Adresse Locale n'est pas habilitée";
 
   return (
     <Tooltip content={tooltipContent}>
-      <Pane
-        position="relative"
-        width={24}
-        height={24}
-        {...(isHabilitationValid && { cursor: "pointer" })}
-      >
+      <Pane position="relative" width={24} height={24}>
         <NextImage
           src={
             isHabilitationValid

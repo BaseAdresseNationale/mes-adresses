@@ -20,6 +20,7 @@ const StyledWrapper = styled.div`
     gap: 0.5rem;
     padding: 1rem;
     background-color: #f9f9f9;
+    border-bottom: 1px solid #e6e8f0;
     flex-shrink: 0;
   }
 
@@ -47,12 +48,22 @@ const StyledWrapper = styled.div`
   }
 
   .stepper-controls {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
+    border-top: 1px solid #e6e8f0;
     background-color: #f9f9f9;
     border-radius: 8px;
     flex-shrink: 0;
+
+    > div {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0 1rem 1rem;
+      max-width: 50%;
+
+      @media screen and (max-width: 768px) {
+        max-width: unset;
+        padding: 1rem;
+      }
+    }
   }
 `;
 
@@ -92,25 +103,27 @@ function Stepper({
       </Pane>
       <Pane className="stepper-content">{children}</Pane>
       <Pane className="stepper-controls">
-        <Button
-          onClick={() => onStepChange(currentStepIndex - 1)}
-          disabled={!steps[currentStepIndex].canBrowseBack}
-          type="button"
-        >
-          Précédent
-        </Button>
-        <Button
-          appearance="primary"
-          onClick={() => {
-            if (currentStepIndex !== steps.length - 1) {
-              onStepChange(currentStepIndex + 1);
-            }
-          }}
-          disabled={!steps[currentStepIndex].canBrowseNext}
-          type={currentStepIndex === steps.length - 1 ? "submit" : "button"}
-        >
-          {currentStepIndex === steps.length - 1 ? "Terminer" : "Suivant"}
-        </Button>
+        <Pane>
+          <Button
+            onClick={() => onStepChange(currentStepIndex - 1)}
+            disabled={!steps[currentStepIndex].canBrowseBack}
+            type="button"
+          >
+            Précédent
+          </Button>
+          <Button
+            appearance="primary"
+            onClick={() => {
+              if (currentStepIndex !== steps.length - 1) {
+                onStepChange(currentStepIndex + 1);
+              }
+            }}
+            disabled={!steps[currentStepIndex].canBrowseNext}
+            type={currentStepIndex === steps.length - 1 ? "submit" : "button"}
+          >
+            {currentStepIndex === steps.length - 1 ? "Terminer" : "Suivant"}
+          </Button>
+        </Pane>
       </Pane>
     </StyledWrapper>
   );

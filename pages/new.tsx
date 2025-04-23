@@ -26,26 +26,15 @@ const getSuggestedBALName = (commune?: CommuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null;
 };
 
-const StyledStepperContent = styled(Pane)`
-  display: flex;
-  height: 100%;
+const StyledIllustration = styled(Pane)`
+  background-image: url("/static/images/illustration-new.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex: 1;
 
-  > div {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .illustration {
-    background-image: url("/static/images/illustration-new.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    flex: 1;
-
-    @media screen and (max-width: 768px) {
-      display: none;
-    }
+  @media screen and (max-width: 768px) {
+    display: none;
   }
 `;
 
@@ -62,9 +51,7 @@ function NewPage({
   const { addBalAccess } = useContext(LocalStorageContext);
   const { pushToast } = useContext(LayoutContext);
   const [commune, setCommune] = useState<CommuneType | null>(defaultCommune);
-  const [importValue, setImportValue] = useState<"ban" | "file" | "empty">(
-    "ban"
-  );
+  const [importValue, setImportValue] = useState<"ban" | "file">("ban");
   const [csvImportFile, setCsvImportFile] = useState<File | null>(null);
   const [balName, setBalName] = useState<string | null>(
     getSuggestedBALName(defaultCommune)
@@ -166,8 +153,8 @@ function NewPage({
           currentStepIndex={currentStepIndex}
           onStepChange={setCurrentStepIndex}
         >
-          <StyledStepperContent>
-            <Pane>
+          <Pane display="flex" height="100%">
+            <Pane flex={1} display="flex" flexDirection="column">
               {currentStepIndex === 0 && (
                 <SearchCommuneStep
                   commune={commune}
@@ -196,8 +183,8 @@ function NewPage({
                 />
               )}
             </Pane>
-            <Pane className="illustration" />
-          </StyledStepperContent>
+            <StyledIllustration />
+          </Pane>
         </Stepper>
       </Pane>
     </Main>

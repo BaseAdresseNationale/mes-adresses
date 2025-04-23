@@ -10,7 +10,7 @@ let idCounter = 0;
 
 interface CommuneSearchFieldProps {
   id: string;
-  hint: string;
+  hint?: string;
   label: string;
   description?: string;
   validationMessage?: string;

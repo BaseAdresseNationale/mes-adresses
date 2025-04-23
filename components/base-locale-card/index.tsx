@@ -130,11 +130,6 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
       elevation={2}
       margin={12}
     >
-      {Boolean(pendingSignalementsCount) && (
-        <Pane position="absolute" top={0} left={0}>
-          <Pulsar size={16} />
-        </Pane>
-      )}
       <Pane position="absolute" top={16} left={16} height={20} elevation={2}>
         <StatusBadge
           status={status}
@@ -207,14 +202,21 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
               nbNumerosCertifies={nbNumerosCertifies}
             />
           </Pane>
-          {Boolean(pendingSignalementsCount) && (
-            <Pane marginTop={5} display="flex" position="relative">
+          {pendingSignalementsCount > 0 && (
+            <Pane marginTop={5} display="flex">
               <Text display="block" marginRight={5}>
                 Signalements en attente :
               </Text>
               <Text fontWeight="bold" whiteSpace="nowrap">
                 {pendingSignalementsCount}
               </Text>
+              <Pane marginLeft={20} position="relative">
+                <Pulsar
+                  size={16}
+                  position="bottom-right"
+                  transform="translateY(50%)"
+                />
+              </Pane>
             </Pane>
           )}
         </Pane>
@@ -232,6 +234,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
           <Button
             intent="danger"
             onClick={onRemove}
+            borderRadius={0}
             border="0"
             flexShrink={0}
             height="100%"
@@ -244,6 +247,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
         {!canHardDelete && (
           <Button
             onClick={onRemove}
+            borderRadius={0}
             border="0"
             flexShrink={0}
             height="100%"
@@ -255,13 +259,16 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
         )}
         <Button
           is={NextLink}
+          color="info"
           href={`/bal/${id}`}
           border="0"
+          borderRadius={0}
           flexGrow={1}
           height="100%"
           title="Accéder à la Base Adresse Locale"
         >
-          <Icon icon={ArrowRightIcon} color="info" />
+          Gérer les adresses
+          <Icon marginLeft={10} icon={ArrowRightIcon} />
         </Button>
       </Pane>
     </Card>

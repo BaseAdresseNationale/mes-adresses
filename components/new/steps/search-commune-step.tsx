@@ -33,7 +33,6 @@ function SearchCommuneStep({
         id="commune"
         initialSelectedItem={commune}
         label="Rechercher une commune"
-        hint="Pour affiner la recherche, renseignez le code département"
         placeholder="Roche 42"
         appearance="default"
         maxWidth={500}

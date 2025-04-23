@@ -3,7 +3,12 @@ import NextLink from "next/link";
 
 function Footer() {
   return (
-    <Pane bottom={0} background="tint1" padding={16} elevation={1}>
+    <Pane
+      bottom={0}
+      background="tint1"
+      padding={16}
+      borderTop="1px solid #E6E8F0"
+    >
       <Button
         is={NextLink}
         appearance="minimal"

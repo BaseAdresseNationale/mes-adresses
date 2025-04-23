@@ -40,21 +40,11 @@ function Accessibilite() {
           />
         </Pane>
 
-        <Pane
-          gap="1em"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
+        <Pane gap="1em" display="flex" flexDirection="column">
           <Heading is="h2" size={900} color="#2952CC">
             Déclaration d’accessibilité
           </Heading>
-          <Pane
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
+          <Pane display="flex" flexDirection="column" justifyContent="center">
             <Pane>
               <Paragraph lineHeight="200%">
                 <Strong>La Base Adresse Nationale</Strong> s’engage à rendre ses
@@ -89,12 +79,7 @@ function Accessibilite() {
           </Pane>
         </Pane>
 
-        <Pane
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          gap="1em"
-        >
+        <Pane display="flex" flexDirection="column" gap="1em">
           <Heading is="h3" size={800} color="#2952CC">
             État de conformité
           </Heading>
@@ -104,16 +89,9 @@ function Accessibilite() {
             border="solid 3px #D14343"
             borderRadius={5}
             textAlign="center"
+            width="fit-content"
           >
-            <Text
-              color="#D14343"
-              fontSize={22}
-              fontWeight={600}
-              display="flex"
-              alignItems="center"
-              textAlign="center"
-              justifyContent="center"
-            >
+            <Text color="#D14343" fontSize={22} fontWeight={600}>
               <DeleteIcon size={22} marginRight={8} />
               Non-conforme
             </Text>
@@ -129,13 +107,7 @@ function Accessibilite() {
           </Paragraph>
         </Pane>
 
-        <Pane
-          width="100%"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          gap="1em"
-        >
+        <Pane width="100%" display="flex" flexDirection="column" gap="1em">
           <Heading is="h3" size={800} color="#2952CC">
             Information et contact
           </Heading>
@@ -150,6 +122,7 @@ function Accessibilite() {
             }}
             appearance="primary"
             iconBefore={EnvelopeIcon}
+            width="fit-content"
           >
             Nous contacter
           </Button>
@@ -159,7 +132,6 @@ function Accessibilite() {
           width="100%"
           display="flex"
           flexDirection="column"
-          alignItems="center"
           gap="1em"
           marginBottom="2em"
         >

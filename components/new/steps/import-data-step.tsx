@@ -21,7 +21,7 @@ import { uniqBy } from "lodash";
 interface ImportDataStepProps {
   commune: CommuneType;
   importValue: string;
-  setImportValue: (value: "ban" | "file" | "empty") => void;
+  setImportValue: (value: "ban" | "file") => void;
   csvImportFile: File | null;
   setCsvImportFile: (file: File | null) => void;
 }
@@ -72,23 +72,6 @@ const getImportOptions = (commune: CommuneType) => [
     value: "file",
     description:
       "Cette méthode est recommandée si vous avez déjà un fichier CSV au format BAL.",
-  },
-  {
-    label: "Créer une Base Adresse Locale vide",
-    value: "empty",
-    description: (
-      <>
-        Cette méthode est recommandée uniquement si les données provennant de la{" "}
-        <a
-          href={`${process.env.NEXT_PUBLIC_ADRESSE_URL}/carte-base-adresse-nationale?id=${commune.code}`}
-          target="_blank"
-        >
-          Base Adresse Nationale
-        </a>{" "}
-        (BAN) sont erronées et ne peuvent pas être utilisées comme point de
-        départ.
-      </>
-    ),
   },
 ];
 
@@ -269,7 +252,7 @@ function ImportDataStep({
         value={importValue}
         options={options}
         onChange={(event) =>
-          setImportValue(event.target.value as "ban" | "file" | "empty")
+          setImportValue(event.target.value as "ban" | "file")
         }
       />
       {description && (
