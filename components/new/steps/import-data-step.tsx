@@ -8,6 +8,8 @@ import {
 } from "@ban-team/validateur-bal";
 import {
   Alert,
+  Button,
+  InboxIcon,
   Pane,
   Paragraph,
   RadioGroup,
@@ -275,6 +277,28 @@ function ImportDataStep({
             isLoading={isLoading}
           />
           {alert}
+
+          <Alert
+            margin={16}
+            title="Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?"
+            marginY={16}
+          >
+            <Text>
+              Utilisez notre formulaire de dépôt afin de publier vos adresses
+              dans la Base Adresse Nationale.
+            </Text>
+            <Pane marginTop={16}>
+              <Button
+                appearance="primary"
+                iconBefore={InboxIcon}
+                is="a"
+                href={`${process.env.NEXT_PUBLIC_ADRESSE_URL}/bases-locales/publication`}
+              >
+                Accéder au formulaire de dépôt d’une Base Adresse Locale sur
+                adresse.data.gouv.fr
+              </Button>
+            </Pane>
+          </Alert>
         </Pane>
       )}
     </>
