@@ -1,30 +1,10 @@
 import { getFullDate } from "@/lib/utils/date";
 import { Heading, Pane, Text } from "evergreen-ui";
-import styled from "styled-components";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkGemoji from "remark-gemoji";
 import { NewsType } from "@/lib/mattermost/type";
 import { useEffect } from "react";
-
-const StyledWrapper = styled.ul`
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  > li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-
-    &:last-child {
-      border-bottom: none;
-    }
-  }
-`;
 
 interface NewsTabProps {
   news: NewsType[];
@@ -37,7 +17,14 @@ function NewsTab({ news, updateLastNewsSeen }: NewsTabProps) {
   }, [updateLastNewsSeen, news]);
 
   return (
-    <StyledWrapper>
+    <Pane
+      is="ul"
+      display="flex"
+      flexDirection="column"
+      padding={0}
+      margin={0}
+      listStyle="none"
+    >
       {news.length === 0 && (
         <Pane
           display="flex"
@@ -50,7 +37,7 @@ function NewsTab({ news, updateLastNewsSeen }: NewsTabProps) {
         </Pane>
       )}
       {news.length > 0 &&
-        news.map(({ id, date, message }) => (
+        news.map(({ id, date, message }, index) => (
           <Pane
             key={id}
             is="li"
@@ -58,6 +45,8 @@ function NewsTab({ news, updateLastNewsSeen }: NewsTabProps) {
             flexDirection="column"
             padding={10}
             gap={8}
+            justifyContent="space-between"
+            borderBottom={index === news.length - 1 ? "none" : "1px solid #ccc"}
           >
             <Heading display="flex" alignItems="center" size={400}>
               {getFullDate(new Date(date))}
@@ -69,7 +58,7 @@ function NewsTab({ news, updateLastNewsSeen }: NewsTabProps) {
             </Text>
           </Pane>
         ))}
-    </StyledWrapper>
+    </Pane>
   );
 }
 

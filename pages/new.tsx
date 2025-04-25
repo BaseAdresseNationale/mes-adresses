@@ -14,7 +14,7 @@ import Router from "next/router";
 import { useBALDataImport } from "@/hooks/bal-data-import";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
-import styled from "styled-components";
+import styles from "./new.module.css";
 
 interface NewPageProps {
   defaultCommune?: CommuneType;
@@ -25,18 +25,6 @@ interface NewPageProps {
 const getSuggestedBALName = (commune?: CommuneType) => {
   return commune ? `Adresses de ${commune.nom}` : null;
 };
-
-const StyledIllustration = styled(Pane)`
-  background-image: url("/static/images/illustration-new.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  flex: 1;
-
-  @media screen and (max-width: 768px) {
-    display: none;
-  }
-`;
 
 function NewPage({
   defaultCommune,
@@ -183,7 +171,7 @@ function NewPage({
                 />
               )}
             </Pane>
-            <StyledIllustration />
+            <Pane className={styles["welcome-illustration"]} />
           </Pane>
         </Stepper>
       </Pane>

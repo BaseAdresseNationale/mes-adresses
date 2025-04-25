@@ -1,0 +1,13 @@
+.welcome-illustration {
+  background-image: url("/static/images/illustration-new.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex: 1;
+}
+
+@media screen and (max-width: 768px) {
+  .welcome-illustration {
+    display: none;
+  }
+}

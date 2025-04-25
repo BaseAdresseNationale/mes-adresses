@@ -1,11 +1,11 @@
 import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";
-import { Pane, Spinner, Text } from "evergreen-ui";
+import { Pane, Spinner } from "evergreen-ui";
 import { useEffect, useState } from "react";
-import AlertPublishedBALMesAdresses from "./alert-published-bal/alert-puslished-bal-mes-adresses";
-import AlertPublishedBALMoissoneur from "./alert-published-bal/alert-puslished-bal-moissoneur";
-import AlertPublishedBALApiDepot from "./alert-published-bal/alert-puslished-bal-api-depot";
+import AlertPublishedBALMesAdresses from "./alert-published-bal/alert-published-bal-mes-adresses";
+import AlertPublishedBALMoissoneur from "./alert-published-bal/alert-published-bal-moissoneur";
+import AlertPublishedBALApiDepot from "./alert-published-bal/alert-published-bal-api-depot";
 import {
   BaseLocale,
   BasesLocalesService,

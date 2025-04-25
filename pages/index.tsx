@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import { Pane, Spinner } from "evergreen-ui";
 import Main from "@/layouts/main";
-import BALWidgetContext from "@/contexts/bal-widget.tsx";
 import Footer from "@/components/footer.tsx";
 
 const CSRUserBasesLocales = dynamic(
@@ -24,15 +23,6 @@ const CSRUserBasesLocales = dynamic(
 );
 
 function Index() {
-  const { showWidget, hideWidget } = useContext(BALWidgetContext);
-
-  useEffect(() => {
-    showWidget();
-    return () => {
-      hideWidget();
-    };
-  }, [showWidget, hideWidget]);
-
   return (
     <Main>
       <CSRUserBasesLocales />

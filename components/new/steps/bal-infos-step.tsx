@@ -72,6 +72,7 @@ function BALInfosStep({
             alignItems="center"
             justifyContent="center"
             flex={1}
+            marginTop={16}
           >
             <Spinner />
           </Pane>

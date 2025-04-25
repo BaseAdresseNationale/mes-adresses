@@ -18,16 +18,13 @@ const mapPostsToNews = ({
 };
 
 export const fetchNews = async () => {
-  const response = await fetch(
-    "https://mattermost.incubateur.net/api/v4/channels/biungtjj63yutc3ixxuqh3nsqe/posts",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${process.env.MES_ADRESSES_BOT_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await fetch(process.env.MATTERMOST_CHANNEL_URL, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${process.env.MATTERMOST_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+  });
 
   if (!response.ok) {
     throw new Error("Failed to fetch news");

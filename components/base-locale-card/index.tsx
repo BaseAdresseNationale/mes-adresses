@@ -76,7 +76,8 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
           await HabilitationService.findHabilitation(baseLocale.id);
         Object.assign(OpenAPI, { TOKEN: null });
 
-        const isAccepted = habilitation.status === "accepted";
+        const isAccepted =
+          habilitation.status === HabilitationDTO.status.ACCEPTED;
         const isExpired = new Date(habilitation.expiresAt) < new Date();
 
         setIsHabilitationValid(isAccepted && !isExpired);
@@ -259,7 +260,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
         )}
         <Button
           is={NextLink}
-          color="info"
+          color="#3366FF"
           href={`/bal/${id}`}
           border="0"
           borderRadius={0}

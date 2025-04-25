@@ -1,0 +1,71 @@
+.button-circle-effect {
+  --bg-color: #3366ff;
+  --bg-color-light: #85a3ff;
+  --text-color-hover: white;
+
+  overflow: hidden;
+  flex: 1;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease-out;
+  text-decoration: none;
+  border: none;
+  background-color: transparent;
+}
+
+.button-circle-effect:hover .overlay {
+  transform: scale(5) translateZ(0);
+}
+
+.button-circle-effect:hover .circle {
+  border-color: var(--bg-color-light);
+  background: var(--bg-color);
+}
+
+.button-circle-effect:hover .circle:after {
+  background: var(--bg-color-light);
+}
+
+.button-circle-effect:hover .button-label {
+  color: var(--text-color-hover);
+}
+
+.circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease-out;
+}
+
+.circle:after {
+  content: "";
+  width: 100px;
+  height: 100px;
+  display: block;
+  position: absolute;
+  background: var(--bg-color);
+  border-radius: 50%;
+  transition: opacity 0.3s ease-out;
+}
+
+.circle svg {
+  z-index: 10000;
+  transform: translateZ(0);
+}
+
+.overlay {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  border-radius: 50%;
+  background: var(--bg-color);
+  z-index: 0;
+  transition: transform 0.3s ease-out;
+}

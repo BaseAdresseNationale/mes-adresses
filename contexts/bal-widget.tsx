@@ -1,7 +1,8 @@
 import { ApiBalAdminService } from "@/lib/bal-admin";
+import { Pane } from "evergreen-ui";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState, createContext } from "react";
-import styled, { css } from "styled-components";
-
+/* 
 export const StyledIFrame = styled.iframe<{
   $isOpen: boolean;
   $isVisible: boolean;
@@ -38,7 +39,7 @@ export const StyledIFrame = styled.iframe<{
     right: 10px;
     ${({ $isOpen }) => $isOpen && "width: calc(100% - 20px);"}
   }
-`;
+`; */
 
 interface BALWidgetContextType {
   open: () => void;
@@ -66,6 +67,8 @@ interface BALWidgetProviderProps {
   children: React.ReactNode;
 }
 
+const visibleOnPages = ["/", "/new", "/accessibilite", "/mentions-legales"];
+
 export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
   const balWidgetRef = useRef<HTMLIFrameElement>(null);
   const transitionTimeout = useRef<NodeJS.Timeout>();
@@ -75,6 +78,12 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
   const [isBalWidgetReady, setIsBalWidgetReady] = useState(false);
   const [isBalWidgetConfigLoaded, setIsBalWidgetConfigLoaded] = useState(false);
   const [balWidgetConfig, setBalWidgetConfig] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const showWidget = visibleOnPages.includes(router.pathname);
+    setIsWidgetVisible(showWidget);
+  }, [router]);
 
   const open = useCallback(() => {
     if (balWidgetRef.current) {
@@ -210,12 +219,20 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
     >
       {children}
       {isWidgetDisplayed && (
-        <StyledIFrame
+        <Pane
+          is="iframe"
           ref={balWidgetRef}
           src={process.env.NEXT_PUBLIC_BAL_WIDGET_URL}
-          $isOpen={isBalWidgetOpen}
-          $isVisible={isWidgetVisible}
           title="BAL Widget"
+          position="fixed"
+          bottom={40}
+          right={40}
+          zIndex={999}
+          border="none"
+          height={isBalWidgetOpen ? "600px" : "60px"}
+          width={isBalWidgetOpen ? "450px" : "60px"}
+          transform={isWidgetVisible ? "translateX(0)" : "translateX(300%)"}
+          transition="transform 0.3s ease"
         />
       )}
     </BALWidgetContext.Provider>

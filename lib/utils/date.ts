@@ -1,3 +1,6 @@
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+
 export const getDuration = (start: Date, end: Date = new Date()) => {
   const duration = end.getTime() - start.getTime();
   const seconds = Math.floor(duration / 1000);
@@ -26,20 +29,9 @@ export const getLongFormattedDate = (date: Date) => {
   });
 };
 
-const daysOfWeek = [
-  "Dimanche",
-  "Lundi",
-  "Mardi",
-  "Mercredi",
-  "Jeudi",
-  "Vendredi",
-  "Samedi",
-];
-
+// Ex: "mercredi 1er janvier 2023"
 export const getFullDate = (date: Date) => {
-  return `${
-    daysOfWeek[date.getDay()]
-  } ${date.getDate()} ${date.toLocaleDateString("fr-FR", {
-    month: "long",
-  })} ${date.getFullYear()}`;
+  return format(date, "PPPP", {
+    locale: fr,
+  });
 };

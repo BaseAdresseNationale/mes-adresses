@@ -12,7 +12,6 @@ function UserBasesLocales() {
   const [basesLocales, setBasesLocales] = useState([]);
 
   const getUserBals = useCallback(async () => {
-    setIsLoading(true);
     if (balAccess) {
       const basesLocales: BaseLocale[] = await Promise.all(
         Object.keys(balAccess).map(async (id) => {
@@ -42,10 +41,10 @@ function UserBasesLocales() {
   }, [balAccess]);
 
   useEffect(() => {
-    if (balAccess !== undefined && basesLocales.length === 0) {
+    if (balAccess !== undefined && isLoading) {
       getUserBals();
     }
-  }, [balAccess, getUserBals, basesLocales]);
+  }, [balAccess, getUserBals, isLoading]);
 
   if (balAccess === undefined || isLoading) {
     return (
@@ -64,7 +63,7 @@ function UserBasesLocales() {
         justifyContent="flex-start"
         overflowY="auto"
       >
-        <BasesLocalesList basesLocales={basesLocales} />
+        <BasesLocalesList initialBasesLocales={basesLocales} />
       </Pane>
       <HomeDrawer />
     </Pane>

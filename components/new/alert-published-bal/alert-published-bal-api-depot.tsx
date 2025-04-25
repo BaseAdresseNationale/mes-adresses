@@ -3,7 +3,7 @@ import { Alert, Paragraph, Strong } from "evergreen-ui";
 import { PublicClient, Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";
 
-interface AlertAlertPublishedBALApiDepotProps {
+interface AlertPublishedBALApiDepotProps {
   revision: Revision;
   outdatedApiDepotClients: string[];
   commune: CommuneType;
@@ -13,7 +13,7 @@ function AlertPublishedBALApiDepot({
   revision,
   outdatedApiDepotClients,
   commune,
-}: AlertAlertPublishedBALApiDepotProps) {
+}: AlertPublishedBALApiDepotProps) {
   const client: PublicClient = revision.client;
   const isOutdatedClient = outdatedApiDepotClients.includes(client.id);
 

@@ -10,28 +10,6 @@ import {
   Pane,
   Text,
 } from "evergreen-ui";
-import styled from "styled-components";
-
-const StyledWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    > li {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-  }
-`;
 
 const trainingTypeMap = {
   [EventTypeTypeEnum.FORMATION]: {
@@ -50,7 +28,7 @@ interface TrainingTabProps {
 
 function TrainingTab({ nextTrainings }: TrainingTabProps) {
   return (
-    <StyledWrapper>
+    <Pane display="flex" flexDirection="column">
       {nextTrainings.length === 0 && (
         <Pane
           display="flex"
@@ -62,10 +40,10 @@ function TrainingTab({ nextTrainings }: TrainingTabProps) {
           <Text>Pas de formations à venir</Text>
         </Pane>
       )}
-      <Pane is="ul">
+      <Pane is="ul" listStyle="none" padding={0} margin={0}>
         {nextTrainings.length > 0 &&
           nextTrainings.map(
-            ({ id, type, date, startHour, endHour, description }) => (
+            ({ id, type, date, startHour, endHour, description }, index) => (
               <Pane
                 key={id}
                 is="li"
@@ -73,6 +51,10 @@ function TrainingTab({ nextTrainings }: TrainingTabProps) {
                 flexDirection="column"
                 padding={10}
                 gap={8}
+                justifyContent="space-between"
+                borderBottom={
+                  index === nextTrainings.length - 1 ? "none" : "1px solid #ccc"
+                }
               >
                 <Badge color={trainingTypeMap[type].color} width="fit-content">
                   {trainingTypeMap[type].label}
@@ -113,7 +95,7 @@ function TrainingTab({ nextTrainings }: TrainingTabProps) {
       >
         Voir tous nos évènements
       </Button>
-    </StyledWrapper>
+    </Pane>
   );
 }
 

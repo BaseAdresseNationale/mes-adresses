@@ -13,14 +13,12 @@ import CreateBaseLocaleCard from "./create-bal-card";
 import WelcomeIllustration from "../welcome-illustration";
 
 interface BasesLocalesListProps {
-  basesLocales: ExtendedBaseLocaleDTO[];
+  initialBasesLocales: ExtendedBaseLocaleDTO[];
 }
 
 const PAGE_SIZE = 8;
 
-function BasesLocalesList({
-  basesLocales: initialBasesLocales,
-}: BasesLocalesListProps) {
+function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
   const [basesLocales, setBasesLocales] = useState(initialBasesLocales);
   const [currentPage, setCurrentPage] = useState(1);
   const { removeBalAccess, getBalToken } = useContext(LocalStorageContext);

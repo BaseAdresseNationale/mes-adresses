@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Alert, Button, Pane, Paragraph, Spinner } from "evergreen-ui";
+import { Alert, Button, Paragraph, Spinner } from "evergreen-ui";
 import { DataGouvService } from "@/lib/data-gouv/data-gouv";
 import { Dataset, Organization } from "@/lib/data-gouv/types";
 import { Revision } from "@/lib/api-depot/types";

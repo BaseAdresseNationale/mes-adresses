@@ -12,12 +12,13 @@ import {
   InboxIcon,
   Pane,
   Paragraph,
+  Radio,
   RadioGroup,
   ShareIcon,
   Strong,
   Text,
 } from "evergreen-ui";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { uniqBy } from "lodash";
 
 interface ImportDataStepProps {
@@ -248,20 +249,28 @@ function ImportDataStep({
 
   return (
     <>
-      <RadioGroup
-        label="Choisissez votre point de départ"
-        size={16}
-        value={importValue}
-        options={options}
-        onChange={(event) =>
-          setImportValue(event.target.value as "ban" | "file")
-        }
-      />
-      {description && (
-        <Alert intent="info" marginBottom={16}>
-          <Text>{description}</Text>
-        </Alert>
-      )}
+      <Pane aria-label="Choisissez votre point de départ" role="group">
+        <Text fontWeight={500} fontSize="14px" color="gray700">
+          Choisissez votre point de départ
+        </Text>
+        {options.map((option) => (
+          <Fragment key={option.value}>
+            <Radio
+              size={16}
+              name="import-option"
+              checked={importValue === option.value}
+              label={option.label}
+              onChange={() => setImportValue(option.value as "ban" | "file")}
+            />
+            {importValue === option.value && (
+              <Alert intent="info" marginBottom={16}>
+                <Text>{description}</Text>
+              </Alert>
+            )}
+          </Fragment>
+        ))}
+      </Pane>
+
       {importValue === "file" && (
         <Pane>
           <Uploader
@@ -279,23 +288,22 @@ function ImportDataStep({
           {alert}
 
           <Alert
-            margin={16}
             title="Vous disposez déjà d’une Base Adresse Locale au format CSV gérée à partir d’un autre outil ?"
             marginY={16}
           >
-            <Text>
-              Utilisez notre formulaire de dépôt afin de publier vos adresses
-              dans la Base Adresse Nationale.
-            </Text>
+            <Paragraph marginTop={16}>
+              Utilisez le formulaire de dépôt afin de publier vos adresses dans
+              la Base Adresse Nationale.
+            </Paragraph>
             <Pane marginTop={16}>
               <Button
                 appearance="primary"
                 iconBefore={InboxIcon}
                 is="a"
                 href={`${process.env.NEXT_PUBLIC_ADRESSE_URL}/bases-locales/publication`}
+                target="_blank"
               >
-                Accéder au formulaire de dépôt d’une Base Adresse Locale sur
-                adresse.data.gouv.fr
+                Accéder au formulaire de dépôt
               </Button>
             </Pane>
           </Alert>

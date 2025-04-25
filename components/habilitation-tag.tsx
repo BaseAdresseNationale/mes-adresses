@@ -1,5 +1,5 @@
 import React from "react";
-import NextImage from "next/legacy/image";
+import NextImage from "next/image";
 import { Pane, Tooltip } from "evergreen-ui";
 
 interface HabilitationTagProps {
