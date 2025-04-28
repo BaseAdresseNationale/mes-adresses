@@ -65,7 +65,7 @@ function PositionEditor({
     return markers.length > 1
       ? "Déplacez les marqueurs sur la carte pour modifier les positions"
       : markers.length === 1
-        ? `Déplacez le marqueur sur la carte pour positioner le ${
+        ? `Déplacez le marqueur sur la carte pour positionner le ${
             isToponyme ? "toponyme" : "numéro"
           }.`
         : `Déplacez le marqueur sur la carte pour placer le ${
