@@ -93,13 +93,10 @@ function SignalementsPage({
       return;
     }
 
-    const communeBbox: number[] = commune.contour
-      ? bbox(commune.contour)
-      : null;
-    if (communeBbox) {
+    if (commune.bbox) {
       const center = [
-        (communeBbox[0] + communeBbox[2]) / 2,
-        (communeBbox[1] + communeBbox[3]) / 2,
+        (commune.bbox[0] + commune.bbox[2]) / 2,
+        (commune.bbox[1] + commune.bbox[3]) / 2,
       ] as [number, number];
       map.flyTo({
         center,
@@ -108,7 +105,7 @@ function SignalementsPage({
         screenSpeed: 2,
       });
     }
-  }, [commune.contour, map]);
+  }, [commune.bbox, map]);
 
   useEffect(() => {
     if (isStyleLoaded) {

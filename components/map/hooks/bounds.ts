@@ -4,7 +4,7 @@ import type { Map } from "maplibre-gl";
 
 import BalDataContext from "@/contexts/bal-data";
 import { NextRouter } from "next/router";
-import { ExtendedBaseLocaleDTO, Toponyme, Voie } from "@/lib/openapi-api-bal";
+import { Toponyme, Voie } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
 function useBounds(
@@ -14,13 +14,7 @@ function useBounds(
   voie: Voie,
   toponyme: Toponyme
 ) {
-  const communeBbox: number[] = useMemo(
-    () => (commune.contour ? bbox(commune.contour) : null),
-    [commune.contour]
-  );
-
-  const [bounds, setBounds] = useState<number[]>(communeBbox);
-
+  const [bounds, setBounds] = useState<number[]>(commune.bbox);
   const { editingItem } = useContext(BalDataContext);
 
   const [wasCenteredOnCommuneOnce, setWasCenteredOnCommuneOnce] =
@@ -45,10 +39,10 @@ function useBounds(
     if (editingItem) {
       setBounds(bboxForItem(editingItem));
     } else if (!wasCenteredOnCommuneOnce) {
-      setBounds(communeBbox);
+      setBounds(commune.bbox);
       setWasCenteredOnCommuneOnce(true);
     }
-  }, [editingItem, wasCenteredOnCommuneOnce, map, bboxForItem, communeBbox]);
+  }, [editingItem, wasCenteredOnCommuneOnce, map, bboxForItem, commune.bbox]);
 
   useEffect(() => {
     const { idVoie, idToponyme } = router.query;
