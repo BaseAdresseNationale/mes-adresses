@@ -86,12 +86,12 @@ function CommunePublicationInfos({
       ) : (
         <>
           {apiDepotLastRevision ? (
-            apiDepotLastRevision.context.extras.balId ? (
+            apiDepotLastRevision.context.extras?.balId ? (
               <AlertPublishedBALMesAdresses
                 commune={commune}
                 revision={apiDepotLastRevision}
               />
-            ) : apiDepotLastRevision.context.extras.sourceId ? (
+            ) : apiDepotLastRevision.context.extras?.sourceId ? (
               <AlertPublishedBALMoissoneur
                 commune={commune}
                 revision={apiDepotLastRevision}
