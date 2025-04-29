@@ -1,45 +1,15 @@
 import { ApiBalAdminService } from "@/lib/bal-admin";
 import { Pane } from "evergreen-ui";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState, createContext } from "react";
-/* 
-export const StyledIFrame = styled.iframe<{
-  $isOpen: boolean;
-  $isVisible: boolean;
-}>`
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  z-index: 999;
-  // Fix to avoid white box when dark mode is enabled
-  color-scheme: normal;
-  border: none;
-  ${({ $isOpen }) =>
-    $isOpen
-      ? css`
-          height: 600px;
-          width: 450px;
-        `
-      : css`
-          height: 60px;
-          width: 60px;
-        `}
-  ${({ $isVisible }) =>
-    $isVisible
-      ? css`
-          transform: translateX(0);
-        `
-      : css`
-          transform: translateX(300%);
-        `}
-  transition: transform 0.3s ease;
-
-  @media screen and (max-width: 450px) {
-    bottom: 10px;
-    right: 10px;
-    ${({ $isOpen }) => $isOpen && "width: calc(100% - 20px);"}
-  }
-`; */
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  createContext,
+  useContext,
+} from "react";
+import LayoutContext from "./layout";
 
 interface BALWidgetContextType {
   open: () => void;
@@ -79,6 +49,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
   const [isBalWidgetConfigLoaded, setIsBalWidgetConfigLoaded] = useState(false);
   const [balWidgetConfig, setBalWidgetConfig] = useState(null);
   const router = useRouter();
+  const { isMobile } = useContext(LayoutContext);
 
   useEffect(() => {
     const showWidget = visibleOnPages.includes(router.pathname);
@@ -233,6 +204,11 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
           width={isBalWidgetOpen ? "450px" : "60px"}
           transform={isWidgetVisible ? "translateX(0)" : "translateX(300%)"}
           transition="transform 0.3s ease"
+          {...(isMobile && {
+            bottom: 10,
+            right: 10,
+            width: isBalWidgetOpen ? "calc(100% - 20px)" : "60px",
+          })}
         />
       )}
     </BALWidgetContext.Provider>

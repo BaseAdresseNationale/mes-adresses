@@ -46,8 +46,8 @@
 
 .circle:after {
   content: "";
-  width: 100px;
-  height: 100px;
+  width: 102px;
+  height: 102px;
   display: block;
   position: absolute;
   background: var(--bg-color);

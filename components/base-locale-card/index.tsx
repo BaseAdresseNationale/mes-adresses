@@ -29,6 +29,7 @@ import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
 import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import { ApiGeoService } from "@/lib/geo-api";
+import styles from "./base-locale-card.module.css";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -232,45 +233,35 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
         borderTop="1px solid #E4E7EB"
       >
         {canHardDelete && (
-          <Button
-            intent="danger"
+          <button
             onClick={onRemove}
-            borderRadius={0}
-            border="0"
-            flexShrink={0}
-            height="100%"
-            borderRight="1px solid #E4E7EB"
+            className={`${styles["custom-button"]} ${styles["delete-button"]}`}
             title="Supprimer la Base Adresse Locale"
           >
             <Icon icon={TrashIcon} />
-          </Button>
+          </button>
         )}
         {!canHardDelete && (
-          <Button
+          <button
             onClick={onRemove}
-            borderRadius={0}
-            border="0"
-            flexShrink={0}
-            height="100%"
-            borderRight="1px solid #E4E7EB"
+            className={`${styles["custom-button"]} ${styles["hide-button"]}`}
             title="Masquer la Base Adresse Locale"
           >
             <Icon icon={EyeOffIcon} />
-          </Button>
+          </button>
         )}
-        <Button
-          is={NextLink}
-          color="#3366FF"
+        <Pane borderLeft="1px solid #E6E8F0" height="100%" />
+
+        <NextLink
           href={`/bal/${id}`}
-          border="0"
-          borderRadius={0}
-          flexGrow={1}
-          height="100%"
+          className={`${styles["custom-button"]} ${styles["manage-button"]}`}
           title="Accéder à la Base Adresse Locale"
         >
-          Gérer les adresses
+          <Text fontSize={16} fontWeight={300} color="inherit">
+            Gérer les adresses
+          </Text>
           <Icon marginLeft={10} icon={ArrowRightIcon} />
-        </Button>
+        </NextLink>
       </Pane>
     </Card>
   );
