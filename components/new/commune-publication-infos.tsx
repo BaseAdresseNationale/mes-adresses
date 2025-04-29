@@ -12,6 +12,7 @@ import {
   PageBaseLocaleDTO,
 } from "@/lib/openapi-api-bal";
 import AlertExistingBALMesAdresses from "./alert-published-bal/alert-existing-bal-mes-adresses";
+import AlertNoBAL from "./alert-published-bal/alert-no-bal";
 
 interface CommunePublicationInfosProps {
   commune: CommuneType;
@@ -111,6 +112,10 @@ function CommunePublicationInfos({
               commune={commune}
               existingBALCount={existingBALCount}
             />
+          )}
+
+          {!apiDepotLastRevision && existingBALCount === 0 && (
+            <AlertNoBAL commune={commune} />
           )}
         </>
       )}

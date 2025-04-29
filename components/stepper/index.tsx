@@ -28,7 +28,7 @@ function Stepper({
             <div
               key={label}
               className={`${styles["stepper-step"]}${
-                currentStepIndex >= index ? " active" : ""
+                currentStepIndex >= index ? ` ${styles.active}` : ""
               }`}
             />
           ))}
