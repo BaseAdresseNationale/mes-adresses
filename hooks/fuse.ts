@@ -3,8 +3,13 @@ import Fuse from "fuse.js";
 
 import { useDebouncedCallback } from "use-debounce";
 
-function useFuse(source, delay, options, initialValue = null) {
-  const [filtered, setFiltered] = useState(source || []);
+function useFuse<T>(
+  source: T[],
+  delay,
+  options,
+  initialValue = null
+): [T[], (value: any) => void] {
+  const [filtered, setFiltered] = useState<T[]>(source || []);
 
   const fuse = useMemo(() => {
     return new Fuse(source, {

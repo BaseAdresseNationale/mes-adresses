@@ -15,6 +15,7 @@ export type BaseLocale = {
     updatedAt: string;
     deletedAt: string;
     nom: string;
+    communeNom?: string;
     communeNomsAlt: Record<string, any>;
     commune: string;
     emails: Array<string>;
