@@ -31,19 +31,14 @@ function NewPage({
   outdatedApiDepotClients,
   outdatedHarvestSources,
 }: NewPageProps) {
-  const [currentStepIndex, setCurrentStepIndex] = useState(
-    defaultCommune ? 1 : 0
-  );
-
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { addBalAccess } = useContext(LocalStorageContext);
   const { pushToast } = useContext(LayoutContext);
   const [commune, setCommune] = useState<CommuneType | null>(defaultCommune);
   const [importValue, setImportValue] = useState<"ban" | "file">("ban");
   const [csvImportFile, setCsvImportFile] = useState<File | null>(null);
-  const [balName, setBalName] = useState<string | null>(
-    getSuggestedBALName(defaultCommune)
-  );
+  const [balName, setBalName] = useState<string | null>(null);
   const [adminEmail, setAdminEmail] = useState<string | null>(null);
   const { importFromCSVFile, importFromBAN } = useBALDataImport();
 

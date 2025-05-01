@@ -26,30 +26,30 @@ function BALInfosStep({
 }: BALInfosStepProps) {
   return (
     <Pane>
-      <TextInputField
-        required
-        autoComplete="one-time-code"
-        name="nom"
-        id="nom"
-        value={balName}
-        maxWidth={600}
-        label="Nom de la Base Adresse Locale"
-        onChange={(e) => setBalName(e.target.value)}
-        disabled={isLoading}
-      />
-      <Pane display="flex" flexWrap="wrap" alignItems="center" gap={10}>
+      <Pane maxWidth={600} display="flex" flexDirection="column">
+        <TextInputField
+          required
+          autoComplete="one-time-code"
+          name="nom"
+          id="nom"
+          value={balName}
+          label="Nom de la Base Adresse Locale"
+          onChange={(e) => setBalName(e.target.value)}
+          disabled={isLoading}
+        />
         <TextInputField
           required
           type="email"
           name="email"
           id="email"
           value={adminEmail}
-          maxWidth={400}
-          label="Renseignez votre adresse email"
+          label="Adresse email de l'administrateur"
           placeholder="nom@example.com"
           onChange={(e) => setAdminEmail(e.target.value)}
           disabled={isLoading}
         />
+      </Pane>
+      <Pane display="flex" flexWrap="wrap" alignItems="center" gap={10}>
         <Text>OU</Text>
         <Button onClick={createDemoBAL} type="button" disabled={isLoading}>
           Créer une Base Adresse Locale de démonstration
