@@ -12,12 +12,11 @@ export enum TabsEnum {
 }
 
 interface TabsSideBarProps {
-  selectedTab: TabsEnum;
   balId: string;
 }
 
-function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
-  const { isMobile } = useContext(LayoutContext);
+function TabsSideBar({ balId }: TabsSideBarProps) {
+  const { isMobile, selectedTab, setSelectedTab } = useContext(LayoutContext);
   const { pendingSignalementsCount } = useContext(SignalementContext);
 
   return (
@@ -35,7 +34,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
               key: TabsEnum.COMMUNE,
               label: "Commune",
               notif: pendingSignalementsCount,
-              href: `/bal/${balId}?selectedTab=${TabsEnum.COMMUNE}`,
+              href: `/bal/${balId}?tab=${TabsEnum.COMMUNE}`,
             },
             {
               key: TabsEnum.VOIES,
@@ -52,7 +51,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
                   </p>
                 </>
               ),
-              href: `/bal/${balId}?selectedTab=${TabsEnum.VOIES}`,
+              href: `/bal/${balId}?tab=${TabsEnum.VOIES}`,
             },
             {
               key: TabsEnum.TOPONYMES,
@@ -68,7 +67,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
                   </p>
                 </>
               ),
-              href: `/bal/${balId}?selectedTab=${TabsEnum.TOPONYMES}`,
+              href: `/bal/${balId}?tab=${TabsEnum.TOPONYMES}`,
             },
           ].map(({ label, notif, tooltip, key, href }) => {
             const tab = (
@@ -78,6 +77,7 @@ function TabsSideBar({ selectedTab, balId }: TabsSideBarProps) {
                 shallow
                 style={{ margin: "0 5px" }}
                 replace={true}
+                onClick={() => setSelectedTab(key)}
               >
                 <Tab
                   key={key}

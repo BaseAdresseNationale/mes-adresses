@@ -30,6 +30,7 @@ import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
 import { ApiGeoService } from "@/lib/geo-api";
 import { CommuneType } from "@/types/commune";
+import TabsSideBar from "@/components/sidebar/tabs";
 
 interface EditorProps {
   children: React.ReactNode;
@@ -87,20 +88,20 @@ function Editor({ children, commune }: EditorProps) {
               flexDirection="column"
               onToggle={setIsMapFullscreen}
             >
-              <>
-                <WelcomeMessage />
+              <TabsSideBar balId={baseLocale.id} />
 
-                {isAddressFormOpen ? (
-                  <AddressEditor
-                    commune={commune}
-                    closeForm={() => {
-                      setIsAddressFormOpen(false);
-                    }}
-                  />
-                ) : (
-                  children
-                )}
-              </>
+              <WelcomeMessage />
+
+              {isAddressFormOpen ? (
+                <AddressEditor
+                  commune={commune}
+                  closeForm={() => {
+                    setIsAddressFormOpen(false);
+                  }}
+                />
+              ) : (
+                children
+              )}
             </Sidebar>
             {isMobile && (
               <MobileControls

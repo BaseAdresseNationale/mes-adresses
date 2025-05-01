@@ -59,7 +59,7 @@ function App(props: AppProps) {
         />
       </Head>
 
-      <LayoutContextProvider>
+      <LayoutContextProvider balId={query.balId as string}>
         <BALWidgetProvider>
           <LocalStorageContextProvider>
             <TokenContextProvider

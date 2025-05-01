@@ -1,7 +1,9 @@
 import CustomToast from "@/components/custom-toast";
+import { TabsEnum } from "@/components/sidebar/tabs";
 import useWindowSize from "@/hooks/useWindowSize";
 import { ChildrenProps } from "@/types/context";
 import { Alert } from "evergreen-ui";
+import { useRouter } from "next/router";
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
 
@@ -28,20 +30,34 @@ interface LayoutContextType {
   pushToast: ({ intent, title, message }: Toast) => void;
   breadcrumbs?: React.ReactNode;
   setBreadcrumbs: (value: React.ReactNode) => void;
+  selectedTab: TabsEnum;
+  setSelectedTab: (value: TabsEnum) => void;
 }
 
 const LayoutContext = React.createContext<LayoutContextType | null>(null);
 
-export function LayoutContextProvider(props: ChildrenProps) {
+export function LayoutContextProvider(
+  props: ChildrenProps & { balId?: string }
+) {
+  const { balId } = props;
   const { isMobile } = useWindowSize();
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [isClientSide, setIsClientSide] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState<React.ReactNode>();
+  const router = useRouter();
+  const [selectedTab, setSelectedTab] = useState<TabsEnum | null>(null);
 
   useEffect(() => {
     setIsClientSide(true);
   }, []);
+
+  // Reset selected tab when balId changes
+  useEffect(() => {
+    balId
+      ? setSelectedTab((router.query?.tab as TabsEnum) || TabsEnum.VOIES)
+      : setSelectedTab(null);
+  }, [balId, router.query?.tab]);
 
   useEffect(() => {
     const lastToast = toasts[toasts.length - 1];
@@ -102,8 +118,20 @@ export function LayoutContextProvider(props: ChildrenProps) {
       toasts,
       breadcrumbs,
       setBreadcrumbs,
+      selectedTab,
+      setSelectedTab,
     }),
-    [isMapFullscreen, isMobile, pushToast, toaster, toasts, breadcrumbs]
+    [
+      isMapFullscreen,
+      isMobile,
+      pushToast,
+      toaster,
+      toasts,
+      breadcrumbs,
+      setBreadcrumbs,
+      selectedTab,
+      setSelectedTab,
+    ]
   );
 
   return (
