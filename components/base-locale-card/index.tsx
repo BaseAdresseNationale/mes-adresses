@@ -11,7 +11,6 @@ import {
   TrashIcon,
   ArrowRightIcon,
   Pulsar,
-  Button,
   Icon,
 } from "evergreen-ui";
 import NextLink from "next/link";
@@ -27,8 +26,6 @@ import HabilitationTag from "../habilitation-tag";
 import { canFetchSignalements } from "@/lib/utils/signalement";
 import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
-import { CommuneApiGeoType } from "@/lib/geo-api/type";
-import { ApiGeoService } from "@/lib/geo-api";
 import styles from "./base-locale-card.module.css";
 
 const ADRESSE_URL =
@@ -40,26 +37,22 @@ interface BaseLocaleCardProps {
 }
 
 function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
-  const [commune, setCommune] = useState<CommuneApiGeoType | null>(null);
   const [isHabilitationValid, setIsHabilitationValid] = useState(false);
   const [pendingSignalementsCount, setPendingSignalementsCount] = useState(0);
   const [flag, setFlag] = useState<string | null>(null);
-  const { id, status, sync, nom, updatedAt, nbNumeros, nbNumerosCertifies } =
-    baseLocale;
+  const {
+    id,
+    status,
+    sync,
+    nom,
+    communeNom,
+    commune: communeCode,
+    updatedAt,
+    nbNumeros,
+    nbNumerosCertifies,
+  } = baseLocale;
 
   useEffect(() => {
-    const fetchCommune = async () => {
-      try {
-        const commune: CommuneApiGeoType = await ApiGeoService.getCommune(
-          baseLocale.commune
-        );
-        setCommune(commune);
-      } catch (err) {
-        console.error("Error fetching commune", err);
-        setCommune(null);
-      }
-    };
-
     const fetchCommuneFlag = async () => {
       try {
         const flagUrl = await getCommuneFlagProxy(baseLocale.commune);
@@ -107,7 +100,6 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
       }
     };
 
-    fetchCommune();
     fetchCommuneFlag();
     fetchIsHabilitationValid();
     if (canFetchSignalements(baseLocale, baseLocale.token)) {
@@ -139,7 +131,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
           isHabilitationValid={isHabilitationValid}
         />
       </Pane>
-      {isHabilitationValid && commune && (
+      {isHabilitationValid && communeNom && (
         <Pane
           position="absolute"
           top={10}
@@ -150,7 +142,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
           backgroundColor="white"
         >
           <HabilitationTag
-            communeName={commune.nom}
+            communeName={communeNom}
             isHabilitationValid={isHabilitationValid}
           />
         </Pane>
@@ -181,16 +173,17 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
               ? "Dernière mise à jour il y a " + majDate
               : "Jamais mise à jour"}{" "}
           </Text>
-          {commune && (
+          {communeNom && (
             <Link
-              href={`${ADRESSE_URL}/commune/${commune.code}`}
+              href={`${ADRESSE_URL}/commune/${communeCode}`}
               target="_blank"
               rel="noopener noreferrer"
               fontSize={12}
               fontStyle="italic"
               textDecoration="underline"
+              width="fit-content"
             >
-              Voir la page de {commune.nom}
+              Voir la page de {communeNom}
             </Link>
           )}
         </Pane>
