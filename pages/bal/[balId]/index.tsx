@@ -10,7 +10,7 @@ import useHelp from "@/hooks/help";
 import CommuneTab from "@/components/bal/commune-tab";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
-import TabsSideBar, { TabsEnum } from "@/components/sidebar/tabs";
+import { TabsEnum } from "@/components/sidebar/tabs";
 import {
   BaseLocale,
   BaseLocaleSync,
@@ -39,7 +39,6 @@ import LocalStorageContext from "@/contexts/local-storage";
 import { CommuneType } from "@/types/commune";
 
 interface BaseLocalePageProps {
-  selectedTab: TabsEnum;
   commune: CommuneType;
 }
 
@@ -52,7 +51,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
 
   const { token } = useContext(TokenContext);
   const { wasWelcomed } = useContext(LocalStorageContext);
-  const { toaster } = useContext(LayoutContext);
+  const { toaster, selectedTab } = useContext(LayoutContext);
   const {
     voies,
     toponymes,
@@ -67,10 +66,7 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
   const { refreshBALSync, reloadVoies, reloadToponymes, reloadParcelles } =
     useContext(BalDataContext);
   const { pendingSignalementsCount } = useContext(SignalementContext);
-
   const router = useRouter();
-  const selectedTab: TabsEnum =
-    (router.query.selectedTab as TabsEnum) || TabsEnum.VOIES;
 
   let help: number = 0;
   if (selectedTab == TabsEnum.VOIES) {
@@ -226,8 +222,6 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
             }}
           />
         )}
-
-        <TabsSideBar selectedTab={selectedTab} balId={baseLocale.id} />
 
         {selectedTab === TabsEnum.COMMUNE && (
           <CommuneTab
