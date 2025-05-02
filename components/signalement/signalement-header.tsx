@@ -9,38 +9,20 @@ import {
 import SignalementTypeBadge from "./signalement-type-badge";
 import { Signalement, Source } from "@/lib/openapi-signalement";
 import { getDuration, getLongFormattedDate } from "@/lib/utils/date";
-import {
-  ExtendedBaseLocaleDTO,
-  SignalementsService as SignalementsServiceBal,
-} from "@/lib/openapi-api-bal";
-import { useEffect, useState } from "react";
 
 interface SignalementHeaderProps {
   signalement: Signalement;
-  baseLocale: ExtendedBaseLocaleDTO;
+  author?: Signalement["author"];
 }
 
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
 export function SignalementHeader({
   signalement,
-  baseLocale,
+  author,
 }: SignalementHeaderProps) {
-  const [author, setAuthor] = useState<Signalement["author"]>();
   const { type, createdAt, source, changesRequested, status, updatedAt } =
     signalement;
-
-  useEffect(() => {
-    const fetchAuthor = async () => {
-      const author = await SignalementsServiceBal.getAuthor(
-        signalement.id,
-        baseLocale.id
-      );
-      setAuthor(author);
-    };
-
-    fetchAuthor();
-  }, [signalement, baseLocale]);
 
   return (
     <Alert

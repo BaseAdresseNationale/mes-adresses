@@ -14,17 +14,16 @@ import SignalementViewerCreateNumero from "./numero/signalement-viewer-create-nu
 import SignalementViewerUpdateVoie from "./voie/signalement-viewer-update-voie";
 import SignalementViewerUpdateToponyme from "./toponyme/signalement-viewer-update-toponyme";
 import SignalementViewerDeleteNumero from "./numero/signalement-viewer-delete-numero";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface SignalementViewerProps {
-  baseLocale: ExtendedBaseLocaleDTO;
   signalement: Signalement;
+  author?: Signalement["author"];
   onClose: () => void;
 }
 
 export function SignalementViewer({
   signalement,
-  baseLocale,
+  author,
   onClose,
 }: SignalementViewerProps) {
   const { map } = useContext(MapContext);
@@ -76,7 +75,7 @@ export function SignalementViewer({
         return Promise.resolve();
       }}
     >
-      <SignalementHeader signalement={signalement} baseLocale={baseLocale} />
+      <SignalementHeader signalement={signalement} author={author} />
 
       {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
         <SignalementViewerCreateNumero signalement={signalement} />

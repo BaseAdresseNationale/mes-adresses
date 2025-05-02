@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Button, Link, Pane, Paragraph, Text } from "evergreen-ui";
 import NextLink from "next/link";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
@@ -40,11 +40,12 @@ function SignalementPage({
   baseLocale,
 }: SignalementPageProps) {
   const router = useRouter();
-  const { fetchPendingSignalements, updateSignalements } =
+  const { fetchPendingSignalements, updateOneSignalement } =
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const { setStyle } = useContext(MapContext);
   const { refreshBALSync } = useContext(BalDataContext);
+  const [author, setAuthor] = useState<Signalement["author"]>();
 
   useEffect(() => {
     setStyle("ortho");
@@ -87,6 +88,19 @@ function SignalementPage({
     }
   }, [existingLocation, signalement, baseLocale, requestedToponyme]);
 
+  // Fetch the author of the signalement
+  useEffect(() => {
+    const fetchAuthor = async () => {
+      const author = await SignalementsServiceBal.getAuthor(
+        signalement.id,
+        baseLocale.id
+      );
+      setAuthor(author);
+    };
+
+    fetchAuthor();
+  }, [signalement, baseLocale]);
+
   const handleClose = useCallback(() => {
     router.push(`/bal/${router.query.balId}/signalements`);
   }, [router]);
@@ -98,10 +112,10 @@ function SignalementPage({
   }, [fetchPendingSignalements]);
 
   const handleSubmit = useCallback(
-    async (status: Signalement.status) => {
+    async (status: Signalement.status, reason?: string) => {
       const _updateSignalement = toaster(
         async () => {
-          await updateSignalements([signalement.id], status);
+          await updateOneSignalement(signalement.id, status, reason);
           await refreshBALSync();
         },
         status === Signalement.status.PROCESSED
@@ -129,7 +143,7 @@ function SignalementPage({
       getNextSignalement,
       router,
       refreshBALSync,
-      updateSignalements,
+      updateOneSignalement,
     ]
   );
 
@@ -139,7 +153,7 @@ function SignalementPage({
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
-            baseLocale={baseLocale}
+            author={author}
             existingLocation={existingLocation}
             requestedToponyme={requestedToponyme}
             onClose={handleClose}
@@ -149,8 +163,8 @@ function SignalementPage({
       ) : signalement.status === Signalement.status.IGNORED ||
         signalement.status === Signalement.status.PROCESSED ? (
         <SignalementViewer
-          baseLocale={baseLocale}
           signalement={signalement}
+          author={author}
           onClose={() =>
             router.push(`/bal/${router.query.balId}/signalements?tab=archived`)
           }

@@ -3,12 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UpdateSignalementDTO = {
-    ids: Array<string>;
-    status: UpdateSignalementDTO.status;
+export type UpdateOneSignalementDTO = {
+    status: UpdateOneSignalementDTO.status;
+    rejectionReason?: string;
 };
 
-export namespace UpdateSignalementDTO {
+export namespace UpdateOneSignalementDTO {
 
     export enum status {
         PENDING = 'PENDING',

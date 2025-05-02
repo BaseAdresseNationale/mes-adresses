@@ -9,15 +9,17 @@ import { SignalementVoieDiffCard } from "../../signalement-diff/signalement-voie
 
 interface SignalementUpdateVoieProps {
   signalement: Signalement;
+  author?: Signalement["author"];
   existingLocation: Voie;
   handleAccept: () => Promise<void>;
-  handleReject: () => Promise<void>;
+  handleReject: (reason?: string) => Promise<void>;
   handleClose: () => void;
   isLoading: boolean;
 }
 
 function SignalementUpdateVoie({
   signalement,
+  author,
   existingLocation,
   handleAccept,
   handleReject,
@@ -57,6 +59,7 @@ function SignalementUpdateVoie({
         }}
       />
       <SignalementFormButtons
+        author={author}
         onAccept={onAccept}
         onReject={handleReject}
         isLoading={isLoading}

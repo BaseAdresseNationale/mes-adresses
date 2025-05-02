@@ -10,16 +10,18 @@ import { useSignalementMapDiffCreation } from "@/components/signalement/hooks/us
 
 interface SignalementCreateNumeroProps {
   signalement: Signalement;
+  author?: Signalement["author"];
   voie: Voie;
   requestedToponyme?: Toponyme;
   handleAccept: () => Promise<void>;
-  handleReject: () => Promise<void>;
+  handleReject: (reason?: string) => Promise<void>;
   handleClose: () => void;
   isLoading: boolean;
 }
 
 function SignalementCreateNumero({
   signalement,
+  author,
   voie,
   requestedToponyme,
   handleAccept,
@@ -70,6 +72,7 @@ function SignalementCreateNumero({
       />
 
       <SignalementFormButtons
+        author={author}
         onAccept={onAccept}
         onReject={handleReject}
         isLoading={isLoading}
