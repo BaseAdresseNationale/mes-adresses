@@ -1,0 +1,30 @@
+.custom-button {
+  border-radius: 0;
+  border: none;
+  flex-grow: 1;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.custom-button:hover {
+  background-color: #fafbff;
+}
+
+.hide-button {
+  max-width: 60px;
+  color: #474d66;
+}
+
+.delete-button {
+  max-width: 60px;
+  color: #d14343;
+}
+
+.manage-button {
+  color: #3366ff;
+}
