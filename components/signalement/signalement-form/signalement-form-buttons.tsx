@@ -8,6 +8,7 @@ import {
   Pane,
   Textarea,
   TickCircleIcon,
+  Text,
 } from "evergreen-ui";
 import { useContext, useRef, useState } from "react";
 
@@ -86,7 +87,9 @@ export function SignalementFormButtons({
               width="100%"
             >
               <Label htmlFor="reject-reason" marginBottom={4} display="block">
-                Raison du rejet
+                <Text is="div" fontWeight="bold">
+                  Raison du rejet
+                </Text>
               </Label>
               <Textarea
                 id="reject-reason"
