@@ -25,7 +25,8 @@ function HabilitationTag({
               : "/static/images/bal-logo-disabled.png"
           }
           alt="Logo Base Adresse Locale"
-          layout="fill"
+          width={24}
+          height={24}
         />
       </Pane>
     </Tooltip>

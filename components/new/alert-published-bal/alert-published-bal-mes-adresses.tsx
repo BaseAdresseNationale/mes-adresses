@@ -25,7 +25,8 @@ function AlertPublishedBALMesAdresses({
             <NextImage
               src="/static/images/published-bal-icon.svg"
               alt="Icone Base Adresse Locale publiée"
-              layout="fill"
+              width={24}
+              height={24}
             />
           </Pane>
           <span style={{ marginLeft: 10 }}>

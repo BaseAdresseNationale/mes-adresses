@@ -92,6 +92,7 @@ Elles peuvent être définies classiquement ou en créant un fichier `.env` sur 
 | `PORT`                           | Port de l'application                                           |
 | `MATTERMOST_CHANNEL_URL`         | Channel Mattermost où sont publiées les actualités              |
 | `MATTERMOST_TOKEN`               | Token pour afficher les messages de Mattermost sur la home page |
+| `NEXT_PUBLIC_BAL_WIDGET_URL`     | URL de BAL-Widget                                               |
 
 Toutes ces variables ont des valeurs par défaut que vous trouverez dans le fichier `.env.sample`.
 

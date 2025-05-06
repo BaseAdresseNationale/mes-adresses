@@ -65,21 +65,12 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
 
     const fetchIsHabilitationValid = async () => {
       try {
-        Object.assign(OpenAPI, { TOKEN: baseLocale.token });
-        const habilitation: HabilitationDTO =
-          await HabilitationService.findHabilitation(baseLocale.id);
-        Object.assign(OpenAPI, { TOKEN: null });
-
-        const isAccepted =
-          habilitation.status === HabilitationDTO.status.ACCEPTED;
-        const isExpired = new Date(habilitation.expiresAt) < new Date();
-
-        setIsHabilitationValid(isAccepted && !isExpired);
-      } catch (err) {
-        console.error("Error fetching habilitation status", err);
+        const isValid: boolean = await HabilitationService.findIsValid(
+          baseLocale.id
+        );
+        setIsHabilitationValid(isValid);
+      } catch {
         setIsHabilitationValid(false);
-      } finally {
-        Object.assign(OpenAPI, { TOKEN: null });
       }
     };
 
@@ -205,12 +196,8 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
               <Text fontWeight="bold" whiteSpace="nowrap">
                 {pendingSignalementsCount}
               </Text>
-              <Pane marginLeft={20} position="relative">
-                <Pulsar
-                  size={16}
-                  position="bottom-right"
-                  transform="translateY(50%)"
-                />
+              <Pane marginLeft={35} position="relative">
+                <Pulsar size={16} right={0} top={0} />
               </Pane>
             </Pane>
           )}
