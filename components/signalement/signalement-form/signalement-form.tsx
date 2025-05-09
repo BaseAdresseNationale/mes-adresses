@@ -4,12 +4,7 @@ import {
   NumeroChangesRequestedDTO,
   Signalement,
 } from "@/lib/openapi-signalement";
-import {
-  ExtendedBaseLocaleDTO,
-  Numero,
-  Toponyme,
-  Voie,
-} from "@/lib/openapi-api-bal";
+import { Numero, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import Form from "../../form";
 import SignalementCreateNumero from "./numero/signalement-create-numero";
 import SignalementUpdateNumero from "./numero/signalement-update-numero";
@@ -23,16 +18,16 @@ import { Paragraph } from "evergreen-ui";
 
 interface SignalementFormProps {
   signalement: Signalement;
-  baseLocale: ExtendedBaseLocaleDTO;
+  author?: Signalement["author"];
   existingLocation: Voie | Toponyme | Numero;
   requestedToponyme?: Toponyme;
-  onSubmit: (status: Signalement.status) => Promise<void>;
+  onSubmit: (status: Signalement.status, reason?: string) => Promise<void>;
   onClose: () => void;
 }
 
 function SignalementForm({
   signalement,
-  baseLocale,
+  author,
   existingLocation,
   requestedToponyme,
   onSubmit,
@@ -88,10 +83,10 @@ function SignalementForm({
     }
   }, [existingLocation, signalement, map]);
 
-  const handleSubmit = async (status: Signalement.status) => {
+  const handleSubmit = async (status: Signalement.status, reason?: string) => {
     try {
       setIsLoading(true);
-      await onSubmit(status);
+      await onSubmit(status, reason);
     } catch (err) {
       console.error(err);
     } finally {
@@ -103,8 +98,8 @@ function SignalementForm({
     await handleSubmit(Signalement.status.PROCESSED);
   };
 
-  const handleReject = async () => {
-    await handleSubmit(Signalement.status.IGNORED);
+  const handleReject = async (reason?: string) => {
+    await handleSubmit(Signalement.status.IGNORED, reason);
   };
 
   return (
@@ -117,11 +112,12 @@ function SignalementForm({
         return Promise.resolve();
       }}
     >
-      <SignalementHeader signalement={signalement} baseLocale={baseLocale} />
+      <SignalementHeader signalement={signalement} author={author} />
 
       {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
         <SignalementCreateNumero
           signalement={signalement}
+          author={author}
           handleClose={onClose}
           handleAccept={handleAccept}
           handleReject={handleReject}
@@ -135,6 +131,7 @@ function SignalementForm({
         (signalement.existingLocation.type === ExistingLocation.type.NUMERO ? (
           <SignalementUpdateNumero
             signalement={signalement}
+            author={author}
             existingLocation={existingLocation as Numero}
             handleAccept={handleAccept}
             handleReject={handleReject}
@@ -145,6 +142,7 @@ function SignalementForm({
         ) : signalement.existingLocation.type === ExistingLocation.type.VOIE ? (
           <SignalementUpdateVoie
             signalement={signalement}
+            author={author}
             existingLocation={existingLocation as Voie}
             handleAccept={handleAccept}
             handleReject={handleReject}
@@ -154,6 +152,7 @@ function SignalementForm({
         ) : (
           <SignalementUpdateToponyme
             signalement={signalement}
+            author={author}
             existingLocation={existingLocation as Toponyme}
             handleAccept={handleAccept}
             handleReject={handleReject}
@@ -164,6 +163,7 @@ function SignalementForm({
 
       {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
         <SignalementDeleteNumero
+          author={author}
           existingLocation={existingLocation as Numero}
           handleClose={onClose}
           handleAccept={handleAccept}

@@ -11,15 +11,17 @@ import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useS
 
 interface SignalementUpdateToponymeProps {
   signalement: Signalement;
+  author?: Signalement["author"];
   existingLocation: Toponyme;
   handleAccept: () => Promise<void>;
-  handleReject: () => Promise<void>;
+  handleReject: (reason?: string) => Promise<void>;
   handleClose: () => void;
   isLoading: boolean;
 }
 
 function SignalementUpdateToponyme({
   signalement,
+  author,
   existingLocation,
   handleAccept,
   handleReject,
@@ -102,6 +104,7 @@ function SignalementUpdateToponyme({
         }}
       />
       <SignalementFormButtons
+        author={author}
         onAccept={onAccept}
         onReject={handleReject}
         isLoading={isLoading}

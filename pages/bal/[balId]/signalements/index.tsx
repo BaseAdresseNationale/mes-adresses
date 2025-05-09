@@ -22,12 +22,7 @@ import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
-import {
-  ExistingNumero,
-  NumeroChangesRequestedDTO,
-  Signalement,
-  SignalementsService,
-} from "@/lib/openapi-signalement";
+import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
 import MarkersContext from "@/contexts/markers";
 import { getSignalementLabel } from "@/lib/utils/signalement";
 import LayoutContext from "@/contexts/layout";
@@ -36,7 +31,6 @@ import SignalementTypeBadge, {
 } from "@/components/signalement/signalement-type-badge";
 import useFuse from "@/hooks/fuse";
 import MapContext from "@/contexts/map";
-import bbox from "@turf/bbox";
 import SignalementContext from "@/contexts/signalement";
 import SignalementJoyRide from "@/components/signalement/product-tour/signalement-page-product-tour";
 
@@ -58,7 +52,7 @@ function SignalementsPage({
   const {
     pendingSignalementsCount,
     archivedSignalementsCount,
-    updateSignalements,
+    updateManySignalements,
     fetchPendingSignalements,
     fetchArchivedSignalements,
   } = useContext(SignalementContext);
@@ -159,48 +153,22 @@ function SignalementsPage({
 
   useEffect(() => {
     const markerPositions = signalementsList
-      .reduce(
-        (
-          acc,
-          { id, label, type, changesRequested, existingLocation, status }
-        ) => {
-          let position;
-          if (type === Signalement.type.LOCATION_TO_CREATE) {
-            position = (changesRequested as NumeroChangesRequestedDTO)
-              ?.positions[0]?.point;
-          } else {
-            position = (existingLocation as ExistingNumero).position?.point;
-          }
-
-          return [
-            ...acc,
-            {
-              signalementId: id,
-              status,
-              label: (
-                <Pane display="flex" flexDirection="column">
-                  <SignalementTypeBadge type={type} />
-                  <Text marginTop={5}>{label}</Text>
-                </Pane>
-              ),
-              type: type,
-              position: position,
-            },
-          ];
-        },
-        []
-      )
-      .filter((signalement) => signalement.position)
-      .map(({ position, signalementId, label, type }) => {
+      .filter((signalement) => signalement.point)
+      .map(({ id, point, label, type }) => {
         return {
-          id: signalementId,
+          id,
           isMapMarker: true,
-          tooltip: label,
-          longitude: position.coordinates[0],
-          latitude: position.coordinates[1],
+          tooltip: (
+            <Pane display="flex" flexDirection="column">
+              <SignalementTypeBadge type={type} />
+              <Text marginTop={5}>{label}</Text>
+            </Pane>
+          ),
+          longitude: point.coordinates[0],
+          latitude: point.coordinates[1],
           color: signalementTypeMap[type].color,
           onClick: () => {
-            handleSelectSignalement(signalementId);
+            handleSelectSignalement(id);
           },
         };
       });
@@ -216,7 +184,7 @@ function SignalementsPage({
 
   const handleIgnoreSignalements = async (ids: string[]) => {
     const _updateSignalements = toaster(
-      () => updateSignalements(ids, Signalement.status.IGNORED),
+      () => updateManySignalements(ids, Signalement.status.IGNORED),
       ids.length > 1
         ? "Les signalements ont bien été ignorés"
         : "Le signalement a bien été ignoré",
@@ -312,6 +280,7 @@ function SignalementsPage({
                     onClick={async () => {
                       await handleIgnoreSignalements(selectedSignalements);
                       setShowWarningDialog(false);
+                      setSelectedSignalements([]);
                     }}
                   >
                     Confirmer

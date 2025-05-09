@@ -17,16 +17,18 @@ import { Alert } from "evergreen-ui";
 
 interface SignalementUpdateNumeroProps {
   signalement: Signalement;
+  author?: Signalement["author"];
   existingLocation: Numero;
   requestedToponyme?: Toponyme;
   handleAccept: () => Promise<void>;
-  handleReject: () => Promise<void>;
+  handleReject: (reason?: string) => Promise<void>;
   handleClose: () => void;
   isLoading: boolean;
 }
 
 function SignalementUpdateNumero({
   signalement,
+  author,
   existingLocation,
   requestedToponyme,
   handleAccept,
@@ -152,6 +154,7 @@ function SignalementUpdateNumero({
         </Alert>
       )}
       <SignalementFormButtons
+        author={author}
         onAccept={onAccept}
         onReject={handleReject}
         isLoading={isLoading}

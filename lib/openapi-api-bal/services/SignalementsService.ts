@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { UpdateSignalementDTO } from '../models/UpdateSignalementDTO';
+import type { UpdateManySignalementDTO } from '../models/UpdateManySignalementDTO';
+import type { UpdateOneSignalementDTO } from '../models/UpdateOneSignalementDTO';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -11,7 +12,32 @@ import { request as __request } from '../core/request';
 export class SignalementsService {
 
     /**
-     * Update signalements
+     * Update one signalement
+     * @param signalementId
+     * @param baseLocaleId
+     * @param requestBody
+     * @returns boolean
+     * @throws ApiError
+     */
+    public static updateSignalement(
+        signalementId: string,
+        baseLocaleId: string,
+        requestBody: UpdateOneSignalementDTO,
+    ): CancelablePromise<boolean> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v2/signalements/{baseLocaleId}/{signalementId}',
+            path: {
+                'signalementId': signalementId,
+                'baseLocaleId': baseLocaleId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+
+    /**
+     * Update many signalements
      * @param baseLocaleId
      * @param requestBody
      * @returns boolean
@@ -19,7 +45,7 @@ export class SignalementsService {
      */
     public static updateSignalements(
         baseLocaleId: string,
-        requestBody: UpdateSignalementDTO,
+        requestBody: UpdateManySignalementDTO,
     ): CancelablePromise<boolean> {
         return __request(OpenAPI, {
             method: 'PUT',

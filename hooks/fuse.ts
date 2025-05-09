@@ -8,8 +8,8 @@ function useFuse<T>(
   delay,
   options,
   initialValue = null
-): [T[], (value: any) => void] {
-  const [filtered, setFiltered] = useState<T[]>(source || []);
+): [T[], (value: string) => void] {
+  const [filtered, setFiltered] = useState(source || []);
 
   const fuse = useMemo(() => {
     return new Fuse(source, {

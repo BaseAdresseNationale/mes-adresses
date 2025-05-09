@@ -16,9 +16,14 @@ import { canFetchSignalements } from "@/lib/utils/signalement";
 interface SignalementContextType {
   pendingSignalementsCount: number;
   archivedSignalementsCount: number;
-  updateSignalements: (
+  updateManySignalements: (
     ids: string[],
     status: Signalement.status
+  ) => Promise<void>;
+  updateOneSignalement: (
+    id: string,
+    status: Signalement.status,
+    rejectionReason?: string
   ) => Promise<void>;
   fetchPendingSignalements: (
     limit?: number,
@@ -89,11 +94,26 @@ export function SignalementContextProvider(props: ChildrenProps) {
     await fetchArchivedSignalements(1);
   }, [fetchPendingSignalements, fetchArchivedSignalements]);
 
-  const updateSignalements = useCallback(
+  const updateManySignalements = useCallback(
     async (ids: string[], status: Signalement.status) => {
       await SignalementsServiceBal.updateSignalements(baseLocale.id, {
         ids,
         status,
+      });
+      await fetchSignalementCount();
+    },
+    [baseLocale, fetchSignalementCount]
+  );
+
+  const updateOneSignalement = useCallback(
+    async (
+      id: string,
+      status: Signalement.status,
+      rejectionReason?: string
+    ) => {
+      await SignalementsServiceBal.updateSignalement(id, baseLocale.id, {
+        status,
+        rejectionReason,
       });
       await fetchSignalementCount();
     },
@@ -110,14 +130,16 @@ export function SignalementContextProvider(props: ChildrenProps) {
     () => ({
       pendingSignalementsCount,
       archivedSignalementsCount,
-      updateSignalements,
+      updateManySignalements,
+      updateOneSignalement,
       fetchPendingSignalements,
       fetchArchivedSignalements,
     }),
     [
       pendingSignalementsCount,
       archivedSignalementsCount,
-      updateSignalements,
+      updateManySignalements,
+      updateOneSignalement,
       fetchPendingSignalements,
       fetchArchivedSignalements,
     ]

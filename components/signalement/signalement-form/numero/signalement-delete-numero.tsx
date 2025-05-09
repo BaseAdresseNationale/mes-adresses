@@ -6,14 +6,16 @@ import { Signalement } from "@/lib/openapi-signalement";
 import { useSignalementMapDiffDeletion } from "../../hooks/useSignalementMapDiffDeletion";
 
 interface SignalementDeleteNumeroProps {
+  author: Signalement["author"];
   existingLocation: Numero;
   handleAccept: () => Promise<void>;
-  handleReject: () => Promise<void>;
+  handleReject: (reason?: string) => Promise<void>;
   handleClose: () => void;
   isLoading: boolean;
 }
 
 function SignalementDeleteNumero({
+  author,
   existingLocation,
   handleAccept,
   handleReject,
@@ -52,6 +54,7 @@ function SignalementDeleteNumero({
         }}
       />
       <SignalementFormButtons
+        author={author}
         onAccept={onAccept}
         onReject={handleReject}
         isLoading={isLoading}
