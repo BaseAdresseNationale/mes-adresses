@@ -1,3 +1,4 @@
+import { trainingTypeMap } from "@/lib/bal-admin";
 import { EventType, EventTypeTypeEnum } from "@/lib/bal-admin/type";
 import { getFullDate } from "@/lib/utils/date";
 import {
@@ -10,17 +11,6 @@ import {
   Pane,
   Text,
 } from "evergreen-ui";
-
-const trainingTypeMap = {
-  [EventTypeTypeEnum.FORMATION]: {
-    color: "green",
-    label: "Formation débutant",
-  },
-  [EventTypeTypeEnum.FORMATION_LVL2]: {
-    color: "blue",
-    label: "Formation avancée",
-  },
-};
 
 interface TrainingTabProps {
   nextTrainings: EventType[];

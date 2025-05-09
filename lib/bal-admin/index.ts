@@ -5,6 +5,21 @@ const NEXT_PUBLIC_BAL_ADMIN_URL =
   process.env.NEXT_PUBLIC_BAL_ADMIN_URL ||
   "https://bal-admin.adresse.data.gouv.fr";
 
+export const trainingTypeMap = {
+  [EventTypeTypeEnum.FORMATION]: {
+    color: "green",
+    label: "Formation débutant",
+  },
+  [EventTypeTypeEnum.FORMATION_LVL2]: {
+    color: "blue",
+    label: "Formation avancée",
+  },
+  [EventTypeTypeEnum.FORMATION_SPECIALE]: {
+    color: "orange",
+    label: "Formation spéciale",
+  },
+};
+
 export class ApiBalAdminService {
   public static async getBALWidgetConfig(): Promise<BALWidgetConfig> {
     const response = await fetch(
@@ -40,8 +55,7 @@ export class ApiBalAdminService {
 
         return (
           eventDate.getTime() >= Date.now() &&
-          (type === EventTypeTypeEnum.FORMATION ||
-            type === EventTypeTypeEnum.FORMATION_LVL2)
+          Object.keys(trainingTypeMap).includes(type)
         );
       })
       .sort((a, b) => {
