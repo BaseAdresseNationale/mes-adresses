@@ -21,8 +21,15 @@ export function SignalementHeader({
   signalement,
   author,
 }: SignalementHeaderProps) {
-  const { type, createdAt, source, changesRequested, status, updatedAt } =
-    signalement;
+  const {
+    type,
+    createdAt,
+    source,
+    changesRequested,
+    status,
+    updatedAt,
+    rejectionReason,
+  } = signalement;
 
   return (
     <Alert
@@ -83,10 +90,18 @@ export function SignalementHeader({
         )}
 
         {status === Signalement.status.IGNORED && (
-          <Paragraph marginTop={10}>
-            Vous avez refusé cette proposition le{" "}
-            <b>{getLongFormattedDate(new Date(updatedAt))}</b>
-          </Paragraph>
+          <>
+            <Paragraph marginTop={10}>
+              Vous avez refusé cette proposition le{" "}
+              <b>{getLongFormattedDate(new Date(updatedAt))}</b>
+            </Paragraph>
+
+            {rejectionReason && (
+              <Paragraph marginTop={10}>
+                Raison : <b>{rejectionReason}</b>
+              </Paragraph>
+            )}
+          </>
         )}
       </Pane>
     </Alert>

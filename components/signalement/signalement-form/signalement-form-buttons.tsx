@@ -1,3 +1,4 @@
+import { BadgeSelect } from "@/components/badge-select";
 import { DelayBar } from "@/components/delay-bar";
 import SignalementContext from "@/contexts/signalement";
 import { Signalement } from "@/lib/openapi-signalement";
@@ -9,6 +10,7 @@ import {
   Textarea,
   TickCircleIcon,
   Text,
+  Select,
 } from "evergreen-ui";
 import { useContext, useRef, useState } from "react";
 
@@ -22,6 +24,17 @@ interface SignalementFormButtonsProps {
 
 const CONFIRMATION_DELAY = 8000;
 
+const rejectionReasonsOptions = [
+  "Signalement non pertinent",
+  "Signalement en double",
+  "Signalement déjà traité",
+  "Signalement mal positionné",
+  "Signalement non conforme",
+  "Autre",
+] as const;
+
+type RejectionReasonOption = (typeof rejectionReasonsOptions)[number];
+
 export function SignalementFormButtons({
   author,
   isLoading,
@@ -34,12 +47,14 @@ export function SignalementFormButtons({
   >(null);
   const timeOutRef = useRef<NodeJS.Timeout | null>(null);
   const { pendingSignalementsCount } = useContext(SignalementContext);
+  const [rejectionReasonSelected, setRejectionReasonSelected] =
+    useState<RejectionReasonOption | null>(null);
   const [rejectionReason, setRejectionReason] = useState<string>("");
-  const showRejectionReason = actionToConfirm === "reject" && author?.email;
+  const showRejectionReason = actionToConfirm === "reject";
 
   const handleActionToConfirm = (action: "accept" | "reject") => {
     setActionToConfirm(action);
-    const withTimeout = action === "reject" && author?.email;
+    const withTimeout = action === "reject";
 
     if (!withTimeout) {
       timeOutRef.current = setTimeout(() => {
@@ -53,7 +68,11 @@ export function SignalementFormButtons({
       if (actionToConfirm === "accept") {
         await onAccept();
       } else if (actionToConfirm === "reject") {
-        await onReject(rejectionReason);
+        await onReject(
+          rejectionReasonSelected === "Autre"
+            ? rejectionReason
+            : rejectionReasonSelected
+        );
       }
       handleClear();
     }
@@ -86,19 +105,32 @@ export function SignalementFormButtons({
               marginBottom={8}
               width="100%"
             >
-              <Label htmlFor="reject-reason" marginBottom={4} display="block">
-                <Text is="div" fontWeight="bold">
-                  Raison du rejet
-                </Text>
+              <Label htmlFor="reject-reason" marginBottom={8} display="block">
+                <Text fontWeight="bold">Raison</Text>
+                {author?.email && (
+                  <Text marginLeft={4} size={300} color="muted">
+                    (L&apos;auteur du signalement recevra cette information par
+                    email)
+                  </Text>
+                )}
               </Label>
-              <Textarea
-                id="reject-reason"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="Vous pouvez indiquer ici la raison de votre refus de prendre en compte le signalement. L'auteur du signalement recevra cette information par email."
-                rows={4}
-                resize="none"
+              <BadgeSelect
+                options={rejectionReasonsOptions}
+                onChange={(value: string) =>
+                  setRejectionReasonSelected(value as RejectionReasonOption)
+                }
+                value={rejectionReasonSelected}
               />
+              {rejectionReasonSelected === "Autre" && (
+                <Textarea
+                  id="reject-reason"
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  placeholder="Précisez la raison du refus, merci de ne pas indiquer de données personnelles"
+                  rows={4}
+                  resize="none"
+                />
+              )}
             </Pane>
           )}
           <Pane display="flex" flexDirection="column" width="100%">
