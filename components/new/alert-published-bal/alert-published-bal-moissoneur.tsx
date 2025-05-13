@@ -65,7 +65,7 @@ function AlertPublishedBALMoissoneur({
             <Button
               is="a"
               height={30}
-              href={`${organization.page}/#/information`}
+              href={`${organization.page}/information`}
               target="_blank"
             >
               Page data.gouv {organization.name}
