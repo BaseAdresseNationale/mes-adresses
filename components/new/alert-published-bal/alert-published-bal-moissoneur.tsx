@@ -62,12 +62,7 @@ function AlertPublishedBALMoissoneur({
             </Paragraph>
           )}
           <Paragraph marginTop={16}>
-            <Button
-              is="a"
-              height={30}
-              href={`${organization.page}/information`}
-              target="_blank"
-            >
+            <Button is="a" height={30} href={organization.page} target="_blank">
               Page data.gouv {organization.name}
             </Button>
           </Paragraph>
