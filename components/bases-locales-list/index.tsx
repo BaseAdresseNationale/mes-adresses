@@ -1,5 +1,5 @@
 import { useState, useCallback, useContext, useMemo } from "react";
-import { Pagination, Pane, Paragraph } from "evergreen-ui";
+import { Pagination, Pane, Paragraph, SearchInput } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import DeleteWarning from "@/components/delete-warning";
 import BaseLocaleCard from "@/components/base-locale-card";
@@ -19,6 +19,7 @@ interface BasesLocalesListProps {
 const PAGE_SIZE = 8;
 
 function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
+  const [search, setSearch] = useState("");
   const [basesLocales, setBasesLocales] = useState(initialBasesLocales);
   const [currentPage, setCurrentPage] = useState(1);
   const { removeBalAccess, getBalToken } = useContext(LocalStorageContext);
@@ -27,18 +28,26 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
     null
   );
 
+  const filteredBALs = useMemo(
+    () =>
+      basesLocales.filter((baseLocale) =>
+        baseLocale.nom.toLowerCase().includes(search.toLowerCase())
+      ),
+    [basesLocales, search]
+  );
+
   const displayedBALs = useMemo(
     () =>
-      basesLocales.slice(
+      filteredBALs.slice(
         (currentPage - 1) * PAGE_SIZE,
         currentPage * PAGE_SIZE
       ),
-    [currentPage, basesLocales]
+    [currentPage, filteredBALs]
   );
 
   const totalPages = useMemo(
-    () => Math.ceil(basesLocales.length / PAGE_SIZE),
-    [basesLocales]
+    () => Math.ceil(filteredBALs.length / PAGE_SIZE),
+    [filteredBALs]
   );
 
   const onRemove = useCallback(async () => {
@@ -109,23 +118,42 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
         {basesLocales.length > 0 ? (
           <Pane
             padding={16}
-            display="grid"
-            gridTemplateColumns="repeat(auto-fill, minmax(290px, 1fr))"
-            gap={8}
-            justifyItems="center"
+            display="flex"
+            flexDirection="column"
             alignItems="center"
-            width="100%"
+            flex={1}
           >
-            {displayedBALs.map((baseLocale) => {
-              return (
-                <BaseLocaleCard
-                  key={baseLocale.id}
-                  baseLocale={baseLocale}
-                  onRemove={() => handleRemove(baseLocale.id)}
-                />
-              );
-            })}
-            <CreateBaseLocaleCard />
+            <SearchInput
+              placeholder="Filtrer les bases adresses locales par nom"
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+              value={search}
+              marginTop={8}
+              marginBottom={12}
+              width="100%"
+              maxWidth={400}
+            />
+            <Pane
+              display="grid"
+              gridTemplateColumns="repeat(auto-fill, minmax(290px, 1fr))"
+              gap={8}
+              justifyItems="center"
+              alignItems="center"
+              width="100%"
+            >
+              {displayedBALs.map((baseLocale) => {
+                return (
+                  <BaseLocaleCard
+                    key={baseLocale.id}
+                    baseLocale={baseLocale}
+                    onRemove={() => handleRemove(baseLocale.id)}
+                  />
+                );
+              })}
+              <CreateBaseLocaleCard />
+            </Pane>
           </Pane>
         ) : (
           <Pane
