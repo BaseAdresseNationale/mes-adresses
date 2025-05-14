@@ -118,7 +118,10 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
           >
             <SearchInput
               placeholder="Filtrer les bases adresses locales par nom"
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
               value={search}
               marginTop={8}
               marginBottom={12}
