@@ -28,19 +28,26 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
     null
   );
 
+  const filteredBALs = useMemo(
+    () =>
+      basesLocales.filter((baseLocale) =>
+        baseLocale.nom.toLowerCase().includes(search.toLowerCase())
+      ),
+    [basesLocales, search]
+  );
+
   const displayedBALs = useMemo(
     () =>
-      basesLocales
-        .filter((baseLocale) =>
-          baseLocale.nom.toLowerCase().includes(search.toLowerCase())
-        )
-        .slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
-    [currentPage, basesLocales, search]
+      filteredBALs.slice(
+        (currentPage - 1) * PAGE_SIZE,
+        currentPage * PAGE_SIZE
+      ),
+    [currentPage, filteredBALs]
   );
 
   const totalPages = useMemo(
-    () => Math.ceil(basesLocales.length / PAGE_SIZE),
-    [basesLocales]
+    () => Math.ceil(filteredBALs.length / PAGE_SIZE),
+    [filteredBALs]
   );
 
   const onRemove = useCallback(async () => {
