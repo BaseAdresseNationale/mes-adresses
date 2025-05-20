@@ -22,6 +22,8 @@ import LayoutContext from "@/contexts/layout";
 import { StrategySelection } from "./strategy-selection";
 import { CommuneType } from "@/types/commune";
 
+export const PRO_CONNECT_QUERY_PARAM = "pro-connect";
+
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {
     return 2;
@@ -77,13 +79,16 @@ function HabilitationProcess({
     }
   };
 
-  const redirectToFranceConnect = () => {
+  const redirectToProConnect = () => {
     const redirectUrl = encodeURIComponent(
-      `${EDITEUR_URL}${Router.asPath}?france-connect=1`
+      `${EDITEUR_URL}${Router.asPath}?${PRO_CONNECT_QUERY_PARAM}=1`
     );
-    Router.push(
-      `${habilitation.franceconnectAuthenticationUrl}?redirectUrl=${redirectUrl}`
+
+    const urlProConnect = ApiDepotService.getUrlProConnect(
+      habilitation.id,
+      redirectUrl
     );
+    Router.push(urlProConnect);
   };
 
   const handleStrategy = async (selectedStrategy: StrategyDTO.type) => {
@@ -95,11 +100,8 @@ function HabilitationProcess({
       }
     }
 
-    if (
-      selectedStrategy === StrategyDTO.type.FRANCECONNECT &&
-      habilitation.franceconnectAuthenticationUrl
-    ) {
-      redirectToFranceConnect();
+    if (selectedStrategy === StrategyDTO.type.PROCONNECT) {
+      redirectToProConnect();
     }
 
     setIsLoading(false);
@@ -202,9 +204,6 @@ function HabilitationProcess({
             codeCommune={commune.code}
             emailSelected={emailSelected}
             setEmailSelected={setEmailSelected}
-            franceconnectAuthenticationUrl={
-              habilitation.franceconnectAuthenticationUrl
-            }
             handleStrategy={handleStrategy}
           />
         )}

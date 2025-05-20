@@ -16,6 +16,7 @@ export namespace StrategyDTO {
     export enum type {
         EMAIL = 'email',
         FRANCECONNECT = 'franceconnect',
+        PROCONNECT = 'proconnect',
         INTERNAL = 'internal',
     }
 

@@ -12,15 +12,14 @@ import {
   ListItem,
 } from "evergreen-ui";
 
-import FranceConnect from "@/components/habilitation-process/strategy-selection/france-connect";
 import CodeEmail from "@/components/habilitation-process/strategy-selection/code-email";
 import { StrategyDTO } from "@/lib/openapi-api-bal";
+import ProConnect from "./pro-connect";
 
 interface StrategySelectionProps {
   codeCommune: string;
   emailSelected: string;
   setEmailSelected: React.Dispatch<React.SetStateAction<string>>;
-  franceconnectAuthenticationUrl: string | null;
   handleStrategy: (strategy: StrategyDTO.type) => void;
 }
 
@@ -28,7 +27,6 @@ export function StrategySelection({
   codeCommune,
   emailSelected,
   setEmailSelected,
-  franceconnectAuthenticationUrl = null,
   handleStrategy,
 }: StrategySelectionProps) {
   const [hovered, setHovered] = useState<StrategyDTO.type | null>(null);
@@ -122,9 +120,9 @@ export function StrategySelection({
           />
         </Pane>
         <Pane
-          onMouseEnter={() => setHovered(StrategyDTO.type.FRANCECONNECT)}
+          onMouseEnter={() => setHovered(StrategyDTO.type.PROCONNECT)}
           onMouseLeave={() => setHovered(null)}
-          elevation={hovered === StrategyDTO.type.FRANCECONNECT ? 3 : 0}
+          elevation={hovered === StrategyDTO.type.PROCONNECT ? 3 : 0}
           display="flex"
           flexDirection="column"
           justifyContent="space-between"
@@ -135,11 +133,8 @@ export function StrategySelection({
           height={415}
           flex={1}
         >
-          <FranceConnect
-            handleStrategy={() =>
-              handleStrategy(StrategyDTO.type.FRANCECONNECT)
-            }
-            isDisabled={!franceconnectAuthenticationUrl}
+          <ProConnect
+            handleStrategy={() => handleStrategy(StrategyDTO.type.PROCONNECT)}
           />
         </Pane>
       </Pane>

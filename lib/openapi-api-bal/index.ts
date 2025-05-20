@@ -14,7 +14,6 @@ export type { BasesLocalesCreationDTO } from './models/BasesLocalesCreationDTO';
 export type { BasesLocalesStatusDTO } from './models/BasesLocalesStatusDTO';
 export type { BatchNumeroResponseDTO } from './models/BatchNumeroResponseDTO';
 export type { CodeCommuneDTO } from './models/CodeCommuneDTO';
-export type { CommuneAncienneDTO } from './models/CommuneAncienneDTO';
 export type { CommuneBalDTO } from './models/CommuneBalDTO';
 export type { CommuneDTO } from './models/CommuneDTO';
 export type { CreateBaseLocaleDTO } from './models/CreateBaseLocaleDTO';
