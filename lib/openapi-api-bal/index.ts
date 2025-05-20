@@ -16,6 +16,7 @@ export type { BatchNumeroResponseDTO } from './models/BatchNumeroResponseDTO';
 export type { CodeCommuneDTO } from './models/CodeCommuneDTO';
 export type { CommuneBalDTO } from './models/CommuneBalDTO';
 export type { CommuneDTO } from './models/CommuneDTO';
+export type { CommunePrecedenteDTO } from './models/CommunePrecedenteDTO';
 export type { CreateBaseLocaleDTO } from './models/CreateBaseLocaleDTO';
 export type { CreateDemoBaseLocaleDTO } from './models/CreateDemoBaseLocaleDTO';
 export type { CreateNumeroDTO } from './models/CreateNumeroDTO';

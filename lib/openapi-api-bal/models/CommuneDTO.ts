@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { CommunePrecedenteDTO } from './CommunePrecedenteDTO';
+
 export type CommuneDTO = {
     code: string;
     nom: string;
@@ -11,5 +13,6 @@ export type CommuneDTO = {
     hasOpenMapTiles: boolean;
     hasOrtho: boolean;
     hasPlanIGN: boolean;
+    communesDeleguees: Array<CommunePrecedenteDTO>;
 };
 
