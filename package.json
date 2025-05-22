@@ -37,6 +37,7 @@
     "@turf/line-slice": "^6.5.0",
     "@turf/nearest-point-on-line": "^6.5.0",
     "bson": "^6.8.0",
+    "carte-facile": "^0.5.16",
     "chart.js": "^4.2.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "2.29.3",
