@@ -5,6 +5,7 @@ import { AppProps } from "next/app";
 import { Pane } from "evergreen-ui";
 
 import "maplibre-gl/dist/maplibre-gl.css";
+import "carte-facile/carte-facile.css";
 
 import { LocalStorageContextProvider } from "@/contexts/local-storage";
 import { HelpContextProvider } from "@/contexts/help";

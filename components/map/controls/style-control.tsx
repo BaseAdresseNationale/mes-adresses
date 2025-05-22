@@ -3,6 +3,7 @@ import { Pane, SelectMenu, Button, Position, LayersIcon } from "evergreen-ui";
 
 import CadastreControl from "@/components/map/controls/cadastre-control";
 import { CommuneType } from "@/types/commune";
+import { MapStyleEnum } from "@/contexts/map";
 
 interface StyleControlProps {
   style: string;
@@ -26,11 +27,15 @@ function StyleControl({
     return [
       {
         label: "Plan OpenMapTiles",
-        value: "vector",
+        value: MapStyleEnum.OSM,
         isAvailable: hasOpenMapTiles,
       },
-      { label: "Plan IGN", value: "plan-ign", isAvailable: hasPlanIGN },
-      { label: "Photographie aérienne", value: "ortho", isAvailable: hasOrtho },
+      { label: "Plan IGN", value: MapStyleEnum.ING, isAvailable: hasPlanIGN },
+      {
+        label: "Photographie aérienne",
+        value: MapStyleEnum.AERIAL,
+        isAvailable: hasOrtho,
+      },
     ].filter(({ isAvailable }) => isAvailable);
   }, [commune]);
 

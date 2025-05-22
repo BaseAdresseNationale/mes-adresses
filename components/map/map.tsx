@@ -16,15 +16,15 @@ import MapGl, {
   LngLatBoundsLike,
 } from "react-map-gl/maplibre";
 import { Pane, Alert } from "evergreen-ui";
+import { mapStyles, addOverlay, removeOverlay } from "carte-facile";
 
-import MapContext, { SOURCE_TILE_ID } from "@/contexts/map";
+import MapContext, { MapStyleEnum, SOURCE_TILE_ID } from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import TokenContext from "@/contexts/token";
 import DrawContext from "@/contexts/draw";
 import ParcellesContext from "@/contexts/parcelles";
 import BalDataContext from "@/contexts/bal-data";
 
-import { cadastreLayers } from "@/components/map/layers/cadastre";
 import {
   tilesLayers,
   VOIE_LABEL,
@@ -33,7 +33,6 @@ import {
   NUMEROS_LABEL,
   LAYERS_SOURCE,
 } from "@/components/map/layers/tiles";
-import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
 import NumerosMarkers from "@/components/map/numeros-markers";
 import ToponymeMarker from "@/components/map/toponyme-marker";
@@ -49,10 +48,9 @@ import useHovered from "@/components/map/hooks/hovered";
 import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import { StyleSpecification } from "maplibre-gl";
 
 const TOPONYMES_MIN_ZOOM = 13;
-
-const LAYERS = [...cadastreLayers];
 
 const settings = {
   maxZoom: 19,
@@ -68,24 +66,17 @@ const interactionProps = {
   doubleClickZoom: true,
 };
 
-function getBaseStyle(style) {
+function getStyleSpecification(style: MapStyleEnum): StyleSpecification {
   switch (style) {
-    case "ortho":
-      return ortho;
-
-    case "vector":
-      return vector;
-
-    case "plan-ign":
-      return planIGN;
+    case MapStyleEnum.OSM:
+      return mapStyles.simpleOsm;
+    case MapStyleEnum.ING:
+      return mapStyles.simple;
+    case MapStyleEnum.AERIAL:
+      return mapStyles.aerial;
     default:
-      return vector;
+      return mapStyles.simpleOsm;
   }
-}
-
-function generateNewStyle(style) {
-  const baseStyle = getBaseStyle(style);
-  return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
 }
 
 export interface MapProps {
@@ -95,12 +86,7 @@ export interface MapProps {
   handleAddressForm: (open: boolean) => void;
 }
 
-function Map({
-  commune,
-  baseLocale,
-  isAddressFormOpen,
-  handleAddressForm,
-}: MapProps) {
+function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const router = useRouter();
   const {
     map,
@@ -124,7 +110,9 @@ function Map({
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
-  const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle));
+  const [mapStyle, setMapStyle] = useState<StyleSpecification>(
+    getStyleSpecification(defaultStyle)
+  );
 
   const { balId } = router.query;
   const {
@@ -261,11 +249,11 @@ function Map({
   // Change map's style and adapte layers
   useEffect(() => {
     if (map) {
-      setMapStyle(generateNewStyle(style));
+      setMapStyle(getStyleSpecification(style));
 
       if (isTileSourceLoaded) {
         // Adapt layer paint property to map style
-        const isOrtho = style === "ortho";
+        const isOrtho = style === MapStyleEnum.AERIAL;
 
         if (map.getLayer(VOIE_LABEL)) {
           map.setPaintProperty(
@@ -288,7 +276,7 @@ function Map({
 
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
-    setStyle((style: string) => {
+    setStyle((style: MapStyleEnum) => {
       if (drawEnabled && communeHasOrtho) {
         prevStyle.current = style;
         return "ortho";

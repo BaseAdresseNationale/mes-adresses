@@ -11,15 +11,21 @@ import type { ViewState } from "react-map-gl/maplibre";
 import type { Map as MaplibreMap, VectorTileSource } from "maplibre-gl";
 import { ChildrenProps } from "@/types/context";
 
+export enum MapStyleEnum {
+  ING = "ing",
+  OSM = "osm",
+  AERIAL = "aerial",
+}
+
 interface MapContextType {
   map: MaplibreMap | null;
   setMap: (value: MaplibreMap | null) => void;
   handleMapRef: (ref: any) => void;
   isTileSourceLoaded: boolean;
   reloadTiles: () => void;
-  style: string;
+  style: MapStyleEnum;
   setStyle: React.Dispatch<React.SetStateAction<string>>;
-  defaultStyle: string;
+  defaultStyle: MapStyleEnum;
   isStyleLoaded: boolean;
   viewport: Partial<ViewState>;
   setViewport: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
@@ -40,7 +46,7 @@ const defaultViewport: Partial<ViewState> = {
   zoom: 6,
 };
 
-export const defaultStyle = "vector";
+export const defaultStyle = MapStyleEnum.OSM;
 
 export const BAL_API_URL =
   process.env.NEXT_PUBLIC_BAL_API_URL ||
@@ -51,7 +57,7 @@ export const SOURCE_TILE_ID = "tiles";
 export function MapContextProvider(props: ChildrenProps) {
   const [map, setMap] = useState<MaplibreMap | null>(null);
   const [showToponymes, setShowToponymes] = useState<boolean>(true);
-  const [style, setStyle] = useState<string>(defaultStyle);
+  const [style, setStyle] = useState<MapStyleEnum>(defaultStyle);
   const [viewport, setViewport] = useState<Partial<ViewState>>(defaultViewport);
   const [isCadastreDisplayed, setIsCadastreDisplayed] =
     useState<boolean>(false);
