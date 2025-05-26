@@ -17,7 +17,7 @@ import {
   getSignalementLabel,
 } from "@/lib/utils/signalement";
 import { ObjectId } from "bson";
-import MapContext, { defaultStyle } from "@/contexts/map";
+import MapContext, { defaultStyle, MapStyleEnum } from "@/contexts/map";
 import BalDataContext from "@/contexts/bal-data";
 import ProtectedPage from "@/layouts/protected-page";
 import SignalementForm from "@/components/signalement/signalement-form/signalement-form";
@@ -48,7 +48,7 @@ function SignalementPage({
   const [author, setAuthor] = useState<Signalement["author"]>();
 
   useEffect(() => {
-    setStyle("ortho");
+    setStyle(MapStyleEnum.AERIAL);
     setBreadcrumbs(
       <>
         <Link is={NextLink} href={`/bal/${baseLocale.id}`}>
