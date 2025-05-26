@@ -2748,6 +2748,11 @@ caniuse-lite@^1.0.30001688:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001690.tgz#f2d15e3aaf8e18f76b2b8c1481abde063b8104c8"
   integrity sha512-5ExiE3qQN6oF8Clf8ifIDcMRCRE/dMGcETG/XGMD8/XiXm6HXQgQTh1yZYLXXpSOsEUlJm1Xr7kGULZTuGtP/w==
 
+carte-facile@^0.5.16:
+  version "0.5.16"
+  resolved "https://registry.yarnpkg.com/carte-facile/-/carte-facile-0.5.16.tgz#9a753cf14861b14e8ca6ed593cff65b5674d4fdc"
+  integrity sha512-AeJQzJOBqXv0iYzRQPmuxjsgudAox4X9RnAZA8/wmScpvlPxWBo6HOI5Hx0sSDh3jeV3YZX2DOZNIN71/vb8aQ==
+
 ccount@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-2.0.1.tgz#17a3bf82302e0870d6da43a01311a8bc02a3ecf5"

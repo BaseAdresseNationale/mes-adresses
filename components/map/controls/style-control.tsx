@@ -3,10 +3,11 @@ import { Pane, SelectMenu, Button, Position, LayersIcon } from "evergreen-ui";
 
 import CadastreControl from "@/components/map/controls/cadastre-control";
 import { CommuneType } from "@/types/commune";
+import { MapStyleEnum } from "@/contexts/map";
 
 interface StyleControlProps {
   style: string;
-  handleStyle: (style: string) => void;
+  handleStyle: (style: MapStyleEnum) => void;
   isCadastreDisplayed: boolean;
   handleCadastre: (fn: (show: boolean) => boolean) => void;
   commune: CommuneType;
@@ -26,11 +27,15 @@ function StyleControl({
     return [
       {
         label: "Plan OpenMapTiles",
-        value: "vector",
+        value: MapStyleEnum.OSM,
         isAvailable: hasOpenMapTiles,
       },
-      { label: "Plan IGN", value: "plan-ign", isAvailable: hasPlanIGN },
-      { label: "Photographie aérienne", value: "ortho", isAvailable: hasOrtho },
+      { label: "Plan IGN", value: MapStyleEnum.ING, isAvailable: hasPlanIGN },
+      {
+        label: "Photographie aérienne",
+        value: MapStyleEnum.AERIAL,
+        isAvailable: hasOrtho,
+      },
     ].filter(({ isAvailable }) => isAvailable);
   }, [commune]);
 
@@ -55,7 +60,7 @@ function StyleControl({
           height={40 + 33 * availableStyles.length}
           options={availableStyles}
           selected={style}
-          onSelect={(style) => handleStyle(style.value as string)}
+          onSelect={(style) => handleStyle(style.value as MapStyleEnum)}
         >
           <Button
             className="map-style-button"

@@ -16,15 +16,15 @@ import MapGl, {
   LngLatBoundsLike,
 } from "react-map-gl/maplibre";
 import { Pane, Alert } from "evergreen-ui";
+import { mapStyles } from "carte-facile";
 
-import MapContext, { SOURCE_TILE_ID } from "@/contexts/map";
+import MapContext, { MapStyleEnum, SOURCE_TILE_ID } from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import TokenContext from "@/contexts/token";
 import DrawContext from "@/contexts/draw";
 import ParcellesContext from "@/contexts/parcelles";
 import BalDataContext from "@/contexts/bal-data";
 
-import { cadastreLayers } from "@/components/map/layers/cadastre";
 import {
   tilesLayers,
   VOIE_LABEL,
@@ -33,7 +33,6 @@ import {
   NUMEROS_LABEL,
   LAYERS_SOURCE,
 } from "@/components/map/layers/tiles";
-import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
 import NumerosMarkers from "@/components/map/numeros-markers";
 import ToponymeMarker from "@/components/map/toponyme-marker";
@@ -49,10 +48,10 @@ import useHovered from "@/components/map/hooks/hovered";
 import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import { StyleSpecification } from "maplibre-gl";
+import { cadastreLayers } from "./layers/cadastre";
 
 const TOPONYMES_MIN_ZOOM = 13;
-
-const LAYERS = [...cadastreLayers];
 
 const settings = {
   maxZoom: 19,
@@ -68,24 +67,17 @@ const interactionProps = {
   doubleClickZoom: true,
 };
 
-function getBaseStyle(style) {
+function getStyleSpecification(style: MapStyleEnum): StyleSpecification {
   switch (style) {
-    case "ortho":
-      return ortho;
-
-    case "vector":
-      return vector;
-
-    case "plan-ign":
-      return planIGN;
+    case MapStyleEnum.OSM:
+      return mapStyles.simpleOsm;
+    case MapStyleEnum.ING:
+      return mapStyles.simple;
+    case MapStyleEnum.AERIAL:
+      return mapStyles.aerial;
     default:
-      return vector;
+      return mapStyles.simpleOsm;
   }
-}
-
-function generateNewStyle(style) {
-  const baseStyle = getBaseStyle(style);
-  return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
 }
 
 export interface MapProps {
@@ -95,12 +87,7 @@ export interface MapProps {
   handleAddressForm: (open: boolean) => void;
 }
 
-function Map({
-  commune,
-  baseLocale,
-  isAddressFormOpen,
-  handleAddressForm,
-}: MapProps) {
+function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const router = useRouter();
   const {
     map,
@@ -124,7 +111,9 @@ function Map({
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
-  const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle));
+  const [mapStyle, setMapStyle] = useState<StyleSpecification>(
+    getStyleSpecification(defaultStyle)
+  );
 
   const { balId } = router.query;
   const {
@@ -259,44 +248,46 @@ function Map({
   }, [map, voie, toponyme, updatePositionsLayer]);
 
   // Change map's style and adapte layers
-  useEffect(() => {
-    if (map) {
-      setMapStyle(generateNewStyle(style));
+  const changeColorsLayers = useCallback(() => {
+    if (isTileSourceLoaded) {
+      if (map.getLayer(VOIE_LABEL)) {
+        map.setPaintProperty(
+          VOIE_LABEL,
+          "text-halo-color",
+          style === MapStyleEnum.AERIAL ? "#ffffff" : "#f8f4f0"
+        );
+      }
 
-      if (isTileSourceLoaded) {
-        // Adapt layer paint property to map style
-        const isOrtho = style === "ortho";
-
-        if (map.getLayer(VOIE_LABEL)) {
-          map.setPaintProperty(
-            VOIE_LABEL,
-            "text-halo-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
-        }
-
-        if (map.getLayer(NUMEROS_POINT)) {
-          map.setPaintProperty(
-            NUMEROS_POINT,
-            "circle-stroke-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
-        }
+      if (map.getLayer(NUMEROS_POINT)) {
+        map.setPaintProperty(
+          NUMEROS_POINT,
+          "circle-stroke-color",
+          style === MapStyleEnum.AERIAL ? "#ffffff" : "#f8f4f0"
+        );
       }
     }
-  }, [map, style]);
+  }, [map, style, isTileSourceLoaded]);
+
+  const handleStyleChange = useCallback(
+    (style: MapStyleEnum) => {
+      if (map) {
+        setStyle(style);
+        setMapStyle(getStyleSpecification(style));
+        changeColorsLayers();
+      }
+    },
+    [map, setStyle, changeColorsLayers]
+  );
 
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
-    setStyle((style: string) => {
-      if (drawEnabled && communeHasOrtho) {
-        prevStyle.current = style;
-        return "ortho";
-      }
-
-      return prevStyle.current;
-    });
-  }, [drawEnabled, setStyle, communeHasOrtho]);
+    if (drawEnabled && communeHasOrtho) {
+      prevStyle.current = style;
+      handleStyleChange(MapStyleEnum.AERIAL);
+    } else {
+      handleStyleChange(prevStyle.current || style);
+    }
+  }, [drawEnabled, communeHasOrtho]);
 
   useEffect(() => {
     if (isStyleLoaded) {
@@ -330,6 +321,14 @@ function Map({
       }
     }
   }, [map, bounds, setViewport]);
+
+  const sourceCadastre: SourceProps = useMemo(() => {
+    return {
+      id: "cadastre",
+      type: "vector",
+      url: "https://openmaptiles.geo.data.gouv.fr/data/cadastre.json",
+    };
+  }, []);
 
   const sourceTiles: SourceProps = useMemo(() => {
     return {
@@ -382,7 +381,7 @@ function Map({
     <Pane display="flex" flexDirection="column" flex={1}>
       <StyleControl
         style={style}
-        handleStyle={setStyle}
+        handleStyle={handleStyleChange}
         commune={commune}
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
@@ -442,6 +441,12 @@ function Map({
 
           <Source {...sourceTiles}>
             {Object.values(tilesLayers).map((layer) => (
+              <Layer key={layer.id} {...(layer as LayerProps)} />
+            ))}
+          </Source>
+
+          <Source {...sourceCadastre}>
+            {Object.values(cadastreLayers).map((layer) => (
               <Layer key={layer.id} {...(layer as LayerProps)} />
             ))}
           </Source>
