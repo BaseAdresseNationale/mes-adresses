@@ -6,7 +6,7 @@ import {
   UnorderedList,
   ListItem,
 } from "evergreen-ui";
-import { ProConnectStyle } from "./pro-connect.styled";
+import styles from "./button-pro-connect.module.css";
 
 interface ProConnectProps {
   handleStrategy: () => void;
@@ -19,13 +19,15 @@ function ProConnect({ handleStrategy }: ProConnectProps) {
         <Heading is="h5" marginBottom={8}>
           M’authentifier comme élu
         </Heading>
-        <ProConnectStyle onClick={handleStrategy}>
-          <button className="proconnect-button" style={{ cursor: "pointer" }}>
-            <span className="proconnect-sr-only">
-              S&apos;identifier avec ProConnect
-            </span>
-          </button>
-        </ProConnectStyle>
+        <button
+          className={styles["proconnect-button"]}
+          style={{ cursor: "pointer" }}
+          onClick={handleStrategy}
+        >
+          <span className={styles["proconnect-sr-only"]}>
+            S&apos;identifier avec ProConnect
+          </span>
+        </button>
       </Pane>
       <Pane>
         <Heading textAlign="center" color="#225DF5">
