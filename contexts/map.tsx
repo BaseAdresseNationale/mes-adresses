@@ -81,7 +81,7 @@ export function MapContextProvider(props: ChildrenProps) {
       if (source?.loaded()) {
         setIsTileSourceLoaded(true);
       }
-      addOverlay(map, "administrativeBoundaries");
+      // addOverlay(map, "administrativeBoundaries");
     });
   }, [map]);
 
@@ -103,11 +103,9 @@ export function MapContextProvider(props: ChildrenProps) {
     if (ref) {
       const map: MaplibreMap = ref.getMap();
       setMap(map);
-      map.on("styledataloading", () => {
-        setIsStyleLoaded(false);
-        void map.once("style.load", () => {
-          setIsStyleLoaded(true);
-        });
+      setIsStyleLoaded(false);
+      void map.once("style.load", () => {
+        setIsStyleLoaded(true);
       });
     }
   }, []);

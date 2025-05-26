@@ -49,6 +49,7 @@ import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import { StyleSpecification } from "maplibre-gl";
+import { cadastreLayers } from "./layers/cadastre";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -321,6 +322,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     }
   }, [map, bounds, setViewport]);
 
+  // const sourceCadastre: SourceProps = useMemo(() => {
+  //   return {
+  //     id: "cadastre",
+  //     type: "vector",
+  //     url: "https://openmaptiles.geo.data.gouv.fr/data/cadastre.json",
+  //   };
+  // }, []);
+
   const sourceTiles: SourceProps = useMemo(() => {
     return {
       id: SOURCE_TILE_ID,
@@ -435,6 +444,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
               <Layer key={layer.id} {...(layer as LayerProps)} />
             ))}
           </Source>
+          {/* 
+          <Source {...sourceCadastre}>
+            {Object.values(cadastreLayers).map((layer) => (
+              <Layer key={layer.id} {...(layer as LayerProps)} />
+            ))}
+          </Source> */}
 
           {(voie || toponyme) && !modeId && numeros && (
             <NumerosMarkers
