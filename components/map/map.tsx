@@ -322,13 +322,13 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     }
   }, [map, bounds, setViewport]);
 
-  // const sourceCadastre: SourceProps = useMemo(() => {
-  //   return {
-  //     id: "cadastre",
-  //     type: "vector",
-  //     url: "https://openmaptiles.geo.data.gouv.fr/data/cadastre.json",
-  //   };
-  // }, []);
+  const sourceCadastre: SourceProps = useMemo(() => {
+    return {
+      id: "cadastre",
+      type: "vector",
+      url: "https://openmaptiles.geo.data.gouv.fr/data/cadastre.json",
+    };
+  }, []);
 
   const sourceTiles: SourceProps = useMemo(() => {
     return {
@@ -444,12 +444,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
               <Layer key={layer.id} {...(layer as LayerProps)} />
             ))}
           </Source>
-          {/* 
+
           <Source {...sourceCadastre}>
             {Object.values(cadastreLayers).map((layer) => (
               <Layer key={layer.id} {...(layer as LayerProps)} />
             ))}
-          </Source> */}
+          </Source>
 
           {(voie || toponyme) && !modeId && numeros && (
             <NumerosMarkers

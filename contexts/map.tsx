@@ -11,6 +11,7 @@ import type { ViewState } from "react-map-gl/maplibre";
 import type { Map as MaplibreMap, VectorTileSource } from "maplibre-gl";
 import { ChildrenProps } from "@/types/context";
 import { addOverlay } from "carte-facile";
+import { cadastreLayers } from "@/components/map/layers/cadastre";
 
 export enum MapStyleEnum {
   ING = "ing",
@@ -81,7 +82,7 @@ export function MapContextProvider(props: ChildrenProps) {
       if (source?.loaded()) {
         setIsTileSourceLoaded(true);
       }
-      // addOverlay(map, "administrativeBoundaries");
+      addOverlay(map, "administrativeBoundaries");
     });
   }, [map]);
 
@@ -103,9 +104,12 @@ export function MapContextProvider(props: ChildrenProps) {
     if (ref) {
       const map: MaplibreMap = ref.getMap();
       setMap(map);
-      setIsStyleLoaded(false);
-      void map.once("style.load", () => {
-        setIsStyleLoaded(true);
+      setIsStyleLoaded(true);
+      map.on("styledataloading", () => {
+        setIsStyleLoaded(false);
+        map.once("style.load", () => {
+          setIsStyleLoaded(true);
+        });
       });
     }
   }, []);
