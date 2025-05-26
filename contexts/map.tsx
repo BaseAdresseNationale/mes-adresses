@@ -77,7 +77,6 @@ export function MapContextProvider(props: ChildrenProps) {
 
   useEffect(() => {
     map?.on("load", () => {
-      console.log("map is loaded");
       const source = map.getSource(SOURCE_TILE_ID);
       if (source?.loaded()) {
         setIsTileSourceLoaded(true);
