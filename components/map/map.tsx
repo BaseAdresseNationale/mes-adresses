@@ -16,7 +16,7 @@ import MapGl, {
   LngLatBoundsLike,
 } from "react-map-gl/maplibre";
 import { Pane, Alert } from "evergreen-ui";
-import { mapStyles, addOverlay, removeOverlay } from "carte-facile";
+import { mapStyles } from "carte-facile";
 
 import MapContext, { MapStyleEnum, SOURCE_TILE_ID } from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
@@ -247,44 +247,46 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   }, [map, voie, toponyme, updatePositionsLayer]);
 
   // Change map's style and adapte layers
-  useEffect(() => {
-    if (map) {
-      setMapStyle(getStyleSpecification(style));
+  const changeColorsLayers = useCallback(() => {
+    if (isTileSourceLoaded) {
+      if (map.getLayer(VOIE_LABEL)) {
+        map.setPaintProperty(
+          VOIE_LABEL,
+          "text-halo-color",
+          style === MapStyleEnum.AERIAL ? "#ffffff" : "#f8f4f0"
+        );
+      }
 
-      if (isTileSourceLoaded) {
-        // Adapt layer paint property to map style
-        const isOrtho = style === MapStyleEnum.AERIAL;
-
-        if (map.getLayer(VOIE_LABEL)) {
-          map.setPaintProperty(
-            VOIE_LABEL,
-            "text-halo-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
-        }
-
-        if (map.getLayer(NUMEROS_POINT)) {
-          map.setPaintProperty(
-            NUMEROS_POINT,
-            "circle-stroke-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
-        }
+      if (map.getLayer(NUMEROS_POINT)) {
+        map.setPaintProperty(
+          NUMEROS_POINT,
+          "circle-stroke-color",
+          style === MapStyleEnum.AERIAL ? "#ffffff" : "#f8f4f0"
+        );
       }
     }
-  }, [map, style]);
+  }, [map, style, isTileSourceLoaded]);
+
+  const handleStyleChange = useCallback(
+    (style: MapStyleEnum) => {
+      if (map) {
+        setStyle(style);
+        setMapStyle(getStyleSpecification(style));
+        changeColorsLayers();
+      }
+    },
+    [map, setStyle, changeColorsLayers]
+  );
 
   // Auto switch to ortho on draw and save previous style
   useEffect(() => {
-    setStyle((style: MapStyleEnum) => {
-      if (drawEnabled && communeHasOrtho) {
-        prevStyle.current = style;
-        return "ortho";
-      }
-
-      return prevStyle.current;
-    });
-  }, [drawEnabled, setStyle, communeHasOrtho]);
+    if (drawEnabled && communeHasOrtho) {
+      prevStyle.current = style;
+      handleStyleChange(MapStyleEnum.AERIAL);
+    } else {
+      handleStyleChange(prevStyle.current || style);
+    }
+  }, [drawEnabled, communeHasOrtho]);
 
   useEffect(() => {
     if (isStyleLoaded) {
@@ -370,7 +372,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     <Pane display="flex" flexDirection="column" flex={1}>
       <StyleControl
         style={style}
-        handleStyle={setStyle}
+        handleStyle={handleStyleChange}
         commune={commune}
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}

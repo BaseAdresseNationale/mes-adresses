@@ -10,6 +10,7 @@ import LocalStorageContext from "@/contexts/local-storage";
 import type { ViewState } from "react-map-gl/maplibre";
 import type { Map as MaplibreMap, VectorTileSource } from "maplibre-gl";
 import { ChildrenProps } from "@/types/context";
+import { addOverlay } from "carte-facile";
 
 export enum MapStyleEnum {
   ING = "ing",
@@ -24,7 +25,7 @@ interface MapContextType {
   isTileSourceLoaded: boolean;
   reloadTiles: () => void;
   style: MapStyleEnum;
-  setStyle: React.Dispatch<React.SetStateAction<string>>;
+  setStyle: React.Dispatch<React.SetStateAction<MapStyleEnum>>;
   defaultStyle: MapStyleEnum;
   isStyleLoaded: boolean;
   viewport: Partial<ViewState>;
@@ -76,10 +77,12 @@ export function MapContextProvider(props: ChildrenProps) {
 
   useEffect(() => {
     map?.on("load", () => {
+      console.log("map is loaded");
       const source = map.getSource(SOURCE_TILE_ID);
       if (source?.loaded()) {
         setIsTileSourceLoaded(true);
       }
+      addOverlay(map, "administrativeBoundaries");
     });
   }, [map]);
 
