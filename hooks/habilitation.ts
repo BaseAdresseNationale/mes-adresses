@@ -12,6 +12,7 @@ import {
   HabilitationDTO,
   HabilitationService,
 } from "@/lib/openapi-api-bal";
+import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 
 interface UseHabilitationType {
   habilitation: HabilitationDTO | null;
@@ -31,7 +32,7 @@ export default function useHabilitation(
     null
   );
   const [isHabilitationProcessDisplayed, setIsHabilitationProcessDisplayed] =
-    useState<boolean>(query["france-connect"] === "1");
+    useState<boolean>(query[PRO_CONNECT_QUERY_PARAM] === "1");
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
