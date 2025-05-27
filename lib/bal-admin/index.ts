@@ -8,15 +8,15 @@ const NEXT_PUBLIC_BAL_ADMIN_URL =
 export const trainingTypeMap = {
   [EventTypeTypeEnum.FORMATION]: {
     color: "green",
-    label: "Formation débutant",
+    label: "Formation initiale",
   },
   [EventTypeTypeEnum.FORMATION_LVL2]: {
     color: "blue",
-    label: "Formation avancée",
+    label: "Formation approfondie",
   },
   [EventTypeTypeEnum.FORMATION_SPECIALE]: {
     color: "orange",
-    label: "Formation spéciale",
+    label: "Formation signalement",
   },
 };
 
