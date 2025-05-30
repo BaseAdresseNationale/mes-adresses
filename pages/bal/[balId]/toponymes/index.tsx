@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { sortBy } from "lodash";
 import {
   Table,
@@ -16,7 +16,6 @@ import { normalizeSort } from "@/lib/normalize";
 
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
-import ReadOnlyInfos from "./read-only-infos";
 
 import DeleteWarning from "@/components/delete-warning";
 import {
@@ -26,15 +25,17 @@ import {
   ToponymesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
-import LanguagePreview from "./language-preview";
-import TableRowNotifications from "../table-row/table-row-notifications";
-import CommentsContent from "../comments-content";
-import TableRowActions from "../table-row/table-row-actions";
-import PaginationList from "../pagination-list";
 import { useSearchPagination } from "@/hooks/search-pagination";
 import { CommuneType } from "@/types/commune";
+import ReadOnlyInfos from "@/components/bal/read-only-infos";
+import PaginationList from "@/components/pagination-list";
+import LanguagePreview from "@/components/bal/language-preview";
+import TableRowNotifications from "@/components/table-row/table-row-notifications";
+import CommentsContent from "@/components/comments-content";
+import TableRowActions from "@/components/table-row/table-row-actions";
+import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 
-interface ToponymesListProps {
+interface ToponymesPageProps {
   commune: CommuneType;
   toponymes: ExtentedToponymeDTO[];
   onRemove: () => Promise<void>;
@@ -44,7 +45,7 @@ interface ToponymesListProps {
   openForm: () => void;
 }
 
-function ToponymesList({
+function ToponymesPage({
   commune,
   toponymes,
   onEnableEditing,
@@ -52,15 +53,23 @@ function ToponymesList({
   balId,
   openForm,
   openRecoveryDialog,
-}: ToponymesListProps) {
+}: ToponymesPageProps) {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
   const { isEditing, reloadToponymes } = useContext(BalDataContext);
-  const { toaster } = useContext(LayoutContext);
+  const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const router = useRouter();
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(toponymes);
+
+  useEffect(() => {
+    setBreadcrumbs(<Text>Toponymes</Text>);
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [setBreadcrumbs]);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -125,11 +134,24 @@ function ToponymesList({
           flexShrink={0}
           elevation={0}
           backgroundColor="white"
-          paddingX={16}
+          padding={16}
           display="flex"
           alignItems="center"
           minHeight={50}
         >
+          <Pane>
+            <Paragraph fontSize={12} lineHeight={1.5}>
+              Liste des voies et lieux-dits qui ne sont pas numérotés.
+            </Paragraph>
+            <Paragraph fontSize={12} lineHeight={1.5} marginTop={4}>
+              Ex : 1 Chemin de Boël,{" "}
+              <Text fontWeight="bold" fontSize={12}>
+                Le Voisinet
+              </Text>
+              , Breux-sur-Avre
+            </Paragraph>
+          </Pane>
+
           <Pane marginLeft="auto">
             <Button
               iconBefore={AddIcon}
@@ -243,4 +265,26 @@ function ToponymesList({
   );
 }
 
-export default ToponymesList;
+export async function getServerSideProps({ params }) {
+  const { balId }: { balId: string } = params;
+
+  try {
+    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
+      await getBaseEditorProps(balId);
+
+    return {
+      props: {
+        baseLocale,
+        commune,
+        voies,
+        toponymes,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
+}
+
+export default ToponymesPage;
