@@ -59,7 +59,7 @@ function App(props: AppProps) {
         />
       </Head>
 
-      <LayoutContextProvider>
+      <LayoutContextProvider balId={query.balId as string}>
         <BALWidgetProvider>
           <LocalStorageContextProvider>
             <TokenContextProvider
@@ -108,25 +108,6 @@ function App(props: AppProps) {
       <style jsx global>{`
         div[id^="evergreen-tooltip"].ub-max-w_240px.ub-bg-clr_white.ub-box-szg_border-box {
           max-width: fit-content;
-        }
-
-        .custom-tooltip-content {
-          color: white;
-          line-height: 24px;
-          font-family:
-            "SF UI Text",
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Helvetica,
-            Arial,
-            sans-serif,
-            "Apple Color Emoji",
-            "Segoe UI Emoji",
-            "Segoe UI Symbol";
-          font-size: 14px;
-          margin: 0 0 5px 0;
         }
 
         .main-table-cell:hover {
