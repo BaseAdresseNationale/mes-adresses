@@ -28,7 +28,7 @@ function HeaderSideBar({
   openForm,
 }: HeaderSideBarProps) {
   const { token } = useContext(TokenContext);
-  const { editingId, isEditing, numeros } = useContext(BalDataContext);
+  const { isEditing } = useContext(BalDataContext);
   return (
     <Pane display="flex" flexDirection="column" background="tint1" padding={16}>
       <Heading>

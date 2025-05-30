@@ -1,182 +1,39 @@
-import React, { useState, useCallback, useContext, useEffect } from "react";
-import { keyBy } from "lodash";
-import { Pane, Paragraph } from "evergreen-ui";
+import React, { useContext, useState } from "react";
+import { Pane } from "evergreen-ui";
 
-import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
+import TokenContext from "@/contexts/token";
 
-import useHelp from "@/hooks/help";
-
-import CommuneTab from "@/components/bal/commune-tab";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import BALRecoveryContext from "@/contexts/bal-recovery";
-import { TabsEnum } from "@/components/sidebar/tabs";
-import {
-  BaseLocale,
-  BaseLocaleSync,
-  Toponyme,
-  Voie,
-  VoiesService,
-  VoieMetas,
-  ExtendedVoieDTO,
-  BasesLocalesService,
-} from "@/lib/openapi-api-bal";
-import usePublishProcess from "@/hooks/publish-process";
-import HeaderSideBar from "@/components/sidebar/header";
-import PopulateSideBar from "@/components/sidebar/populate";
-import { useRouter } from "next/router";
-import VoieEditor from "@/components/bal/voie-editor";
-import ToponymeEditor from "@/components/bal/toponyme-editor";
-import VoiesList from "@/components/bal/voies-list";
-import MapContext from "@/contexts/map";
-import LayoutContext from "@/contexts/layout";
-import ToponymesList from "@/components/bal/toponymes-list";
-import ConvertVoieWarning from "@/components/convert-voie-warning";
-import CommuneEditor from "@/components/bal/commune-editor";
-import SignalementBalPageProductTour from "@/components/signalement/product-tour/signalement-bal-page-product-tour";
-import SignalementContext from "@/contexts/signalement";
-import LocalStorageContext from "@/contexts/local-storage";
+import { BaseLocale, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
+import ReadOnlyInfos from "@/components/bal/read-only-infos";
+import HabilitationInfos from "@/components/bal/habilitation-infos";
+import CertificationInfos from "@/components/bal/certification-infos";
+import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import { getCommuneFlag } from "@/lib/api-blason-commune";
+import CommuneEditor from "@/components/bal/commune-editor";
+import HeaderSideBar from "@/components/sidebar/header";
 
-interface BaseLocalePageProps {
+interface BALHomePageProps {
   commune: CommuneType;
+  voies: ExtendedVoieDTO[];
+  communeFlag?: string;
+  openRecoveryDialog: () => void;
 }
 
-function BaseLocalePage({ commune }: BaseLocalePageProps) {
-  const [editedItem, setEditedItem] = useState<Voie | Toponyme | null>(null);
-  const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
-  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
-  const [toConvert, setToConvert] = useState<string | null>(null);
-  const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
-
+function BALHomePage({
+  commune,
+  communeFlag,
+  voies,
+  openRecoveryDialog,
+}: BALHomePageProps) {
+  const { baseLocale } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
-  const { wasWelcomed } = useContext(LocalStorageContext);
-  const { toaster, selectedTab } = useContext(LayoutContext);
-  const {
-    voies,
-    toponymes,
-    baseLocale,
-    habilitation,
-    isHabilitationValid,
-    setVoies,
-  } = useContext(BalDataContext);
-  const { reloadTiles } = useContext(MapContext);
-  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
-  const { handleShowHabilitationProcess } = usePublishProcess(commune);
-  const { refreshBALSync, reloadVoies, reloadToponymes, reloadParcelles } =
-    useContext(BalDataContext);
-  const { pendingSignalementsCount } = useContext(SignalementContext);
-  const router = useRouter();
-
-  let help: number = 0;
-  if (selectedTab == TabsEnum.VOIES) {
-    help = 1;
-  } else if (selectedTab == TabsEnum.TOPONYMES) {
-    help = 2;
-  }
-  useHelp(help);
-
-  useEffect(() => {
-    async function addCommentsToVoies() {
-      try {
-        const voieMetas: VoieMetas[] =
-          await BasesLocalesService.findVoieMetasByBal(baseLocale.id);
-        const voiesMetasByVoieId = keyBy(voieMetas, "id");
-        setVoies((voies: ExtendedVoieDTO[]) =>
-          voies.map((v) => ({ ...v, ...voiesMetasByVoieId[v.id] }))
-        );
-      } catch (e) {
-        console.error("Impossible de charger les commentaires de voies", e);
-      }
-    }
-
-    if (token) {
-      addCommentsToVoies();
-    }
-  }, [baseLocale.id, setVoies, token]);
-
-  useEffect(() => {
-    if (
-      token &&
-      baseLocale.status === BaseLocale.status.PUBLISHED &&
-      baseLocale.sync?.status === BaseLocaleSync.status.OUTDATED &&
-      habilitation &&
-      !isHabilitationValid
-    ) {
-      handleShowHabilitationProcess();
-    }
-  }, [baseLocale.status, baseLocale.sync?.status, isHabilitationValid, token]);
-
-  const onRemove = useCallback(async () => {
-    await reloadParcelles();
-    reloadTiles();
-    refreshBALSync();
-  }, [refreshBALSync, reloadTiles, reloadParcelles]);
-
-  const onConvert = useCallback(async () => {
-    setOnConvertLoading(true);
-    const convertToponyme = toaster(
-      async () => {
-        const toponyme: Toponyme =
-          await VoiesService.convertToToponyme(toConvert);
-        await reloadVoies();
-        await reloadToponymes();
-        await reloadParcelles();
-        reloadTiles();
-        refreshBALSync();
-        // Select the tab topnyme after conversion
-        router.query.selectedTab = TabsEnum.TOPONYMES;
-        await router.push(router, undefined, { shallow: true });
-        setEditedItem(toponyme);
-        setIsFormOpen(true);
-      },
-      "La voie a bien été convertie en toponyme",
-      "La voie n’a pas pu être convertie en toponyme"
-    );
-
-    await convertToponyme();
-
-    setOnConvertLoading(false);
-    setToConvert(null);
-  }, [
-    router,
-    reloadVoies,
-    refreshBALSync,
-    reloadToponymes,
-    reloadTiles,
-    reloadParcelles,
-    toConvert,
-    toaster,
-  ]);
-
-  const onEdit = useCallback(
-    (idItem: string) => {
-      if (idItem) {
-        setEditedItem([...voies, ...toponymes].find(({ id }) => id === idItem));
-        setIsFormOpen(true);
-      } else {
-        setEditedItem(null);
-        setIsFormOpen(false);
-      }
-    },
-    [voies, toponymes]
-  );
+  const isAdmin = Boolean(token);
+  const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
 
   return (
-    <>
-      <ConvertVoieWarning
-        isShown={Boolean(toConvert)}
-        content={
-          <Paragraph>
-            Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
-          </Paragraph>
-        }
-        isLoading={onConvertLoading}
-        onCancel={() => {
-          setToConvert(null);
-        }}
-        onConfirm={onConvert}
-      />
+    <Pane overflowY="auto">
       <HeaderSideBar
         baseLocale={baseLocale}
         commune={commune}
@@ -185,138 +42,47 @@ function BaseLocalePage({ commune }: BaseLocalePageProps) {
           setIsCommuneFormOpen(true);
         }}
       />
-      {pendingSignalementsCount > 0 && wasWelcomed && (
-        <SignalementBalPageProductTour />
+      {isCommuneFormOpen && (
+        <CommuneEditor
+          initialValue={baseLocale as BaseLocale}
+          closeForm={() => {
+            setIsCommuneFormOpen(false);
+          }}
+        />
       )}
       <Pane
-        position="relative"
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        width="100%"
-        overflow="hidden"
-      >
-        {isCommuneFormOpen && (
-          <CommuneEditor
-            initialValue={baseLocale as BaseLocale}
-            closeForm={() => {
-              setIsCommuneFormOpen(false);
-            }}
-          />
-        )}
-
-        {isFormOpen && selectedTab === TabsEnum.VOIES && (
-          <VoieEditor
-            initialValue={editedItem as Voie}
-            closeForm={() => {
-              onEdit(null);
-            }}
-          />
-        )}
-        {isFormOpen && selectedTab === TabsEnum.TOPONYMES && (
-          <ToponymeEditor
-            initialValue={editedItem as Toponyme}
-            commune={commune}
-            closeForm={() => {
-              onEdit(null);
-            }}
-          />
-        )}
-
-        {selectedTab === TabsEnum.COMMUNE && (
-          <CommuneTab
-            commune={commune}
-            openRecoveryDialog={() => {
-              setIsRecoveryDisplayed(true);
-            }}
-          />
-        )}
-
-        {selectedTab === TabsEnum.VOIES && (
-          <VoiesList
-            voies={voies}
-            balId={baseLocale.id}
-            onEnableEditing={onEdit}
-            setToConvert={setToConvert}
-            onRemove={onRemove}
-            openRecoveryDialog={() => {
-              setIsRecoveryDisplayed(true);
-            }}
-            openForm={() => {
-              setIsFormOpen(true);
-            }}
-          />
-        )}
-
-        {selectedTab === TabsEnum.TOPONYMES && (
-          <ToponymesList
-            commune={commune}
-            toponymes={toponymes}
-            balId={baseLocale.id}
-            onEnableEditing={onEdit}
-            onRemove={onRemove}
-            openRecoveryDialog={() => {
-              setIsRecoveryDisplayed(true);
-            }}
-            openForm={() => {
-              setIsFormOpen(true);
-            }}
-          />
-        )}
-
-        {token && voies && voies.length === 0 && (
-          <PopulateSideBar commune={commune} baseLocale={baseLocale} />
-        )}
-      </Pane>
-
-      <style jsx>{`
-        .tab {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: whitesmoke;
-        }
-
-        .tab:hover {
-          cursor: pointer;
-          background: #e4e7eb;
-        }
-
-        .tab.selected {
-          background: #fff;
-        }
-
-        .tab .selected:hover {
-          background: #e4e7eb;
-        }
-
-        .tab-notif {
-          position: absolute;
-          top: -10px;
-          right: -5px;
-          background: red;
-          color: white;
-          font-size: 10px;
-          padding: 2px 6px;
-          border-radius: 50%;
-        }
-      `}</style>
-    </>
+        height={100}
+        flexShrink={0}
+        backgroundImage={`url(${communeFlag})`}
+        backgroundPosition="center"
+        backgroundRepeat="no-repeat"
+        backgroundSize="contain"
+        marginTop={50}
+        marginX={10}
+      />
+      {!isAdmin && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
+      {isAdmin && baseLocale.status !== BaseLocale.status.DEMO && (
+        <HabilitationInfos commune={commune} />
+      )}
+      <CertificationInfos openRecoveryDialog={!isAdmin && openRecoveryDialog} />
+    </Pane>
   );
 }
 
 export async function getServerSideProps({ params }) {
-  const { balId } = params;
+  const { balId }: { balId: string } = params;
 
   try {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
       await getBaseEditorProps(balId);
+
+    const communeFlag = await getCommuneFlag(commune.code);
+
     return {
       props: {
-        commune,
         baseLocale,
+        commune,
+        communeFlag,
         voies,
         toponymes,
       },
@@ -328,4 +94,4 @@ export async function getServerSideProps({ params }) {
   }
 }
 
-export default BaseLocalePage;
+export default BALHomePage;
