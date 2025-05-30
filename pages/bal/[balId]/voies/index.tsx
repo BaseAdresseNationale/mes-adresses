@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { sortBy } from "lodash";
 import {
   Table,
@@ -23,17 +23,20 @@ import TokenContext from "@/contexts/token";
 
 import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
-import ReadOnlyInfos from "./read-only-infos";
 
-import { ExtendedVoieDTO, VoiesService } from "@/lib/openapi-api-bal";
+import { ExtendedVoieDTO, Toponyme, VoiesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
-import TableRowActions from "../table-row/table-row-actions";
-import TableRowNotifications from "../table-row/table-row-notifications";
-import LanguagePreview from "./language-preview";
-import PaginationList from "../pagination-list";
 import { useSearchPagination } from "@/hooks/search-pagination";
+import ReadOnlyInfos from "@/components/bal/read-only-infos";
+import PaginationList from "@/components/pagination-list";
+import LanguagePreview from "@/components/bal/language-preview";
+import TableRowNotifications from "@/components/table-row/table-row-notifications";
+import TableRowActions from "@/components/table-row/table-row-actions";
+import ConvertVoieWarning from "@/components/convert-voie-warning";
+import MapContext from "@/contexts/map";
+import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 
-interface VoiesListProps {
+interface VoiesPageProps {
   voies: ExtendedVoieDTO[];
   onRemove: () => Promise<void>;
   onEnableEditing: (id: string) => void;
@@ -43,24 +46,41 @@ interface VoiesListProps {
   openForm: () => void;
 }
 
-function VoiesList({
+function VoiesPage({
   voies,
   onEnableEditing,
-  setToConvert,
   balId,
   onRemove,
   openRecoveryDialog,
   openForm,
-}: VoiesListProps) {
+}: VoiesPageProps) {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
-  const { isEditing, reloadVoies } = useContext(BalDataContext);
-  const { toaster } = useContext(LayoutContext);
+  const {
+    isEditing,
+    reloadVoies,
+    reloadToponymes,
+    reloadParcelles,
+    refreshBALSync,
+  } = useContext(BalDataContext);
+  const { reloadTiles } = useContext(MapContext);
+
+  const [toConvert, setToConvert] = useState<string | null>(null);
+  const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
+  const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(voies);
+
+  useEffect(() => {
+    setBreadcrumbs(<Text>Voies</Text>);
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [setBreadcrumbs]);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -75,6 +95,43 @@ function VoiesList({
     setToRemove(null);
     setIsDisabled(false);
   };
+
+  const onConvert = useCallback(async () => {
+    setOnConvertLoading(true);
+    const convertToponyme = toaster(
+      async () => {
+        const toponyme: Toponyme =
+          await VoiesService.convertToToponyme(toConvert);
+        await reloadVoies();
+        await reloadToponymes();
+        await reloadParcelles();
+        reloadTiles();
+        refreshBALSync();
+        // Select the tab topnyme after conversion
+        /*         router.query.selectedTab = TabsEnum.TOPONYMES;
+        await router.push(router, undefined, { shallow: true });
+        setEditedItem(toponyme);
+        setIsFormOpen(true); */
+      },
+      "La voie a bien été convertie en toponyme",
+      "La voie n’a pas pu être convertie en toponyme"
+    );
+
+    await convertToponyme();
+
+    setOnConvertLoading(false);
+    setToConvert(null);
+  }, [
+    /*     router,
+     */
+    reloadVoies,
+    refreshBALSync,
+    reloadToponymes,
+    reloadTiles,
+    reloadParcelles,
+    toConvert,
+    toaster,
+  ]);
 
   const onSelect = async (id: string) => {
     void router.push(`/bal/${balId}/voies/${id}`);
@@ -94,6 +151,19 @@ function VoiesList({
 
   return (
     <>
+      <ConvertVoieWarning
+        isShown={Boolean(toConvert)}
+        content={
+          <Paragraph>
+            Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
+          </Paragraph>
+        }
+        isLoading={onConvertLoading}
+        onCancel={() => {
+          setToConvert(null);
+        }}
+        onConfirm={onConvert}
+      />
       <DeleteWarning
         isShown={Boolean(toRemove)}
         content={
@@ -118,11 +188,25 @@ function VoiesList({
           flexShrink={0}
           elevation={0}
           backgroundColor="white"
-          paddingX={16}
+          padding={16}
           display="flex"
           alignItems="center"
           minHeight={50}
         >
+          <Pane>
+            <Paragraph fontSize={12} lineHeight={1.5}>
+              Liste des dénominations officielles auxquelles sont rattachés des
+              numéros.
+            </Paragraph>
+            <Paragraph fontSize={12} lineHeight={1.5} marginTop={4}>
+              Ex : 1{" "}
+              <Text fontWeight="bold" fontSize={12}>
+                Le Voisinet
+              </Text>
+              , Breux-sur-Avre
+            </Paragraph>
+          </Pane>
+
           <Pane marginLeft="auto">
             <Button
               iconBefore={AddIcon}
@@ -256,4 +340,26 @@ function VoiesList({
   );
 }
 
-export default VoiesList;
+export async function getServerSideProps({ params }) {
+  const { balId }: { balId: string } = params;
+
+  try {
+    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
+      await getBaseEditorProps(balId);
+
+    return {
+      props: {
+        baseLocale,
+        commune,
+        voies,
+        toponymes,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
+}
+
+export default VoiesPage;

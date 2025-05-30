@@ -31,6 +31,7 @@ import LayoutContext from "@/contexts/layout";
 import { ApiGeoService } from "@/lib/geo-api";
 import { CommuneType } from "@/types/commune";
 import TabsSideBar from "@/components/sidebar/tabs";
+import { Pane } from "evergreen-ui";
 
 interface EditorProps {
   children: React.ReactNode;
@@ -100,7 +101,16 @@ function Editor({ children, commune }: EditorProps) {
                   }}
                 />
               ) : (
-                children
+                <Pane
+                  position="relative"
+                  display="flex"
+                  flexDirection="column"
+                  height="100%"
+                  width="100%"
+                  overflow="hidden"
+                >
+                  {children}
+                </Pane>
               )}
             </Sidebar>
             {isMobile && (

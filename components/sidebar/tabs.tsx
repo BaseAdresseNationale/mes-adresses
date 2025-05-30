@@ -1,14 +1,16 @@
 import React, { useContext } from "react";
-import { Pane, Tablist, Tab, Tooltip } from "evergreen-ui";
+import { Pane, Tablist, Tab } from "evergreen-ui";
 import Link from "next/link";
 
 import SignalementContext from "@/contexts/signalement";
 import LayoutContext from "@/contexts/layout";
+import TokenContext from "@/contexts/token";
 
 export enum TabsEnum {
   COMMUNE = "commune",
   VOIES = "voies",
   TOPONYMES = "toponymes",
+  SIGNALEMENTS = "signalements",
 }
 
 interface TabsSideBarProps {
@@ -16,8 +18,13 @@ interface TabsSideBarProps {
 }
 
 function TabsSideBar({ balId }: TabsSideBarProps) {
-  const { isMobile, selectedTab, setSelectedTab } = useContext(LayoutContext);
-  const { pendingSignalementsCount } = useContext(SignalementContext);
+  const { selectedTab } = useContext(LayoutContext);
+  const { pendingSignalementsCount, archivedSignalementsCount } =
+    useContext(SignalementContext);
+  const communeHasSignalements =
+    pendingSignalementsCount > 0 || archivedSignalementsCount > 0;
+  const { token } = useContext(TokenContext);
+  const isAdmin = Boolean(token);
 
   return (
     <>
@@ -33,75 +40,42 @@ function TabsSideBar({ balId }: TabsSideBarProps) {
             {
               key: TabsEnum.COMMUNE,
               label: "Commune",
-              notif: pendingSignalementsCount,
-              href: `/bal/${balId}?tab=${TabsEnum.COMMUNE}`,
+              href: `/bal/${balId}`,
             },
             {
               key: TabsEnum.VOIES,
               label: "Voies",
-              tooltip: (
-                <>
-                  <p className="custom-tooltip-content">
-                    Liste des dénominations officielles auxquelles sont
-                    rattachés des numéros.
-                  </p>
-                  <p className="custom-tooltip-content">
-                    Exemple :
-                    <br /> 1 <b>Le Voisinet</b>, Breux-sur-Avre
-                  </p>
-                </>
-              ),
-              href: `/bal/${balId}?tab=${TabsEnum.VOIES}`,
+              href: `/bal/${balId}/${TabsEnum.VOIES}`,
             },
             {
               key: TabsEnum.TOPONYMES,
               label: "Toponymes",
-              tooltip: (
-                <>
-                  <p className="custom-tooltip-content">
-                    Liste des voies et lieux-dits qui ne sont pas numérotés.
-                  </p>
-                  <p className="custom-tooltip-content">
-                    Exemple :
-                    <br /> 1 Chemin de Boël, <b>Le Voisinet</b>, Breux-sur-Avre
-                  </p>
-                </>
-              ),
-              href: `/bal/${balId}?tab=${TabsEnum.TOPONYMES}`,
+              href: `/bal/${balId}/${TabsEnum.TOPONYMES}`,
             },
-          ].map(({ label, notif, tooltip, key, href }) => {
-            const tab = (
-              <Link
-                href={href}
-                key={key}
-                shallow
-                style={{ margin: "0 5px" }}
-                replace={true}
-                onClick={() => setSelectedTab(key)}
-              >
-                <Tab
-                  key={key}
-                  position="relative"
-                  isSelected={selectedTab === key}
-                >
-                  {label}
-                  {notif > 0 && <span className="tab-notif">{notif}</span>}
-                </Tab>
-              </Link>
-            );
-            return !isMobile && tooltip ? (
-              <Tooltip
-                content={tooltip}
-                key={label}
-                position="top-left"
-                showDelay={500}
-              >
-                {tab}
-              </Tooltip>
-            ) : (
-              tab
-            );
-          })}
+            {
+              key: TabsEnum.SIGNALEMENTS,
+              label: "Signalements",
+              notif: pendingSignalementsCount,
+              href: `/bal/${balId}/${TabsEnum.SIGNALEMENTS}`,
+              isHidden: !isAdmin || !communeHasSignalements,
+            },
+          ]
+            .filter(({ isHidden }) => !isHidden)
+            .map(({ label, notif, key, href }, index) => {
+              const tab = (
+                <Link href={href} key={key} shallow style={{ margin: "0 5px" }}>
+                  <Tab
+                    key={key}
+                    position="relative"
+                    isSelected={selectedTab ? selectedTab === key : index === 0}
+                  >
+                    {label}
+                    {notif > 0 && <span className="tab-notif">{notif}</span>}
+                  </Tab>
+                </Link>
+              );
+              return tab;
+            })}
         </Tablist>
       </Pane>
       <style jsx>{`

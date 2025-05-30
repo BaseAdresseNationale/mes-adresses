@@ -110,25 +110,6 @@ function App(props: AppProps) {
           max-width: fit-content;
         }
 
-        .custom-tooltip-content {
-          color: white;
-          line-height: 24px;
-          font-family:
-            "SF UI Text",
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Helvetica,
-            Arial,
-            sans-serif,
-            "Apple Color Emoji",
-            "Segoe UI Emoji",
-            "Segoe UI Symbol";
-          font-size: 14px;
-          margin: 0 0 5px 0;
-        }
-
         .main-table-cell:hover {
           background-color: #e4e7eb;
         }

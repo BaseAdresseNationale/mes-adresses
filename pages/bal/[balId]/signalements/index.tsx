@@ -17,7 +17,6 @@ import {
   Text,
   Badge,
 } from "evergreen-ui";
-
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
@@ -62,7 +61,7 @@ function SignalementsPage({
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { toaster } = useContext(LayoutContext);
+  const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const { showTilesLayers, setShowToponymes, map, isStyleLoaded } =
     useContext(MapContext);
   const [activeTabIndex, setActiveTabIndex] = useState(
@@ -80,6 +79,14 @@ function SignalementsPage({
       count: archivedSignalementsCount,
     },
   ];
+
+  useEffect(() => {
+    setBreadcrumbs(<Text>Signalements</Text>);
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [setBreadcrumbs]);
 
   // Fly to commune
   useEffect(() => {
