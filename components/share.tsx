@@ -1,6 +1,7 @@
-import { Pane, Heading, ShareIcon } from "evergreen-ui";
+import { Pane, Heading, ShareIcon, Label } from "evergreen-ui";
 import { useMemo } from "react";
 import CopyClipBoard from "./copy-clipboard";
+import QRCode from "react-qr-code";
 
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
@@ -34,6 +35,15 @@ function Share({ baseLocaleId, token }: ShareProps) {
       </Pane>
       <Pane margin={12}>
         <CopyClipBoard url={urlBal} />
+        <Pane
+          display="flex"
+          flexDirection="column"
+          alignItems="left"
+          marginTop={12}
+        >
+          <Label marginBottom={8}>QR code de la BAL</Label>
+          <QRCode value={urlBal} />
+        </Pane>
       </Pane>
     </Pane>
   );
