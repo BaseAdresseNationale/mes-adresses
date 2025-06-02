@@ -10,6 +10,14 @@ import LocalStorageContext from "@/contexts/local-storage";
 import type { ViewState } from "react-map-gl/maplibre";
 import type { Map as MaplibreMap, VectorTileSource } from "maplibre-gl";
 import { ChildrenProps } from "@/types/context";
+import { addOverlay } from "carte-facile";
+import { cadastreLayers } from "@/components/map/layers/cadastre";
+
+export enum MapStyleEnum {
+  ING = "ing",
+  OSM = "osm",
+  AERIAL = "aerial",
+}
 
 interface MapContextType {
   map: MaplibreMap | null;
@@ -17,9 +25,9 @@ interface MapContextType {
   handleMapRef: (ref: any) => void;
   isTileSourceLoaded: boolean;
   reloadTiles: () => void;
-  style: string;
-  setStyle: React.Dispatch<React.SetStateAction<string>>;
-  defaultStyle: string;
+  style: MapStyleEnum;
+  setStyle: React.Dispatch<React.SetStateAction<MapStyleEnum>>;
+  defaultStyle: MapStyleEnum;
   isStyleLoaded: boolean;
   viewport: Partial<ViewState>;
   setViewport: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
@@ -40,7 +48,7 @@ const defaultViewport: Partial<ViewState> = {
   zoom: 6,
 };
 
-export const defaultStyle = "vector";
+export const defaultStyle = MapStyleEnum.OSM;
 
 export const BAL_API_URL =
   process.env.NEXT_PUBLIC_BAL_API_URL ||
@@ -51,7 +59,7 @@ export const SOURCE_TILE_ID = "tiles";
 export function MapContextProvider(props: ChildrenProps) {
   const [map, setMap] = useState<MaplibreMap | null>(null);
   const [showToponymes, setShowToponymes] = useState<boolean>(true);
-  const [style, setStyle] = useState<string>(defaultStyle);
+  const [style, setStyle] = useState<MapStyleEnum>(defaultStyle);
   const [viewport, setViewport] = useState<Partial<ViewState>>(defaultViewport);
   const [isCadastreDisplayed, setIsCadastreDisplayed] =
     useState<boolean>(false);
@@ -74,6 +82,7 @@ export function MapContextProvider(props: ChildrenProps) {
       if (source?.loaded()) {
         setIsTileSourceLoaded(true);
       }
+      addOverlay(map, "administrativeBoundaries");
     });
   }, [map]);
 
@@ -95,9 +104,10 @@ export function MapContextProvider(props: ChildrenProps) {
     if (ref) {
       const map: MaplibreMap = ref.getMap();
       setMap(map);
+      setIsStyleLoaded(true);
       map.on("styledataloading", () => {
         setIsStyleLoaded(false);
-        void map.once("style.load", () => {
+        map.once("style.load", () => {
           setIsStyleLoaded(true);
         });
       });
