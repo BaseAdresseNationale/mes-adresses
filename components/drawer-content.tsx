@@ -8,6 +8,7 @@ import TokenContext from "@/contexts/token";
 import Downloads from "@/components/downloads";
 import Settings from "@/components/settings";
 import Trash from "@/components/trash";
+import Share from "@/components/share";
 import LayoutContext from "@/contexts/layout";
 
 function DrawerContent() {
@@ -30,6 +31,9 @@ function DrawerContent() {
         <Settings baseLocale={baseLocale} isAdmin={isAdmin} />
       )}
       {drawerDisplayed === DrawerDisplayedEnum.TRASH && <Trash />}
+      {drawerDisplayed === DrawerDisplayedEnum.SHARE && (
+        <Share baseLocaleId={baseLocale.id} token={token} />
+      )}
 
       {isMobile && (
         <Button
