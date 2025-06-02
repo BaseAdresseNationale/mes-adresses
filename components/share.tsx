@@ -1,7 +1,7 @@
 import { Pane, Heading, ShareIcon, Label } from "evergreen-ui";
 import { useMemo } from "react";
 import CopyClipBoard from "./copy-clipboard";
-import QRCode from "react-qr-code";
+import { QRCodeSVG } from "qrcode.react";
 
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
@@ -42,7 +42,16 @@ function Share({ baseLocaleId, token }: ShareProps) {
           marginTop={12}
         >
           <Label marginBottom={8}>QR code de la BAL</Label>
-          <QRCode value={urlBal} />
+          <QRCodeSVG
+            value={urlBal}
+            size={256}
+            imageSettings={{
+              src: "/static/images/bal-logo.png",
+              height: 40,
+              width: 40,
+              excavate: true,
+            }}
+          />
         </Pane>
       </Pane>
     </Pane>
