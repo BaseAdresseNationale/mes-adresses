@@ -13,16 +13,16 @@ import languesRegionales from "@ban-team/shared-data/langues-regionales.json";
 import availableFlags from "../../available-flags.json";
 
 interface LanguagePreviewProps {
-  nomAlt: Record<string, string>;
+  nomsAlt: Record<string, string>;
 }
 
-function LanguagePreview({ nomAlt }: LanguagePreviewProps) {
-  const isFlagExist = availableFlags.includes(Object.keys(nomAlt)[0]);
+function LanguagePreview({ nomsAlt }: LanguagePreviewProps) {
+  const isFlagExist = availableFlags.includes(Object.keys(nomsAlt)[0]);
   const foundLangueRegionale = languesRegionales.find(
-    (lr) => lr.code === Object.keys(nomAlt)[0]
+    (lr) => lr.code === Object.keys(nomsAlt)[0]
   );
 
-  return Object.keys(nomAlt).length > 1 ? (
+  return Object.keys(nomsAlt).length > 1 ? (
     <Pane
       fontStyle="italic"
       fontWeight="lighter"
@@ -39,7 +39,7 @@ function LanguagePreview({ nomAlt }: LanguagePreviewProps) {
             padding={0}
             margin={0}
           >
-            {Object.keys(nomAlt).map((language) => {
+            {Object.keys(nomsAlt).map((language) => {
               const foundLangueRegionale = languesRegionales.find(
                 (lr) => lr.code === language
               );
@@ -69,7 +69,7 @@ function LanguagePreview({ nomAlt }: LanguagePreviewProps) {
                         : "Nom de la langue régionale non supportée"
                     }
                   />
-                  {nomAlt[language]}
+                  {nomsAlt[language]}
                 </ListItem>
               );
             })}
@@ -92,7 +92,7 @@ function LanguagePreview({ nomAlt }: LanguagePreviewProps) {
       <Image
         src={
           isFlagExist
-            ? `/static/images/flags/${Object.keys(nomAlt)[0]}.svg`
+            ? `/static/images/flags/${Object.keys(nomsAlt)[0]}.svg`
             : "/static/images/flags/ntr.svg"
         }
         height={18}
@@ -104,7 +104,7 @@ function LanguagePreview({ nomAlt }: LanguagePreviewProps) {
         }
       />
       <Pane fontWeight="lighter" fontSize={14}>
-        {Object.values(nomAlt)[0]}
+        {Object.values(nomsAlt)[0]}
       </Pane>
     </Pane>
   );

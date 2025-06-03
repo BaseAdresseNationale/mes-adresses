@@ -5,6 +5,7 @@ import Link from "next/link";
 import SignalementContext from "@/contexts/signalement";
 import LayoutContext from "@/contexts/layout";
 import TokenContext from "@/contexts/token";
+import Image from "next/image";
 
 export enum TabsEnum {
   COMMUNE = "commune",
@@ -35,25 +36,29 @@ function TabsSideBar({ balId }: TabsSideBarProps) {
         display="flex"
         padding={10}
       >
-        <Tablist>
+        <Tablist display="flex" flexDirection="row" width="100%">
           {[
             {
               key: TabsEnum.COMMUNE,
+              iconeUrl: "/static/images/icone-commune.png",
               label: "Commune",
               href: `/bal/${balId}`,
             },
             {
               key: TabsEnum.VOIES,
+              iconeUrl: "/static/images/icone-voies.png",
               label: "Voies",
               href: `/bal/${balId}/${TabsEnum.VOIES}`,
             },
             {
               key: TabsEnum.TOPONYMES,
+              iconeUrl: "/static/images/icone-toponymes.png",
               label: "Toponymes",
               href: `/bal/${balId}/${TabsEnum.TOPONYMES}`,
             },
             {
               key: TabsEnum.SIGNALEMENTS,
+              iconeUrl: "/static/images/icone-signalements.png",
               label: "Signalements",
               notif: pendingSignalementsCount,
               href: `/bal/${balId}/${TabsEnum.SIGNALEMENTS}`,
@@ -61,14 +66,23 @@ function TabsSideBar({ balId }: TabsSideBarProps) {
             },
           ]
             .filter(({ isHidden }) => !isHidden)
-            .map(({ label, notif, key, href }, index) => {
+            .map(({ label, notif, key, href, iconeUrl }, index) => {
               const tab = (
                 <Link href={href} key={key} shallow style={{ margin: "0 5px" }}>
                   <Tab
                     key={key}
                     position="relative"
                     isSelected={selectedTab ? selectedTab === key : index === 0}
+                    display="flex"
+                    alignItems="center"
+                    flexDirection="column"
                   >
+                    <Image
+                      src={iconeUrl}
+                      alt={label}
+                      width={104}
+                      height={130}
+                    />
                     {label}
                     {notif > 0 && <span className="tab-notif">{notif}</span>}
                   </Tab>
