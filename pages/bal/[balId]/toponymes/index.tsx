@@ -203,7 +203,7 @@ function ToponymesPage({
 
                   {toponyme.nomAlt && (
                     <Pane marginTop={4}>
-                      <LanguagePreview nomAlt={toponyme.nomAlt} />
+                      <LanguagePreview nomsAlt={toponyme.nomAlt} />
                     </Pane>
                   )}
                 </Table.TextCell>
