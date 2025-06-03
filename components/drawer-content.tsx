@@ -8,7 +8,7 @@ import TokenContext from "@/contexts/token";
 import Downloads from "@/components/downloads";
 import Settings from "@/components/settings";
 import Trash from "@/components/trash";
-import Share from "@/components/share";
+import Share from "@/components/share/share";
 import LayoutContext from "@/contexts/layout";
 
 function DrawerContent() {

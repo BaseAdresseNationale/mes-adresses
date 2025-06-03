@@ -1,7 +1,7 @@
 import { Pane, Heading, ShareIcon, Label } from "evergreen-ui";
 import { useMemo } from "react";
-import CopyClipBoard from "./copy-clipboard";
-import { QRCodeSVG } from "qrcode.react";
+import ShareClipBoard from "./share-clipboard";
+import ShareQRCode from "./share-qr-code";
 
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
@@ -12,7 +12,7 @@ interface ShareProps {
 }
 
 function Share({ baseLocaleId, token }: ShareProps) {
-  const urlBal = useMemo(() => {
+  const urlAdminBal = useMemo(() => {
     const url = `https://mes-adresses.data.gouv.fr/bal/${baseLocaleId}`;
     return token ? `${url}/${token}` : url;
   }, [baseLocaleId, token]);
@@ -30,29 +30,18 @@ function Share({ baseLocaleId, token }: ShareProps) {
       >
         <Pane display="flex" alignItems="center">
           <ShareIcon />
-          <Heading paddingLeft={5}>Partage</Heading>
+          <Heading paddingLeft={5}>Partager BAL</Heading>
         </Pane>
       </Pane>
       <Pane margin={12}>
-        <CopyClipBoard url={urlBal} />
-        <Pane
-          display="flex"
-          flexDirection="column"
-          alignItems="left"
-          marginTop={12}
-        >
-          <Label marginBottom={8}>QR code de la BAL</Label>
-          <QRCodeSVG
-            value={urlBal}
-            size={256}
-            imageSettings={{
-              src: "/static/images/bal-logo.png",
-              height: 40,
-              width: 40,
-              excavate: true,
-            }}
-          />
-        </Pane>
+        <ShareClipBoard
+          title="Lien administrateur de la BAL"
+          url={urlAdminBal}
+        />
+        <ShareQRCode
+          title="QR code administrateur de la BAL"
+          url={urlAdminBal}
+        />
       </Pane>
     </Pane>
   );

@@ -7,11 +7,12 @@ import {
 } from "evergreen-ui";
 import { useRef, useState } from "react";
 
-interface CopyClipBoardProps {
+interface ShareClipBoardProps {
+  title: string;
   url: string;
 }
 
-function CopyClipBoard({ url }: CopyClipBoardProps) {
+function ShareClipBoard({ title, url }: ShareClipBoardProps) {
   const [copySuccess, setCopySuccess] = useState(false);
   const textAreaRef = useRef(null);
 
@@ -27,7 +28,7 @@ function CopyClipBoard({ url }: CopyClipBoardProps) {
     <Pane display="flex" alignItems="end">
       <TextInputField
         ref={textAreaRef}
-        label="Lien de la BAL"
+        label={title}
         flex={1}
         marginBottom={0}
         value={url}
@@ -52,4 +53,4 @@ function CopyClipBoard({ url }: CopyClipBoardProps) {
   );
 }
 
-export default CopyClipBoard;
+export default ShareClipBoard;

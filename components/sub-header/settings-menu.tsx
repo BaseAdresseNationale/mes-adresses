@@ -48,12 +48,14 @@ function SettingsMenu({ isAdmin }: SettingsMenuProps) {
                 Voir la corbeille
               </Menu.Item>
             )}
-            <Menu.Item
-              icon={ShareIcon}
-              onSelect={() => setDrawerDisplayed(DrawerDisplayedEnum.SHARE)}
-            >
-              Partager
-            </Menu.Item>
+            {isAdmin && (
+              <Menu.Item
+                icon={ShareIcon}
+                onSelect={() => setDrawerDisplayed(DrawerDisplayedEnum.SHARE)}
+              >
+                Partager BAL
+              </Menu.Item>
+            )}
           </Menu.Group>
         </Menu>
       }
