@@ -71,7 +71,7 @@ function ToponymeHeading({ toponyme, commune }: ToponymeHeadingProps) {
             </Text>
           )}
         </Pane>
-        {toponyme.nomAlt && <LanguagePreview nomAlt={toponyme.nomAlt} />}
+        {toponyme.nomAlt && <LanguagePreview nomsAlt={toponyme.nomAlt} />}
       </Heading>
     </Pane>
   );

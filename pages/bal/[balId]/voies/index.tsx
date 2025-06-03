@@ -269,7 +269,7 @@ function VoiesPage({
 
                   {voie.nomAlt && (
                     <Pane marginTop={4}>
-                      <LanguagePreview nomAlt={voie.nomAlt} />
+                      <LanguagePreview nomsAlt={voie.nomAlt} />
                     </Pane>
                   )}
                 </Table.TextCell>

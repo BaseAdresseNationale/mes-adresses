@@ -30,8 +30,8 @@ import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
 import { ApiGeoService } from "@/lib/geo-api";
 import { CommuneType } from "@/types/commune";
-import TabsSideBar from "@/components/sidebar/tabs";
 import { Pane } from "evergreen-ui";
+import MainTabs from "@/components/sidebar/main-tabs/main-tabs";
 
 interface EditorProps {
   children: React.ReactNode;
@@ -89,7 +89,7 @@ function Editor({ children, commune }: EditorProps) {
               flexDirection="column"
               onToggle={setIsMapFullscreen}
             >
-              <TabsSideBar balId={baseLocale.id} />
+              <MainTabs balId={baseLocale.id} />
 
               <WelcomeMessage />
 
