@@ -4,19 +4,24 @@ import { Pane } from "evergreen-ui";
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
 
-import { BaseLocale, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
+import {
+  BaseLocale,
+  ExtendedVoieDTO,
+  ExtentedToponymeDTO,
+} from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
 import HabilitationInfos from "@/components/bal/habilitation-infos";
 import CertificationInfos from "@/components/bal/certification-infos";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import { getCommuneFlag } from "@/lib/api-blason-commune";
-import CommuneEditor from "@/components/bal/commune-editor";
-import HeaderSideBar from "@/components/sidebar/header";
+import CommuneNomsAltEditor from "@/components/bal/commune-noms-alt-editor";
+import BALSummary from "@/components/bal/bal-summary";
 
 interface BALHomePageProps {
   commune: CommuneType;
   voies: ExtendedVoieDTO[];
+  toponymes: ExtentedToponymeDTO[];
   communeFlag?: string;
   openRecoveryDialog: () => void;
 }
@@ -25,6 +30,7 @@ function BALHomePage({
   commune,
   communeFlag,
   voies,
+  toponymes,
   openRecoveryDialog,
 }: BALHomePageProps) {
   const { baseLocale } = useContext(BalDataContext);
@@ -34,32 +40,25 @@ function BALHomePage({
 
   return (
     <Pane overflowY="auto">
-      <HeaderSideBar
+      <BALSummary
         baseLocale={baseLocale}
         commune={commune}
         voies={voies}
-        openForm={() => {
+        toponymes={toponymes}
+        communeFlag={communeFlag}
+        onEditNomsAlt={() => {
           setIsCommuneFormOpen(true);
         }}
       />
       {isCommuneFormOpen && (
-        <CommuneEditor
+        <CommuneNomsAltEditor
           initialValue={baseLocale as BaseLocale}
           closeForm={() => {
             setIsCommuneFormOpen(false);
           }}
         />
       )}
-      <Pane
-        height={100}
-        flexShrink={0}
-        backgroundImage={`url(${communeFlag})`}
-        backgroundPosition="center"
-        backgroundRepeat="no-repeat"
-        backgroundSize="contain"
-        marginTop={50}
-        marginX={10}
-      />
+
       {!isAdmin && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
       {isAdmin && baseLocale.status !== BaseLocale.status.DEMO && (
         <HabilitationInfos commune={commune} />
