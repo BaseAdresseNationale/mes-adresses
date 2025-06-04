@@ -64,6 +64,7 @@ const TableRowActions = React.memo(function TableRowActions({
           height={24}
           icon={MoreIcon}
           appearance="minimal"
+          title="Actions"
         />
       </Popover>
     </Table.TextCell>

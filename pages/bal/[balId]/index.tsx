@@ -40,6 +40,14 @@ function BALHomePage({
 
   return (
     <Pane overflowY="auto">
+      {isCommuneFormOpen && (
+        <CommuneNomsAltEditor
+          initialValue={baseLocale as BaseLocale}
+          closeForm={() => {
+            setIsCommuneFormOpen(false);
+          }}
+        />
+      )}
       <BALSummary
         baseLocale={baseLocale}
         commune={commune}
@@ -50,15 +58,6 @@ function BALHomePage({
           setIsCommuneFormOpen(true);
         }}
       />
-      {isCommuneFormOpen && (
-        <CommuneNomsAltEditor
-          initialValue={baseLocale as BaseLocale}
-          closeForm={() => {
-            setIsCommuneFormOpen(false);
-          }}
-        />
-      )}
-
       {!isAdmin && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
       {isAdmin && baseLocale.status !== BaseLocale.status.DEMO && (
         <HabilitationInfos commune={commune} />
