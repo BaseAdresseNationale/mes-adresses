@@ -225,20 +225,7 @@ function SignalementsPage({
 
   return (
     <ProtectedPage>
-      <Pane
-        display="flex"
-        flexDirection="column"
-        background="tint1"
-        padding={16}
-      >
-        <Heading>
-          <Pane marginBottom={8} display="flex" justifyContent="space-between">
-            <Pane>Signalements</Pane>
-          </Pane>
-        </Heading>
-      </Pane>
-
-      <Tablist margin={10} marginTop={0}>
+      <Tablist margin={10}>
         {tabs.map(({ label, key, count }, index) => (
           <Tab
             key={key}
