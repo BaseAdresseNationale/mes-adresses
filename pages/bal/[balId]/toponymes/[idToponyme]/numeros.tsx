@@ -7,6 +7,8 @@ import {
   Alert,
   AddIcon,
   LockIcon,
+  Link,
+  Text,
 } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
@@ -15,7 +17,7 @@ import BalDataContext from "@/contexts/bal-data";
 import useHelp from "@/hooks/help";
 import useFuse from "@/hooks/fuse";
 import useFormState from "@/hooks/useFormState";
-
+import NextLink from "next/link";
 import NumeroEditor from "@/components/bal/numero-editor";
 import ToponymeNumeros from "@/components/toponyme/toponyme-numeros";
 import AddNumeros from "@/components/toponyme/add-numeros";
@@ -33,16 +35,23 @@ import {
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 
-interface ToponymePageProps {
+interface ToponymeNumerosListPageProps {
   baseLocale: BaseLocale;
   commune: CommuneType;
+  toponyme: ExtentedToponymeDTO;
+  numeros: Numero[];
 }
 
 const fuseOptions = {
   keys: ["numero"],
 };
 
-function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
+function ToponymeNumerosListPage({
+  baseLocale,
+  commune,
+  toponyme,
+  numeros,
+}: ToponymeNumerosListPageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
 
   const [error, setError] = useState<string | null>(null);
@@ -50,10 +59,9 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
 
   const { token } = useContext(TokenContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
-  const { pushToast } = useContext(LayoutContext);
+  const { pushToast, setBreadcrumbs } = useContext(LayoutContext);
 
-  const { toponyme, numeros, reloadNumeros, isEditing, setIsEditing } =
-    useContext(BalDataContext);
+  const { reloadNumeros, isEditing, setIsEditing } = useContext(BalDataContext);
 
   useHelp(2);
   const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
@@ -108,6 +116,22 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
       reloadNumeros();
     }
   }, [token, reloadNumeros]);
+
+  useEffect(() => {
+    setBreadcrumbs(
+      <>
+        <Link is={NextLink} href={`/bal/${baseLocale.id}/voies`}>
+          Toponymes
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Text>{toponyme.nom}</Text>
+      </>
+    );
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [setBreadcrumbs, baseLocale.id, toponyme.nom]);
 
   return (
     <>
@@ -231,4 +255,4 @@ export async function getServerSideProps({ params }) {
   }
 }
 
-export default ToponymePage;
+export default ToponymeNumerosListPage;

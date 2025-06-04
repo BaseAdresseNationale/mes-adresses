@@ -1,10 +1,27 @@
+.mainTabs {
+  display: flex;
+  padding: 10px;
+  flex-shrink: 0;
+  transform: translateY(0);
+  transition: all 0.3s ease-in-out;
+}
+
+.mainTabs.hide {
+  transform: translateY(-100%);
+}
+
 .tabsList {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: flex-end;
-  height: 108px;
+  height: 88px;
   width: 100%;
+  transition: height 0.3s ease-in-out;
+}
+
+.mainTabs.hide > .tabsList {
+  height: 0;
 }
 
 .tabLink {
@@ -30,20 +47,20 @@
 
 .tabImage {
   filter: grayscale(100%);
-  height: 60px;
-  width: 48px;
+  height: 50px;
+  width: 40px;
   transition: all 0.3s ease-in-out;
 }
 
 .tab.selected > .tabImage {
-  height: 80px;
-  width: 64px;
+  height: 60px;
+  width: 48px;
   filter: grayscale(0%);
 }
 
 .tab:hover > .tabImage {
-  height: 80px;
-  width: 64px;
+  height: 60px;
+  width: 48px;
   filter: grayscale(0%);
 }
 
