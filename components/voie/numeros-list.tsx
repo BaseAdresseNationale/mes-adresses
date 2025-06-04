@@ -350,6 +350,7 @@ function NumerosList({
                     onClick={() => {
                       setIsRecoveryDisplayed(true);
                     }}
+                    title="Récupérer les accès d'administration de la BAL"
                     type="button"
                     height={24}
                     icon={LockIcon}

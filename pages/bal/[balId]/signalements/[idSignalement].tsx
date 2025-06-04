@@ -53,11 +53,6 @@ function SignalementPage({
     setStyle("ortho");
     setBreadcrumbs(
       <>
-        <Link is={NextLink} href={`/bal/${baseLocale.id}`}>
-          {baseLocale.nom || commune.nom}
-        </Link>
-
-        <Text color="muted">{" > "}</Text>
         <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>
           Signalements
         </Link>

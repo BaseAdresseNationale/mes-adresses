@@ -20,6 +20,7 @@ import TokenContext from "@/contexts/token";
 import DeleteWarning from "@/components/delete-warning";
 import {
   CommunePrecedenteDTO,
+  ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
   Numero,
   ToponymesService,
@@ -34,34 +35,28 @@ import TableRowNotifications from "@/components/table-row/table-row-notification
 import CommentsContent from "@/components/comments-content";
 import TableRowActions from "@/components/table-row/table-row-actions";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import BALRecoveryContext from "@/contexts/bal-recovery";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import MapContext from "@/contexts/map";
 
 interface ToponymesPageProps {
+  baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
   toponymes: ExtentedToponymeDTO[];
-  onRemove: () => Promise<void>;
-  onEnableEditing: (id: string) => void;
-  balId: string;
-  openRecoveryDialog: () => void;
-  openForm: () => void;
 }
 
-function ToponymesPage({
-  commune,
-  toponymes,
-  onEnableEditing,
-  onRemove,
-  balId,
-  openForm,
-  openRecoveryDialog,
-}: ToponymesPageProps) {
+function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
-  const { isEditing, reloadToponymes } = useContext(BalDataContext);
+  const { isEditing, reloadToponymes, reloadParcelles, refreshBALSync } =
+    useContext(BalDataContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const router = useRouter();
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(toponymes);
+  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const { reloadTiles } = useContext(MapContext);
 
   useEffect(() => {
     setBreadcrumbs(<Text>Toponymes</Text>);
@@ -80,7 +75,9 @@ function ToponymesPage({
     );
     await softDeleteToponyme();
     await reloadToponymes();
-    await onRemove();
+    await reloadParcelles();
+    reloadTiles();
+    refreshBALSync();
     setToRemove(null);
     setIsDisabled(false);
   };
@@ -98,8 +95,16 @@ function ToponymesPage({
     [commune]
   );
 
-  const onSelect = (id: string) => {
-    void router.push(`/bal/${balId}/toponymes/${id}`);
+  const browseToNumerosList = (idToponyme: string) => {
+    void router.push(
+      `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}/numeros`
+    );
+  };
+
+  const browseToToponyme = (idToponyme: string) => {
+    void router.push(
+      `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}`
+    );
   };
 
   const scrollableItems = useMemo(
@@ -126,7 +131,9 @@ function ToponymesPage({
       />
       {!token && (
         <Pane flexShrink={0} elevation={0} backgroundColor="white">
-          <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />
+          <ReadOnlyInfos
+            openRecoveryDialog={() => setIsRecoveryDisplayed(true)}
+          />
         </Pane>
       )}
       {token && (
@@ -158,9 +165,9 @@ function ToponymesPage({
               appearance="primary"
               intent="success"
               disabled={token && isEditing}
-              onClick={() => {
-                openForm();
-              }}
+              onClick={() =>
+                router.push(`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/new`)
+              }
             >
               Ajouter un toponyme
             </Button>
@@ -192,7 +199,7 @@ function ToponymesPage({
           {(toponyme: ExtentedToponymeDTO & { commentedNumeros: Numero[] }) => (
             <Table.Row key={toponyme.id} paddingRight={8} minHeight={48}>
               <Table.Cell
-                onClick={() => onSelect(toponyme.id)}
+                onClick={() => browseToNumerosList(toponyme.id)}
                 cursor="pointer"
                 className="main-table-cell"
               >
@@ -235,10 +242,10 @@ function ToponymesPage({
               {isEditingEnabled && (
                 <TableRowActions
                   onSelect={() => {
-                    onSelect(toponyme.id);
+                    browseToNumerosList(toponyme.id);
                   }}
                   onEdit={() => {
-                    onEnableEditing(toponyme.id);
+                    browseToToponyme(toponyme.id);
                   }}
                   onRemove={() => {
                     setToRemove(toponyme.id);
@@ -249,7 +256,7 @@ function ToponymesPage({
               {!Boolean(token) && (
                 <Table.TextCell flex="0 1 1">
                   <IconButton
-                    onClick={openRecoveryDialog}
+                    onClick={() => setIsRecoveryDisplayed(true)}
                     type="button"
                     height={24}
                     icon={LockIcon}

@@ -73,6 +73,7 @@ function BALSummary({
               marginTop={-4}
               size="large"
               onClick={onEditNomsAlt}
+              title="Modifier les noms alternatifs de la commune en langue régionale"
             />
           </Tooltip>
         )}

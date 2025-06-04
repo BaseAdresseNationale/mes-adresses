@@ -199,7 +199,12 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
       }
     >
       <Tooltip position={Position.LEFT} content="Prendre une photo de la carte">
-        <IconButton height={29} width={29} icon={CameraIcon} />
+        <IconButton
+          height={29}
+          width={29}
+          icon={CameraIcon}
+          title="Prendre une photo de la carte"
+        />
       </Tooltip>
     </Popover>
   );

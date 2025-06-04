@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
-import { Pane } from "evergreen-ui";
-
+import { Pane, Text, Link } from "evergreen-ui";
+import NextLink from "next/link";
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 
@@ -12,25 +12,51 @@ import VoieHeading from "@/components/voie/voie-heading";
 import NumerosList from "@/components/voie/numeros-list";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import {
+  ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
   Numero,
   VoieMetas,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
+import LayoutContext from "@/contexts/layout";
 
-interface VoiePageProps {
+interface VoieNumerosListPageProps {
   commune: CommuneType;
+  voie: ExtendedVoieDTO;
+  numeros: Numero[];
+  baseLocale: ExtendedBaseLocaleDTO;
 }
 
-function VoiePage({ commune }: VoiePageProps) {
+function VoieNumerosListPage({
+  commune,
+  voie,
+  numeros,
+  baseLocale,
+}: VoieNumerosListPageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
 
   useHelp(3);
 
   const { token } = useContext(TokenContext);
-  const { voie, setVoie, numeros, reloadVoieNumeros } =
-    useContext(BalDataContext);
+  const { setVoie, reloadVoieNumeros } = useContext(BalDataContext);
+  const { setBreadcrumbs } = useContext(LayoutContext);
+
+  useEffect(() => {
+    setBreadcrumbs(
+      <>
+        <Link is={NextLink} href={`/bal/${baseLocale.id}/voies`}>
+          Voies
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Text>{voie.nom}</Text>
+      </>
+    );
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [setBreadcrumbs, baseLocale.id, voie.nom]);
 
   useEffect(() => {
     async function addCommentsToVoies() {
@@ -51,7 +77,6 @@ function VoiePage({ commune }: VoiePageProps) {
   return (
     <>
       <VoieHeading voie={voie} />
-
       <Pane
         position="relative"
         display="flex"
@@ -69,7 +94,6 @@ function VoiePage({ commune }: VoiePageProps) {
             closeForm={reset}
           />
         )}
-
         <NumerosList
           commune={commune}
           token={token}
@@ -108,4 +132,4 @@ export async function getServerSideProps({ params, req }) {
   }
 }
 
-export default VoiePage;
+export default VoieNumerosListPage;

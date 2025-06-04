@@ -15,7 +15,7 @@ import {
   FilterRemoveIcon,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
-
+import NextLink from "next/link";
 import { normalizeSort } from "@/lib/normalize";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -24,7 +24,12 @@ import TokenContext from "@/contexts/token";
 import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
-import { ExtendedVoieDTO, Toponyme, VoiesService } from "@/lib/openapi-api-bal";
+import {
+  ExtendedBaseLocaleDTO,
+  ExtendedVoieDTO,
+  Toponyme,
+  VoiesService,
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { useSearchPagination } from "@/hooks/search-pagination";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
@@ -35,25 +40,18 @@ import TableRowActions from "@/components/table-row/table-row-actions";
 import ConvertVoieWarning from "@/components/convert-voie-warning";
 import MapContext from "@/contexts/map";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import BALRecoveryContext from "@/contexts/bal-recovery";
+import PopulateSideBar from "@/components/sidebar/populate";
+import { CommuneType } from "@/types/commune";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 
 interface VoiesPageProps {
   voies: ExtendedVoieDTO[];
-  onRemove: () => Promise<void>;
-  onEnableEditing: (id: string) => void;
-  balId: string;
-  setToConvert: (id: string) => void;
-  openRecoveryDialog: () => void;
-  openForm: () => void;
+  baseLocale: ExtendedBaseLocaleDTO;
+  commune: CommuneType;
 }
 
-function VoiesPage({
-  voies,
-  onEnableEditing,
-  balId,
-  onRemove,
-  openRecoveryDialog,
-  openForm,
-}: VoiesPageProps) {
+function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const {
@@ -71,6 +69,7 @@ function VoiesPage({
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
+  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(voies);
 
@@ -81,6 +80,12 @@ function VoiesPage({
       setBreadcrumbs(null);
     };
   }, [setBreadcrumbs]);
+
+  const onRemove = useCallback(async () => {
+    await reloadParcelles();
+    reloadTiles();
+    refreshBALSync();
+  }, [refreshBALSync, reloadTiles, reloadParcelles]);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -107,11 +112,9 @@ function VoiesPage({
         await reloadParcelles();
         reloadTiles();
         refreshBALSync();
-        // Select the tab topnyme after conversion
-        /*         router.query.selectedTab = TabsEnum.TOPONYMES;
-        await router.push(router, undefined, { shallow: true });
-        setEditedItem(toponyme);
-        setIsFormOpen(true); */
+        await router.push(
+          `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
+        );
       },
       "La voie a bien été convertie en toponyme",
       "La voie n’a pas pu être convertie en toponyme"
@@ -122,8 +125,8 @@ function VoiesPage({
     setOnConvertLoading(false);
     setToConvert(null);
   }, [
-    /*     router,
-     */
+    baseLocale,
+    router,
     reloadVoies,
     refreshBALSync,
     reloadToponymes,
@@ -133,8 +136,14 @@ function VoiesPage({
     toaster,
   ]);
 
-  const onSelect = async (id: string) => {
-    void router.push(`/bal/${balId}/voies/${id}`);
+  const browseToVoie = (idVoie: string) => {
+    void router.push(`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}`);
+  };
+
+  const browseToNumerosList = (idVoie: string) => {
+    void router.push(
+      `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}/numeros`
+    );
   };
 
   const scrollableItems = useMemo(() => {
@@ -180,8 +189,13 @@ function VoiesPage({
       />
       {!token && (
         <Pane flexShrink={0} elevation={0} backgroundColor="white">
-          <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />
+          <ReadOnlyInfos
+            openRecoveryDialog={() => setIsRecoveryDisplayed(true)}
+          />
         </Pane>
+      )}
+      {token && voies && voies.length === 0 && (
+        <PopulateSideBar commune={commune} baseLocale={baseLocale} />
       )}
       {token && (
         <Pane
@@ -210,12 +224,11 @@ function VoiesPage({
           <Pane marginLeft="auto">
             <Button
               iconBefore={AddIcon}
+              is={NextLink}
               appearance="primary"
               intent="success"
               disabled={token && isEditing}
-              onClick={() => {
-                openForm();
-              }}
+              href={`/bal/${baseLocale.id}/voies/new`}
             >
               Ajouter une voie
             </Button>
@@ -258,7 +271,7 @@ function VoiesPage({
           {(voie: ExtendedVoieDTO) => (
             <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
               <Table.Cell
-                onClick={() => onSelect(voie.id)}
+                onClick={() => browseToNumerosList(voie.id)}
                 cursor="pointer"
                 className="main-table-cell"
               >
@@ -299,10 +312,10 @@ function VoiesPage({
               {isEditingEnabled && (
                 <TableRowActions
                   onSelect={() => {
-                    onSelect(voie.id);
+                    browseToNumerosList(voie.id);
                   }}
                   onEdit={() => {
-                    onEnableEditing(voie.id);
+                    browseToVoie(voie.id);
                   }}
                   onRemove={() => {
                     setToRemove(voie.id);
@@ -324,7 +337,7 @@ function VoiesPage({
               {!Boolean(token) && (
                 <Table.TextCell flex="0 1 1">
                   <IconButton
-                    onClick={openRecoveryDialog}
+                    onClick={() => setIsRecoveryDisplayed(true)}
                     type="button"
                     height={24}
                     icon={LockIcon}

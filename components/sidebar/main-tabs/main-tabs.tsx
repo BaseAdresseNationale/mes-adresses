@@ -6,6 +6,7 @@ import SignalementContext from "@/contexts/signalement";
 import LayoutContext from "@/contexts/layout";
 import TokenContext from "@/contexts/token";
 import Image from "next/image";
+import BalDataContext from "@/contexts/bal-data";
 
 export enum TabsEnum {
   COMMUNE = "commune",
@@ -26,13 +27,14 @@ function MainTabs({ balId }: MainTabsProps) {
     pendingSignalementsCount > 0 || archivedSignalementsCount > 0;
   const { token } = useContext(TokenContext);
   const isAdmin = Boolean(token);
+  const { isEditing } = useContext(BalDataContext);
 
   const isTabSelected = (tabKey: TabsEnum, index: number) => {
     return selectedTab ? selectedTab === tabKey : index === 0;
   };
 
   return (
-    <Pane flexShrink={0} elevation={0} width="100%" display="flex" padding={10}>
+    <div className={`${styles.mainTabs}${isEditing ? ` ${styles.hide}` : ""}`}>
       <div className={styles.tabsList}>
         {[
           {
@@ -66,7 +68,13 @@ function MainTabs({ balId }: MainTabsProps) {
           .map(({ label, notif, key, href, iconeUrl }, index) => {
             const isSelected = isTabSelected(key, index);
             const tab = (
-              <Link className={styles.tabLink} href={href} key={key} shallow>
+              <Link
+                className={styles.tabLink}
+                href={href}
+                key={key}
+                shallow
+                draggable={false}
+              >
                 <div
                   className={`${styles.tab}${
                     isSelected ? ` ${styles.selected}` : ""
@@ -76,7 +84,8 @@ function MainTabs({ balId }: MainTabsProps) {
                   <Image
                     className={styles.tabImage}
                     src={iconeUrl}
-                    alt={label}
+                    alt={`Illustration de l'onglet ${label}`}
+                    draggable={false}
                     width={48}
                     height={60}
                   />
@@ -94,7 +103,7 @@ function MainTabs({ balId }: MainTabsProps) {
             return tab;
           })}
       </div>
-    </Pane>
+    </div>
   );
 }
 export default MainTabs;
