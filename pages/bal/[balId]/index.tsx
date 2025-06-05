@@ -17,13 +17,13 @@ import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import { getCommuneFlag } from "@/lib/api-blason-commune";
 import CommuneNomsAltEditor from "@/components/bal/commune-noms-alt-editor";
 import BALSummary from "@/components/bal/bal-summary";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 interface BALHomePageProps {
   commune: CommuneType;
   voies: ExtendedVoieDTO[];
   toponymes: ExtentedToponymeDTO[];
   communeFlag?: string;
-  openRecoveryDialog: () => void;
 }
 
 function BALHomePage({
@@ -31,12 +31,16 @@ function BALHomePage({
   communeFlag,
   voies,
   toponymes,
-  openRecoveryDialog,
 }: BALHomePageProps) {
   const { baseLocale } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
   const isAdmin = Boolean(token);
   const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
+  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+
+  const openRecoveryDialog = () => {
+    setIsRecoveryDisplayed(true);
+  };
 
   return (
     <Pane overflowY="auto">
