@@ -31,7 +31,6 @@ import SignalementTypeBadge, {
 import useFuse from "@/hooks/fuse";
 import MapContext from "@/contexts/map";
 import SignalementContext from "@/contexts/signalement";
-import SignalementJoyRide from "@/components/signalement/product-tour/signalement-page-product-tour";
 
 const fuseOptions = {
   keys: ["label"],
@@ -311,7 +310,6 @@ function SignalementsPage({
           editionEnabled={activeTabIndex === 0}
         />
       </Pane>
-      <SignalementJoyRide />
     </ProtectedPage>
   );
 }

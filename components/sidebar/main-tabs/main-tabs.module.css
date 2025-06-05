@@ -8,6 +8,7 @@
 
 .mainTabs.hide {
   transform: translateY(-100%);
+  padding: 0;
 }
 
 .tabsList {
