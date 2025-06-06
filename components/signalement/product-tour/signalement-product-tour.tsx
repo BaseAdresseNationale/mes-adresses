@@ -28,11 +28,14 @@ const steps = [
     ),
     spotlightPadding: 15,
     callback: () => {
-      (
-        document.querySelector(
-          "div[class^='main-tabs_tabsList'] > a:last-child"
-        ) as HTMLElement
-      ).click();
+      const element = document.querySelector(
+        "div[class^='main-tabs_tabsList'] > a:last-child"
+      ) as HTMLElement | null;
+      if (element) {
+        element.click();
+      } else {
+        console.warn("Element not found: div[class^='main-tabs_tabsList'] > a:last-child");
+      }
     },
   },
   {
