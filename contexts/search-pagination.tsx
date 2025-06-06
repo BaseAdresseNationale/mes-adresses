@@ -1,6 +1,6 @@
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { ChildrenProps } from "@/types/context";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 type TabsWithPagination = TabsEnum.VOIES | TabsEnum.TOPONYMES;
 
@@ -17,9 +17,7 @@ interface SearchPaginationContextType {
   setLastSelectedItem: React.Dispatch<
     React.SetStateAction<Record<TabsWithPagination, string | null>>
   >;
-  lastSelectedItem: React.SetStateAction<
-    Record<TabsWithPagination, string | null>
-  >;
+  scrollAndHighlightLastSelectedItem: (tab: TabsWithPagination) => void;
 }
 
 const SearchPaginationContext =
@@ -40,17 +38,34 @@ export function SearchPaginationContextProvider(props: ChildrenProps) {
     [TabsEnum.TOPONYMES]: { page: 1, search: "" },
   });
 
+  const scrollAndHighlightLastSelectedItem = useCallback(
+    (tab: TabsWithPagination) => {
+      const lastSelectedItemId = lastSelectedItem[tab];
+      if (lastSelectedItemId) {
+        const element = document.getElementById(lastSelectedItemId);
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          element.style.border = "1px solid #0070f3"; // Highlight the selected row
+        }
+      }
+    },
+    [lastSelectedItem]
+  );
+
   const value = useMemo(
     () => ({
       savedSearchPagination,
       setSavedSearchPagination,
-      lastSelectedItem,
+      scrollAndHighlightLastSelectedItem,
       setLastSelectedItem,
     }),
     [
       savedSearchPagination,
       setSavedSearchPagination,
-      lastSelectedItem,
+      scrollAndHighlightLastSelectedItem,
       setLastSelectedItem,
     ]
   );
