@@ -4,14 +4,14 @@ import {
   Table,
   Paragraph,
   Pane,
-  Button,
   AddIcon,
   LockIcon,
   IconButton,
   Text,
+  Tooltip,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
-
+import NextLink from "next/link";
 import { normalizeSort } from "@/lib/normalize";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -38,6 +38,7 @@ import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import MapContext from "@/contexts/map";
+import SearchPaginationContext from "@/contexts/search-pagination";
 
 interface ToponymesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -54,17 +55,30 @@ function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const router = useRouter();
   const [page, changePage, search, changeFilter, filtered] =
-    useSearchPagination(toponymes);
+    useSearchPagination(TabsEnum.TOPONYMES, toponymes);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const { reloadTiles } = useContext(MapContext);
+  const { lastSelectedItem } = useContext(SearchPaginationContext);
 
   useEffect(() => {
     setBreadcrumbs(<Text>Toponymes</Text>);
 
+    const lastSelectedToponymeId = lastSelectedItem?.[TabsEnum.TOPONYMES];
+    if (lastSelectedToponymeId) {
+      const voieRowElement = document.getElementById(lastSelectedToponymeId);
+      if (voieRowElement) {
+        voieRowElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        voieRowElement.classList.add("selected-row");
+      }
+    }
+
     return () => {
       setBreadcrumbs(null);
     };
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, lastSelectedItem]);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -136,44 +150,6 @@ function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
           />
         </Pane>
       )}
-      {token && (
-        <Pane
-          flexShrink={0}
-          elevation={0}
-          backgroundColor="white"
-          padding={16}
-          display="flex"
-          alignItems="center"
-          minHeight={50}
-        >
-          <Pane>
-            <Paragraph fontSize={12} lineHeight={1.5}>
-              Liste des voies et lieux-dits qui ne sont pas numérotés.
-            </Paragraph>
-            <Paragraph fontSize={12} lineHeight={1.5} marginTop={4}>
-              Ex : 1 Chemin de Boël,{" "}
-              <Text fontWeight="bold" fontSize={12}>
-                Le Voisinet
-              </Text>
-              , Breux-sur-Avre
-            </Paragraph>
-          </Pane>
-
-          <Pane marginLeft="auto">
-            <Button
-              iconBefore={AddIcon}
-              appearance="primary"
-              intent="success"
-              disabled={token && isEditing}
-              onClick={() =>
-                router.push(`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/new`)
-              }
-            >
-              Ajouter un toponyme
-            </Button>
-          </Pane>
-        </Pane>
-      )}
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
           <Table.SearchHeaderCell
@@ -181,6 +157,19 @@ function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
             onChange={changeFilter}
             value={search}
           />
+          <Table.HeaderCell flex="unset">
+            <Tooltip content="Ajouter un toponyme">
+              <IconButton
+                icon={AddIcon}
+                title="Ajouter un toponyme"
+                is={NextLink}
+                appearance="primary"
+                intent="success"
+                disabled={!token || (token && isEditing)}
+                href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/new`}
+              />
+            </Tooltip>
+          </Table.HeaderCell>
         </Table.Head>
 
         {filtered.length === 0 && (
@@ -197,7 +186,12 @@ function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
           setPage={changePage}
         >
           {(toponyme: ExtentedToponymeDTO & { commentedNumeros: Numero[] }) => (
-            <Table.Row key={toponyme.id} paddingRight={8} minHeight={48}>
+            <Table.Row
+              key={toponyme.id}
+              id={toponyme.id}
+              paddingRight={8}
+              minHeight={48}
+            >
               <Table.Cell
                 onClick={() => browseToNumerosList(toponyme.id)}
                 cursor="pointer"
