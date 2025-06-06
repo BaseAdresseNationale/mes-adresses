@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Pane, Pulsar, Text } from "evergreen-ui";
+import { Pane, Pulsar, Tooltip } from "evergreen-ui";
 import Link from "next/link";
 import styles from "./main-tabs.module.css";
 import SignalementContext from "@/contexts/signalement";
@@ -7,6 +7,8 @@ import LayoutContext from "@/contexts/layout";
 import TokenContext from "@/contexts/token";
 import Image from "next/image";
 import BalDataContext from "@/contexts/bal-data";
+import SearchPaginationContext from "@/contexts/search-pagination";
+import { getLinkWithPagination } from "@/hooks/search-pagination";
 
 export enum TabsEnum {
   COMMUNE = "commune",
@@ -28,6 +30,7 @@ function MainTabs({ balId }: MainTabsProps) {
   const { token } = useContext(TokenContext);
   const isAdmin = Boolean(token);
   const { isEditing } = useContext(BalDataContext);
+  const { savedSearchPagination } = useContext(SearchPaginationContext);
 
   const isTabSelected = (tabKey: TabsEnum, index: number) => {
     return selectedTab ? selectedTab === tabKey : index === 0;
@@ -42,18 +45,28 @@ function MainTabs({ balId }: MainTabsProps) {
             iconeUrl: "/static/images/icone-commune.png",
             label: "Commune",
             href: `/bal/${balId}`,
+            tooltip: "Informations générales sur cette Base Adresse Locale.",
           },
           {
             key: TabsEnum.VOIES,
             iconeUrl: "/static/images/icone-voies.png",
             label: "Voies",
-            href: `/bal/${balId}/${TabsEnum.VOIES}`,
+            href: getLinkWithPagination(
+              `/bal/${balId}/${TabsEnum.VOIES}`,
+              savedSearchPagination[TabsEnum.VOIES]
+            ),
+            tooltip:
+              "Liste des dénominations officielles auxquelles sont rattachés des numéros.",
           },
           {
             key: TabsEnum.TOPONYMES,
             iconeUrl: "/static/images/icone-toponymes.png",
             label: "Toponymes",
-            href: `/bal/${balId}/${TabsEnum.TOPONYMES}`,
+            href: getLinkWithPagination(
+              `/bal/${balId}/${TabsEnum.TOPONYMES}`,
+              savedSearchPagination[TabsEnum.TOPONYMES]
+            ),
+            tooltip: "Liste des voies et lieux-dits qui ne sont pas numérotés.",
           },
           {
             key: TabsEnum.SIGNALEMENTS,
@@ -62,44 +75,40 @@ function MainTabs({ balId }: MainTabsProps) {
             notif: pendingSignalementsCount,
             href: `/bal/${balId}/${TabsEnum.SIGNALEMENTS}`,
             isHidden: !isAdmin || !communeHasSignalements,
+            tooltip: "Signalements reçus pour cette commune.",
           },
         ]
           .filter(({ isHidden }) => !isHidden)
-          .map(({ label, notif, key, href, iconeUrl }, index) => {
+          .map(({ label, notif, key, href, iconeUrl, tooltip }, index) => {
             const isSelected = isTabSelected(key, index);
             const tab = (
-              <Link
-                className={styles.tabLink}
-                href={href}
-                key={key}
-                shallow
-                draggable={false}
-              >
-                <div
-                  className={`${styles.tab}${
-                    isSelected ? ` ${styles.selected}` : ""
-                  }`}
-                  key={key}
+              <Tooltip key={key} content={tooltip}>
+                <Link
+                  className={styles.tabLink}
+                  href={href}
+                  shallow
+                  draggable={false}
                 >
-                  <Image
-                    className={styles.tabImage}
-                    src={iconeUrl}
-                    alt={`Illustration de l'onglet ${label}`}
-                    draggable={false}
-                    width={48}
-                    height={60}
-                  />
-                  <Text
-                    marginTop={8}
-                    textDecoration="none"
-                    {...(isSelected && { color: "blue500" })}
+                  <Pane
+                    className={`${styles.tab}${
+                      isSelected ? ` ${styles.selected}` : ""
+                    }`}
+                    {...(isSelected ? { elevation: 1 } : {})}
                   >
-                    {label}
-                  </Text>
-                  {notif > 0 && <Pulsar size={16} right={0} top={0} />}
-                </div>
-              </Link>
+                    <Image
+                      className={styles.tabImage}
+                      src={iconeUrl}
+                      alt={`Illustration de l'onglet ${label}`}
+                      draggable={false}
+                      width={48}
+                      height={60}
+                    />
+                    {notif > 0 && <Pulsar size={16} right={0} top={0} />}
+                  </Pane>
+                </Link>
+              </Tooltip>
             );
+
             return tab;
           })}
       </div>

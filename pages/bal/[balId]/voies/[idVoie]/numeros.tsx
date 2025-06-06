@@ -20,6 +20,9 @@ import {
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
+import SearchPaginationContext from "@/contexts/search-pagination";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import { getLinkWithPagination } from "@/hooks/search-pagination";
 
 interface VoieNumerosListPageProps {
   commune: CommuneType;
@@ -41,11 +44,24 @@ function VoieNumerosListPage({
   const { token } = useContext(TokenContext);
   const { setVoie, reloadVoieNumeros } = useContext(BalDataContext);
   const { setBreadcrumbs } = useContext(LayoutContext);
+  const { savedSearchPagination, setLastSelectedItem } = useContext(
+    SearchPaginationContext
+  );
 
   useEffect(() => {
+    setLastSelectedItem((prev) => ({
+      ...prev,
+      [TabsEnum.VOIES]: voie.id,
+    }));
     setBreadcrumbs(
       <>
-        <Link is={NextLink} href={`/bal/${baseLocale.id}/voies`}>
+        <Link
+          is={NextLink}
+          href={getLinkWithPagination(
+            `/bal/${baseLocale.id}/${TabsEnum.VOIES}`,
+            savedSearchPagination[TabsEnum.VOIES]
+          )}
+        >
           Voies
         </Link>
         <Text color="muted">{" > "}</Text>
@@ -56,7 +72,13 @@ function VoieNumerosListPage({
     return () => {
       setBreadcrumbs(null);
     };
-  }, [setBreadcrumbs, baseLocale.id, voie.nom]);
+  }, [
+    setBreadcrumbs,
+    baseLocale.id,
+    voie,
+    setLastSelectedItem,
+    savedSearchPagination,
+  ]);
 
   useEffect(() => {
     async function addCommentsToVoies() {

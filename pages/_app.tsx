@@ -22,6 +22,7 @@ import { OpenAPI as OpenAPISignalement } from "@/lib/openapi-signalement";
 import { SignalementContextProvider } from "@/contexts/signalement";
 import { LayoutContextProvider } from "@/contexts/layout";
 import { BALWidgetProvider } from "@/contexts/bal-widget";
+import { SearchPaginationContextProvider } from "@/contexts/search-pagination";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -87,11 +88,13 @@ function App(props: AppProps) {
                           initialToponymes={pageProps.toponymes}
                           initialNumeros={pageProps.numeros}
                         >
-                          <SignalementContextProvider>
-                            <Editor {...pageProps}>
-                              <Component {...pageProps} />
-                            </Editor>
-                          </SignalementContextProvider>
+                          <SearchPaginationContextProvider>
+                            <SignalementContextProvider>
+                              <Editor {...pageProps}>
+                                <Component {...pageProps} />
+                              </Editor>
+                            </SignalementContextProvider>
+                          </SearchPaginationContextProvider>
                         </BalDataContextProvider>
                       ) : (
                         <Component {...pageProps} />
@@ -108,6 +111,10 @@ function App(props: AppProps) {
       <style jsx global>{`
         div[id^="evergreen-tooltip"].ub-max-w_240px.ub-bg-clr_white.ub-box-szg_border-box {
           max-width: fit-content;
+        }
+
+        .selected-row {
+          border: 1px solid #0070f3;
         }
 
         .main-table-cell:hover {

@@ -12,6 +12,8 @@ import { useContext, useEffect } from "react";
 import LayoutContext from "@/contexts/layout";
 import NextLink from "next/link";
 import { Text, Link } from "evergreen-ui";
+import SearchPaginationContext from "@/contexts/search-pagination";
+import { getLinkWithPagination } from "@/hooks/search-pagination";
 
 interface VoiePageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -21,11 +23,24 @@ interface VoiePageProps {
 function VoiePage({ baseLocale, voie }: VoiePageProps) {
   const router = useRouter();
   const { setBreadcrumbs } = useContext(LayoutContext);
+  const { savedSearchPagination, setLastSelectedItem } = useContext(
+    SearchPaginationContext
+  );
 
   useEffect(() => {
+    setLastSelectedItem((prev) => ({
+      ...prev,
+      [TabsEnum.VOIES]: voie.id,
+    }));
     setBreadcrumbs(
       <>
-        <Link is={NextLink} href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}`}>
+        <Link
+          is={NextLink}
+          href={getLinkWithPagination(
+            `/bal/${baseLocale.id}/${TabsEnum.VOIES}`,
+            savedSearchPagination[TabsEnum.VOIES]
+          )}
+        >
           Voies
         </Link>
         <Text color="muted">{" > "}</Text>
@@ -36,7 +51,13 @@ function VoiePage({ baseLocale, voie }: VoiePageProps) {
     return () => {
       setBreadcrumbs(null);
     };
-  }, [setBreadcrumbs, baseLocale.id, voie.nom]);
+  }, [
+    setBreadcrumbs,
+    baseLocale.id,
+    voie,
+    setLastSelectedItem,
+    savedSearchPagination,
+  ]);
 
   return (
     <ProtectedPage>

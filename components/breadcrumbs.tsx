@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import NextLink from "next/link";
 import { Pane, Text, Link, PaneProps } from "evergreen-ui";
 import { BaseLocale, Toponyme, Voie } from "@/lib/openapi-api-bal";
-import { useRouter } from "next/router";
 import LayoutContext from "@/contexts/layout";
 
 type BreadcrumbsProps = {

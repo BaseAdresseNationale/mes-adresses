@@ -20,7 +20,9 @@ function CadastreControl({
       <Button
         style={{ padding: ".8em" }}
         onClick={onClick}
-        title="Afficher le cadastre"
+        title={
+          isCadastreDisplayed ? "Masquer le cadastre" : "Afficher le cadastre"
+        }
       >
         <ControlIcon color={isCadastreDisplayed ? "selected" : "muted"} />
       </Button>

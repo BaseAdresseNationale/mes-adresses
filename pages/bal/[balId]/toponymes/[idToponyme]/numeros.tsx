@@ -34,6 +34,9 @@ import {
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import SearchPaginationContext from "@/contexts/search-pagination";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import { getLinkWithPagination } from "@/hooks/search-pagination";
 
 interface ToponymeNumerosListPageProps {
   baseLocale: BaseLocale;
@@ -60,7 +63,9 @@ function ToponymeNumerosListPage({
   const { token } = useContext(TokenContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const { pushToast, setBreadcrumbs } = useContext(LayoutContext);
-
+  const { savedSearchPagination, setLastSelectedItem } = useContext(
+    SearchPaginationContext
+  );
   const { reloadNumeros, isEditing, setIsEditing } = useContext(BalDataContext);
 
   useHelp(2);
@@ -118,9 +123,19 @@ function ToponymeNumerosListPage({
   }, [token, reloadNumeros]);
 
   useEffect(() => {
+    setLastSelectedItem((prev) => ({
+      ...prev,
+      [TabsEnum.TOPONYMES]: toponyme.id,
+    }));
     setBreadcrumbs(
       <>
-        <Link is={NextLink} href={`/bal/${baseLocale.id}/voies`}>
+        <Link
+          is={NextLink}
+          href={getLinkWithPagination(
+            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}`,
+            savedSearchPagination[TabsEnum.TOPONYMES]
+          )}
+        >
           Toponymes
         </Link>
         <Text color="muted">{" > "}</Text>
@@ -131,7 +146,13 @@ function ToponymeNumerosListPage({
     return () => {
       setBreadcrumbs(null);
     };
-  }, [setBreadcrumbs, baseLocale.id, toponyme.nom]);
+  }, [
+    setBreadcrumbs,
+    baseLocale.id,
+    toponyme,
+    setLastSelectedItem,
+    savedSearchPagination,
+  ]);
 
   return (
     <>
