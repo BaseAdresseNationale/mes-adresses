@@ -15,6 +15,7 @@ import BalDataContext from "@/contexts/bal-data";
 
 import { ExtentedToponymeDTO, ToponymesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 
 interface ToponymeMarkerProps {
   initialToponyme: ExtentedToponymeDTO;
@@ -50,7 +51,9 @@ function ToponymeMarker({
 
       if (!isEditing) {
         if (voie || initialToponyme !== toponyme) {
-          router.push(`/bal/${balId}/toponymes/${initialToponyme.id}`);
+          router.push(
+            `/bal/${balId}/${TabsEnum.TOPONYMES}/${initialToponyme.id}/numeros`
+          );
         }
 
         if (!voie && initialToponyme.id === toponyme?.id) {

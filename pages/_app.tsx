@@ -113,10 +113,6 @@ function App(props: AppProps) {
           max-width: fit-content;
         }
 
-        .selected-row {
-          border: 1px solid #0070f3;
-        }
-
         .main-table-cell:hover {
           background-color: #e4e7eb;
         }
