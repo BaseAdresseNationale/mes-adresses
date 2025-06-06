@@ -5,7 +5,6 @@ import {
   KeyTabIcon,
   Paragraph,
   Pane,
-  Button,
   AddIcon,
   LockIcon,
   Text,
@@ -44,6 +43,7 @@ import BALRecoveryContext from "@/contexts/bal-recovery";
 import PopulateSideBar from "@/components/sidebar/populate";
 import { CommuneType } from "@/types/commune";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import SearchPaginationContext from "@/contexts/search-pagination";
 
 interface VoiesPageProps {
   voies: ExtendedVoieDTO[];
@@ -71,15 +71,28 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
   const router = useRouter();
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
-    useSearchPagination(voies);
+    useSearchPagination(TabsEnum.VOIES, voies);
+  const { lastSelectedItem } = useContext(SearchPaginationContext);
 
   useEffect(() => {
     setBreadcrumbs(<Text>Voies</Text>);
 
+    const lastSelectedVoieId = lastSelectedItem?.[TabsEnum.VOIES];
+    if (lastSelectedVoieId) {
+      const voieRowElement = document.getElementById(lastSelectedVoieId);
+      if (voieRowElement) {
+        voieRowElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        voieRowElement.classList.add("selected-row");
+      }
+    }
+
     return () => {
       setBreadcrumbs(null);
     };
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, lastSelectedItem]);
 
   const onRemove = useCallback(async () => {
     await reloadParcelles();
@@ -197,44 +210,6 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
       {token && voies && voies.length === 0 && (
         <PopulateSideBar commune={commune} baseLocale={baseLocale} />
       )}
-      {token && (
-        <Pane
-          flexShrink={0}
-          elevation={0}
-          backgroundColor="white"
-          padding={16}
-          display="flex"
-          alignItems="center"
-          minHeight={50}
-        >
-          <Pane>
-            <Paragraph fontSize={12} lineHeight={1.5}>
-              Liste des dénominations officielles auxquelles sont rattachés des
-              numéros.
-            </Paragraph>
-            <Paragraph fontSize={12} lineHeight={1.5} marginTop={4}>
-              Ex : 1{" "}
-              <Text fontWeight="bold" fontSize={12}>
-                Le Voisinet
-              </Text>
-              , Breux-sur-Avre
-            </Paragraph>
-          </Pane>
-
-          <Pane marginLeft="auto">
-            <Button
-              iconBefore={AddIcon}
-              is={NextLink}
-              appearance="primary"
-              intent="success"
-              disabled={token && isEditing}
-              href={`/bal/${baseLocale.id}/voies/new`}
-            >
-              Ajouter une voie
-            </Button>
-          </Pane>
-        </Pane>
-      )}
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
           <Table.SearchHeaderCell
@@ -244,13 +219,24 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
           />
           <Table.HeaderCell flex="unset">
             <Tooltip content="Voir seulement les voies avec des adresses non certifiées">
-              <Button
+              <IconButton
                 size="small"
-                iconBefore={showUncertify ? FilterRemoveIcon : FilterIcon}
+                title="Voir seulement les voies avec des adresses non certifiées"
+                marginRight={16}
+                icon={showUncertify ? FilterRemoveIcon : FilterIcon}
                 onClick={() => setShowUncertify(!showUncertify)}
-              >
-                Non Certifié
-              </Button>
+              />
+            </Tooltip>
+            <Tooltip content="Ajouter une voie">
+              <IconButton
+                icon={AddIcon}
+                title="Ajouter une voie"
+                is={NextLink}
+                appearance="primary"
+                intent="success"
+                disabled={!token || (token && isEditing)}
+                href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/new`}
+              />
             </Tooltip>
           </Table.HeaderCell>
         </Table.Head>
@@ -269,7 +255,12 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
           setPage={changePage}
         >
           {(voie: ExtendedVoieDTO) => (
-            <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
+            <Table.Row
+              id={voie.id}
+              key={voie.id}
+              paddingRight={8}
+              minHeight={48}
+            >
               <Table.Cell
                 onClick={() => browseToNumerosList(voie.id)}
                 cursor="pointer"
