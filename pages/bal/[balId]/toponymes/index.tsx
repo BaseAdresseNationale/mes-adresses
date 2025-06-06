@@ -58,27 +58,18 @@ function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
     useSearchPagination(TabsEnum.TOPONYMES, toponymes);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const { reloadTiles } = useContext(MapContext);
-  const { lastSelectedItem } = useContext(SearchPaginationContext);
+  const { scrollAndHighlightLastSelectedItem } = useContext(
+    SearchPaginationContext
+  );
 
   useEffect(() => {
     setBreadcrumbs(<Text>Toponymes</Text>);
-
-    const lastSelectedToponymeId = lastSelectedItem?.[TabsEnum.TOPONYMES];
-    if (lastSelectedToponymeId) {
-      const voieRowElement = document.getElementById(lastSelectedToponymeId);
-      if (voieRowElement) {
-        voieRowElement.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-        voieRowElement.classList.add("selected-row");
-      }
-    }
+    scrollAndHighlightLastSelectedItem(TabsEnum.TOPONYMES);
 
     return () => {
       setBreadcrumbs(null);
     };
-  }, [setBreadcrumbs, lastSelectedItem]);
+  }, [setBreadcrumbs, scrollAndHighlightLastSelectedItem]);
 
   const handleRemove = async () => {
     setIsDisabled(true);

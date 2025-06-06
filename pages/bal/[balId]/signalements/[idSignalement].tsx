@@ -25,6 +25,7 @@ import { SignalementViewer } from "@/components/signalement/signalement-viewer/s
 import SignalementContext from "@/contexts/signalement";
 import { CommuneType } from "@/types/commune";
 import TokenContext from "@/contexts/token";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 
 interface SignalementPageProps extends BaseEditorProps {
   signalement: Signalement;
@@ -101,7 +102,7 @@ function SignalementPage({
   }, [signalement, baseLocale, token]);
 
   const handleClose = useCallback(() => {
-    router.push(`/bal/${router.query.balId}/signalements`);
+    router.push(`/bal/${router.query.balId}/${TabsEnum.SIGNALEMENTS}`);
   }, [router]);
 
   const getNextSignalement = useCallback(async () => {
@@ -129,7 +130,7 @@ function SignalementPage({
 
       if (nextSignalement) {
         router.push(
-          `/bal/${router.query.balId}/signalements/${nextSignalement.id}`
+          `/bal/${router.query.balId}/${TabsEnum.SIGNALEMENTS}/${nextSignalement.id}`
         );
       } else {
         handleClose();
@@ -165,7 +166,9 @@ function SignalementPage({
           signalement={signalement}
           author={author}
           onClose={() =>
-            router.push(`/bal/${router.query.balId}/signalements?tab=archived`)
+            router.push(
+              `/bal/${router.query.balId}/${TabsEnum.SIGNALEMENTS}?tab=archived`
+            )
           }
         />
       ) : (
