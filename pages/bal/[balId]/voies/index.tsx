@@ -72,27 +72,18 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(TabsEnum.VOIES, voies);
-  const { lastSelectedItem } = useContext(SearchPaginationContext);
+  const { scrollAndHighlightLastSelectedItem } = useContext(
+    SearchPaginationContext
+  );
 
   useEffect(() => {
     setBreadcrumbs(<Text>Voies</Text>);
-
-    const lastSelectedVoieId = lastSelectedItem?.[TabsEnum.VOIES];
-    if (lastSelectedVoieId) {
-      const voieRowElement = document.getElementById(lastSelectedVoieId);
-      if (voieRowElement) {
-        voieRowElement.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-        voieRowElement.classList.add("selected-row");
-      }
-    }
+    scrollAndHighlightLastSelectedItem(TabsEnum.VOIES);
 
     return () => {
       setBreadcrumbs(null);
     };
-  }, [setBreadcrumbs, lastSelectedItem]);
+  }, [setBreadcrumbs, scrollAndHighlightLastSelectedItem]);
 
   const onRemove = useCallback(async () => {
     await reloadParcelles();
