@@ -17,9 +17,7 @@ import NextLink from "next/link";
 import StatusBadge from "@/components/status-badge";
 import {
   ExtendedBaseLocaleDTO,
-  HabilitationDTO,
   HabilitationService,
-  OpenAPI,
 } from "@/lib/openapi-api-bal";
 import CertificationCount from "../certification-count";
 import HabilitationTag from "../habilitation-tag";
@@ -27,6 +25,7 @@ import { canFetchSignalements } from "@/lib/utils/signalement";
 import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
 import styles from "./base-locale-card.module.css";
+import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 
 const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
@@ -233,7 +232,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
         <Pane borderLeft="1px solid #E6E8F0" height="100%" />
 
         <NextLink
-          href={`/bal/${id}`}
+          href={`/bal/${id}/${TabsEnum.VOIES}`}
           className={`${styles["custom-button"]} ${styles["manage-button"]}`}
           title="Accéder à la Base Adresse Locale"
         >

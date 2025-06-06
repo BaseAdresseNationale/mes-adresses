@@ -1,0 +1,93 @@
+.mainTabs {
+  display: flex;
+  padding: 10px;
+  flex-shrink: 0;
+  transform: translateY(0);
+  transition: all 0.3s ease-in-out;
+}
+
+.mainTabs.hide {
+  transform: translateY(-100%);
+  padding: 0;
+}
+
+.tabsList {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 88px;
+  width: 100%;
+  transition: height 0.3s ease-in-out;
+}
+
+.mainTabs.hide > .tabsList {
+  height: 0;
+}
+
+.tabLink {
+  text-decoration: none;
+  color: inherit;
+  margin: 0 5px;
+}
+
+.tab {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  user-select: none;
+  padding: 10px;
+  width: 90px;
+  border-radius: 4px;
+}
+
+.tab.selected {
+  background: rgb(244, 245, 249);
+}
+
+.tabImage {
+  height: 50px;
+  width: 40px;
+  transition: all 0.3s ease-in-out;
+}
+
+.tab.selected > .tabImage {
+  height: 60px;
+  width: 48px;
+}
+
+.tab:hover > .tabImage {
+  height: 60px;
+  width: 48px;
+}
+
+@media screen and (max-width: 768px) {
+  .tab {
+    width: 70px;
+  }
+
+  .tab > span {
+    font-size: 12px;
+  }
+
+  .tabsList {
+    height: 78px;
+  }
+
+  .tabImage {
+    height: 40px;
+    width: 32px;
+  }
+
+  .tab.selected > .tabImage {
+    height: 50px;
+    width: 40px;
+  }
+
+  .tab:hover > .tabImage {
+    height: 50px;
+    width: 40px;
+  }
+}
