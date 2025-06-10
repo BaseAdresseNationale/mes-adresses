@@ -1,6 +1,6 @@
 import React from "react";
 import { Pane, Text, Strong } from "evergreen-ui";
-import { HabilitationDTO } from "@/lib/openapi-api-bal";
+import { HabilitationDTO, StrategyDTO } from "@/lib/openapi-api-bal";
 
 interface RevisionUserProps {
   communeName: string;
@@ -19,11 +19,15 @@ function RevisionUser({
   let userName = context.nomComplet || context.organisation;
 
   if (!userName) {
-    if (habilitation.strategy.type === "email") {
+    if (
+      [StrategyDTO.type.EMAIL, StrategyDTO.type.PROCONNECT].includes(
+        habilitation.strategy.type
+      )
+    ) {
       userName = `mairie de ${communeName}`;
     }
 
-    if (habilitation.strategy.type === "franceconnect") {
+    if (habilitation.strategy.type === StrategyDTO.type.FRANCECONNECT) {
       userName = `élu(e) de ${communeName}`;
     }
   }
