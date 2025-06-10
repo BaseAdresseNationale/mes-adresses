@@ -3,14 +3,15 @@ import React from "react";
 
 interface FormInputProps {
   children: React.ReactNode;
+  padding?: number;
 }
 
-function FormInput({ children }: FormInputProps, ref) {
+function FormInput({ children, padding = 8 }: FormInputProps, ref) {
   return (
     <Pane
       ref={ref}
       background="white"
-      padding={8}
+      padding={padding}
       borderRadius={8}
       marginBottom={8}
       width="100%"

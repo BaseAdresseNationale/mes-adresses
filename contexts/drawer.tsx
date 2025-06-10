@@ -6,6 +6,7 @@ export enum DrawerDisplayedEnum {
   DOWNLOAD = "download",
   SETTING = "setting",
   TRASH = "trash",
+  SHARE = "share",
 }
 
 interface DrawerContextType {

@@ -8,6 +8,7 @@ import {
   TrashIcon,
   MenuIcon,
   CogIcon,
+  ShareIcon,
 } from "evergreen-ui";
 
 import DrawerContext, { DrawerDisplayedEnum } from "@/contexts/drawer";
@@ -45,6 +46,14 @@ function SettingsMenu({ isAdmin }: SettingsMenuProps) {
                 onSelect={() => setDrawerDisplayed(DrawerDisplayedEnum.TRASH)}
               >
                 Voir la corbeille
+              </Menu.Item>
+            )}
+            {isAdmin && (
+              <Menu.Item
+                icon={ShareIcon}
+                onSelect={() => setDrawerDisplayed(DrawerDisplayedEnum.SHARE)}
+              >
+                Partage
               </Menu.Item>
             )}
           </Menu.Group>
