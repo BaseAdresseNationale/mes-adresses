@@ -18,6 +18,7 @@ import {
 import { ChildrenProps } from "@/types/context";
 import MapContext from "@/contexts/map";
 import BalDataContext from "./bal-data";
+import { getGeoJsonCommuneParcelles } from "@/lib/api-cadastre";
 
 interface ParcellesContextType {
   highlightedParcelles: string[];
@@ -34,6 +35,7 @@ interface ParcellesContextType {
   ) => void;
   isDiffMode?: boolean;
   setIsDiffMode?: React.Dispatch<React.SetStateAction<boolean>>;
+  communeParcelles: Set<string>;
 }
 
 const ParcellesContext = React.createContext<ParcellesContextType | null>(null);
@@ -53,6 +55,9 @@ export function ParcellesContextProvider(props: ChildrenProps) {
     useContext(BalDataContext);
   const [showSelectedParcelles, setShowSelectedParcelles] =
     useState<boolean>(true);
+  const [communeParcelles, setCommuneParcelles] = useState<Set<string>>(
+    new Set([])
+  );
   const [isDiffMode, setIsDiffMode] = useState<boolean>(false);
   const [hoveredParcelles, setHoveredParcelles] = useState<
     {
@@ -70,14 +75,16 @@ export function ParcellesContextProvider(props: ChildrenProps) {
 
   const setHoverFeature = useCallback(
     (featureId: string, hover: boolean) => {
-      map.setFeatureState(
-        {
-          source: CADASTRE_SOURCE,
-          sourceLayer: CADASTRE_SOURCE_LAYER.PARCELLES,
-          id: featureId,
-        },
-        { hover }
-      );
+      if (featureId) {
+        map.setFeatureState(
+          {
+            source: CADASTRE_SOURCE,
+            sourceLayer: CADASTRE_SOURCE_LAYER.PARCELLES,
+            id: featureId,
+          },
+          { hover }
+        );
+      }
     },
     [map]
   );
@@ -301,6 +308,19 @@ export function ParcellesContextProvider(props: ChildrenProps) {
     }
   }, [isStyleLoaded, reloadParcellesLayers]);
 
+  useEffect(() => {
+    async function fetchCommuneParcelles(commune) {
+      const geoJson = await getGeoJsonCommuneParcelles(commune);
+      if (geoJson.features.length > 0) {
+        const parcelles = new Set<string>(
+          geoJson.features.map((feature) => feature.id)
+        );
+        setCommuneParcelles(parcelles);
+      }
+    }
+    fetchCommuneParcelles(baseLocale.commune);
+  }, [baseLocale.commune]);
+
   const value = useMemo(
     () => ({
       highlightedParcelles,
@@ -314,6 +334,7 @@ export function ParcellesContextProvider(props: ChildrenProps) {
       handleSetFeatureState,
       isDiffMode,
       setIsDiffMode,
+      communeParcelles,
     }),
     [
       highlightedParcelles,
@@ -326,6 +347,7 @@ export function ParcellesContextProvider(props: ChildrenProps) {
       handleSetFeatureState,
       isDiffMode,
       setIsDiffMode,
+      communeParcelles,
     ]
   );
 

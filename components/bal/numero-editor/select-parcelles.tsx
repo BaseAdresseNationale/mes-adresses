@@ -32,6 +32,7 @@ function SelectParcelles({
     hoveredParcelles,
     handleHoveredParcelles,
     handleParcelles,
+    communeParcelles,
   } = useContext(ParcellesContext);
   const addressType = isToponyme ? "toponyme" : "numéro";
 
@@ -43,6 +44,15 @@ function SelectParcelles({
       setIsParcelleSelectionEnabled(false);
     };
   }, [setHighlightedParcelles, setIsParcelleSelectionEnabled]);
+
+  const computeColorParcelles = (parcelle: string, isHovered: boolean) => {
+    if (isHovered) {
+      return "red";
+    } else if (!communeParcelles.has(parcelle)) {
+      return "orange";
+    }
+    return "green";
+  };
 
   return (
     <Pane display="flex" flexDirection="column">
@@ -60,7 +70,7 @@ function SelectParcelles({
               <Badge
                 key={parcelle}
                 isInteractive
-                color={isHovered ? "red" : "green"}
+                color={computeColorParcelles(parcelle, isHovered)}
                 margin={4}
                 onClick={() => handleParcelles([parcelle])}
                 onMouseEnter={() => handleHoveredParcelles([parcelle])}
