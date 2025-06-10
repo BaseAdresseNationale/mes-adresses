@@ -17,13 +17,12 @@ const EDITEUR_URL =
 
 interface ShareProps {
   baseLocale: BaseLocale;
-  token?: string;
+  token: string;
 }
 
 function Share({ baseLocale, token }: ShareProps) {
   const urlAdminBal = useMemo(() => {
-    const url = `https://mes-adresses.data.gouv.fr/bal/${baseLocale.id}`;
-    return token ? `${url}/${token}` : url;
+    return `${EDITEUR_URL}/bal/${baseLocale.id}/${token}`;
   }, [baseLocale.id, token]);
 
   return (
@@ -39,7 +38,7 @@ function Share({ baseLocale, token }: ShareProps) {
       >
         <Pane display="flex" alignItems="center">
           <ShareIcon />
-          <Heading paddingLeft={5}>Partager BAL</Heading>
+          <Heading paddingLeft={5}>Partage</Heading>
         </Pane>
       </Pane>
       <Pane margin={12}>

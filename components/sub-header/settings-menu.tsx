@@ -53,7 +53,7 @@ function SettingsMenu({ isAdmin }: SettingsMenuProps) {
                 icon={ShareIcon}
                 onSelect={() => setDrawerDisplayed(DrawerDisplayedEnum.SHARE)}
               >
-                Partager BAL
+                Partage
               </Menu.Item>
             )}
           </Menu.Group>

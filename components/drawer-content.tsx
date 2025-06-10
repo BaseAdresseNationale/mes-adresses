@@ -16,7 +16,6 @@ function DrawerContent() {
   const { drawerDisplayed, setDrawerDisplayed } = useContext(DrawerContext);
   const { baseLocale } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
-  const isAdmin = Boolean(token);
 
   return (
     <SideSheet
@@ -31,7 +30,7 @@ function DrawerContent() {
         <Settings baseLocale={baseLocale} />
       )}
       {drawerDisplayed === DrawerDisplayedEnum.TRASH && <Trash />}
-      {drawerDisplayed === DrawerDisplayedEnum.SHARE && isAdmin && (
+      {drawerDisplayed === DrawerDisplayedEnum.SHARE && token && (
         <Share baseLocale={baseLocale} token={token} />
       )}
 

@@ -17,7 +17,7 @@ function ShareQRCode({ url }: ShareQRCodeProps) {
         value={url}
         size={256}
         imageSettings={{
-          src: "/static/images/bal-logo.png",
+          src: "/static/images/cadenas.svg",
           height: 40,
           width: 40,
           excavate: true,
