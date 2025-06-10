@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import {
   Pane,
-  TextInputField,
   TextInput,
   IconButton,
   Button,
@@ -44,7 +43,6 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
 
   const [isLoading, setIsLoading] = useState(false);
   const [balEmails, setBalEmails] = useState([]);
-  const [nomInput, onNomInputChange] = useInput(baseLocale.nom);
   const [email, onEmailChange, resetEmail] = useInput();
   const [hasChanges, setHasChanges] = useState(false);
   const [error, setError] = useState("");
@@ -53,10 +51,8 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
   const { pushToast } = useContext(LayoutContext);
 
   const formHasChanged = useCallback(() => {
-    return (
-      nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails)
-    );
-  }, [nomInput, baseLocale.nom, emails, balEmails]);
+    return mailHasChanged(emails || [], balEmails);
+  }, [emails, balEmails]);
 
   useEffect(() => {
     setBalEmails(emails || []);
@@ -89,7 +85,6 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
 
       try {
         await BasesLocalesService.updateBaseLocale(baseLocale.id, {
-          nom: nomInput.trim(),
           emails: balEmails,
         });
 
@@ -115,7 +110,6 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
     },
     [
       baseLocale.id,
-      nomInput,
       balEmails,
       reloadEmails,
       reloadBaseLocale,
@@ -135,92 +129,81 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
   }, [formHasChanged]);
 
   return (
-    <FormContainer onSubmit={onSubmit} display="flex" flexDirection="column">
-      <Pane>
-        <FormInput>
-          <TextInputField
-            required
-            name="nom"
-            id="nom"
-            value={nomInput}
-            maxWidth={600}
-            marginBottom={0}
-            disabled={isLoading || baseLocale.status === "demo"}
-            label="Nom"
-            placeholder="Nom"
-            onChange={onNomInputChange}
-          />
-        </FormInput>
-
-        <FormInput>
-          <Label display="block" marginBottom={4}>
-            Adresses email <span title="This field is required.">*</span>
-          </Label>
-          {balEmails.map((email) => (
-            <Pane key={email} display="flex" marginBottom={8}>
-              <TextInput
-                readOnly
-                disabled
-                type="email"
-                display="block"
-                width="100%"
-                maxWidth={400}
-                value={email}
-              />
-              {balEmails.length > 1 && (
-                <IconButton
-                  type="button"
-                  icon={DeleteIcon}
-                  marginLeft={4}
-                  appearance="minimal"
-                  intent="danger"
-                  onClick={() => onRemoveEmail(email)}
-                />
-              )}
-            </Pane>
-          ))}
-
-          <Pane display="flex" marginBottom={0}>
+    <FormContainer
+      onSubmit={onSubmit}
+      display="flex"
+      flexDirection="column"
+      padding={0}
+      background="white"
+    >
+      <FormInput padding={0}>
+        <Label display="block" marginBottom={4}>
+          Adresses email <span title="This field is required.">*</span>
+        </Label>
+        {balEmails.map((email) => (
+          <Pane key={email} display="flex" marginBottom={8}>
             <TextInput
-              display="block"
+              readOnly
+              disabled
               type="email"
+              display="block"
               width="100%"
-              placeholder="Ajouter une adresse email…"
               maxWidth={400}
-              isInvalid={Boolean(error && error.includes("mail"))}
               value={email}
-              disabled={baseLocale.status === "demo"}
-              onChange={onEmailChange}
             />
-
-            {email && !balEmails.includes(email) && (
+            {balEmails.length > 1 && (
               <IconButton
-                type="submit"
-                icon={AddIcon}
+                type="button"
+                icon={DeleteIcon}
                 marginLeft={4}
-                disabled={!email}
                 appearance="minimal"
-                intent="default"
-                onClick={onAddEmail}
+                intent="danger"
+                onClick={() => onRemoveEmail(email)}
               />
             )}
           </Pane>
-        </FormInput>
-        {error && (
-          <Alert marginBottom={16} intent="danger" title="Erreur">
-            {error}
-          </Alert>
-        )}
+        ))}
 
-        {isRenewTokenWarningShown && (
-          <RenewTokenDialog
-            baseLocaleId={baseLocale.id}
-            isShown={isRenewTokenWarningShown}
-            setIsShown={setIsRenewTokenWarningShown}
-            setError={setError}
+        <Pane display="flex" marginBottom={0}>
+          <TextInput
+            display="block"
+            type="email"
+            width="100%"
+            placeholder="Ajouter une adresse email…"
+            maxWidth={400}
+            isInvalid={Boolean(error && error.includes("mail"))}
+            value={email}
+            disabled={baseLocale.status === "demo"}
+            onChange={onEmailChange}
           />
-        )}
-      </Pane>
+
+          {email && !balEmails.includes(email) && (
+            <IconButton
+              type="submit"
+              icon={AddIcon}
+              marginLeft={4}
+              disabled={!email}
+              appearance="minimal"
+              intent="default"
+              onClick={onAddEmail}
+            />
+          )}
+        </Pane>
+      </FormInput>
+      {error && (
+        <Alert marginBottom={16} intent="danger" title="Erreur">
+          {error}
+        </Alert>
+      )}
+
+      {isRenewTokenWarningShown && (
+        <RenewTokenDialog
+          baseLocaleId={baseLocale.id}
+          isShown={isRenewTokenWarningShown}
+          setIsShown={setIsRenewTokenWarningShown}
+          setError={setError}
+        />
+      )}
 
       <Button
         height={40}

@@ -28,11 +28,11 @@ function DrawerContent() {
         <Downloads baseLocaleId={baseLocale.id} />
       )}
       {drawerDisplayed === DrawerDisplayedEnum.SETTING && (
-        <Settings baseLocale={baseLocale} isAdmin={isAdmin} />
+        <Settings baseLocale={baseLocale} />
       )}
       {drawerDisplayed === DrawerDisplayedEnum.TRASH && <Trash />}
-      {drawerDisplayed === DrawerDisplayedEnum.SHARE && (
-        <Share baseLocaleId={baseLocale.id} token={token} />
+      {drawerDisplayed === DrawerDisplayedEnum.SHARE && isAdmin && (
+        <Share baseLocale={baseLocale} token={token} />
       )}
 
       {isMobile && (

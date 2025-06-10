@@ -8,11 +8,10 @@ import {
 import { useRef, useState } from "react";
 
 interface ShareClipBoardProps {
-  title: string;
   url: string;
 }
 
-function ShareClipBoard({ title, url }: ShareClipBoardProps) {
+function ShareClipBoard({ url }: ShareClipBoardProps) {
   const [copySuccess, setCopySuccess] = useState(false);
   const textAreaRef = useRef(null);
 
@@ -26,13 +25,7 @@ function ShareClipBoard({ title, url }: ShareClipBoardProps) {
 
   return (
     <Pane display="flex" alignItems="end">
-      <TextInputField
-        ref={textAreaRef}
-        label={title}
-        flex={1}
-        marginBottom={0}
-        value={url}
-      />
+      <TextInputField ref={textAreaRef} flex={1} marginBottom={0} value={url} />
 
       {copySuccess ? (
         <IconButton

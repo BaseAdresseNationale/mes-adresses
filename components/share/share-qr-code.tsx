@@ -1,20 +1,18 @@
-import { Pane, Label } from "evergreen-ui";
+import { Pane } from "evergreen-ui";
 import { QRCodeSVG } from "qrcode.react";
 
 interface ShareQRCodeProps {
-  title: string;
   url: string;
 }
 
-function ShareQRCode({ title, url }: ShareQRCodeProps) {
+function ShareQRCode({ url }: ShareQRCodeProps) {
   return (
     <Pane
       display="flex"
       flexDirection="column"
-      alignItems="left"
+      alignItems="center"
       marginTop={12}
     >
-      <Label marginBottom={8}>{title}</Label>
       <QRCodeSVG
         value={url}
         size={256}
