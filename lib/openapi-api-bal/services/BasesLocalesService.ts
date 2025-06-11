@@ -554,6 +554,24 @@ export class BasesLocalesService {
     }
 
     /**
+     * get geojson of filaires voies
+     * @param baseLocaleId
+     * @returns any
+     * @throws ApiError
+     */
+    public static findFilairesVoiesGeoJson(
+        baseLocaleId: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/voies/geojson',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+
+    /**
      * Find all Metas Voie in Bal
      * @param baseLocaleId
      * @returns VoieMetas
