@@ -1,24 +1,48 @@
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext } from "react";
 import useFuse from "./fuse";
-import { useDebouncedCallback } from "use-debounce";
-import { Toponyme, Voie } from "@/lib/openapi-api-bal";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import SearchPaginationContext from "@/contexts/search-pagination";
 
 export const QUERY_PAGE = "page";
 export const QUERY_SEARCH = "search";
 
-type UsePaginationType = [
+type UsePaginationType<T> = [
   page: number,
   changePage: (page: number) => void,
   search: string | null,
   changeFilter: (page: string) => void,
-  filtered: Array<Toponyme | Voie>,
+  filtered: Array<T>,
 ];
 
-export function useSearchPagination(
-  items: Array<Toponyme | Voie>
-): UsePaginationType {
+export function getLinkWithPagination<T>(
+  href: string,
+  savedSearchPagination: { page: number; search: string }
+): string {
+  const { page, search } = savedSearchPagination;
+
+  if (page > 1) {
+    href += `?${QUERY_PAGE}=${page}`;
+  }
+
+  if (search) {
+    if (href.includes("?")) {
+      href += `&${QUERY_SEARCH}=${encodeURIComponent(search)}`;
+    } else {
+      href += `?${QUERY_SEARCH}=${encodeURIComponent(search)}`;
+    }
+  }
+
+  return href;
+}
+
+export function useSearchPagination<T>(
+  tab: TabsEnum,
+  items: Array<T>
+): UsePaginationType<T> {
   const router = useRouter();
+  const { setSavedSearchPagination } = useContext(SearchPaginationContext);
+
   let page = Number(router.query?.page as string) || 1;
   const search: string = (router.query?.search as string) || "";
   const [filtered, setFilter] = useFuse(
@@ -38,9 +62,13 @@ export function useSearchPagination(
         router.query[QUERY_PAGE] = String(change);
       }
       router.push(router, undefined, { shallow: true });
+      setSavedSearchPagination((prev) => ({
+        ...prev,
+        [tab]: { page: change, search },
+      }));
       page = change;
     },
-    [, router]
+    [router, setSavedSearchPagination, tab, search]
   );
 
   const changeFilter = useCallback(
@@ -52,9 +80,14 @@ export function useSearchPagination(
       }
       router.push(router, undefined, { shallow: true });
       setFilter(change);
+      setSavedSearchPagination((prev) => ({
+        ...prev,
+        [tab]: { page: 1, search: change },
+      }));
       changePage(1);
     },
-    [setFilter, router, changePage]
+    [setFilter, router, changePage, tab, setSavedSearchPagination]
   );
+
   return [page, changePage, search, changeFilter, filtered];
 }

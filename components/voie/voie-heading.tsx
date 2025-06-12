@@ -71,7 +71,7 @@ function VoieHeading({ voie }: VoieHeadingProps) {
             </Text>
           )}
         </Pane>
-        {voie.nomAlt && <LanguagePreview nomAlt={voie.nomAlt} />}
+        {voie.nomAlt && <LanguagePreview nomsAlt={voie.nomAlt} />}
       </Heading>
     </Pane>
   );

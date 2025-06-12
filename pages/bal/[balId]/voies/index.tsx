@@ -1,11 +1,10 @@
-import { useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { sortBy } from "lodash";
 import {
   Table,
   KeyTabIcon,
   Paragraph,
   Pane,
-  Button,
   AddIcon,
   LockIcon,
   Text,
@@ -15,7 +14,7 @@ import {
   FilterRemoveIcon,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
-
+import NextLink from "next/link";
 import { normalizeSort } from "@/lib/normalize";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -23,44 +22,74 @@ import TokenContext from "@/contexts/token";
 
 import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
-import ReadOnlyInfos from "./read-only-infos";
 
-import { ExtendedVoieDTO, VoiesService } from "@/lib/openapi-api-bal";
+import {
+  ExtendedBaseLocaleDTO,
+  ExtendedVoieDTO,
+  Toponyme,
+  VoiesService,
+} from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
-import TableRowActions from "../table-row/table-row-actions";
-import TableRowNotifications from "../table-row/table-row-notifications";
-import LanguagePreview from "./language-preview";
-import PaginationList from "../pagination-list";
 import { useSearchPagination } from "@/hooks/search-pagination";
+import ReadOnlyInfos from "@/components/bal/read-only-infos";
+import PaginationList from "@/components/pagination-list";
+import LanguagePreview from "@/components/bal/language-preview";
+import TableRowNotifications from "@/components/table-row/table-row-notifications";
+import TableRowActions from "@/components/table-row/table-row-actions";
+import ConvertVoieWarning from "@/components/convert-voie-warning";
+import MapContext from "@/contexts/map";
+import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import BALRecoveryContext from "@/contexts/bal-recovery";
+import PopulateSideBar from "@/components/sidebar/populate";
+import { CommuneType } from "@/types/commune";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import SearchPaginationContext from "@/contexts/search-pagination";
 
-interface VoiesListProps {
+interface VoiesPageProps {
   voies: ExtendedVoieDTO[];
-  onRemove: () => Promise<void>;
-  onEnableEditing: (id: string) => void;
-  balId: string;
-  setToConvert: (id: string) => void;
-  openRecoveryDialog: () => void;
-  openForm: () => void;
+  baseLocale: ExtendedBaseLocaleDTO;
+  commune: CommuneType;
 }
 
-function VoiesList({
-  voies,
-  onEnableEditing,
-  setToConvert,
-  balId,
-  onRemove,
-  openRecoveryDialog,
-  openForm,
-}: VoiesListProps) {
+function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
-  const { isEditing, reloadVoies } = useContext(BalDataContext);
-  const { toaster } = useContext(LayoutContext);
+  const {
+    isEditing,
+    reloadVoies,
+    reloadToponymes,
+    reloadParcelles,
+    refreshBALSync,
+  } = useContext(BalDataContext);
+  const { reloadTiles } = useContext(MapContext);
+
+  const [toConvert, setToConvert] = useState<string | null>(null);
+  const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
+  const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
   const router = useRouter();
+  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
-    useSearchPagination(voies);
+    useSearchPagination(TabsEnum.VOIES, voies);
+  const { scrollAndHighlightLastSelectedItem } = useContext(
+    SearchPaginationContext
+  );
+
+  useEffect(() => {
+    setBreadcrumbs(<Text>Voies</Text>);
+    scrollAndHighlightLastSelectedItem(TabsEnum.VOIES);
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [setBreadcrumbs, scrollAndHighlightLastSelectedItem]);
+
+  const onRemove = useCallback(async () => {
+    await reloadParcelles();
+    reloadTiles();
+    refreshBALSync();
+  }, [refreshBALSync, reloadTiles, reloadParcelles]);
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -76,8 +105,49 @@ function VoiesList({
     setIsDisabled(false);
   };
 
-  const onSelect = async (id: string) => {
-    void router.push(`/bal/${balId}/voies/${id}`);
+  const onConvert = useCallback(async () => {
+    setOnConvertLoading(true);
+    const convertToponyme = toaster(
+      async () => {
+        const toponyme: Toponyme =
+          await VoiesService.convertToToponyme(toConvert);
+        await reloadVoies();
+        await reloadToponymes();
+        await reloadParcelles();
+        reloadTiles();
+        refreshBALSync();
+        await router.push(
+          `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
+        );
+      },
+      "La voie a bien été convertie en toponyme",
+      "La voie n’a pas pu être convertie en toponyme"
+    );
+
+    await convertToponyme();
+
+    setOnConvertLoading(false);
+    setToConvert(null);
+  }, [
+    baseLocale,
+    router,
+    reloadVoies,
+    refreshBALSync,
+    reloadToponymes,
+    reloadTiles,
+    reloadParcelles,
+    toConvert,
+    toaster,
+  ]);
+
+  const browseToVoie = (idVoie: string) => {
+    void router.push(`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}`);
+  };
+
+  const browseToNumerosList = (idVoie: string) => {
+    void router.push(
+      `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}/numeros`
+    );
   };
 
   const scrollableItems = useMemo(() => {
@@ -94,6 +164,19 @@ function VoiesList({
 
   return (
     <>
+      <ConvertVoieWarning
+        isShown={Boolean(toConvert)}
+        content={
+          <Paragraph>
+            Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
+          </Paragraph>
+        }
+        isLoading={onConvertLoading}
+        onCancel={() => {
+          setToConvert(null);
+        }}
+        onConfirm={onConvert}
+      />
       <DeleteWarning
         isShown={Boolean(toRemove)}
         content={
@@ -110,33 +193,13 @@ function VoiesList({
       />
       {!token && (
         <Pane flexShrink={0} elevation={0} backgroundColor="white">
-          <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />
+          <ReadOnlyInfos
+            openRecoveryDialog={() => setIsRecoveryDisplayed(true)}
+          />
         </Pane>
       )}
-      {token && (
-        <Pane
-          flexShrink={0}
-          elevation={0}
-          backgroundColor="white"
-          paddingX={16}
-          display="flex"
-          alignItems="center"
-          minHeight={50}
-        >
-          <Pane marginLeft="auto">
-            <Button
-              iconBefore={AddIcon}
-              appearance="primary"
-              intent="success"
-              disabled={token && isEditing}
-              onClick={() => {
-                openForm();
-              }}
-            >
-              Ajouter une voie
-            </Button>
-          </Pane>
-        </Pane>
+      {token && voies && voies.length === 0 && (
+        <PopulateSideBar commune={commune} baseLocale={baseLocale} />
       )}
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head>
@@ -147,13 +210,24 @@ function VoiesList({
           />
           <Table.HeaderCell flex="unset">
             <Tooltip content="Voir seulement les voies avec des adresses non certifiées">
-              <Button
+              <IconButton
                 size="small"
-                iconBefore={showUncertify ? FilterRemoveIcon : FilterIcon}
+                title="Voir seulement les voies avec des adresses non certifiées"
+                marginRight={16}
+                icon={showUncertify ? FilterRemoveIcon : FilterIcon}
                 onClick={() => setShowUncertify(!showUncertify)}
-              >
-                Non Certifié
-              </Button>
+              />
+            </Tooltip>
+            <Tooltip content="Ajouter une voie">
+              <IconButton
+                icon={AddIcon}
+                title="Ajouter une voie"
+                is={NextLink}
+                appearance="primary"
+                intent="success"
+                disabled={!token || (token && isEditing)}
+                href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/new`}
+              />
             </Tooltip>
           </Table.HeaderCell>
         </Table.Head>
@@ -172,9 +246,14 @@ function VoiesList({
           setPage={changePage}
         >
           {(voie: ExtendedVoieDTO) => (
-            <Table.Row key={voie.id} paddingRight={8} minHeight={48}>
+            <Table.Row
+              id={voie.id}
+              key={voie.id}
+              paddingRight={8}
+              minHeight={48}
+            >
               <Table.Cell
-                onClick={() => onSelect(voie.id)}
+                onClick={() => browseToNumerosList(voie.id)}
                 cursor="pointer"
                 className="main-table-cell"
               >
@@ -185,7 +264,7 @@ function VoiesList({
 
                   {voie.nomAlt && (
                     <Pane marginTop={4}>
-                      <LanguagePreview nomAlt={voie.nomAlt} />
+                      <LanguagePreview nomsAlt={voie.nomAlt} />
                     </Pane>
                   )}
                 </Table.TextCell>
@@ -215,10 +294,10 @@ function VoiesList({
               {isEditingEnabled && (
                 <TableRowActions
                   onSelect={() => {
-                    onSelect(voie.id);
+                    browseToNumerosList(voie.id);
                   }}
                   onEdit={() => {
-                    onEnableEditing(voie.id);
+                    browseToVoie(voie.id);
                   }}
                   onRemove={() => {
                     setToRemove(voie.id);
@@ -240,7 +319,7 @@ function VoiesList({
               {!Boolean(token) && (
                 <Table.TextCell flex="0 1 1">
                   <IconButton
-                    onClick={openRecoveryDialog}
+                    onClick={() => setIsRecoveryDisplayed(true)}
                     type="button"
                     height={24}
                     icon={LockIcon}
@@ -256,4 +335,26 @@ function VoiesList({
   );
 }
 
-export default VoiesList;
+export async function getServerSideProps({ params }) {
+  const { balId }: { balId: string } = params;
+
+  try {
+    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
+      await getBaseEditorProps(balId);
+
+    return {
+      props: {
+        baseLocale,
+        commune,
+        voies,
+        toponymes,
+      },
+    };
+  } catch {
+    return {
+      notFound: true,
+    };
+  }
+}
+
+export default VoiesPage;
