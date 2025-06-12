@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Pane, Pulsar, Tooltip } from "evergreen-ui";
 import Link from "next/link";
 import styles from "./main-tabs.module.css";
@@ -9,6 +9,7 @@ import Image from "next/image";
 import BalDataContext from "@/contexts/bal-data";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
+import DynamicTextIcon from "./dynamic-text-icon/dynamic-text-icon";
 
 export enum TabsEnum {
   COMMUNE = "commune",
@@ -16,6 +17,16 @@ export enum TabsEnum {
   TOPONYMES = "toponymes",
   SIGNALEMENTS = "signalements",
 }
+
+const textExamples = {
+  [TabsEnum.VOIES]: [
+    "Rue Chaptal",
+    "Rue de la paix",
+    "Avenue Thiers",
+    "Le Voisinet",
+  ],
+  [TabsEnum.TOPONYMES]: ["La butte", "Les loges", "Lambert", "Tartifume"],
+};
 
 interface MainTabsProps {
   balId: string;
@@ -31,6 +42,10 @@ function MainTabs({ balId }: MainTabsProps) {
   const isAdmin = Boolean(token);
   const { isEditing } = useContext(BalDataContext);
   const { savedSearchPagination } = useContext(SearchPaginationContext);
+  const [selectedTextIndexes, setSelectedTextIndexes] = useState({
+    [TabsEnum.VOIES]: 0,
+    [TabsEnum.TOPONYMES]: 0,
+  });
 
   const isTabSelected = (tabKey: TabsEnum, index: number) => {
     return selectedTab ? selectedTab === tabKey : index === 0;
@@ -42,15 +57,36 @@ function MainTabs({ balId }: MainTabsProps) {
         {[
           {
             key: TabsEnum.COMMUNE,
-            iconeUrl: "/static/images/icone-commune.png",
-            label: "Commune",
+            icon: (
+              <Image
+                className={styles.tabImage}
+                src="/static/images/icone-commune.png"
+                alt={`Illustration de l'onglet commune`}
+                draggable={false}
+                width={48}
+                height={60}
+              />
+            ),
             href: `/bal/${balId}`,
             tooltip: "Informations générales sur cette Base Adresse Locale.",
           },
           {
             key: TabsEnum.VOIES,
-            iconeUrl: "/static/images/icone-voies.png",
-            label: "Voies",
+            icon: (
+              <DynamicTextIcon
+                selectedTextIndex={selectedTextIndexes[TabsEnum.VOIES]}
+                className={styles.tabImage}
+                texts={textExamples[TabsEnum.VOIES]}
+              >
+                <Image
+                  src="/static/images/icone-voies.png"
+                  alt={`Illustration de l'onglet voies`}
+                  draggable={false}
+                  width={60}
+                  height={26}
+                />
+              </DynamicTextIcon>
+            ),
             href: getLinkWithPagination(
               `/bal/${balId}/${TabsEnum.VOIES}`,
               savedSearchPagination[TabsEnum.VOIES]
@@ -60,8 +96,21 @@ function MainTabs({ balId }: MainTabsProps) {
           },
           {
             key: TabsEnum.TOPONYMES,
-            iconeUrl: "/static/images/icone-toponymes.png",
-            label: "Toponymes",
+            icon: (
+              <DynamicTextIcon
+                selectedTextIndex={selectedTextIndexes[TabsEnum.TOPONYMES]}
+                className={styles.tabImage}
+                texts={textExamples[TabsEnum.TOPONYMES]}
+              >
+                <Image
+                  src="/static/images/icone-toponymes.png"
+                  alt={`Illustration de l'onglet toponymes`}
+                  draggable={false}
+                  width={60}
+                  height={26}
+                />
+              </DynamicTextIcon>
+            ),
             href: getLinkWithPagination(
               `/bal/${balId}/${TabsEnum.TOPONYMES}`,
               savedSearchPagination[TabsEnum.TOPONYMES]
@@ -70,8 +119,16 @@ function MainTabs({ balId }: MainTabsProps) {
           },
           {
             key: TabsEnum.SIGNALEMENTS,
-            iconeUrl: "/static/images/icone-signalements.png",
-            label: "Signalements",
+            icon: (
+              <Image
+                className={styles.tabImage}
+                src="/static/images/icone-signalements.png"
+                alt={`Illustration de l'onglet signalements`}
+                draggable={false}
+                width={48}
+                height={60}
+              />
+            ),
             notif: pendingSignalementsCount,
             href: `/bal/${balId}/${TabsEnum.SIGNALEMENTS}`,
             isHidden: !isAdmin || !communeHasSignalements,
@@ -79,7 +136,7 @@ function MainTabs({ balId }: MainTabsProps) {
           },
         ]
           .filter(({ isHidden }) => !isHidden)
-          .map(({ label, notif, key, href, iconeUrl, tooltip }, index) => {
+          .map(({ notif, key, href, icon, tooltip }, index) => {
             const isSelected = isTabSelected(key, index);
             const tab = (
               <Tooltip key={key} content={tooltip}>
@@ -88,6 +145,18 @@ function MainTabs({ balId }: MainTabsProps) {
                   href={href}
                   shallow
                   draggable={false}
+                  {...((key === TabsEnum.VOIES ||
+                    key === TabsEnum.TOPONYMES) && {
+                    onClick: () => {
+                      setSelectedTextIndexes((prev) => ({
+                        ...prev,
+                        [key]:
+                          prev[key] + 1 >= textExamples[key].length
+                            ? 0
+                            : prev[key] + 1,
+                      }));
+                    },
+                  })}
                 >
                   <Pane
                     className={`${styles.tab}${
@@ -95,14 +164,7 @@ function MainTabs({ balId }: MainTabsProps) {
                     }`}
                     {...(isSelected ? { elevation: 1 } : {})}
                   >
-                    <Image
-                      className={styles.tabImage}
-                      src={iconeUrl}
-                      alt={`Illustration de l'onglet ${label}`}
-                      draggable={false}
-                      width={48}
-                      height={60}
-                    />
+                    {icon}
                     {notif > 0 && <Pulsar size={16} right={0} top={0} />}
                   </Pane>
                 </Link>

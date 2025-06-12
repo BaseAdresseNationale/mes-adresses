@@ -50,17 +50,16 @@
 .tabImage {
   height: 50px;
   width: 40px;
+  transform: scale(1);
   transition: all 0.3s ease-in-out;
 }
 
 .tab.selected > .tabImage {
-  height: 60px;
-  width: 48px;
+  transform: scale(1.3);
 }
 
 .tab:hover > .tabImage {
-  height: 60px;
-  width: 48px;
+  transform: scale(1.3);
 }
 
 @media screen and (max-width: 768px) {
