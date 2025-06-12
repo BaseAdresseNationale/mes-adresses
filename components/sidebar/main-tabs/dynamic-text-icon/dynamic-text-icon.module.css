@@ -14,16 +14,26 @@
   position: absolute;
   text-align: center;
   color: white;
-  font-size: 0.4rem;
-  top: 50%;
+  font-size: 0.5rem;
+  top: 10px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   white-space: nowrap;
   letter-spacing: -0.2px;
-  transition: opacity 0.3s ease-in-out;
-  opacity: 0;
 }
 
-.dynamicTextIcon > span.visible {
-  opacity: 1;
+.dynamicTextIcon > span.blurEffect {
+  animation: blur 1s ease-in forwards;
+}
+
+@keyframes blur {
+  from {
+    opacity: 0.5;
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
 }

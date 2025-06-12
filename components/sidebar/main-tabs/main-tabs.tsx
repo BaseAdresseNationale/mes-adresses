@@ -5,11 +5,11 @@ import styles from "./main-tabs.module.css";
 import SignalementContext from "@/contexts/signalement";
 import LayoutContext from "@/contexts/layout";
 import TokenContext from "@/contexts/token";
-import Image from "next/image";
 import BalDataContext from "@/contexts/bal-data";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
 import DynamicTextIcon from "./dynamic-text-icon/dynamic-text-icon";
+import ResponsiveImage from "@/components/respponsive-image";
 
 export enum TabsEnum {
   COMMUNE = "commune",
@@ -19,12 +19,7 @@ export enum TabsEnum {
 }
 
 const textExamples = {
-  [TabsEnum.VOIES]: [
-    "Rue Chaptal",
-    "Rue de la paix",
-    "Avenue Thiers",
-    "Le Voisinet",
-  ],
+  [TabsEnum.VOIES]: ["Rue Chaptal", "Rue du Bac", "Quai de Lot", "Le Voisinet"],
   [TabsEnum.TOPONYMES]: ["La butte", "Les loges", "Lambert", "Tartifume"],
 };
 
@@ -58,14 +53,14 @@ function MainTabs({ balId }: MainTabsProps) {
           {
             key: TabsEnum.COMMUNE,
             icon: (
-              <Image
-                className={styles.tabImage}
-                src="/static/images/icone-commune.png"
-                alt={`Illustration de l'onglet commune`}
-                draggable={false}
-                width={48}
-                height={60}
-              />
+              <div className={styles.tabImage}>
+                <ResponsiveImage
+                  src="/static/images/icone-commune.png"
+                  alt={`Illustration de l'onglet commune`}
+                  draggable={false}
+                  orientation="portrait"
+                />
+              </div>
             ),
             href: `/bal/${balId}`,
             tooltip: "Informations générales sur cette Base Adresse Locale.",
@@ -78,12 +73,11 @@ function MainTabs({ balId }: MainTabsProps) {
                 className={styles.tabImage}
                 texts={textExamples[TabsEnum.VOIES]}
               >
-                <Image
+                <ResponsiveImage
                   src="/static/images/icone-voies.png"
                   alt={`Illustration de l'onglet voies`}
                   draggable={false}
-                  width={60}
-                  height={26}
+                  orientation="portrait"
                 />
               </DynamicTextIcon>
             ),
@@ -102,12 +96,11 @@ function MainTabs({ balId }: MainTabsProps) {
                 className={styles.tabImage}
                 texts={textExamples[TabsEnum.TOPONYMES]}
               >
-                <Image
+                <ResponsiveImage
                   src="/static/images/icone-toponymes.png"
                   alt={`Illustration de l'onglet toponymes`}
                   draggable={false}
-                  width={60}
-                  height={26}
+                  orientation="portrait"
                 />
               </DynamicTextIcon>
             ),
@@ -120,14 +113,15 @@ function MainTabs({ balId }: MainTabsProps) {
           {
             key: TabsEnum.SIGNALEMENTS,
             icon: (
-              <Image
-                className={styles.tabImage}
-                src="/static/images/icone-signalements.png"
-                alt={`Illustration de l'onglet signalements`}
-                draggable={false}
-                width={48}
-                height={60}
-              />
+              <div className={styles.tabImage}>
+                <ResponsiveImage
+                  className={styles.tabImage}
+                  src="/static/images/icone-signalements.png"
+                  alt={`Illustration de l'onglet signalements`}
+                  draggable={false}
+                  orientation="portrait"
+                />
+              </div>
             ),
             notif: pendingSignalementsCount,
             href: `/bal/${balId}/${TabsEnum.SIGNALEMENTS}`,

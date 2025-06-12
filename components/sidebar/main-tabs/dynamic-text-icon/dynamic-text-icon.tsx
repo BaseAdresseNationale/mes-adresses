@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./dynamic-text-icon.module.css";
 import { Text } from "evergreen-ui";
 
@@ -15,19 +15,22 @@ function DynamicTextIcon({
   className,
   selectedTextIndex,
 }: DynamicTextIconProps) {
+  const textRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!textRef.current) return;
+
+    const textElement = textRef.current;
+    textElement.classList.add(styles.blurEffect);
+    setTimeout(() => {
+      textElement.classList.remove(styles.blurEffect);
+    }, 1000);
+  }, [selectedTextIndex]);
+
   return (
     <div className={[className, styles.dynamicTextIcon].join(" ")}>
       {children}
-      {texts.map((text, index) => (
-        <Text
-          key={text}
-          {...(index === selectedTextIndex
-            ? { className: styles.visible }
-            : {})}
-        >
-          {texts[selectedTextIndex]}
-        </Text>
-      ))}
+      <Text ref={textRef}>{texts[selectedTextIndex]}</Text>
     </div>
   );
 }
