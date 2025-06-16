@@ -7,7 +7,6 @@ import {
   Heading,
   PeopleIcon,
   TimeIcon,
-  LogInIcon,
   UnorderedList,
   ListItem,
 } from "evergreen-ui";
@@ -32,84 +31,36 @@ export function StrategySelection({
   const [hovered, setHovered] = useState<StrategyDTO.type | null>(null);
 
   return (
-    <Pane marginBottom={-16}>
+    <Pane>
       <Pane
         display="flex"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        marginY={16}
+        background="white"
+        padding={16}
+        borderRadius={8}
       >
-        <Text textAlign="center">
-          Afin de pouvoir publier vos adresses dans la{" "}
-          <Strong size={400}>Base Adresse Nationale</Strong>, votre{" "}
-          <Strong size={400}>Base Adresse Locale</Strong> doit obtenir{" "}
-          <Strong size={400}>une habilitation</Strong>.
-        </Text>
-
-        <Pane display="flex" flexDirection="column" marginTop={16}>
-          <Heading textAlign="center" color="#225DF5">
-            Comprendre l’habilitation en quelques points
-          </Heading>
-          <UnorderedList>
-            <ListItem icon={PeopleIcon}>
-              <Text size={400}>
-                Permet à{" "}
-                <Strong size={400}>
-                  toute personne aillant accès à l’édition
-                </Strong>{" "}
-                de cette <Strong size={400}>Base Adresse Locale</Strong> de{" "}
-                <Strong size={400}>mettre à jour</Strong> les adresses de sa
-                commune.
-              </Text>
-            </ListItem>
-
-            <ListItem icon={TimeIcon}>
-              <Text size={400}>
-                Elle est valable <Strong size={400}>1 an</Strong>.
-              </Text>
-            </ListItem>
-
-            <ListItem icon={LogInIcon}>
-              <Text size={400}>
-                Pour l’obtenir, <Strong size={400}>un(e) élu(e)</Strong> de la
-                commune ou <Strong size={400}>un(e) employé(e)</Strong> de la
-                mairie doit <Strong size={400}>s’authentifier</Strong>.
-              </Text>
-            </ListItem>
-          </UnorderedList>
-        </Pane>
-        <Alert title="Vous n’êtes pas habilité ?" marginTop={16}>
-          <Text is="div" marginTop={8}>
-            Prestataires et délégataires, contactez la mairie pour qu’elle
-            puisse authentifier les adresses selon les modalités définies
-            ci-dessus. Pour rappel, la commune reste responsable de ses
-            adresses, même en cas de délégation de la réalisation technique de
-            l’adressage.
-          </Text>
-        </Alert>
+        <Heading is="h2" textAlign="center">
+          Habilitez votre <Strong size={400}>Base Adresse Locale</Strong> pour
+          la publier dans la <Strong size={400}>Base Adresse Nationale</Strong>.
+        </Heading>
       </Pane>
 
       <Pane
         display="grid"
         gridTemplateColumns="repeat(auto-fit, minmax(330px, 1fr))"
-        marginX="-32px"
-        padding={16}
+        marginTop={16}
         gap={16}
         background="gray300"
-        textAlign="center"
       >
         <Pane
           onMouseEnter={() => setHovered(StrategyDTO.type.EMAIL)}
           onMouseLeave={() => setHovered(null)}
           elevation={hovered === StrategyDTO.type.EMAIL ? 3 : 0}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
           background="white"
           padding={16}
           borderRadius={8}
-          height={415}
           flex={1}
         >
           <CodeEmail
@@ -123,20 +74,47 @@ export function StrategySelection({
           onMouseEnter={() => setHovered(StrategyDTO.type.PROCONNECT)}
           onMouseLeave={() => setHovered(null)}
           elevation={hovered === StrategyDTO.type.PROCONNECT ? 3 : 0}
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
-          alignItems="center"
           background="white"
           padding={16}
           borderRadius={8}
-          height={415}
           flex={1}
         >
           <ProConnect
             handleStrategy={() => handleStrategy(StrategyDTO.type.PROCONNECT)}
           />
         </Pane>
+      </Pane>
+      <Pane
+        display="flex"
+        flexDirection="column"
+        background="white"
+        padding={16}
+        borderRadius={8}
+        marginTop={16}
+      >
+        <Heading>Comprendre l’habilitation</Heading>
+        <UnorderedList>
+          <ListItem icon={PeopleIcon}>
+            <Text size={400}>
+              Elle permet de s&apos;assurer que la publication est{" "}
+              <Strong size={400}>réalisée par une personne compétente</Strong>{" "}
+              en matière d&apos;adressage.
+            </Text>
+          </ListItem>
+
+          <ListItem icon={TimeIcon}>
+            <Text size={400}>
+              Elle est <Strong size={400}>valable 1 an</Strong> et doit être
+              renouvelée pour continuer la mise à jour de l'adressage
+            </Text>
+          </ListItem>
+        </UnorderedList>
+        <Alert title="Besoin d'aide pour vous habiliter ?" marginTop={16}>
+          <Text is="div" marginTop={8}>
+            Contactez nous à{" "}
+            <a href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</a>
+          </Text>
+        </Alert>
       </Pane>
     </Pane>
   );

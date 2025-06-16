@@ -198,7 +198,13 @@ function HabilitationProcess({
       isConfirmDisabled={isLoadingPublish}
       onCloseComplete={handleClose}
     >
-      <Pane>
+      <Pane
+        marginX="-32px"
+        marginY="-8px"
+        borderRadius={8}
+        background="gray300"
+        padding={16}
+      >
         {step === 0 && (
           <StrategySelection
             codeCommune={commune.code}
@@ -232,19 +238,21 @@ function HabilitationProcess({
             strategyType={habilitation.strategy.type}
           />
         )}
+        {isLoading && (
+          <Pane
+            marginTop={16}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Spinner size={42} />
+            <Text fontStyle="italic">Chargement…</Text>
+          </Pane>
+        )}
       </Pane>
 
-      {isLoading && (
-        <Pane
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Spinner size={42} />
-          <Text fontStyle="italic">Chargement…</Text>
-        </Pane>
-      )}
+
     </Dialog>
   );
 }

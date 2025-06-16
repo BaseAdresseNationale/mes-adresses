@@ -62,29 +62,37 @@ function AcceptedDialog({
 
   return (
     <Pane>
-      <Pane display="flex" flexDirection="column" marginTop={0} gap={24}>
-        <Pane
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          textAlign="center"
-        >
-          {strategy.mandat ? (
-            <AuthenticatedUser
-              type="elu"
-              title={`${prenom} ${nomMarital || nomNaissance}`}
-            />
-          ) : (
-            <AuthenticatedUser
-              type="mairie"
-              title={`la mairie de ${commune.nom} (${commune.code})`}
-            />
-          )}
-        </Pane>
-
+      <Pane
+        display="flex"
+        flexDirection="column"
+        background="white"
+        padding={16}
+        borderRadius={8}
+        marginBottom={16}
+      >
+        {strategy.mandat ? (
+          <AuthenticatedUser
+            type="elu"
+            title={`${prenom} ${nomMarital || nomNaissance}`}
+          />
+        ) : (
+          <AuthenticatedUser
+            type="mairie"
+            title={`la mairie de ${commune.nom} (${commune.code})`}
+          />
+        )}
+      </Pane>
+      <Pane
+        display="flex"
+        flexDirection="column"
+        background="white"
+        padding={16}
+        borderRadius={8}
+      >
         <Alert
           title="Votre Base Locale a bien été habilitée !"
           intent="success"
+          marginBottom={16}
         >
           <Pane display="flex" flexDirection="column">
             <UnorderedList>
@@ -108,16 +116,9 @@ function AcceptedDialog({
             </UnorderedList>
           </Pane>
         </Alert>
-      </Pane>
 
-      <Pane marginTop={16} paddingTop={16} borderTop="2px solid #EFEFEF">
-        <Pane
-          display="flex"
-          flexDirection="column"
-          marginBottom={16}
-          alignItems="center"
-        >
-          <Heading is="h3" marginBottom={4} textAlign="center">
+        <Pane display="flex" flexDirection="column" marginBottom={16}>
+          <Heading is="h3">
             Votre Base Adresse Locale est maintenant prête à être publiée
           </Heading>
           <UnorderedList marginTop={16}>
@@ -139,7 +140,6 @@ function AcceptedDialog({
           <Alert
             intent="warning"
             title="Toutes vos adresses ne sont pas certifiées"
-            marginY={16}
           >
             <Text is="div" color="muted" marginTop={4}>
               Nous vous recommandons de certifier la{" "}
@@ -172,33 +172,38 @@ function AcceptedDialog({
             </TextWrapper>
           </Alert>
         )}
-      </Pane>
 
-      {isConflicted && (
-        <Alert
-          intent="danger"
-          title="Cette commune possède déjà une Base Adresse Locale"
-          marginTop={16}
-        >
-          <Text is="div" color="muted" marginTop={4}>
-            Une autre Base Adresses Locale est{" "}
-            <Strong>déjà synchronisée avec la Base Adresses Nationale</Strong>.
-          </Text>
-          <Text is="div" color="muted" marginTop={4}>
-            En choisissant de publier, cette Base Adresse Locale{" "}
-            <Strong>remplacera celle actuellement en place</Strong>.
-          </Text>
-          <Text is="div" color="muted" marginTop={4}>
-            Nous vous recommandons{" "}
-            <Strong>
-              d’entrer en contact avec les administrateurs de l’autre Base
-              Adresses Locale
-            </Strong>{" "}
-            ou notre support:{" "}
-            <Link href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</Link>
-          </Text>
-        </Alert>
-      )}
+        {isConflicted && (
+          <Alert
+            intent="danger"
+            title="Cette commune possède déjà une Base Adresse Locale"
+            marginTop={16}
+          >
+            <Text is="div" color="muted" marginTop={4}>
+              Une autre Base Adresses Locale est{" "}
+              <Strong>déjà synchronisée avec la Base Adresses Nationale</Strong>
+              .
+            </Text>
+            <TextWrapper>
+              <Text is="div" color="muted" marginTop={4}>
+                En choisissant de publier, cette Base Adresse Locale{" "}
+                <Strong>remplacera celle actuellement en place</Strong>.
+              </Text>
+              <Text is="div" color="muted" marginTop={4}>
+                Nous vous recommandons{" "}
+                <Strong>
+                  d’entrer en contact avec les administrateurs de l’autre Base
+                  Adresses Locale
+                </Strong>{" "}
+                ou notre support:{" "}
+                <Link href="mailto:adresse@data.gouv.fr">
+                  adresse@data.gouv.fr
+                </Link>
+              </Text>
+            </TextWrapper>
+          </Alert>
+        )}
+      </Pane>
     </Pane>
   );
 }

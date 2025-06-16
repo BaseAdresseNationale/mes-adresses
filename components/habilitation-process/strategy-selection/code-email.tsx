@@ -26,11 +26,6 @@ function isEmail(email) {
 function TextValidEmail() {
   return (
     <>
-      <Text is="div" marginTop={8} size={400}>
-        Vous serez ensuite invité à taper ce code, confirmant ainsi la gestion
-        de cette Base Adresse Locale par un(e) employé(e) de mairie.
-      </Text>
-
       <Alert
         title="Cette adresse email est incorrecte ou obsolète ?"
         width="100%"
@@ -46,7 +41,7 @@ function TextValidEmail() {
   );
 }
 
-function TextInvalidEmail({ email }: { email: string }) {
+function TextInvalidEmail() {
   return (
     <Alert
       intent="danger"
@@ -54,10 +49,6 @@ function TextInvalidEmail({ email }: { email: string }) {
       marginTop={16}
       textAlign="left"
     >
-      <Text is="div" marginY={8} size={400}>
-        L’adresse email renseignée : <Strong>{email}</Strong>, ne peut pas être
-        utilisée afin d’envoyer un code d’authentification.
-      </Text>
       <TextWrapper placeholder="Mettre à jour l’adresse email">
         <AnnuaireServicePublic />
       </TextWrapper>
@@ -127,23 +118,25 @@ function CodeEmail({
 
   return (
     <>
-      <Pane>
-        <Heading is="h5" marginBottom={8}>
-          Authentifier la mairie
+      <Pane display="flex" flexDirection="column">
+        <Heading is="h5">
+          Via le courriel officiel de la mairie
         </Heading>
+        <Text><Strong whiteSpace="nowrap">{emailSelected}</Strong></Text>
+      </Pane>
+      <Pane display="flex" flexDirection="column" alignItems="center" marginY={16}>
         <Button
           disabled={!emailSelected || !isValidEmailSelected}
           cursor={emailSelected ? "pointer" : "not-allowed"}
           appearance="primary"
           onClick={handleStrategy}
-          display="flex"
-          flexDirection="column"
-          width={280}
-          height={72}
-          gap={6}
+          width={214}
+          height={56}
+          borderRadius={0}
+          lineHeight='18px'
+          iconBefore={<EnvelopeIcon size={40} />}
         >
-          <EnvelopeIcon size={30} />
-          Recevoir un code d’habilitation
+          <Text whiteSpace="pre-line" color="white" fontSize={16} textAlign="left">Recevoir un code d&apos;habilitation</Text>
         </Button>
       </Pane>
 
@@ -152,21 +145,9 @@ function CodeEmail({
           {emailsCommune.length === 1 && (
             <>
               {isValidEmailSelected ? (
-                <>
-                  <Text
-                    is="div"
-                    marginTop={8}
-                    size={400}
-                    display="flex"
-                    flexDirection="column"
-                  >
-                    Un code d’habilitation vous sera envoyé à l’adresse :{" "}
-                    <Strong whiteSpace="nowrap">{emailSelected}</Strong>
-                  </Text>
-                  <TextValidEmail />
-                </>
+                <TextValidEmail />
               ) : (
-                <TextInvalidEmail email={emailSelected} />
+                <TextInvalidEmail />
               )}
             </>
           )}
@@ -190,7 +171,7 @@ function CodeEmail({
               {isValidEmailSelected ? (
                 <TextValidEmail />
               ) : (
-                <TextInvalidEmail email={emailSelected} />
+                <TextInvalidEmail />
               )}
             </>
           )}
