@@ -105,7 +105,7 @@ export function StrategySelection({
           <ListItem icon={TimeIcon}>
             <Text size={400}>
               Elle est <Strong size={400}>valable 1 an</Strong> et doit être
-              renouvelée pour continuer la mise à jour de l'adressage
+              renouvelée pour continuer la mise à jour de l&apos;adressage
             </Text>
           </ListItem>
         </UnorderedList>
