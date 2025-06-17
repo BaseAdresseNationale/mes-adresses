@@ -9,6 +9,8 @@ import {
   Label,
   DeleteIcon,
   AddIcon,
+  Checkbox,
+  Heading,
 } from "evergreen-ui";
 import { isEqual, difference } from "lodash";
 
@@ -24,6 +26,7 @@ import FormInput from "@/components/form-input";
 import RenewTokenDialog from "@/components/renew-token-dialog";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import LocalStorageContext from "@/contexts/local-storage";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -39,105 +42,71 @@ interface BALSettingsFormProps {
 const BALSettingsForm = React.memo(function BALSettingsForm({
   baseLocale,
 }: BALSettingsFormProps) {
-  const { emails, reloadEmails } = useContext(TokenContext);
   const { reloadBaseLocale } = useContext(BalDataContext);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [balEmails, setBalEmails] = useState([]);
   const [nomInput, onNomInputChange] = useInput(baseLocale.nom);
-  const [email, onEmailChange, resetEmail] = useInput();
   const [hasChanges, setHasChanges] = useState(false);
   const [error, setError] = useState("");
-  const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] =
-    useState(false);
   const { pushToast } = useContext(LayoutContext);
 
-  const formHasChanged = useCallback(() => {
-    return (
-      nomInput !== baseLocale.nom || mailHasChanged(emails || [], balEmails)
-    );
-  }, [nomInput, baseLocale.nom, emails, balEmails]);
+  const { userSettings, setUserSettings } = useContext(LocalStorageContext);
+  const [userSettingsForm, setUserSettingsForm] = useState(userSettings);
 
-  useEffect(() => {
-    setBalEmails(emails || []);
-  }, [emails]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const hasChanged = () =>
+    JSON.stringify(userSettingsForm) !== JSON.stringify(userSettings) ||
+    nomInput !== baseLocale.nom;
 
-  const onRemoveEmail = useCallback((email) => {
-    setBalEmails((emails) => emails.filter((e) => e !== email));
-  }, []);
-
-  const onAddEmail = useCallback(
-    (e) => {
-      e.preventDefault();
-
-      if (validateEmail(email)) {
-        setBalEmails((emails) => [...emails, email]);
-        resetEmail();
-      } else {
-        setError("Cet email n’est pas valide");
-      }
-    },
-    [email, resetEmail]
-  );
+  const onSubmitNomBaseLocale = useCallback(async () => {
+    setError(null);
+    setIsLoading(true);
+    await BasesLocalesService.updateBaseLocale(baseLocale.id, {
+      nom: nomInput.trim(),
+    });
+    reloadBaseLocale();
+    setIsLoading(false);
+  }, [baseLocale.id, nomInput, reloadBaseLocale]);
 
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-
-      setError(null);
-      setIsLoading(true);
-
       try {
-        await BasesLocalesService.updateBaseLocale(baseLocale.id, {
-          nom: nomInput.trim(),
-          emails: balEmails,
-        });
-
-        await reloadEmails();
-        await reloadBaseLocale();
-
-        if (
-          mailHasChanged(emails || [], balEmails) &&
-          difference(emails, balEmails).length > 0
-        ) {
-          setIsRenewTokenWarningShown(true);
+        if (nomInput !== baseLocale.nom) {
+          await onSubmitNomBaseLocale();
         }
-
+        if (userSettingsForm !== userSettings) {
+          setUserSettings(userSettingsForm);
+        }
         pushToast({
-          title: "La Base Adresse Locale a été modifiée avec succès !",
+          title:
+            "Les préférences utilisateurs ont été enregistrées avec succès",
           intent: "success",
         });
       } catch (error) {
         setError(error.body?.message);
       }
-
-      setIsLoading(false);
     },
     [
-      baseLocale.id,
       nomInput,
-      balEmails,
-      reloadEmails,
-      reloadBaseLocale,
-      emails,
+      baseLocale.nom,
+      userSettingsForm,
+      userSettings,
       pushToast,
+      onSubmitNomBaseLocale,
+      setUserSettings,
     ]
   );
 
   useEffect(() => {
-    if (error) {
-      setError(null);
-    }
-  }, [email]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    setHasChanges(formHasChanged());
-  }, [formHasChanged]);
+    setHasChanges(hasChanged());
+  }, [hasChanged]);
 
   return (
     <FormContainer onSubmit={onSubmit} display="flex" flexDirection="column">
       <Pane>
         <FormInput>
+          <Heading is="h4">Paramètres de la Base Adresse Locale</Heading>
           <TextInputField
             required
             name="nom"
@@ -145,6 +114,7 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
             value={nomInput}
             maxWidth={600}
             marginBottom={0}
+            marginTop={16}
             disabled={isLoading || baseLocale.status === "demo"}
             label="Nom"
             placeholder="Nom"
@@ -152,74 +122,29 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
           />
         </FormInput>
 
-        <FormInput>
-          <Label display="block" marginBottom={4}>
-            Adresses email <span title="This field is required.">*</span>
-          </Label>
-          {balEmails.map((email) => (
-            <Pane key={email} display="flex" marginBottom={8}>
-              <TextInput
-                readOnly
-                disabled
-                type="email"
-                display="block"
-                width="100%"
-                maxWidth={400}
-                value={email}
-              />
-              {balEmails.length > 1 && (
-                <IconButton
-                  type="button"
-                  icon={DeleteIcon}
-                  marginLeft={4}
-                  appearance="minimal"
-                  intent="danger"
-                  onClick={() => onRemoveEmail(email)}
-                />
-              )}
-            </Pane>
-          ))}
-
-          <Pane display="flex" marginBottom={0}>
-            <TextInput
-              display="block"
-              type="email"
-              width="100%"
-              placeholder="Ajouter une adresse email…"
-              maxWidth={400}
-              isInvalid={Boolean(error && error.includes("mail"))}
-              value={email}
-              disabled={baseLocale.status === "demo"}
-              onChange={onEmailChange}
-            />
-
-            {email && !balEmails.includes(email) && (
-              <IconButton
-                type="submit"
-                icon={AddIcon}
-                marginLeft={4}
-                disabled={!email}
-                appearance="minimal"
-                intent="default"
-                onClick={onAddEmail}
-              />
-            )}
-          </Pane>
-        </FormInput>
         {error && (
           <Alert marginBottom={16} intent="danger" title="Erreur">
             {error}
           </Alert>
         )}
+      </Pane>
 
-        {isRenewTokenWarningShown && (
-          <RenewTokenDialog
-            baseLocaleId={baseLocale.id}
-            isShown={isRenewTokenWarningShown}
-            setIsShown={setIsRenewTokenWarningShown}
-            setError={setError}
+      <Pane>
+        <FormInput>
+          <Heading is="h4">Préférences utilisateurs</Heading>
+          <Checkbox
+            name="colorblind-mode"
+            id="colorblind-mode"
+            label="Activer le mode daltonien"
+            checked={userSettingsForm?.colorblindMode}
+            onChange={() =>
+              setUserSettingsForm((settings) => ({
+                ...settings,
+                colorblindMode: !settings?.colorblindMode,
+              }))
+            }
           />
-        )}
+        </FormInput>
       </Pane>
 
       <Button
