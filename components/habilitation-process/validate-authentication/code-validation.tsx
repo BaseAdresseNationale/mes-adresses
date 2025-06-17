@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import NextImage from "next/legacy/image";
 import {
   Pane,
@@ -35,6 +35,16 @@ function CodeValidation({
     handleSubmit(code);
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (handler.refs.current && handler.refs.current.length > 0) {
+        handler.refs.current[0]?.focus();
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [handler.refs]);
+
   return (
     <Pane>
       <Pane
@@ -66,7 +76,7 @@ function CodeValidation({
         marginBottom={16}
       >
         <Heading is="h3" textAlign="center">
-          Entrez le code qui vous a été envoyé à l’adresse : {email}
+          Entrez le code qui vous a été envoyé à l&apos;adresse : {email}
         </Heading>
         <Pane display="flex" justifyContent="center" gap={8} marginY={32}>
           <PinField
@@ -97,7 +107,7 @@ function CodeValidation({
         borderRadius={8}
         marginBottom={16}
       >
-        <Heading>Vous n’avez pas reçu votre code ?</Heading>
+        <Heading>Vous n&apos;avez pas reçu votre code ?</Heading>
         <UnorderedList>
           <ListItem icon={EyeOpenIcon}>
             <Text size={400}>Consultez vos spam</Text>
@@ -122,4 +132,4 @@ function CodeValidation({
   );
 }
 
-export default React.memo(CodeValidation);
+export default CodeValidation;
