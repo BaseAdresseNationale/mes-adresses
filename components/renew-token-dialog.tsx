@@ -1,7 +1,9 @@
 import { useState, useCallback, useContext } from "react";
 import { Pane, Dialog, Paragraph, Alert } from "evergreen-ui";
-import { BasesLocalesService } from "@/lib/openapi-api-bal";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import LocalStorageContext from "@/contexts/local-storage";
+import TokenContext from "@/contexts/token";
 
 interface RenewTokenDialogProps {
   baseLocaleId: string;
@@ -18,6 +20,8 @@ function RenewTokenDialog({
 }: RenewTokenDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { toaster } = useContext(LayoutContext);
+  const { addBalAccess } = useContext(LocalStorageContext);
+  const { reloadEmails } = useContext(TokenContext);
 
   const handleConfirm = useCallback(async () => {
     setIsLoading(true);
@@ -31,11 +35,13 @@ function RenewTokenDialog({
       }
     );
 
-    await renewTokenBaseLocale();
+    const bal: BaseLocale = await renewTokenBaseLocale();
 
+    addBalAccess(bal.id, bal.token);
+    reloadEmails();
     setIsLoading(false);
     setIsShown(false);
-  }, [baseLocaleId, setError, setIsShown, toaster]);
+  }, [baseLocaleId, setError, setIsShown, toaster, addBalAccess, reloadEmails]);
 
   return (
     <Pane>
