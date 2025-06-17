@@ -44,7 +44,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
   const downloadVoieGeoJSON = async () => {
     const file =
       await BasesLocalesService.findFilairesVoiesGeoJson(baseLocaleId);
-    downloadFile(JSON.stringify(file), "liste-des-filaires-de-voies.geojson");
+    downloadFile(JSON.stringify(file), "liste-des-filaires-de-voie.geojson");
   };
 
   return (
@@ -101,7 +101,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
         </Pane>
         <Pane is="li" marginBottom={16}>
           <Link style={{ cursor: "pointer" }} onClick={downloadVoieGeoJSON}>
-            Liste des filaires de voies (format GeoJSON)
+            Liste des filaires de voie (format GeoJSON)
           </Link>
         </Pane>
       </Pane>
