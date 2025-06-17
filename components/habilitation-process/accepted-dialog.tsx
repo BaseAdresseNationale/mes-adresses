@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   Pane,
   Heading,
@@ -14,7 +13,6 @@ import {
 
 import TextWrapper from "@/components/text-wrapper";
 import AuthenticatedUser from "@/components/habilitation-process/authenticated-user";
-import { BasesLocalesService } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
 interface AcceptedDialogProps {
@@ -35,6 +33,7 @@ interface AcceptedDialogProps {
   };
   expiresAt: string;
   isConflicted: boolean;
+  flagURL: string | null;
 }
 
 function AcceptedDialog({
@@ -43,22 +42,9 @@ function AcceptedDialog({
   strategy,
   expiresAt,
   isConflicted,
+  flagURL,
 }: AcceptedDialogProps) {
-  const [isBALCertified, setIsBALCertified] = useState(false);
-
-  const { nomNaissance, nomMarital, prenom, typeMandat } =
-    strategy.mandat || {};
-
-  useEffect(() => {
-    async function fetchBALStats() {
-      const { nbNumeros, nbNumerosCertifies } =
-        await BasesLocalesService.findBaseLocale(baseLocaleId);
-
-      setIsBALCertified(nbNumeros === nbNumerosCertifies);
-    }
-
-    fetchBALStats();
-  }, [baseLocaleId, setIsBALCertified]);
+  const { nomNaissance, nomMarital, prenom } = strategy.mandat || {};
 
   return (
     <Pane>
@@ -73,11 +59,13 @@ function AcceptedDialog({
         {strategy.mandat ? (
           <AuthenticatedUser
             type="elu"
+            flagURL={flagURL}
             title={`${prenom} ${nomMarital || nomNaissance}`}
           />
         ) : (
           <AuthenticatedUser
             type="mairie"
+            flagURL={flagURL}
             title={`la mairie de ${commune.nom} (${commune.code})`}
           />
         )}
@@ -106,7 +94,7 @@ function AcceptedDialog({
                 <Strong size={400}>Base Adresse Locales</Strong>.
               </ListItem>
               <ListItem>
-                Cette habilitation, expirera le{" "}
+                Cette habilitation expirera le{" "}
                 <Strong size={400}>
                   {new Date(expiresAt).toLocaleDateString()}
                 </Strong>
@@ -135,43 +123,6 @@ function AcceptedDialog({
             </ListItem>
           </UnorderedList>
         </Pane>
-
-        {!isBALCertified && (
-          <Alert
-            intent="warning"
-            title="Toutes vos adresses ne sont pas certifiées"
-          >
-            <Text is="div" color="muted" marginTop={4}>
-              Nous vous recommandons de certifier la{" "}
-              <Strong>totalité de vos adresses</Strong>.
-            </Text>
-
-            <TextWrapper>
-              <Pane>
-                <Text is="div" color="muted" marginTop={4}>
-                  Une adresse certifiée est déclarée{" "}
-                  <Strong>authentique par la mairie</Strong>, ce qui{" "}
-                  <Strong>
-                    renforce la qualité de la Base Adresse Locale et facilite sa
-                    réutilisation
-                  </Strong>
-                  .
-                </Text>
-                <Text is="div" color="muted" marginTop={4}>
-                  Vous êtes cependant libre de{" "}
-                  <Strong>
-                    publier maintenant et certifier vos adresses plus tard
-                  </Strong>
-                  .
-                </Text>
-                <Text is="div" color="muted" marginTop={4}>
-                  Notez qu’il est possible de certifier la totalité de vos
-                  adresses depuis l&apos;onglet « Commune ».
-                </Text>
-              </Pane>
-            </TextWrapper>
-          </Alert>
-        )}
 
         {isConflicted && (
           <Alert

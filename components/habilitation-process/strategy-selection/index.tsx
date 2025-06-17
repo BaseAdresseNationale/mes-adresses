@@ -111,7 +111,7 @@ export function StrategySelection({
         </UnorderedList>
         <Alert title="Besoin d'aide pour vous habiliter ?" marginTop={16}>
           <Text is="div" marginTop={8}>
-            Contactez nous à{" "}
+            Contactez-nous à{" "}
             <a href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</a>
           </Text>
         </Alert>

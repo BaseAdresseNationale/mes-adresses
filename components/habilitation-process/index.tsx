@@ -21,6 +21,7 @@ import {
 import LayoutContext from "@/contexts/layout";
 import { StrategySelection } from "./strategy-selection";
 import { CommuneType } from "@/types/commune";
+import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
 
 export const PRO_CONNECT_QUERY_PARAM = "pro-connect";
 
@@ -53,6 +54,7 @@ function HabilitationProcess({
   resetHabilitationProcess,
   handleClose,
 }: HabilitationProcessProps) {
+  const [flagURL, setFlagURL] = useState<string | null>(null);
   const [step, setStep] = useState(getStep(habilitation));
   const [isLoading, setIsLoading] = useState(false);
   const [isConflicted, setIsConflicted] = useState(false);
@@ -177,6 +179,20 @@ function HabilitationProcess({
     setStep(step);
   }, [baseLocale, habilitation, checkConflictingRevision, handleClose]);
 
+  const fetchCommuneFlag = async () => {
+    try {
+      const flagUrl = await getCommuneFlagProxy(baseLocale.commune);
+      setFlagURL(flagUrl);
+    } catch (err) {
+      console.error("Error fetching commune flag", err);
+      setFlagURL(null);
+    }
+  };
+
+  useEffect(() => {
+    fetchCommuneFlag();
+  }, [baseLocale.commune]);
+
   return (
     <Dialog
       isShown
@@ -220,6 +236,7 @@ function HabilitationProcess({
             validatePinCode={handleValidationCode}
             resendCode={sendCode}
             onCancel={handleReset}
+            flagURL={flagURL}
           />
         )}
 
@@ -229,6 +246,7 @@ function HabilitationProcess({
             baseLocaleId={baseLocale.id}
             commune={commune}
             isConflicted={isConflicted}
+            flagURL={flagURL}
           />
         )}
 
@@ -251,8 +269,6 @@ function HabilitationProcess({
           </Pane>
         )}
       </Pane>
-
-
     </Dialog>
   );
 }

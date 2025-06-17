@@ -1,56 +1,38 @@
-import { useState } from "react";
+import React from "react";
 import NextImage from "next/legacy/image";
 import {
   Pane,
   Heading,
   Text,
   Link,
-  TextInput,
-  IconButton,
-  TickIcon,
   Alert,
+  UnorderedList,
+  ListItem,
+  EnvelopeIcon,
+  SendMessageIcon,
+  EyeOpenIcon,
 } from "evergreen-ui";
 
-import FormInput from "@/components/form-input";
-import FormContainer from "@/components/form-container";
+import PinField, { usePinField } from "react-pin-field";
 
 interface CodeValidationProps {
   email: string;
   handleSubmit: (code: string) => Promise<void>;
   resendCode: () => Promise<boolean>;
+  flagURL: string | null;
 }
 
 function CodeValidation({
   email,
   handleSubmit,
   resendCode,
+  flagURL,
 }: CodeValidationProps) {
-  const [code, setCode] = useState("");
-  const [codeMask, setCodeMask] = useState("______");
+  const handler = usePinField();
 
-  const onSubmit = (event) => {
-    event.preventDefault();
+  const handleCodeComplete = (code: string) => {
+    handler.setValue("");
     handleSubmit(code);
-    setCode("");
-  };
-
-  const handleCode = (event) => {
-    // Récupérer la valeur de l'input
-    const { value } = event.target;
-
-    // Supprimer tout ce qui n'est pas un chiffre dans l'input (lettres et caractères spéciaux)
-    const input = value.replaceAll("_", "").replace(/\D/, "");
-
-    if (input.length < 7) {
-      // Si on efface, supprimer la dernière valeur de l'input
-      const hasMissingNumbers = value.length < 6 && code.length < 6;
-      const newCode = input.slice(0, hasMissingNumbers ? -1 : 6);
-
-      // On set code avec la bonne valeur, cleané de tout caractères spéciaux
-      setCode(newCode);
-      // On set codeMask avec les bonnes valeurs + les underscores pour les chiffres encore manquants
-      setCodeMask(newCode.padEnd(6, "_"));
-    }
   };
 
   return (
@@ -65,12 +47,14 @@ function CodeValidation({
         marginBottom={16}
       >
         <NextImage
-          width={54}
-          height={54}
-          src="/static/images/mairie.svg"
+          width={66}
+          height={66}
+          src={flagURL || "/static/images/mairie.svg"}
           alt="logo mairie"
         />
-        <Heading is="h2">Authentification de la mairie</Heading>
+        <Heading is="h2" marginTop={16}>
+          Authentification de la mairie
+        </Heading>
       </Pane>
 
       <Pane
@@ -81,66 +65,61 @@ function CodeValidation({
         borderRadius={8}
         marginBottom={16}
       >
-        <Pane is="form">
-          <FormInput>
-            <Heading is="h3">
-              Entrez le code qui vous a été envoyé à l’adresse : {email}
-            </Heading>
-            <Pane display="flex" justifyContent="center" marginY={16}>
-              <TextInput
-                autoFocus
-                name="code"
-                type="text"
-                value={codeMask}
-                placeholder="Entrez votre code ici"
-                textAlign="center"
-                width="70%"
-                fontSize={32}
-                height={50}
-                fontWeight="bold"
-                letterSpacing={10}
-                paddingY={16}
-                style={{ caretColor: "transparent" }}
-                onChange={handleCode}
-              />
-
-              <IconButton
-                appearance="primary"
-                intent="success"
-                size="large"
-                marginLeft={16}
-                height={50}
-                disabled={code.length !== 6}
-                onClick={onSubmit}
-                icon={TickIcon}
-              />
-            </Pane>
-          </FormInput>
+        <Heading is="h3" textAlign="center">
+          Entrez le code qui vous a été envoyé à l’adresse : {email}
+        </Heading>
+        <Pane display="flex" justifyContent="center" gap={8} marginY={32}>
+          <PinField
+            length={6}
+            handler={handler}
+            onComplete={handleCodeComplete}
+            style={{
+              height: "40px",
+              width: "40px",
+              textAlign: "center",
+              fontSize: "24px",
+              fontWeight: "bold",
+              padding: "16px",
+            }}
+          />
         </Pane>
-
-        <Text>Vous n’avez pas reçu votre code ?</Text>
-        <Pane cursor="pointer" onClick={resendCode} marginBottom={16}>
-          <Link>Renvoyer un code</Link>
-        </Pane>
-
-        <Alert
-          title="Vous ne recevez pas le code d'habilitation"
-          marginBottom={16}
-          textAlign="left"
-        >
-          <Text>
-            Autorisez l&apos;adresse &quot;adresse@data.gouv.fr&quot; dans les
-            paramètre de votre anti-spams (Mailinblack par exemple)
-          </Text>
-        </Alert>
         <Alert
           title="Le code ne sera plus valable si vous fermez la fenètre"
           marginBottom={16}
           textAlign="left"
-        ></Alert>
+        />
+      </Pane>
+      <Pane
+        display="flex"
+        flexDirection="column"
+        background="white"
+        padding={16}
+        borderRadius={8}
+        marginBottom={16}
+      >
+        <Heading>Vous n’avez pas reçu votre code ?</Heading>
+        <UnorderedList>
+          <ListItem icon={EyeOpenIcon}>
+            <Text size={400}>Consultez vos spam</Text>
+          </ListItem>
+
+          <ListItem icon={EnvelopeIcon}>
+            <Text>
+              Autorisez l&apos;adresse
+              &quot;mes-adresses-no-reply@adresse.data.gouv.fr&quot; dans les
+              paramètres de votre anti-spams (Mailinblack par exemple)
+            </Text>
+          </ListItem>
+
+          <ListItem icon={SendMessageIcon}>
+            <Pane cursor="pointer" onClick={resendCode}>
+              <Link>Renvoyez le code</Link>
+            </Pane>
+          </ListItem>
+        </UnorderedList>
       </Pane>
     </Pane>
   );
 }
 
-export default CodeValidation;
+export default React.memo(CodeValidation);

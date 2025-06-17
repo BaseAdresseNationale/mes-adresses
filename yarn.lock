@@ -6391,6 +6391,11 @@ react-markdown@^10.1.0:
     unist-util-visit "^5.0.0"
     vfile "^6.0.0"
 
+react-pin-field@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/react-pin-field/-/react-pin-field-4.0.2.tgz#1cd9b5c9ee93648fa01a84d43ac7812ca4ceb413"
+  integrity sha512-PsNViTx8M4jNjpr6d7Zd5egd5YdAQCIXFVWpbeDYA8TdO8L6KBhS/jtTwocQrtbFIhxodOHC7sYjLRVm8aXOHw==
+
 react-range@^1.8.14:
   version "1.8.14"
   resolved "https://registry.yarnpkg.com/react-range/-/react-range-1.8.14.tgz#11047f69b365ac6c75c3d715771ebe76b93982ec"

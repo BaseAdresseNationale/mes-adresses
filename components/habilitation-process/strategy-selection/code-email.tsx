@@ -27,13 +27,13 @@ function TextValidEmail() {
   return (
     <>
       <Alert
-        title="Cette adresse email est incorrecte ou obsolète ?"
+        title="Ce courriel est incorrecte ou obsolète ?"
         width="100%"
         marginTop={16}
         textAlign="left"
         overflow="auto"
       >
-        <TextWrapper placeholder="Mettre à jour l’adresse email">
+        <TextWrapper placeholder="Mettez à jour le courriel">
           <AnnuaireServicePublic />
         </TextWrapper>
       </Alert>
@@ -45,11 +45,11 @@ function TextInvalidEmail() {
   return (
     <Alert
       intent="danger"
-      title="Adresse email invalide"
+      title="Courriel invalide"
       marginTop={16}
       textAlign="left"
     >
-      <TextWrapper placeholder="Mettre à jour l’adresse email">
+      <TextWrapper placeholder="Mettez à jour le courriel">
         <AnnuaireServicePublic />
       </TextWrapper>
     </Alert>
@@ -118,13 +118,38 @@ function CodeEmail({
 
   return (
     <>
-      <Pane display="flex" flexDirection="column">
-        <Heading is="h5">
-          Via le courriel officiel de la mairie
-        </Heading>
-        <Text><Strong whiteSpace="nowrap">{emailSelected}</Strong></Text>
+      <Pane display="flex" flexDirection="column" alignItems="center">
+        <Heading is="h5">Via le courriel officiel de la mairie</Heading>
+
+        {emailsCommune.length === 1 && (
+          <Text height={40} verticalAlign="middle" paddingTop={8}>
+            <Strong whiteSpace="nowrap">{emailSelected}</Strong>
+          </Text>
+        )}
+        {emailsCommune.length > 1 && (
+          <SelectField
+            marginTop={0}
+            marginBottom={0}
+            value={emailSelected}
+            onChange={({ target }) => {
+              setEmailSelected(target.value);
+            }}
+          >
+            {emailsCommune.map((email) => (
+              <option key={email} value={email}>
+                {email}
+              </option>
+            ))}
+          </SelectField>
+        )}
       </Pane>
-      <Pane display="flex" flexDirection="column" alignItems="center" marginY={16}>
+      <Pane
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        marginTop={16}
+        marginBottom={32}
+      >
         <Button
           disabled={!emailSelected || !isValidEmailSelected}
           cursor={emailSelected ? "pointer" : "not-allowed"}
@@ -133,65 +158,21 @@ function CodeEmail({
           width={214}
           height={56}
           borderRadius={0}
-          lineHeight='18px'
+          lineHeight="18px"
           iconBefore={<EnvelopeIcon size={40} />}
         >
-          <Text whiteSpace="pre-line" color="white" fontSize={16} textAlign="left">Recevoir un code d&apos;habilitation</Text>
+          <Text
+            whiteSpace="pre-line"
+            color="white"
+            fontSize={16}
+            textAlign="left"
+          >
+            Recevoir un code d&apos;habilitation
+          </Text>
         </Button>
       </Pane>
 
-      {emailSelected ? (
-        <>
-          {emailsCommune.length === 1 && (
-            <>
-              {isValidEmailSelected ? (
-                <TextValidEmail />
-              ) : (
-                <TextInvalidEmail />
-              )}
-            </>
-          )}
-          {emailsCommune.length > 1 && (
-            <>
-              <SelectField
-                label="Un code d’habilitation vous sera envoyé à l’adresse que vous selectionnez"
-                marginTop={8}
-                marginBottom={0}
-                value={emailSelected}
-                onChange={({ target }) => {
-                  setEmailSelected(target.value);
-                }}
-              >
-                {emailsCommune.map((email) => (
-                  <option key={email} value={email}>
-                    {email}
-                  </option>
-                ))}
-              </SelectField>
-              {isValidEmailSelected ? (
-                <TextValidEmail />
-              ) : (
-                <TextInvalidEmail />
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <Alert
-          intent="danger"
-          title="Aucune adresse email connue pour cette commune"
-          marginTop={16}
-          textAlign="left"
-          overflow="auto"
-        >
-          <TextWrapper
-            placeholder="Mettre à jour l’adresse email"
-            isOpenDefault
-          >
-            <AnnuaireServicePublic />
-          </TextWrapper>
-        </Alert>
-      )}
+      {isValidEmailSelected ? <TextValidEmail /> : <TextInvalidEmail />}
     </>
   );
 }
