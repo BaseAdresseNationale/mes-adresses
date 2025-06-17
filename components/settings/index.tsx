@@ -26,14 +26,9 @@ const getSettingsTabs = (hideBalSettings) => {
 
 interface SettingsProps {
   baseLocale: BaseLocale;
-  isAdmin: boolean;
 }
 
-function Settings({ baseLocale, isAdmin }: SettingsProps) {
-  const hideBalSettings = baseLocale.status === "demo" || !isAdmin;
-  const avalaibleTabs = getSettingsTabs(hideBalSettings);
-  const [selectedTabKey, setSelectedTabKey] = useState(avalaibleTabs[0].key);
-
+function Settings({ baseLocale }: SettingsProps) {
   return (
     <Pane height="100%" display="flex" flexDirection="column">
       <Pane
@@ -51,29 +46,7 @@ function Settings({ baseLocale, isAdmin }: SettingsProps) {
         </Pane>
       </Pane>
 
-      <Tablist padding={5}>
-        {avalaibleTabs.map(({ key, label }) => (
-          <Tab
-            key={key}
-            isSelected={selectedTabKey === key}
-            onSelect={() => setSelectedTabKey(key)}
-          >
-            {label}
-          </Tab>
-        ))}
-      </Tablist>
-
-      <Pane
-        display="flex"
-        flexGrow={1}
-        flexDirection="column"
-        overflowY="scroll"
-      >
-        {selectedTabKey === "bal-settings" && (
-          <BALSettingsForm baseLocale={baseLocale} />
-        )}
-        {selectedTabKey === "user-preferences" && <UserSettingsForm />}
-      </Pane>
+      <BALSettingsForm baseLocale={baseLocale} />
     </Pane>
   );
 }
