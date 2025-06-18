@@ -7,6 +7,7 @@ interface ValidateAuthenticationProps {
   validatePinCode: (code: string) => Promise<void>;
   resendCode: () => Promise<boolean>;
   onCancel: () => void;
+  flagURL: string | null;
 }
 
 function ValidateAuthentication({
@@ -14,6 +15,7 @@ function ValidateAuthentication({
   validatePinCode,
   resendCode,
   onCancel,
+  flagURL,
 }: ValidateAuthenticationProps) {
   return (
     <Pane>
@@ -21,6 +23,7 @@ function ValidateAuthentication({
         email={emailCommune}
         resendCode={resendCode}
         handleSubmit={validatePinCode}
+        flagURL={flagURL}
       />
 
       <Button iconBefore={ChevronLeftIcon} onClick={onCancel}>

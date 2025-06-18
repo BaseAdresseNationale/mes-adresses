@@ -25,6 +25,7 @@ import useHabilitation from "@/hooks/habilitation";
 import { ChildrenProps } from "@/types/context";
 import { useRouter } from "next/router";
 import LayoutContext from "./layout";
+import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -266,7 +267,7 @@ export function BalDataContextProvider({
     }
     // SET RESUME BAL IF HABILITATION FRANCE_CONNECT
     if (
-      query["france-connect"] === "1" &&
+      query[PRO_CONNECT_QUERY_PARAM] === "1" &&
       habilitation?.status === HabilitationDTO.status.ACCEPTED &&
       baseLocale.sync?.isPaused == true
     ) {

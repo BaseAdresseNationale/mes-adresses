@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   Pane,
   Heading,
@@ -14,7 +13,6 @@ import {
 
 import TextWrapper from "@/components/text-wrapper";
 import AuthenticatedUser from "@/components/habilitation-process/authenticated-user";
-import { BasesLocalesService } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
 interface AcceptedDialogProps {
@@ -35,6 +33,7 @@ interface AcceptedDialogProps {
   };
   expiresAt: string;
   isConflicted: boolean;
+  flagURL: string | null;
 }
 
 function AcceptedDialog({
@@ -43,48 +42,45 @@ function AcceptedDialog({
   strategy,
   expiresAt,
   isConflicted,
+  flagURL,
 }: AcceptedDialogProps) {
-  const [isBALCertified, setIsBALCertified] = useState(false);
-
-  const { nomNaissance, nomMarital, prenom, typeMandat } =
-    strategy.mandat || {};
-
-  useEffect(() => {
-    async function fetchBALStats() {
-      const { nbNumeros, nbNumerosCertifies } =
-        await BasesLocalesService.findBaseLocale(baseLocaleId);
-
-      setIsBALCertified(nbNumeros === nbNumerosCertifies);
-    }
-
-    fetchBALStats();
-  }, [baseLocaleId, setIsBALCertified]);
+  const { nomNaissance, nomMarital, prenom } = strategy.mandat || {};
 
   return (
     <Pane>
-      <Pane display="flex" flexDirection="column" marginTop={0} gap={24}>
-        <Pane
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          textAlign="center"
-        >
-          {strategy.mandat ? (
-            <AuthenticatedUser
-              type="elu"
-              title={`${prenom} ${nomMarital || nomNaissance}`}
-            />
-          ) : (
-            <AuthenticatedUser
-              type="mairie"
-              title={`la mairie de ${commune.nom} (${commune.code})`}
-            />
-          )}
-        </Pane>
-
+      <Pane
+        display="flex"
+        flexDirection="column"
+        background="white"
+        padding={16}
+        borderRadius={8}
+        marginBottom={16}
+      >
+        {strategy.mandat ? (
+          <AuthenticatedUser
+            type="elu"
+            flagURL={flagURL}
+            title={`${prenom} ${nomMarital || nomNaissance}`}
+          />
+        ) : (
+          <AuthenticatedUser
+            type="mairie"
+            flagURL={flagURL}
+            title={`la mairie de ${commune.nom} (${commune.code})`}
+          />
+        )}
+      </Pane>
+      <Pane
+        display="flex"
+        flexDirection="column"
+        background="white"
+        padding={16}
+        borderRadius={8}
+      >
         <Alert
           title="Votre Base Locale a bien été habilitée !"
           intent="success"
+          marginBottom={16}
         >
           <Pane display="flex" flexDirection="column">
             <UnorderedList>
@@ -98,7 +94,7 @@ function AcceptedDialog({
                 <Strong size={400}>Base Adresse Locales</Strong>.
               </ListItem>
               <ListItem>
-                Cette habilitation, expirera le{" "}
+                Cette habilitation expirera le{" "}
                 <Strong size={400}>
                   {new Date(expiresAt).toLocaleDateString()}
                 </Strong>
@@ -108,16 +104,9 @@ function AcceptedDialog({
             </UnorderedList>
           </Pane>
         </Alert>
-      </Pane>
 
-      <Pane marginTop={16} paddingTop={16} borderTop="2px solid #EFEFEF">
-        <Pane
-          display="flex"
-          flexDirection="column"
-          marginBottom={16}
-          alignItems="center"
-        >
-          <Heading is="h3" marginBottom={4} textAlign="center">
+        <Pane display="flex" flexDirection="column" marginBottom={16}>
+          <Heading is="h3">
             Votre Base Adresse Locale est maintenant prête à être publiée
           </Heading>
           <UnorderedList marginTop={16}>
@@ -135,70 +124,37 @@ function AcceptedDialog({
           </UnorderedList>
         </Pane>
 
-        {!isBALCertified && (
+        {isConflicted && (
           <Alert
-            intent="warning"
-            title="Toutes vos adresses ne sont pas certifiées"
-            marginY={16}
+            intent="danger"
+            title="Cette commune possède déjà une Base Adresse Locale"
+            marginTop={16}
           >
             <Text is="div" color="muted" marginTop={4}>
-              Nous vous recommandons de certifier la{" "}
-              <Strong>totalité de vos adresses</Strong>.
+              Une autre Base Adresses Locale est{" "}
+              <Strong>déjà synchronisée avec la Base Adresses Nationale</Strong>
+              .
             </Text>
-
             <TextWrapper>
-              <Pane>
-                <Text is="div" color="muted" marginTop={4}>
-                  Une adresse certifiée est déclarée{" "}
-                  <Strong>authentique par la mairie</Strong>, ce qui{" "}
-                  <Strong>
-                    renforce la qualité de la Base Adresse Locale et facilite sa
-                    réutilisation
-                  </Strong>
-                  .
-                </Text>
-                <Text is="div" color="muted" marginTop={4}>
-                  Vous êtes cependant libre de{" "}
-                  <Strong>
-                    publier maintenant et certifier vos adresses plus tard
-                  </Strong>
-                  .
-                </Text>
-                <Text is="div" color="muted" marginTop={4}>
-                  Notez qu’il est possible de certifier la totalité de vos
-                  adresses depuis l&apos;onglet « Commune ».
-                </Text>
-              </Pane>
+              <Text is="div" color="muted" marginTop={4}>
+                En choisissant de publier, cette Base Adresse Locale{" "}
+                <Strong>remplacera celle actuellement en place</Strong>.
+              </Text>
+              <Text is="div" color="muted" marginTop={4}>
+                Nous vous recommandons{" "}
+                <Strong>
+                  d’entrer en contact avec les administrateurs de l’autre Base
+                  Adresses Locale
+                </Strong>{" "}
+                ou notre support:{" "}
+                <Link href="mailto:adresse@data.gouv.fr">
+                  adresse@data.gouv.fr
+                </Link>
+              </Text>
             </TextWrapper>
           </Alert>
         )}
       </Pane>
-
-      {isConflicted && (
-        <Alert
-          intent="danger"
-          title="Cette commune possède déjà une Base Adresse Locale"
-          marginTop={16}
-        >
-          <Text is="div" color="muted" marginTop={4}>
-            Une autre Base Adresses Locale est{" "}
-            <Strong>déjà synchronisée avec la Base Adresses Nationale</Strong>.
-          </Text>
-          <Text is="div" color="muted" marginTop={4}>
-            En choisissant de publier, cette Base Adresse Locale{" "}
-            <Strong>remplacera celle actuellement en place</Strong>.
-          </Text>
-          <Text is="div" color="muted" marginTop={4}>
-            Nous vous recommandons{" "}
-            <Strong>
-              d’entrer en contact avec les administrateurs de l’autre Base
-              Adresses Locale
-            </Strong>{" "}
-            ou notre support:{" "}
-            <Link href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</Link>
-          </Text>
-        </Alert>
-      )}
     </Pane>
   );
 }

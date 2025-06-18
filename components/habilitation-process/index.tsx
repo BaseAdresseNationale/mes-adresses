@@ -21,6 +21,9 @@ import {
 import LayoutContext from "@/contexts/layout";
 import { StrategySelection } from "./strategy-selection";
 import { CommuneType } from "@/types/commune";
+import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
+
+export const PRO_CONNECT_QUERY_PARAM = "pro-connect";
 
 function getStep(habilitation) {
   if (habilitation.status !== "pending") {
@@ -51,6 +54,7 @@ function HabilitationProcess({
   resetHabilitationProcess,
   handleClose,
 }: HabilitationProcessProps) {
+  const [flagURL, setFlagURL] = useState<string | null>(null);
   const [step, setStep] = useState(getStep(habilitation));
   const [isLoading, setIsLoading] = useState(false);
   const [isConflicted, setIsConflicted] = useState(false);
@@ -77,13 +81,16 @@ function HabilitationProcess({
     }
   };
 
-  const redirectToFranceConnect = () => {
+  const redirectToProConnect = () => {
     const redirectUrl = encodeURIComponent(
-      `${EDITEUR_URL}${Router.asPath}?france-connect=1`
+      `${EDITEUR_URL}${Router.asPath}?${PRO_CONNECT_QUERY_PARAM}=1`
     );
-    Router.push(
-      `${habilitation.franceconnectAuthenticationUrl}?redirectUrl=${redirectUrl}`
+
+    const urlProConnect = ApiDepotService.getUrlProConnect(
+      habilitation.id,
+      redirectUrl
     );
+    Router.push(urlProConnect);
   };
 
   const handleStrategy = async (selectedStrategy: StrategyDTO.type) => {
@@ -95,11 +102,8 @@ function HabilitationProcess({
       }
     }
 
-    if (
-      selectedStrategy === StrategyDTO.type.FRANCECONNECT &&
-      habilitation.franceconnectAuthenticationUrl
-    ) {
-      redirectToFranceConnect();
+    if (selectedStrategy === StrategyDTO.type.PROCONNECT) {
+      redirectToProConnect();
     }
 
     setIsLoading(false);
@@ -175,6 +179,20 @@ function HabilitationProcess({
     setStep(step);
   }, [baseLocale, habilitation, checkConflictingRevision, handleClose]);
 
+  const fetchCommuneFlag = async () => {
+    try {
+      const flagUrl = await getCommuneFlagProxy(baseLocale.commune);
+      setFlagURL(flagUrl);
+    } catch (err) {
+      console.error("Error fetching commune flag", err);
+      setFlagURL(null);
+    }
+  };
+
+  useEffect(() => {
+    fetchCommuneFlag();
+  }, [baseLocale.commune]);
+
   return (
     <Dialog
       isShown
@@ -196,15 +214,18 @@ function HabilitationProcess({
       isConfirmDisabled={isLoadingPublish}
       onCloseComplete={handleClose}
     >
-      <Pane>
+      <Pane
+        marginX="-32px"
+        marginY="-8px"
+        borderRadius={8}
+        background="gray300"
+        padding={16}
+      >
         {step === 0 && (
           <StrategySelection
             codeCommune={commune.code}
             emailSelected={emailSelected}
             setEmailSelected={setEmailSelected}
-            franceconnectAuthenticationUrl={
-              habilitation.franceconnectAuthenticationUrl
-            }
             handleStrategy={handleStrategy}
           />
         )}
@@ -215,6 +236,7 @@ function HabilitationProcess({
             validatePinCode={handleValidationCode}
             resendCode={sendCode}
             onCancel={handleReset}
+            flagURL={flagURL}
           />
         )}
 
@@ -224,6 +246,7 @@ function HabilitationProcess({
             baseLocaleId={baseLocale.id}
             commune={commune}
             isConflicted={isConflicted}
+            flagURL={flagURL}
           />
         )}
 
@@ -233,19 +256,19 @@ function HabilitationProcess({
             strategyType={habilitation.strategy.type}
           />
         )}
+        {isLoading && (
+          <Pane
+            marginTop={16}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Spinner size={42} />
+            <Text fontStyle="italic">Chargement…</Text>
+          </Pane>
+        )}
       </Pane>
-
-      {isLoading && (
-        <Pane
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Spinner size={42} />
-          <Text fontStyle="italic">Chargement…</Text>
-        </Pane>
-      )}
     </Dialog>
   );
 }

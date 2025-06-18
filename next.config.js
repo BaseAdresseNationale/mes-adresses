@@ -6,11 +6,14 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 module.exports = withBundleAnalyzer({
+  images: {
+    domains: ["base-adresse-locale-prod-blasons-communes.s3.fr-par.scw.cloud"],
+  },
   webpack(config, { webpack }) {
     config.resolve.fallback = { fs: false };
 
     config.plugins.push(
-      new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /fr/),
+      new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /fr/)
     );
 
     return config;
