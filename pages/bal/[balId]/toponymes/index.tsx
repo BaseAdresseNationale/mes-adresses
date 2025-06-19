@@ -63,7 +63,7 @@ function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
   );
 
   useEffect(() => {
-    setBreadcrumbs(<Text>Toponymes</Text>);
+    setBreadcrumbs(<Text aria-current="page">Toponymes</Text>);
     scrollAndHighlightLastSelectedItem(TabsEnum.TOPONYMES);
 
     return () => {
@@ -141,8 +141,14 @@ function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
           />
         </Pane>
       )}
-      <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
-        <Table.Head>
+      <Table
+        display="flex"
+        flex={1}
+        flexDirection="column"
+        overflowY="auto"
+        style={{ borderTop: "none" }}
+      >
+        <Table.Head background="white">
           <Table.SearchHeaderCell
             placeholder="Rechercher un toponyme"
             onChange={changeFilter}

@@ -48,7 +48,7 @@ function MainTabs({ balId }: MainTabsProps) {
 
   return (
     <div className={`${styles.mainTabs}${isEditing ? ` ${styles.hide}` : ""}`}>
-      <div className={styles.tabsList}>
+      <div className={styles.tabsList} role="tablist">
         {[
           {
             key: TabsEnum.COMMUNE,
@@ -156,7 +156,6 @@ function MainTabs({ balId }: MainTabsProps) {
                     className={`${styles.tab}${
                       isSelected ? ` ${styles.selected}` : ""
                     }`}
-                    {...(isSelected ? { elevation: 1 } : {})}
                   >
                     {icon}
                     {notif > 0 && <Pulsar size={16} right={0} top={0} />}

@@ -43,7 +43,7 @@ function Breadcrumbs({
           {breadcrumbs}
         </>
       ) : (
-        <Text>{baseLocale.communeNom}</Text>
+        <Text aria-current="page">{baseLocale.communeNom}</Text>
       )}
     </Pane>
   );

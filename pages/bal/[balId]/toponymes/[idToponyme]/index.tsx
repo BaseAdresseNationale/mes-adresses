@@ -46,7 +46,7 @@ function ToponymePage({ baseLocale, commune, toponyme }: ToponymePageProps) {
           Toponymes
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Text>{toponyme.nom}</Text>
+        <Text aria-current="page">{toponyme.nom}</Text>
       </>
     );
 

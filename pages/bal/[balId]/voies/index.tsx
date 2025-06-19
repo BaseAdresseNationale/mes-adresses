@@ -77,7 +77,7 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
   );
 
   useEffect(() => {
-    setBreadcrumbs(<Text>Voies</Text>);
+    setBreadcrumbs(<Text aria-current="page">Voies</Text>);
     scrollAndHighlightLastSelectedItem(TabsEnum.VOIES);
 
     return () => {
@@ -201,8 +201,14 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
       {token && voies && voies.length === 0 && (
         <PopulateSideBar commune={commune} baseLocale={baseLocale} />
       )}
-      <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
-        <Table.Head>
+      <Table
+        display="flex"
+        flex={1}
+        flexDirection="column"
+        overflowY="auto"
+        style={{ borderTop: "none" }}
+      >
+        <Table.Head background="white">
           <Table.SearchHeaderCell
             placeholder="Rechercher une voie, une place, un lieu-dit..."
             onChange={changeFilter}

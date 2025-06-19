@@ -25,8 +25,8 @@ import ToponymeHeading from "@/components/toponyme/toponyme-heading";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
-  BaseLocale,
   BasesLocalesService,
+  ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
   Numero,
   ToponymesService,
@@ -39,7 +39,7 @@ import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
 
 interface ToponymeNumerosListPageProps {
-  baseLocale: BaseLocale;
+  baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
   toponyme: ExtentedToponymeDTO;
   numeros: Numero[];
@@ -139,7 +139,14 @@ function ToponymeNumerosListPage({
           Toponymes
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Text>{toponyme.nom}</Text>
+        <Link
+          is={NextLink}
+          href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`}
+        >
+          {toponyme.nom}
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Text aria-current="page">Liste des numéros</Text>
       </>
     );
 
@@ -156,8 +163,7 @@ function ToponymeNumerosListPage({
 
   return (
     <>
-      <ToponymeHeading toponyme={toponyme} commune={commune} />
-
+      <ToponymeHeading toponyme={toponyme} baseLocale={baseLocale} />
       <Pane
         position="relative"
         display="flex"
