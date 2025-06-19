@@ -1,13 +1,5 @@
 import React, { useContext } from "react";
-import {
-  Heading,
-  Button,
-  Pane,
-  Text,
-  IconButton,
-  EditIcon,
-  Tooltip,
-} from "evergreen-ui";
+import { Heading, Pane, Text, IconButton, EditIcon } from "evergreen-ui";
 import {
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
@@ -44,9 +36,7 @@ function BALSummary({
       display="flex"
       flexDirection="column"
       backgroundColor="white"
-      padding={8}
-      borderRadius={10}
-      margin={8}
+      padding={16}
     >
       <Heading
         display="flex"
@@ -67,14 +57,12 @@ function BALSummary({
           {commune.nom} - {commune.code}
         </Pane>
         {!isEditing && token && (
-          <Tooltip content="Gérer les noms alternatifs de la commune en langue régionale">
-            <IconButton
-              icon={EditIcon}
-              marginTop={-4}
-              onClick={onEditNomsAlt}
-              title="Modifier les noms alternatifs de la commune en langue régionale"
-            />
-          </Tooltip>
+          <IconButton
+            icon={EditIcon}
+            marginTop={-4}
+            onClick={onEditNomsAlt}
+            title="Modifier les noms alternatifs de la commune en langue régionale"
+          />
         )}
       </Heading>
       <Pane marginLeft={40} marginY={8}>
@@ -85,16 +73,16 @@ function BALSummary({
       <Pane display="flex" alignItems="center" gap={8}>
         {voies && (
           <Text>
-            <b>{voies.length}</b> voie{voies.length > 1 ? "s" : ""}
+            <b>{voies.length}</b> voie{voies.length > 1 && "s"}
           </Text>
         )}
         {toponymes && (
           <Text>
-            <b>{toponymes.length}</b> toponyme{toponymes.length > 1 ? "s" : ""}
+            <b>{toponymes.length}</b> toponyme{toponymes.length > 1 && "s"}
           </Text>
         )}
         <Text>
-          <b>{nbNumeros}</b> numéro{nbNumeros > 1 ? "s" : ""}
+          <b>{nbNumeros}</b> numéro{nbNumeros > 1 && "s"}
         </Text>
       </Pane>
     </Pane>

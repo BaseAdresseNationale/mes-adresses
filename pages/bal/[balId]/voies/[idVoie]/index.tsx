@@ -44,7 +44,7 @@ function VoiePage({ baseLocale, voie }: VoiePageProps) {
           Voies
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Text>{voie.nom}</Text>
+        <Text aria-current="page">{voie.nom}</Text>
       </>
     );
 
