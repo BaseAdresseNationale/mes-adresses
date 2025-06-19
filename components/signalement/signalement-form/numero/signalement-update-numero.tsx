@@ -149,7 +149,7 @@ function SignalementUpdateNumero({
         }}
       />
       {changes.voie && (
-        <Alert intent="warning" title="Attention">
+        <Alert intent="warning" title="Attention" flexShrink={0}>
           Le renommage de la voie affectera toutes les adresses de cette voie.
         </Alert>
       )}
