@@ -1,72 +1,49 @@
-import { useState, useContext, useEffect } from "react";
-import { Pane, Heading, EditIcon, Text } from "evergreen-ui";
-
+import { useContext } from "react";
+import { Pane, Heading, EditIcon, Text, IconButton } from "evergreen-ui";
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
-
-import ToponymeEditor from "@/components/bal/toponyme-editor";
 import LanguagePreview from "../bal/language-preview";
-import { Toponyme } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
+import { ExtendedBaseLocaleDTO, Toponyme } from "@/lib/openapi-api-bal";
+import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
+import NextLink from "next/link";
 
 interface ToponymeHeadingProps {
   toponyme: Toponyme;
-  commune: CommuneType;
+  baseLocale: ExtendedBaseLocaleDTO;
 }
 
-function ToponymeHeading({ toponyme, commune }: ToponymeHeadingProps) {
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [hovered, setHovered] = useState(false);
-
+function ToponymeHeading({ toponyme, baseLocale }: ToponymeHeadingProps) {
   const { token } = useContext(TokenContext);
-  const { isEditing, editingId, numeros } = useContext(BalDataContext);
+  const { numeros } = useContext(BalDataContext);
 
-  const onEnableToponymeEditing = () => {
-    if (!isEditing && token) {
-      setIsFormOpen(true);
-      setHovered(false);
-    }
-  };
-
-  useEffect(() => {
-    if (editingId === toponyme.id) {
-      setIsFormOpen(true);
-    }
-  }, [editingId, toponyme.id]);
-
-  return isFormOpen ? (
-    <ToponymeEditor
-      initialValue={toponyme}
-      commune={commune}
-      closeForm={() => setIsFormOpen(false)}
-    />
-  ) : (
-    <Pane display="flex" flexDirection="column" background="tint1" padding={16}>
-      <Heading
-        style={{ cursor: hovered && !isEditing ? "text" : "default" }}
-        onClick={onEnableToponymeEditing}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        padding={0}
-      >
+  return (
+    <Pane display="flex" flexDirection="column" background="white" padding={16}>
+      <Heading>
         <Pane
           marginBottom={8}
           display="flex"
-          flexDirection={toponyme.nomAlt ? "row" : "column"}
+          flexDirection="column"
           justifyContent="space-between"
         >
-          <Pane>
+          <Pane
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             {toponyme.nom}
-            {!isEditing && token && (
-              <EditIcon
+            {token && (
+              <IconButton
+                is={NextLink}
+                href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`}
+                title="Éditer le toponyme"
+                icon={EditIcon}
                 marginBottom={-2}
                 marginLeft={8}
-                color={hovered ? "black" : "muted"}
               />
             )}
           </Pane>
           {numeros && (
-            <Text padding={editingId === toponyme.id ? 16 : 0}>
+            <Text padding={0}>
               {numeros.length} numéro{numeros.length > 1 ? "s" : ""}
             </Text>
           )}
