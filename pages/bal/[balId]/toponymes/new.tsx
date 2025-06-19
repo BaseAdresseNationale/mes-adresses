@@ -29,7 +29,7 @@ function NewToponymePage({ baseLocale, commune }: NewToponymePageProps) {
           Toponymes
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Text>Nouveau toponyme</Text>
+        <Text aria-current="page">Nouveau toponyme</Text>
       </>
     );
 

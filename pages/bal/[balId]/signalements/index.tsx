@@ -80,7 +80,7 @@ function SignalementsPage({
   ];
 
   useEffect(() => {
-    setBreadcrumbs(<Text>Signalements</Text>);
+    setBreadcrumbs(<Text aria-current="page">Signalements</Text>);
 
     return () => {
       setBreadcrumbs(null);
@@ -224,7 +224,7 @@ function SignalementsPage({
 
   return (
     <ProtectedPage>
-      <Tablist margin={10}>
+      <Tablist background="white" padding={8}>
         {tabs.map(({ label, key, count }, index) => (
           <Tab
             key={key}

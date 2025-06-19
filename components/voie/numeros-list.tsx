@@ -263,7 +263,7 @@ function NumerosList({
       />
 
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
-        <Table.Head>
+        <Table.Head background="white">
           {numeros && token && filtered.length > 1 && (
             <Table.Cell flex="0 1 1">
               <Checkbox checked={isAllSelected} onChange={handleSelectAll} />

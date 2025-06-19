@@ -15,7 +15,7 @@ type UsePaginationType<T> = [
   filtered: Array<T>,
 ];
 
-export function getLinkWithPagination<T>(
+export function getLinkWithPagination(
   href: string,
   savedSearchPagination: { page: number; search: string }
 ): string {

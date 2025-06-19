@@ -1,10 +1,4 @@
-import {
-  Tooltip,
-  Position,
-  IconButton,
-  AddIcon,
-  CrossIcon,
-} from "evergreen-ui";
+import { IconButton, AddIcon, CrossIcon } from "evergreen-ui";
 
 interface AddressEditorControlProps {
   isAddressFormOpen?: boolean;
@@ -18,10 +12,7 @@ function AddressEditorControl({
   handleAddressForm,
 }: AddressEditorControlProps) {
   return (
-    <Tooltip
-      position={Position.LEFT}
-      content={isAddressFormOpen ? "Annuler" : "Créer une adresse"}
-    >
+    <>
       {isAddressFormOpen ? (
         <IconButton
           height={29}
@@ -42,7 +33,7 @@ function AddressEditorControl({
           title="Créer une adresse"
         />
       )}
-    </Tooltip>
+    </>
   );
 }
 

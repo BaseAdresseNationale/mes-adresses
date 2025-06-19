@@ -56,7 +56,7 @@ function SignalementPage({
           Signalements
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Text>{getSignalementLabel(signalement)}</Text>
+        <Text aria-current="page">{getSignalementLabel(signalement)}</Text>
       </>
     );
 

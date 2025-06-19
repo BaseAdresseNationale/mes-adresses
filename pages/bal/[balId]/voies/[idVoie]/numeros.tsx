@@ -65,7 +65,14 @@ function VoieNumerosListPage({
           Voies
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Text>{voie.nom}</Text>
+        <Link
+          is={NextLink}
+          href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
+        >
+          {voie.nom}{" "}
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Text aria-current="page">Liste des numéros</Text>
       </>
     );
 
@@ -98,7 +105,7 @@ function VoieNumerosListPage({
 
   return (
     <>
-      <VoieHeading voie={voie} />
+      <VoieHeading baseLocale={baseLocale} voie={voie} />
       <Pane
         position="relative"
         display="flex"

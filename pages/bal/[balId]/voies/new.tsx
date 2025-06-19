@@ -24,7 +24,7 @@ function NewVoiePage({ baseLocale }: NewVoiePageProps) {
           Voies
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Text>Nouvelle voie</Text>
+        <Text aria-current="page">Nouvelle voie</Text>
       </>
     );
 

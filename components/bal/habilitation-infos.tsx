@@ -18,7 +18,7 @@ function HabilitationInfos({ commune }: HabilitationInfosProps) {
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
   return (
-    <Pane backgroundColor="white" padding={8} borderRadius={10} margin={8}>
+    <Pane backgroundColor="white" padding={8}>
       <Heading marginBottom={15}>Habilitation</Heading>
 
       {!habilitation || !isHabilitationValid ? (
