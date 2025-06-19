@@ -71,7 +71,7 @@ function SignalementList({
 
   return (
     <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
-      <Table.Head>
+      <Table.Head background="white">
         {editionEnabled && (
           <Table.Cell flex="0 1 1">
             <Checkbox

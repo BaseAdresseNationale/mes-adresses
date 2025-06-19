@@ -81,7 +81,6 @@ function SubHeader({ commune }: SubHeaderProps) {
         <Pane order={isMobile ? 2 : 1}>
           <Breadcrumbs
             baseLocale={baseLocale}
-            commune={commune}
             voie={voie}
             toponyme={toponyme}
             marginLeft={8}

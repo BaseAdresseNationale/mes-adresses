@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
-import { Pane } from "evergreen-ui";
-
+import { Pane, Text, Link } from "evergreen-ui";
+import NextLink from "next/link";
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 
@@ -12,25 +12,80 @@ import VoieHeading from "@/components/voie/voie-heading";
 import NumerosList from "@/components/voie/numeros-list";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import {
+  ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
   Numero,
   VoieMetas,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
+import LayoutContext from "@/contexts/layout";
+import SearchPaginationContext from "@/contexts/search-pagination";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import { getLinkWithPagination } from "@/hooks/search-pagination";
 
-interface VoiePageProps {
+interface VoieNumerosListPageProps {
   commune: CommuneType;
+  voie: ExtendedVoieDTO;
+  numeros: Numero[];
+  baseLocale: ExtendedBaseLocaleDTO;
 }
 
-function VoiePage({ commune }: VoiePageProps) {
+function VoieNumerosListPage({
+  commune,
+  voie,
+  numeros,
+  baseLocale,
+}: VoieNumerosListPageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
 
   useHelp(3);
 
   const { token } = useContext(TokenContext);
-  const { voie, setVoie, numeros, reloadVoieNumeros } =
-    useContext(BalDataContext);
+  const { setVoie, reloadVoieNumeros } = useContext(BalDataContext);
+  const { setBreadcrumbs } = useContext(LayoutContext);
+  const { savedSearchPagination, setLastSelectedItem } = useContext(
+    SearchPaginationContext
+  );
+
+  useEffect(() => {
+    setLastSelectedItem((prev) => ({
+      ...prev,
+      [TabsEnum.VOIES]: voie.id,
+    }));
+    setBreadcrumbs(
+      <>
+        <Link
+          is={NextLink}
+          href={getLinkWithPagination(
+            `/bal/${baseLocale.id}/${TabsEnum.VOIES}`,
+            savedSearchPagination[TabsEnum.VOIES]
+          )}
+        >
+          Voies
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Link
+          is={NextLink}
+          href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
+        >
+          {voie.nom}{" "}
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Text aria-current="page">Liste des numéros</Text>
+      </>
+    );
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [
+    setBreadcrumbs,
+    baseLocale.id,
+    voie,
+    setLastSelectedItem,
+    savedSearchPagination,
+  ]);
 
   useEffect(() => {
     async function addCommentsToVoies() {
@@ -50,8 +105,7 @@ function VoiePage({ commune }: VoiePageProps) {
 
   return (
     <>
-      <VoieHeading voie={voie} />
-
+      <VoieHeading baseLocale={baseLocale} voie={voie} />
       <Pane
         position="relative"
         display="flex"
@@ -69,7 +123,6 @@ function VoiePage({ commune }: VoiePageProps) {
             closeForm={reset}
           />
         )}
-
         <NumerosList
           commune={commune}
           token={token}
@@ -108,4 +161,4 @@ export async function getServerSideProps({ params, req }) {
   }
 }
 
-export default VoiePage;
+export default VoieNumerosListPage;

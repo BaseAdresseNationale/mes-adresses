@@ -8,14 +8,35 @@ const steps = [
     content: (
       <Pane>
         <Heading size={800}>
-          Bienvenue sur la page de gestion des signalements
+          Votre Base Adresse Locale a reçu des propositions d&apos;amélioration
         </Heading>
-        <Paragraph margin={20}>
-          Nous allons vous guider à travers les différentes fonctionnalités de
-          cette page
+        <Paragraph margin={20} textAlign="justify">
+          Des administrés ou des services publics ont proposé des améliorations
+          sur les adresses de votre commune via le dispositif de signalement.
         </Paragraph>
       </Pane>
     ),
+  },
+  {
+    target: "div[class^='main-tabs_tabsList'] > a:last-child",
+    content: (
+      <Pane>
+        <Paragraph>
+          Pour les visualiser, rendez-vous sur l&apos;onglet signalements.
+        </Paragraph>
+      </Pane>
+    ),
+    spotlightPadding: 15,
+    callback: () => {
+      const element = document.querySelector(
+        "div[class^='main-tabs_tabsList'] > a:last-child"
+      ) as HTMLElement | null;
+      if (element) {
+        element.click();
+      } else {
+        console.warn("Element not found: div[class^='main-tabs_tabsList'] > a:last-child");
+      }
+    },
   },
   {
     target: "div[role='tablist'] > span:nth-child(1)",
@@ -86,6 +107,6 @@ const steps = [
   },
 ];
 
-export default function SignalementPageProductTour() {
+export default function SignalementProductTour() {
   return <ProductTour steps={steps} localStorageKey="signalement" />;
 }

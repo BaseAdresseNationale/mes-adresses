@@ -7,6 +7,8 @@ import {
   Alert,
   AddIcon,
   LockIcon,
+  Link,
+  Text,
 } from "evergreen-ui";
 
 import TokenContext from "@/contexts/token";
@@ -15,7 +17,7 @@ import BalDataContext from "@/contexts/bal-data";
 import useHelp from "@/hooks/help";
 import useFuse from "@/hooks/fuse";
 import useFormState from "@/hooks/useFormState";
-
+import NextLink from "next/link";
 import NumeroEditor from "@/components/bal/numero-editor";
 import ToponymeNumeros from "@/components/toponyme/toponyme-numeros";
 import AddNumeros from "@/components/toponyme/add-numeros";
@@ -23,8 +25,8 @@ import ToponymeHeading from "@/components/toponyme/toponyme-heading";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
-  BaseLocale,
   BasesLocalesService,
+  ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
   Numero,
   ToponymesService,
@@ -32,17 +34,27 @@ import {
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import SearchPaginationContext from "@/contexts/search-pagination";
+import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import { getLinkWithPagination } from "@/hooks/search-pagination";
 
-interface ToponymePageProps {
-  baseLocale: BaseLocale;
+interface ToponymeNumerosListPageProps {
+  baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
+  toponyme: ExtentedToponymeDTO;
+  numeros: Numero[];
 }
 
 const fuseOptions = {
   keys: ["numero"],
 };
 
-function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
+function ToponymeNumerosListPage({
+  baseLocale,
+  commune,
+  toponyme,
+  numeros,
+}: ToponymeNumerosListPageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
 
   const [error, setError] = useState<string | null>(null);
@@ -50,10 +62,11 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
 
   const { token } = useContext(TokenContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
-  const { pushToast } = useContext(LayoutContext);
-
-  const { toponyme, numeros, reloadNumeros, isEditing, setIsEditing } =
-    useContext(BalDataContext);
+  const { pushToast, setBreadcrumbs } = useContext(LayoutContext);
+  const { savedSearchPagination, setLastSelectedItem } = useContext(
+    SearchPaginationContext
+  );
+  const { reloadNumeros, isEditing, setIsEditing } = useContext(BalDataContext);
 
   useHelp(2);
   const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
@@ -109,10 +122,48 @@ function ToponymePage({ baseLocale, commune }: ToponymePageProps) {
     }
   }, [token, reloadNumeros]);
 
+  useEffect(() => {
+    setLastSelectedItem((prev) => ({
+      ...prev,
+      [TabsEnum.TOPONYMES]: toponyme.id,
+    }));
+    setBreadcrumbs(
+      <>
+        <Link
+          is={NextLink}
+          href={getLinkWithPagination(
+            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}`,
+            savedSearchPagination[TabsEnum.TOPONYMES]
+          )}
+        >
+          Toponymes
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Link
+          is={NextLink}
+          href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`}
+        >
+          {toponyme.nom}
+        </Link>
+        <Text color="muted">{" > "}</Text>
+        <Text aria-current="page">Liste des numéros</Text>
+      </>
+    );
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [
+    setBreadcrumbs,
+    baseLocale.id,
+    toponyme,
+    setLastSelectedItem,
+    savedSearchPagination,
+  ]);
+
   return (
     <>
-      <ToponymeHeading toponyme={toponyme} commune={commune} />
-
+      <ToponymeHeading toponyme={toponyme} baseLocale={baseLocale} />
       <Pane
         position="relative"
         display="flex"
@@ -231,4 +282,4 @@ export async function getServerSideProps({ params }) {
   }
 }
 
-export default ToponymePage;
+export default ToponymeNumerosListPage;
