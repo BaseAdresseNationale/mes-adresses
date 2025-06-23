@@ -1,4 +1,4 @@
-import { Pane, Heading, Strong, Text } from "evergreen-ui";
+import { Pane, Heading, Strong, Text, Badge } from "evergreen-ui";
 import styles from "./button-pro-connect.module.css";
 
 interface ProConnectProps {
@@ -10,7 +10,8 @@ function ProConnect({ handleStrategy }: ProConnectProps) {
     <>
       <Pane>
         <Heading is="h5" height={60} textAlign="center">
-          Via votre compte ProConnect
+          Via votre compte ProConnect{" "}
+          <Badge color="yellow">Bientot disponible</Badge>
         </Heading>
       </Pane>
       <Pane
@@ -21,8 +22,9 @@ function ProConnect({ handleStrategy }: ProConnectProps) {
         marginBottom={32}
       >
         <button
+          disabled={true}
           className={styles["proconnect-button"]}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", opacity: 0.5, pointerEvents: "none" }}
           onClick={handleStrategy}
         >
           <span className={styles["proconnect-sr-only"]}>
