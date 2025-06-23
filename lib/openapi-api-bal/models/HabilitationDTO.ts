@@ -9,7 +9,6 @@ export type HabilitationDTO = {
     id: string;
     codeCommune: string;
     emailCommune: string;
-    franceconnectAuthenticationUrl: string;
     strategy: StrategyDTO;
     client: string;
     status: HabilitationDTO.status;

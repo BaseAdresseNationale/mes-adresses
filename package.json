@@ -17,7 +17,7 @@
     "build": "yarn build-available-flags && next build",
     "analyze": "ANALYZE=true next build",
     "build-available-flags": "node scripts/build-available-flags",
-    "generate:openapi:api-bal": "openapi --input http://localhost:5000/api-json --output ./lib/openapi-api-bal",
+    "generate:openapi:api-bal": "openapi --input http://localhost:5001/api-json --output ./lib/openapi-api-bal",
     "generate:openapi:signalement": "openapi --input http://localhost:5005/api-json --output ./lib/openapi-signalement",
     "push-staging": "./scripts/push-staging.sh"
   },
@@ -63,6 +63,7 @@
     "react-map-gl": "^7.1.6",
     "react-map-gl-draw": "1.0.4",
     "react-markdown": "^10.1.0",
+    "react-pin-field": "^4.0.2",
     "react-range": "^1.8.14",
     "remark-gemoji": "^8.0.0",
     "remark-gfm": "^4.0.1",

@@ -1,15 +1,16 @@
 // HABILITATION
 
 export enum StatusHabilitationEnum {
-  ACCEPTED = 'accepted',
-  PENDING = 'pending',
-  REJECTED = 'rejected',
+  ACCEPTED = "accepted",
+  PENDING = "pending",
+  REJECTED = "rejected",
 }
 
 export enum TypeStrategyEnum {
-  EMAIL = 'email',
-  FRANCECONNECT = 'franceconnect',
-  INTERNAL = 'internal',
+  EMAIL = "email",
+  PROCONNECT = "franceconnect",
+  FRANCECONNECT = "franceconnect",
+  INTERNAL = "internal",
 }
 
 export type Mandat = {
@@ -35,7 +36,6 @@ export type Habilitation = {
   clientId?: string;
   codeCommune: string;
   emailCommune: string;
-  franceconnectAuthenticationUrl?: string;
   status: StatusHabilitationEnum;
   strategy?: Strategy | null;
   expiresAt?: Date;
@@ -48,7 +48,7 @@ export type Habilitation = {
 // FILE
 
 export enum TypeFileEnum {
-  BAL = 'bal',
+  BAL = "bal",
 }
 export type File = {
   id?: string;
@@ -60,8 +60,8 @@ export type File = {
 };
 
 export enum StatusRevisionEnum {
-  PENDING = 'pending',
-  PUBLISHED = 'published',
+  PENDING = "pending",
+  PUBLISHED = "published",
 }
 
 // REVISION
@@ -118,9 +118,9 @@ export type Revision = {
 // CHEF DE FILE
 
 export enum TypePerimeterEnum {
-  COMMUNE = 'commune',
-  DEPARTEMENT = 'departement',
-  EPCI = 'epci',
+  COMMUNE = "commune",
+  DEPARTEMENT = "departement",
+  EPCI = "epci",
 }
 
 export type Perimeter = {
@@ -154,9 +154,9 @@ export type Mandataire = {
 // CLIENT
 
 export enum AuthorizationStrategyEnum {
-  INTERNAL = 'internal',
-  CHEF_DE_FILE = 'chef-de-file',
-  HABILITATION = 'habilitation',
+  INTERNAL = "internal",
+  CHEF_DE_FILE = "chef-de-file",
+  HABILITATION = "habilitation",
 }
 
 export type Client = {
