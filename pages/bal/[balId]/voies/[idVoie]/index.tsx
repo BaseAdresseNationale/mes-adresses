@@ -1,6 +1,7 @@
 import {
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
+  VoieMetas,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
@@ -8,24 +9,45 @@ import VoieEditor from "@/components/bal/voie-editor";
 import ProtectedPage from "@/layouts/protected-page";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { useRouter } from "next/router";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import LayoutContext from "@/contexts/layout";
 import NextLink from "next/link";
-import { Text, Link } from "evergreen-ui";
+import { Text, Link, Spinner } from "evergreen-ui";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
+import BalDataContext from "@/contexts/bal-data";
+import TokenContext from "@/contexts/token";
 
 interface VoiePageProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  voie: ExtendedVoieDTO;
 }
 
-function VoiePage({ baseLocale, voie }: VoiePageProps) {
+function VoiePage({ baseLocale }: VoiePageProps) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const { setBreadcrumbs } = useContext(LayoutContext);
+  const { voie, setVoie } = useContext(BalDataContext);
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
   );
+  const { token } = useContext(TokenContext);
+
+  useEffect(() => {
+    async function addCommentsToVoies() {
+      try {
+        const voieMetas: VoieMetas = await VoiesService.findVoieMetas(voie.id);
+        setVoie({ ...voie, ...voieMetas });
+      } catch (e) {
+        console.error("Impossible de charger les commentaires de voie", e);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (token) {
+      addCommentsToVoies();
+    }
+  }, [token]);
 
   useEffect(() => {
     setLastSelectedItem((prev) => ({
@@ -61,14 +83,18 @@ function VoiePage({ baseLocale, voie }: VoiePageProps) {
 
   return (
     <ProtectedPage>
-      <VoieEditor
-        initialValue={voie}
-        closeForm={() => {
-          router.push(
-            `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`
-          );
-        }}
-      />
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <VoieEditor
+          initialValue={voie}
+          closeForm={() => {
+            router.push(
+              `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`
+            );
+          }}
+        />
+      )}
     </ProtectedPage>
   );
 }
