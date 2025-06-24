@@ -341,13 +341,8 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
   );
 }
 
-export async function getServerSideProps({ params, res }) {
+export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
-
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=59"
-  );
 
   try {
     const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
