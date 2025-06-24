@@ -64,7 +64,9 @@ function VoiePage({ baseLocale, voie }: VoiePageProps) {
       <VoieEditor
         initialValue={voie}
         closeForm={() => {
-          router.push(`/bal/${baseLocale.id}/${TabsEnum.VOIES}`);
+          router.push(
+            `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`
+          );
         }}
       />
     </ProtectedPage>
