@@ -156,6 +156,7 @@ function MainTabs({ balId }: MainTabsProps) {
                     className={`${styles.tab}${
                       isSelected ? ` ${styles.selected}` : ""
                     }`}
+                    {...(isSelected && { elevation: 1 })}
                   >
                     {icon}
                     {notif > 0 && <Pulsar size={16} right={0} top={0} />}

@@ -67,7 +67,9 @@ function ToponymePage({ baseLocale, commune, toponyme }: ToponymePageProps) {
         initialValue={toponyme}
         commune={commune}
         closeForm={() => {
-          router.push(`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}`);
+          router.push(
+            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}/numeros`
+          );
         }}
       />
     </ProtectedPage>

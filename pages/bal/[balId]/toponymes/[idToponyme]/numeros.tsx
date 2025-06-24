@@ -42,7 +42,6 @@ interface ToponymeNumerosListPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
   toponyme: ExtentedToponymeDTO;
-  numeros: Numero[];
 }
 
 const fuseOptions = {
@@ -53,7 +52,6 @@ function ToponymeNumerosListPage({
   baseLocale,
   commune,
   toponyme,
-  numeros,
 }: ToponymeNumerosListPageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
 
@@ -66,7 +64,8 @@ function ToponymeNumerosListPage({
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
   );
-  const { reloadNumeros, isEditing, setIsEditing } = useContext(BalDataContext);
+  const { reloadNumeros, isEditing, setIsEditing, numeros } =
+    useContext(BalDataContext);
 
   useHelp(2);
   const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
