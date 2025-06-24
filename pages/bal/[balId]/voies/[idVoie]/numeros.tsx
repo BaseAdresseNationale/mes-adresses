@@ -26,13 +26,11 @@ import { getLinkWithPagination } from "@/hooks/search-pagination";
 
 interface VoieNumerosListPageProps {
   commune: CommuneType;
-  voie: ExtendedVoieDTO;
   baseLocale: ExtendedBaseLocaleDTO;
 }
 
 function VoieNumerosListPage({
   commune,
-  voie,
   baseLocale,
 }: VoieNumerosListPageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
@@ -40,7 +38,8 @@ function VoieNumerosListPage({
   useHelp(3);
 
   const { token } = useContext(TokenContext);
-  const { setVoie, reloadVoieNumeros, numeros } = useContext(BalDataContext);
+  const { setVoie, reloadVoieNumeros, numeros, voie } =
+    useContext(BalDataContext);
   const { setBreadcrumbs } = useContext(LayoutContext);
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
