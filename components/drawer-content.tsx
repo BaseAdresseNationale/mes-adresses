@@ -8,6 +8,7 @@ import TokenContext from "@/contexts/token";
 import Downloads from "@/components/downloads";
 import Settings from "@/components/settings";
 import Trash from "@/components/trash";
+import Share from "@/components/share/share";
 import LayoutContext from "@/contexts/layout";
 
 function DrawerContent() {
@@ -15,7 +16,6 @@ function DrawerContent() {
   const { drawerDisplayed, setDrawerDisplayed } = useContext(DrawerContext);
   const { baseLocale } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
-  const isAdmin = Boolean(token);
 
   return (
     <SideSheet
@@ -27,9 +27,12 @@ function DrawerContent() {
         <Downloads baseLocaleId={baseLocale.id} />
       )}
       {drawerDisplayed === DrawerDisplayedEnum.SETTING && (
-        <Settings baseLocale={baseLocale} isAdmin={isAdmin} />
+        <Settings baseLocale={baseLocale} />
       )}
       {drawerDisplayed === DrawerDisplayedEnum.TRASH && <Trash />}
+      {drawerDisplayed === DrawerDisplayedEnum.SHARE && token && (
+        <Share baseLocale={baseLocale} token={token} />
+      )}
 
       {isMobile && (
         <Button

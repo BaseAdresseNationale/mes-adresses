@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type CommuneAncienneDTO = {
+export type CommunePrecedenteDTO = {
     code: string;
     nom: string;
 };

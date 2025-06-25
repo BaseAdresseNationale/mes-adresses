@@ -20,7 +20,7 @@ import ReadOnlyInfos from "./read-only-infos";
 
 import DeleteWarning from "@/components/delete-warning";
 import {
-  CommuneAncienneDTO,
+  CommunePrecedenteDTO,
   ExtentedToponymeDTO,
   Numero,
   ToponymesService,
@@ -78,7 +78,7 @@ function ToponymesList({
 
   const getCommuneDeleguee = useCallback(
     (codeCommuneDeleguee) => {
-      const communeDeleguee: CommuneAncienneDTO =
+      const communeDeleguee: CommunePrecedenteDTO =
         commune.communesDeleguees?.find(
           ({ code }) => code === codeCommuneDeleguee
         );

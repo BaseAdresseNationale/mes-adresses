@@ -10,7 +10,7 @@ import {
   Label,
 } from "evergreen-ui";
 import { useContext, useState } from "react";
-import { ExportCsvService } from "@/lib/openapi-api-bal";
+import { BasesLocalesService, ExportCsvService } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
 
 interface DownloadsProps {
@@ -41,6 +41,12 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
     downloadFile(file, "liste-des-voies.csv");
   };
 
+  const downloadVoieGeoJSON = async () => {
+    const file =
+      await BasesLocalesService.findFilairesVoiesGeoJson(baseLocaleId);
+    downloadFile(JSON.stringify(file), "liste-des-filaires-de-voie.geojson");
+  };
+
   return (
     <Pane>
       <Pane
@@ -58,7 +64,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
         </Pane>
       </Pane>
       <Pane is="ul" display="flex" flexDirection="column" overflowY="scroll">
-        <Pane is="li" marginBottom={10}>
+        <Pane is="li" marginBottom={16}>
           <Pane display="flex" alignItems="center">
             <Link
               style={{ cursor: "pointer" }}
@@ -72,6 +78,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
                 <Checkbox
                   checked={withComment}
                   onChange={(e) => setWithComment(e.target.checked)}
+                  margin={0}
                 />
                 <Text marginLeft={6}>Avec commentaires</Text>
               </>
@@ -87,9 +94,14 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
             </Alert>
           )}
         </Pane>
-        <Pane is="li" marginBottom={10}>
+        <Pane is="li" marginBottom={16}>
           <Link style={{ cursor: "pointer" }} onClick={downloadVoieCsv}>
             Liste des voies (format CSV)
+          </Link>
+        </Pane>
+        <Pane is="li" marginBottom={16}>
+          <Link style={{ cursor: "pointer" }} onClick={downloadVoieGeoJSON}>
+            Liste des filaires de voie (format GeoJSON)
           </Link>
         </Pane>
       </Pane>

@@ -617,10 +617,10 @@
   resolved "https://registry.yarnpkg.com/@ban-team/shared-data/-/shared-data-1.4.1.tgz#befd80777dd8a5f80262d65730f92c3a1c8a0116"
   integrity sha512-dcbwb+6xUE3O/5e7Gz5XrMw6rkI7XvTAXqfSzpFPkf5yteuy8nkLZc8EK4hX3G2nSvOx/hh8mVVCpo+OAZuOwA==
 
-"@ban-team/validateur-bal@^3.1.9":
-  version "3.1.9"
-  resolved "https://registry.yarnpkg.com/@ban-team/validateur-bal/-/validateur-bal-3.1.9.tgz#64a960d5a25633dc74a9f1407e4ecc069962e882"
-  integrity sha512-tmI2PFtEmrd+kFlTvDzFYPfaZ2eMi2+Z68F248fJE5nDg+oX2t+GGAmNQuEMii4OG9mM1+WSk/2LglPk3rqOsw==
+"@ban-team/validateur-bal@^3.1.11":
+  version "3.1.11"
+  resolved "https://registry.yarnpkg.com/@ban-team/validateur-bal/-/validateur-bal-3.1.11.tgz#700d61657ac235f5e4e21ef64a120f574c52c26a"
+  integrity sha512-E6t/UyKUVJdeGAi3SrMSNA/8leIz8nODZN9xw9znVXbzNENpX/1JREm7JJLcNWu/p0Da7oTV6o3W4WXfT9jJwQ==
   dependencies:
     "@ban-team/adresses-util" "^0.9.0"
     "@ban-team/shared-data" "^1.4.1"
@@ -6224,6 +6224,11 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.0.tgz#f67fa67c94da8f4d0cfff981aee4118064199b8f"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
 
+qrcode.react@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-4.2.0.tgz#1bce8363f348197d145c0da640929a24c83cbca3"
+  integrity sha512-QpgqWi8rD9DsS9EP3z7BT+5lY5SFhsqGjpgW5DY/i3mK4M9DTBNz3ErMi8BWYEfI3L0d8GIbGmcdFAS1uIRGjA==
+
 qs@6.11.0:
   version "6.11.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.0.tgz#fd0d963446f7a65e1367e01abd85429453f0c37a"
@@ -6390,6 +6395,11 @@ react-markdown@^10.1.0:
     unified "^11.0.0"
     unist-util-visit "^5.0.0"
     vfile "^6.0.0"
+
+react-pin-field@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/react-pin-field/-/react-pin-field-4.0.2.tgz#1cd9b5c9ee93648fa01a84d43ac7812ca4ceb413"
+  integrity sha512-PsNViTx8M4jNjpr6d7Zd5egd5YdAQCIXFVWpbeDYA8TdO8L6KBhS/jtTwocQrtbFIhxodOHC7sYjLRVm8aXOHw==
 
 react-range@^1.8.14:
   version "1.8.14"
