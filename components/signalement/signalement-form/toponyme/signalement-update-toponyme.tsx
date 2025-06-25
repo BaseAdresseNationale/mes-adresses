@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Signalement,
   ToponymeChangesRequestedDTO,
@@ -8,6 +8,7 @@ import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
 import { ActiveCardEnum } from "@/lib/utils/signalement";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
+import LayoutContext from "@/contexts/layout";
 
 interface SignalementUpdateToponymeProps {
   signalement: Signalement;
@@ -36,6 +37,7 @@ function SignalementUpdateToponyme({
 
   const { nom, parcelles, positions } =
     signalement.changesRequested as ToponymeChangesRequestedDTO;
+  const { pushToast } = useContext(LayoutContext);
 
   const { activeCard, setActiveCard } = useSignalementMapDiffUpdate(
     { positions: existingPositions, parcelles: existingParcelles },
@@ -43,10 +45,18 @@ function SignalementUpdateToponyme({
   );
 
   const onAccept = async () => {
-    await ToponymesService.updateToponyme(existingLocation.id, {
-      nom,
-    });
-    await handleAccept();
+    try {
+      await ToponymesService.updateToponyme(existingLocation.id, {
+        nom,
+      });
+      await handleAccept();
+    } catch (error) {
+      console.error("Error accepting signalement:", error);
+      pushToast({
+        title: "Erreur lors de l'acceptation du signalement.",
+        intent: "danger",
+      });
+    }
   };
 
   return (

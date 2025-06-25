@@ -24,6 +24,7 @@ import SignalementForm from "@/components/signalement/signalement-form/signaleme
 import { SignalementViewer } from "@/components/signalement/signalement-viewer/signalement-viewer";
 import SignalementContext from "@/contexts/signalement";
 import { CommuneType } from "@/types/commune";
+import TokenContext from "@/contexts/token";
 
 interface SignalementPageProps extends BaseEditorProps {
   signalement: Signalement;
@@ -46,6 +47,7 @@ function SignalementPage({
   const { setStyle } = useContext(MapContext);
   const { refreshBALSync } = useContext(BalDataContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
+  const { token } = useContext(TokenContext);
 
   useEffect(() => {
     setStyle("ortho");
@@ -98,8 +100,10 @@ function SignalementPage({
       setAuthor(author);
     };
 
-    fetchAuthor();
-  }, [signalement, baseLocale]);
+    if (token) {
+      fetchAuthor();
+    }
+  }, [signalement, baseLocale, token]);
 
   const handleClose = useCallback(() => {
     router.push(`/bal/${router.query.balId}/signalements`);
