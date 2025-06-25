@@ -2,7 +2,7 @@ import { Pane, Heading, Paragraph, VideoIcon } from "evergreen-ui";
 import Link from "next/link";
 
 const PEERTUBE_LINK =
-  process.env.NEXT_PUBLIC_PEERTUBE || "https://peertube.adresse.data.gouv.fr";
+  process.env.NEXT_PUBLIC_PEERTUBE || "https://tube.numerique.gouv.fr";
 
 interface VideoContainerProps {
   title?: string;

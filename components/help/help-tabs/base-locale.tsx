@@ -24,7 +24,7 @@ function BaseLocale() {
     <Pane>
       <VideoContainer
         title="Création d’une Base Adresse Locale :"
-        link={`${PEERTUBE_LINK}/w/aNEtMh7fJCzsAPoGkwvFSg`}
+        link={`${PEERTUBE_LINK}/w/f2b6yiXosmfoKkmyF4YLtE`}
       />
       <Tuto title="Créer une nouvelle Base Adresse Locale">
         <Paragraph marginTop="default">

@@ -131,7 +131,7 @@ function RecoverBALAlert({
       </Paragraph>
       <VideoContainer
         title="Tutoriel sur la récupération :"
-        link={`${PEERTUBE_LINK}/w/fdD1tzvPfktHkkVK8p7h5D`}
+        link={`${PEERTUBE_LINK}/w/wwf47pyuTNkMqK5GG5RUtP`}
       />
     </Dialog>
   );
