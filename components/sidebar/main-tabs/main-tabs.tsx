@@ -20,7 +20,7 @@ export enum TabsEnum {
 
 const textExamples = {
   [TabsEnum.VOIES]: ["Rue Chaptal", "Rue du Bac", "Quai de Lot", "Le Voisinet"],
-  [TabsEnum.TOPONYMES]: ["La butte", "Les loges", "Lambert", "Tartifume"],
+  [TabsEnum.TOPONYMES]: ["La Butte", "Les Loges", "Lambert", "Tartifume"],
 };
 
 interface MainTabsProps {
