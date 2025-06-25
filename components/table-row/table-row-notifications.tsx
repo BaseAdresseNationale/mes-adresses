@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import {
   Table,
   Position,
@@ -7,14 +7,17 @@ import {
   WarningSignIcon,
   CommentIcon,
   OfficeIcon,
+  ControlIcon,
 } from "evergreen-ui";
 import TokenContext from "@/contexts/token";
+import ParcellesContext from "@/contexts/parcelles";
 
 interface TableRowNotificationsProps {
   certification?: string;
   comment?: string | React.ReactNode;
   warning?: string;
   communeDeleguee?: string;
+  parcelles?: string[];
 }
 
 function TableRowNotifications({
@@ -22,8 +25,16 @@ function TableRowNotifications({
   comment,
   warning,
   communeDeleguee,
+  parcelles,
 }: TableRowNotificationsProps) {
   const { token } = useContext(TokenContext);
+  const { communeParcelles } = useContext(ParcellesContext);
+
+  const parcellesIsInCommune = useMemo(
+    () => parcelles?.every((parcelle) => communeParcelles.has(parcelle)),
+    [parcelles, communeParcelles]
+  );
+
   return (
     <>
       {communeDeleguee && (
@@ -45,6 +56,17 @@ function TableRowNotifications({
         <Table.TextCell flex="0 1 1" paddingLeft="8px" paddingRight="8px">
           <Tooltip content={certification} position={Position.BOTTOM}>
             <EndorsedIcon color="success" style={{ verticalAlign: "bottom" }} />
+          </Tooltip>
+        </Table.TextCell>
+      )}
+
+      {parcelles?.length > 0 && !parcellesIsInCommune && (
+        <Table.TextCell flex="0 1 1" paddingLeft="8px" paddingRight="8px">
+          <Tooltip
+            content="Une parcelle ne correspond pas"
+            position={Position.BOTTOM}
+          >
+            <ControlIcon color="warning" />
           </Tooltip>
         </Table.TextCell>
       )}
