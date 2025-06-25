@@ -29,7 +29,7 @@ export function MobileHelpMenu() {
               is="a"
               target="_blank"
               icon={VideoIcon}
-              href={PEERTUBE_LINK}
+              href={`${PEERTUBE_LINK}/c/base_adresse_locale/videos`}
             >
               Tutoriels vidéos
             </Menu.Item>

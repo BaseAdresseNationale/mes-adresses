@@ -52,7 +52,7 @@ function MassDeletionDialog({
         </Paragraph>
         <Paragraph marginTop={8}>
           Des{" "}
-          <a href={PEERTUBE_LINK}>
+          <a href={`${PEERTUBE_LINK}/c/base_adresse_locale/videos`}>
             <VideoIcon size={12} /> tutoriels vidéo
           </a>{" "}
           sont également disponibles afin de vous accompagner lors de vos

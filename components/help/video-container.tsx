@@ -39,7 +39,9 @@ function VideoContainer({ title, link }: VideoContainerProps) {
       />
       <Paragraph paddingTop={10}>
         <VideoIcon paddingRight={5} verticalAlign="middle" size={25} />
-        <Link href={PEERTUBE_LINK}>Retouvez tous les tutoriels vidéos</Link>
+        <Link href={`${PEERTUBE_LINK}/c/base_adresse_locale/videos`}>
+          Retouvez tous les tutoriels vidéos
+        </Link>
       </Paragraph>
     </Pane>
   );
