@@ -43,7 +43,7 @@ function Numeros() {
     <Pane>
       <VideoContainer
         title="Création / Modification d’un numéro :"
-        link={`${PEERTUBE_LINK}/w/un73nNp4kQofNkhT38D6YQ`}
+        link={`${PEERTUBE_LINK}/w/ts9chg7zehHXkTrotsjpqr`}
       />
       <Tuto title="Bon à savoir">
         <ListItem listStyleType="none">

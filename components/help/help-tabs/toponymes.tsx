@@ -39,7 +39,7 @@ function Toponymes() {
     <Pane>
       <VideoContainer
         title="Création / Modification d’un toponyme :"
-        link={`${PEERTUBE_LINK}/w/ttnYNTcXtcubCHQX8kHdGt`}
+        link={`${PEERTUBE_LINK}/w/7AeS1b84kmwjbL3A19Wphw`}
       />
       <Tuto title="Ajouter un toponyme">
         {before}

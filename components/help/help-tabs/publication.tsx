@@ -28,7 +28,7 @@ function Publication() {
     <Pane>
       <VideoContainer
         title="Publication de votre Base Adresse Locale :"
-        link={`${PEERTUBE_LINK}/w/4uU6AHpTe7coPyhskBSANB`}
+        link={`${PEERTUBE_LINK}/w/oMKnhiVycDTjddCBXZuYMB`}
       />
       <Tuto title="Obtenir une habilitation">
         <Paragraph>

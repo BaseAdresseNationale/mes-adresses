@@ -37,7 +37,7 @@ function Voies() {
     <Pane>
       <VideoContainer
         title="Création / Modification d’une voie :"
-        link={`${PEERTUBE_LINK}/w/rgksUPigy8KWnmx8WFELDN`}
+        link={`${PEERTUBE_LINK}/w/v2caTXtfYkvg6wUELBvLs2`}
       />
       <Tuto title="Ajouter une voie">
         {before}

@@ -43,7 +43,7 @@ function WelcomeMessage() {
         commune ? Vous êtes au <Strong>bon endroit</Strong> ! 🎉
       </Paragraph>
 
-      <VideoContainer link={`${PEERTUBE_LINK}/w/toyKNe4rKyVD7mUovsWLKd`} />
+      <VideoContainer link={`${PEERTUBE_LINK}/w/tsqJcL1c7axB9HrMgebyp8`} />
 
       <Pane marginY={16}>
         <Heading size={400}>Comment cela fonctionne ❓</Heading>
