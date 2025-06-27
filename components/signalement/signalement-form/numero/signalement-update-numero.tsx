@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Numero,
   NumerosService,
@@ -37,8 +37,15 @@ function SignalementUpdateNumero({
   handleClose,
   isLoading,
 }: SignalementUpdateNumeroProps) {
-  const [changes] = useState(detectChanges(signalement, existingLocation));
+  const [changes, setChanges] = useState(
+    detectChanges(signalement, existingLocation)
+  );
   const { pushToast } = useContext(LayoutContext);
+
+  useEffect(() => {
+    const newChanges = detectChanges(signalement, existingLocation);
+    setChanges(newChanges);
+  }, [signalement, existingLocation]);
 
   const { numero, suffixe, positions, parcelles, nomVoie } =
     signalement.changesRequested as NumeroChangesRequestedDTO;
