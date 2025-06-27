@@ -13,7 +13,6 @@ import Sidebar from "@/layouts/sidebar";
 
 import SubHeader from "@/components/sub-header";
 import Map from "@/components/map";
-import WelcomeMessage from "@/components/welcome-message";
 import DrawerContent from "@/components/drawer-content";
 import AddressEditor from "@/components/bal/address-editor";
 import DemoWarning from "@/components/demo-warning";
@@ -30,6 +29,9 @@ import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
 import { ApiGeoService } from "@/lib/geo-api";
 import { CommuneType } from "@/types/commune";
+import { Pane } from "evergreen-ui";
+import MainTabs from "@/components/sidebar/main-tabs/main-tabs";
+import ProductTours from "@/components/sidebar/product-tours";
 
 interface EditorProps {
   children: React.ReactNode;
@@ -87,20 +89,29 @@ function Editor({ children, commune }: EditorProps) {
               flexDirection="column"
               onToggle={setIsMapFullscreen}
             >
-              <>
-                <WelcomeMessage />
+              <MainTabs balId={baseLocale.id} />
 
-                {isAddressFormOpen ? (
-                  <AddressEditor
-                    commune={commune}
-                    closeForm={() => {
-                      setIsAddressFormOpen(false);
-                    }}
-                  />
-                ) : (
-                  children
-                )}
-              </>
+              <ProductTours />
+
+              {isAddressFormOpen ? (
+                <AddressEditor
+                  commune={commune}
+                  closeForm={() => {
+                    setIsAddressFormOpen(false);
+                  }}
+                />
+              ) : (
+                <Pane
+                  position="relative"
+                  display="flex"
+                  flexDirection="column"
+                  height="100%"
+                  width="100%"
+                  overflow="hidden"
+                >
+                  {children}
+                </Pane>
+              )}
             </Sidebar>
             {isMobile && (
               <MobileControls

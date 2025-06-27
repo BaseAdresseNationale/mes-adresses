@@ -17,7 +17,6 @@ import {
   Text,
   Badge,
 } from "evergreen-ui";
-
 import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
@@ -32,7 +31,6 @@ import SignalementTypeBadge, {
 import useFuse from "@/hooks/fuse";
 import MapContext from "@/contexts/map";
 import SignalementContext from "@/contexts/signalement";
-import SignalementJoyRide from "@/components/signalement/product-tour/signalement-page-product-tour";
 
 const fuseOptions = {
   keys: ["label"],
@@ -62,7 +60,7 @@ function SignalementsPage({
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { toaster } = useContext(LayoutContext);
+  const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const { showTilesLayers, setShowToponymes, map, isStyleLoaded } =
     useContext(MapContext);
   const [activeTabIndex, setActiveTabIndex] = useState(
@@ -80,6 +78,14 @@ function SignalementsPage({
       count: archivedSignalementsCount,
     },
   ];
+
+  useEffect(() => {
+    setBreadcrumbs(<Text aria-current="page">Signalements</Text>);
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [setBreadcrumbs]);
 
   // Fly to commune
   useEffect(() => {
@@ -218,20 +224,7 @@ function SignalementsPage({
 
   return (
     <ProtectedPage>
-      <Pane
-        display="flex"
-        flexDirection="column"
-        background="tint1"
-        padding={16}
-      >
-        <Heading>
-          <Pane marginBottom={8} display="flex" justifyContent="space-between">
-            <Pane>Signalements</Pane>
-          </Pane>
-        </Heading>
-      </Pane>
-
-      <Tablist margin={10} marginTop={0}>
+      <Tablist background="white" padding={8}>
         {tabs.map(({ label, key, count }, index) => (
           <Tab
             key={key}
@@ -317,7 +310,6 @@ function SignalementsPage({
           editionEnabled={activeTabIndex === 0}
         />
       </Pane>
-      <SignalementJoyRide />
     </ProtectedPage>
   );
 }
