@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Signalement,
   VoieChangesRequestedDTO,
@@ -6,6 +6,7 @@ import {
 import { Voie, VoiesService } from "@/lib/openapi-api-bal";
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementVoieDiffCard } from "../../signalement-diff/signalement-voie-diff-card";
+import LayoutContext from "@/contexts/layout";
 
 interface SignalementUpdateVoieProps {
   signalement: Signalement;
@@ -28,12 +29,21 @@ function SignalementUpdateVoie({
 }: SignalementUpdateVoieProps) {
   const { nom: existingNom } = existingLocation;
   const { nom } = signalement.changesRequested as VoieChangesRequestedDTO;
+  const { pushToast } = useContext(LayoutContext);
 
   const onAccept = async () => {
-    await VoiesService.updateVoie(existingLocation.id, {
-      nom,
-    });
-    await handleAccept();
+    try {
+      await VoiesService.updateVoie(existingLocation.id, {
+        nom,
+      });
+      await handleAccept();
+    } catch (error) {
+      console.error("Error accepting signalement:", error);
+      pushToast({
+        title: "Erreur lors de l'acceptation du signalement.",
+        intent: "danger",
+      });
+    }
   };
 
   return (

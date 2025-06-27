@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Numero,
   NumerosService,
@@ -14,6 +14,7 @@ import { ActiveCardEnum, detectChanges } from "@/lib/utils/signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
 import { Alert } from "evergreen-ui";
+import LayoutContext from "@/contexts/layout";
 
 interface SignalementUpdateNumeroProps {
   signalement: Signalement;
@@ -36,7 +37,15 @@ function SignalementUpdateNumero({
   handleClose,
   isLoading,
 }: SignalementUpdateNumeroProps) {
-  const [changes] = useState(detectChanges(signalement, existingLocation));
+  const [changes, setChanges] = useState(
+    detectChanges(signalement, existingLocation)
+  );
+  const { pushToast } = useContext(LayoutContext);
+
+  useEffect(() => {
+    const newChanges = detectChanges(signalement, existingLocation);
+    setChanges(newChanges);
+  }, [signalement, existingLocation]);
 
   const { numero, suffixe, positions, parcelles, nomVoie } =
     signalement.changesRequested as NumeroChangesRequestedDTO;
@@ -55,19 +64,27 @@ function SignalementUpdateNumero({
   );
 
   const onAccept = async () => {
-    if (changes.voie) {
-      await VoiesService.updateVoie(existingLocation.voie.id, {
-        nom: nomVoie,
+    try {
+      if (changes.voie) {
+        await VoiesService.updateVoie(existingLocation.voie.id, {
+          nom: nomVoie,
+        });
+      }
+      await NumerosService.updateNumero(existingLocation.id, {
+        numero,
+        suffixe,
+        positions: positions as any[],
+        parcelles,
+        toponymeId: requestedToponyme?.id,
+      });
+      await handleAccept();
+    } catch (error) {
+      console.error("Error accepting signalement update:", error);
+      pushToast({
+        title: "Erreur lors de l'acceptation du signalement.",
+        intent: "danger",
       });
     }
-    await NumerosService.updateNumero(existingLocation.id, {
-      numero,
-      suffixe,
-      positions: positions as any[],
-      parcelles,
-      toponymeId: requestedToponyme?.id,
-    });
-    await handleAccept();
   };
 
   return (

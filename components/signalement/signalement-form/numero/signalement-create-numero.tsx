@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Toponyme, Voie, VoiesService } from "@/lib/openapi-api-bal";
 import {
   NumeroChangesRequestedDTO,
@@ -7,6 +7,7 @@ import {
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
 import { useSignalementMapDiffCreation } from "@/components/signalement/hooks/useSignalementMapDiffCreation";
+import LayoutContext from "@/contexts/layout";
 
 interface SignalementCreateNumeroProps {
   signalement: Signalement;
@@ -31,21 +32,30 @@ function SignalementCreateNumero({
 }: SignalementCreateNumeroProps) {
   const { numero, suffixe, parcelles, positions, nomVoie } =
     signalement.changesRequested as NumeroChangesRequestedDTO;
+  const { pushToast } = useContext(LayoutContext);
 
   useSignalementMapDiffCreation(
     signalement.changesRequested as NumeroChangesRequestedDTO
   );
 
   const onAccept = async () => {
-    await VoiesService.createNumero(voie.id, {
-      numero,
-      suffixe,
-      positions: positions as any[],
-      parcelles,
-      certifie: true,
-      toponymeId: requestedToponyme?.id,
-    });
-    await handleAccept();
+    try {
+      await VoiesService.createNumero(voie.id, {
+        numero,
+        suffixe,
+        positions: positions as any[],
+        parcelles,
+        certifie: true,
+        toponymeId: requestedToponyme?.id,
+      });
+      await handleAccept();
+    } catch (error) {
+      console.error("Error accepting signalement:", error);
+      pushToast({
+        title: "Erreur lors de l'acceptation du signalement.",
+        intent: "danger",
+      });
+    }
   };
 
   return (
