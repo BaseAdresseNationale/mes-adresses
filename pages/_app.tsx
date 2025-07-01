@@ -23,6 +23,7 @@ import { SignalementContextProvider } from "@/contexts/signalement";
 import { LayoutContextProvider } from "@/contexts/layout";
 import { BALWidgetProvider } from "@/contexts/bal-widget";
 import { SearchPaginationContextProvider } from "@/contexts/search-pagination";
+import NextNProgress from "nextjs-progressbar";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -91,13 +92,29 @@ function App(props: AppProps) {
                           <SearchPaginationContextProvider>
                             <SignalementContextProvider>
                               <Editor {...pageProps}>
+                                <NextNProgress
+                                  color="#3366FF"
+                                  startPosition={0.3}
+                                  stopDelayMs={200}
+                                  height={3}
+                                  showOnShallow={true}
+                                />
                                 <Component {...pageProps} />
                               </Editor>
                             </SignalementContextProvider>
                           </SearchPaginationContextProvider>
                         </BalDataContextProvider>
                       ) : (
-                        <Component {...pageProps} />
+                        <>
+                          <NextNProgress
+                            color="#3366FF"
+                            startPosition={0.3}
+                            stopDelayMs={200}
+                            height={3}
+                            showOnShallow={true}
+                          />
+                          <Component {...pageProps} />
+                        </>
                       )}
                     </>
                   </Pane>
