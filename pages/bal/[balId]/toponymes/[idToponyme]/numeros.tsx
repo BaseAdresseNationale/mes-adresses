@@ -32,15 +32,12 @@ import {
   UpdateBatchNumeroDTO,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
-import { CommuneType } from "@/types/commune";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
-import { getCommuneWithBBox } from "@/lib/commune";
 
 interface ToponymeNumerosListPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
   toponyme: ExtentedToponymeDTO;
 }
 
@@ -50,7 +47,6 @@ const fuseOptions = {
 
 function ToponymeNumerosListPage({
   baseLocale,
-  commune,
   toponyme,
 }: ToponymeNumerosListPageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
@@ -64,7 +60,7 @@ function ToponymeNumerosListPage({
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
   );
-  const { reloadNumeros, isEditing, setIsEditing, numeros } =
+  const { reloadNumeros, isEditing, setIsEditing, numeros, commune } =
     useContext(BalDataContext);
 
   useHelp(2);
