@@ -8,9 +8,9 @@ Il est disponible en ligne à l'adresse [mes-adresses.data.gouv.fr](https://mes-
 
 https://adresse.data.gouv.fr/data/docs/guide-mes-adresses-v4.0.pdf
 
-## Documentation
+## 📚 Documentation
 
-https://adresse-data-gouv-fr.gitbook.io/bal/mes-adresses
+Une documentation plus complète et des guides d’utilisation sont disponibles dans le [Wiki](https://github.com/BaseAdresseNationale/mes-adresses/wiki).
 
 ## Pré-requis
 
