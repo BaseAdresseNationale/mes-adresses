@@ -45,7 +45,6 @@ function AddressEditor({ commune, closeForm }: AddressEditorProps) {
           <NumeroEditor
             initialVoieId={voie?.id}
             commune={commune}
-            hasPreview
             closeForm={closeForm}
           />
         )}

@@ -19,6 +19,7 @@ import TokenContext from "@/contexts/token";
 
 import DeleteWarning from "@/components/delete-warning";
 import {
+  BasesLocalesService,
   CommunePrecedenteDTO,
   ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
@@ -34,7 +35,6 @@ import LanguagePreview from "@/components/bal/language-preview";
 import TableRowNotifications from "@/components/table-row/table-row-notifications";
 import CommentsContent from "@/components/comments-content";
 import TableRowActions from "@/components/table-row/table-row-actions";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import MapContext from "@/contexts/map";
@@ -42,16 +42,20 @@ import SearchPaginationContext from "@/contexts/search-pagination";
 
 interface ToponymesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
-  toponymes: ExtentedToponymeDTO[];
 }
 
-function ToponymesPage({ baseLocale, commune, toponymes }: ToponymesPageProps) {
+function ToponymesPage({ baseLocale }: ToponymesPageProps) {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const [isDisabled, setIsDisabled] = useState(false);
-  const { isEditing, reloadToponymes, reloadParcelles, refreshBALSync } =
-    useContext(BalDataContext);
+  const {
+    commune,
+    toponymes,
+    isEditing,
+    reloadToponymes,
+    reloadParcelles,
+    refreshBALSync,
+  } = useContext(BalDataContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const router = useRouter();
   const [page, changePage, search, changeFilter, filtered] =
@@ -267,15 +271,11 @@ export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
 
   try {
-    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
 
     return {
       props: {
         baseLocale,
-        commune,
-        voies,
-        toponymes,
       },
     };
   } catch {

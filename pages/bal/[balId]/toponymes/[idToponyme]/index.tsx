@@ -1,9 +1,9 @@
 import {
+  BasesLocalesService,
   ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
   ToponymesService,
 } from "@/lib/openapi-api-bal";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import { CommuneType } from "@/types/commune";
 import ProtectedPage from "@/layouts/protected-page";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
@@ -80,15 +80,13 @@ export async function getServerSideProps({ params }) {
   const { idToponyme, balId }: { idToponyme: string; balId: string } = params;
 
   try {
-    const { baseLocale, commune }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
     const toponyme: ExtentedToponymeDTO =
       await ToponymesService.findToponyme(idToponyme);
 
     return {
       props: {
         baseLocale,
-        commune,
         toponyme,
       },
     };

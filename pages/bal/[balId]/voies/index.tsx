@@ -24,6 +24,7 @@ import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
 import {
+  BasesLocalesService,
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
   Toponyme,
@@ -38,23 +39,20 @@ import TableRowNotifications from "@/components/table-row/table-row-notification
 import TableRowActions from "@/components/table-row/table-row-actions";
 import ConvertVoieWarning from "@/components/convert-voie-warning";
 import MapContext from "@/contexts/map";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import PopulateSideBar from "@/components/sidebar/populate";
-import { CommuneType } from "@/types/commune";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import SearchPaginationContext from "@/contexts/search-pagination";
 
 interface VoiesPageProps {
-  voies: ExtendedVoieDTO[];
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
 }
 
-function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
+function VoiesPage({ baseLocale }: VoiesPageProps) {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
   const {
+    voies,
     isEditing,
     reloadVoies,
     reloadToponymes,
@@ -199,7 +197,7 @@ function VoiesPage({ voies, baseLocale, commune }: VoiesPageProps) {
         </Pane>
       )}
       {token && voies && voies.length === 0 && (
-        <PopulateSideBar commune={commune} baseLocale={baseLocale} />
+        <PopulateSideBar baseLocale={baseLocale} />
       )}
       <Table
         display="flex"
@@ -345,15 +343,11 @@ export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
 
   try {
-    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
 
     return {
       props: {
         baseLocale,
-        commune,
-        voies,
-        toponymes,
       },
     };
   } catch {

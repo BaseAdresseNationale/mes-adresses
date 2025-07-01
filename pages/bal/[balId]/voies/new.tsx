@@ -1,5 +1,7 @@
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
+import {
+  BasesLocalesService,
+  ExtendedBaseLocaleDTO,
+} from "@/lib/openapi-api-bal";
 import VoieEditor from "@/components/bal/voie-editor";
 import ProtectedPage from "@/layouts/protected-page";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
@@ -48,13 +50,11 @@ export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
 
   try {
-    const { baseLocale, commune }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
 
     return {
       props: {
         baseLocale,
-        commune,
       },
     };
   } catch {

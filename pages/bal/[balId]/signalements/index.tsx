@@ -17,7 +17,6 @@ import {
   Text,
   Badge,
 } from "evergreen-ui";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
@@ -31,19 +30,21 @@ import SignalementTypeBadge, {
 import useFuse from "@/hooks/fuse";
 import MapContext from "@/contexts/map";
 import SignalementContext from "@/contexts/signalement";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
+import BalDataContext from "@/contexts/bal-data";
 
 const fuseOptions = {
   keys: ["label"],
 };
 
-interface SignalementsPageProps extends BaseEditorProps {
+interface SignalementsPageProps {
   paginatedSignalements: { data: Signalement[] };
 }
 
 function SignalementsPage({
-  commune,
   paginatedSignalements: initialSignalements,
 }: SignalementsPageProps) {
+  const { commune } = useContext(BalDataContext);
   const [signalements, setSignalements] = useState<Signalement[]>(
     initialSignalements.data
   );
@@ -318,8 +319,7 @@ export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
 
   try {
-    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
 
     const paginatedSignalements = await SignalementsService.getSignalements(
       100,
@@ -333,9 +333,6 @@ export async function getServerSideProps({ params }) {
     return {
       props: {
         baseLocale,
-        commune,
-        voies,
-        toponymes,
         paginatedSignalements,
       },
     };
