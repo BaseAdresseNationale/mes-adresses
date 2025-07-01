@@ -103,15 +103,16 @@ export function BalDataContextProvider({
   useEffect(() => {
     async function fetchBALData() {
       try {
-        setCommune(await getCommuneWithBBox(initialBaseLocale));
-        setVoies(
-          await BasesLocalesService.findBaseLocaleVoies(initialBaseLocale.id)
+        const voies = await BasesLocalesService.findBaseLocaleVoies(
+          initialBaseLocale.id
         );
-        setToponymes(
-          await BasesLocalesService.findBaseLocaleToponymes(
-            initialBaseLocale.id
-          )
+        const toponymes = await BasesLocalesService.findBaseLocaleToponymes(
+          initialBaseLocale.id
         );
+        const commune = await getCommuneWithBBox(initialBaseLocale, voies);
+        setVoies(voies);
+        setToponymes(toponymes);
+        setCommune(commune);
         setIsBALDataLoaded(true);
       } catch (error) {
         console.error("Error fetching BAL data:", error);
