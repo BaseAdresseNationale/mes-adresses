@@ -136,6 +136,7 @@ function MainTabs({ balId }: MainTabsProps) {
               <Tooltip key={key} content={tooltip}>
                 <Link
                   className={styles.tabLink}
+                  role="tab"
                   href={href}
                   shallow
                   draggable={false}
