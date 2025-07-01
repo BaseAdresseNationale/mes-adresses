@@ -28,7 +28,6 @@ import {
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { useSearchPagination } from "@/hooks/search-pagination";
-import { CommuneType } from "@/types/commune";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
 import PaginationList from "@/components/pagination-list";
 import LanguagePreview from "@/components/bal/language-preview";

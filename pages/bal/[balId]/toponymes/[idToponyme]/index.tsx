@@ -15,19 +15,20 @@ import { Text, Link } from "evergreen-ui";
 import ToponymeEditor from "@/components/bal/toponyme-editor";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
+import BalDataContext from "@/contexts/bal-data";
 
 interface ToponymePageProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
   toponyme: ExtentedToponymeDTO;
 }
 
-function ToponymePage({ baseLocale, commune, toponyme }: ToponymePageProps) {
+function ToponymePage({ baseLocale, toponyme }: ToponymePageProps) {
   const router = useRouter();
   const { setBreadcrumbs } = useContext(LayoutContext);
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
   );
+  const { commune } = useContext(BalDataContext);
 
   useEffect(() => {
     setLastSelectedItem((prev) => ({
