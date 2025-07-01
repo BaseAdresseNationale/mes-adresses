@@ -10,35 +10,30 @@ import useFormState from "@/hooks/useFormState";
 import NumeroEditor from "@/components/bal/numero-editor";
 import VoieHeading from "@/components/voie/voie-heading";
 import NumerosList from "@/components/voie/numeros-list";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import {
+  BasesLocalesService,
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
   Numero,
   VoieMetas,
   VoiesService,
 } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import LayoutContext from "@/contexts/layout";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
 
 interface VoieNumerosListPageProps {
-  commune: CommuneType;
   baseLocale: ExtendedBaseLocaleDTO;
 }
 
-function VoieNumerosListPage({
-  commune,
-  baseLocale,
-}: VoieNumerosListPageProps) {
+function VoieNumerosListPage({ baseLocale }: VoieNumerosListPageProps) {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
 
   useHelp(3);
 
   const { token } = useContext(TokenContext);
-  const { setVoie, reloadVoieNumeros, numeros, voie } =
+  const { setVoie, reloadVoieNumeros, numeros, voie, commune } =
     useContext(BalDataContext);
   const { setBreadcrumbs } = useContext(LayoutContext);
   const { savedSearchPagination, setLastSelectedItem } = useContext(
@@ -113,7 +108,6 @@ function VoieNumerosListPage({
       >
         {isFormOpen && (
           <NumeroEditor
-            hasPreview
             initialVoieId={voie.id}
             initialValue={editedNumero}
             commune={commune}
@@ -136,17 +130,13 @@ export async function getServerSideProps({ params }) {
   const { idVoie, balId }: { idVoie: string; balId: string } = params;
 
   try {
-    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
     const voie: ExtendedVoieDTO = await VoiesService.findVoie(idVoie);
     const numeros: Numero[] = await VoiesService.findVoieNumeros(idVoie);
 
     return {
       props: {
         baseLocale,
-        commune,
-        voies,
-        toponymes,
         voie,
         numeros,
       },

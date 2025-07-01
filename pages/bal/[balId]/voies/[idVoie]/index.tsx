@@ -1,10 +1,10 @@
 import {
+  BasesLocalesService,
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
   VoieMetas,
   VoiesService,
 } from "@/lib/openapi-api-bal";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import VoieEditor from "@/components/bal/voie-editor";
 import ProtectedPage from "@/layouts/protected-page";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
@@ -103,14 +103,12 @@ export async function getServerSideProps({ params }) {
   const { idVoie, balId }: { idVoie: string; balId: string } = params;
 
   try {
-    const { baseLocale, commune }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
     const voie: ExtendedVoieDTO = await VoiesService.findVoie(idVoie);
 
     return {
       props: {
         baseLocale,
-        commune,
         voie,
       },
     };

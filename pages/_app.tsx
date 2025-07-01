@@ -85,8 +85,6 @@ function App(props: AppProps) {
                           initialBaseLocale={pageProps.baseLocale}
                           initialVoie={pageProps.voie}
                           initialToponyme={pageProps.toponyme}
-                          initialVoies={pageProps.voies}
-                          initialToponymes={pageProps.toponymes}
                           initialNumeros={pageProps.numeros}
                         >
                           <SearchPaginationContextProvider>

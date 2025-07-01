@@ -6,6 +6,7 @@ import TokenContext from "@/contexts/token";
 
 import {
   BaseLocale,
+  BasesLocalesService,
   ExtendedVoieDTO,
   ExtentedToponymeDTO,
 } from "@/lib/openapi-api-bal";
@@ -13,26 +14,19 @@ import { CommuneType } from "@/types/commune";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
 import HabilitationInfos from "@/components/bal/habilitation-infos";
 import CertificationInfos from "@/components/bal/certification-infos";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import { getCommuneFlag } from "@/lib/api-blason-commune";
 import CommuneNomsAltEditor from "@/components/bal/commune-noms-alt-editor";
 import BALSummary from "@/components/bal/bal-summary";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 
 interface BALHomePageProps {
-  commune: CommuneType;
   voies: ExtendedVoieDTO[];
   toponymes: ExtentedToponymeDTO[];
   communeFlag?: string;
 }
 
-function BALHomePage({
-  commune,
-  communeFlag,
-  voies,
-  toponymes,
-}: BALHomePageProps) {
-  const { baseLocale } = useContext(BalDataContext);
+function BALHomePage({ communeFlag, voies, toponymes }: BALHomePageProps) {
+  const { baseLocale, commune } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
   const isAdmin = Boolean(token);
   const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
@@ -75,18 +69,13 @@ export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
 
   try {
-    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
-      await getBaseEditorProps(balId);
-
-    const communeFlag = await getCommuneFlag(commune.code);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
+    const communeFlag = await getCommuneFlag(baseLocale.commune);
 
     return {
       props: {
         baseLocale,
-        commune,
         communeFlag,
-        voies,
-        toponymes,
       },
     };
   } catch {

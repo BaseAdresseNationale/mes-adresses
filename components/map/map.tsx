@@ -46,7 +46,7 @@ import AddressEditorControl from "@/components/map/controls/address-editor-contr
 import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
-import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
+import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
@@ -91,17 +91,11 @@ function generateNewStyle(style) {
 
 export interface MapProps {
   commune: CommuneType;
-  baseLocale: ExtendedBaseLocaleDTO;
   isAddressFormOpen: boolean;
   handleAddressForm: (open: boolean) => void;
 }
 
-function Map({
-  commune,
-  baseLocale,
-  isAddressFormOpen,
-  handleAddressForm,
-}: MapProps) {
+function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const router = useRouter();
   const {
     map,

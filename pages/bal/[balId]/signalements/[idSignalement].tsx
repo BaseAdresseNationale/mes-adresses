@@ -1,8 +1,13 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Button, Link, Pane, Paragraph, Text } from "evergreen-ui";
 import NextLink from "next/link";
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
-import { Numero, Toponyme, Voie } from "@/lib/openapi-api-bal";
+import {
+  BasesLocalesService,
+  ExtendedBaseLocaleDTO,
+  Numero,
+  Toponyme,
+  Voie,
+} from "@/lib/openapi-api-bal";
 import {
   ExistingVoie,
   NumeroChangesRequestedDTO,
@@ -23,22 +28,20 @@ import ProtectedPage from "@/layouts/protected-page";
 import SignalementForm from "@/components/signalement/signalement-form/signalement-form";
 import { SignalementViewer } from "@/components/signalement/signalement-viewer/signalement-viewer";
 import SignalementContext from "@/contexts/signalement";
-import { CommuneType } from "@/types/commune";
 import TokenContext from "@/contexts/token";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 
-interface SignalementPageProps extends BaseEditorProps {
+interface SignalementPageProps {
   signalement: Signalement;
   existingLocation: Voie | Toponyme | Numero | null;
   requestedToponyme?: Toponyme;
-  commune: CommuneType;
+  baseLocale: ExtendedBaseLocaleDTO;
 }
 
 function SignalementPage({
   signalement,
   existingLocation,
   requestedToponyme,
-  commune,
   baseLocale,
 }: SignalementPageProps) {
   const router = useRouter();
@@ -66,7 +69,7 @@ function SignalementPage({
       setStyle(defaultStyle);
       setBreadcrumbs(null);
     };
-  }, [setStyle, setBreadcrumbs, baseLocale, signalement, commune]);
+  }, [setStyle, setBreadcrumbs, baseLocale, signalement]);
 
   // Mark the signalement as expired if the location is not found
   // and the signalement is still pending
@@ -201,8 +204,10 @@ export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
 
   try {
-    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
+
+    const voies = await BasesLocalesService.findBaseLocaleVoies(balId);
+    const toponymes = await BasesLocalesService.findBaseLocaleToponymes(balId);
 
     const signalement = await SignalementsService.getSignalementById(
       params.idSignalement
@@ -224,7 +229,6 @@ export async function getServerSideProps({ params }) {
       return {
         props: {
           baseLocale,
-          commune,
           voies,
           toponymes,
           signalement,
@@ -282,7 +286,6 @@ export async function getServerSideProps({ params }) {
     return {
       props: {
         baseLocale,
-        commune,
         voies,
         toponymes,
         signalement,
