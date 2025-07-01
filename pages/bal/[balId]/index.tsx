@@ -10,7 +10,6 @@ import {
   ExtendedVoieDTO,
   ExtentedToponymeDTO,
 } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
 import HabilitationInfos from "@/components/bal/habilitation-infos";
 import CertificationInfos from "@/components/bal/certification-infos";

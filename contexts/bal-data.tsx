@@ -22,12 +22,12 @@ import {
 } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
 import useHabilitation from "@/hooks/habilitation";
-import { ChildrenProps } from "@/types/context";
 import { useRouter } from "next/router";
 import LayoutContext from "./layout";
 import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 import { CommuneType } from "@/types/commune";
 import { getCommuneWithBBox } from "@/lib/commune";
+import { Pane, Paragraph, Spinner } from "evergreen-ui";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -367,7 +367,24 @@ export function BalDataContextProvider({
 
   return (
     <BalDataContext.Provider value={value}>
-      {isBALDataLoaded ? children : <div>Loading...</div>}
+      {isBALDataLoaded ? (
+        children
+      ) : (
+        <Pane
+          width="100%"
+          height="100%"
+          display="flex"
+          flexDirection="column"
+          background="tint1"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Spinner />
+          <Paragraph marginTop={10}>
+            Chargement de la base adresse locale...
+          </Paragraph>
+        </Pane>
+      )}
     </BalDataContext.Provider>
   );
 }
