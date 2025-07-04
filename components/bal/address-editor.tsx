@@ -19,7 +19,7 @@ function AddressEditor({ commune, closeForm }: AddressEditorProps) {
 
   return (
     <Pane display="flex" flexDirection="column" height="100%">
-      <Pane padding={12}>
+      <Pane padding={12} zIndex={1} background="tint2">
         <Heading is="h4">Nouvelle adresse</Heading>
         <SelectField
           label="Créer un nouveau"
@@ -45,7 +45,6 @@ function AddressEditor({ commune, closeForm }: AddressEditorProps) {
           <NumeroEditor
             initialVoieId={voie?.id}
             commune={commune}
-            hasPreview
             closeForm={closeForm}
           />
         )}

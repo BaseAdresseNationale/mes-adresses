@@ -15,13 +15,15 @@ import {
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
-interface CommuneEditorProps {
+interface CommuneNomsAltEditorProps {
   initialValue?: BaseLocale;
   closeForm: () => void;
-  onSubmitted?: () => void;
 }
 
-function CommuneEditor({ initialValue, closeForm }: CommuneEditorProps) {
+function CommuneNomsAltEditor({
+  initialValue,
+  closeForm,
+}: CommuneNomsAltEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [communeNomsAlt, setCommuneNomsAlt] = useState(
     initialValue?.communeNomsAlt
@@ -129,4 +131,4 @@ function CommuneEditor({ initialValue, closeForm }: CommuneEditorProps) {
   );
 }
 
-export default CommuneEditor;
+export default CommuneNomsAltEditor;

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Map as MaplibreMap } from "maplibre-gl";
 import {
-  Tooltip,
   Position,
   IconButton,
   Popover,
@@ -198,9 +197,12 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
         </Pane>
       }
     >
-      <Tooltip position={Position.LEFT} content="Prendre une photo de la carte">
-        <IconButton height={29} width={29} icon={CameraIcon} />
-      </Tooltip>
+      <IconButton
+        height={29}
+        width={29}
+        icon={CameraIcon}
+        title="Prendre une photo de la carte"
+      />
     </Popover>
   );
 }

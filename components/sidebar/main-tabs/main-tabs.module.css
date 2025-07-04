@@ -1,0 +1,70 @@
+.mainTabs {
+  display: flex;
+  padding: 10px;
+  padding-bottom: 0;
+  flex-shrink: 0;
+  transform: translateY(0);
+  transition: all 0.3s ease-in-out;
+}
+
+.mainTabs.hide {
+  transform: translateY(-100%);
+  padding: 0;
+}
+
+.tabsList {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 88px;
+  width: 100%;
+  transition: height 0.3s ease-in-out;
+}
+
+.mainTabs.hide > .tabsList {
+  height: 0;
+}
+
+.tabLink {
+  text-decoration: none;
+  color: inherit;
+  margin: 0 5px;
+  height: 100%;
+  flex: 1;
+}
+
+.tab {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  user-select: none;
+  padding: 10px;
+  height: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.tab.selected {
+  background: white;
+}
+
+.tabImage {
+  transform: scale(1);
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab.selected > .tabImage {
+  transform: scale(1.3);
+}
+
+.tab:hover > .tabImage {
+  transform: scale(1.3);
+}

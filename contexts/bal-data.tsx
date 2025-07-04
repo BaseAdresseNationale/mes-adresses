@@ -22,10 +22,12 @@ import {
 } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
 import useHabilitation from "@/hooks/habilitation";
-import { ChildrenProps } from "@/types/context";
 import { useRouter } from "next/router";
 import LayoutContext from "./layout";
 import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
+import { CommuneType } from "@/types/commune";
+import { getCommuneWithBBox } from "@/lib/commune";
+import { Pane, Paragraph, Spinner } from "evergreen-ui";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -61,44 +63,66 @@ interface BALDataContextType {
     isHabilitationProcessDisplayed: boolean
   ) => void;
   reloadVoieNumeros: (voieId: string) => Promise<void>;
+  commune: CommuneType | null;
 }
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null);
 
-interface BalDataContextProviderProps extends ChildrenProps {
+interface BalDataContextProviderProps {
   initialBaseLocale: ExtendedBaseLocaleDTO;
   initialVoie: Voie;
   initialToponyme: Toponyme;
-  initialVoies: ExtendedVoieDTO[];
-  initialToponymes: ExtentedToponymeDTO[];
   initialNumeros: Numero[];
+  children: React.ReactNode;
 }
 
 export function BalDataContextProvider({
   initialBaseLocale,
   initialVoie,
   initialToponyme,
-  initialVoies,
-  initialToponymes,
   initialNumeros,
-  ...props
+  children,
 }: BalDataContextProviderProps) {
   const { query } = useRouter();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editingId, _setEditingId] = useState<string>(null);
   const [parcelles, setParcelles] = useState<Array<string>>([]);
   const [numeros, setNumeros] = useState<Array<Numero>>(initialNumeros);
-  const [voies, setVoies] = useState<ExtendedVoieDTO[]>(initialVoies);
-  const [toponymes, setToponymes] =
-    useState<ExtentedToponymeDTO[]>(initialToponymes);
+  const [voies, setVoies] = useState<ExtendedVoieDTO[]>([]);
+  const [toponymes, setToponymes] = useState<ExtentedToponymeDTO[]>([]);
+  const [commune, setCommune] = useState<CommuneType | null>(null);
   const [voie, setVoie] = useState<Voie>(initialVoie);
   const [toponyme, setToponyme] = useState<Toponyme>(initialToponyme);
   const [baseLocale, setBaseLocale] =
     useState<ExtendedBaseLocaleDTO>(initialBaseLocale);
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
   const { pushToast } = useContext(LayoutContext);
-
   const { token } = useContext(TokenContext);
+  const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function fetchBALData() {
+      try {
+        const voies = await BasesLocalesService.findBaseLocaleVoies(
+          initialBaseLocale.id
+        );
+        const toponymes = await BasesLocalesService.findBaseLocaleToponymes(
+          initialBaseLocale.id
+        );
+        const commune = await getCommuneWithBBox(initialBaseLocale, voies);
+        setVoies(voies);
+        setToponymes(toponymes);
+        setCommune(commune);
+        setIsBALDataLoaded(true);
+      } catch (error) {
+        console.error("Error fetching BAL data:", error);
+      }
+    }
+
+    if (!isBALDataLoaded) {
+      fetchBALData();
+    }
+  }, [initialBaseLocale, isBALDataLoaded]);
 
   const {
     habilitation,
@@ -242,16 +266,6 @@ export function BalDataContextProvider({
   }, [initialToponyme]);
 
   useEffect(() => {
-    setVoies(initialVoies);
-  }, [initialVoie, initialVoies]);
-
-  useEffect(() => {
-    if (initialToponymes) {
-      setToponymes(initialToponymes);
-    }
-  }, [initialToponymes]);
-
-  useEffect(() => {
     setNumeros(initialNumeros);
   }, [initialNumeros]);
 
@@ -294,8 +308,8 @@ export function BalDataContextProvider({
       voie: voie || initialVoie,
       toponyme: toponyme || initialToponyme,
       numeros: numeros || initialNumeros,
-      voies: voies || initialVoies,
-      toponymes: toponymes || initialToponymes,
+      voies: voies,
+      toponymes: toponymes,
       isRefrehSyncStat,
       setEditingId,
       refreshBALSync,
@@ -314,6 +328,7 @@ export function BalDataContextProvider({
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
       reloadVoieNumeros,
+      commune,
     }),
     [
       isEditing,
@@ -332,8 +347,6 @@ export function BalDataContextProvider({
       initialVoie,
       initialToponyme,
       initialNumeros,
-      initialVoies,
-      initialToponymes,
       voies,
       toponymes,
       setVoies,
@@ -349,10 +362,32 @@ export function BalDataContextProvider({
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
       reloadVoieNumeros,
+      commune,
     ]
   );
 
-  return <BalDataContext.Provider value={value} {...props} />;
+  return (
+    <BalDataContext.Provider value={value}>
+      {isBALDataLoaded ? (
+        children
+      ) : (
+        <Pane
+          width="100%"
+          height="100%"
+          display="flex"
+          flexDirection="column"
+          background="tint1"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Spinner />
+          <Paragraph marginTop={10}>
+            Chargement de la base adresse locale...
+          </Paragraph>
+        </Pane>
+      )}
+    </BalDataContext.Provider>
+  );
 }
 
 export const BalDataContextConsumer = BalDataContext.Consumer;
