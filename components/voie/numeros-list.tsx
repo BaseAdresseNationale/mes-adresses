@@ -333,6 +333,7 @@ function NumerosList({
                     : null
                 }
                 comment={numero.comment}
+                parcelles={numero.parcelles}
               />
 
               {isEditingEnabled && (
