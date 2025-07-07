@@ -1,5 +1,5 @@
 import { useCallback, useState, useContext } from "react";
-import { Dialog, Label, Paragraph, TextInput } from "evergreen-ui";
+import { Alert, Dialog, Label, Paragraph, TextInput } from "evergreen-ui";
 
 import { validateEmail } from "@/lib/utils/email";
 
@@ -36,13 +36,15 @@ function RecoverBALAlert({
 }: RecoverBALAlertProps) {
   const { recoveryEmailSent, setRecoveryEmailSent } =
     useContext(LocalStorageContext);
-  const { toaster, pushToast } = useContext(LayoutContext);
+  const { pushToast } = useContext(LayoutContext);
 
   const [isLoading, setIsLoading] = useState(false);
   const [email, onEmailChange, resetEmail] = useInput(defaultEmail);
+  const [error, setError] = useState<string | null>(null);
 
   const handleComplete = () => {
     setIsLoading(false);
+    setError(null);
     onClose();
   };
 
@@ -61,34 +63,32 @@ function RecoverBALAlert({
       return;
     }
 
-    const recoveryBasesLocales = toaster(
-      async () => {
+    const recoveryBasesLocales = async () => {
+     
         await BasesLocalesService.recoveryBasesLocales({
           email,
           id: baseLocaleId,
         });
         setRecoveryEmailSent(now);
-      },
-      `Un email a été envoyé à l’adresse ${email}`,
-      "Une erreur est survenue"
-    );
+        pushToast({
+          title: `Un email a été envoyé à l’adresse ${email}`,
+          intent: "success",
+        });
+        setError(null);
 
-    await recoveryBasesLocales();
+    }
 
-    resetEmail();
+    try {
+      await recoveryBasesLocales();
+      resetEmail();
+      onClose();
+    } catch (error) {
+      setError(error.body?.message);
+    } finally {
+      setIsLoading(false);
+    }
 
-    setIsLoading(false);
-    onClose();
-  }, [
-    email,
-    baseLocaleId,
-    recoveryEmailSent,
-    resetEmail,
-    onClose,
-    setRecoveryEmailSent,
-    toaster,
-    pushToast,
-  ]);
+  }, [email, baseLocaleId, recoveryEmailSent, resetEmail, onClose, setRecoveryEmailSent, pushToast]);
 
   return (
     <Dialog
@@ -117,6 +117,7 @@ function RecoverBALAlert({
         value={email}
         onChange={onEmailChange}
       />
+      {error && <Alert marginTop={16} intent="danger">{error}</Alert>}
 
       <Paragraph marginTop={16}>
         Un courrier électronique va être envoyé à l’adresse que vous avez
