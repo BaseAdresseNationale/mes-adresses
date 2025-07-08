@@ -193,9 +193,7 @@ function NumeroEditor({
           await reloadParcelles();
         }
 
-        if (initialVoieId !== voie.id) {
-          reloadVoies();
-        }
+        await reloadVoies();
 
         if (onSubmitted) {
           onSubmitted();
@@ -219,7 +217,6 @@ function NumeroEditor({
       initialValue,
       setValidationMessages,
       reloadVoies,
-      initialVoieId,
       reloadTiles,
       onSubmitted,
       toaster,
