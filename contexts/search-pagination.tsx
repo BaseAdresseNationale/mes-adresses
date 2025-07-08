@@ -15,6 +15,8 @@ const scrollAndHighlightElement = (elementId: string) => {
 
     return true;
   }
+
+  return false;
 };
 
 interface SearchPaginationContextType {

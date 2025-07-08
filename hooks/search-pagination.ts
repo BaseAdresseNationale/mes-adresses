@@ -71,7 +71,7 @@ export function useSearchPagination<T>(
       router.push(router, undefined, { shallow: true });
       page = change;
     },
-    [router, setSavedSearchPagination, tab, search]
+    [router]
   );
 
   const changeFilter = useCallback(
