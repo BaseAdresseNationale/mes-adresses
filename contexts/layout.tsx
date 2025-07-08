@@ -2,6 +2,7 @@ import CustomToast from "@/components/custom-toast";
 import useWindowSize from "@/hooks/useWindowSize";
 import { ChildrenProps } from "@/types/context";
 import { Alert } from "evergreen-ui";
+import { useRouter } from "next/router";
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
 
@@ -28,16 +29,28 @@ interface LayoutContextType {
   pushToast: ({ intent, title, message }: Toast) => void;
   breadcrumbs?: React.ReactNode;
   setBreadcrumbs: (value: React.ReactNode) => void;
+  selectedTab?: string;
 }
 
 const LayoutContext = React.createContext<LayoutContextType | null>(null);
 
-export function LayoutContextProvider(props: ChildrenProps) {
+export function LayoutContextProvider(
+  props: ChildrenProps & { balId?: string }
+) {
   const { isMobile } = useWindowSize();
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [isClientSide, setIsClientSide] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState<React.ReactNode>();
+  const router = useRouter();
+
+  const selectedTab = useMemo(() => {
+    const path = router.pathname.split("[balId]")[1];
+    const innerPathSplitted = path?.split("/");
+    let innerPath = innerPathSplitted?.[1];
+
+    return innerPath;
+  }, [router.pathname]);
 
   useEffect(() => {
     setIsClientSide(true);
@@ -102,8 +115,18 @@ export function LayoutContextProvider(props: ChildrenProps) {
       toasts,
       breadcrumbs,
       setBreadcrumbs,
+      selectedTab,
     }),
-    [isMapFullscreen, isMobile, pushToast, toaster, toasts, breadcrumbs]
+    [
+      isMapFullscreen,
+      isMobile,
+      pushToast,
+      toaster,
+      toasts,
+      breadcrumbs,
+      setBreadcrumbs,
+      selectedTab,
+    ]
   );
 
   return (

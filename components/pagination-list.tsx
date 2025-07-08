@@ -28,13 +28,21 @@ function PaginationList({
         .slice((page - 1) * LIMIT, page * LIMIT)
         .map((numero) => children(numero))}
       {items?.length > LIMIT && (
-        <Pagination
-          page={page}
-          totalPages={Math.ceil(items?.length / LIMIT)}
-          onPageChange={(newPage) => setPage(newPage)}
-          onPreviousPage={() => setPage(page - 1)}
-          onNextPage={() => setPage(page + 1)}
-        ></Pagination>
+        <Pane
+          position="sticky"
+          bottom={0}
+          display="flex"
+          justifyContent="center"
+          background="tint2"
+        >
+          <Pagination
+            page={page}
+            totalPages={Math.ceil(items?.length / LIMIT)}
+            onPageChange={(newPage) => setPage(newPage)}
+            onPreviousPage={() => setPage(page - 1)}
+            onNextPage={() => setPage(page + 1)}
+          />
+        </Pane>
       )}
     </Pane>
   );

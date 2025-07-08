@@ -1,0 +1,39 @@
+.dynamicTextIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dynamicTextIcon > img {
+  z-index: 1;
+}
+
+.dynamicTextIcon > span {
+  z-index: 2;
+  position: absolute;
+  text-align: center;
+  color: white;
+  font-size: 0.5rem;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+}
+
+.dynamicTextIcon > span.blurEffect {
+  animation: blur 1s ease-in forwards;
+}
+
+@keyframes blur {
+  from {
+    opacity: 0.5;
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
