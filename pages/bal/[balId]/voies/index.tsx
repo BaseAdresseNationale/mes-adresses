@@ -245,6 +245,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
         )}
 
         <PaginationList
+          id={`${TabsEnum.VOIES}-list`}
           items={scrollableItems}
           page={page}
           setPage={changePage}

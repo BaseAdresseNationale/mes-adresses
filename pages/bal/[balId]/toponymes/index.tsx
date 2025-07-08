@@ -181,6 +181,7 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
         )}
 
         <PaginationList
+          id={`${TabsEnum.TOPONYMES}-list`}
           items={scrollableItems}
           page={page}
           setPage={changePage}
