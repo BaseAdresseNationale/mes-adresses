@@ -59,19 +59,18 @@ export function SearchPaginationContextProvider(props: ChildrenProps) {
         return;
       }
 
-      const observer = new MutationObserver(function (mutationsList) {
-        for (const mutation of mutationsList) {
-          if (mutation.type == "childList") {
-            const elementFound = scrollAndHighlightElement(lastSelectedItemId);
-            if (elementFound) {
-              // If the element was found and highlighted, disconnect the observer
-              observer.disconnect();
-              return;
+      if (!scrollAndHighlightElement(lastSelectedItemId)) {
+        const observer = new MutationObserver(function (mutationsList) {
+          for (const mutation of mutationsList) {
+            if (mutation.type == "childList") {
+              if (scrollAndHighlightElement(lastSelectedItemId)) {
+                observer.disconnect();
+              }
             }
           }
-        }
-      });
-      observer.observe(listElem, { childList: true });
+        });
+        observer.observe(listElem, { childList: true });
+      }
     },
     [lastSelectedItem]
   );
