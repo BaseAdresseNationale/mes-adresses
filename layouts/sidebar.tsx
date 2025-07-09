@@ -76,6 +76,13 @@ function Sidebar({
             paddingX={8}
             borderRadius={0}
             onClick={handleClick}
+            title={
+              isHidden
+                ? "Ouvrir la barre latérale"
+                : isEditing || voie || toponyme
+                  ? "Fermer le formulaire"
+                  : "Masquer la barre latérale"
+            }
           >
             {isHidden ? (
               <ChevronRightIcon />

@@ -17,8 +17,6 @@ import {
   Text,
   Badge,
 } from "evergreen-ui";
-
-import { BaseEditorProps, getBaseEditorProps } from "@/layouts/editor";
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter } from "next/router";
 import ProtectedPage from "@/layouts/protected-page";
@@ -32,20 +30,21 @@ import SignalementTypeBadge, {
 import useFuse from "@/hooks/fuse";
 import MapContext from "@/contexts/map";
 import SignalementContext from "@/contexts/signalement";
-import SignalementJoyRide from "@/components/signalement/product-tour/signalement-page-product-tour";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
+import BalDataContext from "@/contexts/bal-data";
 
 const fuseOptions = {
   keys: ["label"],
 };
 
-interface SignalementsPageProps extends BaseEditorProps {
+interface SignalementsPageProps {
   paginatedSignalements: { data: Signalement[] };
 }
 
 function SignalementsPage({
-  commune,
   paginatedSignalements: initialSignalements,
 }: SignalementsPageProps) {
+  const { commune } = useContext(BalDataContext);
   const [signalements, setSignalements] = useState<Signalement[]>(
     initialSignalements.data
   );
@@ -62,7 +61,7 @@ function SignalementsPage({
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { toaster } = useContext(LayoutContext);
+  const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const { showTilesLayers, setShowToponymes, map, isStyleLoaded } =
     useContext(MapContext);
   const [activeTabIndex, setActiveTabIndex] = useState(
@@ -80,6 +79,14 @@ function SignalementsPage({
       count: archivedSignalementsCount,
     },
   ];
+
+  useEffect(() => {
+    setBreadcrumbs(<Text aria-current="page">Signalements</Text>);
+
+    return () => {
+      setBreadcrumbs(null);
+    };
+  }, [setBreadcrumbs]);
 
   // Fly to commune
   useEffect(() => {
@@ -218,20 +225,7 @@ function SignalementsPage({
 
   return (
     <ProtectedPage>
-      <Pane
-        display="flex"
-        flexDirection="column"
-        background="tint1"
-        padding={16}
-      >
-        <Heading>
-          <Pane marginBottom={8} display="flex" justifyContent="space-between">
-            <Pane>Signalements</Pane>
-          </Pane>
-        </Heading>
-      </Pane>
-
-      <Tablist margin={10} marginTop={0}>
+      <Tablist background="white" padding={8}>
         {tabs.map(({ label, key, count }, index) => (
           <Tab
             key={key}
@@ -317,7 +311,6 @@ function SignalementsPage({
           editionEnabled={activeTabIndex === 0}
         />
       </Pane>
-      <SignalementJoyRide />
     </ProtectedPage>
   );
 }
@@ -326,8 +319,7 @@ export async function getServerSideProps({ params }) {
   const { balId }: { balId: string } = params;
 
   try {
-    const { baseLocale, commune, voies, toponymes }: BaseEditorProps =
-      await getBaseEditorProps(balId);
+    const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
 
     const paginatedSignalements = await SignalementsService.getSignalements(
       100,
@@ -341,9 +333,6 @@ export async function getServerSideProps({ params }) {
     return {
       props: {
         baseLocale,
-        commune,
-        voies,
-        toponymes,
         paginatedSignalements,
       },
     };

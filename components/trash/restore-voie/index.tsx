@@ -42,7 +42,7 @@ function RestoreVoie({ voie, onRestoreVoie, onClose }: RestoreVoieProps) {
         <Heading>
           <Pane marginBottom={8}>
             <Pane>{voie.nom}</Pane>
-            {voie.nomAlt && <LanguagePreview nomAlt={voie.nomAlt} />}
+            {voie.nomAlt && <LanguagePreview nomsAlt={voie.nomAlt} />}
           </Pane>
         </Heading>
         <Pane display="flex" flexDirection="row" justifyContent="end">

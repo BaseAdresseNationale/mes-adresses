@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext, useEffect } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
 import { xor, sortBy } from "lodash";
 import { Pane, SelectField, TextInputField } from "evergreen-ui";
 
@@ -41,7 +41,6 @@ interface NumeroEditorProps {
   initialVoieId?: string;
   initialValue?: Numero;
   commune: CommuneType;
-  hasPreview?: boolean;
   closeForm: () => void;
   onSubmitted?: () => void;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
@@ -53,7 +52,6 @@ function NumeroEditor({
   initialVoieId,
   initialValue,
   commune,
-  hasPreview,
   closeForm,
   onSubmitted,
   refs,
@@ -195,9 +193,7 @@ function NumeroEditor({
           await reloadParcelles();
         }
 
-        if (initialVoieId !== voie.id) {
-          reloadVoies();
-        }
+        await reloadVoies();
 
         if (onSubmitted) {
           onSubmitted();
@@ -221,7 +217,6 @@ function NumeroEditor({
       initialValue,
       setValidationMessages,
       reloadVoies,
-      initialVoieId,
       reloadTiles,
       onSubmitted,
       toaster,
@@ -301,17 +296,15 @@ function NumeroEditor({
       closeForm={closeForm}
       onFormSubmit={onFormSubmit}
     >
-      {hasPreview && (
-        <AddressPreview
-          numero={numero}
-          suffixe={suffixe}
-          selectedNomToponyme={selectedNomToponyme}
-          voie={nomVoie || selectedNomVoie}
-          commune={commune}
-        />
-      )}
+      <AddressPreview
+        numero={numero}
+        suffixe={suffixe}
+        selectedNomToponyme={selectedNomToponyme}
+        voie={nomVoie || selectedNomVoie}
+        commune={commune}
+      />
 
-      <Pane paddingTop={hasPreview ? 36 : 0}>
+      <Pane paddingTop={36}>
         <FormInput ref={refs?.voie}>
           <NumeroVoieSelector
             voieId={voieId}

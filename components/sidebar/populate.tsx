@@ -1,16 +1,17 @@
 import React, { useContext, useCallback } from "react";
 import { Button, Pane, Paragraph } from "evergreen-ui";
 
-import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
+import {
+  BasesLocalesService,
+  ExtendedBaseLocaleDTO,
+} from "@/lib/openapi-api-bal";
 import BalDataContext from "@/contexts/bal-data";
-import { CommuneType } from "@/types/commune";
 
 interface PopulateSideBarProps {
-  commune: CommuneType;
-  baseLocale: BaseLocale;
+  baseLocale: ExtendedBaseLocaleDTO;
 }
 
-function PopulateSideBar({ commune, baseLocale }: PopulateSideBarProps) {
+function PopulateSideBar({ baseLocale }: PopulateSideBarProps) {
   const { reloadVoies, setIsEditing, isEditing } = useContext(BalDataContext);
 
   const onPopulate = useCallback(async () => {
@@ -25,8 +26,8 @@ function PopulateSideBar({ commune, baseLocale }: PopulateSideBarProps) {
   return (
     <Pane borderTop marginTop="auto" padding={16}>
       <Paragraph size={300} color="muted">
-        Vous souhaitez importer les voies de la commune de {commune.nom} depuis
-        la Base Adresse Nationale ?
+        Vous souhaitez importer les voies de la commune de{" "}
+        {baseLocale.communeNom} depuis la Base Adresse Nationale ?
       </Paragraph>
       <Button
         marginTop={10}

@@ -32,7 +32,7 @@ function RowNumerosDeleted({
 
           {nomAlt && (
             <Pane marginTop={4}>
-              <LanguagePreview nomAlt={nomAlt} />
+              <LanguagePreview nomsAlt={nomAlt} />
             </Pane>
           )}
         </Table.TextCell>
