@@ -4,6 +4,7 @@ import { Pagination, Pane } from "evergreen-ui";
 const LIMIT = 20;
 
 interface PaginationListProps {
+  id?: string;
   items: any[];
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
@@ -11,6 +12,7 @@ interface PaginationListProps {
 }
 
 function PaginationList({
+  id,
   items,
   page,
   setPage,
@@ -18,6 +20,7 @@ function PaginationList({
 }: PaginationListProps) {
   return (
     <Pane
+      id={id}
       display="flex"
       position="relative"
       flex={1}

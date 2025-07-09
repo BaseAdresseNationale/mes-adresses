@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import useFuse from "./fuse";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import SearchPaginationContext from "@/contexts/search-pagination";
@@ -54,6 +54,13 @@ export function useSearchPagination<T>(
     search
   );
 
+  useEffect(() => {
+    setSavedSearchPagination((prev) => ({
+      ...prev,
+      [tab]: { page, search },
+    }));
+  }, [search, page, tab, setSavedSearchPagination]);
+
   const changePage = useCallback(
     (change: number) => {
       if (change == 1) {
@@ -62,13 +69,9 @@ export function useSearchPagination<T>(
         router.query[QUERY_PAGE] = String(change);
       }
       router.push(router, undefined, { shallow: true });
-      setSavedSearchPagination((prev) => ({
-        ...prev,
-        [tab]: { page: change, search },
-      }));
       page = change;
     },
-    [router, setSavedSearchPagination, tab, search]
+    [router]
   );
 
   const changeFilter = useCallback(
@@ -80,13 +83,9 @@ export function useSearchPagination<T>(
       }
       router.push(router, undefined, { shallow: true });
       setFilter(change);
-      setSavedSearchPagination((prev) => ({
-        ...prev,
-        [tab]: { page: 1, search: change },
-      }));
       changePage(1);
     },
-    [setFilter, router, changePage, tab, setSavedSearchPagination]
+    [setFilter, router, changePage]
   );
 
   return [page, changePage, search, changeFilter, filtered];
