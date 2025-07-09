@@ -34,7 +34,7 @@ function EditableMarker({
   const voie = useMemo(() => {
     if (idVoie) {
       return map
-        .queryRenderedFeatures({ layers: [VOIE_TRACE_LINE] })
+        ?.queryRenderedFeatures({ layers: [VOIE_TRACE_LINE] })
         .filter(({ geometry }) => geometry.type === "LineString")
         .find(({ properties }) => properties.id === idVoie);
     }

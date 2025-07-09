@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import bbox from "@turf/bbox";
 
 import { DrawerContextProvider } from "@/contexts/drawer";
 import { DrawContextProvider } from "@/contexts/draw";
@@ -13,36 +12,27 @@ import Sidebar from "@/layouts/sidebar";
 
 import SubHeader from "@/components/sub-header";
 import Map from "@/components/map";
-import WelcomeMessage from "@/components/welcome-message";
 import DrawerContent from "@/components/drawer-content";
 import AddressEditor from "@/components/bal/address-editor";
 import DemoWarning from "@/components/demo-warning";
 import Overlay from "@/components/overlay";
-import {
-  BaseLocale,
-  BasesLocalesService,
-  CommuneService,
-  ExtendedBaseLocaleDTO,
-  ExtendedVoieDTO,
-  ExtentedToponymeDTO,
-} from "@/lib/openapi-api-bal";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 import { MobileControls } from "@/components/mobile-layout/mobile-controls";
 import LayoutContext from "@/contexts/layout";
-import { ApiGeoService } from "@/lib/geo-api";
-import { CommuneType } from "@/types/commune";
+import { Pane } from "evergreen-ui";
+import MainTabs from "@/components/sidebar/main-tabs/main-tabs";
+import ProductTours from "@/components/sidebar/product-tours";
 
 interface EditorProps {
   children: React.ReactNode;
-  baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
 }
 
-function Editor({ children, commune }: EditorProps) {
+function Editor({ children }: EditorProps) {
   const { isMobile, isMapFullscreen, setIsMapFullscreen } =
     useContext(LayoutContext);
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
   const { tokenIsChecking } = useContext(TokenContext);
-  const { baseLocale } = useContext(BalDataContext);
+  const { baseLocale, commune } = useContext(BalDataContext);
 
   const isDemo = baseLocale.status === BaseLocale.status.DEMO;
 
@@ -71,7 +61,6 @@ function Editor({ children, commune }: EditorProps) {
               bottom={isDemo || isMobile ? 50 : 0}
               left={isMapFullscreen ? 0 : sidebarWidth}
               commune={commune}
-              baseLocale={baseLocale}
               isAddressFormOpen={isAddressFormOpen}
               handleAddressForm={setIsAddressFormOpen}
             />
@@ -87,20 +76,29 @@ function Editor({ children, commune }: EditorProps) {
               flexDirection="column"
               onToggle={setIsMapFullscreen}
             >
-              <>
-                <WelcomeMessage />
+              <MainTabs balId={baseLocale.id} />
 
-                {isAddressFormOpen ? (
-                  <AddressEditor
-                    commune={commune}
-                    closeForm={() => {
-                      setIsAddressFormOpen(false);
-                    }}
-                  />
-                ) : (
-                  children
-                )}
-              </>
+              <ProductTours />
+
+              {isAddressFormOpen ? (
+                <AddressEditor
+                  commune={commune}
+                  closeForm={() => {
+                    setIsAddressFormOpen(false);
+                  }}
+                />
+              ) : (
+                <Pane
+                  position="relative"
+                  display="flex"
+                  flexDirection="column"
+                  height="100%"
+                  width="100%"
+                  overflow="hidden"
+                >
+                  {children}
+                </Pane>
+              )}
             </Sidebar>
             {isMobile && (
               <MobileControls
@@ -117,52 +115,6 @@ function Editor({ children, commune }: EditorProps) {
       </DrawContextProvider>
     </MapContextProvider>
   );
-}
-
-export interface BaseEditorProps {
-  baseLocale: ExtendedBaseLocaleDTO;
-  commune: CommuneType;
-  voies: ExtendedVoieDTO[];
-  toponymes: ExtentedToponymeDTO[];
-}
-
-export async function getBaseEditorProps(
-  balId: string
-): Promise<BaseEditorProps> {
-  const [baseLocale, voies, toponymes] = await Promise.all([
-    BasesLocalesService.findBaseLocale(balId, true),
-    BasesLocalesService.findBaseLocaleVoies(balId),
-    BasesLocalesService.findBaseLocaleToponymes(balId),
-  ]);
-
-  const commune: CommuneType = await CommuneService.findCommune(
-    baseLocale.commune
-  );
-  try {
-    const communeApiGeo = await ApiGeoService.getCommune(baseLocale.commune, {
-      fields: "contour",
-    });
-    if (communeApiGeo.contour) {
-      commune.bbox = bbox(communeApiGeo.contour);
-    }
-  } catch (e) {
-    if (voies.length > 0) {
-      const bboxs = voies.map(({ bbox }) => bbox);
-      commune.bbox = [
-        Math.min(...bboxs.map((b) => b[0])),
-        Math.min(...bboxs.map((b) => b[1])),
-        Math.max(...bboxs.map((b) => b[2])),
-        Math.max(...bboxs.map((b) => b[3])),
-      ];
-    }
-  }
-
-  return {
-    baseLocale,
-    commune,
-    voies,
-    toponymes,
-  };
 }
 
 export default Editor;
