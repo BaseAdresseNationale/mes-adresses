@@ -7,6 +7,8 @@ import {
   FilterIcon,
   Tooltip,
   Pane,
+  RefreshIcon,
+  IconButton,
 } from "evergreen-ui";
 
 import InfiniteScrollList from "../infinite-scroll-list";
@@ -28,6 +30,7 @@ interface SignalementListProps {
   setFilters: (filters: { type: Signalement.type[] }) => void;
   onSearch?: (search: string) => void;
   editionEnabled?: boolean;
+  onShowPurgeExpiredSignalementsDialog?: () => void;
 }
 
 function SignalementList({
@@ -41,6 +44,7 @@ function SignalementList({
   setFilters,
   onSearch,
   editionEnabled,
+  onShowPurgeExpiredSignalementsDialog,
 }: SignalementListProps) {
   const [showFilters, setShowFilters] = useState(false);
   const { updateMarker } = useContext(MarkersContext);
@@ -130,6 +134,16 @@ function SignalementList({
               width="100vw"
               onClick={() => setShowFilters(false)}
             />
+          )}
+          {editionEnabled && (
+            <Tooltip content="Actualiser les signalements">
+              <IconButton
+                icon={RefreshIcon}
+                marginLeft={16}
+                title="Actualiser les signalements"
+                onClick={onShowPurgeExpiredSignalementsDialog}
+              />
+            </Tooltip>
           )}
         </Table.HeaderCell>
       </Table.Head>
