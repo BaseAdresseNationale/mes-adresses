@@ -59,12 +59,12 @@ function MentionsLegales() {
           <Paragraph>La plateforme est hébergée par :</Paragraph>
 
           <Pane marginTop="15px">
-            <Paragraph>OVH</Paragraph>
-            <Paragraph>2 rue Kellermann</Paragraph>
-            <Paragraph>59100 Roubaix</Paragraph>
+            <Paragraph>Scalingo SAS</Paragraph>
+            <Paragraph>13 rue Jacques Peirotes</Paragraph>
+            <Paragraph>67000 Strasbourg</Paragraph>
             <Paragraph>France</Paragraph>
 
-            <Paragraph marginTop="15px">Téléphone : 01 85 58 60 00</Paragraph>
+            <Paragraph marginTop="15px">SIRET 80866548300018</Paragraph>
           </Pane>
         </Pane>
 
