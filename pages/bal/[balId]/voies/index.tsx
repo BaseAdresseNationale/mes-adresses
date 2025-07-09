@@ -2,7 +2,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { sortBy } from "lodash";
 import {
   Table,
-  KeyTabIcon,
   Paragraph,
   Pane,
   AddIcon,
@@ -12,6 +11,7 @@ import {
   Tooltip,
   FilterIcon,
   FilterRemoveIcon,
+  Button,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
@@ -291,7 +291,11 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                 }
                 warning={
                   voie.nbNumeros === 0
-                    ? "Cette voie ne contient aucun numéro"
+                    ? (<>
+                        <Text style={{ color: 'white' }}>Cette voie ne contient aucun numéro</Text>
+                        <br /><br />
+                        <Button onClick={() => setToConvert(voie.id)}>Convertir en toponyme</Button>
+                      </>)
                     : null
                 }
               />
@@ -307,17 +311,6 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   onRemove={() => {
                     setToRemove(voie.id);
                   }}
-                  extra={
-                    voie.nbNumeros === 0
-                      ? {
-                          callback: () => {
-                            setToConvert(voie.id);
-                          },
-                          icon: KeyTabIcon,
-                          text: "Convertir en toponyme",
-                        }
-                      : null
-                  }
                 />
               )}
 

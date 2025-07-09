@@ -13,7 +13,7 @@ import TokenContext from "@/contexts/token";
 interface TableRowNotificationsProps {
   certification?: string;
   comment?: string | React.ReactNode;
-  warning?: string;
+  warning?: string | React.ReactNode;
   communeDeleguee?: string;
 }
 
