@@ -38,24 +38,3 @@
   border-radius: 8px;
   flex-grow: 1;
 }
-
-.stepper-controls {
-  border-top: 1px solid #e6e8f0;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-
-.stepper-controls > div {
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 0 1rem 1rem;
-  max-width: 50%;
-}
-
-@media screen and (max-width: 768px) {
-  .stepper-controls > div {
-    max-width: unset;
-    padding: 1rem;
-  }
-}
