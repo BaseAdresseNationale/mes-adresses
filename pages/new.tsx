@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { ApiGeoService } from "../lib/geo-api";
 import Main from "../layouts/main";
 import { ApiBalAdminService } from "@/lib/bal-admin";
@@ -7,7 +13,7 @@ import Stepper from "@/components/stepper";
 import SearchCommuneStep from "@/components/new/steps/search-commune-step";
 import ImportDataStep from "@/components/new/steps/import-data-step";
 import BALInfosStep from "@/components/new/steps/bal-infos-step";
-import { Pane } from "evergreen-ui";
+import { Button, Pane } from "evergreen-ui";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import LocalStorageContext from "@/contexts/local-storage";
 import Router from "next/router";
@@ -72,6 +78,21 @@ function NewPage({
       },
     ];
   }, [commune, importValue, csvImportFile, isLoading, balName, adminEmail]);
+
+  const onPreviousStep = useCallback(() => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex(currentStepIndex - 1);
+    }
+    if (currentStepIndex === 1) {
+      setCommune(null);
+    }
+  }, [currentStepIndex]);
+
+  const onNextStep = useCallback(() => {
+    if (currentStepIndex !== steps.length - 1) {
+      setCurrentStepIndex(currentStepIndex + 1);
+    }
+  }, [currentStepIndex, steps.length]);
 
   const createNewBal = async (isDemo?: boolean) => {
     let bal: BaseLocale;
@@ -140,6 +161,7 @@ function NewPage({
             <Pane flex={1} display="flex" flexDirection="column">
               {currentStepIndex === 0 && (
                 <SearchCommuneStep
+                  onCreateNewBAL={onNextStep}
                   commune={commune}
                   setCommune={setCommune}
                   outdatedApiDepotClients={outdatedApiDepotClients}
@@ -164,6 +186,34 @@ function NewPage({
                   createDemoBAL={() => createNewBal(true)}
                   isLoading={isLoading}
                 />
+              )}
+              {currentStepIndex !== 0 && (
+                <Pane className={styles["stepper-controls"]}>
+                  <Button
+                    onClick={onPreviousStep}
+                    disabled={!steps[currentStepIndex].canBrowseBack}
+                    type="button"
+                    {...(!steps[currentStepIndex].canBrowseBack && {
+                      style: { visibility: "hidden" },
+                    })}
+                  >
+                    Précédent
+                  </Button>
+                  <Button
+                    appearance="primary"
+                    onClick={onNextStep}
+                    disabled={!steps[currentStepIndex].canBrowseNext}
+                    type={
+                      currentStepIndex === steps.length - 1
+                        ? "submit"
+                        : "button"
+                    }
+                  >
+                    {currentStepIndex === steps.length - 1
+                      ? "Terminer"
+                      : "Suivant"}
+                  </Button>
+                </Pane>
               )}
             </Pane>
             <Pane className={styles["welcome-illustration"]} />
