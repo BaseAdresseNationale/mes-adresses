@@ -9,6 +9,7 @@ interface SearchCommuneStepProps {
   setCommune: (commune: CommuneType | null) => void;
   outdatedApiDepotClients: string[];
   outdatedHarvestSources: string[];
+  onCreateNewBAL: () => void;
 }
 
 function SearchCommuneStep({
@@ -16,6 +17,7 @@ function SearchCommuneStep({
   setCommune,
   outdatedApiDepotClients,
   outdatedHarvestSources,
+  onCreateNewBAL,
 }: SearchCommuneStepProps) {
   const [ref, setRef] = useState<HTMLInputElement>();
 
@@ -40,6 +42,7 @@ function SearchCommuneStep({
       />
       {commune && (
         <CommunePublicationInfos
+          onCreateNewBAL={onCreateNewBAL}
           commune={commune}
           outdatedApiDepotClients={outdatedApiDepotClients}
           outdatedHarvestSources={outdatedHarvestSources}
