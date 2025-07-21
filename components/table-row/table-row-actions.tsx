@@ -15,18 +15,12 @@ interface TableRowActionsProps {
   onSelect?: () => void;
   onEdit?: () => void;
   onRemove?: () => void;
-  extra?: {
-    callback: () => void;
-    icon: React.ElementType;
-    text: string;
-  };
 }
 
 const TableRowActions = React.memo(function TableRowActions({
   onSelect,
   onEdit,
   onRemove,
-  extra,
 }: TableRowActionsProps) {
   return (
     <Table.TextCell flex="0 1 1">
@@ -43,11 +37,6 @@ const TableRowActions = React.memo(function TableRowActions({
               {onEdit && (
                 <Menu.Item icon={EditIcon} onSelect={onEdit}>
                   Modifier
-                </Menu.Item>
-              )}
-              {extra && (
-                <Menu.Item icon={extra.icon} onSelect={extra.callback}>
-                  {extra.text}
                 </Menu.Item>
               )}
               {onRemove && (
