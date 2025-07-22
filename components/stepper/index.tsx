@@ -43,29 +43,6 @@ function Stepper({
         )}
       </Pane>
       <Pane className={styles["stepper-content"]}>{children}</Pane>
-      <Pane className={styles["stepper-controls"]}>
-        <Pane>
-          <Button
-            onClick={() => onStepChange(currentStepIndex - 1)}
-            disabled={!steps[currentStepIndex].canBrowseBack}
-            type="button"
-          >
-            Précédent
-          </Button>
-          <Button
-            appearance="primary"
-            onClick={() => {
-              if (currentStepIndex !== steps.length - 1) {
-                onStepChange(currentStepIndex + 1);
-              }
-            }}
-            disabled={!steps[currentStepIndex].canBrowseNext}
-            type={currentStepIndex === steps.length - 1 ? "submit" : "button"}
-          >
-            {currentStepIndex === steps.length - 1 ? "Terminer" : "Suivant"}
-          </Button>
-        </Pane>
-      </Pane>
     </Pane>
   );
 }

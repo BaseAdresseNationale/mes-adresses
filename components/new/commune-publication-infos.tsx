@@ -1,7 +1,7 @@
 import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";
-import { Pane, Spinner } from "evergreen-ui";
+import { Button, Pane, Spinner } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import AlertPublishedBALMesAdresses from "./alert-published-bal/alert-published-bal-mes-adresses";
 import AlertPublishedBALMoissoneur from "./alert-published-bal/alert-published-bal-moissoneur";
@@ -12,23 +12,30 @@ import {
   PageBaseLocaleDTO,
 } from "@/lib/openapi-api-bal";
 import AlertExistingBALMesAdresses from "./alert-published-bal/alert-existing-bal-mes-adresses";
-import AlertNoBAL from "./alert-published-bal/alert-no-bal";
 
 interface CommunePublicationInfosProps {
   commune: CommuneType;
   outdatedApiDepotClients: string[];
   outdatedHarvestSources: string[];
+  onCreateNewBAL: () => void;
 }
 
 function CommunePublicationInfos({
   commune,
   outdatedHarvestSources,
   outdatedApiDepotClients,
+  onCreateNewBAL,
 }: CommunePublicationInfosProps) {
   const [apiDepotLastRevision, setApiDepotLastRevision] =
     useState<Revision | null>(null);
   const [existingBALCount, setExistingBALCount] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (!isLoading && !apiDepotLastRevision && existingBALCount === 0) {
+      onCreateNewBAL();
+    }
+  }, [apiDepotLastRevision, existingBALCount, isLoading, onCreateNewBAL]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,9 +121,9 @@ function CommunePublicationInfos({
             />
           )}
 
-          {!apiDepotLastRevision && existingBALCount === 0 && (
-            <AlertNoBAL commune={commune} />
-          )}
+          <Button marginTop={16} intent="none" onClick={onCreateNewBAL}>
+            Créer une nouvelle Base Adresse Locale
+          </Button>
         </>
       )}
     </Pane>
