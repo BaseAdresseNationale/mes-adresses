@@ -98,11 +98,15 @@ export async function getExistingLocation(
       if ((signalement.existingLocation as ExistingVoie).banId) {
         return (
           voie.banId === (signalement.existingLocation as ExistingVoie).banId ||
-          voie.nom === (signalement.existingLocation as ExistingVoie).nom
+          voie.nom.toLowerCase() ===
+            (signalement.existingLocation as ExistingVoie).nom.toLowerCase()
         );
       }
 
-      return voie.nom === (signalement.existingLocation as ExistingVoie).nom;
+      return (
+        voie.nom.toLowerCase() ===
+        (signalement.existingLocation as ExistingVoie).nom.toLowerCase()
+      );
     });
   } else if (
     signalement.existingLocation.type === ExistingLocation.type.TOPONYME
@@ -112,13 +116,14 @@ export async function getExistingLocation(
         return (
           toponyme.banId ===
             (signalement.existingLocation as ExistingToponyme).banId ||
-          toponyme.nom ===
-            (signalement.existingLocation as ExistingToponyme).nom
+          toponyme.nom.toLowerCase() ===
+            (signalement.existingLocation as ExistingToponyme).nom.toLowerCase()
         );
       }
 
       return (
-        toponyme.nom === (signalement.existingLocation as ExistingToponyme).nom
+        toponyme.nom.toLowerCase() ===
+        (signalement.existingLocation as ExistingToponyme).nom.toLowerCase()
       );
     });
   } else if (
@@ -130,11 +135,13 @@ export async function getExistingLocation(
         if (existingNumero.toponyme.banId) {
           return (
             voie.banId === existingNumero.toponyme.banId ||
-            voie.nom === existingNumero.toponyme.nom
+            voie.nom.toLowerCase() === existingNumero.toponyme.nom.toLowerCase()
           );
         }
 
-        return voie.nom === existingNumero.toponyme.nom;
+        return (
+          voie.nom.toLowerCase() === existingNumero.toponyme.nom.toLowerCase()
+        );
       });
       const numeros = await VoiesService.findVoieNumeros(voie.id);
       existingLocation = numeros.find(({ numero, suffixe, banId }) => {
@@ -147,11 +154,15 @@ export async function getExistingLocation(
         if (existingNumero.banId) {
           return (
             banId === existingNumero.banId ||
-            numeroComplet === existingLocationNumeroComplet
+            numeroComplet.toLowerCase() ===
+              existingLocationNumeroComplet.toLowerCase()
           );
         }
 
-        return numeroComplet === existingLocationNumeroComplet;
+        return (
+          numeroComplet.toLowerCase() ===
+          existingLocationNumeroComplet.toLowerCase()
+        );
       });
       if (existingLocation) {
         existingLocation.voie = voie;
@@ -168,11 +179,15 @@ export async function getExistingLocation(
         if (existingNumero.toponyme.banId) {
           return (
             toponyme.banId === existingNumero.toponyme.banId ||
-            toponyme.nom === existingNumero.toponyme.nom
+            toponyme.nom.toLowerCase() ===
+              existingNumero.toponyme.nom.toLowerCase()
           );
         }
 
-        return toponyme.nom === existingNumero.toponyme.nom;
+        return (
+          toponyme.nom.toLowerCase() ===
+          existingNumero.toponyme.nom.toLowerCase()
+        );
       });
       const numeros = await ToponymesService.findToponymeNumeros(toponyme.id);
       existingLocation = numeros.find(({ numero, suffixe, banId }) => {
@@ -185,11 +200,15 @@ export async function getExistingLocation(
         if (existingNumero.banId) {
           return (
             banId === existingNumero.banId ||
-            numeroComplet === existingLocationNumeroComplet
+            numeroComplet.toLowerCase() ===
+              existingLocationNumeroComplet.toLowerCase()
           );
         }
 
-        return numeroComplet === existingLocationNumeroComplet;
+        return (
+          numeroComplet.toLowerCase() ===
+          existingLocationNumeroComplet.toLowerCase()
+        );
       });
       if (existingLocation) {
         existingLocation.toponyme = toponyme;
