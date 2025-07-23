@@ -251,32 +251,15 @@ export async function getServerSideProps({ params }) {
     }
 
     let existingLocation = null;
-    if (
-      signalement.type === Signalement.type.LOCATION_TO_UPDATE ||
-      signalement.type === Signalement.type.LOCATION_TO_DELETE
-    ) {
-      try {
-        existingLocation = await getExistingLocation(
-          signalement,
-          voies,
-          toponymes
-        );
-      } catch (err) {
-        console.error(err);
-        existingLocation = null;
-      }
-    } else if (signalement.type === Signalement.type.LOCATION_TO_CREATE) {
-      existingLocation = voies.find((voie) => {
-        if ((signalement.existingLocation as ExistingVoie).banId) {
-          return (
-            voie.banId ===
-              (signalement.existingLocation as ExistingVoie).banId ||
-            voie.nom === (signalement.existingLocation as ExistingVoie).nom
-          );
-        }
-
-        return voie.nom === (signalement.existingLocation as ExistingVoie).nom;
-      });
+    try {
+      existingLocation = await getExistingLocation(
+        signalement,
+        voies,
+        toponymes
+      );
+    } catch (err) {
+      console.error(err);
+      existingLocation = null;
     }
 
     if (!existingLocation) {
