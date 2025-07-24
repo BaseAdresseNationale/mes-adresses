@@ -98,14 +98,14 @@ export async function getExistingLocation(
       if ((signalement.existingLocation as ExistingVoie).banId) {
         return (
           voie.banId === (signalement.existingLocation as ExistingVoie).banId ||
-          voie.nom.toLowerCase() ===
-            (signalement.existingLocation as ExistingVoie).nom.toLowerCase()
+          voie.nom?.toLowerCase() ===
+            (signalement.existingLocation as ExistingVoie).nom?.toLowerCase()
         );
       }
 
       return (
-        voie.nom.toLowerCase() ===
-        (signalement.existingLocation as ExistingVoie).nom.toLowerCase()
+        voie.nom?.toLowerCase() ===
+        (signalement.existingLocation as ExistingVoie).nom?.toLowerCase()
       );
     });
   } else if (
@@ -116,14 +116,16 @@ export async function getExistingLocation(
         return (
           toponyme.banId ===
             (signalement.existingLocation as ExistingToponyme).banId ||
-          toponyme.nom.toLowerCase() ===
-            (signalement.existingLocation as ExistingToponyme).nom.toLowerCase()
+          toponyme.nom?.toLowerCase() ===
+            (
+              signalement.existingLocation as ExistingToponyme
+            ).nom?.toLowerCase()
         );
       }
 
       return (
-        toponyme.nom.toLowerCase() ===
-        (signalement.existingLocation as ExistingToponyme).nom.toLowerCase()
+        toponyme.nom?.toLowerCase() ===
+        (signalement.existingLocation as ExistingToponyme).nom?.toLowerCase()
       );
     });
   } else if (
@@ -135,12 +137,13 @@ export async function getExistingLocation(
         if (existingNumero.toponyme.banId) {
           return (
             voie.banId === existingNumero.toponyme.banId ||
-            voie.nom.toLowerCase() === existingNumero.toponyme.nom.toLowerCase()
+            voie.nom?.toLowerCase() ===
+              existingNumero.toponyme.nom?.toLowerCase()
           );
         }
 
         return (
-          voie.nom.toLowerCase() === existingNumero.toponyme.nom.toLowerCase()
+          voie.nom?.toLowerCase() === existingNumero.toponyme.nom?.toLowerCase()
         );
       });
       const numeros = await VoiesService.findVoieNumeros(voie.id);
@@ -154,14 +157,14 @@ export async function getExistingLocation(
         if (existingNumero.banId) {
           return (
             banId === existingNumero.banId ||
-            numeroComplet.toLowerCase() ===
-              existingLocationNumeroComplet.toLowerCase()
+            numeroComplet?.toLowerCase() ===
+              existingLocationNumeroComplet?.toLowerCase()
           );
         }
 
         return (
-          numeroComplet.toLowerCase() ===
-          existingLocationNumeroComplet.toLowerCase()
+          numeroComplet?.toLowerCase() ===
+          existingLocationNumeroComplet?.toLowerCase()
         );
       });
       if (existingLocation) {
@@ -179,14 +182,14 @@ export async function getExistingLocation(
         if (existingNumero.toponyme.banId) {
           return (
             toponyme.banId === existingNumero.toponyme.banId ||
-            toponyme.nom.toLowerCase() ===
-              existingNumero.toponyme.nom.toLowerCase()
+            toponyme.nom?.toLowerCase() ===
+              existingNumero.toponyme.nom?.toLowerCase()
           );
         }
 
         return (
-          toponyme.nom.toLowerCase() ===
-          existingNumero.toponyme.nom.toLowerCase()
+          toponyme.nom?.toLowerCase() ===
+          existingNumero.toponyme.nom?.toLowerCase()
         );
       });
       const numeros = await ToponymesService.findToponymeNumeros(toponyme.id);
@@ -200,14 +203,14 @@ export async function getExistingLocation(
         if (existingNumero.banId) {
           return (
             banId === existingNumero.banId ||
-            numeroComplet.toLowerCase() ===
-              existingLocationNumeroComplet.toLowerCase()
+            numeroComplet?.toLowerCase() ===
+              existingLocationNumeroComplet?.toLowerCase()
           );
         }
 
         return (
-          numeroComplet.toLowerCase() ===
-          existingLocationNumeroComplet.toLowerCase()
+          numeroComplet?.toLowerCase() ===
+          existingLocationNumeroComplet?.toLowerCase()
         );
       });
       if (existingLocation) {
