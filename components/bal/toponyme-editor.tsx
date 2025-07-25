@@ -262,7 +262,7 @@ function ToponymeEditor({
         {commune.hasCadastre ? (
           <FormInput ref={refs?.parcelles}>
             <SelectParcelles
-              initialParcelles={initialValue?.parcelles}
+              initialParcelles={initialValue?.parcelles || []}
               isToponyme
             />
           </FormInput>

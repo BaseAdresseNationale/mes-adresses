@@ -413,7 +413,7 @@ function NumeroEditor({
 
         {commune.hasCadastre ? (
           <FormInput ref={refs?.parcelles}>
-            <SelectParcelles initialParcelles={initialValue?.parcelles} />
+            <SelectParcelles initialParcelles={initialValue?.parcelles || []} />
           </FormInput>
         ) : (
           <DisabledFormInput label="Parcelles" />
