@@ -13,6 +13,7 @@ import {
   ExistingVoie,
   NumeroChangesRequestedDTO,
   Signalement,
+  SignalementsService,
 } from "../openapi-signalement";
 
 export enum SignalementDiff {
@@ -243,3 +244,29 @@ export const canFetchSignalements = (baseLocale: BaseLocale, token: string) => {
     process.env.NEXT_PUBLIC_API_SIGNALEMENT !== undefined
   );
 };
+
+export async function getAllSignalements(
+  status?: Signalement.status[],
+  types?: Signalement.type[],
+  sourceIds?: string[],
+  codeCommunes?: string[]
+) {
+  let page = 1;
+  let response;
+  const signalement = [];
+
+  do {
+    response = await SignalementsService.getSignalements(
+      100,
+      page,
+      status,
+      types,
+      sourceIds,
+      codeCommunes
+    );
+    signalement.push(...response.data);
+    page++;
+  } while (response.data.length > 0);
+
+  return signalement;
+}

@@ -30,18 +30,24 @@ import SignalementTypeBadge, {
 import useFuse from "@/hooks/fuse";
 import MapContext from "@/contexts/map";
 import SignalementContext from "@/contexts/signalement";
-import { BasesLocalesService } from "@/lib/openapi-api-bal";
+import {
+  BasesLocalesService,
+  ExtendedBaseLocaleDTO,
+} from "@/lib/openapi-api-bal";
 import BalDataContext from "@/contexts/bal-data";
+import { PurgeExpiredSignalementsDialog } from "@/components/signalement/purge-expired-signalements-dialog";
 
 const fuseOptions = {
   keys: ["label"],
 };
 
 interface SignalementsPageProps {
+  baseLocale: ExtendedBaseLocaleDTO;
   paginatedSignalements: { data: Signalement[] };
 }
 
 function SignalementsPage({
+  baseLocale,
   paginatedSignalements: initialSignalements,
 }: SignalementsPageProps) {
   const { commune } = useContext(BalDataContext);
@@ -59,6 +65,10 @@ function SignalementsPage({
     []
   );
   const [showWarningDialog, setShowWarningDialog] = useState(false);
+  const [
+    showPurgeExpiredSignalementsModal,
+    setShowPurgeExpiredSignalementsDialog,
+  ] = useState(false);
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
@@ -309,8 +319,16 @@ function SignalementsPage({
           setFilters={setFilters}
           onSearch={setSignalementsList}
           editionEnabled={activeTabIndex === 0}
+          onShowPurgeExpiredSignalementsDialog={() =>
+            setShowPurgeExpiredSignalementsDialog(true)
+          }
         />
       </Pane>
+      <PurgeExpiredSignalementsDialog
+        baseLocale={baseLocale}
+        onClose={() => setShowPurgeExpiredSignalementsDialog(false)}
+        isShown={showPurgeExpiredSignalementsModal}
+      />
     </ProtectedPage>
   );
 }
