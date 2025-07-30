@@ -1,5 +1,10 @@
 import React, { useContext } from "react";
-import { Toponyme, Voie, VoiesService } from "@/lib/openapi-api-bal";
+import {
+  BasesLocalesService,
+  Toponyme,
+  Voie,
+  VoiesService,
+} from "@/lib/openapi-api-bal";
 import {
   NumeroChangesRequestedDTO,
   Signalement,
@@ -8,11 +13,13 @@ import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
 import { useSignalementMapDiffCreation } from "@/components/signalement/hooks/useSignalementMapDiffCreation";
 import LayoutContext from "@/contexts/layout";
+import BalDataContext from "@/contexts/bal-data";
+import { Alert } from "evergreen-ui";
 
 interface SignalementCreateNumeroProps {
   signalement: Signalement;
   author?: Signalement["author"];
-  voie: Voie;
+  voie?: Voie;
   requestedToponyme?: Toponyme;
   handleAccept: () => Promise<void>;
   handleReject: (reason?: string) => Promise<void>;
@@ -33,6 +40,7 @@ function SignalementCreateNumero({
   const { numero, suffixe, parcelles, positions, nomVoie } =
     signalement.changesRequested as NumeroChangesRequestedDTO;
   const { pushToast } = useContext(LayoutContext);
+  const { baseLocale, reloadVoies } = useContext(BalDataContext);
 
   useSignalementMapDiffCreation(
     signalement.changesRequested as NumeroChangesRequestedDTO
@@ -40,7 +48,15 @@ function SignalementCreateNumero({
 
   const onAccept = async () => {
     try {
-      await VoiesService.createNumero(voie.id, {
+      let newVoie;
+      if (!voie) {
+        newVoie = await BasesLocalesService.createVoie(baseLocale.id, {
+          nom: nomVoie,
+        });
+        await reloadVoies();
+      }
+      const voieId = voie?.id || newVoie.id;
+      await VoiesService.createNumero(voieId, {
         numero,
         suffixe,
         positions: positions as any[],
@@ -80,6 +96,10 @@ function SignalementCreateNumero({
           to: parcelles,
         }}
       />
+
+      {!voie && (
+        <Alert>Une nouvelle voie sera crée en acceptant ce signalement</Alert>
+      )}
 
       <SignalementFormButtons
         author={author}

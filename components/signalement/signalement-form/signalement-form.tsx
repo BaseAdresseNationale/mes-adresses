@@ -19,7 +19,7 @@ import { Paragraph } from "evergreen-ui";
 interface SignalementFormProps {
   signalement: Signalement;
   author?: Signalement["author"];
-  existingLocation: Voie | Toponyme | Numero;
+  existingLocation: Voie | Toponyme | Numero | null;
   requestedToponyme?: Toponyme;
   onSubmit: (status: Signalement.status, reason?: string) => Promise<void>;
   onClose: () => void;
@@ -45,13 +45,7 @@ function SignalementForm({
 
     let pointTo = null;
 
-    if ((existingLocation as Numero).positions?.length > 0) {
-      const position = (existingLocation as Numero).positions[0];
-      pointTo = {
-        latitude: position.point.coordinates[1],
-        longitude: position.point.coordinates[0],
-      };
-    } else if (
+    if (
       (signalement.changesRequested as NumeroChangesRequestedDTO).positions
         ?.length > 0
     ) {
@@ -62,7 +56,13 @@ function SignalementForm({
         latitude: position.point.coordinates[1],
         longitude: position.point.coordinates[0],
       };
-    } else if ((existingLocation as Voie).centroid) {
+    } else if ((existingLocation as Numero)?.positions?.length > 0) {
+      const position = (existingLocation as Numero).positions[0];
+      pointTo = {
+        latitude: position.point.coordinates[1],
+        longitude: position.point.coordinates[0],
+      };
+    } else if ((existingLocation as Voie)?.centroid) {
       pointTo = {
         latitude: (existingLocation as Voie).centroid.coordinates[1],
         longitude: (existingLocation as Voie).centroid.coordinates[0],
@@ -104,7 +104,7 @@ function SignalementForm({
 
   return (
     <Form
-      editingId={existingLocation.id}
+      editingId={existingLocation?.id}
       closeForm={onClose}
       onFormSubmit={(e) => {
         e.preventDefault();
