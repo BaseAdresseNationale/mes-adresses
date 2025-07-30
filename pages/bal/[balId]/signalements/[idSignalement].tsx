@@ -53,6 +53,10 @@ function SignalementPage({
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
 
+  const isNewVoieCreation =
+    signalement.type === Signalement.type.LOCATION_TO_CREATE &&
+    signalement.existingLocation === null;
+
   useEffect(() => {
     setStyle("ortho");
     setBreadcrumbs(
@@ -83,11 +87,18 @@ function SignalementPage({
 
     if (
       (existingLocation === null || requestedToponyme === null) &&
-      signalement.status === Signalement.status.PENDING
+      signalement.status === Signalement.status.PENDING &&
+      !isNewVoieCreation
     ) {
       markSignalementAsExpired();
     }
-  }, [existingLocation, signalement, baseLocale, requestedToponyme]);
+  }, [
+    existingLocation,
+    signalement,
+    baseLocale,
+    requestedToponyme,
+    isNewVoieCreation,
+  ]);
 
   // Fetch the author of the signalement
   useEffect(() => {
@@ -152,7 +163,7 @@ function SignalementPage({
 
   return (
     <ProtectedPage>
-      {existingLocation && requestedToponyme !== null ? (
+      {(existingLocation || isNewVoieCreation) && requestedToponyme !== null ? (
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
