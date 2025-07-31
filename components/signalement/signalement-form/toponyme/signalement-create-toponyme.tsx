@@ -1,40 +1,46 @@
 import React, { useContext } from "react";
-import { Toponyme, ToponymesService } from "@/lib/openapi-api-bal";
+import {
+  Signalement,
+  ToponymeChangesRequestedDTO,
+} from "@/lib/openapi-signalement";
+import { BasesLocalesService, Position } from "@/lib/openapi-api-bal";
 import { SignalementFormButtons } from "../signalement-form-buttons";
-import { Signalement } from "@/lib/openapi-signalement";
-import { useSignalementMapDiffDeletion } from "../../hooks/useSignalementMapDiffDeletion";
-import LayoutContext from "@/contexts/layout";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
+import LayoutContext from "@/contexts/layout";
 import BalDataContext from "@/contexts/bal-data";
-import { Alert } from "evergreen-ui";
 
-interface SignalementDeleteToponymeProps {
-  author: Signalement["author"];
-  existingLocation: Toponyme;
+interface SignalementCreateToponymeProps {
+  signalement: Signalement;
+  author?: Signalement["author"];
   handleAccept: () => Promise<void>;
   handleReject: (reason?: string) => Promise<void>;
   handleClose: () => void;
   isLoading: boolean;
 }
 
-function SignalementDeleteToponyme({
+function SignalementCreateToponyme({
+  signalement,
   author,
-  existingLocation,
   handleAccept,
   handleReject,
   handleClose,
   isLoading,
-}: SignalementDeleteToponymeProps) {
-  const { nom, positions, parcelles } = existingLocation;
+}: SignalementCreateToponymeProps) {
+  const { nom, parcelles, positions } =
+    signalement.changesRequested as ToponymeChangesRequestedDTO;
   const { pushToast } = useContext(LayoutContext);
-  const { reloadToponymes } = useContext(BalDataContext);
+  const { baseLocale, reloadToponymes } = useContext(BalDataContext);
 
-  useSignalementMapDiffDeletion(existingLocation);
+  console.log("positions", positions);
 
   const onAccept = async () => {
     try {
-      await ToponymesService.softDeleteToponyme(existingLocation.id);
-      await reloadToponymes();
+      await BasesLocalesService.createToponyme(baseLocale.id, {
+        nom,
+        parcelles,
+        positions: positions as any[],
+      });
+      await reloadToponymes;
       await handleAccept();
     } catch (error) {
       console.error("Error accepting signalement:", error);
@@ -48,9 +54,8 @@ function SignalementDeleteToponyme({
   return (
     <>
       <SignalementToponymeDiffCard
+        title="Demande de création d'un toponyme"
         isActive
-        signalementType={Signalement.type.LOCATION_TO_DELETE}
-        title="Demande de suppression d'un toponyme"
         nom={{
           to: nom,
         }}
@@ -61,10 +66,6 @@ function SignalementDeleteToponyme({
           to: parcelles,
         }}
       />
-      <Alert>
-        En acceptant ce signalement, le toponyme {nom} sera placé dans la
-        corbeille
-      </Alert>
       <SignalementFormButtons
         author={author}
         onAccept={onAccept}
@@ -76,4 +77,4 @@ function SignalementDeleteToponyme({
   );
 }
 
-export default SignalementDeleteToponyme;
+export default SignalementCreateToponyme;

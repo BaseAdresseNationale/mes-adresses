@@ -14,6 +14,7 @@ import {
   NumeroChangesRequestedDTO,
   Signalement,
   SignalementsService,
+  ToponymeChangesRequestedDTO,
 } from "../openapi-signalement";
 
 export enum SignalementDiff {
@@ -55,11 +56,13 @@ export const getExistingLocationLabel = (
 };
 
 const getRequestedLocationLabel = (
-  changesRequested: NumeroChangesRequestedDTO
+  changesRequested: ToponymeChangesRequestedDTO | NumeroChangesRequestedDTO
 ) => {
-  return `${changesRequested.numero} ${
-    changesRequested.suffixe ? `${changesRequested.suffixe} ` : ""
-  }${changesRequested.nomVoie}`;
+  return isToponymeChangesRequested(changesRequested)
+    ? changesRequested.nom
+    : `${changesRequested.numero} ${
+        changesRequested.suffixe ? `${changesRequested.suffixe} ` : ""
+      }${changesRequested.nomVoie}`;
 };
 
 export const getSignalementLabel = (
@@ -276,3 +279,12 @@ export async function getAllSignalements(
 
   return signalement;
 }
+
+export const isToponymeChangesRequested = (
+  changesRequested: any
+): changesRequested is ToponymeChangesRequestedDTO => {
+  const { nom, parcelles, positions } =
+    changesRequested as ToponymeChangesRequestedDTO;
+
+  return nom && Array.isArray(parcelles) && Array.isArray(positions);
+};
