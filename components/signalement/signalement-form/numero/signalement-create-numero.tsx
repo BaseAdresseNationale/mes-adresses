@@ -98,7 +98,9 @@ function SignalementCreateNumero({
       />
 
       {!voie && (
-        <Alert>Une nouvelle voie sera crée en acceptant ce signalement</Alert>
+        <Alert>
+          La nouvelle voie {nomVoie} sera créée en acceptant ce signalement
+        </Alert>
       )}
 
       <SignalementFormButtons

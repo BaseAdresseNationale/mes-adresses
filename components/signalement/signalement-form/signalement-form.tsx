@@ -15,6 +15,8 @@ import MapContext from "@/contexts/map";
 import { SignalementHeader } from "../signalement-header";
 import SignalementContext from "@/contexts/signalement";
 import { Paragraph } from "evergreen-ui";
+import SignalementCreateToponyme from "./toponyme/signalement-create-toponyme";
+import { isToponymeChangesRequested } from "@/lib/utils/signalement";
 
 interface SignalementFormProps {
   signalement: Signalement;
@@ -114,18 +116,28 @@ function SignalementForm({
     >
       <SignalementHeader signalement={signalement} author={author} />
 
-      {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
-        <SignalementCreateNumero
-          signalement={signalement}
-          author={author}
-          handleClose={onClose}
-          handleAccept={handleAccept}
-          handleReject={handleReject}
-          voie={existingLocation as Voie}
-          isLoading={isLoading}
-          requestedToponyme={requestedToponyme}
-        />
-      )}
+      {signalement.type === Signalement.type.LOCATION_TO_CREATE &&
+        (isToponymeChangesRequested(signalement.changesRequested) ? (
+          <SignalementCreateToponyme
+            signalement={signalement}
+            author={author}
+            handleAccept={handleAccept}
+            handleReject={handleReject}
+            handleClose={onClose}
+            isLoading={isLoading}
+          />
+        ) : (
+          <SignalementCreateNumero
+            signalement={signalement}
+            author={author}
+            handleClose={onClose}
+            handleAccept={handleAccept}
+            handleReject={handleReject}
+            voie={existingLocation as Voie}
+            isLoading={isLoading}
+            requestedToponyme={requestedToponyme}
+          />
+        ))}
 
       {signalement.type === Signalement.type.LOCATION_TO_UPDATE &&
         (signalement.existingLocation.type === ExistingLocation.type.NUMERO ? (
