@@ -6,7 +6,7 @@ import { useSignalementMapDiffDeletion } from "../../hooks/useSignalementMapDiff
 import LayoutContext from "@/contexts/layout";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
 import BalDataContext from "@/contexts/bal-data";
-import { Alert } from "evergreen-ui";
+import { Alert, Text } from "evergreen-ui";
 
 interface SignalementDeleteToponymeProps {
   author: Signalement["author"];
@@ -61,9 +61,11 @@ function SignalementDeleteToponyme({
           to: parcelles,
         }}
       />
-      <Alert>
-        En acceptant ce signalement, le toponyme {nom} sera placé dans la
-        corbeille
+      <Alert flexShrink={0}>
+        <Text>
+          En acceptant ce signalement, le toponyme {nom} sera placé dans la
+          corbeille
+        </Text>
       </Alert>
       <SignalementFormButtons
         author={author}

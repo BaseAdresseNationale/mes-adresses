@@ -163,7 +163,20 @@ function SignalementPage({
 
   return (
     <ProtectedPage>
-      {(existingLocation || isNewVoieCreation) && requestedToponyme !== null ? (
+      {signalement.status === Signalement.status.IGNORED ||
+      signalement.status === Signalement.status.PROCESSED ? (
+        <SignalementViewer
+          signalement={signalement}
+          author={author}
+          onClose={() =>
+            router.push(
+              `/bal/${router.query.balId}/${TabsEnum.SIGNALEMENTS}?tab=archived`
+            )
+          }
+        />
+      ) : signalement.status === Signalement.status.PENDING &&
+        (existingLocation || isNewVoieCreation) &&
+        requestedToponyme !== null ? (
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
@@ -174,17 +187,6 @@ function SignalementPage({
             onSubmit={handleSubmit}
           />
         </Pane>
-      ) : signalement.status === Signalement.status.IGNORED ||
-        signalement.status === Signalement.status.PROCESSED ? (
-        <SignalementViewer
-          signalement={signalement}
-          author={author}
-          onClose={() =>
-            router.push(
-              `/bal/${router.query.balId}/${TabsEnum.SIGNALEMENTS}?tab=archived`
-            )
-          }
-        />
       ) : (
         <Pane padding={20}>
           <Paragraph>

@@ -8,6 +8,7 @@ import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
 import LayoutContext from "@/contexts/layout";
 import BalDataContext from "@/contexts/bal-data";
+import { useSignalementMapDiffCreation } from "../../hooks/useSignalementMapDiffCreation";
 
 interface SignalementCreateToponymeProps {
   signalement: Signalement;
@@ -31,7 +32,9 @@ function SignalementCreateToponyme({
   const { pushToast } = useContext(LayoutContext);
   const { baseLocale, reloadToponymes } = useContext(BalDataContext);
 
-  console.log("positions", positions);
+  useSignalementMapDiffCreation(
+    signalement.changesRequested as ToponymeChangesRequestedDTO
+  );
 
   const onAccept = async () => {
     try {
@@ -40,7 +43,7 @@ function SignalementCreateToponyme({
         parcelles,
         positions: positions as any[],
       });
-      await reloadToponymes;
+      await reloadToponymes();
       await handleAccept();
     } catch (error) {
       console.error("Error accepting signalement:", error);
@@ -55,6 +58,7 @@ function SignalementCreateToponyme({
     <>
       <SignalementToponymeDiffCard
         title="Demande de création d'un toponyme"
+        signalementType={Signalement.type.LOCATION_TO_CREATE}
         isActive
         nom={{
           to: nom,
