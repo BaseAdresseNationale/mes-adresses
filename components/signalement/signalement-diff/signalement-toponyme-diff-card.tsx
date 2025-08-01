@@ -54,7 +54,10 @@ export function SignalementToponymeDiffCard({
           positions={positions.to}
         />
       ) : (
-        <SignalementPosition positions={positions.to} />
+        <SignalementPosition
+          positions={positions.to}
+          signalementType={signalementType}
+        />
       )}
       {parcelles.from ? (
         <SignalementParcelleDiff

@@ -13,7 +13,7 @@ import { SignalementFormButtons } from "../signalement-form-buttons";
 import { ActiveCardEnum, detectChanges } from "@/lib/utils/signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
-import { Alert } from "evergreen-ui";
+import { Alert, Text } from "evergreen-ui";
 import LayoutContext from "@/contexts/layout";
 
 interface SignalementUpdateNumeroProps {
@@ -166,8 +166,10 @@ function SignalementUpdateNumero({
         }}
       />
       {changes.voie && (
-        <Alert intent="warning" title="Attention" flexShrink={0}>
-          Le renommage de la voie affectera toutes les adresses de cette voie.
+        <Alert intent="warning" flexShrink={0}>
+          <Text>
+            Le renommage de la voie affectera toutes les adresses de cette voie.
+          </Text>
         </Alert>
       )}
       <SignalementFormButtons
