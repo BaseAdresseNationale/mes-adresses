@@ -4,7 +4,7 @@ import {
   NumeroChangesRequestedDTO,
   Signalement,
 } from "@/lib/openapi-signalement";
-import { Numero, Toponyme, Voie } from "@/lib/openapi-api-bal";
+import { ExtendedVoieDTO, Numero, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import Form from "../../form";
 import SignalementCreateNumero from "./numero/signalement-create-numero";
 import SignalementUpdateNumero from "./numero/signalement-update-numero";
@@ -17,6 +17,8 @@ import SignalementContext from "@/contexts/signalement";
 import { Paragraph } from "evergreen-ui";
 import SignalementCreateToponyme from "./toponyme/signalement-create-toponyme";
 import { isToponymeChangesRequested } from "@/lib/utils/signalement";
+import SignalementDeleteToponyme from "./toponyme/signalement-delete-toponyme";
+import SignalementDeleteVoie from "./voie/signalement-delete-voie";
 
 interface SignalementFormProps {
   signalement: Signalement;
@@ -173,16 +175,36 @@ function SignalementForm({
           />
         ))}
 
-      {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
-        <SignalementDeleteNumero
-          author={author}
-          existingLocation={existingLocation as Numero}
-          handleClose={onClose}
-          handleAccept={handleAccept}
-          handleReject={handleReject}
-          isLoading={isLoading}
-        />
-      )}
+      {signalement.type === Signalement.type.LOCATION_TO_DELETE &&
+        (signalement.existingLocation.type ===
+        ExistingLocation.type.TOPONYME ? (
+          <SignalementDeleteToponyme
+            author={author}
+            existingLocation={existingLocation as Toponyme}
+            handleClose={onClose}
+            handleAccept={handleAccept}
+            handleReject={handleReject}
+            isLoading={isLoading}
+          />
+        ) : signalement.existingLocation.type === ExistingLocation.type.VOIE ? (
+          <SignalementDeleteVoie
+            author={author}
+            existingLocation={existingLocation as ExtendedVoieDTO}
+            handleAccept={handleAccept}
+            handleReject={handleReject}
+            handleClose={onClose}
+            isLoading={isLoading}
+          />
+        ) : (
+          <SignalementDeleteNumero
+            author={author}
+            existingLocation={existingLocation as Numero}
+            handleClose={onClose}
+            handleAccept={handleAccept}
+            handleReject={handleReject}
+            isLoading={isLoading}
+          />
+        ))}
       <Paragraph textAlign="center">
         Il reste {pendingSignalementsCount} signalement
         {pendingSignalementsCount === 1 ? "" : "s"} à traiter

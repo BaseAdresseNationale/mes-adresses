@@ -5,13 +5,14 @@ import { useContext, useEffect, useState } from "react";
 import {
   NumeroChangesRequestedDTO,
   Position as PositionSignalement,
+  ToponymeChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 import { getPositionName } from "@/lib/positions-types-list";
 import { useMapStyleLoaded } from "./useMapStyleLoaded";
 import { SignalementDiff } from "@/lib/utils/signalement";
 
 export function useSignalementMapDiffCreation(
-  changesRequested: NumeroChangesRequestedDTO
+  changesRequested: NumeroChangesRequestedDTO | ToponymeChangesRequestedDTO
 ) {
   const { parcelles, positions } = changesRequested;
   const [initialized, setInitialized] = useState(false);

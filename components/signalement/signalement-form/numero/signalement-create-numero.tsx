@@ -14,7 +14,7 @@ import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-nu
 import { useSignalementMapDiffCreation } from "@/components/signalement/hooks/useSignalementMapDiffCreation";
 import LayoutContext from "@/contexts/layout";
 import BalDataContext from "@/contexts/bal-data";
-import { Alert } from "evergreen-ui";
+import { Alert, Text } from "evergreen-ui";
 
 interface SignalementCreateNumeroProps {
   signalement: Signalement;
@@ -98,8 +98,11 @@ function SignalementCreateNumero({
       />
 
       {!voie && (
-        <Alert>
-          La nouvelle voie {nomVoie} sera créée en acceptant ce signalement
+        <Alert flexShrink={0}>
+          <Text>
+            La nouvelle voie <b>{nomVoie}</b> sera créée en acceptant ce
+            signalement
+          </Text>
         </Alert>
       )}
 
