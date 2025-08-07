@@ -50,6 +50,10 @@ export function PurgeExpiredSignalementsDialog({
 
       for (const pendingSignalement of allPendingSignalements) {
         let signalementLocation = null;
+        const isNewVoieCreation =
+          pendingSignalement.type === Signalement.type.LOCATION_TO_CREATE &&
+          pendingSignalement.existingLocation === null;
+
         try {
           signalementLocation = await getExistingLocation(
             pendingSignalement,
@@ -63,7 +67,7 @@ export function PurgeExpiredSignalementsDialog({
           );
         }
 
-        if (!signalementLocation) {
+        if (!signalementLocation && !isNewVoieCreation) {
           await SignalementsServiceBal.updateSignalements(baseLocale.id, {
             ids: [pendingSignalement.id],
             status: Signalement.status.EXPIRED,

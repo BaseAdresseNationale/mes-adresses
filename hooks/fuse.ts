@@ -7,16 +7,17 @@ function useFuse<T>(
   source: T[],
   delay,
   options,
-  initialValue = null
+  initialValue = null,
+  threshold = 0.2
 ): [T[], (value: string) => void] {
   const [filtered, setFiltered] = useState(source || []);
 
   const fuse = useMemo(() => {
     return new Fuse(source, {
-      threshold: 0.2,
+      threshold,
       ...options,
     });
-  }, [options, source]);
+  }, [options, source, threshold]);
 
   useEffect(() => {
     setFiltered(source);
