@@ -133,6 +133,18 @@ const matchExistingNumero = (
   });
 };
 
+export function getAlreadyExistingLocation(
+  signalement: Signalement,
+  voies: Voie[]
+) {
+  return matchExistingToponyme(
+    {
+      nom: (signalement.changesRequested as NumeroChangesRequestedDTO).nomVoie,
+    },
+    voies
+  );
+}
+
 export async function getExistingLocation(
   signalement: Signalement,
   voies: Voie[],
@@ -265,4 +277,15 @@ export const isToponymeChangesRequested = (
     changesRequested as ToponymeChangesRequestedDTO;
 
   return nom && Array.isArray(parcelles) && Array.isArray(positions);
+};
+
+export const isNumeroChangesRequested = (
+  changesRequested: any
+): changesRequested is NumeroChangesRequestedDTO => {
+  const { numero, parcelles, positions, nomVoie } =
+    changesRequested as NumeroChangesRequestedDTO;
+
+  return (
+    numero && nomVoie && Array.isArray(parcelles) && Array.isArray(positions)
+  );
 };

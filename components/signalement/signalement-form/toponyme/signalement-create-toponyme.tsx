@@ -3,12 +3,15 @@ import {
   Signalement,
   ToponymeChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
-import { BasesLocalesService, Position } from "@/lib/openapi-api-bal";
+import { BasesLocalesService } from "@/lib/openapi-api-bal";
 import { SignalementFormButtons } from "../signalement-form-buttons";
 import { SignalementToponymeDiffCard } from "../../signalement-diff/signalement-toponyme-diff-card";
 import LayoutContext from "@/contexts/layout";
 import BalDataContext from "@/contexts/bal-data";
 import { useSignalementMapDiffCreation } from "../../hooks/useSignalementMapDiffCreation";
+import useFuse from "@/hooks/fuse";
+import { Alert, Link, Paragraph } from "evergreen-ui";
+import NextLink from "next/link";
 
 interface SignalementCreateToponymeProps {
   signalement: Signalement;
@@ -30,7 +33,17 @@ function SignalementCreateToponyme({
   const { nom, parcelles, positions } =
     signalement.changesRequested as ToponymeChangesRequestedDTO;
   const { pushToast } = useContext(LayoutContext);
-  const { baseLocale, reloadToponymes } = useContext(BalDataContext);
+  const { baseLocale, reloadToponymes, toponymes } = useContext(BalDataContext);
+
+  const [similarToponymes] = useFuse(
+    toponymes,
+    0,
+    {
+      keys: ["nom"],
+    },
+    nom,
+    0.1
+  );
 
   useSignalementMapDiffCreation(
     signalement.changesRequested as ToponymeChangesRequestedDTO
@@ -70,6 +83,30 @@ function SignalementCreateToponyme({
           to: parcelles,
         }}
       />
+      {similarToponymes.length > 0 && (
+        <Alert
+          title="Accepter ce signalement pourrait créer un doublon"
+          flexShrink={0}
+          intent="warning"
+        >
+          <Paragraph>
+            La Base Adresse Locale comporte{" "}
+            {similarToponymes.length === 1
+              ? `un toponyme`
+              : `plusieurs toponymes`}{" "}
+            dont le nom est similaire :{" "}
+            {similarToponymes.map(({ id, nom }) => (
+              <Link
+                key={id}
+                is={NextLink}
+                href={`/bal/${baseLocale.id}/toponymes/${id}`}
+              >
+                {nom}
+              </Link>
+            ))}
+          </Paragraph>
+        </Alert>
+      )}
       <SignalementFormButtons
         author={author}
         onAccept={onAccept}
