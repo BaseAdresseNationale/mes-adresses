@@ -18,8 +18,10 @@ import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api
 import { useRouter } from "next/router";
 import LayoutContext from "@/contexts/layout";
 import {
+  getAlreadyExistingLocation,
   getExistingLocation,
   getSignalementLabel,
+  isNumeroChangesRequested,
 } from "@/lib/utils/signalement";
 import { ObjectId } from "bson";
 import MapContext, { defaultStyle } from "@/contexts/map";
@@ -265,11 +267,19 @@ export async function getServerSideProps({ params }) {
 
     let existingLocation = null;
     try {
-      existingLocation = await getExistingLocation(
-        signalement,
-        voies,
-        toponymes
-      );
+      if (signalement.existingLocation) {
+        existingLocation = await getExistingLocation(
+          signalement,
+          voies,
+          toponymes
+        );
+      } else if (
+        !signalement.existingLocation &&
+        isNumeroChangesRequested(signalement.changesRequested)
+      ) {
+        // In case of a creation, we check if the street already exists
+        existingLocation = getAlreadyExistingLocation(signalement, voies);
+      }
     } catch (err) {
       console.error(err);
       existingLocation = null;
