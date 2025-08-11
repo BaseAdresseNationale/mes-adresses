@@ -98,7 +98,7 @@ function NumeroEditor({
     if (nomVoie) {
       try {
         const newVoie = await BasesLocalesService.createVoie(baseLocale.id, {
-          nom: nomVoie,
+          nom: nomVoie.trim(),
         });
         return newVoie;
       } catch (err) {
@@ -155,6 +155,15 @@ function NumeroEditor({
       e.preventDefault();
 
       setIsLoading(true);
+
+      if (parseInt(numero) === 99999) {
+        setValidationMessages([
+          "numero:Le numero 99999 est réservé au lieu-dit et complément",
+        ]);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const body = getNumeroBody();
 
@@ -220,6 +229,7 @@ function NumeroEditor({
       reloadTiles,
       onSubmitted,
       toaster,
+      numero,
     ]
   );
 
@@ -311,7 +321,7 @@ function NumeroEditor({
             voies={voies}
             nomVoie={nomVoie}
             mode={voieId ? "selection" : "creation"}
-            validationMessage={getValidationMessage("nom")}
+            validationMessage={getValidationMessage("voie_nom")}
             handleVoie={handleVoieIdChange}
             handleNomVoie={handleNomVoieChange}
           />
@@ -374,7 +384,6 @@ function NumeroEditor({
               maxWidth={300}
               flex={2}
               min={0}
-              max={9999}
               value={numero}
               marginBottom={0}
               onWheel={(e) => e.target.blur()}

@@ -105,6 +105,20 @@ function LanguesRegionalesForm({
         />
       ))}
 
+      <Pane marginTop={8}>
+        {validationMessage && (
+          <Text color="danger" fontSize={12}>
+            <ErrorIcon
+              size={14}
+              color="danger"
+              marginRight={4}
+              marginBottom={-1}
+            />
+            {validationMessage}
+          </Text>
+        )}
+      </Pane>
+
       <Button
         type="button"
         appearance="primary"
@@ -117,20 +131,6 @@ function LanguesRegionalesForm({
       >
         Ajouter une langue régionale
       </Button>
-
-      <Pane marginTop={8}>
-        {validationMessage && (
-          <Text color="danger" fontStyle="italic">
-            <ErrorIcon
-              size={14}
-              color="danger"
-              marginRight={4}
-              marginBottom={-1}
-            />
-            {validationMessage}
-          </Text>
-        )}
-      </Pane>
     </>
   );
 }

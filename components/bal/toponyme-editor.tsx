@@ -82,6 +82,16 @@ function ToponymeEditor({
     [baseLocale.id, numerosIds, reloadNumeros]
   );
 
+  const trimNomAlt = (nomAlt) => {
+    return Object.entries(nomAlt).reduce(
+      (acc, [key, value]) => {
+        acc[key] = typeof value === "string" ? value.trim() : value;
+        return acc;
+      },
+      {} as Record<string, any>
+    );
+  };
+
   const onFormSubmit = useCallback(
     async (e) => {
       e.preventDefault();
@@ -90,8 +100,8 @@ function ToponymeEditor({
       setIsLoading(true);
 
       const body = {
-        nom,
-        nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
+        nom: nom.trim(),
+        nomAlt: Object.keys(nomAlt).length > 0 ? trimNomAlt(nomAlt) : null,
         communeDeleguee,
         positions: [],
         parcelles: highlightedParcelles,
@@ -202,7 +212,7 @@ function ToponymeEditor({
     const { nom } = initialValue || {};
     resetNom(nom || "");
     setValidationMessages(null);
-  }, [resetNom, setValidationMessages, initialValue]);
+  }, [resetNom, initialValue]);
 
   return (
     <Form
@@ -220,12 +230,12 @@ function ToponymeEditor({
             placeholder="Nom du toponyme"
             value={nom}
             onChange={onNomChange}
-            validationMessage={getValidationMessage("nom")}
+            validationMessage={getValidationMessage("voie_nom")}
           />
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessage={getValidationMessage("langue")}
+            validationMessage={getValidationMessage("lang_alt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>
