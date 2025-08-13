@@ -95,7 +95,6 @@ function SignalementCreateNumero({
         newVoie = await BasesLocalesService.createVoie(baseLocale.id, {
           nom: nomVoie,
         });
-        await reloadVoies();
       }
       const voieId = existingVoie?.id || newVoie.id;
       await VoiesService.createNumero(voieId, {
@@ -106,6 +105,9 @@ function SignalementCreateNumero({
         certifie: true,
         toponymeId: requestedToponyme?.id,
       });
+      if (!existingVoie) {
+        await reloadVoies();
+      }
       await handleAccept();
     } catch (error) {
       console.error("Error accepting signalement:", error);
