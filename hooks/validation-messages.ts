@@ -7,10 +7,13 @@ export default function useValidationMessage() {
   > | null>(null);
 
   const setValidationMessages = (messages: string[] | null) => {
+    _setValidationMessages(null);
     if (messages) {
       for (const message of messages) {
-        const field = message.split(":")[0];
-        const error = message.split(":")[1];
+        let [field, error] = message.split(":");
+        if (field.includes("positions")) {
+          field = "positions";
+        }
         _setValidationMessages((prev) => ({
           ...prev,
           [field]: [...(prev?.[field] || []), error],
