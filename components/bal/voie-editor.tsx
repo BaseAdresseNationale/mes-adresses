@@ -25,6 +25,7 @@ import {
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
+import { trimNomAlt } from "@/lib/utils/string";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -57,16 +58,6 @@ function VoieEditor({
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
-
-  const trimNomAlt = (nomAlt) => {
-    return Object.entries(nomAlt).reduce(
-      (acc, [key, value]) => {
-        acc[key] = typeof value === "string" ? value.trim() : value;
-        return acc;
-      },
-      {} as Record<string, any>
-    );
-  };
 
   const onFormSubmit = useCallback(
     async (e) => {

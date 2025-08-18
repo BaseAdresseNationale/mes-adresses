@@ -28,6 +28,7 @@ import LayoutContext from "@/contexts/layout";
 import AddNumerosInput from "../toponyme/add-numeros-input";
 import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
+import { trimNomAlt } from "@/lib/utils/string";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -81,16 +82,6 @@ function ToponymeEditor({
     },
     [baseLocale.id, numerosIds, reloadNumeros]
   );
-
-  const trimNomAlt = (nomAlt) => {
-    return Object.entries(nomAlt).reduce(
-      (acc, [key, value]) => {
-        acc[key] = typeof value === "string" ? value.trim() : value;
-        return acc;
-      },
-      {} as Record<string, any>
-    );
-  };
 
   const onFormSubmit = useCallback(
     async (e) => {
