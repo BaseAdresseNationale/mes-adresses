@@ -7,6 +7,7 @@ import type { CommunePrecedenteDTO } from './CommunePrecedenteDTO';
 
 export type CommuneDTO = {
     code: string;
+    codeCommuneCadastre: string;
     nom: string;
     isCOM: boolean;
     hasCadastre: boolean;

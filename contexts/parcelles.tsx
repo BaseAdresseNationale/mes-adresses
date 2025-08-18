@@ -49,8 +49,11 @@ function getFeatureId(map: MaplibreMap, id: string): string | undefined {
 
 export function ParcellesContextProvider(props: ChildrenProps) {
   const { map, isCadastreDisplayed, isStyleLoaded } = useContext(MapContext);
-  const { baseLocale, parcelles: selectedParcelles } =
-    useContext(BalDataContext);
+  const {
+    baseLocale,
+    commune,
+    parcelles: selectedParcelles,
+  } = useContext(BalDataContext);
   const [showSelectedParcelles, setShowSelectedParcelles] =
     useState<boolean>(true);
   const [isDiffMode, setIsDiffMode] = useState<boolean>(false);
@@ -230,17 +233,22 @@ export function ParcellesContextProvider(props: ChildrenProps) {
   const reloadParcellesLayers = useCallback(() => {
     // Toggle all cadastre layers visiblity
     // Filter cadastre with code commune
+    const features = map.querySourceFeatures(CADASTRE_SOURCE, {
+      sourceLayer: CADASTRE_SOURCE_LAYER.PARCELLES,
+    });
+
+    console.log(commune.codeCommuneCadastre, commune.code, features);
     map.setFilter(CADASTRE_LAYER.PARCELLES, [
       "match",
       ["get", "commune"],
-      baseLocale.commune,
+      commune.codeCommuneCadastre || baseLocale.commune,
       true,
       false,
     ]);
     map.setFilter(CADASTRE_LAYER.PARCELLES_FILL, [
       "match",
       ["get", "commune"],
-      baseLocale.commune,
+      commune.codeCommuneCadastre || baseLocale.commune,
       true,
       false,
     ]);
@@ -254,6 +262,7 @@ export function ParcellesContextProvider(props: ChildrenProps) {
     }
   }, [
     map,
+    commune.codeCommuneCadastre,
     baseLocale.commune,
     toggleCadastreVisibility,
     filterSelectedParcelles,
