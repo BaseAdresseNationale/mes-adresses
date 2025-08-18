@@ -85,7 +85,7 @@ function CommuneNomsAltEditor({
   // Reset validation messages on changes
   useEffect(() => {
     setValidationMessages(null);
-  }, [communeNomsAlt, setValidationMessages]);
+  }, [communeNomsAlt]);
 
   return (
     <Form
@@ -98,7 +98,7 @@ function CommuneNomsAltEditor({
           <Label>Nom en langue régionale de la commune</Label>
           <LanguesRegionalesForm
             initialValue={initialValue?.communeNomsAlt}
-            validationMessage={getValidationMessage("langue")}
+            validationMessage={getValidationMessage("lang_alt")}
             handleLanguages={setCommuneNomsAlt}
             autoOpen={true}
           />

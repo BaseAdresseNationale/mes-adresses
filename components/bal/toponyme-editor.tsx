@@ -28,6 +28,7 @@ import LayoutContext from "@/contexts/layout";
 import AddNumerosInput from "../toponyme/add-numeros-input";
 import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
+import { trimNomAlt } from "@/lib/utils/string";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -90,8 +91,8 @@ function ToponymeEditor({
       setIsLoading(true);
 
       const body = {
-        nom,
-        nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
+        nom: nom.trim(),
+        nomAlt: Object.keys(nomAlt).length > 0 ? trimNomAlt(nomAlt) : null,
         communeDeleguee,
         positions: [],
         parcelles: highlightedParcelles,
@@ -202,7 +203,7 @@ function ToponymeEditor({
     const { nom } = initialValue || {};
     resetNom(nom || "");
     setValidationMessages(null);
-  }, [resetNom, setValidationMessages, initialValue]);
+  }, [resetNom, initialValue]);
 
   return (
     <Form
@@ -220,12 +221,12 @@ function ToponymeEditor({
             placeholder="Nom du toponyme"
             value={nom}
             onChange={onNomChange}
-            validationMessage={getValidationMessage("nom")}
+            validationMessage={getValidationMessage("voie_nom")}
           />
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessage={getValidationMessage("langue")}
+            validationMessage={getValidationMessage("lang_alt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>

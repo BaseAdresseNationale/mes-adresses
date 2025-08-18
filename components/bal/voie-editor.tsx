@@ -25,6 +25,7 @@ import {
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
+import { trimNomAlt } from "@/lib/utils/string";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -66,8 +67,8 @@ function VoieEditor({
 
       try {
         const body = {
-          nom,
-          nomAlt: Object.keys(nomAlt).length > 0 ? nomAlt : null,
+          nom: nom.trim(),
+          nomAlt: Object.keys(nomAlt).length > 0 ? trimNomAlt(nomAlt) : null,
           typeNumerotation: isMetric ? "metrique" : "numerique",
           trace: data ? data.geometry : null,
           comment: comment ? comment : null,
@@ -157,7 +158,7 @@ function VoieEditor({
   // Reset validation messages on changes
   useEffect(() => {
     setValidationMessages(null);
-  }, [nom, setValidationMessages]);
+  }, [nom]);
 
   useEffect(() => {
     if (isMetric) {
@@ -191,7 +192,7 @@ function VoieEditor({
             placeholder="Nom de la voie"
             value={nom}
             onChange={onNomChange}
-            validationMessage={getValidationMessage("nom")}
+            validationMessage={getValidationMessage("voie_nom")}
           />
 
           <Checkbox
@@ -203,7 +204,7 @@ function VoieEditor({
 
           <LanguesRegionalesForm
             initialValue={initialValue?.nomAlt}
-            validationMessage={getValidationMessage("langue")}
+            validationMessage={getValidationMessage("lang_alt")}
             handleLanguages={setNomAlt}
           />
         </FormInput>
