@@ -37,7 +37,7 @@ import PaginationList from "@/components/pagination-list";
 import LanguagePreview from "@/components/bal/language-preview";
 import TableRowNotifications from "@/components/table-row/table-row-notifications";
 import TableRowActions from "@/components/table-row/table-row-actions";
-import ConvertVoieWarning from "@/components/convert-voie-warning";
+import DialogWarningAction from "@/components/dialog-warning-action";
 import MapContext from "@/contexts/map";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import PopulateSideBar from "@/components/sidebar/populate";
@@ -58,11 +58,14 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     reloadToponymes,
     reloadParcelles,
     refreshBALSync,
+    reloadNumeros,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
 
   const [toConvert, setToConvert] = useState<string | null>(null);
+  const [toCertify, setToCertify] = useState<string | null>(null);
   const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
+  const [onCertifyLoading, setOnCertifyLoading] = useState<boolean>(false);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
@@ -102,6 +105,15 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     setToRemove(null);
     setIsDisabled(false);
   };
+
+  const onCertify = useCallback(async () => {
+    setOnCertifyLoading(true);
+    await VoiesService.certifyVoieNumeros(toCertify);
+    await reloadVoies();
+    await reloadNumeros();
+    setOnCertifyLoading(false);
+    setToCertify(null);
+  }, [toCertify, reloadVoies, reloadNumeros]);
 
   const onConvert = useCallback(async () => {
     setOnConvertLoading(true);
@@ -162,7 +174,23 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
 
   return (
     <>
-      <ConvertVoieWarning
+      <DialogWarningAction
+        confirmLabel="Certifier les numéros de la voie"
+        isShown={Boolean(toCertify)}
+        content={
+          <Paragraph>
+            Êtes vous bien sûr de vouloir certifier toutes les adresses de cette
+            voie ?
+          </Paragraph>
+        }
+        isLoading={onCertifyLoading}
+        onCancel={() => {
+          setToCertify(null);
+        }}
+        onConfirm={onCertify}
+      />
+      <DialogWarningAction
+        confirmLabel="Convertir en toponyme"
         isShown={Boolean(toConvert)}
         content={
           <Paragraph>
@@ -290,13 +318,18 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   ) : null
                 }
                 warning={
-                  voie.nbNumeros === 0
-                    ? (<>
-                        <Text style={{ color: 'white' }}>Cette voie ne contient aucun numéro</Text>
-                        <br /><br />
-                        <Button onClick={() => setToConvert(voie.id)}>Convertir en toponyme</Button>
-                      </>)
-                    : null
+                  voie.nbNumeros === 0 ? (
+                    <>
+                      <Text style={{ color: "white" }}>
+                        Cette voie ne contient aucun numéro
+                      </Text>
+                      <br />
+                      <br />
+                      <Button onClick={() => setToConvert(voie.id)}>
+                        Convertir en toponyme
+                      </Button>
+                    </>
+                  ) : null
                 }
               />
 
@@ -307,6 +340,9 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   }}
                   onEdit={() => {
                     browseToVoie(voie.id);
+                  }}
+                  onCertified={() => {
+                    setToCertify(voie.id);
                   }}
                   onRemove={() => {
                     setToRemove(voie.id);
