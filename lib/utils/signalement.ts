@@ -271,7 +271,7 @@ export async function getAllSignalements(
 }
 
 export const isToponymeChangesRequested = (
-  changesRequested: any
+  changesRequested: unknown
 ): changesRequested is ToponymeChangesRequestedDTO => {
   const { nom, parcelles, positions } =
     changesRequested as ToponymeChangesRequestedDTO;
@@ -280,7 +280,7 @@ export const isToponymeChangesRequested = (
 };
 
 export const isNumeroChangesRequested = (
-  changesRequested: any
+  changesRequested: unknown
 ): changesRequested is NumeroChangesRequestedDTO => {
   const { numero, parcelles, positions, nomVoie } =
     changesRequested as NumeroChangesRequestedDTO;

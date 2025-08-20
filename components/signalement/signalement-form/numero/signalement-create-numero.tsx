@@ -18,6 +18,7 @@ import BalDataContext from "@/contexts/bal-data";
 import { Alert, Link, Paragraph, Text, Pane, Button } from "evergreen-ui";
 import useFuse from "@/hooks/fuse";
 import NextLink from "next/link";
+import { computeCompletNumero } from "@/lib/utils/numero";
 
 interface SignalementCreateNumeroProps {
   signalement: Signalement;
@@ -29,9 +30,6 @@ interface SignalementCreateNumeroProps {
   handleClose: () => void;
   isLoading: boolean;
 }
-
-const getNumeroComplet = (numero: number, suffixe?: string) =>
-  `${numero}${suffixe && ` ${suffixe}`}`;
 
 function SignalementCreateNumero({
   signalement,
@@ -80,7 +78,7 @@ function SignalementCreateNumero({
   }, [existingVoie]);
 
   const numeroAlreadyExists = useMemo(() => {
-    const numeroCompletToBeCreated = getNumeroComplet(numero, suffixe);
+    const numeroCompletToBeCreated = computeCompletNumero(numero, suffixe);
 
     return existingNumeros?.some(
       ({ numeroComplet }) =>
@@ -190,7 +188,7 @@ function SignalementCreateNumero({
         >
           <Paragraph>
             La voie <b>{existingVoie.nom}</b> comporte déjà une adresse au
-            numéro <b>{getNumeroComplet(numero, suffixe)}</b>.
+            numéro <b>{computeCompletNumero(numero, suffixe)}</b>.
           </Paragraph>
         </Alert>
       )}

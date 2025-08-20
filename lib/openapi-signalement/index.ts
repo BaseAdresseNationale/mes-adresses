@@ -9,6 +9,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { Author } from './models/Author';
 export type { AuthorInput } from './models/AuthorInput';
+export type { ChangesRequested } from './models/ChangesRequested';
 export type { Client } from './models/Client';
 export { CommuneSettingsDTO } from './models/CommuneSettingsDTO';
 export { CommuneStatusDTO } from './models/CommuneStatusDTO';
