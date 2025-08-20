@@ -266,7 +266,10 @@ export function ParcellesContextProvider(props: ChildrenProps) {
     }
     // Les codes communes du cadastre ne correspondent pas toujours à ceux du COG
     // La variables codeCommunesCadastre est un mapping des code_insee vers les code commune du cadastre
-    if (commune.codeCommunesCadastre) {
+    if (
+      commune.codeCommunesCadastre &&
+      commune.codeCommunesCadastre.length > 0
+    ) {
       displayParcellesByCodeCommunes(commune.codeCommunesCadastre);
     } else {
       displayParcellesByCodeCommune(baseLocale.commune);
