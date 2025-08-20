@@ -261,6 +261,9 @@ export function ParcellesContextProvider(props: ChildrenProps) {
   );
 
   const reloadParcellesLayers = useCallback(() => {
+    if (!map.isStyleLoaded()) {
+      return;
+    }
     // Les codes communes du cadastre ne correspondent pas toujours à ceux du COG
     // La variables codeCommunesCadastre est un mapping des code_insee vers les code commune du cadastre
     if (commune.codeCommunesCadastre) {
@@ -277,14 +280,15 @@ export function ParcellesContextProvider(props: ChildrenProps) {
       filterHighlightedParcelles();
     }
   }, [
+    map,
     commune.codeCommunesCadastre,
-    baseLocale.commune,
     toggleCadastreVisibility,
+    isCadastreDisplayed,
+    displayParcellesByCodeCommunes,
+    displayParcellesByCodeCommune,
+    baseLocale.commune,
     filterSelectedParcelles,
     filterHighlightedParcelles,
-    displayParcellesByCodeCommune,
-    displayParcellesByCodeCommunes,
-    isCadastreDisplayed,
   ]);
 
   // Toggle all cadastre layers visiblity

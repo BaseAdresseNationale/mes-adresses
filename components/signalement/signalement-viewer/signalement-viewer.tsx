@@ -14,6 +14,10 @@ import SignalementViewerCreateNumero from "./numero/signalement-viewer-create-nu
 import SignalementViewerUpdateVoie from "./voie/signalement-viewer-update-voie";
 import SignalementViewerUpdateToponyme from "./toponyme/signalement-viewer-update-toponyme";
 import SignalementViewerDeleteNumero from "./numero/signalement-viewer-delete-numero";
+import SignalementViewerDeleteVoie from "./voie/signalement-viewer-delete-voie";
+import SignalementViewerDeleteToponyme from "./toponyme/signalement-viewer-delete-toponyme";
+import { isToponymeChangesRequested } from "@/lib/utils/signalement";
+import SignalementViewerCreateToponyme from "./toponyme/signalement-viewer-create-toponyme";
 
 interface SignalementViewerProps {
   signalement: Signalement;
@@ -77,9 +81,12 @@ export function SignalementViewer({
     >
       <SignalementHeader signalement={signalement} author={author} />
 
-      {signalement.type === Signalement.type.LOCATION_TO_CREATE && (
-        <SignalementViewerCreateNumero signalement={signalement} />
-      )}
+      {signalement.type === Signalement.type.LOCATION_TO_CREATE &&
+        (isToponymeChangesRequested(signalement.changesRequested) ? (
+          <SignalementViewerCreateToponyme signalement={signalement} />
+        ) : (
+          <SignalementViewerCreateNumero signalement={signalement} />
+        ))}
 
       {signalement.type === Signalement.type.LOCATION_TO_UPDATE &&
         (signalement.existingLocation.type === ExistingLocation.type.NUMERO ? (
@@ -90,9 +97,14 @@ export function SignalementViewer({
           <SignalementViewerUpdateToponyme signalement={signalement} />
         ))}
 
-      {signalement.type === Signalement.type.LOCATION_TO_DELETE && (
-        <SignalementViewerDeleteNumero signalement={signalement} />
-      )}
+      {signalement.type === Signalement.type.LOCATION_TO_DELETE &&
+        (signalement.existingLocation.type === ExistingLocation.type.NUMERO ? (
+          <SignalementViewerDeleteNumero signalement={signalement} />
+        ) : signalement.existingLocation.type === ExistingLocation.type.VOIE ? (
+          <SignalementViewerDeleteVoie signalement={signalement} />
+        ) : (
+          <SignalementViewerDeleteToponyme signalement={signalement} />
+        ))}
 
       <Pane
         position="sticky"
