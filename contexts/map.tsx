@@ -10,6 +10,7 @@ import LocalStorageContext from "@/contexts/local-storage";
 import type { ViewState } from "react-map-gl/maplibre";
 import type { Map as MaplibreMap, VectorTileSource } from "maplibre-gl";
 import { ChildrenProps } from "@/types/context";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface MapContextType {
   map: MaplibreMap | null;
@@ -30,6 +31,8 @@ interface MapContextType {
   showTilesLayers: (show?: boolean) => void;
   showToponymes: boolean;
   setShowToponymes: React.Dispatch<React.SetStateAction<boolean>>;
+  tileLayersMode: TilesLayerMode;
+  setTileLayersMode: React.Dispatch<React.SetStateAction<TilesLayerMode>>;
 }
 
 const MapContext = React.createContext<MapContextType | null>(null);
@@ -58,6 +61,9 @@ export function MapContextProvider(props: ChildrenProps) {
   const [isTileSourceLoaded, setIsTileSourceLoaded] = useState<boolean>(false);
   const [isStyleLoaded, setIsStyleLoaded] = useState<boolean>(false);
   const [isMapLoaded, setIsMapLoaded] = useState<boolean>(false);
+  const [tileLayersMode, setTileLayersMode] = useState<TilesLayerMode>(
+    TilesLayerMode.VOIE
+  );
 
   const { baseLocale } = useContext(BalContext);
   const { userSettings } = useContext(LocalStorageContext);
@@ -144,6 +150,8 @@ export function MapContextProvider(props: ChildrenProps) {
       showTilesLayers,
       showToponymes,
       setShowToponymes,
+      tileLayersMode,
+      setTileLayersMode,
     }),
     [
       map,
@@ -159,6 +167,8 @@ export function MapContextProvider(props: ChildrenProps) {
       showTilesLayers,
       showToponymes,
       setShowToponymes,
+      tileLayersMode,
+      setTileLayersMode,
     ]
   );
 

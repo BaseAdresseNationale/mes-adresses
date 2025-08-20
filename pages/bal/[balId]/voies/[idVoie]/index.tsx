@@ -17,6 +17,8 @@ import SearchPaginationContext from "@/contexts/search-pagination";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
+import MapContext from "@/contexts/map";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface VoiePageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -31,6 +33,11 @@ function VoiePage({ baseLocale }: VoiePageProps) {
     SearchPaginationContext
   );
   const { token } = useContext(TokenContext);
+  const { setTileLayersMode } = useContext(MapContext);
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.VOIE);
+  }, [setTileLayersMode]);
 
   useEffect(() => {
     async function addCommentsToVoies() {
