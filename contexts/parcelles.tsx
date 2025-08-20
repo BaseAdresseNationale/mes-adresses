@@ -230,28 +230,44 @@ export function ParcellesContextProvider(props: ChildrenProps) {
     }
   }, [map, highlightedParcelles, isDiffMode]);
 
-  const reloadParcellesLayers = useCallback(() => {
-    // Toggle all cadastre layers visiblity
-    // Filter cadastre with code commune
-    const features = map.querySourceFeatures(CADASTRE_SOURCE, {
-      sourceLayer: CADASTRE_SOURCE_LAYER.PARCELLES,
-    });
+  const setFilterMatch = useCallback(
+    (layerId: string, value: string) => {
+      map.setFilter(layerId, ["match", ["get", "commune"], value, true, false]);
+    },
+    [map]
+  );
 
-    console.log(commune.codeCommuneCadastre, commune.code, features);
-    map.setFilter(CADASTRE_LAYER.PARCELLES, [
-      "match",
-      ["get", "commune"],
-      commune.codeCommuneCadastre || baseLocale.commune,
-      true,
-      false,
-    ]);
-    map.setFilter(CADASTRE_LAYER.PARCELLES_FILL, [
-      "match",
-      ["get", "commune"],
-      commune.codeCommuneCadastre || baseLocale.commune,
-      true,
-      false,
-    ]);
+  const displayParcellesByCodeCommune = useCallback(
+    (codeCommune: string) => {
+      setFilterMatch(CADASTRE_LAYER.PARCELLES, codeCommune);
+      setFilterMatch(CADASTRE_LAYER.PARCELLES_FILL, codeCommune);
+    },
+    [setFilterMatch]
+  );
+
+  const setFilterIn = useCallback(
+    (layerId: string, value: string[]) => {
+      map.setFilter(layerId, ["in", ["get", "commune"], ["literal", value]]);
+    },
+    [map]
+  );
+
+  const displayParcellesByCodeCommunes = useCallback(
+    (codeCommunes: string[]) => {
+      setFilterIn(CADASTRE_LAYER.PARCELLES, codeCommunes);
+      setFilterIn(CADASTRE_LAYER.PARCELLES_FILL, codeCommunes);
+    },
+    [setFilterIn]
+  );
+
+  const reloadParcellesLayers = useCallback(() => {
+    // Les codes communes du cadastre ne correspondent pas toujours à ceux du COG
+    // La variables codeCommunesCadastre est un mapping des code_insee vers les code commune du cadastre
+    if (commune.codeCommunesCadastre) {
+      displayParcellesByCodeCommunes(commune.codeCommunesCadastre);
+    } else {
+      displayParcellesByCodeCommune(baseLocale.commune);
+    }
 
     toggleCadastreVisibility();
 
@@ -261,12 +277,13 @@ export function ParcellesContextProvider(props: ChildrenProps) {
       filterHighlightedParcelles();
     }
   }, [
-    map,
-    commune.codeCommuneCadastre,
+    commune.codeCommunesCadastre,
     baseLocale.commune,
     toggleCadastreVisibility,
     filterSelectedParcelles,
     filterHighlightedParcelles,
+    displayParcellesByCodeCommune,
+    displayParcellesByCodeCommunes,
     isCadastreDisplayed,
   ]);
 
