@@ -16,6 +16,8 @@ import ToponymeEditor from "@/components/bal/toponyme-editor";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
 import BalDataContext from "@/contexts/bal-data";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
+import MapContext from "@/contexts/map";
 
 interface ToponymePageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -29,6 +31,11 @@ function ToponymePage({ baseLocale, toponyme }: ToponymePageProps) {
     SearchPaginationContext
   );
   const { commune } = useContext(BalDataContext);
+  const { setTileLayersMode } = useContext(MapContext);
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.TOPONYME);
+  }, [setTileLayersMode]);
 
   useEffect(() => {
     setLastSelectedItem((prev) => ({

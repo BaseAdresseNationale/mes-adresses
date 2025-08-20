@@ -43,6 +43,7 @@ import BALRecoveryContext from "@/contexts/bal-recovery";
 import PopulateSideBar from "@/components/sidebar/populate";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import SearchPaginationContext from "@/contexts/search-pagination";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface VoiesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -59,7 +60,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     reloadParcelles,
     refreshBALSync,
   } = useContext(BalDataContext);
-  const { reloadTiles } = useContext(MapContext);
+  const { reloadTiles, setTileLayersMode } = useContext(MapContext);
 
   const [toConvert, setToConvert] = useState<string | null>(null);
   const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
@@ -73,6 +74,10 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
   const { scrollAndHighlightLastSelectedItem } = useContext(
     SearchPaginationContext
   );
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.VOIE);
+  }, [setTileLayersMode]);
 
   useEffect(() => {
     setBreadcrumbs(<Text aria-current="page">Voies</Text>);
@@ -290,13 +295,18 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   ) : null
                 }
                 warning={
-                  voie.nbNumeros === 0
-                    ? (<>
-                        <Text style={{ color: 'white' }}>Cette voie ne contient aucun numéro</Text>
-                        <br /><br />
-                        <Button onClick={() => setToConvert(voie.id)}>Convertir en toponyme</Button>
-                      </>)
-                    : null
+                  voie.nbNumeros === 0 ? (
+                    <>
+                      <Text style={{ color: "white" }}>
+                        Cette voie ne contient aucun numéro
+                      </Text>
+                      <br />
+                      <br />
+                      <Button onClick={() => setToConvert(voie.id)}>
+                        Convertir en toponyme
+                      </Button>
+                    </>
+                  ) : null
                 }
               />
 
