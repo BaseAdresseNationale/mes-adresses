@@ -63,6 +63,10 @@ function SignalementCreateNumero({
   );
 
   useEffect(() => {
+    setExistingVoie(voie);
+  }, [voie]);
+
+  useEffect(() => {
     async function fetchNumeros() {
       try {
         const numeros = await VoiesService.findVoieNumeros(existingVoie.id);
@@ -148,7 +152,7 @@ function SignalementCreateNumero({
         </Alert>
       )}
 
-      {!existingVoie && similarVoies.length > 0 && (
+      {!isLoading && !existingVoie && similarVoies.length > 0 && (
         <Alert
           title="Accepter ce signalement pourrait créer un doublon"
           flexShrink={0}
@@ -180,7 +184,7 @@ function SignalementCreateNumero({
         </Alert>
       )}
 
-      {numeroAlreadyExists && (
+      {!isLoading && numeroAlreadyExists && (
         <Alert
           title="Accepter ce signalement pourrait créer un doublon"
           flexShrink={0}

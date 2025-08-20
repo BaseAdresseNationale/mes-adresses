@@ -83,7 +83,7 @@ function SignalementCreateToponyme({
           to: parcelles,
         }}
       />
-      {similarToponymes.length > 0 && (
+      {!isLoading && similarToponymes.length > 0 && (
         <Alert
           title="Accepter ce signalement pourrait créer un doublon"
           flexShrink={0}
