@@ -26,7 +26,7 @@ import BalDataContext from "@/contexts/bal-data";
 
 import { cadastreLayers } from "@/components/map/layers/cadastre";
 import {
-  tilesLayers,
+  getTilesLayers,
   VOIE_LABEL,
   VOIE_TRACE_LINE,
   NUMEROS_POINT,
@@ -112,6 +112,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     balTilesUrl,
     isMapLoaded,
     showToponymes,
+    tileLayersMode,
   } = useContext(MapContext);
   const { isParcelleSelectionEnabled, handleParcelles } =
     useContext(ParcellesContext);
@@ -436,7 +437,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           <Layer {...(layerCommune as LayerProps)} />
 
           <Source {...sourceTiles}>
-            {Object.values(tilesLayers).map((layer) => (
+            {Object.values(getTilesLayers(tileLayersMode)).map((layer) => (
               <Layer key={layer.id} {...(layer as LayerProps)} />
             ))}
           </Source>

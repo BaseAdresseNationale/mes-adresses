@@ -43,6 +43,7 @@ import BALRecoveryContext from "@/contexts/bal-recovery";
 import PopulateSideBar from "@/components/sidebar/populate";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import SearchPaginationContext from "@/contexts/search-pagination";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface VoiesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -60,7 +61,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     refreshBALSync,
     reloadNumeros,
   } = useContext(BalDataContext);
-  const { reloadTiles } = useContext(MapContext);
+  const { reloadTiles, setTileLayersMode } = useContext(MapContext);
 
   const [toConvert, setToConvert] = useState<string | null>(null);
   const [toCertify, setToCertify] = useState<string | null>(null);
@@ -76,6 +77,10 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
   const { scrollAndHighlightLastSelectedItem } = useContext(
     SearchPaginationContext
   );
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.VOIE);
+  }, [setTileLayersMode]);
 
   useEffect(() => {
     setBreadcrumbs(<Text aria-current="page">Voies</Text>);
