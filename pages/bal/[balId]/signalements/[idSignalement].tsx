@@ -18,8 +18,10 @@ import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api
 import { useRouter } from "next/router";
 import LayoutContext from "@/contexts/layout";
 import {
+  getAlreadyExistingLocation,
   getExistingLocation,
   getSignalementLabel,
+  isNumeroChangesRequested,
 } from "@/lib/utils/signalement";
 import { ObjectId } from "bson";
 import MapContext, { defaultStyle } from "@/contexts/map";
@@ -53,6 +55,10 @@ function SignalementPage({
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
 
+  const isNewVoieCreation =
+    signalement.type === Signalement.type.LOCATION_TO_CREATE &&
+    signalement.existingLocation === null;
+
   useEffect(() => {
     setStyle("ortho");
     setBreadcrumbs(
@@ -83,11 +89,18 @@ function SignalementPage({
 
     if (
       (existingLocation === null || requestedToponyme === null) &&
-      signalement.status === Signalement.status.PENDING
+      signalement.status === Signalement.status.PENDING &&
+      !isNewVoieCreation
     ) {
       markSignalementAsExpired();
     }
-  }, [existingLocation, signalement, baseLocale, requestedToponyme]);
+  }, [
+    existingLocation,
+    signalement,
+    baseLocale,
+    requestedToponyme,
+    isNewVoieCreation,
+  ]);
 
   // Fetch the author of the signalement
   useEffect(() => {
@@ -152,7 +165,20 @@ function SignalementPage({
 
   return (
     <ProtectedPage>
-      {existingLocation && requestedToponyme !== null ? (
+      {signalement.status === Signalement.status.IGNORED ||
+      signalement.status === Signalement.status.PROCESSED ? (
+        <SignalementViewer
+          signalement={signalement}
+          author={author}
+          onClose={() =>
+            router.push(
+              `/bal/${router.query.balId}/${TabsEnum.SIGNALEMENTS}?tab=archived`
+            )
+          }
+        />
+      ) : signalement.status === Signalement.status.PENDING &&
+        (existingLocation || isNewVoieCreation) &&
+        requestedToponyme !== null ? (
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
@@ -163,17 +189,6 @@ function SignalementPage({
             onSubmit={handleSubmit}
           />
         </Pane>
-      ) : signalement.status === Signalement.status.IGNORED ||
-        signalement.status === Signalement.status.PROCESSED ? (
-        <SignalementViewer
-          signalement={signalement}
-          author={author}
-          onClose={() =>
-            router.push(
-              `/bal/${router.query.balId}/${TabsEnum.SIGNALEMENTS}?tab=archived`
-            )
-          }
-        />
       ) : (
         <Pane padding={20}>
           <Paragraph>
@@ -251,32 +266,23 @@ export async function getServerSideProps({ params }) {
     }
 
     let existingLocation = null;
-    if (
-      signalement.type === Signalement.type.LOCATION_TO_UPDATE ||
-      signalement.type === Signalement.type.LOCATION_TO_DELETE
-    ) {
-      try {
+    try {
+      if (signalement.existingLocation) {
         existingLocation = await getExistingLocation(
           signalement,
           voies,
           toponymes
         );
-      } catch (err) {
-        console.error(err);
-        existingLocation = null;
+      } else if (
+        !signalement.existingLocation &&
+        isNumeroChangesRequested(signalement.changesRequested)
+      ) {
+        // In case of a creation, we check if the street already exists
+        existingLocation = getAlreadyExistingLocation(signalement, voies);
       }
-    } else if (signalement.type === Signalement.type.LOCATION_TO_CREATE) {
-      existingLocation = voies.find((voie) => {
-        if ((signalement.existingLocation as ExistingVoie).banId) {
-          return (
-            voie.banId ===
-              (signalement.existingLocation as ExistingVoie).banId ||
-            voie.nom === (signalement.existingLocation as ExistingVoie).nom
-          );
-        }
-
-        return voie.nom === (signalement.existingLocation as ExistingVoie).nom;
-      });
+    } catch (err) {
+      console.error(err);
+      existingLocation = null;
     }
 
     if (!existingLocation) {

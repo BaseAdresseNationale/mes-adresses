@@ -228,6 +228,9 @@ export function ParcellesContextProvider(props: ChildrenProps) {
   }, [map, highlightedParcelles, isDiffMode]);
 
   const reloadParcellesLayers = useCallback(() => {
+    if (!map.isStyleLoaded()) {
+      return;
+    }
     // Toggle all cadastre layers visiblity
     // Filter cadastre with code commune
     map.setFilter(CADASTRE_LAYER.PARCELLES, [
