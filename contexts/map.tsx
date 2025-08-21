@@ -29,8 +29,6 @@ interface MapContextType {
   balTilesUrl: string;
   isMapLoaded: boolean;
   showTilesLayers: (show?: boolean) => void;
-  showToponymes: boolean;
-  setShowToponymes: React.Dispatch<React.SetStateAction<boolean>>;
   tileLayersMode: TilesLayerMode;
   setTileLayersMode: React.Dispatch<React.SetStateAction<TilesLayerMode>>;
 }
@@ -53,7 +51,6 @@ export const SOURCE_TILE_ID = "tiles";
 
 export function MapContextProvider(props: ChildrenProps) {
   const [map, setMap] = useState<MaplibreMap | null>(null);
-  const [showToponymes, setShowToponymes] = useState<boolean>(true);
   const [style, setStyle] = useState<string>(defaultStyle);
   const [viewport, setViewport] = useState<Partial<ViewState>>(defaultViewport);
   const [isCadastreDisplayed, setIsCadastreDisplayed] =
@@ -148,8 +145,6 @@ export function MapContextProvider(props: ChildrenProps) {
       balTilesUrl,
       isMapLoaded,
       showTilesLayers,
-      showToponymes,
-      setShowToponymes,
       tileLayersMode,
       setTileLayersMode,
     }),
@@ -165,8 +160,6 @@ export function MapContextProvider(props: ChildrenProps) {
       balTilesUrl,
       isMapLoaded,
       showTilesLayers,
-      showToponymes,
-      setShowToponymes,
       tileLayersMode,
       setTileLayersMode,
     ]

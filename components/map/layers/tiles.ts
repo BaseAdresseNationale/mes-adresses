@@ -23,6 +23,10 @@ export const ZOOM = {
   TRACE_ZOOM: {
     minZoom: 13,
   },
+  TOPONYME_ZOOM: {
+    minZoom: 13,
+    maxZoom: 17,
+  },
 };
 
 export const VOIE_LABEL = "voie-label";
@@ -169,7 +173,7 @@ const toponymeLabelLayer = {
   "source-layer": LAYERS_SOURCE.TOPONYME_POINTS,
   interactive: true,
   type: "symbol",
-  maxzoom: ZOOM.VOIE_ZOOM.maxZoom,
+  maxzoom: ZOOM.TOPONYME_ZOOM.maxZoom,
   paint: {
     "text-color": [
       "case",
