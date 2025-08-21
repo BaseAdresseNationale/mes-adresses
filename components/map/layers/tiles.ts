@@ -179,7 +179,7 @@ const toponymeLabelLayer = {
       "case",
       ["boolean", ["feature-state", "hover"], false],
       ["get", "color"],
-      "#000",
+      "#4d3322",
     ],
     "text-halo-color": "#f8f4f0",
     "text-halo-blur": 0.5,
@@ -193,13 +193,7 @@ const toponymeLabelLayer = {
   layout: {
     "text-field": ["get", "nom"],
     "text-anchor": "top",
-    "text-size": {
-      base: 1,
-      stops: [
-        [13, 13],
-        [15, 14],
-      ],
-    },
+    "text-size": 16,
     "text-font": ["Open Sans Regular"],
   },
 };
@@ -210,7 +204,18 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
       return {
         VOIE_LABEL: voieLabelLayer,
         VOIE_TRACE_LINE: voieTraceLineLayer,
-        NUMEROS_LABEL: numerosLabelLayer,
+        NUMEROS_LABEL: {
+          ...numerosLabelLayer,
+          paint: {
+            ...numerosLabelLayer.paint,
+            "text-halo-color": [
+              "case",
+              ["boolean", "certifie", true],
+              defaultTheme.colors.green500,
+              defaultTheme.colors.gray500,
+            ],
+          },
+        },
         NUMEROS_POINT: {
           ...numerosPointLayer,
           paint: {
@@ -226,7 +231,16 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
       };
     case TilesLayerMode.TOPONYME:
       return {
-        NUMEROS_LABEL: numerosLabelLayer,
+        NUMEROS_LABEL: {
+          ...numerosLabelLayer,
+          paint: {
+            ...numerosLabelLayer.paint,
+            "text-halo-color": {
+              type: "identity",
+              property: "colorToponyme",
+            },
+          },
+        },
         NUMEROS_POINT: {
           ...numerosPointLayer,
           paint: {

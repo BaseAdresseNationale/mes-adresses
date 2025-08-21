@@ -33,6 +33,7 @@ import {
   NUMEROS_LABEL,
   LAYERS_SOURCE,
   TOPONYME_LABEL,
+  TilesLayerMode,
 } from "@/components/map/layers/tiles";
 import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
@@ -50,6 +51,7 @@ import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
+import { handleSelectToponyme, handleSelectVoie } from "@/lib/utils/map";
 
 const LAYERS = [...cadastreLayers];
 
@@ -209,7 +211,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             source === "cadastre" ||
             sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
             sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
-            sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS
+            sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS ||
+            sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS
           );
         });
       const feature = features && features[0];
@@ -223,25 +226,25 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
       if (parcelles.length > 0) {
         handleParcelles(parcelles.map(({ properties }) => properties.id));
-      } else if (
-        feature &&
-        !isEditing &&
-        ((feature.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS &&
-          feature.properties.idVoie) ||
-          ((feature.sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
-            feature.sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS) &&
-            feature.properties.id))
-      ) {
-        const idVoie =
-          feature.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS
-            ? feature.properties.idVoie
-            : feature.properties.id;
-        router.push(`/bal/${balId}/${TabsEnum.VOIES}/${idVoie}/numeros`);
+      } else if (feature && !isEditing) {
+        if (tileLayersMode === TilesLayerMode.TOPONYME) {
+          handleSelectToponyme(feature, router, balId as string);
+        } else {
+          handleSelectVoie(feature, router, balId as string);
+        }
       }
 
       setIsContextMenuDisplayed(null);
     },
-    [router, balId, setEditingId, isEditing, voie, handleParcelles]
+    [
+      router,
+      balId,
+      setEditingId,
+      isEditing,
+      voie,
+      handleParcelles,
+      tileLayersMode,
+    ]
   );
 
   useEffect(() => {
