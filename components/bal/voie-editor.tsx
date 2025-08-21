@@ -26,6 +26,7 @@ import {
 import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
 import { trimNomAlt } from "@/lib/utils/string";
+import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -100,21 +101,16 @@ function VoieEditor({
         const voie = await submit();
 
         refreshBALSync();
-
-        if (initialValue?.id === voie.id && router.query.idVoie) {
-          setVoie(voie);
-          // Reload voie trace
-          if (
-            !isEqual(initialValue.trace, data?.geometry) ||
-            body.typeNumerotation !== initialValue.typeNumerotation
-          ) {
-            reloadTiles();
-          }
-        } else {
-          reloadTiles();
-        }
-
         await reloadVoies();
+        reloadTiles();
+
+        if (initialValue?.id === voie.id) {
+          setVoie(voie);
+        } else if (!initialValue) {
+          router.push(
+            `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`
+          );
+        }
 
         if (onSubmitted) {
           onSubmitted();
