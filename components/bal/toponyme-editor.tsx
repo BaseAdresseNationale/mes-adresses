@@ -29,6 +29,8 @@ import AddNumerosInput from "../toponyme/add-numeros-input";
 import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
 import { trimNomAlt } from "@/lib/utils/string";
+import MapContext from "@/contexts/map";
+import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -55,6 +57,7 @@ function ToponymeEditor({
   const { toaster } = useContext(LayoutContext);
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
   const [numerosIds, setNumerosIds] = useState<string[]>([]);
+  const { reloadTiles } = useContext(MapContext);
 
   const {
     baseLocale,
@@ -141,15 +144,18 @@ function ToponymeEditor({
         const toponyme = await submit();
 
         refreshBALSync();
-
-        if (initialValue?.id === toponyme.id && router.query.idToponyme) {
-          setToponyme(toponyme);
-        }
-
         await reloadToponymes();
+        reloadTiles();
 
-        if (xor(initialValue?.parcelles, body.parcelles).length > 0) {
-          await reloadParcelles();
+        if (initialValue?.id === toponyme.id) {
+          setToponyme(toponyme);
+          if (xor(initialValue?.parcelles, body.parcelles).length > 0) {
+            await reloadParcelles();
+          }
+        } else if (!initialValue) {
+          router.push(
+            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}/numeros`
+          );
         }
 
         if (onSubmitted) {
@@ -180,6 +186,7 @@ function ToponymeEditor({
       onSubmitted,
       toaster,
       updateNumerosToponyme,
+      reloadTiles,
     ]
   );
 
