@@ -97,7 +97,8 @@ function useHovered(map) {
         if (
           sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
           sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
-          sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS
+          sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS ||
+          sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS
         ) {
           setFeatureHovered(feature);
         }

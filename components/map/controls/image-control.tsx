@@ -14,6 +14,7 @@ import {
   VOIE_LABEL,
   VOIE_TRACE_LINE,
   ZOOM,
+  TOPONYME_LABEL,
 } from "@/components/map/layers/tiles";
 import LayerShowHideZoomControl from "@/components/map/controls/layer-show-hide-zoom-control";
 
@@ -31,9 +32,14 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
   const [voieLayerZoom, setVoieLayerZoom] = useState<number[]>([
     ZOOM.VOIE_ZOOM.maxZoom,
   ]);
+  const [toponymeLayerZoom, setToponymeLayerZoom] = useState<number[]>([
+    ZOOM.TOPONYME_ZOOM.maxZoom,
+  ]);
   const [adresseLayerIsDisplayed, setAdresseLayerIsDisplayed] =
     useState<boolean>(true);
   const [voieLayerIsDisplayed, setVoieLayerIsDisplayed] =
+    useState<boolean>(true);
+  const [toponymeLayerIsDisplayed, setToponymeLayerIsDisplayed] =
     useState<boolean>(true);
   const [poiLayerIsDisplayed, setPoiLayerIsDisplayed] = useState<boolean>(true);
 
@@ -52,6 +58,30 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
       }
     }
   }, [map, voieLayerZoom]);
+
+  useEffect(() => {
+    if (map) {
+      if (map.getLayer(TOPONYME_LABEL)) {
+        map.setLayerZoomRange(
+          TOPONYME_LABEL,
+          ZOOM.ALL.minZoom,
+          toponymeLayerZoom[0]
+        );
+      }
+    }
+  }, [map, toponymeLayerZoom]);
+
+  useEffect(() => {
+    if (map) {
+      if (map.getLayer(TOPONYME_LABEL)) {
+        map.setLayoutProperty(
+          TOPONYME_LABEL,
+          "visibility",
+          toponymeLayerIsDisplayed ? "visible" : "none"
+        );
+      }
+    }
+  }, [map, toponymeLayerIsDisplayed]);
 
   useEffect(() => {
     if (map) {
@@ -129,10 +159,12 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
 
   const initLayer = () => {
     setAdresseLayerIsDisplayed(true);
+    setToponymeLayerIsDisplayed(true);
     setVoieLayerIsDisplayed(true);
     setPoiLayerIsDisplayed(true);
     setAdresseLayerZoom([ZOOM.NUMEROS_ZOOM.maxZoom]);
     setVoieLayerZoom([ZOOM.VOIE_ZOOM.maxZoom]);
+    setToponymeLayerZoom([ZOOM.TOPONYME_ZOOM.maxZoom]);
   };
 
   const takeScreenshot = async () => {
@@ -182,6 +214,14 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
             setIsDiplayed={setVoieLayerIsDisplayed}
             zoom={voieLayerZoom}
             setZoom={setVoieLayerZoom}
+          />
+
+          <LayerShowHideZoomControl
+            title="Toponymes"
+            isDiplayed={toponymeLayerIsDisplayed}
+            setIsDiplayed={setToponymeLayerIsDisplayed}
+            zoom={toponymeLayerZoom}
+            setZoom={setToponymeLayerZoom}
           />
 
           <LayerShowHideZoomControl

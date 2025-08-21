@@ -72,8 +72,7 @@ function SignalementsPage({
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const { showTilesLayers, setShowToponymes, map, isStyleLoaded } =
-    useContext(MapContext);
+  const { showTilesLayers, map, isStyleLoaded } = useContext(MapContext);
   const [activeTabIndex, setActiveTabIndex] = useState(
     router.query.tab === "archived" ? 1 : 0
   );
@@ -121,14 +120,12 @@ function SignalementsPage({
   useEffect(() => {
     if (isStyleLoaded) {
       showTilesLayers(false);
-      setShowToponymes(false);
     }
 
     return () => {
       showTilesLayers(true);
-      setShowToponymes(true);
     };
-  }, [showTilesLayers, setShowToponymes, isStyleLoaded]);
+  }, [showTilesLayers, isStyleLoaded]);
 
   useEffect(() => {
     const updateSignalements = async () => {
