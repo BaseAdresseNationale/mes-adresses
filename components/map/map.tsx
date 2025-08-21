@@ -32,11 +32,11 @@ import {
   NUMEROS_POINT,
   NUMEROS_LABEL,
   LAYERS_SOURCE,
+  TOPONYME_LABEL,
 } from "@/components/map/layers/tiles";
 import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
 import NumerosMarkers from "@/components/map/numeros-markers";
-import ToponymeMarker from "@/components/map/toponyme-marker";
 import MapMarker from "@/components/map/map-marker";
 import PopupFeature from "@/components/map/popup-feature/popup-feature";
 import NavControl from "@/components/map/controls/nav-control";
@@ -50,8 +50,6 @@ import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
-
-const TOPONYMES_MIN_ZOOM = 13;
 
 const LAYERS = [...cadastreLayers];
 
@@ -111,7 +109,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     setIsCadastreDisplayed,
     balTilesUrl,
     isMapLoaded,
-    showToponymes,
     tileLayersMode,
   } = useContext(MapContext);
   const { isParcelleSelectionEnabled, handleParcelles } =
@@ -123,15 +120,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle));
 
   const { balId } = router.query;
-  const {
-    voie,
-    toponyme,
-    numeros,
-    toponymes,
-    editingId,
-    setEditingId,
-    isEditing,
-  } = useContext(BalDataContext);
+  const { voie, toponyme, numeros, editingId, setEditingId, isEditing } =
+    useContext(BalDataContext);
   const { modeId, hint, drawEnabled } = useContext(DrawContext);
   const { token } = useContext(TokenContext);
 
@@ -141,6 +131,13 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const bounds = useBounds(map, router, commune, voie, toponyme);
 
   const prevStyle = useRef(defaultStyle);
+
+  const displayPopupFeature =
+    featureHovered !== null &&
+    viewport.zoom > 14 &&
+    (featureHovered.sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
+      featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
+      featureHovered.sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS);
 
   const updatePositionsLayer = useCallback(() => {
     if (map && isTileSourceLoaded) {
@@ -166,12 +163,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           ["get", "idToponyme"],
           toponyme.id,
         ]);
+        map.setFilter(TOPONYME_LABEL, ["!=", ["get", "id"], toponyme.id]);
       } else {
         // Remove filter
         map.setFilter(VOIE_TRACE_LINE, null);
         map.setFilter(NUMEROS_POINT, null);
         map.setFilter(NUMEROS_LABEL, null);
         map.setFilter(VOIE_LABEL, null);
+        map.setFilter(TOPONYME_LABEL, null);
       }
     }
   }, [map, voie, toponyme, isTileSourceLoaded, drawEnabled]);
@@ -184,7 +183,13 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     }
 
     if (!isEditing && isTileSourceLoaded) {
-      layers.push(VOIE_TRACE_LINE, NUMEROS_POINT, NUMEROS_LABEL, VOIE_LABEL);
+      layers.push(
+        VOIE_TRACE_LINE,
+        NUMEROS_POINT,
+        NUMEROS_LABEL,
+        VOIE_LABEL,
+        TOPONYME_LABEL
+      );
     }
 
     return layers;
@@ -266,6 +271,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         if (map.getLayer(VOIE_LABEL)) {
           map.setPaintProperty(
             VOIE_LABEL,
+            "text-halo-color",
+            isOrtho ? "#ffffff" : "#f8f4f0"
+          );
+        }
+
+        if (map.getLayer(TOPONYME_LABEL)) {
+          map.setPaintProperty(
+            TOPONYME_LABEL,
             "text-halo-color",
             isOrtho ? "#ffffff" : "#f8f4f0"
           );
@@ -451,18 +464,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             />
           )}
 
-          {toponymes &&
-            showToponymes &&
-            viewport.zoom > TOPONYMES_MIN_ZOOM &&
-            toponymes.map((toponyme) => (
-              <ToponymeMarker
-                key={toponyme.id}
-                initialToponyme={toponyme}
-                isContextMenuDisplayed={toponyme.id === isContextMenuDisplayed}
-                setIsContextMenuDisplayed={setIsContextMenuDisplayed}
-              />
-            ))}
-
           {isEditing && (
             <EditableMarker
               style={style || defaultStyle}
@@ -478,12 +479,9 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
               <MapMarker key={marker.id} marker={marker} />
             ))}
 
-          {featureHovered !== null &&
-            viewport.zoom > 14 &&
-            (featureHovered.sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
-              featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS) && (
-              <PopupFeature feature={featureHovered} commune={commune} />
-            )}
+          {displayPopupFeature && (
+            <PopupFeature feature={featureHovered} commune={commune} />
+          )}
         </MapGl>
       </Pane>
     </Pane>
