@@ -8,7 +8,7 @@ function useHovered(map) {
   const { handleHoveredParcelles } = useContext(ParcellesContext);
   const [featureHovered, setFeatureHovered] = useState(null);
 
-  const handleRelatedNumerosPoints = (map, idVoie, isHovered) => {
+  const handleRelatedNumerosForVoie = (map, idVoie, isHovered) => {
     const numerosFeatures = map.querySourceFeatures("tiles", {
       sourceLayer: LAYERS_SOURCE.NUMEROS_POINTS,
       filter: ["==", ["get", "idVoie"], idVoie],
@@ -29,6 +29,20 @@ function useHovered(map) {
     );
   };
 
+  const handleRelatedNumerosForToponyme = (map, idToponyme, isHovered) => {
+    const numerosFeatures = map.querySourceFeatures("tiles", {
+      sourceLayer: LAYERS_SOURCE.NUMEROS_POINTS,
+      filter: ["==", ["get", "idToponyme"], idToponyme],
+    });
+
+    numerosFeatures.forEach(({ id }) => {
+      map.setFeatureState(
+        { source: "tiles", sourceLayer: LAYERS_SOURCE.NUMEROS_POINTS, id },
+        { hover: isHovered }
+      );
+    });
+  };
+
   const handleRelatedVoiePoints = (map, id, isHovered) => {
     map.setFeatureState(
       { source: "tiles", sourceLayer: LAYERS_SOURCE.VOIES_POINTS, id },
@@ -41,7 +55,9 @@ function useHovered(map) {
     const { source, sourceLayer, properties } = feature;
     if (source === "tiles") {
       if (sourceLayer === LAYERS_SOURCE.VOIES_POINTS) {
-        handleRelatedNumerosPoints(map, properties.id, isHovered);
+        handleRelatedNumerosForVoie(map, properties.id, isHovered);
+      } else if (sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS) {
+        handleRelatedNumerosForToponyme(map, properties.id, isHovered);
       } else if (
         sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
         sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS
