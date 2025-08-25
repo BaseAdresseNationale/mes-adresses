@@ -2,16 +2,13 @@ import { useState, useContext, useEffect } from "react";
 import {
   Pane,
   Heading,
-  Dialog,
   Button,
   Text,
   Alert,
   EndorsedIcon,
-  WarningSignIcon,
   LightbulbIcon,
   ChevronUpIcon,
   ChevronDownIcon,
-  LockIcon,
 } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -19,21 +16,9 @@ import BalDataContext from "@/contexts/bal-data";
 import ProgressBar from "@/components/progress-bar";
 import Counter from "@/components/counter";
 
-interface CertificationInfosProps {
-  openRecoveryDialog?: () => void;
-}
-
-function CertificationInfos({ openRecoveryDialog }: CertificationInfosProps) {
-  const {
-    certifyAllNumeros,
-    uncertifyAllNumeros,
-    baseLocale,
-    reloadBaseLocale,
-  } = useContext(BalDataContext);
-  const [isDialogCertifieShown, setIsDialogCertifieShown] = useState(false);
-  const [isDialogUncertifieShown, setIsDialogUncertifieShown] = useState(false);
+function CertificationInfos() {
+  const { baseLocale, reloadBaseLocale } = useContext(BalDataContext);
   const [isInfosShown, setIsInfosShown] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { nbNumeros, nbNumerosCertifies } = baseLocale;
   const percentCertified =
     nbNumeros > 0 ? Math.floor((nbNumerosCertifies * 100) / nbNumeros) : 0;
@@ -43,28 +28,6 @@ function CertificationInfos({ openRecoveryDialog }: CertificationInfosProps) {
   useEffect(() => {
     reloadBaseLocale();
   }, [reloadBaseLocale]);
-
-  const handleCertification = async () => {
-    setIsDialogCertifieShown(false);
-    setIsInfosShown(false);
-    setIsLoading(true);
-    await certifyAllNumeros();
-    setIsLoading(false);
-  };
-
-  const handleUncertification = async () => {
-    setIsDialogUncertifieShown(false);
-    setIsInfosShown(false);
-    setIsLoading(true);
-    await uncertifyAllNumeros();
-    setIsLoading(false);
-  };
-
-  const handleClose = () => {
-    setIsDialogUncertifieShown(false);
-    setIsDialogCertifieShown(false);
-    setIsInfosShown(false);
-  };
 
   return (
     <Pane backgroundColor="white" padding={8}>
@@ -95,68 +58,6 @@ function CertificationInfos({ openRecoveryDialog }: CertificationInfosProps) {
       </Pane>
 
       <Pane>
-        <Dialog
-          isShown={isDialogCertifieShown}
-          title="Certification des adresses"
-          onCloseComplete={handleClose}
-          footer={
-            <Pane>
-              <Button onClick={handleClose}>Annuler</Button>
-              <Button
-                isLoading={isLoading}
-                appearance="primary"
-                iconAfter={EndorsedIcon}
-                marginLeft={15}
-                onClick={handleCertification}
-              >
-                Certifier
-              </Button>
-            </Pane>
-          }
-        >
-          <Pane>
-            <Pane display="flex" alignItems="center">
-              <WarningSignIcon size={65} margin={20} color="warning" />
-              <Text size={500}>
-                Vous vous apprêtez à certifier{" "}
-                <b>{nbNumeros - nbNumerosCertifies}</b> adresses de votre
-                commune, <b> cette action ne peut pas être annulée</b>
-              </Text>
-            </Pane>
-          </Pane>
-        </Dialog>
-
-        <Dialog
-          isShown={isDialogUncertifieShown}
-          title="Décertification des adresses"
-          onCloseComplete={handleClose}
-          footer={
-            <Pane>
-              <Button onClick={handleClose}>Annuler</Button>
-              <Button
-                isLoading={isLoading}
-                appearance="primary"
-                intent="danger"
-                marginLeft={15}
-                onClick={handleUncertification}
-              >
-                Décertifier
-              </Button>
-            </Pane>
-          }
-        >
-          <Pane>
-            <Pane display="flex" alignItems="center">
-              <WarningSignIcon size={65} margin={20} color="warning" />
-              <Text size={500}>
-                Vous vous apprêtez à décertifier <b>{nbNumerosCertifies}</b>{" "}
-                adresses de votre commune,{" "}
-                <b> cette action ne peut pas être annulée</b>
-              </Text>
-            </Pane>
-          </Pane>
-        </Dialog>
-
         <Pane textAlign="center">
           <Button
             iconBefore={LightbulbIcon}
@@ -192,57 +93,10 @@ function CertificationInfos({ openRecoveryDialog }: CertificationInfosProps) {
               <Text>
                 En revanche, les numéros qui auront été authentifiés par la
                 commune <u>devront être certifiés</u>, qu’ils soient
-                nouvellement crées par la commune ou que leur correspondance
-                avec la liste officielle qui ressort du Conseil municipal, soit
+                nouvellement créés par la commune ou que leur correspondance
+                avec la liste officielle qui ressort du Conseil Municipal soit
                 avérée.
               </Text>
-            </Pane>
-            <Heading paddingY={15}>
-              Toutes les adresses de votre commune ont été vérifiées ?
-            </Heading>
-            <Pane>
-              <Text>
-                Si vous avez déjà procédé à la vérification de toutes les
-                adresses de votre commune, cliquez sur le bouton «certifier mes
-                adresses».
-              </Text>
-            </Pane>
-            <Pane display="flex" justifyContent="end" paddingTop={15}>
-              {baseLocale.nbNumerosCertifies > 0 && (
-                <Button
-                  isLoading={isLoading}
-                  iconBefore={openRecoveryDialog && LockIcon}
-                  intent="danger"
-                  appearance="primary"
-                  marginRight={5}
-                  onClick={() => {
-                    if (openRecoveryDialog) {
-                      openRecoveryDialog();
-                    } else {
-                      setIsDialogUncertifieShown(true);
-                    }
-                  }}
-                >
-                  Décertifier mes adresses
-                </Button>
-              )}
-              {!baseLocale.isAllCertified && (
-                <Button
-                  isLoading={isLoading}
-                  iconBefore={openRecoveryDialog && LockIcon}
-                  intent="infos"
-                  appearance="primary"
-                  onClick={() => {
-                    if (openRecoveryDialog) {
-                      openRecoveryDialog();
-                    } else {
-                      setIsDialogCertifieShown(true);
-                    }
-                  }}
-                >
-                  Certifier mes adresses
-                </Button>
-              )}
             </Pane>
           </Alert>
         </Pane>

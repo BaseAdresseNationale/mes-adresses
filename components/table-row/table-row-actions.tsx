@@ -9,17 +9,20 @@ import {
   MoreIcon,
   SendToMapIcon,
   TrashIcon,
+  EndorsedIcon,
 } from "evergreen-ui";
 
 interface TableRowActionsProps {
   onSelect?: () => void;
   onEdit?: () => void;
+  onCertified?: () => void;
   onRemove?: () => void;
 }
 
 const TableRowActions = React.memo(function TableRowActions({
   onSelect,
   onEdit,
+  onCertified,
   onRemove,
 }: TableRowActionsProps) {
   return (
@@ -37,6 +40,11 @@ const TableRowActions = React.memo(function TableRowActions({
               {onEdit && (
                 <Menu.Item icon={EditIcon} onSelect={onEdit}>
                   Modifier
+                </Menu.Item>
+              )}
+              {onCertified && (
+                <Menu.Item icon={EndorsedIcon} onSelect={onCertified}>
+                  Certifier
                 </Menu.Item>
               )}
               {onRemove && (

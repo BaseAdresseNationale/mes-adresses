@@ -59,7 +59,7 @@ function BALHomePage({ communeFlag, voies, toponymes }: BALHomePageProps) {
       {isAdmin && baseLocale.status !== BaseLocale.status.DEMO && (
         <HabilitationInfos commune={commune} />
       )}
-      <CertificationInfos openRecoveryDialog={!isAdmin && openRecoveryDialog} />
+      <CertificationInfos />
     </Pane>
   );
 }
