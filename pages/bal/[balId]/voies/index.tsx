@@ -341,12 +341,14 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   onEdit={() => {
                     browseToVoie(voie.id);
                   }}
-                  onCertified={() => {
-                    setToCertify(voie.id);
-                  }}
                   onRemove={() => {
                     setToRemove(voie.id);
                   }}
+                  {...(!voie.isAllCertified && {
+                    onCertified: () => {
+                      setToCertify(voie.id);
+                    },
+                  })}
                 />
               )}
 
