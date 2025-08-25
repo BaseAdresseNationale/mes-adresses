@@ -49,8 +49,11 @@ function getFeatureId(map: MaplibreMap, id: string): string | undefined {
 
 export function ParcellesContextProvider(props: ChildrenProps) {
   const { map, isCadastreDisplayed, isStyleLoaded } = useContext(MapContext);
-  const { baseLocale, parcelles: selectedParcelles } =
-    useContext(BalDataContext);
+  const {
+    baseLocale,
+    commune,
+    parcelles: selectedParcelles,
+  } = useContext(BalDataContext);
   const [showSelectedParcelles, setShowSelectedParcelles] =
     useState<boolean>(true);
   const [isDiffMode, setIsDiffMode] = useState<boolean>(false);
@@ -227,23 +230,50 @@ export function ParcellesContextProvider(props: ChildrenProps) {
     }
   }, [map, highlightedParcelles, isDiffMode]);
 
+  const setFilterMatch = useCallback(
+    (layerId: string, value: string) => {
+      map.setFilter(layerId, ["match", ["get", "commune"], value, true, false]);
+    },
+    [map]
+  );
+
+  const displayParcellesByCodeCommune = useCallback(
+    (codeCommune: string) => {
+      setFilterMatch(CADASTRE_LAYER.PARCELLES, codeCommune);
+      setFilterMatch(CADASTRE_LAYER.PARCELLES_FILL, codeCommune);
+    },
+    [setFilterMatch]
+  );
+
+  const setFilterIn = useCallback(
+    (layerId: string, value: string[]) => {
+      map.setFilter(layerId, ["in", ["get", "commune"], ["literal", value]]);
+    },
+    [map]
+  );
+
+  const displayParcellesByCodeCommunes = useCallback(
+    (codeCommunes: string[]) => {
+      setFilterIn(CADASTRE_LAYER.PARCELLES, codeCommunes);
+      setFilterIn(CADASTRE_LAYER.PARCELLES_FILL, codeCommunes);
+    },
+    [setFilterIn]
+  );
+
   const reloadParcellesLayers = useCallback(() => {
-    // Toggle all cadastre layers visiblity
-    // Filter cadastre with code commune
-    map.setFilter(CADASTRE_LAYER.PARCELLES, [
-      "match",
-      ["get", "commune"],
-      baseLocale.commune,
-      true,
-      false,
-    ]);
-    map.setFilter(CADASTRE_LAYER.PARCELLES_FILL, [
-      "match",
-      ["get", "commune"],
-      baseLocale.commune,
-      true,
-      false,
-    ]);
+    if (!map.isStyleLoaded()) {
+      return;
+    }
+    // Les codes communes du cadastre ne correspondent pas toujours à ceux du COG
+    // La variables codeCommunesCadastre est un mapping des code_insee vers les code commune du cadastre
+    if (
+      commune.codeCommunesCadastre &&
+      commune.codeCommunesCadastre.length > 0
+    ) {
+      displayParcellesByCodeCommunes(commune.codeCommunesCadastre);
+    } else {
+      displayParcellesByCodeCommune(baseLocale.commune);
+    }
 
     toggleCadastreVisibility();
 
@@ -254,11 +284,14 @@ export function ParcellesContextProvider(props: ChildrenProps) {
     }
   }, [
     map,
-    baseLocale.commune,
+    commune.codeCommunesCadastre,
     toggleCadastreVisibility,
+    isCadastreDisplayed,
+    displayParcellesByCodeCommunes,
+    displayParcellesByCodeCommune,
+    baseLocale.commune,
     filterSelectedParcelles,
     filterHighlightedParcelles,
-    isCadastreDisplayed,
   ]);
 
   // Toggle all cadastre layers visiblity

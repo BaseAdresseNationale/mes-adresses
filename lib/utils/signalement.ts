@@ -14,6 +14,7 @@ import {
   NumeroChangesRequestedDTO,
   Signalement,
   SignalementsService,
+  ToponymeChangesRequestedDTO,
 } from "../openapi-signalement";
 
 export enum SignalementDiff {
@@ -55,11 +56,13 @@ export const getExistingLocationLabel = (
 };
 
 const getRequestedLocationLabel = (
-  changesRequested: NumeroChangesRequestedDTO
+  changesRequested: ToponymeChangesRequestedDTO | NumeroChangesRequestedDTO
 ) => {
-  return `${changesRequested.numero} ${
-    changesRequested.suffixe ? `${changesRequested.suffixe} ` : ""
-  }${changesRequested.nomVoie}`;
+  return isToponymeChangesRequested(changesRequested)
+    ? changesRequested.nom
+    : `${changesRequested.numero} ${
+        changesRequested.suffixe ? `${changesRequested.suffixe} ` : ""
+      }${changesRequested.nomVoie}`;
 };
 
 export const getSignalementLabel = (
@@ -88,6 +91,60 @@ export const getSignalementLabel = (
   return label;
 };
 
+export const matchExistingToponyme = (
+  signalementToponyme: { nom: string; banId?: string },
+  toponymes: Array<Voie | Toponyme>
+) => {
+  return toponymes.find(({ nom, banId }) => {
+    if (signalementToponyme.banId) {
+      return (
+        banId === signalementToponyme.banId ||
+        nom.toLowerCase() === signalementToponyme.nom?.toLowerCase()
+      );
+    }
+
+    return nom.toLowerCase() === signalementToponyme.nom?.toLowerCase();
+  });
+};
+
+const matchExistingNumero = (
+  signalementExistingNumero: ExistingNumero,
+  numeros: Numero[]
+) => {
+  return numeros.find(({ numero, suffixe, banId }) => {
+    const existingLocationNumeroComplet = signalementExistingNumero.suffixe
+      ? `${signalementExistingNumero.numero}${signalementExistingNumero.suffixe}`
+      : `${signalementExistingNumero.numero}`;
+
+    const numeroComplet = suffixe ? `${numero}${suffixe}` : `${numero}`;
+
+    if (signalementExistingNumero.banId) {
+      return (
+        banId === signalementExistingNumero.banId ||
+        numeroComplet?.toLowerCase() ===
+          existingLocationNumeroComplet?.toLowerCase()
+      );
+    }
+
+    return (
+      numeroComplet?.toLowerCase() ===
+      existingLocationNumeroComplet?.toLowerCase()
+    );
+  });
+};
+
+export function getAlreadyExistingLocation(
+  signalement: Signalement,
+  voies: Voie[]
+) {
+  return matchExistingToponyme(
+    {
+      nom: (signalement.changesRequested as NumeroChangesRequestedDTO).nomVoie,
+    },
+    voies
+  );
+}
+
 export async function getExistingLocation(
   signalement: Signalement,
   voies: Voie[],
@@ -95,65 +152,28 @@ export async function getExistingLocation(
 ) {
   let existingLocation = null;
   if (signalement.existingLocation.type === ExistingLocation.type.VOIE) {
-    existingLocation = voies.find((voie) => {
-      if ((signalement.existingLocation as ExistingVoie).banId) {
-        return (
-          voie.banId === (signalement.existingLocation as ExistingVoie).banId ||
-          voie.nom === (signalement.existingLocation as ExistingVoie).nom
-        );
-      }
-
-      return voie.nom === (signalement.existingLocation as ExistingVoie).nom;
-    });
+    existingLocation = matchExistingToponyme(
+      signalement.existingLocation as ExistingVoie,
+      voies
+    );
   } else if (
     signalement.existingLocation.type === ExistingLocation.type.TOPONYME
   ) {
-    existingLocation = toponymes.find((toponyme) => {
-      if ((signalement.existingLocation as ExistingToponyme).banId) {
-        return (
-          toponyme.banId ===
-            (signalement.existingLocation as ExistingToponyme).banId ||
-          toponyme.nom ===
-            (signalement.existingLocation as ExistingToponyme).nom
-        );
-      }
-
-      return (
-        toponyme.nom === (signalement.existingLocation as ExistingToponyme).nom
-      );
-    });
+    existingLocation = matchExistingToponyme(
+      signalement.existingLocation as ExistingToponyme,
+      toponymes
+    );
   } else if (
     signalement.existingLocation.type === ExistingLocation.type.NUMERO
   ) {
     const existingNumero = signalement.existingLocation as ExistingNumero;
     if (existingNumero.toponyme.type === ExistingLocation.type.VOIE) {
-      const voie = voies.find((voie) => {
-        if (existingNumero.toponyme.banId) {
-          return (
-            voie.banId === existingNumero.toponyme.banId ||
-            voie.nom === existingNumero.toponyme.nom
-          );
-        }
-
-        return voie.nom === existingNumero.toponyme.nom;
-      });
+      const voie = matchExistingToponyme(
+        existingNumero.toponyme as ExistingVoie,
+        voies
+      );
       const numeros = await VoiesService.findVoieNumeros(voie.id);
-      existingLocation = numeros.find(({ numero, suffixe, banId }) => {
-        const existingLocationNumeroComplet = existingNumero.suffixe
-          ? `${existingNumero.numero}${existingNumero.suffixe}`
-          : `${existingNumero.numero}`;
-
-        const numeroComplet = suffixe ? `${numero}${suffixe}` : `${numero}`;
-
-        if (existingNumero.banId) {
-          return (
-            banId === existingNumero.banId ||
-            numeroComplet === existingLocationNumeroComplet
-          );
-        }
-
-        return numeroComplet === existingLocationNumeroComplet;
-      });
+      existingLocation = matchExistingNumero(existingNumero, numeros);
       if (existingLocation) {
         existingLocation.voie = voie;
         if ((existingLocation as Numero).toponymeId) {
@@ -165,33 +185,12 @@ export async function getExistingLocation(
         }
       }
     } else {
-      const toponyme = toponymes.find((toponyme) => {
-        if (existingNumero.toponyme.banId) {
-          return (
-            toponyme.banId === existingNumero.toponyme.banId ||
-            toponyme.nom === existingNumero.toponyme.nom
-          );
-        }
-
-        return toponyme.nom === existingNumero.toponyme.nom;
-      });
+      const toponyme = matchExistingToponyme(
+        existingNumero.toponyme as ExistingToponyme,
+        toponymes
+      );
       const numeros = await ToponymesService.findToponymeNumeros(toponyme.id);
-      existingLocation = numeros.find(({ numero, suffixe, banId }) => {
-        const existingLocationNumeroComplet = existingNumero.suffixe
-          ? `${existingNumero.numero}${existingNumero.suffixe}`
-          : `${existingNumero.numero}`;
-
-        const numeroComplet = suffixe ? `${numero}${suffixe}` : `${numero}`;
-
-        if (existingNumero.banId) {
-          return (
-            banId === existingNumero.banId ||
-            numeroComplet === existingLocationNumeroComplet
-          );
-        }
-
-        return numeroComplet === existingLocationNumeroComplet;
-      });
+      existingLocation = matchExistingNumero(existingNumero, numeros);
       if (existingLocation) {
         existingLocation.toponyme = toponyme;
         if ((existingLocation as Numero).voieId) {
@@ -270,3 +269,23 @@ export async function getAllSignalements(
 
   return signalement;
 }
+
+export const isToponymeChangesRequested = (
+  changesRequested: unknown
+): changesRequested is ToponymeChangesRequestedDTO => {
+  const { nom, parcelles, positions } =
+    changesRequested as ToponymeChangesRequestedDTO;
+
+  return nom && Array.isArray(parcelles) && Array.isArray(positions);
+};
+
+export const isNumeroChangesRequested = (
+  changesRequested: unknown
+): changesRequested is NumeroChangesRequestedDTO => {
+  const { numero, parcelles, positions, nomVoie } =
+    changesRequested as NumeroChangesRequestedDTO;
+
+  return (
+    numero && nomVoie && Array.isArray(parcelles) && Array.isArray(positions)
+  );
+};

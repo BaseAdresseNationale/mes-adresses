@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { ChangesRequested } from '../models/ChangesRequested';
 import type { CreateSignalementDTO } from '../models/CreateSignalementDTO';
 import type { PaginatedSignalementsDTO } from '../models/PaginatedSignalementsDTO';
 import type { Signalement } from '../models/Signalement';
@@ -94,6 +95,23 @@ export class SignalementsService {
             query: {
                 'status': status,
             },
+        });
+    }
+
+    /**
+     * Validate changes requested
+     * @param requestBody
+     * @returns any
+     * @throws ApiError
+     */
+    public static validateChangesRequested(
+        requestBody: ChangesRequested,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/signalements/validate-changes-requested',
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 
