@@ -31,7 +31,7 @@ interface VoieEditorProps {
   initialValue?: Voie;
   closeForm: () => void;
   formInputRef?: React.RefObject<HTMLDivElement>;
-  onSubmitted?: () => void;
+  onSubmitted?: (idVoie: string) => void;
 }
 
 function VoieEditor({
@@ -117,10 +117,10 @@ function VoieEditor({
         await reloadVoies();
 
         if (onSubmitted) {
-          onSubmitted();
+          onSubmitted(voie.id);
+        } else {
+          closeForm();
         }
-
-        closeForm();
       } catch (err) {
         console.error(err);
       } finally {

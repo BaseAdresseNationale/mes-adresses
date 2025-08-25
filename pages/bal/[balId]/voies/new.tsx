@@ -41,6 +41,11 @@ function NewVoiePage({ baseLocale }: NewVoiePageProps) {
         closeForm={() => {
           router.push(`/bal/${baseLocale.id}/${TabsEnum.VOIES}`);
         }}
+        onSubmitted={(idVoie) => {
+          router.push(
+            `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}/numeros`
+          );
+        }}
       />
     </ProtectedPage>
   );
