@@ -93,8 +93,8 @@ function CertificationInfos() {
               <Text>
                 En revanche, les numéros qui auront été authentifiés par la
                 commune <u>devront être certifiés</u>, qu’ils soient
-                nouvellement crées par la commune ou que leur correspondance
-                avec la liste officielle qui ressort du Conseil municipal, soit
+                nouvellement créés par la commune ou que leur correspondance
+                avec la liste officielle qui ressort du Conseil Municipal soit
                 avérée.
               </Text>
             </Pane>
