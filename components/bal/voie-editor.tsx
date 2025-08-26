@@ -26,20 +26,19 @@ import {
 import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
 import { trimNomAlt } from "@/lib/utils/string";
-import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 
 interface VoieEditorProps {
   initialValue?: Voie;
-  closeForm: () => void;
   formInputRef?: React.RefObject<HTMLDivElement>;
-  onSubmitted?: () => void;
+  onSubmit: (idVoie: string) => void;
+  onClose: () => void;
 }
 
 function VoieEditor({
   initialValue,
-  closeForm,
+  onClose,
   formInputRef,
-  onSubmitted,
+  onSubmit,
 }: VoieEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isMetric, onIsMetricChange] = useCheckboxInput(
@@ -106,17 +105,9 @@ function VoieEditor({
 
         if (initialValue?.id === voie.id) {
           setVoie(voie);
-        } else if (!initialValue) {
-          router.push(
-            `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`
-          );
         }
 
-        if (onSubmitted) {
-          onSubmitted();
-        }
-
-        closeForm();
+        onSubmit(voie.id);
       } catch (err) {
         console.error(err);
       } finally {
@@ -131,13 +122,12 @@ function VoieEditor({
       isMetric,
       data,
       nomAlt,
-      closeForm,
       setValidationMessages,
       setVoie,
       reloadVoies,
       refreshBALSync,
       reloadTiles,
-      onSubmitted,
+      onSubmit,
       toaster,
     ]
   );
@@ -146,9 +136,9 @@ function VoieEditor({
     (e) => {
       e.preventDefault();
 
-      closeForm();
+      onClose();
     },
-    [closeForm]
+    [onClose]
   );
 
   // Reset validation messages on changes
@@ -176,7 +166,7 @@ function VoieEditor({
     <Form
       editingId={initialValue?.id}
       unmountForm={onUnmount}
-      closeForm={closeForm}
+      closeForm={onClose}
       onFormSubmit={onFormSubmit}
     >
       <Pane>
@@ -224,7 +214,7 @@ function VoieEditor({
           {isLoading ? "En cours…" : "Enregistrer"}
         </Button>
 
-        {closeForm && (
+        {onClose && (
           <Button
             disabled={isLoading}
             appearance="minimal"

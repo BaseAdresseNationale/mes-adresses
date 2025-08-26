@@ -1,7 +1,6 @@
 import { useState, useMemo, useContext, useCallback, useEffect } from "react";
 import { xor } from "lodash";
 import { Pane, Button } from "evergreen-ui";
-import router from "next/router";
 
 import BalDataContext from "@/contexts/bal-data";
 import MarkersContext from "@/contexts/markers";
@@ -30,22 +29,21 @@ import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
 import { trimNomAlt } from "@/lib/utils/string";
 import MapContext from "@/contexts/map";
-import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
   commune: CommuneType;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
-  closeForm: () => void;
-  onSubmitted?: () => Promise<void>;
+  onClose: () => void;
+  onSubmit: (idToponyme: string) => void;
 }
 
 function ToponymeEditor({
   initialValue,
   commune,
-  closeForm,
+  onClose,
+  onSubmit,
   refs,
-  onSubmitted,
 }: ToponymeEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [communeDeleguee, setCommuneDeleguee] = useState(
@@ -152,17 +150,9 @@ function ToponymeEditor({
           if (xor(initialValue?.parcelles, body.parcelles).length > 0) {
             await reloadParcelles();
           }
-        } else if (!initialValue) {
-          router.push(
-            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}/numeros`
-          );
         }
 
-        if (onSubmitted) {
-          await onSubmitted();
-        }
-
-        closeForm();
+        onSubmit(toponyme.id);
       } catch (err) {
         console.error(err);
       } finally {
@@ -178,24 +168,23 @@ function ToponymeEditor({
       markers,
       highlightedParcelles,
       setToponyme,
-      closeForm,
       refreshBALSync,
       reloadToponymes,
       reloadParcelles,
       setValidationMessages,
-      onSubmitted,
       toaster,
       updateNumerosToponyme,
       reloadTiles,
+      onSubmit,
     ]
   );
 
   const onFormCancel = useCallback(
     (e) => {
       e.preventDefault();
-      closeForm();
+      onClose();
     },
-    [closeForm]
+    [onClose]
   );
 
   const submitLabel = useMemo(() => {
@@ -215,7 +204,7 @@ function ToponymeEditor({
   return (
     <Form
       editingId={initialValue?.id}
-      closeForm={closeForm}
+      closeForm={onClose}
       onFormSubmit={onFormSubmit}
     >
       <Pane>

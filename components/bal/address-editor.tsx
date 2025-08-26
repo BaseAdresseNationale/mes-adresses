@@ -1,11 +1,11 @@
 import { useState, useContext } from "react";
 import { Pane, Heading, SelectField } from "evergreen-ui";
-
 import BalDataContext from "@/contexts/bal-data";
-
 import NumeroEditor from "@/components/bal/numero-editor";
 import ToponymeEditor from "@/components/bal/toponyme-editor";
 import { CommuneType } from "@/types/commune";
+import { useRouter } from "next/router";
+import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 
 interface AddressEditorProps {
   commune: CommuneType;
@@ -13,9 +13,9 @@ interface AddressEditorProps {
 }
 
 function AddressEditor({ commune, closeForm }: AddressEditorProps) {
+  const router = useRouter();
   const [isToponyme, setIsToponyme] = useState(false);
-
-  const { voie } = useContext(BalDataContext);
+  const { voie, baseLocale } = useContext(BalDataContext);
 
   return (
     <Pane display="flex" flexDirection="column" height="100%">
@@ -40,7 +40,15 @@ function AddressEditor({ commune, closeForm }: AddressEditorProps) {
         overflow="hidden"
       >
         {isToponyme ? (
-          <ToponymeEditor commune={commune} closeForm={closeForm} />
+          <ToponymeEditor
+            commune={commune}
+            onClose={closeForm}
+            onSubmit={(idToponyme) => {
+              router.push(
+                `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}/numeros`
+              );
+            }}
+          />
         ) : (
           <NumeroEditor
             initialVoieId={voie?.id}
