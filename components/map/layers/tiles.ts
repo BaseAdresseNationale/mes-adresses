@@ -210,8 +210,9 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
             ...numerosLabelLayer.paint,
             "text-halo-color": [
               "case",
-              ["boolean", "certifie", true],
+              ["boolean", ["get", "certifie"], true],
               defaultTheme.colors.green500,
+
               defaultTheme.colors.gray500,
             ],
           },
@@ -222,8 +223,9 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
             ...numerosPointLayer.paint,
             "circle-color": [
               "case",
-              ["boolean", "certifie", true],
+              ["boolean", ["get", "certifie"], true],
               defaultTheme.colors.green500,
+
               defaultTheme.colors.gray500,
             ],
           },
