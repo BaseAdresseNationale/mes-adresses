@@ -44,6 +44,7 @@ function AddressEditor({ commune, closeForm }: AddressEditorProps) {
             commune={commune}
             onClose={closeForm}
             onSubmit={(idToponyme) => {
+              closeForm();
               router.push(
                 `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}/numeros`
               );

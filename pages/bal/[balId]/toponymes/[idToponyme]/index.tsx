@@ -71,9 +71,9 @@ function ToponymePage({ baseLocale, toponyme }: ToponymePageProps) {
             `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}/numeros`
           );
         }}
-        onSubmit={() => {
+        onSubmit={(idToponyme) => {
           router.push(
-            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}/numeros`
+            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}/numeros`
           );
         }}
       />
