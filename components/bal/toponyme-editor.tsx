@@ -254,7 +254,9 @@ function ToponymeEditor({
 
         <FormInput ref={refs?.positions}>
           <PositionEditor
-            initialPositions={initialValue?.positions}
+            {...(initialValue?.positions.length > 0 && {
+              initialPositions: initialValue?.positions,
+            })}
             isToponyme
             validationMessage={getValidationMessage("positions")}
           />
