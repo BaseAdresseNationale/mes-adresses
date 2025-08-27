@@ -4,7 +4,6 @@ import {
   ExtentedToponymeDTO,
   ToponymesService,
 } from "@/lib/openapi-api-bal";
-import { CommuneType } from "@/types/commune";
 import ProtectedPage from "@/layouts/protected-page";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { useRouter } from "next/router";
@@ -67,9 +66,14 @@ function ToponymePage({ baseLocale, toponyme }: ToponymePageProps) {
       <ToponymeEditor
         initialValue={toponyme}
         commune={commune}
-        closeForm={() => {
+        onClose={() => {
           router.push(
             `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}/numeros`
+          );
+        }}
+        onSubmit={(idToponyme) => {
+          router.push(
+            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}/numeros`
           );
         }}
       />
