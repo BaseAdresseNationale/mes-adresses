@@ -13,11 +13,6 @@ import {
 
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
-import LocalStorageContext from "@/contexts/local-storage";
-import {
-  VideoContainer,
-  PEERTUBE_LINK,
-} from "@/components/help/video-container";
 import Confetti from "react-confetti";
 import CommuneFlag from "./commune-flag";
 import { CommuneType } from "@/types/commune";
@@ -35,7 +30,7 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
   useEffect(() => {
     setIsShown(!wasWelcomed);
   }, [wasWelcomed]);
-  console.log(wrapperRef.current?.offsetHeight);
+
   return (
     <Dialog
       isShown={isShown}
@@ -176,6 +171,13 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
           commune afin de faciliter leur publication.
         </Alert> */}
       </Pane>
+      <Confetti
+        className="confetti"
+        recycle={false}
+        numberOfPieces={500}
+        tweenDuration={3000}
+        width={wrapperRef?.current?.offsetWidth + 64}
+      />
       <style jsx>{`
         .confetti {
           position: absolute;
