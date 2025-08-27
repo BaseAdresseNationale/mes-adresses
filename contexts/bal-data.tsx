@@ -55,8 +55,6 @@ interface BALDataContextType {
   reloadToponymes: () => Promise<void>;
   isRefrehSyncStat: boolean;
   refreshBALSync: () => Promise<void>;
-  certifyAllNumeros: () => Promise<void>;
-  uncertifyAllNumeros: () => Promise<void>;
   habilitationIsLoading: boolean;
   isHabilitationProcessDisplayed: boolean;
   setIsHabilitationProcessDisplayed: (
@@ -223,40 +221,6 @@ export function BalDataContextProvider({
     }
   }, [editingId, numeros, voie, toponyme, voies, toponymes]);
 
-  const certifyAllNumeros = useCallback(async () => {
-    await BasesLocalesService.certifyAllNumeros(baseLocale.id);
-    await reloadNumeros();
-    await reloadVoies();
-    await reloadToponymes();
-    await reloadBaseLocale();
-
-    await refreshBALSync();
-  }, [
-    baseLocale.id,
-    reloadNumeros,
-    reloadVoies,
-    reloadToponymes,
-    reloadBaseLocale,
-    refreshBALSync,
-  ]);
-
-  const uncertifyAllNumeros = useCallback(async () => {
-    await BasesLocalesService.uncertifyAllNumeros(baseLocale.id);
-    await reloadNumeros();
-    await reloadVoies();
-    await reloadToponymes();
-    await reloadBaseLocale();
-
-    await refreshBALSync();
-  }, [
-    baseLocale.id,
-    reloadNumeros,
-    reloadVoies,
-    reloadToponymes,
-    reloadBaseLocale,
-    refreshBALSync,
-  ]);
-
   useEffect(() => {
     setVoie(initialVoie);
   }, [initialVoie]);
@@ -322,8 +286,6 @@ export function BalDataContextProvider({
       setVoie,
       setVoies,
       setToponyme,
-      certifyAllNumeros,
-      uncertifyAllNumeros,
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
@@ -354,8 +316,6 @@ export function BalDataContextProvider({
       reloadVoies,
       reloadToponymes,
       toponyme,
-      certifyAllNumeros,
-      uncertifyAllNumeros,
       isRefrehSyncStat,
       refreshBALSync,
       habilitationIsLoading,
