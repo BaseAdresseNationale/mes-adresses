@@ -88,9 +88,14 @@ function VoiePage({ baseLocale }: VoiePageProps) {
       ) : (
         <VoieEditor
           initialValue={voie}
-          closeForm={() => {
+          onClose={() => {
             router.push(
               `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`
+            );
+          }}
+          onSubmit={(idVoie) => {
+            router.push(
+              `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}/numeros`
             );
           }}
         />

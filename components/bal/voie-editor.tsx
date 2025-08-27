@@ -29,16 +29,16 @@ import { trimNomAlt } from "@/lib/utils/string";
 
 interface VoieEditorProps {
   initialValue?: Voie;
-  closeForm: () => void;
   formInputRef?: React.RefObject<HTMLDivElement>;
-  onSubmitted?: () => void;
+  onSubmit: (idVoie: string) => void;
+  onClose: () => void;
 }
 
 function VoieEditor({
   initialValue,
-  closeForm,
+  onClose,
   formInputRef,
-  onSubmitted,
+  onSubmit,
 }: VoieEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isMetric, onIsMetricChange] = useCheckboxInput(
@@ -100,27 +100,14 @@ function VoieEditor({
         const voie = await submit();
 
         refreshBALSync();
-
-        if (initialValue?.id === voie.id && router.query.idVoie) {
-          setVoie(voie);
-          // Reload voie trace
-          if (
-            !isEqual(initialValue.trace, data?.geometry) ||
-            body.typeNumerotation !== initialValue.typeNumerotation
-          ) {
-            reloadTiles();
-          }
-        } else {
-          reloadTiles();
-        }
-
         await reloadVoies();
+        reloadTiles();
 
-        if (onSubmitted) {
-          onSubmitted();
+        if (initialValue?.id === voie.id) {
+          setVoie(voie);
         }
 
-        closeForm();
+        onSubmit(voie.id);
       } catch (err) {
         console.error(err);
       } finally {
@@ -135,13 +122,12 @@ function VoieEditor({
       isMetric,
       data,
       nomAlt,
-      closeForm,
       setValidationMessages,
       setVoie,
       reloadVoies,
       refreshBALSync,
       reloadTiles,
-      onSubmitted,
+      onSubmit,
       toaster,
     ]
   );
@@ -150,9 +136,9 @@ function VoieEditor({
     (e) => {
       e.preventDefault();
 
-      closeForm();
+      onClose();
     },
-    [closeForm]
+    [onClose]
   );
 
   // Reset validation messages on changes
@@ -180,7 +166,7 @@ function VoieEditor({
     <Form
       editingId={initialValue?.id}
       unmountForm={onUnmount}
-      closeForm={closeForm}
+      closeForm={onClose}
       onFormSubmit={onFormSubmit}
     >
       <Pane>
@@ -228,7 +214,7 @@ function VoieEditor({
           {isLoading ? "En cours…" : "Enregistrer"}
         </Button>
 
-        {closeForm && (
+        {onClose && (
           <Button
             disabled={isLoading}
             appearance="minimal"

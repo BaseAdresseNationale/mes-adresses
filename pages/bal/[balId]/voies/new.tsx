@@ -38,8 +38,13 @@ function NewVoiePage({ baseLocale }: NewVoiePageProps) {
   return (
     <ProtectedPage>
       <VoieEditor
-        closeForm={() => {
+        onClose={() => {
           router.push(`/bal/${baseLocale.id}/${TabsEnum.VOIES}`);
+        }}
+        onSubmit={(idVoie) => {
+          router.push(
+            `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}/numeros`
+          );
         }}
       />
     </ProtectedPage>
