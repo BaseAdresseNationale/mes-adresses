@@ -37,7 +37,7 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
       // isShown={Boolean(isShown && token && !habilitationIsLoading)}
       intent="success"
       header={
-        <Pane position="relative">
+        <Pane position="relative" width="100%">
           <Pane display="flex" flexDirection="column" alignItems="center">
             <Heading textAlign="center" marginBottom={16}>
               <CommuneFlag codeCommune={commune.code} />
@@ -89,24 +89,24 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
           </Paragraph>
         </Pane>
         <Pane marginY={16}>
-          <Heading>📚 Besoin d&apos;aide ?</Heading>
+          <Heading>❓ Besoin d&apos;aide ?</Heading>
           <Paragraph marginY={16}>
             <Link
               href="https://adresse.data.gouv.fr/evenements"
               target="_blank"
             >
-              Suivez une formation
+              Suivez une formation 🎓
             </Link>
             <br />
             <Link
               href="https://tube.numerique.gouv.fr/w/p/cm6YcSnDdztzRjKTH3vNFn?playlistPosition=1"
               target="_blank"
             >
-              Regardez les tutoriels
+              Regardez les tutoriels 📺
             </Link>
             <br />
             <Link href="https://adresse.data.gouv.fr/guides" target="_blank">
-              Consulter les guides
+              Consulter les guides 📚
             </Link>
           </Paragraph>
         </Pane>
