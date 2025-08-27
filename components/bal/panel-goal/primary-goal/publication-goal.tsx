@@ -7,7 +7,7 @@ import usePublishProcess from "@/hooks/publish-process";
 import BalDataContext from "@/contexts/bal-data";
 import { CommuneType } from "@/types/commune";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
-import style from "./goal-card.module.css";
+import style from "../goal-card.module.css";
 
 interface PublicationGoalProps {
   commune: CommuneType;

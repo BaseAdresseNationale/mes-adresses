@@ -11,15 +11,11 @@ import {
   ExtentedToponymeDTO,
 } from "@/lib/openapi-api-bal";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
-import HabilitationInfos from "@/components/bal/habilitation-infos";
-import CertificationInfos from "@/components/bal/certification-infos";
 import { getCommuneFlag } from "@/lib/api-blason-commune";
 import CommuneNomsAltEditor from "@/components/bal/commune-noms-alt-editor";
 import BALSummary from "@/components/bal/bal-summary";
 import BALRecoveryContext from "@/contexts/bal-recovery";
-import PublicationGoal from "@/components/bal/publication-goal";
-import CertificationGoal from "@/components/bal/certification-goal";
-import PanelGoal from "@/components/bal/panel-goal";
+import PanelGoal from "@/components/bal/panel-goal/index";
 
 interface BALHomePageProps {
   voies: ExtendedVoieDTO[];

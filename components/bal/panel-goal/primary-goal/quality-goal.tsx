@@ -1,6 +1,6 @@
 import { Pane, Heading, Paragraph, Text } from "evergreen-ui";
 
-import style from "./goal-card.module.css";
+import style from "../goal-card.module.css";
 import StarRating from "./star-rating";
 
 interface QualityGoalProps {}

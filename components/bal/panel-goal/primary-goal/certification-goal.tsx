@@ -1,21 +1,7 @@
 import { useState, useContext, useEffect } from "react";
-import {
-  Pane,
-  Heading,
-  Dialog,
-  Button,
-  Text,
-  Alert,
-  EndorsedIcon,
-  WarningSignIcon,
-  LightbulbIcon,
-  ChevronUpIcon,
-  ChevronDownIcon,
-  LockIcon,
-} from "evergreen-ui";
+import { Pane, Heading, Text, EndorsedIcon } from "evergreen-ui";
 
-import BalDataContext from "@/contexts/bal-data";
-import style from "./goal-card.module.css";
+import style from "../goal-card.module.css";
 import ProgressBar from "@/components/progress-bar";
 import Counter from "@/components/counter";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
