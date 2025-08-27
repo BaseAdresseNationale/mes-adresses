@@ -1,6 +1,7 @@
-import {Dialog} from 'evergreen-ui'
+import { Dialog } from "evergreen-ui";
 
-interface ConvertVoieWarningProps {
+interface DialogWarningActionProps {
+  confirmLabel: string;
   isShown: boolean;
   content: React.ReactNode;
   isLoading: boolean;
@@ -8,13 +9,20 @@ interface ConvertVoieWarningProps {
   onConfirm: () => void;
 }
 
-function ConvertVoieWarning({isShown = false, content, isLoading, onCancel, onConfirm}: ConvertVoieWarningProps) {
+function DialogWarningAction({
+  confirmLabel,
+  isShown = false,
+  content,
+  isLoading,
+  onCancel,
+  onConfirm,
+}: DialogWarningActionProps) {
   return (
     <Dialog
       isShown={isShown}
-      title='Attention'
-      cancelLabel='Annuler'
-      confirmLabel='Convertir'
+      title="Attention"
+      cancelLabel="Annuler"
+      confirmLabel={confirmLabel}
       onCloseComplete={onCancel}
       onCancel={onCancel}
       onConfirm={onConfirm}
@@ -26,7 +34,7 @@ function ConvertVoieWarning({isShown = false, content, isLoading, onCancel, onCo
     >
       {content}
     </Dialog>
-  )
+  );
 }
 
-export default ConvertVoieWarning
+export default DialogWarningAction;

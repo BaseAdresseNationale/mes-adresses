@@ -44,8 +44,13 @@ function NewToponymePage({ baseLocale }: NewToponymePageProps) {
     <ProtectedPage>
       <ToponymeEditor
         commune={commune}
-        closeForm={() => {
+        onClose={() => {
           router.push(`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}`);
+        }}
+        onSubmit={(idToponyme) => {
+          router.push(
+            `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}/numeros`
+          );
         }}
       />
     </ProtectedPage>

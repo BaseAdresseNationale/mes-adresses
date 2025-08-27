@@ -196,4 +196,22 @@ export class VoiesService {
         });
     }
 
+    /**
+     * Certify Voie numeros in Bal
+     * @param voieId
+     * @returns any
+     * @throws ApiError
+     */
+    public static certifyVoieNumeros(
+        voieId: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v2/voies/{voieId}/numeros/certify-all',
+            path: {
+                'voieId': voieId,
+            },
+        });
+    }
+
 }
