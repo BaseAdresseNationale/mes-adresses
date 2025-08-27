@@ -50,6 +50,7 @@ import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
+import RulerControl from "./controls/ruler-control";
 
 const TOPONYMES_MIN_ZOOM = 13;
 
@@ -397,6 +398,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       {!isMobile && (
         <Pane position="absolute" zIndex={1} top={125} right={10}>
           <ImageControl map={map} communeNom={commune.nom} />
+        </Pane>
+      )}
+
+      {!isMobile && (
+        <Pane position="absolute" zIndex={1} top={160} right={10}>
+          <RulerControl disabled={isEditing} />
         </Pane>
       )}
 
