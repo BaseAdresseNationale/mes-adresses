@@ -49,6 +49,7 @@ import {
 import GeolocationControl from "./controls/geolocation-control";
 import { ortho, planIGN, vector } from "./styles";
 import { cadastreLayers } from "./layers/cadastre";
+import RulerControl from "./controls/ruler-control";
 
 const settings = {
   maxZoom: 19,
@@ -347,6 +348,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       {!isMobile && (
         <Pane position="absolute" zIndex={1} top={125} right={10}>
           <ImageControl map={map} communeNom={commune.nom} />
+        </Pane>
+      )}
+
+      {!isMobile && (
+        <Pane position="absolute" zIndex={1} top={160} right={10}>
+          <RulerControl disabled={isEditing} />
         </Pane>
       )}
 
