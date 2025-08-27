@@ -97,7 +97,7 @@ function PositionEditor({
               <PositionItem
                 key={marker.id}
                 marker={marker}
-                isRemovable={isToponyme ? false : markers.length === 1}
+                isRemovable={markers.length === 1}
                 handleChange={updateMarker}
                 onRemove={removeMarker}
               />
