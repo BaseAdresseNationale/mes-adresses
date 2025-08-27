@@ -12,8 +12,7 @@ function Counter({ label, value, color }: CounterProps) {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      paddingX={5}
-      paddingY={10}
+      paddingTop={8}
       margin={5}
       width="100%"
     >
