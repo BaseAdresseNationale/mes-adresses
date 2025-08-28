@@ -73,7 +73,7 @@ const voieLabelLayer = {
         [15, 14],
       ],
     },
-    "text-font": ["Open Sans Regular"],
+    "text-font": ["SF UI Text", "Open Sans Regular"],
   },
 };
 
@@ -179,7 +179,7 @@ const toponymeLabelLayer = {
       "case",
       ["boolean", ["feature-state", "hover"], false],
       ["get", "color"],
-      "#4d3322",
+      "#000",
     ],
     "text-halo-color": "#f8f4f0",
     "text-halo-blur": 0.5,
@@ -193,8 +193,8 @@ const toponymeLabelLayer = {
   layout: {
     "text-field": ["get", "nom"],
     "text-anchor": "top",
-    "text-size": 16,
-    "text-font": ["Open Sans Regular"],
+    "text-size": 15,
+    "text-font": ["Segoe UI Bold"],
   },
 };
 
@@ -202,8 +202,19 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
   switch (mode) {
     case TilesLayerMode.CERTIFICATION:
       return {
-        VOIE_LABEL: voieLabelLayer,
-        VOIE_TRACE_LINE: voieTraceLineLayer,
+        VOIE_LABEL: {
+          ...voieLabelLayer,
+          paint: {
+            ...voieLabelLayer.paint,
+            "text-color": "#000",
+            "text-opacity": [
+              "case",
+              ["boolean", ["feature-state", "hover"], false],
+              1,
+              0.7,
+            ],
+          },
+        },
         NUMEROS_LABEL: {
           ...numerosLabelLayer,
           paint: {

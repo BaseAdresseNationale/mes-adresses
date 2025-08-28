@@ -50,6 +50,13 @@ function useHovered(map) {
     );
   };
 
+  const handleRelatedToponymePoints = (map, id, isHovered) => {
+    map.setFeatureState(
+      { source: "tiles", sourceLayer: LAYERS_SOURCE.TOPONYME_POINTS, id },
+      { hover: isHovered }
+    );
+  };
+
   // Highlight related features
   const handleRelatedFeatures = (map, feature, isHovered) => {
     const { source, sourceLayer, properties } = feature;
@@ -58,17 +65,13 @@ function useHovered(map) {
         handleRelatedNumerosForVoie(map, properties.id, isHovered);
       } else if (sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS) {
         handleRelatedNumerosForToponyme(map, properties.id, isHovered);
-      } else if (
-        sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
-        sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS
-      ) {
-        handleRelatedVoiePoints(
-          map,
-          sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS
-            ? properties.idVoie
-            : properties.id,
-          isHovered
-        );
+      } else if (sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS) {
+        handleRelatedVoiePoints(map, properties.id, isHovered);
+      } else if (sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS) {
+        handleRelatedVoiePoints(map, properties.idVoie, isHovered);
+        if (properties.idToponyme) {
+          handleRelatedToponymePoints(map, properties.idToponyme, isHovered);
+        }
       }
     }
   };

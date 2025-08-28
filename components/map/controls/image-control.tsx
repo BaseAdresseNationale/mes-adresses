@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import type { Map as MaplibreMap } from "maplibre-gl";
 import {
   Position,
@@ -15,8 +15,10 @@ import {
   VOIE_TRACE_LINE,
   ZOOM,
   TOPONYME_LABEL,
+  TilesLayerMode,
 } from "@/components/map/layers/tiles";
 import LayerShowHideZoomControl from "@/components/map/controls/layer-show-hide-zoom-control";
+import MapContext from "@/contexts/map";
 
 const poiLayersIds = ["poi-level-1", "poi-level-2", "poi-level-3"];
 
@@ -26,6 +28,7 @@ interface ImageControlProps {
 }
 
 function ImageControl({ map, communeNom }: ImageControlProps) {
+  const { tileLayersMode } = useContext(MapContext);
   const [adresseLayerZoom, setAdresseLayerZoom] = useState([
     ZOOM.NUMEROS_ZOOM.maxZoom,
   ]);
@@ -192,11 +195,9 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
       onClose={() => initLayer()}
       content={
         <Pane
-          paddingLeft={18}
-          paddingRight={18}
-          paddingTop={12}
+          paddingX={18}
+          paddingY={12}
           width={200}
-          height={210}
           display="flex"
           flexDirection="column"
         >
@@ -208,24 +209,28 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
             setZoom={setAdresseLayerZoom}
           />
 
-          <LayerShowHideZoomControl
-            title="Voies"
-            isDiplayed={voieLayerIsDisplayed}
-            setIsDiplayed={setVoieLayerIsDisplayed}
-            zoom={voieLayerZoom}
-            setZoom={setVoieLayerZoom}
-          />
+          {tileLayersMode !== TilesLayerMode.TOPONYME && (
+            <LayerShowHideZoomControl
+              title="Voies"
+              isDiplayed={voieLayerIsDisplayed}
+              setIsDiplayed={setVoieLayerIsDisplayed}
+              zoom={voieLayerZoom}
+              setZoom={setVoieLayerZoom}
+            />
+          )}
+
+          {tileLayersMode === TilesLayerMode.TOPONYME && (
+            <LayerShowHideZoomControl
+              title="Toponymes"
+              isDiplayed={toponymeLayerIsDisplayed}
+              setIsDiplayed={setToponymeLayerIsDisplayed}
+              zoom={toponymeLayerZoom}
+              setZoom={setToponymeLayerZoom}
+            />
+          )}
 
           <LayerShowHideZoomControl
-            title="Toponymes"
-            isDiplayed={toponymeLayerIsDisplayed}
-            setIsDiplayed={setToponymeLayerIsDisplayed}
-            zoom={toponymeLayerZoom}
-            setZoom={setToponymeLayerZoom}
-          />
-
-          <LayerShowHideZoomControl
-            title="Points d‘intérets"
+            title="Points d'intérets"
             isDiplayed={poiLayerIsDisplayed}
             setIsDiplayed={setPoiLayerIsDisplayed}
           />
