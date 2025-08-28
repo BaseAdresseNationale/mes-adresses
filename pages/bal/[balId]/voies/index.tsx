@@ -116,9 +116,10 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     await VoiesService.certifyVoieNumeros(toCertify);
     await reloadVoies();
     await reloadNumeros();
+    reloadTiles();
     setOnCertifyLoading(false);
     setToCertify(null);
-  }, [toCertify, reloadVoies, reloadNumeros]);
+  }, [toCertify, reloadVoies, reloadNumeros, reloadTiles]);
 
   const onConvert = useCallback(async () => {
     setOnConvertLoading(true);

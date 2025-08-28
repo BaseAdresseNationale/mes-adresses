@@ -50,7 +50,6 @@ import useHovered from "@/components/map/hooks/hovered";
 import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
-import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 import { handleSelectToponyme, handleSelectVoie } from "@/lib/utils/map";
 
 const LAYERS = [...cadastreLayers];
@@ -268,31 +267,16 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       setMapStyle(generateNewStyle(style));
 
       if (isTileSourceLoaded) {
-        // Adapt layer paint property to map style
-        const isOrtho = style === "ortho";
-
         if (map.getLayer(VOIE_LABEL)) {
-          map.setPaintProperty(
-            VOIE_LABEL,
-            "text-halo-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
+          map.setPaintProperty(VOIE_LABEL, "text-halo-color", "#ffffff");
         }
 
         if (map.getLayer(TOPONYME_LABEL)) {
-          map.setPaintProperty(
-            TOPONYME_LABEL,
-            "text-halo-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
+          map.setPaintProperty(TOPONYME_LABEL, "text-halo-color", "#ffffff");
         }
 
         if (map.getLayer(NUMEROS_POINT)) {
-          map.setPaintProperty(
-            NUMEROS_POINT,
-            "circle-stroke-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
+          map.setPaintProperty(NUMEROS_POINT, "circle-stroke-color", "#ffffff");
         }
       }
     }
