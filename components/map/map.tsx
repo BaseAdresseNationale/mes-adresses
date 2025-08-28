@@ -26,17 +26,18 @@ import BalDataContext from "@/contexts/bal-data";
 
 import { cadastreLayers } from "@/components/map/layers/cadastre";
 import {
-  tilesLayers,
+  getTilesLayers,
   VOIE_LABEL,
   VOIE_TRACE_LINE,
   NUMEROS_POINT,
   NUMEROS_LABEL,
   LAYERS_SOURCE,
+  TOPONYME_LABEL,
+  TilesLayerMode,
 } from "@/components/map/layers/tiles";
 import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
 import NumerosMarkers from "@/components/map/numeros-markers";
-import ToponymeMarker from "@/components/map/toponyme-marker";
 import MapMarker from "@/components/map/map-marker";
 import PopupFeature from "@/components/map/popup-feature/popup-feature";
 import NavControl from "@/components/map/controls/nav-control";
@@ -49,9 +50,7 @@ import useHovered from "@/components/map/hooks/hovered";
 import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
-import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
-
-const TOPONYMES_MIN_ZOOM = 13;
+import { handleSelectToponyme, handleSelectVoie } from "@/lib/utils/map";
 
 const LAYERS = [...cadastreLayers];
 
@@ -111,7 +110,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     setIsCadastreDisplayed,
     balTilesUrl,
     isMapLoaded,
-    showToponymes,
+    tileLayersMode,
   } = useContext(MapContext);
   const { isParcelleSelectionEnabled, handleParcelles } =
     useContext(ParcellesContext);
@@ -122,15 +121,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle));
 
   const { balId } = router.query;
-  const {
-    voie,
-    toponyme,
-    numeros,
-    toponymes,
-    editingId,
-    setEditingId,
-    isEditing,
-  } = useContext(BalDataContext);
+  const { voie, toponyme, numeros, editingId, setEditingId, isEditing } =
+    useContext(BalDataContext);
   const { modeId, hint, drawEnabled } = useContext(DrawContext);
   const { token } = useContext(TokenContext);
 
@@ -140,6 +132,13 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const bounds = useBounds(map, router, commune, voie, toponyme);
 
   const prevStyle = useRef(defaultStyle);
+
+  const displayPopupFeature =
+    featureHovered !== null &&
+    viewport.zoom > 14 &&
+    (featureHovered.sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
+      featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
+      featureHovered.sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS);
 
   const updatePositionsLayer = useCallback(() => {
     if (map && isTileSourceLoaded) {
@@ -165,12 +164,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           ["get", "idToponyme"],
           toponyme.id,
         ]);
+        map.setFilter(TOPONYME_LABEL, ["!=", ["get", "id"], toponyme.id]);
       } else {
         // Remove filter
         map.setFilter(VOIE_TRACE_LINE, null);
         map.setFilter(NUMEROS_POINT, null);
         map.setFilter(NUMEROS_LABEL, null);
         map.setFilter(VOIE_LABEL, null);
+        map.setFilter(TOPONYME_LABEL, null);
       }
     }
   }, [map, voie, toponyme, isTileSourceLoaded, drawEnabled]);
@@ -183,7 +184,13 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     }
 
     if (!isEditing && isTileSourceLoaded) {
-      layers.push(VOIE_TRACE_LINE, NUMEROS_POINT, NUMEROS_LABEL, VOIE_LABEL);
+      layers.push(
+        VOIE_TRACE_LINE,
+        NUMEROS_POINT,
+        NUMEROS_LABEL,
+        VOIE_LABEL,
+        TOPONYME_LABEL
+      );
     }
 
     return layers;
@@ -203,7 +210,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             source === "cadastre" ||
             sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
             sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
-            sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS
+            sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS ||
+            sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS
           );
         });
       const feature = features && features[0];
@@ -217,25 +225,25 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
       if (parcelles.length > 0) {
         handleParcelles(parcelles.map(({ properties }) => properties.id));
-      } else if (
-        feature &&
-        !isEditing &&
-        ((feature.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS &&
-          feature.properties.idVoie) ||
-          ((feature.sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
-            feature.sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS) &&
-            feature.properties.id))
-      ) {
-        const idVoie =
-          feature.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS
-            ? feature.properties.idVoie
-            : feature.properties.id;
-        router.push(`/bal/${balId}/${TabsEnum.VOIES}/${idVoie}/numeros`);
+      } else if (feature && !isEditing) {
+        if (tileLayersMode === TilesLayerMode.TOPONYME) {
+          handleSelectToponyme(feature, router, balId as string);
+        } else {
+          handleSelectVoie(feature, router, balId as string);
+        }
       }
 
       setIsContextMenuDisplayed(null);
     },
-    [router, balId, setEditingId, isEditing, voie, handleParcelles]
+    [
+      router,
+      balId,
+      setEditingId,
+      isEditing,
+      voie,
+      handleParcelles,
+      tileLayersMode,
+    ]
   );
 
   useEffect(() => {
@@ -259,23 +267,16 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       setMapStyle(generateNewStyle(style));
 
       if (isTileSourceLoaded) {
-        // Adapt layer paint property to map style
-        const isOrtho = style === "ortho";
-
         if (map.getLayer(VOIE_LABEL)) {
-          map.setPaintProperty(
-            VOIE_LABEL,
-            "text-halo-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
+          map.setPaintProperty(VOIE_LABEL, "text-halo-color", "#ffffff");
+        }
+
+        if (map.getLayer(TOPONYME_LABEL)) {
+          map.setPaintProperty(TOPONYME_LABEL, "text-halo-color", "#ffffff");
         }
 
         if (map.getLayer(NUMEROS_POINT)) {
-          map.setPaintProperty(
-            NUMEROS_POINT,
-            "circle-stroke-color",
-            isOrtho ? "#ffffff" : "#f8f4f0"
-          );
+          map.setPaintProperty(NUMEROS_POINT, "circle-stroke-color", "#ffffff");
         }
       }
     }
@@ -436,7 +437,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           <Layer {...(layerCommune as LayerProps)} />
 
           <Source {...sourceTiles}>
-            {Object.values(tilesLayers).map((layer) => (
+            {Object.values(getTilesLayers(tileLayersMode)).map((layer) => (
               <Layer key={layer.id} {...(layer as LayerProps)} />
             ))}
           </Source>
@@ -449,18 +450,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
               color={selectedVoieColor}
             />
           )}
-
-          {toponymes &&
-            showToponymes &&
-            viewport.zoom > TOPONYMES_MIN_ZOOM &&
-            toponymes.map((toponyme) => (
-              <ToponymeMarker
-                key={toponyme.id}
-                initialToponyme={toponyme}
-                isContextMenuDisplayed={toponyme.id === isContextMenuDisplayed}
-                setIsContextMenuDisplayed={setIsContextMenuDisplayed}
-              />
-            ))}
 
           {isEditing && (
             <EditableMarker
@@ -477,12 +466,9 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
               <MapMarker key={marker.id} marker={marker} />
             ))}
 
-          {featureHovered !== null &&
-            viewport.zoom > 14 &&
-            (featureHovered.sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
-              featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS) && (
-              <PopupFeature feature={featureHovered} commune={commune} />
-            )}
+          {displayPopupFeature && (
+            <PopupFeature feature={featureHovered} commune={commune} />
+          )}
         </MapGl>
       </Pane>
     </Pane>

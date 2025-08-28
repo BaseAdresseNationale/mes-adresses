@@ -25,7 +25,7 @@ function StyleControl({
     const { hasOrtho, hasOpenMapTiles, hasPlanIGN } = commune;
     return [
       {
-        label: "Plan OpenMapTiles",
+        label: "Plan OpenStreetMap",
         value: "vector",
         isAvailable: hasOpenMapTiles,
       },
