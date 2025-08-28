@@ -55,6 +55,7 @@ import {
   handleSelectVoie,
   setMapFilter,
 } from "@/lib/utils/map";
+import GeolocationControl from "./controls/geolocation-control";
 
 const LAYERS = [...cadastreLayers];
 
@@ -386,6 +387,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       {!isMobile && (
         <Pane position="absolute" zIndex={1} top={125} right={10}>
           <ImageControl map={map} communeNom={commune.nom} />
+        </Pane>
+      )}
+
+      {isMobile && navigator.geolocation && (
+        <Pane position="absolute" zIndex={1} top={90} right={10}>
+          <GeolocationControl map={map} />
         </Pane>
       )}
 
