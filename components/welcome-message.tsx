@@ -171,13 +171,6 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
           commune afin de faciliter leur publication.
         </Alert> */}
       </Pane>
-      <Confetti
-        className="confetti"
-        recycle={false}
-        numberOfPieces={500}
-        tweenDuration={3000}
-        width={wrapperRef?.current?.offsetWidth + 64}
-      />
       <style jsx>{`
         .confetti {
           position: absolute;

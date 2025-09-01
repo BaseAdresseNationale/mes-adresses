@@ -64,7 +64,6 @@ function PublishBalStep({
   }, [commune.code, handlePublication]);
 
   useEffect(() => {
-    console.log("baseLocale.sync", baseLocale.sync);
     if (baseLocale.sync) {
       // Skip publication step when renewing accreditation
       handleClose();

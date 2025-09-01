@@ -17,14 +17,6 @@ interface PanelGoalProps {
 function PanelGoal({ commune, baseLocale }: PanelGoalProps) {
   const isPublished =
     baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED;
-  //   const { baseLocale, commune } = useContext(BalDataContext);
-  //   const { token } = useContext(TokenContext);
-  //   const isAdmin = Boolean(token);
-  //   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
-
-  //   const openRecoveryDialog = () => {
-  //     setIsRecoveryDisplayed(true);
-  //   };
 
   return (
     <Pane>

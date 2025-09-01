@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext, useEffect } from "react";
+import { useState, useCallback, useContext, useEffect, useRef } from "react";
 import Router from "next/router";
 import { Dialog, Pane, Text, Spinner } from "evergreen-ui";
 
@@ -15,6 +15,7 @@ import {
   HabilitationService,
   StrategyDTO,
   HabilitationDTO,
+  BasesLocalesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { StrategySelectionStep } from "./strategy-selection";
@@ -74,8 +75,8 @@ function HabilitationProcess({
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
   const [emailSelected, setEmailSelected] = useState<string>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const { pushToast } = useContext(LayoutContext);
-  console.log("step", step, habilitation);
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
 
   const sendCode = async () => {
@@ -130,11 +131,10 @@ function HabilitationProcess({
         code,
       });
 
-      // checkConflictingRevision();
-      // // SET RESUME BAL IF HABILITATION CODE
-      // if (baseLocale.sync?.isPaused == true) {
-      //   await BasesLocalesService.resumeBaseLocale(baseLocale.id);
-      // }
+      // SET RESUME BAL IF HABILITATION CODE
+      if (baseLocale.sync?.isPaused == true) {
+        await BasesLocalesService.resumeBaseLocale(baseLocale.id);
+      }
       setStep(StepPublicationEnum.PUBLISH_BAL);
     } catch (error) {
       pushToast({
@@ -156,25 +156,19 @@ function HabilitationProcess({
     resetHabilitationProcess();
   };
 
-  const wait = useCallback(
-    async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)),
-    []
-  );
-
   const handleConfirm = useCallback(async () => {
     setIsLoadingPublish(true);
     if (habilitation.status === HabilitationDTO.status.ACCEPTED) {
-      await wait(2000);
-      // await handlePublication();
+      await handlePublication();
     }
     setIsLoadingPublish(false);
-    console.log("handleConfirm", baseLocale);
+    baseLocale.status = BaseLocale.status.PUBLISHED;
     if (baseLocale.status === BaseLocale.status.PUBLISHED) {
       setStep(StepPublicationEnum.PUBLISHED_BAL);
     } else {
       setStep(StepPublicationEnum.PUBLISH_BAL_REJECTED);
     }
-  }, [habilitation.status]);
+  }, [baseLocale, habilitation.status, handlePublication]);
 
   const fetchCommuneFlag = async () => {
     try {
@@ -201,6 +195,7 @@ function HabilitationProcess({
       onCloseComplete={handleClose}
     >
       <Pane
+        ref={wrapperRef}
         marginX="-32px"
         marginY="-8px"
         borderRadius={8}
@@ -251,7 +246,13 @@ function HabilitationProcess({
         {step === StepPublicationEnum.PUBLISH_BAL_REJECTED && (
           <PublishBalRejectedStep handleClose={handleClose} />
         )}
-        {step === StepPublicationEnum.PUBLISHED_BAL && <PublishedBalStep />}
+        {step === StepPublicationEnum.PUBLISHED_BAL && (
+          <PublishedBalStep
+            habilitation={habilitation}
+            handleClose={handleClose}
+            dialogWidth={wrapperRef?.current?.offsetWidth}
+          />
+        )}
         {isLoading && (
           <Pane
             marginTop={16}
