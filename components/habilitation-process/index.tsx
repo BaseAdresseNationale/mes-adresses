@@ -9,38 +9,44 @@ import { ApiDepotService } from "@/lib/api-depot";
 
 import BalDataContext from "@/contexts/bal-data";
 
-import ValidateAuthentication from "@/components/habilitation-process/validate-authentication";
-import AcceptedDialog from "@/components/habilitation-process/accepted-dialog";
-import RejectedDialog from "@/components/habilitation-process/rejected-dialog";
+import AuthenticationRejectedStep from "@/components/habilitation-process/authentication_rejected.step";
 import {
   BaseLocale,
-  BasesLocalesService,
   HabilitationService,
   StrategyDTO,
   HabilitationDTO,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
-import { StrategySelection } from "./strategy-selection";
+import { StrategySelectionStep } from "./strategy-selection";
 import { CommuneType } from "@/types/commune";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
-import PublishBalStep from "./publish-bal-step";
+import PublishBalStep from "./publish-bal.step";
+import PublishedBalStep from "./published-bal.step";
+import PublishBalRejectedStep from "./publish-bal-rejected.step";
+import AuthenticationValidateStep from "@/components/habilitation-process/validate-authentication";
 
 export const PRO_CONNECT_QUERY_PARAM = "pro-connect";
 
 export const StepPublicationEnum = {
   STRATEGY_SELECTION: 0,
-  VALIDATE_AUTHENTICATION: 1,
-  PUBLISH: 2,
-  PUBLISHED: 3,
+  AUTHENTICATION_VALIDATE: 1,
+  AUTHENTICATION_REJECTED: 2,
+  PUBLISH_BAL: 3,
+  PUBLISH_BAL_REJECTED: 4,
+  PUBLISHED_BAL: 5,
 };
 
 function getStep(habilitation: HabilitationDTO) {
-  if (habilitation.status !== HabilitationDTO.status.PENDING) {
-    return StepPublicationEnum.PUBLISH;
+  if (habilitation.status === HabilitationDTO.status.REJECTED) {
+    return StepPublicationEnum.AUTHENTICATION_REJECTED;
+  }
+
+  if (habilitation.status === HabilitationDTO.status.ACCEPTED) {
+    return StepPublicationEnum.PUBLISH_BAL;
   }
 
   if (habilitation.strategy?.type === StrategyDTO.type.EMAIL) {
-    return StepPublicationEnum.VALIDATE_AUTHENTICATION;
+    return StepPublicationEnum.AUTHENTICATION_VALIDATE;
   }
 
   return StepPublicationEnum.STRATEGY_SELECTION;
@@ -106,7 +112,7 @@ function HabilitationProcess({
     if (selectedStrategy === StrategyDTO.type.EMAIL) {
       const codeSent = await sendCode();
       if (codeSent) {
-        setStep(StepPublicationEnum.VALIDATE_AUTHENTICATION);
+        setStep(StepPublicationEnum.AUTHENTICATION_VALIDATE);
       }
     }
 
@@ -129,7 +135,7 @@ function HabilitationProcess({
       // if (baseLocale.sync?.isPaused == true) {
       //   await BasesLocalesService.resumeBaseLocale(baseLocale.id);
       // }
-      setStep(StepPublicationEnum.PUBLISH);
+      setStep(StepPublicationEnum.PUBLISH_BAL);
     } catch (error) {
       pushToast({
         intent: "danger",
@@ -150,19 +156,25 @@ function HabilitationProcess({
     resetHabilitationProcess();
   };
 
-  const wait = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
+  const wait = useCallback(
+    async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)),
+    []
+  );
 
-  const handleConfirm = async () => {
+  const handleConfirm = useCallback(async () => {
     setIsLoadingPublish(true);
     if (habilitation.status === HabilitationDTO.status.ACCEPTED) {
       await wait(2000);
       // await handlePublication();
     }
-    setStep(StepPublicationEnum.PUBLISHED);
     setIsLoadingPublish(false);
-    // handleClose();
-  };
+    console.log("handleConfirm", baseLocale);
+    if (baseLocale.status === BaseLocale.status.PUBLISHED) {
+      setStep(StepPublicationEnum.PUBLISHED_BAL);
+    } else {
+      setStep(StepPublicationEnum.PUBLISH_BAL_REJECTED);
+    }
+  }, [habilitation.status]);
 
   const fetchCommuneFlag = async () => {
     try {
@@ -186,21 +198,6 @@ function HabilitationProcess({
       hasHeader={false}
       hasFooter={false}
       shouldCloseOnOverlayClick={!isLoadingPublish}
-      // intent={isConflicted ? "danger" : "success"}
-      // hasFooter={step === 2}
-      // hasCancel={
-      //   step === 2 && habilitation.status === StatusHabilitationEnum.ACCEPTED
-      // }
-      // confirmLabel={
-      //   habilitation.status === StatusHabilitationEnum.ACCEPTED
-      //     ? isConflicted
-      //       ? "Forcer la publication"
-      //       : "Publier"
-      //     : "Fermer"
-      // }
-      // cancelLabel="Fermer"
-      // onConfirm={handleConfirm}
-      // isConfirmDisabled={isLoadingPublish}
       onCloseComplete={handleClose}
     >
       <Pane
@@ -210,8 +207,8 @@ function HabilitationProcess({
         background="gray300"
         padding={16}
       >
-        {step === 0 && (
-          <StrategySelection
+        {step === StepPublicationEnum.STRATEGY_SELECTION && (
+          <StrategySelectionStep
             codeCommune={commune.code}
             emailSelected={emailSelected}
             setEmailSelected={setEmailSelected}
@@ -219,8 +216,8 @@ function HabilitationProcess({
           />
         )}
 
-        {step === 1 && (
-          <ValidateAuthentication
+        {step === StepPublicationEnum.AUTHENTICATION_VALIDATE && (
+          <AuthenticationValidateStep
             emailCommune={habilitation.emailCommune}
             validatePinCode={handleValidationCode}
             resendCode={sendCode}
@@ -229,7 +226,16 @@ function HabilitationProcess({
           />
         )}
 
-        {step === 2 &&
+        {step === StepPublicationEnum.AUTHENTICATION_REJECTED &&
+          habilitation.status === HabilitationDTO.status.REJECTED && (
+            <AuthenticationRejectedStep
+              communeName={commune.nom}
+              strategyType={habilitation.strategy.type}
+              handleClose={handleClose}
+            />
+          )}
+
+        {step === StepPublicationEnum.PUBLISH_BAL &&
           habilitation.status === HabilitationDTO.status.ACCEPTED && (
             <PublishBalStep
               baseLocale={baseLocale}
@@ -242,13 +248,10 @@ function HabilitationProcess({
             />
           )}
 
-        {step === 2 &&
-          habilitation.status === HabilitationDTO.status.REJECTED && (
-            <RejectedDialog
-              communeName={commune.nom}
-              strategyType={habilitation.strategy.type}
-            />
-          )}
+        {step === StepPublicationEnum.PUBLISH_BAL_REJECTED && (
+          <PublishBalRejectedStep handleClose={handleClose} />
+        )}
+        {step === StepPublicationEnum.PUBLISHED_BAL && <PublishedBalStep />}
         {isLoading && (
           <Pane
             marginTop={16}
