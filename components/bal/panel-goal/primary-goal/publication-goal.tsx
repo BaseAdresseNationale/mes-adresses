@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { Pane, Heading, Button, Paragraph, EndorsedIcon } from "evergreen-ui";
 import { format } from "date-fns";
 
@@ -8,6 +8,7 @@ import BalDataContext from "@/contexts/bal-data";
 import { CommuneType } from "@/types/commune";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import style from "../goal-card.module.css";
+import AchievementBadge from "../achievements-badge";
 
 interface PublicationGoalProps {
   commune: CommuneType;
@@ -18,24 +19,36 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
   const { habilitation, isHabilitationValid } = useContext(BalDataContext);
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
-  return (
-    <Pane
-      className={style["goal-card"]}
-      backgroundColor={
-        baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED
-          ? "#FDF4F4"
-          : baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
-            (!habilitation || !isHabilitationValid) &&
-            "#FFFAF2"
+  const isCompleted = useMemo(() => {
+    return (
+      habilitation &&
+      isHabilitationValid &&
+      baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED
+    );
+  }, [habilitation, isHabilitationValid, baseLocale.status]);
+
+  const colorCard = useMemo(() => {
+    if (baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED) {
+      return "#FDF4F4";
+    } else if (baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED) {
+      if (habilitation && isHabilitationValid) {
+        return "#DCF2EA";
+      } else {
+        return "#FFFAF2";
       }
-    >
-      <Pane display="flex" justifyContent="space-between" marginBottom={16}>
-        <Heading>📤 Publication</Heading>
-        {habilitation &&
-          isHabilitationValid &&
-          baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED && (
-            <EndorsedIcon color="green" size={24} />
-          )}
+    }
+    return "white";
+  }, [baseLocale.status, habilitation, isHabilitationValid]);
+
+  return (
+    <Pane className={style["goal-card"]} backgroundColor={colorCard}>
+      <Pane display="flex" alignItems="center" gap={16} marginBottom={16}>
+        <AchievementBadge
+          icone="/static/images/achievements/published-bal.svg"
+          title="Publication"
+          completed={isCompleted}
+        />
+        <Heading color={isCompleted && "#317159"}>Publication</Heading>
       </Pane>
       {baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (
         <Paragraph marginBottom={16}>
