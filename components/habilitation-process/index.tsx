@@ -17,30 +17,39 @@ import {
   BasesLocalesService,
   HabilitationService,
   StrategyDTO,
+  HabilitationDTO,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { StrategySelection } from "./strategy-selection";
 import { CommuneType } from "@/types/commune";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
+import PublishBalStep from "./publish-bal-step";
 
 export const PRO_CONNECT_QUERY_PARAM = "pro-connect";
 
-function getStep(habilitation) {
-  if (habilitation.status !== "pending") {
-    return 2;
+export const StepPublicationEnum = {
+  STRATEGY_SELECTION: 0,
+  VALIDATE_AUTHENTICATION: 1,
+  PUBLISH: 2,
+  PUBLISHED: 3,
+};
+
+function getStep(habilitation: HabilitationDTO) {
+  if (habilitation.status !== HabilitationDTO.status.PENDING) {
+    return StepPublicationEnum.PUBLISH;
   }
 
-  if (habilitation.strategy?.type === "email") {
-    return 1;
+  if (habilitation.strategy?.type === StrategyDTO.type.EMAIL) {
+    return StepPublicationEnum.VALIDATE_AUTHENTICATION;
   }
 
-  return 0;
+  return StepPublicationEnum.STRATEGY_SELECTION;
 }
 
 interface HabilitationProcessProps {
   baseLocale: BaseLocale;
   commune: CommuneType;
-  habilitation: any;
+  habilitation: HabilitationDTO;
   handlePublication: () => void;
   resetHabilitationProcess: () => void;
   handleClose: () => void;
@@ -57,11 +66,10 @@ function HabilitationProcess({
   const [flagURL, setFlagURL] = useState<string | null>(null);
   const [step, setStep] = useState(getStep(habilitation));
   const [isLoading, setIsLoading] = useState(false);
-  const [isConflicted, setIsConflicted] = useState(false);
   const [isLoadingPublish, setIsLoadingPublish] = useState(false);
   const [emailSelected, setEmailSelected] = useState<string>(null);
   const { pushToast } = useContext(LayoutContext);
-
+  console.log("step", step, habilitation);
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
 
   const sendCode = async () => {
@@ -98,7 +106,7 @@ function HabilitationProcess({
     if (selectedStrategy === StrategyDTO.type.EMAIL) {
       const codeSent = await sendCode();
       if (codeSent) {
-        setStep(1);
+        setStep(StepPublicationEnum.VALIDATE_AUTHENTICATION);
       }
     }
 
@@ -109,19 +117,6 @@ function HabilitationProcess({
     setIsLoading(false);
   };
 
-  // Checks revisions to warn of a conflict
-  const checkConflictingRevision = useCallback(async () => {
-    try {
-      const revisions = await ApiDepotService.getRevisions(commune.code);
-      setIsConflicted(revisions.length > 0);
-    } catch (error) {
-      console.error(
-        "ERROR: Impossible de récupérer les révisions pour cette commune",
-        error.body
-      );
-    }
-  }, [commune.code]);
-
   const handleValidationCode = async (code: string) => {
     setIsLoading(true);
     try {
@@ -129,12 +124,12 @@ function HabilitationProcess({
         code,
       });
 
-      checkConflictingRevision();
-      // SET RESUME BAL IF HABILITATION CODE
-      if (baseLocale.sync?.isPaused == true) {
-        await BasesLocalesService.resumeBaseLocale(baseLocale.id);
-      }
-      setStep(2);
+      // checkConflictingRevision();
+      // // SET RESUME BAL IF HABILITATION CODE
+      // if (baseLocale.sync?.isPaused == true) {
+      //   await BasesLocalesService.resumeBaseLocale(baseLocale.id);
+      // }
+      setStep(StepPublicationEnum.PUBLISH);
     } catch (error) {
       pushToast({
         intent: "danger",
@@ -151,33 +146,23 @@ function HabilitationProcess({
 
   // Restart habilitation process, create new habilitation
   const handleReset = () => {
-    setStep(0);
+    setStep(StepPublicationEnum.STRATEGY_SELECTION);
     resetHabilitationProcess();
   };
 
+  const wait = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
   const handleConfirm = async () => {
     setIsLoadingPublish(true);
-    if (habilitation.status === "accepted") {
-      await handlePublication();
+    if (habilitation.status === HabilitationDTO.status.ACCEPTED) {
+      await wait(2000);
+      // await handlePublication();
     }
-
+    setStep(StepPublicationEnum.PUBLISHED);
     setIsLoadingPublish(false);
-    handleClose();
+    // handleClose();
   };
-
-  useEffect(() => {
-    const step = getStep(habilitation);
-    if (step === 2) {
-      if (baseLocale.sync) {
-        // Skip publication step when renewing accreditation
-        handleClose();
-      } else {
-        checkConflictingRevision();
-      }
-    }
-
-    setStep(step);
-  }, [baseLocale, habilitation, checkConflictingRevision, handleClose]);
 
   const fetchCommuneFlag = async () => {
     try {
@@ -199,19 +184,23 @@ function HabilitationProcess({
       width={1200}
       preventBodyScrolling
       hasHeader={false}
-      intent={isConflicted ? "danger" : "success"}
-      hasFooter={step === 2}
-      hasCancel={step === 2 && habilitation.status === "accepted"}
-      confirmLabel={
-        habilitation.status === "accepted"
-          ? isConflicted
-            ? "Forcer la publication"
-            : "Publier"
-          : "Fermer"
-      }
-      cancelLabel="Attendre"
-      onConfirm={handleConfirm}
-      isConfirmDisabled={isLoadingPublish}
+      hasFooter={false}
+      shouldCloseOnOverlayClick={!isLoadingPublish}
+      // intent={isConflicted ? "danger" : "success"}
+      // hasFooter={step === 2}
+      // hasCancel={
+      //   step === 2 && habilitation.status === StatusHabilitationEnum.ACCEPTED
+      // }
+      // confirmLabel={
+      //   habilitation.status === StatusHabilitationEnum.ACCEPTED
+      //     ? isConflicted
+      //       ? "Forcer la publication"
+      //       : "Publier"
+      //     : "Fermer"
+      // }
+      // cancelLabel="Fermer"
+      // onConfirm={handleConfirm}
+      // isConfirmDisabled={isLoadingPublish}
       onCloseComplete={handleClose}
     >
       <Pane
@@ -240,22 +229,26 @@ function HabilitationProcess({
           />
         )}
 
-        {step === 2 && habilitation.status === "accepted" && (
-          <AcceptedDialog
-            {...habilitation}
-            baseLocaleId={baseLocale.id}
-            commune={commune}
-            isConflicted={isConflicted}
-            flagURL={flagURL}
-          />
-        )}
+        {step === 2 &&
+          habilitation.status === HabilitationDTO.status.ACCEPTED && (
+            <PublishBalStep
+              baseLocale={baseLocale}
+              habilitation={habilitation}
+              commune={commune}
+              handlePublication={handleConfirm}
+              isLoadingPublish={isLoadingPublish}
+              flagURL={flagURL}
+              handleClose={handleClose}
+            />
+          )}
 
-        {step === 2 && habilitation.status === "rejected" && (
-          <RejectedDialog
-            communeName={commune.nom}
-            strategyType={habilitation.strategy.type}
-          />
-        )}
+        {step === 2 &&
+          habilitation.status === HabilitationDTO.status.REJECTED && (
+            <RejectedDialog
+              communeName={commune.nom}
+              strategyType={habilitation.strategy.type}
+            />
+          )}
         {isLoading && (
           <Pane
             marginTop={16}
