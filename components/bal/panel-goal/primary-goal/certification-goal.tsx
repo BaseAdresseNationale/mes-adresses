@@ -84,15 +84,6 @@ function CertificationGoal({ baseLocale }: CertificationGoalProps) {
               officielle qui ressort du Conseil municipal, soit avérée.
             </Text>
           </Pane>
-          <Heading paddingY={15}>
-            Toutes les adresses de votre commune ont été vérifiées ?
-          </Heading>
-          <Pane>
-            <Text>
-              Si vous avez déjà procédé à la vérification de toutes les adresses
-              de votre commune, cliquez sur le bouton «certifier mes adresses».
-            </Text>
-          </Pane>
         </Pane>
       </AccordionCard>
     </Pane>

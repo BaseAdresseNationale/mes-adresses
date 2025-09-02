@@ -31,7 +31,11 @@ function QualityGoal({}: QualityGoalProps) {
               <StarRating value={3} />
               <Pane display="flex" justifyContent="center" alignItems="center">
                 <Counter label="Erreurs détectées" value={1} color="red" />
-                <Counter label="Warnings détectés" value={2} color="#orange" />
+                <Counter
+                  label="Avertissements détectés"
+                  value={2}
+                  color="#orange"
+                />
               </Pane>
             </Pane>
           </Pane>
@@ -49,7 +53,7 @@ function QualityGoal({}: QualityGoalProps) {
             <br />
             <br />
             Les alertes sont des indicateurs de qualité de votre Base Adresse
-            Locale. Elles sont classées en erreurs et warnings.
+            Locale. Elles sont classées en erreurs et avertissements.
             <br />
             Pour garantir la qualité de votre Base Adresse Locale, il est
             important de corriger les alertes.
@@ -58,8 +62,8 @@ function QualityGoal({}: QualityGoalProps) {
             Les erreurs sont des alertes qui doivent être corrigées avant la
             publication de votre Base Adresse Locale.
             <br />
-            Les warnings sont des alertes qui peuvent être corrigées après la
-            publication de votre Base Adresse Locale.
+            Les avertissements sont des alertes qui peuvent être corrigées après
+            la publication de votre Base Adresse Locale.
           </Text>
         </Pane>
       </AccordionCard>
