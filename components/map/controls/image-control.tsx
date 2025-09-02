@@ -46,6 +46,8 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
     useState<boolean>(true);
   const [poiLayerIsDisplayed, setPoiLayerIsDisplayed] = useState<boolean>(true);
 
+  const tileLayerEnabled = !TilesLayerMode.HIDDEN;
+
   useEffect(() => {
     if (map) {
       if (map && map.getLayer(VOIE_LABEL)) {
@@ -201,15 +203,17 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
           display="flex"
           flexDirection="column"
         >
-          <LayerShowHideZoomControl
-            title="Numéros"
-            isDiplayed={adresseLayerIsDisplayed}
-            setIsDiplayed={setAdresseLayerIsDisplayed}
-            zoom={adresseLayerZoom}
-            setZoom={setAdresseLayerZoom}
-          />
+          {tileLayerEnabled && (
+            <LayerShowHideZoomControl
+              title="Numéros"
+              isDiplayed={adresseLayerIsDisplayed}
+              setIsDiplayed={setAdresseLayerIsDisplayed}
+              zoom={adresseLayerZoom}
+              setZoom={setAdresseLayerZoom}
+            />
+          )}
 
-          {tileLayersMode !== TilesLayerMode.TOPONYME && (
+          {tileLayerEnabled && tileLayersMode !== TilesLayerMode.TOPONYME && (
             <LayerShowHideZoomControl
               title="Voies"
               isDiplayed={voieLayerIsDisplayed}
@@ -219,7 +223,7 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
             />
           )}
 
-          {tileLayersMode === TilesLayerMode.TOPONYME && (
+          {tileLayerEnabled && tileLayersMode !== TilesLayerMode.VOIE && (
             <LayerShowHideZoomControl
               title="Toponymes"
               isDiplayed={toponymeLayerIsDisplayed}

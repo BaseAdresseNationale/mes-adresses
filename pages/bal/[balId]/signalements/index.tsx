@@ -36,6 +36,7 @@ import {
 } from "@/lib/openapi-api-bal";
 import BalDataContext from "@/contexts/bal-data";
 import { PurgeExpiredSignalementsDialog } from "@/components/signalement/purge-expired-signalements-dialog";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 const fuseOptions = {
   keys: ["label"],
@@ -72,7 +73,7 @@ function SignalementsPage({
   const router = useRouter();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const { showTilesLayers, map, isStyleLoaded } = useContext(MapContext);
+  const { map, setTileLayersMode } = useContext(MapContext);
   const [activeTabIndex, setActiveTabIndex] = useState(
     router.query.tab === "archived" ? 1 : 0
   );
@@ -91,11 +92,12 @@ function SignalementsPage({
 
   useEffect(() => {
     setBreadcrumbs(<Text aria-current="page">Signalements</Text>);
+    setTileLayersMode(TilesLayerMode.HIDDEN);
 
     return () => {
       setBreadcrumbs(null);
     };
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, setTileLayersMode]);
 
   // Fly to commune
   useEffect(() => {
@@ -116,16 +118,6 @@ function SignalementsPage({
       });
     }
   }, [commune.bbox, map]);
-
-  useEffect(() => {
-    if (isStyleLoaded) {
-      showTilesLayers(false);
-    }
-
-    return () => {
-      showTilesLayers(true);
-    };
-  }, [showTilesLayers, isStyleLoaded]);
 
   useEffect(() => {
     const updateSignalements = async () => {

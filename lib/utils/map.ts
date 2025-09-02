@@ -2,6 +2,7 @@ import { LAYERS_SOURCE } from "@/components/map/layers/tiles";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { MapGeoJSONFeature } from "maplibre-gl";
 import { NextRouter } from "next/router";
+import type { Map as MaplibreMap, FilterSpecification } from "maplibre-gl";
 
 export function handleSelectToponyme(
   feature: MapGeoJSONFeature,
@@ -33,5 +34,15 @@ export function handleSelectVoie(
 
   if (idVoie) {
     router.push(`/bal/${balId}/${TabsEnum.VOIES}/${idVoie}/numeros`);
+  }
+}
+
+export function setMapFilter(
+  map: MaplibreMap,
+  layerId: string,
+  filter: FilterSpecification
+) {
+  if (map.getLayer(layerId)) {
+    map.setFilter(layerId, filter);
   }
 }

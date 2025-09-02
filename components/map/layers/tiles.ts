@@ -39,6 +39,7 @@ export enum TilesLayerMode {
   CERTIFICATION = "certification",
   VOIE = "voie",
   TOPONYME = "toponyme",
+  HIDDEN = "hidden",
 }
 
 const voieLabelLayer = {
@@ -202,19 +203,6 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
   switch (mode) {
     case TilesLayerMode.CERTIFICATION:
       return {
-        VOIE_LABEL: {
-          ...voieLabelLayer,
-          paint: {
-            ...voieLabelLayer.paint,
-            "text-color": "#000",
-            "text-opacity": [
-              "case",
-              ["boolean", ["feature-state", "hover"], false],
-              1,
-              0.7,
-            ],
-          },
-        },
         NUMEROS_LABEL: {
           ...numerosLabelLayer,
           paint: {
@@ -241,6 +229,39 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
             ],
           },
         },
+        VOIE_LABEL: {
+          ...voieLabelLayer,
+          paint: {
+            ...voieLabelLayer.paint,
+            "text-color": "#000",
+            "text-opacity": [
+              "case",
+              ["boolean", ["feature-state", "hover"], false],
+              1,
+              0.7,
+            ],
+          },
+        },
+        TOPONYME_LABEL: {
+          ...toponymeLabelLayer,
+          paint: {
+            ...toponymeLabelLayer.paint,
+            "text-color": "#000",
+            "text-opacity": [
+              "case",
+              ["boolean", ["feature-state", "hover"], false],
+              1,
+              0.7,
+            ],
+          },
+        },
+      };
+    case TilesLayerMode.VOIE:
+      return {
+        NUMEROS_POINT: numerosPointLayer,
+        NUMEROS_LABEL: numerosLabelLayer,
+        VOIE_TRACE_LINE: voieTraceLineLayer,
+        VOIE_LABEL: voieLabelLayer,
       };
     case TilesLayerMode.TOPONYME:
       return {
@@ -264,11 +285,6 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
         TOPONYME_LABEL: toponymeLabelLayer,
       };
     default:
-      return {
-        VOIE_LABEL: voieLabelLayer,
-        VOIE_TRACE_LINE: voieTraceLineLayer,
-        NUMEROS_POINT: numerosPointLayer,
-        NUMEROS_LABEL: numerosLabelLayer,
-      };
+      return {};
   }
 };

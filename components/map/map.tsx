@@ -33,7 +33,6 @@ import {
   NUMEROS_LABEL,
   LAYERS_SOURCE,
   TOPONYME_LABEL,
-  TilesLayerMode,
 } from "@/components/map/layers/tiles";
 import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
@@ -50,7 +49,11 @@ import useHovered from "@/components/map/hooks/hovered";
 import { Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
-import { handleSelectToponyme, handleSelectVoie } from "@/lib/utils/map";
+import {
+  handleSelectToponyme,
+  handleSelectVoie,
+  setMapFilter,
+} from "@/lib/utils/map";
 
 const LAYERS = [...cadastreLayers];
 
@@ -145,33 +148,33 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       // Filter positions of voie or toponyme
       if (voie) {
         if (drawEnabled && modeId !== "drawPolygon") {
-          map.setFilter(VOIE_TRACE_LINE, ["!=", ["get", "id"], voie.id]);
+          setMapFilter(map, VOIE_TRACE_LINE, ["!=", ["get", "id"], voie.id]);
         } else {
-          map.setFilter(VOIE_TRACE_LINE, null);
+          setMapFilter(map, VOIE_TRACE_LINE, null);
         }
 
-        map.setFilter(NUMEROS_POINT, ["!=", ["get", "idVoie"], voie.id]);
-        map.setFilter(NUMEROS_LABEL, ["!=", ["get", "idVoie"], voie.id]);
-        map.setFilter(VOIE_LABEL, ["!=", ["get", "id"], voie.id]);
+        setMapFilter(map, NUMEROS_POINT, ["!=", ["get", "idVoie"], voie.id]);
+        setMapFilter(map, NUMEROS_LABEL, ["!=", ["get", "idVoie"], voie.id]);
+        setMapFilter(map, VOIE_LABEL, ["!=", ["get", "id"], voie.id]);
       } else if (toponyme) {
-        map.setFilter(NUMEROS_POINT, [
+        setMapFilter(map, NUMEROS_POINT, [
           "!=",
           ["get", "idToponyme"],
           toponyme.id,
         ]);
-        map.setFilter(NUMEROS_LABEL, [
+        setMapFilter(map, NUMEROS_LABEL, [
           "!=",
           ["get", "idToponyme"],
           toponyme.id,
         ]);
-        map.setFilter(TOPONYME_LABEL, ["!=", ["get", "id"], toponyme.id]);
+        setMapFilter(map, TOPONYME_LABEL, ["!=", ["get", "id"], toponyme.id]);
       } else {
         // Remove filter
-        map.setFilter(VOIE_TRACE_LINE, null);
-        map.setFilter(NUMEROS_POINT, null);
-        map.setFilter(NUMEROS_LABEL, null);
-        map.setFilter(VOIE_LABEL, null);
-        map.setFilter(TOPONYME_LABEL, null);
+        setMapFilter(map, VOIE_TRACE_LINE, null);
+        setMapFilter(map, NUMEROS_POINT, null);
+        setMapFilter(map, NUMEROS_LABEL, null);
+        setMapFilter(map, VOIE_LABEL, null);
+        setMapFilter(map, TOPONYME_LABEL, null);
       }
     }
   }, [map, voie, toponyme, isTileSourceLoaded, drawEnabled]);
@@ -226,11 +229,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       if (parcelles.length > 0) {
         handleParcelles(parcelles.map(({ properties }) => properties.id));
       } else if (feature && !isEditing) {
-        if (tileLayersMode === TilesLayerMode.TOPONYME) {
-          handleSelectToponyme(feature, router, balId as string);
-        } else {
-          handleSelectVoie(feature, router, balId as string);
-        }
+        handleSelectVoie(feature, router, balId as string);
+        handleSelectToponyme(feature, router, balId as string);
       }
 
       setIsContextMenuDisplayed(null);

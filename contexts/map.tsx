@@ -28,7 +28,6 @@ interface MapContextType {
   setIsCadastreDisplayed: React.Dispatch<React.SetStateAction<boolean>>;
   balTilesUrl: string;
   isMapLoaded: boolean;
-  showTilesLayers: (show?: boolean) => void;
   tileLayersMode: TilesLayerMode;
   setTileLayersMode: React.Dispatch<React.SetStateAction<TilesLayerMode>>;
 }
@@ -107,26 +106,6 @@ export function MapContextProvider(props: ChildrenProps) {
     }
   }, []);
 
-  const showTilesLayers = useCallback(
-    (show = true) => {
-      if (map && isMapLoaded) {
-        const tilesLayers = map
-          .getStyle()
-          ?.layers.filter((layer) => (layer as any).source === SOURCE_TILE_ID)
-          .map((layer) => layer.id);
-
-        tilesLayers?.forEach((layerId) => {
-          map.setLayoutProperty(
-            layerId,
-            "visibility",
-            show ? "visible" : "none"
-          );
-        });
-      }
-    },
-    [map, isMapLoaded]
-  );
-
   const value = useMemo(
     () => ({
       map,
@@ -144,7 +123,6 @@ export function MapContextProvider(props: ChildrenProps) {
       setIsCadastreDisplayed,
       balTilesUrl,
       isMapLoaded,
-      showTilesLayers,
       tileLayersMode,
       setTileLayersMode,
     }),
@@ -159,7 +137,6 @@ export function MapContextProvider(props: ChildrenProps) {
       isCadastreDisplayed,
       balTilesUrl,
       isMapLoaded,
-      showTilesLayers,
       tileLayersMode,
       setTileLayersMode,
     ]
