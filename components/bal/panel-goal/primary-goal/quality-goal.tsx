@@ -25,9 +25,7 @@ function QualityGoal({}: QualityGoalProps) {
                 title="Publication"
                 completed={isAllCertified}
               />
-              <Heading color={isAllCertified && "#317159"}>
-                Certification
-              </Heading>
+              <Heading color={isAllCertified && "#317159"}>Qualité</Heading>
             </Pane>
             <Pane width="100%">
               <StarRating value={3} />
