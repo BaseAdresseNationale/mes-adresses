@@ -65,6 +65,7 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
         backgroundColor={colorCard}
         isActive={isActive}
         onClick={() => setIsActive(!isActive)}
+        caretPosition="start"
       >
         <Pane padding={8}>
           {baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (

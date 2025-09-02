@@ -1,4 +1,4 @@
-import { Heading, Pane, Text } from "evergreen-ui";
+import { Heading, Pane, Strong, Text } from "evergreen-ui";
 
 interface CounterProps {
   label: string;
@@ -10,16 +10,16 @@ function Counter({ label, value, color }: CounterProps) {
   return (
     <Pane
       display="flex"
-      flexDirection="column"
       alignItems="center"
+      justifyContent="center"
       paddingTop={8}
       margin={5}
       width="100%"
     >
-      <Heading size={600} color={color}>
-        {value}
-      </Heading>
-      <Text fontSize=".9em" marginTop={4}>
+      <Text fontSize=".9em" color={color} textAlign="center">
+        <Strong size={600} color={color}>
+          {value}
+        </Strong>{" "}
         {label}
       </Text>
     </Pane>
