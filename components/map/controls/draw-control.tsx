@@ -18,7 +18,7 @@ const draw = new MapboxDraw({
         "line-join": "round",
       },
       paint: {
-        "line-color": defaultTheme.colors.blue500,
+        "line-color": defaultTheme.colors.orange500,
         "line-dasharray": [0.2, 2],
         "line-width": 4,
       },
@@ -29,8 +29,8 @@ const draw = new MapboxDraw({
       type: "fill",
       filter: ["all", ["==", "$type", "Polygon"]],
       paint: {
-        "fill-color": defaultTheme.colors.blue500,
-        "fill-outline-color": defaultTheme.colors.blue500,
+        "fill-color": defaultTheme.colors.orange500,
+        "fill-outline-color": defaultTheme.colors.orange500,
         "fill-opacity": 0.1,
       },
     },
@@ -41,7 +41,7 @@ const draw = new MapboxDraw({
       filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
       paint: {
         "circle-radius": 5,
-        "circle-color": defaultTheme.colors.blue500,
+        "circle-color": defaultTheme.colors.orange500,
       },
     },
     // polygon outline stroke
@@ -55,7 +55,7 @@ const draw = new MapboxDraw({
         "line-join": "round",
       },
       paint: {
-        "line-color": defaultTheme.colors.blue500,
+        "line-color": defaultTheme.colors.orange500,
         "line-dasharray": [0.2, 2],
         "line-width": 4,
       },
@@ -77,7 +77,7 @@ const draw = new MapboxDraw({
       filter: ["all", ["==", "meta", "vertex"], ["==", "$type", "Point"]],
       paint: {
         "circle-radius": 8,
-        "circle-color": defaultTheme.colors.blue500,
+        "circle-color": defaultTheme.colors.orange500,
       },
     },
   ],
