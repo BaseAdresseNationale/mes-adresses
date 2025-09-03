@@ -38,7 +38,7 @@ export function DrawContextProvider(props: ChildrenProps) {
   const lineLength = useMemo(() => {
     if (!data) return 0;
 
-    return length(data, { units: "kilometers" });
+    return length(data, { units: "meters" });
   }, [data]);
 
   const isRulerEnabled = modeInterne === DrawMode.RULER;
@@ -90,7 +90,7 @@ export function DrawContextProvider(props: ChildrenProps) {
           setModeId("drawLineString");
           setHint(
             lineLength > 0
-              ? `Longueur : ${lineLength.toFixed(2)} km.`
+              ? `Longueur : ${Math.round(lineLength)} m.`
               : "Cliquez sur la carte pour mesurer une distance. Double-cliquez pour terminer."
           );
           break;
