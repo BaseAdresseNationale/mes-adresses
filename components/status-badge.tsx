@@ -6,12 +6,11 @@ import { BaseLocale, BaseLocaleSync } from "@/lib/openapi-api-bal";
 interface StatusBadgeProps {
   status: BaseLocale.status;
   sync: Partial<BaseLocaleSync>;
-  isHabilitationValid?: boolean;
 }
 
-function StatusBadge({ status, sync, isHabilitationValid }: StatusBadgeProps) {
+function StatusBadge({ status, sync }: StatusBadgeProps) {
   const { color, label, content, icon, textColor } =
-    computeStatus(status, sync, isHabilitationValid) || {};
+    computeStatus(status, sync) || {};
 
   return (
     <Tooltip position={Position.BOTTOM_RIGHT} content={content}>

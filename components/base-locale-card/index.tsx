@@ -36,7 +36,6 @@ interface BaseLocaleCardProps {
 }
 
 function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
-  const [isHabilitationValid, setIsHabilitationValid] = useState(false);
   const [pendingSignalementsCount, setPendingSignalementsCount] = useState(0);
   const [flag, setFlag] = useState<string | null>(null);
   const {
@@ -62,17 +61,6 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
       }
     };
 
-    const fetchIsHabilitationValid = async () => {
-      try {
-        const isValid: boolean = await HabilitationService.findIsValid(
-          baseLocale.id
-        );
-        setIsHabilitationValid(isValid);
-      } catch {
-        setIsHabilitationValid(false);
-      }
-    };
-
     const fetchPendingSignalementsCount = async () => {
       try {
         const paginatedSignalements = await SignalementsService.getSignalements(
@@ -91,7 +79,6 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
     };
 
     fetchCommuneFlag();
-    fetchIsHabilitationValid();
     if (canFetchSignalements(baseLocale, baseLocale.token)) {
       fetchPendingSignalementsCount();
     }
@@ -115,28 +102,8 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
       margin={12}
     >
       <Pane position="absolute" top={16} left={16} height={20} elevation={2}>
-        <StatusBadge
-          status={status}
-          sync={sync}
-          isHabilitationValid={isHabilitationValid}
-        />
+        <StatusBadge status={status} sync={sync} />
       </Pane>
-      {isHabilitationValid && communeNom && (
-        <Pane
-          position="absolute"
-          top={10}
-          right={10}
-          elevation={2}
-          padding={5}
-          borderRadius="50%"
-          backgroundColor="white"
-        >
-          <HabilitationTag
-            communeName={communeNom}
-            isHabilitationValid={isHabilitationValid}
-          />
-        </Pane>
-      )}
       <Pane
         height={100}
         flexShrink={0}
