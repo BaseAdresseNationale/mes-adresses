@@ -1,0 +1,54 @@
+.achievement-badge {
+  --color-gradient-from: #aaa;
+  --color-gradient-to: #ddd;
+  --color: #ccc;
+  --color-contrast: #222;
+
+  position: relative;
+  font-size: 1em;
+  display: inline-block;
+  top: 0;
+  background: linear-gradient(to bottom right, #37c66c 0%, #98d2a6 100%);
+  color: #34eb7b;
+
+  margin: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+}
+
+.disabled {
+  filter: opacity(0.5) grayscale(1);
+}
+
+.green {
+  --color-gradient-from: #46fd89;
+  --color-gradient-to: #b8fec9;
+  --color: #34eb7b;
+  --color-contrast: #18753c;
+}
+
+.achievement-badge:before,
+.achievement-badge:after {
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  background: inherit;
+  content: "";
+  inset: 0;
+  margin: auto;
+}
+
+.achievement-badge:before {
+  transform: rotate(60deg);
+}
+
+.achievement-badge:after {
+  transform: rotate(-60deg);
+}
+
+.achievement-badge > img {
+  position: absolute;
+  z-index: 10;
+}

@@ -13,6 +13,7 @@ interface AccordionCardProps {
   isActive?: boolean;
   onClick?: () => void;
   children: React.ReactNode;
+  caretPosition?: "center" | "start";
 }
 
 export function AccordionCard({
@@ -21,6 +22,7 @@ export function AccordionCard({
   isActive,
   onClick,
   children,
+  caretPosition = "center",
 }: AccordionCardProps) {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [hover, setHover] = useState(false);
@@ -40,14 +42,19 @@ export function AccordionCard({
       <Pane
         display="flex"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={caretPosition}
         userSelect="none"
         {...(onClick ? { cursor: "pointer" } : {})}
       >
-        <Heading is="h3" marginY={8} display="flex">
+        <Heading is="h3" marginY={8} display="flex" width="100%">
           {title}
         </Heading>
-        {onClick && <Icon icon={isActive ? CaretDownIcon : CaretRightIcon} />}
+        {onClick && (
+          <Icon
+            icon={isActive ? CaretDownIcon : CaretRightIcon}
+            paddingTop={caretPosition === "start" ? 16 : 0}
+          />
+        )}
       </Pane>
       <Pane
         overflow="hidden"
