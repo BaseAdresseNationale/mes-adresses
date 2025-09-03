@@ -33,6 +33,7 @@ import {
   NUMEROS_LABEL,
   LAYERS_SOURCE,
   TOPONYME_LABEL,
+  TilesLayerMode,
 } from "@/components/map/layers/tiles";
 import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
@@ -213,8 +214,11 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       if (parcelles.length > 0) {
         handleParcelles(parcelles.map(({ properties }) => properties.id));
       } else if (feature && !isEditing) {
-        handleSelectVoie(feature, router, balId as string);
-        handleSelectToponyme(feature, router, balId as string);
+        if (tileLayersMode === TilesLayerMode.TOPONYME) {
+          handleSelectToponyme(feature, router, balId as string);
+        } else {
+          handleSelectVoie(feature, router, balId as string);
+        }
       }
 
       setIsContextMenuDisplayed(null);
