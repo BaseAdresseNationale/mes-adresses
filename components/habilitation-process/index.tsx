@@ -234,11 +234,9 @@ function HabilitationProcess({
           habilitation.status === HabilitationDTO.status.ACCEPTED && (
             <PublishBalStep
               baseLocale={baseLocale}
-              habilitation={habilitation}
               commune={commune}
               handlePublication={handleConfirm}
               isLoadingPublish={isLoadingPublish}
-              flagURL={flagURL}
               handleClose={handleClose}
             />
           )}

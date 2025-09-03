@@ -10,32 +10,23 @@ import {
   Button,
   Image,
 } from "evergreen-ui";
-import {
-  BaseLocale,
-  HabilitationDTO,
-  StrategyDTO,
-} from "@/lib/openapi-api-bal";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import { ApiDepotService } from "@/lib/api-depot/index";
-import TextWrapper from "../text-wrapper";
 
 interface PublishBalStepProps {
   baseLocale: BaseLocale;
-  habilitation: HabilitationDTO;
   commune: CommuneType;
   handlePublication: () => void;
   isLoadingPublish: boolean;
-  flagURL: string;
   handleClose: () => void;
 }
 
 function PublishBalStep({
   baseLocale,
-  habilitation,
   commune,
   handlePublication,
   isLoadingPublish,
-  flagURL,
   handleClose,
 }: PublishBalStepProps) {
   const [isConflicted, setIsConflicted] = useState(false);
@@ -50,7 +41,6 @@ function PublishBalStep({
     try {
       const revisions = await ApiDepotService.getRevisions(commune.code);
       const conflicted = revisions.length > 0;
-      // const conflicted = false;
       setIsConflicted(conflicted);
       if (!conflicted) {
         handlePublication();
