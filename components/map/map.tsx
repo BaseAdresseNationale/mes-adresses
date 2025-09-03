@@ -145,29 +145,13 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const updatePositionsLayer = useCallback(() => {
     if (map && isTileSourceLoaded) {
-      // Filter positions of voie or toponyme
       if (voie) {
-        if (drawEnabled && modeId !== "drawPolygon") {
+        if (drawEnabled) {
+          setMapFilter(map, NUMEROS_POINT, ["==", ["get", "idVoie"], voie.id]);
+          setMapFilter(map, NUMEROS_LABEL, ["==", ["get", "idVoie"], voie.id]);
+          setMapFilter(map, VOIE_LABEL, ["==", ["get", "id"], voie.id]);
           setMapFilter(map, VOIE_TRACE_LINE, ["!=", ["get", "id"], voie.id]);
-        } else {
-          setMapFilter(map, VOIE_TRACE_LINE, null);
         }
-
-        setMapFilter(map, NUMEROS_POINT, ["!=", ["get", "idVoie"], voie.id]);
-        setMapFilter(map, NUMEROS_LABEL, ["!=", ["get", "idVoie"], voie.id]);
-        setMapFilter(map, VOIE_LABEL, ["!=", ["get", "id"], voie.id]);
-      } else if (toponyme) {
-        setMapFilter(map, NUMEROS_POINT, [
-          "!=",
-          ["get", "idToponyme"],
-          toponyme.id,
-        ]);
-        setMapFilter(map, NUMEROS_LABEL, [
-          "!=",
-          ["get", "idToponyme"],
-          toponyme.id,
-        ]);
-        setMapFilter(map, TOPONYME_LABEL, ["!=", ["get", "id"], toponyme.id]);
       } else {
         // Remove filter
         setMapFilter(map, VOIE_TRACE_LINE, null);
@@ -177,7 +161,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         setMapFilter(map, TOPONYME_LABEL, null);
       }
     }
-  }, [map, voie, toponyme, isTileSourceLoaded, drawEnabled]);
+  }, [map, voie, isTileSourceLoaded, drawEnabled]);
 
   const interactiveLayerIds = useMemo(() => {
     const layers = [];
