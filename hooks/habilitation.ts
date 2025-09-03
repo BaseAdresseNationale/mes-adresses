@@ -17,7 +17,6 @@ import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 interface UseHabilitationType {
   habilitation: HabilitationDTO | null;
   reloadHabilitation: () => Promise<void>;
-  isValid: boolean;
   isLoading: boolean;
   isHabilitationProcessDisplayed: boolean;
   setIsHabilitationProcessDisplayed: Dispatch<SetStateAction<boolean>>;
@@ -33,7 +32,6 @@ export default function useHabilitation(
   );
   const [isHabilitationProcessDisplayed, setIsHabilitationProcessDisplayed] =
     useState<boolean>(query[PRO_CONNECT_QUERY_PARAM] === "1");
-  const [isValid, setIsValid] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const reloadHabilitation = useCallback(async () => {
@@ -43,14 +41,8 @@ export default function useHabilitation(
           await HabilitationService.findHabilitation(baseLocale.id);
         setHabilitation(habilitation);
         // SET IF HABILITATION IS VALID
-        if (habilitation) {
-          setIsValid(habilitation.status === HabilitationDTO.status.ACCEPTED);
-        } else {
-          setIsValid(false);
-        }
       } catch {
         setHabilitation(null);
-        setIsValid(false);
       }
     }
   }, [baseLocale.id, token]);
@@ -68,7 +60,6 @@ export default function useHabilitation(
   return {
     habilitation,
     reloadHabilitation,
-    isValid,
     isLoading,
     isHabilitationProcessDisplayed,
     setIsHabilitationProcessDisplayed,

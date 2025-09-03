@@ -25,7 +25,6 @@ function SubHeader({ commune }: SubHeaderProps) {
     baseLocale,
     habilitation,
     reloadBaseLocale,
-    isHabilitationValid,
     voie,
     toponyme,
     isRefrehSyncStat,
