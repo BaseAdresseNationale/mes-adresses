@@ -46,7 +46,7 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
     useState<boolean>(true);
   const [poiLayerIsDisplayed, setPoiLayerIsDisplayed] = useState<boolean>(true);
 
-  const tileLayerEnabled = !TilesLayerMode.HIDDEN;
+  const tileLayerEnabled = tileLayersMode !== TilesLayerMode.HIDDEN;
 
   useEffect(() => {
     if (map) {

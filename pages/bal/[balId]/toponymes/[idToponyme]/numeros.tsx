@@ -62,8 +62,14 @@ function ToponymeNumerosListPage({
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
   );
-  const { reloadNumeros, isEditing, setIsEditing, numeros, commune } =
-    useContext(BalDataContext);
+  const {
+    reloadNumeros,
+    isEditing,
+    setIsEditing,
+    numeros,
+    commune,
+    reloadToponymes,
+  } = useContext(BalDataContext);
   const { setTileLayersMode } = useContext(MapContext);
 
   useEffect(() => {
@@ -83,6 +89,7 @@ function ToponymeNumerosListPage({
       };
       await BasesLocalesService.updateNumeros(baseLocale.id, payload);
       await reloadNumeros();
+      await reloadToponymes();
       pushToast({
         title: "Les numéros ont bien été modifiés",
         intent: "success",

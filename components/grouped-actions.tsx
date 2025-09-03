@@ -63,7 +63,8 @@ function GroupedActions({
     selectedNumerosIds.includes(id)
   );
 
-  const { voies, toponymes, baseLocale } = useContext(BalDataContext);
+  const { voies, toponymes, baseLocale, reloadVoies, reloadToponymes } =
+    useContext(BalDataContext);
 
   const [isShown, setIsShown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -172,6 +173,8 @@ function GroupedActions({
         numerosIds: selectedNumerosIds,
         changes,
       });
+      await reloadVoies();
+      await reloadToponymes();
 
       setIsLoading(false);
       setIsShown(false);
@@ -193,6 +196,8 @@ function GroupedActions({
       selectedNumerosIds,
       idVoie,
       reloadTiles,
+      reloadVoies,
+      reloadToponymes,
     ]
   );
 
