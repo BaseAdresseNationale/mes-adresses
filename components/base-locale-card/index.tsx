@@ -15,12 +15,8 @@ import {
 } from "evergreen-ui";
 import NextLink from "next/link";
 import StatusBadge from "@/components/status-badge";
-import {
-  ExtendedBaseLocaleDTO,
-  HabilitationService,
-} from "@/lib/openapi-api-bal";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import CertificationCount from "../certification-count";
-import HabilitationTag from "../habilitation-tag";
 import { canFetchSignalements } from "@/lib/utils/signalement";
 import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
