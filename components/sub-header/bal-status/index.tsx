@@ -8,7 +8,6 @@ import RefreshSyncBadge from "@/components/sub-header/bal-status/refresh-sync-ba
 import {
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
-  BaseLocaleSync,
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 

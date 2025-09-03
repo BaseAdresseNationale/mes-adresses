@@ -114,7 +114,6 @@ function SubHeader({ commune }: SubHeaderProps) {
                 baseLocale={baseLocale}
                 commune={commune}
                 token={token}
-                isHabilitationValid={isHabilitationValid}
                 isRefrehSyncStat={isRefrehSyncStat}
                 handlePublication={handlePublication}
                 handleHabilitation={handleShowHabilitationProcess}
