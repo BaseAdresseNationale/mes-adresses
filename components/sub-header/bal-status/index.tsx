@@ -16,7 +16,6 @@ interface BALStatusProps {
   baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
   token: string;
-  isHabilitationValid: boolean;
   isRefrehSyncStat: boolean;
   handlePublication: () => Promise<any>;
   handleHabilitation: () => Promise<void>;
@@ -27,7 +26,6 @@ function BALStatus({
   baseLocale,
   commune,
   token = null,
-  isHabilitationValid,
   isRefrehSyncStat,
   handlePublication,
   handleHabilitation,
@@ -75,16 +73,12 @@ function BALStatus({
         {isRefrehSyncStat ? (
           <RefreshSyncBadge />
         ) : (
-          <StatusBadge
-            status={baseLocale.status}
-            sync={baseLocale.sync}
-            isHabilitationValid={isHabilitationValid}
-          />
+          <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
         )}
       </Pane>
 
       {token &&
-        (baseLocale.sync && isHabilitationValid ? (
+        (baseLocale.sync ? (
           <BANSync
             baseLocale={baseLocale}
             commune={commune}
@@ -92,34 +86,18 @@ function BALStatus({
             togglePause={
               baseLocale.sync.isPaused ? handleResumeSync : handlePause
             }
-            isHabilitationValid={isHabilitationValid}
           />
         ) : (
-          <>
-            {(baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED ||
-              baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED) &&
-              baseLocale.sync?.status !== BaseLocaleSync.status.SYNCED &&
-              !isHabilitationValid && (
-                <Button
-                  marginRight={8}
-                  height={24}
-                  appearance="primary"
-                  onClick={handleShowHabilitationProcess}
-                >
-                  Habiliter la BAL
-                </Button>
-              )}
-            {baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (
-              <Button
-                marginRight={8}
-                height={24}
-                appearance="primary"
-                onClick={handleHabilitation}
-              >
-                Publier
-              </Button>
-            )}
-          </>
+          baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (
+            <Button
+              marginRight={8}
+              height={24}
+              appearance="primary"
+              onClick={handleHabilitation}
+            >
+              Publier
+            </Button>
+          )
         ))}
     </>
   );
