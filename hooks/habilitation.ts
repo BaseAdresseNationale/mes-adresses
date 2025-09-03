@@ -44,9 +44,7 @@ export default function useHabilitation(
         setHabilitation(habilitation);
         // SET IF HABILITATION IS VALID
         if (habilitation) {
-          const isAccepted = habilitation.status === "accepted";
-          const isExpired = new Date(habilitation.expiresAt) < new Date();
-          setIsValid(isAccepted && !isExpired);
+          setIsValid(habilitation.status === HabilitationDTO.status.ACCEPTED);
         } else {
           setIsValid(false);
         }
