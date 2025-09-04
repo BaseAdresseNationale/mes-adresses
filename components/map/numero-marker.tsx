@@ -47,7 +47,7 @@ function NumeroMarker({
   return (
     <Marker
       anchor="left"
-      offset={[-4, 14]}
+      offset={[-5, 6]}
       longitude={coordinates[0]}
       latitude={coordinates[1]}
     >

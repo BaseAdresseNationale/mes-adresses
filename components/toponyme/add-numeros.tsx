@@ -1,9 +1,7 @@
 import { useState, useCallback } from "react";
-import { Pane, Button, Text } from "evergreen-ui";
+import { Pane, Button } from "evergreen-ui";
 
 import Form from "@/components/form";
-import AddNumerosWithVoie from "./add-numeros-with-voie";
-import AddNumerosWithPolygon from "./add-numeros-with-polygon";
 import AddNumerosInput from "./add-numeros-input";
 
 interface AddNumerosProps {

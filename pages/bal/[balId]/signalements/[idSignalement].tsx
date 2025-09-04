@@ -9,7 +9,6 @@ import {
   Voie,
 } from "@/lib/openapi-api-bal";
 import {
-  ExistingVoie,
   NumeroChangesRequestedDTO,
   Signalement,
   SignalementsService,
@@ -32,6 +31,7 @@ import { SignalementViewer } from "@/components/signalement/signalement-viewer/s
 import SignalementContext from "@/contexts/signalement";
 import TokenContext from "@/contexts/token";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface SignalementPageProps {
   signalement: Signalement;
@@ -50,7 +50,7 @@ function SignalementPage({
   const { fetchPendingSignalements, updateOneSignalement } =
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const { setStyle } = useContext(MapContext);
+  const { setStyle, setTileLayersMode } = useContext(MapContext);
   const { refreshBALSync } = useContext(BalDataContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
@@ -60,6 +60,7 @@ function SignalementPage({
     signalement.existingLocation === null;
 
   useEffect(() => {
+    setTileLayersMode(TilesLayerMode.HIDDEN);
     setStyle("ortho");
     setBreadcrumbs(
       <>
@@ -75,7 +76,7 @@ function SignalementPage({
       setStyle(defaultStyle);
       setBreadcrumbs(null);
     };
-  }, [setStyle, setBreadcrumbs, baseLocale, signalement]);
+  }, [setStyle, setBreadcrumbs, baseLocale, signalement, setTileLayersMode]);
 
   // Mark the signalement as expired if the location is not found
   // and the signalement is still pending

@@ -10,6 +10,7 @@ interface PopupFeatureNumeroProps {
     };
     properties: {
       idVoie: string;
+      idToponyme?: string;
       numero: number;
       certifie: boolean;
       parcelles: string;
@@ -20,7 +21,7 @@ interface PopupFeatureNumeroProps {
 }
 
 function PopupFeatureNumero({ feature, commune }: PopupFeatureNumeroProps) {
-  const { voies } = useContext(BalDataContext);
+  const { voies, toponymes } = useContext(BalDataContext);
 
   const getParcelles = useMemo(() => {
     return feature.properties?.parcelles
@@ -32,11 +33,16 @@ function PopupFeatureNumero({ feature, commune }: PopupFeatureNumeroProps) {
     return voies.find((v) => v.id === feature.properties?.idVoie);
   }, [feature.properties?.idVoie, voies]);
 
+  const toponyme = useMemo(() => {
+    return toponymes.find((t) => t.id === feature.properties?.idToponyme);
+  }, [feature.properties?.idToponyme, toponymes]);
+
   return (
     <Pane display="flex" flexDirection="column">
       <Strong>
         {feature.properties.numero} {feature.properties.suffixe} {voie?.nom}
       </Strong>
+      {toponyme && <Text is="i">{toponyme.nom}</Text>}
       <Text marginBottom="10px">
         {commune.code} - {commune.nom}
       </Text>
