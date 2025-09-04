@@ -2,26 +2,27 @@ import LayoutContext from "@/contexts/layout";
 import { GeolocationIcon, IconButton } from "evergreen-ui";
 import { useContext, useState } from "react";
 import styles from "./geolocation-control.module.css";
+import type { Map as MaplibreMap } from "maplibre-gl";
 
 interface GeolocationControlProps {
-  map: any;
+  map: MaplibreMap;
 }
 
 function GeolocationControl({ map }: GeolocationControlProps) {
   const [isFlying, setIsFlying] = useState(false);
   const { pushToast } = useContext(LayoutContext);
 
-  const getLocation = () => {
+  const flyToCurrentPosition = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         map.flyTo({
           center: [position.coords.longitude, position.coords.latitude],
           zoom: 16,
         });
+        setIsFlying(true);
         map.once("moveend", () => {
           setIsFlying(false);
         });
-        setIsFlying(true);
       },
       (err) => {
         pushToast({
@@ -42,7 +43,7 @@ function GeolocationControl({ map }: GeolocationControlProps) {
     <IconButton
       className={styles.geolocationControl}
       title="Me géolocaliser"
-      onClick={getLocation}
+      onClick={flyToCurrentPosition}
       height={29}
       width={29}
       {...(isFlying
