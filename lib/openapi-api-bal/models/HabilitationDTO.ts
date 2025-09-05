@@ -14,7 +14,6 @@ export type HabilitationDTO = {
     status: HabilitationDTO.status;
     createdAt: string;
     updatedAt: string;
-    expiresAt: string;
 };
 
 export namespace HabilitationDTO {

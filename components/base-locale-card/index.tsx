@@ -15,12 +15,8 @@ import {
 } from "evergreen-ui";
 import NextLink from "next/link";
 import StatusBadge from "@/components/status-badge";
-import {
-  ExtendedBaseLocaleDTO,
-  HabilitationService,
-} from "@/lib/openapi-api-bal";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import CertificationCount from "../certification-count";
-import HabilitationTag from "../habilitation-tag";
 import { canFetchSignalements } from "@/lib/utils/signalement";
 import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
@@ -36,7 +32,6 @@ interface BaseLocaleCardProps {
 }
 
 function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
-  const [isHabilitationValid, setIsHabilitationValid] = useState(false);
   const [pendingSignalementsCount, setPendingSignalementsCount] = useState(0);
   const [flag, setFlag] = useState<string | null>(null);
   const {
@@ -62,17 +57,6 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
       }
     };
 
-    const fetchIsHabilitationValid = async () => {
-      try {
-        const isValid: boolean = await HabilitationService.findIsValid(
-          baseLocale.id
-        );
-        setIsHabilitationValid(isValid);
-      } catch {
-        setIsHabilitationValid(false);
-      }
-    };
-
     const fetchPendingSignalementsCount = async () => {
       try {
         const paginatedSignalements = await SignalementsService.getSignalements(
@@ -91,7 +75,6 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
     };
 
     fetchCommuneFlag();
-    fetchIsHabilitationValid();
     if (canFetchSignalements(baseLocale, baseLocale.token)) {
       fetchPendingSignalementsCount();
     }
@@ -115,28 +98,8 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
       margin={12}
     >
       <Pane position="absolute" top={16} left={16} height={20} elevation={2}>
-        <StatusBadge
-          status={status}
-          sync={sync}
-          isHabilitationValid={isHabilitationValid}
-        />
+        <StatusBadge status={status} sync={sync} />
       </Pane>
-      {isHabilitationValid && communeNom && (
-        <Pane
-          position="absolute"
-          top={10}
-          right={10}
-          elevation={2}
-          padding={5}
-          borderRadius="50%"
-          backgroundColor="white"
-        >
-          <HabilitationTag
-            communeName={communeNom}
-            isHabilitationValid={isHabilitationValid}
-          />
-        </Pane>
-      )}
       <Pane
         height={100}
         flexShrink={0}

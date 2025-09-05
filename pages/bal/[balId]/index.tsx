@@ -11,7 +11,6 @@ import {
   ExtentedToponymeDTO,
 } from "@/lib/openapi-api-bal";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
-import HabilitationInfos from "@/components/bal/habilitation-infos";
 import CertificationInfos from "@/components/bal/certification-infos";
 import { getCommuneFlag } from "@/lib/api-blason-commune";
 import CommuneNomsAltEditor from "@/components/bal/commune-noms-alt-editor";
@@ -63,9 +62,6 @@ function BALHomePage({ communeFlag, voies, toponymes }: BALHomePageProps) {
         }}
       />
       {!isAdmin && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
-      {isAdmin && baseLocale.status !== BaseLocale.status.DEMO && (
-        <HabilitationInfos commune={commune} />
-      )}
       <CertificationInfos />
     </Pane>
   );
