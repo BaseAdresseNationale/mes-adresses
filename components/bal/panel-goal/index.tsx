@@ -24,7 +24,7 @@ function PanelGoal({ commune, baseLocale }: PanelGoalProps) {
         Objectif{isPublished && "s"} Principal{isPublished && "s"}
       </Heading>
       <PublicationGoal commune={commune} baseLocale={baseLocale} />
-      {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED && (
+      {isPublished && (
         <>
           <CertificationGoal baseLocale={baseLocale} />
           <QualityGoal />
