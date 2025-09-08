@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import type { Map as MaplibreMap } from "maplibre-gl";
 import {
   Position,
@@ -14,8 +14,11 @@ import {
   VOIE_LABEL,
   VOIE_TRACE_LINE,
   ZOOM,
+  TOPONYME_LABEL,
+  TilesLayerMode,
 } from "@/components/map/layers/tiles";
 import LayerShowHideZoomControl from "@/components/map/controls/layer-show-hide-zoom-control";
+import MapContext from "@/contexts/map";
 
 const poiLayersIds = ["poi-level-1", "poi-level-2", "poi-level-3"];
 
@@ -25,17 +28,25 @@ interface ImageControlProps {
 }
 
 function ImageControl({ map, communeNom }: ImageControlProps) {
+  const { tileLayersMode } = useContext(MapContext);
   const [adresseLayerZoom, setAdresseLayerZoom] = useState([
     ZOOM.NUMEROS_ZOOM.maxZoom,
   ]);
   const [voieLayerZoom, setVoieLayerZoom] = useState<number[]>([
     ZOOM.VOIE_ZOOM.maxZoom,
   ]);
+  const [toponymeLayerZoom, setToponymeLayerZoom] = useState<number[]>([
+    ZOOM.TOPONYME_ZOOM.maxZoom,
+  ]);
   const [adresseLayerIsDisplayed, setAdresseLayerIsDisplayed] =
     useState<boolean>(true);
   const [voieLayerIsDisplayed, setVoieLayerIsDisplayed] =
     useState<boolean>(true);
+  const [toponymeLayerIsDisplayed, setToponymeLayerIsDisplayed] =
+    useState<boolean>(true);
   const [poiLayerIsDisplayed, setPoiLayerIsDisplayed] = useState<boolean>(true);
+
+  const tileLayerEnabled = tileLayersMode !== TilesLayerMode.HIDDEN;
 
   useEffect(() => {
     if (map) {
@@ -52,6 +63,30 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
       }
     }
   }, [map, voieLayerZoom]);
+
+  useEffect(() => {
+    if (map) {
+      if (map.getLayer(TOPONYME_LABEL)) {
+        map.setLayerZoomRange(
+          TOPONYME_LABEL,
+          ZOOM.ALL.minZoom,
+          toponymeLayerZoom[0]
+        );
+      }
+    }
+  }, [map, toponymeLayerZoom]);
+
+  useEffect(() => {
+    if (map) {
+      if (map.getLayer(TOPONYME_LABEL)) {
+        map.setLayoutProperty(
+          TOPONYME_LABEL,
+          "visibility",
+          toponymeLayerIsDisplayed ? "visible" : "none"
+        );
+      }
+    }
+  }, [map, toponymeLayerIsDisplayed]);
 
   useEffect(() => {
     if (map) {
@@ -129,10 +164,12 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
 
   const initLayer = () => {
     setAdresseLayerIsDisplayed(true);
+    setToponymeLayerIsDisplayed(true);
     setVoieLayerIsDisplayed(true);
     setPoiLayerIsDisplayed(true);
     setAdresseLayerZoom([ZOOM.NUMEROS_ZOOM.maxZoom]);
     setVoieLayerZoom([ZOOM.VOIE_ZOOM.maxZoom]);
+    setToponymeLayerZoom([ZOOM.TOPONYME_ZOOM.maxZoom]);
   };
 
   const takeScreenshot = async () => {
@@ -160,32 +197,44 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
       onClose={() => initLayer()}
       content={
         <Pane
-          paddingLeft={18}
-          paddingRight={18}
-          paddingTop={12}
+          paddingX={18}
+          paddingY={12}
           width={200}
-          height={210}
           display="flex"
           flexDirection="column"
         >
-          <LayerShowHideZoomControl
-            title="Numéros"
-            isDiplayed={adresseLayerIsDisplayed}
-            setIsDiplayed={setAdresseLayerIsDisplayed}
-            zoom={adresseLayerZoom}
-            setZoom={setAdresseLayerZoom}
-          />
+          {tileLayerEnabled && (
+            <LayerShowHideZoomControl
+              title="Numéros"
+              isDiplayed={adresseLayerIsDisplayed}
+              setIsDiplayed={setAdresseLayerIsDisplayed}
+              zoom={adresseLayerZoom}
+              setZoom={setAdresseLayerZoom}
+            />
+          )}
+
+          {tileLayerEnabled && tileLayersMode !== TilesLayerMode.TOPONYME && (
+            <LayerShowHideZoomControl
+              title="Voies"
+              isDiplayed={voieLayerIsDisplayed}
+              setIsDiplayed={setVoieLayerIsDisplayed}
+              zoom={voieLayerZoom}
+              setZoom={setVoieLayerZoom}
+            />
+          )}
+
+          {tileLayerEnabled && tileLayersMode !== TilesLayerMode.VOIE && (
+            <LayerShowHideZoomControl
+              title="Toponymes"
+              isDiplayed={toponymeLayerIsDisplayed}
+              setIsDiplayed={setToponymeLayerIsDisplayed}
+              zoom={toponymeLayerZoom}
+              setZoom={setToponymeLayerZoom}
+            />
+          )}
 
           <LayerShowHideZoomControl
-            title="Voies"
-            isDiplayed={voieLayerIsDisplayed}
-            setIsDiplayed={setVoieLayerIsDisplayed}
-            zoom={voieLayerZoom}
-            setZoom={setVoieLayerZoom}
-          />
-
-          <LayerShowHideZoomControl
-            title="Points d‘intérets"
+            title="Points d'intérets"
             isDiplayed={poiLayerIsDisplayed}
             setIsDiplayed={setPoiLayerIsDisplayed}
           />

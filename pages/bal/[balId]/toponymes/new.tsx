@@ -11,6 +11,8 @@ import NextLink from "next/link";
 import { Text, Link } from "evergreen-ui";
 import ToponymeEditor from "@/components/bal/toponyme-editor";
 import BalDataContext from "@/contexts/bal-data";
+import MapContext from "@/contexts/map";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface NewToponymePageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -20,6 +22,11 @@ function NewToponymePage({ baseLocale }: NewToponymePageProps) {
   const router = useRouter();
   const { setBreadcrumbs } = useContext(LayoutContext);
   const { commune } = useContext(BalDataContext);
+  const { setTileLayersMode } = useContext(MapContext);
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.TOPONYME);
+  }, [setTileLayersMode]);
 
   useEffect(() => {
     setBreadcrumbs(

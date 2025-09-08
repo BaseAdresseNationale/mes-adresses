@@ -10,6 +10,7 @@ import LocalStorageContext from "@/contexts/local-storage";
 import type { ViewState } from "react-map-gl/maplibre";
 import type { Map as MaplibreMap, VectorTileSource } from "maplibre-gl";
 import { ChildrenProps } from "@/types/context";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface MapContextType {
   map: MaplibreMap | null;
@@ -27,9 +28,8 @@ interface MapContextType {
   setIsCadastreDisplayed: React.Dispatch<React.SetStateAction<boolean>>;
   balTilesUrl: string;
   isMapLoaded: boolean;
-  showTilesLayers: (show?: boolean) => void;
-  showToponymes: boolean;
-  setShowToponymes: React.Dispatch<React.SetStateAction<boolean>>;
+  tileLayersMode: TilesLayerMode;
+  setTileLayersMode: React.Dispatch<React.SetStateAction<TilesLayerMode>>;
 }
 
 const MapContext = React.createContext<MapContextType | null>(null);
@@ -50,7 +50,6 @@ export const SOURCE_TILE_ID = "tiles";
 
 export function MapContextProvider(props: ChildrenProps) {
   const [map, setMap] = useState<MaplibreMap | null>(null);
-  const [showToponymes, setShowToponymes] = useState<boolean>(true);
   const [style, setStyle] = useState<string>(defaultStyle);
   const [viewport, setViewport] = useState<Partial<ViewState>>(defaultViewport);
   const [isCadastreDisplayed, setIsCadastreDisplayed] =
@@ -58,6 +57,9 @@ export function MapContextProvider(props: ChildrenProps) {
   const [isTileSourceLoaded, setIsTileSourceLoaded] = useState<boolean>(false);
   const [isStyleLoaded, setIsStyleLoaded] = useState<boolean>(false);
   const [isMapLoaded, setIsMapLoaded] = useState<boolean>(false);
+  const [tileLayersMode, setTileLayersMode] = useState<TilesLayerMode>(
+    TilesLayerMode.VOIE
+  );
 
   const { baseLocale } = useContext(BalContext);
   const { userSettings } = useContext(LocalStorageContext);
@@ -104,26 +106,6 @@ export function MapContextProvider(props: ChildrenProps) {
     }
   }, []);
 
-  const showTilesLayers = useCallback(
-    (show = true) => {
-      if (map && isMapLoaded) {
-        const tilesLayers = map
-          .getStyle()
-          ?.layers.filter((layer) => (layer as any).source === SOURCE_TILE_ID)
-          .map((layer) => layer.id);
-
-        tilesLayers?.forEach((layerId) => {
-          map.setLayoutProperty(
-            layerId,
-            "visibility",
-            show ? "visible" : "none"
-          );
-        });
-      }
-    },
-    [map, isMapLoaded]
-  );
-
   const value = useMemo(
     () => ({
       map,
@@ -141,9 +123,8 @@ export function MapContextProvider(props: ChildrenProps) {
       setIsCadastreDisplayed,
       balTilesUrl,
       isMapLoaded,
-      showTilesLayers,
-      showToponymes,
-      setShowToponymes,
+      tileLayersMode,
+      setTileLayersMode,
     }),
     [
       map,
@@ -156,9 +137,8 @@ export function MapContextProvider(props: ChildrenProps) {
       isCadastreDisplayed,
       balTilesUrl,
       isMapLoaded,
-      showTilesLayers,
-      showToponymes,
-      setShowToponymes,
+      tileLayersMode,
+      setTileLayersMode,
     ]
   );
 

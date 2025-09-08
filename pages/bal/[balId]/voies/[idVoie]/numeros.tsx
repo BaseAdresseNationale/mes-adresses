@@ -22,6 +22,8 @@ import LayoutContext from "@/contexts/layout";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
+import MapContext from "@/contexts/map";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface VoieNumerosListPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -39,6 +41,11 @@ function VoieNumerosListPage({ baseLocale }: VoieNumerosListPageProps) {
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
   );
+  const { setTileLayersMode } = useContext(MapContext);
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.VOIE);
+  }, [setTileLayersMode]);
 
   useEffect(() => {
     setLastSelectedItem((prev) => ({
