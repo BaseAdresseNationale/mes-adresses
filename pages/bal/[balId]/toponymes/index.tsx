@@ -38,6 +38,7 @@ import BALRecoveryContext from "@/contexts/bal-recovery";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import MapContext from "@/contexts/map";
 import SearchPaginationContext from "@/contexts/search-pagination";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface ToponymesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -64,6 +65,11 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
   const { scrollAndHighlightLastSelectedItem } = useContext(
     SearchPaginationContext
   );
+  const { setTileLayersMode } = useContext(MapContext);
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.TOPONYME);
+  }, [setTileLayersMode]);
 
   useEffect(() => {
     setBreadcrumbs(<Text aria-current="page">Toponymes</Text>);

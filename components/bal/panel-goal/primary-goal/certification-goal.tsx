@@ -7,6 +7,8 @@ import Counter from "@/components/counter";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
 import AchievementBadge from "../achievements-badge";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
+import MapContext from "@/contexts/map";
 
 interface CertificationGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -16,7 +18,19 @@ function CertificationGoal({ baseLocale }: CertificationGoalProps) {
   const { nbNumeros, nbNumerosCertifies, isAllCertified } = baseLocale;
   const percentCertified =
     nbNumeros > 0 ? Math.floor((nbNumerosCertifies * 100) / nbNumeros) : 0;
+
   const [isActive, setIsActive] = useState(false);
+  const { setTileLayersMode } = useContext(MapContext);
+
+  const toggleAccordion = () => {
+    const isOpen = !isActive;
+    setIsActive(isOpen);
+    if (isOpen) {
+      setTileLayersMode(TilesLayerMode.CERTIFICATION);
+    } else {
+      setTileLayersMode(TilesLayerMode.VOIE);
+    }
+  };
 
   return (
     <Pane paddingX={8}>
@@ -58,7 +72,7 @@ function CertificationGoal({ baseLocale }: CertificationGoalProps) {
         }
         backgroundColor={baseLocale.isAllCertified ? "#DCF2EA" : "white"}
         isActive={isActive}
-        onClick={() => setIsActive(!isActive)}
+        onClick={toggleAccordion}
         caretPosition="start"
       >
         <Pane padding={8}>

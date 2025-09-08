@@ -35,6 +35,8 @@ import LayoutContext from "@/contexts/layout";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
+import MapContext from "@/contexts/map";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface ToponymeNumerosListPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -60,8 +62,19 @@ function ToponymeNumerosListPage({
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
   );
-  const { reloadNumeros, isEditing, setIsEditing, numeros, commune } =
-    useContext(BalDataContext);
+  const {
+    reloadNumeros,
+    isEditing,
+    setIsEditing,
+    numeros,
+    commune,
+    reloadToponymes,
+  } = useContext(BalDataContext);
+  const { setTileLayersMode } = useContext(MapContext);
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.TOPONYME);
+  }, [setTileLayersMode]);
 
   useHelp(2);
   const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
@@ -76,6 +89,7 @@ function ToponymeNumerosListPage({
       };
       await BasesLocalesService.updateNumeros(baseLocale.id, payload);
       await reloadNumeros();
+      await reloadToponymes();
       pushToast({
         title: "Les numéros ont bien été modifiés",
         intent: "success",

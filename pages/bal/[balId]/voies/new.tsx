@@ -10,6 +10,8 @@ import { useContext, useEffect } from "react";
 import LayoutContext from "@/contexts/layout";
 import NextLink from "next/link";
 import { Text, Link } from "evergreen-ui";
+import MapContext from "@/contexts/map";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface NewVoiePageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -18,6 +20,11 @@ interface NewVoiePageProps {
 function NewVoiePage({ baseLocale }: NewVoiePageProps) {
   const router = useRouter();
   const { setBreadcrumbs } = useContext(LayoutContext);
+  const { setTileLayersMode } = useContext(MapContext);
+
+  useEffect(() => {
+    setTileLayersMode(TilesLayerMode.VOIE);
+  }, [setTileLayersMode]);
 
   useEffect(() => {
     setBreadcrumbs(

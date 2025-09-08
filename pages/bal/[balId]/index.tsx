@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Heading, Pane } from "evergreen-ui";
+import { Pane } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
@@ -16,6 +16,8 @@ import CommuneNomsAltEditor from "@/components/bal/commune-noms-alt-editor";
 import BALSummary from "@/components/bal/bal-summary";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import PanelGoal from "@/components/bal/panel-goal/index";
+import MapContext from "@/contexts/map";
+import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface BALHomePageProps {
   voies: ExtendedVoieDTO[];
@@ -29,6 +31,7 @@ function BALHomePage({ communeFlag, voies, toponymes }: BALHomePageProps) {
   const isAdmin = Boolean(token);
   const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const { setTileLayersMode } = useContext(MapContext);
 
   const openRecoveryDialog = () => {
     setIsRecoveryDisplayed(true);
@@ -36,7 +39,8 @@ function BALHomePage({ communeFlag, voies, toponymes }: BALHomePageProps) {
 
   useEffect(() => {
     reloadBaseLocale();
-  }, [reloadBaseLocale]);
+    setTileLayersMode(TilesLayerMode.VOIE);
+  }, [reloadBaseLocale, setTileLayersMode]);
 
   return (
     <Pane overflowY="auto">
