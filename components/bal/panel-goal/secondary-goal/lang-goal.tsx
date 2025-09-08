@@ -45,7 +45,7 @@ function LangGoal({ baseLocale }: LangGoalProps) {
               <Counter
                 label="toponyme(s) régionales"
                 value={nbToponymesWithLang}
-                color="#53301f"
+                color="#000091"
               />
             </Pane>
           </Pane>
