@@ -1,12 +1,11 @@
-import { useState, useContext, useEffect } from "react";
-import { Pane, Heading, Text, EndorsedIcon } from "evergreen-ui";
+import { useState, useContext } from "react";
+import { Pane, Heading, Text, defaultTheme } from "evergreen-ui";
 
-import style from "../goal-card.module.css";
 import ProgressBar from "@/components/progress-bar";
 import Counter from "@/components/counter";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
-import AchievementBadge from "../achievements-badge";
+import AchievementBadge from "../achievements-badge/achievements-badge";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import MapContext from "@/contexts/map";
 
@@ -15,7 +14,11 @@ interface CertificationGoalProps {
 }
 
 function CertificationGoal({ baseLocale }: CertificationGoalProps) {
-  const { nbNumeros, nbNumerosCertifies, isAllCertified } = baseLocale;
+  const {
+    nbNumeros,
+    nbNumerosCertifies,
+    isAllCertified: isCompleted,
+  } = baseLocale;
   const percentCertified =
     nbNumeros > 0 ? Math.floor((nbNumerosCertifies * 100) / nbNumeros) : 0;
 
@@ -41,25 +44,25 @@ function CertificationGoal({ baseLocale }: CertificationGoalProps) {
               <AchievementBadge
                 icone="/static/images/achievements/100-certified.svg"
                 title="Publication"
-                completed={isAllCertified}
+                completed={isCompleted}
               />
-              <Heading color={isAllCertified && "#317159"}>
+              <Heading color={isCompleted && defaultTheme.colors.green700}>
                 Certification
               </Heading>
             </Pane>
-            {!baseLocale.isAllCertified ? (
+            {!isCompleted ? (
               <Pane width="100%">
                 <ProgressBar percent={percentCertified} />
                 <Pane display="flex" justifyContent="center">
                   <Counter
                     label="Adresses certifiées"
                     value={nbNumerosCertifies}
-                    color="#52BD95"
+                    color={defaultTheme.colors.green500}
                   />
                   <Counter
                     label="Adresses non-certifiées"
                     value={nbNumeros - nbNumerosCertifies}
-                    color="#c1c4d6"
+                    color={defaultTheme.colors.gray500}
                   />
                 </Pane>
               </Pane>
@@ -70,7 +73,9 @@ function CertificationGoal({ baseLocale }: CertificationGoalProps) {
             )}
           </Pane>
         }
-        backgroundColor={baseLocale.isAllCertified ? "#DCF2EA" : "white"}
+        backgroundColor={
+          isCompleted ? defaultTheme.colors.green100 : defaultTheme.colors.white
+        }
         isActive={isActive}
         onClick={toggleAccordion}
         caretPosition="start"

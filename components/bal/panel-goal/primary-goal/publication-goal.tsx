@@ -1,14 +1,10 @@
-import { useContext, useMemo, useState } from "react";
-import { Pane, Heading, Button, Paragraph, EndorsedIcon } from "evergreen-ui";
-import { format } from "date-fns";
+import { useMemo, useState } from "react";
+import { Pane, Heading, Button, Paragraph, defaultTheme } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
-
-import BalDataContext from "@/contexts/bal-data";
 import { CommuneType } from "@/types/commune";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
-import style from "../goal-card.module.css";
-import AchievementBadge from "../achievements-badge";
+import AchievementBadge from "../achievements-badge/achievements-badge";
 import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
 
 interface PublicationGoalProps {
@@ -17,7 +13,6 @@ interface PublicationGoalProps {
 }
 
 function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
-  const { habilitation, isHabilitationValid } = useContext(BalDataContext);
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
   const [isActive, setIsActive] = useState(
     baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT
@@ -29,25 +24,17 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
   };
 
   const isCompleted = useMemo(() => {
-    return (
-      habilitation &&
-      isHabilitationValid &&
-      baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED
-    );
-  }, [habilitation, isHabilitationValid, baseLocale.status]);
+    return baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED;
+  }, [baseLocale.status]);
 
   const colorCard = useMemo(() => {
     if (baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED) {
-      return "#FDF4F4";
+      return defaultTheme.colors.redTint;
     } else if (baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED) {
-      if (habilitation && isHabilitationValid) {
-        return "#DCF2EA";
-      } else {
-        return "#FFFAF2";
-      }
+      return defaultTheme.colors.green100;
     }
-    return "white";
-  }, [baseLocale.status, habilitation, isHabilitationValid]);
+    return defaultTheme.colors.white;
+  }, [baseLocale.status]);
 
   return (
     <Pane paddingX={8}>
@@ -59,7 +46,9 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
               title="Publication"
               completed={isCompleted}
             />
-            <Heading color={isCompleted && "#317159"}>Publication</Heading>
+            <Heading color={isCompleted && defaultTheme.colors.green700}>
+              Publication
+            </Heading>
           </Pane>
         }
         backgroundColor={colorCard}
@@ -88,31 +77,15 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
               </Pane>
             </Paragraph>
           )}
-          {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
-            (!habilitation || !isHabilitationValid ? (
-              <Paragraph color="#996A13">
-                Votre habilitation n&apos;est plus valide, veuillez la
-                renouveler.
-                <Pane display="flex" justifyContent="right" marginTop={8}>
-                  <Button
-                    appearance="primary"
-                    onClick={(e) => handlePublication(e)}
-                    textAlign="center"
-                  >
-                    S&apos;habiliter
-                  </Button>
-                </Pane>
-              </Paragraph>
-            ) : (
-              <Paragraph>
-                Toutes les modifications remonteront automatiquement dans la
-                Base Adresse Nationale jusqu&apos;au{" "}
-                <b>{format(new Date(habilitation.expiresAt), "dd/MM/yyyy")}</b>.
-              </Paragraph>
-            ))}
+          {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED && (
+            <Paragraph>
+              Toutes les modifications remonteront automatiquement dans la Base
+              Adresse Nationale
+            </Paragraph>
+          )}
           {baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED && (
             <Pane>
-              <Paragraph color="#7D2828">
+              <Paragraph color={defaultTheme.colors.red700}>
                 La Base Adresse Locale a été remplacée par une autre, une autre
                 Base Adresses Locale est synchronisée avec la Base Adresse
                 Nationale.

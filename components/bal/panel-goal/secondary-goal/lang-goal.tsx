@@ -1,11 +1,10 @@
-import { Pane, Heading, Paragraph, Text } from "evergreen-ui";
-
-import style from "../goal-card.module.css";
+import { Pane, Heading, Paragraph, defaultTheme } from "evergreen-ui";
 import { useContext, useState } from "react";
+
 import BalDataContext from "@/contexts/bal-data";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
-import AchievementBadge from "../achievements-badge";
+import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
 
 interface LangGoalProps {
@@ -21,7 +20,7 @@ function LangGoal({ baseLocale }: LangGoalProps) {
     (toponyme) => toponyme.nomAlt
   ).length;
 
-  const haveLang = nbVoiesWithLang > 0 || nbToponymesWithLang > 0;
+  const isCompleted = nbVoiesWithLang > 0 || nbToponymesWithLang > 0;
 
   return (
     <Pane paddingX={8}>
@@ -32,25 +31,29 @@ function LangGoal({ baseLocale }: LangGoalProps) {
               <AchievementBadge
                 icone="/static/images/achievements/regional-language.svg"
                 title="Logo Langue Régionale"
-                completed={haveLang}
+                completed={isCompleted}
               />
-              <Heading color={haveLang && "#317159"}>Langue Régionale</Heading>
+              <Heading color={isCompleted && defaultTheme.colors.green700}>
+                Langue Régionale
+              </Heading>
             </Pane>
             <Pane display="flex" justifyContent="center">
               <Counter
                 label="voie(s) régionales"
                 value={nbVoiesWithLang}
-                color="#000091"
+                color={defaultTheme.colors.blue700}
               />
               <Counter
                 label="toponyme(s) régionales"
                 value={nbToponymesWithLang}
-                color="#000091"
+                color={defaultTheme.colors.blue700}
               />
             </Pane>
           </Pane>
         }
-        backgroundColor={haveLang ? "#DCF2EA" : "white"}
+        backgroundColor={
+          isCompleted ? defaultTheme.colors.green100 : defaultTheme.colors.white
+        }
         isActive={isActive}
         onClick={() => setIsActive(!isActive)}
         caretPosition="start"

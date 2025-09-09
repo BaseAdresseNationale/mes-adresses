@@ -1,11 +1,10 @@
-import { Pane, Heading, Paragraph, Text } from "evergreen-ui";
-
-import style from "../goal-card.module.css";
+import { Pane, Heading, Paragraph, defaultTheme } from "evergreen-ui";
 import { useContext, useState } from "react";
+
 import BalDataContext from "@/contexts/bal-data";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
-import AchievementBadge from "../achievements-badge";
+import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
 
 interface LangGoalProps {
@@ -34,23 +33,27 @@ function LangGoal({ baseLocale }: LangGoalProps) {
                 title="Publication"
                 completed={isCompleted}
               />
-              <Heading color={isCompleted && "#317159"}>Toponyme</Heading>
+              <Heading color={isCompleted && defaultTheme.colors.green700}>
+                Toponyme
+              </Heading>
             </Pane>
             <Pane display="flex" justifyContent="start">
               <Counter
                 label="Toponyme(s)"
                 value={toponymes.length}
-                color="#53301f"
+                color={defaultTheme.colors.orange700}
               />
               <Counter
                 label="Numéro(s) relié(s)"
                 value={nbNumerosWithToponymes}
-                color="#53301f"
+                color={defaultTheme.colors.orange700}
               />
             </Pane>
           </Pane>
         }
-        backgroundColor={isCompleted ? "#DCF2EA" : "white"}
+        backgroundColor={
+          isCompleted ? defaultTheme.colors.green100 : defaultTheme.colors.white
+        }
         isActive={isActive}
         onClick={() => setIsActive(!isActive)}
         caretPosition="start"
@@ -61,12 +64,7 @@ function LangGoal({ baseLocale }: LangGoalProps) {
             commune dans l&apos;onglet toponyme.
           </Paragraph>
           <Paragraph>
-            Il est important de remplir les lieux-dits et complément de votre
-            commune dans l&apos;onglet toponyme.
-          </Paragraph>
-          <Paragraph>
-            Il est important de remplir les lieux-dits et complément de votre
-            commune dans l&apos;onglet toponyme.
+            Vous pouvez les relier à des numéros pour les localiser
           </Paragraph>
         </Pane>
       </AccordionCard>

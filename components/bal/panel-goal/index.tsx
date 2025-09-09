@@ -27,10 +27,10 @@ function PanelGoal({ commune, baseLocale }: PanelGoalProps) {
       {isPublished && (
         <>
           <CertificationGoal baseLocale={baseLocale} />
-          <QualityGoal />
+          {/* <QualityGoal /> */}
           <Heading margin={16}>Objectifs secondaires</Heading>
-          <LangGoal baseLocale={baseLocale} />
           <ToponymeGoal baseLocale={baseLocale} />
+          <LangGoal baseLocale={baseLocale} />
         </>
       )}
     </Pane>
