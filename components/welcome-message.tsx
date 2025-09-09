@@ -92,7 +92,7 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
           <Heading>❓ Besoin d&apos;aide ?</Heading>
           <Paragraph marginY={16}>
             <Link
-              href="https://adresse.data.gouv.fr/evenements"
+              href="https://adresse.data.gouv.fr/formation-en-ligne"
               target="_blank"
             >
               Suivez une formation 🎓
