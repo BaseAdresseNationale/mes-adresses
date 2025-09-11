@@ -1,4 +1,4 @@
-import DrawContext from "@/contexts/draw";
+import DrawContext, { DrawMode } from "@/contexts/draw";
 import { CrossIcon, IconButton } from "evergreen-ui";
 import Image from "next/image";
 import { useContext } from "react";
@@ -8,20 +8,20 @@ interface RulerControlProps {
 }
 
 function RulerControl({ disabled }: RulerControlProps) {
-  const { toggleRuler, isRulerEnabled } = useContext(DrawContext);
+  const { drawMode, setDrawMode } = useContext(DrawContext);
 
-  return isRulerEnabled ? (
+  return drawMode === DrawMode.RULER ? (
     <IconButton
       height={29}
       width={29}
       icon={CrossIcon}
-      onClick={toggleRuler}
+      onClick={() => setDrawMode(null)}
       title="Fermer l’outil de mesure"
     />
   ) : (
     <IconButton
       disabled={disabled}
-      onClick={toggleRuler}
+      onClick={() => setDrawMode(DrawMode.RULER)}
       height={29}
       width={29}
       icon={
@@ -30,6 +30,7 @@ function RulerControl({ disabled }: RulerControlProps) {
           alt="Ruler icon"
           width={20}
           height={20}
+          style={{ opacity: disabled ? 0.4 : 1 }}
         />
       }
       title="Mesurer une distance"
