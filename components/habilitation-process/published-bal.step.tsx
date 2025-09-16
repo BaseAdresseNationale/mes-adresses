@@ -43,10 +43,8 @@ function PublishedBalStep({
           <Paragraph marginBottom={16}>
             <Heading is="h3">Habilitation</Heading>
             <Text>
-              Vous êtes maintenant habilitée, toutes les modifications
-              remonteront automatiquement dans la Base Adresse Nationale
-              jusqu&apos;au{" "}
-              <b>{format(new Date(habilitation.expiresAt), "dd/MM/yyyy")}</b>.
+              Toutes les modifications remonteront automatiquement dans la Base
+              Adresse Nationale
             </Text>
           </Paragraph>
           <Paragraph marginBottom={16}>
