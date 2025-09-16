@@ -25,7 +25,6 @@ function SubHeader({ commune }: SubHeaderProps) {
     baseLocale,
     habilitation,
     reloadBaseLocale,
-    isHabilitationValid,
     voie,
     toponyme,
     isRefrehSyncStat,
@@ -114,7 +113,6 @@ function SubHeader({ commune }: SubHeaderProps) {
                 baseLocale={baseLocale}
                 commune={commune}
                 token={token}
-                isHabilitationValid={isHabilitationValid}
                 isRefrehSyncStat={isRefrehSyncStat}
                 handlePublication={handlePublication}
                 handleHabilitation={handleShowHabilitationProcess}

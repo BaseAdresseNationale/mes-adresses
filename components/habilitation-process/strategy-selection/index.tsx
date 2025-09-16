@@ -101,13 +101,6 @@ export function StrategySelectionStep({
               en matière d&apos;adressage.
             </Text>
           </ListItem>
-
-          <ListItem icon={TimeIcon}>
-            <Text size={400}>
-              Elle est <Strong size={400}>valable 1 an</Strong> et doit être
-              renouvelée pour continuer la mise à jour de l&apos;adressage
-            </Text>
-          </ListItem>
         </UnorderedList>
         <Alert title="Besoin d'aide pour vous habiliter ?" marginTop={16}>
           <Text is="div" marginTop={8}>

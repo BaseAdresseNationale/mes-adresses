@@ -1,6 +1,6 @@
 // HABILITATION
 
-import { HabilitationDTO, StrategyDTO } from "../openapi-api-bal";
+import { HabilitationDTO } from "../openapi-api-bal";
 
 // FILE
 

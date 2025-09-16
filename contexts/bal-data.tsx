@@ -39,7 +39,6 @@ interface BALDataContextType {
   reloadBaseLocale: () => void;
   habilitation: HabilitationDTO;
   reloadHabilitation: () => Promise<void>;
-  isHabilitationValid: boolean;
   parcelles: Array<string>;
   reloadParcelles: () => Promise<void>;
   setVoies: React.Dispatch<React.SetStateAction<ExtendedVoieDTO[]>>;
@@ -125,7 +124,6 @@ export function BalDataContextProvider({
   const {
     habilitation,
     reloadHabilitation,
-    isValid: isHabilitationValid,
     isLoading: habilitationIsLoading,
     isHabilitationProcessDisplayed,
     setIsHabilitationProcessDisplayed,
@@ -267,7 +265,6 @@ export function BalDataContextProvider({
       editingItem,
       baseLocale,
       habilitation,
-      isHabilitationValid,
       parcelles,
       voie: voie || initialVoie,
       toponyme: toponyme || initialToponyme,
@@ -302,7 +299,6 @@ export function BalDataContextProvider({
       baseLocale,
       reloadBaseLocale,
       habilitation,
-      isHabilitationValid,
       reloadHabilitation,
       voie,
       numeros,
