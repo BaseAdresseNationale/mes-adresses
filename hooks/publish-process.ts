@@ -4,6 +4,7 @@ import { getBANCommune } from "@/lib/api-ban";
 import BalDataContext from "@/contexts/bal-data";
 import {
   BasesLocalesService,
+  HabilitationDTO,
   HabilitationService,
 } from "@/lib/openapi-api-bal";
 import { BaseLocale } from "@/lib/openapi-api-bal";
@@ -29,7 +30,6 @@ export default function usePublishProcess(
     habilitation,
     reloadBaseLocale,
     reloadHabilitation,
-    isHabilitationValid,
     setIsHabilitationProcessDisplayed,
   } = useContext(BalDataContext);
 
@@ -60,7 +60,8 @@ export default function usePublishProcess(
 
     if (
       isReadyToPublish &&
-      (!habilitation || !isHabilitationValid) &&
+      (!habilitation ||
+        habilitation.status !== HabilitationDTO.status.ACCEPTED) &&
       !commune.isCOM
     ) {
       try {

@@ -31,7 +31,6 @@ interface AcceptedDialogProps {
         | "administrateur";
     };
   };
-  expiresAt: string;
   isConflicted: boolean;
   flagURL: string | null;
 }
@@ -40,7 +39,6 @@ function AcceptedDialog({
   baseLocaleId,
   commune,
   strategy,
-  expiresAt,
   isConflicted,
   flagURL,
 }: AcceptedDialogProps) {
@@ -92,14 +90,6 @@ function AcceptedDialog({
                 les adresses de la commune de{" "}
                 <Strong size={400}>{commune.nom}</Strong> via cette{" "}
                 <Strong size={400}>Base Adresse Locales</Strong>.
-              </ListItem>
-              <ListItem>
-                Cette habilitation expirera le{" "}
-                <Strong size={400}>
-                  {new Date(expiresAt).toLocaleDateString()}
-                </Strong>
-                . Après cette date, vous serez invité à demander une nouvelle
-                habilitation.
               </ListItem>
             </UnorderedList>
           </Pane>

@@ -19,7 +19,6 @@ import { CommuneType } from "@/types/commune";
 interface BANSyncProps {
   baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
-  isHabilitationValid: boolean;
   handleSync: () => void;
   togglePause: () => void;
 }
@@ -27,15 +26,13 @@ interface BANSyncProps {
 function BANSync({
   baseLocale,
   commune,
-  isHabilitationValid,
   handleSync,
   togglePause,
 }: BANSyncProps) {
   const { isMobile } = useContext(LayoutContext);
   const { intent, title, content } = computeStatus(
     baseLocale.status,
-    baseLocale.sync,
-    isHabilitationValid
+    baseLocale.sync
   );
 
   return (

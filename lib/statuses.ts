@@ -29,26 +29,6 @@ type StatusType = {
 };
 
 const STATUSES: { [key: string]: StatusType } = {
-  conflict: {
-    label: "Conflit",
-    title:
-      "Cette Base Adresse Locale n’alimente plus la Base Adresse Nationale",
-    content:
-      "Une autre Base Adresses Locale est aussi synchronisée avec la Base Adresse Nationale. Veuillez entrer en contact les administrateurs de l’autre Base Adresse Locale ou notre support: adresse@data.gouv.fr",
-    color: "red",
-    intent: "danger",
-    icon: ErrorIcon,
-  },
-  "waiting-habilitation": {
-    label: "En attente d'habilitation",
-    title:
-      "Cette Base Adresse Locale a besoin d'une habilitation pour alimenter la Base Adresse Nationale",
-    content:
-      "De nouvelles modifications ont été détectées mais vous n'êtes pas habilité, les modifications ne seront pas répercutées dans la Base Adresse Nationale.",
-    color: "yellow",
-    intent: "none",
-    icon: TimeIcon,
-  },
   paused: {
     label: "Suspendue",
     title:
@@ -77,6 +57,16 @@ const STATUSES: { [key: string]: StatusType } = {
     intent: "success",
     icon: TickCircleIcon,
   },
+  replaced: {
+    label: "Remplacée",
+    title:
+      "Cette Base Adresse Locale n’alimente plus la Base Adresse Nationale",
+    content:
+      "Une autre Base Adresses Locale est aussi synchronisée avec la Base Adresse Nationale. Veuillez entrer en contact les administrateurs de l’autre Base Adresse Locale ou notre support: adresse@data.gouv.fr",
+    color: "red",
+    intent: "danger",
+    icon: ErrorIcon,
+  },
   draft: {
     content: "Cette Base Adresses Locale est en cours de construction",
     label: "Brouillon",
@@ -96,24 +86,8 @@ const STATUSES: { [key: string]: StatusType } = {
 
 export function computeStatus(
   balStatus: BaseLocale.status,
-  sync: Partial<BaseLocaleSync>,
-  isHabilitationValid: boolean
+  sync: Partial<BaseLocaleSync>
 ): StatusType {
-  if (
-    balStatus === BaseLocale.status.REPLACED ||
-    sync?.status === BaseLocaleSync.status.CONFLICT
-  ) {
-    return STATUSES.conflict;
-  }
-
-  if (
-    balStatus === BaseLocale.status.PUBLISHED &&
-    sync.status === BaseLocaleSync.status.OUTDATED &&
-    !isHabilitationValid
-  ) {
-    return STATUSES["waiting-habilitation"];
-  }
-
   if (sync?.isPaused) {
     return STATUSES.paused;
   }
