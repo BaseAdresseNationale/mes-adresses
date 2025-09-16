@@ -41,7 +41,8 @@ export function SignalementFormButtons({
   const { pendingSignalementsCount } = useContext(SignalementContext);
   const [rejectionReasonSelected, setRejectionReasonSelected] =
     useState<RejectionReasonOption | null>(null);
-  const [rejectionReason, setRejectionReason] = useState<string>();
+  const [showRejectionForm, setShowRejectionForm] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState<string>("");
 
   return (
     <Pane
@@ -55,7 +56,7 @@ export function SignalementFormButtons({
       backgroundColor="#e6e8f0"
       width="100%"
     >
-      {rejectionReason !== undefined ? (
+      {showRejectionForm ? (
         <>
           <Pane
             background="white"
@@ -110,7 +111,8 @@ export function SignalementFormButtons({
                         ? rejectionReason
                         : rejectionReasonSelected
                     );
-                    setRejectionReason(undefined);
+                    setShowRejectionForm(false);
+                    setRejectionReason("");
                   }}
                   appearance="default"
                   intent="danger"
@@ -131,7 +133,7 @@ export function SignalementFormButtons({
                   type="button"
                   appearance="default"
                   display="inline-flex"
-                  onClick={() => setRejectionReason(undefined)}
+                  onClick={() => setShowRejectionForm(false)}
                 >
                   Annuler
                 </Button>
@@ -146,6 +148,7 @@ export function SignalementFormButtons({
             boxShadow="0 0 1px rgba(67, 90, 111, 0.3), 0 5px 8px -4px rgba(67, 90, 111, 0.47)"
           >
             <Button
+              disabled={isLoading}
               onClick={async () => await onAccept()}
               appearance="primary"
               intent="success"
@@ -160,11 +163,12 @@ export function SignalementFormButtons({
             boxShadow="0 0 1px rgba(67, 90, 111, 0.3), 0 5px 8px -4px rgba(67, 90, 111, 0.47)"
           >
             <Button
+              disabled={isLoading}
               type="button"
               appearance="default"
               intent="danger"
               display="inline-flex"
-              onClick={() => setRejectionReason("")}
+              onClick={() => setShowRejectionForm(true)}
               iconAfter={BanCircleIcon}
             >
               Refuser
@@ -176,6 +180,7 @@ export function SignalementFormButtons({
             boxShadow="0 0 1px rgba(67, 90, 111, 0.3), 0 5px 8px -4px rgba(67, 90, 111, 0.47)"
           >
             <Button
+              disabled={isLoading}
               type="button"
               appearance="default"
               display="inline-flex"
