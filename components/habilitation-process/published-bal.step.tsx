@@ -1,15 +1,5 @@
-import { useRef } from "react";
-import {
-  Alert,
-  Button,
-  Heading,
-  Pane,
-  Paragraph,
-  Text,
-  Strong,
-} from "evergreen-ui";
-import { format } from "date-fns";
-import { HabilitationDTO, StrategyDTO } from "@/lib/openapi-api-bal";
+import { Button, Heading, Pane, Paragraph, Text, Strong } from "evergreen-ui";
+import { HabilitationDTO } from "@/lib/openapi-api-bal";
 import Confetti from "react-confetti";
 
 interface PublishedBalStepProps {

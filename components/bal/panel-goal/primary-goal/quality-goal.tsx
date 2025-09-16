@@ -1,11 +1,9 @@
-import { Pane, Heading, Paragraph, Text } from "evergreen-ui";
+import { Pane, Heading, Text } from "evergreen-ui";
 
-import style from "../goal-card.module.css";
 import StarRating from "./star-rating";
 import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
 import { useState } from "react";
 import AchievementBadge from "../achievements-badge/achievements-badge";
-import ProgressBar from "@/components/progress-bar";
 import Counter from "@/components/counter";
 
 interface QualityGoalProps {}
