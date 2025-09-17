@@ -10,7 +10,7 @@ import MapGl, {
 } from "react-map-gl/maplibre";
 import { Pane, Alert } from "evergreen-ui";
 
-import MapContext, { SOURCE_TILE_ID } from "@/contexts/map";
+import MapContext, { MapStyle, SOURCE_TILE_ID } from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import TokenContext from "@/contexts/token";
 import DrawContext from "@/contexts/draw";
@@ -47,6 +47,8 @@ import {
   setMapFilter,
 } from "@/lib/utils/map";
 import GeolocationControl from "./controls/geolocation-control";
+import { ortho, planIGN, vector } from "./styles";
+import { cadastreLayers } from "./layers/cadastre";
 
 const settings = {
   maxZoom: 19,
@@ -68,6 +70,28 @@ export interface MapProps {
   handleAddressForm: (open: boolean) => void;
 }
 
+const LAYERS = [...cadastreLayers];
+
+function getBaseStyle(style: MapStyle) {
+  switch (style) {
+    case MapStyle.ORTHO:
+      return ortho;
+
+    case MapStyle.VECTOR:
+      return vector;
+
+    case MapStyle.PLAN_IGN:
+      return planIGN;
+    default:
+      return vector;
+  }
+}
+
+function generateNewStyle(style: MapStyle) {
+  const baseStyle = getBaseStyle(style);
+  return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
+}
+
 function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const router = useRouter();
   const {
@@ -84,7 +108,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     balTilesUrl,
     isMapLoaded,
     tileLayersMode,
-    mapStyle,
   } = useContext(MapContext);
   const { isParcelleSelectionEnabled, handleParcelles } =
     useContext(ParcellesContext);
@@ -92,6 +115,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
+  const [mapStyle, setMapStyle] = useState<any>(generateNewStyle(style));
 
   const { balId } = router.query;
   const { voie, toponyme, numeros, editingId, setEditingId, isEditing } =
@@ -211,6 +235,13 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   useEffect(() => {
     updatePositionsLayer();
   }, [map, voie, toponyme, updatePositionsLayer]);
+
+  // Change map's style and adapte layers
+  useEffect(() => {
+    if (map) {
+      setMapStyle(generateNewStyle(style));
+    }
+  }, [map, style]);
 
   useEffect(() => {
     if (isStyleLoaded) {
@@ -342,7 +373,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           ref={handleMapRef}
           hash={true}
           {...viewport}
-          mapStyle={mapStyle as any}
+          mapStyle={mapStyle}
           styleDiffing={false}
           {...settings}
           {...interactionProps}

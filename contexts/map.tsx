@@ -11,8 +11,6 @@ import type { Map as MaplibreMap, VectorTileSource } from "maplibre-gl";
 import { ChildrenProps } from "@/types/context";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import { CommuneDTO } from "@/lib/openapi-api-bal";
-import { ortho, planIGN, vector } from "@/components/map/styles";
-import { cadastreLayers } from "@/components/map/layers/cadastre";
 import BalDataContext from "@/contexts/bal-data";
 
 interface MapContextType {
@@ -21,9 +19,8 @@ interface MapContextType {
   handleMapRef: (ref: any) => void;
   isTileSourceLoaded: boolean;
   reloadTiles: () => void;
-  style: string;
-  setStyle: React.Dispatch<React.SetStateAction<string>>;
-  mapStyle: any;
+  style: MapStyle;
+  setStyle: React.Dispatch<React.SetStateAction<MapStyle>>;
   isStyleLoaded: boolean;
   viewport: Partial<ViewState>;
   setViewport: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
@@ -58,28 +55,6 @@ export enum MapStyle {
 export const getDefaultStyle = (commune: CommuneDTO) =>
   commune.hasOrtho ? MapStyle.ORTHO : MapStyle.VECTOR;
 
-const LAYERS = [...cadastreLayers];
-
-function getBaseStyle(style: MapStyle) {
-  switch (style) {
-    case MapStyle.ORTHO:
-      return ortho;
-
-    case MapStyle.VECTOR:
-      return vector;
-
-    case MapStyle.PLAN_IGN:
-      return planIGN;
-    default:
-      return vector;
-  }
-}
-
-function generateNewStyle(style) {
-  const baseStyle = getBaseStyle(style);
-  return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
-}
-
 export function MapContextProvider(props: ChildrenProps) {
   const { baseLocale, commune } = useContext(BalDataContext);
   const { userSettings, registeredMapStyle } = useContext(LocalStorageContext);
@@ -99,8 +74,6 @@ export function MapContextProvider(props: ChildrenProps) {
   const [tileLayersMode, setTileLayersMode] = useState<TilesLayerMode>(
     TilesLayerMode.VOIE
   );
-
-  const mapStyle = useMemo(() => generateNewStyle(style), [style]);
 
   const balTilesUrl = `${BAL_API_URL}/bases-locales/${
     baseLocale.id
@@ -162,7 +135,6 @@ export function MapContextProvider(props: ChildrenProps) {
       isMapLoaded,
       tileLayersMode,
       setTileLayersMode,
-      mapStyle,
     }),
     [
       map,
@@ -177,7 +149,6 @@ export function MapContextProvider(props: ChildrenProps) {
       isMapLoaded,
       tileLayersMode,
       setTileLayersMode,
-      mapStyle,
     ]
   );
 
