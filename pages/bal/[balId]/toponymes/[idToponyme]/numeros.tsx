@@ -70,7 +70,7 @@ function ToponymeNumerosListPage({
     commune,
     reloadToponymes,
   } = useContext(BalDataContext);
-  const { setTileLayersMode } = useContext(MapContext);
+  const { setTileLayersMode, reloadTiles } = useContext(MapContext);
 
   useEffect(() => {
     setTileLayersMode(TilesLayerMode.TOPONYME);
@@ -98,6 +98,7 @@ function ToponymeNumerosListPage({
       setError((error as any).message);
     }
 
+    reloadTiles();
     setIsLoading(false);
     reset();
 
