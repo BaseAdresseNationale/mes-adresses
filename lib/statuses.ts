@@ -99,6 +99,10 @@ export function computeStatus(
   sync: Partial<BaseLocaleSync>,
   isHabilitationValid: boolean
 ): StatusType {
+  if (sync?.isPaused && balStatus !== BaseLocale.status.REPLACED) {
+    return STATUSES.paused;
+  }
+
   if (balStatus === BaseLocale.status.PUBLISHED && sync.status) {
     if (
       sync.status === BaseLocaleSync.status.OUTDATED &&
@@ -107,10 +111,6 @@ export function computeStatus(
       return STATUSES["waiting-habilitation"];
     }
     return STATUSES[sync.status];
-  }
-
-  if (sync?.isPaused && balStatus !== BaseLocale.status.REPLACED) {
-    return STATUSES.paused;
   }
 
   return STATUSES[balStatus];

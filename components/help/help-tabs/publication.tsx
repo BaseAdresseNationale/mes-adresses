@@ -103,6 +103,24 @@ function Publication() {
             <Pane height={32} marginTop={4}>
               <StatusBadge
                 status={BaseLocale.status.PUBLISHED}
+                sync={{
+                  isPaused: false,
+                  status: BaseLocaleSync.status.OUTDATED,
+                }}
+                isHabilitationValid={true}
+              />
+            </Pane>
+            <Text>
+              Des modifications ont été détectées, elles seront automatiquement
+              répercutées dans la Base Adresse Nationale dans les prochaines
+              heures.
+            </Text>
+          </Pane>
+
+          <Pane display="grid" gridTemplateColumns="160px 1fr" gap={8}>
+            <Pane height={32} marginTop={4}>
+              <StatusBadge
+                status={BaseLocale.status.PUBLISHED}
                 sync={{ isPaused: true, status: BaseLocaleSync.status.SYNCED }}
                 isHabilitationValid={true}
               />
@@ -130,6 +148,24 @@ function Publication() {
               mettre à jour automatiquement vos adresses. Vous pouvez forcer la
               mise à jour afin de remplacer la Base Adresse Locale actuellement
               en place.
+            </Text>
+          </Pane>
+
+          <Pane display="grid" gridTemplateColumns="160px 1fr" gap={8}>
+            <Pane height={38}>
+              <StatusBadge
+                status={BaseLocale.status.PUBLISHED}
+                sync={{
+                  isPaused: false,
+                  status: BaseLocaleSync.status.OUTDATED,
+                }}
+                isHabilitationValid={false}
+              />
+            </Pane>
+            <Text>
+              L&apos;habilitation de la Base Adresse Locale n&apos;est pas
+              valide. Il vous faut renouveler celle-ci pour que les nouvelles
+              modifications remontent dans la Base Adresse Nationale.
             </Text>
           </Pane>
         </Pane>
