@@ -23,7 +23,7 @@ import {
   isNumeroChangesRequested,
 } from "@/lib/utils/signalement";
 import { ObjectId } from "bson";
-import MapContext, { defaultStyle } from "@/contexts/map";
+import MapContext from "@/contexts/map";
 import BalDataContext from "@/contexts/bal-data";
 import ProtectedPage from "@/layouts/protected-page";
 import SignalementForm from "@/components/signalement/signalement-form/signalement-form";
@@ -50,7 +50,7 @@ function SignalementPage({
   const { fetchPendingSignalements, updateOneSignalement } =
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const { setStyle, setTileLayersMode } = useContext(MapContext);
+  const { setTileLayersMode } = useContext(MapContext);
   const { refreshBALSync } = useContext(BalDataContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
@@ -61,7 +61,6 @@ function SignalementPage({
 
   useEffect(() => {
     setTileLayersMode(TilesLayerMode.HIDDEN);
-    setStyle("ortho");
     setBreadcrumbs(
       <>
         <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>
@@ -73,10 +72,9 @@ function SignalementPage({
     );
 
     return () => {
-      setStyle(defaultStyle);
       setBreadcrumbs(null);
     };
-  }, [setStyle, setBreadcrumbs, baseLocale, signalement, setTileLayersMode]);
+  }, [setBreadcrumbs, baseLocale, signalement, setTileLayersMode]);
 
   // Mark the signalement as expired if the location is not found
   // and the signalement is still pending

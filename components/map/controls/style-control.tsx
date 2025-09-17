@@ -1,12 +1,15 @@
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { Pane, SelectMenu, Button, Position, LayersIcon } from "evergreen-ui";
 
 import CadastreControl from "@/components/map/controls/cadastre-control";
 import { CommuneType } from "@/types/commune";
+import { MapStyle } from "@/contexts/map";
+import LocalStorageContext from "@/contexts/local-storage";
+import BalDataContext from "@/contexts/bal-data";
 
 interface StyleControlProps {
   style: string;
-  handleStyle: (style: string) => void;
+  handleStyle: (style: MapStyle) => void;
   isCadastreDisplayed: boolean;
   handleCadastre: (fn: (show: boolean) => boolean) => void;
   commune: CommuneType;
@@ -20,19 +23,34 @@ function StyleControl({
   handleCadastre,
 }: StyleControlProps) {
   const [showPopover, setShowPopover] = useState(false);
+  const { baseLocale } = useContext(BalDataContext);
+  const { registeredMapStyle, setRegisteredMapStyle } =
+    useContext(LocalStorageContext);
 
   const availableStyles = useMemo(() => {
     const { hasOrtho, hasOpenMapTiles, hasPlanIGN } = commune;
     return [
       {
+        label: "Photographie aérienne",
+        value: MapStyle.ORTHO,
+        isAvailable: hasOrtho,
+      },
+      {
         label: "Plan OpenStreetMap",
-        value: "vector",
+        value: MapStyle.VECTOR,
         isAvailable: hasOpenMapTiles,
       },
-      { label: "Plan IGN", value: "plan-ign", isAvailable: hasPlanIGN },
-      { label: "Photographie aérienne", value: "ortho", isAvailable: hasOrtho },
+      { label: "Plan IGN", value: MapStyle.PLAN_IGN, isAvailable: hasPlanIGN },
     ].filter(({ isAvailable }) => isAvailable);
   }, [commune]);
+
+  const onSelect = (style) => {
+    const updatedRegisteredMapStyle = registeredMapStyle
+      ? { ...registeredMapStyle, [baseLocale.id]: style.value }
+      : { [baseLocale.id]: style.value };
+    setRegisteredMapStyle(updatedRegisteredMapStyle);
+    handleStyle(style.value as MapStyle);
+  };
 
   return (
     <Pane
@@ -55,7 +73,7 @@ function StyleControl({
           height={40 + 33 * availableStyles.length}
           options={availableStyles}
           selected={style}
-          onSelect={(style) => handleStyle(style.value as string)}
+          onSelect={onSelect}
         >
           <Button
             className="map-style-button"
