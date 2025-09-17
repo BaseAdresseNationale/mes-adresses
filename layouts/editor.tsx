@@ -78,7 +78,7 @@ function Editor({ children }: EditorProps) {
             >
               <MainTabs balId={baseLocale.id} />
 
-              <ProductTours />
+              <ProductTours commune={commune} />
 
               {isAddressFormOpen ? (
                 <AddressEditor

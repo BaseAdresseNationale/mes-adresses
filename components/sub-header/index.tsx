@@ -9,7 +9,7 @@ import TokenContext from "@/contexts/token";
 
 import HabilitationProcess from "@/components/habilitation-process/index";
 import Breadcrumbs from "@/components/breadcrumbs";
-import COMDialog from "@/components/habilitation-process/com-dialog";
+import COMDialog from "./com-dialog";
 import SettingsMenu from "@/components/sub-header/settings-menu";
 import BALStatus from "@/components/sub-header/bal-status";
 import MassDeletionDialog from "@/components/mass-deletion-dialog";
