@@ -113,6 +113,7 @@ function SubHeader({ commune }: SubHeaderProps) {
                 baseLocale={baseLocale}
                 commune={commune}
                 token={token}
+                habilitation={habilitation}
                 isRefrehSyncStat={isRefrehSyncStat}
                 handlePublication={handlePublication}
                 handleHabilitation={handleShowHabilitationProcess}
