@@ -17,7 +17,7 @@ export function useSignalementMapDiffCreation(
   const { parcelles, positions } = changesRequested;
   const [initialized, setInitialized] = useState(false);
   const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
+  const { isStyleLoaded, setIsCadastreDisplayed } = useContext(MapContext);
   const { isMapLoaded } = useMapStyleLoaded();
   const {
     setHighlightedParcelles,
