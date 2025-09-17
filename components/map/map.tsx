@@ -139,7 +139,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         setMapFilter(map, NUMEROS_POINT, ["==", ["get", "idVoie"], voie.id]);
         setMapFilter(map, NUMEROS_LABEL, ["==", ["get", "idVoie"], voie.id]);
         setMapFilter(map, VOIE_LABEL, ["==", ["get", "id"], voie.id]);
-        setMapFilter(map, VOIE_TRACE_LINE, ["==", ["get", "id"], voie.id]);
+        // Hide all traces
+        setMapFilter(map, VOIE_TRACE_LINE, ["==", ["get", "id"], ""]);
       } else {
         // Remove filter
         setMapFilter(map, VOIE_TRACE_LINE, null);

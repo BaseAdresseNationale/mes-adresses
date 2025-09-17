@@ -168,6 +168,7 @@ export function DrawContextProvider(props: ChildrenProps) {
               "Cliquez sur la carte pour mesurer une distance. Double-cliquez pour terminer."
             );
           } else {
+            draw.changeMode("direct_select", { featureId: data.id });
             const lineLength = length(data, { units: "meters" });
             setHint(`Longueur : ${Math.round(lineLength)} m.`);
           }
