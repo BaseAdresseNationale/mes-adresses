@@ -90,6 +90,7 @@ function Publication() {
               <StatusBadge
                 status={BaseLocale.status.PUBLISHED}
                 sync={{ isPaused: false, status: BaseLocaleSync.status.SYNCED }}
+                isHabilitationValid={true}
               />
             </Pane>
             <Text>
@@ -103,6 +104,7 @@ function Publication() {
               <StatusBadge
                 status={BaseLocale.status.PUBLISHED}
                 sync={{ isPaused: true, status: BaseLocaleSync.status.SYNCED }}
+                isHabilitationValid={true}
               />
             </Pane>
             <Text>
@@ -120,6 +122,7 @@ function Publication() {
                   isPaused: true,
                   status: BaseLocaleSync.status.CONFLICT,
                 }}
+                isHabilitationValid={true}
               />
             </Pane>
             <Text>
