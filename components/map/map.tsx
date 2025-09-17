@@ -13,7 +13,7 @@ import { Pane, Alert } from "evergreen-ui";
 import MapContext, { MapStyle, SOURCE_TILE_ID } from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import TokenContext from "@/contexts/token";
-import DrawContext from "@/contexts/draw";
+import DrawContext, { DrawMode } from "@/contexts/draw";
 import ParcellesContext from "@/contexts/parcelles";
 import BalDataContext from "@/contexts/bal-data";
 
@@ -32,7 +32,6 @@ import NumerosMarkers from "@/components/map/numeros-markers";
 import MapMarker from "@/components/map/map-marker";
 import PopupFeature from "@/components/map/popup-feature/popup-feature";
 import NavControl from "@/components/map/controls/nav-control";
-import DrawControl from "./controls/draw-control";
 import StyleControl from "@/components/map/controls/style-control";
 import AddressEditorControl from "@/components/map/controls/address-editor-control";
 import ImageControl from "@/components/map/controls/image-control";
@@ -49,6 +48,7 @@ import {
 import GeolocationControl from "./controls/geolocation-control";
 import { ortho, planIGN, vector } from "./styles";
 import { cadastreLayers } from "./layers/cadastre";
+import RulerControl from "./controls/ruler-control";
 
 const settings = {
   maxZoom: 19,
@@ -120,7 +120,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const { balId } = router.query;
   const { voie, toponyme, numeros, editingId, setEditingId, isEditing } =
     useContext(BalDataContext);
-  const { modeId, hint, drawEnabled } = useContext(DrawContext);
+  const { hint, drawMode } = useContext(DrawContext);
   const { token } = useContext(TokenContext);
 
   const [handleHover, handleMouseLeave, featureHovered] = useHovered(map);
@@ -135,11 +135,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const updatePositionsLayer = useCallback(() => {
     if (map && isTileSourceLoaded) {
-      if (voie && drawEnabled) {
+      if (voie && drawMode === DrawMode.DRAW_METRIC_VOIE) {
         setMapFilter(map, NUMEROS_POINT, ["==", ["get", "idVoie"], voie.id]);
         setMapFilter(map, NUMEROS_LABEL, ["==", ["get", "idVoie"], voie.id]);
         setMapFilter(map, VOIE_LABEL, ["==", ["get", "id"], voie.id]);
-        setMapFilter(map, VOIE_TRACE_LINE, ["==", ["get", "id"], voie.id]);
+        // Hide all traces
+        setMapFilter(map, VOIE_TRACE_LINE, ["==", ["get", "id"], ""]);
       } else {
         // Remove filter
         setMapFilter(map, VOIE_TRACE_LINE, null);
@@ -149,7 +150,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         setMapFilter(map, TOPONYME_LABEL, null);
       }
     }
-  }, [map, voie, isTileSourceLoaded, drawEnabled]);
+  }, [map, voie, isTileSourceLoaded, drawMode]);
 
   const interactiveLayerIds = useMemo(() => {
     const layers = [];
@@ -222,14 +223,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   );
 
   useEffect(() => {
-    if (modeId === "drawLineString") {
+    if (drawMode) {
       setCursor("crosshair");
     } else if (featureHovered) {
       setCursor("pointer");
     } else {
       setCursor("default");
     }
-  }, [modeId, featureHovered]);
+  }, [drawMode, featureHovered]);
 
   // Hide current voie's or toponyme's numeros
   useEffect(() => {
@@ -332,7 +333,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
-      {map && <DrawControl map={map} isMapLoaded={isMapLoaded} />}
 
       {token && !isMobile && (
         <Pane position="absolute" zIndex={1} top={90} right={10}>
@@ -347,6 +347,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       {!isMobile && (
         <Pane position="absolute" zIndex={1} top={125} right={10}>
           <ImageControl map={map} communeNom={commune.nom} />
+        </Pane>
+      )}
+
+      {!isMobile && (
+        <Pane position="absolute" zIndex={1} top={160} right={10}>
+          <RulerControl disabled={isEditing} />
         </Pane>
       )}
 
@@ -397,7 +403,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             ))}
           </Source>
 
-          {(voie || toponyme) && !modeId && numeros && (
+          {(voie || toponyme) && !drawMode && numeros && (
             <NumerosMarkers
               numeros={numeros.filter(({ id }) => id !== editingId) as Numero[]}
               isContextMenuDisplayed={isContextMenuDisplayed}

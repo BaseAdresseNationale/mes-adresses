@@ -1,10 +1,33 @@
-import { useContext, useCallback } from "react";
+import { useContext, useCallback, useEffect } from "react";
 import { Pane, Heading, Button, Alert, EraserIcon } from "evergreen-ui";
 
-import DrawContext from "@/contexts/draw";
+import DrawContext, { DrawMode } from "@/contexts/draw";
+import { LineString, Voie } from "@/lib/openapi-api-bal";
 
-function DrawEditor() {
-  const { hint, data, setData } = useContext(DrawContext);
+interface DrawMetricVoieEditorProps {
+  voie?: Voie;
+}
+
+export function DrawMetricVoieEditor({ voie }: DrawMetricVoieEditorProps) {
+  const { hint, data, setData, setDrawMode } = useContext(DrawContext);
+
+  useEffect(() => {
+    setDrawMode(DrawMode.DRAW_METRIC_VOIE);
+
+    if (voie?.trace) {
+      setData({
+        type: "Feature",
+        properties: {},
+        geometry: voie.trace as LineString,
+      });
+    } else {
+      setData(null);
+    }
+
+    return () => {
+      setDrawMode(null);
+    };
+  }, [voie, setData, setDrawMode]);
 
   const handleDelete = useCallback(() => {
     setData(null);
@@ -38,5 +61,3 @@ function DrawEditor() {
     </Pane>
   );
 }
-
-export default DrawEditor;
