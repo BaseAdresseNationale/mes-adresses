@@ -6,8 +6,10 @@ import StatusBadge from "@/components/status-badge";
 import BANSync from "@/components/sub-header/bal-status/ban-sync";
 import RefreshSyncBadge from "@/components/sub-header/bal-status/refresh-sync-badge";
 import {
+  BaseLocaleSync,
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
+  HabilitationDTO,
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
@@ -15,6 +17,7 @@ interface BALStatusProps {
   baseLocale: ExtendedBaseLocaleDTO;
   commune: CommuneType;
   token: string;
+  habilitation: HabilitationDTO;
   isRefrehSyncStat: boolean;
   handlePublication: () => Promise<any>;
   handleHabilitation: () => Promise<void>;
@@ -25,11 +28,14 @@ function BALStatus({
   baseLocale,
   commune,
   token = null,
+  habilitation,
   isRefrehSyncStat,
   handlePublication,
   handleHabilitation,
   reloadBaseLocale,
 }: BALStatusProps) {
+  const isHabilitationValid =
+    habilitation?.status === HabilitationDTO.status.ACCEPTED;
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
   const handlePause = async () => {
@@ -72,12 +78,16 @@ function BALStatus({
         {isRefrehSyncStat ? (
           <RefreshSyncBadge />
         ) : (
-          <StatusBadge status={baseLocale.status} sync={baseLocale.sync} />
+          <StatusBadge
+            status={baseLocale.status}
+            sync={baseLocale.sync}
+            isHabilitationValid={isHabilitationValid}
+          />
         )}
       </Pane>
 
       {token &&
-        (baseLocale.sync ? (
+        (baseLocale.sync && isHabilitationValid ? (
           <BANSync
             baseLocale={baseLocale}
             commune={commune}
@@ -85,18 +95,34 @@ function BALStatus({
             togglePause={
               baseLocale.sync.isPaused ? handleResumeSync : handlePause
             }
+            isHabilitationValid={isHabilitationValid}
           />
         ) : (
-          baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (
-            <Button
-              marginRight={8}
-              height={24}
-              appearance="primary"
-              onClick={handleHabilitation}
-            >
-              Publier
-            </Button>
-          )
+          <>
+            {(baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED ||
+              baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED) &&
+              baseLocale.sync?.status !== BaseLocaleSync.status.SYNCED &&
+              !isHabilitationValid && (
+                <Button
+                  marginRight={8}
+                  height={24}
+                  appearance="primary"
+                  onClick={handleShowHabilitationProcess}
+                >
+                  Habiliter la BAL
+                </Button>
+              )}
+            {baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (
+              <Button
+                marginRight={8}
+                height={24}
+                appearance="primary"
+                onClick={handleHabilitation}
+              >
+                Publier
+              </Button>
+            )}
+          </>
         ))}
     </>
   );
