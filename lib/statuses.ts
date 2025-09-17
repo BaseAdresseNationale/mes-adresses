@@ -88,13 +88,10 @@ export function computeStatus(
   balStatus: BaseLocale.status,
   sync: Partial<BaseLocaleSync>
 ): StatusType {
-  if (sync?.isPaused) {
+  if (sync?.isPaused && balStatus !== BaseLocale.status.REPLACED) {
     return STATUSES.paused;
-  }
-
-  if (balStatus === BaseLocale.status.PUBLISHED) {
+  } else if (balStatus === BaseLocale.status.PUBLISHED) {
     return STATUSES[sync.status];
   }
-
   return STATUSES[balStatus];
 }
