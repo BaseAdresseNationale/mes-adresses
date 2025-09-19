@@ -60,7 +60,6 @@ function PublishBalStep({
     }
 
     async function publishBAL() {
-      console.log("publishBAL", habilitation);
       setIsLoadingPublish(true);
       if (habilitation?.status === StatusHabilitationEnum.ACCEPTED) {
         checkConflictingRevision();

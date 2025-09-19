@@ -1,12 +1,12 @@
 import { parcelleDiff } from "@/components/signalement/signalement-diff/signalement-parcelle-diff";
 import { positionDiff } from "@/components/signalement/signalement-diff/signalement-position-diff";
-import MapContext from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import ParcellesContext from "@/contexts/parcelles";
 import { getPositionName } from "@/lib/positions-types-list";
 import { ActiveCardEnum, SignalementDiff } from "@/lib/utils/signalement";
 import { useContext, useEffect, useState } from "react";
 import { useMapStyleLoaded } from "./useMapStyleLoaded";
+import { useSignalementCadastre } from "./useSignalementCadastre";
 
 export type SignalementMapDiffUpdateExistingLocation = {
   positions: any[];
@@ -28,38 +28,13 @@ export function useSignalementMapDiffUpdate(
   const [initialized, setInitialized] = useState(false);
   const [activeCard, setActiveCard] = useState<ActiveCardEnum>();
   const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
   const { isMapLoaded } = useMapStyleLoaded();
-  const {
-    setHighlightedParcelles,
-    setShowSelectedParcelles,
-    handleSetFeatureState,
-    setIsDiffMode,
-  } = useContext(ParcellesContext);
+  const { setHighlightedParcelles, handleSetFeatureState } =
+    useContext(ParcellesContext);
+
+  useSignalementCadastre(parcelles);
 
   const [positionsToDisplay, setPositionsToDisplay] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (isStyleLoaded && parcelles?.length > 0) {
-      setIsCadastreDisplayed(true);
-      setShowSelectedParcelles(false);
-      setIsDiffMode(true);
-
-      return () => {
-        setIsCadastreDisplayed(false);
-        setShowSelectedParcelles(true);
-        setHighlightedParcelles([]);
-        setIsDiffMode(false);
-      };
-    }
-  }, [
-    isStyleLoaded,
-    setIsCadastreDisplayed,
-    setHighlightedParcelles,
-    setShowSelectedParcelles,
-    setIsDiffMode,
-    parcelles,
-  ]);
 
   useEffect(() => {
     if (!isMapLoaded || initialized) {
