@@ -91,9 +91,11 @@ export const getSignalementLabel = (
   return label;
 };
 
-export const matchExistingToponyme = (
+export const matchExistingToponyme = <
+  T extends { nom: string; banId?: string },
+>(
   signalementToponyme: { nom: string; banId?: string },
-  toponymes: Array<Voie | Toponyme>
+  toponymes: Array<T>
 ) => {
   return toponymes.find(({ nom, banId }) => {
     if (signalementToponyme.banId) {

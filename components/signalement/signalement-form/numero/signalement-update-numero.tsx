@@ -1,19 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  Numero,
-  NumerosService,
-  Toponyme,
-  VoiesService,
-} from "@/lib/openapi-api-bal";
+import React, { useContext } from "react";
+import { Numero, NumerosService, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import {
   Signalement,
   NumeroChangesRequestedDTO,
 } from "@/lib/openapi-signalement";
 import { SignalementFormButtons } from "../signalement-form-buttons";
-import { ActiveCardEnum, detectChanges } from "@/lib/utils/signalement";
+import { ActiveCardEnum } from "@/lib/utils/signalement";
 import { SignalementNumeroDiffCard } from "../../signalement-diff/signalement-numero-diff-card";
 import { useSignalementMapDiffUpdate } from "@/components/signalement/hooks/useSignalementMapDiffUpdate";
-import { Alert, Text } from "evergreen-ui";
 import LayoutContext from "@/contexts/layout";
 
 interface SignalementUpdateNumeroProps {
@@ -21,6 +15,7 @@ interface SignalementUpdateNumeroProps {
   author?: Signalement["author"];
   existingLocation: Numero;
   requestedToponyme?: Toponyme;
+  requestedVoie?: Voie;
   handleAccept: () => Promise<void>;
   handleReject: (reason?: string) => Promise<void>;
   handleClose: () => void;
@@ -32,20 +27,13 @@ function SignalementUpdateNumero({
   author,
   existingLocation,
   requestedToponyme,
+  requestedVoie,
   handleAccept,
   handleReject,
   handleClose,
   isLoading,
 }: SignalementUpdateNumeroProps) {
-  const [changes, setChanges] = useState(
-    detectChanges(signalement, existingLocation)
-  );
   const { pushToast } = useContext(LayoutContext);
-
-  useEffect(() => {
-    const newChanges = detectChanges(signalement, existingLocation);
-    setChanges(newChanges);
-  }, [signalement, existingLocation]);
 
   const { numero, suffixe, positions, parcelles, nomVoie } =
     signalement.changesRequested as NumeroChangesRequestedDTO;
@@ -65,16 +53,12 @@ function SignalementUpdateNumero({
 
   const onAccept = async () => {
     try {
-      if (changes.voie) {
-        await VoiesService.updateVoie(existingLocation.voie.id, {
-          nom: nomVoie,
-        });
-      }
       await NumerosService.updateNumero(existingLocation.id, {
         numero,
         suffixe,
         positions: positions as any[],
         parcelles,
+        voieId: requestedVoie?.id || existingLocation.voie.id,
         toponymeId: requestedToponyme?.id,
       });
       await handleAccept();
@@ -128,7 +112,7 @@ function SignalementUpdateNumero({
           to: nomVoie,
         }}
         complement={{
-          from: existingLocation.toponyme?.nom,
+          from: existingLocation.toponyme?.nom || "",
           to: requestedToponyme?.nom,
         }}
         positions={{
@@ -165,13 +149,6 @@ function SignalementUpdateNumero({
           setActiveCard(ActiveCardEnum.FINAL);
         }}
       />
-      {changes.voie && (
-        <Alert intent="warning" flexShrink={0}>
-          <Text>
-            Le renommage de la voie affectera toutes les adresses de cette voie.
-          </Text>
-        </Alert>
-      )}
       <SignalementFormButtons
         author={author}
         onAccept={onAccept}

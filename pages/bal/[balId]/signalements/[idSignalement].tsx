@@ -9,6 +9,7 @@ import {
   Voie,
 } from "@/lib/openapi-api-bal";
 import {
+  ExistingNumero,
   NumeroChangesRequestedDTO,
   Signalement,
   SignalementsService,
@@ -21,6 +22,7 @@ import {
   getExistingLocation,
   getSignalementLabel,
   isNumeroChangesRequested,
+  matchExistingToponyme,
 } from "@/lib/utils/signalement";
 import { ObjectId } from "bson";
 import MapContext from "@/contexts/map";
@@ -36,14 +38,14 @@ import { TilesLayerMode } from "@/components/map/layers/tiles";
 interface SignalementPageProps {
   signalement: Signalement;
   existingLocation: Voie | Toponyme | Numero | null;
-  requestedToponyme?: Toponyme;
+  requestedLocations: { toponyme?: Toponyme | null; voie?: Voie | null };
   baseLocale: ExtendedBaseLocaleDTO;
 }
 
 function SignalementPage({
   signalement,
   existingLocation,
-  requestedToponyme,
+  requestedLocations,
   baseLocale,
 }: SignalementPageProps) {
   const router = useRouter();
@@ -87,7 +89,9 @@ function SignalementPage({
     };
 
     if (
-      (existingLocation === null || requestedToponyme === null) &&
+      (existingLocation === null ||
+        requestedLocations.toponyme === null ||
+        requestedLocations.voie === null) &&
       signalement.status === Signalement.status.PENDING &&
       !isNewVoieCreation
     ) {
@@ -97,7 +101,7 @@ function SignalementPage({
     existingLocation,
     signalement,
     baseLocale,
-    requestedToponyme,
+    requestedLocations,
     isNewVoieCreation,
   ]);
 
@@ -177,13 +181,14 @@ function SignalementPage({
         />
       ) : signalement.status === Signalement.status.PENDING &&
         (existingLocation || isNewVoieCreation) &&
-        requestedToponyme !== null ? (
+        requestedLocations.toponyme !== null &&
+        requestedLocations.voie !== null ? (
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
             author={author}
             existingLocation={existingLocation}
-            requestedToponyme={requestedToponyme}
+            requestedLocations={requestedLocations}
             onClose={handleClose}
             onSubmit={handleSubmit}
           />
@@ -251,20 +256,10 @@ export async function getServerSideProps({ params }) {
       };
     }
 
-    let requestedToponyme;
-    if (
-      (signalement.changesRequested as NumeroChangesRequestedDTO).nomComplement
-    ) {
-      requestedToponyme =
-        toponymes.find(
-          (toponyme) =>
-            toponyme.nom ===
-            (signalement.changesRequested as NumeroChangesRequestedDTO)
-              .nomComplement
-        ) || null;
-    }
-
     let existingLocation = null;
+    let requestedLocations: { toponyme?: Toponyme | null; voie?: Voie | null } =
+      {};
+
     try {
       if (signalement.existingLocation) {
         existingLocation = await getExistingLocation(
@@ -272,6 +267,24 @@ export async function getServerSideProps({ params }) {
           voies,
           toponymes
         );
+        if (
+          signalement.type === Signalement.type.LOCATION_TO_UPDATE &&
+          signalement.existingLocation.type === ExistingNumero.type.NUMERO &&
+          (signalement.existingLocation as ExistingNumero).toponyme.nom !==
+            (signalement.changesRequested as NumeroChangesRequestedDTO).nomVoie
+        ) {
+          requestedLocations.voie =
+            matchExistingToponyme(
+              {
+                nom: (signalement.changesRequested as NumeroChangesRequestedDTO)
+                  .nomVoie,
+                banId: (
+                  signalement.changesRequested as NumeroChangesRequestedDTO
+                ).banIdVoie,
+              },
+              voies
+            ) || null;
+        }
       } else if (
         !signalement.existingLocation &&
         isNumeroChangesRequested(signalement.changesRequested)
@@ -288,6 +301,21 @@ export async function getServerSideProps({ params }) {
       existingLocation = null;
     }
 
+    if (
+      (signalement.changesRequested as NumeroChangesRequestedDTO).nomComplement
+    ) {
+      requestedLocations.toponyme =
+        matchExistingToponyme(
+          {
+            nom: (signalement.changesRequested as NumeroChangesRequestedDTO)
+              .nomComplement,
+            banId: (signalement.changesRequested as NumeroChangesRequestedDTO)
+              .banIdComplement,
+          },
+          toponymes
+        ) || null;
+    }
+
     return {
       props: {
         baseLocale,
@@ -295,7 +323,7 @@ export async function getServerSideProps({ params }) {
         toponymes,
         signalement,
         existingLocation,
-        ...(requestedToponyme !== undefined ? { requestedToponyme } : {}),
+        requestedLocations,
       },
     };
   } catch (err) {
