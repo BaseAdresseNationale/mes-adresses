@@ -63,9 +63,8 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
               Nationnale, cette Base Adresse Locale doit être publiée par la
               commune de {commune.nom}.
               <br />
-              Notez qu&apos;une une fois publiée, votre Bal sera habilitée et
-              toutes les modifications remonteront automatiquement dans la Base
-              Adresse Nationale.
+              Notez qu&apos;une une fois publiée, toutes les modifications
+              remonteront automatiquement dans la Base Adresse Nationale.
               <Pane display="flex" justifyContent="right">
                 <Button
                   appearance="primary"
