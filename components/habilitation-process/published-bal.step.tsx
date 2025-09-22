@@ -1,6 +1,17 @@
-import { Button, Heading, Pane, Paragraph, Text, Strong } from "evergreen-ui";
+import {
+  Button,
+  Heading,
+  Pane,
+  Paragraph,
+  Text,
+  Strong,
+  defaultTheme,
+} from "evergreen-ui";
 import { HabilitationDTO } from "@/lib/openapi-api-bal";
 import Confetti from "react-confetti";
+import style from "./animation-achievement.module.css";
+import AchievementBadge from "../bal/panel-goal/achievements-badge/achievements-badge";
+import { useEffect, useState } from "react";
 
 interface PublishedBalStepProps {
   habilitation: HabilitationDTO;
@@ -13,20 +24,57 @@ function PublishedBalStep({
   handleClose,
   dialogWidth,
 }: PublishedBalStepProps) {
+  const [displayTitle, setIsAnimating] = useState<boolean>(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsAnimating(true);
+    }, 1000);
+  }, []);
+
   return (
     <>
       <Confetti
         className="confetti"
         recycle={false}
         numberOfPieces={500}
-        tweenDuration={3000}
+        tweenDuration={1}
         width={dialogWidth}
       />
       <Pane display="flex" flexDirection="column" gap={16}>
-        <Pane background="white" padding={16} borderRadius={8}>
-          <Heading is="h2" textAlign="center">
-            Votre Base Adresse Locale a bien été publiée
-          </Heading>
+        <Pane
+          background="white"
+          paddingY={32}
+          paddingX={16}
+          borderRadius={8}
+          height={128}
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="center"
+          gap={32}
+        >
+          {displayTitle && (
+            <AchievementBadge
+              icone="/static/images/achievements/published-bal.svg"
+              title="Publication"
+              completed={true}
+              width={64}
+              height={64}
+              className={style.tada}
+            />
+          )}
+          {displayTitle && (
+            <Heading
+              is="h2"
+              textAlign="center"
+              size={600}
+              className={style.slideInRight}
+              color={defaultTheme.colors.green700}
+            >
+              Votre Base Adresse Locale a bien été publiée
+            </Heading>
+          )}
         </Pane>
 
         <Pane background="white" padding={16} borderRadius={8}>

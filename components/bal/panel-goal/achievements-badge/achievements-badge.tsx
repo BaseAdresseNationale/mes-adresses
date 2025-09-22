@@ -9,6 +9,7 @@ interface AchievementsProps {
   completed: boolean;
   width?: number;
   height?: number;
+  className?: string;
 }
 
 export function AchievementBadge({
@@ -17,12 +18,13 @@ export function AchievementBadge({
   completed,
   width = 32,
   height = 32,
+  className,
 }: AchievementsProps) {
   return (
     <div
       className={`${style["achievement-badge"]} ${
         completed ? style["green"] : style["disabled"]
-      }`}
+      } ${className}`}
       style={{ width, height }}
     >
       <NextImage
