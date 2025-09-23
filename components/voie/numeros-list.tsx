@@ -10,6 +10,10 @@ import {
   AddIcon,
   LockIcon,
   IconButton,
+  DownloadIcon,
+  Menu,
+  TrashIcon,
+  EditIcon,
 } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
@@ -157,6 +161,27 @@ function NumerosList({
       await softDeleteNumero();
     },
     [reloadNumeros, reloadParcelles, refreshBALSync, reloadTiles, toaster]
+  );
+
+  const onDownloadCertificat = useCallback(
+    async (idNumero) => {
+      const downloadCertificat = toaster(
+        async () => {
+          const response = await NumerosService.downloadCertificat(idNumero);
+          const url = window.URL.createObjectURL(response);
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", `certificat_adressage_${idNumero}.pdf`);
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        },
+        "Le certificat d'adressage a bien été téléchargé",
+        "Le certificat d'adressage n'a pas pu être téléchargé"
+      );
+      await downloadCertificat();
+    },
+    [toaster]
   );
 
   const onMultipleRemove = async () => {
@@ -336,12 +361,31 @@ function NumerosList({
               />
 
               {isEditingEnabled && (
-                <TableRowActions
-                  onRemove={async () => onRemove(numero.id)}
-                  onEdit={() => {
-                    handleEditing(numero.id);
-                  }}
-                />
+                <TableRowActions>
+                  <Menu.Item
+                    icon={EditIcon}
+                    onSelect={() => {
+                      handleEditing(numero.id);
+                    }}
+                  >
+                    Modifier
+                  </Menu.Item>
+                  {numero.certifie && (
+                    <Menu.Item
+                      icon={DownloadIcon}
+                      onSelect={() => onDownloadCertificat(numero.id)}
+                    >
+                      Télécharger le certificat d&apos;adressage
+                    </Menu.Item>
+                  )}
+                  <Menu.Item
+                    icon={TrashIcon}
+                    intent="danger"
+                    onSelect={onRemove}
+                  >
+                    Supprimer…
+                  </Menu.Item>
+                </TableRowActions>
               )}
 
               {!Boolean(token) && (

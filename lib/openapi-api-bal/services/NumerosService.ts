@@ -70,6 +70,24 @@ export class NumerosService {
     }
 
     /**
+     * Download the certificat of the numero by id
+     * @param numeroId
+     * @returns binary PDF certificate file
+     * @throws ApiError
+     */
+    public static downloadCertificat(
+        numeroId: string,
+    ): CancelablePromise<Blob> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/numeros/download-certificat/{numeroId}',
+            path: {
+                'numeroId': numeroId,
+            },
+        });
+    }
+
+    /**
      * Soft delete the numero by id
      * @param numeroId
      * @returns Numero

@@ -12,6 +12,11 @@ import {
   FilterIcon,
   FilterRemoveIcon,
   Button,
+  Menu,
+  SendToMapIcon,
+  EditIcon,
+  EndorsedIcon,
+  TrashIcon,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
@@ -340,22 +345,41 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
               />
 
               {isEditingEnabled && (
-                <TableRowActions
-                  onSelect={() => {
-                    browseToNumerosList(voie.id);
-                  }}
-                  onEdit={() => {
-                    browseToVoie(voie.id);
-                  }}
-                  onRemove={() => {
-                    setToRemove(voie.id);
-                  }}
-                  {...(!voie.isAllCertified && {
-                    onCertified: () => {
-                      setToCertify(voie.id);
-                    },
-                  })}
-                />
+                <TableRowActions>
+                  <Menu.Item
+                    icon={SendToMapIcon}
+                    onSelect={() => {
+                      browseToNumerosList(voie.id);
+                    }}
+                  >
+                    Consulter
+                  </Menu.Item>
+                  <Menu.Item
+                    icon={EditIcon}
+                    onSelect={() => {
+                      browseToVoie(voie.id);
+                    }}
+                  >
+                    Modifier
+                  </Menu.Item>
+                  {!voie.isAllCertified && (
+                    <Menu.Item
+                      icon={EndorsedIcon}
+                      onSelect={() => {
+                        setToCertify(voie.id);
+                      }}
+                    >
+                      Certifier
+                    </Menu.Item>
+                  )}
+                  <Menu.Item
+                    icon={TrashIcon}
+                    intent="danger"
+                    onSelect={onRemove}
+                  >
+                    Supprimer…
+                  </Menu.Item>
+                </TableRowActions>
               )}
 
               {!Boolean(token) && (
