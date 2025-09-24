@@ -1,10 +1,10 @@
-import MapContext from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import ParcellesContext from "@/contexts/parcelles";
 import { useContext, useEffect, useState } from "react";
 import { getPositionName } from "@/lib/positions-types-list";
 import { useMapStyleLoaded } from "./useMapStyleLoaded";
 import { SignalementDiff } from "@/lib/utils/signalement";
+import { useSignalementCadastre } from "./useSignalementCadastre";
 
 export function useSignalementMapDiffDeletion(existingLocation: {
   positions: any[];
@@ -13,37 +13,11 @@ export function useSignalementMapDiffDeletion(existingLocation: {
   const { parcelles, positions } = existingLocation;
   const [initialized, setInitialized] = useState(false);
   const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { isStyleLoaded, setIsCadastreDisplayed, map } = useContext(MapContext);
   const { isMapLoaded } = useMapStyleLoaded();
-  const {
-    setHighlightedParcelles,
-    setShowSelectedParcelles,
-    setIsDiffMode,
-    handleSetFeatureState,
-  } = useContext(ParcellesContext);
+  const { setHighlightedParcelles, handleSetFeatureState } =
+    useContext(ParcellesContext);
 
-  useEffect(() => {
-    if (isStyleLoaded && parcelles?.length > 0) {
-      setIsCadastreDisplayed(true);
-      setShowSelectedParcelles(false);
-      setHighlightedParcelles(parcelles);
-      setIsDiffMode(true);
-
-      return () => {
-        setIsCadastreDisplayed(false);
-        setShowSelectedParcelles(true);
-        setHighlightedParcelles([]);
-        setIsDiffMode(false);
-      };
-    }
-  }, [
-    isStyleLoaded,
-    setIsCadastreDisplayed,
-    parcelles,
-    setHighlightedParcelles,
-    setShowSelectedParcelles,
-    setIsDiffMode,
-  ]);
+  useSignalementCadastre(parcelles);
 
   useEffect(() => {
     if (!isMapLoaded || initialized) {
