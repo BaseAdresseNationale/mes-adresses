@@ -14,6 +14,8 @@ import {
   Menu,
   TrashIcon,
   EditIcon,
+  Dialog,
+  TextInputField,
 } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
@@ -30,6 +32,7 @@ import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
   BasesLocalesService,
   CommunePrecedenteDTO,
+  GenerateCertificatDTO,
   Numero,
   NumerosService,
 } from "@/lib/openapi-api-bal";
@@ -51,6 +54,8 @@ const fuseOptions = {
   keys: ["numeroComplet"],
 };
 
+type CertificatGenerationData = GenerateCertificatDTO & { numeroId: string };
+
 function NumerosList({
   commune,
   token = null,
@@ -59,6 +64,9 @@ function NumerosList({
   handleEditing,
 }: NumerosListProps) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false);
+  const [certificatGenerationData, setCertificatGenerationData] =
+    useState<CertificatGenerationData | null>(null);
+  const [isGeneratingCertificat, setIsGeneratingCertificat] = useState(false);
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
   const { toaster } = useContext(LayoutContext);
 
@@ -164,14 +172,20 @@ function NumerosList({
   );
 
   const onDownloadCertificat = useCallback(
-    async (idNumero) => {
+    async (data) => {
       const downloadCertificat = toaster(
         async () => {
-          const response = await NumerosService.downloadCertificat(idNumero);
-          const url = window.URL.createObjectURL(response);
+          const { numeroId, ...rest } = data;
+          const response = await NumerosService.generateCertificat(
+            numeroId,
+            rest
+          );
+          console.log("response", response);
+          const blob = new Blob([response], { type: "application/pdf" });
+          const url = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `certificat_adressage_${idNumero}.pdf`);
+          link.setAttribute("download", `certificat_adressage_${numeroId}.pdf`);
           document.body.appendChild(link);
           link.click();
           link.parentNode.removeChild(link);
@@ -287,6 +301,68 @@ function NumerosList({
         isDisabled={isDisabled}
       />
 
+      <Dialog
+        isShown={certificatGenerationData !== null}
+        title="Génération d'un certificat d'adressage"
+        cancelLabel="Annuler"
+        confirmLabel="Télécharger"
+        onCloseComplete={() => setCertificatGenerationData(null)}
+        onCancel={() => setCertificatGenerationData(null)}
+        isConfirmLoading={isGeneratingCertificat}
+        isConfirmDisabled={
+          !certificatGenerationData?.destinataire ||
+          !certificatGenerationData?.emetteur ||
+          isGeneratingCertificat
+        }
+        shouldCloseOnOverlayClick={!isGeneratingCertificat}
+        shouldCloseOnEscapePress={!isGeneratingCertificat}
+        hasCancel={!isGeneratingCertificat}
+        hasClose={!isGeneratingCertificat}
+        onConfirm={async () => {
+          if (certificatGenerationData) {
+            setIsGeneratingCertificat(true);
+            await onDownloadCertificat(certificatGenerationData);
+            setIsGeneratingCertificat(false);
+            setCertificatGenerationData(null);
+          }
+        }}
+      >
+        <Pane is="form" onSubmit={(e) => e.preventDefault()}>
+          <TextInputField
+            label="Émetteur"
+            description="L'émetteur sera mentionné dans le certificat d'adressage"
+            required
+            value={certificatGenerationData?.emetteur || ""}
+            onChange={(e) =>
+              setCertificatGenerationData(
+                (data) =>
+                  ({
+                    ...data,
+                    emetteur: e.target.value,
+                  }) as CertificatGenerationData
+              )
+            }
+            placeholder="Sylvie Loiseau, Adjointe au Maire"
+          />
+          <TextInputField
+            label="Destinataire"
+            description="Le propriétaire ou le gestionnaire des parcelles associées au numéro"
+            required
+            value={certificatGenerationData?.destinataire || ""}
+            onChange={(e) =>
+              setCertificatGenerationData(
+                (data) =>
+                  ({
+                    ...data,
+                    destinataire: e.target.value,
+                  }) as CertificatGenerationData
+              )
+            }
+            placeholder="Mr Rémi Dupont"
+          />
+        </Pane>
+      </Dialog>
+
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head background="white">
           {numeros && token && filtered.length > 1 && (
@@ -373,7 +449,13 @@ function NumerosList({
                   {numero.certifie && (
                     <Menu.Item
                       icon={DownloadIcon}
-                      onSelect={() => onDownloadCertificat(numero.id)}
+                      onSelect={() =>
+                        setCertificatGenerationData({
+                          numeroId: numero.id,
+                          destinataire: "",
+                          emetteur: "",
+                        })
+                      }
                     >
                       Télécharger le certificat d&apos;adressage
                     </Menu.Item>
