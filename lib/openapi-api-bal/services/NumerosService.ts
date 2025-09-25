@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { GenerateCertificatDTO } from '../models/GenerateCertificatDTO';
 import type { Numero } from '../models/Numero';
 import type { UpdateNumeroDTO } from '../models/UpdateNumeroDTO';
 
@@ -70,20 +71,24 @@ export class NumerosService {
     }
 
     /**
-     * Download the certificat of the numero by id
+     * Generate the certificat of the numero by id
      * @param numeroId
+     * @param requestBody
      * @returns binary PDF certificate file
      * @throws ApiError
      */
-    public static downloadCertificat(
+    public static generateCertificat(
         numeroId: string,
+        requestBody: GenerateCertificatDTO,
     ): CancelablePromise<Blob> {
         return __request(OpenAPI, {
-            method: 'GET',
-            url: '/v2/numeros/download-certificat/{numeroId}',
+            method: 'POST',
+            url: '/v2/numeros/generate-certificat/{numeroId}',
             path: {
                 'numeroId': numeroId,
             },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 

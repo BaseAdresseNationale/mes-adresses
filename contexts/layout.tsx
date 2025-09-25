@@ -80,6 +80,7 @@ export function LayoutContextProvider(
         ]);
         return result;
       } catch (error) {
+        console.error(error);
         if (error.status === 400 && onValidationError) {
           onValidationError(error);
           throw error;
