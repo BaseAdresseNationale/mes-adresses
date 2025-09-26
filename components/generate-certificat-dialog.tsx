@@ -31,9 +31,7 @@ export function GenerateCertificatDialog({
       onCancel={() => setCertificatGenerationData(null)}
       isConfirmLoading={isGeneratingCertificat}
       isConfirmDisabled={
-        !certificatGenerationData?.destinataire ||
-        !certificatGenerationData?.emetteur ||
-        isGeneratingCertificat
+        !certificatGenerationData?.emetteur || isGeneratingCertificat
       }
       shouldCloseOnOverlayClick={!isGeneratingCertificat}
       shouldCloseOnEscapePress={!isGeneratingCertificat}
@@ -81,8 +79,7 @@ export function GenerateCertificatDialog({
         />
         <TextInputField
           label="Destinataire"
-          description="Le propriétaire ou le gestionnaire des parcelles associées au numéro"
-          required
+          description="Renseigner le nom du destinataire pour un certificat nominatif"
           value={certificatGenerationData?.destinataire || ""}
           onChange={(e) =>
             setCertificatGenerationData(
