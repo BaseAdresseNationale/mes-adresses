@@ -74,13 +74,13 @@ export class NumerosService {
      * Generate the certificat of the numero by id
      * @param numeroId
      * @param requestBody
-     * @returns binary PDF certificate file
+     * @returns string URL of the generated PDF certificat
      * @throws ApiError
      */
     public static generateCertificat(
         numeroId: string,
         requestBody: GenerateCertificatDTO,
-    ): CancelablePromise<Blob> {
+    ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/numeros/generate-certificat/{numeroId}',
