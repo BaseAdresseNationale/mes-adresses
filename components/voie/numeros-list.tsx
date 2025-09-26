@@ -14,8 +14,7 @@ import {
   Menu,
   TrashIcon,
   EditIcon,
-  Dialog,
-  TextInputField,
+  Tooltip,
 } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
@@ -32,7 +31,6 @@ import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
   BasesLocalesService,
   CommunePrecedenteDTO,
-  GenerateCertificatDTO,
   Numero,
   NumerosService,
 } from "@/lib/openapi-api-bal";
@@ -41,6 +39,11 @@ import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
 import NumeroHeading from "./numero-heading";
 import { CommuneType } from "@/types/commune";
+import {
+  CertificatGenerationData,
+  GenerateCertificatDialog,
+} from "../generate-certificat-dialog";
+import LocalStorageContext from "@/contexts/local-storage";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -54,8 +57,6 @@ const fuseOptions = {
   keys: ["numeroComplet"],
 };
 
-type CertificatGenerationData = GenerateCertificatDTO & { numeroId: string };
-
 function NumerosList({
   commune,
   token = null,
@@ -66,7 +67,6 @@ function NumerosList({
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false);
   const [certificatGenerationData, setCertificatGenerationData] =
     useState<CertificatGenerationData | null>(null);
-  const [isGeneratingCertificat, setIsGeneratingCertificat] = useState(false);
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
   const { toaster } = useContext(LayoutContext);
 
@@ -79,6 +79,8 @@ function NumerosList({
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const { certificatEmetteur, setCertificatEmetteur } =
+    useContext(LocalStorageContext);
 
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -176,26 +178,20 @@ function NumerosList({
       const downloadCertificat = toaster(
         async () => {
           const { numeroId, ...rest } = data;
-          const response = await NumerosService.generateCertificat(
-            numeroId,
-            rest
-          );
-          console.log("response", response);
-          const blob = new Blob([response], { type: "application/pdf" });
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", `certificat_adressage_${numeroId}.pdf`);
-          document.body.appendChild(link);
-          link.click();
-          link.parentNode.removeChild(link);
+          const url = await NumerosService.generateCertificat(numeroId, rest);
+          window.open(url, "_blank");
         },
         "Le certificat d'adressage a bien été téléchargé",
         "Le certificat d'adressage n'a pas pu être téléchargé"
       );
       await downloadCertificat();
+      if (data.rememberEmetteur) {
+        setCertificatEmetteur(data.emetteur);
+      } else {
+        setCertificatEmetteur(null);
+      }
     },
-    [toaster]
+    [toaster, setCertificatEmetteur]
   );
 
   const onMultipleRemove = async () => {
@@ -233,6 +229,38 @@ function NumerosList({
     );
     await updateNumeros();
   };
+
+  const generateCertificatButton = useCallback(
+    (numero) => {
+      const menuItem = (
+        <Menu.Item
+          icon={DownloadIcon}
+          disabled={!numero.certifie || numero.parcelles.length === 0}
+          onSelect={() =>
+            setCertificatGenerationData({
+              numeroId: numero.id,
+              destinataire: "",
+              emetteur: certificatEmetteur || "",
+              rememberEmetteur: Boolean(certificatEmetteur),
+            })
+          }
+        >
+          Générer un certificat d&apos;adressage
+        </Menu.Item>
+      );
+
+      if (!numero.certifie || numero.parcelles.length === 0) {
+        return (
+          <Tooltip content="Le certificat d'adressage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
+            {menuItem}
+          </Tooltip>
+        );
+      }
+
+      return menuItem;
+    },
+    [certificatEmetteur]
+  );
 
   const isEditingEnabled = !isEditing && Boolean(token);
 
@@ -301,67 +329,11 @@ function NumerosList({
         isDisabled={isDisabled}
       />
 
-      <Dialog
-        isShown={certificatGenerationData !== null}
-        title="Génération d'un certificat d'adressage"
-        cancelLabel="Annuler"
-        confirmLabel="Télécharger"
-        onCloseComplete={() => setCertificatGenerationData(null)}
-        onCancel={() => setCertificatGenerationData(null)}
-        isConfirmLoading={isGeneratingCertificat}
-        isConfirmDisabled={
-          !certificatGenerationData?.destinataire ||
-          !certificatGenerationData?.emetteur ||
-          isGeneratingCertificat
-        }
-        shouldCloseOnOverlayClick={!isGeneratingCertificat}
-        shouldCloseOnEscapePress={!isGeneratingCertificat}
-        hasCancel={!isGeneratingCertificat}
-        hasClose={!isGeneratingCertificat}
-        onConfirm={async () => {
-          if (certificatGenerationData) {
-            setIsGeneratingCertificat(true);
-            await onDownloadCertificat(certificatGenerationData);
-            setIsGeneratingCertificat(false);
-            setCertificatGenerationData(null);
-          }
-        }}
-      >
-        <Pane is="form" onSubmit={(e) => e.preventDefault()}>
-          <TextInputField
-            label="Émetteur"
-            description="L'émetteur sera mentionné dans le certificat d'adressage"
-            required
-            value={certificatGenerationData?.emetteur || ""}
-            onChange={(e) =>
-              setCertificatGenerationData(
-                (data) =>
-                  ({
-                    ...data,
-                    emetteur: e.target.value,
-                  }) as CertificatGenerationData
-              )
-            }
-            placeholder="Sylvie Loiseau, Adjointe au Maire"
-          />
-          <TextInputField
-            label="Destinataire"
-            description="Le propriétaire ou le gestionnaire des parcelles associées au numéro"
-            required
-            value={certificatGenerationData?.destinataire || ""}
-            onChange={(e) =>
-              setCertificatGenerationData(
-                (data) =>
-                  ({
-                    ...data,
-                    destinataire: e.target.value,
-                  }) as CertificatGenerationData
-              )
-            }
-            placeholder="Mr Rémi Dupont"
-          />
-        </Pane>
-      </Dialog>
+      <GenerateCertificatDialog
+        certificatGenerationData={certificatGenerationData}
+        setCertificatGenerationData={setCertificatGenerationData}
+        onDownloadCertificat={onDownloadCertificat}
+      />
 
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head background="white">
@@ -446,20 +418,7 @@ function NumerosList({
                   >
                     Modifier
                   </Menu.Item>
-                  {numero.certifie && (
-                    <Menu.Item
-                      icon={DownloadIcon}
-                      onSelect={() =>
-                        setCertificatGenerationData({
-                          numeroId: numero.id,
-                          destinataire: "",
-                          emetteur: "",
-                        })
-                      }
-                    >
-                      Télécharger le certificat d&apos;adressage
-                    </Menu.Item>
-                  )}
+                  {generateCertificatButton(numero)}
                   <Menu.Item
                     icon={TrashIcon}
                     intent="danger"
