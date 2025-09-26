@@ -29,6 +29,7 @@ import GroupedActions from "@/components/grouped-actions";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
+  BaseLocale,
   BasesLocalesService,
   CommunePrecedenteDTO,
   Numero,
@@ -418,7 +419,9 @@ function NumerosList({
                   >
                     Modifier
                   </Menu.Item>
-                  {generateCertificatButton(numero)}
+                  {Boolean(token) &&
+                    baseLocale.status === BaseLocale.status.PUBLISHED &&
+                    generateCertificatButton(numero)}
                   <Menu.Item
                     icon={TrashIcon}
                     intent="danger"
