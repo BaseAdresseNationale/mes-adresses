@@ -5,6 +5,6 @@
 
 export type GenerateCertificatDTO = {
     emetteur: string;
-    destinataire: string;
+    destinataire: string | null;
 };
 
