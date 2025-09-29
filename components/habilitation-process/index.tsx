@@ -159,10 +159,15 @@ function HabilitationProcess({
   const handleConfirm = useCallback(async () => {
     setIsLoadingPublish(true);
     if (habilitation.status === HabilitationDTO.status.ACCEPTED) {
-      await handlePublication();
+      try {
+        await handlePublication();
+        baseLocale.status = BaseLocale.status.PUBLISHED;
+      } catch (error) {
+        console.error("Error handling publication", error);
+      }
     }
     setIsLoadingPublish(false);
-    baseLocale.status = BaseLocale.status.PUBLISHED;
+
     if (baseLocale.status === BaseLocale.status.PUBLISHED) {
       setStep(StepPublicationEnum.PUBLISHED_BAL);
     } else {

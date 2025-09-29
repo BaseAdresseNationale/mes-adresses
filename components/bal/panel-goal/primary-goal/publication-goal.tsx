@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useContext } from "react";
 import { Pane, Heading, Button, Paragraph, defaultTheme } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
 import { CommuneType } from "@/types/commune";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
+import { ExtendedBaseLocaleDTO, HabilitationDTO } from "@/lib/openapi-api-bal";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import { AccordionCard } from "@/components/accordion-card";
+import BalDataContext from "@/contexts/bal-data";
 
 interface PublicationGoalProps {
   commune: CommuneType;
@@ -14,6 +15,7 @@ interface PublicationGoalProps {
 
 function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
+  const { habilitation } = useContext(BalDataContext);
   const [isActive, setIsActive] = useState(
     baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT
   );
@@ -22,19 +24,25 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
     e.stopPropagation();
     handleShowHabilitationProcess();
   };
-
   const isCompleted = useMemo(() => {
-    return baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED;
-  }, [baseLocale.status]);
+    return (
+      baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
+      habilitation?.status === HabilitationDTO.status.ACCEPTED
+    );
+  }, [baseLocale.status, habilitation?.status]);
 
   const colorCard = useMemo(() => {
     if (baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED) {
       return defaultTheme.colors.redTint;
     } else if (baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED) {
-      return defaultTheme.colors.green100;
+      if (habilitation?.status === HabilitationDTO.status.ACCEPTED) {
+        return defaultTheme.colors.green100;
+      } else {
+        return defaultTheme.colors.yellow100;
+      }
     }
     return defaultTheme.colors.white;
-  }, [baseLocale.status]);
+  }, [baseLocale.status, habilitation?.status]);
 
   return (
     <Pane paddingX={8}>
@@ -76,12 +84,30 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
               </Pane>
             </Paragraph>
           )}
-          {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED && (
-            <Paragraph>
-              Toutes les modifications remonteront automatiquement dans la Base
-              Adresse Nationale
-            </Paragraph>
-          )}
+          {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
+            habilitation.status === HabilitationDTO.status.ACCEPTED && (
+              <Paragraph>
+                Toutes les modifications remonteront automatiquement dans la
+                Base Adresse Nationale
+              </Paragraph>
+            )}
+          {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
+            habilitation.status !== HabilitationDTO.status.ACCEPTED && (
+              <Paragraph display="flex" flexDirection="column" gap={8}>
+                Votre habilitation n&apos;est plus valide, veuillez la
+                renouveler
+                <Pane display="flex" justifyContent="right">
+                  <Button
+                    marginRight={8}
+                    height={24}
+                    appearance="primary"
+                    onClick={handleShowHabilitationProcess}
+                  >
+                    Habiliter la BAL
+                  </Button>
+                </Pane>
+              </Paragraph>
+            )}
           {baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED && (
             <Pane>
               <Paragraph color={defaultTheme.colors.red700}>

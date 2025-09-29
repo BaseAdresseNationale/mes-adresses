@@ -73,7 +73,6 @@ function PublishedBalStep({ handleClose, dialogWidth }: PublishedBalStepProps) {
 
         <Pane background="white" padding={16} borderRadius={8}>
           <Paragraph marginBottom={16}>
-            <Heading is="h3">Habilitation</Heading>
             <Text>
               Toutes les modifications remonteront automatiquement dans la Base
               Adresse Nationale
@@ -85,16 +84,12 @@ function PublishedBalStep({ handleClose, dialogWidth }: PublishedBalStepProps) {
               Pour maintenir la qualité de votre Base Adresse Locale, nous vous
               recommandons de continuer à mettre à jour vos adresses.
             </Text>
-            <ul>
-              <li>
-                <Strong>Cetification des adresses:</Strong> permet de garantir
-                la fiabilité des adresses
-              </li>
-              <li>
-                <Strong>Qualité des adresses:</Strong> des améliorations a vos
-                adresses vont vous être proposées
-              </li>
-            </ul>
+          </Paragraph>
+          <Paragraph>
+            <Text>
+              <Strong>Cetification des adresses:</Strong> permet de garantir la
+              fiabilité des adresses
+            </Text>
           </Paragraph>
         </Pane>
 
