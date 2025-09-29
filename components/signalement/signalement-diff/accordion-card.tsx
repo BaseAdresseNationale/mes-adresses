@@ -37,19 +37,19 @@ export function AccordionCard({
       onClick={onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      {...(isActive || hover ? { elevation: 3 } : {})}
+      {...((children && isActive) || hover ? { elevation: 3 } : {})}
     >
       <Pane
         display="flex"
         justifyContent="space-between"
         alignItems={caretPosition}
         userSelect="none"
-        {...(onClick ? { cursor: "pointer" } : {})}
+        {...(onClick && children ? { cursor: "pointer" } : {})}
       >
         <Heading is="h3" marginY={8} display="flex" width="100%">
           {title}
         </Heading>
-        {onClick && (
+        {onClick && children && (
           <Icon
             icon={isActive ? CaretDownIcon : CaretRightIcon}
             paddingTop={caretPosition === "start" ? 16 : 0}

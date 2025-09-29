@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Pane } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -64,7 +64,12 @@ function BALHomePage({ communeFlag, voies, toponymes }: BALHomePageProps) {
       />
       {!isAdmin && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
       {isAdmin && baseLocale.status !== BaseLocale.status.DEMO && (
-        <PanelGoal commune={commune} baseLocale={baseLocale} />
+        <PanelGoal
+          commune={commune}
+          onEditNomsAlt={() => {
+            setIsCommuneFormOpen(true);
+          }}
+        />
       )}
     </Pane>
   );
