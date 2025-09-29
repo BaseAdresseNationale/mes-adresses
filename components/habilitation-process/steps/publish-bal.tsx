@@ -13,6 +13,12 @@ import {
 import { BaseLocale } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import { ApiDepotService } from "@/lib/api-depot/index";
+import { Revision } from "@/lib/api-depot/types";
+import AlertPublishedBALMesAdresses from "@/components/new/alert-published-bal/alert-published-bal-mes-adresses";
+import AlertPublishedBALMoissoneur from "@/components/new/alert-published-bal/alert-published-bal-moissoneur";
+import AlertPublishedBALApiDepot from "@/components/new/alert-published-bal/alert-published-bal-api-depot";
+import { ApiBalAdminService } from "@/lib/bal-admin";
+import { BALWidgetConfig } from "@/lib/bal-admin/type";
 
 interface PublishBalStepProps {
   baseLocale: BaseLocale;
@@ -30,6 +36,13 @@ function PublishBalStep({
   handleClose,
 }: PublishBalStepProps) {
   const [isConflicted, setIsConflicted] = useState(false);
+  const [lastRevision, setLastRevision] = useState<Revision | null>(null);
+  const [outdatedApiDepotClients, setOutdatedApiDepotClients] = useState<
+    string[]
+  >([]);
+  const [outdatedHarvestSources, setOutdatedHarvestSources] = useState<
+    string[]
+  >([]);
 
   const forcePublication = useCallback(async () => {
     setIsConflicted(false);
@@ -39,11 +52,22 @@ function PublishBalStep({
   // Checks revisions to warn of a conflict
   const checkConflictingRevision = useCallback(async () => {
     try {
-      const revisions = await ApiDepotService.getRevisions(commune.code);
-      const conflicted = revisions.length > 0;
+      const revision = await ApiDepotService.getCurrentRevision(commune.code);
+      setLastRevision(revision);
+      const publishedBALId = revision.context?.extras?.balId || null;
+      const conflicted = baseLocale.id !== publishedBALId;
       setIsConflicted(conflicted);
       if (!conflicted) {
         handlePublication();
+      } else {
+        const widgetConfig: BALWidgetConfig =
+          await ApiBalAdminService.getBALWidgetConfig();
+        setOutdatedApiDepotClients(
+          widgetConfig?.communes?.outdatedApiDepotClients || []
+        );
+        setOutdatedHarvestSources(
+          widgetConfig?.communes?.outdatedHarvestSources || []
+        );
       }
     } catch (error) {
       console.error(
@@ -51,7 +75,7 @@ function PublishBalStep({
         error.body
       );
     }
-  }, [commune.code, handlePublication]);
+  }, [baseLocale.id, commune.code, handlePublication]);
 
   useEffect(() => {
     if (baseLocale.sync) {
@@ -116,12 +140,31 @@ function PublishBalStep({
             <Image
               src="/static/images/schema_bal_conflict.png"
               width="100%"
-              maxWidth={800}
+              maxWidth={600}
               overflow="hidden"
               alt="Schema du conflit entre la Base Adresse Locale et la Base Adresse Nationale"
             />
           </Pane>
-
+          {lastRevision ? (
+            lastRevision.context.extras?.balId ? (
+              <AlertPublishedBALMesAdresses
+                commune={commune}
+                revision={lastRevision}
+              />
+            ) : lastRevision.context.extras?.sourceId ? (
+              <AlertPublishedBALMoissoneur
+                commune={commune}
+                revision={lastRevision}
+                outdatedHarvestSources={outdatedHarvestSources}
+              />
+            ) : (
+              <AlertPublishedBALApiDepot
+                commune={commune}
+                revision={lastRevision}
+                outdatedApiDepotClients={outdatedApiDepotClients}
+              />
+            )
+          ) : null}
           <Pane
             display="flex"
             flexDirection="row"
