@@ -19,7 +19,7 @@ function Counter({ label, value, color }: CounterProps) {
       <Text fontSize=".9em" color={color} textAlign="center">
         <Strong size={600} color={color}>
           {value}
-        </Strong>{" "}
+        </Strong>
         {label}
       </Text>
     </Pane>

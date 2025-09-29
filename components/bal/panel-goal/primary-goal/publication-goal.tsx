@@ -5,7 +5,7 @@ import usePublishProcess from "@/hooks/publish-process";
 import { CommuneType } from "@/types/commune";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import AchievementBadge from "../achievements-badge/achievements-badge";
-import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
+import { AccordionCard } from "@/components/accordion-card";
 
 interface PublicationGoalProps {
   commune: CommuneType;

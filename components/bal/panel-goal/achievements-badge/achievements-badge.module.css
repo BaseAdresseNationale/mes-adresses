@@ -10,6 +10,7 @@
   top: 0;
   background: linear-gradient(to bottom right, #37c66c 0%, #98d2a6 100%);
   color: #34eb7b;
+  isolation: isolate;
 
   margin: 0;
   width: 32px;
@@ -28,8 +29,7 @@
   --color-contrast: #18753c;
 }
 
-.achievement-badge:before,
-.achievement-badge:after {
+.achievement-badge > span {
   position: absolute;
   width: inherit;
   height: inherit;
@@ -40,15 +40,10 @@
   margin: auto;
 }
 
-.achievement-badge:before {
+.achievement-badge > span:nth-child(1) {
   transform: rotate(60deg);
 }
 
-.achievement-badge:after {
+.achievement-badge > span:nth-child(2) {
   transform: rotate(-60deg);
-}
-
-.achievement-badge > img {
-  position: absolute;
-  z-index: 10;
 }

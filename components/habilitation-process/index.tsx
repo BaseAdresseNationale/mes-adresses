@@ -9,7 +9,6 @@ import { ApiDepotService } from "@/lib/api-depot";
 
 import BalDataContext from "@/contexts/bal-data";
 
-import AuthenticationRejectedStep from "@/components/habilitation-process/authentication_rejected.step";
 import {
   BaseLocale,
   HabilitationService,
@@ -21,10 +20,11 @@ import LayoutContext from "@/contexts/layout";
 import { StrategySelectionStep } from "./strategy-selection";
 import { CommuneType } from "@/types/commune";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
-import PublishBalStep from "./publish-bal.step";
-import PublishedBalStep from "./published-bal.step";
-import PublishBalRejectedStep from "./publish-bal-rejected.step";
-import AuthenticationValidateStep from "@/components/habilitation-process/validate-authentication";
+import AuthenticationRejectedStep from "@/components/habilitation-process/steps/authentication_rejected";
+import PublishBalStep from "./steps/publish-bal";
+import PublishedBalStep from "./steps/published-bal";
+import PublishBalRejectedStep from "./steps/publish-bal-rejected";
+import AuthenticationValidateStep from "./steps/validate-authentication";
 
 export const PRO_CONNECT_QUERY_PARAM = "pro-connect";
 

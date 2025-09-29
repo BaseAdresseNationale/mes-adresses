@@ -13,7 +13,7 @@ import { useContext, useState } from "react";
 
 import BalDataContext from "@/contexts/bal-data";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
-import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
+import { AccordionCard } from "@/components/accordion-card";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
@@ -57,13 +57,15 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
                   Lieux-dits / Complément
                 </Heading>
               </Pane>
-              <IconButton
-                icon={TrashIcon}
-                title="Ajouter un toponyme"
-                appearance="minimal"
-                intent="danger"
-                onClick={onIgnoreGoal}
-              />
+              {toponymeGoalAccepted === null && (
+                <IconButton
+                  icon={TrashIcon}
+                  title="Ajouter un toponyme"
+                  appearance="minimal"
+                  intent="danger"
+                  onClick={onIgnoreGoal}
+                />
+              )}
             </Pane>
             {toponymeGoalAccepted === null && (
               <Pane marginTop={16}>

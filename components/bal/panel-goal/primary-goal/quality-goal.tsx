@@ -1,7 +1,7 @@
 import { Pane, Heading, Text } from "evergreen-ui";
 
 import StarRating from "./star-rating";
-import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
+import { AccordionCard } from "@/components/accordion-card";
 import { useState } from "react";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
@@ -32,7 +32,7 @@ function QualityGoal({}: QualityGoalProps) {
                 <Counter
                   label="Avertissements détectés"
                   value={2}
-                  color="#orange"
+                  color="orange"
                 />
               </Pane>
             </Pane>

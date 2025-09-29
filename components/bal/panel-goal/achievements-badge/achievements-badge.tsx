@@ -27,11 +27,14 @@ export function AchievementBadge({
       } ${className}`}
       style={{ width, height }}
     >
+      <span />
+      <span />
       <NextImage
         src={icone}
         alt={`Badge ${title}`}
         width={width}
         height={height}
+        style={{ position: "relative" }}
       />
     </div>
   );

@@ -4,7 +4,7 @@ import { Pane, Heading, Text, defaultTheme } from "evergreen-ui";
 import ProgressBar from "@/components/progress-bar";
 import Counter from "@/components/counter";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
-import { AccordionCard } from "@/components/signalement/signalement-diff/accordion-card";
+import { AccordionCard } from "@/components/accordion-card";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import MapContext from "@/contexts/map";

@@ -1,6 +1,6 @@
 import { Pane, Button, ChevronLeftIcon } from "evergreen-ui";
 
-import CodeValidation from "@/components/habilitation-process/validate-authentication/code-validation";
+import CodeValidation from "./code-validation";
 
 interface AuthenticationValidateStepProps {
   emailCommune: string;
