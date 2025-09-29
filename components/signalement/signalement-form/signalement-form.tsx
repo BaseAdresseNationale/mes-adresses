@@ -24,7 +24,7 @@ interface SignalementFormProps {
   signalement: Signalement;
   author?: Signalement["author"];
   existingLocation: Voie | Toponyme | Numero | null;
-  requestedToponyme?: Toponyme;
+  requestedLocations: { toponyme?: Toponyme; voie?: Voie };
   onSubmit: (status: Signalement.status, reason?: string) => Promise<void>;
   onClose: () => void;
 }
@@ -33,7 +33,7 @@ function SignalementForm({
   signalement,
   author,
   existingLocation,
-  requestedToponyme,
+  requestedLocations,
   onSubmit,
   onClose,
 }: SignalementFormProps) {
@@ -137,7 +137,7 @@ function SignalementForm({
             handleReject={handleReject}
             voie={existingLocation as Voie}
             isLoading={isLoading}
-            requestedToponyme={requestedToponyme}
+            requestedToponyme={requestedLocations.toponyme}
           />
         ))}
 
@@ -151,7 +151,8 @@ function SignalementForm({
             handleReject={handleReject}
             handleClose={onClose}
             isLoading={isLoading}
-            requestedToponyme={requestedToponyme}
+            requestedToponyme={requestedLocations.toponyme}
+            requestedVoie={requestedLocations.voie}
           />
         ) : signalement.existingLocation.type === ExistingLocation.type.VOIE ? (
           <SignalementUpdateVoie

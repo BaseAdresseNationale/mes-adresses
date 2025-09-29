@@ -9,6 +9,7 @@ import {
   Voie,
 } from "@/lib/openapi-api-bal";
 import {
+  ExistingNumero,
   NumeroChangesRequestedDTO,
   Signalement,
   SignalementsService,
@@ -21,9 +22,10 @@ import {
   getExistingLocation,
   getSignalementLabel,
   isNumeroChangesRequested,
+  matchExistingToponyme,
 } from "@/lib/utils/signalement";
 import { ObjectId } from "bson";
-import MapContext, { defaultStyle } from "@/contexts/map";
+import MapContext from "@/contexts/map";
 import BalDataContext from "@/contexts/bal-data";
 import ProtectedPage from "@/layouts/protected-page";
 import SignalementForm from "@/components/signalement/signalement-form/signalement-form";
@@ -36,21 +38,21 @@ import { TilesLayerMode } from "@/components/map/layers/tiles";
 interface SignalementPageProps {
   signalement: Signalement;
   existingLocation: Voie | Toponyme | Numero | null;
-  requestedToponyme?: Toponyme;
+  requestedLocations: { toponyme?: Toponyme | null; voie?: Voie | null };
   baseLocale: ExtendedBaseLocaleDTO;
 }
 
 function SignalementPage({
   signalement,
   existingLocation,
-  requestedToponyme,
+  requestedLocations,
   baseLocale,
 }: SignalementPageProps) {
   const router = useRouter();
   const { fetchPendingSignalements, updateOneSignalement } =
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const { setStyle, setTileLayersMode } = useContext(MapContext);
+  const { setTileLayersMode } = useContext(MapContext);
   const { refreshBALSync } = useContext(BalDataContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
@@ -61,7 +63,6 @@ function SignalementPage({
 
   useEffect(() => {
     setTileLayersMode(TilesLayerMode.HIDDEN);
-    setStyle("ortho");
     setBreadcrumbs(
       <>
         <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>
@@ -73,10 +74,9 @@ function SignalementPage({
     );
 
     return () => {
-      setStyle(defaultStyle);
       setBreadcrumbs(null);
     };
-  }, [setStyle, setBreadcrumbs, baseLocale, signalement, setTileLayersMode]);
+  }, [setBreadcrumbs, baseLocale, signalement, setTileLayersMode]);
 
   // Mark the signalement as expired if the location is not found
   // and the signalement is still pending
@@ -89,7 +89,9 @@ function SignalementPage({
     };
 
     if (
-      (existingLocation === null || requestedToponyme === null) &&
+      (existingLocation === null ||
+        requestedLocations.toponyme === null ||
+        requestedLocations.voie === null) &&
       signalement.status === Signalement.status.PENDING &&
       !isNewVoieCreation
     ) {
@@ -99,7 +101,7 @@ function SignalementPage({
     existingLocation,
     signalement,
     baseLocale,
-    requestedToponyme,
+    requestedLocations,
     isNewVoieCreation,
   ]);
 
@@ -179,13 +181,14 @@ function SignalementPage({
         />
       ) : signalement.status === Signalement.status.PENDING &&
         (existingLocation || isNewVoieCreation) &&
-        requestedToponyme !== null ? (
+        requestedLocations.toponyme !== null &&
+        requestedLocations.voie !== null ? (
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
             author={author}
             existingLocation={existingLocation}
-            requestedToponyme={requestedToponyme}
+            requestedLocations={requestedLocations}
             onClose={handleClose}
             onSubmit={handleSubmit}
           />
@@ -253,20 +256,10 @@ export async function getServerSideProps({ params }) {
       };
     }
 
-    let requestedToponyme;
-    if (
-      (signalement.changesRequested as NumeroChangesRequestedDTO).nomComplement
-    ) {
-      requestedToponyme =
-        toponymes.find(
-          (toponyme) =>
-            toponyme.nom ===
-            (signalement.changesRequested as NumeroChangesRequestedDTO)
-              .nomComplement
-        ) || null;
-    }
-
     let existingLocation = null;
+    let requestedLocations: { toponyme?: Toponyme | null; voie?: Voie | null } =
+      {};
+
     try {
       if (signalement.existingLocation) {
         existingLocation = await getExistingLocation(
@@ -274,6 +267,24 @@ export async function getServerSideProps({ params }) {
           voies,
           toponymes
         );
+        if (
+          signalement.type === Signalement.type.LOCATION_TO_UPDATE &&
+          signalement.existingLocation.type === ExistingNumero.type.NUMERO &&
+          (signalement.existingLocation as ExistingNumero).toponyme.nom !==
+            (signalement.changesRequested as NumeroChangesRequestedDTO).nomVoie
+        ) {
+          requestedLocations.voie =
+            matchExistingToponyme(
+              {
+                nom: (signalement.changesRequested as NumeroChangesRequestedDTO)
+                  .nomVoie,
+                banId: (
+                  signalement.changesRequested as NumeroChangesRequestedDTO
+                ).banIdVoie,
+              },
+              voies
+            ) || null;
+        }
       } else if (
         !signalement.existingLocation &&
         isNumeroChangesRequested(signalement.changesRequested)
@@ -290,6 +301,21 @@ export async function getServerSideProps({ params }) {
       existingLocation = null;
     }
 
+    if (
+      (signalement.changesRequested as NumeroChangesRequestedDTO).nomComplement
+    ) {
+      requestedLocations.toponyme =
+        matchExistingToponyme(
+          {
+            nom: (signalement.changesRequested as NumeroChangesRequestedDTO)
+              .nomComplement,
+            banId: (signalement.changesRequested as NumeroChangesRequestedDTO)
+              .banIdComplement,
+          },
+          toponymes
+        ) || null;
+    }
+
     return {
       props: {
         baseLocale,
@@ -297,7 +323,7 @@ export async function getServerSideProps({ params }) {
         toponymes,
         signalement,
         existingLocation,
-        ...(requestedToponyme !== undefined ? { requestedToponyme } : {}),
+        requestedLocations,
       },
     };
   } catch (err) {

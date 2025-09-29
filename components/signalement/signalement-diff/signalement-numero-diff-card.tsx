@@ -7,6 +7,7 @@ import { SignalementPosition } from "./signalement-position";
 import { Signalement } from "@/lib/openapi-signalement";
 import { signalementTypeMap } from "../signalement-type-badge";
 import { SignalementParcelle } from "./signalement-parcelle";
+import TextChange from "./text-change";
 
 interface SignalementNumeroDiffCardProps {
   title: string | React.ReactNode;
@@ -72,7 +73,7 @@ export function SignalementNumeroDiffCard({
           <Text is="div" fontWeight="bold" marginBottom={5}>
             Voie
           </Text>
-          <TextDiff from={voie.from} to={voie.to} />
+          <TextChange from={voie.from} to={voie.to} />
         </Pane>
       </Pane>
       {complement.to && (
@@ -80,7 +81,7 @@ export function SignalementNumeroDiffCard({
           <Text is="div" fontWeight="bold" marginBottom={5}>
             Complément
           </Text>
-          <TextDiff from={complement.from} to={complement.to} />
+          <TextChange from={complement.from} to={complement.to} />
         </Pane>
       )}
       {positions.from ? (

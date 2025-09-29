@@ -1,25 +1,16 @@
 import {
   useState,
-  useCallback,
   useContext,
   useMemo,
   Dispatch,
   SetStateAction,
   useEffect,
 } from "react";
-import { sortBy } from "lodash";
-import {
-  SelectField,
-  SelectMenu,
-  Pane,
-  Button,
-  Text,
-  Alert,
-} from "evergreen-ui";
+import { SelectMenu, Pane, Button, Text, Alert } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
 import { BasesLocalesService, Numero } from "@/lib/openapi-api-bal";
-import DrawContext from "@/contexts/draw";
+import DrawContext, { DrawMode } from "@/contexts/draw";
 
 interface AddNumerosWithPolygonProps {
   numerosIds: string[];
@@ -32,18 +23,17 @@ function AddNumerosWithPolygon({
 }: AddNumerosWithPolygonProps) {
   const [numerosSelected, setNumerosSelected] = useState<Numero[]>([]);
   const { baseLocale } = useContext(BalDataContext);
-  const { enableDrawPolygon, disableDrawPolygon, data, setHint, setModeId } =
-    useContext(DrawContext);
+  const { data, setHint, setDrawMode } = useContext(DrawContext);
 
   useEffect(() => {
-    enableDrawPolygon();
+    setDrawMode(DrawMode.DRAW_NUMEROS_TO_TOPONYME_POLYGONE);
     setHint(
       "Cliquez sur la carte pour dessiner un polygon. Une fois terminé, cliquez sur le dernier point afin de fermer le polygone. Les numeros dans le polygone seront selectionnés"
     );
     return () => {
-      disableDrawPolygon();
+      setDrawMode(null);
     };
-  }, [enableDrawPolygon, setHint, disableDrawPolygon]);
+  }, [setHint, setDrawMode]);
 
   useEffect(() => {
     async function searchNumeros() {
@@ -58,10 +48,9 @@ function AddNumerosWithPolygon({
     }
 
     if (data) {
-      setModeId("editing");
       searchNumeros();
     }
-  }, [baseLocale.id, data, setModeId, setNumerosIds, setNumerosSelected]);
+  }, [baseLocale.id, data, setNumerosIds, setNumerosSelected]);
 
   const selectedNumerosCount = useMemo(() => {
     if (numerosSelected.length === 0) {

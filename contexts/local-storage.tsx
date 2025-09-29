@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 
 import { useLocalStorage } from "@/hooks/local-storage";
 import { ChildrenProps } from "@/types/context";
+import { MapStyle } from "./map";
 
 interface LocalStorageContextType {
   balAccess: Record<string, string>;
@@ -18,6 +19,8 @@ interface LocalStorageContextType {
   lastNewsSeen: string;
   setLastNewsSeen: (value: string) => void;
   removeBalAccess: (index: string) => void;
+  registeredMapStyle?: { [balId: string]: MapStyle };
+  setRegisteredMapStyle: (value: { [balId: string]: MapStyle }) => void;
 }
 
 const LocalStorageContext = React.createContext<LocalStorageContextType | null>(
@@ -30,6 +33,7 @@ const RECOVERY_EMAIL = "recovery-email-sent";
 const USER_SETTINGS = "user-settings";
 const PRODUCT_TOUR = "product-tour";
 const LAST_NEWS_SEEN = "last-news-seen";
+const MAP_STYLE = "map-style";
 
 export function LocalStorageContextProvider(props: ChildrenProps) {
   const [balAccess, , getBalToken, addBalAccess, removeBalAccess] =
@@ -40,6 +44,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
   const [userSettings, setUserSettings] = useLocalStorage(USER_SETTINGS);
   const [productTour, setProductTour] = useLocalStorage(PRODUCT_TOUR);
   const [lastNewsSeen, setLastNewsSeen] = useLocalStorage(LAST_NEWS_SEEN);
+  const [registeredMapStyle, setRegisteredMapStyle] =
+    useLocalStorage(MAP_STYLE);
 
   const value = useMemo(
     () => ({
@@ -57,6 +63,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       lastNewsSeen,
       setLastNewsSeen,
       removeBalAccess,
+      setRegisteredMapStyle,
+      registeredMapStyle,
     }),
     [
       balAccess,
@@ -73,6 +81,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       lastNewsSeen,
       setLastNewsSeen,
       removeBalAccess,
+      setRegisteredMapStyle,
+      registeredMapStyle,
     ]
   );
 

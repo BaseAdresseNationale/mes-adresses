@@ -18,14 +18,14 @@ export const ZOOM = {
   },
   VOIE_ZOOM: {
     minZoom: 13,
-    maxZoom: 17,
+    maxZoom: 20,
   },
   TRACE_ZOOM: {
     minZoom: 13,
   },
   TOPONYME_ZOOM: {
     minZoom: 13,
-    maxZoom: 17,
+    maxZoom: 20,
   },
 };
 

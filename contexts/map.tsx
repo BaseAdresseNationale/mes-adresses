@@ -5,12 +5,13 @@ import React, {
   useEffect,
   useContext,
 } from "react";
-import BalContext from "@/contexts/bal-data";
 import LocalStorageContext from "@/contexts/local-storage";
 import type { ViewState } from "react-map-gl/maplibre";
 import type { Map as MaplibreMap, VectorTileSource } from "maplibre-gl";
 import { ChildrenProps } from "@/types/context";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
+import { CommuneDTO } from "@/lib/openapi-api-bal";
+import BalDataContext from "@/contexts/bal-data";
 
 interface MapContextType {
   map: MaplibreMap | null;
@@ -18,9 +19,8 @@ interface MapContextType {
   handleMapRef: (ref: any) => void;
   isTileSourceLoaded: boolean;
   reloadTiles: () => void;
-  style: string;
-  setStyle: React.Dispatch<React.SetStateAction<string>>;
-  defaultStyle: string;
+  style: MapStyle;
+  setStyle: React.Dispatch<React.SetStateAction<MapStyle>>;
   isStyleLoaded: boolean;
   viewport: Partial<ViewState>;
   setViewport: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
@@ -40,17 +40,31 @@ const defaultViewport: Partial<ViewState> = {
   zoom: 6,
 };
 
-export const defaultStyle = "vector";
-
 export const BAL_API_URL =
   process.env.NEXT_PUBLIC_BAL_API_URL ||
   "https://api-bal.adresse.data.gouv.fr/v2";
 
 export const SOURCE_TILE_ID = "tiles";
 
+export enum MapStyle {
+  ORTHO = "ortho",
+  VECTOR = "vector",
+  PLAN_IGN = "plan-ign",
+}
+
+export const getDefaultStyle = (commune: CommuneDTO) =>
+  commune.hasOrtho ? MapStyle.ORTHO : MapStyle.VECTOR;
+
 export function MapContextProvider(props: ChildrenProps) {
+  const { baseLocale, commune } = useContext(BalDataContext);
+  const { userSettings, registeredMapStyle } = useContext(LocalStorageContext);
   const [map, setMap] = useState<MaplibreMap | null>(null);
-  const [style, setStyle] = useState<string>(defaultStyle);
+  const registeredBalMapStyle = registeredMapStyle
+    ? registeredMapStyle[baseLocale.id]
+    : null;
+  const [style, setStyle] = useState<MapStyle>(
+    registeredBalMapStyle || getDefaultStyle(commune)
+  );
   const [viewport, setViewport] = useState<Partial<ViewState>>(defaultViewport);
   const [isCadastreDisplayed, setIsCadastreDisplayed] =
     useState<boolean>(false);
@@ -60,9 +74,6 @@ export function MapContextProvider(props: ChildrenProps) {
   const [tileLayersMode, setTileLayersMode] = useState<TilesLayerMode>(
     TilesLayerMode.VOIE
   );
-
-  const { baseLocale } = useContext(BalContext);
-  const { userSettings } = useContext(LocalStorageContext);
 
   const balTilesUrl = `${BAL_API_URL}/bases-locales/${
     baseLocale.id
@@ -115,7 +126,6 @@ export function MapContextProvider(props: ChildrenProps) {
       reloadTiles,
       style,
       setStyle,
-      defaultStyle,
       isStyleLoaded,
       viewport,
       setViewport,

@@ -17,17 +17,16 @@ function RevisionUser({
   communeName,
 }: RevisionUserProps) {
   let userName = context.nomComplet || context.organisation;
-
   if (!userName) {
     if (
       [StrategyDTO.type.EMAIL, StrategyDTO.type.PROCONNECT].includes(
-        habilitation.strategy.type
+        habilitation?.strategy?.type
       )
     ) {
       userName = `mairie de ${communeName}`;
     }
 
-    if (habilitation.strategy.type === StrategyDTO.type.FRANCECONNECT) {
+    if (habilitation?.strategy?.type === StrategyDTO.type.FRANCECONNECT) {
       userName = `élu(e) de ${communeName}`;
     }
   }

@@ -1,6 +1,4 @@
 import { useState, useContext, useCallback, useEffect } from "react";
-import router from "next/router";
-import { isEqual } from "lodash";
 import { Pane, Button, Checkbox } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -14,7 +12,6 @@ import useFocus from "@/hooks/focus";
 import Form from "@/components/form";
 import FormInput from "@/components/form-input";
 import AssistedTextField from "@/components/assisted-text-field";
-import DrawEditor from "@/components/bal/draw-editor";
 import LanguesRegionalesForm from "@/components/langues-regionales-form";
 import {
   BasesLocalesService,
@@ -26,6 +23,7 @@ import {
 import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
 import { trimNomAlt } from "@/lib/utils/string";
+import { DrawMetricVoieEditor } from "./draw-metric-voie-editor";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -53,8 +51,7 @@ function VoieEditor({
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
   const { baseLocale, refreshBALSync, reloadVoies, setVoie } =
     useContext(BalDataContext);
-  const { drawEnabled, data, enableDraw, disableDraw } =
-    useContext(DrawContext);
+  const { data } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
@@ -147,25 +144,12 @@ function VoieEditor({
   }, [nom]);
 
   useEffect(() => {
-    if (isMetric) {
-      enableDraw(initialValue);
-    } else if (!isMetric && drawEnabled) {
-      disableDraw();
-    }
-  }, [initialValue, disableDraw, drawEnabled, enableDraw, isMetric]);
-
-  useEffect(() => {
     onNomChange({ target: { value: initialValue?.nom } });
   }, [initialValue?.nom, onNomChange]);
-
-  const onUnmount = useCallback(() => {
-    disableDraw();
-  }, [disableDraw]);
 
   return (
     <Form
       editingId={initialValue?.id}
-      unmountForm={onUnmount}
       closeForm={onClose}
       onFormSubmit={onFormSubmit}
     >
@@ -201,7 +185,7 @@ function VoieEditor({
           validationMessage={getValidationMessage("comment")}
         />
 
-        {isMetric && <DrawEditor />}
+        {isMetric && <DrawMetricVoieEditor voie={initialValue} />}
       </Pane>
 
       <Pane>

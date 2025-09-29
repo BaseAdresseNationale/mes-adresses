@@ -1,11 +1,4 @@
-import {
-  useState,
-  useMemo,
-  useEffect,
-  useCallback,
-  useContext,
-  useRef,
-} from "react";
+import { useState, useMemo, useEffect, useCallback, useContext } from "react";
 import { useRouter } from "next/router";
 import MapGl, {
   Source,
@@ -17,14 +10,13 @@ import MapGl, {
 } from "react-map-gl/maplibre";
 import { Pane, Alert } from "evergreen-ui";
 
-import MapContext, { SOURCE_TILE_ID } from "@/contexts/map";
+import MapContext, { MapStyle, SOURCE_TILE_ID } from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
 import TokenContext from "@/contexts/token";
-import DrawContext from "@/contexts/draw";
+import DrawContext, { DrawMode } from "@/contexts/draw";
 import ParcellesContext from "@/contexts/parcelles";
 import BalDataContext from "@/contexts/bal-data";
 
-import { cadastreLayers } from "@/components/map/layers/cadastre";
 import {
   getTilesLayers,
   VOIE_LABEL,
@@ -35,13 +27,11 @@ import {
   TOPONYME_LABEL,
   TilesLayerMode,
 } from "@/components/map/layers/tiles";
-import { vector, ortho, planIGN } from "@/components/map/styles";
 import EditableMarker from "@/components/map/editable-marker";
 import NumerosMarkers from "@/components/map/numeros-markers";
 import MapMarker from "@/components/map/map-marker";
 import PopupFeature from "@/components/map/popup-feature/popup-feature";
 import NavControl from "@/components/map/controls/nav-control";
-import DrawControl from "./controls/draw-control";
 import StyleControl from "@/components/map/controls/style-control";
 import AddressEditorControl from "@/components/map/controls/address-editor-control";
 import ImageControl from "@/components/map/controls/image-control";
@@ -56,8 +46,9 @@ import {
   setMapFilter,
 } from "@/lib/utils/map";
 import GeolocationControl from "./controls/geolocation-control";
-
-const LAYERS = [...cadastreLayers];
+import { ortho, planIGN, vector } from "./styles";
+import { cadastreLayers } from "./layers/cadastre";
+import RulerControl from "./controls/ruler-control";
 
 const settings = {
   maxZoom: 19,
@@ -73,30 +64,32 @@ const interactionProps = {
   doubleClickZoom: true,
 };
 
-function getBaseStyle(style) {
+export interface MapProps {
+  commune: CommuneType;
+  isAddressFormOpen: boolean;
+  handleAddressForm: (open: boolean) => void;
+}
+
+const LAYERS = [...cadastreLayers];
+
+function getBaseStyle(style: MapStyle) {
   switch (style) {
-    case "ortho":
+    case MapStyle.ORTHO:
       return ortho;
 
-    case "vector":
+    case MapStyle.VECTOR:
       return vector;
 
-    case "plan-ign":
+    case MapStyle.PLAN_IGN:
       return planIGN;
     default:
       return vector;
   }
 }
 
-function generateNewStyle(style) {
+function generateNewStyle(style: MapStyle) {
   const baseStyle = getBaseStyle(style);
   return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
-}
-
-export interface MapProps {
-  commune: CommuneType;
-  isAddressFormOpen: boolean;
-  handleAddressForm: (open: boolean) => void;
 }
 
 function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
@@ -107,7 +100,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     handleMapRef,
     style,
     setStyle,
-    defaultStyle,
     isStyleLoaded,
     viewport,
     setViewport,
@@ -123,20 +115,16 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
-  const [mapStyle, setMapStyle] = useState(generateNewStyle(defaultStyle));
+  const [mapStyle, setMapStyle] = useState<any>(generateNewStyle(style));
 
   const { balId } = router.query;
   const { voie, toponyme, numeros, editingId, setEditingId, isEditing } =
     useContext(BalDataContext);
-  const { modeId, hint, drawEnabled } = useContext(DrawContext);
+  const { hint, drawMode } = useContext(DrawContext);
   const { token } = useContext(TokenContext);
-
-  const communeHasOrtho = useMemo(() => commune.hasOrtho, [commune]);
 
   const [handleHover, handleMouseLeave, featureHovered] = useHovered(map);
   const bounds = useBounds(map, router, commune, voie, toponyme);
-
-  const prevStyle = useRef(defaultStyle);
 
   const displayPopupFeature =
     featureHovered !== null &&
@@ -147,13 +135,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const updatePositionsLayer = useCallback(() => {
     if (map && isTileSourceLoaded) {
-      if (voie) {
-        if (drawEnabled) {
-          setMapFilter(map, NUMEROS_POINT, ["==", ["get", "idVoie"], voie.id]);
-          setMapFilter(map, NUMEROS_LABEL, ["==", ["get", "idVoie"], voie.id]);
-          setMapFilter(map, VOIE_LABEL, ["==", ["get", "id"], voie.id]);
-          setMapFilter(map, VOIE_TRACE_LINE, ["!=", ["get", "id"], voie.id]);
-        }
+      if (voie && drawMode === DrawMode.DRAW_METRIC_VOIE) {
+        setMapFilter(map, NUMEROS_POINT, ["==", ["get", "idVoie"], voie.id]);
+        setMapFilter(map, NUMEROS_LABEL, ["==", ["get", "idVoie"], voie.id]);
+        setMapFilter(map, VOIE_LABEL, ["==", ["get", "id"], voie.id]);
+        // Hide all traces
+        setMapFilter(map, VOIE_TRACE_LINE, ["==", ["get", "id"], ""]);
       } else {
         // Remove filter
         setMapFilter(map, VOIE_TRACE_LINE, null);
@@ -163,7 +150,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         setMapFilter(map, TOPONYME_LABEL, null);
       }
     }
-  }, [map, voie, isTileSourceLoaded, drawEnabled]);
+  }, [map, voie, isTileSourceLoaded, drawMode]);
 
   const interactiveLayerIds = useMemo(() => {
     const layers = [];
@@ -236,14 +223,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   );
 
   useEffect(() => {
-    if (modeId === "drawLineString") {
+    if (drawMode) {
       setCursor("crosshair");
     } else if (featureHovered) {
       setCursor("pointer");
     } else {
       setCursor("default");
     }
-  }, [modeId, featureHovered]);
+  }, [drawMode, featureHovered]);
 
   // Hide current voie's or toponyme's numeros
   useEffect(() => {
@@ -254,34 +241,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   useEffect(() => {
     if (map) {
       setMapStyle(generateNewStyle(style));
-
-      if (isTileSourceLoaded) {
-        if (map.getLayer(VOIE_LABEL)) {
-          map.setPaintProperty(VOIE_LABEL, "text-halo-color", "#ffffff");
-        }
-
-        if (map.getLayer(TOPONYME_LABEL)) {
-          map.setPaintProperty(TOPONYME_LABEL, "text-halo-color", "#ffffff");
-        }
-
-        if (map.getLayer(NUMEROS_POINT)) {
-          map.setPaintProperty(NUMEROS_POINT, "circle-stroke-color", "#ffffff");
-        }
-      }
     }
   }, [map, style]);
-
-  // Auto switch to ortho on draw and save previous style
-  useEffect(() => {
-    setStyle((style: string) => {
-      if (drawEnabled && communeHasOrtho) {
-        prevStyle.current = style;
-        return "ortho";
-      }
-
-      return prevStyle.current;
-    });
-  }, [drawEnabled, setStyle, communeHasOrtho]);
 
   useEffect(() => {
     if (isStyleLoaded) {
@@ -372,7 +333,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
       />
-      {map && <DrawControl map={map} isMapLoaded={isMapLoaded} />}
 
       {token && !isMobile && (
         <Pane position="absolute" zIndex={1} top={90} right={10}>
@@ -387,6 +347,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       {!isMobile && (
         <Pane position="absolute" zIndex={1} top={125} right={10}>
           <ImageControl map={map} communeNom={commune.nom} />
+        </Pane>
+      )}
+
+      {!isMobile && (
+        <Pane position="absolute" zIndex={1} top={160} right={10}>
+          <RulerControl disabled={isEditing} />
         </Pane>
       )}
 
@@ -413,7 +379,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           ref={handleMapRef}
           hash={true}
           {...viewport}
-          mapStyle={mapStyle as any}
+          mapStyle={mapStyle}
           styleDiffing={false}
           {...settings}
           {...interactionProps}
@@ -437,7 +403,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             ))}
           </Source>
 
-          {(voie || toponyme) && !modeId && numeros && (
+          {(voie || toponyme) && !drawMode && numeros && (
             <NumerosMarkers
               numeros={numeros.filter(({ id }) => id !== editingId) as Numero[]}
               isContextMenuDisplayed={isContextMenuDisplayed}
@@ -448,7 +414,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
           {isEditing && (
             <EditableMarker
-              style={style || defaultStyle}
+              style={style}
               idVoie={voie?.id}
               isToponyme={Boolean(toponyme)}
               viewport={viewport}

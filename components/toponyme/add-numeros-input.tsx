@@ -1,8 +1,15 @@
-import { useState, Dispatch, SetStateAction } from "react";
+import {
+  useState,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+} from "react";
 import { Pane, Button, Text } from "evergreen-ui";
 
 import AddNumerosWithVoie from "./add-numeros-with-voie";
 import AddNumerosWithPolygon from "./add-numeros-with-polygon";
+import DrawContext from "@/contexts/draw";
 
 interface AddNumerosProps {
   numerosIds: string[];
@@ -12,6 +19,13 @@ interface AddNumerosProps {
 
 function AddNumerosInput({ numerosIds, setNumerosIds }: AddNumerosProps) {
   const [typeSelection, setTypeSelection] = useState<"voie" | "polygon">(null);
+  const { drawMode, setDrawMode } = useContext(DrawContext);
+
+  useEffect(() => {
+    if (!typeSelection && drawMode) {
+      setDrawMode(null);
+    }
+  }, [drawMode, setDrawMode, typeSelection]);
 
   return (
     <Pane>
