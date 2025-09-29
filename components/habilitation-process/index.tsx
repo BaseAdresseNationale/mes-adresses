@@ -246,7 +246,6 @@ function HabilitationProcess({
         )}
         {step === StepPublicationEnum.PUBLISHED_BAL && (
           <PublishedBalStep
-            habilitation={habilitation}
             handleClose={handleClose}
             dialogWidth={wrapperRef?.current?.offsetWidth}
           />

@@ -7,23 +7,17 @@ import {
   Strong,
   defaultTheme,
 } from "evergreen-ui";
-import { HabilitationDTO } from "@/lib/openapi-api-bal";
 import Confetti from "react-confetti";
 import style from "./animation-achievement.module.css";
-import AchievementBadge from "../bal/panel-goal/achievements-badge/achievements-badge";
+import AchievementBadge from "@/components/bal/panel-goal/achievements-badge/achievements-badge";
 import { useEffect, useState } from "react";
 
 interface PublishedBalStepProps {
-  habilitation: HabilitationDTO;
   handleClose: () => void;
   dialogWidth: number;
 }
 
-function PublishedBalStep({
-  habilitation,
-  handleClose,
-  dialogWidth,
-}: PublishedBalStepProps) {
+function PublishedBalStep({ handleClose, dialogWidth }: PublishedBalStepProps) {
   const [displayTitle, setIsAnimating] = useState<boolean>(false);
 
   useEffect(() => {
