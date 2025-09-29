@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type BaseLocaleSetting = {
-    languageGoalAccepted: boolean;
-    toponymeGoalAccepted: boolean;
+    languageGoalIgnored: boolean;
+    toponymeGoalIgnored: boolean;
 };
 

@@ -7,7 +7,6 @@ import {
 } from "@/lib/openapi-api-bal";
 import PublicationGoal from "@/components/bal/panel-goal/primary-goal/publication-goal";
 import CertificationGoal from "@/components/bal/panel-goal/primary-goal/certification-goal";
-import QualityGoal from "@/components/bal/panel-goal/primary-goal/quality-goal";
 import { CommuneType } from "@/types/commune";
 import LangGoal from "./secondary-goal/lang-goal";
 import ToponymeGoal from "./secondary-goal/toponyme-goal";
@@ -27,11 +26,11 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
   const [isActive, setIsActive] = useState(false);
 
   const ignoreGoal = useCallback(
-    async (goal: "languageGoalAccepted" | "toponymeGoalAccepted") => {
+    async (goal: "toponymeGoalIgnored" | "languageGoalIgnored") => {
       await BasesLocalesService.updateBaseLocale(baseLocale.id, {
         settings: {
           ...baseLocale.settings,
-          [goal]: false,
+          [goal]: true,
         },
       });
       await reloadBaseLocale();
@@ -48,24 +47,23 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
       {isPublished && (
         <>
           <CertificationGoal baseLocale={baseLocale} />
-          {(settings.toponymeGoalAccepted !== false ||
-            settings.languageGoalAccepted !== false) && (
+          {(!settings.toponymeGoalIgnored || !settings.languageGoalIgnored) && (
             <AccordionSimple
               title="Objectifs secondaires"
               isActive={isActive}
               onClick={() => setIsActive(!isActive)}
             >
-              {settings.toponymeGoalAccepted !== false && (
+              {!settings.toponymeGoalIgnored && (
                 <ToponymeGoal
                   baseLocale={baseLocale}
-                  onIgnoreGoal={() => ignoreGoal("toponymeGoalAccepted")}
+                  onIgnoreGoal={() => ignoreGoal("toponymeGoalIgnored")}
                 />
               )}
-              {settings.languageGoalAccepted !== false && (
+              {!settings.languageGoalIgnored && (
                 <LangGoal
                   baseLocale={baseLocale}
                   onEditNomsAlt={onEditNomsAlt}
-                  onIgnoreGoal={() => ignoreGoal("languageGoalAccepted")}
+                  onIgnoreGoal={() => ignoreGoal("languageGoalIgnored")}
                 />
               )}
             </AccordionSimple>

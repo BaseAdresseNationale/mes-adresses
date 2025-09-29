@@ -30,10 +30,9 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
   const nbToponymesWithLang = toponymes.filter(
     (toponyme) => toponyme.nomAlt
   ).length;
+  const hasLangRegional =
+    baseLocale.communeNomsAlt || nbVoiesWithLang > 0 || nbToponymesWithLang > 0;
   const isCompleted = nbVoiesWithLang > 0 || nbToponymesWithLang > 0;
-  const {
-    settings: { languageGoalAccepted },
-  } = baseLocale;
 
   return (
     <Pane paddingX={8}>
@@ -56,7 +55,7 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
                   Langue Régionale
                 </Heading>
               </Pane>
-              {languageGoalAccepted === null && (
+              {!hasLangRegional && (
                 <IconButton
                   icon={TrashIcon}
                   title="Ajouter un toponyme"
@@ -66,7 +65,20 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
                 />
               )}
             </Pane>
-            {languageGoalAccepted === null && (
+            {hasLangRegional ? (
+              <Pane display="flex" justifyContent="center">
+                <Counter
+                  label="voie(s) régionales"
+                  value={nbVoiesWithLang}
+                  color={defaultTheme.colors.blue700}
+                />
+                <Counter
+                  label="toponyme(s) régionales"
+                  value={nbToponymesWithLang}
+                  color={defaultTheme.colors.blue700}
+                />
+              </Pane>
+            ) : (
               <Pane marginTop={16}>
                 <Paragraph>
                   Pour activer l&apos;objectif, il faut ajouter une langue
@@ -84,20 +96,6 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
                 </Button>
               </Pane>
             )}
-            {languageGoalAccepted === true && (
-              <Pane display="flex" justifyContent="center">
-                <Counter
-                  label="voie(s) régionales"
-                  value={nbVoiesWithLang}
-                  color={defaultTheme.colors.blue700}
-                />
-                <Counter
-                  label="toponyme(s) régionales"
-                  value={nbToponymesWithLang}
-                  color={defaultTheme.colors.blue700}
-                />
-              </Pane>
-            )}
           </Pane>
         }
         backgroundColor={
@@ -107,7 +105,7 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
         onClick={() => setIsActive(!isActive)}
         caretPosition="start"
       >
-        {languageGoalAccepted === true && (
+        {hasLangRegional && (
           <Pane padding={8}>
             <Paragraph marginBottom={8}>
               Afin d&apos;améliorer la qualité de votre Base Adresse Locale, il

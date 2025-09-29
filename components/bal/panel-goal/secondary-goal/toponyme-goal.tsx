@@ -31,10 +31,8 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
     (acc, toponyme) => acc + toponyme.nbNumeros,
     0
   );
+  const hasToponymes = toponymes.length > 0;
   const isCompleted = toponymes.length > 0 && nbNumerosWithToponymes > 0;
-  const {
-    settings: { toponymeGoalAccepted },
-  } = baseLocale;
 
   return (
     <Pane paddingX={8}>
@@ -57,7 +55,7 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
                   Lieux-dits / Complément
                 </Heading>
               </Pane>
-              {toponymeGoalAccepted === null && (
+              {!hasToponymes && (
                 <IconButton
                   icon={TrashIcon}
                   title="Ajouter un toponyme"
@@ -67,7 +65,20 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
                 />
               )}
             </Pane>
-            {toponymeGoalAccepted === null && (
+            {hasToponymes ? (
+              <Pane display="flex" justifyContent="start">
+                <Counter
+                  label="Toponyme(s)"
+                  value={toponymes.length}
+                  color={defaultTheme.colors.orange700}
+                />
+                <Counter
+                  label="Numéro(s) relié(s)"
+                  value={nbNumerosWithToponymes}
+                  color={defaultTheme.colors.orange700}
+                />
+              </Pane>
+            ) : (
               <Pane marginTop={16}>
                 <Paragraph>
                   Pour activer l&apos;objectif, il faut créer votre premier
@@ -87,20 +98,6 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
                 </Button>
               </Pane>
             )}
-            {toponymeGoalAccepted === true && (
-              <Pane display="flex" justifyContent="start">
-                <Counter
-                  label="Toponyme(s)"
-                  value={toponymes.length}
-                  color={defaultTheme.colors.orange700}
-                />
-                <Counter
-                  label="Numéro(s) relié(s)"
-                  value={nbNumerosWithToponymes}
-                  color={defaultTheme.colors.orange700}
-                />
-              </Pane>
-            )}
           </Pane>
         }
         backgroundColor={
@@ -110,7 +107,7 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
         onClick={() => setIsActive(!isActive)}
         caretPosition="start"
       >
-        {toponymeGoalAccepted === true && (
+        {hasToponymes && (
           <Pane padding={8}>
             <Paragraph>
               Il est important de remplir les lieux-dits et complément de votre
