@@ -24,7 +24,7 @@
   "dependencies": {
     "@babel/runtime": "^7.21.0",
     "@ban-team/shared-data": "^1.4.2",
-    "@ban-team/validateur-bal": "^3.2.0",
+    "@ban-team/validateur-bal": "^3.3.0",
     "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@next/bundle-analyzer": "^13.5.3",
     "@sentry/nextjs": "^8",
