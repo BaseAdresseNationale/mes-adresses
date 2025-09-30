@@ -85,14 +85,14 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
             </Paragraph>
           )}
           {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
-            habilitation.status === HabilitationDTO.status.ACCEPTED && (
+            habilitation?.status === HabilitationDTO.status.ACCEPTED && (
               <Paragraph>
                 Toutes les modifications remonteront automatiquement dans la
                 Base Adresse Nationale
               </Paragraph>
             )}
           {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
-            habilitation.status !== HabilitationDTO.status.ACCEPTED && (
+            habilitation?.status !== HabilitationDTO.status.ACCEPTED && (
               <Paragraph display="flex" flexDirection="column" gap={8}>
                 Votre habilitation n&apos;est plus valide, veuillez la
                 renouveler

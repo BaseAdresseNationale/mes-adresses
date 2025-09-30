@@ -38,15 +38,15 @@ export const StepPublicationEnum = {
 };
 
 function getStep(habilitation: HabilitationDTO) {
-  if (habilitation.status === HabilitationDTO.status.REJECTED) {
+  if (habilitation?.status === HabilitationDTO.status.REJECTED) {
     return StepPublicationEnum.AUTHENTICATION_REJECTED;
   }
 
-  if (habilitation.status === HabilitationDTO.status.ACCEPTED) {
+  if (habilitation?.status === HabilitationDTO.status.ACCEPTED) {
     return StepPublicationEnum.PUBLISH_BAL;
   }
 
-  if (habilitation.strategy?.type === StrategyDTO.type.EMAIL) {
+  if (habilitation?.strategy?.type === StrategyDTO.type.EMAIL) {
     return StepPublicationEnum.AUTHENTICATION_VALIDATE;
   }
 

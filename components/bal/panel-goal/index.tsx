@@ -40,9 +40,6 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
 
   return (
     <Pane>
-      <Heading margin={16}>
-        Objectif{isPublished && "s"} Principal{isPublished && "s"}
-      </Heading>
       <PublicationGoal commune={commune} baseLocale={baseLocale} />
       {isPublished && (
         <>

@@ -52,7 +52,7 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
                   completed={isCompleted}
                 />
                 <Heading color={isCompleted && defaultTheme.colors.green700}>
-                  Lieux-dits / Complément
+                  Lieux-dits / Compléments
                 </Heading>
               </Pane>
               {!hasToponymes && (
