@@ -49,6 +49,7 @@ function AlertPublishedBALMesAdresses({
           is={NextLink}
           height={30}
           href={`/bal/${publishedBALId}`}
+          target="_blank"
         >
           Accéder à la Base Adresse Locale publiée
         </Button>

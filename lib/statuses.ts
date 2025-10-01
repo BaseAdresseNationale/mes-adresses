@@ -39,12 +39,12 @@ const STATUSES: { [key: string]: StatusType } = {
     intent: "warning",
     icon: PauseIcon,
   },
-  "waiting-habilitation": {
-    label: "En attente d'habilitation",
+  "no-habilitation": {
+    label: "Aucune habilitation",
     title:
       "Cette Base Adresse Locale a besoin d'une habilitation pour alimenter la Base Adresse Nationale",
     content:
-      "De nouvelles modifications ont été détectées mais vous n'êtes pas habilité, les modifications ne seront pas répercutées dans la Base Adresse Nationale.",
+      "Les modifications ne seront pas répercutées dans la Base Adresse Nationale.",
     color: "yellow",
     intent: "none",
     icon: TimeIcon,
@@ -104,11 +104,8 @@ export function computeStatus(
   }
 
   if (balStatus === BaseLocale.status.PUBLISHED && sync.status) {
-    if (
-      sync.status === BaseLocaleSync.status.OUTDATED &&
-      !isHabilitationValid
-    ) {
-      return STATUSES["waiting-habilitation"];
+    if (!isHabilitationValid) {
+      return STATUSES["no-habilitation"];
     }
     return STATUSES[sync.status];
   }

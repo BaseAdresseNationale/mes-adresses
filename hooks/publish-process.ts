@@ -85,12 +85,12 @@ export default function usePublishProcess(
   };
 
   const handleSync = async () => {
-    const publishBaseLocale = toaster(
-      () => BasesLocalesService.publishBaseLocale(baseLocale.id),
-      "La Base Adresses Nationale a bien été mise à jour",
-      "Impossible de mettre à jour la Base Adresses Nationale"
-    );
-    await publishBaseLocale();
+    // const publishBaseLocale = toaster(
+    //   () => BasesLocalesService.publishBaseLocale(baseLocale.id),
+    //   "La Base Adresses Nationale a bien été mise à jour",
+    //   "Impossible de mettre à jour la Base Adresses Nationale"
+    // );
+    await BasesLocalesService.publishBaseLocale(baseLocale.id);
     await reloadBaseLocale();
   };
 

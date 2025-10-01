@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { BaseLocaleSetting } from './BaseLocaleSetting';
 import type { BaseLocaleSync } from './BaseLocaleSync';
 import type { Numero } from './Numero';
 import type { Toponyme } from './Toponyme';
@@ -23,6 +24,7 @@ export type ExtendedBaseLocaleDTO = {
     status: ExtendedBaseLocaleDTO.status;
     habilitationId: string;
     sync: BaseLocaleSync;
+    settings: BaseLocaleSetting;
     voies: Array<Voie>;
     toponymes: Array<Toponyme>;
     numeros: Array<Numero>;

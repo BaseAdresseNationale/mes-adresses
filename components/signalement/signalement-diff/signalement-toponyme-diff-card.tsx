@@ -2,7 +2,7 @@ import { Pane } from "evergreen-ui";
 import TextDiff from "./text-diff";
 import { SignalementPositionDiff } from "./signalement-position-diff";
 import { SignalementParcelleDiff } from "./signalement-parcelle-diff";
-import { AccordionCard } from "./accordion-card";
+import { AccordionCard } from "@/components/accordion-card";
 import { SignalementPosition } from "./signalement-position";
 import { SignalementParcelle } from "./signalement-parcelle";
 import { signalementTypeMap } from "../signalement-type-badge";
