@@ -10,11 +10,9 @@ import {
   AddIcon,
   LockIcon,
   IconButton,
-  DownloadIcon,
   Menu,
   TrashIcon,
   EditIcon,
-  Tooltip,
 } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
@@ -43,8 +41,13 @@ import { CommuneType } from "@/types/commune";
 import {
   CertificatGenerationData,
   GenerateCertificatDialog,
-} from "../generate-certificat-dialog";
-import LocalStorageContext from "@/contexts/local-storage";
+} from "../document-generation/generate-certificat-dialog";
+import {
+  DocumentGenerationData,
+  GeneratedDocumentType,
+  NumeroGeneratedDocuments,
+} from "../document-generation/numero-generated-documents";
+import { GenerateArreteDeNumerotationDialog } from "../document-generation/generate-arrete-de-numerotation-dialog";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -66,8 +69,9 @@ function NumerosList({
   handleEditing,
 }: NumerosListProps) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false);
-  const [certificatGenerationData, setCertificatGenerationData] =
-    useState<CertificatGenerationData | null>(null);
+  const [documentGenerationData, setDocumentGenerationData] =
+    useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
+
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
   const { toaster } = useContext(LayoutContext);
 
@@ -80,8 +84,6 @@ function NumerosList({
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
-  const { certificatEmetteur, setCertificatEmetteur } =
-    useContext(LocalStorageContext);
 
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -175,24 +177,36 @@ function NumerosList({
   );
 
   const onDownloadCertificat = useCallback(
-    async (data) => {
+    async (numeroId: string, data: CertificatGenerationData) => {
       const downloadCertificat = toaster(
         async () => {
-          const { numeroId, ...rest } = data;
-          const url = await NumerosService.generateCertificat(numeroId, rest);
+          const url = await NumerosService.generateCertificat(numeroId, data);
           window.open(url, "_blank");
         },
         "Le certificat d'adressage a bien été téléchargé",
         "Le certificat d'adressage n'a pas pu être téléchargé"
       );
       await downloadCertificat();
-      if (data.rememberEmetteur) {
-        setCertificatEmetteur(data.emetteur);
-      } else {
-        setCertificatEmetteur(null);
-      }
     },
-    [toaster, setCertificatEmetteur]
+    [toaster]
+  );
+
+  const onDownloadArreteDeNumerotation = useCallback(
+    async (numeroId: string, data: { file?: Blob }) => {
+      const downloadArreteDeNumerotation = toaster(
+        async () => {
+          const url = await NumerosService.generateArreteDeNumerotation(
+            numeroId,
+            data
+          );
+          window.open(url, "_blank");
+        },
+        "L'arrêté de numérotation a bien été téléchargé",
+        "L'arrêté de numérotation n'a pas pu être téléchargé"
+      );
+      await downloadArreteDeNumerotation();
+    },
+    [toaster]
   );
 
   const onMultipleRemove = async () => {
@@ -230,38 +244,6 @@ function NumerosList({
     );
     await updateNumeros();
   };
-
-  const generateCertificatButton = useCallback(
-    (numero) => {
-      const menuItem = (
-        <Menu.Item
-          icon={DownloadIcon}
-          disabled={!numero.certifie || numero.parcelles.length === 0}
-          onSelect={() =>
-            setCertificatGenerationData({
-              numeroId: numero.id,
-              destinataire: "",
-              emetteur: certificatEmetteur || "",
-              rememberEmetteur: Boolean(certificatEmetteur),
-            })
-          }
-        >
-          Générer un certificat d&apos;adressage
-        </Menu.Item>
-      );
-
-      if (!numero.certifie || numero.parcelles.length === 0) {
-        return (
-          <Tooltip content="Le certificat d'adressage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
-            {menuItem}
-          </Tooltip>
-        );
-      }
-
-      return menuItem;
-    },
-    [certificatEmetteur]
-  );
 
   const isEditingEnabled = !isEditing && Boolean(token);
 
@@ -331,9 +313,15 @@ function NumerosList({
       />
 
       <GenerateCertificatDialog
-        certificatGenerationData={certificatGenerationData}
-        setCertificatGenerationData={setCertificatGenerationData}
-        onDownloadCertificat={onDownloadCertificat}
+        data={documentGenerationData}
+        setData={setDocumentGenerationData}
+        onDownload={onDownloadCertificat}
+      />
+
+      <GenerateArreteDeNumerotationDialog
+        data={documentGenerationData}
+        setData={setDocumentGenerationData}
+        onDownload={onDownloadArreteDeNumerotation}
       />
 
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
@@ -419,9 +407,6 @@ function NumerosList({
                   >
                     Modifier
                   </Menu.Item>
-                  {Boolean(token) &&
-                    baseLocale.status === BaseLocale.status.PUBLISHED &&
-                    generateCertificatButton(numero)}
                   <Menu.Item
                     icon={TrashIcon}
                     intent="danger"
@@ -429,6 +414,13 @@ function NumerosList({
                   >
                     Supprimer…
                   </Menu.Item>
+                  {Boolean(token) &&
+                    baseLocale.status === BaseLocale.status.PUBLISHED && (
+                      <NumeroGeneratedDocuments
+                        numero={numero}
+                        setDocumentGenerationData={setDocumentGenerationData}
+                      />
+                    )}
                 </TableRowActions>
               )}
 
