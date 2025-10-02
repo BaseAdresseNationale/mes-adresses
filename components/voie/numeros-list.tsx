@@ -10,6 +10,11 @@ import {
   AddIcon,
   LockIcon,
   IconButton,
+  DownloadIcon,
+  Menu,
+  TrashIcon,
+  EditIcon,
+  Tooltip,
 } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
@@ -24,6 +29,7 @@ import GroupedActions from "@/components/grouped-actions";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
+  BaseLocale,
   BasesLocalesService,
   CommunePrecedenteDTO,
   Numero,
@@ -34,6 +40,11 @@ import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
 import NumeroHeading from "./numero-heading";
 import { CommuneType } from "@/types/commune";
+import {
+  CertificatGenerationData,
+  GenerateCertificatDialog,
+} from "../generate-certificat-dialog";
+import LocalStorageContext from "@/contexts/local-storage";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -55,6 +66,8 @@ function NumerosList({
   handleEditing,
 }: NumerosListProps) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false);
+  const [certificatGenerationData, setCertificatGenerationData] =
+    useState<CertificatGenerationData | null>(null);
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
   const { toaster } = useContext(LayoutContext);
 
@@ -67,6 +80,8 @@ function NumerosList({
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const { certificatEmetteur, setCertificatEmetteur } =
+    useContext(LocalStorageContext);
 
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -159,6 +174,27 @@ function NumerosList({
     [reloadNumeros, reloadParcelles, refreshBALSync, reloadTiles, toaster]
   );
 
+  const onDownloadCertificat = useCallback(
+    async (data) => {
+      const downloadCertificat = toaster(
+        async () => {
+          const { numeroId, ...rest } = data;
+          const url = await NumerosService.generateCertificat(numeroId, rest);
+          window.open(url, "_blank");
+        },
+        "Le certificat d'adressage a bien été téléchargé",
+        "Le certificat d'adressage n'a pas pu être téléchargé"
+      );
+      await downloadCertificat();
+      if (data.rememberEmetteur) {
+        setCertificatEmetteur(data.emetteur);
+      } else {
+        setCertificatEmetteur(null);
+      }
+    },
+    [toaster, setCertificatEmetteur]
+  );
+
   const onMultipleRemove = async () => {
     setIsDisabled(true);
     const softDeleteNumeros = toaster(
@@ -194,6 +230,38 @@ function NumerosList({
     );
     await updateNumeros();
   };
+
+  const generateCertificatButton = useCallback(
+    (numero) => {
+      const menuItem = (
+        <Menu.Item
+          icon={DownloadIcon}
+          disabled={!numero.certifie || numero.parcelles.length === 0}
+          onSelect={() =>
+            setCertificatGenerationData({
+              numeroId: numero.id,
+              destinataire: "",
+              emetteur: certificatEmetteur || "",
+              rememberEmetteur: Boolean(certificatEmetteur),
+            })
+          }
+        >
+          Générer un certificat d&apos;adressage
+        </Menu.Item>
+      );
+
+      if (!numero.certifie || numero.parcelles.length === 0) {
+        return (
+          <Tooltip content="Le certificat d'adressage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
+            {menuItem}
+          </Tooltip>
+        );
+      }
+
+      return menuItem;
+    },
+    [certificatEmetteur]
+  );
 
   const isEditingEnabled = !isEditing && Boolean(token);
 
@@ -260,6 +328,12 @@ function NumerosList({
         }}
         onConfirm={onMultipleRemove}
         isDisabled={isDisabled}
+      />
+
+      <GenerateCertificatDialog
+        certificatGenerationData={certificatGenerationData}
+        setCertificatGenerationData={setCertificatGenerationData}
+        onDownloadCertificat={onDownloadCertificat}
       />
 
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
@@ -336,12 +410,26 @@ function NumerosList({
               />
 
               {isEditingEnabled && (
-                <TableRowActions
-                  onRemove={async () => onRemove(numero.id)}
-                  onEdit={() => {
-                    handleEditing(numero.id);
-                  }}
-                />
+                <TableRowActions>
+                  <Menu.Item
+                    icon={EditIcon}
+                    onSelect={() => {
+                      handleEditing(numero.id);
+                    }}
+                  >
+                    Modifier
+                  </Menu.Item>
+                  {Boolean(token) &&
+                    baseLocale.status === BaseLocale.status.PUBLISHED &&
+                    generateCertificatButton(numero)}
+                  <Menu.Item
+                    icon={TrashIcon}
+                    intent="danger"
+                    onSelect={() => onRemove(numero.id)}
+                  >
+                    Supprimer…
+                  </Menu.Item>
+                </TableRowActions>
               )}
 
               {!Boolean(token) && (
