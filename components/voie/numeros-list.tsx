@@ -425,7 +425,7 @@ function NumerosList({
                   <Menu.Item
                     icon={TrashIcon}
                     intent="danger"
-                    onSelect={onRemove}
+                    onSelect={() => onRemove(numero.id)}
                   >
                     Supprimer…
                   </Menu.Item>
