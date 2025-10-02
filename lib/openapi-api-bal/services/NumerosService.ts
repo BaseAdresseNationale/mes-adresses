@@ -93,6 +93,30 @@ export class NumerosService {
     }
 
     /**
+     * Generate the arrete de numerotation by id
+     * @param numeroId
+     * @param formData
+     * @returns string URL of the generated PDF arrête de numérotation
+     * @throws ApiError
+     */
+    public static generateArreteDeNumerotation(
+        numeroId: string,
+        formData: {
+            file?: Blob;
+        },
+    ): CancelablePromise<string> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v2/numeros/generate-arrete-de-numerotation/{numeroId}',
+            path: {
+                'numeroId': numeroId,
+            },
+            formData: formData,
+            mediaType: 'multipart/form-data',
+        });
+    }
+
+    /**
      * Soft delete the numero by id
      * @param numeroId
      * @returns Numero
