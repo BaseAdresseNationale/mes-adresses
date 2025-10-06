@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { BaseLocaleSetting } from './BaseLocaleSetting';
+import type { Alert } from './Alert';
 import type { BaseLocaleSync } from './BaseLocaleSync';
 import type { Numero } from './Numero';
 import type { Toponyme } from './Toponyme';
@@ -24,10 +24,10 @@ export type ExtendedBaseLocaleDTO = {
     status: ExtendedBaseLocaleDTO.status;
     habilitationId: string;
     sync: BaseLocaleSync;
-    settings: BaseLocaleSetting;
     voies: Array<Voie>;
     toponymes: Array<Toponyme>;
     numeros: Array<Numero>;
+    alerts: Array<Alert>;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;

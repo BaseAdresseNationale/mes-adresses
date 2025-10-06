@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { Alert } from './Alert';
 import type { BaseLocale } from './BaseLocale';
 import type { Position } from './Position';
 import type { Toponyme } from './Toponyme';
@@ -28,5 +29,6 @@ export type Numero = {
     baseLocale: BaseLocale;
     voie: Voie;
     toponyme: Toponyme;
+    alerts: Array<Alert>;
 };
 

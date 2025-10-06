@@ -19,6 +19,7 @@ import {
   ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
   ExtendedVoieDTO,
+  Alert,
 } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
 import useHabilitation from "@/hooks/habilitation";
@@ -52,6 +53,8 @@ interface BALDataContextType {
   reloadVoies: () => Promise<void>;
   toponymes: ExtentedToponymeDTO[];
   reloadToponymes: () => Promise<void>;
+  alerts: Alert[];
+  reloadAlerts: () => Promise<void>;
   isRefrehSyncStat: boolean;
   refreshBALSync: () => Promise<void>;
   habilitationIsLoading: boolean;
@@ -87,6 +90,7 @@ export function BalDataContextProvider({
   const [numeros, setNumeros] = useState<Array<Numero>>(initialNumeros);
   const [voies, setVoies] = useState<ExtendedVoieDTO[]>([]);
   const [toponymes, setToponymes] = useState<ExtentedToponymeDTO[]>([]);
+  const [alerts, setAlerts] = useState<Array<Alert>>([]);
   const [commune, setCommune] = useState<CommuneType | null>(null);
   const [voie, setVoie] = useState<Voie>(initialVoie);
   const [toponyme, setToponyme] = useState<Toponyme>(initialToponyme);
@@ -106,10 +110,14 @@ export function BalDataContextProvider({
         const toponymes = await BasesLocalesService.findBaseLocaleToponymes(
           initialBaseLocale.id
         );
+        const alerts = await BasesLocalesService.findBaseLocaleAlerts(
+          initialBaseLocale.id
+        );
         const commune = await getCommuneWithBBox(initialBaseLocale, voies);
         setVoies(voies);
         setToponymes(toponymes);
         setCommune(commune);
+        setAlerts(alerts);
         setIsBALDataLoaded(true);
       } catch (error) {
         console.error("Error fetching BAL data:", error);
@@ -151,6 +159,13 @@ export function BalDataContextProvider({
     const numeros: Numero[] = await VoiesService.findVoieNumeros(voieId);
     setNumeros(numeros);
   }, []);
+
+  const reloadAlerts = useCallback(async () => {
+    const alerts: Alert[] = await BasesLocalesService.findBaseLocaleAlerts(
+      baseLocale.id
+    );
+    setAlerts(alerts);
+  }, [baseLocale.id]);
 
   const reloadNumeros = useCallback(async () => {
     let numeros: Numero[];
@@ -283,6 +298,8 @@ export function BalDataContextProvider({
       setVoie,
       setVoies,
       setToponyme,
+      alerts,
+      reloadAlerts,
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,
@@ -312,6 +329,8 @@ export function BalDataContextProvider({
       reloadVoies,
       reloadToponymes,
       toponyme,
+      alerts,
+      reloadAlerts,
       isRefrehSyncStat,
       refreshBALSync,
       habilitationIsLoading,

@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { Alert } from './Alert';
 import type { BaseLocale } from './BaseLocale';
 import type { Numero } from './Numero';
 
@@ -22,6 +23,7 @@ export type Voie = {
     comment: string;
     baseLocale: BaseLocale;
     numeros: Array<Numero>;
+    alerts: Array<Alert>;
 };
 
 export namespace Voie {

@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { Alert } from './Alert';
 import type { BaseLocale } from './BaseLocale';
 import type { Numero } from './Numero';
 import type { Position } from './Position';
@@ -21,6 +22,7 @@ export type ExtentedToponymeDTO = {
     positions: Array<Position>;
     baseLocale: BaseLocale;
     numeros: Array<Numero>;
+    alerts: Array<Alert>;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;

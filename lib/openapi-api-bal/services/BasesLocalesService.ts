@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Alert } from '../models/Alert';
 import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
 import type { BatchNumeroResponseDTO } from '../models/BatchNumeroResponseDTO';
@@ -590,6 +591,24 @@ export class BasesLocalesService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+
+    /**
+     * Find all Alerts from Bal
+     * @param baseLocaleId
+     * @returns Alert
+     * @throws ApiError
+     */
+    public static findBaseLocaleAlerts(
+        baseLocaleId: string,
+    ): CancelablePromise<Array<Alert>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/alerts',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
         });
     }
 

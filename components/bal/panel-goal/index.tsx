@@ -12,6 +12,7 @@ import LangGoal from "./secondary-goal/lang-goal";
 import ToponymeGoal from "./secondary-goal/toponyme-goal";
 import { AccordionSimple } from "./secondary-goal/accordion-simple";
 import BalDataContext from "@/contexts/bal-data";
+import QualityGoal from "./primary-goal/quality-goal";
 
 interface PanelGoalProps {
   commune: CommuneType;
@@ -44,19 +45,21 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
       {isPublished && (
         <>
           <CertificationGoal baseLocale={baseLocale} />
-          {(!settings.toponymeGoalIgnored || !settings.languageGoalIgnored) && (
+          <QualityGoal baseLocale={baseLocale} />
+          {(!settings?.toponymeGoalIgnored ||
+            !settings?.languageGoalIgnored) && (
             <AccordionSimple
               title="Objectifs secondaires"
               isActive={isActive}
               onClick={() => setIsActive(!isActive)}
             >
-              {!settings.toponymeGoalIgnored && (
+              {!settings?.toponymeGoalIgnored && (
                 <ToponymeGoal
                   baseLocale={baseLocale}
                   onIgnoreGoal={() => ignoreGoal("toponymeGoalIgnored")}
                 />
               )}
-              {!settings.languageGoalIgnored && (
+              {!settings?.languageGoalIgnored && (
                 <LangGoal
                   baseLocale={baseLocale}
                   onEditNomsAlt={onEditNomsAlt}

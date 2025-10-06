@@ -7,9 +7,9 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export { Alert } from './models/Alert';
 export type { AllDeletedInBalDTO } from './models/AllDeletedInBalDTO';
 export { BaseLocale } from './models/BaseLocale';
-export type { BaseLocaleSetting } from './models/BaseLocaleSetting';
 export { BaseLocaleSync } from './models/BaseLocaleSync';
 export type { BasesLocalesCreationDTO } from './models/BasesLocalesCreationDTO';
 export type { BasesLocalesStatusDTO } from './models/BasesLocalesStatusDTO';
@@ -54,6 +54,7 @@ export { Voie } from './models/Voie';
 export type { VoieMetas } from './models/VoieMetas';
 
 export { AdminService } from './services/AdminService';
+export { AlertsService } from './services/AlertsService';
 export { BasesLocalesService } from './services/BasesLocalesService';
 export { CommuneService } from './services/CommuneService';
 export { ExportCsvService } from './services/ExportCsvService';

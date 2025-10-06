@@ -2,16 +2,39 @@ import { Pane, Heading, Text } from "evergreen-ui";
 
 import StarRating from "./star-rating";
 import { AccordionCard } from "@/components/accordion-card";
-import { useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
+import BalDataContext from "@/contexts/bal-data";
+import { Alert } from "@/lib/openapi-api-bal";
 
 interface QualityGoalProps {}
 
 function QualityGoal({}: QualityGoalProps) {
   const [isActive, setIsActive] = useState(false);
+  const { alerts } = useContext(BalDataContext);
 
-  const isAllCertified = false;
+  const nbErrors = useMemo(
+    () => alerts.filter((alert) => alert.severity === Alert.severity.E).length,
+    [alerts]
+  );
+  const nbWarnings = useMemo(
+    () => alerts.filter((alert) => alert.severity === Alert.severity.W).length,
+    [alerts]
+  );
+  const nbInfos = useMemo(
+    () => alerts.filter((alert) => alert.severity === Alert.severity.I).length,
+    [alerts]
+  );
+  const rate = useMemo(() => {
+    if (nbErrors > 0) return 0;
+    else if (nbWarnings > 2 && nbErrors === 0) return 2;
+    else if (nbWarnings <= 2 && nbErrors === 0) return 3;
+    else if (nbInfos > 2 && nbWarnings === 0 && nbErrors === 0) return 4;
+    return 5;
+  }, [nbErrors, nbWarnings, nbInfos]);
+  const isCompleted = rate === 5;
+
   return (
     <Pane paddingX={8}>
       <AccordionCard
@@ -21,17 +44,21 @@ function QualityGoal({}: QualityGoalProps) {
               <AchievementBadge
                 icone="/static/images/achievements/fiabilite.svg"
                 title="Publication"
-                completed={isAllCertified}
+                completed={isCompleted}
               />
-              <Heading color={isAllCertified && "#317159"}>Qualité</Heading>
+              <Heading color={isCompleted && "#317159"}>Qualité</Heading>
             </Pane>
             <Pane width="100%">
-              <StarRating value={3} />
+              <StarRating value={rate} />
               <Pane display="flex" justifyContent="center" alignItems="center">
-                <Counter label="Erreurs détectées" value={1} color="red" />
+                <Counter
+                  label="Erreurs détectées"
+                  value={nbErrors}
+                  color="red"
+                />
                 <Counter
                   label="Avertissements détectés"
-                  value={2}
+                  value={nbWarnings}
                   color="orange"
                 />
               </Pane>

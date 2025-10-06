@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { Alert } from './Alert';
 import type { BaseLocale } from './BaseLocale';
 import type { Numero } from './Numero';
 
@@ -22,6 +23,7 @@ export type ExtendedVoieDTO = {
     comment: string;
     baseLocale: BaseLocale;
     numeros: Array<Numero>;
+    alerts: Array<Alert>;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
