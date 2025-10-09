@@ -29,6 +29,7 @@ import CommentsContent from "@/components/comments-content";
 import DeleteWarning from "@/components/delete-warning";
 
 import {
+  BaseLocale,
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
@@ -49,6 +50,12 @@ import PopulateSideBar from "@/components/sidebar/populate";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
+import { VoieGeneratedDocuments } from "@/components/document-generation/voie-generated-documents";
+import {
+  DocumentGenerationData,
+  GeneratedDocumentType,
+} from "@/components/document-generation/document-generation.types";
+import { GenerateArreteDeNumerotationDialog } from "@/components/document-generation/generate-arrete-de-numerotation-dialog";
 
 interface VoiesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -72,6 +79,8 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
   const [toCertify, setToCertify] = useState<string | null>(null);
   const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
   const [onCertifyLoading, setOnCertifyLoading] = useState<boolean>(false);
+  const [documentGenerationData, setDocumentGenerationData] =
+    useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState(false);
@@ -125,6 +134,24 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     setOnCertifyLoading(false);
     setToCertify(null);
   }, [toCertify, reloadVoies, reloadNumeros, reloadTiles]);
+
+  const onDownloadArreteDeNumerotation = useCallback(
+    async (voieId: string, data: { file?: Blob }) => {
+      const downloadArreteDeNumerotation = toaster(
+        async () => {
+          const url = await VoiesService.generateArreteDeNumerotation(
+            voieId,
+            data
+          );
+          window.open(url, "_blank");
+        },
+        "L'arrêté de numérotation a bien été téléchargé",
+        "L'arrêté de numérotation n'a pas pu être téléchargé"
+      );
+      await downloadArreteDeNumerotation();
+    },
+    [toaster]
+  );
 
   const onConvert = useCallback(async () => {
     setOnConvertLoading(true);
@@ -200,6 +227,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
         }}
         onConfirm={onCertify}
       />
+
       <DialogWarningAction
         confirmLabel="Convertir en toponyme"
         isShown={Boolean(toConvert)}
@@ -214,6 +242,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
         }}
         onConfirm={onConvert}
       />
+
       <DeleteWarning
         isShown={Boolean(toRemove)}
         content={
@@ -228,6 +257,13 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
         onConfirm={handleRemove}
         isDisabled={isDisabled}
       />
+
+      <GenerateArreteDeNumerotationDialog
+        data={documentGenerationData}
+        setData={setDocumentGenerationData}
+        onDownload={onDownloadArreteDeNumerotation}
+      />
+
       {!token && (
         <Pane flexShrink={0} elevation={0} backgroundColor="white">
           <ReadOnlyInfos
@@ -387,6 +423,13 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   >
                     Supprimer…
                   </Menu.Item>
+                  {Boolean(token) &&
+                    baseLocale.status === BaseLocale.status.PUBLISHED && (
+                      <VoieGeneratedDocuments
+                        voie={voie}
+                        setDocumentGenerationData={setDocumentGenerationData}
+                      />
+                    )}
                 </TableRowActions>
               )}
 

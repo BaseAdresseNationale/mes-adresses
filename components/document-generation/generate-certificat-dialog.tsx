@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
   DocumentGenerationData,
   GeneratedDocumentType,
-} from "./numero-generated-documents";
+} from "./document-generation.types";
 
 export type CertificatGenerationData = GenerateCertificatDTO & {
   rememberEmetteur?: boolean;
@@ -48,7 +48,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
       onConfirm={async () => {
         if (data) {
           setIsGeneratingCertificat(true);
-          await onDownload(docData.numeroId, data);
+          await onDownload(docData.id, data);
           if (data.rememberEmetteur) {
             setCertificatEmetteur(data.emetteur);
           } else {

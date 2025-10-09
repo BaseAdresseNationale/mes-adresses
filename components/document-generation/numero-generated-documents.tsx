@@ -2,22 +2,10 @@ import LocalStorageContext from "@/contexts/local-storage";
 import { Numero } from "@/lib/openapi-api-bal";
 import { DownloadIcon, Menu, Tooltip } from "evergreen-ui";
 import { useContext } from "react";
-import { CertificatGenerationData } from "./generate-certificat-dialog";
-
-export enum GeneratedDocumentType {
-  CERTIFICAT_ADRESSAGE = "CERTIFICAT_ADRESSAGE",
-  ARRETE_DE_NUMEROTATION = "ARRETE_DE_NUMEROTATION",
-}
-
-export type DocumentGenerationData<type extends GeneratedDocumentType> = {
-  type: GeneratedDocumentType;
-  numeroId: string;
-  data: type extends GeneratedDocumentType.CERTIFICAT_ADRESSAGE
-    ? CertificatGenerationData
-    : type extends GeneratedDocumentType.ARRETE_DE_NUMEROTATION
-      ? { file?: Blob }
-      : never;
-};
+import {
+  DocumentGenerationData,
+  GeneratedDocumentType,
+} from "./document-generation.types";
 
 interface NumeroGeneratedDocumentsProps<type extends GeneratedDocumentType> {
   setDocumentGenerationData: (data: DocumentGenerationData<type>) => void;
@@ -37,7 +25,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
       onSelect={() =>
         setDocumentGenerationData({
           type: GeneratedDocumentType.CERTIFICAT_ADRESSAGE,
-          numeroId: numero.id,
+          id: numero.id,
           data: {
             destinataire: "",
             emetteur: certificatEmetteur || "",
@@ -57,7 +45,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
       onSelect={() =>
         setDocumentGenerationData({
           type: GeneratedDocumentType.ARRETE_DE_NUMEROTATION,
-          numeroId: numero.id,
+          id: numero.id,
           data: {},
         } as Parameters<typeof setDocumentGenerationData>[0])
       }

@@ -42,12 +42,12 @@ import {
   CertificatGenerationData,
   GenerateCertificatDialog,
 } from "../document-generation/generate-certificat-dialog";
+import { NumeroGeneratedDocuments } from "../document-generation/numero-generated-documents";
+import { GenerateArreteDeNumerotationDialog } from "../document-generation/generate-arrete-de-numerotation-dialog";
 import {
   DocumentGenerationData,
   GeneratedDocumentType,
-  NumeroGeneratedDocuments,
-} from "../document-generation/numero-generated-documents";
-import { GenerateArreteDeNumerotationDialog } from "../document-generation/generate-arrete-de-numerotation-dialog";
+} from "../document-generation/document-generation.types";
 
 interface NumerosListProps {
   commune: CommuneType;

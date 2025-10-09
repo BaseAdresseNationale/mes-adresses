@@ -93,7 +93,7 @@ export class NumerosService {
     }
 
     /**
-     * Generate the arrete de numerotation by id
+     * Generate the arrete de numerotation by numero id
      * @param numeroId
      * @param formData
      * @returns string URL of the generated PDF arrête de numérotation
