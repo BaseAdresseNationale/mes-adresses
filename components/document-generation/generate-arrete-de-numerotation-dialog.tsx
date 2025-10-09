@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import {
   DocumentGenerationData,
   GeneratedDocumentType,
-} from "./numero-generated-documents";
+} from "./document-generation.types";
 
 interface GenerateArreteDeNumerotationDialogProps<
   type extends GeneratedDocumentType,
@@ -39,7 +39,7 @@ export function GenerateArreteDeNumerotationDialog<
   const handleConfirm = async () => {
     if (files[0]) {
       setIsLoading(true);
-      await onDownload(data.numeroId, {
+      await onDownload(data.id, {
         file: files[0],
       });
       setIsLoading(false);
