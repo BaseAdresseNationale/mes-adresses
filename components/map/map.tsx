@@ -43,6 +43,7 @@ import { CommuneType } from "@/types/commune";
 import {
   handleSelectToponyme,
   handleSelectVoie,
+  resetMapFilter,
   setMapFilter,
 } from "@/lib/utils/map";
 import GeolocationControl from "./controls/geolocation-control";
@@ -143,11 +144,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         setMapFilter(map, VOIE_TRACE_LINE, ["==", ["get", "id"], ""]);
       } else {
         // Remove filter
-        setMapFilter(map, VOIE_TRACE_LINE, null);
-        setMapFilter(map, NUMEROS_POINT, null);
-        setMapFilter(map, NUMEROS_LABEL, null);
-        setMapFilter(map, VOIE_LABEL, null);
-        setMapFilter(map, TOPONYME_LABEL, null);
+        resetMapFilter(map);
       }
     }
   }, [map, voie, isTileSourceLoaded, drawMode]);
