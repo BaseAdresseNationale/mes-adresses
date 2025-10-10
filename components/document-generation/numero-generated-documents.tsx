@@ -25,7 +25,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
       onSelect={() =>
         setDocumentGenerationData({
           type: GeneratedDocumentType.CERTIFICAT_ADRESSAGE,
-          id: numero.id,
+          for: numero,
           data: {
             destinataire: "",
             emetteur: certificatEmetteur || "",
@@ -45,7 +45,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
       onSelect={() =>
         setDocumentGenerationData({
           type: GeneratedDocumentType.ARRETE_DE_NUMEROTATION,
-          id: numero.id,
+          for: numero,
           data: {},
         } as Parameters<typeof setDocumentGenerationData>[0])
       }
@@ -56,7 +56,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
 
   if (!numero.certifie || numero.parcelles.length === 0) {
     generateCertificatAdressageItem = (
-      <Tooltip content="Le certificat d'adressage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
+      <Tooltip content="Le Certficat de numérotage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
         {generateCertificatAdressageItem}
       </Tooltip>
     );
@@ -70,7 +70,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
   return (
     <>
       <Menu.Divider />
-      <Menu.Group title="Générer un document">
+      <Menu.Group title="Générer un modèle">
         {generateCertificatAdressageItem}
         {generateArreteDeNumerotationItem}
       </Menu.Group>
