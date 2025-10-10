@@ -1,3 +1,4 @@
+import { Numero, Voie } from "@/lib/openapi-api-bal";
 import { CertificatGenerationData } from "./generate-certificat-dialog";
 
 export enum GeneratedDocumentType {
@@ -7,7 +8,7 @@ export enum GeneratedDocumentType {
 
 export type DocumentGenerationData<type extends GeneratedDocumentType> = {
   type: GeneratedDocumentType;
-  id: string;
+  for: Numero | Voie;
   data: type extends GeneratedDocumentType.CERTIFICAT_ADRESSAGE
     ? CertificatGenerationData
     : type extends GeneratedDocumentType.ARRETE_DE_NUMEROTATION

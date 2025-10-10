@@ -44,6 +44,7 @@ import { CommuneType } from "@/types/commune";
 import {
   handleSelectToponyme,
   handleSelectVoie,
+  resetMapFilter,
   setMapFilter,
 } from "@/lib/utils/map";
 import GeolocationControl from "./controls/geolocation-control";
@@ -184,11 +185,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         map.setLayerZoomRange(NUMEROS_POINT, undefined, undefined);
       } else {
         // Remove filter
-        setMapFilter(map, VOIE_TRACE_LINE, null);
-        setMapFilter(map, NUMEROS_POINT, null);
-        setMapFilter(map, NUMEROS_LABEL, null);
-        setMapFilter(map, VOIE_LABEL, null);
-        setMapFilter(map, TOPONYME_LABEL, null);
+        resetMapFilter(map);
         map.setLayerZoomRange(
           NUMEROS_POINT,
           ZOOM.NUMEROS_ZOOM.minZoom,

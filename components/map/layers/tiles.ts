@@ -35,6 +35,14 @@ export const NUMEROS_POINT = "numeros-point";
 export const NUMEROS_LABEL = "numeros-label";
 export const TOPONYME_LABEL = "toponyme-label";
 
+export const mapLayersIds = [
+  VOIE_LABEL,
+  VOIE_TRACE_LINE,
+  NUMEROS_POINT,
+  NUMEROS_LABEL,
+  TOPONYME_LABEL,
+];
+
 export enum TilesLayerMode {
   CERTIFICATION = "certification",
   VOIE = "voie",

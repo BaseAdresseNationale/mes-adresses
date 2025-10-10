@@ -17,13 +17,13 @@ export function VoieGeneratedDocuments<type extends GeneratedDocumentType>({
   return (
     <>
       <Menu.Divider />
-      <Menu.Group title="Générer un document">
+      <Menu.Group title="Générer un modèle">
         <Menu.Item
           icon={DownloadIcon}
           onSelect={() =>
             setDocumentGenerationData({
               type: GeneratedDocumentType.ARRETE_DE_NUMEROTATION,
-              id: voie.id,
+              for: voie,
               data: {},
             } as Parameters<typeof setDocumentGenerationData>[0])
           }
