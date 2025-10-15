@@ -210,21 +210,6 @@ export function GenerateArreteDeNumerotationDialog<
               <Text>
                 Sélectionner le fichier (Format PNG et JPEG, maximum 5 Mo)
               </Text>
-              <Pane>
-                <Text>
-                  Ou cliquer sur{" "}
-                  <IconButton
-                    marginLeft={8}
-                    marginRight={8}
-                    height={29}
-                    width={29}
-                    icon={CameraIcon}
-                    title="Prendre une photo de la carte"
-                    onClick={handleTakeScreenshot}
-                  />
-                  pour générer le plan de situation automatiquement
-                </Text>
-              </Pane>
             </Pane>
           )}
           maxSizeInBytes={5 * 1024 ** 2}
@@ -253,6 +238,21 @@ export function GenerateArreteDeNumerotationDialog<
           }}
           values={files}
         />
+        <Pane>
+          <Text>
+            Ou cliquer sur
+            <IconButton
+              marginLeft={8}
+              marginRight={8}
+              height={29}
+              width={29}
+              icon={CameraIcon}
+              title="Prendre une photo de la carte"
+              onClick={handleTakeScreenshot}
+            />
+            pour générer le plan de situation automatiquement
+          </Text>
+        </Pane>
       </Pane>
     </Dialog>
   );
