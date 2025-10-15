@@ -26,6 +26,7 @@ import {
   LAYERS_SOURCE,
   TOPONYME_LABEL,
   TilesLayerMode,
+  ZOOM,
 } from "@/components/map/layers/tiles";
 import EditableMarker from "@/components/map/editable-marker";
 import NumerosMarkers from "@/components/map/numeros-markers";
@@ -141,6 +142,31 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         setMapFilter(map, VOIE_LABEL, ["==", ["get", "id"], voie.id]);
         // Hide all traces
         setMapFilter(map, VOIE_TRACE_LINE, ["==", ["get", "id"], ""]);
+        map.setLayerZoomRange(
+          NUMEROS_POINT,
+          ZOOM.NUMEROS_ZOOM.minZoom,
+          ZOOM.NUMEROS_ZOOM.maxZoom
+        );
+      } else if (voie) {
+        setMapFilter(map, VOIE_TRACE_LINE, null);
+        setMapFilter(map, NUMEROS_POINT, null);
+        setMapFilter(map, NUMEROS_LABEL, ["!=", ["get", "idVoie"], voie.id]);
+        setMapFilter(map, VOIE_LABEL, null);
+        setMapFilter(map, TOPONYME_LABEL, null);
+        // Remove maxZoom filter to see numéros points on all zoom levels
+        map.setLayerZoomRange(NUMEROS_POINT, undefined, undefined);
+      } else if (toponyme) {
+        setMapFilter(map, VOIE_TRACE_LINE, null);
+        setMapFilter(map, NUMEROS_POINT, null);
+        setMapFilter(map, NUMEROS_LABEL, [
+          "!=",
+          ["get", "idToponyme"],
+          toponyme.id,
+        ]);
+        setMapFilter(map, VOIE_LABEL, null);
+        setMapFilter(map, TOPONYME_LABEL, null);
+        // Remove maxZoom filter to see numéros points on all zoom levels
+        map.setLayerZoomRange(NUMEROS_POINT, undefined, undefined);
       } else {
         // Remove filter
         setMapFilter(map, VOIE_TRACE_LINE, null);
@@ -148,9 +174,14 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         setMapFilter(map, NUMEROS_LABEL, null);
         setMapFilter(map, VOIE_LABEL, null);
         setMapFilter(map, TOPONYME_LABEL, null);
+        map.setLayerZoomRange(
+          NUMEROS_POINT,
+          ZOOM.NUMEROS_ZOOM.minZoom,
+          ZOOM.NUMEROS_ZOOM.maxZoom
+        );
       }
     }
-  }, [map, voie, isTileSourceLoaded, drawMode]);
+  }, [map, voie, isTileSourceLoaded, drawMode, toponyme]);
 
   const interactiveLayerIds = useMemo(() => {
     const layers = [];
