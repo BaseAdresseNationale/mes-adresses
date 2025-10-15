@@ -157,6 +157,16 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
         overflowY="auto"
         style={{ borderTop: "none" }}
       >
+        <Pane
+          background="white"
+          padding={8}
+          borderBottom="muted"
+          textAlign="center"
+        >
+          <Text fontWeight="bold">
+            Lieux-dits complémentaires et voies sans adresses
+          </Text>
+        </Pane>
         <Table.Head background="white">
           <Table.SearchHeaderCell
             placeholder="Rechercher un toponyme"

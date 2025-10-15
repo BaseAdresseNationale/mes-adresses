@@ -240,6 +240,14 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
         overflowY="auto"
         style={{ borderTop: "none" }}
       >
+        <Pane
+          background="white"
+          padding={8}
+          borderBottom="muted"
+          textAlign="center"
+        >
+          <Text fontWeight="bold">Voies, places et lieux-dits numérotés</Text>
+        </Pane>
         <Table.Head background="white">
           <Table.SearchHeaderCell
             placeholder="Rechercher une voie, une place, un lieu-dit..."

@@ -63,7 +63,6 @@ function MainTabs({ balId }: MainTabsProps) {
               </div>
             ),
             href: `/bal/${balId}`,
-            tooltip: "Informations générales sur cette Base Adresse Locale.",
           },
           {
             key: TabsEnum.VOIES,
@@ -85,8 +84,6 @@ function MainTabs({ balId }: MainTabsProps) {
               `/bal/${balId}/${TabsEnum.VOIES}`,
               savedSearchPagination[TabsEnum.VOIES]
             ),
-            tooltip:
-              "Liste des dénominations officielles auxquelles sont rattachés des numéros.",
           },
           {
             key: TabsEnum.TOPONYMES,
@@ -108,7 +105,6 @@ function MainTabs({ balId }: MainTabsProps) {
               `/bal/${balId}/${TabsEnum.TOPONYMES}`,
               savedSearchPagination[TabsEnum.TOPONYMES]
             ),
-            tooltip: "Liste des voies et lieux-dits qui ne sont pas numérotés.",
           },
           {
             key: TabsEnum.SIGNALEMENTS,
@@ -126,44 +122,41 @@ function MainTabs({ balId }: MainTabsProps) {
             notif: pendingSignalementsCount,
             href: `/bal/${balId}/${TabsEnum.SIGNALEMENTS}`,
             isHidden: !isAdmin || !communeHasSignalements,
-            tooltip: "Signalements reçus pour cette commune.",
           },
         ]
           .filter(({ isHidden }) => !isHidden)
-          .map(({ notif, key, href, icon, tooltip }, index) => {
+          .map(({ notif, key, href, icon }, index) => {
             const isSelected = isTabSelected(key, index);
             const tab = (
-              <Tooltip key={key} content={tooltip}>
-                <Link
-                  className={styles.tabLink}
-                  role="tab"
-                  href={href}
-                  shallow
-                  draggable={false}
-                  {...((key === TabsEnum.VOIES ||
-                    key === TabsEnum.TOPONYMES) && {
-                    onClick: () => {
-                      setSelectedTextIndexes((prev) => ({
-                        ...prev,
-                        [key]:
-                          prev[key] + 1 >= textExamples[key].length
-                            ? 0
-                            : prev[key] + 1,
-                      }));
-                    },
-                  })}
+              <Link
+                key={key}
+                className={styles.tabLink}
+                role="tab"
+                href={href}
+                shallow
+                draggable={false}
+                {...((key === TabsEnum.VOIES || key === TabsEnum.TOPONYMES) && {
+                  onClick: () => {
+                    setSelectedTextIndexes((prev) => ({
+                      ...prev,
+                      [key]:
+                        prev[key] + 1 >= textExamples[key].length
+                          ? 0
+                          : prev[key] + 1,
+                    }));
+                  },
+                })}
+              >
+                <Pane
+                  className={`${styles.tab}${
+                    isSelected ? ` ${styles.selected}` : ""
+                  }`}
+                  {...(isSelected && { elevation: 1 })}
                 >
-                  <Pane
-                    className={`${styles.tab}${
-                      isSelected ? ` ${styles.selected}` : ""
-                    }`}
-                    {...(isSelected && { elevation: 1 })}
-                  >
-                    {icon}
-                    {notif > 0 && <Pulsar size={16} right={0} top={0} />}
-                  </Pane>
-                </Link>
-              </Tooltip>
+                  {icon}
+                  {notif > 0 && <Pulsar size={16} right={0} top={0} />}
+                </Pane>
+              </Link>
             );
 
             return tab;

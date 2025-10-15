@@ -20,13 +20,11 @@ import MapContext from "@/contexts/map";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface BALHomePageProps {
-  voies: ExtendedVoieDTO[];
-  toponymes: ExtentedToponymeDTO[];
   communeFlag?: string;
 }
 
-function BALHomePage({ communeFlag, voies, toponymes }: BALHomePageProps) {
-  const { baseLocale, commune } = useContext(BalDataContext);
+function BALHomePage({ communeFlag }: BALHomePageProps) {
+  const { baseLocale, commune, voies, toponymes } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
   const isAdmin = Boolean(token);
   const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
