@@ -10,6 +10,9 @@ import {
   AddIcon,
   LockIcon,
   IconButton,
+  Menu,
+  TrashIcon,
+  EditIcon,
 } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
@@ -24,6 +27,7 @@ import GroupedActions from "@/components/grouped-actions";
 import InfiniteScrollList from "@/components/infinite-scroll-list";
 import BALRecoveryContext from "@/contexts/bal-recovery";
 import {
+  BaseLocale,
   BasesLocalesService,
   CommunePrecedenteDTO,
   Numero,
@@ -34,6 +38,16 @@ import TableRowNotifications from "../table-row/table-row-notifications";
 import LayoutContext from "@/contexts/layout";
 import NumeroHeading from "./numero-heading";
 import { CommuneType } from "@/types/commune";
+import {
+  CertificatGenerationData,
+  GenerateCertificatDialog,
+} from "../document-generation/generate-certificat-dialog";
+import { NumeroGeneratedDocuments } from "../document-generation/numero-generated-documents";
+import { GenerateArreteDeNumerotationDialog } from "../document-generation/generate-arrete-de-numerotation-dialog";
+import {
+  DocumentGenerationData,
+  GeneratedDocumentType,
+} from "../document-generation/document-generation.types";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -55,6 +69,9 @@ function NumerosList({
   handleEditing,
 }: NumerosListProps) {
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false);
+  const [documentGenerationData, setDocumentGenerationData] =
+    useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
+
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
   const { toaster } = useContext(LayoutContext);
 
@@ -157,6 +174,39 @@ function NumerosList({
       await softDeleteNumero();
     },
     [reloadNumeros, reloadParcelles, refreshBALSync, reloadTiles, toaster]
+  );
+
+  const onDownloadCertificat = useCallback(
+    async (numeroId: string, data: CertificatGenerationData) => {
+      const downloadCertificat = toaster(
+        async () => {
+          const url = await NumerosService.generateCertificat(numeroId, data);
+          window.open(url, "_blank");
+        },
+        "Le certficat de numérotage a bien été téléchargé",
+        "Le certficat de numérotage n'a pas pu être téléchargé"
+      );
+      await downloadCertificat();
+    },
+    [toaster]
+  );
+
+  const onDownloadArreteDeNumerotation = useCallback(
+    async (numeroId: string, data: { file?: Blob }) => {
+      const downloadArreteDeNumerotation = toaster(
+        async () => {
+          const url = await NumerosService.generateArreteDeNumerotation(
+            numeroId,
+            data
+          );
+          window.open(url, "_blank");
+        },
+        "L'arrêté de numérotation a bien été téléchargé",
+        "L'arrêté de numérotation n'a pas pu être téléchargé"
+      );
+      await downloadArreteDeNumerotation();
+    },
+    [toaster]
   );
 
   const onMultipleRemove = async () => {
@@ -262,6 +312,18 @@ function NumerosList({
         isDisabled={isDisabled}
       />
 
+      <GenerateCertificatDialog
+        data={documentGenerationData}
+        setData={setDocumentGenerationData}
+        onDownload={onDownloadCertificat}
+      />
+
+      <GenerateArreteDeNumerotationDialog
+        data={documentGenerationData}
+        setData={setDocumentGenerationData}
+        onDownload={onDownloadArreteDeNumerotation}
+      />
+
       <Table display="flex" flex={1} flexDirection="column" overflowY="auto">
         <Table.Head background="white">
           {numeros && token && filtered.length > 1 && (
@@ -336,12 +398,30 @@ function NumerosList({
               />
 
               {isEditingEnabled && (
-                <TableRowActions
-                  onRemove={async () => onRemove(numero.id)}
-                  onEdit={() => {
-                    handleEditing(numero.id);
-                  }}
-                />
+                <TableRowActions>
+                  <Menu.Item
+                    icon={EditIcon}
+                    onSelect={() => {
+                      handleEditing(numero.id);
+                    }}
+                  >
+                    Modifier
+                  </Menu.Item>
+                  <Menu.Item
+                    icon={TrashIcon}
+                    intent="danger"
+                    onSelect={() => onRemove(numero.id)}
+                  >
+                    Supprimer…
+                  </Menu.Item>
+                  {Boolean(token) &&
+                    baseLocale.status === BaseLocale.status.PUBLISHED && (
+                      <NumeroGeneratedDocuments
+                        numero={numero}
+                        setDocumentGenerationData={setDocumentGenerationData}
+                      />
+                    )}
+                </TableRowActions>
               )}
 
               {!Boolean(token) && (
