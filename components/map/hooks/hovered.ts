@@ -2,6 +2,7 @@ import { useCallback, useContext, useRef, useState } from "react";
 
 import ParcellesContext from "@/contexts/parcelles";
 import { LAYERS_SOURCE } from "@/components/map/layers/tiles";
+import { PANORAMAX_LAYERS_SOURCE } from "../layers/panoramax";
 
 function useHovered(map) {
   const hovered = useRef<{ id; source; sourceLayer }>();
@@ -80,6 +81,7 @@ function useHovered(map) {
     (event) => {
       const feature = event && event.features && event.features[0];
       if (feature) {
+        console.log("feature", feature);
         const { source, id, sourceLayer } = feature;
 
         const parcelles = event.features.filter(
@@ -111,13 +113,15 @@ function useHovered(map) {
         hovered.current = feature;
 
         // Highlight hovered features
-        map.setFeatureState({ source, id, sourceLayer }, { hover: true });
+        map.setFeatureState({ source, id: id, sourceLayer }, { hover: true });
+        console.log("sourceLayer", sourceLayer);
         handleRelatedFeatures(map, feature, true);
         if (
           sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
           sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
           sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS ||
-          sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS
+          sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS ||
+          sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES
         ) {
           setFeatureHovered(feature);
         }

@@ -50,6 +50,14 @@ import GeolocationControl from "./controls/geolocation-control";
 import { ortho, planIGN, vector } from "./styles";
 import { cadastreLayers } from "./layers/cadastre";
 import RulerControl from "./controls/ruler-control";
+import PanoramaxControl from "./controls/panoramax-control";
+import {
+  PANORAMAX_LAYERS_SOURCE,
+  PANORAMAX_PICTURE_LAYER_ID,
+  PANORAMAX_TILE_URL,
+  panoramaxPictureLayer,
+  panoramaxSequenceLayer,
+} from "./layers/panoramax";
 
 const settings = {
   maxZoom: 19,
@@ -113,6 +121,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const { isParcelleSelectionEnabled, handleParcelles } =
     useContext(ParcellesContext);
   const { isMobile } = useContext(LayoutContext);
+  const [showPanoramax, setShowPanoramax] = useState(false);
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
@@ -196,7 +205,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         NUMEROS_POINT,
         NUMEROS_LABEL,
         VOIE_LABEL,
-        TOPONYME_LABEL
+        TOPONYME_LABEL,
+        PANORAMAX_PICTURE_LAYER_ID
       );
     }
 
@@ -215,29 +225,52 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         .filter(({ source, sourceLayer }) => {
           return (
             source === "cadastre" ||
-            sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
-            sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
-            sourceLayer === LAYERS_SOURCE.VOIES_LINES_STRINGS ||
-            sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS
+            source === "tiles" ||
+            source === "panoramax"
           );
         });
       const feature = features && features[0];
+      const source = feature && feature.source;
 
-      const parcelles = features.filter(
-        ({ source, sourceLayer, layer }) =>
-          source === "cadastre" &&
-          sourceLayer === "parcelles" &&
-          layer?.id === "parcelles-fill"
-      );
+      console.log("feature", feature);
 
-      if (parcelles.length > 0) {
-        handleParcelles(parcelles.map(({ properties }) => properties.id));
-      } else if (feature && !isEditing) {
-        if (tileLayersMode === TilesLayerMode.TOPONYME) {
-          handleSelectToponyme(feature, router, balId as string);
-        } else {
-          handleSelectVoie(feature, router, balId as string);
+      switch (source) {
+        case "cadastre": {
+          const parcelles = features.filter(
+            ({ source, sourceLayer, layer }) =>
+              source === "cadastre" &&
+              sourceLayer === "parcelles" &&
+              layer?.id === "parcelles-fill"
+          );
+
+          if (parcelles.length > 0) {
+            handleParcelles(parcelles.map(({ properties }) => properties.id));
+          }
+          break;
         }
+        case "tiles": {
+          if (feature && !isEditing) {
+            if (tileLayersMode === TilesLayerMode.TOPONYME) {
+              handleSelectToponyme(feature, router, balId as string);
+            } else {
+              handleSelectVoie(feature, router, balId as string);
+            }
+          }
+          break;
+        }
+        case "panoramax": {
+          if (feature.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES) {
+            const pictureId = feature.properties.id;
+            window.open(
+              `https://api.panoramax.xyz/?focus=pic&pic=${pictureId}`,
+              "_blank",
+              "noreferrer"
+            );
+          }
+          break;
+        }
+        default:
+          break;
       }
 
       setIsContextMenuDisplayed(null);
@@ -365,33 +398,31 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         handleCadastre={setIsCadastreDisplayed}
       />
 
-      {token && !isMobile && (
-        <Pane position="absolute" zIndex={1} top={90} right={10}>
+      <Pane
+        position="absolute"
+        zIndex={1}
+        top={90}
+        right={10}
+        display="flex"
+        flexDirection="column"
+        gap={8}
+      >
+        {token && !isMobile && (
           <AddressEditorControl
             isAddressFormOpen={isAddressFormOpen}
             handleAddressForm={handleAddressForm}
             isDisabled={isEditing && !isAddressFormOpen}
           />
-        </Pane>
-      )}
-
-      {!isMobile && (
-        <Pane position="absolute" zIndex={1} top={125} right={10}>
-          <ImageControl map={map} communeNom={commune.nom} />
-        </Pane>
-      )}
-
-      {!isMobile && (
-        <Pane position="absolute" zIndex={1} top={160} right={10}>
-          <RulerControl disabled={isEditing} />
-        </Pane>
-      )}
-
-      {isMobile && navigator.geolocation && (
-        <Pane position="absolute" zIndex={1} top={90} right={10}>
-          <GeolocationControl map={map} />
-        </Pane>
-      )}
+        )}
+        {!isMobile && <ImageControl map={map} communeNom={commune.nom} />}
+        {!isMobile && <RulerControl disabled={isEditing} />}
+        {isMobile && navigator.geolocation && <GeolocationControl map={map} />}
+        <PanoramaxControl
+          map={map}
+          showPanoramax={showPanoramax}
+          setShowPanoramax={setShowPanoramax}
+        />
+      </Pane>
 
       {hint && (
         <Pane
@@ -432,6 +463,17 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             {Object.values(getTilesLayers(tileLayersMode)).map((layer) => (
               <Layer key={layer.id} {...(layer as LayerProps)} />
             ))}
+          </Source>
+
+          <Source id="panoramax" type="vector" tiles={[PANORAMAX_TILE_URL]}>
+            <Layer
+              {...(panoramaxSequenceLayer as LayerProps)}
+              layout={{ visibility: showPanoramax ? "visible" : "none" }}
+            />
+            <Layer
+              {...(panoramaxPictureLayer as LayerProps)}
+              layout={{ visibility: showPanoramax ? "visible" : "none" }}
+            />
           </Source>
 
           {(voie || toponyme) && !drawMode && numeros && (
