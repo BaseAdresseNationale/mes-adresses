@@ -34,7 +34,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
         } as Parameters<typeof setDocumentGenerationData>[0])
       }
     >
-      Certificat d&apos;adressage
+      Certificat de numérotage
     </Menu.Item>
   );
 
@@ -56,7 +56,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
 
   if (!numero.certifie || numero.parcelles.length === 0) {
     generateCertificatAdressageItem = (
-      <Tooltip content="Le Certficat de numérotage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
+      <Tooltip content="Le certficat de numérotage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
         {generateCertificatAdressageItem}
       </Tooltip>
     );

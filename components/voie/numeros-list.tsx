@@ -183,8 +183,8 @@ function NumerosList({
           const url = await NumerosService.generateCertificat(numeroId, data);
           window.open(url, "_blank");
         },
-        "Le Certficat de numérotage a bien été téléchargé",
-        "Le Certficat de numérotage n'a pas pu être téléchargé"
+        "Le certficat de numérotage a bien été téléchargé",
+        "Le certficat de numérotage n'a pas pu être téléchargé"
       );
       await downloadCertificat();
     },

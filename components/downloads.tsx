@@ -111,9 +111,9 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
         {token && baseLocale.status === BaseLocale.status.PUBLISHED && (
           <Pane is="li" marginBottom={16}>
             <Text>
-              Pour télécharger un certificat d&apos;adressage, rendez-vous dans
-              la liste des numéros d&apos;une voie et ouvrez le menu
-              d&apos;actions du numéro concerné.
+              Pour télécharger un certificat de numérotage, rendez-vous dans la
+              liste des numéros d&apos;une voie et ouvrez le menu d&apos;actions
+              du numéro concerné.
             </Text>
           </Pane>
         )}
