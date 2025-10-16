@@ -230,7 +230,7 @@ function SignalementsPage({
         borderBottom="muted"
         textAlign="center"
       >
-        <Text fontWeight="bold">Demandes d&apos;améliorations</Text>
+        <Text>Demandes d&apos;amélioration</Text>
       </Pane>
       <Tablist background="white" padding={8}>
         {tabs.map(({ label, key, count }, index) => (

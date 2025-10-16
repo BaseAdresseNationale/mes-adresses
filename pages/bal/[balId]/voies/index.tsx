@@ -246,7 +246,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
           borderBottom="muted"
           textAlign="center"
         >
-          <Text fontWeight="bold">Voies, places et lieux-dits numérotés</Text>
+          <Text>Voies, places et lieux-dits numérotés</Text>
         </Pane>
         <Table.Head background="white">
           <Table.SearchHeaderCell
