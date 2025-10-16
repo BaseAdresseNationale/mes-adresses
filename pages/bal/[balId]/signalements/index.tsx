@@ -224,6 +224,14 @@ function SignalementsPage({
 
   return (
     <ProtectedPage>
+      <Pane
+        background="white"
+        padding={8}
+        borderBottom="muted"
+        textAlign="center"
+      >
+        <Text>Demandes d&apos;amélioration</Text>
+      </Pane>
       <Tablist background="white" padding={8}>
         {tabs.map(({ label, key, count }, index) => (
           <Tab
