@@ -19,12 +19,10 @@ import {
   DocumentGenerationData,
   GeneratedDocumentType,
 } from "./document-generation.types";
-import { MouseEvent } from "react";
 import MapContext from "@/contexts/map";
 import type { LngLatBoundsLike, Map } from "maplibre-gl";
 import { bboxForVoie, resetMapFilter, setMapFilter } from "@/lib/utils/map";
 import {
-  mapLayersIds,
   NUMEROS_LABEL,
   NUMEROS_POINT,
   TOPONYME_LABEL,
@@ -54,6 +52,7 @@ export function GenerateArreteDeNumerotationDialog<
   const [files, setFiles] = useState([]);
   const [fileRejections, setFileRejections] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTakingScreenshot, setIsTakingScreenshot] = useState(false);
 
   const handleChange = useCallback((files) => setFiles([files[0]]), []);
 
@@ -67,8 +66,8 @@ export function GenerateArreteDeNumerotationDialog<
     setFileRejections([]);
   }, []);
 
-  const handleTakeScreenshot = async (e: MouseEvent) => {
-    e.stopPropagation();
+  const handleTakeScreenshot = async () => {
+    setIsTakingScreenshot(true);
 
     function resetMapAfterScreenshot(map: Map) {
       resetMapFilter(map);
@@ -167,6 +166,8 @@ export function GenerateArreteDeNumerotationDialog<
       setFileRejections([]);
     } catch (e) {
       console.error(e);
+    } finally {
+      setIsTakingScreenshot(false);
     }
   };
 
@@ -189,11 +190,13 @@ export function GenerateArreteDeNumerotationDialog<
       onCloseComplete={() => setData(null)}
       onCancel={() => setData(null)}
       isConfirmLoading={isLoading}
-      isConfirmDisabled={isLoading || fileRejections.length > 0}
-      shouldCloseOnOverlayClick={!isLoading}
-      shouldCloseOnEscapePress={!isLoading}
-      hasCancel={!isLoading}
-      hasClose={!isLoading}
+      isConfirmDisabled={
+        isTakingScreenshot || isLoading || fileRejections.length > 0
+      }
+      shouldCloseOnOverlayClick={!isLoading && !isTakingScreenshot}
+      shouldCloseOnEscapePress={!isLoading && !isTakingScreenshot}
+      hasCancel={!isLoading && !isTakingScreenshot}
+      hasClose={!isLoading && !isTakingScreenshot}
       onConfirm={handleConfirm}
     >
       <Pane is="form" onSubmit={(e) => e.preventDefault()}>

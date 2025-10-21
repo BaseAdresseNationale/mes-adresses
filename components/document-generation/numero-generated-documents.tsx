@@ -41,7 +41,7 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
   let generateArreteDeNumerotationItem = (
     <Menu.Item
       icon={DownloadIcon}
-      disabled={!numero.certifie || numero.parcelles.length === 0}
+      disabled={!numero.certifie}
       onSelect={() =>
         setDocumentGenerationData({
           type: GeneratedDocumentType.ARRETE_DE_NUMEROTATION,
@@ -60,8 +60,10 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
         {generateCertificatAdressageItem}
       </Tooltip>
     );
+  }
+  if (!numero.certifie) {
     generateArreteDeNumerotationItem = (
-      <Tooltip content="L'arrêté de numérotation ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
+      <Tooltip content="L'arrêté de numérotation ne peut être généré que pour un numéro certifié">
         {generateArreteDeNumerotationItem}
       </Tooltip>
     );

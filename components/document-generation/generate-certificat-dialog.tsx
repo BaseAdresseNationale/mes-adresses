@@ -40,7 +40,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
       onCloseComplete={() => setData(null)}
       onCancel={() => setData(null)}
       isConfirmLoading={isGeneratingCertificat}
-      isConfirmDisabled={!data?.emetteur || isGeneratingCertificat}
+      isConfirmDisabled={isGeneratingCertificat}
       shouldCloseOnOverlayClick={!isGeneratingCertificat}
       shouldCloseOnEscapePress={!isGeneratingCertificat}
       hasCancel={!isGeneratingCertificat}
@@ -52,7 +52,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
           if (data.rememberEmetteur) {
             setCertificatEmetteur(data.emetteur);
           } else {
-            setCertificatEmetteur(null);
+            setCertificatEmetteur(undefined);
           }
           setIsGeneratingCertificat(false);
           setData(null);
@@ -61,9 +61,8 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
     >
       <Pane is="form" onSubmit={(e) => e.preventDefault()}>
         <TextInputField
-          label="Émetteur"
+          label="Émetteur (optionnel)"
           description="L'émetteur sera mentionné dans le certficat de numérotage"
-          required
           value={data?.emetteur || ""}
           onChange={(e) =>
             setData((data) => ({
@@ -91,7 +90,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
           marginBottom={16}
         />
         <TextInputField
-          label="Destinataire"
+          label="Destinataire (optionnel)"
           description="Renseigner le nom du destinataire pour un certificat nominatif"
           value={data?.destinataire || ""}
           onChange={(e) =>

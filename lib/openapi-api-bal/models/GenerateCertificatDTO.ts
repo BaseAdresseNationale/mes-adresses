@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type GenerateCertificatDTO = {
-    emetteur: string;
-    destinataire: string | null;
+    emetteur?: string;
+    destinataire?: string;
 };
 
