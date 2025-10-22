@@ -1,11 +1,9 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Pane,
   Dialog,
-  Link,
   Paragraph,
   Heading,
-  defaultTheme,
   CrossIcon,
   Icon,
 } from "evergreen-ui";
@@ -13,7 +11,6 @@ import {
 import CommuneFlag from "./commune-flag";
 import { CommuneType } from "@/types/commune";
 import { AchievementBadge } from "./bal/panel-goal/achievements-badge/achievements-badge";
-import NextImage from "next/image";
 import MiniCard from "./mini-card";
 
 function WelcomeMessage({ commune }: { commune: CommuneType }) {
@@ -59,6 +56,15 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
     >
       <Pane>
         <Pane marginTop={16} display="flex" flexDirection="row">
+          <Pane marginRight={32}>
+            <AchievementBadge
+              icone="/static/images/achievements/published-bal.svg"
+              title="Publication"
+              completed={true}
+              width={64}
+              height={64}
+            />
+          </Pane>
           <Pane>
             <Heading>
               Commencez par la <b>publication</b>!
@@ -68,27 +74,9 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
               adresses de {commune.nom}
             </Paragraph>
           </Pane>
-          <Pane marginLeft={32}>
-            <AchievementBadge
-              icone="/static/images/achievements/published-bal.svg"
-              title="Publication"
-              completed={true}
-              width={96}
-              height={96}
-            />
-          </Pane>
         </Pane>
         <br />
         <Pane display="flex" flexDirection="row">
-          <Pane marginRight={32}>
-            <AchievementBadge
-              icone="/static/images/achievements/time.png"
-              title="Publication"
-              completed={true}
-              width={96}
-              height={96}
-            />
-          </Pane>
           <Pane>
             <Heading>Adressez à votre rythme.</Heading>
             <Paragraph marginY={16}>
