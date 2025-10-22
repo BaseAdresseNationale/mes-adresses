@@ -232,8 +232,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       const feature = features && features[0];
       const source = feature && feature.source;
 
-      console.log("feature", feature);
-
       switch (source) {
         case "cadastre": {
           const parcelles = features.filter(
@@ -262,7 +260,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           if (feature.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES) {
             const pictureId = feature.properties.id;
             window.open(
-              `https://api.panoramax.xyz/?focus=pic&pic=${pictureId}`,
+              `${process.env.NEXT_PUBLIC_PANORAMAX_API_ENDPOINT}/?focus=pic&pic=${pictureId}`,
               "_blank",
               "noreferrer"
             );

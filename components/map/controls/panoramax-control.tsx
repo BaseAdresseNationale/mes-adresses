@@ -37,7 +37,7 @@ function PanoramaxControl({
       icon={
         <Image
           src="/static/images/panoramax.svg"
-          alt="Ruler icon"
+          alt="Panoramax logo"
           width={20}
           height={20}
         />

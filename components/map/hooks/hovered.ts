@@ -81,7 +81,6 @@ function useHovered(map) {
     (event) => {
       const feature = event && event.features && event.features[0];
       if (feature) {
-        console.log("feature", feature);
         const { source, id, sourceLayer } = feature;
 
         const parcelles = event.features.filter(
@@ -113,8 +112,7 @@ function useHovered(map) {
         hovered.current = feature;
 
         // Highlight hovered features
-        map.setFeatureState({ source, id: id, sourceLayer }, { hover: true });
-        console.log("sourceLayer", sourceLayer);
+        map.setFeatureState({ source, id, sourceLayer }, { hover: true });
         handleRelatedFeatures(map, feature, true);
         if (
           sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
