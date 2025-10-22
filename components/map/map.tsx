@@ -222,7 +222,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     (event) => {
       const features = map
         .queryRenderedFeatures(event.point)
-        .filter(({ source, sourceLayer }) => {
+        .filter(({ source }) => {
           return (
             source === "cadastre" ||
             source === "tiles" ||
@@ -416,6 +416,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
         {!isMobile && <RulerControl disabled={isEditing} />}
         {isMobile && navigator.geolocation && <GeolocationControl map={map} />}
         <PanoramaxControl
+          commune={commune}
           map={map}
           showPanoramax={showPanoramax}
           setShowPanoramax={setShowPanoramax}
@@ -466,7 +467,12 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           <Source id="panoramax" type="vector" tiles={[PANORAMAX_TILE_URL]}>
             <Layer
               {...(panoramaxSequenceLayer as LayerProps)}
-              layout={{ visibility: showPanoramax ? "visible" : "none" }}
+              paint={
+                {
+                  ...panoramaxSequenceLayer.paint,
+                  "line-opacity": showPanoramax ? 1 : 0,
+                } as any
+              }
             />
             <Layer
               {...(panoramaxPictureLayer as LayerProps)}
