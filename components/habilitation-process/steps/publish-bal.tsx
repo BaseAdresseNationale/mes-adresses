@@ -9,16 +9,21 @@ import {
   Link,
   Button,
   Image,
+  Heading,
+  defaultTheme,
+  Icon,
+  ErrorIcon,
 } from "evergreen-ui";
+import NextImage from "next/image";
 import { BaseLocale } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 import { ApiDepotService } from "@/lib/api-depot/index";
 import { Revision } from "@/lib/api-depot/types";
-import AlertPublishedBALMesAdresses from "@/components/new/alert-published-bal/alert-published-bal-mes-adresses";
-import AlertPublishedBALMoissoneur from "@/components/new/alert-published-bal/alert-published-bal-moissoneur";
-import AlertPublishedBALApiDepot from "@/components/new/alert-published-bal/alert-published-bal-api-depot";
 import { ApiBalAdminService } from "@/lib/bal-admin";
 import { BALWidgetConfig } from "@/lib/bal-admin/type";
+import PublishedBALMesAdresses from "@/components/new/alert-published-bal/published-bal-mes-adresses";
+import PublishedBALMoissoneur from "@/components/new/alert-published-bal/published-bal-moissoneur";
+import PublishedBALApiDepot from "@/components/new/alert-published-bal/published-bal-api-depot";
 
 interface PublishBalStepProps {
   baseLocale: BaseLocale;
@@ -103,68 +108,111 @@ function PublishBalStep({
       )}
       {isConflicted && (
         <Pane display="flex" flexDirection="column" gap={16}>
-          <Alert
-            intent="danger"
-            title="Cette commune possède déjà une Base Adresse Locale"
-            marginTop={16}
-            width="100%"
-          >
-            <Text is="div" color="muted" marginTop={16}>
-              Une autre Base Adresses Locale est{" "}
-              <Strong>déjà synchronisée avec la Base Adresses Nationale</Strong>
-              .
-            </Text>
-            <Text is="div" color="muted" marginTop={8}>
-              En choisissant de publier, cette Base Adresse Locale{" "}
-              <Strong>remplacera celle actuellement en place</Strong>.
-            </Text>
-            <Text is="div" color="muted" marginTop={8}>
-              Nous vous recommandons{" "}
-              <Strong>
-                d’entrer en contact avec les administrateurs de l’autre Base
-                Adresses Locale
-              </Strong>{" "}
-              ou notre support:{" "}
-              <Link href="mailto:adresse@data.gouv.fr">
-                adresse@data.gouv.fr
-              </Link>
-            </Text>
-          </Alert>
-
           <Pane
             width="100%"
             textAlign="center"
             borderRadius={8}
             backgroundColor="white"
+            padding={16}
           >
-            <Image
-              src="/static/images/schema_bal_conflict.png"
-              width="100%"
-              maxWidth={600}
-              overflow="hidden"
-              alt="Schema du conflit entre la Base Adresse Locale et la Base Adresse Nationale"
-            />
+            <Heading size={600} textAlign="center">
+              Cette commune possède déjà une Base Adresse Locale publiée.
+            </Heading>
           </Pane>
-          {lastRevision ? (
-            lastRevision.context.extras?.balId ? (
-              <AlertPublishedBALMesAdresses
-                commune={commune}
-                revision={lastRevision}
+          <Pane
+            width="100%"
+            borderRadius={8}
+            backgroundColor="white"
+            border={`1px solid ${defaultTheme.colors.red500}`}
+            padding={16}
+          >
+            <Heading
+              size={600}
+              is="h3"
+              color={defaultTheme.colors.red500}
+              display="flex"
+              alignItems="center"
+              gap={8}
+            >
+              <Icon icon={ErrorIcon} />
+              Êtes-vous sûre de vouloir la remplacer
+            </Heading>
+            <Text is="p" marginTop={8}>
+              En forcant la publication, cette Base Adresse Locale{" "}
+              <Strong>remplacera celle actuellement en place</Strong>.
+            </Text>
+            <Pane
+              width="100%"
+              textAlign="center"
+              borderRadius={8}
+              backgroundColor="white"
+            >
+              <Image
+                src="/static/images/schema_bals_conflict.png"
+                maxHeight={200}
+                overflow="hidden"
+                alt="Schema du conflit entre la Base Adresse Locale et la Base Adresse Nationale"
               />
-            ) : lastRevision.context.extras?.sourceId ? (
-              <AlertPublishedBALMoissoneur
-                commune={commune}
-                revision={lastRevision}
-                outdatedHarvestSources={outdatedHarvestSources}
-              />
-            ) : (
-              <AlertPublishedBALApiDepot
-                commune={commune}
-                revision={lastRevision}
-                outdatedApiDepotClients={outdatedApiDepotClients}
-              />
-            )
-          ) : null}
+            </Pane>
+
+            <Pane display="flex" justifyContent="end">
+              <Button
+                intent="danger"
+                appearance="primary"
+                onClick={forcePublication}
+              >
+                Forcer la publication
+              </Button>
+            </Pane>
+          </Pane>
+          {lastRevision && (
+            <Pane
+              width="100%"
+              borderRadius={8}
+              backgroundColor="white"
+              border={`1px solid ${defaultTheme.colors.blue400}`}
+              padding={16}
+            >
+              <Heading
+                size={600}
+                is="h3"
+                color={defaultTheme.colors.blue400}
+                display="flex"
+                alignItems="center"
+                gap={8}
+              >
+                <Pane position="relative" width={24} height={24}>
+                  <NextImage
+                    src="/static/images/published-bal-icon.svg"
+                    alt="Icone Base Adresse Locale publiée"
+                    width={24}
+                    height={24}
+                  />
+                </Pane>
+                Ou souhaitez vous pouvsuivre sur la BAL deja publiée ?
+              </Heading>
+              {lastRevision.context.extras?.balId ? (
+                <PublishedBALMesAdresses
+                  commune={commune}
+                  revision={lastRevision}
+                  buttonPosition="right"
+                />
+              ) : lastRevision.context.extras?.sourceId ? (
+                <PublishedBALMoissoneur
+                  commune={commune}
+                  revision={lastRevision}
+                  outdatedHarvestSources={outdatedHarvestSources}
+                />
+              ) : (
+                <PublishedBALApiDepot
+                  commune={commune}
+                  revision={lastRevision}
+                  outdatedApiDepotClients={outdatedApiDepotClients}
+                />
+              )}
+            </Pane>
+          )}
+
           <Pane
             display="flex"
             flexDirection="row"
@@ -173,13 +221,6 @@ function PublishBalStep({
           >
             <Button intent="primary" onClick={handleClose}>
               Fermer
-            </Button>
-            <Button
-              intent="danger"
-              appearance="primary"
-              onClick={forcePublication}
-            >
-              Forcer la publication
             </Button>
           </Pane>
         </Pane>

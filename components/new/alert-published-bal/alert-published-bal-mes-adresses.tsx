@@ -3,6 +3,7 @@ import { CommuneType } from "@/types/commune";
 import { Alert, Button, Pane, Paragraph } from "evergreen-ui";
 import NextLink from "next/link";
 import NextImage from "next/image";
+import PublishedBALMesAdresses from "./published-bal-mes-adresses";
 
 interface AlertPublishedBALMesAdressesProps {
   revision: Revision;
@@ -13,8 +14,6 @@ function AlertPublishedBALMesAdresses({
   revision,
   commune,
 }: AlertPublishedBALMesAdressesProps) {
-  const publishedBALId = revision.context?.extras?.balId || null;
-
   return (
     <Alert
       intent="success"
@@ -35,25 +34,7 @@ function AlertPublishedBALMesAdresses({
         </Pane>
       }
     >
-      <Pane marginLeft={35}>
-        <Paragraph marginTop={8}>
-          Une Base Adresse Locale est déjà publiée pour {commune.nom}.
-        </Paragraph>
-        <Paragraph marginTop={8}>
-          Si vous en êtes l&apos;administrateur, nous vous recommendons de
-          poursuivre l’adressage depuis cette dernière.
-        </Paragraph>
-        <Button
-          marginTop={8}
-          appearance="primary"
-          is={NextLink}
-          height={30}
-          href={`/bal/${publishedBALId}`}
-          target="_blank"
-        >
-          Accéder à la Base Adresse Locale publiée
-        </Button>
-      </Pane>
+      <PublishedBALMesAdresses revision={revision} commune={commune} />
     </Alert>
   );
 }
