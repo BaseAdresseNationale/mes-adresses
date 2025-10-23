@@ -107,7 +107,7 @@ function PanoramaxControl({
         <>
           <Pane marginBottom={8}>
             <Text color="white">
-              Aucunes données Panoramax ne sont disponibles.
+              Aucune photographie du territoire n&apos;est disponible.
             </Text>
           </Pane>
           <Button
@@ -117,7 +117,7 @@ function PanoramaxControl({
             target="_blank"
             rel="noopener noreferrer"
           >
-            En savoir plus
+            Participer à Panoramax
           </Button>
         </>
       }
