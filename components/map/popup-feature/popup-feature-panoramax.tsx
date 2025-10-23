@@ -1,4 +1,4 @@
-import ResponsiveImage from "@/components/respponsive-image";
+import ResponsiveImage from "@/components/responsive-image";
 import { Pane } from "evergreen-ui";
 
 interface PopupFeaturePanoramaxProps {
