@@ -1,5 +1,16 @@
 import { useState, useCallback, useContext, useMemo } from "react";
-import { Pagination, Pane, Paragraph, SearchInput } from "evergreen-ui";
+import {
+  defaultTheme,
+  IconButton,
+  Pagination,
+  Pane,
+  Paragraph,
+  SearchInput,
+  SortAlphabeticalDescIcon,
+  SortAlphabeticalIcon,
+  SortAscIcon,
+  SortDescIcon,
+} from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import DeleteWarning from "@/components/delete-warning";
 import BaseLocaleCard from "@/components/base-locale-card";
@@ -11,10 +22,39 @@ import {
 import LayoutContext from "@/contexts/layout";
 import CreateBaseLocaleCard from "./create-bal-card";
 import WelcomeIllustration from "../welcome-illustration";
+import styles from "./bases-locales-list.module.css";
 
 interface BasesLocalesListProps {
   initialBasesLocales: ExtendedBaseLocaleDTO[];
 }
+
+type SortType = {
+  updatedAt: "asc" | "desc";
+  nom: "asc" | "desc";
+};
+
+const sortFnMap = {
+  updatedAt: (
+    a: ExtendedBaseLocaleDTO,
+    b: ExtendedBaseLocaleDTO,
+    direction: "asc" | "desc"
+  ) => {
+    const dateA = new Date(a.updatedAt).getTime();
+    const dateB = new Date(b.updatedAt).getTime();
+    return direction === "asc" ? dateA - dateB : dateB - dateA;
+  },
+  nom: (
+    a: ExtendedBaseLocaleDTO,
+    b: ExtendedBaseLocaleDTO,
+    direction: "asc" | "desc"
+  ) => {
+    const nameA = a.nom.toLowerCase();
+    const nameB = b.nom.toLowerCase();
+    if (nameA < nameB) return direction === "asc" ? -1 : 1;
+    if (nameA > nameB) return direction === "asc" ? 1 : -1;
+    return 0;
+  },
+};
 
 const PAGE_SIZE = 8;
 
@@ -22,6 +62,12 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
   const [search, setSearch] = useState("");
   const [basesLocales, setBasesLocales] = useState(initialBasesLocales);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sort, setSort] = useState<SortType>({
+    updatedAt: "desc",
+    nom: "asc",
+  });
+  const [activeSortField, setActiveSortField] =
+    useState<keyof SortType>("updatedAt");
   const { removeBalAccess, getBalToken } = useContext(LocalStorageContext);
   const { toaster } = useContext(LayoutContext);
   const [BALtoRemove, setBALToRemove] = useState<ExtendedBaseLocaleDTO | null>(
@@ -30,10 +76,12 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
 
   const filteredBALs = useMemo(
     () =>
-      basesLocales.filter((baseLocale) =>
-        baseLocale.nom.toLowerCase().includes(search.toLowerCase())
-      ),
-    [basesLocales, search]
+      basesLocales
+        .sort((a, b) => sortFnMap[activeSortField](a, b, sort[activeSortField]))
+        .filter((baseLocale) =>
+          baseLocale.nom.toLowerCase().includes(search.toLowerCase())
+        ),
+    [basesLocales, search, sort, activeSortField]
   );
 
   const displayedBALs = useMemo(
@@ -91,6 +139,20 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
     [basesLocales]
   );
 
+  const handleUpdateSort = useCallback(
+    (field: keyof SortType) => {
+      if (field === activeSortField) {
+        setSort((prevSort) => ({
+          ...prevSort,
+          [field]: prevSort[field] === "asc" ? "desc" : "asc",
+        }));
+      }
+      setActiveSortField(field);
+      setCurrentPage(1);
+    },
+    [activeSortField]
+  );
+
   return (
     <Pane display="flex" flexDirection="column" flex={1}>
       <DeleteWarning
@@ -123,18 +185,63 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
             alignItems="center"
             flex={1}
           >
-            <SearchInput
-              placeholder="Filtrer les bases adresses locales par nom"
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-              value={search}
+            <Pane
+              display="flex"
+              width="100%"
               marginTop={8}
               marginBottom={12}
-              width="100%"
-              maxWidth={400}
-            />
+              justifyContent="center"
+              flexWrap="wrap"
+            >
+              <SearchInput
+                placeholder="Filtrer les bases adresses locales par nom"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setCurrentPage(1);
+                }}
+                value={search}
+                width={400}
+              />
+              <Pane
+                marginLeft={8}
+                display="flex"
+                gap={8}
+                justifySelf="flex-end"
+              >
+                <IconButton
+                  title="Trier par date de mise à jour"
+                  appearance="minimal"
+                  className={styles["sort-button"]}
+                  icon={
+                    sort.updatedAt === "asc" ? (
+                      <SortAscIcon />
+                    ) : (
+                      <SortDescIcon />
+                    )
+                  }
+                  onClick={() => handleUpdateSort("updatedAt")}
+                  {...(activeSortField === "updatedAt" && {
+                    color: defaultTheme.colors.blue500,
+                  })}
+                />
+                <IconButton
+                  title="Trier par ordre alphabétique"
+                  className={styles["sort-button"]}
+                  appearance="minimal"
+                  icon={
+                    sort.nom === "asc" ? (
+                      <SortAlphabeticalIcon />
+                    ) : (
+                      <SortAlphabeticalDescIcon />
+                    )
+                  }
+                  onClick={() => handleUpdateSort("nom")}
+                  {...(activeSortField === "nom" && {
+                    color: defaultTheme.colors.blue500,
+                  })}
+                />
+              </Pane>
+            </Pane>
             <Pane
               display="grid"
               gridTemplateColumns="repeat(auto-fill, minmax(290px, 1fr))"
