@@ -107,7 +107,7 @@ function PanoramaxControl({
         <>
           <Pane marginBottom={8}>
             <Text color="white">
-              Aucune données Panoramax n&apos;est disponible.
+              Aucunes données Panoramax ne sont disponibles.
             </Text>
           </Pane>
           <Button
