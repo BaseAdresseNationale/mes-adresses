@@ -54,6 +54,7 @@ import PanoramaxControl from "./controls/panoramax-control";
 import {
   PANORAMAX_LAYERS_SOURCE,
   PANORAMAX_PICTURE_LAYER_ID,
+  PANORAMAX_SOURCE_ID,
   PANORAMAX_TILE_URL,
   panoramaxPictureLayer,
   panoramaxSequenceLayer,
@@ -141,7 +142,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     viewport.zoom > 14 &&
     (featureHovered.sourceLayer === LAYERS_SOURCE.VOIES_POINTS ||
       featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
-      featureHovered.sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS);
+      featureHovered.sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS ||
+      featureHovered.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES);
 
   const updatePositionsLayer = useCallback(() => {
     if (map && isTileSourceLoaded) {
@@ -464,7 +466,11 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
             ))}
           </Source>
 
-          <Source id="panoramax" type="vector" tiles={[PANORAMAX_TILE_URL]}>
+          <Source
+            id={PANORAMAX_SOURCE_ID}
+            type="vector"
+            tiles={[PANORAMAX_TILE_URL]}
+          >
             <Layer
               {...(panoramaxSequenceLayer as LayerProps)}
               paint={

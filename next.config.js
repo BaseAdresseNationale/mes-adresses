@@ -7,7 +7,10 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 
 module.exports = withBundleAnalyzer({
   images: {
-    domains: ["base-adresse-locale-prod-blasons-communes.s3.fr-par.scw.cloud"],
+    domains: [
+      "base-adresse-locale-prod-blasons-communes.s3.fr-par.scw.cloud",
+      "api.panoramax.xyz",
+    ],
   },
   webpack(config, { webpack }) {
     config.resolve.fallback = { fs: false };

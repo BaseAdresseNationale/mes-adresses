@@ -81,6 +81,10 @@ function useHovered(map) {
     (event) => {
       const feature = event && event.features && event.features[0];
       if (feature) {
+        if (feature.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES) {
+          feature.id = feature.properties.id;
+        }
+
         const { source, id, sourceLayer } = feature;
 
         const parcelles = event.features.filter(

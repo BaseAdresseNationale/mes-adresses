@@ -1,3 +1,5 @@
+export const PANORAMAX_SOURCE_ID = "panoramax";
+
 export const PANORAMAX_TILE_URL = `${process.env.NEXT_PUBLIC_PANORAMAX_API_ENDPOINT}/api/map/{z}/{x}/{y}.mvt`;
 
 export const PANORAMAX_LAYERS_SOURCE = {
@@ -14,7 +16,7 @@ export const panoramaxSequenceLayer = {
   interactive: false,
   type: "line",
   paint: {
-    "line-color": "#0078ff",
+    "line-color": "#4845f4",
     "line-width": 4,
   },
   layout: {
@@ -28,13 +30,7 @@ export const panoramaxPictureLayer = {
   type: "circle",
   interactive: true,
   paint: {
-    "circle-color": "#0078ff",
-    "circle-opacity": [
-      "case",
-      ["boolean", ["feature-state", "hover"], false],
-      1,
-      0.7,
-    ],
+    "circle-color": "#4845f4",
     "circle-radius": {
       stops: [
         [12, 0.8],

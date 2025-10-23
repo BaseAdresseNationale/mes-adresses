@@ -10,7 +10,10 @@ import Image from "next/image";
 import type { Map as MaplibreMap } from "maplibre-gl";
 import { useEffect, useState } from "react";
 import { CommuneType } from "@/types/commune";
-import { PANORAMAX_LAYERS_SOURCE } from "../layers/panoramax";
+import {
+  PANORAMAX_LAYERS_SOURCE,
+  PANORAMAX_SOURCE_ID,
+} from "../layers/panoramax";
 
 interface PanoramaxControlProps {
   map: MaplibreMap | null;
@@ -40,29 +43,31 @@ function PanoramaxControl({
       return;
     }
 
-    const checkPanoramaxData = () => {
-      const sequences = map?.querySourceFeatures("panoramax", {
-        sourceLayer: PANORAMAX_LAYERS_SOURCE.SEQUENCES,
-        filter: [
-          "within",
-          commune.contour || {
-            type: "Polygon",
-            coordinates: [
-              [
-                [commune.bbox[0], commune.bbox[1]],
-                [commune.bbox[0], commune.bbox[3]],
-                [commune.bbox[2], commune.bbox[3]],
-                [commune.bbox[2], commune.bbox[1]],
+    const checkPanoramaxData = (e) => {
+      if (e.sourceId === PANORAMAX_SOURCE_ID && e.isSourceLoaded) {
+        const sequences = map?.querySourceFeatures(PANORAMAX_SOURCE_ID, {
+          sourceLayer: PANORAMAX_LAYERS_SOURCE.SEQUENCES,
+          filter: [
+            "within",
+            commune.contour || {
+              type: "Polygon",
+              coordinates: [
+                [
+                  [commune.bbox[0], commune.bbox[1]],
+                  [commune.bbox[0], commune.bbox[3]],
+                  [commune.bbox[2], commune.bbox[3]],
+                  [commune.bbox[2], commune.bbox[1]],
+                ],
               ],
-            ],
-          },
-        ],
-      });
+            },
+          ],
+        });
 
-      setDisabled(!(sequences && sequences.length > 0));
+        setDisabled(!(sequences && sequences.length > 0));
+      }
     };
 
-    checkPanoramaxData();
+    map.on("sourcedata", checkPanoramaxData);
 
     return () => {
       map.off("sourcedata", checkPanoramaxData);
@@ -102,7 +107,7 @@ function PanoramaxControl({
         <>
           <Pane marginBottom={8}>
             <Text color="white">
-              Aucune données Panoramax n&apos;est disponible pour cette commune.
+              Aucune données Panoramax n&apos;est disponible.
             </Text>
           </Pane>
           <Button
