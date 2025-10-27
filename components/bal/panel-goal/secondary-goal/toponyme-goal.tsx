@@ -68,12 +68,16 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
             {hasToponymes ? (
               <Pane display="flex" justifyContent="start">
                 <Counter
-                  label="Toponyme(s)"
+                  label={`lieux-dit${
+                    toponymes.length > 1 ? "s" : ""
+                  } / complément${toponymes.length > 1 ? "s" : ""}`}
                   value={toponymes.length}
                   color={defaultTheme.colors.orange700}
                 />
                 <Counter
-                  label="Numéro(s) relié(s)"
+                  label={`numéro${
+                    nbNumerosWithToponymes > 1 ? "s" : ""
+                  } associé${nbNumerosWithToponymes > 1 ? "s" : ""}`}
                   value={nbNumerosWithToponymes}
                   color={defaultTheme.colors.orange700}
                 />
@@ -81,8 +85,8 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
             ) : (
               <Pane marginTop={16}>
                 <Paragraph>
-                  Pour activer l&apos;objectif, il faut créer votre premier
-                  toponyme
+                  Enrichissez l&apos;adressage de votre commune en renseignant
+                  vos lieux-dits complémentaires et voies sans adresse.
                 </Paragraph>
                 <Button
                   marginTop={16}
@@ -93,7 +97,7 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
                   href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/new`}
                   width="100%"
                 >
-                  Créer Toponyme
+                  Créez un lieu-dit complémentaire ou une voie sans adresse
                   <AddIcon marginLeft={8} />
                 </Button>
               </Pane>
@@ -110,11 +114,8 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
         {hasToponymes && (
           <Pane padding={8}>
             <Paragraph>
-              Il est important de remplir les lieux-dits et complément de votre
-              commune dans l&apos;onglet toponyme.
-            </Paragraph>
-            <Paragraph>
-              Vous pouvez les relier à des numéros pour les localiser
+              Conservez vos noms de hameaux et lieux-dits historique.
+              Associez-les aux numéros comme complément d'adresse.
             </Paragraph>
           </Pane>
         )}

@@ -73,7 +73,11 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
             {hasLangRegional ? (
               <Pane display="flex" justifyContent="center">
                 <Counter
-                  label="voies, places et lieux-dits multilingues"
+                  label={`voie${nbWithLang > 1 ? "s" : ""}, place${
+                    nbWithLang > 1 ? "s" : ""
+                  } ou lieux-dit${nbWithLang > 1 ? "s" : ""} multilingue${
+                    nbWithLang > 1 ? "s" : ""
+                  }`}
                   value={nbWithLang}
                   color={defaultTheme.colors.blue700}
                 />
