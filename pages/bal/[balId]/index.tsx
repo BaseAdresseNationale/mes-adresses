@@ -1,15 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Pane } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
 
-import {
-  BaseLocale,
-  BasesLocalesService,
-  ExtendedVoieDTO,
-  ExtentedToponymeDTO,
-} from "@/lib/openapi-api-bal";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
 import { getCommuneFlag } from "@/lib/api-blason-commune";
 import CommuneNomsAltEditor from "@/components/bal/commune-noms-alt-editor";
@@ -20,13 +15,12 @@ import MapContext from "@/contexts/map";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 
 interface BALHomePageProps {
-  voies: ExtendedVoieDTO[];
-  toponymes: ExtentedToponymeDTO[];
   communeFlag?: string;
 }
 
-function BALHomePage({ communeFlag, voies, toponymes }: BALHomePageProps) {
-  const { baseLocale, commune, reloadBaseLocale } = useContext(BalDataContext);
+function BALHomePage({ communeFlag }: BALHomePageProps) {
+  const { baseLocale, commune, voies, toponymes, reloadBaseLocale } =
+    useContext(BalDataContext);
   const { token } = useContext(TokenContext);
   const isAdmin = Boolean(token);
   const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
