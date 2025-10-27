@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Pane,
   Button,
@@ -7,7 +7,49 @@ import {
   PlayIcon,
   PauseIcon,
   AutomaticUpdatesIcon,
+  RefreshIcon,
 } from "evergreen-ui";
+
+function SyncButtonIsLoading() {
+  return (
+    <Pane display="flex" alignItems="center">
+      Synchronisation en cours{" "}
+      <span>
+        <RefreshIcon size={16} />
+      </span>
+      <style jsx>{`
+        /* Safari 4.0 - 8.0 */
+        @-webkit-keyframes rotate {
+          0% {
+            -webkit-transform: rotate(0deg);
+          }
+          100% {
+            -webkit-transform: rotate(360deg);
+          }
+        }
+
+        /* Standard syntax */
+        @keyframes rotate {
+          0% {
+            -webkit-transform: rotate(0deg);
+          }
+          100% {
+            -webkit-transform: rotate(360deg);
+          }
+        }
+
+        span {
+          display: flex;
+          width: 16px;
+          height: 16px;
+          margin-left: 8px;
+          -webkit-animation: rotate 2s linear infinite; /* Safari */
+          animation: rotate 2s linear infinite;
+        }
+      `}</style>
+    </Pane>
+  );
+}
 
 interface SyncButtonProps {
   isSync: boolean;
@@ -73,14 +115,26 @@ function SyncButton({
     <Pane display="flex" flexDirection="column">
       <Button
         width="100%"
-        iconAfter={isActionHovered ? CircleArrowUpIcon : AutomaticUpdatesIcon}
-        appearance={isActionHovered ? "primary" : "default"}
+        {...(!isLoading
+          ? {
+              iconAfter: isActionHovered
+                ? CircleArrowUpIcon
+                : AutomaticUpdatesIcon,
+            }
+          : {})}
+        appearance={isLoading || isActionHovered ? "primary" : "default"}
         onMouseEnter={() => setIsActionHovered(true)}
         onMouseLeave={() => setIsActionHovered(false)}
-        onClick={handleSync}
-        disabled={isSync}
+        onClick={onSync}
+        disabled={isSync || isLoading}
       >
-        {isActionHovered ? "Mettre à jour" : "Mise à jour automatique"}
+        {isLoading ? (
+          <SyncButtonIsLoading />
+        ) : isActionHovered ? (
+          "Mettre à jour"
+        ) : (
+          "Mise à jour automatique"
+        )}
       </Button>
       <Button appearance="minimal" iconAfter={PauseIcon} onClick={togglePause}>
         Suspendre la mise à jour automatique
