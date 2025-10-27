@@ -115,7 +115,7 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
           <Pane padding={8}>
             <Paragraph>
               Conservez vos noms de hameaux et lieux-dits historique.
-              Associez-les aux numéros comme complément d'adresse.
+              Associez-les aux numéros comme complément d&apos;adresse.
             </Paragraph>
           </Pane>
         )}
