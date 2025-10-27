@@ -9,6 +9,7 @@ import {
   IconButton,
 } from "evergreen-ui";
 import { useContext, useState } from "react";
+import languesRegionales from "@ban-team/shared-data/langues-regionales.json";
 
 import BalDataContext from "@/contexts/bal-data";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
@@ -30,10 +31,14 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
   const nbToponymesWithLang = toponymes.filter(
     (toponyme) => toponyme.nomAlt
   ).length;
-  const hasLangRegional =
-    baseLocale.communeNomsAlt || nbVoiesWithLang > 0 || nbToponymesWithLang > 0;
-  const isCompleted = nbVoiesWithLang > 0 || nbToponymesWithLang > 0;
-
+  const nbWithLang = nbVoiesWithLang + nbToponymesWithLang;
+  const isCompleted = nbWithLang > 0;
+  const hasLangRegional = baseLocale.communeNomsAlt || isCompleted;
+  const langueRegional =
+    baseLocale.communeNomsAlt &&
+    languesRegionales.find(
+      (lr) => lr.code === Object.keys(baseLocale.communeNomsAlt)[0]
+    )?.label;
   return (
     <Pane paddingX={8}>
       <AccordionCard
@@ -58,7 +63,7 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
               {!hasLangRegional && (
                 <IconButton
                   icon={TrashIcon}
-                  title="Ajouter un toponyme"
+                  title="poubelle icon"
                   appearance="minimal"
                   intent="danger"
                   onClick={onIgnoreGoal}
@@ -68,21 +73,16 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
             {hasLangRegional ? (
               <Pane display="flex" justifyContent="center">
                 <Counter
-                  label="voie(s) régionales"
-                  value={nbVoiesWithLang}
-                  color={defaultTheme.colors.blue700}
-                />
-                <Counter
-                  label="toponyme(s) régionales"
-                  value={nbToponymesWithLang}
+                  label="voies, places et lieux-dits multilingues"
+                  value={nbWithLang}
                   color={defaultTheme.colors.blue700}
                 />
               </Pane>
             ) : (
               <Pane marginTop={16}>
                 <Paragraph>
-                  Pour activer l&apos;objectif, il faut ajouter une langue
-                  régionale à la commune, une voie ou un toponyme.
+                  Pour un adressage multilingue, commencez par renseigner le nom
+                  de la commune en langue régional
                 </Paragraph>
                 <Button
                   marginTop={16}
@@ -92,7 +92,7 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
                   width="100%"
                   onClick={onEditNomsAlt}
                 >
-                  Modifier langue de la commune <EditIcon marginLeft={8} />
+                  Modifier le nom de la commune <EditIcon marginLeft={8} />
                 </Button>
               </Pane>
             )}
@@ -108,12 +108,9 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
         {hasLangRegional && (
           <Pane padding={8}>
             <Paragraph marginBottom={8}>
-              Afin d&apos;améliorer la qualité de votre Base Adresse Locale, il
-              est important de remplir les champs de langue régionale.
-            </Paragraph>
-            <Paragraph>
-              Vous pouvez remplir le champ de langue régionale pour chaque voie
-              et toponyme mais aussi pour la commune.
+              Mettez en valeur votre patrimoine linguistique en renseignant vos
+              libellés de voies, places et lieux-dits
+              {langueRegional && ` en ${langueRegional}`}
             </Paragraph>
           </Pane>
         )}
