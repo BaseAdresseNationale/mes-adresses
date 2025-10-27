@@ -1,5 +1,12 @@
 import { useState, useContext } from "react";
-import { Pane, Heading, Text, defaultTheme } from "evergreen-ui";
+import {
+  Pane,
+  Heading,
+  Text,
+  defaultTheme,
+  Paragraph,
+  Strong,
+} from "evergreen-ui";
 
 import ProgressBar from "@/components/progress-bar";
 import Counter from "@/components/counter";
@@ -81,28 +88,20 @@ function CertificationGoal({ baseLocale }: CertificationGoalProps) {
         caretPosition="start"
       >
         <Pane padding={8}>
-          <Heading size={400}>
-            Pour faciliter la réutilisation des adresses,{" "}
-            <u>il est conseillé de les certifier</u>.
-          </Heading>
-          <br />
-          <Text>
-            Il est tout à fait possible de publier une Base Adresse Locale dont
-            l’ensemble des{" "}
-            <u>
-              numéros n’ont pas encore été vérifiés : ils doivent rester
-              non-certifiés.
-            </u>
-            <br />
-          </Text>
-          <Pane paddingTop={15}>
-            <Text>
-              En revanche, les numéros qui auront été authentifiés par la
-              commune <u>devront être certifiés</u>, qu’ils soient nouvellement
-              crées par la commune ou que leur correspondance avec la liste
-              officielle qui ressort du Conseil municipal, soit avérée.
-            </Text>
-          </Pane>
+          <Paragraph>
+            La{" "}
+            <a
+              href="https://guide.mes-adresses.data.gouv.fr/publier-une-base-adresse-locale-1/certifier-ses-adresses"
+              target="_blank"
+              rel="noreferrer"
+            >
+              certification
+            </a>{" "}
+            vous permet de{" "}
+            <Strong>suivre l&apos;avancée de la fiabilisation</Strong> des
+            adresses et de <Strong>mettre en valeur votre travail</Strong>
+            auprès des réutilisateurs.
+          </Paragraph>
         </Pane>
       </AccordionCard>
     </Pane>

@@ -58,7 +58,7 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
               {!hasToponymes && (
                 <IconButton
                   icon={TrashIcon}
-                  title="Ajouter un toponyme"
+                  title="Supprimer objectif"
                   appearance="minimal"
                   intent="danger"
                   onClick={onIgnoreGoal}

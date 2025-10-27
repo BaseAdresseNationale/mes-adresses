@@ -63,7 +63,7 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
               {!hasLangRegional && (
                 <IconButton
                   icon={TrashIcon}
-                  title="poubelle icon"
+                  title="Supprimer objectif"
                   appearance="minimal"
                   intent="danger"
                   onClick={onIgnoreGoal}
