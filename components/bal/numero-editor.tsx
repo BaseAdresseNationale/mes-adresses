@@ -384,6 +384,7 @@ function NumeroEditor({
               maxWidth={300}
               flex={2}
               min={0}
+              max={99999}
               value={numero}
               marginBottom={0}
               onWheel={(e) => e.target.blur()}

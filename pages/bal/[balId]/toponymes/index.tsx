@@ -163,7 +163,7 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
           borderBottom="muted"
           textAlign="center"
         >
-          <Text>Lieux-dits complémentaires et voies sans adresses</Text>
+          <Text>Lieux-dits complémentaires et voies sans adresse</Text>
         </Pane>
         <Table.Head background="white">
           <Table.SearchHeaderCell
