@@ -1,8 +1,8 @@
 import { Pane, Button, ChevronLeftIcon } from "evergreen-ui";
 
-import CodeValidation from "@/components/habilitation-process/validate-authentication/code-validation";
+import CodeValidation from "./code-validation";
 
-interface ValidateAuthenticationProps {
+interface AuthenticationValidateStepProps {
   emailCommune: string;
   validatePinCode: (code: string) => Promise<void>;
   resendCode: () => Promise<boolean>;
@@ -10,13 +10,13 @@ interface ValidateAuthenticationProps {
   flagURL: string | null;
 }
 
-function ValidateAuthentication({
+function AuthenticationValidateStep({
   emailCommune,
   validatePinCode,
   resendCode,
   onCancel,
   flagURL,
-}: ValidateAuthenticationProps) {
+}: AuthenticationValidateStepProps) {
   return (
     <Pane>
       <CodeValidation
@@ -33,4 +33,4 @@ function ValidateAuthentication({
   );
 }
 
-export default ValidateAuthentication;
+export default AuthenticationValidateStep;
