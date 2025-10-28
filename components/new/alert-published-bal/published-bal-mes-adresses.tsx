@@ -22,7 +22,7 @@ function PublishedBALMesAdresses({
         Une Base Adresse Locale est déjà publiée pour {commune.nom}.
       </Paragraph>
       <Paragraph marginTop={8}>
-        Si vous en êtes l&apos;administrateur, nous vous recommendons de
+        Si vous en êtes l&apos;administrateur, nous vous recommandons de
         poursuivre l’adressage depuis cette dernière.
       </Paragraph>
       <Pane

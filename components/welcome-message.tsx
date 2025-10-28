@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Pane,
   Dialog,
@@ -12,13 +12,11 @@ import CommuneFlag from "./commune-flag";
 import { CommuneType } from "@/types/commune";
 import { AchievementBadge } from "./bal/panel-goal/achievements-badge/achievements-badge";
 import MiniCard from "./mini-card";
+import LocalStorageContext from "@/contexts/local-storage";
 
 function WelcomeMessage({ commune }: { commune: CommuneType }) {
-  // const { wasWelcomed, setWasWelcomed } = useContext(LocalStorageContext);
-  // const [isShown, setIsShown] = useState(false);
-
-  const [wasWelcomed, setWasWelcomed] = useState(false);
-  const [isShown, setIsShown] = useState(true);
+  const { wasWelcomed, setWasWelcomed } = useContext(LocalStorageContext);
+  const [isShown, setIsShown] = useState(false);
 
   useEffect(() => {
     setIsShown(!wasWelcomed);
@@ -27,7 +25,6 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
   return (
     <Dialog
       isShown={isShown}
-      // isShown={Boolean(isShown && token && !habilitationIsLoading)}
       intent="success"
       header={
         <Pane position="relative" width="100%">
@@ -49,7 +46,7 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
           />
         </Pane>
       }
-      confirmLabel="Commencer l’adressage"
+      confirmLabel="Commencez l’adressage"
       hasCancel={false}
       onConfirm={() => setWasWelcomed(true)}
       onCloseComplete={() => setWasWelcomed(true)}
@@ -67,7 +64,7 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
           </Pane>
           <Pane>
             <Heading>
-              Commencez par la <b>publication</b>!
+              Commencez par la <b>publication</b> !
             </Heading>
             <Paragraph marginY={16}>
               La BAL deviendra alors l&apos;unique source officielle des
@@ -80,10 +77,10 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
           <Pane>
             <Heading>Adressez à votre rythme.</Heading>
             <Paragraph marginY={16}>
-              Une fois publiée, les adresses sont syncronisées avec la base
-              nationale.
+              Une fois publiées, les adresses sont syncronisées avec la Base
+              Adresse Nationale.
               <br />
-              Toutes vos modifications remonterons au fil de l&apos;eau.
+              Toutes vos modifications remonteront au fil de l&apos;eau.
             </Paragraph>
           </Pane>
         </Pane>
@@ -98,14 +95,17 @@ function WelcomeMessage({ commune }: { commune: CommuneType }) {
             <MiniCard
               img="/static/images/education.png"
               message="Suivez une formation"
+              href="https://adresse.data.gouv.fr/formation-en-ligne"
             />
             <MiniCard
               img="/static/images/video-call.png"
               message="Regardez les tutoriels"
+              href="https://tube.numerique.gouv.fr/w/p/cm6YcSnDdztzRjKTH3vNFn?playlistPosition=1"
             />
             <MiniCard
               img="/static/images/manual.png"
-              message="Consulter les guides"
+              message="Consultez les guides"
+              href="https://adresse.data.gouv.fr/documentation-bal"
             />
           </Pane>
         </Pane>

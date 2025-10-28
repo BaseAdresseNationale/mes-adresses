@@ -110,7 +110,7 @@ function CodeValidation({
         <Heading>Vous n&apos;avez pas reçu votre code ?</Heading>
         <UnorderedList>
           <ListItem icon={EyeOpenIcon}>
-            <Text size={400}>Consultez vos spam</Text>
+            <Text size={400}>Consultez vos spams</Text>
           </ListItem>
 
           <ListItem icon={EnvelopeIcon}>

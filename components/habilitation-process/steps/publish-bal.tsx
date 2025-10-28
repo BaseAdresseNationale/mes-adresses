@@ -41,6 +41,7 @@ function PublishBalStep({
   handleClose,
 }: PublishBalStepProps) {
   const [isConflicted, setIsConflicted] = useState(false);
+  const [isLoadingConflicted, setIsLoadingConflicted] = useState(false);
   const [lastRevision, setLastRevision] = useState<Revision | null>(null);
   const [outdatedApiDepotClients, setOutdatedApiDepotClients] = useState<
     string[]
@@ -56,28 +57,33 @@ function PublishBalStep({
 
   // Checks revisions to warn of a conflict
   const checkConflictingRevision = useCallback(async () => {
+    let conflicted = false;
     try {
+      setIsLoadingConflicted(true);
       const revision = await ApiDepotService.getCurrentRevision(commune.code);
       setLastRevision(revision);
       const publishedBALId = revision.context?.extras?.balId || null;
-      const conflicted = baseLocale.id !== publishedBALId;
+      conflicted = Boolean(baseLocale.id !== publishedBALId);
       setIsConflicted(conflicted);
-      if (!conflicted) {
-        handlePublication();
-      } else {
-        const widgetConfig: BALWidgetConfig =
-          await ApiBalAdminService.getBALWidgetConfig();
-        setOutdatedApiDepotClients(
-          widgetConfig?.communes?.outdatedApiDepotClients || []
-        );
-        setOutdatedHarvestSources(
-          widgetConfig?.communes?.outdatedHarvestSources || []
-        );
-      }
     } catch (error) {
       console.error(
         "ERROR: Impossible de récupérer les révisions pour cette commune",
         error.body
+      );
+    } finally {
+      setIsLoadingConflicted(false);
+    }
+
+    if (!conflicted) {
+      handlePublication();
+    } else {
+      const widgetConfig: BALWidgetConfig =
+        await ApiBalAdminService.getBALWidgetConfig();
+      setOutdatedApiDepotClients(
+        widgetConfig?.communes?.outdatedApiDepotClients || []
+      );
+      setOutdatedHarvestSources(
+        widgetConfig?.communes?.outdatedHarvestSources || []
       );
     }
   }, [baseLocale.id, commune.code, handlePublication]);
@@ -93,6 +99,19 @@ function PublishBalStep({
 
   return (
     <Pane>
+      {isLoadingConflicted && (
+        <Pane
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
+          gap={16}
+          padding={16}
+          borderRadius={8}
+        >
+          <Spinner size={42} />
+          <Text>Vérification sur la Base Adresse Nationale...</Text>
+        </Pane>
+      )}
       {isLoadingPublish && (
         <Pane
           display="flex"
@@ -135,7 +154,7 @@ function PublishBalStep({
               gap={8}
             >
               <Icon icon={ErrorIcon} />
-              Êtes-vous sûre de vouloir la remplacer
+              Êtes-vous sûr de vouloir la remplacer ?
             </Heading>
             <Text is="p" marginTop={8}>
               En forcant la publication, cette Base Adresse Locale{" "}
@@ -189,7 +208,7 @@ function PublishBalStep({
                     height={24}
                   />
                 </Pane>
-                Ou souhaitez vous pouvsuivre sur la BAL deja publiée ?
+                Ou souhaitez vous poursuivre sur la BAL déjà publiée ?
               </Heading>
               {lastRevision.context.extras?.balId ? (
                 <PublishedBALMesAdresses

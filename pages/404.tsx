@@ -2,11 +2,11 @@ import React from "react";
 import Link from "next/link";
 import {
   Pane,
-  Heading,
   Button,
   Icon,
-  ArrowLeftIcon,
   RouteIcon,
+  Heading,
+  ArrowLeftIcon,
 } from "evergreen-ui";
 
 import Main from "@/layouts/main";

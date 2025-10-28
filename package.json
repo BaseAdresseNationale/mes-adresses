@@ -69,7 +69,8 @@
     "remark-gemoji": "^8.0.0",
     "remark-gfm": "^4.0.1",
     "sharp": "^0.32.6",
-    "use-debounce": "^9.0.4"
+    "use-debounce": "^9.0.4",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",

@@ -86,17 +86,17 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
               <Pane marginTop={16}>
                 <Paragraph>
                   Pour un adressage multilingue, commencez par renseigner le nom
-                  de la commune en langue régional
+                  de la commune en langue régionale
                 </Paragraph>
                 <Button
                   marginTop={16}
-                  title="Modifier langue régionale a la commune"
+                  title="Modifiez langue régionale a la commune"
                   appearance="primary"
                   intent="success"
                   width="100%"
                   onClick={onEditNomsAlt}
                 >
-                  Modifier le nom de la commune <EditIcon marginLeft={8} />
+                  Modifiez le nom de la commune <EditIcon marginLeft={8} />
                 </Button>
               </Pane>
             )}

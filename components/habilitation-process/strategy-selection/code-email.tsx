@@ -27,7 +27,7 @@ function TextValidEmail() {
   return (
     <>
       <Alert
-        title="Ce courriel est incorrecte ou obsolète ?"
+        title="Ce courriel est incorrect ou obsolète ?"
         width="100%"
         marginTop={16}
         textAlign="left"
@@ -67,7 +67,7 @@ function AnnuaireServicePublic() {
       </ListItem>
       <ListItem>Consultez la fiche annuaire de votre commune</ListItem>
       <ListItem>
-        Cliquer sur le lien «Demander une mise à jour de cette page», visible en
+        Cliquez sur le lien «Demander une mise à jour de cette page», visible en
         bas de page
       </ListItem>
     </OrderedList>

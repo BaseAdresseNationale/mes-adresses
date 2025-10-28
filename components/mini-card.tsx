@@ -3,7 +3,15 @@ import { Pane, Link, Paragraph, defaultTheme } from "evergreen-ui";
 
 import NextImage from "next/image";
 
-function MiniCard({ img, message }: { img: string; message: string }) {
+function MiniCard({
+  img,
+  message,
+  href,
+}: {
+  img: string;
+  message: string;
+  href: string;
+}) {
   const [hover, setHover] = useState(false);
 
   return (
@@ -13,7 +21,7 @@ function MiniCard({ img, message }: { img: string; message: string }) {
       {...(hover ? { elevation: 3 } : {})}
     >
       <Link
-        href="https://adresse.data.gouv.fr/formation-en-ligne"
+        href={href}
         target="_blank"
         style={{
           display: "flex",

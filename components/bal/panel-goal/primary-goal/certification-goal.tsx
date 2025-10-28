@@ -99,7 +99,7 @@ function CertificationGoal({ baseLocale }: CertificationGoalProps) {
             </a>{" "}
             vous permet de{" "}
             <Strong>suivre l&apos;avancée de la fiabilisation</Strong> des
-            adresses et de <Strong>mettre en valeur votre travail</Strong>
+            adresses et de <Strong>mettre en valeur votre travail</Strong>{" "}
             auprès des réutilisateurs.
           </Paragraph>
         </Pane>

@@ -1,5 +1,12 @@
 import { useMemo, useState, useContext } from "react";
-import { Pane, Heading, Button, Paragraph, defaultTheme } from "evergreen-ui";
+import {
+  Pane,
+  Heading,
+  Button,
+  Paragraph,
+  defaultTheme,
+  Strong,
+} from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
 import { CommuneType } from "@/types/commune";
@@ -67,12 +74,15 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
         <Pane padding={8}>
           {baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (
             <Paragraph>
-              Afin d&apos;être synchronisée avec la Base d&apos;Adresse
-              Nationnale, cette Base Adresse Locale doit être publiée par la
-              commune de {commune.nom}.
+              Afin d&apos;être synchronisée avec la Base Adresse Nationale,
+              cette Base Adresse Locale doit être publiée par la commune de{" "}
+              {commune.nom}.
               <br />
-              Notez qu&apos;une une fois publiée, toutes les modifications
-              remonteront automatiquement dans la Base Adresse Nationale.
+              Notez qu&apos;une fois publiée,{" "}
+              <Strong>
+                toutes les modifications remonteront automatiquement
+              </Strong>{" "}
+              dans la Base Adresse Nationale.
               <Pane display="flex" justifyContent="right">
                 <Button
                   appearance="primary"
