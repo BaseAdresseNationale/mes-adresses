@@ -47,20 +47,6 @@ function PanoramaxControl({
       if (e.sourceId === PANORAMAX_SOURCE_ID && e.isSourceLoaded) {
         const sequences = map?.querySourceFeatures(PANORAMAX_SOURCE_ID, {
           sourceLayer: PANORAMAX_LAYERS_SOURCE.SEQUENCES,
-          filter: [
-            "within",
-            commune.contour || {
-              type: "Polygon",
-              coordinates: [
-                [
-                  [commune.bbox[0], commune.bbox[1]],
-                  [commune.bbox[0], commune.bbox[3]],
-                  [commune.bbox[2], commune.bbox[3]],
-                  [commune.bbox[2], commune.bbox[1]],
-                ],
-              ],
-            },
-          ],
         });
 
         setDisabled(!(sequences && sequences.length > 0));
