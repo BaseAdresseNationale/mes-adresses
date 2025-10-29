@@ -3,7 +3,7 @@ import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { MapGeoJSONFeature } from "maplibre-gl";
 import { NextRouter } from "next/router";
 import type { Map as MaplibreMap, FilterSpecification } from "maplibre-gl";
-import { Numero, Toponyme, Voie } from "../openapi-api-bal";
+import { Voie } from "../openapi-api-bal";
 import bbox from "@turf/bbox";
 
 export function handleSelectToponyme(
@@ -64,3 +64,16 @@ export const bboxForVoie = (item: Voie, map: MaplibreMap) => {
     return item.bbox;
   }
 };
+
+export function getImageBase64(
+  map: MaplibreMap,
+  type?: string,
+  quality?: number
+): Promise<string> {
+  return new Promise((resolve) => {
+    map.once("render", () =>
+      resolve((map.getCanvas() as HTMLCanvasElement).toDataURL(type, quality))
+    );
+    map.setBearing(map.getBearing());
+  });
+}

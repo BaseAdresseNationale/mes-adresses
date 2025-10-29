@@ -21,7 +21,12 @@ import {
 } from "./document-generation.types";
 import MapContext from "@/contexts/map";
 import type { LngLatBoundsLike, Map } from "maplibre-gl";
-import { bboxForVoie, resetMapFilter, setMapFilter } from "@/lib/utils/map";
+import {
+  bboxForVoie,
+  getImageBase64,
+  resetMapFilter,
+  setMapFilter,
+} from "@/lib/utils/map";
 import {
   NUMEROS_LABEL,
   NUMEROS_POINT,
@@ -49,7 +54,7 @@ export function GenerateArreteDeNumerotationDialog<
   onDownload,
 }: GenerateArreteDeNumerotationDialogProps<type>) {
   const { map, setViewport } = useContext(MapContext);
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [fileRejections, setFileRejections] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isTakingScreenshot, setIsTakingScreenshot] = useState(false);
@@ -137,24 +142,13 @@ export function GenerateArreteDeNumerotationDialog<
       return new Blob([ab], { type: mimeString });
     }
 
-    function getImageBase64(map): Promise<string> {
-      return new Promise((resolve) => {
-        map.once("render", () =>
-          resolve(
-            (map.getCanvas() as HTMLCanvasElement).toDataURL("image/jpeg", 0.8)
-          )
-        );
-        map.setBearing(map.getBearing());
-      });
-    }
-
     try {
       if (!map) {
         return;
       }
 
       await prepareMapBeforeScreenshot(map);
-      const imageBase64: string = await getImageBase64(map);
+      const imageBase64: string = await getImageBase64(map, "image/jpeg", 0.8);
       const blob = dataURItoBlob(imageBase64);
       const file = new File([blob], `plan-de-situation.jpeg`, {
         type: "image/jpeg",

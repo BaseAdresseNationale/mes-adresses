@@ -19,6 +19,7 @@ import {
 } from "@/components/map/layers/tiles";
 import LayerShowHideZoomControl from "@/components/map/controls/layer-show-hide-zoom-control";
 import MapContext from "@/contexts/map";
+import { getImageBase64 } from "@/lib/utils/map";
 
 const poiLayersIds = ["poi-level-1", "poi-level-2", "poi-level-3"];
 
@@ -173,13 +174,6 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
   };
 
   const takeScreenshot = async () => {
-    function getImageBase64(map): Promise<string> {
-      return new Promise((resolve) => {
-        map.once("render", () => resolve(map.getCanvas().toDataURL()));
-        map.setBearing(map.getBearing());
-      });
-    }
-
     try {
       const imageBase64: string = await getImageBase64(map);
       const a: HTMLAnchorElement = document.createElement("a");

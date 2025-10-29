@@ -108,6 +108,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
             Liste des filaires de voie (format GeoJSON)
           </Link>
         </Pane>
+        {/* 
         {token && baseLocale.status === BaseLocale.status.PUBLISHED && (
           <Pane is="li" marginBottom={16}>
             <Text>
@@ -116,7 +117,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
               du numéro concerné.
             </Text>
           </Pane>
-        )}
+        )} */}
       </Pane>
     </Pane>
   );

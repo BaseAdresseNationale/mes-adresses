@@ -73,7 +73,10 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
     <>
       <Menu.Divider />
       <Menu.Group title="Générer un modèle">
-        {generateCertificatAdressageItem}
+        {/*
+        Temporaly disabled
+          {generateCertificatAdressageItem}
+         */}
         {generateArreteDeNumerotationItem}
       </Menu.Group>
     </>
