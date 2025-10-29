@@ -9,6 +9,16 @@ import {
   AutomaticUpdatesIcon,
 } from "evergreen-ui";
 
+import RefreshIconRotate from "../refresh-icon-rotate/refresh-icon-rotate";
+
+function SyncButtonIsLoading() {
+  return (
+    <Pane display="flex" alignItems="center">
+      Synchronisation en cours <RefreshIconRotate />
+    </Pane>
+  );
+}
+
 interface SyncButtonProps {
   isSync: boolean;
   isConflicted: boolean;
@@ -73,14 +83,26 @@ function SyncButton({
     <Pane display="flex" flexDirection="column">
       <Button
         width="100%"
-        iconAfter={isActionHovered ? CircleArrowUpIcon : AutomaticUpdatesIcon}
-        appearance={isActionHovered ? "primary" : "default"}
+        {...(!isLoading
+          ? {
+              iconAfter: isActionHovered
+                ? CircleArrowUpIcon
+                : AutomaticUpdatesIcon,
+            }
+          : {})}
+        appearance={isLoading || isActionHovered ? "primary" : "default"}
         onMouseEnter={() => setIsActionHovered(true)}
         onMouseLeave={() => setIsActionHovered(false)}
-        onClick={handleSync}
-        disabled={isSync}
+        onClick={onSync}
+        disabled={isSync || isLoading}
       >
-        {isActionHovered ? "Mettre à jour" : "Mise à jour automatique"}
+        {isLoading ? (
+          <SyncButtonIsLoading />
+        ) : isActionHovered ? (
+          "Mettre à jour"
+        ) : (
+          "Mise à jour automatique"
+        )}
       </Button>
       <Button appearance="minimal" iconAfter={PauseIcon} onClick={togglePause}>
         Suspendre la mise à jour automatique
