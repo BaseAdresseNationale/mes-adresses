@@ -76,7 +76,7 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
 
   const filteredBALs = useMemo(
     () =>
-      basesLocales
+      [...basesLocales]
         .sort((a, b) => sortFnMap[activeSortField](a, b, sort[activeSortField]))
         .filter((baseLocale) =>
           baseLocale.nom.toLowerCase().includes(search.toLowerCase())
