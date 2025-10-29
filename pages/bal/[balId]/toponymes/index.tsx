@@ -9,6 +9,10 @@ import {
   IconButton,
   Text,
   Tooltip,
+  SendToMapIcon,
+  EditIcon,
+  TrashIcon,
+  Menu,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
@@ -249,17 +253,33 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
               />
 
               {isEditingEnabled && (
-                <TableRowActions
-                  onSelect={() => {
-                    browseToNumerosList(toponyme.id);
-                  }}
-                  onEdit={() => {
-                    browseToToponyme(toponyme.id);
-                  }}
-                  onRemove={() => {
-                    setToRemove(toponyme.id);
-                  }}
-                />
+                <TableRowActions>
+                  <Menu.Item
+                    icon={SendToMapIcon}
+                    onSelect={() => {
+                      browseToNumerosList(toponyme.id);
+                    }}
+                  >
+                    Consulter
+                  </Menu.Item>
+                  <Menu.Item
+                    icon={EditIcon}
+                    onSelect={() => {
+                      browseToToponyme(toponyme.id);
+                    }}
+                  >
+                    Modifier
+                  </Menu.Item>
+                  <Menu.Item
+                    icon={TrashIcon}
+                    intent="danger"
+                    onSelect={() => {
+                      setToRemove(toponyme.id);
+                    }}
+                  >
+                    Supprimer…
+                  </Menu.Item>
+                </TableRowActions>
               )}
 
               {!Boolean(token) && (

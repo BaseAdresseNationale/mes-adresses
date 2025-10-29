@@ -28,6 +28,7 @@ export { ExtendedBaseLocaleDTO } from './models/ExtendedBaseLocaleDTO';
 export { ExtendedVoieDTO } from './models/ExtendedVoieDTO';
 export type { ExtentedToponymeDTO } from './models/ExtentedToponymeDTO';
 export type { FusionCommunesDTO } from './models/FusionCommunesDTO';
+export type { GenerateCertificatDTO } from './models/GenerateCertificatDTO';
 export { HabilitationDTO } from './models/HabilitationDTO';
 export type { ImportFileBaseLocaleDTO } from './models/ImportFileBaseLocaleDTO';
 export { LineString } from './models/LineString';

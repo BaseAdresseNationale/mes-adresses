@@ -21,6 +21,8 @@ interface LocalStorageContextType {
   removeBalAccess: (index: string) => void;
   registeredMapStyle?: { [balId: string]: MapStyle };
   setRegisteredMapStyle: (value: { [balId: string]: MapStyle }) => void;
+  certificatEmetteur?: string;
+  setCertificatEmetteur: (value: string | undefined) => void;
 }
 
 const LocalStorageContext = React.createContext<LocalStorageContextType | null>(
@@ -34,6 +36,7 @@ const USER_SETTINGS = "user-settings";
 const PRODUCT_TOUR = "product-tour";
 const LAST_NEWS_SEEN = "last-news-seen";
 const MAP_STYLE = "map-style";
+const CERTIFICAT_EMETTEUR = "certificat-emetteur";
 
 export function LocalStorageContextProvider(props: ChildrenProps) {
   const [balAccess, , getBalToken, addBalAccess, removeBalAccess] =
@@ -46,6 +49,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
   const [lastNewsSeen, setLastNewsSeen] = useLocalStorage(LAST_NEWS_SEEN);
   const [registeredMapStyle, setRegisteredMapStyle] =
     useLocalStorage(MAP_STYLE);
+  const [certificatEmetteur, setCertificatEmetteur] =
+    useLocalStorage(CERTIFICAT_EMETTEUR);
 
   const value = useMemo(
     () => ({
@@ -65,6 +70,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       removeBalAccess,
       setRegisteredMapStyle,
       registeredMapStyle,
+      certificatEmetteur,
+      setCertificatEmetteur,
     }),
     [
       balAccess,
@@ -83,6 +90,8 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       removeBalAccess,
       setRegisteredMapStyle,
       registeredMapStyle,
+      certificatEmetteur,
+      setCertificatEmetteur,
     ]
   );
 

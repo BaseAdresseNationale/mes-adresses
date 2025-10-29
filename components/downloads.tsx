@@ -5,13 +5,16 @@ import {
   DownloadIcon,
   Checkbox,
   Alert,
-  Button,
   Text,
-  Label,
 } from "evergreen-ui";
 import { useContext, useState } from "react";
-import { BasesLocalesService, ExportCsvService } from "@/lib/openapi-api-bal";
+import {
+  BaseLocale,
+  BasesLocalesService,
+  ExportCsvService,
+} from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
+import BalDataContext from "@/contexts/bal-data";
 
 interface DownloadsProps {
   baseLocaleId: string;
@@ -19,6 +22,7 @@ interface DownloadsProps {
 
 function Downloads({ baseLocaleId }: DownloadsProps) {
   const { token } = useContext(TokenContext);
+  const { baseLocale } = useContext(BalDataContext);
   const [withComment, setWithComment] = useState(false);
 
   const downloadFile = (file: string, filename: string) => {
@@ -104,6 +108,16 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
             Liste des filaires de voie (format GeoJSON)
           </Link>
         </Pane>
+        {/* 
+        {token && baseLocale.status === BaseLocale.status.PUBLISHED && (
+          <Pane is="li" marginBottom={16}>
+            <Text>
+              Pour télécharger un certificat de numérotage, rendez-vous dans la
+              liste des numéros d&apos;une voie et ouvrez le menu d&apos;actions
+              du numéro concerné.
+            </Text>
+          </Pane>
+        )} */}
       </Pane>
     </Pane>
   );

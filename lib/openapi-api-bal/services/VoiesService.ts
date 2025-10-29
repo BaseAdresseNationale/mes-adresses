@@ -214,4 +214,28 @@ export class VoiesService {
         });
     }
 
+    /**
+     * Generate the arrete de numerotation by voie id
+     * @param voieId
+     * @param formData
+     * @returns string URL of the generated PDF arrête de numérotation
+     * @throws ApiError
+     */
+    public static generateArreteDeNumerotation(
+        voieId: string,
+        formData: {
+            file?: Blob;
+        },
+    ): CancelablePromise<string> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v2/voies/generate-arrete-de-numerotation/{voieId}',
+            path: {
+                'voieId': voieId,
+            },
+            formData: formData,
+            mediaType: 'multipart/form-data',
+        });
+    }
+
 }
