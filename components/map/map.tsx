@@ -48,7 +48,11 @@ import {
 } from "@/lib/utils/map";
 import GeolocationControl from "./controls/geolocation-control";
 import { ortho, planIGN, vector } from "./styles";
-import { cadastreLayers } from "./layers/cadastre";
+import {
+  cadastreLayers,
+  LAYER as CADASTRE_LAYER,
+  SOURCE_LAYER as CADASTRE_SOURCE_LAYER,
+} from "./layers/cadastre";
 import RulerControl from "./controls/ruler-control";
 import PanoramaxControl from "./controls/panoramax-control";
 import {
@@ -239,8 +243,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
           const parcelles = features.filter(
             ({ source, sourceLayer, layer }) =>
               source === "cadastre" &&
-              sourceLayer === "parcelles" &&
-              layer?.id === "parcelles-fill"
+              sourceLayer === CADASTRE_SOURCE_LAYER.PARCELLES &&
+              layer?.id === CADASTRE_LAYER.PARCELLES_FILL
           );
 
           if (parcelles.length > 0) {
