@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useCallback, useMemo } from "react";
+import { useContext, useState, useEffect, useCallback } from "react";
 import bbox from "@turf/bbox";
 import type { Map } from "maplibre-gl";
 

@@ -9,7 +9,7 @@ import BalDataContext from "@/contexts/bal-data";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
 import DynamicTextIcon from "./dynamic-text-icon/dynamic-text-icon";
-import ResponsiveImage from "@/components/respponsive-image";
+import ResponsiveImage from "@/components/responsive-image";
 
 export enum TabsEnum {
   COMMUNE = "commune",

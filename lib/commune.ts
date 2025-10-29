@@ -20,6 +20,7 @@ export async function getCommuneWithBBox(
     });
     if (communeApiGeo.contour) {
       commune.bbox = bbox(communeApiGeo.contour);
+      commune.contour = communeApiGeo.contour;
     }
   } catch (e) {
     if (voies.length > 0) {
