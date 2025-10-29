@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Pane,
   Button,
@@ -7,46 +7,14 @@ import {
   PlayIcon,
   PauseIcon,
   AutomaticUpdatesIcon,
-  RefreshIcon,
 } from "evergreen-ui";
+
+import RefreshIconRotate from "../refresh-icon-rotate/refresh-icon-rotate";
 
 function SyncButtonIsLoading() {
   return (
     <Pane display="flex" alignItems="center">
-      Synchronisation en cours{" "}
-      <span>
-        <RefreshIcon size={16} />
-      </span>
-      <style jsx>{`
-        /* Safari 4.0 - 8.0 */
-        @-webkit-keyframes rotate {
-          0% {
-            -webkit-transform: rotate(0deg);
-          }
-          100% {
-            -webkit-transform: rotate(360deg);
-          }
-        }
-
-        /* Standard syntax */
-        @keyframes rotate {
-          0% {
-            -webkit-transform: rotate(0deg);
-          }
-          100% {
-            -webkit-transform: rotate(360deg);
-          }
-        }
-
-        span {
-          display: flex;
-          width: 16px;
-          height: 16px;
-          margin-left: 8px;
-          -webkit-animation: rotate 2s linear infinite; /* Safari */
-          animation: rotate 2s linear infinite;
-        }
-      `}</style>
+      Synchronisation en cours <RefreshIconRotate />
     </Pane>
   );
 }

@@ -1,0 +1,28 @@
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+/* Standard syntax */
+@keyframes rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.rotateIcon {
+  display: flex;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  -webkit-animation: rotate 2s linear infinite; /* Safari */
+  animation: rotate 2s linear infinite;
+}
