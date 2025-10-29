@@ -4,18 +4,13 @@ import { Pane } from "evergreen-ui";
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
 
-import {
-  BaseLocale,
-  BasesLocalesService,
-  ExtendedVoieDTO,
-  ExtentedToponymeDTO,
-} from "@/lib/openapi-api-bal";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import ReadOnlyInfos from "@/components/bal/read-only-infos";
-import CertificationInfos from "@/components/bal/certification-infos";
 import { getCommuneFlag } from "@/lib/api-blason-commune";
 import CommuneNomsAltEditor from "@/components/bal/commune-noms-alt-editor";
 import BALSummary from "@/components/bal/bal-summary";
 import BALRecoveryContext from "@/contexts/bal-recovery";
+import PanelGoal from "@/components/bal/panel-goal/index";
 import MapContext from "@/contexts/map";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 
@@ -24,7 +19,8 @@ interface BALHomePageProps {
 }
 
 function BALHomePage({ communeFlag }: BALHomePageProps) {
-  const { baseLocale, commune, voies, toponymes } = useContext(BalDataContext);
+  const { baseLocale, commune, voies, toponymes, reloadBaseLocale } =
+    useContext(BalDataContext);
   const { token } = useContext(TokenContext);
   const isAdmin = Boolean(token);
   const [isCommuneFormOpen, setIsCommuneFormOpen] = useState<boolean>(false);
@@ -36,8 +32,9 @@ function BALHomePage({ communeFlag }: BALHomePageProps) {
   };
 
   useEffect(() => {
-    setTileLayersMode(TilesLayerMode.CERTIFICATION);
-  }, [setTileLayersMode]);
+    reloadBaseLocale();
+    setTileLayersMode(TilesLayerMode.VOIE);
+  }, [reloadBaseLocale, setTileLayersMode]);
 
   return (
     <Pane overflowY="auto">
@@ -60,7 +57,14 @@ function BALHomePage({ communeFlag }: BALHomePageProps) {
         }}
       />
       {!isAdmin && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
-      <CertificationInfos />
+      {isAdmin && baseLocale.status !== BaseLocale.status.DEMO && (
+        <PanelGoal
+          commune={commune}
+          onEditNomsAlt={() => {
+            setIsCommuneFormOpen(true);
+          }}
+        />
+      )}
     </Pane>
   );
 }

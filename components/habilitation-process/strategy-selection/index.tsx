@@ -15,19 +15,19 @@ import CodeEmail from "@/components/habilitation-process/strategy-selection/code
 import { StrategyDTO } from "@/lib/openapi-api-bal";
 import ProConnect from "./pro-connect";
 
-interface StrategySelectionProps {
+interface StrategySelectionStepProps {
   codeCommune: string;
   emailSelected: string;
   setEmailSelected: React.Dispatch<React.SetStateAction<string>>;
   handleStrategy: (strategy: StrategyDTO.type) => void;
 }
 
-export function StrategySelection({
+export function StrategySelectionStep({
   codeCommune,
   emailSelected,
   setEmailSelected,
   handleStrategy,
-}: StrategySelectionProps) {
+}: StrategySelectionStepProps) {
   const [hovered, setHovered] = useState<StrategyDTO.type | null>(null);
 
   return (

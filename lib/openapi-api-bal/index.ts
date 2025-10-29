@@ -9,6 +9,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AllDeletedInBalDTO } from './models/AllDeletedInBalDTO';
 export { BaseLocale } from './models/BaseLocale';
+export type { BaseLocaleSetting } from './models/BaseLocaleSetting';
 export { BaseLocaleSync } from './models/BaseLocaleSync';
 export type { BasesLocalesCreationDTO } from './models/BasesLocalesCreationDTO';
 export type { BasesLocalesStatusDTO } from './models/BasesLocalesStatusDTO';
