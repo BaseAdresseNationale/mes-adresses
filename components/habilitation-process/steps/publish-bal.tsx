@@ -77,14 +77,21 @@ function PublishBalStep({
     if (!conflicted) {
       handlePublication();
     } else {
-      const widgetConfig: BALWidgetConfig =
-        await ApiBalAdminService.getBALWidgetConfig();
-      setOutdatedApiDepotClients(
-        widgetConfig?.communes?.outdatedApiDepotClients || []
-      );
-      setOutdatedHarvestSources(
-        widgetConfig?.communes?.outdatedHarvestSources || []
-      );
+      try {
+        const widgetConfig: BALWidgetConfig =
+          await ApiBalAdminService.getBALWidgetConfig();
+        setOutdatedApiDepotClients(
+          widgetConfig?.communes?.outdatedApiDepotClients || []
+        );
+        setOutdatedHarvestSources(
+          widgetConfig?.communes?.outdatedHarvestSources || []
+        );
+      } catch (error) {
+        console.error(
+          "ERROR: Impossible de récupérer les clients API Depot pour cette commune",
+          error.body
+        );
+      }
     }
   }, [baseLocale.id, commune.code, handlePublication]);
 
