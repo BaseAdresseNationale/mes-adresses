@@ -96,11 +96,11 @@ function SubHeader({ commune }: SubHeaderProps) {
           >
             {isMobile ? (
               ReactDOM.createPortal(
-                <SettingsMenu isAdmin={isAdmin} />,
+                <SettingsMenu />,
                 document.getElementById("header-menu-wrapper")
               )
             ) : (
-              <SettingsMenu isAdmin={isAdmin} />
+              <SettingsMenu />
             )}
             <Pane
               display="flex"

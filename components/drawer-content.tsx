@@ -1,7 +1,15 @@
-import { useContext } from "react";
-import { Button, CrossIcon, SideSheet } from "evergreen-ui";
+import { useContext, useState } from "react";
+import {
+  Button,
+  CrossIcon,
+  Pane,
+  SideSheet,
+  Tab,
+  Tablist,
+  Text,
+} from "evergreen-ui";
 
-import DrawerContext, { DrawerDisplayedEnum } from "@/contexts/drawer";
+import DrawerContext from "@/contexts/drawer";
 import BalDataContext from "@/contexts/bal-data";
 import TokenContext from "@/contexts/token";
 
@@ -13,9 +21,38 @@ import LayoutContext from "@/contexts/layout";
 
 function DrawerContent() {
   const { isMobile } = useContext(LayoutContext);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const { drawerDisplayed, setDrawerDisplayed } = useContext(DrawerContext);
   const { baseLocale } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
+
+  const tabs = [
+    {
+      label: "Paramètres",
+      key: "settings",
+      content: <Settings baseLocale={baseLocale} />,
+    },
+    {
+      label: "Téléchargements",
+      key: "downloads",
+      content: <Downloads baseLocale={baseLocale} />,
+    },
+
+    {
+      label: "Corbeille",
+      key: "trash",
+      content: <Trash />,
+    },
+    ...(token
+      ? [
+          {
+            label: "Accès",
+            key: "share",
+            content: <Share baseLocale={baseLocale} token={token} />,
+          },
+        ]
+      : []),
+  ];
 
   return (
     <SideSheet
@@ -23,20 +60,36 @@ function DrawerContent() {
       onCloseComplete={() => setDrawerDisplayed(null)}
       {...(isMobile && { width: "100%" })}
     >
-      {drawerDisplayed === DrawerDisplayedEnum.DOWNLOAD && (
-        <Downloads baseLocale={baseLocale} />
-      )}
-      {drawerDisplayed === DrawerDisplayedEnum.SETTING && (
-        <Settings baseLocale={baseLocale} />
-      )}
-      {drawerDisplayed === DrawerDisplayedEnum.TRASH && <Trash />}
-      {drawerDisplayed === DrawerDisplayedEnum.SHARE && token && (
-        <Share baseLocale={baseLocale} token={token} />
-      )}
+      <Pane
+        flexShrink={0}
+        elevation={0}
+        background="white"
+        padding={16}
+        display="flex"
+        alignItems="center"
+        minHeight={64}
+      >
+        <Pane display="flex" alignItems="center">
+          <Tablist>
+            {tabs.map(({ label }, index) => (
+              <Tab
+                key={label}
+                isSelected={selectedIndex === index}
+                onSelect={() => setSelectedIndex(index)}
+                position="relative"
+              >
+                {label}
+              </Tab>
+            ))}
+          </Tablist>
+        </Pane>
+      </Pane>
+
+      {tabs[selectedIndex] && tabs[selectedIndex].content}
 
       {isMobile && (
         <Button
-          onClick={() => setDrawerDisplayed(null)}
+          onClick={() => setDrawerDisplayed(false)}
           position="absolute"
           top="15px"
           right="20px"
