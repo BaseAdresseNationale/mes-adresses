@@ -38,7 +38,7 @@ function Share({ baseLocale, token }: ShareProps) {
       >
         <Pane display="flex" alignItems="center">
           <ShareIcon />
-          <Heading paddingLeft={5}>Partage</Heading>
+          <Heading paddingLeft={5}>Accès</Heading>
         </Pane>
       </Pane>
       <Pane margin={12}>

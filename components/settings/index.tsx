@@ -1,28 +1,6 @@
-import { useState } from "react";
-import { Pane, Heading, Tablist, Tab, CogIcon } from "evergreen-ui";
-
-import UserSettingsForm from "./user-settings-form";
+import { Pane, Heading, CogIcon } from "evergreen-ui";
 import BALSettingsForm from "./bal-settings-form";
 import { BaseLocale } from "@/lib/openapi-api-bal";
-
-const getSettingsTabs = (hideBalSettings) => {
-  const tabs = [
-    {
-      key: "bal-settings",
-      label: "Paramètres de la Base Adresse Locale",
-    },
-    {
-      key: "user-preferences",
-      label: "Préférences utilisateurs",
-    },
-  ];
-  // Only show user preferences if the user is not an admin
-  if (hideBalSettings) {
-    tabs.shift();
-  }
-
-  return tabs;
-};
 
 interface SettingsProps {
   baseLocale: BaseLocale;
