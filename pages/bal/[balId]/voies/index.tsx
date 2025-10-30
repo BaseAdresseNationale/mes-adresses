@@ -105,12 +105,6 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     };
   }, [setBreadcrumbs, scrollAndHighlightLastSelectedItem]);
 
-  const onRemove = useCallback(async () => {
-    await reloadParcelles();
-    reloadTiles();
-    refreshBALSync();
-  }, [refreshBALSync, reloadTiles, reloadParcelles]);
-
   const handleRemove = async () => {
     setIsDisabled(true);
     const softDeleteVoie = toaster(
@@ -120,7 +114,9 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     );
     await softDeleteVoie();
     await reloadVoies();
-    await onRemove();
+    await reloadParcelles();
+    reloadTiles();
+    refreshBALSync();
     setToRemove(null);
     setIsDisabled(false);
   };
@@ -419,7 +415,9 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   <Menu.Item
                     icon={TrashIcon}
                     intent="danger"
-                    onSelect={onRemove}
+                    onSelect={() => {
+                      setToRemove(voie.id);
+                    }}
                   >
                     Supprimer…
                   </Menu.Item>
