@@ -41,32 +41,28 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
   return (
     <Pane>
       <PublicationGoal commune={commune} baseLocale={baseLocale} />
-      {isPublished && (
-        <>
-          <CertificationGoal baseLocale={baseLocale} />
-          {(!settings.toponymeGoalIgnored || !settings.languageGoalIgnored) && (
-            <AccordionSimple
-              title="Objectifs secondaires"
-              isActive={isActive}
-              onClick={() => setIsActive(!isActive)}
-            >
-              {!settings.toponymeGoalIgnored && (
-                <ToponymeGoal
-                  baseLocale={baseLocale}
-                  onIgnoreGoal={() => ignoreGoal("toponymeGoalIgnored")}
-                />
-              )}
-              {!settings.languageGoalIgnored && (
-                <LangGoal
-                  baseLocale={baseLocale}
-                  onEditNomsAlt={onEditNomsAlt}
-                  onIgnoreGoal={() => ignoreGoal("languageGoalIgnored")}
-                />
-              )}
-            </AccordionSimple>
-          )}
-        </>
-      )}
+      {isPublished &&
+        (!settings.toponymeGoalIgnored || !settings.languageGoalIgnored) && (
+          <AccordionSimple
+            title="Objectifs secondaires"
+            isActive={isActive}
+            onClick={() => setIsActive(!isActive)}
+          >
+            {!settings.toponymeGoalIgnored && (
+              <ToponymeGoal
+                baseLocale={baseLocale}
+                onIgnoreGoal={() => ignoreGoal("toponymeGoalIgnored")}
+              />
+            )}
+            {!settings.languageGoalIgnored && (
+              <LangGoal
+                baseLocale={baseLocale}
+                onEditNomsAlt={onEditNomsAlt}
+                onIgnoreGoal={() => ignoreGoal("languageGoalIgnored")}
+              />
+            )}
+          </AccordionSimple>
+        )}
     </Pane>
   );
 }
