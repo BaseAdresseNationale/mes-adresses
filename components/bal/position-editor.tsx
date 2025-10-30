@@ -61,26 +61,9 @@ function PositionEditor({
     // Remove addMarker and handleAddMarker from hooks to prevent useEffect running when viewport changing
   }, [initialPositions, disableMarkers]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const msgAlert = useMemo(() => {
-    return markers.length > 1
-      ? "Déplacez les marqueurs sur la carte pour modifier les positions"
-      : markers.length === 1
-        ? `Déplacez le marqueur sur la carte pour positionner le ${
-            isToponyme ? "toponyme" : "numéro"
-          }.`
-        : `Déplacez le marqueur sur la carte pour placer le ${
-            isToponyme ? "toponyme" : "numéro"
-          }.`;
-  }, [markers.length, isToponyme]);
-
   return (
     <FormField label="" validationMessage={validationMessage}>
-      <InputLabel title="Positions" help={msgAlert} />
-      <Pane>
-        <Alert marginTop={8} marginBottom={8}>
-          <Text>{msgAlert}</Text>
-        </Alert>
-      </Pane>
+      <InputLabel title="Positions *" />
       {markers.length > 0 ? (
         <Pane display="grid" gridTemplateColumns="2fr .5fr 1fr 1fr .5fr">
           <Strong fontWeight={400} paddingBottom=".5em">
