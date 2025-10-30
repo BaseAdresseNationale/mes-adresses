@@ -8,13 +8,8 @@ import {
   Text,
 } from "evergreen-ui";
 import { useContext, useState } from "react";
-import {
-  BaseLocale,
-  BasesLocalesService,
-  ExportCsvService,
-} from "@/lib/openapi-api-bal";
+import { BasesLocalesService, ExportCsvService } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
-import BalDataContext from "@/contexts/bal-data";
 
 interface DownloadsProps {
   baseLocaleId: string;
@@ -22,7 +17,6 @@ interface DownloadsProps {
 
 function Downloads({ baseLocaleId }: DownloadsProps) {
   const { token } = useContext(TokenContext);
-  const { baseLocale } = useContext(BalDataContext);
   const [withComment, setWithComment] = useState(false);
 
   const downloadFile = (file: string, filename: string) => {

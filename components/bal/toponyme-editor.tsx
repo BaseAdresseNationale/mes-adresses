@@ -29,6 +29,7 @@ import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
 import { trimNomAlt } from "@/lib/utils/string";
 import MapContext from "@/contexts/map";
+import DrawContext from "@/contexts/draw";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -66,6 +67,7 @@ function ToponymeEditor({
     reloadNumeros,
   } = useContext(BalDataContext);
   const { markers } = useContext(MarkersContext);
+  const { setHint } = useContext(DrawContext);
   const { highlightedParcelles } = useContext(ParcellesContext);
   const [ref, setIsFocus] = useFocus(true);
 
@@ -200,6 +202,20 @@ function ToponymeEditor({
     resetNom(nom || "");
     setValidationMessages(null);
   }, [resetNom, initialValue]);
+
+  useEffect(() => {
+    if (markers.length > 1) {
+      setHint(
+        "Déplacez les marqueurs sur la carte pour modifier les positions"
+      );
+    } else {
+      setHint("Déplacez le marqueur sur la carte pour positionner le toponyme");
+    }
+
+    return () => {
+      setHint(null);
+    };
+  }, [markers, setHint]);
 
   return (
     <Form
