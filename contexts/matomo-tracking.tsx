@@ -14,6 +14,7 @@ export enum MatomoEventCategory {
   MAP = "Carte",
   GAMIFICATION = "Gamification",
   BAL_EDITOR = "Éditeur BAL",
+  HOME_PAGE = "Page d'accueil",
 }
 
 export const MatomoEventAction = {
@@ -48,6 +49,12 @@ export const MatomoEventAction = {
   },
   [MatomoEventCategory.BAL_EDITOR]: {
     CONVERT_VOIE_TO_TOPONYME: "convert_voie_to_toponyme",
+  },
+  [MatomoEventCategory.HOME_PAGE]: {
+    SHOW_NEWS: "show_news",
+    OPEN_BAL_WIDGET: "open_bal_widget",
+    CLOSE_BAL_WIDGET: "close_bal_widget",
+    REGISTER_TO_WEBINAIRE: "register_to_webinaire",
   },
 };
 
@@ -110,9 +117,7 @@ export function MatomoTrackingContextProvider({
   // Track pages when pageProps change
   useEffect(() => {
     if (matomoState === "initialized") {
-      const {
-        baseLocale: { commune },
-      } = pageProps;
+      const commune = pageProps?.baseLocale?.commune;
       let urlToTrack = location.href;
       const balEditorPageRe = /\/bal\/.*/;
       const isOnBalEditor = balEditorPageRe.test(location.pathname);
@@ -142,10 +147,10 @@ export function MatomoTrackingContextProvider({
         return;
       }
 
-      const codeComune = pageProps?.baseLocale?.commune || "";
+      const codeCommune = pageProps?.baseLocale?.commune || "";
       const balId = pageProps?.baseLocale?.id || "";
 
-      window._paq.push(["trackEvent", category, action, codeComune, balId]);
+      window._paq.push(["trackEvent", category, action, codeCommune, balId]);
     },
     [matomoState, pageProps]
   );

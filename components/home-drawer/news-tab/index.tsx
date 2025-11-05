@@ -4,7 +4,11 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkGemoji from "remark-gemoji";
 import { NewsType } from "@/lib/mattermost/type";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface NewsTabProps {
   news: NewsType[];
@@ -12,9 +16,15 @@ interface NewsTabProps {
 }
 
 function NewsTab({ news, updateLastNewsSeen }: NewsTabProps) {
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
+
   useEffect(() => {
     updateLastNewsSeen(news[0]?.id);
-  }, [updateLastNewsSeen, news]);
+    matomoTrackEvent(
+      MatomoEventCategory.HOME_PAGE,
+      MatomoEventAction[MatomoEventCategory.HOME_PAGE].SHOW_NEWS
+    );
+  }, [updateLastNewsSeen, news, matomoTrackEvent]);
 
   return (
     <Pane
