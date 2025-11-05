@@ -15,6 +15,10 @@ import { AccordionCard } from "@/components/accordion-card";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import MapContext from "@/contexts/map";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface CertificationGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -32,14 +36,25 @@ function CertificationGoal({ baseLocale, isAdmin }: CertificationGoalProps) {
 
   const [isActive, setIsActive] = useState(false);
   const { setTileLayersMode } = useContext(MapContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const toggleAccordion = () => {
     const isOpen = !isActive;
     setIsActive(isOpen);
     if (isOpen) {
       setTileLayersMode(TilesLayerMode.CERTIFICATION);
+      matomoTrackEvent(
+        MatomoEventCategory.GAMIFICATION,
+        MatomoEventAction[MatomoEventCategory.GAMIFICATION]
+          .OPEN_CERTIFICATION_GOAL
+      );
     } else {
       setTileLayersMode(TilesLayerMode.VOIE);
+      matomoTrackEvent(
+        MatomoEventCategory.GAMIFICATION,
+        MatomoEventAction[MatomoEventCategory.GAMIFICATION]
+          .CLOSE_CERTIFICATION_GOAL
+      );
     }
   };
 

@@ -1,17 +1,20 @@
 import React, { useCallback, useContext, useState } from "react";
-import { Heading, Pane } from "evergreen-ui";
+import { Pane } from "evergreen-ui";
 
 import {
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
 } from "@/lib/openapi-api-bal";
 import PublicationGoal from "@/components/bal/panel-goal/primary-goal/publication-goal";
-import CertificationGoal from "@/components/bal/panel-goal/primary-goal/certification-goal";
 import { CommuneType } from "@/types/commune";
 import LangGoal from "./secondary-goal/lang-goal";
 import ToponymeGoal from "./secondary-goal/toponyme-goal";
 import { AccordionSimple } from "./secondary-goal/accordion-simple";
 import BalDataContext from "@/contexts/bal-data";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface PanelGoalProps {
   commune: CommuneType;
@@ -20,6 +23,7 @@ interface PanelGoalProps {
 
 function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
   const { baseLocale, reloadBaseLocale } = useContext(BalDataContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
   const { settings } = baseLocale;
   const isPublished =
     baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED;
@@ -51,14 +55,28 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
             {!settings.toponymeGoalIgnored && (
               <ToponymeGoal
                 baseLocale={baseLocale}
-                onIgnoreGoal={() => ignoreGoal("toponymeGoalIgnored")}
+                onIgnoreGoal={() => {
+                  ignoreGoal("toponymeGoalIgnored");
+                  matomoTrackEvent(
+                    MatomoEventCategory.GAMIFICATION,
+                    MatomoEventAction[MatomoEventCategory.GAMIFICATION]
+                      .IGNORE_GOAL_TOPONYME
+                  );
+                }}
               />
             )}
             {!settings.languageGoalIgnored && (
               <LangGoal
                 baseLocale={baseLocale}
                 onEditNomsAlt={onEditNomsAlt}
-                onIgnoreGoal={() => ignoreGoal("languageGoalIgnored")}
+                onIgnoreGoal={() => {
+                  ignoreGoal("languageGoalIgnored");
+                  matomoTrackEvent(
+                    MatomoEventCategory.GAMIFICATION,
+                    MatomoEventAction[MatomoEventCategory.GAMIFICATION]
+                      .IGNORE_GOAL_LANGUAGE
+                  );
+                }}
               />
             )}
           </AccordionSimple>

@@ -13,7 +13,6 @@ import { TokenContextProvider } from "@/contexts/token";
 import Header from "@/components/header";
 import IEWarning from "@/components/ie-warning";
 import Help from "@/components/help";
-import useMatomoTracker from "@/hooks/matomo-tracker";
 import Editor from "@/layouts/editor";
 import { BALRecoveryProvider } from "@/contexts/bal-recovery";
 import { BalDataContextProvider } from "@/contexts/bal-data";
@@ -23,6 +22,7 @@ import { SignalementContextProvider } from "@/contexts/signalement";
 import { LayoutContextProvider } from "@/contexts/layout";
 import { BALWidgetProvider } from "@/contexts/bal-widget";
 import { SearchPaginationContextProvider } from "@/contexts/search-pagination";
+import { MatomoTrackingContextProvider } from "@/contexts/matomo-tracking";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -40,17 +40,8 @@ function App(props: AppProps) {
     router: { query },
   } = props;
 
-  useMatomoTracker(
-    {
-      trackingEnabled: process.env.NODE_ENV === "production",
-      siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID,
-      trackerUrl: process.env.NEXT_PUBLIC_MATOMO_TRACKER_URL,
-    },
-    pageProps
-  );
-
   return (
-    <>
+    <MatomoTrackingContextProvider pageProps={pageProps}>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>mes-adresses.data.gouv.fr</title>
@@ -133,7 +124,7 @@ function App(props: AppProps) {
           }
         }
       `}</style>
-    </>
+    </MatomoTrackingContextProvider>
   );
 }
 

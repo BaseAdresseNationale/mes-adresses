@@ -17,6 +17,10 @@ import { AccordionCard } from "@/components/accordion-card";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface LangGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -26,6 +30,7 @@ interface LangGoalProps {
 function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
   const [isActive, setIsActive] = useState(false);
   const { toponymes } = useContext(BalDataContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const nbNumerosWithToponymes = toponymes.reduce(
     (acc, toponyme) => acc + toponyme.nbNumeros,
@@ -33,6 +38,22 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
   );
   const hasToponymes = toponymes.length > 0;
   const isCompleted = toponymes.length > 0 && nbNumerosWithToponymes > 0;
+
+  const toggleAccordion = () => {
+    const isOpen = !isActive;
+    setIsActive(isOpen);
+    if (isOpen) {
+      matomoTrackEvent(
+        MatomoEventCategory.GAMIFICATION,
+        MatomoEventAction[MatomoEventCategory.GAMIFICATION].OPEN_TOPONYME_GOAL
+      );
+    } else {
+      matomoTrackEvent(
+        MatomoEventCategory.GAMIFICATION,
+        MatomoEventAction[MatomoEventCategory.GAMIFICATION].CLOSE_TOPONYME_GOAL
+      );
+    }
+  };
 
   return (
     <Pane paddingX={8}>
@@ -108,7 +129,7 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
           isCompleted ? defaultTheme.colors.green100 : defaultTheme.colors.white
         }
         isActive={isActive}
-        onClick={() => setIsActive(!isActive)}
+        onClick={toggleAccordion}
         caretPosition="start"
       >
         {hasToponymes && (
