@@ -56,6 +56,7 @@ import {
   GeneratedDocumentType,
 } from "@/components/document-generation/document-generation.types";
 import { GenerateArreteDeNumerotationDialog } from "@/components/document-generation/generate-arrete-de-numerotation-dialog";
+import { ButtonIconExpandHover } from "@/components/expand-button-hover/button-expand-hover";
 
 interface VoiesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -292,26 +293,24 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
             value={search}
           />
           <Table.HeaderCell flex="unset">
-            <Tooltip content="Voir seulement les voies avec des adresses non certifiées">
-              <IconButton
-                size="small"
-                title="Voir seulement les voies avec des adresses non certifiées"
-                marginRight={16}
-                icon={showUncertify ? FilterRemoveIcon : FilterIcon}
-                onClick={() => setShowUncertify(!showUncertify)}
-              />
-            </Tooltip>
-            <Tooltip content="Ajouter une voie">
-              <IconButton
-                icon={AddIcon}
-                title="Ajouter une voie"
-                is={NextLink}
-                appearance="primary"
-                intent="success"
-                disabled={!token || (token && isEditing)}
-                href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/new`}
-              />
-            </Tooltip>
+            <ButtonIconExpandHover
+              icon={showUncertify ? FilterRemoveIcon : FilterIcon}
+              title="Voir seulement les voies avec des adresses non certifiées"
+              size="small"
+              marginRight={16}
+              onClick={() => setShowUncertify(!showUncertify)}
+              message="Filtre adresses non certifiées"
+            />
+            <ButtonIconExpandHover
+              icon={AddIcon}
+              title="Ajouter une voie"
+              is={NextLink}
+              appearance="primary"
+              intent="success"
+              disabled={!token || (token && isEditing)}
+              href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/new`}
+              message="Ajouter une voie"
+            />
           </Table.HeaderCell>
         </Table.Head>
 
@@ -356,9 +355,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
 
               <TableRowNotifications
                 certification={
-                  voie.isAllCertified
-                    ? "Toutes les adresses de cette voie sont certifiées par la commune"
-                    : null
+                  voie.isAllCertified ? "Les adresses sont certifiées" : null
                 }
                 comment={
                   voie.comment?.length || voie.commentedNumeros?.length > 0 ? (
@@ -371,12 +368,16 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                 warning={
                   voie.nbNumeros === 0 ? (
                     <>
-                      <Text style={{ color: "white" }}>
-                        Cette voie ne contient aucun numéro
-                      </Text>
-                      <br />
-                      <br />
-                      <Button onClick={() => setToConvert(voie.id)}>
+                      <Pane marginBottom={8}>
+                        <Text color="white">
+                          Cette voie ne contient aucun numéro
+                        </Text>
+                      </Pane>
+                      <Button
+                        onClick={() => setToConvert(voie.id)}
+                        size="small"
+                        title="Convertir la voieen toponyme"
+                      >
                         Convertir en toponyme
                       </Button>
                     </>
