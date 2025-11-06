@@ -53,11 +53,6 @@ function LangGoal({ baseLocale, onEditNomsAlt, onIgnoreGoal }: LangGoalProps) {
         MatomoEventCategory.GAMIFICATION,
         MatomoEventAction[MatomoEventCategory.GAMIFICATION].OPEN_LANGUAGE_GOAL
       );
-    } else {
-      matomoTrackEvent(
-        MatomoEventCategory.GAMIFICATION,
-        MatomoEventAction[MatomoEventCategory.GAMIFICATION].CLOSE_LANGUAGE_GOAL
-      );
     }
   };
 

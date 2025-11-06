@@ -22,10 +22,6 @@ function RulerControl({ disabled }: RulerControlProps) {
       icon={CrossIcon}
       onClick={() => {
         setDrawMode(null);
-        matomoTrackEvent(
-          MatomoEventCategory.MAP,
-          MatomoEventAction[MatomoEventCategory.MAP].DISABLE_RULER
-        );
       }}
       title="Fermer l’outil de mesure"
     />

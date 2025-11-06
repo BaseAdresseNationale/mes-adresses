@@ -97,10 +97,6 @@ function PanoramaxControl({
       icon={CrossIcon}
       onClick={() => {
         setShowPanoramax(false);
-        matomoTrackEvent(
-          MatomoEventCategory.MAP,
-          MatomoEventAction[MatomoEventCategory.MAP].DISABLE_PANORAMAX
-        );
       }}
       title="Fermer Panoramax"
     />

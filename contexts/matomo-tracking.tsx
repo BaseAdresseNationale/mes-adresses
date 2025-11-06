@@ -31,19 +31,14 @@ export const MatomoEventAction = {
   },
   [MatomoEventCategory.MAP]: {
     ENABLE_PANORAMAX: "enable_panoramax",
-    DISABLE_PANORAMAX: "disable_panoramax",
     ENABLE_RULER: "enable_ruler",
-    DISABLE_RULER: "disable_ruler",
     GEOLOCATE_ME: "geolocate_me",
     TAKE_SCREENSHOT: "take_screenshot",
   },
   [MatomoEventCategory.GAMIFICATION]: {
     OPEN_CERTIFICATION_GOAL: "open_certification_goal",
-    CLOSE_CERTIFICATION_GOAL: "close_certification_goal",
     OPEN_TOPONYME_GOAL: "open_toponyme_goal",
-    CLOSE_TOPONYME_GOAL: "close_toponyme_goal",
     OPEN_LANGUAGE_GOAL: "open_language_goal",
-    CLOSE_LANGUAGE_GOAL: "close_language_goal",
     IGNORE_GOAL_TOPONYME: "ignore_goal_toponyme",
     IGNORE_GOAL_LANGUAGE: "ignore_goal_language",
   },
@@ -53,7 +48,6 @@ export const MatomoEventAction = {
   [MatomoEventCategory.HOME_PAGE]: {
     SHOW_NEWS: "show_news",
     OPEN_BAL_WIDGET: "open_bal_widget",
-    CLOSE_BAL_WIDGET: "close_bal_widget",
     REGISTER_TO_WEBINAIRE: "register_to_webinaire",
   },
 };

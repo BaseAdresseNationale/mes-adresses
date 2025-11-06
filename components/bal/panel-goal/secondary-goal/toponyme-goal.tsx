@@ -47,11 +47,6 @@ function LangGoal({ baseLocale, onIgnoreGoal }: LangGoalProps) {
         MatomoEventCategory.GAMIFICATION,
         MatomoEventAction[MatomoEventCategory.GAMIFICATION].OPEN_TOPONYME_GOAL
       );
-    } else {
-      matomoTrackEvent(
-        MatomoEventCategory.GAMIFICATION,
-        MatomoEventAction[MatomoEventCategory.GAMIFICATION].CLOSE_TOPONYME_GOAL
-      );
     }
   };
 

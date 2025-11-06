@@ -50,11 +50,6 @@ function CertificationGoal({ baseLocale, isAdmin }: CertificationGoalProps) {
       );
     } else {
       setTileLayersMode(TilesLayerMode.VOIE);
-      matomoTrackEvent(
-        MatomoEventCategory.GAMIFICATION,
-        MatomoEventAction[MatomoEventCategory.GAMIFICATION]
-          .CLOSE_CERTIFICATION_GOAL
-      );
     }
   };
 

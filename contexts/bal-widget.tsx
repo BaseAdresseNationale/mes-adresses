@@ -157,12 +157,6 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
           if (transitionTimeout.current) {
             clearTimeout(transitionTimeout.current);
           }
-          if (isBalWidgetOpen) {
-            matomoTrackEvent(
-              MatomoEventCategory.HOME_PAGE,
-              MatomoEventAction[MatomoEventCategory.HOME_PAGE].CLOSE_BAL_WIDGET
-            );
-          }
           transitionTimeout.current = setTimeout(() => {
             setIsBalWidgetOpen(false);
           }, 300);
