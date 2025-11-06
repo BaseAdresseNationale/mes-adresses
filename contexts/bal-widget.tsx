@@ -10,6 +10,10 @@ import {
   useContext,
 } from "react";
 import LayoutContext from "./layout";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "./matomo-tracking";
 
 interface BALWidgetContextType {
   open: () => void;
@@ -50,6 +54,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
   const [balWidgetConfig, setBalWidgetConfig] = useState(null);
   const router = useRouter();
   const { isMobile } = useContext(LayoutContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   useEffect(() => {
     const showWidget = visibleOnPages.includes(router.pathname);
@@ -142,6 +147,10 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
             clearTimeout(transitionTimeout.current);
           }
           setIsBalWidgetOpen(true);
+          matomoTrackEvent(
+            MatomoEventCategory.HOME_PAGE,
+            MatomoEventAction[MatomoEventCategory.HOME_PAGE].OPEN_BAL_WIDGET
+          );
           break;
         case "BAL_WIDGET_CLOSED":
           // Wait for transition to end before closing the iframe
@@ -151,6 +160,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
           transitionTimeout.current = setTimeout(() => {
             setIsBalWidgetOpen(false);
           }, 300);
+
           break;
         case "BAL_WIDGET_READY":
           setIsBalWidgetReady(true);
@@ -173,7 +183,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
       window.removeEventListener("message", BALWidgetMessageHandler);
       clearTimeout(transitionTimeout.current);
     };
-  }, [isBalWidgetOpen]);
+  }, [isBalWidgetOpen, matomoTrackEvent]);
 
   return (
     <BALWidgetContext.Provider

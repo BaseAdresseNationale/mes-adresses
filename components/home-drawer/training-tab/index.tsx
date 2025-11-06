@@ -1,5 +1,9 @@
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 import { trainingTypeMap } from "@/lib/bal-admin";
-import { EventType, EventTypeTypeEnum } from "@/lib/bal-admin/type";
+import { EventType } from "@/lib/bal-admin/type";
 import { getFullDate } from "@/lib/utils/date";
 import {
   ArrowRightIcon,
@@ -11,12 +15,15 @@ import {
   Pane,
   Text,
 } from "evergreen-ui";
+import { useContext } from "react";
 
 interface TrainingTabProps {
   nextTrainings: EventType[];
 }
 
 function TrainingTab({ nextTrainings }: TrainingTabProps) {
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
+
   return (
     <Pane display="flex" flexDirection="column">
       {nextTrainings.length === 0 && (
@@ -62,6 +69,13 @@ function TrainingTab({ nextTrainings }: TrainingTabProps) {
                   is="a"
                   iconAfter={ArrowRightIcon}
                   href={`${process.env.NEXT_PUBLIC_ADRESSE_URL}/formation-en-ligne#open-event-modal-${id}`}
+                  onClick={() => {
+                    matomoTrackEvent(
+                      MatomoEventCategory.HOME_PAGE,
+                      MatomoEventAction[MatomoEventCategory.HOME_PAGE]
+                        .REGISTER_TO_WEBINAIRE
+                    );
+                  }}
                   target="_blank"
                   rel="noopener noreferrer"
                   alignSelf="flex-end"

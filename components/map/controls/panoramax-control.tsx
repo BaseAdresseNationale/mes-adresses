@@ -8,12 +8,16 @@ import {
 } from "evergreen-ui";
 import Image from "next/image";
 import type { Map as MaplibreMap } from "maplibre-gl";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CommuneType } from "@/types/commune";
 import {
   PANORAMAX_LAYERS_SOURCE,
   PANORAMAX_SOURCE_ID,
 } from "../layers/panoramax";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface PanoramaxControlProps {
   map: MaplibreMap | null;
@@ -29,6 +33,7 @@ function PanoramaxControl({
   commune,
 }: PanoramaxControlProps) {
   const [disabled, setDisabled] = useState(true);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   useEffect(() => {
     if (map && showPanoramax) {
@@ -63,7 +68,13 @@ function PanoramaxControl({
   const enabledButton = (
     <IconButton
       disabled={disabled}
-      onClick={() => setShowPanoramax(true)}
+      onClick={() => {
+        setShowPanoramax(true);
+        matomoTrackEvent(
+          MatomoEventCategory.MAP,
+          MatomoEventAction[MatomoEventCategory.MAP].ENABLE_PANORAMAX
+        );
+      }}
       height={29}
       width={29}
       icon={
@@ -84,7 +95,9 @@ function PanoramaxControl({
       height={29}
       width={29}
       icon={CrossIcon}
-      onClick={() => setShowPanoramax(false)}
+      onClick={() => {
+        setShowPanoramax(false);
+      }}
       title="Fermer Panoramax"
     />
   ) : disabled ? (

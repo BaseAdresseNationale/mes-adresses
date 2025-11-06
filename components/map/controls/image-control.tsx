@@ -20,6 +20,10 @@ import {
 import LayerShowHideZoomControl from "@/components/map/controls/layer-show-hide-zoom-control";
 import MapContext from "@/contexts/map";
 import { getImageBase64 } from "@/lib/utils/map";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 const poiLayersIds = ["poi-level-1", "poi-level-2", "poi-level-3"];
 
@@ -30,6 +34,8 @@ interface ImageControlProps {
 
 function ImageControl({ map, communeNom }: ImageControlProps) {
   const { tileLayersMode } = useContext(MapContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
+
   const [adresseLayerZoom, setAdresseLayerZoom] = useState([
     ZOOM.NUMEROS_ZOOM.maxZoom,
   ]);
@@ -180,6 +186,10 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
       a.href = imageBase64;
       a.download = `Screenshot-${communeNom}.png`;
       a.click();
+      matomoTrackEvent(
+        MatomoEventCategory.MAP,
+        MatomoEventAction[MatomoEventCategory.MAP].TAKE_SCREENSHOT
+      );
     } catch (e) {
       console.error(e);
     }

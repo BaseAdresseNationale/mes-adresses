@@ -48,6 +48,10 @@ import {
   DocumentGenerationData,
   GeneratedDocumentType,
 } from "../document-generation/document-generation.types";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -74,6 +78,7 @@ function NumerosList({
 
   const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
   const { toaster } = useContext(LayoutContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const {
     baseLocale,
@@ -187,8 +192,13 @@ function NumerosList({
         "Le certficat de numérotage n'a pas pu être téléchargé"
       );
       await downloadCertificat();
+      matomoTrackEvent(
+        MatomoEventCategory.DOCUMENT,
+        MatomoEventAction[MatomoEventCategory.DOCUMENT]
+          .GENERATE_CERTIFICAT_NUMEROTAGE
+      );
     },
-    [toaster]
+    [toaster, matomoTrackEvent]
   );
 
   const onDownloadArreteDeNumerotation = useCallback(
@@ -205,8 +215,13 @@ function NumerosList({
         "L'arrêté de numérotation n'a pas pu être téléchargé"
       );
       await downloadArreteDeNumerotation();
+      matomoTrackEvent(
+        MatomoEventCategory.DOCUMENT,
+        MatomoEventAction[MatomoEventCategory.DOCUMENT]
+          .GENERATE_ARRETE_NUMEROTATION_NUMERO
+      );
     },
-    [toaster]
+    [toaster, matomoTrackEvent]
   );
 
   const onMultipleRemove = async () => {
