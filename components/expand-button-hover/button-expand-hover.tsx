@@ -5,12 +5,13 @@ import {
   IconButtonOwnProps,
   BoxComponent,
   PolymorphicBoxProps,
+  ButtonOwnProps,
 } from "evergreen-ui";
 import styles from "./button-expand-hover.module.css";
 
-interface ButtonIconExpandHoverProps
-  extends PolymorphicBoxProps<"button", IconButtonOwnProps> {
+interface ButtonIconExpandHoverProps {
   message: string;
+  [props: string]: any;
 }
 
 export function ButtonIconExpandHover({
