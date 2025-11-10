@@ -28,7 +28,7 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
   const { settings } = baseLocale;
   const isPublished =
     baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED;
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(baseLocale.isAllCertified);
 
   const ignoreGoal = useCallback(
     async (goal: "toponymeGoalIgnored" | "languageGoalIgnored") => {
