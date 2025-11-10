@@ -15,6 +15,7 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
+import CertificationGoal from "./primary-goal/certification-goal";
 
 interface PanelGoalProps {
   commune: CommuneType;
@@ -45,42 +46,46 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
   return (
     <Pane>
       <PublicationGoal commune={commune} baseLocale={baseLocale} />
-      {isPublished &&
-        (!settings.toponymeGoalIgnored || !settings.languageGoalIgnored) && (
-          <AccordionSimple
-            title="Objectifs secondaires"
-            isActive={isActive}
-            onClick={() => setIsActive(!isActive)}
-          >
-            {!settings.toponymeGoalIgnored && (
-              <ToponymeGoal
-                baseLocale={baseLocale}
-                onIgnoreGoal={() => {
-                  ignoreGoal("toponymeGoalIgnored");
-                  matomoTrackEvent(
-                    MatomoEventCategory.GAMIFICATION,
-                    MatomoEventAction[MatomoEventCategory.GAMIFICATION]
-                      .IGNORE_GOAL_TOPONYME
-                  );
-                }}
-              />
-            )}
-            {!settings.languageGoalIgnored && (
-              <LangGoal
-                baseLocale={baseLocale}
-                onEditNomsAlt={onEditNomsAlt}
-                onIgnoreGoal={() => {
-                  ignoreGoal("languageGoalIgnored");
-                  matomoTrackEvent(
-                    MatomoEventCategory.GAMIFICATION,
-                    MatomoEventAction[MatomoEventCategory.GAMIFICATION]
-                      .IGNORE_GOAL_LANGUAGE
-                  );
-                }}
-              />
-            )}
-          </AccordionSimple>
-        )}
+      {isPublished && (
+        <>
+          <CertificationGoal baseLocale={baseLocale} />
+          {(!settings.toponymeGoalIgnored || !settings.languageGoalIgnored) && (
+            <AccordionSimple
+              title="Objectifs secondaires"
+              isActive={isActive}
+              onClick={() => setIsActive(!isActive)}
+            >
+              {!settings.toponymeGoalIgnored && (
+                <ToponymeGoal
+                  baseLocale={baseLocale}
+                  onIgnoreGoal={() => {
+                    ignoreGoal("toponymeGoalIgnored");
+                    matomoTrackEvent(
+                      MatomoEventCategory.GAMIFICATION,
+                      MatomoEventAction[MatomoEventCategory.GAMIFICATION]
+                        .IGNORE_GOAL_TOPONYME
+                    );
+                  }}
+                />
+              )}
+              {!settings.languageGoalIgnored && (
+                <LangGoal
+                  baseLocale={baseLocale}
+                  onEditNomsAlt={onEditNomsAlt}
+                  onIgnoreGoal={() => {
+                    ignoreGoal("languageGoalIgnored");
+                    matomoTrackEvent(
+                      MatomoEventCategory.GAMIFICATION,
+                      MatomoEventAction[MatomoEventCategory.GAMIFICATION]
+                        .IGNORE_GOAL_LANGUAGE
+                    );
+                  }}
+                />
+              )}
+            </AccordionSimple>
+          )}
+        </>
+      )}
     </Pane>
   );
 }

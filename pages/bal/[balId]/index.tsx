@@ -14,6 +14,7 @@ import PanelGoal from "@/components/bal/panel-goal/index";
 import MapContext from "@/contexts/map";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import CertificationGoal from "@/components/bal/panel-goal/primary-goal/certification-goal";
+import CertificationInfos from "@/components/bal/certification-infos";
 
 interface BALHomePageProps {
   communeFlag?: string;
@@ -57,8 +58,12 @@ function BALHomePage({ communeFlag }: BALHomePageProps) {
           setIsCommuneFormOpen(true);
         }}
       />
-      {!isAdmin && <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />}
-      <CertificationGoal baseLocale={baseLocale} isAdmin={isAdmin} />
+      {!isAdmin && (
+        <>
+          <ReadOnlyInfos openRecoveryDialog={openRecoveryDialog} />
+          <CertificationInfos baseLocale={baseLocale} />
+        </>
+      )}
       {isAdmin && baseLocale.status !== BaseLocale.status.DEMO && (
         <PanelGoal
           commune={commune}

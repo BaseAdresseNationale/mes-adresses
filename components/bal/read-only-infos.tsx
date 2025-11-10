@@ -8,11 +8,7 @@ interface BALReadOnlyProps {
 function BALReadOnly({ openRecoveryDialog }: BALReadOnlyProps) {
   return (
     <Pane backgroundColor="white" padding={8}>
-      <Alert
-        intent="warning"
-        title="Vous êtes en mode consultation"
-        marginBottom={15}
-      >
+      <Alert intent="warning" title="Vous êtes en mode consultation">
         <Text is="p">
           Vous ne pouvez pas modifier cette Base Adresse Locale car vous n’êtes
           pas authentifié comme administrateur.

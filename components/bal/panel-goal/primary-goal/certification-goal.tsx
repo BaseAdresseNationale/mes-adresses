@@ -22,10 +22,9 @@ import MatomoTrackingContext, {
 
 interface CertificationGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  isAdmin: boolean;
 }
 
-function CertificationGoal({ baseLocale, isAdmin }: CertificationGoalProps) {
+function CertificationGoal({ baseLocale }: CertificationGoalProps) {
   const {
     nbNumeros,
     nbNumerosCertifies,
@@ -99,27 +98,20 @@ function CertificationGoal({ baseLocale, isAdmin }: CertificationGoalProps) {
         caretPosition="start"
       >
         <Pane padding={8}>
-          {isAdmin ? (
-            <Paragraph>
-              La{" "}
-              <a
-                href="https://guide.mes-adresses.data.gouv.fr/publier-une-base-adresse-locale-1/certifier-ses-adresses"
-                target="_blank"
-                rel="noreferrer"
-              >
-                certification
-              </a>{" "}
-              vous permet de{" "}
-              <Strong>suivre l&apos;avancée de la fiabilisation</Strong> des
-              adresses et de <Strong>mettre en valeur votre travail</Strong>{" "}
-              auprès des réutilisateurs.
-            </Paragraph>
-          ) : (
-            <Paragraph>
-              Les adresses certifiées par la commune sont marquées comme fiables
-              et prêtes à être utilisées par les réutilisateurs.
-            </Paragraph>
-          )}
+          <Paragraph>
+            La{" "}
+            <a
+              href="https://guide.mes-adresses.data.gouv.fr/publier-une-base-adresse-locale-1/certifier-ses-adresses"
+              target="_blank"
+              rel="noreferrer"
+            >
+              certification
+            </a>{" "}
+            vous permet de{" "}
+            <Strong>suivre l&apos;avancée de la fiabilisation</Strong> des
+            adresses et de <Strong>mettre en valeur votre travail</Strong>{" "}
+            auprès des réutilisateurs.
+          </Paragraph>
         </Pane>
       </AccordionCard>
     </Pane>
