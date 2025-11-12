@@ -34,7 +34,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
   return (
     <Dialog
       isShown={docData?.type === GeneratedDocumentType.CERTIFICAT_ADRESSAGE}
-      title="Génération d'un certficat d'adressage"
+      title="Génération d'un certificat d'adressage"
       cancelLabel="Annuler"
       confirmLabel="Télécharger"
       onCloseComplete={() => setData(null)}
