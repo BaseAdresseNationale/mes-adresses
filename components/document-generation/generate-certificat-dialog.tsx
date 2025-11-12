@@ -34,7 +34,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
   return (
     <Dialog
       isShown={docData?.type === GeneratedDocumentType.CERTIFICAT_ADRESSAGE}
-      title="Génération d'un certficat de numérotage"
+      title="Génération d'un certificat d'adressage"
       cancelLabel="Annuler"
       confirmLabel="Télécharger"
       onCloseComplete={() => setData(null)}
@@ -62,7 +62,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
       <Pane is="form" onSubmit={(e) => e.preventDefault()}>
         <TextInputField
           label="Émetteur (optionnel)"
-          description="L'émetteur sera mentionné dans le certficat de numérotage"
+          description="L'émetteur sera mentionné dans le certificat d'adressage"
           value={data?.emetteur || ""}
           onChange={(e) =>
             setData((data) => ({
