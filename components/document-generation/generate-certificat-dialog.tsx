@@ -62,7 +62,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
       <Pane is="form" onSubmit={(e) => e.preventDefault()}>
         <TextInputField
           label="Émetteur (optionnel)"
-          description="L'émetteur sera mentionné dans le certficat d'adressage"
+          description="L'émetteur sera mentionné dans le certificat d'adressage"
           value={data?.emetteur || ""}
           onChange={(e) =>
             setData((data) => ({
