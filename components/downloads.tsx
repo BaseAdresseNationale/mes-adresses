@@ -8,13 +8,12 @@ import {
   Text,
 } from "evergreen-ui";
 import { useContext, useState } from "react";
-import {
-  BaseLocale,
-  BasesLocalesService,
-  ExportCsvService,
-} from "@/lib/openapi-api-bal";
+import { BasesLocalesService, ExportCsvService } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
-import BalDataContext from "@/contexts/bal-data";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface DownloadsProps {
   baseLocaleId: string;
@@ -22,8 +21,8 @@ interface DownloadsProps {
 
 function Downloads({ baseLocaleId }: DownloadsProps) {
   const { token } = useContext(TokenContext);
-  const { baseLocale } = useContext(BalDataContext);
   const [withComment, setWithComment] = useState(false);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const downloadFile = (file: string, filename: string) => {
     const url = window.URL.createObjectURL(new Blob([file]));
@@ -37,17 +36,33 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
 
   const downloadBalCsv = async () => {
     const file = await ExportCsvService.getCsvBal(withComment, baseLocaleId);
+    matomoTrackEvent(
+      MatomoEventCategory.DOWNLOAD,
+      withComment
+        ? MatomoEventAction[MatomoEventCategory.DOWNLOAD]
+            .DOWNLOAD_BAL_CSV_WITH_COMMENT
+        : MatomoEventAction[MatomoEventCategory.DOWNLOAD]
+            .DOWNLOAD_BAL_CSV_WITHOUT_COMMENT
+    );
     downloadFile(file, "bal.csv");
   };
 
   const downloadVoieCsv = async () => {
     const file = await ExportCsvService.getCsvVoies(baseLocaleId);
+    matomoTrackEvent(
+      MatomoEventCategory.DOWNLOAD,
+      MatomoEventAction[MatomoEventCategory.DOWNLOAD].DOWNLOAD_VOIE_CSV
+    );
     downloadFile(file, "liste-des-voies.csv");
   };
 
   const downloadVoieGeoJSON = async () => {
     const file =
       await BasesLocalesService.findFilairesVoiesGeoJson(baseLocaleId);
+    matomoTrackEvent(
+      MatomoEventCategory.DOWNLOAD,
+      MatomoEventAction[MatomoEventCategory.DOWNLOAD].DOWNLOAD_VOIE_GEOJSON
+    );
     downloadFile(JSON.stringify(file), "liste-des-filaires-de-voie.geojson");
   };
 

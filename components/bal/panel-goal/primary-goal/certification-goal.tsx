@@ -15,13 +15,16 @@ import { AccordionCard } from "@/components/accordion-card";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import MapContext from "@/contexts/map";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface CertificationGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
-  isAdmin: boolean;
 }
 
-function CertificationGoal({ baseLocale, isAdmin }: CertificationGoalProps) {
+function CertificationGoal({ baseLocale }: CertificationGoalProps) {
   const {
     nbNumeros,
     nbNumerosCertifies,
@@ -32,12 +35,18 @@ function CertificationGoal({ baseLocale, isAdmin }: CertificationGoalProps) {
 
   const [isActive, setIsActive] = useState(false);
   const { setTileLayersMode } = useContext(MapContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const toggleAccordion = () => {
     const isOpen = !isActive;
     setIsActive(isOpen);
     if (isOpen) {
       setTileLayersMode(TilesLayerMode.CERTIFICATION);
+      matomoTrackEvent(
+        MatomoEventCategory.GAMIFICATION,
+        MatomoEventAction[MatomoEventCategory.GAMIFICATION]
+          .OPEN_CERTIFICATION_GOAL
+      );
     } else {
       setTileLayersMode(TilesLayerMode.VOIE);
     }
@@ -89,27 +98,20 @@ function CertificationGoal({ baseLocale, isAdmin }: CertificationGoalProps) {
         caretPosition="start"
       >
         <Pane padding={8}>
-          {isAdmin ? (
-            <Paragraph>
-              La{" "}
-              <a
-                href="https://guide.mes-adresses.data.gouv.fr/publier-une-base-adresse-locale-1/certifier-ses-adresses"
-                target="_blank"
-                rel="noreferrer"
-              >
-                certification
-              </a>{" "}
-              vous permet de{" "}
-              <Strong>suivre l&apos;avancée de la fiabilisation</Strong> des
-              adresses et de <Strong>mettre en valeur votre travail</Strong>{" "}
-              auprès des réutilisateurs.
-            </Paragraph>
-          ) : (
-            <Paragraph>
-              Les adresses certifiées par la commune sont marquées comme fiables
-              et prêtes à être utilisées par les réutilisateurs.
-            </Paragraph>
-          )}
+          <Paragraph>
+            La{" "}
+            <a
+              href="https://guide.mes-adresses.data.gouv.fr/publier-une-base-adresse-locale-1/certifier-ses-adresses"
+              target="_blank"
+              rel="noreferrer"
+            >
+              certification
+            </a>{" "}
+            vous permet de{" "}
+            <Strong>suivre l&apos;avancée de la fiabilisation</Strong> des
+            adresses et de <Strong>mettre en valeur votre travail</Strong>{" "}
+            auprès des réutilisateurs.
+          </Paragraph>
         </Pane>
       </AccordionCard>
     </Pane>

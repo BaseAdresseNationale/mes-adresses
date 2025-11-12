@@ -57,6 +57,10 @@ import {
 } from "@/components/document-generation/document-generation.types";
 import { GenerateArreteDeNumerotationDialog } from "@/components/document-generation/generate-arrete-de-numerotation-dialog";
 import { ButtonIconExpandHover } from "@/components/expand-button-hover/button-expand-hover";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface VoiesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -75,6 +79,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     reloadNumeros,
   } = useContext(BalDataContext);
   const { reloadTiles, setTileLayersMode } = useContext(MapContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const [toConvert, setToConvert] = useState<string | null>(null);
   const [toCertify, setToCertify] = useState<string | null>(null);
@@ -146,8 +151,13 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
         "L'arrêté de numérotation n'a pas pu être téléchargé"
       );
       await downloadArreteDeNumerotation();
+      matomoTrackEvent(
+        MatomoEventCategory.DOCUMENT,
+        MatomoEventAction[MatomoEventCategory.DOCUMENT]
+          .GENERATE_ARRETE_NUMEROTATION_VOIE
+      );
     },
-    [toaster]
+    [toaster, matomoTrackEvent]
   );
 
   const onConvert = useCallback(async () => {
@@ -170,6 +180,10 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     );
 
     await convertToponyme();
+    matomoTrackEvent(
+      MatomoEventCategory.BAL_EDITOR,
+      MatomoEventAction[MatomoEventCategory.BAL_EDITOR].CONVERT_VOIE_TO_TOPONYME
+    );
 
     setOnConvertLoading(false);
     setToConvert(null);
@@ -183,6 +197,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     reloadParcelles,
     toConvert,
     toaster,
+    matomoTrackEvent,
   ]);
 
   const browseToVoie = (idVoie: string) => {
