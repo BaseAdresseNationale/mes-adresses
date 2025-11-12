@@ -1,13 +1,5 @@
 import { useContext, useState } from "react";
-import {
-  Button,
-  CrossIcon,
-  Pane,
-  SideSheet,
-  Tab,
-  Tablist,
-  Text,
-} from "evergreen-ui";
+import { Button, CrossIcon, Pane, SideSheet, Tab, Tablist } from "evergreen-ui";
 
 import DrawerContext from "@/contexts/drawer";
 import BalDataContext from "@/contexts/bal-data";
@@ -16,7 +8,6 @@ import TokenContext from "@/contexts/token";
 import Downloads from "@/components/downloads";
 import Settings from "@/components/settings";
 import Trash from "@/components/trash";
-import Share from "@/components/share/share";
 import LayoutContext from "@/contexts/layout";
 
 function DrawerContent() {
@@ -30,7 +21,7 @@ function DrawerContent() {
     {
       label: "Paramètres",
       key: "settings",
-      content: <Settings baseLocale={baseLocale} />,
+      content: <Settings baseLocale={baseLocale} token={token} />,
     },
     {
       label: "Téléchargements",
@@ -43,15 +34,6 @@ function DrawerContent() {
       key: "trash",
       content: <Trash />,
     },
-    ...(token
-      ? [
-          {
-            label: "Accès",
-            key: "share",
-            content: <Share baseLocale={baseLocale} token={token} />,
-          },
-        ]
-      : []),
   ];
 
   return (
