@@ -7,6 +7,7 @@ export enum DrawerDisplayedEnum {
   SETTING = "setting",
   TRASH = "trash",
   SHARE = "share",
+  STYLE_MAP = "style-map",
 }
 
 interface DrawerContextType {
