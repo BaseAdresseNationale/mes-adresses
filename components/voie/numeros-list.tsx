@@ -188,14 +188,14 @@ function NumerosList({
           const url = await NumerosService.generateCertificat(numeroId, data);
           window.open(url, "_blank");
         },
-        "Le certficat de numérotage a bien été téléchargé",
-        "Le certficat de numérotage n'a pas pu être téléchargé"
+        "Le certficat d'adressage a bien été téléchargé",
+        "Le certficat d'adressage n'a pas pu être téléchargé"
       );
       await downloadCertificat();
       matomoTrackEvent(
         MatomoEventCategory.DOCUMENT,
         MatomoEventAction[MatomoEventCategory.DOCUMENT]
-          .GENERATE_CERTIFICAT_NUMEROTAGE
+          .GENERATE_CERTIFICAT_ADRESSAGE
       );
     },
     [toaster, matomoTrackEvent]

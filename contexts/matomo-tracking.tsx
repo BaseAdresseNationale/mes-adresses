@@ -25,7 +25,7 @@ export const MatomoEventAction = {
     DOWNLOAD_VOIE_GEOJSON: "download_voie_geojson",
   },
   [MatomoEventCategory.DOCUMENT]: {
-    GENERATE_CERTIFICAT_NUMEROTAGE: "generate_certificat_numerotage",
+    GENERATE_CERTIFICAT_ADRESSAGE: "generate_certificat_adressage",
     GENERATE_ARRETE_NUMEROTATION_NUMERO: "generate_arrete_numerotation_numero",
     GENERATE_ARRETE_NUMEROTATION_VOIE: "generate_arrete_numerotation_voie",
   },
