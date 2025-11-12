@@ -31,7 +31,7 @@ function LayerShowHideZoomControl({
             {title}
           </Label>
           {zoom && zoom.length > 0 && (
-            <Tooltip content={`Ajustez la distance d‘affichage des ${title}.`}>
+            <Tooltip content={`Ajustez la distance d'affichage des ${title}.`}>
               <InfoSignIcon size={10} color="grey" />
             </Tooltip>
           )}

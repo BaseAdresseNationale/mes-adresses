@@ -64,8 +64,8 @@ function NumeroMarker({
 
         {numero.certifie && (
           <Tooltip
-            content="Cette adresse est certifiée par la commune"
-            position={Position.RIGHT}
+            content="Cette adresse est certifiée"
+            position={Position.BOTTOM_RIGHT}
           >
             <EndorsedIcon
               color="success"

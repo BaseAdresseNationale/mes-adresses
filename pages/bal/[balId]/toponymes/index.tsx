@@ -43,6 +43,7 @@ import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import MapContext from "@/contexts/map";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
+import { ButtonIconExpandHover } from "@/components/expand-button-hover/button-expand-hover";
 
 interface ToponymesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -176,17 +177,16 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
             value={search}
           />
           <Table.HeaderCell flex="unset">
-            <Tooltip content="Ajouter un toponyme">
-              <IconButton
-                icon={AddIcon}
-                title="Ajouter un toponyme"
-                is={NextLink}
-                appearance="primary"
-                intent="success"
-                disabled={!token || (token && isEditing)}
-                href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/new`}
-              />
-            </Tooltip>
+            <ButtonIconExpandHover
+              icon={AddIcon}
+              title="Ajouter un toponyme"
+              is={NextLink}
+              appearance="primary"
+              intent="success"
+              disabled={!token || (token && isEditing)}
+              href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/new`}
+              message="Ajouter un toponyme"
+            />
           </Table.HeaderCell>
         </Table.Head>
 
@@ -238,7 +238,7 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
                 }
                 certification={
                   toponyme.isAllCertified
-                    ? "Toutes les adresses de ce toponyme sont certifiées par la commune"
+                    ? "Les adresses sont certifiées"
                     : null
                 }
                 comment={

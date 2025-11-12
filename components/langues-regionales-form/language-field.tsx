@@ -107,19 +107,17 @@ function LanguageField({
           isDisabled={!codeISO}
         />
 
-        <Tooltip content="Supprimer la langue régionale">
-          <Button
-            type="button"
-            aria-label="Supprimer la langue régionale"
-            onClick={() => onDelete(codeISO)}
-            intent="danger"
-            width="fit-content"
-            padding={0}
-            marginTop={8}
-          >
-            <TrashIcon size={14} color="danger" />
-          </Button>
-        </Tooltip>
+        <Button
+          type="button"
+          aria-label="Supprimer la langue régionale"
+          onClick={() => onDelete(codeISO)}
+          intent="danger"
+          width="fit-content"
+          padding={0}
+          marginTop={8}
+        >
+          <TrashIcon size={14} color="danger" />
+        </Button>
       </Pane>
     </Pane>
   );

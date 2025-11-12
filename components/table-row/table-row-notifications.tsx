@@ -43,7 +43,7 @@ function TableRowNotifications({
 
       {certification && (
         <Table.TextCell flex="0 1 1" paddingLeft="8px" paddingRight="8px">
-          <Tooltip content={certification} position={Position.BOTTOM}>
+          <Tooltip content={certification} position={Position.BOTTOM_RIGHT}>
             <EndorsedIcon color="success" style={{ verticalAlign: "bottom" }} />
           </Tooltip>
         </Table.TextCell>
@@ -51,7 +51,11 @@ function TableRowNotifications({
 
       {warning && (
         <Table.TextCell flex="0 1 1" paddingLeft="8px" paddingRight="8px">
-          <Tooltip content={warning} position={Position.BOTTOM}>
+          <Tooltip
+            content={warning}
+            position={Position.BOTTOM_RIGHT}
+            statelessProps={{ maxWidth: "500px" }}
+          >
             <WarningSignIcon
               color="warning"
               style={{ verticalAlign: "bottom" }}
