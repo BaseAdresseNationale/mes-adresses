@@ -188,8 +188,8 @@ function NumerosList({
           const url = await NumerosService.generateCertificat(numeroId, data);
           window.open(url, "_blank");
         },
-        "Le certficat d'adressage a bien été téléchargé",
-        "Le certficat d'adressage n'a pas pu être téléchargé"
+        "Le certificat d'adressage a bien été téléchargé",
+        "Le certificat d'adressage n'a pas pu être téléchargé"
       );
       await downloadCertificat();
       matomoTrackEvent(
