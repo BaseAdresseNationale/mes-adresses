@@ -1,46 +1,41 @@
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   Pane,
   TextInputField,
-  TextInput,
-  IconButton,
   Button,
   Alert,
-  Label,
-  DeleteIcon,
-  AddIcon,
   Checkbox,
   Heading,
+  MobilePhoneIcon,
+  Text,
 } from "evergreen-ui";
-import { isEqual, difference } from "lodash";
-
-import { validateEmail } from "@/lib/utils/email";
-
 import BalDataContext from "@/contexts/bal-data";
-import TokenContext from "@/contexts/token";
-
 import { useInput } from "@/hooks/input";
-
 import FormContainer from "@/components/form-container";
 import FormInput from "@/components/form-input";
-import RenewTokenDialog from "@/components/renew-token-dialog";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import LocalStorageContext from "@/contexts/local-storage";
+import ShareClipBoard from "./share/share-clipboard";
+import ShareQRCode from "./share/share-qr-code";
 
-const mailHasChanged = (listA, listB) => {
-  return !isEqual(
-    [...listA].sort((a, b) => a.localeCompare(b)),
-    [...listB].sort((a, b) => a.localeCompare(b))
-  );
-};
+const EDITEUR_URL =
+  process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
 
 interface BALSettingsFormProps {
   baseLocale: BaseLocale;
+  token?: string;
 }
 
 const BALSettingsForm = React.memo(function BALSettingsForm({
   baseLocale,
+  token,
 }: BALSettingsFormProps) {
   const { reloadBaseLocale } = useContext(BalDataContext);
 
@@ -52,6 +47,10 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
 
   const { userSettings, setUserSettings } = useContext(LocalStorageContext);
   const [userSettingsForm, setUserSettingsForm] = useState(userSettings);
+
+  const urlAdminBal = useMemo(() => {
+    return `${EDITEUR_URL}/bal/${baseLocale.id}/${token}`;
+  }, [baseLocale.id, token]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const hasChanged = () =>
@@ -106,17 +105,15 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
     <FormContainer onSubmit={onSubmit} display="flex" flexDirection="column">
       <Pane>
         <FormInput>
-          <Heading is="h4">Paramètres de la Base Adresse Locale</Heading>
           <TextInputField
             required
             name="nom"
             id="nom"
             value={nomInput}
             maxWidth={600}
-            marginBottom={0}
-            marginTop={16}
+            margin={8}
             disabled={isLoading || baseLocale.status === "demo"}
-            label="Nom"
+            label="Nom de la Base Adresse Locale"
             placeholder="Nom"
             onChange={onNomInputChange}
           />
@@ -131,7 +128,6 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
 
       <Pane>
         <FormInput>
-          <Heading is="h4">Préférences utilisateurs</Heading>
           <Checkbox
             name="colorblind-mode"
             id="colorblind-mode"
@@ -145,6 +141,24 @@ const BALSettingsForm = React.memo(function BALSettingsForm({
             }
           />
         </FormInput>
+      </Pane>
+
+      <Pane background="white" padding={16} borderRadius={8}>
+        <Heading is="h4" marginBottom={12}>
+          Partagez l&apos;accès avec d&apos;autres appareils
+        </Heading>
+        <ShareClipBoard url={urlAdminBal} />
+        <br />
+        <ShareQRCode url={urlAdminBal} />
+        <Alert intent="success" marginTop={12} hasIcon={false}>
+          <Pane display="flex" alignItems="center">
+            <MobilePhoneIcon size={24} marginRight={8} />
+            <Text>
+              Mes Adresses fonctionne aussi sur votre mobile. Scannez le code QR
+              pour accéder à votre BAL.
+            </Text>
+          </Pane>
+        </Alert>
       </Pane>
 
       <Button
