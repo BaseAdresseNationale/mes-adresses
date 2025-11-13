@@ -1,54 +1,44 @@
 import { BaseLocale } from "@/lib/openapi-api-bal";
-import React from "react";
+import React, { useState } from "react";
 import {
   TextInputField,
   Button,
   Alert,
-  Checkbox,
-  MobilePhoneIcon,
-  Text,
   Pane,
   CogIcon,
   Heading,
+  EyeOpenIcon,
 } from "evergreen-ui";
-import FormContainer from "@/components/form-container";
-import FormInput from "@/components/form-input";
-import ShareClipBoard from "./share/share-clipboard";
-import ShareQRCode from "./share/share-qr-code";
-import ShareEmails from "./share/share-emails";
+import { BALAdminEmails } from "./bal-admin-emails";
 import { useBALSettings } from "@/hooks/bal-settings";
 import RenewTokenDialog from "../renew-token-dialog";
+import { ShareBALAccessDialog } from "./share/share-bal-access-dialog";
 
 interface SettingsProps {
   baseLocale: BaseLocale;
-  token?: string;
+  token: string;
 }
 
 function Settings({ baseLocale, token }: SettingsProps) {
+  const [showBALAccessDialog, setShowBALAccessDialog] = useState(false);
+
   const {
     onSubmit,
     isLoading,
-    balEmails,
+    emailsInput,
+    setEmailsInput,
     nomInput,
-    onNomInputChange,
+    setNomInput,
     error,
-    urlAdminBal,
-    userSettingsForm,
-    setUserSettingsForm,
     nomHasChanged,
-    userSettingsHasChanged,
     emailsHaveChanged,
     isRenewTokenWarningShown,
     setIsRenewTokenWarningShown,
     setError,
-    email,
-    onEmailChange,
-    onRemoveEmail,
-    onAddEmail,
-  } = useBALSettings(baseLocale, token);
+  } = useBALSettings(baseLocale);
 
   return (
-    <Pane height="100%" display="flex" flexDirection="column">
+    <Pane>
       <Pane
         flexShrink={0}
         elevation={0}
@@ -63,80 +53,41 @@ function Settings({ baseLocale, token }: SettingsProps) {
           <Heading paddingLeft={5}>Paramètres</Heading>
         </Pane>
       </Pane>
+      <Pane
+        is="form"
+        onSubmit={onSubmit}
+        display="flex"
+        flexDirection="column"
+        background="white"
+        paddingX={16}
+        marginY={1}
+      >
+        <TextInputField
+          required
+          name="nom"
+          id="nom"
+          value={nomInput}
+          maxWidth={600}
+          marginTop={8}
+          disabled={isLoading}
+          label="Nom"
+          placeholder="Nom"
+          onChange={(e) => setNomInput(e.target.value)}
+        />
 
-      <FormContainer onSubmit={onSubmit} display="flex" flexDirection="column">
-        <Pane marginBottom={6}>
-          <FormInput>
-            <TextInputField
-              required
-              name="nom"
-              id="nom"
-              value={nomInput}
-              maxWidth={600}
-              marginTop={8}
-              disabled={isLoading || baseLocale.status === "demo"}
-              label="Nom de la Base Adresse Locale"
-              placeholder="Nom"
-              onChange={onNomInputChange}
-            />
-          </FormInput>
-        </Pane>
-
-        <Pane
-          background="white"
-          padding={16}
-          borderRadius={8}
-          marginBottom={12}
-        >
-          <ShareEmails
-            baseLocale={baseLocale}
-            balEmails={balEmails}
-            onRemoveEmail={onRemoveEmail}
-            onAddEmail={onAddEmail}
-            onEmailChange={onEmailChange}
-            email={email}
-            error={error}
-          />
-        </Pane>
-
-        <Pane
-          background="white"
-          padding={16}
-          borderRadius={8}
-          marginBottom={12}
-        >
-          <Heading is="h4" marginBottom={12}>
-            Partagez l&apos;accès avec d&apos;autres appareils
-          </Heading>
-          <ShareClipBoard url={urlAdminBal} />
-          <br />
-          <ShareQRCode url={urlAdminBal} />
-          <Alert intent="success" marginTop={12} hasIcon={false}>
-            <Pane display="flex" alignItems="center">
-              <MobilePhoneIcon size={24} marginRight={8} />
-              <Text>
-                Mes Adresses fonctionne aussi sur votre mobile. Scannez le code
-                QR pour accéder à votre BAL.
-              </Text>
-            </Pane>
-          </Alert>
-        </Pane>
-
-        <Pane>
-          <FormInput>
-            <Checkbox
-              name="colorblind-mode"
-              id="colorblind-mode"
-              label="Activer le mode daltonien"
-              checked={userSettingsForm?.colorblindMode}
-              onChange={() =>
-                setUserSettingsForm((settings) => ({
-                  ...settings,
-                  colorblindMode: !settings?.colorblindMode,
-                }))
-              }
-            />
-          </FormInput>
+        <Pane display="flex" gap={16} marginBottom={16}>
+          <Pane flex={1}>
+            <BALAdminEmails value={emailsInput} onChange={setEmailsInput} />
+          </Pane>
+          <Button
+            type="button"
+            onClick={() => setShowBALAccessDialog(true)}
+            width="fit-content"
+            alignSelf="flex-end"
+          >
+            <EyeOpenIcon marginRight={8} />
+            Partage d&apos;accès
+          </Button>
         </Pane>
         {error && (
           <Alert marginBottom={16} intent="danger" title="Erreur">
@@ -145,23 +96,25 @@ function Settings({ baseLocale, token }: SettingsProps) {
         )}
         <Button
           height={40}
-          marginTop={8}
           type="submit"
           appearance="primary"
-          disabled={
-            !nomHasChanged && !userSettingsHasChanged && !emailsHaveChanged
-          }
+          disabled={!nomHasChanged && !emailsHaveChanged}
           isLoading={isLoading}
           width="fit-content"
         >
           {isLoading ? "En cours…" : "Enregistrer les changements"}
         </Button>
-      </FormContainer>
+      </Pane>
       <RenewTokenDialog
         baseLocaleId={baseLocale.id}
         isShown={isRenewTokenWarningShown}
         setIsShown={setIsRenewTokenWarningShown}
         setError={setError}
+      />
+      <ShareBALAccessDialog
+        baseLocale={baseLocale}
+        isShown={showBALAccessDialog}
+        token={token}
       />
     </Pane>
   );
