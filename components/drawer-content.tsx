@@ -9,6 +9,7 @@ import Downloads from "@/components/downloads";
 import Settings from "@/components/settings";
 import Trash from "@/components/trash";
 import LayoutContext from "@/contexts/layout";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 
 function DrawerContent() {
   const { isMobile } = useContext(LayoutContext);
@@ -17,23 +18,32 @@ function DrawerContent() {
   const { baseLocale } = useContext(BalDataContext);
   const { token } = useContext(TokenContext);
 
+  const isAdmin = Boolean(token);
+
   const tabs = [
-    {
-      label: "Paramètres",
-      key: "settings",
-      content: <Settings baseLocale={baseLocale} token={token} />,
-    },
+    ...(baseLocale.status !== BaseLocale.status.DEMO && isAdmin
+      ? [
+          {
+            label: "Paramètres",
+            key: "settings",
+            content: <Settings baseLocale={baseLocale} token={token} />,
+          },
+        ]
+      : []),
     {
       label: "Téléchargements",
       key: "downloads",
       content: <Downloads baseLocale={baseLocale} />,
     },
-
-    {
-      label: "Corbeille",
-      key: "trash",
-      content: <Trash />,
-    },
+    ...(isAdmin
+      ? [
+          {
+            label: "Corbeille",
+            key: "trash",
+            content: <Trash />,
+          },
+        ]
+      : []),
   ];
 
   return (

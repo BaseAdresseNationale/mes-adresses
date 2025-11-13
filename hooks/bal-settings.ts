@@ -2,11 +2,8 @@ import BalDataContext from "@/contexts/bal-data";
 import LayoutContext from "@/contexts/layout";
 import TokenContext from "@/contexts/token";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useInput } from "./input";
 import { isEqual, difference } from "lodash";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
-import { validateEmail } from "@/lib/utils/email";
-import LocalStorageContext from "@/contexts/local-storage";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -15,72 +12,17 @@ const mailHasChanged = (listA, listB) => {
   );
 };
 
-const EDITEUR_URL =
-  process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
-
-export function useBALSettings(baseLocale: BaseLocale, token?: string) {
+export function useBALSettings(baseLocale: BaseLocale) {
   const { emails, reloadEmails } = useContext(TokenContext);
   const { reloadBaseLocale } = useContext(BalDataContext);
+  const { pushToast } = useContext(LayoutContext);
 
+  const [nomInput, setNomInput] = useState(baseLocale.nom);
+  const [emailsInput, setEmailsInput] = useState(emails || []);
   const [isLoading, setIsLoading] = useState(false);
-  const [balEmails, setBalEmails] = useState([]);
-  const [email, onEmailChange, resetEmail] = useInput();
   const [error, setError] = useState("");
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] =
     useState(false);
-  const [nomInput, onNomInputChange] = useInput(baseLocale.nom);
-
-  const { userSettings, setUserSettings } = useContext(LocalStorageContext);
-  const { pushToast } = useContext(LayoutContext);
-
-  const [userSettingsForm, setUserSettingsForm] = useState(userSettings);
-
-  const urlAdminBal = useMemo(() => {
-    return `${EDITEUR_URL}/bal/${baseLocale.id}/${token}`;
-  }, [baseLocale.id, token]);
-
-  useEffect(() => {
-    setBalEmails(emails || []);
-  }, [emails]);
-
-  useEffect(() => {
-    if (error) {
-      setError(null);
-    }
-  }, [email]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const onRemoveEmail = useCallback((email) => {
-    setBalEmails((emails) => emails.filter((e) => e !== email));
-  }, []);
-
-  const onAddEmail = useCallback(() => {
-    if (validateEmail(email)) {
-      setBalEmails((emails) => [...emails, email]);
-      resetEmail();
-    } else {
-      setError("Cet email n’est pas valide");
-    }
-  }, [email, resetEmail]);
-
-  const onSubmitBALEmails = useCallback(async () => {
-    try {
-      await BasesLocalesService.updateBaseLocale(baseLocale.id, {
-        emails: balEmails,
-      });
-
-      await reloadEmails();
-      await reloadBaseLocale();
-
-      if (
-        mailHasChanged(emails || [], balEmails) &&
-        difference(emails, balEmails).length > 0
-      ) {
-        setIsRenewTokenWarningShown(true);
-      }
-    } catch (error) {
-      setError(error.body?.message);
-    }
-  }, [baseLocale.id, balEmails, reloadEmails, reloadBaseLocale, emails]);
 
   const nomHasChanged = useMemo(
     () => nomInput !== baseLocale.nom,
@@ -88,75 +30,66 @@ export function useBALSettings(baseLocale: BaseLocale, token?: string) {
   );
 
   const emailsHaveChanged = useMemo(
-    () => mailHasChanged(emails || [], balEmails),
-    [emails, balEmails]
+    () => mailHasChanged(emails || [], emailsInput),
+    [emails, emailsInput]
   );
-
-  const userSettingsHasChanged = useMemo(
-    () => JSON.stringify(userSettingsForm) !== JSON.stringify(userSettings),
-    [userSettingsForm, userSettings]
-  );
-
-  const onSubmitNomBaseLocale = useCallback(async () => {
-    setError(null);
-    setIsLoading(true);
-    await BasesLocalesService.updateBaseLocale(baseLocale.id, {
-      nom: nomInput.trim(),
-    });
-    reloadBaseLocale();
-    setIsLoading(false);
-  }, [baseLocale.id, nomInput, reloadBaseLocale]);
 
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+      setError(null);
+      setIsLoading(true);
+
       try {
         if (nomHasChanged) {
-          await onSubmitNomBaseLocale();
-        }
-        if (userSettingsHasChanged) {
-          setUserSettings(userSettingsForm);
+          await BasesLocalesService.updateBaseLocale(baseLocale.id, {
+            nom: nomInput.trim(),
+          });
         }
         if (emailsHaveChanged) {
-          await onSubmitBALEmails();
+          await BasesLocalesService.updateBaseLocale(baseLocale.id, {
+            emails: emailsInput,
+          });
+
+          await reloadEmails();
+          if (difference(emails, emailsInput).length > 0) {
+            setIsRenewTokenWarningShown(true);
+          }
         }
+        await reloadBaseLocale();
         pushToast({
           title: "Les paramètres ont été enregistrées avec succès",
           intent: "success",
         });
       } catch (error) {
         setError(error.body?.message);
+      } finally {
+        setIsLoading(false);
       }
     },
     [
+      baseLocale,
+      nomInput,
+      emailsInput,
+      reloadEmails,
       nomHasChanged,
-      userSettingsHasChanged,
       emailsHaveChanged,
-      userSettingsForm,
       pushToast,
-      onSubmitNomBaseLocale,
-      setUserSettings,
-      onSubmitBALEmails,
+      reloadBaseLocale,
+      emails,
     ]
   );
 
   return {
     isLoading,
-    balEmails,
-    email,
     error,
     isRenewTokenWarningShown,
+    emailsInput,
+    setEmailsInput,
     nomInput,
-    onEmailChange,
-    onRemoveEmail,
-    onAddEmail,
+    setNomInput,
     onSubmit,
-    onNomInputChange,
-    urlAdminBal,
-    userSettingsForm,
-    setUserSettingsForm,
     nomHasChanged,
-    userSettingsHasChanged,
     emailsHaveChanged,
     setError,
     setIsRenewTokenWarningShown,
