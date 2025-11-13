@@ -1,5 +1,5 @@
 import { useState, useContext, useCallback, useEffect } from "react";
-import { Pane, Button, Checkbox, RadioGroup } from "evergreen-ui";
+import { Pane, Button, RadioGroup } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
 import DrawContext from "@/contexts/draw";
@@ -34,8 +34,8 @@ interface VoieEditorProps {
 }
 
 const options = [
-  { label: "Numérique", value: "numerique" },
-  { label: "Métrique", value: "metrique" },
+  { label: "Numérique", value: Voie.typeNumerotation.NUMERIQUE },
+  { label: "Métrique", value: Voie.typeNumerotation.METRIQUE },
 ];
 
 function VoieEditor({
@@ -44,10 +44,9 @@ function VoieEditor({
   formInputRef,
   onSubmit,
 }: VoieEditorProps) {
-  console.log("initialValue", initialValue);
   const [isLoading, setIsLoading] = useState(false);
-  const [isMetric, setIsMetric] = useState(
-    initialValue ? initialValue.typeNumerotation === "metrique" : false
+  const [typeNumerotation, setTypeNumerotation] = useState(
+    initialValue.typeNumerotation || Voie.typeNumerotation.NUMERIQUE
   );
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : "");
   const [comment, onCommentChange] = useInput(
@@ -73,7 +72,7 @@ function VoieEditor({
         const body = {
           nom: nom.trim(),
           nomAlt: Object.keys(nomAlt).length > 0 ? trimNomAlt(nomAlt) : null,
-          typeNumerotation: isMetric ? "metrique" : "numerique",
+          typeNumerotation,
           trace: data ? data.geometry : null,
           comment: comment ? comment : null,
         };
@@ -123,7 +122,7 @@ function VoieEditor({
       initialValue,
       nom,
       comment,
-      isMetric,
+      typeNumerotation,
       data,
       nomAlt,
       setValidationMessages,
@@ -177,9 +176,11 @@ function VoieEditor({
             className={styles["custom-radio-group"]}
             marginTop="1em"
             label="Type de numérotation *"
-            value={isMetric ? "metrique" : "numerique"}
+            value={typeNumerotation}
             options={options}
-            onChange={(event) => setIsMetric(event.target.value === "metrique")}
+            onChange={(event) =>
+              setTypeNumerotation(event.target.value as Voie.typeNumerotation)
+            }
           />
 
           <LanguesRegionalesForm
@@ -195,7 +196,9 @@ function VoieEditor({
           validationMessage={getValidationMessage("comment")}
         />
 
-        {isMetric && <DrawMetricVoieEditor voie={initialValue} />}
+        {typeNumerotation === Voie.typeNumerotation.METRIQUE && (
+          <DrawMetricVoieEditor voie={initialValue} />
+        )}
       </Pane>
 
       <Pane>
