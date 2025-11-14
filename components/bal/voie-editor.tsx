@@ -46,7 +46,7 @@ function VoieEditor({
 }: VoieEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [typeNumerotation, setTypeNumerotation] = useState(
-    initialValue.typeNumerotation || Voie.typeNumerotation.NUMERIQUE
+    initialValue?.typeNumerotation || Voie.typeNumerotation.NUMERIQUE
   );
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : "");
   const [comment, onCommentChange] = useInput(
