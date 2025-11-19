@@ -21,7 +21,7 @@
     "generate:openapi:signalement": "openapi --input http://localhost:5005/api-json --output ./lib/openapi-signalement",
     "push-staging": "./scripts/push-staging.sh",
     "test": "playwright test --workers=1",
-    "test:ui": "yarn playwright test --workers=1 --ui"
+    "test:ui": "playwright test --workers=1 --ui"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
@@ -74,10 +74,11 @@
     "use-debounce": "^9.0.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@babel/core": "^7.21.4",
     "@babel/eslint-parser": "^7.21.3",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
-    "@playwright/test": "1.39",
+    "@playwright/test": "^1.56.1",
     "@types/node": "^20.14.11",
     "@types/react": "^18.2.23",
     "babel-plugin-lodash": "^3.3.4",
