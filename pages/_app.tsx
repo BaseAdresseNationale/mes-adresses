@@ -115,6 +115,11 @@ function App(props: AppProps) {
           border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
+        // Evergreen UI Tabs customization for accessibility
+        div[role="tablist"] > span[aria-selected="true"] {
+          color: #0038e0;
+        }
+
         @keyframes delay-bar {
           0% {
             width: 100%;

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 let balId = null;
 let balToken = null;
@@ -8,27 +9,37 @@ test.describe("home page", () => {
     await page.goto("/");
   });
 
-  test("check title", async ({ page }) => {
-    await expect(page).toHaveTitle(/mes-adresses.data.gouv.fr/);
+  test("check accessibility", async ({ page }) => {
+    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+
+    expect(accessibilityScanResults.violations).toEqual([]);
+  });
+});
+
+test.describe("new page", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/new");
+  });
+
+  test("check accessibility", async ({ page }) => {
+    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+
+    expect(accessibilityScanResults.violations).toEqual([]);
   });
 
   test("create a new BAL", async ({ page }) => {
     await page
-      .getByRole("link", { name: "Créer une Base Adresse Locale" })
-      .click();
-    await page.getByPlaceholder("Roche").fill("cangey");
+      .getByRole("searchbox", { name: "Rechercher une commune *" })
+      .fill("limeray");
+    await page.getByText("Limeray (Indre-et-Loire - 37)").click();
+    await page.getByRole("button", { name: "Créer une nouvelle Base" }).click();
+    await page.getByText("Partir des données existantes").click();
+    await page.getByRole("button", { name: "Suivant" }).click();
+    await page.getByRole("textbox", { name: "Adresse email de l'" }).click();
     await page
-      .getByRole("option", { name: "Cangey (Indre-et-Loire - 37)" })
-      .locator("div")
-      .first()
-      .click();
-    await page
-      .getByPlaceholder("nom@example.com")
-      .fill("gfay@e2e-tests-bal.fr");
-    await page
-      .getByRole("button", { name: "Créer la Base Adresse Locale" })
-      .click();
-    await page.getByRole("button", { name: "Continuer" }).click();
+      .getByRole("textbox", { name: "Adresse email de l'" })
+      .fill("test@playwright.com");
+    await page.getByRole("button", { name: "Terminer" }).click();
 
     await page.waitForURL(/\/bal\/.+/);
 
@@ -50,16 +61,20 @@ test.describe("home page", () => {
 test.describe("BAL page - Edition", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`/bal/${balId}/${balToken}`);
-
-    await page.getByRole("button", { name: "Commencer l'adressage" }).click();
   });
 
   test("create a new voie", async ({ page }) => {
-    await page.getByRole("button", { name: "Ajouter une voie" }).click();
-    await page.getByPlaceholder("Nom de la voie").fill("Rue de la Mairie");
-    await page.getByRole("button", { name: "Enregistrer" }).click();
+    await page.getByRole("button", { name: "Commencez l’adressage" }).click();
+    await page
+      .getByRole("tab", { name: /Illustration de l\'onglet voies.*/ })
+      .click();
 
-    await page.waitForSelector("text^=Rue de la Mairie");
+    await page.getByRole("link", { name: "Ajouter une voie" }).click();
+    await page
+      .getByRole("textbox", { name: "Nom de la voie *" })
+      .fill("Rue de la Fontenelle");
+    await page.getByRole("button", { name: "Enregistrer" }).click();
+    await page.waitForURL(/\/bal\/[a-f\d]{24}\/voies\/[a-f\d]{24}\/numeros/i);
   });
 
   // test("Create a new toponyme", async ({ page }) => {
@@ -67,17 +82,18 @@ test.describe("BAL page - Edition", () => {
   // });
 });
 
-test.describe("BAL page - Read only", () => {
-  test.beforeEach(async ({ page }) => {
-    // const balId = getBALId();
-    await page.goto(`/bal/${balId}/invalid_token`);
-  });
+/* test.describe("BAL page - Read only", () => {
+  test.beforeEach(async ({ page }) => { */
+// const balId = getBALId();
+/*     await page.goto(`/bal/${balId}/invalid_token`);
+  }); */
 
-  // test("check that new BAL is in list", async ({ page }) => {
-  //   await page.waitForSelector("text^=Adresses de Cangey");
-  // });
+// test("check that new BAL is in list", async ({ page }) => {
+//   await page.waitForSelector("text^=Adresses de Cangey");
+// });
 
-  // test("check that new BAL is in list", async ({ page }) => {
-  //   await page.waitForSelector("text^=Adresses de Cangey");
-  // });
-});
+// test("check that new BAL is in list", async ({ page }) => {
+//   await page.waitForSelector("text^=Adresses de Cangey");
+// });
+/* });
+ */

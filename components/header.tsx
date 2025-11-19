@@ -15,6 +15,7 @@ function Header() {
   return (
     <Pane
       is="header"
+      aria-label="mes-adresses-header"
       borderBottom
       backgroundColor="white"
       display="flex"
