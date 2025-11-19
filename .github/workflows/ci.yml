@@ -1,4 +1,4 @@
-name: Node.js CI
+name: CI
 
 on:
   push:
@@ -8,34 +8,39 @@ on:
 
 env:
   NEXT_PUBLIC_EDITEUR_URL: https://mes-adresses.data.gouv.fr
-  NEXT_PUBLIC_BAL_API_URL: https://api-bal.adresse.data.gouv.fr/v2
+  NEXT_PUBLIC_BAL_API_URL: https://mes-adresses-api-demo.osc-fr1.scalingo.io/v2
   NEXT_PUBLIC_GEO_API_URL: https://geo.api.gouv.fr
   NEXT_PUBLIC_ADRESSE_URL: https://adresse.data.gouv.fr
   NEXT_PUBLIC_API_BAN_URL: https://plateforme.adresse.data.gouv.fr
-  NEXT_PUBLIC_BAN_API_DEPOT: https://plateforme-bal.adresse.data.gouv.fr/api-depot
+  NEXT_PUBLIC_BAN_API_DEPOT: https://plateforme-bal.adresse.data.gouv.fr/api-depot-demo
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [22.x]
-
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: "yarn"
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Lint the codebase
         run: yarn lint
       - name: Build
         run: yarn build
+      - uses: actions/cache/save@v4
+        with:
+          path: |
+            .next/
+            node_modules/
+          key: build-${{ github.sha }}
 
-  scan:
+  gitleaks-scan:
     name: gitleaks
     runs-on: ubuntu-latest
     steps:
@@ -60,3 +65,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
+
+  playwright-tests:
+    name: Playwright Tests
+    needs: build
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            .next/
+            node_modules/
+          key: build-${{ github.sha }}
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
