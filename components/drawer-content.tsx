@@ -10,6 +10,7 @@ import Settings from "@/components/settings";
 import Trash from "@/components/trash";
 import Share from "@/components/share/share";
 import LayoutContext from "@/contexts/layout";
+import StyleMap from "@/components/menu/style-map/style-map";
 
 function DrawerContent() {
   const { isMobile } = useContext(LayoutContext);
@@ -33,6 +34,7 @@ function DrawerContent() {
       {drawerDisplayed === DrawerDisplayedEnum.SHARE && token && (
         <Share baseLocale={baseLocale} token={token} />
       )}
+      {drawerDisplayed === DrawerDisplayedEnum.STYLE_MAP && <StyleMap />}
 
       {isMobile && (
         <Button

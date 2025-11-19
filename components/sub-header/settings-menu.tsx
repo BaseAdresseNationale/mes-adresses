@@ -9,6 +9,7 @@ import {
   MenuIcon,
   CogIcon,
   ShareIcon,
+  MapIcon,
 } from "evergreen-ui";
 
 import DrawerContext, { DrawerDisplayedEnum } from "@/contexts/drawer";
@@ -56,6 +57,12 @@ function SettingsMenu({ isAdmin }: SettingsMenuProps) {
                 Partage
               </Menu.Item>
             )}
+            <Menu.Item
+              icon={MapIcon}
+              onSelect={() => setDrawerDisplayed(DrawerDisplayedEnum.STYLE_MAP)}
+            >
+              Fond de carte
+            </Menu.Item>
           </Menu.Group>
         </Menu>
       }
