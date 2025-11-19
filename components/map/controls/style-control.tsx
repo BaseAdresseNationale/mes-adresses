@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState, useEffect } from "react";
 import { Pane, SelectMenu, Button, Position, LayersIcon } from "evergreen-ui";
 
 import CadastreControl from "@/components/map/controls/cadastre-control";
@@ -26,6 +26,7 @@ function StyleControl({
   const { baseLocale } = useContext(BalDataContext);
   const { registeredMapStyle, setRegisteredMapStyle } =
     useContext(LocalStorageContext);
+  const { styleMaps } = useContext(LocalStorageContext);
 
   const availableStyles = useMemo(() => {
     const { hasOrtho, hasOpenMapTiles, hasPlanIGN } = commune;
@@ -41,8 +42,13 @@ function StyleControl({
         isAvailable: hasOpenMapTiles,
       },
       { label: "Plan IGN", value: MapStyle.PLAN_IGN, isAvailable: hasPlanIGN },
+      ...styleMaps.map((styleMap) => ({
+        label: styleMap.name,
+        value: styleMap.id,
+        isAvailable: true,
+      })),
     ].filter(({ isAvailable }) => isAvailable);
-  }, [commune]);
+  }, [commune, styleMaps]);
 
   const onSelect = (style) => {
     const updatedRegisteredMapStyle = registeredMapStyle
@@ -51,6 +57,12 @@ function StyleControl({
     setRegisteredMapStyle(updatedRegisteredMapStyle);
     handleStyle(style.value as MapStyle);
   };
+
+  useEffect(() => {
+    if (!availableStyles.find(({ value }) => value === style)) {
+      onSelect(availableStyles[0].value);
+    }
+  }, [availableStyles]);
 
   return (
     <Pane
@@ -83,7 +95,7 @@ function StyleControl({
               style={{ marginRight: ".5em", borderRadius: "0 3px 3px 0" }}
             />
             <div className="map-style-label">
-              {availableStyles.find(({ value }) => value === style).label}
+              {availableStyles.find(({ value }) => value === style)?.label}
             </div>
           </Button>
         </SelectMenu>

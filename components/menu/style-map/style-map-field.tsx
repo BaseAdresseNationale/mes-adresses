@@ -1,15 +1,11 @@
-import { useCallback, useState, useMemo } from "react";
 import {
   Pane,
-  Button,
-  SelectMenu,
-  Tooltip,
   SelectField,
   TextInputField,
   TextareaField,
   CrossIcon,
   IconButton,
-  Select,
+  Alert,
 } from "evergreen-ui";
 import InputLabel from "@/components/input-label";
 
@@ -41,6 +37,7 @@ function StyleMapField({
       padding={10}
       marginBottom={10}
       marginTop={10}
+      backgroundColor="white"
     >
       <IconButton
         title="Supprimer le fond de carte"
@@ -81,12 +78,9 @@ function StyleMapField({
           <option value="vector">Vector</option>
         </SelectField>
       </Pane>
-      <InputLabel
-        title="Url"
-        help="Ajouter l'url de flux de donnéesWMTS ou WMS"
-        required
-      />
       <TextareaField
+        label="Url"
+        required
         title="URL du fond de carte"
         value={initialValue.url}
         onChange={(e) => onChange("url", e.target.value)}

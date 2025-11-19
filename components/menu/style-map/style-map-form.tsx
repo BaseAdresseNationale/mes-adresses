@@ -1,6 +1,6 @@
-import { useCallback, useContext, useState } from "react";
-import { uniqueId } from "lodash";
-import { Button, AddIcon } from "evergreen-ui";
+import { useCallback, useContext, useState, useMemo } from "react";
+import { uniqueId, cloneDeep, differenceWith, isEqual } from "lodash";
+import { Button, AddIcon, Alert, Pane } from "evergreen-ui";
 
 import LocalStorageContext from "@/contexts/local-storage";
 import StyleMapField, { StyleMap } from "./style-map-field";
@@ -8,11 +8,11 @@ import StyleMapField, { StyleMap } from "./style-map-field";
 function StyleMapForm() {
   const { styleMaps, setStyleMaps } = useContext(LocalStorageContext);
   const [styleMapsForm, setStyleMapsForm] = useState<StyleMap[]>(
-    styleMaps || []
+    cloneDeep(styleMaps)
   );
 
   const saveStyleMapsOnLocalStorage = useCallback(() => {
-    setStyleMaps(styleMapsForm);
+    setStyleMaps(cloneDeep(styleMapsForm));
   }, [styleMapsForm, setStyleMaps]);
 
   const onAddForm = () => {
@@ -42,6 +42,10 @@ function StyleMapForm() {
     [styleMapsForm]
   );
 
+  const styleChanged = useMemo(() => {
+    return differenceWith(styleMapsForm, styleMaps, isEqual).length > 0;
+  }, [styleMapsForm, styleMaps]);
+
   return (
     <>
       <Button
@@ -50,24 +54,33 @@ function StyleMapForm() {
         intent="success"
         iconBefore={AddIcon}
         onClick={onAddForm}
+        marginBottom={8}
       >
         Ajouter un fond de carte
       </Button>
-      {styleMapsForm.map((styleMap) => (
-        <StyleMapField
-          key={styleMap.id}
-          initialValue={styleMap}
-          onChange={(key, value) => onChange(styleMap.id, key, value)}
-          onDelete={() => onRemove(styleMap.id)}
-        />
-      ))}
-      <Button
-        type="button"
-        appearance="primary"
-        onClick={saveStyleMapsOnLocalStorage}
-      >
-        Enregistrer les Changements
-      </Button>
+      <Alert intent="none" title="Comment ca marche les fonds de carte">
+        Seul les url des fluxs WMTS ou WMS sont supportés. Bien préciser le
+        type: Raster ou Vector. Les images doivent être de hauteur et largeur
+        256px.
+      </Alert>
+      <Pane backgroundColor="#FAFBFF">
+        {styleMapsForm.map((styleMap) => (
+          <StyleMapField
+            key={styleMap.id}
+            initialValue={styleMap}
+            onChange={(key, value) => onChange(styleMap.id, key, value)}
+            onDelete={() => onRemove(styleMap.id)}
+          />
+        ))}
+        <Button
+          disabled={!styleChanged}
+          type="button"
+          appearance="primary"
+          onClick={saveStyleMapsOnLocalStorage}
+        >
+          Enregistrer les Changements
+        </Button>
+      </Pane>
     </>
   );
 }

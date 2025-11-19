@@ -6,11 +6,13 @@ import StyleMapForm from "./style-map-form";
 interface StyleMapProps {}
 
 function StyleMap({}: StyleMapProps) {
-  const { styleMaps, setStyleMaps } = useContext(LocalStorageContext);
-
-  console.log(styleMaps);
   return (
-    <Pane height="100%" display="flex" flexDirection="column">
+    <Pane
+      height="100%"
+      display="flex"
+      flexDirection="column"
+      backgroundColor="#FAFBFF"
+    >
       <Pane
         flexShrink={0}
         elevation={0}

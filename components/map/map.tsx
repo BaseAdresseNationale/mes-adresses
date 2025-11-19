@@ -48,7 +48,7 @@ import {
   setMapFilter,
 } from "@/lib/utils/map";
 import GeolocationControl from "./controls/geolocation-control";
-import { ortho, planIGN, vector } from "./styles";
+import { getStyleDynamically, ortho, planIGN, vector } from "./styles";
 import {
   cadastreLayers,
   LAYER as CADASTRE_LAYER,
@@ -64,6 +64,7 @@ import {
   panoramaxPictureLayer,
   panoramaxSequenceLayer,
 } from "./layers/panoramax";
+import LocalStorageContext from "@/contexts/local-storage";
 
 const settings = {
   maxZoom: 19,
@@ -86,26 +87,6 @@ export interface MapProps {
 }
 
 const LAYERS = [...cadastreLayers];
-
-function getBaseStyle(style: MapStyle) {
-  switch (style) {
-    case MapStyle.ORTHO:
-      return ortho;
-
-    case MapStyle.VECTOR:
-      return vector;
-
-    case MapStyle.PLAN_IGN:
-      return planIGN;
-    default:
-      return vector;
-  }
-}
-
-function generateNewStyle(style: MapStyle) {
-  const baseStyle = getBaseStyle(style);
-  return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
-}
 
 function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
   const router = useRouter();
@@ -131,6 +112,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
+  const { styleMaps } = useContext(LocalStorageContext);
   const [mapStyle, setMapStyle] = useState<any>(generateNewStyle(style));
 
   const { balId } = router.query;
@@ -149,6 +131,29 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
       featureHovered.sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS ||
       featureHovered.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES);
+
+  function getBaseStyle(style: MapStyle | string) {
+    if (styleMaps.find(({ id }) => id === style)) {
+      return getStyleDynamically(styleMaps.find(({ id }) => id === style));
+    }
+    switch (style) {
+      case MapStyle.ORTHO:
+        return ortho;
+
+      case MapStyle.VECTOR:
+        return vector;
+
+      case MapStyle.PLAN_IGN:
+        return planIGN;
+      default:
+        return vector;
+    }
+  }
+
+  function generateNewStyle(style: MapStyle) {
+    const baseStyle = getBaseStyle(style);
+    return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
+  }
 
   const updatePositionsLayer = useCallback(() => {
     if (map && isTileSourceLoaded) {
