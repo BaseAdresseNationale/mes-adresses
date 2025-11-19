@@ -1,9 +1,9 @@
 name: Playwright Tests
 on:
   push:
-    branches: [main, master]
+    branches: [master]
   pull_request:
-    branches: [main, master]
+    branches: [master]
 
 env:
   NEXT_PUBLIC_EDITEUR_URL: https://mes-adresses.data.gouv.fr
@@ -22,9 +22,10 @@ jobs:
         node-version: [22.x]
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          node-version: lts/*
+          node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Install Playwright Browsers
