@@ -1,6 +1,4 @@
-import { Pane, Heading, MapIcon, Button, Paragraph } from "evergreen-ui";
-import LocalStorageContext from "@/contexts/local-storage";
-import { useContext } from "react";
+import { Pane, Heading, MapIcon } from "evergreen-ui";
 import StyleMapForm from "./style-map-form";
 
 interface StyleMapProps {}

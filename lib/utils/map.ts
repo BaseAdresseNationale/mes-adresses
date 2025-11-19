@@ -3,11 +3,7 @@ import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { MapGeoJSONFeature } from "maplibre-gl";
 import { NextRouter } from "next/router";
 import maplibregl from "maplibre-gl";
-import type {
-  Map as MaplibreMap,
-  FilterSpecification,
-  SourceSpecification,
-} from "maplibre-gl";
+import type { Map as MaplibreMap, FilterSpecification } from "maplibre-gl";
 import { Voie } from "../openapi-api-bal";
 import bbox from "@turf/bbox";
 

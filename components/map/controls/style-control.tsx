@@ -62,6 +62,7 @@ function StyleControl({
     if (!availableStyles.find(({ value }) => value === style)) {
       onSelect(availableStyles[0].value);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [availableStyles]);
 
   return (

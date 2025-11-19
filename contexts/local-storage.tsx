@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { useLocalStorage } from "@/hooks/local-storage";
 import { ChildrenProps } from "@/types/context";
 import { MapStyle } from "./map";
-import StyleMap from "@/components/menu/style-map/style-map";
+import { StyleMap } from "@/components/menu/style-map/style-map-field";
 
 interface LocalStorageContextType {
   balAccess: Record<string, string>;
