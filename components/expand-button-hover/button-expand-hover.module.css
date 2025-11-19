@@ -1,5 +1,4 @@
 .button-expand {
-  padding: 5px !important;
   text-transform: none !important;
 }
 
@@ -11,14 +10,12 @@
 
 .button-expand:not(:hover) > span {
   max-width: 0px;
-  padding-left: 0;
-  padding-right: 0;
   transition: all 0.3s;
 }
 
 .button-expand:hover > span {
   max-width: 500px;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 5px;
+  padding-right: 5px;
   transition: all 0.3s;
 }

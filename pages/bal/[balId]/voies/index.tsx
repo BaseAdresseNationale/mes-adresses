@@ -320,6 +320,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
               icon={AddIcon}
               title="Ajouter une voie"
               is={NextLink}
+              size="medium"
               appearance="primary"
               intent="success"
               disabled={!token || (token && isEditing)}
@@ -391,7 +392,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                       <Button
                         onClick={() => setToConvert(voie.id)}
                         size="small"
-                        title="Convertir la voieen toponyme"
+                        title="Convertir la voie en toponyme"
                       >
                         Convertir en toponyme
                       </Button>
