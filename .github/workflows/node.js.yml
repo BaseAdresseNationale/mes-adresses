@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile
       - name: Lint the codebase
         run: yarn lint
       - name: Build
