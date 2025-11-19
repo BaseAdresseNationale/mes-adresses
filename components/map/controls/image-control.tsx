@@ -13,12 +13,11 @@ import {
   NUMEROS_LABEL,
   VOIE_LABEL,
   VOIE_TRACE_LINE,
-  ZOOM,
   TOPONYME_LABEL,
   TilesLayerMode,
 } from "@/components/map/layers/tiles";
-import LayerShowHideZoomControl from "@/components/map/controls/layer-show-hide-zoom-control";
 import MapContext from "@/contexts/map";
+import LayerShowHideControl from "./layer-show-hide-control";
 import { getImageBase64 } from "@/lib/utils/map";
 import MatomoTrackingContext, {
   MatomoEventAction,
@@ -36,15 +35,6 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
   const { tileLayersMode } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
-  const [adresseLayerZoom, setAdresseLayerZoom] = useState([
-    ZOOM.NUMEROS_ZOOM.maxZoom,
-  ]);
-  const [voieLayerZoom, setVoieLayerZoom] = useState<number[]>([
-    ZOOM.VOIE_ZOOM.maxZoom,
-  ]);
-  const [toponymeLayerZoom, setToponymeLayerZoom] = useState<number[]>([
-    ZOOM.TOPONYME_ZOOM.maxZoom,
-  ]);
   const [adresseLayerIsDisplayed, setAdresseLayerIsDisplayed] =
     useState<boolean>(true);
   const [voieLayerIsDisplayed, setVoieLayerIsDisplayed] =
@@ -57,34 +47,6 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
 
   useEffect(() => {
     if (map) {
-      if (map && map.getLayer(VOIE_LABEL)) {
-        map.setLayerZoomRange(VOIE_LABEL, ZOOM.ALL.minZoom, voieLayerZoom[0]);
-      }
-
-      if (map.getLayer(VOIE_TRACE_LINE)) {
-        map.setLayerZoomRange(
-          VOIE_TRACE_LINE,
-          ZOOM.ALL.minZoom,
-          voieLayerZoom[0]
-        );
-      }
-    }
-  }, [map, voieLayerZoom]);
-
-  useEffect(() => {
-    if (map) {
-      if (map.getLayer(TOPONYME_LABEL)) {
-        map.setLayerZoomRange(
-          TOPONYME_LABEL,
-          ZOOM.ALL.minZoom,
-          toponymeLayerZoom[0]
-        );
-      }
-    }
-  }, [map, toponymeLayerZoom]);
-
-  useEffect(() => {
-    if (map) {
       if (map.getLayer(TOPONYME_LABEL)) {
         map.setLayoutProperty(
           TOPONYME_LABEL,
@@ -94,26 +56,6 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
       }
     }
   }, [map, toponymeLayerIsDisplayed]);
-
-  useEffect(() => {
-    if (map) {
-      if (map.getLayer(NUMEROS_POINT)) {
-        map.setLayerZoomRange(
-          NUMEROS_POINT,
-          ZOOM.ALL.minZoom,
-          adresseLayerZoom[0]
-        );
-      }
-
-      if (map.getLayer(NUMEROS_LABEL)) {
-        map.setLayerZoomRange(
-          NUMEROS_LABEL,
-          adresseLayerZoom[0],
-          ZOOM.ALL.maxZoom
-        );
-      }
-    }
-  }, [map, adresseLayerZoom]);
 
   useEffect(() => {
     if (map) {
@@ -174,9 +116,6 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
     setToponymeLayerIsDisplayed(true);
     setVoieLayerIsDisplayed(true);
     setPoiLayerIsDisplayed(true);
-    setAdresseLayerZoom([ZOOM.NUMEROS_ZOOM.maxZoom]);
-    setVoieLayerZoom([ZOOM.VOIE_ZOOM.maxZoom]);
-    setToponymeLayerZoom([ZOOM.TOPONYME_ZOOM.maxZoom]);
   };
 
   const takeScreenshot = async () => {
@@ -208,36 +147,30 @@ function ImageControl({ map, communeNom }: ImageControlProps) {
           flexDirection="column"
         >
           {tileLayerEnabled && (
-            <LayerShowHideZoomControl
+            <LayerShowHideControl
               title="Numéros"
               isDiplayed={adresseLayerIsDisplayed}
               setIsDiplayed={setAdresseLayerIsDisplayed}
-              zoom={adresseLayerZoom}
-              setZoom={setAdresseLayerZoom}
             />
           )}
 
           {tileLayerEnabled && tileLayersMode !== TilesLayerMode.TOPONYME && (
-            <LayerShowHideZoomControl
+            <LayerShowHideControl
               title="Voies"
               isDiplayed={voieLayerIsDisplayed}
               setIsDiplayed={setVoieLayerIsDisplayed}
-              zoom={voieLayerZoom}
-              setZoom={setVoieLayerZoom}
             />
           )}
 
           {tileLayerEnabled && tileLayersMode !== TilesLayerMode.VOIE && (
-            <LayerShowHideZoomControl
+            <LayerShowHideControl
               title="Toponymes"
               isDiplayed={toponymeLayerIsDisplayed}
               setIsDiplayed={setToponymeLayerIsDisplayed}
-              zoom={toponymeLayerZoom}
-              setZoom={setToponymeLayerZoom}
             />
           )}
 
-          <LayerShowHideZoomControl
+          <LayerShowHideControl
             title="Points d'intérets"
             isDiplayed={poiLayerIsDisplayed}
             setIsDiplayed={setPoiLayerIsDisplayed}
