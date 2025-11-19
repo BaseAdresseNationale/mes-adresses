@@ -17,7 +17,6 @@ export const getStyleDynamically = ({ id, type, url }) => {
       [`personnalise#${id}`]: {
         type,
         tiles: [url],
-        tileSize: 256,
       },
       ...otherSources,
     },

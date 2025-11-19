@@ -2,7 +2,12 @@ import { LAYERS_SOURCE, mapLayersIds } from "@/components/map/layers/tiles";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { MapGeoJSONFeature } from "maplibre-gl";
 import { NextRouter } from "next/router";
-import type { Map as MaplibreMap, FilterSpecification } from "maplibre-gl";
+import maplibregl from "maplibre-gl";
+import type {
+  Map as MaplibreMap,
+  FilterSpecification,
+  SourceSpecification,
+} from "maplibre-gl";
 import { Voie } from "../openapi-api-bal";
 import bbox from "@turf/bbox";
 
@@ -75,5 +80,71 @@ export function getImageBase64(
       resolve((map.getCanvas() as HTMLCanvasElement).toDataURL(type, quality))
     );
     map.setBearing(map.getBearing());
+  });
+}
+
+// On créer un fause map avec la library pour tester si la source est bonne
+export async function validateSourceWithTempMap({
+  id: sourceId,
+  url,
+  type,
+}): Promise<boolean> {
+  return new Promise((resolve) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.style.width = "1px";
+    tempDiv.style.height = "1px";
+    tempDiv.style.position = "absolute";
+    tempDiv.style.left = "-9999px";
+    document.body.appendChild(tempDiv);
+
+    const tempMap = new maplibregl.Map({
+      container: tempDiv,
+      style: {
+        version: 8,
+        sources: {},
+        layers: [],
+      },
+      center: [0, 0],
+      zoom: 1,
+      interactive: false,
+    });
+
+    let done = false;
+
+    const finish = (isValid: boolean) => {
+      if (done) return;
+      done = true;
+      tempMap.remove();
+      tempDiv.remove();
+      resolve(isValid);
+    };
+
+    tempMap.on("load", () => {
+      tempMap.addSource(sourceId, {
+        type,
+        tiles: [url],
+      });
+
+      tempMap.addLayer({
+        id: sourceId,
+        type: "raster",
+        source: sourceId,
+      });
+    });
+
+    tempMap.on("data", (e) => {
+      if ((e as any).sourceId === sourceId && (e as any).isSourceLoaded) {
+        finish(true);
+      }
+    });
+
+    tempMap.on("error", (e) => {
+      if (e.error && (e as any).sourceId === sourceId) {
+        console.error("Error loading source", e.error);
+        finish(false);
+      }
+    });
+
+    setTimeout(() => finish(false), 4000);
   });
 }
