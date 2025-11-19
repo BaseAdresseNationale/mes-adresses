@@ -86,7 +86,7 @@ function StyleMapForm() {
       <Alert intent="none" title="Comment ca marche les fonds de carte">
         Seul les urls des fluxs WMTS ou WMS sont supportées. Bien préciser le
         type: Raster ou Vector. Les images Raster doivent être 256x256 pixels et
-        les images Vector doivent être 512x512 pixels. Voir l'exemple
+        les images Vector doivent être 512x512 pixels. Voir l&apos;exemple
         ci-dessous.
       </Alert>
       <Pane backgroundColor="#FAFBFF">
