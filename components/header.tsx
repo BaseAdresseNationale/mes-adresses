@@ -35,16 +35,21 @@ function Header() {
       paddingLeft={16}
       paddingRight={16}
     >
-      <Pane cursor="pointer" display="flex" alignItems="center">
-        <NextLink href="/">
-          <Image
-            className="img"
-            height={34}
-            width={72}
-            src="/static/images/mes-adresses.svg"
-            alt="Page d’accueil du site mes-adresses.data.gouv.fr"
-          />
-        </NextLink>
+      <Pane
+        is={NextLink}
+        href="/"
+        cursor="pointer"
+        display="flex"
+        alignItems="center"
+        textDecoration="none"
+      >
+        <Image
+          className="img"
+          height={34}
+          width={72}
+          src="/static/images/mes-adresses.svg"
+          alt="Page d’accueil du site mes-adresses.data.gouv.fr"
+        />
         <Heading is="h1" size={500} marginLeft={10} display="inline-block">
           <Text is="span" size={400} fontWeight="normal">
             mes-adresses.
