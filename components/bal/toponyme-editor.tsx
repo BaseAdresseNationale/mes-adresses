@@ -119,7 +119,7 @@ function ToponymeEditor({
         const submit = initialValue
           ? toaster(
               () => ToponymesService.updateToponyme(initialValue.id, body),
-              "Le toponyme a bien été modifé",
+              "Le toponyme a bien été modifié",
               "Le toponyme n’a pas pu être modifié",
               (error) => {
                 setValidationMessages(error.body.message);

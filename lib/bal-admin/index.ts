@@ -15,7 +15,7 @@ export const trainingTypeMap = {
     label: "Formation approfondie",
   },
   [EventTypeTypeEnum.FORMATION_SPECIALE]: {
-    color: "orange",
+    color: "teal",
     label: "Formation signalement",
   },
 };
