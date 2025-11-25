@@ -133,7 +133,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       featureHovered.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES);
 
   function getBaseStyle(style: MapStyle | string) {
-    if (styleMaps.find(({ id }) => id === style)) {
+    if (styleMaps?.find(({ id }) => id === style)) {
       return getStyleDynamically(styleMaps.find(({ id }) => id === style));
     }
     switch (style) {

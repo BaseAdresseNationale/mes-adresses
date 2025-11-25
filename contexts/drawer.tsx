@@ -11,16 +11,14 @@ export enum DrawerDisplayedEnum {
 }
 
 interface DrawerContextType {
-  drawerDisplayed: DrawerDisplayedEnum;
-  setDrawerDisplayed: (value: DrawerDisplayedEnum) => void;
+  drawerDisplayed: boolean;
+  setDrawerDisplayed: (value: boolean) => void;
 }
 
 const DrawerContext = React.createContext<DrawerContextType | null>(null);
 
 export function DrawerContextProvider(props: ChildrenProps) {
-  const [drawerDisplayed, setDrawerDisplayed] = useState<DrawerDisplayedEnum>(
-    DrawerDisplayedEnum.NONE
-  );
+  const [drawerDisplayed, setDrawerDisplayed] = useState(false);
 
   const value = useMemo(
     () => ({
