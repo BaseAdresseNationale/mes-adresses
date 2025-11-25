@@ -25,7 +25,13 @@ function ShareClipBoard({ url }: ShareClipBoardProps) {
 
   return (
     <Pane display="flex" alignItems="end">
-      <TextInputField ref={textAreaRef} flex={1} marginBottom={0} value={url} />
+      <TextInputField
+        label="Lien de connexion administrateur"
+        ref={textAreaRef}
+        flex={1}
+        marginBottom={0}
+        value={url}
+      />
 
       {copySuccess ? (
         <IconButton

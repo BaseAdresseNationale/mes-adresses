@@ -12,8 +12,6 @@ interface LocalStorageContextType {
   setWasWelcomed: (value: boolean) => void;
   recoveryEmailSent: Date;
   setRecoveryEmailSent: (value: Date) => void;
-  userSettings: Record<string, any>;
-  setUserSettings: (value: Record<string, any>) => void;
   productTour: Record<string, boolean>;
   setProductTour: (value: Record<string, boolean>) => void;
   lastNewsSeen: string;
@@ -32,7 +30,6 @@ const LocalStorageContext = React.createContext<LocalStorageContextType | null>(
 const STORAGE_KEY = "bal-access";
 const WELCOMED_KEY = "was-welcomed";
 const RECOVERY_EMAIL = "recovery-email-sent";
-const USER_SETTINGS = "user-settings";
 const PRODUCT_TOUR = "product-tour";
 const LAST_NEWS_SEEN = "last-news-seen";
 const MAP_STYLE = "map-style";
@@ -44,7 +41,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
   const [wasWelcomed, setWasWelcomed] = useLocalStorage(WELCOMED_KEY);
   const [recoveryEmailSent, setRecoveryEmailSent] =
     useLocalStorage(RECOVERY_EMAIL);
-  const [userSettings, setUserSettings] = useLocalStorage(USER_SETTINGS);
   const [productTour, setProductTour] = useLocalStorage(PRODUCT_TOUR);
   const [lastNewsSeen, setLastNewsSeen] = useLocalStorage(LAST_NEWS_SEEN);
   const [registeredMapStyle, setRegisteredMapStyle] =
@@ -61,8 +57,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       setWasWelcomed,
       recoveryEmailSent,
       setRecoveryEmailSent,
-      userSettings,
-      setUserSettings,
       productTour,
       setProductTour,
       lastNewsSeen,
@@ -81,8 +75,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       setWasWelcomed,
       recoveryEmailSent,
       setRecoveryEmailSent,
-      userSettings,
-      setUserSettings,
       productTour,
       setProductTour,
       lastNewsSeen,

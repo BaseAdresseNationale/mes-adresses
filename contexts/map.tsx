@@ -57,7 +57,7 @@ export const getDefaultStyle = (commune: CommuneDTO) =>
 
 export function MapContextProvider(props: ChildrenProps) {
   const { baseLocale, commune } = useContext(BalDataContext);
-  const { userSettings, registeredMapStyle } = useContext(LocalStorageContext);
+  const { registeredMapStyle } = useContext(LocalStorageContext);
   const [map, setMap] = useState<MaplibreMap | null>(null);
   const registeredBalMapStyle = registeredMapStyle
     ? registeredMapStyle[baseLocale.id]
@@ -75,11 +75,7 @@ export function MapContextProvider(props: ChildrenProps) {
     TilesLayerMode.VOIE
   );
 
-  const balTilesUrl = `${BAL_API_URL}/bases-locales/${
-    baseLocale.id
-  }/tiles/{z}/{x}/{y}.pbf${
-    userSettings?.colorblindMode ? "?colorblindMode=true" : ""
-  }`;
+  const balTilesUrl = `${BAL_API_URL}/bases-locales/${baseLocale.id}/tiles/{z}/{x}/{y}.pbf`;
 
   useEffect(() => {
     map?.on("load", () => {
