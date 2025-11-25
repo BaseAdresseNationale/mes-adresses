@@ -115,6 +115,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
         baseLocale={baseLocale}
         isShown={showBALAccessDialog}
         token={token}
+        onCloseComplete={() => setShowBALAccessDialog(false)}
       />
     </Pane>
   );

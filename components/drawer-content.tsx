@@ -49,7 +49,7 @@ function DrawerContent() {
   return (
     <SideSheet
       isShown={Boolean(drawerDisplayed)}
-      onCloseComplete={() => setDrawerDisplayed(null)}
+      onCloseComplete={() => setDrawerDisplayed(false)}
       {...(isMobile && { width: "100%" })}
     >
       <Pane

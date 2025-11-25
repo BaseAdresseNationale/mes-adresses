@@ -69,7 +69,6 @@ export function BALAdminEmails({ value, onChange }: BALAdminEmailsProps) {
         <TextInput
           display="block"
           type="email"
-          pattern=""
           width="100%"
           placeholder="Ajouter une adresse email…"
           maxWidth={400}

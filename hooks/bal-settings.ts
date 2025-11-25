@@ -1,7 +1,7 @@
 import BalDataContext from "@/contexts/bal-data";
 import LayoutContext from "@/contexts/layout";
 import TokenContext from "@/contexts/token";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { isEqual, difference } from "lodash";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 
@@ -37,7 +37,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      setError(null);
+      setError("");
       setIsLoading(true);
 
       try {
@@ -58,7 +58,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
         }
         await reloadBaseLocale();
         pushToast({
-          title: "Les paramètres ont été enregistrées avec succès",
+          title: "Les paramètres ont été enregistrés avec succès",
           intent: "success",
         });
       } catch (error) {

@@ -7,6 +7,7 @@ interface ShareEmailsDialogProps {
   baseLocale: BaseLocale;
   isShown: boolean;
   token: string;
+  onCloseComplete: () => void;
 }
 
 const EDITEUR_URL =
@@ -16,6 +17,7 @@ export function ShareBALAccessDialog({
   baseLocale,
   isShown,
   token,
+  onCloseComplete,
 }: ShareEmailsDialogProps) {
   const urlAdminBal = `${EDITEUR_URL}/bal/${baseLocale.id}/${token}`;
 
@@ -24,6 +26,7 @@ export function ShareBALAccessDialog({
       isShown={isShown}
       title="Partagez l'accès avec d'autres appareils"
       hasFooter={false}
+      onCloseComplete={onCloseComplete}
     >
       <Pane paddingBottom={16}>
         <ShareClipBoard url={urlAdminBal} />
