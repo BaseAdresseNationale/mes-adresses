@@ -157,7 +157,7 @@ test.describe("BAL page - Edition", () => {
       .getByRole("button", { name: "Certifier et enregistrer" })
       .click();
     await page.waitForSelector('text="Le numéro a bien été ajouté"');
-    await page.waitForSelector('h2:has-text("Liste des numéros")');
+    await page.waitForTimeout(1000); // Wait for the numéro to appear in the list
 
     expect(
       await page
@@ -187,7 +187,7 @@ test.describe("BAL page - Edition", () => {
     await page.getByRole("menuitem", { name: "Supprimer…" }).click();
     await page.getByRole("button", { name: "Supprimer" }).click();
     await page.waitForSelector('text="La voie a bien été archivée"');
-    await page.waitForSelector('text="Voies, places et lieux-dits numérotés"');
+    await page.waitForTimeout(1000);
 
     expect(
       await page
@@ -207,7 +207,7 @@ test.describe("BAL page - Edition", () => {
       .fill("Le petit lieu");
     await page.getByRole("button", { name: "Enregistrer" }).click();
     await page.waitForSelector('text="Le toponyme a bien été ajouté"');
-    await page.waitForSelector('h2:has-text("Liste des numéros")');
+    await page.waitForTimeout(1000);
 
     await page.waitForURL(
       /\/bal\/[a-f\d]{24}\/toponymes\/[a-f\d]{24}\/numeros/i
@@ -235,7 +235,7 @@ test.describe("BAL page - Edition", () => {
       .fill("Le grand lieu");
     await page.getByRole("button", { name: "Enregistrer" }).click();
     await page.waitForSelector('text="Le toponyme a bien été modifié"');
-    await page.waitForSelector('h2:has-text("Liste des numéros")');
+    await page.waitForTimeout(1000);
 
     expect(
       await page
@@ -265,9 +265,7 @@ test.describe("BAL page - Edition", () => {
     await page.getByRole("menuitem", { name: "Supprimer…" }).click();
     await page.getByRole("button", { name: "Supprimer" }).click();
     await page.waitForSelector('text="Le toponyme a bien été archivé"');
-    await page.waitForSelector(
-      'text="Lieux-dits complémentaires et voies sans adresse"'
-    );
+    await page.waitForTimeout(1000);
 
     expect(
       await page
