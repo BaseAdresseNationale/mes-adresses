@@ -20,8 +20,8 @@
     "generate:openapi:api-bal": "openapi --input http://localhost:5001/api-json --output ./lib/openapi-api-bal",
     "generate:openapi:signalement": "openapi --input http://localhost:5005/api-json --output ./lib/openapi-signalement",
     "push-staging": "./scripts/push-staging.sh",
-    "test": "playwright test --workers=1",
-    "test:ui": "playwright test --workers=1 --ui"
+    "test": "playwright test --workers=1 -x",
+    "test:ui": "playwright test --workers=1 --ui -x"
   },
   "dependencies": {
     "@babel/runtime": "^7.21.0",
