@@ -21,6 +21,7 @@ import {
   ExtendedVoieDTO,
 } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
+import AlertsContext from "@/contexts/alerts";
 import useHabilitation from "@/hooks/habilitation";
 import { useRouter } from "next/router";
 import LayoutContext from "./layout";
@@ -95,19 +96,21 @@ export function BalDataContextProvider({
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
   const { pushToast } = useContext(LayoutContext);
   const { token } = useContext(TokenContext);
+  const { reloadVoieAlerts } = useContext(AlertsContext);
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchBALData() {
       try {
-        const voies = await BasesLocalesService.findBaseLocaleVoies(
-          initialBaseLocale.id
-        );
+        reloadVoies();
+        // const voies = await BasesLocalesService.findBaseLocaleVoies(
+        //   initialBaseLocale.id
+        // );
+        // setVoies(voies);
         const toponymes = await BasesLocalesService.findBaseLocaleToponymes(
           initialBaseLocale.id
         );
         const commune = await getCommuneWithBBox(initialBaseLocale, voies);
-        setVoies(voies);
         setToponymes(toponymes);
         setCommune(commune);
         setIsBALDataLoaded(true);
@@ -138,8 +141,9 @@ export function BalDataContextProvider({
   const reloadVoies = useCallback(async () => {
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
+    reloadVoieAlerts(voies);
     setVoies(voies);
-  }, [baseLocale.id]);
+  }, [baseLocale.id, reloadVoieAlerts]);
 
   const reloadToponymes = useCallback(async () => {
     const toponymes: ExtentedToponymeDTO[] =

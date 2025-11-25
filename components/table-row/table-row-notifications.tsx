@@ -24,6 +24,7 @@ function TableRowNotifications({
   communeDeleguee,
 }: TableRowNotificationsProps) {
   const { token } = useContext(TokenContext);
+
   return (
     <>
       {communeDeleguee && (
