@@ -2,11 +2,19 @@ import { Pane } from "evergreen-ui";
 
 interface MainProps {
   children: React.ReactNode;
+  isEditor?: boolean;
 }
 
-function Main({ children }: MainProps) {
+function Main({ children, isEditor }: MainProps) {
   return (
-    <Pane display="flex" height="calc(100vh - 76px)" flexDirection="column">
+    <Pane
+      is="main"
+      width="100%"
+      aria-label="mes-adresses-main"
+      display="flex"
+      height={isEditor ? "100%" : "calc(100vh - 76px)"}
+      flexDirection="column"
+    >
       {children}
     </Pane>
   );

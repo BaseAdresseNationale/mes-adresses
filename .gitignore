@@ -12,4 +12,10 @@ available-flags.json
 .DS_Store
 # Sentry Config File
 .env.sentry-build-plugin
+
 .cursorrules
+
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

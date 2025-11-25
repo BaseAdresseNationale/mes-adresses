@@ -130,6 +130,7 @@ function MainTabs({ balId }: MainTabsProps) {
             const tab = (
               <Link
                 key={key}
+                title={`Onglet ${key}`}
                 className={styles.tabLink}
                 role="tab"
                 href={href}

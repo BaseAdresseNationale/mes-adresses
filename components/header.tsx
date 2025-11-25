@@ -1,7 +1,15 @@
 import { useContext } from "react";
 import NextLink from "next/link";
 import Image from "next/legacy/image";
-import { Pane, Button, HelpIcon, BookIcon, VideoIcon } from "evergreen-ui";
+import {
+  Pane,
+  Button,
+  HelpIcon,
+  BookIcon,
+  VideoIcon,
+  Heading,
+  Text,
+} from "evergreen-ui";
 
 import HelpContext from "@/contexts/help";
 import { PEERTUBE_LINK } from "@/components/help/video-container";
@@ -15,6 +23,7 @@ function Header() {
   return (
     <Pane
       is="header"
+      aria-label="mes-adresses-header"
       borderBottom
       backgroundColor="white"
       display="flex"
@@ -26,16 +35,30 @@ function Header() {
       paddingLeft={16}
       paddingRight={16}
     >
-      <Pane cursor="pointer">
-        <NextLink href="/">
-          <Image
-            className="img"
-            height={34}
-            width={isMobile ? 200 : 304}
-            src="/static/images/mes-adresses.svg"
-            alt="Page d’accueil du site mes-adresses.data.gouv.fr"
-          />
-        </NextLink>
+      <Pane
+        is={NextLink}
+        href="/"
+        cursor="pointer"
+        display="flex"
+        alignItems="center"
+        textDecoration="none"
+      >
+        <Image
+          className="img"
+          height={34}
+          width={72}
+          src="/static/images/mes-adresses.svg"
+          alt="Page d’accueil du site mes-adresses.data.gouv.fr"
+        />
+        <Heading is="h1" size={500} marginLeft={10} display="inline-block">
+          <Text is="span" size={400} fontWeight="normal">
+            mes-adresses.
+          </Text>
+          data.gouv.
+          <Text is="span" size={400} fontWeight="normal">
+            fr
+          </Text>
+        </Heading>
       </Pane>
       <Pane id="header-menu-wrapper" paddingTop={16} paddingBottom={16}>
         {!isMobile ? (
