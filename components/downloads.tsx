@@ -8,7 +8,11 @@ import {
   Text,
 } from "evergreen-ui";
 import { useContext, useState } from "react";
-import { BasesLocalesService, ExportCsvService } from "@/lib/openapi-api-bal";
+import {
+  BaseLocale,
+  BasesLocalesService,
+  ExportCsvService,
+} from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
 import MatomoTrackingContext, {
   MatomoEventAction,
@@ -16,10 +20,10 @@ import MatomoTrackingContext, {
 } from "@/contexts/matomo-tracking";
 
 interface DownloadsProps {
-  baseLocaleId: string;
+  baseLocale: BaseLocale;
 }
 
-function Downloads({ baseLocaleId }: DownloadsProps) {
+function Downloads({ baseLocale }: DownloadsProps) {
   const { token } = useContext(TokenContext);
   const [withComment, setWithComment] = useState(false);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
@@ -35,7 +39,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
   };
 
   const downloadBalCsv = async () => {
-    const file = await ExportCsvService.getCsvBal(withComment, baseLocaleId);
+    const file = await ExportCsvService.getCsvBal(withComment, baseLocale.id);
     matomoTrackEvent(
       MatomoEventCategory.DOWNLOAD,
       withComment
@@ -48,7 +52,7 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
   };
 
   const downloadVoieCsv = async () => {
-    const file = await ExportCsvService.getCsvVoies(baseLocaleId);
+    const file = await ExportCsvService.getCsvVoies(baseLocale.id);
     matomoTrackEvent(
       MatomoEventCategory.DOWNLOAD,
       MatomoEventAction[MatomoEventCategory.DOWNLOAD].DOWNLOAD_VOIE_CSV
@@ -57,8 +61,9 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
   };
 
   const downloadVoieGeoJSON = async () => {
-    const file =
-      await BasesLocalesService.findFilairesVoiesGeoJson(baseLocaleId);
+    const file = await BasesLocalesService.findFilairesVoiesGeoJson(
+      baseLocale.id
+    );
     matomoTrackEvent(
       MatomoEventCategory.DOWNLOAD,
       MatomoEventAction[MatomoEventCategory.DOWNLOAD].DOWNLOAD_VOIE_GEOJSON
@@ -123,16 +128,15 @@ function Downloads({ baseLocaleId }: DownloadsProps) {
             Liste des filaires de voie (format GeoJSON)
           </Link>
         </Pane>
-        {/* 
         {token && baseLocale.status === BaseLocale.status.PUBLISHED && (
           <Pane is="li" marginBottom={16}>
             <Text>
-              Pour télécharger un certificat de numérotage, rendez-vous dans la
-              liste des numéros d&apos;une voie et ouvrez le menu d&apos;actions
-              du numéro concerné.
+              Pour télécharger un certificat d&apos;adressage, rendez-vous dans
+              la liste des numéros d&apos;une voie et ouvrez le menu
+              d&apos;actions du numéro concerné.
             </Text>
           </Pane>
-        )} */}
+        )}
       </Pane>
     </Pane>
   );

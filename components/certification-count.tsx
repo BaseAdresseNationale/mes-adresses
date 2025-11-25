@@ -10,12 +10,10 @@ function CertificationCount({
   nbNumerosCertifies,
 }: CertificationCountProps) {
   return (
-    <Tooltip content="Adresses certifiées par la commune">
-      <Text fontWeight="bold" whiteSpace="nowrap">
-        {nbNumerosCertifies} / {nbNumeros}{" "}
-        <EndorsedIcon color="success" style={{ verticalAlign: "sub" }} />
-      </Text>
-    </Tooltip>
+    <Text fontWeight="bold" whiteSpace="nowrap">
+      {nbNumerosCertifies} / {nbNumeros}{" "}
+      <EndorsedIcon color="success" style={{ verticalAlign: "sub" }} />
+    </Text>
   );
 }
 
