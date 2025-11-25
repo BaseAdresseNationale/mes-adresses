@@ -9,7 +9,7 @@ import { validateSourceWithTempMap } from "@/lib/utils/map";
 function StyleMapForm() {
   const { styleMaps, setStyleMaps } = useContext(LocalStorageContext);
   const [styleMapsForm, setStyleMapsForm] = useState<StyleMap[]>(
-    cloneDeep(styleMaps)
+    cloneDeep(styleMaps) || []
   );
   const [errors, setErrors] = useState<
     Record<string, Record<"url" | "name", boolean>>
@@ -67,7 +67,7 @@ function StyleMapForm() {
   const styleChanged = useMemo(() => {
     return (
       differenceWith(styleMapsForm, styleMaps, isEqual).length > 0 ||
-      styleMapsForm.length !== styleMaps.length
+      styleMapsForm?.length !== styleMaps?.length
     );
   }, [styleMapsForm, styleMaps]);
 
