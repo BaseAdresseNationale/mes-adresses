@@ -44,7 +44,7 @@ function StyleControl({
       { label: "Plan IGN", value: MapStyle.PLAN_IGN, isAvailable: hasPlanIGN },
       ...(styleMaps?.map((styleMap) => ({
         label: styleMap.name,
-        value: styleMap.id,
+        value: styleMap.name,
         isAvailable: true,
       })) || []),
     ].filter(({ isAvailable }) => isAvailable);

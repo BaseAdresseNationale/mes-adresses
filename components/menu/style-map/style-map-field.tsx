@@ -7,7 +7,6 @@ import {
 } from "evergreen-ui";
 
 export interface StyleMap {
-  id: string;
   name: string;
   url: string;
 }
@@ -57,7 +56,10 @@ function StyleMapField({
         placeholder="Plan IGN"
         required
         validationMessage={
-          errors?.["name"] == false && "Le nom est obligatoire"
+          errors?.["name"] == false &&
+          (initialValue.name === ""
+            ? "Le nom est obligatoire"
+            : "Le nom est invalide")
         }
         isInvalid={errors?.["name"] == false}
       />

@@ -133,8 +133,9 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       featureHovered.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES);
 
   function getBaseStyle(style: MapStyle | string) {
-    if (styleMaps?.find(({ id }) => id === style)) {
-      return getStyleDynamically(styleMaps.find(({ id }) => id === style));
+    const fondDeCarte = styleMaps.find(({ name }) => name === style);
+    if (fondDeCarte) {
+      return getStyleDynamically(fondDeCarte);
     }
     switch (style) {
       case MapStyle.ORTHO:
