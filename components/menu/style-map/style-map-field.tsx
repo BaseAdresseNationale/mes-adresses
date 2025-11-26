@@ -1,6 +1,5 @@
 import {
   Pane,
-  SelectField,
   TextInputField,
   TextareaField,
   CrossIcon,
@@ -10,7 +9,6 @@ import {
 export interface StyleMap {
   id: string;
   name: string;
-  type: "vector" | "raster";
   url: string;
 }
 
@@ -19,7 +17,6 @@ interface StyleMapFieldProps {
   onChange: (key: string, value: string) => void;
   onDelete: () => void;
   errors?: Record<"url" | "name", boolean>;
-  disabled?: boolean;
 }
 
 function StyleMapField({
@@ -27,7 +24,6 @@ function StyleMapField({
   onChange,
   onDelete,
   errors,
-  disabled,
 }: StyleMapFieldProps) {
   return (
     <Pane
@@ -41,52 +37,30 @@ function StyleMapField({
       marginTop={10}
       backgroundColor="white"
     >
-      {!disabled && (
-        <IconButton
-          title="Supprimer le fond de carte"
-          onClick={() => onDelete()}
-          intent="danger"
-          icon={CrossIcon}
-          position="absolute"
-          top={0}
-          right={0}
-          appearance="minimal"
-        />
-      )}
-      <Pane
-        display="flex"
-        justifyContent="space-between"
-        gap={10}
-        alignItems="end"
-        marginBottom={8}
-      >
-        <TextInputField
-          label="Nom"
-          title="Nom du fond de carte"
-          value={initialValue.name}
-          onChange={(e) => onChange("name", e.target.value)}
-          width="80%"
-          marginBottom={0}
-          placeholder="Plan IGN"
-          required
-          validationMessage={
-            errors?.["name"] == false && "Le nom est obligatoire"
-          }
-          isInvalid={errors?.["name"] == false}
-        />
-        <SelectField
-          label="Type"
-          onChange={(e) => onChange("type", e.target.value)}
-          width="20%"
-          marginBottom={0}
-          value={initialValue.type}
-        >
-          <option value="raster" selected>
-            Raster
-          </option>
-          <option value="vector">Vector</option>
-        </SelectField>
-      </Pane>
+      <IconButton
+        title="Supprimer le fond de carte"
+        onClick={() => onDelete()}
+        intent="danger"
+        icon={CrossIcon}
+        position="absolute"
+        top={0}
+        right={0}
+        appearance="minimal"
+      />
+      <TextInputField
+        label="Nom"
+        title="Nom du fond de carte"
+        value={initialValue.name}
+        onChange={(e) => onChange("name", e.target.value)}
+        width="80%"
+        marginBottom={0}
+        placeholder="Plan IGN"
+        required
+        validationMessage={
+          errors?.["name"] == false && "Le nom est obligatoire"
+        }
+        isInvalid={errors?.["name"] == false}
+      />
       <TextareaField
         label="Url"
         required

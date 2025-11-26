@@ -8,14 +8,14 @@ export const ortho = fromJS(orthoStyle);
 export const vector = fromJS(vectorStyle);
 export const planIGN = fromJS(planIGNStyle);
 
-export const getStyleDynamically = ({ id, type, url }) => {
+export const getStyleDynamically = ({ id, url }) => {
   return fromJS({
     version: 8,
     glyphs:
       "https://openmaptiles.geo.data.gouv.fr/fonts/{fontstack}/{range}.pbf",
     sources: {
       [`personnalise#${id}`]: {
-        type,
+        type: "raster",
         tiles: [url],
       },
       ...otherSources,
@@ -23,7 +23,7 @@ export const getStyleDynamically = ({ id, type, url }) => {
     layers: [
       {
         id: "simple-tiles",
-        type,
+        type: "raster",
         source: `personnalise#${id}`,
       },
       ...layersDecoupageAdministratif,

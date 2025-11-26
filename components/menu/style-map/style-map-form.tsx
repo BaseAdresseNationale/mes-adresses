@@ -84,24 +84,11 @@ function StyleMapForm() {
         Ajouter un fond de carte
       </Button>
       <Alert intent="none" title="Comment ca marche les fonds de carte">
-        Seul les urls des fluxs WMTS ou WMS sont supportées. Bien préciser le
-        type: Raster ou Vector. Les images Raster doivent être 256x256 pixels et
-        les images Vector doivent être 512x512 pixels. Voir l&apos;exemple
+        Seul les urls des fluxs WMTS ou WMS sont supportées. Les données doivent
+        être de type raster et les images de 256x256 pixels. Voir l&apos;exemple
         ci-dessous.
       </Alert>
       <Pane backgroundColor="#FAFBFF">
-        <StyleMapField
-          key="example"
-          initialValue={{
-            id: "example",
-            name: "Exemple de fond de carte",
-            type: "raster",
-            url: "https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&STYLE=normal&FORMAT=image/jpeg&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
-          }}
-          onChange={() => {}}
-          onDelete={() => {}}
-          disabled={true}
-        />
         {styleMapsForm.map((styleMap) => (
           <StyleMapField
             key={styleMap.id}

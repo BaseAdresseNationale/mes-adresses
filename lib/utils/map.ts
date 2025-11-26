@@ -83,7 +83,6 @@ export function getImageBase64(
 export async function validateSourceWithTempMap({
   id: sourceId,
   url,
-  type,
 }): Promise<boolean> {
   return new Promise((resolve) => {
     const tempDiv = document.createElement("div");
@@ -117,7 +116,7 @@ export async function validateSourceWithTempMap({
 
     tempMap.on("load", () => {
       tempMap.addSource(sourceId, {
-        type,
+        type: "raster",
         tiles: [url],
       });
 
