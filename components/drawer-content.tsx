@@ -10,6 +10,7 @@ import Settings from "@/components/settings";
 import Trash from "@/components/trash";
 import LayoutContext from "@/contexts/layout";
 import { BaseLocale } from "@/lib/openapi-api-bal";
+import StyleMap from "./menu/style-map/style-map";
 
 function DrawerContent() {
   const { isMobile } = useContext(LayoutContext);
@@ -34,6 +35,11 @@ function DrawerContent() {
       label: "Téléchargements",
       key: "downloads",
       content: <Downloads baseLocale={baseLocale} />,
+    },
+    {
+      label: "Fond de carte",
+      key: "style-map",
+      content: <StyleMap />,
     },
     ...(isAdmin
       ? [

@@ -1,6 +1,15 @@
 import { ChildrenProps } from "@/types/context";
 import React, { useState, useMemo } from "react";
 
+export enum DrawerDisplayedEnum {
+  NONE = "",
+  DOWNLOAD = "download",
+  SETTING = "setting",
+  TRASH = "trash",
+  SHARE = "share",
+  STYLE_MAP = "style-map",
+}
+
 interface DrawerContextType {
   drawerDisplayed: boolean;
   setDrawerDisplayed: (value: boolean) => void;
