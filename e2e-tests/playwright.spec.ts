@@ -6,7 +6,7 @@ let balToken = null;
 let voieId = null;
 let toponymeId = null;
 
-test.describe("Home page", () => {
+test.describe("Page d'accueil", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
   });
@@ -18,7 +18,7 @@ test.describe("Home page", () => {
   });
 });
 
-test.describe("New page", () => {
+test.describe("Page de création", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/new");
   });
@@ -58,7 +58,7 @@ test.describe("New page", () => {
   });
 });
 
-test.describe("BAL page - Edition", () => {
+test.describe("Éditeur BAL - Edition", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`/bal/${balId}/${balToken}`);
     await page.getByRole("button", { name: "Commencez l’adressage" }).click();
@@ -130,14 +130,6 @@ test.describe("BAL page - Edition", () => {
     ).toBeGreaterThan(0);
   });
 
-  /*   test("Check voie form accessibility", async ({ page }) => {
-    await page.goto(`/bal/${balId}/voies/${voieId}`);
-
-    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-
-    expect(accessibilityScanResults.violations).toEqual([]);
-  }); */
-
   test("Create a numéro on voie", async ({ page }) => {
     await page
       .getByRole("tab", { name: /Illustration de l\'onglet voies.*/ })
@@ -166,14 +158,6 @@ test.describe("BAL page - Edition", () => {
         .count()
     ).toBeGreaterThan(0);
   });
-
-  /*   test("Check numéro form accessibility", async ({ page }) => {
-    await page.goto(`/bal/${balId}/voies/${voieId}/numeros`);
-
-    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-
-    expect(accessibilityScanResults.violations).toEqual([]);
-  }); */
 
   test("Delete voie", async ({ page }) => {
     await page
@@ -245,14 +229,6 @@ test.describe("BAL page - Edition", () => {
     ).toBeGreaterThan(0);
   });
 
-  /*   test("Check toponyme form accessibility", async ({ page }) => {
-    await page.goto(`/bal/${balId}/toponymes/${toponymeId}`);
-
-    const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
-
-    expect(accessibilityScanResults.violations).toEqual([]);
-  }); */
-
   test("Delete toponyme", async ({ page }) => {
     await page
       .getByRole("tab", { name: /Illustration de l\'onglet toponymes.*/ })
@@ -276,24 +252,74 @@ test.describe("BAL page - Edition", () => {
   });
 });
 
-test.describe("BAL page - Publication", () => {
+test.describe("Éditeur BAL - Publication", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`/bal/${balId}/${balToken}`);
+    await page.getByRole("button", { name: "Commencez l’adressage" }).click();
+  });
+
+  test("Publication de la BAL avec un mauvais code PIN", async ({ page }) => {
+    await page
+      .locator("div")
+      .filter({ hasText: /^Publier$/ })
+      .getByRole("button")
+      .click();
+    await page.getByRole("button", { name: "Recevoir un code d'" }).click();
+    await page.getByRole("textbox", { name: "PIN field 1 of" }).fill("1");
+    await page.getByRole("textbox", { name: "PIN field 2 of" }).fill("2");
+    await page.getByRole("textbox", { name: "PIN field 3 of" }).fill("3");
+    await page.getByRole("textbox", { name: "PIN field 4 of" }).fill("4");
+    await page.getByRole("textbox", { name: "PIN field 5 of" }).fill("5");
+    await page.getByRole("textbox", { name: "PIN field 6 of" }).fill("6");
+    await page.waitForSelector('text="Le code n’est pas valide"');
+  });
+
+  test("Publication de la BAL avec le bon code PIN", async ({ page }) => {
+    await page
+      .locator("div")
+      .filter({ hasText: /^Publier$/ })
+      .getByRole("button")
+      .click();
+    await page.getByRole("button", { name: "Recevoir un code d'" }).click();
+    await page.getByRole("textbox", { name: "PIN field 1 of" }).fill("0");
+    await page.getByRole("textbox", { name: "PIN field 2 of" }).fill("0");
+    await page.getByRole("textbox", { name: "PIN field 3 of" }).fill("0");
+    await page.getByRole("textbox", { name: "PIN field 4 of" }).fill("0");
+    await page.getByRole("textbox", { name: "PIN field 5 of" }).fill("0");
+    await page.getByRole("textbox", { name: "PIN field 6 of" }).fill("0");
+    await page.getByRole("button", { name: "Forcer la publication" }).click();
+    await page.waitForSelector(
+      'text="Votre Base Adresse Locale a bien été publiée"'
+    );
+    await page.getByRole("button", { name: "Continuer l'adressage" }).click();
+
+    await expect(page.getByTestId("status-badge")).toHaveText("À jour");
   });
 });
 
-/* test.describe("BAL page - Read only", () => {
-  test.beforeEach(async ({ page }) => { */
-// const balId = getBALId();
-/*     await page.goto(`/bal/${balId}/invalid_token`);
-  }); */
+test.describe("Éditeur BAL - Consultation", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(`/bal/${balId}/invalid_token`);
+  });
 
-// test("check that new BAL is in list", async ({ page }) => {
-//   await page.waitForSelector("text^=Adresses de Cangey");
-// });
-
-// test("check that new BAL is in list", async ({ page }) => {
-//   await page.waitForSelector("text^=Adresses de Cangey");
-// });
-/* });
- */
+  test("check that new BAL is in list", async ({ page }) => {
+    await page
+      .getByRole("tab", { name: "Illustration de l'onglet commune" })
+      .click();
+    expect(
+      await page.getByText("Vous êtes en mode consultation").first().isVisible()
+    ).toBeTruthy();
+    await page
+      .getByRole("tab", { name: "Illustration de l'onglet voies Rue Chaptal" })
+      .click();
+    expect(
+      await page.getByText("Vous êtes en mode consultation").first().isVisible()
+    ).toBeTruthy();
+    await page
+      .getByRole("tab", { name: "Illustration de l'onglet toponymes La Butte" })
+      .click();
+    expect(
+      await page.getByText("Vous êtes en mode consultation").first().isVisible()
+    ).toBeTruthy();
+  });
+});
