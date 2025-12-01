@@ -2,7 +2,6 @@ import { useCallback, useContext, useState, useMemo } from "react";
 import { cloneDeep, differenceWith, isEqual } from "lodash";
 import { Button, AddIcon, Alert, Pane } from "evergreen-ui";
 
-import StyleMapField from "./style-map-field";
 import { validateSourceWithTempMap } from "@/lib/utils/map";
 import RefreshIconRotate from "@/components/sub-header/bal-status/refresh-icon-rotate/refresh-icon-rotate";
 import BalDataContext from "@/contexts/bal-data";
@@ -10,16 +9,30 @@ import {
   BaseLocaleFondDeCarte,
   BasesLocalesService,
 } from "@/lib/openapi-api-bal";
+import FondDeCarteField from "./fond-de-carte-field";
 
-function StyleMapForm() {
+function FondDeCarteForm() {
   const [isLoading, setIsLoading] = useState(false);
   const { baseLocale, reloadBaseLocale } = useContext(BalDataContext);
   const [fondDeCartesForm, setFondDeCartesForm] = useState<
     BaseLocaleFondDeCarte[]
-  >(cloneDeep(baseLocale.settings.fondDeCarte) || []);
+  >(cloneDeep(baseLocale.settings.fondDeCartes) || []);
   const [errors, setErrors] = useState<
     Record<number, { url: boolean; name: boolean }>
   >({});
+
+  const updateFondDeCartes = useCallback(
+    async (fondDeCartes: BaseLocaleFondDeCarte[]) => {
+      await BasesLocalesService.updateBaseLocale(baseLocale.id, {
+        settings: {
+          ...baseLocale.settings,
+          fondDeCartes,
+        },
+      });
+      await reloadBaseLocale();
+    },
+    [baseLocale.id, baseLocale.settings, reloadBaseLocale]
+  );
 
   const computeErrors = useCallback(async () => {
     const urlIsValid = await Promise.all(
@@ -49,22 +62,10 @@ function StyleMapForm() {
       await computeErrors();
     setErrors(errorsForm);
     if (Object.values(errorsForm).every((error) => error.url && error.name)) {
-      await BasesLocalesService.updateBaseLocale(baseLocale.id, {
-        settings: {
-          ...baseLocale.settings,
-          fondDeCarte: cloneDeep(fondDeCartesForm),
-        },
-      });
-      await reloadBaseLocale();
+      await updateFondDeCartes(fondDeCartesForm);
     }
     setIsLoading(false);
-  }, [
-    computeErrors,
-    baseLocale.id,
-    baseLocale.settings,
-    fondDeCartesForm,
-    reloadBaseLocale,
-  ]);
+  }, [computeErrors, fondDeCartesForm, updateFondDeCartes]);
 
   const onAddForm = () => {
     setFondDeCartesForm((prev) => [...prev, { name: "", url: "" }]);
@@ -80,17 +81,27 @@ function StyleMapForm() {
     [fondDeCartesForm]
   );
 
-  const onRemove = useCallback((index: number) => {
-    setFondDeCartesForm((prev) => prev.filter((_, i) => i !== index));
-  }, []);
+  const onRemove = useCallback(
+    async (index: number) => {
+      const filteredFondDeCartesForm = fondDeCartesForm.filter(
+        (_, i) => i !== index
+      );
+      setFondDeCartesForm(filteredFondDeCartesForm);
+      await updateFondDeCartes(filteredFondDeCartesForm);
+    },
+    [fondDeCartesForm, updateFondDeCartes]
+  );
 
   const styleChanged = useMemo(() => {
     return (
-      differenceWith(fondDeCartesForm, baseLocale.settings.fondDeCarte, isEqual)
-        .length > 0 ||
-      fondDeCartesForm?.length !== baseLocale.settings.fondDeCarte?.length
+      differenceWith(
+        fondDeCartesForm,
+        baseLocale.settings.fondDeCartes,
+        isEqual
+      ).length > 0 ||
+      fondDeCartesForm?.length !== baseLocale.settings.fondDeCartes?.length
     );
-  }, [fondDeCartesForm, baseLocale.settings.fondDeCarte]);
+  }, [fondDeCartesForm, baseLocale.settings.fondDeCartes]);
 
   return (
     <>
@@ -100,36 +111,34 @@ function StyleMapForm() {
         intent="success"
         iconBefore={AddIcon}
         onClick={onAddForm}
-        marginBottom={8}
       >
         Ajouter un fond de carte
       </Button>
-      <Alert intent="none" title="Comment ca marche les fonds de carte">
-        Seul les urls des fluxs WMTS ou WMS sont supportées. Les données doivent
-        être de type raster et les images de 256x256 pixels. Voir l&apos;exemple
-        ci-dessous.
-      </Alert>
-      <Pane backgroundColor="#FAFBFF">
-        {fondDeCartesForm.map((styleMap, index) => (
-          <StyleMapField
-            key={`fond-de-carte-formulaire-${index}`}
-            initialValue={styleMap}
-            onChange={(key, value) => onChange(index, key, value)}
-            onDelete={() => onRemove(index)}
-            errors={errors[index]}
-          />
-        ))}
-        <Button
-          disabled={!styleChanged}
-          type="button"
-          appearance="primary"
-          onClick={saveFondDeCartes}
-        >
-          Enregistrer les Changements {isLoading && <RefreshIconRotate />}
-        </Button>
-      </Pane>
+      {fondDeCartesForm.length > 0 && (
+        <Pane backgroundColor="#FAFBFF">
+          {fondDeCartesForm.map((styleMap, index) => (
+            <FondDeCarteField
+              key={`fond-de-carte-formulaire-${index}`}
+              initialValue={styleMap}
+              onChange={(key, value) => onChange(index, key, value)}
+              onDelete={() => onRemove(index)}
+              errors={errors[index]}
+            />
+          ))}
+          <Pane display="flex" justifyContent="flex-end">
+            <Button
+              disabled={!styleChanged}
+              type="button"
+              appearance="primary"
+              onClick={saveFondDeCartes}
+            >
+              Enregistrer les Changements {isLoading && <RefreshIconRotate />}
+            </Button>
+          </Pane>
+        </Pane>
+      )}
     </>
   );
 }
 
-export default StyleMapForm;
+export default FondDeCarteForm;

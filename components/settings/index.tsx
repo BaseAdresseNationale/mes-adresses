@@ -16,6 +16,7 @@ import { useBALSettings } from "@/hooks/bal-settings";
 import RenewTokenDialog from "../renew-token-dialog";
 import { ShareBALAccessDialog } from "./share/share-bal-access-dialog";
 import FondDeCarteList from "./fond-de-carte-list";
+import FondDeCarteDialog from "./fond-de-carte/fond-de-carte-dialog";
 
 interface SettingsProps {
   baseLocale: BaseLocale;
@@ -24,6 +25,7 @@ interface SettingsProps {
 
 function Settings({ baseLocale, token }: SettingsProps) {
   const [showBALAccessDialog, setShowBALAccessDialog] = useState(false);
+  const [showFondDeCarteDialog, setShowFondDeCarteDialog] = useState(false);
 
   const {
     onSubmit,
@@ -102,15 +104,17 @@ function Settings({ baseLocale, token }: SettingsProps) {
             Fonds de carte
           </Label>
           <Pane display="flex" gap={16} marginBottom={16}>
-            <FondDeCarteList baseLocale={baseLocale} />
+            {baseLocale.settings?.fondDeCartes?.length > 0 && (
+              <FondDeCarteList baseLocale={baseLocale} />
+            )}
             <Button
               type="button"
-              onClick={() => setShowBALAccessDialog(true)}
+              onClick={() => setShowFondDeCarteDialog(true)}
               width="fit-content"
               alignSelf="flex-end"
             >
               <MapCreateIcon marginRight={8} />
-              Changer fonds de carte
+              Modifier fonds de carte
             </Button>
           </Pane>
         </Pane>
@@ -136,6 +140,10 @@ function Settings({ baseLocale, token }: SettingsProps) {
         isShown={showBALAccessDialog}
         token={token}
         onCloseComplete={() => setShowBALAccessDialog(false)}
+      />
+      <FondDeCarteDialog
+        isShown={showFondDeCarteDialog}
+        onCloseComplete={() => setShowFondDeCarteDialog(false)}
       />
     </Pane>
   );

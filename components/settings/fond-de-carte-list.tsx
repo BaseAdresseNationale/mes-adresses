@@ -23,7 +23,7 @@ interface FondDeCarteListProps {
 function FondDeCarteList({ baseLocale }: FondDeCarteListProps) {
   return (
     <Pane flex={1}>
-      {baseLocale.settings.fondDeCarte.map((fondDeCarte) => (
+      {baseLocale.settings?.fondDeCartes?.map((fondDeCarte) => (
         <Pane key={fondDeCarte.name} display="flex" gap={4} maxWidth={400}>
           <TextInputField
             readOnly

@@ -7,19 +7,19 @@ import {
   IconButton,
 } from "evergreen-ui";
 
-interface StyleMapFieldProps {
+interface FondDeCarteFieldProps {
   initialValue: BaseLocaleFondDeCarte;
   onChange: (key: string, value: string) => void;
   onDelete: () => void;
   errors?: Record<"url" | "name", boolean>;
 }
 
-function StyleMapField({
+function FondDeCarteField({
   initialValue,
   onChange,
   onDelete,
   errors,
-}: StyleMapFieldProps) {
+}: FondDeCarteFieldProps) {
   return (
     <Pane
       position="relative"
@@ -76,4 +76,4 @@ function StyleMapField({
   );
 }
 
-export default StyleMapField;
+export default FondDeCarteField;

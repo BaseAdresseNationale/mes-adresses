@@ -8,6 +8,6 @@ import type { BaseLocaleFondDeCarte } from './BaseLocaleFondDeCarte';
 export type BaseLocaleSetting = {
     languageGoalIgnored: boolean;
     toponymeGoalIgnored: boolean;
-    fondDeCarte: Array<BaseLocaleFondDeCarte>;
+    fondDeCartes: Array<BaseLocaleFondDeCarte>;
 };
 
