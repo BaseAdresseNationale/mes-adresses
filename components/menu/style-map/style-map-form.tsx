@@ -1,25 +1,29 @@
 import { useCallback, useContext, useState, useMemo } from "react";
-import { uniqueId, cloneDeep, differenceWith, isEqual } from "lodash";
+import { cloneDeep, differenceWith, isEqual } from "lodash";
 import { Button, AddIcon, Alert, Pane } from "evergreen-ui";
 
-import LocalStorageContext from "@/contexts/local-storage";
-import StyleMapField, { StyleMap } from "./style-map-field";
+import StyleMapField from "./style-map-field";
 import { validateSourceWithTempMap } from "@/lib/utils/map";
 import RefreshIconRotate from "@/components/sub-header/bal-status/refresh-icon-rotate/refresh-icon-rotate";
+import BalDataContext from "@/contexts/bal-data";
+import {
+  BaseLocaleFondDeCarte,
+  BasesLocalesService,
+} from "@/lib/openapi-api-bal";
 
 function StyleMapForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const { styleMaps, setStyleMaps } = useContext(LocalStorageContext);
-  const [styleMapsForm, setStyleMapsForm] = useState<StyleMap[]>(
-    cloneDeep(styleMaps) || []
-  );
+  const { baseLocale, reloadBaseLocale } = useContext(BalDataContext);
+  const [fondDeCartesForm, setFondDeCartesForm] = useState<
+    BaseLocaleFondDeCarte[]
+  >(cloneDeep(baseLocale.settings.fondDeCarte) || []);
   const [errors, setErrors] = useState<
     Record<number, { url: boolean; name: boolean }>
   >({});
 
   const computeErrors = useCallback(async () => {
     const urlIsValid = await Promise.all(
-      styleMapsForm.map(async (styleMap, index) => {
+      fondDeCartesForm.map(async (styleMap, index) => {
         const fluxIsValid = await validateSourceWithTempMap({
           id: `source-${index}`,
           url: styleMap.url,
@@ -30,48 +34,63 @@ function StyleMapForm() {
           !["Photographie aérienne", "Plan OpenStreetMap", "Plan IGN"].includes(
             styleMap.name
           ) &&
-          styleMapsForm.slice(0, index).every((s) => s.name !== styleMap.name);
+          fondDeCartesForm
+            .slice(0, index)
+            .every((s) => s.name !== styleMap.name);
         return [index, { url: fluxIsValid, name: nameIsValid }];
       })
     );
     return Object.fromEntries(urlIsValid);
-  }, [styleMapsForm]);
+  }, [fondDeCartesForm]);
 
-  const saveStyleMapsOnLocalStorage = useCallback(async () => {
+  const saveFondDeCartes = useCallback(async () => {
     setIsLoading(true);
     const errorsForm: Record<number, { url: boolean; name: boolean }> =
       await computeErrors();
     setErrors(errorsForm);
     if (Object.values(errorsForm).every((error) => error.url && error.name)) {
-      setStyleMaps(cloneDeep(styleMapsForm));
+      await BasesLocalesService.updateBaseLocale(baseLocale.id, {
+        settings: {
+          ...baseLocale.settings,
+          fondDeCarte: cloneDeep(fondDeCartesForm),
+        },
+      });
+      await reloadBaseLocale();
     }
     setIsLoading(false);
-  }, [computeErrors, setErrors, setStyleMaps, styleMapsForm]);
+  }, [
+    computeErrors,
+    baseLocale.id,
+    baseLocale.settings,
+    fondDeCartesForm,
+    reloadBaseLocale,
+  ]);
 
   const onAddForm = () => {
-    setStyleMapsForm((prev) => [...prev, { name: "", url: "" }]);
+    setFondDeCartesForm((prev) => [...prev, { name: "", url: "" }]);
   };
 
   const onChange = useCallback(
     (index: number, key: string, value: string) => {
-      const updated = [...styleMapsForm];
+      const updated = [...fondDeCartesForm];
       updated[index][key] = value;
 
-      setStyleMapsForm(updated);
+      setFondDeCartesForm(updated);
     },
-    [styleMapsForm]
+    [fondDeCartesForm]
   );
 
   const onRemove = useCallback((index: number) => {
-    setStyleMapsForm((prev) => prev.filter((_, i) => i !== index));
+    setFondDeCartesForm((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   const styleChanged = useMemo(() => {
     return (
-      differenceWith(styleMapsForm, styleMaps, isEqual).length > 0 ||
-      styleMapsForm?.length !== styleMaps?.length
+      differenceWith(fondDeCartesForm, baseLocale.settings.fondDeCarte, isEqual)
+        .length > 0 ||
+      fondDeCartesForm?.length !== baseLocale.settings.fondDeCarte?.length
     );
-  }, [styleMapsForm, styleMaps]);
+  }, [fondDeCartesForm, baseLocale.settings.fondDeCarte]);
 
   return (
     <>
@@ -91,7 +110,7 @@ function StyleMapForm() {
         ci-dessous.
       </Alert>
       <Pane backgroundColor="#FAFBFF">
-        {styleMapsForm.map((styleMap, index) => (
+        {fondDeCartesForm.map((styleMap, index) => (
           <StyleMapField
             key={`fond-de-carte-formulaire-${index}`}
             initialValue={styleMap}
@@ -104,7 +123,7 @@ function StyleMapForm() {
           disabled={!styleChanged}
           type="button"
           appearance="primary"
-          onClick={saveStyleMapsOnLocalStorage}
+          onClick={saveFondDeCartes}
         >
           Enregistrer les Changements {isLoading && <RefreshIconRotate />}
         </Button>

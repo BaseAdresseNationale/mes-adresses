@@ -38,7 +38,7 @@ import AddressEditorControl from "@/components/map/controls/address-editor-contr
 import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
-import { Numero } from "@/lib/openapi-api-bal";
+import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import {
@@ -64,7 +64,6 @@ import {
   panoramaxPictureLayer,
   panoramaxSequenceLayer,
 } from "./layers/panoramax";
-import LocalStorageContext from "@/contexts/local-storage";
 
 const settings = {
   maxZoom: 19,
@@ -82,13 +81,19 @@ const interactionProps = {
 
 export interface MapProps {
   commune: CommuneType;
+  baseLocale: ExtendedBaseLocaleDTO;
   isAddressFormOpen: boolean;
   handleAddressForm: (open: boolean) => void;
 }
 
 const LAYERS = [...cadastreLayers];
 
-function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
+function Map({
+  commune,
+  baseLocale,
+  isAddressFormOpen,
+  handleAddressForm,
+}: MapProps) {
   const router = useRouter();
   const {
     map,
@@ -112,7 +117,6 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
 
   const [cursor, setCursor] = useState("default");
   const [isContextMenuDisplayed, setIsContextMenuDisplayed] = useState(null);
-  const { styleMaps } = useContext(LocalStorageContext);
   const [mapStyle, setMapStyle] = useState<any>(generateNewStyle(style));
 
   const { balId } = router.query;
@@ -133,7 +137,9 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       featureHovered.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES);
 
   function getBaseStyle(style: MapStyle | string) {
-    const fondDeCarte = styleMaps.find(({ name }) => name === style);
+    const fondDeCarte = baseLocale.settings?.fondDeCarte?.find(
+      ({ name }) => name === style
+    );
     if (fondDeCarte) {
       return getStyleDynamically(fondDeCarte);
     }
@@ -400,6 +406,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       <StyleControl
         style={style}
         handleStyle={setStyle}
+        baseLocale={baseLocale}
         commune={commune}
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}

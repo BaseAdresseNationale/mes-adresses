@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import { useLocalStorage } from "@/hooks/local-storage";
 import { ChildrenProps } from "@/types/context";
 import { MapStyle } from "./map";
-import { StyleMap } from "@/components/menu/style-map/style-map-field";
 
 interface LocalStorageContextType {
   balAccess: Record<string, string>;
@@ -22,8 +21,6 @@ interface LocalStorageContextType {
   setRegisteredMapStyle: (value: { [balId: string]: MapStyle }) => void;
   certificatEmetteur?: string;
   setCertificatEmetteur: (value: string | undefined) => void;
-  styleMaps: StyleMap[];
-  setStyleMaps: (value: StyleMap[]) => void;
 }
 
 const LocalStorageContext = React.createContext<LocalStorageContextType | null>(
@@ -51,7 +48,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
     useLocalStorage(MAP_STYLE);
   const [certificatEmetteur, setCertificatEmetteur] =
     useLocalStorage(CERTIFICAT_EMETTEUR);
-  const [styleMaps, setStyleMaps] = useLocalStorage(STYLE_MAPS);
 
   const value = useMemo(
     () => ({
@@ -71,8 +67,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       registeredMapStyle,
       certificatEmetteur,
       setCertificatEmetteur,
-      styleMaps,
-      setStyleMaps,
     }),
     [
       balAccess,
@@ -91,8 +85,6 @@ export function LocalStorageContextProvider(props: ChildrenProps) {
       registeredMapStyle,
       certificatEmetteur,
       setCertificatEmetteur,
-      styleMaps,
-      setStyleMaps,
     ]
   );
 

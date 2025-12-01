@@ -1,3 +1,4 @@
+import { BaseLocaleFondDeCarte } from "@/lib/openapi-api-bal";
 import {
   Pane,
   TextInputField,
@@ -6,13 +7,8 @@ import {
   IconButton,
 } from "evergreen-ui";
 
-export interface StyleMap {
-  name: string;
-  url: string;
-}
-
 interface StyleMapFieldProps {
-  initialValue: StyleMap;
+  initialValue: BaseLocaleFondDeCarte;
   onChange: (key: string, value: string) => void;
   onDelete: () => void;
   errors?: Record<"url" | "name", boolean>;

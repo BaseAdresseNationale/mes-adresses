@@ -5,7 +5,7 @@ import CadastreControl from "@/components/map/controls/cadastre-control";
 import { CommuneType } from "@/types/commune";
 import { MapStyle } from "@/contexts/map";
 import LocalStorageContext from "@/contexts/local-storage";
-import BalDataContext from "@/contexts/bal-data";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface StyleControlProps {
   style: string;
@@ -13,20 +13,20 @@ interface StyleControlProps {
   isCadastreDisplayed: boolean;
   handleCadastre: (fn: (show: boolean) => boolean) => void;
   commune: CommuneType;
+  baseLocale: ExtendedBaseLocaleDTO;
 }
 
 function StyleControl({
   style,
   commune,
+  baseLocale,
   handleStyle,
   isCadastreDisplayed,
   handleCadastre,
 }: StyleControlProps) {
   const [showPopover, setShowPopover] = useState(false);
-  const { baseLocale } = useContext(BalDataContext);
   const { registeredMapStyle, setRegisteredMapStyle } =
     useContext(LocalStorageContext);
-  const { styleMaps } = useContext(LocalStorageContext);
 
   const availableStyles = useMemo(() => {
     const { hasOrtho, hasOpenMapTiles, hasPlanIGN } = commune;
@@ -42,13 +42,13 @@ function StyleControl({
         isAvailable: hasOpenMapTiles,
       },
       { label: "Plan IGN", value: MapStyle.PLAN_IGN, isAvailable: hasPlanIGN },
-      ...(styleMaps?.map((styleMap) => ({
+      ...(baseLocale.settings?.fondDeCarte?.map((styleMap) => ({
         label: styleMap.name,
         value: styleMap.name,
         isAvailable: true,
       })) || []),
     ].filter(({ isAvailable }) => isAvailable);
-  }, [commune, styleMaps]);
+  }, [commune, baseLocale.settings.fondDeCarte]);
 
   const onSelect = (style) => {
     const updatedRegisteredMapStyle = registeredMapStyle
