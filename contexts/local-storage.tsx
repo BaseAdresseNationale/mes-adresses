@@ -34,7 +34,6 @@ const PRODUCT_TOUR = "product-tour";
 const LAST_NEWS_SEEN = "last-news-seen";
 const MAP_STYLE = "map-style";
 const CERTIFICAT_EMETTEUR = "certificat-emetteur";
-const STYLE_MAPS = "style-maps";
 
 export function LocalStorageContextProvider(props: ChildrenProps) {
   const [balAccess, , getBalToken, addBalAccess, removeBalAccess] =

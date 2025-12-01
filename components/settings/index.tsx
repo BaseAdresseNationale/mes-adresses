@@ -8,11 +8,14 @@ import {
   CogIcon,
   Heading,
   EyeOpenIcon,
+  Label,
+  MapCreateIcon,
 } from "evergreen-ui";
 import { BALAdminEmails } from "./bal-admin-emails";
 import { useBALSettings } from "@/hooks/bal-settings";
 import RenewTokenDialog from "../renew-token-dialog";
 import { ShareBALAccessDialog } from "./share/share-bal-access-dialog";
+import FondDeCarteList from "./fond-de-carte-list";
 
 interface SettingsProps {
   baseLocale: BaseLocale;
@@ -94,6 +97,23 @@ function Settings({ baseLocale, token }: SettingsProps) {
             {error}
           </Alert>
         )}
+        <Pane marginBottom={16}>
+          <Label display="block" marginBottom={8}>
+            Fonds de carte
+          </Label>
+          <Pane display="flex" gap={16} marginBottom={16}>
+            <FondDeCarteList baseLocale={baseLocale} />
+            <Button
+              type="button"
+              onClick={() => setShowBALAccessDialog(true)}
+              width="fit-content"
+              alignSelf="flex-end"
+            >
+              <MapCreateIcon marginRight={8} />
+              Changer fonds de carte
+            </Button>
+          </Pane>
+        </Pane>
         <Button
           height={40}
           type="submit"
