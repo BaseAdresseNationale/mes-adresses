@@ -9,7 +9,7 @@ import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface StyleControlProps {
   style: string;
-  handleStyle: (style: MapStyle) => void;
+  handleStyle: (style: MapStyle | string) => void;
   isCadastreDisplayed: boolean;
   handleCadastre: (fn: (show: boolean) => boolean) => void;
   commune: CommuneType;
@@ -50,12 +50,12 @@ function StyleControl({
     ].filter(({ isAvailable }) => isAvailable);
   }, [commune, baseLocale.settings.fondDeCartes]);
 
-  const onSelect = (style) => {
+  const onSelect = (style: MapStyle | string) => {
     const updatedRegisteredMapStyle = registeredMapStyle
-      ? { ...registeredMapStyle, [baseLocale.id]: style.value }
-      : { [baseLocale.id]: style.value };
+      ? { ...registeredMapStyle, [baseLocale.id]: style }
+      : { [baseLocale.id]: style };
     setRegisteredMapStyle(updatedRegisteredMapStyle);
-    handleStyle(style.value as MapStyle);
+    handleStyle(style);
   };
 
   useEffect(() => {
@@ -86,7 +86,7 @@ function StyleControl({
           height={40 + 33 * availableStyles.length}
           options={availableStyles}
           selected={style}
-          onSelect={onSelect}
+          onSelect={(item) => onSelect(item.value as MapStyle | string)}
         >
           <Button
             className="map-style-button"

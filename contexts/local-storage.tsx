@@ -17,8 +17,10 @@ interface LocalStorageContextType {
   lastNewsSeen: string;
   setLastNewsSeen: (value: string) => void;
   removeBalAccess: (index: string) => void;
-  registeredMapStyle?: { [balId: string]: MapStyle };
-  setRegisteredMapStyle: (value: { [balId: string]: MapStyle }) => void;
+  registeredMapStyle?: { [balId: string]: MapStyle | string };
+  setRegisteredMapStyle: (value: {
+    [balId: string]: MapStyle | string;
+  }) => void;
   certificatEmetteur?: string;
   setCertificatEmetteur: (value: string | undefined) => void;
 }
