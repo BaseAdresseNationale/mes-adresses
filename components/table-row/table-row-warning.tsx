@@ -116,7 +116,7 @@ function TableRowWarning({ baseLocale, voie, alert }: TableRowWarningProps) {
       ) : null}
       {alert && (
         <>
-          <Pane marginTop={8} marginBottom={8}>
+          <Pane>
             {voie.nbNumeros === 0 && <hr />}
             <Text color="white">
               <WarningSignIcon
@@ -125,22 +125,17 @@ function TableRowWarning({ baseLocale, voie, alert }: TableRowWarningProps) {
                 marginRight={4}
               />
               Problème avec le nom de la voie :
-              {alert.codes.map((code) => (
-                <>
-                  <br />
-                  {AlertDefinitions[code].message}
-                </>
-              ))}
+              <Button
+                marginLeft={8}
+                is={NextLink}
+                href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
+                title="Éditer la voie"
+                size="small"
+              >
+                Corriger
+              </Button>
             </Text>
           </Pane>
-          <Button
-            is={NextLink}
-            href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
-            title="Éditer la voie"
-            size="small"
-          >
-            Corriger le nom de la voie
-          </Button>
         </>
       )}
     </>
