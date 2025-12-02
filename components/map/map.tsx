@@ -157,7 +157,7 @@ function Map({
     }
   }
 
-  function generateNewStyle(style: MapStyle) {
+  function generateNewStyle(style: MapStyle | string) {
     const baseStyle = getBaseStyle(style);
     return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
   }
