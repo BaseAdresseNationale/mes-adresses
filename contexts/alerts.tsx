@@ -8,7 +8,6 @@ import { computeVoieNomAlerts } from "@/lib/alerts/voie-nom.utils";
 interface AlertsContextType {
   voieAlerts: Record<string, Alert>;
   reloadVoieAlerts: (voies: ExtendedVoieDTO[]) => void;
-  reloadVoieAlert: (voie: ExtendedVoieDTO) => void;
 }
 
 const AlertsContext = React.createContext<AlertsContextType | null>(null);
@@ -24,44 +23,47 @@ export function AlertsContextProvider(props: ChildrenProps) {
     },
     [voieAlerts]
   );
-  const updateVoieAlert = useCallback(
-    (voie: ExtendedVoieDTO) => {
+  const getVoieNomAlert = useCallback(
+    (voie: ExtendedVoieDTO): AlertVoieNom | undefined => {
       const [codes, remediation] = computeVoieNomAlerts(voie.nom);
+
       if (codes.length > 0) {
-        setVoieAlerts({
-          ...voieAlerts,
-          [voie.id]: {
-            codes,
-            field: AlertFieldEnum.VOIE_NOM,
-            value: voie.nom,
-            remediation,
-          } as AlertVoieNom,
-        });
+        return {
+          codes,
+          field: AlertFieldEnum.VOIE_NOM,
+          value: voie.nom,
+          remediation,
+        } as AlertVoieNom;
       }
     },
-    [voieAlerts]
+    []
   );
 
   const reloadVoieAlert = useCallback(
-    (voie: ExtendedVoieDTO) => {
+    (voie: ExtendedVoieDTO): Alert | undefined => {
       const existingAlert = voieAlerts[voie.id];
       if (existingAlert) {
         if (existingAlert.value !== voie.nom) {
           deleteVoieAlert(voie.id);
-          updateVoieAlert(voie);
+          return getVoieNomAlert(voie);
         }
       } else {
-        updateVoieAlert(voie);
+        return getVoieNomAlert(voie);
       }
     },
-    [deleteVoieAlert, updateVoieAlert, voieAlerts]
+    [deleteVoieAlert, getVoieNomAlert, voieAlerts]
   );
 
   const reloadVoieAlerts = useCallback(
     (voies: ExtendedVoieDTO[]) => {
+      const newVoieAlerts: Record<string, Alert> = {};
       for (const voie of voies) {
-        reloadVoieAlert(voie);
+        const alert = reloadVoieAlert(voie);
+        if (alert) {
+          newVoieAlerts[voie.id] = alert;
+        }
       }
+      setVoieAlerts(newVoieAlerts);
     },
     [reloadVoieAlert]
   );
@@ -70,9 +72,8 @@ export function AlertsContextProvider(props: ChildrenProps) {
     () => ({
       voieAlerts,
       reloadVoieAlerts,
-      reloadVoieAlert,
     }),
-    [voieAlerts, reloadVoieAlerts, reloadVoieAlert]
+    [voieAlerts, reloadVoieAlerts]
   );
 
   return <AlertsContext.Provider value={value} {...props} />;

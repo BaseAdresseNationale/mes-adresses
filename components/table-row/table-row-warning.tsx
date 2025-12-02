@@ -77,6 +77,7 @@ function TableRowWarning({ baseLocale, voie, alert }: TableRowWarningProps) {
     toaster,
     matomoTrackEvent,
   ]);
+
   return (
     <>
       <DialogWarningAction

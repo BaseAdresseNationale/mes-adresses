@@ -122,6 +122,7 @@ export function BalDataContextProvider({
     if (!isBALDataLoaded) {
       fetchBALData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialBaseLocale, isBALDataLoaded]);
 
   const {
@@ -139,6 +140,7 @@ export function BalDataContextProvider({
   }, [baseLocale.id]);
 
   const reloadVoies = useCallback(async () => {
+    console.log("reloadVoies");
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     reloadVoieAlerts(voies);

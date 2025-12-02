@@ -178,7 +178,6 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
   }, [filtered, showUncertify]);
 
   const isEditingEnabled = !isEditing && Boolean(token);
-
   return (
     <>
       <DialogWarningAction

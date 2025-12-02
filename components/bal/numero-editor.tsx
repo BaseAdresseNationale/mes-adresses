@@ -34,6 +34,7 @@ import {
 import LayoutContext from "@/contexts/layout";
 import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
+import DrawContext from "@/contexts/draw";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -90,6 +91,7 @@ function NumeroEditor({
   const { highlightedParcelles } = useContext(ParcellesContext);
   const { markers, suggestedNumero, setCompleteNumero } =
     useContext(MarkersContext);
+  const { setHint } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
 
   const [ref] = useFocus(true);
@@ -299,6 +301,20 @@ function NumeroEditor({
 
     setSelectedNomToponyme(nom);
   }, [toponymeId, toponymes]);
+
+  useEffect(() => {
+    if (markers.length > 1) {
+      setHint(
+        "Déplacez les marqueurs sur la carte pour modifier les positions"
+      );
+    } else {
+      setHint("Déplacez le marqueur sur la carte pour positionner le numéro");
+    }
+
+    return () => {
+      setHint(null);
+    };
+  }, [markers, setHint]);
 
   return (
     <Form
