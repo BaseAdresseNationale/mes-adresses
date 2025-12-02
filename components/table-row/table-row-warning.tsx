@@ -116,7 +116,7 @@ function TableRowWarning({ baseLocale, voie, alert }: TableRowWarningProps) {
       {alert && (
         <>
           <Pane marginTop={8} marginBottom={8}>
-            <hr />
+            {voie.nbNumeros === 0 && <hr />}
             <Text color="white">
               <WarningSignIcon
                 color="white"

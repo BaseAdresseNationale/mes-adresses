@@ -219,7 +219,7 @@ function computeCommuneErrors(value: string): AlertCodeEnum[] {
   const codes: AlertCodeEnum[] = [];
 
   // SI CARACTERE INVALIDE
-  if (value.match(/[�_,/#!$%^&*;:{}=\~()"?«»…]/g)) {
+  if (value.match(/[�_,/#!$%^&*;:{}=\~"?«»…]/g)) {
     codes.push(AlertCodeEnum.CARACTERE_INVALIDE);
   }
   // SI CELA COMMENCE PAR ESPACE ' ou -
