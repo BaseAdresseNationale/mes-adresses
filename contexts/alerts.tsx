@@ -15,14 +15,6 @@ const AlertsContext = React.createContext<AlertsContextType | null>(null);
 export function AlertsContextProvider(props: ChildrenProps) {
   const [voieAlerts, setVoieAlerts] = useState<Record<string, Alert>>({});
 
-  const deleteVoieAlert = useCallback(
-    (voieId: string) => {
-      const copyVoieAlerts = { ...voieAlerts };
-      delete copyVoieAlerts[voieId];
-      setVoieAlerts(copyVoieAlerts);
-    },
-    [voieAlerts]
-  );
   const getVoieNomAlert = useCallback(
     (voie: ExtendedVoieDTO): AlertVoieNom | undefined => {
       const [codes, remediation] = computeVoieNomAlerts(voie.nom);
@@ -39,33 +31,18 @@ export function AlertsContextProvider(props: ChildrenProps) {
     []
   );
 
-  const reloadVoieAlert = useCallback(
-    (voie: ExtendedVoieDTO): Alert | undefined => {
-      const existingAlert = voieAlerts[voie.id];
-      if (existingAlert) {
-        if (existingAlert.value !== voie.nom) {
-          deleteVoieAlert(voie.id);
-          return getVoieNomAlert(voie);
-        }
-      } else {
-        return getVoieNomAlert(voie);
-      }
-    },
-    [deleteVoieAlert, getVoieNomAlert, voieAlerts]
-  );
-
   const reloadVoieAlerts = useCallback(
     (voies: ExtendedVoieDTO[]) => {
       const newVoieAlerts: Record<string, Alert> = {};
       for (const voie of voies) {
-        const alert = reloadVoieAlert(voie);
+        const alert = getVoieNomAlert(voie);
         if (alert) {
           newVoieAlerts[voie.id] = alert;
         }
       }
       setVoieAlerts(newVoieAlerts);
     },
-    [reloadVoieAlert]
+    [getVoieNomAlert]
   );
 
   const value = useMemo(
