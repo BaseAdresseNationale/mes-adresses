@@ -1,4 +1,5 @@
 export enum AlertCodeEnum {
+  // Voie nom
   CARACTERE_INVALIDE = "caractere_invalide",
   CARACTERE_INVALIDE_START = "caractere_invalide_start",
   CARACTERE_INVALIDE_END = "caractere_invalide_end",
@@ -10,6 +11,8 @@ export enum AlertCodeEnum {
   CASSE_INCORRECTE = "casse_incorrecte",
   TOO_SHORT = "trop_court",
   TOO_LONG = "trop_long",
+  // Voie sans numéros
+  VOIE_EMPTY = "voie_empty",
 }
 
 export const AlertDefinitions = {
@@ -48,17 +51,29 @@ export const AlertDefinitions = {
   },
 };
 
+export enum AlertModelEnum {
+  VOIE = "voie",
+}
+
 export enum AlertFieldEnum {
   VOIE_NOM = "voie_nom",
 }
 
 export interface Alert {
-  field: AlertFieldEnum;
+  model: AlertModelEnum;
   codes: AlertCodeEnum[];
+}
+
+export interface AlertVoie extends Alert {
+  model: AlertModelEnum.VOIE;
+}
+
+export interface AlertVoieNom extends AlertVoie {
+  field: AlertFieldEnum.VOIE_NOM;
   value: string;
   remediation?: string;
 }
 
-export interface AlertVoieNom extends Alert {
-  field: AlertFieldEnum.VOIE_NOM;
+export function isAlertVoieNom(alert: AlertVoie): alert is AlertVoieNom {
+  return "field" in alert && alert.field === AlertFieldEnum.VOIE_NOM;
 }

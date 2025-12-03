@@ -96,17 +96,13 @@ export function BalDataContextProvider({
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
   const { pushToast } = useContext(LayoutContext);
   const { token } = useContext(TokenContext);
-  const { reloadVoieAlerts } = useContext(AlertsContext);
+  const { reloadVoiesAlerts } = useContext(AlertsContext);
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchBALData() {
       try {
         reloadVoies();
-        // const voies = await BasesLocalesService.findBaseLocaleVoies(
-        //   initialBaseLocale.id
-        // );
-        // setVoies(voies);
         const toponymes = await BasesLocalesService.findBaseLocaleToponymes(
           initialBaseLocale.id
         );
@@ -143,8 +139,8 @@ export function BalDataContextProvider({
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     setVoies(voies);
-    reloadVoieAlerts(voies);
-  }, [baseLocale.id, reloadVoieAlerts]);
+    reloadVoiesAlerts(voies);
+  }, [baseLocale.id, reloadVoiesAlerts]);
 
   const reloadToponymes = useCallback(async () => {
     const toponymes: ExtentedToponymeDTO[] =

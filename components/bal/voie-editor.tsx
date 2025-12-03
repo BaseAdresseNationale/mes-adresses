@@ -29,7 +29,9 @@ import AlertsContext from "@/contexts/alerts";
 import {
   AlertDefinitions,
   AlertFieldEnum,
+  AlertModelEnum,
   AlertVoieNom,
+  isAlertVoieNom,
 } from "@/lib/alerts/alerts.types";
 import { computeVoieNomAlerts } from "@/lib/alerts/voie-nom.utils";
 import styles from "./voie-editor.module.css";
@@ -69,10 +71,11 @@ function VoieEditor({
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
-  const { voieAlerts } = useContext(AlertsContext);
+  const { voiesAlerts } = useContext(AlertsContext);
 
   const [voieNomAlert, setVoieNomAlert] = useState<AlertVoieNom | null>(
-    voieAlerts[initialValue?.id]
+    voiesAlerts[initialValue?.id]?.find((alert) => isAlertVoieNom(alert)) ||
+      null
   );
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -183,8 +186,9 @@ function VoieEditor({
         const [codes, remediation] = computeVoieNomAlerts(value);
         if (codes.length > 0) {
           setVoieNomAlert({
-            codes,
+            model: AlertModelEnum.VOIE,
             field: AlertFieldEnum.VOIE_NOM,
+            codes,
             value,
             remediation,
           });

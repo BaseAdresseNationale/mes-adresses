@@ -93,7 +93,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
   const { scrollAndHighlightLastSelectedItem } = useContext(
     SearchPaginationContext
   );
-  const { voieAlerts } = useContext(AlertsContext);
+  const { voiesAlerts } = useContext(AlertsContext);
 
   useEffect(() => {
     setTileLayersMode(TilesLayerMode.VOIE);
@@ -323,11 +323,11 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   ) : null
                 }
                 warning={
-                  voie.nbNumeros === 0 || voieAlerts[voie.id] ? (
+                  voiesAlerts[voie.id] ? (
                     <TableRowWarning
                       baseLocale={baseLocale}
                       voie={voie}
-                      alert={voieAlerts[voie.id]}
+                      alerts={voiesAlerts[voie.id]}
                     />
                   ) : null
                 }

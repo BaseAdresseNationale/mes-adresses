@@ -1,143 +1,33 @@
-import { useCallback, useContext, useState } from "react";
-import { Paragraph, Pane, Text, Button, WarningSignIcon } from "evergreen-ui";
-import NextLink from "next/link";
-import { useRouter } from "next/router";
-
-import BalDataContext from "@/contexts/bal-data";
-
+import { ExtendedBaseLocaleDTO, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
 import {
-  ExtendedBaseLocaleDTO,
-  ExtendedVoieDTO,
-  Toponyme,
-  VoiesService,
-} from "@/lib/openapi-api-bal";
-import LayoutContext from "@/contexts/layout";
-import DialogWarningAction from "@/components/dialog-warning-action";
-import MapContext from "@/contexts/map";
-import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
-import MatomoTrackingContext, {
-  MatomoEventAction,
-  MatomoEventCategory,
-} from "@/contexts/matomo-tracking";
-import { Alert, AlertDefinitions } from "@/lib/alerts/alerts.types";
+  AlertCodeEnum,
+  AlertVoie,
+  isAlertVoieNom,
+} from "@/lib/alerts/alerts.types";
+import VoieEmptyWarning from "./warnings/voie-empty-warning";
+import VoieNomWarning from "./warnings/voie-nom-warning";
 
 interface TableRowWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
   voie: ExtendedVoieDTO;
-  alert: Alert;
+  alerts: AlertVoie[];
 }
 
-function TableRowWarning({ baseLocale, voie, alert }: TableRowWarningProps) {
-  const { reloadVoies, reloadToponymes, reloadParcelles, refreshBALSync } =
-    useContext(BalDataContext);
-  const { reloadTiles } = useContext(MapContext);
-  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
-
-  const [toConvert, setToConvert] = useState<string | null>(null);
-  const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
-  const { toaster } = useContext(LayoutContext);
-  const router = useRouter();
-
-  const onConvert = useCallback(async () => {
-    setOnConvertLoading(true);
-    const convertToponyme = toaster(
-      async () => {
-        const toponyme: Toponyme =
-          await VoiesService.convertToToponyme(toConvert);
-        await reloadVoies();
-        await reloadToponymes();
-        await reloadParcelles();
-        reloadTiles();
-        refreshBALSync();
-        await router.push(
-          `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
-        );
-      },
-      "La voie a bien été convertie en toponyme",
-      "La voie n’a pas pu être convertie en toponyme"
-    );
-
-    await convertToponyme();
-    matomoTrackEvent(
-      MatomoEventCategory.BAL_EDITOR,
-      MatomoEventAction[MatomoEventCategory.BAL_EDITOR].CONVERT_VOIE_TO_TOPONYME
-    );
-
-    setOnConvertLoading(false);
-    setToConvert(null);
-  }, [
-    baseLocale,
-    router,
-    reloadVoies,
-    refreshBALSync,
-    reloadToponymes,
-    reloadTiles,
-    reloadParcelles,
-    toConvert,
-    toaster,
-    matomoTrackEvent,
-  ]);
-
+function TableRowWarning({ baseLocale, voie, alerts }: TableRowWarningProps) {
   return (
     <>
-      <DialogWarningAction
-        confirmLabel="Convertir en toponyme"
-        isShown={Boolean(toConvert)}
-        content={
-          <Paragraph>
-            Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
-          </Paragraph>
-        }
-        isLoading={onConvertLoading}
-        onCancel={() => {
-          setToConvert(null);
-        }}
-        onConfirm={onConvert}
-      />
-
-      {voie.nbNumeros === 0 ? (
-        <>
-          <Pane marginBottom={8}>
-            <WarningSignIcon
-              color="white"
-              style={{ verticalAlign: "middle" }}
-              marginRight={4}
-            />
-            <Text color="white">Cette voie ne contient aucun numéro</Text>
-          </Pane>
-          <Button
-            onClick={() => setToConvert(voie.id)}
-            size="small"
-            title="Convertir la voie en toponyme"
-          >
-            Convertir en toponyme
-          </Button>
-        </>
-      ) : null}
-      {alert && (
-        <>
-          <Pane>
-            {voie.nbNumeros === 0 && <hr />}
-            <Text color="white">
-              <WarningSignIcon
-                color="white"
-                style={{ verticalAlign: "middle" }}
-                marginRight={4}
-              />
-              Le nom de la voie est incorrect
-              <Button
-                marginLeft={8}
-                is={NextLink}
-                href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
-                title="Éditer la voie"
-                size="small"
-              >
-                Corriger
-              </Button>
-            </Text>
-          </Pane>
-        </>
-      )}
+      {alerts.map((alert, index) => {
+        return (
+          <div key={`alert-${index}`}>
+            {index > 0 && <hr />}
+            {alert.codes.includes(AlertCodeEnum.VOIE_EMPTY) ? (
+              <VoieEmptyWarning baseLocale={baseLocale} voie={voie} />
+            ) : isAlertVoieNom(alert) ? (
+              <VoieNomWarning baseLocale={baseLocale} voie={voie} />
+            ) : null}
+          </div>
+        );
+      })}
     </>
   );
 }
