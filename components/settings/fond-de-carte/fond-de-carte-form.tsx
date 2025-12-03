@@ -114,7 +114,7 @@ function FondDeCarteForm() {
         Ajouter un fond de carte
       </Button>
       {(fondsDeCartesForm.length > 0 ||
-        baseLocale.settings.fondsDeCartes.length > 0) && (
+        baseLocale.settings?.fondsDeCartes?.length > 0) && (
         <Pane backgroundColor="#FAFBFF">
           {fondsDeCartesForm.map((styleMap, index) => (
             <FondDeCarteField
