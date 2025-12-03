@@ -19,8 +19,6 @@ Une documentation plus complète et des guides d’utilisation sont disponibles 
 
 ## Utilisation
 
-TEST
-
 ### Installation
 
 Installation des dépendances Node.js
