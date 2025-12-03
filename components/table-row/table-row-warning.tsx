@@ -124,7 +124,7 @@ function TableRowWarning({ baseLocale, voie, alert }: TableRowWarningProps) {
                 style={{ verticalAlign: "middle" }}
                 marginRight={4}
               />
-              Problème avec le nom de la voie :
+              Le nom de la voie est incorrect
               <Button
                 marginLeft={8}
                 is={NextLink}
