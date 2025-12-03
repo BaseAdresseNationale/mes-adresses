@@ -140,11 +140,10 @@ export function BalDataContextProvider({
   }, [baseLocale.id]);
 
   const reloadVoies = useCallback(async () => {
-    console.log("reloadVoies");
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
-    reloadVoieAlerts(voies);
     setVoies(voies);
+    reloadVoieAlerts(voies);
   }, [baseLocale.id, reloadVoieAlerts]);
 
   const reloadToponymes = useCallback(async () => {
