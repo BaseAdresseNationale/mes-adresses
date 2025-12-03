@@ -104,7 +104,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
             Fonds de carte
           </Label>
           <Pane display="flex" gap={16} marginBottom={16}>
-            {baseLocale.settings?.fondDeCartes?.length > 0 && (
+            {baseLocale.settings?.fondsDeCartes?.length > 0 && (
               <FondDeCarteList baseLocale={baseLocale} />
             )}
             <Button

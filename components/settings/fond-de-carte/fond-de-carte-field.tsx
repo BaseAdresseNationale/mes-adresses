@@ -49,7 +49,7 @@ function FondDeCarteField({
         onChange={(e) => onChange("name", e.target.value)}
         width="80%"
         marginBottom={0}
-        placeholder="Plan IGN"
+        placeholder="Mon fond de carte"
         required
         validationMessage={
           errors?.["name"] == false &&

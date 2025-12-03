@@ -137,7 +137,7 @@ function Map({
       featureHovered.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES);
 
   function getBaseStyle(style: MapStyle | string) {
-    const fondDeCarte = baseLocale.settings?.fondDeCartes?.find(
+    const fondDeCarte = baseLocale.settings?.fondsDeCartes?.find(
       ({ name }) => name === style
     );
     if (fondDeCarte) {

@@ -22,7 +22,7 @@ export function FondDeCarteDialog({
         <Alert
           marginBottom={8}
           intent="none"
-          title="Comment ca marche les fonds de carte"
+          title="Comment rajouter ses propres fonds de carte ?"
         >
           Seul les urls des fluxs WMTS ou WMS sont supportées. Les données
           doivent être de type raster et les images de 256x256 pixels. Voir

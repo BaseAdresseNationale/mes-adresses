@@ -42,13 +42,13 @@ function StyleControl({
         isAvailable: hasOpenMapTiles,
       },
       { label: "Plan IGN", value: MapStyle.PLAN_IGN, isAvailable: hasPlanIGN },
-      ...(baseLocale.settings?.fondDeCartes?.map((styleMap) => ({
+      ...(baseLocale.settings?.fondsDeCartes?.map((styleMap) => ({
         label: styleMap.name,
         value: styleMap.name,
         isAvailable: true,
       })) || []),
     ].filter(({ isAvailable }) => isAvailable);
-  }, [commune, baseLocale.settings.fondDeCartes]);
+  }, [commune, baseLocale.settings.fondsDeCartes]);
 
   const onSelect = (style: MapStyle | string) => {
     const updatedRegisteredMapStyle = registeredMapStyle

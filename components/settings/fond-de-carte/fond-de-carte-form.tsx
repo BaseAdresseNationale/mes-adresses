@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState, useMemo } from "react";
 import { cloneDeep, differenceWith, isEqual } from "lodash";
-import { Button, AddIcon, Alert, Pane } from "evergreen-ui";
+import { Button, AddIcon, Pane } from "evergreen-ui";
 
 import { validateSourceWithTempMap } from "@/lib/utils/map";
 import RefreshIconRotate from "@/components/sub-header/bal-status/refresh-icon-rotate/refresh-icon-rotate";
@@ -14,19 +14,19 @@ import FondDeCarteField from "./fond-de-carte-field";
 function FondDeCarteForm() {
   const [isLoading, setIsLoading] = useState(false);
   const { baseLocale, reloadBaseLocale } = useContext(BalDataContext);
-  const [fondDeCartesForm, setFondDeCartesForm] = useState<
+  const [fondsDeCartesForm, setFondDeCartesForm] = useState<
     BaseLocaleFondDeCarte[]
-  >(cloneDeep(baseLocale.settings.fondDeCartes) || []);
+  >(cloneDeep(baseLocale.settings.fondsDeCartes) || []);
   const [errors, setErrors] = useState<
     Record<number, { url: boolean; name: boolean }>
   >({});
 
   const updateFondDeCartes = useCallback(
-    async (fondDeCartes: BaseLocaleFondDeCarte[]) => {
+    async (fondsDeCartes: BaseLocaleFondDeCarte[]) => {
       await BasesLocalesService.updateBaseLocale(baseLocale.id, {
         settings: {
           ...baseLocale.settings,
-          fondDeCartes,
+          fondsDeCartes,
         },
       });
       await reloadBaseLocale();
@@ -36,7 +36,7 @@ function FondDeCarteForm() {
 
   const computeErrors = useCallback(async () => {
     const urlIsValid = await Promise.all(
-      fondDeCartesForm.map(async (styleMap, index) => {
+      fondsDeCartesForm.map(async (styleMap, index) => {
         const fluxIsValid = await validateSourceWithTempMap({
           id: `source-${index}`,
           url: styleMap.url,
@@ -47,14 +47,14 @@ function FondDeCarteForm() {
           !["Photographie aérienne", "Plan OpenStreetMap", "Plan IGN"].includes(
             styleMap.name
           ) &&
-          fondDeCartesForm
+          fondsDeCartesForm
             .slice(0, index)
             .every((s) => s.name !== styleMap.name);
         return [index, { url: fluxIsValid, name: nameIsValid }];
       })
     );
     return Object.fromEntries(urlIsValid);
-  }, [fondDeCartesForm]);
+  }, [fondsDeCartesForm]);
 
   const saveFondDeCartes = useCallback(async () => {
     setIsLoading(true);
@@ -62,10 +62,10 @@ function FondDeCarteForm() {
       await computeErrors();
     setErrors(errorsForm);
     if (Object.values(errorsForm).every((error) => error.url && error.name)) {
-      await updateFondDeCartes(fondDeCartesForm);
+      await updateFondDeCartes(fondsDeCartesForm);
     }
     setIsLoading(false);
-  }, [computeErrors, fondDeCartesForm, updateFondDeCartes]);
+  }, [computeErrors, fondsDeCartesForm, updateFondDeCartes]);
 
   const onAddForm = () => {
     setFondDeCartesForm((prev) => [...prev, { name: "", url: "" }]);
@@ -73,35 +73,34 @@ function FondDeCarteForm() {
 
   const onChange = useCallback(
     (index: number, key: string, value: string) => {
-      const updated = [...fondDeCartesForm];
+      const updated = [...fondsDeCartesForm];
       updated[index][key] = value;
 
       setFondDeCartesForm(updated);
     },
-    [fondDeCartesForm]
+    [fondsDeCartesForm]
   );
 
   const onRemove = useCallback(
     async (index: number) => {
-      const filteredFondDeCartesForm = fondDeCartesForm.filter(
+      const filteredFondDeCartesForm = fondsDeCartesForm.filter(
         (_, i) => i !== index
       );
       setFondDeCartesForm(filteredFondDeCartesForm);
-      await updateFondDeCartes(filteredFondDeCartesForm);
     },
-    [fondDeCartesForm, updateFondDeCartes]
+    [fondsDeCartesForm]
   );
 
   const styleChanged = useMemo(() => {
     return (
       differenceWith(
-        fondDeCartesForm,
-        baseLocale.settings.fondDeCartes,
+        fondsDeCartesForm,
+        baseLocale.settings.fondsDeCartes,
         isEqual
       ).length > 0 ||
-      fondDeCartesForm?.length !== baseLocale.settings.fondDeCartes?.length
+      fondsDeCartesForm?.length !== baseLocale.settings.fondsDeCartes?.length
     );
-  }, [fondDeCartesForm, baseLocale.settings.fondDeCartes]);
+  }, [fondsDeCartesForm, baseLocale.settings.fondsDeCartes]);
 
   return (
     <>
@@ -114,9 +113,10 @@ function FondDeCarteForm() {
       >
         Ajouter un fond de carte
       </Button>
-      {fondDeCartesForm.length > 0 && (
+      {(fondsDeCartesForm.length > 0 ||
+        baseLocale.settings.fondsDeCartes.length > 0) && (
         <Pane backgroundColor="#FAFBFF">
-          {fondDeCartesForm.map((styleMap, index) => (
+          {fondsDeCartesForm.map((styleMap, index) => (
             <FondDeCarteField
               key={`fond-de-carte-formulaire-${index}`}
               initialValue={styleMap}
@@ -132,7 +132,7 @@ function FondDeCarteForm() {
               appearance="primary"
               onClick={saveFondDeCartes}
             >
-              Enregistrer les Changements {isLoading && <RefreshIconRotate />}
+              Enregistrer les changements {isLoading && <RefreshIconRotate />}
             </Button>
           </Pane>
         </Pane>
