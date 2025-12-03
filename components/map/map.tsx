@@ -319,6 +319,8 @@ function Map({
     if (map) {
       setMapStyle(generateNewStyle(style));
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, style]);
 
   useEffect(() => {
