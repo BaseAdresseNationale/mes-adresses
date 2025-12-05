@@ -34,7 +34,7 @@ test.describe("Page de création", () => {
       .getByRole("searchbox", { name: "Rechercher une commune *" })
       .fill("limeray");
     await page.getByText("Limeray (Indre-et-Loire - 37)").click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
     const creerUneNouvelleBALButton = page.getByRole("button", {
       name: "Créer une nouvelle Base",
