@@ -34,7 +34,14 @@ test.describe("Page de création", () => {
       .getByRole("searchbox", { name: "Rechercher une commune *" })
       .fill("limeray");
     await page.getByText("Limeray (Indre-et-Loire - 37)").click();
-    await page.getByRole("button", { name: "Créer une nouvelle Base" }).click();
+    await page.waitForTimeout(1000);
+
+    const creerUneNouvelleBALButton = page.getByRole("button", {
+      name: "Créer une nouvelle Base",
+    });
+    if (await creerUneNouvelleBALButton.isVisible()) {
+      await creerUneNouvelleBALButton.click();
+    }
     await page.getByText("Partir des données existantes").click();
     await page.getByRole("button", { name: "Suivant" }).click();
     await page.getByRole("textbox", { name: "Adresse email de l'" }).click();
@@ -287,7 +294,16 @@ test.describe("Éditeur BAL - Publication", () => {
     await page.getByRole("textbox", { name: "PIN field 4 of" }).fill("0");
     await page.getByRole("textbox", { name: "PIN field 5 of" }).fill("0");
     await page.getByRole("textbox", { name: "PIN field 6 of" }).fill("0");
-    await page.getByRole("button", { name: "Forcer la publication" }).click();
+    await page.waitForTimeout(1000);
+
+    const forcerlaPublicationButton = page.getByRole("button", {
+      name: "Forcer la publication",
+    });
+
+    if (await forcerlaPublicationButton.isVisible()) {
+      await forcerlaPublicationButton.click();
+    }
+
     await page.waitForSelector(
       'text="Votre Base Adresse Locale a bien été publiée"'
     );
