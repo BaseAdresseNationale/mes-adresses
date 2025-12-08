@@ -266,7 +266,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                     onChange={() => setShowUncertify(!showUncertify)}
                   />
                   <Checkbox
-                    label="Avec warnings"
+                    label="Avec alertes"
                     checked={showWarning}
                     onChange={() => setShowWarning(!showWarning)}
                   />

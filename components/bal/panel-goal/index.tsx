@@ -16,6 +16,7 @@ import MatomoTrackingContext, {
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
 import CertificationGoal from "./primary-goal/certification-goal";
+import QualityGoal from "./primary-goal/quality-goal";
 
 interface PanelGoalProps {
   commune: CommuneType;
@@ -49,6 +50,7 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
       {isPublished && (
         <>
           <CertificationGoal baseLocale={baseLocale} />
+          <QualityGoal baseLocale={baseLocale} />
           {(!settings.toponymeGoalIgnored || !settings.languageGoalIgnored) && (
             <AccordionSimple
               title="Objectifs secondaires"

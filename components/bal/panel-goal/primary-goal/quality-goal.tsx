@@ -1,15 +1,27 @@
-import { Pane, Heading, Text } from "evergreen-ui";
+import { useContext } from "react";
+import { Pane, Heading, Text, Button, EyeOpenIcon } from "evergreen-ui";
 
-import StarRating from "./star-rating";
 import { AccordionCard } from "@/components/accordion-card";
 import { useState } from "react";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
+import AlertsContext from "@/contexts/alerts";
+import { useRouter } from "next/router";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
-interface QualityGoalProps {}
+interface QualityGoalProps {
+  baseLocale: ExtendedBaseLocaleDTO;
+}
 
-function QualityGoal({}: QualityGoalProps) {
+function QualityGoal({ baseLocale }: QualityGoalProps) {
   const [isActive, setIsActive] = useState(false);
+  const { voiesAlerts } = useContext(AlertsContext);
+  const router = useRouter();
+
+  const goToAlerts = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    void router.push(`/bal/${baseLocale.id}/voies`);
+  };
 
   const isAllCertified = false;
   return (
@@ -21,20 +33,29 @@ function QualityGoal({}: QualityGoalProps) {
               <AchievementBadge
                 icone="/static/images/achievements/fiabilite.svg"
                 title="Publication"
-                completed={isAllCertified}
+                completed={Object.values(voiesAlerts).length === 0}
               />
               <Heading color={isAllCertified && "#317159"}>Qualité</Heading>
             </Pane>
-            <Pane width="100%">
-              <StarRating value={3} />
-              <Pane display="flex" justifyContent="center" alignItems="center">
-                <Counter label="Erreurs détectées" value={1} color="red" />
-                <Counter
-                  label="Avertissements détectés"
-                  value={2}
-                  color="orange"
-                />
-              </Pane>
+            <Pane
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Counter
+                label="Avertissements détectés"
+                value={Object.values(voiesAlerts).length}
+                color="orange"
+              />
+              <Button
+                width="100%"
+                appearance="primary"
+                iconAfter={EyeOpenIcon}
+                title="Voir les alertes"
+                onClick={(e) => goToAlerts(e)}
+              >
+                Voir les alertes
+              </Button>
             </Pane>
           </Pane>
         }
