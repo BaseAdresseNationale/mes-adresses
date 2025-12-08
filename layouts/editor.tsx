@@ -61,6 +61,7 @@ function Editor({ children }: EditorProps) {
               bottom={isDemo || isMobile ? 50 : 0}
               left={isMapFullscreen ? 0 : sidebarWidth}
               commune={commune}
+              baseLocale={baseLocale}
               isAddressFormOpen={isAddressFormOpen}
               handleAddressForm={setIsAddressFormOpen}
             />

@@ -19,8 +19,8 @@ interface MapContextType {
   handleMapRef: (ref: any) => void;
   isTileSourceLoaded: boolean;
   reloadTiles: () => void;
-  style: MapStyle;
-  setStyle: React.Dispatch<React.SetStateAction<MapStyle>>;
+  style: MapStyle | string;
+  setStyle: React.Dispatch<React.SetStateAction<MapStyle | string>>;
   isStyleLoaded: boolean;
   viewport: Partial<ViewState>;
   setViewport: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
@@ -62,7 +62,7 @@ export function MapContextProvider(props: ChildrenProps) {
   const registeredBalMapStyle = registeredMapStyle
     ? registeredMapStyle[baseLocale.id]
     : null;
-  const [style, setStyle] = useState<MapStyle>(
+  const [style, setStyle] = useState<MapStyle | string>(
     registeredBalMapStyle || getDefaultStyle(commune)
   );
   const [viewport, setViewport] = useState<Partial<ViewState>>(defaultViewport);

@@ -8,11 +8,15 @@ import {
   CogIcon,
   Heading,
   EyeOpenIcon,
+  Label,
+  MapCreateIcon,
 } from "evergreen-ui";
 import { BALAdminEmails } from "./bal-admin-emails";
 import { useBALSettings } from "@/hooks/bal-settings";
 import RenewTokenDialog from "../renew-token-dialog";
 import { ShareBALAccessDialog } from "./share/share-bal-access-dialog";
+import FondDeCarteList from "./fond-de-carte-list";
+import FondDeCarteDialog from "./fond-de-carte/fond-de-carte-dialog";
 
 interface SettingsProps {
   baseLocale: BaseLocale;
@@ -21,6 +25,7 @@ interface SettingsProps {
 
 function Settings({ baseLocale, token }: SettingsProps) {
   const [showBALAccessDialog, setShowBALAccessDialog] = useState(false);
+  const [showFondDeCarteDialog, setShowFondDeCarteDialog] = useState(false);
 
   const {
     onSubmit,
@@ -94,6 +99,25 @@ function Settings({ baseLocale, token }: SettingsProps) {
             {error}
           </Alert>
         )}
+        <Pane marginBottom={16}>
+          <Label display="block" marginBottom={8}>
+            Fonds de carte
+          </Label>
+          <Pane display="flex" gap={16} marginBottom={16}>
+            {baseLocale.settings?.fondsDeCartes?.length > 0 && (
+              <FondDeCarteList baseLocale={baseLocale} />
+            )}
+            <Button
+              type="button"
+              onClick={() => setShowFondDeCarteDialog(true)}
+              width="fit-content"
+              alignSelf="flex-end"
+            >
+              <MapCreateIcon marginRight={8} />
+              Modifier fonds de carte
+            </Button>
+          </Pane>
+        </Pane>
         <Button
           height={40}
           type="submit"
@@ -116,6 +140,10 @@ function Settings({ baseLocale, token }: SettingsProps) {
         isShown={showBALAccessDialog}
         token={token}
         onCloseComplete={() => setShowBALAccessDialog(false)}
+      />
+      <FondDeCarteDialog
+        isShown={showFondDeCarteDialog}
+        onCloseComplete={() => setShowFondDeCarteDialog(false)}
       />
     </Pane>
   );
