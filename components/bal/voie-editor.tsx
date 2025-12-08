@@ -73,8 +73,9 @@ function VoieEditor({
   const { voiesAlerts } = useContext(AlertsContext);
 
   const [voieNomAlert, setVoieNomAlert] = useState<AlertVoieNom | null>(
-    voiesAlerts[initialValue?.id]?.find((alert) => isAlertVoieNom(alert)) ||
-      null
+    (voiesAlerts[initialValue?.id]?.find((alert) =>
+      isAlertVoieNom(alert)
+    ) as AlertVoieNom) || null
   );
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
