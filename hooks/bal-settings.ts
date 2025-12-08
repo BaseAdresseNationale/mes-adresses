@@ -5,6 +5,7 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { isEqual, difference } from "lodash";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
+import AlertsContext from "@/contexts/alerts";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -25,7 +26,8 @@ const ignoredAlertCodesHasChanged = (
 
 export function useBALSettings(baseLocale: BaseLocale) {
   const { emails, reloadEmails } = useContext(TokenContext);
-  const { reloadBaseLocale } = useContext(BalDataContext);
+  const { reloadBaseLocale, voies } = useContext(BalDataContext);
+  const { reloadVoiesAlerts } = useContext(AlertsContext);
   const { pushToast } = useContext(LayoutContext);
 
   const [nomInput, setNomInput] = useState(baseLocale.nom);
@@ -86,6 +88,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
               alerts: { ignoredAlertCodes },
             },
           });
+          await reloadVoiesAlerts(voies, ignoredAlertCodes);
         }
         await reloadBaseLocale();
         pushToast({
@@ -110,6 +113,8 @@ export function useBALSettings(baseLocale: BaseLocale) {
       emails,
       ignoredAlertCodesChanged,
       ignoredAlertCodes,
+      reloadVoiesAlerts,
+      voies,
     ]
   );
 

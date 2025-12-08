@@ -139,8 +139,15 @@ export function BalDataContextProvider({
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     setVoies(voies);
-    reloadVoiesAlerts(voies);
-  }, [baseLocale.id, reloadVoiesAlerts]);
+    reloadVoiesAlerts(
+      voies,
+      baseLocale.settings?.alerts?.ignoredAlertCodes || []
+    );
+  }, [
+    baseLocale.id,
+    reloadVoiesAlerts,
+    baseLocale.settings?.alerts?.ignoredAlertCodes,
+  ]);
 
   const reloadToponymes = useCallback(async () => {
     const toponymes: ExtentedToponymeDTO[] =
