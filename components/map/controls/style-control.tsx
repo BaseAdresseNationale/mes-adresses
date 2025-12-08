@@ -1,29 +1,30 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState, useEffect } from "react";
 import { Pane, SelectMenu, Button, Position, LayersIcon } from "evergreen-ui";
 
 import CadastreControl from "@/components/map/controls/cadastre-control";
 import { CommuneType } from "@/types/commune";
 import { MapStyle } from "@/contexts/map";
 import LocalStorageContext from "@/contexts/local-storage";
-import BalDataContext from "@/contexts/bal-data";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 
 interface StyleControlProps {
   style: string;
-  handleStyle: (style: MapStyle) => void;
+  handleStyle: (style: MapStyle | string) => void;
   isCadastreDisplayed: boolean;
   handleCadastre: (fn: (show: boolean) => boolean) => void;
   commune: CommuneType;
+  baseLocale: ExtendedBaseLocaleDTO;
 }
 
 function StyleControl({
   style,
   commune,
+  baseLocale,
   handleStyle,
   isCadastreDisplayed,
   handleCadastre,
 }: StyleControlProps) {
   const [showPopover, setShowPopover] = useState(false);
-  const { baseLocale } = useContext(BalDataContext);
   const { registeredMapStyle, setRegisteredMapStyle } =
     useContext(LocalStorageContext);
 
@@ -41,16 +42,28 @@ function StyleControl({
         isAvailable: hasOpenMapTiles,
       },
       { label: "Plan IGN", value: MapStyle.PLAN_IGN, isAvailable: hasPlanIGN },
+      ...(baseLocale.settings?.fondsDeCartes?.map((styleMap) => ({
+        label: styleMap.name,
+        value: styleMap.name,
+        isAvailable: true,
+      })) || []),
     ].filter(({ isAvailable }) => isAvailable);
-  }, [commune]);
+  }, [commune, baseLocale.settings.fondsDeCartes]);
 
-  const onSelect = (style) => {
+  const onSelect = (style: MapStyle | string) => {
     const updatedRegisteredMapStyle = registeredMapStyle
-      ? { ...registeredMapStyle, [baseLocale.id]: style.value }
-      : { [baseLocale.id]: style.value };
+      ? { ...registeredMapStyle, [baseLocale.id]: style }
+      : { [baseLocale.id]: style };
     setRegisteredMapStyle(updatedRegisteredMapStyle);
-    handleStyle(style.value as MapStyle);
+    handleStyle(style);
   };
+
+  useEffect(() => {
+    if (!availableStyles.find(({ value }) => value === style)) {
+      onSelect(availableStyles[0].value);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableStyles]);
 
   return (
     <Pane
@@ -73,7 +86,7 @@ function StyleControl({
           height={40 + 33 * availableStyles.length}
           options={availableStyles}
           selected={style}
-          onSelect={onSelect}
+          onSelect={(item) => onSelect(item.value as MapStyle | string)}
         >
           <Button
             className="map-style-button"
@@ -83,7 +96,7 @@ function StyleControl({
               style={{ marginRight: ".5em", borderRadius: "0 3px 3px 0" }}
             />
             <div className="map-style-label">
-              {availableStyles.find(({ value }) => value === style).label}
+              {availableStyles.find(({ value }) => value === style)?.label}
             </div>
           </Button>
         </SelectMenu>

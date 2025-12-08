@@ -38,7 +38,7 @@ import AddressEditorControl from "@/components/map/controls/address-editor-contr
 import ImageControl from "@/components/map/controls/image-control";
 import useBounds from "@/components/map/hooks/bounds";
 import useHovered from "@/components/map/hooks/hovered";
-import { Numero } from "@/lib/openapi-api-bal";
+import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import {
@@ -48,7 +48,7 @@ import {
   setMapFilter,
 } from "@/lib/utils/map";
 import GeolocationControl from "./controls/geolocation-control";
-import { ortho, planIGN, vector } from "./styles";
+import { getStyleDynamically, ortho, planIGN, vector } from "./styles";
 import {
   cadastreLayers,
   LAYER as CADASTRE_LAYER,
@@ -81,33 +81,19 @@ const interactionProps = {
 
 export interface MapProps {
   commune: CommuneType;
+  baseLocale: ExtendedBaseLocaleDTO;
   isAddressFormOpen: boolean;
   handleAddressForm: (open: boolean) => void;
 }
 
 const LAYERS = [...cadastreLayers];
 
-function getBaseStyle(style: MapStyle) {
-  switch (style) {
-    case MapStyle.ORTHO:
-      return ortho;
-
-    case MapStyle.VECTOR:
-      return vector;
-
-    case MapStyle.PLAN_IGN:
-      return planIGN;
-    default:
-      return vector;
-  }
-}
-
-function generateNewStyle(style: MapStyle) {
-  const baseStyle = getBaseStyle(style);
-  return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
-}
-
-function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
+function Map({
+  commune,
+  baseLocale,
+  isAddressFormOpen,
+  handleAddressForm,
+}: MapProps) {
   const router = useRouter();
   const {
     map,
@@ -149,6 +135,32 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       featureHovered.sourceLayer === LAYERS_SOURCE.NUMEROS_POINTS ||
       featureHovered.sourceLayer === LAYERS_SOURCE.TOPONYME_POINTS ||
       featureHovered.sourceLayer === PANORAMAX_LAYERS_SOURCE.PICTURES);
+
+  function getBaseStyle(style: MapStyle | string) {
+    const fondDeCarte = baseLocale.settings?.fondsDeCartes?.find(
+      ({ name }) => name === style
+    );
+    if (fondDeCarte) {
+      return getStyleDynamically(fondDeCarte);
+    }
+    switch (style) {
+      case MapStyle.ORTHO:
+        return ortho;
+
+      case MapStyle.VECTOR:
+        return vector;
+
+      case MapStyle.PLAN_IGN:
+        return planIGN;
+      default:
+        return vector;
+    }
+  }
+
+  function generateNewStyle(style: MapStyle | string) {
+    const baseStyle = getBaseStyle(style);
+    return baseStyle.updateIn(["layers"], (arr: any[]) => arr.push(...LAYERS));
+  }
 
   const updatePositionsLayer = useCallback(() => {
     if (map && isTileSourceLoaded) {
@@ -307,6 +319,8 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
     if (map) {
       setMapStyle(generateNewStyle(style));
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, style]);
 
   useEffect(() => {
@@ -394,6 +408,7 @@ function Map({ commune, isAddressFormOpen, handleAddressForm }: MapProps) {
       <StyleControl
         style={style}
         handleStyle={setStyle}
+        baseLocale={baseLocale}
         commune={commune}
         isCadastreDisplayed={isCadastreDisplayed}
         handleCadastre={setIsCadastreDisplayed}
