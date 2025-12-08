@@ -4,11 +4,22 @@ import TokenContext from "@/contexts/token";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { isEqual, difference } from "lodash";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
     [...listA].sort((a, b) => a.localeCompare(b)),
     [...listB].sort((a, b) => a.localeCompare(b))
+  );
+};
+
+const ignoredAlertCodesHasChanged = (
+  listA: AlertCodeEnum[],
+  listB: AlertCodeEnum[]
+) => {
+  return (
+    listA.length !== listB.length ||
+    !listA.every((code) => listB.includes(code))
   );
 };
 
@@ -20,9 +31,21 @@ export function useBALSettings(baseLocale: BaseLocale) {
   const [nomInput, setNomInput] = useState(baseLocale.nom);
   const [emailsInput, setEmailsInput] = useState(emails || []);
   const [isLoading, setIsLoading] = useState(false);
+  const [ignoredAlertCodes, setIgnoredAlertCodes] = useState<AlertCodeEnum[]>(
+    baseLocale.settings?.alerts?.ignoredAlertCodes || []
+  );
   const [error, setError] = useState("");
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] =
     useState(false);
+
+  const ignoredAlertCodesChanged = useMemo(
+    () =>
+      ignoredAlertCodesHasChanged(
+        ignoredAlertCodes,
+        baseLocale.settings?.alerts?.ignoredAlertCodes || []
+      ),
+    [ignoredAlertCodes, baseLocale.settings?.alerts?.ignoredAlertCodes]
+  );
 
   const nomHasChanged = useMemo(
     () => nomInput !== baseLocale.nom,
@@ -56,6 +79,14 @@ export function useBALSettings(baseLocale: BaseLocale) {
             setIsRenewTokenWarningShown(true);
           }
         }
+        if (ignoredAlertCodesChanged) {
+          await BasesLocalesService.updateBaseLocale(baseLocale.id, {
+            settings: {
+              ...baseLocale.settings,
+              alerts: { ignoredAlertCodes },
+            },
+          });
+        }
         await reloadBaseLocale();
         pushToast({
           title: "Les paramètres ont été enregistrés avec succès",
@@ -77,6 +108,8 @@ export function useBALSettings(baseLocale: BaseLocale) {
       pushToast,
       reloadBaseLocale,
       emails,
+      ignoredAlertCodesChanged,
+      ignoredAlertCodes,
     ]
   );
 
@@ -93,5 +126,8 @@ export function useBALSettings(baseLocale: BaseLocale) {
     emailsHaveChanged,
     setError,
     setIsRenewTokenWarningShown,
+    ignoredAlertCodes,
+    setIgnoredAlertCodes,
+    ignoredAlertCodesChanged,
   };
 }

@@ -15,42 +15,6 @@ export enum AlertCodeEnum {
   VOIE_EMPTY = "voie_empty",
 }
 
-export const AlertDefinitions = {
-  [AlertCodeEnum.CARACTERE_INVALIDE]: {
-    message: "Le nom de la voie contient un caractère invalide",
-  },
-  [AlertCodeEnum.CARACTERE_INVALIDE_START]: {
-    message: "Le nom de la voie commence par un caractère invalide",
-  },
-  [AlertCodeEnum.CARACTERE_INVALIDE_END]: {
-    message: "Le nom de la voie finit par un caractère invalide",
-  },
-  [AlertCodeEnum.NO_WORDS_IN_PARENTHESES]: {
-    message: "Le nom de la voie contient un mot entre parenthèses",
-  },
-  [AlertCodeEnum.MULTI_SPACE_CARACTERE]: {
-    message: "Le nom de la voie contient plusieurs espaces de suite",
-  },
-  [AlertCodeEnum.BAD_WORD_LIEUDIT]: {
-    message: "Le nom de la voie contient un mot de lieu-dit invalide",
-  },
-  [AlertCodeEnum.BAD_MULTI_WORD_RUE]: {
-    message: "Le nom de la voie contient plusieurs fois le mot rue",
-  },
-  [AlertCodeEnum.ABBREVIATION_INVALID]: {
-    message: "Le nom de la voie contient une abréviation invalide",
-  },
-  [AlertCodeEnum.CASSE_INCORRECTE]: {
-    message: "Le nom de la voie contient une casse incorrecte",
-  },
-  [AlertCodeEnum.TOO_SHORT]: {
-    message: "Le nom de la voie est trop court",
-  },
-  [AlertCodeEnum.TOO_LONG]: {
-    message: "Le nom de la voie est trop long",
-  },
-};
-
 export enum AlertModelEnum {
   VOIE = "voie",
 }
@@ -58,6 +22,71 @@ export enum AlertModelEnum {
 export enum AlertFieldEnum {
   VOIE_NOM = "voie_nom",
 }
+
+export const AlertDefinitions: Record<
+  AlertCodeEnum,
+  { message: string; model: AlertModelEnum; field?: AlertFieldEnum }
+> = {
+  [AlertCodeEnum.CARACTERE_INVALIDE]: {
+    message: "Le nom de la voie contient un caractère invalide",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.CARACTERE_INVALIDE_START]: {
+    message: "Le nom de la voie commence par un caractère invalide",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.CARACTERE_INVALIDE_END]: {
+    message: "Le nom de la voie finit par un caractère invalide",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.NO_WORDS_IN_PARENTHESES]: {
+    message: "Le nom de la voie contient un mot entre parenthèses",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.MULTI_SPACE_CARACTERE]: {
+    message: "Le nom de la voie contient plusieurs espaces de suite",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.BAD_WORD_LIEUDIT]: {
+    message: "Le nom de la voie contient un mot de lieu-dit invalide",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.BAD_MULTI_WORD_RUE]: {
+    message: "Le nom de la voie contient plusieurs fois le mot rue",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.ABBREVIATION_INVALID]: {
+    message: "Le nom de la voie contient une abréviation invalide",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.CASSE_INCORRECTE]: {
+    message: "Le nom de la voie contient une casse incorrecte",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.TOO_SHORT]: {
+    message: "Le nom de la voie est trop court",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.TOO_LONG]: {
+    message: "Le nom de la voie est trop long",
+    model: AlertModelEnum.VOIE,
+    field: AlertFieldEnum.VOIE_NOM,
+  },
+  [AlertCodeEnum.VOIE_EMPTY]: {
+    message: "Aucun numéro de voie",
+    model: AlertModelEnum.VOIE,
+  },
+};
 
 export interface Alert {
   model: AlertModelEnum;

@@ -3,11 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { BaseLocaleFondDeCarte } from './BaseLocaleFondDeCarte';
+import type { BaseLocaleFondDeCarte } from "./BaseLocaleFondDeCarte";
 
 export type BaseLocaleSetting = {
-    languageGoalIgnored: boolean;
-    toponymeGoalIgnored: boolean;
-    fondsDeCartes: Array<BaseLocaleFondDeCarte>;
+  alerts?: any;
+  languageGoalIgnored: boolean;
+  toponymeGoalIgnored: boolean;
+  fondsDeCartes: Array<BaseLocaleFondDeCarte>;
 };
-

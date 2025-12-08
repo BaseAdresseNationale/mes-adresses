@@ -16,7 +16,6 @@ import LanguesRegionalesForm from "@/components/langues-regionales-form";
 import {
   BasesLocalesService,
   CreateVoieDTO,
-  ExtendedVoieDTO,
   UpdateVoieDTO,
   Voie,
   VoiesService,
