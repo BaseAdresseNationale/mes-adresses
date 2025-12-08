@@ -15,6 +15,9 @@ import {
   EditIcon,
   EndorsedIcon,
   TrashIcon,
+  Popover,
+  Button,
+  Checkbox,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
@@ -85,7 +88,8 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [showUncertify, setShowUncertify] = useState(false);
+  const [showUncertify, setShowUncertify] = useState<boolean>(false);
+  const [showWarning, setShowWarning] = useState<boolean>(false);
   const router = useRouter();
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
@@ -168,16 +172,20 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
   };
 
   const scrollableItems = useMemo(() => {
-    const items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
+    let items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
       normalizeSort(v.nom)
     );
     if (showUncertify) {
-      return items.filter(({ isAllCertified }) => !isAllCertified);
+      items = items.filter(({ isAllCertified }) => !isAllCertified);
+    }
+    if (showWarning) {
+      items = items.filter(({ id }) => voiesAlerts[id]?.length > 0);
     }
     return items;
-  }, [filtered, showUncertify]);
+  }, [filtered, showUncertify, showWarning, voiesAlerts]);
 
   const isEditingEnabled = !isEditing && Boolean(token);
+
   return (
     <>
       <DialogWarningAction
@@ -249,14 +257,31 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
             value={search}
           />
           <Table.HeaderCell flex="unset">
-            <ButtonIconExpandHover
-              icon={showUncertify ? FilterRemoveIcon : FilterIcon}
-              title="Voir seulement les voies avec des adresses non certifiées"
-              size="small"
-              marginRight={16}
-              onClick={() => setShowUncertify(!showUncertify)}
-              message="Filtre adresses non certifiées"
-            />
+            <Popover
+              content={
+                <Pane paddingX={16}>
+                  <Checkbox
+                    label="Non certifiées"
+                    checked={showUncertify}
+                    onChange={() => setShowUncertify(!showUncertify)}
+                  />
+                  <Checkbox
+                    label="Avec warnings"
+                    checked={showWarning}
+                    onChange={() => setShowWarning(!showWarning)}
+                  />
+                </Pane>
+              }
+            >
+              <IconButton
+                icon={
+                  showUncertify || showWarning ? FilterRemoveIcon : FilterIcon
+                }
+                title="filtres voies"
+                size="small"
+                marginRight={16}
+              />
+            </Popover>
             <ButtonIconExpandHover
               icon={AddIcon}
               title="Ajouter une voie"
