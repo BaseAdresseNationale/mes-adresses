@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { sortBy } from "lodash";
+import { sortBy, compact } from "lodash";
 import {
   Table,
   Paragraph,
@@ -16,8 +16,8 @@ import {
   EndorsedIcon,
   TrashIcon,
   Popover,
-  Button,
   Checkbox,
+  WarningSignIcon,
 } from "evergreen-ui";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
@@ -82,15 +82,19 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
   const { reloadTiles, setTileLayersMode } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
+  const router = useRouter();
   const [toCertify, setToCertify] = useState<string | null>(null);
   const [onCertifyLoading, setOnCertifyLoading] = useState<boolean>(false);
   const [documentGenerationData, setDocumentGenerationData] =
     useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [showUncertify, setShowUncertify] = useState<boolean>(false);
-  const [showWarning, setShowWarning] = useState<boolean>(false);
-  const router = useRouter();
+  const [showUncertify, setShowUncertify] = useState<boolean>(
+    router.query.filters?.includes("uncertified") || false
+  );
+  const [showAlerts, setShowAlerts] = useState<boolean>(
+    router.query.filters?.includes("alertes") || false
+  );
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(TabsEnum.VOIES, voies);
@@ -111,6 +115,40 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
       setBreadcrumbs(null);
     };
   }, [setBreadcrumbs, scrollAndHighlightLastSelectedItem]);
+
+  const changeQueryParamsFilters = useCallback(
+    (key: string, value: boolean) => {
+      if (value) {
+        router.query.filters = Array.isArray(router.query.filters)
+          ? compact([...router.query.filters, key])
+          : compact([router.query.filters, key]);
+      } else {
+        router.query.filters = Array.isArray(router.query.filters)
+          ? (router.query.filters as string[]).filter(
+              (filter) => filter !== key
+            )
+          : [];
+      }
+      void router.push(router, undefined, { shallow: true });
+    },
+    [router]
+  );
+
+  const changeUncertified = useCallback(
+    (value: boolean) => {
+      setShowUncertify(value);
+      changeQueryParamsFilters("uncertified", value);
+    },
+    [changeQueryParamsFilters]
+  );
+
+  const changeAlerts = useCallback(
+    (value: boolean) => {
+      setShowAlerts(value);
+      changeQueryParamsFilters("alerts", value);
+    },
+    [changeQueryParamsFilters]
+  );
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -178,11 +216,11 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     if (showUncertify) {
       items = items.filter(({ isAllCertified }) => !isAllCertified);
     }
-    if (showWarning) {
+    if (showAlerts) {
       items = items.filter(({ id }) => voiesAlerts[id]?.length > 0);
     }
     return items;
-  }, [filtered, showUncertify, showWarning, voiesAlerts]);
+  }, [filtered, showUncertify, showAlerts, voiesAlerts]);
 
   const isEditingEnabled = !isEditing && Boolean(token);
 
@@ -261,21 +299,33 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
               content={
                 <Pane paddingX={16}>
                   <Checkbox
-                    label="Non certifiées"
+                    label={
+                      <Text>
+                        Non certifiées{" "}
+                        <EndorsedIcon style={{ verticalAlign: "text-top" }} />
+                      </Text>
+                    }
                     checked={showUncertify}
-                    onChange={() => setShowUncertify(!showUncertify)}
+                    onChange={() => changeUncertified(!showUncertify)}
                   />
                   <Checkbox
-                    label="Avec alertes"
-                    checked={showWarning}
-                    onChange={() => setShowWarning(!showWarning)}
+                    label={
+                      <Text>
+                        Avec alertes{" "}
+                        <WarningSignIcon
+                          style={{ verticalAlign: "text-top" }}
+                        />
+                      </Text>
+                    }
+                    checked={showAlerts}
+                    onChange={() => changeAlerts(!showAlerts)}
                   />
                 </Pane>
               }
             >
               <IconButton
                 icon={
-                  showUncertify || showWarning ? FilterRemoveIcon : FilterIcon
+                  showUncertify || showAlerts ? FilterRemoveIcon : FilterIcon
                 }
                 title="filtres voies"
                 size="small"

@@ -20,7 +20,10 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
 
   const goToAlerts = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    void router.push(`/bal/${baseLocale.id}/voies`);
+    void router.push({
+      pathname: `/bal/${baseLocale.id}/voies`,
+      query: { filters: ["alertes"] },
+    });
   };
 
   const isAllCertified = false;
