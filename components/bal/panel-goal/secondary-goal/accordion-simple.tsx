@@ -5,7 +5,7 @@ import {
   Icon,
   Pane,
 } from "evergreen-ui";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./accordion-simple.module.css";
 
 interface AccordionCardProps {
