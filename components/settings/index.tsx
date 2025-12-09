@@ -101,7 +101,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
         )}
         <Pane marginBottom={16}>
           <Label display="block" marginBottom={8}>
-            Fonds de carte
+            Fonds de cartes
           </Label>
           <Pane display="flex" gap={16} marginBottom={16}>
             {baseLocale.settings?.fondsDeCartes?.length > 0 && (
@@ -114,7 +114,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
               alignSelf="flex-end"
             >
               <MapCreateIcon marginRight={8} />
-              Modifier fonds de carte
+              Ajouter fond de carte
             </Button>
           </Pane>
         </Pane>
