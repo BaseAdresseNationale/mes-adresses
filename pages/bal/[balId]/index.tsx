@@ -13,7 +13,6 @@ import BALRecoveryContext from "@/contexts/bal-recovery";
 import PanelGoal from "@/components/bal/panel-goal/index";
 import MapContext from "@/contexts/map";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
-import CertificationGoal from "@/components/bal/panel-goal/primary-goal/certification-goal";
 import CertificationInfos from "@/components/bal/certification-infos";
 
 interface BALHomePageProps {

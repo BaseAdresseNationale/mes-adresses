@@ -4,6 +4,8 @@ import TokenContext from "@/contexts/token";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { isEqual, difference } from "lodash";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
+import AlertsContext from "@/contexts/alerts";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -12,17 +14,40 @@ const mailHasChanged = (listA, listB) => {
   );
 };
 
+const ignoredAlertCodesHasChanged = (
+  listA: AlertCodeEnum[],
+  listB: AlertCodeEnum[]
+) => {
+  return (
+    listA.length !== listB.length ||
+    !listA.every((code) => listB.includes(code))
+  );
+};
+
 export function useBALSettings(baseLocale: BaseLocale) {
   const { emails, reloadEmails } = useContext(TokenContext);
-  const { reloadBaseLocale } = useContext(BalDataContext);
+  const { reloadBaseLocale, voies } = useContext(BalDataContext);
+  const { reloadVoiesAlerts } = useContext(AlertsContext);
   const { pushToast } = useContext(LayoutContext);
 
   const [nomInput, setNomInput] = useState(baseLocale.nom);
   const [emailsInput, setEmailsInput] = useState(emails || []);
   const [isLoading, setIsLoading] = useState(false);
+  const [ignoredAlertCodes, setIgnoredAlertCodes] = useState<AlertCodeEnum[]>(
+    baseLocale.settings?.alerts?.ignoredAlertCodes || []
+  );
   const [error, setError] = useState("");
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] =
     useState(false);
+
+  const ignoredAlertCodesChanged = useMemo(
+    () =>
+      ignoredAlertCodesHasChanged(
+        ignoredAlertCodes,
+        baseLocale.settings?.alerts?.ignoredAlertCodes || []
+      ),
+    [ignoredAlertCodes, baseLocale.settings?.alerts?.ignoredAlertCodes]
+  );
 
   const nomHasChanged = useMemo(
     () => nomInput !== baseLocale.nom,
@@ -56,6 +81,15 @@ export function useBALSettings(baseLocale: BaseLocale) {
             setIsRenewTokenWarningShown(true);
           }
         }
+        if (ignoredAlertCodesChanged) {
+          await BasesLocalesService.updateBaseLocale(baseLocale.id, {
+            settings: {
+              ...baseLocale.settings,
+              alerts: { ignoredAlertCodes },
+            },
+          });
+          await reloadVoiesAlerts(voies, ignoredAlertCodes);
+        }
         await reloadBaseLocale();
         pushToast({
           title: "Les paramètres ont été enregistrés avec succès",
@@ -77,6 +111,10 @@ export function useBALSettings(baseLocale: BaseLocale) {
       pushToast,
       reloadBaseLocale,
       emails,
+      ignoredAlertCodesChanged,
+      ignoredAlertCodes,
+      reloadVoiesAlerts,
+      voies,
     ]
   );
 
@@ -93,5 +131,8 @@ export function useBALSettings(baseLocale: BaseLocale) {
     emailsHaveChanged,
     setError,
     setIsRenewTokenWarningShown,
+    ignoredAlertCodes,
+    setIgnoredAlertCodes,
+    ignoredAlertCodesChanged,
   };
 }

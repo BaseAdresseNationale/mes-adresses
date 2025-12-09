@@ -1,0 +1,21 @@
+.button-expand {
+  text-transform: none !important;
+}
+
+.button-expand > span {
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.button-expand:not(:hover) > span {
+  max-width: 0px;
+  transition: all 0.3s;
+}
+
+.button-expand:hover > span {
+  max-width: 500px;
+  padding-left: 5px;
+  padding-right: 5px;
+  transition: all 0.3s;
+}

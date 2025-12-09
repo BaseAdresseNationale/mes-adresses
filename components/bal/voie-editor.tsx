@@ -1,5 +1,5 @@
-import { useState, useContext, useCallback, useEffect } from "react";
-import { Pane, Button, RadioGroup } from "evergreen-ui";
+import { useState, useContext, useCallback, useEffect, useRef } from "react";
+import { Pane, Button, RadioGroup, Alert } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
 import DrawContext from "@/contexts/draw";
@@ -24,6 +24,15 @@ import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
 import { trimNomAlt } from "@/lib/utils/string";
 import { DrawMetricVoieEditor } from "./draw-metric-voie-editor";
+import AlertsContext from "@/contexts/alerts";
+import {
+  AlertDefinitions,
+  AlertFieldEnum,
+  AlertModelEnum,
+  AlertVoieNom,
+  isAlertVoieNom,
+} from "@/lib/alerts/alerts.types";
+import { computeVoieNomAlerts } from "@/lib/alerts/voie-nom.utils";
 import styles from "./voie-editor.module.css";
 
 interface VoieEditorProps {
@@ -61,6 +70,14 @@ function VoieEditor({
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
+  const { voiesAlerts } = useContext(AlertsContext);
+
+  const [voieNomAlert, setVoieNomAlert] = useState<AlertVoieNom | null>(
+    (voiesAlerts[initialValue?.id]?.find((alert) =>
+      isAlertVoieNom(alert)
+    ) as AlertVoieNom) || null
+  );
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const onFormSubmit = useCallback(
     async (e) => {
@@ -153,6 +170,52 @@ function VoieEditor({
     onNomChange({ target: { value: initialValue?.nom } });
   }, [initialValue?.nom, onNomChange]);
 
+  const setNom = useCallback(
+    (value: string) => {
+      onNomChange({
+        target: {
+          value,
+        },
+      });
+
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      debounceTimerRef.current = setTimeout(() => {
+        const [codes, remediation] = computeVoieNomAlerts(value);
+        if (codes.length > 0) {
+          setVoieNomAlert({
+            model: AlertModelEnum.VOIE,
+            field: AlertFieldEnum.VOIE_NOM,
+            codes,
+            value,
+            remediation,
+          });
+        } else {
+          setVoieNomAlert(null);
+        }
+      }, 500);
+    },
+    [onNomChange]
+  );
+
+  const handleCorrection = useCallback(
+    (value: string) => {
+      setNom(value);
+      setVoieNomAlert(null);
+    },
+    [setNom, setVoieNomAlert]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <Form
       editingId={initialValue?.id}
@@ -167,9 +230,34 @@ function VoieEditor({
             label="Nom de la voie"
             placeholder="Nom de la voie"
             value={nom}
-            onChange={onNomChange}
+            onChange={(e) => setNom(e.target.value)}
             validationMessage={getValidationMessage("voie_nom")}
           />
+          {voieNomAlert && voieNomAlert.field === AlertFieldEnum.VOIE_NOM && (
+            <Alert intent="warning" marginTop={8} hasIcon={false} padding={8}>
+              <ul style={{ marginTop: 0, marginBottom: 0, paddingLeft: 20 }}>
+                {voieNomAlert.codes.map((code) => (
+                  <li key={code}>{AlertDefinitions[code].message}</li>
+                ))}
+              </ul>
+              {voieNomAlert.remediation && (
+                <>
+                  Corriger en
+                  <Button
+                    marginLeft={8}
+                    intent="primary"
+                    size="small"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleCorrection(voieNomAlert.remediation);
+                    }}
+                  >
+                    {voieNomAlert.remediation}
+                  </Button>
+                </>
+              )}
+            </Alert>
+          )}
 
           <RadioGroup
             isRequired
