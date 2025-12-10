@@ -80,11 +80,12 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
   return (
     <>
       <DialogWarningAction
-        confirmLabel="Convertir en toponyme"
+        confirmLabel="Convertir en voie sans adresses"
         isShown={Boolean(toConvert)}
         content={
           <Paragraph>
-            Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
+            Êtes vous bien sûr de vouloir convertir cette voie en voie sans
+            adresses ?
           </Paragraph>
         }
         isLoading={onConvertLoading}
@@ -105,9 +106,9 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
         <Button
           onClick={() => setToConvert(voie.id)}
           size="small"
-          title="Convertir la voie en toponyme"
+          title="Convertir la voie en voie sans adresses"
         >
-          Convertir en toponyme
+          Convertir en voie sans adresses
         </Button>
       </>
     </>

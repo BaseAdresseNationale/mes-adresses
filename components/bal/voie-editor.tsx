@@ -1,5 +1,14 @@
 import { useState, useContext, useCallback, useEffect, useRef } from "react";
-import { Pane, Button, RadioGroup, Alert } from "evergreen-ui";
+import {
+  Pane,
+  Button,
+  RadioGroup,
+  Alert,
+  Text,
+  UnorderedList,
+  ListItem,
+  defaultTheme,
+} from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
 import DrawContext from "@/contexts/draw";
@@ -235,13 +244,15 @@ function VoieEditor({
           />
           {voieNomAlert && voieNomAlert.field === AlertFieldEnum.VOIE_NOM && (
             <Alert intent="warning" marginTop={8} hasIcon={false} padding={8}>
-              <ul style={{ marginTop: 0, marginBottom: 0, paddingLeft: 20 }}>
+              <UnorderedList>
                 {voieNomAlert.codes.map((code) => (
-                  <li key={code}>{AlertDefinitions[code].message}</li>
+                  <ListItem key={code} color={defaultTheme.colors.yellow800}>
+                    {AlertDefinitions[code].message}
+                  </ListItem>
                 ))}
-              </ul>
+              </UnorderedList>
               {voieNomAlert.remediation && (
-                <>
+                <Text color={defaultTheme.colors.yellow800}>
                   Corriger en
                   <Button
                     marginLeft={8}
@@ -254,7 +265,7 @@ function VoieEditor({
                   >
                     {voieNomAlert.remediation}
                   </Button>
-                </>
+                </Text>
               )}
             </Alert>
           )}

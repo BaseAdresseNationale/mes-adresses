@@ -66,6 +66,7 @@ function TableRowNotifications({
             <WarningSignIcon
               color="warning"
               style={{ verticalAlign: "bottom" }}
+              cursor="pointer"
             />
           </Popover>
         </Table.TextCell>
