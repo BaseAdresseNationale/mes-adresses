@@ -31,7 +31,7 @@ function Editor({ children }: EditorProps) {
   const { isMobile, isMapFullscreen, setIsMapFullscreen } =
     useContext(LayoutContext);
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
-  const { tokenIsChecking } = useContext(TokenContext);
+  const { tokenIsChecking, token } = useContext(TokenContext);
   const { baseLocale, commune } = useContext(BalDataContext);
 
   const isDemo = baseLocale.status === BaseLocale.status.DEMO;
@@ -79,7 +79,7 @@ function Editor({ children }: EditorProps) {
             >
               <MainTabs balId={baseLocale.id} />
 
-              <ProductTours commune={commune} />
+              {token && <ProductTours commune={commune} />}
 
               {isAddressFormOpen ? (
                 <AddressEditor

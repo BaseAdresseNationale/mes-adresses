@@ -14,7 +14,7 @@ export function FondDeCarteDialog({
   return (
     <Dialog
       isShown={isShown}
-      title="Modifier le fond de carte"
+      title="Ajouter fond de carte"
       hasFooter={false}
       onCloseComplete={onCloseComplete}
     >
@@ -24,7 +24,7 @@ export function FondDeCarteDialog({
           intent="none"
           title="Comment rajouter ses propres fonds de carte ?"
         >
-          Seul les urls des fluxs WMTS ou WMS sont supportées. Les données
+          Seul les urls des flux WMTS ou WMS sont supportées. Les données
           doivent être de type raster et les images de 256x256 pixels. Voir
           l&apos;exemple ci-dessous.
         </Alert>
