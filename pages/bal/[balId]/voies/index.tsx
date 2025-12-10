@@ -398,7 +398,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   ) : null
                 }
                 warning={
-                  voiesAlerts[voie.id] ? (
+                  Boolean(token) && voiesAlerts[voie.id]?.length > 0 ? (
                     <TableRowWarning
                       baseLocale={baseLocale}
                       voie={voie}
