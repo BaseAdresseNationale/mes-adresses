@@ -23,6 +23,7 @@ import {
   getSignalementLabel,
   isNumeroChangesRequested,
   matchExistingToponyme,
+  requestedLocationsExist,
 } from "@/lib/utils/signalement";
 import { ObjectId } from "bson";
 import MapContext from "@/contexts/map";
@@ -34,6 +35,7 @@ import SignalementContext from "@/contexts/signalement";
 import TokenContext from "@/contexts/token";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
+import { wait } from "@/lib/utils/promise";
 
 interface SignalementPageProps {
   signalement: Signalement;
@@ -78,6 +80,11 @@ function SignalementPage({
     };
   }, [setBreadcrumbs, baseLocale, signalement, setTileLayersMode]);
 
+  const isProcessableSignalement =
+    signalement.status === Signalement.status.PENDING &&
+    (existingLocation || isNewVoieCreation) &&
+    requestedLocationsExist(requestedLocations);
+
   // Mark the signalement as expired if the location is not found
   // and the signalement is still pending
   useEffect(() => {
@@ -88,22 +95,10 @@ function SignalementPage({
       });
     };
 
-    if (
-      (existingLocation === null ||
-        requestedLocations.toponyme === null ||
-        requestedLocations.voie === null) &&
-      signalement.status === Signalement.status.PENDING &&
-      !isNewVoieCreation
-    ) {
+    if (!isProcessableSignalement) {
       markSignalementAsExpired();
     }
-  }, [
-    existingLocation,
-    signalement,
-    baseLocale,
-    requestedLocations,
-    isNewVoieCreation,
-  ]);
+  }, [signalement, baseLocale, isProcessableSignalement]);
 
   // Fetch the author of the signalement
   useEffect(() => {
@@ -147,6 +142,8 @@ function SignalementPage({
 
       const nextSignalement = await getNextSignalement();
 
+      await wait(1000); // Wait for a smoother transition
+
       if (nextSignalement) {
         router.push(
           `/bal/${router.query.balId}/${TabsEnum.SIGNALEMENTS}/${nextSignalement.id}`
@@ -179,10 +176,7 @@ function SignalementPage({
             )
           }
         />
-      ) : signalement.status === Signalement.status.PENDING &&
-        (existingLocation || isNewVoieCreation) &&
-        requestedLocations.toponyme !== null &&
-        requestedLocations.voie !== null ? (
+      ) : isProcessableSignalement ? (
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
