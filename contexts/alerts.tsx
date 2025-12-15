@@ -63,7 +63,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
     []
   );
 
-  const getAlertsVoie = useCallback(
+  const getVoieAlerts = useCallback(
     (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const alerts = [getVoieNomAlert(voie), getVoieEmptyAlert(voie)];
       const filteredAlerts = alerts
@@ -78,24 +78,24 @@ export function AlertsContextProvider(props: ChildrenProps) {
 
   const reloadVoieAlerts = useCallback(
     (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
-      const alerts = getAlertsVoie(voie, ignoredAlertCodes);
+      const alerts = getVoieAlerts(voie, ignoredAlertCodes);
       setVoiesAlerts((prev) => ({ ...prev, [voie.id]: alerts }));
     },
-    [getAlertsVoie]
+    [getVoieAlerts]
   );
 
   const reloadVoiesAlerts = useCallback(
     (voies: ExtendedVoieDTO[], ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const newVoiesAlerts: Record<string, AlertVoie[]> = {};
       for (const voie of voies) {
-        const alerts = getAlertsVoie(voie, ignoredAlertCodes);
+        const alerts = getVoieAlerts(voie, ignoredAlertCodes);
         if (alerts.length > 0) {
           newVoiesAlerts[voie.id] = alerts;
         }
       }
       setVoiesAlerts(newVoiesAlerts);
     },
-    [getAlertsVoie]
+    [getVoieAlerts]
   );
 
   const value = useMemo(

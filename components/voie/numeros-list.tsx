@@ -30,8 +30,10 @@ import {
   BaseLocale,
   BasesLocalesService,
   CommunePrecedenteDTO,
+  ExtendedVoieDTO,
   Numero,
   NumerosService,
+  Voie,
 } from "@/lib/openapi-api-bal";
 import TableRowActions from "../table-row/table-row-actions";
 import TableRowNotifications from "../table-row/table-row-notifications";
@@ -52,11 +54,13 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
+import AlertsContext from "@/contexts/alerts";
 
 interface NumerosListProps {
   commune: CommuneType;
   token?: string;
-  voieId: string;
+  voie: Voie;
   numeros: Array<Numero>;
   handleEditing: (id?: string) => void;
 }
@@ -68,7 +72,7 @@ const fuseOptions = {
 function NumerosList({
   commune,
   token = null,
-  voieId,
+  voie,
   numeros,
   handleEditing,
 }: NumerosListProps) {
@@ -76,7 +80,7 @@ function NumerosList({
   const [documentGenerationData, setDocumentGenerationData] =
     useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
 
-  const [selectedNumerosIds, setSelectedNumerosIds] = useState([]);
+  const [selectedNumerosIds, setSelectedNumerosIds] = useState<string[]>([]);
   const { toaster } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
@@ -93,7 +97,7 @@ function NumerosList({
   const [isDisabled, setIsDisabled] = useState(false);
 
   const [filtered, setFilter] = useFuse(numeros, 200, fuseOptions);
-
+  const { reloadVoieAlerts } = useContext(AlertsContext);
   const scrollableItems = useMemo(
     () =>
       sortBy(filtered, (n) => {
@@ -163,6 +167,29 @@ function NumerosList({
     [commune]
   );
 
+  const reloadVoie = useCallback(
+    async (deletedNumerosIds: string[]) => {
+      const numerosRestants = numeros.filter(
+        (numero) => !deletedNumerosIds.includes(numero.id)
+      );
+      (voie as ExtendedVoieDTO).nbNumeros = numerosRestants.length;
+      (voie as ExtendedVoieDTO).nbNumerosCertifies = numerosRestants.filter(
+        (numero) => numero.certifie
+      ).length;
+      (voie as ExtendedVoieDTO).isAllCertified =
+        numerosRestants.length ===
+        numerosRestants.filter((numero) => numero.certifie).length;
+      (voie as ExtendedVoieDTO).commentedNumeros = numerosRestants
+        .filter((numero) => numero.comment !== null)
+        .map((numero) => numero.id);
+      await reloadVoieAlerts(
+        voie as ExtendedVoieDTO,
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+      );
+    },
+    [baseLocale.settings?.ignoredAlertCodes, numeros, reloadVoieAlerts, voie]
+  );
+
   const onRemove = useCallback(
     async (idNumero) => {
       const softDeleteNumero = toaster(
@@ -177,8 +204,16 @@ function NumerosList({
         "Le numéro n’a pas pu être archivé"
       );
       await softDeleteNumero();
+      await reloadVoie([idNumero]);
     },
-    [reloadNumeros, reloadParcelles, refreshBALSync, reloadTiles, toaster]
+    [
+      reloadNumeros,
+      reloadParcelles,
+      refreshBALSync,
+      reloadTiles,
+      toaster,
+      reloadVoie,
+    ]
   );
 
   const onDownloadCertificat = useCallback(
@@ -244,6 +279,7 @@ function NumerosList({
       "Les numéros n’ont pas pu être archivés"
     );
     await softDeleteNumeros();
+    await reloadVoie(selectedNumerosIds);
     setIsDisabled(false);
   };
 
@@ -300,7 +336,7 @@ function NumerosList({
       {isGroupedActionsShown && (
         <GroupedActions
           commune={commune}
-          idVoie={voieId}
+          idVoie={voie.id}
           numeros={numeros}
           selectedNumerosIds={selectedNumerosIds}
           resetSelectedNumerosIds={() => {
