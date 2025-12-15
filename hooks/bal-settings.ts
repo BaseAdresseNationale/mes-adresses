@@ -34,7 +34,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
   const [emailsInput, setEmailsInput] = useState(emails || []);
   const [isLoading, setIsLoading] = useState(false);
   const [ignoredAlertCodes, setIgnoredAlertCodes] = useState<AlertCodeEnum[]>(
-    baseLocale.settings?.alerts?.ignoredAlertCodes || []
+    (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
   );
   const [error, setError] = useState("");
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] =
@@ -44,9 +44,9 @@ export function useBALSettings(baseLocale: BaseLocale) {
     () =>
       ignoredAlertCodesHasChanged(
         ignoredAlertCodes,
-        baseLocale.settings?.alerts?.ignoredAlertCodes || []
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
       ),
-    [ignoredAlertCodes, baseLocale.settings?.alerts?.ignoredAlertCodes]
+    [ignoredAlertCodes, baseLocale.settings?.ignoredAlertCodes]
   );
 
   const nomHasChanged = useMemo(
@@ -85,7 +85,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
           await BasesLocalesService.updateBaseLocale(baseLocale.id, {
             settings: {
               ...baseLocale.settings,
-              alerts: { ignoredAlertCodes },
+              ignoredAlertCodes,
             },
           });
           await reloadVoiesAlerts(voies, ignoredAlertCodes);

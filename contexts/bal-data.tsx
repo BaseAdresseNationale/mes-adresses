@@ -29,6 +29,7 @@ import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 import { CommuneType } from "@/types/commune";
 import { getCommuneWithBBox } from "@/lib/commune";
 import { Pane, Paragraph, Spinner } from "evergreen-ui";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -135,18 +136,20 @@ export function BalDataContextProvider({
     setParcelles(parcelles);
   }, [baseLocale.id]);
 
+  const sleep = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
   const reloadVoies = useCallback(async () => {
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     setVoies(voies);
     reloadVoiesAlerts(
       voies,
-      baseLocale.settings?.alerts?.ignoredAlertCodes || []
+      (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
     );
   }, [
     baseLocale.id,
     reloadVoiesAlerts,
-    baseLocale.settings?.alerts?.ignoredAlertCodes,
+    baseLocale.settings?.ignoredAlertCodes,
   ]);
 
   const reloadToponymes = useCallback(async () => {
