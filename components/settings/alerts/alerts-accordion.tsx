@@ -1,7 +1,6 @@
-import { BaseLocale } from "@/lib/openapi-api-bal";
 import React, { useState } from "react";
-import { TextInputField, Pane, Text, Checkbox, Heading } from "evergreen-ui";
-import { AccordionCard } from "../accordion-card";
+import { Pane, Checkbox, Heading } from "evergreen-ui";
+import { AccordionCard } from "../../accordion-card";
 import {
   AlertCodeEnum,
   AlertDefinitions,
