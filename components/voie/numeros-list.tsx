@@ -56,6 +56,7 @@ import MatomoTrackingContext, {
 } from "@/contexts/matomo-tracking";
 import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 import AlertsContext from "@/contexts/alerts";
+import NumeroWarning from "@/components/table-row/table-numero-warning";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -83,7 +84,7 @@ function NumerosList({
   const [selectedNumerosIds, setSelectedNumerosIds] = useState<string[]>([]);
   const { toaster } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
-
+  const { numerosAlerts } = useContext(AlertsContext);
   const {
     baseLocale,
     isEditing,
@@ -446,6 +447,18 @@ function NumerosList({
                     : null
                 }
                 comment={numero.comment}
+                warning={
+                  Boolean(token) && numerosAlerts[numero.id]?.length > 0 ? (
+                    <NumeroWarning
+                      baseLocale={baseLocale}
+                      alerts={numerosAlerts[numero.id]}
+                      numero={numero}
+                      onSelect={() => {
+                        handleEditing(numero.id);
+                      }}
+                    />
+                  ) : null
+                }
               />
 
               {isEditingEnabled && (

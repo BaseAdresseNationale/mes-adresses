@@ -61,7 +61,7 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
-import TableRowWarning from "@/components/table-row/table-row-warning";
+import TableRowWarning from "@/components/table-row/table-voie-warning";
 import AlertsContext from "@/contexts/alerts";
 
 interface VoiesPageProps {

@@ -4,13 +4,13 @@ import VoieEmptyWarning from "./warnings/voie-empty-warning";
 import VoieNomWarning from "./warnings/voie-nom-warning";
 import { isAlertVoieNom } from "@/lib/alerts/utils/alerts-voies.utils";
 
-interface TableRowWarningProps {
+interface TableVoieWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
   voie: ExtendedVoieDTO;
   alerts: AlertVoie[];
 }
 
-function TableRowWarning({ baseLocale, voie, alerts }: TableRowWarningProps) {
+function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
   return (
     <>
       {alerts.map((alert, index) => {
@@ -29,4 +29,4 @@ function TableRowWarning({ baseLocale, voie, alerts }: TableRowWarningProps) {
   );
 }
 
-export default TableRowWarning;
+export default TableVoieWarning;
