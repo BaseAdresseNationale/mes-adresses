@@ -35,12 +35,12 @@ import { trimNomAlt } from "@/lib/utils/string";
 import { DrawMetricVoieEditor } from "./draw-metric-voie-editor";
 import AlertsContext from "@/contexts/alerts";
 import {
-  AlertDefinitions,
-  AlertFieldEnum,
+  AlertFieldVoieEnum,
+  AlertVoie,
   AlertModelEnum,
-  AlertVoieNom,
   isAlertVoieNom,
 } from "@/lib/alerts/alerts.types";
+import { AlertVoieDefinitions } from "@/lib/alerts/alerts.definitions";
 import { computeVoieNomAlerts } from "@/lib/alerts/voie-nom.utils";
 import styles from "./voie-editor.module.css";
 
@@ -81,10 +81,10 @@ function VoieEditor({
   const [ref, setIsFocus] = useFocus(true);
   const { voiesAlerts } = useContext(AlertsContext);
 
-  const [voieNomAlert, setVoieNomAlert] = useState<AlertVoieNom | null>(
+  const [voieNomAlert, setVoieNomAlert] = useState<AlertVoie | null>(
     (voiesAlerts[initialValue?.id]?.find((alert) =>
       isAlertVoieNom(alert)
-    ) as AlertVoieNom) || null
+    ) as AlertVoie) || null
   );
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -196,7 +196,7 @@ function VoieEditor({
         if (codes.length > 0) {
           setVoieNomAlert({
             model: AlertModelEnum.VOIE,
-            field: AlertFieldEnum.VOIE_NOM,
+            field: AlertFieldVoieEnum.VOIE_NOM,
             codes,
             value,
             remediation,
@@ -242,12 +242,12 @@ function VoieEditor({
             onChange={(e) => setNom(e.target.value)}
             validationMessage={getValidationMessage("voie_nom")}
           />
-          {voieNomAlert && voieNomAlert.field === AlertFieldEnum.VOIE_NOM && (
+          {voieNomAlert && isAlertVoieNom(voieNomAlert) && (
             <Alert intent="warning" marginTop={8} hasIcon={false} padding={8}>
               <UnorderedList>
                 {voieNomAlert.codes.map((code) => (
                   <ListItem key={code} color={defaultTheme.colors.yellow800}>
-                    {AlertDefinitions[code].message}
+                    {AlertVoieDefinitions[code]}
                   </ListItem>
                 ))}
               </UnorderedList>

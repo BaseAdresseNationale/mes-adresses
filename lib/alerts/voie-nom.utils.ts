@@ -1,5 +1,5 @@
 import { trim } from "lodash";
-import { AlertCodeEnum } from "./alerts.types";
+import { AlertCodeVoieEnum } from "./alerts.types";
 
 const LIEU_WORD = "lieu";
 const DIT_WORD = "dit";
@@ -215,28 +215,28 @@ export function remediationVoieNom(str: string): string {
   );
 }
 
-function computeCommuneErrors(value: string): AlertCodeEnum[] {
-  const codes: AlertCodeEnum[] = [];
+function computeCommuneErrors(value: string): AlertCodeVoieEnum[] {
+  const codes: AlertCodeVoieEnum[] = [];
 
   // SI CARACTERE INVALIDE
   if (value.match(/[�_,/#!$%^&*;:{}=\~"?«»…]/g)) {
-    codes.push(AlertCodeEnum.CARACTERE_INVALIDE);
+    codes.push(AlertCodeVoieEnum.CARACTERE_INVALIDE);
   }
   // SI CELA COMMENCE PAR ESPACE ' ou -
   if (trim(value, " '-") !== value) {
-    codes.push(AlertCodeEnum.CARACTERE_INVALIDE_START);
+    codes.push(AlertCodeVoieEnum.CARACTERE_INVALIDE_START);
   }
   // SI CELA FINI PAR UN POINT
   if (value.match(/\.$/)) {
-    codes.push(AlertCodeEnum.CARACTERE_INVALIDE_END);
+    codes.push(AlertCodeVoieEnum.CARACTERE_INVALIDE_END);
   }
   // SI IL Y A UN MOT ENTRE PARENTHESE
   if (value.match(/\([^()]*\)/g)) {
-    codes.push(AlertCodeEnum.NO_WORDS_IN_PARENTHESES);
+    codes.push(AlertCodeVoieEnum.NO_WORDS_IN_PARENTHESES);
   }
   // SI PLUSIEURS ESPACE DE SUITE
   if (value.match(/\s\s+/g)) {
-    codes.push(AlertCodeEnum.MULTI_SPACE_CARACTERE);
+    codes.push(AlertCodeVoieEnum.MULTI_SPACE_CARACTERE);
   }
 
   return codes;
@@ -244,8 +244,8 @@ function computeCommuneErrors(value: string): AlertCodeEnum[] {
 
 function computeSpecificWordsAndAbbreviationErrors(
   value: string
-): AlertCodeEnum[] {
-  const codes: AlertCodeEnum[] = [];
+): AlertCodeVoieEnum[] {
+  const codes: AlertCodeVoieEnum[] = [];
   const lowerWords: string[] = getWords(value, true);
   // SI CELA COMMENCE PAR LIEU DIT
   if (
@@ -253,7 +253,7 @@ function computeSpecificWordsAndAbbreviationErrors(
     (LIEU_DIT_WORDS.includes(lowerWords[0]) ||
       (lowerWords[0] === LIEU_WORD && lowerWords[1] === DIT_WORD))
   ) {
-    codes.push(AlertCodeEnum.BAD_WORD_LIEUDIT);
+    codes.push(AlertCodeVoieEnum.BAD_WORD_LIEUDIT);
   }
   // SI IL Y A PLUSIEURS FOIS LE MOT RUE
   if (
@@ -261,7 +261,7 @@ function computeSpecificWordsAndAbbreviationErrors(
     lowerWords[0] === "rue" &&
     lowerWords.slice(1).some((w) => w.endsWith("rue"))
   ) {
-    codes.push(AlertCodeEnum.BAD_MULTI_WORD_RUE);
+    codes.push(AlertCodeVoieEnum.BAD_MULTI_WORD_RUE);
   }
   // SI IL Y A UNE ABREVATiON
   if (
@@ -271,16 +271,16 @@ function computeSpecificWordsAndAbbreviationErrors(
         Object.keys(EXPAND_FIRST_WORD_TABLE).includes(w)
     )
   ) {
-    codes.push(AlertCodeEnum.ABBREVIATION_INVALID);
+    codes.push(AlertCodeVoieEnum.ABBREVIATION_INVALID);
   }
   return codes;
 }
 
-function computeCasseIncorrecteErrors(value: string): AlertCodeEnum[] {
+function computeCasseIncorrecteErrors(value: string): AlertCodeVoieEnum[] {
   const words: string[] = getWords(value);
   const wordsCapitalized = fixCapitalize(words);
   if (words.length > 0 && words.some((w, i) => w !== wordsCapitalized[i])) {
-    return [AlertCodeEnum.CASSE_INCORRECTE];
+    return [AlertCodeVoieEnum.CASSE_INCORRECTE];
   }
 
   return [];
@@ -288,14 +288,14 @@ function computeCasseIncorrecteErrors(value: string): AlertCodeEnum[] {
 
 export function computeVoieNomAlerts(
   value: string
-): [codes: AlertCodeEnum[], remediation?: string] {
-  const codes: AlertCodeEnum[] = [];
+): [codes: AlertCodeVoieEnum[], remediation?: string] {
+  const codes: AlertCodeVoieEnum[] = [];
 
   // SI CELA FAIT MOINS DE 3 OU PLUS QUE 200 CARACTERES
   if (value.length < 3) {
-    return [[AlertCodeEnum.TOO_SHORT]];
+    return [[AlertCodeVoieEnum.TOO_SHORT]];
   } else if (value.length > 200) {
-    return [[AlertCodeEnum.TOO_LONG]];
+    return [[AlertCodeVoieEnum.TOO_LONG]];
   }
 
   const communeErrors = computeCommuneErrors(value);

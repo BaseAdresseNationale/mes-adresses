@@ -136,8 +136,6 @@ export function BalDataContextProvider({
     setParcelles(parcelles);
   }, [baseLocale.id]);
 
-  const sleep = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
   const reloadVoies = useCallback(async () => {
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);

@@ -1,5 +1,9 @@
-export enum AlertCodeEnum {
-  // Voie nom
+export enum AlertModelEnum {
+  VOIE = "voie",
+  NUMERO = "numero",
+}
+
+export enum AlertCodeVoieEnum {
   CARACTERE_INVALIDE = "caractere_invalide",
   CARACTERE_INVALIDE_START = "caractere_invalide_start",
   CARACTERE_INVALIDE_END = "caractere_invalide_end",
@@ -11,98 +15,50 @@ export enum AlertCodeEnum {
   CASSE_INCORRECTE = "casse_incorrecte",
   TOO_SHORT = "trop_court",
   TOO_LONG = "trop_long",
-  // Voie sans numéros
   VOIE_EMPTY = "voie_empty",
 }
 
-export enum AlertModelEnum {
-  VOIE = "voie",
+export enum AlertCodeNumeroEnum {
+  SUFFIXE_CARACTERE_INVALIDE = "suffixe_caractere_invalide",
 }
 
-export enum AlertFieldEnum {
+export type AlertCodeEnum = AlertCodeVoieEnum | AlertCodeNumeroEnum;
+
+export type AlertCodeByModel<T extends AlertModelEnum> =
+  T extends AlertModelEnum.VOIE
+    ? AlertCodeVoieEnum
+    : T extends AlertModelEnum.NUMERO
+      ? AlertCodeNumeroEnum
+      : never;
+
+export enum AlertFieldVoieEnum {
   VOIE_NOM = "voie_nom",
 }
 
-export const AlertDefinitions: Record<
-  AlertCodeEnum,
-  { message: string; model: AlertModelEnum; field?: AlertFieldEnum }
-> = {
-  [AlertCodeEnum.CARACTERE_INVALIDE]: {
-    message: "Le nom de la voie contient un caractère invalide",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.CARACTERE_INVALIDE_START]: {
-    message: "Le nom de la voie commence par un caractère invalide",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.CARACTERE_INVALIDE_END]: {
-    message: "Le nom de la voie finit par un caractère invalide",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.NO_WORDS_IN_PARENTHESES]: {
-    message: "Le nom de la voie contient un mot entre parenthèses",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.MULTI_SPACE_CARACTERE]: {
-    message: "Le nom de la voie contient plusieurs espaces de suite",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.BAD_WORD_LIEUDIT]: {
-    message: "Le nom de la voie contient un mot de lieu-dit invalide",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.BAD_MULTI_WORD_RUE]: {
-    message: "Le nom de la voie contient plusieurs fois le mot rue",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.ABBREVIATION_INVALID]: {
-    message: "Le nom de la voie contient une abréviation invalide",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.CASSE_INCORRECTE]: {
-    message: "Le nom de la voie contient une casse incorrecte",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.TOO_SHORT]: {
-    message: "Le nom de la voie est trop court",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.TOO_LONG]: {
-    message: "Le nom de la voie est trop long",
-    model: AlertModelEnum.VOIE,
-    field: AlertFieldEnum.VOIE_NOM,
-  },
-  [AlertCodeEnum.VOIE_EMPTY]: {
-    message: "Aucun numéro de voie",
-    model: AlertModelEnum.VOIE,
-  },
-};
-
-export interface Alert {
-  model: AlertModelEnum;
-  codes: AlertCodeEnum[];
+export enum AlertFieldNumeroEnum {
+  NUMERO_SUFFIXE = "numero_suffixe",
 }
 
-export interface AlertVoie extends Alert {
-  model: AlertModelEnum.VOIE;
-}
+export type AlertFieldEnum = AlertFieldVoieEnum | AlertFieldNumeroEnum;
 
-export interface AlertVoieNom extends AlertVoie {
-  field: AlertFieldEnum.VOIE_NOM;
+export type AlertFieldByModel<T extends AlertModelEnum> =
+  T extends AlertModelEnum.VOIE
+    ? AlertFieldVoieEnum
+    : T extends AlertModelEnum.NUMERO
+      ? AlertFieldNumeroEnum
+      : never;
+
+export type Alert<M extends AlertModelEnum = AlertModelEnum> = {
+  model: M;
+  codes: AlertCodeByModel<M>[];
+  field: AlertFieldByModel<M>;
   value: string;
   remediation?: string;
-}
+};
 
-export function isAlertVoieNom(alert: AlertVoie): alert is AlertVoieNom {
-  return "field" in alert && alert.field === AlertFieldEnum.VOIE_NOM;
+export type AlertVoie = Alert<AlertModelEnum.VOIE>;
+export type AlertNumero = Alert<AlertModelEnum.NUMERO>;
+
+export function isAlertVoieNom(alert: Alert): boolean {
+  return "field" in alert && alert.field === AlertFieldVoieEnum.VOIE_NOM;
 }

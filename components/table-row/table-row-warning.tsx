@@ -1,6 +1,6 @@
 import { ExtendedBaseLocaleDTO, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
 import {
-  AlertCodeEnum,
+  AlertCodeVoieEnum,
   AlertVoie,
   isAlertVoieNom,
 } from "@/lib/alerts/alerts.types";
@@ -20,7 +20,7 @@ function TableRowWarning({ baseLocale, voie, alerts }: TableRowWarningProps) {
         return (
           <div key={`alert-${index}`}>
             {index > 0 && <hr />}
-            {alert.codes.includes(AlertCodeEnum.VOIE_EMPTY) ? (
+            {alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) ? (
               <VoieEmptyWarning baseLocale={baseLocale} voie={voie} />
             ) : isAlertVoieNom(alert) ? (
               <VoieNomWarning baseLocale={baseLocale} voie={voie} />

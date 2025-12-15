@@ -2,12 +2,11 @@ import React, { useState, useCallback, useMemo, useContext } from "react";
 import { without } from "lodash";
 import { ChildrenProps } from "@/types/context";
 import {
-  Alert,
+  AlertCodeVoieEnum,
   AlertCodeEnum,
-  AlertFieldEnum,
   AlertModelEnum,
   AlertVoie,
-  AlertVoieNom,
+  AlertFieldVoieEnum,
 } from "@/lib/alerts/alerts.types";
 import { ExtendedVoieDTO } from "@/lib/openapi-api-bal/models/ExtendedVoieDTO";
 import { computeVoieNomAlerts } from "@/lib/alerts/voie-nom.utils";
@@ -32,7 +31,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
     (
       voie: ExtendedVoieDTO,
       ignoredAlertCodes: AlertCodeEnum[] = []
-    ): AlertVoieNom | undefined => {
+    ): AlertVoie | undefined => {
       const [codesFound, remediation] = computeVoieNomAlerts(voie.nom);
       const codes = codesFound.filter(
         (code) => !ignoredAlertCodes.includes(code)
@@ -40,11 +39,11 @@ export function AlertsContextProvider(props: ChildrenProps) {
       if (codes.length > 0) {
         return {
           model: AlertModelEnum.VOIE,
-          field: AlertFieldEnum.VOIE_NOM,
+          field: AlertFieldVoieEnum.VOIE_NOM,
           codes,
           value: voie.nom,
           remediation,
-        } as AlertVoieNom;
+        } as AlertVoie;
       }
     },
     []
@@ -55,7 +54,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       if (voie.nbNumeros === 0) {
         return {
           model: AlertModelEnum.VOIE,
-          codes: [AlertCodeEnum.VOIE_EMPTY],
+          codes: [AlertCodeVoieEnum.VOIE_EMPTY],
         } as AlertVoie;
       }
     },
@@ -64,18 +63,19 @@ export function AlertsContextProvider(props: ChildrenProps) {
 
   const reloadVoiesAlerts = useCallback(
     (voies: ExtendedVoieDTO[], ignoredAlertCodes: AlertCodeEnum[] = []) => {
-      const newVoiesAlerts: Record<string, Alert[]> = {};
+      const newVoiesAlerts: Record<string, AlertVoie[]> = {};
       for (const voie of voies) {
-        const alerts = without(
-          [
-            getVoieNomAlert(voie, ignoredAlertCodes),
-            !ignoredAlertCodes.includes(AlertCodeEnum.VOIE_EMPTY) &&
-              getVoieEmptyAlert(voie),
-          ],
-          undefined
-        );
+        const alerts = [
+          getVoieNomAlert(voie, ignoredAlertCodes),
+          getVoieEmptyAlert(voie),
+        ];
+        const filteredAlerts = alerts
+          .filter((alert) => alert !== undefined)
+          .filter((alert) =>
+            alert.codes.every((code) => !ignoredAlertCodes.includes(code))
+          );
         if (alerts.length > 0) {
-          newVoiesAlerts[voie.id] = alerts as Alert[];
+          newVoiesAlerts[voie.id] = filteredAlerts;
         }
       }
       setVoiesAlerts(newVoiesAlerts);
