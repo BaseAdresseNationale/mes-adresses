@@ -1,5 +1,5 @@
 import { trim } from "lodash";
-import { AlertCodeVoieEnum } from "./alerts.types";
+import { AlertCodeVoieEnum } from "../../alerts.types";
 
 const LIEU_WORD = "lieu";
 const DIT_WORD = "dit";

@@ -19,7 +19,8 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
-import { Alert } from "@/lib/alerts/alerts.types";
+import { Alert, AlertCodeEnum } from "@/lib/alerts/alerts.types";
+import AlertsContext from "@/contexts/alerts";
 
 interface VoieEmptyWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -31,8 +32,8 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
     useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
-
-  const [toConvert, setToConvert] = useState<string | null>(null);
+  const { reloadVoieAlerts } = useContext(AlertsContext);
+  const [toConvert, setToConvert] = useState<ExtendedVoieDTO | null>(null);
   const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
   const { toaster } = useContext(LayoutContext);
   const router = useRouter();
@@ -41,13 +42,18 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
     setOnConvertLoading(true);
     const convertToponyme = toaster(
       async () => {
-        const toponyme: Toponyme =
-          await VoiesService.convertToToponyme(toConvert);
+        const toponyme: Toponyme = await VoiesService.convertToToponyme(
+          toConvert.id
+        );
         await reloadVoies();
         await reloadToponymes();
         await reloadParcelles();
         reloadTiles();
         refreshBALSync();
+        reloadVoieAlerts(
+          toConvert,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
         await router.push(
           `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
         );
@@ -104,7 +110,7 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
           <Text color="white">Cette voie ne contient aucun numéro</Text>
         </Pane>
         <Button
-          onClick={() => setToConvert(voie.id)}
+          onClick={() => setToConvert(voie)}
           size="small"
           title="Convertir la voie en voie sans adresses"
         >

@@ -58,7 +58,3 @@ export type Alert<M extends AlertModelEnum = AlertModelEnum> = {
 
 export type AlertVoie = Alert<AlertModelEnum.VOIE>;
 export type AlertNumero = Alert<AlertModelEnum.NUMERO>;
-
-export function isAlertVoieNom(alert: Alert): boolean {
-  return "field" in alert && alert.field === AlertFieldVoieEnum.VOIE_NOM;
-}

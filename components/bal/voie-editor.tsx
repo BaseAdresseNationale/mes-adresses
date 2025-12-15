@@ -38,10 +38,11 @@ import {
   AlertFieldVoieEnum,
   AlertVoie,
   AlertModelEnum,
-  isAlertVoieNom,
+  AlertCodeEnum,
 } from "@/lib/alerts/alerts.types";
 import { AlertVoieDefinitions } from "@/lib/alerts/alerts.definitions";
-import { computeVoieNomAlerts } from "@/lib/alerts/voie-nom.utils";
+import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
+import { isAlertVoieNom } from "@/lib/alerts/utils/alerts-voies.utils";
 import styles from "./voie-editor.module.css";
 
 interface VoieEditorProps {
@@ -79,7 +80,7 @@ function VoieEditor({
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
-  const { voiesAlerts } = useContext(AlertsContext);
+  const { voiesAlerts, reloadVoieAlerts } = useContext(AlertsContext);
 
   const [voieNomAlert, setVoieNomAlert] = useState<AlertVoie | null>(
     (voiesAlerts[initialValue?.id]?.find((alert) =>
@@ -131,6 +132,11 @@ function VoieEditor({
         refreshBALSync();
         await reloadVoies();
         reloadTiles();
+        // LOAD ALERTS
+        reloadVoieAlerts(
+          voie,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
 
         if (initialValue?.id === voie.id) {
           setVoie(voie);
@@ -144,20 +150,22 @@ function VoieEditor({
       }
     },
     [
-      baseLocale.id,
-      initialValue,
+      setValidationMessages,
       nom,
-      comment,
+      nomAlt,
       typeNumerotation,
       data,
-      nomAlt,
-      setValidationMessages,
-      setVoie,
-      reloadVoies,
-      refreshBALSync,
-      reloadTiles,
-      onSubmit,
+      comment,
+      initialValue,
       toaster,
+      refreshBALSync,
+      reloadVoies,
+      reloadTiles,
+      reloadVoieAlerts,
+      baseLocale.settings?.ignoredAlertCodes,
+      baseLocale.id,
+      onSubmit,
+      setVoie,
     ]
   );
 

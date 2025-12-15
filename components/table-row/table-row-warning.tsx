@@ -1,11 +1,8 @@
 import { ExtendedBaseLocaleDTO, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
-import {
-  AlertCodeVoieEnum,
-  AlertVoie,
-  isAlertVoieNom,
-} from "@/lib/alerts/alerts.types";
+import { AlertCodeVoieEnum, AlertVoie } from "@/lib/alerts/alerts.types";
 import VoieEmptyWarning from "./warnings/voie-empty-warning";
 import VoieNomWarning from "./warnings/voie-nom-warning";
+import { isAlertVoieNom } from "@/lib/alerts/utils/alerts-voies.utils";
 
 interface TableRowWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;

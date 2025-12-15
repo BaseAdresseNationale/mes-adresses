@@ -97,20 +97,32 @@ export function BalDataContextProvider({
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
   const { pushToast } = useContext(LayoutContext);
   const { token } = useContext(TokenContext);
-  const { reloadVoiesAlerts } = useContext(AlertsContext);
+  const { reloadVoiesAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchBALData() {
       try {
-        reloadVoies();
+        const voies = await BasesLocalesService.findBaseLocaleVoies(
+          initialBaseLocale.id
+        );
         const toponymes = await BasesLocalesService.findBaseLocaleToponymes(
           initialBaseLocale.id
         );
         const commune = await getCommuneWithBBox(initialBaseLocale, voies);
+        setVoies(voies);
         setToponymes(toponymes);
         setCommune(commune);
         setIsBALDataLoaded(true);
+        // LOAD ALERTS
+        reloadVoiesAlerts(
+          voies,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
+        reloadNumerosAlerts(
+          initialBaseLocale.id,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
       } catch (error) {
         console.error("Error fetching BAL data:", error);
       }
@@ -140,15 +152,7 @@ export function BalDataContextProvider({
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     setVoies(voies);
-    reloadVoiesAlerts(
-      voies,
-      (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-    );
-  }, [
-    baseLocale.id,
-    reloadVoiesAlerts,
-    baseLocale.settings?.ignoredAlertCodes,
-  ]);
+  }, [baseLocale.id]);
 
   const reloadToponymes = useCallback(async () => {
     const toponymes: ExtentedToponymeDTO[] =

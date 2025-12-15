@@ -390,6 +390,29 @@ export class BasesLocalesService {
     }
 
     /**
+     * Find all Voie in Bal
+     * @param select
+     * @param baseLocaleId
+     * @returns Numero
+     * @throws ApiError
+     */
+    public static findNumeros(
+        select: Array<string>,
+        baseLocaleId: string,
+    ): CancelablePromise<Array<Numero>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/numeros',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+            query: {
+                'select': select,
+            },
+        });
+    }
+
+    /**
      * Search numero
      * @param baseLocaleId
      * @param requestBody
