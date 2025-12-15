@@ -33,19 +33,16 @@ function PublishedBALMoissoneur({
   useEffect(() => {
     const loadOrganization = async () => {
       setIsLoading(true);
-      console.log(revision.context);
       if (revision.context.extras.sourceId) {
         try {
           const sourceId: string = revision.context.extras.sourceId;
           const dataset: Dataset = await DataGouvService.findDataset(sourceId);
-          console.log(dataset.organization);
           setOrganizationDataGouv(dataset.organization);
           if (dataset?.organization?.id) {
             const organizationMoissonneur =
               await ApiMoissonneurBalService.getOrganization(
                 dataset.organization.id
               );
-            console.log(organizationMoissonneur);
             setOrganizationMoissonneur(organizationMoissonneur);
           }
         } catch (error) {
@@ -72,21 +69,18 @@ function PublishedBALMoissoneur({
           {!isOutdatedSource && (
             <Paragraph marginTop={16}>
               Nous recommandons de prendre contact avec cet organisme :{" "}
-              {organizationMoissonneur?.email && (
+              {organizationMoissonneur?.email ? (
                 <b>{organizationMoissonneur.email}</b>
+              ) : (
+                <Button
+                  is="a"
+                  height={30}
+                  href={organizationDataGouv.page}
+                  target="_blank"
+                >
+                  Page data.gouv {organizationDataGouv.name}
+                </Button>
               )}
-            </Paragraph>
-          )}
-          {!organizationMoissonneur?.email && (
-            <Paragraph marginTop={16}>
-              <Button
-                is="a"
-                height={30}
-                href={organizationDataGouv.page}
-                target="_blank"
-              >
-                Page data.gouv {organizationDataGouv.name}
-              </Button>
             </Paragraph>
           )}
         </>
