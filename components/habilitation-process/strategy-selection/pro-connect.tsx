@@ -1,4 +1,4 @@
-import { Pane, Heading, Strong, Text } from "evergreen-ui";
+import { Pane, Heading, Strong, Text, Link } from "evergreen-ui";
 import styles from "./button-pro-connect.module.css";
 
 interface ProConnectProps {
@@ -30,12 +30,18 @@ function ProConnect({ handleStrategy }: ProConnectProps) {
           </span>
         </button>
       </Pane>
-      <Text textDecoration="underline">
-        <Strong>
-          Aucune donnée personnelle ne nous sera transmise durant ce processus
-          d’authentification
-        </Strong>
-      </Text>
+      <Link
+        href="https://proconnect.crisp.help/fr/article/utiliser-proconnect-au-sein-dune-collectivite-ou-dune-mairie-1mobnb6/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Text textDecoration="underline">
+          <Strong>
+            Qu&apos;est-ce que Proconnect et comment l&apos;utiliser? Consulter
+            le tutoriel
+          </Strong>
+        </Text>
+      </Link>
     </>
   );
 }
