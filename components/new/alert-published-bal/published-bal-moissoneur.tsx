@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button, Paragraph, Spinner } from "evergreen-ui";
 import { DataGouvService } from "@/lib/data-gouv/data-gouv";
-import { Dataset, Organization } from "@/lib/data-gouv/types";
+import {
+  Dataset,
+  Organization as OrganizationDataGouv,
+} from "@/lib/data-gouv/types";
+import { Organization as OrganizationMoissonneur } from "@/lib/moissonneur/type";
 import { Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";
+import { ApiMoissonneurBalService } from "@/lib/moissonneur";
 
 interface PublishedBALMoissoneurProps {
   commune: CommuneType;
@@ -16,7 +21,10 @@ function PublishedBALMoissoneur({
   outdatedHarvestSources,
   commune,
 }: PublishedBALMoissoneurProps) {
-  const [organization, setOrganization] = useState<Organization | null>(null);
+  const [organizationMoissonneur, setOrganizationMoissonneur] =
+    useState<OrganizationMoissonneur | null>(null);
+  const [organizationDataGouv, setOrganizationDataGouv] =
+    useState<OrganizationDataGouv | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const isOutdatedSource = outdatedHarvestSources.includes(
     revision.context.extras.sourceId
@@ -29,8 +37,14 @@ function PublishedBALMoissoneur({
         try {
           const sourceId: string = revision.context.extras.sourceId;
           const dataset: Dataset = await DataGouvService.findDataset(sourceId);
-
-          setOrganization(dataset.organization);
+          setOrganizationDataGouv(dataset.organization);
+          if (dataset?.organization?.id) {
+            const organizationMoissonneur =
+              await ApiMoissonneurBalService.getOrganization(
+                dataset.organization.id
+              );
+            setOrganizationMoissonneur(organizationMoissonneur);
+          }
         } catch (error) {
           console.error("Error fetching organization:", error);
         } finally {
@@ -46,22 +60,29 @@ function PublishedBALMoissoneur({
     <Spinner />
   ) : (
     <>
-      {organization && (
+      {organizationDataGouv && (
         <>
           <Paragraph marginTop={16}>
-            Une Base Adresse Locale est déjà publiée par {organization.name}{" "}
-            pour {commune.nom}.
+            Une Base Adresse Locale est déjà publiée par{" "}
+            {organizationDataGouv.name} pour {commune.nom}.
           </Paragraph>
           {!isOutdatedSource && (
             <Paragraph marginTop={16}>
-              Nous recommandons de prendre contact avec cet organisme.
+              Nous recommandons de prendre contact avec cet organisme :{" "}
+              {organizationMoissonneur?.email ? (
+                <b>{organizationMoissonneur.email}</b>
+              ) : (
+                <Button
+                  is="a"
+                  height={30}
+                  href={organizationDataGouv.page}
+                  target="_blank"
+                >
+                  Page data.gouv {organizationDataGouv.name}
+                </Button>
+              )}
             </Paragraph>
           )}
-          <Paragraph marginTop={16}>
-            <Button is="a" height={30} href={organization.page} target="_blank">
-              Page data.gouv {organization.name}
-            </Button>
-          </Paragraph>
         </>
       )}
 
