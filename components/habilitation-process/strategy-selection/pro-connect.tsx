@@ -37,7 +37,7 @@ function ProConnect({ handleStrategy }: ProConnectProps) {
       >
         <Text textDecoration="underline">
           <Strong>
-            Qu&apos;est-ce que Proconnect et comment l&apos;utiliser ? Consulter
+            Qu&apos;est-ce que Proconnect et comment l&apos;utiliser? Consulter
             le tutoriel
           </Strong>
         </Text>
