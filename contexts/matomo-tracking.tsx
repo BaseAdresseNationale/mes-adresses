@@ -15,6 +15,7 @@ export enum MatomoEventCategory {
   GAMIFICATION = "Gamification",
   BAL_EDITOR = "Éditeur BAL",
   HOME_PAGE = "Page d'accueil",
+  SETTINGS = "Paramètres",
 }
 
 export const MatomoEventAction = {
@@ -49,6 +50,13 @@ export const MatomoEventAction = {
     SHOW_NEWS: "show_news",
     OPEN_BAL_WIDGET: "open_bal_widget",
     REGISTER_TO_WEBINAIRE: "register_to_webinaire",
+  },
+  [MatomoEventCategory.SETTINGS]: {
+    SHARE_ACCESS: "share_access",
+    ADD_ADMIN: "add_admin",
+    REMOVE_ADMIN: "remove_admin",
+    UPDATE_CUSTOM_MAP_STYLES: "update_custom_map_styles",
+    UPDATE_BAL_NAME: "update_bal_name",
   },
 };
 

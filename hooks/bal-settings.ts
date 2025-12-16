@@ -4,6 +4,10 @@ import TokenContext from "@/contexts/token";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { isEqual, difference } from "lodash";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -16,6 +20,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
   const { emails, reloadEmails } = useContext(TokenContext);
   const { reloadBaseLocale } = useContext(BalDataContext);
   const { pushToast } = useContext(LayoutContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const [nomInput, setNomInput] = useState(baseLocale.nom);
   const [emailsInput, setEmailsInput] = useState(emails || []);
@@ -45,6 +50,11 @@ export function useBALSettings(baseLocale: BaseLocale) {
           await BasesLocalesService.updateBaseLocale(baseLocale.id, {
             nom: nomInput.trim(),
           });
+
+          matomoTrackEvent(
+            MatomoEventCategory.SETTINGS,
+            MatomoEventAction[MatomoEventCategory.SETTINGS].UPDATE_BAL_NAME
+          );
         }
         if (emailsHaveChanged) {
           await BasesLocalesService.updateBaseLocale(baseLocale.id, {
@@ -54,6 +64,15 @@ export function useBALSettings(baseLocale: BaseLocale) {
           await reloadEmails();
           if (difference(emails, emailsInput).length > 0) {
             setIsRenewTokenWarningShown(true);
+            matomoTrackEvent(
+              MatomoEventCategory.SETTINGS,
+              MatomoEventAction[MatomoEventCategory.SETTINGS].REMOVE_ADMIN
+            );
+          } else {
+            matomoTrackEvent(
+              MatomoEventCategory.SETTINGS,
+              MatomoEventAction[MatomoEventCategory.SETTINGS].ADD_ADMIN
+            );
           }
         }
         await reloadBaseLocale();
@@ -77,6 +96,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
       pushToast,
       reloadBaseLocale,
       emails,
+      matomoTrackEvent,
     ]
   );
 
