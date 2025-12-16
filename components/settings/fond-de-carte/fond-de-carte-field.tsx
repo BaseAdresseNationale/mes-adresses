@@ -80,6 +80,7 @@ function FondDeCarteField({
         value={initialValue.url}
         onChange={(e) => onChange("url", e.target.value)}
         marginBottom={8}
+        marginTop={8}
         placeholder="https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&STYLE=normal&FORMAT=image/jpeg&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
         validationMessage={
           errors?.["url"] == false && "L'url du fond de carte est invalide"
