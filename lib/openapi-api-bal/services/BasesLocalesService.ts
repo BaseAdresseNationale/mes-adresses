@@ -13,6 +13,7 @@ import type { DeleteBatchNumeroDTO } from '../models/DeleteBatchNumeroDTO';
 import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
+import type { FindManyBaseLocalDTO } from '../models/FindManyBaseLocalDTO';
 import type { ImportFileBaseLocaleDTO } from '../models/ImportFileBaseLocaleDTO';
 import type { Numero } from '../models/Numero';
 import type { PageBaseLocaleDTO } from '../models/PageBaseLocaleDTO';
@@ -95,6 +96,28 @@ export class BasesLocalesService {
                 'email': email,
                 'status': status,
             },
+        });
+    }
+
+    /**
+     * Find Many Bases Locales
+     * @param requestBody
+     * @param isExist
+     * @returns ExtendedBaseLocaleDTO
+     * @throws ApiError
+     */
+    public static findManyBaseLocales(
+        requestBody: FindManyBaseLocalDTO,
+        isExist?: boolean,
+    ): CancelablePromise<Array<ExtendedBaseLocaleDTO>> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v2/bases-locales/search-by-ids',
+            query: {
+                'isExist': isExist,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 
