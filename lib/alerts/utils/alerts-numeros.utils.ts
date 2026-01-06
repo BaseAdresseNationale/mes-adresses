@@ -12,7 +12,7 @@ export const getNumeroSuffixeAlert = (
 ): AlertNumero | undefined => {
   const alphanumericRegex = /^[a-zA-ZÀ-ÿ0-9]+$/g;
 
-  if (!numero.suffixe?.match(alphanumericRegex)) {
+  if (numero.suffixe && !numero.suffixe?.match(alphanumericRegex)) {
     return {
       model: AlertModelEnum.NUMERO,
       field: AlertFieldNumeroEnum.NUMERO_SUFFIXE,
@@ -22,6 +22,7 @@ export const getNumeroSuffixeAlert = (
     } as AlertNumero;
   }
 };
+
 export function isAlertNumeroSuffixe(alert: Alert): boolean {
   return (
     "field" in alert && alert.field === AlertFieldNumeroEnum.NUMERO_SUFFIXE
