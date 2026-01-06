@@ -68,7 +68,9 @@ function BALInfosStep({
           disabled={isLoading}
         />
         <FormInput padding={0}>
-          <Label>Adresse email de l&apos;administrateur *</Label>
+          <Pane marginBottom={8}>
+            <Label>Adresses emails de des administrateurs *</Label>
+          </Pane>
           {adminEmails.map((email, index) => (
             <Pane
               key={`form-admin-emails-${index}`}
