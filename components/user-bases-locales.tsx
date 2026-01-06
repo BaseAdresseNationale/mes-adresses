@@ -15,7 +15,7 @@ function UserBasesLocales() {
     if (balAccess) {
       const ids = Object.keys(balAccess);
       const basesLocalesResponse =
-        await BasesLocalesService.findManyBaseLocales({ ids }, true);
+        await BasesLocalesService.findManyBaseLocales({ ids });
 
       const basesLocales = basesLocalesResponse.map((baseLocale) => ({
         ...baseLocale,

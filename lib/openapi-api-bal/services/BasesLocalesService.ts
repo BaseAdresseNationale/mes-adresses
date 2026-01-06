@@ -102,20 +102,15 @@ export class BasesLocalesService {
     /**
      * Find Many Bases Locales
      * @param requestBody
-     * @param isExist
      * @returns ExtendedBaseLocaleDTO
      * @throws ApiError
      */
     public static findManyBaseLocales(
         requestBody: FindManyBaseLocalDTO,
-        isExist?: boolean,
     ): CancelablePromise<Array<ExtendedBaseLocaleDTO>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/search-by-ids',
-            query: {
-                'isExist': isExist,
-            },
             body: requestBody,
             mediaType: 'application/json',
         });
