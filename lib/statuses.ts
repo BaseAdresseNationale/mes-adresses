@@ -6,6 +6,7 @@ import {
   ManuallyEnteredDataIcon,
   LabTestIcon,
   IconComponent,
+  EyeOpenIcon,
 } from "evergreen-ui";
 
 import { BaseLocale, BaseLocaleSync } from "./openapi-api-bal";
@@ -29,6 +30,15 @@ type StatusType = {
 };
 
 const STATUSES: { [key: string]: StatusType } = {
+  consultation: {
+    label: "Consultation",
+    title: "Vous consultez cette Base Adresse Locale",
+    content:
+      "Vous consultez cette Base Adresse Locale, aucune modification ne sera répercutée dans la Base Adresse Nationale.",
+    color: "yellow",
+    intent: "none",
+    icon: EyeOpenIcon,
+  },
   paused: {
     label: "Suspendue",
     title:
@@ -97,8 +107,13 @@ const STATUSES: { [key: string]: StatusType } = {
 export function computeStatus(
   balStatus: BaseLocale.status,
   sync: Partial<BaseLocaleSync>,
-  isHabilitationValid: boolean
+  isHabilitationValid: boolean,
+  isAdmin: boolean = null
 ): StatusType {
+  if (isAdmin === false) {
+    return STATUSES.consultation;
+  }
+
   if (sync?.isPaused && balStatus !== BaseLocale.status.REPLACED) {
     return STATUSES.paused;
   }
