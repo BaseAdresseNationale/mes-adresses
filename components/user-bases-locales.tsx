@@ -13,24 +13,14 @@ function UserBasesLocales() {
 
   const getUserBals = useCallback(async () => {
     if (balAccess) {
-      const basesLocales: BaseLocale[] = await Promise.all(
-        Object.keys(balAccess).map(async (id) => {
-          const token = balAccess[id];
-          try {
-            const baseLocale = await BasesLocalesService.findBaseLocale(
-              id,
-              true
-            );
+      const ids = Object.keys(balAccess);
+      const basesLocalesResponse =
+        await BasesLocalesService.findManyBaseLocales({ ids });
 
-            return {
-              ...baseLocale,
-              token,
-            };
-          } catch {
-            console.log(`Impossible de récupérer la bal ${id}`);
-          }
-        })
-      );
+      const basesLocales = basesLocalesResponse.map((baseLocale) => ({
+        ...baseLocale,
+        token: balAccess[baseLocale.id],
+      }));
 
       const orderedBALs = sortBalByUpdate(basesLocales.filter(Boolean));
 
