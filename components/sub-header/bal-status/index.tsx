@@ -6,7 +6,6 @@ import StatusBadge from "@/components/status-badge";
 import BANSync from "@/components/sub-header/bal-status/ban-sync";
 import RefreshSyncBadge from "@/components/sub-header/bal-status/refresh-sync-badge";
 import {
-  BaseLocaleSync,
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
@@ -82,6 +81,7 @@ function BALStatus({
             status={baseLocale.status}
             sync={baseLocale.sync}
             isHabilitationValid={isHabilitationValid}
+            isAdmin={Boolean(token)}
           />
         )}
       </Pane>
