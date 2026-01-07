@@ -38,6 +38,7 @@ export type { Numero } from './models/Numero';
 export type { PageBaseLocaleDTO } from './models/PageBaseLocaleDTO';
 export { Position } from './models/Position';
 export type { RecoverBaseLocaleDTO } from './models/RecoverBaseLocaleDTO';
+export type { RecoverCommuneDTO } from './models/RecoverCommuneDTO';
 export type { RestoreVoieDTO } from './models/RestoreVoieDTO';
 export type { SearchNumeroDTO } from './models/SearchNumeroDTO';
 export type { SendPinCodeDTO } from './models/SendPinCodeDTO';

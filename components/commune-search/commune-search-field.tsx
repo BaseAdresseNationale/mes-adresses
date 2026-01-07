@@ -3,7 +3,6 @@ import { Dispatch, SetStateAction, useMemo } from "react";
 import { FormField } from "evergreen-ui";
 
 import CommuneSearch from "@/components/commune-search/commune-search";
-import { CommuneApiGeoType } from "@/lib/geo-api/type";
 import { CommuneType } from "@/types/commune";
 
 let idCounter = 0;

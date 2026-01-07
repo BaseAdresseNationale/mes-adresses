@@ -18,6 +18,7 @@ import type { ImportFileBaseLocaleDTO } from '../models/ImportFileBaseLocaleDTO'
 import type { Numero } from '../models/Numero';
 import type { PageBaseLocaleDTO } from '../models/PageBaseLocaleDTO';
 import type { RecoverBaseLocaleDTO } from '../models/RecoverBaseLocaleDTO';
+import type { RecoverCommuneDTO } from '../models/RecoverCommuneDTO';
 import type { SearchNumeroDTO } from '../models/SearchNumeroDTO';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateBaseLocaleDemoDTO } from '../models/UpdateBaseLocaleDemoDTO';
@@ -237,6 +238,23 @@ export class BasesLocalesService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/recovery',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+
+    /**
+     * Recover BAL access by commune
+     * @param requestBody
+     * @returns void
+     * @throws ApiError
+     */
+    public static recoveryBasesLocalesByCommune(
+        requestBody: RecoverCommuneDTO,
+    ): CancelablePromise<void> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v2/bases-locales/recovery/commune',
             body: requestBody,
             mediaType: 'application/json',
         });
