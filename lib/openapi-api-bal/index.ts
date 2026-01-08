@@ -12,6 +12,7 @@ export { BaseLocale } from './models/BaseLocale';
 export type { BaseLocaleFondDeCarte } from './models/BaseLocaleFondDeCarte';
 export type { BaseLocaleSetting } from './models/BaseLocaleSetting';
 export { BaseLocaleSync } from './models/BaseLocaleSync';
+export { BaseLocaleWithHabilitationDTO } from './models/BaseLocaleWithHabilitationDTO';
 export type { BasesLocalesCreationDTO } from './models/BasesLocalesCreationDTO';
 export type { BasesLocalesStatusDTO } from './models/BasesLocalesStatusDTO';
 export type { BatchNumeroResponseDTO } from './models/BatchNumeroResponseDTO';

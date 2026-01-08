@@ -16,7 +16,7 @@ import DeleteWarning from "@/components/delete-warning";
 import BaseLocaleCard from "@/components/base-locale-card";
 import {
   BasesLocalesService,
-  ExtendedBaseLocaleDTO,
+  BaseLocaleWithHabilitationDTO,
   OpenAPI,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
@@ -25,7 +25,7 @@ import WelcomeIllustration from "../welcome-illustration";
 import styles from "./bases-locales-list.module.css";
 
 interface BasesLocalesListProps {
-  initialBasesLocales: ExtendedBaseLocaleDTO[];
+  initialBasesLocales: BaseLocaleWithHabilitationDTO[];
 }
 
 type SortType = {
@@ -35,8 +35,8 @@ type SortType = {
 
 const sortFnMap = {
   updatedAt: (
-    a: ExtendedBaseLocaleDTO,
-    b: ExtendedBaseLocaleDTO,
+    a: BaseLocaleWithHabilitationDTO,
+    b: BaseLocaleWithHabilitationDTO,
     direction: "asc" | "desc"
   ) => {
     const dateA = new Date(a.updatedAt).getTime();
@@ -44,8 +44,8 @@ const sortFnMap = {
     return direction === "asc" ? dateA - dateB : dateB - dateA;
   },
   nom: (
-    a: ExtendedBaseLocaleDTO,
-    b: ExtendedBaseLocaleDTO,
+    a: BaseLocaleWithHabilitationDTO,
+    b: BaseLocaleWithHabilitationDTO,
     direction: "asc" | "desc"
   ) => {
     const nameA = a.nom.toLowerCase();
@@ -70,9 +70,8 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
     useState<keyof SortType>("updatedAt");
   const { removeBalAccess, getBalToken } = useContext(LocalStorageContext);
   const { toaster } = useContext(LayoutContext);
-  const [BALtoRemove, setBALToRemove] = useState<ExtendedBaseLocaleDTO | null>(
-    null
-  );
+  const [BALtoRemove, setBALToRemove] =
+    useState<BaseLocaleWithHabilitationDTO | null>(null);
 
   const filteredBALs = useMemo(
     () =>
@@ -105,8 +104,8 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
 
     const { id: balId, status } = BALtoRemove;
     if (
-      status === ExtendedBaseLocaleDTO.status.DRAFT ||
-      status === ExtendedBaseLocaleDTO.status.DEMO
+      status === BaseLocaleWithHabilitationDTO.status.DRAFT ||
+      status === BaseLocaleWithHabilitationDTO.status.DEMO
     ) {
       const token: string = getBalToken(balId);
       Object.assign(OpenAPI, { TOKEN: token });
@@ -158,8 +157,8 @@ function BasesLocalesList({ initialBasesLocales }: BasesLocalesListProps) {
       <DeleteWarning
         isShown={Boolean(BALtoRemove)}
         content={
-          BALtoRemove?.status === ExtendedBaseLocaleDTO.status.DRAFT ||
-          BALtoRemove?.status === ExtendedBaseLocaleDTO.status.DEMO ? (
+          BALtoRemove?.status === BaseLocaleWithHabilitationDTO.status.DRAFT ||
+          BALtoRemove?.status === BaseLocaleWithHabilitationDTO.status.DEMO ? (
             <Paragraph>
               Êtes vous bien sûr de vouloir supprimer cette Base Adresse Locale
               ? Cette action est définitive.

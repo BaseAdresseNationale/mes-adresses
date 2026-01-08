@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
+import type { BaseLocaleWithHabilitationDTO } from '../models/BaseLocaleWithHabilitationDTO';
 import type { BatchNumeroResponseDTO } from '../models/BatchNumeroResponseDTO';
 import type { CreateBaseLocaleDTO } from '../models/CreateBaseLocaleDTO';
 import type { CreateDemoBaseLocaleDTO } from '../models/CreateDemoBaseLocaleDTO';
@@ -102,12 +103,12 @@ export class BasesLocalesService {
     /**
      * Find Many Bases Locales
      * @param requestBody
-     * @returns ExtendedBaseLocaleDTO
+     * @returns BaseLocaleWithHabilitationDTO
      * @throws ApiError
      */
     public static findManyBaseLocales(
         requestBody: FindManyBaseLocalDTO,
-    ): CancelablePromise<Array<ExtendedBaseLocaleDTO>> {
+    ): CancelablePromise<Array<BaseLocaleWithHabilitationDTO>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/search-by-ids',
