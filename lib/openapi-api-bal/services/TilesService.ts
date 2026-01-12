@@ -13,7 +13,6 @@ export class TilesService {
      * @param z
      * @param x
      * @param y
-     * @param colorblindMode
      * @param baseLocaleId
      * @returns any
      * @throws ApiError
@@ -22,7 +21,6 @@ export class TilesService {
         z: string,
         x: string,
         y: string,
-        colorblindMode: boolean,
         baseLocaleId: string,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
@@ -33,9 +31,6 @@ export class TilesService {
                 'x': x,
                 'y': y,
                 'baseLocaleId': baseLocaleId,
-            },
-            query: {
-                'colorblindMode': colorblindMode,
             },
         });
     }

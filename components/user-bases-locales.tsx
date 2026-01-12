@@ -2,37 +2,34 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import { Pane, Spinner } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import BasesLocalesList from "@/components/bases-locales-list";
-import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
+import {
+  BaseLocaleWithHabilitationDTO,
+  BasesLocalesService,
+} from "@/lib/openapi-api-bal";
 import { sortBalByUpdate } from "@/lib/utils/sort-bal";
 import HomeDrawer from "./home-drawer";
 
 function UserBasesLocales() {
   const { balAccess } = useContext(LocalStorageContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [basesLocales, setBasesLocales] = useState([]);
+  const [basesLocales, setBasesLocales] = useState<
+    BaseLocaleWithHabilitationDTO[]
+  >([]);
 
   const getUserBals = useCallback(async () => {
     if (balAccess) {
-      const basesLocales: BaseLocale[] = await Promise.all(
-        Object.keys(balAccess).map(async (id) => {
-          const token = balAccess[id];
-          try {
-            const baseLocale = await BasesLocalesService.findBaseLocale(
-              id,
-              true
-            );
+      const ids = Object.keys(balAccess);
+      const basesLocalesResponse =
+        await BasesLocalesService.findManyBaseLocales({ ids });
 
-            return {
-              ...baseLocale,
-              token,
-            };
-          } catch {
-            console.log(`Impossible de récupérer la bal ${id}`);
-          }
-        })
+      const basesLocales = basesLocalesResponse.map((baseLocale) => ({
+        ...baseLocale,
+        token: balAccess[baseLocale.id],
+      }));
+
+      const orderedBALs = sortBalByUpdate<BaseLocaleWithHabilitationDTO>(
+        basesLocales.filter(Boolean)
       );
-
-      const orderedBALs = sortBalByUpdate(basesLocales.filter(Boolean));
 
       setBasesLocales(orderedBALs);
     }

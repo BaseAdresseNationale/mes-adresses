@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
+import type { BaseLocaleWithHabilitationDTO } from '../models/BaseLocaleWithHabilitationDTO';
 import type { BatchNumeroResponseDTO } from '../models/BatchNumeroResponseDTO';
 import type { CreateBaseLocaleDTO } from '../models/CreateBaseLocaleDTO';
 import type { CreateDemoBaseLocaleDTO } from '../models/CreateDemoBaseLocaleDTO';
@@ -13,6 +14,7 @@ import type { DeleteBatchNumeroDTO } from '../models/DeleteBatchNumeroDTO';
 import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
+import type { FindManyBaseLocalDTO } from '../models/FindManyBaseLocalDTO';
 import type { ImportFileBaseLocaleDTO } from '../models/ImportFileBaseLocaleDTO';
 import type { Numero } from '../models/Numero';
 import type { PageBaseLocaleDTO } from '../models/PageBaseLocaleDTO';
@@ -95,6 +97,23 @@ export class BasesLocalesService {
                 'email': email,
                 'status': status,
             },
+        });
+    }
+
+    /**
+     * Find Many Bases Locales
+     * @param requestBody
+     * @returns BaseLocaleWithHabilitationDTO
+     * @throws ApiError
+     */
+    public static findManyBaseLocales(
+        requestBody: FindManyBaseLocalDTO,
+    ): CancelablePromise<Array<BaseLocaleWithHabilitationDTO>> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/v2/bases-locales/search-by-ids',
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 

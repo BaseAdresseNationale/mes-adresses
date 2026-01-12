@@ -45,7 +45,7 @@ function NewPage({
   const [importValue, setImportValue] = useState<"ban" | "file">("ban");
   const [csvImportFile, setCsvImportFile] = useState<File | null>(null);
   const [balName, setBalName] = useState<string | null>(null);
-  const [adminEmail, setAdminEmail] = useState<string | null>(null);
+  const [adminEmails, setAdminEmails] = useState<string[]>([]);
   const { importFromCSVFile, importFromBAN } = useBALDataImport();
 
   useEffect(() => {
@@ -73,11 +73,12 @@ function NewPage({
       },
       {
         label: "Informations sur la BAL",
-        canBrowseNext: !isLoading && Boolean(balName) && Boolean(adminEmail),
+        canBrowseNext:
+          !isLoading && Boolean(balName) && Boolean(adminEmails.length),
         canBrowseBack: !isLoading,
       },
     ];
-  }, [commune, importValue, csvImportFile, isLoading, balName, adminEmail]);
+  }, [commune, importValue, csvImportFile, isLoading, balName, adminEmails]);
 
   const onPreviousStep = useCallback(() => {
     if (currentStepIndex > 0) {
@@ -107,7 +108,7 @@ function NewPage({
       } else {
         bal = await BasesLocalesService.createBaseLocale({
           nom: balName,
-          emails: [adminEmail],
+          emails: adminEmails,
           commune: commune.code,
         });
       }
@@ -151,7 +152,7 @@ function NewPage({
 
   return (
     <Main>
-      <Pane flex={1} is="form" onSubmit={handleSubmit}>
+      <Pane flex={1}>
         <Stepper
           steps={steps}
           currentStepIndex={currentStepIndex}
@@ -181,8 +182,8 @@ function NewPage({
                 <BALInfosStep
                   balName={balName}
                   setBalName={setBalName}
-                  adminEmail={adminEmail}
-                  setAdminEmail={setAdminEmail}
+                  adminEmails={adminEmails}
+                  setAdminEmails={setAdminEmails}
                   createDemoBAL={() => createNewBal(true)}
                   isLoading={isLoading}
                 />
@@ -201,13 +202,13 @@ function NewPage({
                   </Button>
                   <Button
                     appearance="primary"
-                    onClick={onNextStep}
-                    disabled={!steps[currentStepIndex].canBrowseNext}
-                    type={
+                    onClick={(e) => {
                       currentStepIndex === steps.length - 1
-                        ? "submit"
-                        : "button"
-                    }
+                        ? handleSubmit(e)
+                        : onNextStep();
+                    }}
+                    disabled={!steps[currentStepIndex].canBrowseNext}
+                    type="button"
                   >
                     {currentStepIndex === steps.length - 1
                       ? "Terminer"
