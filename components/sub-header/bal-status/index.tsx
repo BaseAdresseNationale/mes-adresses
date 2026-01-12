@@ -42,11 +42,16 @@ function BALStatus({
   useEffect(() => {
     async function checkHabilitationValid() {
       const result = await HabilitationService.findIsValid(baseLocale.id);
-      console.log("result", result);
       setIsHabilitationValid(result);
     }
-    checkHabilitationValid();
-  }, [baseLocale.id]);
+    if (habilitation) {
+      setIsHabilitationValid(
+        habilitation?.status === HabilitationDTO.status.ACCEPTED
+      );
+    } else {
+      checkHabilitationValid();
+    }
+  }, [habilitation, baseLocale.id]);
 
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
