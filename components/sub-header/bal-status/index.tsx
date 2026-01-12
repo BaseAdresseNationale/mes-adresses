@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Pane, Button, toaster } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
@@ -9,6 +10,7 @@ import {
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
+  HabilitationService,
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
@@ -33,8 +35,18 @@ function BALStatus({
   handleHabilitation,
   reloadBaseLocale,
 }: BALStatusProps) {
-  const isHabilitationValid =
-    habilitation?.status === HabilitationDTO.status.ACCEPTED;
+  const [isHabilitationValid, setIsHabilitationValid] = useState<
+    boolean | null
+  >(null);
+
+  useEffect(() => {
+    async function checkHabilitationValid() {
+      const result = await HabilitationService.findIsValid(baseLocale.id);
+      setIsHabilitationValid(result);
+    }
+    checkHabilitationValid();
+  }, [baseLocale.id]);
+
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
   const handlePause = async () => {
@@ -81,7 +93,6 @@ function BALStatus({
             status={baseLocale.status}
             sync={baseLocale.sync}
             isHabilitationValid={isHabilitationValid}
-            isAdmin={Boolean(token)}
           />
         )}
       </Pane>

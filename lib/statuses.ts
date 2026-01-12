@@ -107,13 +107,8 @@ const STATUSES: { [key: string]: StatusType } = {
 export function computeStatus(
   balStatus: BaseLocale.status,
   sync: Partial<BaseLocaleSync>,
-  isHabilitationValid: boolean,
-  isAdmin: boolean = null
+  isHabilitationValid: boolean
 ): StatusType {
-  if (isAdmin === false) {
-    return STATUSES.consultation;
-  }
-
   if (sync?.isPaused && balStatus !== BaseLocale.status.REPLACED) {
     return STATUSES.paused;
   }

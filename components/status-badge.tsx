@@ -10,14 +10,9 @@ interface StatusBadgeProps {
   isAdmin?: boolean;
 }
 
-function StatusBadge({
-  status,
-  sync,
-  isHabilitationValid,
-  isAdmin = null,
-}: StatusBadgeProps) {
+function StatusBadge({ status, sync, isHabilitationValid }: StatusBadgeProps) {
   const { color, label, content, icon, textColor } =
-    computeStatus(status, sync, isHabilitationValid, isAdmin) || {};
+    computeStatus(status, sync, isHabilitationValid) || {};
 
   return (
     <Tooltip position={Position.BOTTOM_RIGHT} content={content}>
