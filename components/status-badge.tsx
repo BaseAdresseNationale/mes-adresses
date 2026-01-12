@@ -7,6 +7,7 @@ interface StatusBadgeProps {
   status: BaseLocale.status;
   sync: Partial<BaseLocaleSync>;
   isHabilitationValid: boolean;
+  isAdmin?: boolean;
 }
 
 function StatusBadge({ status, sync, isHabilitationValid }: StatusBadgeProps) {
