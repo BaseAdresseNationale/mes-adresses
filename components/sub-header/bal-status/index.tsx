@@ -42,6 +42,7 @@ function BALStatus({
   useEffect(() => {
     async function checkHabilitationValid() {
       const result = await HabilitationService.findIsValid(baseLocale.id);
+      console.log("result", result);
       setIsHabilitationValid(result);
     }
     checkHabilitationValid();
