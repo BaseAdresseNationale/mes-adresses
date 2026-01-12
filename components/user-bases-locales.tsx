@@ -2,14 +2,19 @@ import { useState, useEffect, useContext, useCallback } from "react";
 import { Pane, Spinner } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import BasesLocalesList from "@/components/bases-locales-list";
-import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
+import {
+  BaseLocaleWithHabilitationDTO,
+  BasesLocalesService,
+} from "@/lib/openapi-api-bal";
 import { sortBalByUpdate } from "@/lib/utils/sort-bal";
 import HomeDrawer from "./home-drawer";
 
 function UserBasesLocales() {
   const { balAccess } = useContext(LocalStorageContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [basesLocales, setBasesLocales] = useState([]);
+  const [basesLocales, setBasesLocales] = useState<
+    BaseLocaleWithHabilitationDTO[]
+  >([]);
 
   const getUserBals = useCallback(async () => {
     if (balAccess) {
@@ -22,7 +27,9 @@ function UserBasesLocales() {
         token: balAccess[baseLocale.id],
       }));
 
-      const orderedBALs = sortBalByUpdate(basesLocales.filter(Boolean));
+      const orderedBALs = sortBalByUpdate<BaseLocaleWithHabilitationDTO>(
+        basesLocales.filter(Boolean)
+      );
 
       setBasesLocales(orderedBALs);
     }

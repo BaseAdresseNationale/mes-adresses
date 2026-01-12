@@ -9,7 +9,7 @@ import type { Numero } from './Numero';
 import type { Toponyme } from './Toponyme';
 import type { Voie } from './Voie';
 
-export type ExtendedBaseLocaleDTO = {
+export type BaseLocaleWithHabilitationDTO = {
     id: string;
     banId: string;
     createdAt: string;
@@ -19,9 +19,7 @@ export type ExtendedBaseLocaleDTO = {
     communeNom?: string;
     communeNomsAlt: Record<string, any>;
     commune: string;
-    emails: Array<string>;
-    token: string;
-    status: ExtendedBaseLocaleDTO.status;
+    status: BaseLocaleWithHabilitationDTO.status;
     habilitationId: string;
     sync: BaseLocaleSync;
     settings: BaseLocaleSetting;
@@ -34,7 +32,7 @@ export type ExtendedBaseLocaleDTO = {
     isHabilitationValid: boolean;
 };
 
-export namespace ExtendedBaseLocaleDTO {
+export namespace BaseLocaleWithHabilitationDTO {
 
     export enum status {
         DRAFT = 'draft',
