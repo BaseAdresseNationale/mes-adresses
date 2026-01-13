@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Dialog, Heading, Pane } from "evergreen-ui";
 
 import RecoverBALCommune from "./recover-bal-commune";
 import RecoverBALMail from "./recover-bal-mail";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 
 interface RecoverBALAlertProps {
   isShown: boolean;
@@ -20,6 +21,7 @@ function RecoverBALAlert({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMail, setErrorMail] = useState<string | null>(null);
   const [errorCommune, setErrorCommune] = useState<string | null>(null);
+  const [baseLocale, setBaseLocale] = useState<BaseLocale | null>(null);
 
   const handleComplete = () => {
     setIsLoading(false);
@@ -28,10 +30,24 @@ function RecoverBALAlert({
     onClose();
   };
 
+  useEffect(() => {
+    async function loadBaseLocale() {
+      const baseLocale = await BasesLocalesService.findBaseLocale(baseLocaleId);
+      setBaseLocale(baseLocale);
+    }
+
+    if (baseLocaleId) {
+      loadBaseLocale();
+    }
+  }, [baseLocaleId]);
+
+  const isDisplayCommuneRecovery = useMemo(() => {
+    return !baseLocale || baseLocale.status === BaseLocale.status.PUBLISHED;
+  }, [baseLocale]);
   return (
     <Dialog
       isShown={isShown}
-      width={1000}
+      width={isDisplayCommuneRecovery ? 1000 : 500}
       hasHeader={false}
       hasFooter={false}
       onCloseComplete={() => handleComplete()}
@@ -60,14 +76,16 @@ function RecoverBALAlert({
             setIsLoading={setIsLoading}
             onClose={onClose}
           />
-          <RecoverBALCommune
-            baseLocaleId={baseLocaleId}
-            error={errorCommune}
-            isLoading={isLoading}
-            setError={setErrorCommune}
-            setIsLoading={setIsLoading}
-            onClose={onClose}
-          />
+          {isDisplayCommuneRecovery && (
+            <RecoverBALCommune
+              baseLocale={baseLocale}
+              error={errorCommune}
+              isLoading={isLoading}
+              setError={setErrorCommune}
+              setIsLoading={setIsLoading}
+              onClose={onClose}
+            />
+          )}
         </Pane>
       </Pane>
     </Dialog>

@@ -12,7 +12,7 @@ import { hasBeenSentRecently } from "@/lib/utils/date";
 import { ApiDepotService } from "@/lib/api-depot";
 
 interface RecoverBALCommuneProps {
-  baseLocaleId?: string;
+  baseLocale?: BaseLocale;
   error?: string;
   isLoading?: boolean;
   setError: (error: string) => void;
@@ -21,7 +21,7 @@ interface RecoverBALCommuneProps {
 }
 
 function RecoverBALCommune({
-  baseLocaleId,
+  baseLocale,
   error,
   isLoading,
   setError,
@@ -31,7 +31,6 @@ function RecoverBALCommune({
   const { recoveryEmailCommuneSent, setRecoveryEmailCommuneSent } =
     useContext(LocalStorageContext);
   const { pushToast } = useContext(LayoutContext);
-  const [baseLocale, setBaseLocale] = useState<BaseLocale | null>(null);
   const [commune, setCommune] = useState<CommuneType | null>(null);
   const [emailsCommune, setEmailsCommune] = useState<string[]>([]);
 
@@ -49,18 +48,10 @@ function RecoverBALCommune({
   );
 
   useEffect(() => {
-    async function loadBaseLocale() {
-      const baseLocale = await BasesLocalesService.findBaseLocale(baseLocaleId);
-      setBaseLocale(baseLocale);
-      if (baseLocale.status === BaseLocale.status.PUBLISHED) {
-        await fetchEmailsCommune(baseLocale?.commune);
-      }
+    if (baseLocale?.id) {
+      fetchEmailsCommune(baseLocale.commune);
     }
-
-    if (baseLocaleId) {
-      loadBaseLocale();
-    }
-  }, [baseLocaleId, fetchEmailsCommune]);
+  }, [baseLocale?.id, baseLocale?.commune, fetchEmailsCommune]);
 
   const recoveryCommune = useCallback(async () => {
     const codeCommune = commune?.code || baseLocale?.commune;
@@ -113,7 +104,7 @@ function RecoverBALCommune({
 
   return (
     <Pane
-      width="50%"
+      width="100%"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
@@ -135,7 +126,7 @@ function RecoverBALCommune({
         <Heading is="h2" marginBottom={8}>
           Avec le courrier électronique officiel de votre commune
         </Heading>
-        {!baseLocaleId && (
+        {!baseLocale?.id && (
           <Paragraph marginBottom={8}>
             Renseigner la commune dont vous voulez récupérer les Bases Adresses
             Locales.
@@ -168,19 +159,13 @@ function RecoverBALCommune({
             </Paragraph>
           </Alert>
         )}
-        {baseLocale && baseLocale.status !== BaseLocale.status.PUBLISHED && (
-          <Alert marginTop={16} intent="danger">
-            Vous ne pouvez pas récupérer une Bases Adresses Locales qui
-            n&apos;est pas publiée.
-          </Alert>
-        )}
       </Pane>
       {(!baseLocale || baseLocale.status === BaseLocale.status.PUBLISHED) && (
         <Button
           marginTop={16}
           onClick={handleConfirmCommune}
           appearance="primary"
-          disabled={(!Boolean(baseLocaleId) && !commune) || isLoading}
+          disabled={(!Boolean(baseLocale?.id) && !commune) || isLoading}
           alignSelf="flex-end"
         >
           {isLoading ? "Chargement..." : "Recevoir le courriel"}
