@@ -1,5 +1,6 @@
 import { useCallback, useState, useContext, useEffect } from "react";
-import { Alert, Button, Label, Pane, Paragraph } from "evergreen-ui";
+import NextImage from "next/legacy/image";
+import { Alert, Button, Heading, Pane, Paragraph, Strong } from "evergreen-ui";
 
 import LocalStorageContext from "@/contexts/local-storage";
 
@@ -8,6 +9,7 @@ import LayoutContext from "@/contexts/layout";
 import { CommuneSearchField } from "@/components/commune-search";
 import { CommuneType } from "@/types/commune";
 import { hasBeenSentRecently } from "@/lib/utils/date";
+import { ApiDepotService } from "@/lib/api-depot";
 
 interface RecoverBALCommuneProps {
   baseLocaleId?: string;
@@ -31,17 +33,34 @@ function RecoverBALCommune({
   const { pushToast } = useContext(LayoutContext);
   const [baseLocale, setBaseLocale] = useState<BaseLocale | null>(null);
   const [commune, setCommune] = useState<CommuneType | null>(null);
+  const [emailsCommune, setEmailsCommune] = useState<string[]>([]);
+
+  const fetchEmailsCommune = useCallback(async (codeCommune: string) => {
+    const emails = await ApiDepotService.getEmailsCommune(codeCommune);
+    setEmailsCommune(emails);
+  }, []);
+
+  const selectCommune = useCallback(
+    (commune: CommuneType) => {
+      setCommune(commune);
+      fetchEmailsCommune(commune?.code);
+    },
+    [fetchEmailsCommune]
+  );
 
   useEffect(() => {
     async function loadBaseLocale() {
       const baseLocale = await BasesLocalesService.findBaseLocale(baseLocaleId);
       setBaseLocale(baseLocale);
+      if (baseLocale.status === BaseLocale.status.PUBLISHED) {
+        await fetchEmailsCommune(baseLocale?.commune);
+      }
     }
 
     if (baseLocaleId) {
       loadBaseLocale();
     }
-  }, [baseLocaleId]);
+  }, [baseLocaleId, fetchEmailsCommune]);
 
   const recoveryCommune = useCallback(async () => {
     const codeCommune = commune?.code || baseLocale?.commune;
@@ -104,20 +123,33 @@ function RecoverBALCommune({
       borderRadius={8}
     >
       <Pane>
-        <Label display="block" marginBottom={4}>
+        <Pane display="flex" justifyContent="center" marginBottom={8}>
+          <NextImage
+            width={66}
+            height={66}
+            src={"/static/images/mairie.svg"}
+            alt="logo mairie"
+            style={{ filter: "grayscale(100%)" }}
+          />
+        </Pane>
+        <Heading is="h2" marginBottom={8}>
           Avec le courrier électronique officiel de votre commune
-        </Label>
+        </Heading>
+        <Paragraph marginBottom={8}>
+          Renseigner la commune dont vous voulez récupérer les Bases Adresses
+          Locales.
+        </Paragraph>
         {!baseLocale && (
           <CommuneSearchField
             id="commune"
             required={false}
             innerRef={() => {}}
             initialSelectedItem={commune}
-            label="Rechercher une commune"
+            label=""
             placeholder="Roche 42"
             appearance="default"
             maxWidth={500}
-            onSelect={setCommune}
+            onSelect={selectCommune}
           />
         )}
         {error && (
@@ -125,15 +157,16 @@ function RecoverBALCommune({
             {error}
           </Alert>
         )}
-        {!baseLocale || baseLocale.status === BaseLocale.status.PUBLISHED ? (
-          <Paragraph marginY={8}>
-            Un courrier électronique va être envoyé à l’adresse de votre
-            commune.
-            <br />
-            Vous y retrouverez le lien de récupération de la Bases Adresses
-            Locales associées à celle-ci.
-          </Paragraph>
-        ) : (
+        {emailsCommune.length > 0 && (
+          <Alert marginTop={16} intent="info" hasIcon={false}>
+            <Paragraph color="blue600">
+              Un courrier électronique avec le lien de récupération va être
+              envoyé à l’adresse de votre commune:{" "}
+              <Strong>{emailsCommune.join(", ")}</Strong>
+            </Paragraph>
+          </Alert>
+        )}
+        {baseLocale && baseLocale.status !== BaseLocale.status.PUBLISHED && (
           <Alert marginTop={16} intent="danger">
             Vous ne pouvez pas récupérer une Bases Adresses Locales qui
             n&apos;est pas publiée.

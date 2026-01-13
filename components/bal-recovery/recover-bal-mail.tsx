@@ -1,5 +1,14 @@
 import { useCallback, useContext } from "react";
-import { Alert, Button, Label, Pane, Paragraph, TextInput } from "evergreen-ui";
+import {
+  Alert,
+  Button,
+  EnvelopeIcon,
+  Heading,
+  Label,
+  Pane,
+  Paragraph,
+  TextInput,
+} from "evergreen-ui";
 
 import { validateEmail } from "@/lib/utils/email";
 
@@ -91,10 +100,16 @@ function RecoverBALMail({
       borderRadius={8}
     >
       <Pane>
-        {/* <EnvelopeIcon size={40} /> */}
-        <Label display="block" marginBottom={16}>
+        <Pane display="flex" justifyContent="center" marginBottom={8}>
+          <EnvelopeIcon size={66} color="gray800" />
+        </Pane>
+        <Heading is="h2" marginBottom={8}>
           Avec votre adresse de courrier électronique
-        </Label>
+        </Heading>
+        <Paragraph marginBottom={20}>
+          Un courrier électronique va être envoyé à l’adresse que vous avez
+          renseignée.
+        </Paragraph>
         <TextInput
           display="block"
           type="email"
@@ -110,17 +125,13 @@ function RecoverBALMail({
           </Alert>
         )}
 
-        <Paragraph marginTop={16}>
-          Un courrier électronique va être envoyé à l’adresse que vous avez
-          renseignée.
-          <br />
-          {}
-        </Paragraph>
-        <Paragraph marginY={8}>
-          {baseLocaleId
-            ? "Vous y retrouverez un lien d’administration de votre Base Adresse Locale. Il vous suffira alors de cliquer sur le lien afin de pouvoir la retrouver sur votre espace."
-            : "Vous y retrouverez la liste de toutes les Bases Adresses Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace."}
-        </Paragraph>
+        <Alert marginTop={24} marginBottom={8} intent="info" hasIcon={false}>
+          <Paragraph color="blue600">
+            {baseLocaleId
+              ? "Vous y retrouverez un lien d’administration de votre Base Adresse Locale. Il vous suffira alors de cliquer sur le lien afin de pouvoir la retrouver sur votre espace."
+              : "Vous y retrouverez la liste de toutes les Bases Adresses Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace."}
+          </Paragraph>
+        </Alert>
       </Pane>
       <Button
         marginTop={16}
