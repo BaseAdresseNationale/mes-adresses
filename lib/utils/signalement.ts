@@ -238,7 +238,10 @@ export const detectChanges = (
   };
 };
 
-export const canFetchSignalements = (baseLocale: BaseLocale, token: string) => {
+export const canFetchSignalements = (
+  baseLocale: BaseLocale,
+  token?: string | null
+) => {
   return (
     baseLocale.status === BaseLocale.status.PUBLISHED &&
     Boolean(token) &&

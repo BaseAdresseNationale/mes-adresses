@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Pane, Button, toaster } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
@@ -6,10 +7,10 @@ import StatusBadge from "@/components/status-badge";
 import BANSync from "@/components/sub-header/bal-status/ban-sync";
 import RefreshSyncBadge from "@/components/sub-header/bal-status/refresh-sync-badge";
 import {
-  BaseLocaleSync,
   BasesLocalesService,
   ExtendedBaseLocaleDTO,
   HabilitationDTO,
+  HabilitationService,
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
 
@@ -34,8 +35,24 @@ function BALStatus({
   handleHabilitation,
   reloadBaseLocale,
 }: BALStatusProps) {
-  const isHabilitationValid =
-    habilitation?.status === HabilitationDTO.status.ACCEPTED;
+  const [isHabilitationValid, setIsHabilitationValid] = useState<
+    boolean | null
+  >(null);
+
+  useEffect(() => {
+    async function checkHabilitationValid() {
+      const result = await HabilitationService.findIsValid(baseLocale.id);
+      setIsHabilitationValid(result);
+    }
+    if (habilitation) {
+      setIsHabilitationValid(
+        habilitation?.status === HabilitationDTO.status.ACCEPTED
+      );
+    } else {
+      checkHabilitationValid();
+    }
+  }, [habilitation, baseLocale.id]);
+
   const { handleShowHabilitationProcess } = usePublishProcess(commune);
 
   const handlePause = async () => {

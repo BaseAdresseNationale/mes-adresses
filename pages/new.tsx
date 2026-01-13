@@ -152,7 +152,7 @@ function NewPage({
 
   return (
     <Main>
-      <Pane flex={1} is="form" onSubmit={handleSubmit}>
+      <Pane flex={1}>
         <Stepper
           steps={steps}
           currentStepIndex={currentStepIndex}
@@ -202,13 +202,13 @@ function NewPage({
                   </Button>
                   <Button
                     appearance="primary"
-                    onClick={onNextStep}
-                    disabled={!steps[currentStepIndex].canBrowseNext}
-                    type={
+                    onClick={(e) => {
                       currentStepIndex === steps.length - 1
-                        ? "submit"
-                        : "button"
-                    }
+                        ? handleSubmit(e)
+                        : onNextStep();
+                    }}
+                    disabled={!steps[currentStepIndex].canBrowseNext}
+                    type="button"
                   >
                     {currentStepIndex === steps.length - 1
                       ? "Terminer"

@@ -16,8 +16,8 @@ import {
 import NextLink from "next/link";
 import StatusBadge from "@/components/status-badge";
 import {
-  ExtendedBaseLocaleDTO,
-  HabilitationService,
+  BaseLocale,
+  BaseLocaleWithHabilitationDTO,
 } from "@/lib/openapi-api-bal";
 import CertificationCount from "../certification-count";
 import { canFetchSignalements } from "@/lib/utils/signalement";
@@ -30,12 +30,11 @@ const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
 
 interface BaseLocaleCardProps {
-  baseLocale: ExtendedBaseLocaleDTO;
+  baseLocale: BaseLocaleWithHabilitationDTO;
   onRemove: () => void;
 }
 
 function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
-  const [isHabilitationValid, setIsHabilitationValid] = useState(false);
   const [pendingSignalementsCount, setPendingSignalementsCount] = useState(0);
   const [flag, setFlag] = useState<string | null>(null);
   const {
@@ -61,17 +60,6 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
       }
     };
 
-    const fetchIsHabilitationValid = async () => {
-      try {
-        const isValid: boolean = await HabilitationService.findIsValid(
-          baseLocale.id
-        );
-        setIsHabilitationValid(isValid);
-      } catch {
-        setIsHabilitationValid(false);
-      }
-    };
-
     const fetchPendingSignalementsCount = async () => {
       try {
         const paginatedSignalements = await SignalementsService.getSignalements(
@@ -90,8 +78,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
     };
 
     fetchCommuneFlag();
-    fetchIsHabilitationValid();
-    if (canFetchSignalements(baseLocale, baseLocale.token)) {
+    if (canFetchSignalements(baseLocale as unknown as BaseLocale)) {
       fetchPendingSignalementsCount();
     }
   }, [baseLocale]);
@@ -99,8 +86,8 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
   const majDate = formatDistanceToNow(new Date(updatedAt), { locale: fr });
 
   const canHardDelete =
-    status === ExtendedBaseLocaleDTO.status.DRAFT ||
-    status === ExtendedBaseLocaleDTO.status.DEMO;
+    status === BaseLocaleWithHabilitationDTO.status.DRAFT ||
+    status === BaseLocaleWithHabilitationDTO.status.DEMO;
 
   return (
     <Card
@@ -117,7 +104,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
         <StatusBadge
           status={status}
           sync={sync}
-          isHabilitationValid={isHabilitationValid}
+          isHabilitationValid={baseLocale.isHabilitationValid}
         />
       </Pane>
       <Pane
