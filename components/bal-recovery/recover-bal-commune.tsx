@@ -135,10 +135,12 @@ function RecoverBALCommune({
         <Heading is="h2" marginBottom={8}>
           Avec le courrier électronique officiel de votre commune
         </Heading>
-        <Paragraph marginBottom={8}>
-          Renseigner la commune dont vous voulez récupérer les Bases Adresses
-          Locales.
-        </Paragraph>
+        {!baseLocaleId && (
+          <Paragraph marginBottom={8}>
+            Renseigner la commune dont vous voulez récupérer les Bases Adresses
+            Locales.
+          </Paragraph>
+        )}
         {!baseLocale && (
           <CommuneSearchField
             id="commune"
