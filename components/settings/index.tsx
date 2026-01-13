@@ -1,5 +1,5 @@
 import { BaseLocale } from "@/lib/openapi-api-bal";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   TextInputField,
   Button,
@@ -18,6 +18,10 @@ import { ShareBALAccessDialog } from "./share/share-bal-access-dialog";
 import FondDeCarteList from "./fond-de-carte/fond-de-carte-list";
 import FondDeCarteDialog from "./fond-de-carte/fond-de-carte-dialog";
 import AlertsAccordion from "./alerts/alerts-accordion";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface SettingsProps {
   baseLocale: BaseLocale;
@@ -27,6 +31,15 @@ interface SettingsProps {
 function Settings({ baseLocale, token }: SettingsProps) {
   const [showBALAccessDialog, setShowBALAccessDialog] = useState(false);
   const [showFondDeCarteDialog, setShowFondDeCarteDialog] = useState(false);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
+
+  const onShowBALAccessDialog = () => {
+    matomoTrackEvent(
+      MatomoEventCategory.SETTINGS,
+      MatomoEventAction[MatomoEventCategory.SETTINGS].SHARE_ACCESS
+    );
+    setShowBALAccessDialog(true);
+  };
 
   const {
     onSubmit,
@@ -92,7 +105,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
           </Pane>
           <Button
             type="button"
-            onClick={() => setShowBALAccessDialog(true)}
+            onClick={onShowBALAccessDialog}
             width="fit-content"
             alignSelf="flex-end"
           >
@@ -107,7 +120,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
         )}
         <Pane marginBottom={16}>
           <Label display="block" marginBottom={8}>
-            Fonds de carte
+            Fonds de cartes
           </Label>
           <Pane display="flex" gap={16}>
             {baseLocale.settings?.fondsDeCartes?.length > 0 && (
@@ -120,7 +133,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
               alignSelf="flex-end"
             >
               <MapCreateIcon marginRight={8} />
-              Modifier fonds de carte
+              Ajouter fond de carte
             </Button>
           </Pane>
         </Pane>

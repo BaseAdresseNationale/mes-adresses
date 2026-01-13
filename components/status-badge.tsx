@@ -7,6 +7,7 @@ interface StatusBadgeProps {
   status: BaseLocale.status;
   sync: Partial<BaseLocaleSync>;
   isHabilitationValid: boolean;
+  isAdmin?: boolean;
 }
 
 function StatusBadge({ status, sync, isHabilitationValid }: StatusBadgeProps) {
@@ -16,6 +17,7 @@ function StatusBadge({ status, sync, isHabilitationValid }: StatusBadgeProps) {
   return (
     <Tooltip position={Position.BOTTOM_RIGHT} content={content}>
       <Badge
+        data-testid="status-badge"
         display="flex"
         justifyContent="center"
         color={color}

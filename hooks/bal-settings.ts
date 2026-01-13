@@ -6,6 +6,10 @@ import { isEqual, difference } from "lodash";
 import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 import AlertsContext from "@/contexts/alerts";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -29,6 +33,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
   const { reloadBaseLocale, voies } = useContext(BalDataContext);
   const { reloadVoiesAlerts } = useContext(AlertsContext);
   const { pushToast } = useContext(LayoutContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const [nomInput, setNomInput] = useState(baseLocale.nom);
   const [emailsInput, setEmailsInput] = useState(emails || []);
@@ -70,6 +75,11 @@ export function useBALSettings(baseLocale: BaseLocale) {
           await BasesLocalesService.updateBaseLocale(baseLocale.id, {
             nom: nomInput.trim(),
           });
+
+          matomoTrackEvent(
+            MatomoEventCategory.SETTINGS,
+            MatomoEventAction[MatomoEventCategory.SETTINGS].UPDATE_BAL_NAME
+          );
         }
         if (emailsHaveChanged) {
           await BasesLocalesService.updateBaseLocale(baseLocale.id, {
@@ -79,6 +89,15 @@ export function useBALSettings(baseLocale: BaseLocale) {
           await reloadEmails();
           if (difference(emails, emailsInput).length > 0) {
             setIsRenewTokenWarningShown(true);
+            matomoTrackEvent(
+              MatomoEventCategory.SETTINGS,
+              MatomoEventAction[MatomoEventCategory.SETTINGS].REMOVE_ADMIN
+            );
+          } else {
+            matomoTrackEvent(
+              MatomoEventCategory.SETTINGS,
+              MatomoEventAction[MatomoEventCategory.SETTINGS].ADD_ADMIN
+            );
           }
         }
         if (ignoredAlertCodesChanged) {
@@ -115,6 +134,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
       ignoredAlertCodes,
       reloadVoiesAlerts,
       voies,
+      matomoTrackEvent,
     ]
   );
 

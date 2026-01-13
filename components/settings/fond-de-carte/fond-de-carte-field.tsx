@@ -6,6 +6,8 @@ import {
   CrossIcon,
   IconButton,
 } from "evergreen-ui";
+import { useEffect, useState } from "react";
+import styles from "@/components/bal/panel-goal/secondary-goal/accordion-simple.module.css";
 
 interface FondDeCarteFieldProps {
   initialValue: BaseLocaleFondDeCarte;
@@ -20,8 +22,20 @@ function FondDeCarteField({
   onDelete,
   errors,
 }: FondDeCarteFieldProps) {
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsAnimating(true);
+  }, []);
+
+  const onAnimationEnd = () => {
+    setIsAnimating(false);
+    setTimeout(() => onDelete(), 500);
+  };
+
   return (
     <Pane
+      className={isAnimating ? styles.bounceInLeft : styles.bounceOutLeft}
       position="relative"
       display="flex"
       flexDirection="column"
@@ -34,7 +48,7 @@ function FondDeCarteField({
     >
       <IconButton
         title="Supprimer le fond de carte"
-        onClick={() => onDelete()}
+        onClick={() => onAnimationEnd()}
         intent="danger"
         icon={CrossIcon}
         position="absolute"
@@ -66,6 +80,7 @@ function FondDeCarteField({
         value={initialValue.url}
         onChange={(e) => onChange("url", e.target.value)}
         marginBottom={8}
+        marginTop={8}
         placeholder="https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&STYLE=normal&FORMAT=image/jpeg&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
         validationMessage={
           errors?.["url"] == false && "L'url du fond de carte est invalide"

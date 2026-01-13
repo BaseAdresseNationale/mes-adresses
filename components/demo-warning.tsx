@@ -20,9 +20,14 @@ import LayoutContext from "@/contexts/layout";
 interface DemoWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
   communeName: string;
+  isReadonly: boolean;
 }
 
-function DemoWarning({ baseLocale, communeName }: DemoWarningProps) {
+function DemoWarning({
+  baseLocale,
+  communeName,
+  isReadonly,
+}: DemoWarningProps) {
   const [isShown, setIsShown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [nom, setNom] = useState(`Adresses de ${communeName}`);
@@ -64,7 +69,7 @@ function DemoWarning({ baseLocale, communeName }: DemoWarningProps) {
       textAlign="center"
       backgroundColor="orange"
       position="fixed"
-      bottom={0}
+      bottom={isReadonly ? 50 : 0}
       height={50}
       display="flex"
       alignItems="center"

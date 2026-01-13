@@ -24,6 +24,7 @@ import { BALWidgetProvider } from "@/contexts/bal-widget";
 import { SearchPaginationContextProvider } from "@/contexts/search-pagination";
 import { MatomoTrackingContextProvider } from "@/contexts/matomo-tracking";
 import { AlertsContextProvider } from "@/contexts/alerts";
+import Main from "@/layouts/main";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
   .slice(0, -1)
@@ -72,22 +73,24 @@ function App(props: AppProps) {
                     <>
                       <IEWarning />
                       {query.balId && pageProps ? (
-                        <AlertsContextProvider>
-                          <BalDataContextProvider
-                            initialBaseLocale={pageProps.baseLocale}
-                            initialVoie={pageProps.voie}
-                            initialToponyme={pageProps.toponyme}
-                            initialNumeros={pageProps.numeros}
-                          >
-                            <SearchPaginationContextProvider>
-                              <SignalementContextProvider>
-                                <Editor {...pageProps}>
-                                  <Component {...pageProps} />
-                                </Editor>
-                              </SignalementContextProvider>
-                            </SearchPaginationContextProvider>
-                          </BalDataContextProvider>
-                        </AlertsContextProvider>
+                        <Main isEditor>
+                          <AlertsContextProvider>
+                            <BalDataContextProvider
+                              initialBaseLocale={pageProps.baseLocale}
+                              initialVoie={pageProps.voie}
+                              initialToponyme={pageProps.toponyme}
+                              initialNumeros={pageProps.numeros}
+                            >
+                              <SearchPaginationContextProvider>
+                                <SignalementContextProvider>
+                                  <Editor {...pageProps}>
+                                    <Component {...pageProps} />
+                                  </Editor>
+                                </SignalementContextProvider>
+                              </SearchPaginationContextProvider>
+                            </BalDataContextProvider>
+                          </AlertsContextProvider>
+                        </Main>
                       ) : (
                         <Component {...pageProps} />
                       )}
@@ -116,6 +119,11 @@ function App(props: AppProps) {
           backdrop-filter: blur(5px);
           -webkit-backdrop-filter: blur(5px);
           border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        // Evergreen UI Tabs customization for accessibility
+        div[role="tablist"] > span[aria-selected="true"] {
+          color: #0038e0;
         }
 
         @keyframes delay-bar {

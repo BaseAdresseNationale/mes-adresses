@@ -178,7 +178,13 @@ function Map({
       } else if (voie) {
         setMapFilter(map, VOIE_TRACE_LINE, null);
         setMapFilter(map, NUMEROS_POINT, null);
-        setMapFilter(map, NUMEROS_LABEL, ["!=", ["get", "idVoie"], voie.id]);
+        setMapFilter(
+          map,
+          NUMEROS_LABEL,
+          drawMode === DrawMode.RULER
+            ? null
+            : ["!=", ["get", "idVoie"], voie.id]
+        );
         setMapFilter(map, VOIE_LABEL, null);
         setMapFilter(map, TOPONYME_LABEL, null);
         // Remove maxZoom filter to see numéros points on all zoom levels

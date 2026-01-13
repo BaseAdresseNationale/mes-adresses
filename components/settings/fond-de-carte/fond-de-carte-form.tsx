@@ -10,10 +10,17 @@ import {
   BasesLocalesService,
 } from "@/lib/openapi-api-bal";
 import FondDeCarteField from "./fond-de-carte-field";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
+import LayoutContext from "@/contexts/layout";
 
 function FondDeCarteForm() {
   const [isLoading, setIsLoading] = useState(false);
   const { baseLocale, reloadBaseLocale } = useContext(BalDataContext);
+  const { toaster } = useContext(LayoutContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
   const [fondsDeCartesForm, setFondDeCartesForm] = useState<
     BaseLocaleFondDeCarte[]
   >(cloneDeep(baseLocale.settings.fondsDeCartes) || []);
@@ -23,15 +30,31 @@ function FondDeCarteForm() {
 
   const updateFondDeCartes = useCallback(
     async (fondsDeCartes: BaseLocaleFondDeCarte[]) => {
-      await BasesLocalesService.updateBaseLocale(baseLocale.id, {
-        settings: {
-          ...baseLocale.settings,
-          fondsDeCartes,
-        },
-      });
+      const saveFondsDeCarte = toaster(
+        () =>
+          BasesLocalesService.updateBaseLocale(baseLocale.id, {
+            settings: {
+              ...baseLocale.settings,
+              fondsDeCartes,
+            },
+          }),
+        "Les fonds de carte ont bien été mis à jour",
+        "Les fonds de carte n’ont pas pu être mis à jour"
+      );
+      await saveFondsDeCarte();
       await reloadBaseLocale();
+      matomoTrackEvent(
+        MatomoEventCategory.SETTINGS,
+        MatomoEventAction[MatomoEventCategory.SETTINGS].UPDATE_CUSTOM_MAP_STYLES
+      );
     },
-    [baseLocale.id, baseLocale.settings, reloadBaseLocale]
+    [
+      baseLocale.id,
+      baseLocale.settings,
+      reloadBaseLocale,
+      toaster,
+      matomoTrackEvent,
+    ]
   );
 
   const computeErrors = useCallback(async () => {

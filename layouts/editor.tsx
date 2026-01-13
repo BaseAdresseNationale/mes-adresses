@@ -22,6 +22,7 @@ import LayoutContext from "@/contexts/layout";
 import { Pane } from "evergreen-ui";
 import MainTabs from "@/components/sidebar/main-tabs/main-tabs";
 import ProductTours from "@/components/sidebar/product-tours";
+import ReadonlyWarning from "@/components/read-only-warning";
 
 interface EditorProps {
   children: React.ReactNode;
@@ -31,11 +32,11 @@ function Editor({ children }: EditorProps) {
   const { isMobile, isMapFullscreen, setIsMapFullscreen } =
     useContext(LayoutContext);
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
-  const { tokenIsChecking } = useContext(TokenContext);
+  const { tokenIsChecking, token } = useContext(TokenContext);
   const { baseLocale, commune } = useContext(BalDataContext);
 
   const isDemo = baseLocale.status === BaseLocale.status.DEMO;
-
+  const isReadonly = !Boolean(token);
   const sidebarWidth = isMobile ? window.innerWidth : 500;
 
   return (
@@ -58,7 +59,7 @@ function Editor({ children }: EditorProps) {
 
             <Map
               top={isMobile ? 150 : 116}
-              bottom={isDemo || isMobile ? 50 : 0}
+              bottom={isDemo || isReadonly || isMobile ? 50 : 0}
               left={isMapFullscreen ? 0 : sidebarWidth}
               commune={commune}
               baseLocale={baseLocale}
@@ -69,7 +70,7 @@ function Editor({ children }: EditorProps) {
             <Sidebar
               size={sidebarWidth}
               top={isMobile ? 150 : 116}
-              bottom={isDemo ? 50 : 0}
+              bottom={isDemo || isReadonly ? 50 : 0}
               isHidden={isMapFullscreen}
               elevation={2}
               background="tint2"
@@ -79,7 +80,7 @@ function Editor({ children }: EditorProps) {
             >
               <MainTabs balId={baseLocale.id} />
 
-              <ProductTours commune={commune} />
+              {token && <ProductTours commune={commune} />}
 
               {isAddressFormOpen ? (
                 <AddressEditor
@@ -108,8 +109,13 @@ function Editor({ children }: EditorProps) {
                 isMapFullscreen={isMapFullscreen}
               />
             )}
-            {isDemo && (
-              <DemoWarning baseLocale={baseLocale} communeName={commune.nom} />
+            {isReadonly && <ReadonlyWarning />}
+            {!isReadonly && isDemo && (
+              <DemoWarning
+                baseLocale={baseLocale}
+                communeName={commune.nom}
+                isReadonly={isReadonly}
+              />
             )}
           </ParcellesContextProvider>
         </MarkersContextProvider>
