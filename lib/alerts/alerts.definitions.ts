@@ -1,4 +1,4 @@
-import { AlertCodeVoieEnum } from "./alerts.types";
+import { AlertCodeNumeroEnum, AlertCodeVoieEnum } from "./alerts.types";
 
 export const AlertVoieDefinitions: Record<AlertCodeVoieEnum, string> = {
   [AlertCodeVoieEnum.CARACTERE_INVALIDE]:
@@ -22,4 +22,9 @@ export const AlertVoieDefinitions: Record<AlertCodeVoieEnum, string> = {
   [AlertCodeVoieEnum.TOO_SHORT]: "Le nom de la voie est trop court",
   [AlertCodeVoieEnum.TOO_LONG]: "Le nom de la voie est trop long",
   [AlertCodeVoieEnum.VOIE_EMPTY]: "La voie n'a pas de numéro",
+};
+
+export const AlertNumeroDefinitions: Record<AlertCodeNumeroEnum, string> = {
+  [AlertCodeNumeroEnum.SUFFIXE_CARACTERE_INVALIDE]:
+    "Le suffixe du numéro contient un caractère invalide",
 };
