@@ -3,10 +3,17 @@ import { Pane, Checkbox, Heading } from "evergreen-ui";
 import { AccordionCard } from "../../accordion-card";
 import {
   AlertCodeEnum,
-  AlertDefinitions,
+  // AlertDefinitions,
   AlertModelEnum,
   AlertFieldEnum,
+  AlertFieldVoieEnum,
+  isAlertCodeVoieEnum,
+  AlertFieldNumeroEnum,
+  isAlertCodeNumeroEnum,
+  AlertCodeVoieEnum,
 } from "@/lib/alerts/alerts.types";
+
+import { AlertVoieDefinitions } from "@/lib/alerts/alerts.definitions";
 
 interface AlertsAccordionProps {
   ignoredAlertCodes: AlertCodeEnum[];
@@ -20,14 +27,24 @@ function AlertsAccordion({
   const [isActive, setIsActive] = useState(false);
 
   const toggleAllAlertCodes = (f?: AlertFieldEnum) => {
-    const allAlertCodesIgnored = Object.entries(AlertDefinitions)
-      .filter(([, { field }]) => field === f)
-      .every(([code]) => !ignoredAlertCodes.includes(code as AlertCodeEnum));
-    if (allAlertCodesIgnored) {
+    const allAlertCodesIgnored = Object.entries(AlertVoieDefinitions).filter(
+      ([code]) => {
+        if (f === AlertFieldVoieEnum.VOIE_NOM) {
+          return isAlertCodeVoieEnum(code);
+        } else if (f === AlertFieldNumeroEnum.NUMERO_SUFFIXE) {
+          return isAlertCodeNumeroEnum(code);
+        }
+        return true;
+      }
+    );
+
+    if (
+      allAlertCodesIgnored.every(
+        ([code]) => !ignoredAlertCodes.includes(code as AlertCodeEnum)
+      )
+    ) {
       setIgnoredAlertCodes(
-        Object.entries(AlertDefinitions)
-          .filter(([, { field }]) => field === f)
-          .map(([code]) => code as AlertCodeEnum)
+        allAlertCodesIgnored.map(([code]) => code as AlertCodeEnum)
       );
     } else {
       setIgnoredAlertCodes([]);
@@ -44,36 +61,18 @@ function AlertsAccordion({
 
   return (
     <Pane width="100%">
-      {Object.entries(AlertDefinitions)
-        .filter(
-          ([, { model, field }]) => model === AlertModelEnum.VOIE && !field
-        )
-        .map(([code, { message }]) => (
-          <Checkbox
-            marginLeft={16}
-            key={code}
-            marginTop={8}
-            marginBottom={8}
-            label={message}
-            checked={!ignoredAlertCodes.includes(code as AlertCodeEnum)}
-            onChange={(e) => toggleAlertCode(code as AlertCodeEnum)}
-          />
-        ))}
-
       <AccordionCard
         title={
           <Pane paddingLeft={8}>
             <Checkbox
               margin={0}
-              label={
-                <Heading size={400}>Alertes sur les noms de voies</Heading>
-              }
-              checked={Object.entries(AlertDefinitions)
-                .filter(([, { field }]) => field === AlertFieldEnum.VOIE_NOM)
+              label={<Heading size={400}>Alertes sur les voies</Heading>}
+              checked={Object.entries(AlertVoieDefinitions)
+                .filter(([key]) => isAlertCodeVoieEnum(key))
                 .every(
                   ([code]) => !ignoredAlertCodes.includes(code as AlertCodeEnum)
                 )}
-              onChange={() => toggleAllAlertCodes(AlertFieldEnum.VOIE_NOM)}
+              onChange={() => toggleAllAlertCodes(AlertFieldVoieEnum.VOIE_NOM)}
             />
           </Pane>
         }
@@ -81,14 +80,14 @@ function AlertsAccordion({
         onClick={() => setIsActive(!isActive)}
       >
         <Pane paddingLeft={8} paddingBottom={8}>
-          {Object.entries(AlertDefinitions)
-            .filter(([, { field }]) => field === AlertFieldEnum.VOIE_NOM)
-            .map(([code, { message }]) => (
+          {Object.entries(AlertVoieDefinitions)
+            .filter(([key]) => isAlertCodeVoieEnum(key))
+            .map(([code, value]) => (
               <Checkbox
                 key={code}
                 marginTop={8}
                 marginBottom={8}
-                label={message}
+                label={value}
                 checked={!ignoredAlertCodes.includes(code as AlertCodeEnum)}
                 onChange={(e) => toggleAlertCode(code as AlertCodeEnum)}
               />

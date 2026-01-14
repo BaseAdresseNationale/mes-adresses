@@ -58,3 +58,15 @@ export type Alert<M extends AlertModelEnum = AlertModelEnum> = {
 
 export type AlertVoie = Alert<AlertModelEnum.VOIE>;
 export type AlertNumero = Alert<AlertModelEnum.NUMERO>;
+
+export function isAlertCodeVoieEnum(code: string): code is AlertCodeVoieEnum {
+  return Object.values(AlertCodeVoieEnum).includes(code as AlertCodeVoieEnum);
+}
+
+export function isAlertCodeNumeroEnum(
+  code: string
+): code is AlertCodeNumeroEnum {
+  return Object.values(AlertCodeNumeroEnum).includes(
+    code as AlertCodeNumeroEnum
+  );
+}
