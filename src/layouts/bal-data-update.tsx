@@ -38,6 +38,12 @@ export default function BALDataUpdate({
     }
 
     setUpdated(true);
+
+    return () => {
+      setVoie(null);
+      setToponyme(null);
+      setNumeros([]);
+    };
   }, [voie, toponyme, numeros, setVoie, setToponyme, setNumeros]);
 
   return updated ? children : null;

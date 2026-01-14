@@ -34,6 +34,7 @@ function PaginationList({
         <Pane
           position="sticky"
           bottom={0}
+          paddingY={8}
           display="flex"
           justifyContent="center"
           background="tint2"

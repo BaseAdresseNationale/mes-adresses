@@ -20,6 +20,14 @@ const nextConfig: NextConfig = withBundleAnalyzer({
       },
     ];
   },
+  images: {
+    remotePatterns: [
+      new URL(
+        "https://base-adresse-locale-prod-blasons-communes.s3.fr-par.scw.cloud/**"
+      ),
+      new URL("https://api.panoramax.xyz/**"),
+    ],
+  },
 });
 
 export default withSentryConfig(nextConfig, {

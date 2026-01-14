@@ -89,7 +89,14 @@ function Downloads({ baseLocale }: DownloadsProps) {
           <Heading paddingLeft={5}>Téléchargements</Heading>
         </Pane>
       </Pane>
-      <Pane is="ul" display="flex" flexDirection="column" overflowY="scroll">
+      <Pane
+        is="ul"
+        display="flex"
+        flexDirection="column"
+        overflowY="scroll"
+        marginY={16}
+        paddingX={24}
+      >
         <Pane is="li" marginBottom={16}>
           <Pane display="flex" alignItems="center">
             <Link
