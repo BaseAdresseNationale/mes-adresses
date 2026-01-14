@@ -1,4 +1,4 @@
-import { useMemo, useContext } from "react";
+import { useContext } from "react";
 import { Pane, Badge, Text, Strong } from "evergreen-ui";
 import BalDataContext from "@/contexts/bal-data";
 import { CommuneType } from "@/types/commune";
@@ -19,9 +19,7 @@ interface PopupFeatureNumeroProps {
 function PopupFeatureVoie({ feature, commune }: PopupFeatureNumeroProps) {
   const { toponymes } = useContext(BalDataContext);
 
-  const toponyme = useMemo(() => {
-    return toponymes.find((t) => t.id === feature.properties?.id);
-  }, [feature.properties?.id, toponymes]);
+  const toponyme = toponymes.find((t) => t.id === feature.properties?.id);
 
   return (
     <Pane display="flex" flexDirection="column">

@@ -166,7 +166,7 @@ function HabilitationProcess({
     if (habilitation.status === HabilitationDTO.status.ACCEPTED) {
       try {
         await handlePublication();
-        baseLocale.status = BaseLocale.status.PUBLISHED;
+        await reloadBaseLocale();
       } catch (error) {
         console.error("Error handling publication", error);
       }

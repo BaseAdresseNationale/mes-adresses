@@ -17,16 +17,6 @@ export function useLocalStorage(
 ): UseLocalStorageType {
   const [data, setData] = useState<any>();
 
-  // Initializes with data already stored if none is provided
-  useEffect(() => {
-    if (value) {
-      storeData(value);
-    } else {
-      const v = getData();
-      setData(v);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const storeData = useCallback(
     (value: any) => {
       localStorage.setItem(key, JSON.stringify(value));
@@ -44,6 +34,16 @@ export function useLocalStorage(
       return null;
     }
   }, [key, storeData]);
+
+  // Initializes with data already stored if none is provided
+  useEffect(() => {
+    if (value) {
+      storeData(value);
+    } else {
+      const v = getData();
+      setData(v);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getIndex = useCallback(
     (index: string | number) => {

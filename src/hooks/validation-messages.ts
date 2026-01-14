@@ -10,6 +10,7 @@ export default function useValidationMessage() {
     _setValidationMessages(null);
     if (messages) {
       for (const message of messages) {
+        // eslint-disable-next-line prefer-const
         let [field, error] = message.split(":");
         if (field.includes("positions")) {
           field = "positions";

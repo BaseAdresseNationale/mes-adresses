@@ -93,13 +93,13 @@ function GroupedActions({
   );
 
   // Returns a unique position type, if selected numeros have only one and the same position type
-  const getDefaultPositionType = useCallback(() => {
+  const getDefaultPositionType = () => {
     if (!hasMultiposition && selectedNumerosUniqType.length === 1) {
       return selectedNumerosUniqType[0];
     }
 
     return "";
-  }, [hasMultiposition, selectedNumerosUniqType]);
+  };
 
   const [positionType, onPositionTypeChange, resetPositionType] = useInput(
     getDefaultPositionType()
@@ -130,78 +130,58 @@ function GroupedActions({
     setIsShown(false);
   };
 
-  const handleConfirm = useCallback(
-    async (event) => {
-      event.preventDefault();
+  const handleConfirm = async (event) => {
+    event.preventDefault();
 
-      const commentCondition = (commentValue) => {
-        if (removeAllComments) {
-          return null;
-        }
-
-        if (commentValue) {
-          return commentValue;
-        }
-      };
-
-      const getIsCertifie = (isCertifie) => {
-        if (isCertifie !== null) {
-          return isCertifie;
-        }
-      };
-
-      setIsLoading(true);
-
-      const changes = {
-        comment: commentCondition(comment),
-        certifie: getIsCertifie(certifie),
-        communeDeleguee,
-      } as any;
-
-      if (idVoie !== selectedVoieId) {
-        changes.voieId = selectedVoieId;
+    const commentCondition = (commentValue) => {
+      if (removeAllComments) {
+        return null;
       }
 
-      if (hasUniqToponyme) {
-        changes.toponymeId =
-          selectedToponymeId === "" ? null : selectedToponymeId;
+      if (commentValue) {
+        return commentValue;
       }
+    };
 
-      if (positionType) {
-        changes.positionType = positionType;
+    const getIsCertifie = (isCertifie) => {
+      if (isCertifie !== null) {
+        return isCertifie;
       }
+    };
 
-      await onSubmit(baseLocale.id, {
-        numerosIds: selectedNumerosIds,
-        changes,
-      });
-      await reloadVoies();
-      await reloadToponymes();
+    setIsLoading(true);
 
-      setIsLoading(false);
-      setIsShown(false);
-      reloadTiles();
-      resetSelectedNumerosIds();
-    },
-    [
-      comment,
+    const changes = {
+      comment: commentCondition(comment),
+      certifie: getIsCertifie(certifie),
       communeDeleguee,
-      selectedVoieId,
-      certifie,
-      hasUniqToponyme,
-      selectedToponymeId,
-      onSubmit,
-      positionType,
-      removeAllComments,
-      resetSelectedNumerosIds,
-      baseLocale,
-      selectedNumerosIds,
-      idVoie,
-      reloadTiles,
-      reloadVoies,
-      reloadToponymes,
-    ]
-  );
+    } as any;
+
+    if (idVoie !== selectedVoieId) {
+      changes.voieId = selectedVoieId;
+    }
+
+    if (hasUniqToponyme) {
+      changes.toponymeId =
+        selectedToponymeId === "" ? null : selectedToponymeId;
+    }
+
+    if (positionType) {
+      changes.positionType = positionType;
+    }
+
+    await onSubmit(baseLocale.id, {
+      numerosIds: selectedNumerosIds,
+      changes,
+    });
+    await reloadVoies();
+    await reloadToponymes();
+
+    setIsLoading(false);
+    setIsShown(false);
+    reloadTiles();
+    resetSelectedNumerosIds();
+  };
 
   useEffect(() => {
     if (!isShown) {
