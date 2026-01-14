@@ -30,7 +30,7 @@ const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
 
 interface BaseLocaleCardProps {
-  baseLocale: BaseLocaleWithHabilitationDTO;
+  baseLocale: BaseLocaleWithHabilitationDTO & { token: string };
   onRemove: () => void;
 }
 
@@ -78,7 +78,12 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
     };
 
     fetchCommuneFlag();
-    if (canFetchSignalements(baseLocale as unknown as BaseLocale)) {
+    if (
+      canFetchSignalements(
+        baseLocale as unknown as BaseLocale,
+        baseLocale.token
+      )
+    ) {
       fetchPendingSignalementsCount();
     }
   }, [baseLocale]);

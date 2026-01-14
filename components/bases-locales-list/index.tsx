@@ -25,7 +25,7 @@ import WelcomeIllustration from "../welcome-illustration";
 import styles from "./bases-locales-list.module.css";
 
 interface BasesLocalesListProps {
-  initialBasesLocales: BaseLocaleWithHabilitationDTO[];
+  initialBasesLocales: Array<BaseLocaleWithHabilitationDTO & { token: string }>;
 }
 
 type SortType = {
