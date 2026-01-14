@@ -1,23 +1,19 @@
 #!/usr/bin/env node
 
-const fs = require('fs-extra')
-const path = require('path')
-const {exit} = require('process')
+import { readdirSync, writeFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
-const flagsFolder = './public/static/images/flags'
+const flagsFolder = "./public/static/images/flags";
+const __filename = fileURLToPath(import.meta.url);
 
-async function main() {
-  const data = fs.readdirSync(flagsFolder).map(file => file.split('.')[0])
+function main() {
+  const data = readdirSync(flagsFolder).map((file) => file.split(".")[0]);
 
-  try {
-    await fs.outputJson(path.join(__dirname, '..', 'available-flags.json'), data)
-  } catch (err) {
-    console.error(err)
-  }
+  writeFileSync(
+    join(dirname(__filename), "..", "available-flags.json"),
+    JSON.stringify(data)
+  );
 }
 
-main().catch(error => {
-  console.error(error)
-  exit(1)
-})
-
+main();

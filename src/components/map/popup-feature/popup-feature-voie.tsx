@@ -1,4 +1,4 @@
-import { useMemo, useContext } from "react";
+import { useContext } from "react";
 import { Pane, Badge, Text, Strong } from "evergreen-ui";
 import BalDataContext from "@/contexts/bal-data";
 import { CommuneType } from "@/types/commune";
@@ -19,9 +19,7 @@ interface PopupFeatureNumeroProps {
 function PopupFeatureVoie({ feature, commune }: PopupFeatureNumeroProps) {
   const { voies } = useContext(BalDataContext);
 
-  const voie = useMemo(() => {
-    return voies.find((v) => v.id === feature.properties?.id);
-  }, [feature.properties?.id, voies]);
+  const voie = voies.find((v) => v.id === feature.properties?.id);
 
   return (
     <Pane display="flex" flexDirection="column">

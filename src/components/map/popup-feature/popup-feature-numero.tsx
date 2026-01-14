@@ -29,13 +29,11 @@ function PopupFeatureNumero({ feature, commune }: PopupFeatureNumeroProps) {
       : [];
   }, [feature.properties]);
 
-  const voie = useMemo(() => {
-    return voies.find((v) => v.id === feature.properties?.idVoie);
-  }, [feature.properties?.idVoie, voies]);
+  const voie = voies.find((v) => v.id === feature.properties?.idVoie);
 
-  const toponyme = useMemo(() => {
-    return toponymes.find((t) => t.id === feature.properties?.idToponyme);
-  }, [feature.properties?.idToponyme, toponymes]);
+  const toponyme = toponymes.find(
+    (t) => t.id === feature.properties?.idToponyme
+  );
 
   return (
     <Pane display="flex" flexDirection="column">

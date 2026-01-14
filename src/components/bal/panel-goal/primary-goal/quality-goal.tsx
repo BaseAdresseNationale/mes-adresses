@@ -6,9 +6,7 @@ import { useState } from "react";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
 
-interface QualityGoalProps {}
-
-function QualityGoal({}: QualityGoalProps) {
+function QualityGoal() {
   const [isActive, setIsActive] = useState(false);
 
   const isAllCertified = false;
