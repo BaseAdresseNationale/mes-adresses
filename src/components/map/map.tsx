@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback, useContext } from "react";
-import { useRouter, useParams, usePathname } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import MapGl, {
   Source,
   Layer,
@@ -98,7 +98,6 @@ function Map({
 }: MapProps) {
   const router = useRouter();
   const params = useParams();
-  const pathname = usePathname();
   const {
     map,
     isTileSourceLoaded,
@@ -340,21 +339,13 @@ function Map({
   }, [isStyleLoaded, updatePositionsLayer]);
 
   useEffect(() => {
-    if (map && bounds) {
-      const camera = map.cameraForBounds(bounds as LngLatBoundsLike, {
-        padding: 100,
-      });
+    if (map) {
+      const hash = window.location.hash.slice(1);
 
-      const hash = pathname.split("#")?.[1];
-      if (hash) {
-        const [zoom, latitude, longitude]: string[] = hash.split("/");
-        setViewport((viewport: ViewState) => ({
-          ...viewport,
-          longitude: Number(longitude),
-          latitude: Number(latitude),
-          zoom: Number(zoom),
-        }));
-      } else if (camera) {
+      if (bounds) {
+        const camera = map.cameraForBounds(bounds as LngLatBoundsLike, {
+          padding: 100,
+        });
         setViewport((viewport: ViewState) => ({
           ...viewport,
           bearing: camera.bearing,
@@ -362,9 +353,17 @@ function Map({
           latitude: (camera.center as any).lat,
           zoom: camera.zoom,
         }));
+      } else if (hash) {
+        const [zoom, latitude, longitude]: string[] = hash.split("/");
+        setViewport((viewport: ViewState) => ({
+          ...viewport,
+          longitude: Number(longitude),
+          latitude: Number(latitude),
+          zoom: Number(zoom),
+        }));
       }
     }
-  }, [map, bounds, setViewport, pathname]);
+  }, [map, bounds, setViewport]);
 
   const sourceTiles: SourceProps = useMemo(() => {
     return {

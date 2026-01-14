@@ -6,7 +6,7 @@ import type { Map } from "maplibre-gl";
 import BalDataContext from "@/contexts/bal-data";
 import { Toponyme, Voie } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 function useBounds(
   map: Map,
@@ -14,7 +14,7 @@ function useBounds(
   voie: Voie,
   toponyme: Toponyme
 ) {
-  const searchParams = useSearchParams();
+  const params = useParams();
   const [bounds, setBounds] = useState<number[]>(commune.bbox);
   const { editingItem } = useContext(BalDataContext);
 
@@ -46,8 +46,9 @@ function useBounds(
   }, [editingItem, wasCenteredOnCommuneOnce, map, bboxForItem, commune.bbox]);
 
   useEffect(() => {
-    const idVoie = searchParams.get("idVoie");
-    const idToponyme = searchParams.get("idToponyme");
+    const idVoie = params.idVoie;
+    const idToponyme = params.idToponyme;
+
     if (!map) {
       return;
     }
@@ -57,7 +58,7 @@ function useBounds(
     } else if (idToponyme) {
       setBounds(bboxForItem(toponyme));
     }
-  }, [searchParams, voie, toponyme, map, bboxForItem]);
+  }, [params, voie, toponyme, map, bboxForItem]);
 
   return bounds;
 }

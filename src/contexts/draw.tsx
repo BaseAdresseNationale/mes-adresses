@@ -121,7 +121,7 @@ export function DrawContextProvider(props: ChildrenProps) {
     };
 
     cb();
-  }, [drawMode, setDrawMode, params]);
+  }, [setDrawMode, params]);
 
   const onCreate = useCallback(
     ({ features }) => {
