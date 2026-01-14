@@ -9,5 +9,6 @@ export type BaseLocaleSetting = {
     languageGoalIgnored: boolean;
     toponymeGoalIgnored: boolean;
     fondsDeCartes: Array<BaseLocaleFondDeCarte>;
+    ignoredAlertCodes: Array<string>;
 };
 

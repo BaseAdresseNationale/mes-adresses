@@ -23,6 +23,7 @@ import { LayoutContextProvider } from "@/contexts/layout";
 import { BALWidgetProvider } from "@/contexts/bal-widget";
 import { SearchPaginationContextProvider } from "@/contexts/search-pagination";
 import { MatomoTrackingContextProvider } from "@/contexts/matomo-tracking";
+import { AlertsContextProvider } from "@/contexts/alerts";
 import Main from "@/layouts/main";
 
 const openAPIBase = process.env.NEXT_PUBLIC_BAL_API_URL.split("/")
@@ -73,20 +74,22 @@ function App(props: AppProps) {
                       <IEWarning />
                       {query.balId && pageProps ? (
                         <Main isEditor>
-                          <BalDataContextProvider
-                            initialBaseLocale={pageProps.baseLocale}
-                            initialVoie={pageProps.voie}
-                            initialToponyme={pageProps.toponyme}
-                            initialNumeros={pageProps.numeros}
-                          >
-                            <SearchPaginationContextProvider>
-                              <SignalementContextProvider>
-                                <Editor {...pageProps}>
-                                  <Component {...pageProps} />
-                                </Editor>
-                              </SignalementContextProvider>
-                            </SearchPaginationContextProvider>
-                          </BalDataContextProvider>
+                          <AlertsContextProvider>
+                            <BalDataContextProvider
+                              initialBaseLocale={pageProps.baseLocale}
+                              initialVoie={pageProps.voie}
+                              initialToponyme={pageProps.toponyme}
+                              initialNumeros={pageProps.numeros}
+                            >
+                              <SearchPaginationContextProvider>
+                                <SignalementContextProvider>
+                                  <Editor {...pageProps}>
+                                    <Component {...pageProps} />
+                                  </Editor>
+                                </SignalementContextProvider>
+                              </SearchPaginationContextProvider>
+                            </BalDataContextProvider>
+                          </AlertsContextProvider>
                         </Main>
                       ) : (
                         <Component {...pageProps} />

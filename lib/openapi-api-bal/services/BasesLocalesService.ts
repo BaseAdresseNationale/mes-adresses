@@ -409,19 +409,42 @@ export class BasesLocalesService {
     }
 
     /**
+     * Find all Voie in Bal
+     * @param select
+     * @param baseLocaleId
+     * @returns Numero
+     * @throws ApiError
+     */
+    public static findNumeros(
+        select: Array<string>,
+        baseLocaleId: string,
+    ): CancelablePromise<Array<Numero>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/numeros',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+            query: {
+                'select': select,
+            },
+        });
+    }
+
+    /**
      * Search numero
      * @param baseLocaleId
      * @param requestBody
      * @returns Numero
      * @throws ApiError
      */
-    public static searchNumeros(
+    public static searchNumerosInPolygon(
         baseLocaleId: string,
         requestBody: SearchNumeroDTO,
     ): CancelablePromise<Array<Numero>> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/v2/bases-locales/{baseLocaleId}/numeros',
+            url: '/v2/bases-locales/{baseLocaleId}/search/numeros',
             path: {
                 'baseLocaleId': baseLocaleId,
             },

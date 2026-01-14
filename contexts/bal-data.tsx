@@ -21,6 +21,7 @@ import {
   ExtendedVoieDTO,
 } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
+import AlertsContext from "@/contexts/alerts";
 import useHabilitation from "@/hooks/habilitation";
 import { useRouter } from "next/router";
 import LayoutContext from "./layout";
@@ -28,6 +29,7 @@ import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 import { CommuneType } from "@/types/commune";
 import { getCommuneWithBBox } from "@/lib/commune";
 import { Pane, Paragraph, Spinner } from "evergreen-ui";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -95,6 +97,7 @@ export function BalDataContextProvider({
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
   const { pushToast } = useContext(LayoutContext);
   const { token } = useContext(TokenContext);
+  const { reloadVoiesAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
 
   useEffect(() => {
@@ -111,6 +114,15 @@ export function BalDataContextProvider({
         setToponymes(toponymes);
         setCommune(commune);
         setIsBALDataLoaded(true);
+        // LOAD ALERTS
+        reloadVoiesAlerts(
+          voies,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
+        reloadNumerosAlerts(
+          initialBaseLocale.id,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
       } catch (error) {
         console.error("Error fetching BAL data:", error);
       }
@@ -119,6 +131,7 @@ export function BalDataContextProvider({
     if (!isBALDataLoaded) {
       fetchBALData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialBaseLocale, isBALDataLoaded]);
 
   const {

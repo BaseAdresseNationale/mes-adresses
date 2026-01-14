@@ -7,6 +7,8 @@ import {
   WarningSignIcon,
   CommentIcon,
   OfficeIcon,
+  Popover,
+  defaultTheme,
 } from "evergreen-ui";
 import TokenContext from "@/contexts/token";
 
@@ -24,6 +26,7 @@ function TableRowNotifications({
   communeDeleguee,
 }: TableRowNotificationsProps) {
   const { token } = useContext(TokenContext);
+
   return (
     <>
       {communeDeleguee && (
@@ -51,16 +54,20 @@ function TableRowNotifications({
 
       {warning && (
         <Table.TextCell flex="0 1 1" paddingLeft="8px" paddingRight="8px">
-          <Tooltip
+          <Popover
             content={warning}
             position={Position.BOTTOM_RIGHT}
-            statelessProps={{ maxWidth: "500px" }}
+            statelessProps={{
+              background: defaultTheme.colors.gray800,
+              padding: "16px",
+            }}
           >
             <WarningSignIcon
               color="warning"
               style={{ verticalAlign: "bottom" }}
+              cursor="pointer"
             />
-          </Tooltip>
+          </Popover>
         </Table.TextCell>
       )}
     </>
