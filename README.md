@@ -1,107 +1,36 @@
-# Mes Adresses
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-"Mes Adresses" est un outil en ligne qui vous permet de gérer simplement vos adresses, de la constitution d’une Base Adresse Locale à sa mise à jour. Il est accessible sans compétences techniques et dispose d’un tutoriel embarqué.
+## Getting Started
 
-Il est disponible en ligne à l'adresse [mes-adresses.data.gouv.fr](https://mes-adresses.data.gouv.fr).
-
-## Guide
-
-https://adresse.data.gouv.fr/data/docs/guide-mes-adresses-v4.0.pdf
-
-## 📚 Documentation
-
-Une documentation plus complète et des guides d’utilisation sont disponibles dans le [Wiki](https://github.com/BaseAdresseNationale/mes-adresses/wiki).
-
-## Pré-requis
-
-- [Node.js](https://nodejs.org) 22
-- [yarn](https://www.yarnpkg.com)
-
-## Utilisation
-
-### Installation
-
-Installation des dépendances Node.js
-
-```
-$ yarn
-```
-
-Créer la liste des drapeaux disponibles pour les langues régionales
-
-```
-$ yarn build-available-flags
-```
-
-Créer les variables d'environnement
+First, run the development server:
 
 ```bash
-cp .env.sample .env
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-On pourra ensuite éditer les variables d'environnement dans le fichier `.env` si nécessaire.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Développement
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-Lancer le serveur de développement :
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-```
-$ yarn dev
-```
+## Learn More
 
-### Production
+To learn more about Next.js, take a look at the following resources:
 
-Créer une version de production :
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-```
-$ yarn build
-```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-Démarrer le serveur (port 3000 par défaut) :
+## Deploy on Vercel
 
-```
-$ yarn start
-```
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### Linter
-
-Rapport du linter (eslint) :
-
-```
-$ yarn lint
-```
-
-## Configuration
-
-Cette application utilise des variables d'environnement pour sa configuration.
-Elles peuvent être définies classiquement ou en créant un fichier `.env` sur la base du modèle `.env.sample`.
-
-| Nom de la variable                    | Description                                                     |
-| ------------------------------------- | --------------------------------------------------------------- |
-| `NEXT_PUBLIC_BAL_API_URL`             | URL de base de l’API BAL                                        |
-| `NEXT_PUBLIC_GEO_API_URL`             | URL de base de l’API Géo                                        |
-| `NEXT_PUBLIC_ADRESSE_URL`             | URL de base du site adresse.data.gouv.fr                        |
-| `NEXT_PUBLIC_EDITEUR_URL`             | URL de base pour les redirection sur l'éditeur mes-adresses     |
-| `NEXT_PUBLIC_API_BAN_URL`             | URL de base de ban plateforme                                   |
-| `NEXT_PUBLIC_BAN_API_DEPOT`           | URL de base de l'api de depot                                   |
-| `NEXT_PUBLIC_PEERTUBE`                | URL du peertube                                                 |
-| `NEXT_PUBLIC_MATOMO_TRACKER_URL`      | URL du matomo                                                   |
-| `NEXT_PUBLIC_MATOMO_SITE_ID`          | Id du site sur matomo                                           |
-| `NEXT_PUBLIC_API_SIGNALEMENT`         | URL de l'API signalement                                        |
-| `NEXT_PUBLIC_BAL_ADMIN_URL`           | URL de base de bal admin                                        |
-| `NEXT_PUBLIC_MOISSONNEUR_BAL_API_URL` | URL de l'API moissonneur-bal                                    |
-| `PORT`                                | Port de l'application                                           |
-| `MATTERMOST_CHANNEL_URL`              | Channel Mattermost où sont publiées les actualités              |
-| `MATTERMOST_TOKEN`                    | Token pour afficher les messages de Mattermost sur la home page |
-| `NEXT_PUBLIC_BAL_WIDGET_URL`          | URL de BAL-Widget                                               |
-| `SENTRY_ENABLED`                      | Activation de Sentry                                            |
-
-Toutes ces variables ont des valeurs par défaut que vous trouverez dans le fichier `.env.sample`.
-
-## Gouvernance
-
-Ce outil a été conçu à l'initiative d'Etalab. Il est depuis 2020 piloté conjointement par Etalab et l'ANCT.
-
-## Licence
-
-MIT
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
