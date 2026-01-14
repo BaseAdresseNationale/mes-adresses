@@ -13,7 +13,7 @@ function UserBasesLocales() {
   const { balAccess } = useContext(LocalStorageContext);
   const [isLoading, setIsLoading] = useState(true);
   const [basesLocales, setBasesLocales] = useState<
-    BaseLocaleWithHabilitationDTO[]
+    Array<BaseLocaleWithHabilitationDTO & { token: string }>
   >([]);
 
   const getUserBals = useCallback(async () => {
@@ -22,14 +22,16 @@ function UserBasesLocales() {
       const basesLocalesResponse =
         await BasesLocalesService.findManyBaseLocales({ ids });
 
-      const basesLocales = basesLocalesResponse.map((baseLocale) => ({
+      const basesLocales: Array<
+        BaseLocaleWithHabilitationDTO & { token: string }
+      > = basesLocalesResponse.map((baseLocale) => ({
         ...baseLocale,
         token: balAccess[baseLocale.id],
       }));
 
-      const orderedBALs = sortBalByUpdate<BaseLocaleWithHabilitationDTO>(
-        basesLocales.filter(Boolean)
-      );
+      const orderedBALs = sortBalByUpdate<
+        BaseLocaleWithHabilitationDTO & { token: string }
+      >(basesLocales.filter(Boolean));
 
       setBasesLocales(orderedBALs);
     }

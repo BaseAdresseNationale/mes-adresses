@@ -6,7 +6,10 @@ import {
 } from "../openapi-api-bal";
 
 export function sortBalByUpdate<
-  T extends BaseLocale | ExtendedBaseLocaleDTO | BaseLocaleWithHabilitationDTO,
+  T extends
+    | BaseLocale
+    | ExtendedBaseLocaleDTO
+    | (BaseLocaleWithHabilitationDTO & { token: string }),
 >(array: T[]): T[] {
   return orderBy(array, ["updatedAt"], ["desc"]);
 }
