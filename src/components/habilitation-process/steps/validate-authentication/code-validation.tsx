@@ -84,8 +84,8 @@ function CodeValidation({
             handler={handler}
             onComplete={handleCodeComplete}
             style={{
-              height: "40px",
-              width: "40px",
+              height: "76px",
+              width: "76px",
               textAlign: "center",
               fontSize: "24px",
               fontWeight: "bold",
