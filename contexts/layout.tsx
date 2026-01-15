@@ -63,7 +63,7 @@ export function LayoutContextProvider(
     }
     const timeoutDuration = lastToast?.duration || TOAST_DURATION;
     const timeout = setTimeout(() => {
-      setToasts((toasts) => toasts.slice(1));
+      setToasts((toasts) => [...toasts.slice(1)]);
     }, timeoutDuration);
 
     return () => clearTimeout(timeout);
