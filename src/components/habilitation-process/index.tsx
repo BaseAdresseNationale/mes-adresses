@@ -166,7 +166,8 @@ function HabilitationProcess({
     if (habilitation.status === HabilitationDTO.status.ACCEPTED) {
       try {
         await handlePublication();
-        await reloadBaseLocale();
+        // eslint-disable-next-line react-hooks/immutability
+        baseLocale.status = BaseLocale.status.PUBLISHED;
       } catch (error) {
         console.error("Error handling publication", error);
       }
