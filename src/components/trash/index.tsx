@@ -109,27 +109,6 @@ function Trash() {
             <ItemsDeletedList {...propsDeletedList} />
           </>
         )}
-
-        <style jsx>{`
-          .tab {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: whitesmoke;
-          }
-          .tab:hover {
-            cursor: pointer;
-            background: #e4e7eb;
-          }
-          .tab.selected {
-            background: #fff;
-          }
-          .tab .selected:hover {
-            background: #e4e7eb;
-          }
-        `}</style>
       </Pane>
     </Pane>
   );
