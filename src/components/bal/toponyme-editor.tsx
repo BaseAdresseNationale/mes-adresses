@@ -48,7 +48,7 @@ function ToponymeEditor({
 }: ToponymeEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [communeDeleguee, setCommuneDeleguee] = useState(
-    initialValue ? initialValue.communeDeleguee : ""
+    initialValue ? initialValue.communeDeleguee : "",
   );
   const [nom, onNomChange, resetNom] = useInput(initialValue?.nom || "");
   const { getValidationMessage, setValidationMessages } =
@@ -83,7 +83,7 @@ function ToponymeEditor({
 
       setIsLoading(false);
     },
-    [baseLocale.id, numerosIds, reloadNumeros]
+    [baseLocale.id, numerosIds, reloadNumeros],
   );
 
   const onFormSubmit = useCallback(
@@ -123,13 +123,13 @@ function ToponymeEditor({
               "Le toponyme n’a pas pu être modifié",
               (error) => {
                 setValidationMessages(error.body.message);
-              }
+              },
             )
           : toaster(
               async () => {
                 const toponyme = await BasesLocalesService.createToponyme(
                   baseLocale.id,
-                  body
+                  body,
                 );
                 await updateNumerosToponyme(toponyme.id);
                 return toponyme;
@@ -138,7 +138,7 @@ function ToponymeEditor({
               "Le toponyme n’a pas pu être ajouté",
               (error) => {
                 setValidationMessages(error.body.message);
-              }
+              },
             );
 
         const toponyme = await submit();
@@ -178,7 +178,7 @@ function ToponymeEditor({
       updateNumerosToponyme,
       reloadTiles,
       onSubmit,
-    ]
+    ],
   );
 
   const onFormCancel = useCallback(
@@ -186,7 +186,7 @@ function ToponymeEditor({
       e.preventDefault();
       onClose();
     },
-    [onClose]
+    [onClose],
   );
 
   const submitLabel = useMemo(() => {
@@ -206,7 +206,7 @@ function ToponymeEditor({
   useEffect(() => {
     if (markers.length > 1) {
       setHint(
-        "Déplacez les marqueurs sur la carte pour modifier les positions"
+        "Déplacez les marqueurs sur la carte pour modifier les positions",
       );
     } else {
       setHint("Déplacez le marqueur sur la carte pour positionner le toponyme");
@@ -286,7 +286,14 @@ function ToponymeEditor({
         )}
       </Pane>
 
-      <div className="toponyme-editor-controls">
+      <Pane
+        position="sticky"
+        bottom={0}
+        display="flex"
+        padding={10}
+        alignItems="center"
+        justifyContent="center"
+      >
         <Button
           isLoading={isLoading}
           type="submit"
@@ -307,18 +314,7 @@ function ToponymeEditor({
         >
           Annuler
         </Button>
-      </div>
-
-      <style jsx>{`
-        .toponyme-editor-controls {
-          position: sticky;
-          bottom: 0;
-          display: flex;
-          padding: 10px;
-          align-items: center;
-          justify-content: center;
-        }
-      `}</style>
+      </Pane>
     </Form>
   );
 }

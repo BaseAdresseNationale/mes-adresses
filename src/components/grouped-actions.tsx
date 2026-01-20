@@ -33,7 +33,7 @@ import { CommuneType } from "@/types/commune";
 
 const getInitialCommuneDeleguee = (selectedNumeros: Numero[]) => {
   const selectedNumerosUniqToponyme = uniq(
-    selectedNumeros.map((numero) => numero.communeDeleguee)
+    selectedNumeros.map((numero) => numero.communeDeleguee),
   );
   return selectedNumerosUniqToponyme.length === 1
     ? selectedNumeros[0].communeDeleguee
@@ -62,7 +62,7 @@ function GroupedActions({
   onSubmit,
 }: GroupedActionsProps) {
   const selectedNumeros = numeros.filter(({ id }) =>
-    selectedNumerosIds.includes(id)
+    selectedNumerosIds.includes(id),
   );
 
   const { voies, toponymes, baseLocale, reloadVoies, reloadToponymes } =
@@ -73,7 +73,7 @@ function GroupedActions({
   const [selectedVoieId, setSelectedVoieId] = useState(idVoie);
   const [comment, onCommentChange] = useInput("");
   const [communeDeleguee, setCommuneDeleguee] = useState(
-    getInitialCommuneDeleguee(selectedNumeros)
+    getInitialCommuneDeleguee(selectedNumeros),
   );
   const [removeAllComments, onRemoveAllCommentsChange] =
     useCheckboxInput(false);
@@ -81,15 +81,15 @@ function GroupedActions({
   const { reloadTiles } = useContext(MapContext);
 
   const selectedNumerosUniqType = uniq(
-    selectedNumeros.map((numero) => numero.positions[0].type)
+    selectedNumeros.map((numero) => numero.positions[0].type),
   );
   const hasMultiposition = Boolean(
-    selectedNumeros.find((numero) => numero.positions.length > 1)
+    selectedNumeros.find((numero) => numero.positions.length > 1),
   );
   const hasComment = selectedNumeros.some((numero) => numero.comment);
 
   const selectedNumerosUniqVoie = uniq(
-    selectedNumeros.map((numero) => numero.voieId)
+    selectedNumeros.map((numero) => numero.voieId),
   );
 
   // Returns a unique position type, if selected numeros have only one and the same position type
@@ -102,10 +102,10 @@ function GroupedActions({
   };
 
   const [positionType, onPositionTypeChange, resetPositionType] = useInput(
-    getDefaultPositionType()
+    getDefaultPositionType(),
   );
   const selectedNumerosUniqToponyme = uniq(
-    selectedNumeros.map((numero) => numero.toponymeId)
+    selectedNumeros.map((numero) => numero.toponymeId),
   );
   const hasUniqToponyme = selectedNumerosUniqToponyme.length === 1;
 
@@ -231,7 +231,7 @@ function GroupedActions({
                       <option key={id} value={id}>
                         {nom}
                       </option>
-                    )
+                    ),
                   )}
                 </SelectField>
               </FormInput>
@@ -266,7 +266,7 @@ function GroupedActions({
                         <option key={id} value={id}>
                           {nom}
                         </option>
-                      )
+                      ),
                     )}
                   </SelectField>
                 </FormInput>

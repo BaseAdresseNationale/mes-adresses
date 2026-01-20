@@ -3,7 +3,6 @@ import {
   Heading,
   Pane,
   Paragraph,
-  Text,
   Strong,
   defaultTheme,
 } from "evergreen-ui";
@@ -40,6 +39,9 @@ function PublishedBalStep({
         numberOfPieces={500}
         tweenDuration={1}
         width={dialogWidth}
+        style={{
+          position: "absolute",
+        }}
       />
       <Pane display="flex" flexDirection="column" gap={16}>
         <Pane
@@ -136,11 +138,6 @@ function PublishedBalStep({
           </Button>
         </Pane>
       </Pane>
-      <style jsx>{`
-        .confetti {
-          position: absolute;
-        }
-      `}</style>
     </>
   );
 }

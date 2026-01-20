@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Button, EndorsedIcon } from "evergreen-ui";
+import styles from "./certification-button.module.css";
 
 export interface CertificationButtonProps {
   isLoading: boolean;
@@ -33,7 +34,7 @@ function CertificationButton({
   }, [isLoading, isCertified]);
 
   return (
-    <div className="certification-button-wrapper">
+    <div className={styles["certification-button-wrapper"]}>
       {onConfirm && (
         <div>
           <Button
@@ -76,27 +77,6 @@ function CertificationButton({
           Annuler
         </Button>
       </div>
-
-      <style jsx>{`
-        .certification-button-wrapper {
-          position: sticky;
-          width: 100%;
-          bottom: -12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-          padding: 10px 0;
-          background-color: #e6e8f0;
-        }
-
-        .certification-button-wrapper > div {
-          box-shadow:
-            0 0 1px rgba(67, 90, 111, 0.3),
-            0 5px 8px -4px rgba(67, 90, 111, 0.47);
-          margin: 4px;
-        }
-      `}</style>
     </div>
   );
 }

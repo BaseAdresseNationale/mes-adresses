@@ -65,12 +65,12 @@ function NumeroEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [certifie, setCertifie] = useState(initialValue?.certifie || false);
   const [numero, onNumeroChange] = useInput(
-    initialValue?.numero.toString() || ""
+    initialValue?.numero.toString() || "",
   );
   const [numeroWasEdited, setNumeroWasEdited] = useState<boolean>(false);
   const [nomVoie, onNomVoieChange] = useState("");
   const [communeDeleguee, setCommuneDeleguee] = useState(
-    initialValue?.communeDeleguee || null
+    initialValue?.communeDeleguee || null,
   );
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe || "");
@@ -182,7 +182,7 @@ function NumeroEditor({
             "Le numéro n’a pas pu être modifié",
             (err) => {
               setValidationMessages(err.body.message);
-            }
+            },
           );
           await updateNumero();
         } else {
@@ -192,7 +192,7 @@ function NumeroEditor({
             "Le numéro n’a pas pu être ajouté",
             (err) => {
               setValidationMessages(err.body.message);
-            }
+            },
           );
           await createNumero();
         }
@@ -232,14 +232,14 @@ function NumeroEditor({
       onSubmitted,
       toaster,
       numero,
-    ]
+    ],
   );
 
   useEffect(() => {
     onNumeroChange({ target: { value: initialValue?.numero.toString() } });
     onSuffixeChange({ target: { value: initialValue?.suffixe } });
     setCompleteNumero(
-      computeCompletNumero(initialValue?.numero, initialValue?.suffixe)
+      computeCompletNumero(initialValue?.numero, initialValue?.suffixe),
     );
   }, [
     initialValue?.numero,
@@ -305,7 +305,7 @@ function NumeroEditor({
   useEffect(() => {
     if (markers.length > 1) {
       setHint(
-        "Déplacez les marqueurs sur la carte pour modifier les positions"
+        "Déplacez les marqueurs sur la carte pour modifier les positions",
       );
     } else {
       setHint("Déplacez le marqueur sur la carte pour positionner le numéro");
@@ -355,7 +355,7 @@ function NumeroEditor({
                   target.value === REMOVE_TOPONYME_LABEL ||
                     target.value === "- Choisir un toponyme -"
                     ? null
-                    : target.value
+                    : target.value,
                 );
               }}
             >
@@ -369,7 +369,7 @@ function NumeroEditor({
                   <option key={id} value={id}>
                     {nom}
                   </option>
-                )
+                ),
               )}
             </SelectField>
           </FormInput>
