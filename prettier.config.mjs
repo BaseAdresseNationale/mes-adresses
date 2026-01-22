@@ -1,8 +1,8 @@
 const prettierConfig = {
   semi: true,
   singleQuote: false,
-  trailingComma: "all",
-  printWidth: 100,
+  trailingComma: "es5",
+  printWidth: 80,
   tabWidth: 2,
 };
 
