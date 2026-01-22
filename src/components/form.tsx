@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useContext, useRef } from "react";
-
 import BalDataContext from "@/contexts/bal-data";
-
 import useKeyEvent from "@/hooks/key-event";
-
 import FormContainer from "@/components/form-container";
 
 interface FormProps {
@@ -34,15 +31,8 @@ function Form({
       }
     },
     [closeForm],
-    "keyup"
+    "keyup",
   );
-
-  // Close form when edition is canceled form menu
-  /*   useEffect(() => {
-    if (formRef.current && !isEditing) {
-      closeForm();
-    }
-  }, [isEditing, closeForm]); */
 
   useEffect(() => {
     setIsEditing(true);

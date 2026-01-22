@@ -7,7 +7,11 @@ import { LAYERS_SOURCE } from "@/components/map/layers/tiles";
 import { PANORAMAX_LAYERS_SOURCE } from "../layers/panoramax";
 
 function useHovered(map) {
-  const hovered = useRef<{ id; source; sourceLayer }>(undefined);
+  const hovered = useRef<{
+    id: string;
+    source: "tiles" | "cadastre";
+    sourceLayer: typeof LAYERS_SOURCE;
+  }>(undefined);
   const { handleHoveredParcelles } = useContext(ParcellesContext);
   const [featureHovered, setFeatureHovered] = useState(null);
 
@@ -19,7 +23,7 @@ function useHovered(map) {
     numerosFeatures.forEach(({ id }) => {
       map.setFeatureState(
         { source: "tiles", sourceLayer: LAYERS_SOURCE.NUMEROS_POINTS, id },
-        { hover: isHovered }
+        { hover: isHovered },
       );
     });
     map.setFeatureState(
@@ -28,7 +32,7 @@ function useHovered(map) {
         sourceLayer: LAYERS_SOURCE.VOIES_LINES_STRINGS,
         id: idVoie,
       },
-      { hover: isHovered }
+      { hover: isHovered },
     );
   };
 
@@ -41,7 +45,7 @@ function useHovered(map) {
     numerosFeatures.forEach(({ id }) => {
       map.setFeatureState(
         { source: "tiles", sourceLayer: LAYERS_SOURCE.NUMEROS_POINTS, id },
-        { hover: isHovered }
+        { hover: isHovered },
       );
     });
   };
@@ -49,14 +53,14 @@ function useHovered(map) {
   const handleRelatedVoiePoints = (map, id, isHovered) => {
     map.setFeatureState(
       { source: "tiles", sourceLayer: LAYERS_SOURCE.VOIES_POINTS, id },
-      { hover: isHovered }
+      { hover: isHovered },
     );
   };
 
   const handleRelatedToponymePoints = (map, id, isHovered) => {
     map.setFeatureState(
       { source: "tiles", sourceLayer: LAYERS_SOURCE.TOPONYME_POINTS, id },
-      { hover: isHovered }
+      { hover: isHovered },
     );
   };
 
@@ -93,12 +97,12 @@ function useHovered(map) {
           ({ source, sourceLayer, layer }) =>
             source === "cadastre" &&
             sourceLayer === "parcelles" &&
-            layer?.id === "parcelles-fill"
+            layer?.id === "parcelles-fill",
         );
 
         if (source === "cadastre") {
           handleHoveredParcelles(
-            parcelles.map(({ properties }) => properties.id)
+            parcelles.map(({ properties }) => properties.id),
           );
         }
 
@@ -109,7 +113,7 @@ function useHovered(map) {
               id: hovered.current.id,
               sourceLayer: hovered.current.sourceLayer,
             },
-            { hover: false }
+            { hover: false },
           );
           handleRelatedFeatures(map, hovered.current, false);
           setFeatureHovered(null);
@@ -131,7 +135,7 @@ function useHovered(map) {
         }
       }
     },
-    [map, handleHoveredParcelles]
+    [map, handleHoveredParcelles],
   );
 
   const handleMouseLeave = useCallback(() => {
