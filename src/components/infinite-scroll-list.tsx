@@ -14,8 +14,8 @@ interface InfiniteScrollListProps {
 function InfiniteScrollList({ items, children }: InfiniteScrollListProps) {
   const [limit, setLimit] = useState(5);
 
-  const visibleElements = useRef<number>(undefined);
-  const containerRef = useRef<HTMLDivElement>(undefined);
+  const visibleElements = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const scrollPosition = useRef({ target: null, limit });
 
   const handleScroll = useCallback(({ target }) => {
@@ -39,7 +39,7 @@ function InfiniteScrollList({ items, children }: InfiniteScrollListProps) {
     function updateMaxVisibleElements() {
       if (containerRef.current) {
         visibleElements.current = Math.ceil(
-          containerRef.current.offsetHeight / ELEMENT_HEIGHT
+          containerRef.current.offsetHeight / ELEMENT_HEIGHT,
         );
         setLimit(visibleElements.current);
       }

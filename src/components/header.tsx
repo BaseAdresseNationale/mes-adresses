@@ -17,8 +17,8 @@ import { MobileHelpMenu } from "./mobile-layout/mobile-help-menu";
 import LayoutContext from "@/contexts/layout";
 
 function Header() {
-  const layoutCtx = useContext(LayoutContext);
-  const helpCtx = useContext(HelpContext);
+  const { isMobile } = useContext(LayoutContext);
+  const { showHelp, setShowHelp } = useContext(HelpContext);
 
   return (
     <Pane
@@ -61,7 +61,7 @@ function Header() {
         </Heading>
       </Pane>
       <Pane id="header-menu-wrapper" paddingTop={16} paddingBottom={16}>
-        {!layoutCtx?.isMobile ? (
+        {!isMobile ? (
           <Pane
             display="flex"
             justifyContent="space-around"
@@ -72,7 +72,7 @@ function Header() {
               marginRight="12px"
               minHeight="55px"
               iconAfter={HelpIcon}
-              onClick={() => helpCtx?.setShowHelp(!helpCtx.showHelp)}
+              onClick={() => setShowHelp(!showHelp)}
             >
               Besoin d’aide
             </Button>

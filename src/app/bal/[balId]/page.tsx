@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Pane } from "evergreen-ui";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -27,19 +27,19 @@ export default function BALHomePage() {
   const { setTileLayersMode } = useContext(MapContext);
   const [communeFlag, setCommuneFlag] = useState<string | null>(null);
 
-  const fetchCommuneFlag = useCallback(async () => {
-    try {
-      const flagUrl = await getCommuneFlagProxy(baseLocale.commune);
-      setCommuneFlag(flagUrl);
-    } catch (err) {
-      console.error("Error fetching commune flag", err);
-      setCommuneFlag(null);
-    }
-  }, [baseLocale.commune]);
-
   useEffect(() => {
+    const fetchCommuneFlag = async () => {
+      try {
+        const flagUrl = await getCommuneFlagProxy(baseLocale.commune);
+        setCommuneFlag(flagUrl);
+      } catch (err) {
+        console.error("Error fetching commune flag", err);
+        setCommuneFlag(null);
+      }
+    };
+
     fetchCommuneFlag();
-  }, [fetchCommuneFlag]);
+  }, [baseLocale.commune]);
 
   const openRecoveryDialog = () => {
     setIsRecoveryDisplayed(true);
