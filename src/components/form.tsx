@@ -1,28 +1,20 @@
 "use client";
 
-import { useEffect, useContext, useRef } from "react";
+import { useEffect, useContext, useState } from "react";
 import BalDataContext from "@/contexts/bal-data";
 import useKeyEvent from "@/hooks/key-event";
 import FormContainer from "@/components/form-container";
 
 interface FormProps {
   editingId?: string | null;
-  unmountForm?: () => void;
   closeForm?: () => void;
   onFormSubmit: (e: any) => Promise<void>;
   children: React.ReactNode;
 }
 
-function Form({
-  editingId,
-  unmountForm,
-  closeForm,
-  onFormSubmit,
-  children,
-}: FormProps) {
-  const { setEditingId, setIsEditing } = useContext(BalDataContext);
-
-  const formRef = useRef(false);
+function Form({ editingId, closeForm, onFormSubmit, children }: FormProps) {
+  const [initialized, setInitialized] = useState(false);
+  const { setEditingId, setIsEditing, isEditing } = useContext(BalDataContext);
 
   useKeyEvent(
     ({ key }) => {
@@ -35,19 +27,21 @@ function Form({
   );
 
   useEffect(() => {
+    if (initialized && !isEditing) {
+      closeForm();
+    }
+  }, [isEditing, closeForm, initialized]);
+
+  useEffect(() => {
     setIsEditing(true);
-    formRef.current = true;
     if (editingId) {
       setEditingId(editingId);
     }
+    setInitialized(true);
 
     return () => {
       setIsEditing(false);
       setEditingId(null);
-
-      if (unmountForm) {
-        unmountForm();
-      }
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
