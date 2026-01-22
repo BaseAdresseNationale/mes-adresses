@@ -10,7 +10,12 @@ interface HelpContextType {
   setSelectedIndex: (value: number) => void;
 }
 
-const HelpContext = React.createContext<HelpContextType | null>(null);
+const HelpContext = React.createContext<HelpContextType>({
+  showHelp: false,
+  setShowHelp: () => {},
+  selectedIndex: 0,
+  setSelectedIndex: () => {},
+});
 
 export function HelpContextProvider(props: ChildrenProps) {
   const [showHelp, setShowHelp] = useState<boolean>(false);
@@ -23,7 +28,7 @@ export function HelpContextProvider(props: ChildrenProps) {
       selectedIndex,
       setSelectedIndex,
     }),
-    [showHelp, selectedIndex]
+    [showHelp, selectedIndex],
   );
 
   return <HelpContext.Provider value={value} {...props} />;

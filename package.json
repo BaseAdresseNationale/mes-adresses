@@ -14,6 +14,7 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "eslint --ext .js,.ts,.tsx .",
+    "format": "prettier --write .",
     "build": "yarn build-available-flags && next build",
     "analyze": "ANALYZE=true next build",
     "build-available-flags": "node scripts/build-available-flags",
@@ -70,7 +71,10 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
     "openapi-typescript-codegen": "^0.30.0",
+    "prettier": "^3.8.1",
     "typescript": "^5"
   },
   "engines": {

@@ -24,7 +24,7 @@ interface LayoutContextType {
     fn: () => Promise<any>,
     successMessage: string,
     errorMessage: string,
-    onValidationError?: (error: any) => void
+    onValidationError?: (error: any) => void,
   ) => () => Promise<any>;
   toasts: Toast[];
   pushToast: ({ intent, title, message }: Toast) => void;
@@ -33,7 +33,15 @@ interface LayoutContextType {
   selectedTab?: string;
 }
 
-const LayoutContext = React.createContext<LayoutContextType | null>(null);
+const LayoutContext = React.createContext<LayoutContextType>({
+  isMobile: false,
+  isMapFullscreen: false,
+  setIsMapFullscreen: () => {},
+  toaster: () => async () => {},
+  toasts: [],
+  pushToast: () => {},
+  setBreadcrumbs: () => {},
+});
 
 export function LayoutContextProvider(props: ChildrenProps) {
   const { isMobile } = useWindowSize();
@@ -81,14 +89,14 @@ export function LayoutContextProvider(props: ChildrenProps) {
         }
       }
     },
-    []
+    [],
   );
 
   const pushToast = useCallback(
     (newToast: Toast) => {
       setToasts((toasts) => [...toasts, { ...newToast }]);
     },
-    [setToasts]
+    [setToasts],
   );
 
   const value = useMemo(
@@ -110,7 +118,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
       toasts,
       breadcrumbs,
       setBreadcrumbs,
-    ]
+    ],
   );
 
   return (
@@ -126,7 +134,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
               </CustomToast>
             ))}
           </>,
-          document.body
+          document.body,
         )}
       {props.children}
     </LayoutContext.Provider>

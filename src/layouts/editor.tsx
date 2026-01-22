@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 
 import { DrawerContextProvider } from "@/contexts/drawer";
 import { DrawContextProvider } from "@/contexts/draw";
@@ -40,6 +40,10 @@ function Editor({ children }: EditorProps) {
   const isDemo = baseLocale.status === BaseLocale.status.DEMO;
   const isReadonly = !Boolean(token);
   const sidebarWidth = isMobile ? window.innerWidth : 500;
+
+  const closeForm = useCallback(() => {
+    setIsAddressFormOpen(false);
+  }, []);
 
   return (
     <MapContextProvider>
@@ -87,9 +91,7 @@ function Editor({ children }: EditorProps) {
               {isAddressFormOpen ? (
                 <AddressEditor
                   commune={commune}
-                  closeForm={() => {
-                    setIsAddressFormOpen(false);
-                  }}
+                  closeForm={closeForm}
                 />
               ) : (
                 <Pane

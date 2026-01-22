@@ -29,10 +29,6 @@ export function DrawMetricVoieEditor({ voie }: DrawMetricVoieEditorProps) {
     };
   }, [voie, setData, setDrawMode]);
 
-  const handleDelete = useCallback(() => {
-    setData(null);
-  }, [setData]);
-
   return (
     <Pane borderLeft="default" paddingX={12} marginBottom={12}>
       <Heading is="h4">Tracé de la voie</Heading>
@@ -53,7 +49,9 @@ export function DrawMetricVoieEditor({ voie }: DrawMetricVoieEditorProps) {
           marginY={8}
           marginRight={12}
           iconBefore={EraserIcon}
-          onClick={handleDelete}
+          onClick={() => {
+            setData(null);
+          }}
         >
           Effacer le tracé
         </Button>

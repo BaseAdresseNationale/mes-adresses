@@ -11,7 +11,13 @@ interface MainProps {
 
 function Main({ children, isEditor }: MainProps) {
   return (
-    <Pane height="100%" width="100%" display="flex" flexDirection="column">
+    <Pane
+      height="100%"
+      width="100%"
+      display="flex"
+      flexDirection="column"
+      backgroundColor="white"
+    >
       <Header />
       <>
         <IEWarning />

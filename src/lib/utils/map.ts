@@ -1,15 +1,16 @@
 import { LAYERS_SOURCE, mapLayersIds } from "@/components/map/layers/tiles";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { MapGeoJSONFeature } from "maplibre-gl";
-import { useRouter } from "next/navigation";
 import maplibregl from "maplibre-gl";
 import type { Map as MaplibreMap, FilterSpecification } from "maplibre-gl";
 import { Voie } from "../openapi-api-bal";
 import bbox from "@turf/bbox";
+import { AllGeoJSON } from '@turf/helpers';
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export function handleSelectToponyme(
   feature: MapGeoJSONFeature,
-  router: ReturnType<typeof useRouter>,
+  router: AppRouterInstance,
   balId: string
 ) {
   const idToponyme =
@@ -25,7 +26,7 @@ export function handleSelectToponyme(
 
 export function handleSelectVoie(
   feature: MapGeoJSONFeature,
-  router: ReturnType<typeof useRouter>,
+  router: AppRouterInstance,
   balId: string
 ) {
   const idVoie =
@@ -60,7 +61,7 @@ export const resetMapFilter = (map: MaplibreMap) => {
 
 export const bboxForVoie = (item: Voie, map: MaplibreMap) => {
   if (map && item && item.trace) {
-    return bbox(JSON.parse(JSON.stringify(item.trace)));
+    return bbox(item.trace as AllGeoJSON);
   } else if (map && item && item.bbox) {
     return item.bbox;
   }
