@@ -5,7 +5,7 @@ import maplibregl from "maplibre-gl";
 import type { Map as MaplibreMap, FilterSpecification } from "maplibre-gl";
 import { Voie } from "../openapi-api-bal";
 import bbox from "@turf/bbox";
-import { AllGeoJSON } from '@turf/helpers';
+import { AllGeoJSON } from "@turf/helpers";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export function handleSelectToponyme(

@@ -4,6 +4,6 @@ export const trimNomAlt = (nomAlt) => {
       acc[key] = (value as string).trim();
       return acc;
     },
-    {} as Record<string, any>,
+    {} as Record<string, any>
   );
 };

@@ -130,8 +130,8 @@ function EditableMarker({
               marker.isDisabled
                 ? "muted"
                 : style === "vector"
-                ? "info"
-                : "success"
+                  ? "info"
+                  : "success"
             }
             size={size}
           />

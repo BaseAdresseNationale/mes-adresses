@@ -39,7 +39,7 @@ function InfiniteScrollList({ items, children }: InfiniteScrollListProps) {
     function updateMaxVisibleElements() {
       if (containerRef.current) {
         visibleElements.current = Math.ceil(
-          containerRef.current.offsetHeight / ELEMENT_HEIGHT,
+          containerRef.current.offsetHeight / ELEMENT_HEIGHT
         );
         setLimit(visibleElements.current);
       }

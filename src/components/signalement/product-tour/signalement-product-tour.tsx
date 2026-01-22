@@ -34,7 +34,9 @@ const steps = [
       if (element) {
         element.click();
       } else {
-        console.warn("Element not found: div[class^='main-tabs_tabsList'] > a:last-child");
+        console.warn(
+          "Element not found: div[class^='main-tabs_tabsList'] > a:last-child"
+        );
       }
     },
   },

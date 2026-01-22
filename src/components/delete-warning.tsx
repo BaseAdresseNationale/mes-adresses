@@ -1,4 +1,4 @@
-import {Pane, Dialog} from 'evergreen-ui'
+import { Pane, Dialog } from "evergreen-ui";
 
 interface DeleteWarningProps {
   isShown: boolean;
@@ -8,15 +8,21 @@ interface DeleteWarningProps {
   isDisabled?: boolean;
 }
 
-function DeleteWarning({isShown, content, onCancel, onConfirm, isDisabled}: DeleteWarningProps) {
+function DeleteWarning({
+  isShown,
+  content,
+  onCancel,
+  onConfirm,
+  isDisabled,
+}: DeleteWarningProps) {
   return (
     <Pane>
       <Dialog
         isShown={isShown}
-        title='Attention'
-        intent='danger'
-        cancelLabel='Annuler'
-        confirmLabel='Supprimer'
+        title="Attention"
+        intent="danger"
+        cancelLabel="Annuler"
+        confirmLabel="Supprimer"
         onCloseComplete={onCancel}
         onCancel={onCancel}
         onConfirm={onConfirm}
@@ -26,7 +32,7 @@ function DeleteWarning({isShown, content, onCancel, onConfirm, isDisabled}: Dele
         {content}
       </Dialog>
     </Pane>
-  )
+  );
 }
 
-export default DeleteWarning
+export default DeleteWarning;

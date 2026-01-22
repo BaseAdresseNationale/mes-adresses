@@ -28,7 +28,7 @@ export function HelpContextProvider(props: ChildrenProps) {
       selectedIndex,
       setSelectedIndex,
     }),
-    [showHelp, selectedIndex],
+    [showHelp, selectedIndex]
   );
 
   return <HelpContext.Provider value={value} {...props} />;

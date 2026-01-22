@@ -27,9 +27,8 @@ export default async function SignalementPageSSR({
   const voies = await BasesLocalesService.findBaseLocaleVoies(balId);
   const toponymes = await BasesLocalesService.findBaseLocaleToponymes(balId);
 
-  const signalement = await SignalementsService.getSignalementById(
-    idSignalement
-  );
+  const signalement =
+    await SignalementsService.getSignalementById(idSignalement);
 
   if ((signalement.changesRequested as NumeroChangesRequestedDTO).positions) {
     (signalement.changesRequested as NumeroChangesRequestedDTO).positions = (

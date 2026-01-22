@@ -96,11 +96,11 @@ export function useSignalementMapDiffUpdate(
               position.diff === SignalementDiff.DELETED
                 ? "orange"
                 : position.diff === SignalementDiff.NEW
-                ? "teal"
-                : Array.isArray(position.diff) &&
-                  position.diff[0] !== position.diff[1]
-                ? "purple"
-                : "blue",
+                  ? "teal"
+                  : Array.isArray(position.diff) &&
+                      position.diff[0] !== position.diff[1]
+                    ? "purple"
+                    : "blue",
           }))
         );
         const _parcelleDiff = parcelleDiff(parcelles, existingParcelles);

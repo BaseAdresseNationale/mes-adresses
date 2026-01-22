@@ -80,8 +80,8 @@ function Sidebar({
               isHidden
                 ? "Ouvrir la barre latérale"
                 : isEditing || voie || toponyme
-                ? "Fermer le formulaire"
-                : "Masquer la barre latérale"
+                  ? "Fermer le formulaire"
+                  : "Masquer la barre latérale"
             }
           >
             {isHidden ? (

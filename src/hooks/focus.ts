@@ -4,7 +4,7 @@ function useFocus(
   autofocus = false
 ): [
   React.RefObject<HTMLInputElement>,
-  React.Dispatch<React.SetStateAction<boolean>>
+  React.Dispatch<React.SetStateAction<boolean>>,
 ] {
   const ref = useRef<HTMLInputElement>(undefined);
   const [isFocus, setIsFocus] = useState<boolean>(autofocus);

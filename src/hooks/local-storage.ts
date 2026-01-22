@@ -8,7 +8,7 @@ type UseLocalStorageType = [
   getIndex: (index: string) => any,
   addIndex: (index: string, value: any) => void,
   removeIndex: (index: string) => void,
-  getData: () => any
+  getData: () => any,
 ];
 
 export function useLocalStorage(

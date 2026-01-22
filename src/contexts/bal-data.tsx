@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useMemo, useCallback, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useContext,
+} from "react";
 import { union } from "lodash";
 
 import {
@@ -52,7 +58,9 @@ interface BALDataContextType {
   refreshBALSync: () => Promise<void>;
   habilitationIsLoading: boolean;
   isHabilitationProcessDisplayed: boolean;
-  setIsHabilitationProcessDisplayed: (isHabilitationProcessDisplayed: boolean) => void;
+  setIsHabilitationProcessDisplayed: (
+    isHabilitationProcessDisplayed: boolean
+  ) => void;
   reloadVoieNumeros: (voieId: string) => Promise<void>;
   commune: CommuneType | null;
   setNumeros: React.Dispatch<React.SetStateAction<Numero[]>>;
@@ -79,7 +87,8 @@ export function BalDataContextProvider({
   const [commune, setCommune] = useState<CommuneType | null>(null);
   const [voie, setVoie] = useState<Voie | undefined>();
   const [toponyme, setToponyme] = useState<Toponyme | undefined>();
-  const [baseLocale, setBaseLocale] = useState<ExtendedBaseLocaleDTO>(initialBaseLocale);
+  const [baseLocale, setBaseLocale] =
+    useState<ExtendedBaseLocaleDTO>(initialBaseLocale);
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
   const { pushToast } = useContext(LayoutContext);
   const { token } = useContext(TokenContext);
@@ -88,8 +97,12 @@ export function BalDataContextProvider({
   useEffect(() => {
     async function fetchBALData() {
       try {
-        const voies = await BasesLocalesService.findBaseLocaleVoies(initialBaseLocale.id);
-        const toponymes = await BasesLocalesService.findBaseLocaleToponymes(initialBaseLocale.id);
+        const voies = await BasesLocalesService.findBaseLocaleVoies(
+          initialBaseLocale.id
+        );
+        const toponymes = await BasesLocalesService.findBaseLocaleToponymes(
+          initialBaseLocale.id
+        );
         const commune = await getCommuneWithBBox(initialBaseLocale, voies);
         setVoies(voies);
         setToponymes(toponymes);
@@ -114,21 +127,20 @@ export function BalDataContextProvider({
   } = useHabilitation(initialBaseLocale, token);
 
   const reloadParcelles = useCallback(async () => {
-    const parcelles: Array<string> = await BasesLocalesService.findBaseLocaleParcelles(
-      baseLocale.id,
-    );
+    const parcelles: Array<string> =
+      await BasesLocalesService.findBaseLocaleParcelles(baseLocale.id);
     setParcelles(parcelles);
   }, [baseLocale.id]);
 
   const reloadVoies = useCallback(async () => {
-    const voies: ExtendedVoieDTO[] = await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
+    const voies: ExtendedVoieDTO[] =
+      await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     setVoies(voies);
   }, [baseLocale.id]);
 
   const reloadToponymes = useCallback(async () => {
-    const toponymes: ExtentedToponymeDTO[] = await BasesLocalesService.findBaseLocaleToponymes(
-      baseLocale.id,
-    );
+    const toponymes: ExtentedToponymeDTO[] =
+      await BasesLocalesService.findBaseLocaleToponymes(baseLocale.id);
     setToponymes(toponymes);
   }, [baseLocale.id]);
 
@@ -185,7 +197,7 @@ export function BalDataContextProvider({
         setIsEditing(Boolean(editingId));
       }
     },
-    [token],
+    [token]
   );
 
   const editingItem = useMemo(() => {
@@ -198,7 +210,9 @@ export function BalDataContextProvider({
         return toponyme;
       }
 
-      return union(voies, toponymes, numeros).find(({ id }) => id === editingId);
+      return union(voies, toponymes, numeros).find(
+        ({ id }) => id === editingId
+      );
     }
   }, [editingId, numeros, voie, toponyme, voies, toponymes]);
 
@@ -289,7 +303,7 @@ export function BalDataContextProvider({
       reloadVoieNumeros,
       commune,
       setNumeros,
-    ],
+    ]
   );
 
   return (
@@ -307,7 +321,9 @@ export function BalDataContextProvider({
           justifyContent="center"
         >
           <Spinner />
-          <Paragraph marginTop={10}>Chargement de la base adresse locale...</Paragraph>
+          <Paragraph marginTop={10}>
+            Chargement de la base adresse locale...
+          </Paragraph>
         </Pane>
       )}
     </BalDataContext.Provider>

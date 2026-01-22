@@ -11,9 +11,8 @@ export default async function ToponymeNumerosPageSSR({
 }) {
   const { idToponyme } = await params;
   const toponyme = await ToponymesService.findToponyme(idToponyme);
-  const numeros: Numero[] = await ToponymesService.findToponymeNumeros(
-    idToponyme
-  );
+  const numeros: Numero[] =
+    await ToponymesService.findToponymeNumeros(idToponyme);
 
   return (
     <BALDataUpdate toponyme={toponyme} numeros={numeros}>

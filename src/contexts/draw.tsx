@@ -2,7 +2,13 @@
 
 import { LineString } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
-import React, { useState, useEffect, useMemo, useContext, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useContext,
+  useCallback,
+} from "react";
 import length from "@turf/length";
 import { useParams } from "next/navigation";
 import MapContext from "./map";
@@ -123,7 +129,7 @@ export function DrawContextProvider(props: ChildrenProps) {
         setData(features[0]);
       }
     },
-    [setData],
+    [setData]
   );
 
   const onModeChange = useCallback(({ mode }) => {
@@ -158,7 +164,7 @@ export function DrawContextProvider(props: ChildrenProps) {
           if (!data) {
             draw.changeMode("draw_line_string");
             setHint(
-              "Cliquez sur la carte pour mesurer une distance. Double-cliquez pour terminer.",
+              "Cliquez sur la carte pour mesurer une distance. Double-cliquez pour terminer."
             );
           } else {
             draw.changeMode("direct_select", { featureId: data.id });
@@ -170,12 +176,12 @@ export function DrawContextProvider(props: ChildrenProps) {
           draw.changeMode("draw_polygon");
           if (!data) {
             setHint(
-              "Cliquez sur la carte pour indiquer le début du polygone, puis ajoutez de nouveaux points afin de tracer votre polygone. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin du polygone.",
+              "Cliquez sur la carte pour indiquer le début du polygone, puis ajoutez de nouveaux points afin de tracer votre polygone. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin du polygone."
             );
           } else {
             draw.changeMode("direct_select", { featureId: data.id });
             setHint(
-              "Vous pouvez éditer le polygone en déplaçant les points ou en ajoutant de nouveaux points en cliquant sur le contour du polygone.",
+              "Vous pouvez éditer le polygone en déplaçant les points ou en ajoutant de nouveaux points en cliquant sur le contour du polygone."
             );
           }
           break;
@@ -184,13 +190,13 @@ export function DrawContextProvider(props: ChildrenProps) {
             draw.deleteAll();
             draw.changeMode("draw_line_string");
             setHint(
-              "Cliquez sur la carte pour indiquer le début de la voie, puis ajoutez de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie.",
+              "Cliquez sur la carte pour indiquer le début de la voie, puis ajoutez de nouveaux points afin de tracer votre voie. Une fois terminé, cliquez sur le dernier point afin d’indiquer la fin de la voie."
             );
           } else {
             const featureId = data.id || draw.add(data)[0];
             draw.changeMode("direct_select", { featureId });
             setHint(
-              "Vous pouvez éditer le tracé en déplaçant les points ou en ajoutant de nouveaux points en cliquant sur le tracé.",
+              "Vous pouvez éditer le tracé en déplaçant les points ou en ajoutant de nouveaux points en cliquant sur le tracé."
             );
           }
           break;
@@ -215,7 +221,7 @@ export function DrawContextProvider(props: ChildrenProps) {
       data,
       setData,
     }),
-    [drawMode, setDrawMode, hint, data],
+    [drawMode, setDrawMode, hint, data]
   );
 
   return <DrawContext.Provider value={value} {...props} />;

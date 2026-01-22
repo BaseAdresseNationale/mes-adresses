@@ -19,7 +19,7 @@ function SelectCommune({
   label = null,
 }: SelectCommuneProps) {
   return (
-    <Pane marginTop={8} >
+    <Pane marginTop={8}>
       <SelectField
         label={label}
         value={selectedCodeCommune}

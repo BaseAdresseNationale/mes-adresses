@@ -12,7 +12,7 @@ type UsePaginationType<T> = [
   changePage: (page: number) => void,
   search: string | null,
   changeFilter: (page: string) => void,
-  filtered: Array<T>
+  filtered: Array<T>,
 ];
 
 export function getLinkWithPagination(

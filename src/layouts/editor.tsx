@@ -89,10 +89,7 @@ function Editor({ children }: EditorProps) {
               {token && <ProductTours commune={commune} />}
 
               {isAddressFormOpen ? (
-                <AddressEditor
-                  commune={commune}
-                  closeForm={closeForm}
-                />
+                <AddressEditor commune={commune} closeForm={closeForm} />
               ) : (
                 <Pane
                   position="relative"

@@ -160,9 +160,8 @@ export default function VoiesPage() {
     setOnConvertLoading(true);
     const convertToponyme = toaster(
       async () => {
-        const toponyme: Toponyme = await VoiesService.convertToToponyme(
-          toConvert
-        );
+        const toponyme: Toponyme =
+          await VoiesService.convertToToponyme(toConvert);
         await reloadVoies();
         await reloadToponymes();
         await reloadParcelles();

@@ -39,7 +39,7 @@ import { Numero, Voie } from "@/lib/openapi-api-bal";
 import { ViewState } from "react-map-gl/maplibre";
 
 interface GenerateArreteDeNumerotationDialogProps<
-  type extends GeneratedDocumentType
+  type extends GeneratedDocumentType,
 > {
   data: DocumentGenerationData<type> | null;
   setData: Dispatch<SetStateAction<DocumentGenerationData<type> | null>>;
@@ -47,7 +47,7 @@ interface GenerateArreteDeNumerotationDialogProps<
 }
 
 export function GenerateArreteDeNumerotationDialog<
-  type extends GeneratedDocumentType
+  type extends GeneratedDocumentType,
 >({
   data,
   setData,

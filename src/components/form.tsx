@@ -23,7 +23,7 @@ function Form({ editingId, closeForm, onFormSubmit, children }: FormProps) {
       }
     },
     [closeForm],
-    "keyup",
+    "keyup"
   );
 
   useEffect(() => {
