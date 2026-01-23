@@ -17,7 +17,7 @@
     "format": "prettier --write .",
     "build": "yarn build-available-flags && next build",
     "analyze": "ANALYZE=true next build",
-    "build-available-flags": "node scripts/build-available-flags",
+    "build-available-flags": "node scripts/build-available-flags.mjs",
     "generate:openapi:api-bal": "openapi --input http://localhost:5001/api-json --output ./lib/openapi-api-bal",
     "generate:openapi:signalement": "openapi --input http://localhost:5005/api-json --output ./lib/openapi-signalement",
     "push-staging": "./scripts/push-staging.sh",
