@@ -17,16 +17,16 @@ interface AlertsContextType {
   voiesAlerts: Record<string, AlertVoie[]>;
   reloadVoieAlerts: (
     voie: ExtendedVoieDTO,
-    ignoredAlertCodes: AlertCodeEnum[]
+    ignoredAlertCodes: AlertCodeEnum[],
   ) => void;
   reloadVoiesAlerts: (
     voies: ExtendedVoieDTO[],
-    ignoredAlertCodes: AlertCodeEnum[]
+    ignoredAlertCodes: AlertCodeEnum[],
   ) => void;
   numerosAlerts: Record<string, AlertNumero[]>;
   reloadNumerosAlerts: (
     balId: string,
-    ignoredAlertCodes: AlertCodeEnum[]
+    ignoredAlertCodes: AlertCodeEnum[],
   ) => void;
 }
 
@@ -34,7 +34,7 @@ const AlertsContext = React.createContext<AlertsContextType | null>(null);
 
 export function AlertsContextProvider(props: ChildrenProps) {
   const [voiesAlerts, setVoiesAlerts] = useState<Record<string, AlertVoie[]>>(
-    {}
+    {},
   );
   const [numerosAlerts, setNumerosAlerts] = useState<
     Record<string, AlertNumero[]>
@@ -43,8 +43,8 @@ export function AlertsContextProvider(props: ChildrenProps) {
   const reloadNumerosAlerts = useCallback(
     async (balId: string, ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const balNumeros = await BasesLocalesService.findNumeros(
-        ["id", "suffixe"],
-        balId
+        ["id", "suffixe", "voieId"],
+        balId,
       );
       const newNumerosAlerts: Record<string, AlertNumero[]> = {};
       for (const numero of balNumeros) {
@@ -52,7 +52,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
         const filteredAlerts = alerts
           .filter((alert) => alert !== undefined)
           .filter((alert) =>
-            alert.codes.every((code) => !ignoredAlertCodes.includes(code))
+            alert.codes.every((code) => !ignoredAlertCodes.includes(code)),
           );
         if (alerts.length > 0) {
           newNumerosAlerts[numero.id] = filteredAlerts;
@@ -60,7 +60,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       }
       setNumerosAlerts(newNumerosAlerts);
     },
-    []
+    [],
   );
 
   const getVoieAlerts = useCallback(
@@ -69,11 +69,11 @@ export function AlertsContextProvider(props: ChildrenProps) {
       const filteredAlerts = alerts
         .filter((alert) => alert !== undefined)
         .filter((alert) =>
-          alert.codes.every((code) => !ignoredAlertCodes.includes(code))
+          alert.codes.every((code) => !ignoredAlertCodes.includes(code)),
         );
       return filteredAlerts;
     },
-    []
+    [],
   );
 
   const reloadVoieAlerts = useCallback(
@@ -81,7 +81,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       const alerts = getVoieAlerts(voie, ignoredAlertCodes);
       setVoiesAlerts((prev) => ({ ...prev, [voie.id]: alerts }));
     },
-    [getVoieAlerts]
+    [getVoieAlerts],
   );
 
   const reloadVoiesAlerts = useCallback(
@@ -95,7 +95,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       }
       setVoiesAlerts(newVoiesAlerts);
     },
-    [getVoieAlerts]
+    [getVoieAlerts],
   );
 
   const value = useMemo(
@@ -112,7 +112,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       reloadVoiesAlerts,
       numerosAlerts,
       reloadNumerosAlerts,
-    ]
+    ],
   );
 
   return <AlertsContext.Provider value={value} {...props} />;

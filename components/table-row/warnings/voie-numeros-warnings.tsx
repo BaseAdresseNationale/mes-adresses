@@ -9,7 +9,7 @@ interface VoieNomWarningProps {
   voie: ExtendedVoieDTO;
 }
 
-function VoieNomWarning({ baseLocale, voie }: VoieNomWarningProps) {
+function VoieNumerosWarning({ baseLocale, voie }: VoieNomWarningProps) {
   return (
     <>
       <Pane marginBottom={8}>
@@ -18,18 +18,18 @@ function VoieNomWarning({ baseLocale, voie }: VoieNomWarningProps) {
           style={{ verticalAlign: "middle" }}
           marginRight={4}
         />
-        <Text color="white">Le nom de la voie est incorrect</Text>
+        <Text color="white">Un ou plusieurs numéros ont des alertes</Text>
       </Pane>
       <Button
         is={NextLink}
-        href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
-        title="Éditer la voie"
+        href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`}
+        title="Voir les numeros de la voie"
         size="small"
       >
-        Corriger
+        Voir
       </Button>
     </>
   );
 }
 
-export default VoieNomWarning;
+export default VoieNumerosWarning;

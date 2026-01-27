@@ -1,6 +1,5 @@
 import { useCallback, useContext, useState } from "react";
 import { Paragraph, Pane, Text, Button, WarningSignIcon } from "evergreen-ui";
-import NextLink from "next/link";
 import { useRouter } from "next/router";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -19,7 +18,7 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
-import { Alert, AlertCodeEnum } from "@/lib/alerts/alerts.types";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 import AlertsContext from "@/contexts/alerts";
 
 interface VoieEmptyWarningProps {
@@ -43,7 +42,7 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
     const convertToponyme = toaster(
       async () => {
         const toponyme: Toponyme = await VoiesService.convertToToponyme(
-          toConvert.id
+          toConvert.id,
         );
         await reloadVoies();
         await reloadToponymes();
@@ -52,20 +51,21 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
         refreshBALSync();
         reloadVoieAlerts(
           toConvert,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
         );
         await router.push(
-          `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
+          `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`,
         );
       },
       "La voie a bien été convertie en toponyme",
-      "La voie n’a pas pu être convertie en toponyme"
+      "La voie n’a pas pu être convertie en toponyme",
     );
 
     await convertToponyme();
     matomoTrackEvent(
       MatomoEventCategory.BAL_EDITOR,
-      MatomoEventAction[MatomoEventCategory.BAL_EDITOR].CONVERT_VOIE_TO_TOPONYME
+      MatomoEventAction[MatomoEventCategory.BAL_EDITOR]
+        .CONVERT_VOIE_TO_TOPONYME,
     );
 
     setOnConvertLoading(false);

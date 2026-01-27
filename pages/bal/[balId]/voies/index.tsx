@@ -61,8 +61,9 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
-import TableRowWarning from "@/components/table-row/table-voie-warning";
+import TableVoieWarning from "@/components/table-row/table-voie-warning";
 import AlertsContext from "@/contexts/alerts";
+import { AlertVoie, AlertNumero } from "@/lib/alerts/alerts.types";
 
 interface VoiesPageProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -90,18 +91,18 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
   const [showUncertify, setShowUncertify] = useState<boolean>(
-    router.query.filters?.includes("uncertified") || false
+    router.query.filters?.includes("uncertified") || false,
   );
   const [showAlerts, setShowAlerts] = useState<boolean>(
-    router.query.filters?.includes("alertes") || false
+    router.query.filters?.includes("alertes") || false,
   );
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(TabsEnum.VOIES, voies);
   const { scrollAndHighlightLastSelectedItem } = useContext(
-    SearchPaginationContext
+    SearchPaginationContext,
   );
-  const { voiesAlerts } = useContext(AlertsContext);
+  const { voiesAlerts, numerosAlerts } = useContext(AlertsContext);
 
   useEffect(() => {
     setTileLayersMode(TilesLayerMode.VOIE);
@@ -125,13 +126,13 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
       } else {
         router.query.filters = Array.isArray(router.query.filters)
           ? (router.query.filters as string[]).filter(
-              (filter) => filter !== key
+              (filter) => filter !== key,
             )
           : [];
       }
       void router.push(router, undefined, { shallow: true });
     },
-    [router]
+    [router],
   );
 
   const changeUncertified = useCallback(
@@ -139,7 +140,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
       setShowUncertify(value);
       changeQueryParamsFilters("uncertified", value);
     },
-    [changeQueryParamsFilters]
+    [changeQueryParamsFilters],
   );
 
   const changeAlerts = useCallback(
@@ -147,7 +148,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
       setShowAlerts(value);
       changeQueryParamsFilters("alerts", value);
     },
-    [changeQueryParamsFilters]
+    [changeQueryParamsFilters],
   );
 
   const handleRemove = async () => {
@@ -155,7 +156,7 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     const softDeleteVoie = toaster(
       () => VoiesService.softDeleteVoie(toRemove),
       "La voie a bien été archivée",
-      "La voie n’a pas pu être archivée"
+      "La voie n’a pas pu être archivée",
     );
     await softDeleteVoie();
     await reloadVoies();
@@ -182,21 +183,21 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
         async () => {
           const url = await VoiesService.generateArreteDeNumerotation(
             voieId,
-            data
+            data,
           );
           window.open(url, "_blank");
         },
         "L'arrêté de numérotation a bien été téléchargé",
-        "L'arrêté de numérotation n'a pas pu être téléchargé"
+        "L'arrêté de numérotation n'a pas pu être téléchargé",
       );
       await downloadArreteDeNumerotation();
       matomoTrackEvent(
         MatomoEventCategory.DOCUMENT,
         MatomoEventAction[MatomoEventCategory.DOCUMENT]
-          .GENERATE_ARRETE_NUMEROTATION_VOIE
+          .GENERATE_ARRETE_NUMEROTATION_VOIE,
       );
     },
-    [toaster, matomoTrackEvent]
+    [toaster, matomoTrackEvent],
   );
 
   const browseToVoie = (idVoie: string) => {
@@ -205,22 +206,38 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
 
   const browseToNumerosList = (idVoie: string) => {
     void router.push(
-      `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}/numeros`
+      `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}/numeros`,
     );
   };
 
+  const getVoieAlerts = useCallback(
+    (voieId: string): (AlertVoie | AlertNumero)[] => {
+      const voieWarnings = voiesAlerts[voieId] || [];
+
+      // Récupérer les alertes des numéros de cette voie en utilisant le champ voieId
+      const numerosWarnings = Object.values(numerosAlerts)
+        .flat()
+        .filter((alert) => alert.voieId === voieId);
+      // console.log(numerosAlerts);
+      // console.log("---------------------------------");
+      if (numerosWarnings.length > 0) console.log(numerosAlerts);
+      return [...voieWarnings, ...numerosWarnings];
+    },
+    [voiesAlerts, numerosAlerts],
+  );
+
   const scrollableItems = useMemo(() => {
     let items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
-      normalizeSort(v.nom)
+      normalizeSort(v.nom),
     );
     if (showUncertify) {
       items = items.filter(({ isAllCertified }) => !isAllCertified);
     }
     if (showAlerts) {
-      items = items.filter(({ id }) => voiesAlerts[id]?.length > 0);
+      items = items.filter(({ id }) => getVoieAlerts(id).length > 0);
     }
     return items;
-  }, [filtered, showUncertify, showAlerts, voiesAlerts]);
+  }, [filtered, showUncertify, showAlerts, getVoieAlerts]);
 
   const isEditingEnabled = !isEditing && Boolean(token);
 
@@ -398,11 +415,11 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
                   ) : null
                 }
                 warning={
-                  Boolean(token) && voiesAlerts[voie.id]?.length > 0 ? (
-                    <TableRowWarning
+                  Boolean(token) && getVoieAlerts(voie.id).length > 0 ? (
+                    <TableVoieWarning
                       baseLocale={baseLocale}
                       voie={voie}
-                      alerts={voiesAlerts[voie.id]}
+                      alerts={getVoieAlerts(voie.id)}
                     />
                   ) : null
                 }

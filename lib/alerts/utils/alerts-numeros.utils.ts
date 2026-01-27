@@ -8,17 +8,18 @@ import {
 import { AlertModelEnum } from "../alerts.types";
 
 export const getNumeroSuffixeAlert = (
-  numero: Numero
+  numero: Numero,
 ): AlertNumero | undefined => {
   const alphanumericRegex = /^[a-zA-ZÀ-ÿ0-9]+$/g;
-
   if (numero.suffixe && !numero.suffixe?.match(alphanumericRegex)) {
+    console.log(numero);
     return {
       model: AlertModelEnum.NUMERO,
       field: AlertFieldNumeroEnum.NUMERO_SUFFIXE,
       codes: [AlertCodeNumeroEnum.SUFFIXE_CARACTERE_INVALIDE],
       value: numero.suffixe,
       remediation: numero.suffixe?.replace(alphanumericRegex, ""),
+      voieId: numero.voieId,
     } as AlertNumero;
   }
 };

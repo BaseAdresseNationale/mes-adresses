@@ -54,7 +54,7 @@ export type Alert<M extends AlertModelEnum = AlertModelEnum> = {
   field: AlertFieldByModel<M>;
   value: string;
   remediation?: string;
-};
+} & (M extends AlertModelEnum.NUMERO ? { voieId: string } : {});
 
 export type AlertVoie = Alert<AlertModelEnum.VOIE>;
 export type AlertNumero = Alert<AlertModelEnum.NUMERO>;
@@ -64,9 +64,9 @@ export function isAlertCodeVoieEnum(code: string): code is AlertCodeVoieEnum {
 }
 
 export function isAlertCodeNumeroEnum(
-  code: string
+  code: string,
 ): code is AlertCodeNumeroEnum {
   return Object.values(AlertCodeNumeroEnum).includes(
-    code as AlertCodeNumeroEnum
+    code as AlertCodeNumeroEnum,
   );
 }
