@@ -35,3 +35,11 @@ export const getFullDate = (date: Date) => {
     locale: fr,
   });
 };
+
+export const hasBeenSentRecently = (sentAt: Date) => {
+  const now = new Date();
+
+  const floodLimitTime = new Date(sentAt);
+  floodLimitTime.setMinutes(floodLimitTime.getMinutes() + 5);
+  return now < floodLimitTime;
+};
