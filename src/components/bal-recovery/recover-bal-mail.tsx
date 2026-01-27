@@ -1,10 +1,11 @@
+"use client";
+
 import { useCallback, useContext } from "react";
 import {
   Alert,
   Button,
   EnvelopeIcon,
   Heading,
-  Label,
   Pane,
   Paragraph,
   TextInput,

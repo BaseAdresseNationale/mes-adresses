@@ -1,6 +1,16 @@
+"use client";
+
 import { useCallback, useState, useContext, useEffect } from "react";
 import NextImage from "next/legacy/image";
-import { Alert, Button, Heading, Pane, Paragraph, Spinner, Strong } from "evergreen-ui";
+import {
+  Alert,
+  Button,
+  Heading,
+  Pane,
+  Paragraph,
+  Spinner,
+  Strong,
+} from "evergreen-ui";
 
 import LocalStorageContext from "@/contexts/local-storage";
 
@@ -159,7 +169,9 @@ function RecoverBALCommune({
         {isLoadingEmails && (
           <Pane marginTop={16} display="flex" alignItems="center" gap={8}>
             <Spinner />
-            <Paragraph>Chargement des adresses email de la commune...</Paragraph>
+            <Paragraph>
+              Chargement des adresses email de la commune...
+            </Paragraph>
           </Pane>
         )}
         {!isLoadingEmails && emailsCommune.length > 0 && (
