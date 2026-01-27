@@ -1,6 +1,6 @@
 import { useCallback, useState, useContext, useEffect } from "react";
 import NextImage from "next/legacy/image";
-import { Alert, Button, Heading, Pane, Paragraph, Strong } from "evergreen-ui";
+import { Alert, Button, Heading, Pane, Paragraph, Spinner, Strong } from "evergreen-ui";
 
 import LocalStorageContext from "@/contexts/local-storage";
 
@@ -33,10 +33,16 @@ function RecoverBALCommune({
   const { pushToast } = useContext(LayoutContext);
   const [commune, setCommune] = useState<CommuneType | null>(null);
   const [emailsCommune, setEmailsCommune] = useState<string[]>([]);
+  const [isLoadingEmails, setIsLoadingEmails] = useState<boolean>(false);
 
   const fetchEmailsCommune = useCallback(async (codeCommune: string) => {
-    const emails = await ApiDepotService.getEmailsCommune(codeCommune);
-    setEmailsCommune(emails);
+    setIsLoadingEmails(true);
+    try {
+      const emails = await ApiDepotService.getEmailsCommune(codeCommune);
+      setEmailsCommune(emails);
+    } finally {
+      setIsLoadingEmails(false);
+    }
   }, []);
 
   const selectCommune = useCallback(
@@ -150,11 +156,17 @@ function RecoverBALCommune({
             {error}
           </Alert>
         )}
-        {emailsCommune.length > 0 && (
+        {isLoadingEmails && (
+          <Pane marginTop={16} display="flex" alignItems="center" gap={8}>
+            <Spinner />
+            <Paragraph>Chargement des adresses email de la commune...</Paragraph>
+          </Pane>
+        )}
+        {!isLoadingEmails && emailsCommune.length > 0 && (
           <Alert marginTop={16} intent="info" hasIcon={false}>
             <Paragraph color="blue600">
               Un courrier électronique avec le lien de récupération va être
-              envoyé à l’adresse de votre commune:{" "}
+              envoyé à l&apos;adresse de votre commune:{" "}
               <Strong>{emailsCommune.join(", ")}</Strong>
             </Paragraph>
           </Alert>

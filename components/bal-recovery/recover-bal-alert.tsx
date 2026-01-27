@@ -36,6 +36,7 @@ function RecoverBALAlert({
       setBaseLocale(baseLocale);
     }
 
+    setBaseLocale(null)
     if (baseLocaleId) {
       loadBaseLocale();
     }
