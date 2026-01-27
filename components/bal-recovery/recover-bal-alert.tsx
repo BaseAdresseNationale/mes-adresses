@@ -1,25 +1,9 @@
-import { useCallback, useState, useContext } from "react";
-import { Alert, Dialog, Label, Paragraph, TextInput } from "evergreen-ui";
+import { useEffect, useMemo, useState } from "react";
+import { Dialog, Heading, Pane } from "evergreen-ui";
 
-import { validateEmail } from "@/lib/utils/email";
-
-import LocalStorageContext from "@/contexts/local-storage";
-import {
-  VideoContainer,
-  PEERTUBE_LINK,
-} from "@/components/help/video-container";
-
-import { useInput } from "@/hooks/input";
-import { BasesLocalesService } from "@/lib/openapi-api-bal";
-import LayoutContext from "@/contexts/layout";
-
-const hasBeenSentRecently = (sentAt) => {
-  const now = new Date();
-
-  const floodLimitTime = new Date(sentAt);
-  floodLimitTime.setMinutes(floodLimitTime.getMinutes() + 5);
-  return now < floodLimitTime;
-};
+import RecoverBALCommune from "./recover-bal-commune";
+import RecoverBALMail from "./recover-bal-mail";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 
 interface RecoverBALAlertProps {
   isShown: boolean;
@@ -34,106 +18,77 @@ function RecoverBALAlert({
   baseLocaleId,
   onClose,
 }: RecoverBALAlertProps) {
-  const { recoveryEmailSent, setRecoveryEmailSent } =
-    useContext(LocalStorageContext);
-  const { pushToast } = useContext(LayoutContext);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [email, onEmailChange, resetEmail] = useInput(defaultEmail);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMail, setErrorMail] = useState<string | null>(null);
+  const [errorCommune, setErrorCommune] = useState<string | null>(null);
+  const [baseLocale, setBaseLocale] = useState<BaseLocale | null>(null);
 
   const handleComplete = () => {
     setIsLoading(false);
-    setError(null);
+    setErrorMail(null);
+    setErrorCommune(null);
     onClose();
   };
 
-  const handleConfirm = useCallback(async () => {
-    const now = new Date();
-
-    setIsLoading(true);
-
-    if (hasBeenSentRecently(recoveryEmailSent)) {
-      setIsLoading(false);
-      onClose();
-      pushToast({
-        title: "Un email a déjà été envoyé, merci de patienter.",
-        intent: "warning",
-      });
-      return;
+  useEffect(() => {
+    async function loadBaseLocale() {
+      const baseLocale = await BasesLocalesService.findBaseLocale(baseLocaleId);
+      setBaseLocale(baseLocale);
     }
 
-    const recoveryBasesLocales = async () => {
-     
-        await BasesLocalesService.recoveryBasesLocales({
-          email,
-          id: baseLocaleId,
-        });
-        setRecoveryEmailSent(now);
-        pushToast({
-          title: `Un email a été envoyé à l’adresse ${email}`,
-          intent: "success",
-        });
-        setError(null);
-
+    setBaseLocale(null)
+    if (baseLocaleId) {
+      loadBaseLocale();
     }
+  }, [baseLocaleId]);
 
-    try {
-      await recoveryBasesLocales();
-      resetEmail();
-      onClose();
-    } catch (error) {
-      setError(error.body?.message);
-    } finally {
-      setIsLoading(false);
-    }
-
-  }, [email, baseLocaleId, recoveryEmailSent, resetEmail, onClose, setRecoveryEmailSent, pushToast]);
-
+  const isDisplayCommuneRecovery = useMemo(() => {
+    return !baseLocale || baseLocale.status === BaseLocale.status.PUBLISHED;
+  }, [baseLocale]);
   return (
     <Dialog
       isShown={isShown}
-      title={
-        baseLocaleId
-          ? "Récupération de votre Base Adresse Locale"
-          : "Récupération de mes Bases Adresses Locales"
-      }
-      cancelLabel="Annuler"
-      isConfirmLoading={isLoading}
-      isConfirmDisabled={!validateEmail(email)}
-      confirmLabel={isLoading ? "Chargement..." : "Recevoir le courriel"}
+      width={isDisplayCommuneRecovery ? 1000 : 500}
+      hasHeader={false}
+      hasFooter={false}
       onCloseComplete={() => handleComplete()}
-      onConfirm={() => handleConfirm()}
     >
-      <Label display="block" marginBottom={4}>
-        Renseignez votre adresse de courrier électronique
-      </Label>
-      <TextInput
-        display="block"
-        type="email"
-        width="100%"
-        placeholder="adresse@courriel.fr"
-        maxWidth={400}
-        value={email}
-        onChange={onEmailChange}
-      />
-      {error && <Alert marginTop={16} intent="danger">{error}</Alert>}
-
-      <Paragraph marginTop={16}>
-        Un courrier électronique va être envoyé à l’adresse que vous avez
-        renseignée.
-        <br />
-        {}
-      </Paragraph>
-      <Paragraph marginY={8}>
-        {baseLocaleId
-          ? "Vous y retrouverez un lien d’administration de votre Base Adresse Locale. Il vous suffira alors de cliquer sur le lien afin de pouvoir la retrouver sur votre espace."
-          : "Vous y retrouverez la liste de toutes les Bases Adresses Locales associées à celle-ci. Il vous suffira alors de cliquer sur les liens qui y sont associés afin de pouvoir les retrouver sur votre espace."}
-      </Paragraph>
-      <VideoContainer
-        title="Tutoriel sur la récupération :"
-        link={`${PEERTUBE_LINK}/w/wwf47pyuTNkMqK5GG5RUtP`}
-      />
+      <Pane
+        background="gray300"
+        marginX="-32px"
+        marginY="-8px"
+        borderRadius={8}
+        padding={16}
+      >
+        <Pane background="white" borderRadius={8} padding={16}>
+          <Heading is="h2" textAlign="center">
+            {baseLocaleId
+              ? "Récupération de votre Base Adresse Locale"
+              : "Récupération de mes Bases Adresses Locales"}
+          </Heading>
+        </Pane>
+        <Pane display="flex" gap={16}>
+          <RecoverBALMail
+            defaultEmail={defaultEmail}
+            baseLocaleId={baseLocaleId}
+            error={errorMail}
+            isLoading={isLoading}
+            setError={setErrorMail}
+            setIsLoading={setIsLoading}
+            onClose={onClose}
+          />
+          {isDisplayCommuneRecovery && (
+            <RecoverBALCommune
+              baseLocale={baseLocale}
+              error={errorCommune}
+              isLoading={isLoading}
+              setError={setErrorCommune}
+              setIsLoading={setIsLoading}
+              onClose={onClose}
+            />
+          )}
+        </Pane>
+      </Pane>
     </Dialog>
   );
 }
