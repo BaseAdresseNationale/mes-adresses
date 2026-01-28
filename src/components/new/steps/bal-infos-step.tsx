@@ -101,6 +101,7 @@ function BALInfosStep({
             />
             <IconButton
               type="button"
+              title="Ajouter"
               icon={AddIcon}
               marginLeft={4}
               appearance="primary"
