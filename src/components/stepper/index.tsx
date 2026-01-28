@@ -33,12 +33,18 @@ function Stepper({
             />
           ))}
         </Pane>
-        {currentStepIndex !== steps.length - 1 && (
+        {currentStepIndex !== steps.length - 1 ? (
           <Pane>
             <Text fontWeight="bold" color="muted">
               Étape suivante :
             </Text>{" "}
             <Text color="muted">{steps[currentStepIndex + 1].label}</Text>
+          </Pane>
+        ) : (
+          <Pane>
+            <Text fontWeight="bold" color="muted">
+              Dernière étape
+            </Text>
           </Pane>
         )}
       </Pane>

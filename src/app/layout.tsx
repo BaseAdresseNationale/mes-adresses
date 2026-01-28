@@ -30,9 +30,10 @@ export default async function RootLayout({
   const { css, hydrationScript } = extractStyles();
 
   return (
-    <html lang="fr">
+    <html lang="fr" data-color-scheme="light">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="light" />
         <style id="evergreen-css" dangerouslySetInnerHTML={{ __html: css }} />
         {hydrationScript}
       </head>

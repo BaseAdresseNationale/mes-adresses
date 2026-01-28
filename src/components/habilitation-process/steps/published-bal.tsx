@@ -79,7 +79,7 @@ function PublishedBalStep({
           )}
         </Pane>
 
-        <Pane background="white" padding={16} borderRadius={8}>
+        <Pane background="white" padding={24} borderRadius={8}>
           <Heading is="h3" marginBottom={8}>
             Grâce à la publication
           </Heading>
