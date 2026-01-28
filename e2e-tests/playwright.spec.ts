@@ -47,11 +47,8 @@ test.describe("Page de création", () => {
 
     await page
       .getByRole("textbox", { name: "Ajouter une adresse email…" })
-      .click();
-    await page
-      .getByRole("textbox", { name: "Ajouter une adresse email…" })
       .fill("test@playwright.com");
-    await page.getByRole("button").filter({ hasText: /^$/ }).click();
+    await page.getByRole("button", { name: "Ajouter" }).click();
     await page.getByRole("button", { name: "Terminer" }).click();
 
     await page.waitForURL(/\/bal\/.+/);
