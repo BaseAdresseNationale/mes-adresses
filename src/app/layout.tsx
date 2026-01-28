@@ -24,14 +24,10 @@ initialOpenAPIBaseURL();
 
 export default async function RootLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ balId: string }>;
 }>) {
   const { css, hydrationScript } = extractStyles();
-  const { balId } = await params;
-  const isEditor = Boolean(balId);
 
   return (
     <html lang="fr">
@@ -50,7 +46,7 @@ export default async function RootLayout({
                   <HelpContextProvider>
                     <BALRecoveryProvider>
                       <Help />
-                      <Main isEditor={isEditor}>{children}</Main>
+                      <Main>{children}</Main>
                     </BALRecoveryProvider>
                   </HelpContextProvider>
                 </LocalStorageContextProvider>

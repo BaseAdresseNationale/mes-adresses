@@ -1,8 +1,10 @@
 "use client";
 
 import RecoverBALAlert from "@/components/bal-recovery/recover-bal-alert";
+import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
-import React, { useState, useMemo } from "react";
+import { useParams } from "next/navigation";
+import React, { useState, useMemo, useEffect } from "react";
 
 interface BALRecoveryContextType {
   isRecoveryDisplayed: boolean;
@@ -13,15 +15,11 @@ const BALRecoveryContext = React.createContext<BALRecoveryContextType | null>(
   null
 );
 
-interface BALRecoveryProviderProps extends ChildrenProps {
-  balId?: string;
-}
-
-export function BALRecoveryProvider({
-  balId,
-  ...props
-}: BALRecoveryProviderProps) {
+export function BALRecoveryProvider(props: ChildrenProps) {
   const [isRecoveryDisplayed, setIsRecoveryDisplayed] = useState(false);
+  const [baseLocale, setBaseLocale] = useState<BaseLocale | null>(null);
+  const params = useParams();
+  const balId = params?.balId as string | undefined;
 
   const value = useMemo(
     () => ({
@@ -31,6 +29,19 @@ export function BALRecoveryProvider({
     [isRecoveryDisplayed]
   );
 
+  useEffect(() => {
+    async function loadBaseLocale() {
+      const baseLocale = await BasesLocalesService.findBaseLocale(balId);
+      setBaseLocale(baseLocale);
+    }
+
+    if (balId) {
+      loadBaseLocale();
+    } else {
+      setBaseLocale(null);
+    }
+  }, [balId]);
+
   return (
     <>
       <RecoverBALAlert
@@ -38,7 +49,7 @@ export function BALRecoveryProvider({
         onClose={() => {
           setIsRecoveryDisplayed(false);
         }}
-        baseLocaleId={balId}
+        baseLocale={baseLocale}
       />
       <BALRecoveryContext.Provider value={value} {...props} />
     </>

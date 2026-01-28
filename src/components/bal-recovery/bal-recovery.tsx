@@ -1,34 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useContext } from "react";
 import { Alert, Button, Text } from "evergreen-ui";
-
-import RecoverBALAlert from "@/components/bal-recovery/recover-bal-alert";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 function BALRecovery() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
 
   return (
-    <>
-      <RecoverBALAlert
-        isShown={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-      />
-
-      <Alert>
-        <Text>
-          Vous ne retrouvez pas vos Bases Adresse Locales ? Pour les récupérer
-          par courriel
-        </Text>
-        <Button
-          appearance="primary"
-          marginLeft="1em"
-          onClick={() => setIsDialogOpen(true)}
-        >
-          Cliquez ici
-        </Button>
-      </Alert>
-    </>
+    <Alert>
+      <Text>
+        Vous ne retrouvez pas vos Bases Adresse Locales ? Pour les récupérer par
+        courriel
+      </Text>
+      <Button
+        appearance="primary"
+        marginLeft="1em"
+        onClick={() => setIsRecoveryDisplayed(true)}
+      >
+        Cliquez ici
+      </Button>
+    </Alert>
   );
 }
 

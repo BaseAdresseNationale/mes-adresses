@@ -1,29 +1,28 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Dialog, Heading, Pane } from "evergreen-ui";
 
 import RecoverBALCommune from "./recover-bal-commune";
 import RecoverBALMail from "./recover-bal-mail";
-import { BaseLocale, BasesLocalesService } from "@/lib/openapi-api-bal";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 
 interface RecoverBALAlertProps {
   isShown: boolean;
   defaultEmail?: string;
-  baseLocaleId?: string;
+  baseLocale?: BaseLocale;
   onClose: () => void;
 }
 
 function RecoverBALAlert({
   isShown,
   defaultEmail,
-  baseLocaleId,
+  baseLocale,
   onClose,
 }: RecoverBALAlertProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMail, setErrorMail] = useState<string | null>(null);
   const [errorCommune, setErrorCommune] = useState<string | null>(null);
-  const [baseLocale, setBaseLocale] = useState<BaseLocale | null>(null);
 
   const handleComplete = () => {
     setIsLoading(false);
@@ -32,21 +31,10 @@ function RecoverBALAlert({
     onClose();
   };
 
-  useEffect(() => {
-    async function loadBaseLocale() {
-      const baseLocale = await BasesLocalesService.findBaseLocale(baseLocaleId);
-      setBaseLocale(baseLocale);
-    }
-
-    setBaseLocale(null);
-    if (baseLocaleId) {
-      loadBaseLocale();
-    }
-  }, [baseLocaleId]);
-
   const isDisplayCommuneRecovery = useMemo(() => {
     return !baseLocale || baseLocale.status === BaseLocale.status.PUBLISHED;
   }, [baseLocale]);
+
   return (
     <Dialog
       isShown={isShown}
@@ -64,7 +52,7 @@ function RecoverBALAlert({
       >
         <Pane background="white" borderRadius={8} padding={16}>
           <Heading is="h2" textAlign="center">
-            {baseLocaleId
+            {baseLocale
               ? "Récupération de votre Base Adresse Locale"
               : "Récupération de mes Bases Adresses Locales"}
           </Heading>
@@ -72,7 +60,7 @@ function RecoverBALAlert({
         <Pane display="flex" gap={16}>
           <RecoverBALMail
             defaultEmail={defaultEmail}
-            baseLocaleId={baseLocaleId}
+            baseLocaleId={baseLocale?.id}
             error={errorMail}
             isLoading={isLoading}
             setError={setErrorMail}
