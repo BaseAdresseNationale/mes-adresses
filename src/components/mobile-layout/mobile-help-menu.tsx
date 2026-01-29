@@ -36,7 +36,7 @@ export function MobileHelpMenu() {
             <Menu.Item
               is="a"
               target="_blank"
-              href="https://adresse.data.gouv.fr/guides"
+              href="https://doc.adresse.data.gouv.fr/"
               icon={BookIcon}
             >
               Guides de l’adressage

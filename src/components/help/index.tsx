@@ -60,7 +60,7 @@ function Help() {
       <Pane padding={16} background="tint2" elevation={1}>
         <Heading>Vous n’avez pas trouvé la solution à votre problème ?</Heading>
         <Paragraph>
-          <Link target="_blank" href="https://adresse.data.gouv.fr/guides">
+          <Link target="_blank" href="https://doc.adresse.data.gouv.fr/">
             Consultez les guides de l’adressage
           </Link>
         </Paragraph>

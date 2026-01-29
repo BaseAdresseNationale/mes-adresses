@@ -91,7 +91,7 @@ function Header() {
 
             <Button
               is="a"
-              href="https://adresse.data.gouv.fr/guides"
+              href="https://doc.adresse.data.gouv.fr/"
               target="_blank"
               appearance="minimal"
               marginRight="12px"
