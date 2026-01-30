@@ -1,0 +1,44 @@
+.cadastreSearchInput.hidden {
+  overflow: hidden;
+  width: 0px;
+  transition: width 0.3s;
+  padding: 0;
+  border: 0;
+}
+
+.cadastreSearchInput.visible {
+  width: 200px;
+  transition: width 0.3s;
+
+  input {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    border-left: 0;
+  }
+
+  input:focus {
+    box-shadow: none;
+  }
+
+  .overlay {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+  }
+
+  .parcelleBtn {
+    width: 100%;
+    text-align: left;
+    padding: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .parcelleBtn:hover {
+    background-color: #f0f0f0;
+  }
+}
