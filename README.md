@@ -89,6 +89,7 @@ Elles peuvent être définies classiquement ou en créant un fichier `.env` sur 
 | `NEXT_PUBLIC_MATOMO_SITE_ID`          | Id du site sur matomo                                           |
 | `NEXT_PUBLIC_API_SIGNALEMENT`         | URL de l'API signalement                                        |
 | `NEXT_PUBLIC_BAL_ADMIN_URL`           | URL de base de bal admin                                        |
+| `NEXT_PUBLIC_API_CADASTRE`            | URL de base de l'API Cadastre                                   |
 | `NEXT_PUBLIC_MOISSONNEUR_BAL_API_URL` | URL de l'API moissonneur-bal                                    |
 | `PORT`                                | Port de l'application                                           |
 | `MATTERMOST_CHANNEL_URL`              | Channel Mattermost où sont publiées les actualités              |
