@@ -5,6 +5,7 @@ import {
   useRef,
   SetStateAction,
   Dispatch,
+  useMemo,
 } from "react";
 import {
   Button,
@@ -20,9 +21,13 @@ import {
   AlertModelEnum,
   AlertCodeVoieEnum,
   Alert,
+  isAlertCodeVoieEnum,
+  isAlertCodeNumeroEnum,
 } from "@/lib/alerts/alerts.types";
-import { AlertVoieDefinitions } from "@/lib/alerts/alerts.definitions";
-import { isAlertVoieNom } from "@/lib/alerts/utils/alerts-voies.utils";
+import {
+  AlertNumeroDefinitions,
+  AlertVoieDefinitions,
+} from "@/lib/alerts/alerts.definitions";
 
 interface VoieEditorProps {
   initialAlert?: Alert;
@@ -31,6 +36,8 @@ interface VoieEditorProps {
   validation: (
     value: string,
   ) => [codes: AlertCodeVoieEnum[], remediation?: string];
+  model: AlertModelEnum;
+  field: AlertFieldVoieEnum;
 }
 
 function AlertEditor({
@@ -38,9 +45,23 @@ function AlertEditor({
   value,
   setValue,
   validation,
+  model,
+  field,
 }: VoieEditorProps) {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [alert, setAlert] = useState<Alert | null>(initialAlert || null);
+
+  const alertDefinition = useMemo(() => {
+    return (
+      alert?.codes.map((code) => {
+        if (isAlertCodeVoieEnum(code)) {
+          return AlertVoieDefinitions[code];
+        } else if (isAlertCodeNumeroEnum(code)) {
+          return AlertNumeroDefinitions[code];
+        }
+      }) || []
+    );
+  }, [alert]);
 
   const handleCorrection = useCallback(
     (value: string) => {
@@ -59,8 +80,8 @@ function AlertEditor({
       const [codes, remediation] = validation(value);
       if (codes.length > 0) {
         setAlert({
-          model: AlertModelEnum.VOIE,
-          field: AlertFieldVoieEnum.VOIE_NOM,
+          model,
+          field,
           codes,
           value,
           remediation,
@@ -69,7 +90,7 @@ function AlertEditor({
         setAlert(null);
       }
     }, 500);
-  }, [value, validation]);
+  }, [value, validation, model, field]);
 
   useEffect(() => {
     return () => {
@@ -81,7 +102,7 @@ function AlertEditor({
 
   return (
     <>
-      {alert && isAlertVoieNom(alert) && (
+      {alert && (
         <AlertEvergreen
           intent="warning"
           marginTop={8}
@@ -89,9 +110,9 @@ function AlertEditor({
           padding={8}
         >
           <UnorderedList>
-            {alert.codes.map((code) => (
-              <ListItem key={code} color={defaultTheme.colors.yellow800}>
-                {AlertVoieDefinitions[code]}
+            {alertDefinition.map((def) => (
+              <ListItem key={def} color={defaultTheme.colors.yellow800}>
+                {def}
               </ListItem>
             ))}
           </UnorderedList>

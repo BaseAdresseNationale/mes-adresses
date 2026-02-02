@@ -214,6 +214,8 @@ function VoieEditor({
             value={nom}
             setValue={onNomChange}
             validation={computeVoieNomAlerts}
+            model={AlertModelEnum.VOIE}
+            field={AlertFieldVoieEnum.VOIE_NOM}
           />
           <RadioGroup
             isRequired
