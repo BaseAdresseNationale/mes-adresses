@@ -23,6 +23,8 @@ import {
   Alert,
   isAlertCodeVoieEnum,
   isAlertCodeNumeroEnum,
+  AlertFieldEnum,
+  AlertCodeEnum,
 } from "@/lib/alerts/alerts.types";
 import {
   AlertNumeroDefinitions,
@@ -30,26 +32,24 @@ import {
 } from "@/lib/alerts/alerts.definitions";
 
 interface VoieEditorProps {
-  initialAlert?: Alert;
   value?: any;
   setValue: Dispatch<SetStateAction<any>>;
-  validation: (
-    value: string,
-  ) => [codes: AlertCodeVoieEnum[], remediation?: string];
+  validation: (value: string) => [codes: AlertCodeEnum[], remediation?: string];
   model: AlertModelEnum;
-  field: AlertFieldVoieEnum;
+  field: AlertFieldEnum;
+  hasDefinition: boolean;
 }
 
 function AlertEditor({
-  initialAlert,
   value,
   setValue,
   validation,
   model,
   field,
+  hasDefinition = true,
 }: VoieEditorProps) {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const [alert, setAlert] = useState<Alert | null>(initialAlert || null);
+  const [alert, setAlert] = useState<Alert | null>(null);
 
   const alertDefinition = useMemo(() => {
     return (
@@ -109,13 +109,15 @@ function AlertEditor({
           hasIcon={false}
           padding={8}
         >
-          <UnorderedList>
-            {alertDefinition.map((def) => (
-              <ListItem key={def} color={defaultTheme.colors.yellow800}>
-                {def}
-              </ListItem>
-            ))}
-          </UnorderedList>
+          {hasDefinition ? (
+            <UnorderedList>
+              {alertDefinition.map((def) => (
+                <ListItem key={def} color={defaultTheme.colors.yellow800}>
+                  {def}
+                </ListItem>
+              ))}
+            </UnorderedList>
+          ) : null}
           {alert.remediation && (
             <Text color={defaultTheme.colors.yellow800}>
               Corriger en

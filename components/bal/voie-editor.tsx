@@ -210,7 +210,6 @@ function VoieEditor({
             validationMessage={getValidationMessage("voie_nom")}
           />
           <AlertEditor
-            initialAlert={initialVoieNomAlert}
             value={nom}
             setValue={onNomChange}
             validation={computeVoieNomAlerts}

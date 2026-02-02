@@ -35,6 +35,13 @@ import LayoutContext from "@/contexts/layout";
 import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
 import DrawContext from "@/contexts/draw";
+import AlertEditor from "./alert-editor";
+import {
+  AlertFieldNumeroEnum,
+  AlertModelEnum,
+} from "@/lib/alerts/alerts.types";
+import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
+import { computeNumeroSuffixeAlerts } from "@/lib/alerts/utils/fields/numero-suffixe.utils";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -65,12 +72,12 @@ function NumeroEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [certifie, setCertifie] = useState(initialValue?.certifie || false);
   const [numero, onNumeroChange] = useInput(
-    initialValue?.numero.toString() || ""
+    initialValue?.numero.toString() || "",
   );
   const [numeroWasEdited, setNumeroWasEdited] = useState<boolean>(false);
   const [nomVoie, onNomVoieChange] = useState("");
   const [communeDeleguee, setCommuneDeleguee] = useState(
-    initialValue?.communeDeleguee || null
+    initialValue?.communeDeleguee || null,
   );
   const [selectedNomVoie, setSelectedNomVoie] = useState("");
   const [suffixe, onSuffixeChange] = useInput(initialValue?.suffixe || "");
@@ -182,7 +189,7 @@ function NumeroEditor({
             "Le numéro n’a pas pu être modifié",
             (err) => {
               setValidationMessages(err.body.message);
-            }
+            },
           );
           await updateNumero();
         } else {
@@ -192,7 +199,7 @@ function NumeroEditor({
             "Le numéro n’a pas pu être ajouté",
             (err) => {
               setValidationMessages(err.body.message);
-            }
+            },
           );
           await createNumero();
         }
@@ -232,14 +239,14 @@ function NumeroEditor({
       onSubmitted,
       toaster,
       numero,
-    ]
+    ],
   );
 
   useEffect(() => {
     onNumeroChange({ target: { value: initialValue?.numero.toString() } });
     onSuffixeChange({ target: { value: initialValue?.suffixe } });
     setCompleteNumero(
-      computeCompletNumero(initialValue?.numero, initialValue?.suffixe)
+      computeCompletNumero(initialValue?.numero, initialValue?.suffixe),
     );
   }, [
     initialValue?.numero,
@@ -305,7 +312,7 @@ function NumeroEditor({
   useEffect(() => {
     if (markers.length > 1) {
       setHint(
-        "Déplacez les marqueurs sur la carte pour modifier les positions"
+        "Déplacez les marqueurs sur la carte pour modifier les positions",
       );
     } else {
       setHint("Déplacez le marqueur sur la carte pour positionner le numéro");
@@ -355,7 +362,7 @@ function NumeroEditor({
                   target.value === REMOVE_TOPONYME_LABEL ||
                     target.value === "- Choisir un toponyme -"
                     ? null
-                    : target.value
+                    : target.value,
                 );
               }}
             >
@@ -369,7 +376,7 @@ function NumeroEditor({
                   <option key={id} value={id}>
                     {nom}
                   </option>
-                )
+                ),
               )}
             </SelectField>
           </FormInput>
@@ -388,7 +395,7 @@ function NumeroEditor({
         )}
 
         <FormInput ref={refs?.numero}>
-          <Pane display="flex" alignItems="flex-start">
+          <Pane display="flex" alignItems="flex-start" gap={8}>
             <TextInputField
               ref={ref}
               required
@@ -396,8 +403,7 @@ function NumeroEditor({
               display="block"
               type="number"
               disabled={isLoading}
-              width="100%"
-              maxWidth={300}
+              width="50%"
               flex={2}
               value={numero}
               marginBottom={0}
@@ -408,23 +414,29 @@ function NumeroEditor({
               onChange={handleChangeNumero}
               validationMessage={getValidationMessage("numero")}
             />
-
-            <TextInputField
-              label=""
-              style={{ textTransform: "lowercase" }}
-              display="block"
-              marginTop={18}
-              marginLeft={8}
-              disabled={isLoading}
-              width="100%"
-              flex={1}
-              minWidth={59}
-              value={suffixe}
-              marginBottom={0}
-              placeholder="Suffixe"
-              onChange={handleChangeSuffixe}
-              validationMessage={getValidationMessage("suffixe")}
-            />
+            <Pane width="50%">
+              <TextInputField
+                label=""
+                style={{ textTransform: "lowercase" }}
+                display="block"
+                marginTop={18}
+                disabled={isLoading}
+                flex={1}
+                value={suffixe}
+                marginBottom={0}
+                placeholder="Suffixe"
+                onChange={handleChangeSuffixe}
+                validationMessage={getValidationMessage("suffixe")}
+              />
+              <AlertEditor
+                hasDefinition={false}
+                value={suffixe}
+                setValue={handleChangeSuffixe}
+                validation={computeNumeroSuffixeAlerts}
+                model={AlertModelEnum.NUMERO}
+                field={AlertFieldNumeroEnum.NUMERO_SUFFIXE}
+              />
+            </Pane>
           </Pane>
         </FormInput>
 
