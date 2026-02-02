@@ -1,4 +1,11 @@
-import { useState, useContext, useCallback, useEffect, useRef } from "react";
+import {
+  useState,
+  useContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+} from "react";
 import {
   Pane,
   Button,
@@ -44,6 +51,7 @@ import { AlertVoieDefinitions } from "@/lib/alerts/alerts.definitions";
 import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
 import { isAlertVoieNom } from "@/lib/alerts/utils/alerts-voies.utils";
 import styles from "./voie-editor.module.css";
+import AlertEditor from "./alert-editor";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -65,11 +73,11 @@ function VoieEditor({
 }: VoieEditorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [typeNumerotation, setTypeNumerotation] = useState(
-    initialValue?.typeNumerotation || Voie.typeNumerotation.NUMERIQUE
+    initialValue?.typeNumerotation || Voie.typeNumerotation.NUMERIQUE,
   );
   const [nom, onNomChange] = useInput(initialValue ? initialValue.nom : "");
   const [comment, onCommentChange] = useInput(
-    initialValue ? initialValue.comment : ""
+    initialValue ? initialValue.comment : "",
   );
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
@@ -82,12 +90,13 @@ function VoieEditor({
   const [ref, setIsFocus] = useFocus(true);
   const { voiesAlerts, reloadVoieAlerts } = useContext(AlertsContext);
 
-  const [voieNomAlert, setVoieNomAlert] = useState<AlertVoie | null>(
-    (voiesAlerts[initialValue?.id]?.find((alert) =>
-      isAlertVoieNom(alert)
-    ) as AlertVoie) || null
-  );
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const initialVoieNomAlert = useMemo(() => {
+    return (
+      (voiesAlerts[initialValue?.id]?.find((alert) =>
+        isAlertVoieNom(alert),
+      ) as AlertVoie) || null
+    );
+  }, [voiesAlerts, initialValue?.id]);
 
   const onFormSubmit = useCallback(
     async (e) => {
@@ -112,19 +121,19 @@ function VoieEditor({
               "La voie n’a pas pu être modifiée",
               (err) => {
                 setValidationMessages(err.body.message);
-              }
+              },
             )
           : toaster(
               async () =>
                 BasesLocalesService.createVoie(
                   baseLocale.id,
-                  body as CreateVoieDTO
+                  body as CreateVoieDTO,
                 ),
               "La voie a bien été ajoutée",
               "La voie n’a pas pu être ajoutée",
               (err) => {
                 setValidationMessages(err.body.message);
-              }
+              },
             );
 
         const voie = await submit();
@@ -135,7 +144,7 @@ function VoieEditor({
         // LOAD ALERTS
         reloadVoieAlerts(
           voie,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
         );
 
         if (initialValue?.id === voie.id) {
@@ -166,7 +175,7 @@ function VoieEditor({
       baseLocale.id,
       onSubmit,
       setVoie,
-    ]
+    ],
   );
 
   const onFormCancel = useCallback(
@@ -175,63 +184,13 @@ function VoieEditor({
 
       onClose();
     },
-    [onClose]
+    [onClose],
   );
 
   // Reset validation messages on changes
   useEffect(() => {
     setValidationMessages(null);
   }, [nom]);
-
-  useEffect(() => {
-    onNomChange({ target: { value: initialValue?.nom } });
-  }, [initialValue?.nom, onNomChange]);
-
-  const setNom = useCallback(
-    (value: string) => {
-      onNomChange({
-        target: {
-          value,
-        },
-      });
-
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-
-      debounceTimerRef.current = setTimeout(() => {
-        const [codes, remediation] = computeVoieNomAlerts(value);
-        if (codes.length > 0) {
-          setVoieNomAlert({
-            model: AlertModelEnum.VOIE,
-            field: AlertFieldVoieEnum.VOIE_NOM,
-            codes,
-            value,
-            remediation,
-          });
-        } else {
-          setVoieNomAlert(null);
-        }
-      }, 500);
-    },
-    [onNomChange]
-  );
-
-  const handleCorrection = useCallback(
-    (value: string) => {
-      setNom(value);
-      setVoieNomAlert(null);
-    },
-    [setNom, setVoieNomAlert]
-  );
-
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
 
   return (
     <Form
@@ -247,37 +206,15 @@ function VoieEditor({
             label="Nom de la voie"
             placeholder="Nom de la voie"
             value={nom}
-            onChange={(e) => setNom(e.target.value)}
+            onChange={onNomChange}
             validationMessage={getValidationMessage("voie_nom")}
           />
-          {voieNomAlert && isAlertVoieNom(voieNomAlert) && (
-            <Alert intent="warning" marginTop={8} hasIcon={false} padding={8}>
-              <UnorderedList>
-                {voieNomAlert.codes.map((code) => (
-                  <ListItem key={code} color={defaultTheme.colors.yellow800}>
-                    {AlertVoieDefinitions[code]}
-                  </ListItem>
-                ))}
-              </UnorderedList>
-              {voieNomAlert.remediation && (
-                <Text color={defaultTheme.colors.yellow800}>
-                  Corriger en
-                  <Button
-                    marginLeft={8}
-                    intent="primary"
-                    size="small"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleCorrection(voieNomAlert.remediation);
-                    }}
-                  >
-                    {voieNomAlert.remediation}
-                  </Button>
-                </Text>
-              )}
-            </Alert>
-          )}
-
+          <AlertEditor
+            initialAlert={initialVoieNomAlert}
+            value={nom}
+            setValue={onNomChange}
+            validation={computeVoieNomAlerts}
+          />
           <RadioGroup
             isRequired
             className={styles["custom-radio-group"]}
