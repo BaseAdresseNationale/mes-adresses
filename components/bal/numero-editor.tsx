@@ -233,7 +233,7 @@ function NumeroEditor({
       setValidationMessages,
       getNumeroBody,
       getEditedVoie,
-      initialValue.id,
+      initialValue?.id,
       initialValue?.parcelles,
       reloadNumeros,
       reloadNumerosAlerts,

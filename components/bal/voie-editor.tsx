@@ -128,19 +128,16 @@ function VoieEditor({
               },
             );
 
-        const { id: voieId } = await submit();
+        const voie = await submit();
+
+        await reloadVoieAlerts(
+          voie,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
+        );
 
         refreshBALSync();
         await reloadVoies();
         reloadTiles();
-        // LOAD ALERTS
-        const voie = voies.find(({ id }) => id === voieId);
-        if (voie) {
-          await reloadVoieAlerts(
-            voie,
-            (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
-          );
-        }
 
         if (initialValue?.id === voie.id) {
           setVoie(voie);
@@ -165,7 +162,6 @@ function VoieEditor({
       refreshBALSync,
       reloadVoies,
       reloadTiles,
-      voies,
       onSubmit,
       baseLocale.id,
       baseLocale.settings?.ignoredAlertCodes,
