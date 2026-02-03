@@ -51,7 +51,7 @@ interface BALDataContextType {
   numeros: Array<Numero>;
   reloadNumeros: () => Promise<void>;
   voies: ExtendedVoieDTO[];
-  reloadVoies: () => Promise<void>;
+  reloadVoies: () => Promise<ExtendedVoieDTO[]>;
   toponymes: ExtentedToponymeDTO[];
   reloadToponymes: () => Promise<void>;
   isRefrehSyncStat: boolean;
@@ -59,7 +59,7 @@ interface BALDataContextType {
   habilitationIsLoading: boolean;
   isHabilitationProcessDisplayed: boolean;
   setIsHabilitationProcessDisplayed: (
-    isHabilitationProcessDisplayed: boolean
+    isHabilitationProcessDisplayed: boolean,
   ) => void;
   reloadVoieNumeros: (voieId: string) => Promise<void>;
   commune: CommuneType | null;
@@ -104,10 +104,10 @@ export function BalDataContextProvider({
     async function fetchBALData() {
       try {
         const voies = await BasesLocalesService.findBaseLocaleVoies(
-          initialBaseLocale.id
+          initialBaseLocale.id,
         );
         const toponymes = await BasesLocalesService.findBaseLocaleToponymes(
-          initialBaseLocale.id
+          initialBaseLocale.id,
         );
         const commune = await getCommuneWithBBox(initialBaseLocale, voies);
         setVoies(voies);
@@ -117,11 +117,11 @@ export function BalDataContextProvider({
         // LOAD ALERTS
         reloadVoiesAlerts(
           voies,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
         );
         reloadNumerosAlerts(
           initialBaseLocale.id,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
         );
       } catch (error) {
         console.error("Error fetching BAL data:", error);
@@ -148,10 +148,11 @@ export function BalDataContextProvider({
     setParcelles(parcelles);
   }, [baseLocale.id]);
 
-  const reloadVoies = useCallback(async () => {
+  const reloadVoies = useCallback(async (): Promise<ExtendedVoieDTO[]> => {
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     setVoies(voies);
+    return voies;
   }, [baseLocale.id]);
 
   const reloadToponymes = useCallback(async () => {
@@ -213,7 +214,7 @@ export function BalDataContextProvider({
         setIsEditing(Boolean(editingId));
       }
     },
-    [token]
+    [token],
   );
 
   const editingItem = useMemo(() => {
@@ -227,7 +228,7 @@ export function BalDataContextProvider({
       }
 
       return union(voies, toponymes, numeros).find(
-        ({ id }) => id === editingId
+        ({ id }) => id === editingId,
       );
     }
   }, [editingId, numeros, voie, toponyme, voies, toponymes]);
@@ -332,7 +333,7 @@ export function BalDataContextProvider({
       setIsHabilitationProcessDisplayed,
       reloadVoieNumeros,
       commune,
-    ]
+    ],
   );
 
   return (

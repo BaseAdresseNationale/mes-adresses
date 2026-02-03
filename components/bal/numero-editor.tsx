@@ -207,22 +207,23 @@ function NumeroEditor({
         }
 
         await reloadNumeros();
-        // RELOAD ALERTS
-        await reloadNumerosAlerts(
-          baseLocale.id,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
-        );
-        await reloadVoieAlerts(
-          voies.find(({ id }) => id === voie.id),
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
-        );
 
         reloadTiles();
         if (xor(initialValue?.parcelles, body?.parcelles).length > 0) {
           await reloadParcelles();
         }
 
-        await reloadVoies();
+        const newVoies = await reloadVoies();
+
+        // RELOAD ALERTS
+        await reloadNumerosAlerts(
+          baseLocale.id,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
+        );
+        await reloadVoieAlerts(
+          newVoies.find(({ id }) => id === voie.id),
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
+        );
 
         if (onSubmitted) {
           onSubmitted();

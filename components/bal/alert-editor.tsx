@@ -17,9 +17,7 @@ import {
 } from "evergreen-ui";
 
 import {
-  AlertFieldVoieEnum,
   AlertModelEnum,
-  AlertCodeVoieEnum,
   Alert,
   isAlertCodeVoieEnum,
   isAlertCodeNumeroEnum,

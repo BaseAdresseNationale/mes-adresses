@@ -71,16 +71,18 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
     setOnConvertLoading(false);
     setToConvert(null);
   }, [
-    baseLocale,
-    router,
-    reloadVoies,
-    refreshBALSync,
-    reloadToponymes,
-    reloadTiles,
-    reloadParcelles,
-    toConvert,
     toaster,
     matomoTrackEvent,
+    toConvert,
+    reloadVoies,
+    reloadToponymes,
+    reloadParcelles,
+    reloadTiles,
+    refreshBALSync,
+    reloadVoieAlerts,
+    baseLocale.settings?.ignoredAlertCodes,
+    baseLocale.id,
+    router,
   ]);
 
   return (
