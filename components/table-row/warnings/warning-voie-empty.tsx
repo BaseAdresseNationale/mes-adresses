@@ -21,12 +21,12 @@ import MatomoTrackingContext, {
 import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 import AlertsContext from "@/contexts/alerts";
 
-interface VoieEmptyWarningProps {
+interface WarningVoieEmptyProps {
   baseLocale: ExtendedBaseLocaleDTO;
   voie: ExtendedVoieDTO;
 }
 
-function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
+function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
   const { reloadVoies, reloadToponymes, reloadParcelles, refreshBALSync } =
     useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
@@ -123,4 +123,4 @@ function VoieEmptyWarning({ baseLocale, voie }: VoieEmptyWarningProps) {
   );
 }
 
-export default VoieEmptyWarning;
+export default WarningVoieEmpty;

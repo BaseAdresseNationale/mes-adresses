@@ -6,9 +6,9 @@ import {
   AlertNumero,
   AlertModelEnum,
 } from "@/lib/alerts/alerts.types";
-import VoieEmptyWarning from "./warnings/voie-empty-warning";
-import VoieNomWarning from "./warnings/voie-nom-warning";
-import VoieNumerosWarning from "./warnings/voie-numeros-warnings";
+import WarningLink from "./warnings/warning-link";
+import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
+import WarningVoieEmpty from "./warnings/warning-voie-empty";
 
 interface TableVoieWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -26,10 +26,13 @@ function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
             {alert.model === AlertModelEnum.VOIE ? (
               <>
                 {alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) && (
-                  <VoieEmptyWarning baseLocale={baseLocale} voie={voie} />
+                  <WarningLink
+                    title="Le nom de la voie est incorrect"
+                    url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
+                  />
                 )}
                 {!alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) && (
-                  <VoieNomWarning baseLocale={baseLocale} voie={voie} />
+                  <WarningVoieEmpty baseLocale={baseLocale} voie={voie} />
                 )}
               </>
             ) : alert.model === AlertModelEnum.NUMERO ? (
@@ -37,7 +40,10 @@ function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
                 {alert.codes.includes(
                   AlertCodeNumeroEnum.SUFFIXE_CARACTERE_INVALIDE,
                 ) ? (
-                  <VoieNumerosWarning baseLocale={baseLocale} voie={voie} />
+                  <WarningLink
+                    title="Un ou plusieurs numéros ont des alertes"
+                    url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`}
+                  />
                 ) : null}
               </>
             ) : null}

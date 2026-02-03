@@ -1,7 +1,7 @@
 import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import { AlertNumero } from "@/lib/alerts/alerts.types";
 import { isAlertNumeroSuffixe } from "@/lib/alerts/utils/alerts-numeros.utils";
-import NumeroSuffixeWarning from "./warnings/numero-suffixe-warning";
+import WarningNumero from "./warnings/warning-numero";
 
 interface TableNumeroWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -18,7 +18,10 @@ function TableNumeroWarning({ alerts, onSelect }: TableNumeroWarningProps) {
           <div key={`alert-${index}`}>
             {index > 0 && <hr />}
             {isAlertNumeroSuffixe(alert) ? (
-              <NumeroSuffixeWarning onSelect={onSelect} />
+              <WarningNumero
+                title="Le suffixe du numéro est incorrect"
+                goToFormNumero={onSelect}
+              />
             ) : null}
           </div>
         );
