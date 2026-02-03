@@ -25,18 +25,23 @@ function AlertsAccordion({
   const [isAccordionNumeroActive, setIsAccordionNumeroActive] = useState(false);
 
   const toggleAllAlertCodes = (
-    alertsCodes?: AlertCodeVoieEnum[] | AlertCodeNumeroEnum[],
+    alertsCodes: AlertCodeVoieEnum[] | AlertCodeNumeroEnum[],
   ) => {
-    const allAlertCodesIgnored = alertsCodes.filter(
+    const allActive = alertsCodes.every(
       (code) => !ignoredAlertCodes.includes(code as AlertCodeEnum),
     );
-    if (
-      allAlertCodesIgnored.length >= 0 &&
-      allAlertCodesIgnored.length < alertsCodes.length
-    ) {
-      setIgnoredAlertCodes([]);
+
+    if (allActive) {
+      setIgnoredAlertCodes([
+        ...ignoredAlertCodes,
+        ...(alertsCodes as AlertCodeEnum[]),
+      ]);
     } else {
-      setIgnoredAlertCodes(alertsCodes);
+      setIgnoredAlertCodes(
+        ignoredAlertCodes.filter(
+          (code) => !(alertsCodes as string[]).includes(code),
+        ),
+      );
     }
   };
 
