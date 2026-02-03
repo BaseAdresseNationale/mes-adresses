@@ -102,7 +102,7 @@ function NumeroEditor({
     useContext(MarkersContext);
   const { setHint } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
-  const { reloadNumerosAlerts } = useContext(AlertsContext);
+  const { reloadNumerosAlerts, reloadVoieAlerts } = useContext(AlertsContext);
   const [ref] = useFocus(true);
 
   const getEditedVoie = useCallback(async () => {
@@ -207,14 +207,22 @@ function NumeroEditor({
         }
 
         await reloadNumeros();
+        // RELOAD ALERTS
         await reloadNumerosAlerts(
           baseLocale.id,
           (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
         );
+        await reloadVoieAlerts(
+          voies.find(({ id }) => id === voie.id),
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
+        );
+
         reloadTiles();
         if (xor(initialValue?.parcelles, body?.parcelles).length > 0) {
           await reloadParcelles();
         }
+
+        await reloadVoies();
 
         if (onSubmitted) {
           onSubmitted();
@@ -239,7 +247,10 @@ function NumeroEditor({
       reloadNumerosAlerts,
       baseLocale.id,
       baseLocale.settings?.ignoredAlertCodes,
+      reloadVoieAlerts,
+      voies,
       reloadTiles,
+      reloadVoies,
       onSubmitted,
       refreshBALSync,
       closeForm,

@@ -68,7 +68,7 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const { reloadTiles } = useContext(MapContext);
   const { scrollAndHighlightLastSelectedItem } = useContext(
-    SearchPaginationContext
+    SearchPaginationContext,
   );
   const { setTileLayersMode } = useContext(MapContext);
 
@@ -90,7 +90,7 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
     const softDeleteToponyme = toaster(
       () => ToponymesService.softDeleteToponyme(toRemove),
       "Le toponyme a bien été archivé",
-      "Le toponyme n’a pas pu être archivé"
+      "Le toponyme n’a pas pu être archivé",
     );
     await softDeleteToponyme();
     await reloadToponymes();
@@ -105,30 +105,30 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
     (codeCommuneDeleguee) => {
       const communeDeleguee: CommunePrecedenteDTO =
         commune.communesDeleguees?.find(
-          ({ code }) => code === codeCommuneDeleguee
+          ({ code }) => code === codeCommuneDeleguee,
         );
       return (
         communeDeleguee && `${communeDeleguee.nom} - ${communeDeleguee.code}`
       );
     },
-    [commune]
+    [commune],
   );
 
   const browseToNumerosList = (idToponyme: string) => {
     void router.push(
-      `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}/numeros`
+      `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}/numeros`,
     );
   };
 
   const browseToToponyme = (idToponyme: string) => {
     void router.push(
-      `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}`
+      `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${idToponyme}`,
     );
   };
 
   const scrollableItems = useMemo(
     () => sortBy(filtered, (v) => normalizeSort(v.nom)),
-    [filtered]
+    [filtered],
   );
 
   const isEditingEnabled = !isEditing && Boolean(token);
@@ -232,9 +232,9 @@ function ToponymesPage({ baseLocale }: ToponymesPageProps) {
               <TableRowNotifications
                 communeDeleguee={getCommuneDeleguee(toponyme.communeDeleguee)}
                 warning={
-                  toponyme.positions.length === 0
-                    ? "Ce toponyme n’a pas de position"
-                    : null
+                  toponyme.positions.length === 0 ? (
+                    <Text color="white">Ce toponyme n’a pas de position</Text>
+                  ) : null
                 }
                 certification={
                   toponyme.isAllCertified

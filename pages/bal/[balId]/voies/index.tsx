@@ -218,7 +218,6 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
         .flat()
         .filter((alert) => alert.voieId === voieId);
 
-      if (numerosWarnings.length > 0) console.log(numerosAlerts);
       return [...voieWarnings, ...numerosWarnings];
     },
     [voiesAlerts, numerosAlerts],
