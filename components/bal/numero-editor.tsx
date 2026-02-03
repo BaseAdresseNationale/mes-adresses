@@ -413,7 +413,7 @@ function NumeroEditor({
               flex={2}
               value={numero}
               marginBottom={0}
-              onWheel={(e) => e.target.blur()}
+              onWheel={(e) => (e.target as HTMLElement).blur()}
               placeholder={`Numéro${
                 suggestedNumero ? ` recommandé : ${suggestedNumero}` : ""
               }`}
