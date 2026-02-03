@@ -9,7 +9,7 @@ import { AlertModelEnum } from "../alerts.types";
 import { computeVoieNomAlerts } from "./fields/voie-nom.utils";
 
 export const getVoieNomAlert = (
-  voie: ExtendedVoieDTO
+  voie: ExtendedVoieDTO,
 ): AlertVoie | undefined => {
   const [codes, remediation] = computeVoieNomAlerts(voie.nom);
   if (codes.length > 0) {
@@ -24,7 +24,7 @@ export const getVoieNomAlert = (
 };
 
 export const getVoieEmptyAlert = (
-  voie: ExtendedVoieDTO
+  voie: ExtendedVoieDTO,
 ): AlertVoie | undefined => {
   if (voie.nbNumeros === 0) {
     return {

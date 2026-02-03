@@ -40,6 +40,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
               />
               <Heading color={isAllCertified && "#317159"}>Qualité</Heading>
             </Pane>
+
             <Pane
               display="flex"
               justifyContent="space-between"
@@ -50,15 +51,17 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
                 value={Object.values(voiesAlerts).length}
                 color="orange"
               />
-              <Button
-                width="100%"
-                appearance="primary"
-                iconAfter={EyeOpenIcon}
-                title="Voir les alertes"
-                onClick={(e) => goToAlerts(e)}
-              >
-                Voir les alertes
-              </Button>
+              {Object.values(voiesAlerts).length > 0 ? (
+                <Button
+                  width="100%"
+                  appearance="primary"
+                  iconAfter={EyeOpenIcon}
+                  title="Voir les alertes"
+                  onClick={(e) => goToAlerts(e)}
+                >
+                  Voir les alertes
+                </Button>
+              ) : null}
             </Pane>
           </Pane>
         }

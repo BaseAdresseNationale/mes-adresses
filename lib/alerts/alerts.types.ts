@@ -1,8 +1,10 @@
+// MODEL
 export enum AlertModelEnum {
   VOIE = "voie",
   NUMERO = "numero",
 }
 
+// CODE
 export enum AlertCodeVoieEnum {
   CARACTERE_INVALIDE = "caractere_invalide",
   CARACTERE_INVALIDE_START = "caractere_invalide_start",
@@ -31,6 +33,7 @@ export type AlertCodeByModel<T extends AlertModelEnum> =
       ? AlertCodeNumeroEnum
       : never;
 
+// FIELD
 export enum AlertFieldVoieEnum {
   VOIE_NOM = "voie_nom",
 }
@@ -48,6 +51,7 @@ export type AlertFieldByModel<T extends AlertModelEnum> =
       ? AlertFieldNumeroEnum
       : never;
 
+// ALERT
 export type Alert<M extends AlertModelEnum = AlertModelEnum> = {
   model: M;
   codes: AlertCodeByModel<M>[];
@@ -59,6 +63,7 @@ export type Alert<M extends AlertModelEnum = AlertModelEnum> = {
 export type AlertVoie = Alert<AlertModelEnum.VOIE>;
 export type AlertNumero = Alert<AlertModelEnum.NUMERO>;
 
+// FUNCTION
 export function isAlertCodeVoieEnum(code: string): code is AlertCodeVoieEnum {
   return Object.values(AlertCodeVoieEnum).includes(code as AlertCodeVoieEnum);
 }

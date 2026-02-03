@@ -8,8 +8,6 @@ import {
 } from "@/lib/alerts/alerts.types";
 import VoieEmptyWarning from "./warnings/voie-empty-warning";
 import VoieNomWarning from "./warnings/voie-nom-warning";
-import { isAlertVoieNom } from "@/lib/alerts/utils/alerts-voies.utils";
-import { Pane, Text, WarningSignIcon } from "evergreen-ui";
 import VoieNumerosWarning from "./warnings/voie-numeros-warnings";
 
 interface TableVoieWarningProps {

@@ -214,12 +214,10 @@ function VoiesPage({ baseLocale }: VoiesPageProps) {
     (voieId: string): (AlertVoie | AlertNumero)[] => {
       const voieWarnings = voiesAlerts[voieId] || [];
 
-      // Récupérer les alertes des numéros de cette voie en utilisant le champ voieId
       const numerosWarnings = Object.values(numerosAlerts)
         .flat()
         .filter((alert) => alert.voieId === voieId);
-      // console.log(numerosAlerts);
-      // console.log("---------------------------------");
+
       if (numerosWarnings.length > 0) console.log(numerosAlerts);
       return [...voieWarnings, ...numerosWarnings];
     },

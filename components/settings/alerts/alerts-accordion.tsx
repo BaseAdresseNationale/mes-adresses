@@ -3,11 +3,6 @@ import { Pane, Checkbox, Heading } from "evergreen-ui";
 import { AccordionCard } from "../../accordion-card";
 import {
   AlertCodeEnum,
-  AlertFieldEnum,
-  AlertFieldVoieEnum,
-  isAlertCodeVoieEnum,
-  AlertFieldNumeroEnum,
-  isAlertCodeNumeroEnum,
   AlertCodeVoieEnum,
   AlertCodeNumeroEnum,
 } from "@/lib/alerts/alerts.types";
@@ -30,10 +25,10 @@ function AlertsAccordion({
   const [isAccordionNumeroActive, setIsAccordionNumeroActive] = useState(false);
 
   const toggleAllAlertCodes = (
-    alertsCodes?: AlertCodeVoieEnum[] | AlertCodeNumeroEnum[]
+    alertsCodes?: AlertCodeVoieEnum[] | AlertCodeNumeroEnum[],
   ) => {
     const allAlertCodesIgnored = alertsCodes.filter(
-      (code) => !ignoredAlertCodes.includes(code as AlertCodeEnum)
+      (code) => !ignoredAlertCodes.includes(code as AlertCodeEnum),
     );
     if (
       allAlertCodesIgnored.length >= 0 &&
@@ -63,7 +58,7 @@ function AlertsAccordion({
               margin={0}
               label={<Heading size={400}>Alertes sur les voies</Heading>}
               checked={Object.entries(AlertVoieDefinitions).every(
-                ([code]) => !ignoredAlertCodes.includes(code as AlertCodeEnum)
+                ([code]) => !ignoredAlertCodes.includes(code as AlertCodeEnum),
               )}
               onChange={() =>
                 toggleAllAlertCodes(Object.values(AlertCodeVoieEnum))
@@ -95,7 +90,7 @@ function AlertsAccordion({
               margin={0}
               label={<Heading size={400}>Alertes sur les numéros</Heading>}
               checked={Object.entries(AlertNumeroDefinitions).every(
-                ([code]) => !ignoredAlertCodes.includes(code as AlertCodeEnum)
+                ([code]) => !ignoredAlertCodes.includes(code as AlertCodeEnum),
               )}
               onChange={() =>
                 toggleAllAlertCodes(Object.values(AlertCodeNumeroEnum))

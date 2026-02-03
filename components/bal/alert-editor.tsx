@@ -37,7 +37,7 @@ interface VoieEditorProps {
   validation: (value: string) => [codes: AlertCodeEnum[], remediation?: string];
   model: AlertModelEnum;
   field: AlertFieldEnum;
-  hasDefinition: boolean;
+  hasDefinition?: boolean;
 }
 
 function AlertEditor({

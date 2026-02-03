@@ -37,11 +37,13 @@ import { CommuneType } from "@/types/commune";
 import DrawContext from "@/contexts/draw";
 import AlertEditor from "./alert-editor";
 import {
+  AlertCodeEnum,
   AlertFieldNumeroEnum,
   AlertModelEnum,
 } from "@/lib/alerts/alerts.types";
 import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
 import { computeNumeroSuffixeAlerts } from "@/lib/alerts/utils/fields/numero-suffixe.utils";
+import AlertsContext from "@/contexts/alerts";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -100,7 +102,7 @@ function NumeroEditor({
     useContext(MarkersContext);
   const { setHint } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
-
+  const { reloadNumerosAlerts } = useContext(AlertsContext);
   const [ref] = useFocus(true);
 
   const getEditedVoie = useCallback(async () => {
@@ -205,13 +207,14 @@ function NumeroEditor({
         }
 
         await reloadNumeros();
-
+        await reloadNumerosAlerts(
+          baseLocale.id,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
+        );
         reloadTiles();
         if (xor(initialValue?.parcelles, body?.parcelles).length > 0) {
           await reloadParcelles();
         }
-
-        await reloadVoies();
 
         if (onSubmitted) {
           onSubmitted();
@@ -226,19 +229,22 @@ function NumeroEditor({
       }
     },
     [
+      numero,
+      setValidationMessages,
       getNumeroBody,
       getEditedVoie,
-      closeForm,
+      initialValue.id,
+      initialValue?.parcelles,
       reloadNumeros,
-      refreshBALSync,
-      reloadParcelles,
-      initialValue,
-      setValidationMessages,
-      reloadVoies,
+      reloadNumerosAlerts,
+      baseLocale.id,
+      baseLocale.settings?.ignoredAlertCodes,
       reloadTiles,
       onSubmitted,
+      refreshBALSync,
+      closeForm,
       toaster,
-      numero,
+      reloadParcelles,
     ],
   );
 

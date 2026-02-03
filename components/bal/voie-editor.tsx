@@ -82,21 +82,13 @@ function VoieEditor({
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
-  const { baseLocale, refreshBALSync, reloadVoies, setVoie } =
+  const { baseLocale, refreshBALSync, reloadVoies, setVoie, voies } =
     useContext(BalDataContext);
   const { data } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
-  const { voiesAlerts, reloadVoieAlerts } = useContext(AlertsContext);
-
-  const initialVoieNomAlert = useMemo(() => {
-    return (
-      (voiesAlerts[initialValue?.id]?.find((alert) =>
-        isAlertVoieNom(alert),
-      ) as AlertVoie) || null
-    );
-  }, [voiesAlerts, initialValue?.id]);
+  const { reloadVoieAlerts } = useContext(AlertsContext);
 
   const onFormSubmit = useCallback(
     async (e) => {
@@ -136,16 +128,19 @@ function VoieEditor({
               },
             );
 
-        const voie = await submit();
+        const { id: voieId } = await submit();
 
         refreshBALSync();
         await reloadVoies();
         reloadTiles();
         // LOAD ALERTS
-        reloadVoieAlerts(
-          voie,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
-        );
+        const voie = voies.find(({ id }) => id === voieId);
+        if (voie) {
+          await reloadVoieAlerts(
+            voie,
+            (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || [],
+          );
+        }
 
         if (initialValue?.id === voie.id) {
           setVoie(voie);

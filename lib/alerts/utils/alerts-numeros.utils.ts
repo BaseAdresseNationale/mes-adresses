@@ -14,6 +14,7 @@ export const getNumeroSuffixeAlert = (
       codes,
       value: numero.suffixe,
       remediation,
+      voieId: numero.voieId,
     } as AlertNumero;
   }
 };

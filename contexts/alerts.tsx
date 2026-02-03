@@ -54,7 +54,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
           .filter((alert) =>
             alert.codes.every((code) => !ignoredAlertCodes.includes(code)),
           );
-        if (alerts.length > 0) {
+        if (filteredAlerts.length > 0) {
           newNumerosAlerts[numero.id] = filteredAlerts;
         }
       }
