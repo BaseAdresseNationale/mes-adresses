@@ -163,7 +163,6 @@ function VoieEditor({
       reloadVoies,
       reloadTiles,
       reloadVoieAlerts,
-      voies,
       baseLocale.settings?.ignoredAlertCodes,
       baseLocale.id,
       onSubmit,

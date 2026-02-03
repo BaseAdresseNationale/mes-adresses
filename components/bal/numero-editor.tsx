@@ -249,7 +249,6 @@ function NumeroEditor({
       baseLocale.id,
       baseLocale.settings?.ignoredAlertCodes,
       reloadVoieAlerts,
-      voies,
       reloadTiles,
       reloadVoies,
       onSubmitted,
