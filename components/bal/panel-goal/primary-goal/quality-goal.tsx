@@ -1,5 +1,12 @@
-import { useContext } from "react";
-import { Pane, Heading, Text, Button, EyeOpenIcon } from "evergreen-ui";
+import { useContext, useMemo } from "react";
+import {
+  Pane,
+  Heading,
+  Text,
+  Button,
+  EyeOpenIcon,
+  defaultTheme,
+} from "evergreen-ui";
 
 import { AccordionCard } from "@/components/accordion-card";
 import { useState } from "react";
@@ -8,6 +15,7 @@ import Counter from "@/components/counter";
 import AlertsContext from "@/contexts/alerts";
 import { useRouter } from "next/router";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
+import habilitation from "@/hooks/habilitation";
 
 interface QualityGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -26,7 +34,15 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
     });
   };
 
-  const isAllCertified = false;
+  const isAllCorrected = Object.values(voiesAlerts).length === 0;
+
+  const colorCard = useMemo(() => {
+    if (Object.values(voiesAlerts).length === 0) {
+      return defaultTheme.colors.green100;
+    }
+    return defaultTheme.colors.white;
+  }, [voiesAlerts]);
+
   return (
     <Pane paddingX={8}>
       <AccordionCard
@@ -36,22 +52,23 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
               <AchievementBadge
                 icone="/static/images/achievements/fiabilite.svg"
                 title="Publication"
-                completed={Object.values(voiesAlerts).length === 0}
+                completed={isAllCorrected}
               />
-              <Heading color={isAllCertified && "#317159"}>Qualité</Heading>
+              <Heading color={isAllCorrected && "#317159"}>Qualité</Heading>
             </Pane>
 
-            <Pane
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Counter
-                label="Avertissements détectés"
-                value={Object.values(voiesAlerts).length}
-                color="orange"
-              />
-              {Object.values(voiesAlerts).length > 0 ? (
+            {Object.values(voiesAlerts).length > 0 ? (
+              <Pane
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Counter
+                  label="Avertissements détectés"
+                  value={Object.values(voiesAlerts).length}
+                  color="orange"
+                />
+
                 <Button
                   width="100%"
                   appearance="primary"
@@ -61,11 +78,11 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
                 >
                   Voir les alertes
                 </Button>
-              ) : null}
-            </Pane>
+              </Pane>
+            ) : null}
           </Pane>
         }
-        backgroundColor="white"
+        backgroundColor={colorCard}
         isActive={isActive}
         onClick={() => setIsActive(!isActive)}
         caretPosition="start"
