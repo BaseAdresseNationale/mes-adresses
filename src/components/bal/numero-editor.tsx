@@ -36,7 +36,13 @@ import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
 import DrawContext from "@/contexts/draw";
 import AlertsContext from "@/contexts/alerts";
-import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
+import {
+  AlertCodeEnum,
+  AlertFieldNumeroEnum,
+  AlertModelEnum,
+} from "@/lib/alerts/alerts.types";
+import { computeNumeroSuffixeAlerts } from "@/lib/alerts/utils/fields/numero-suffixe.utils";
+import AlertEditor from "./alert-editor";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -245,6 +251,10 @@ function NumeroEditor({
       onSubmitted,
       toaster,
       numero,
+      baseLocale.id,
+      reloadNumerosAlerts,
+      reloadVoieAlerts,
+      baseLocale.settings?.ignoredAlertCodes,
     ]
   );
 
@@ -401,7 +411,7 @@ function NumeroEditor({
         )}
 
         <FormInput ref={refs?.numero}>
-          <Pane display="flex" alignItems="flex-start">
+          <Pane display="flex" alignItems="flex-start" gap={8}>
             <TextInputField
               ref={ref}
               required
@@ -409,7 +419,7 @@ function NumeroEditor({
               display="block"
               type="number"
               disabled={isLoading}
-              width="100%"
+              width="50%"
               maxWidth={300}
               flex={2}
               value={numero}
@@ -422,22 +432,29 @@ function NumeroEditor({
               validationMessage={getValidationMessage("numero")}
             />
 
-            <TextInputField
-              label=""
-              style={{ textTransform: "lowercase" }}
-              display="block"
-              marginTop={18}
-              marginLeft={8}
-              disabled={isLoading}
-              width="100%"
-              flex={1}
-              minWidth={59}
-              value={suffixe}
-              marginBottom={0}
-              placeholder="Suffixe"
-              onChange={handleChangeSuffixe}
-              validationMessage={getValidationMessage("suffixe")}
-            />
+            <Pane width="50%">
+              <TextInputField
+                label=""
+                style={{ textTransform: "lowercase" }}
+                display="block"
+                marginTop={18}
+                disabled={isLoading}
+                flex={1}
+                value={suffixe}
+                marginBottom={0}
+                placeholder="Suffixe"
+                onChange={handleChangeSuffixe}
+                validationMessage={getValidationMessage("suffixe")}
+              />
+              <AlertEditor
+                hasDefinition={false}
+                value={suffixe}
+                setValue={handleChangeSuffixe}
+                validation={computeNumeroSuffixeAlerts}
+                model={AlertModelEnum.NUMERO}
+                field={AlertFieldNumeroEnum.NUMERO_SUFFIXE}
+              />
+            </Pane>
           </Pane>
         </FormInput>
 
