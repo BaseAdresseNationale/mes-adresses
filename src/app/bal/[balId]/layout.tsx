@@ -27,15 +27,15 @@ export default async function EditorLayout({
 
   return (
     <TokenContextProvider balId={balId}>
-      <BalDataContextProvider initialBaseLocale={baseLocale}>
-        <AlertsContextProvider>
+      <AlertsContextProvider>
+        <BalDataContextProvider initialBaseLocale={baseLocale}>
           <SearchPaginationContextProvider>
             <SignalementContextProvider>
               <Editor>{children}</Editor>
             </SignalementContextProvider>
           </SearchPaginationContextProvider>
-        </AlertsContextProvider>
-      </BalDataContextProvider>
+        </BalDataContextProvider>
+      </AlertsContextProvider>
     </TokenContextProvider>
   );
 }

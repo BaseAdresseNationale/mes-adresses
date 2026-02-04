@@ -35,6 +35,8 @@ import LayoutContext from "@/contexts/layout";
 import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
 import DrawContext from "@/contexts/draw";
+import AlertsContext from "@/contexts/alerts";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -93,6 +95,7 @@ function NumeroEditor({
     useContext(MarkersContext);
   const { setHint } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
+  const { reloadNumerosAlerts, reloadVoieAlerts } = useContext(AlertsContext);
 
   const [ref] = useFocus(true);
 
@@ -204,7 +207,17 @@ function NumeroEditor({
           await reloadParcelles();
         }
 
-        await reloadVoies();
+        const newVoies = await reloadVoies();
+
+        // RELOAD ALERTS
+        await reloadNumerosAlerts(
+          baseLocale.id,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
+        await reloadVoieAlerts(
+          newVoies.find(({ id }) => id === voie.id),
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
 
         if (onSubmitted) {
           onSubmitted();
