@@ -1,15 +1,48 @@
-import { Pane, Heading, Text } from "evergreen-ui";
+import { useContext, useMemo } from "react";
+import {
+  Pane,
+  Heading,
+  Text,
+  Button,
+  EyeOpenIcon,
+  defaultTheme,
+} from "evergreen-ui";
 
-import StarRating from "./star-rating";
 import { AccordionCard } from "@/components/accordion-card";
 import { useState } from "react";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
+import AlertsContext from "@/contexts/alerts";
+import { useRouter } from "next/router";
+import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
+import habilitation from "@/hooks/habilitation";
 
-function QualityGoal() {
+interface QualityGoalProps {
+  baseLocale: ExtendedBaseLocaleDTO;
+}
+
+function QualityGoal({ baseLocale }: QualityGoalProps) {
   const [isActive, setIsActive] = useState(false);
+  const { voiesAlerts } = useContext(AlertsContext);
+  const router = useRouter();
 
-  const isAllCertified = false;
+  const goToAlerts = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    void router.push({
+      pathname: `/bal/${baseLocale.id}/voies`,
+      query: { filters: ["alertes"] },
+    });
+  };
+
+  const isAllCorrected = Object.values(voiesAlerts).length === 0;
+
+  const colorCard = useMemo(() => {
+    if (Object.values(voiesAlerts).length === 0) {
+      return defaultTheme.colors.green100;
+    }
+    return defaultTheme.colors.white;
+  }, [voiesAlerts]);
+
   return (
     <Pane paddingX={8}>
       <AccordionCard
@@ -19,24 +52,37 @@ function QualityGoal() {
               <AchievementBadge
                 icone="/static/images/achievements/fiabilite.svg"
                 title="Publication"
-                completed={isAllCertified}
+                completed={isAllCorrected}
               />
-              <Heading color={isAllCertified && "#317159"}>Qualité</Heading>
+              <Heading color={isAllCorrected && "#317159"}>Qualité</Heading>
             </Pane>
-            <Pane width="100%">
-              <StarRating value={3} />
-              <Pane display="flex" justifyContent="center" alignItems="center">
-                <Counter label="Erreurs détectées" value={1} color="red" />
+
+            {Object.values(voiesAlerts).length > 0 ? (
+              <Pane
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Counter
                   label="Avertissements détectés"
-                  value={2}
+                  value={Object.values(voiesAlerts).length}
                   color="orange"
                 />
+
+                <Button
+                  width="100%"
+                  appearance="primary"
+                  iconAfter={EyeOpenIcon}
+                  title="Voir les alertes"
+                  onClick={(e) => goToAlerts(e)}
+                >
+                  Voir les alertes
+                </Button>
               </Pane>
-            </Pane>
+            ) : null}
           </Pane>
         }
-        backgroundColor="white"
+        backgroundColor={colorCard}
         isActive={isActive}
         onClick={() => setIsActive(!isActive)}
         caretPosition="start"
