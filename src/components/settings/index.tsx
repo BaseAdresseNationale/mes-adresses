@@ -15,8 +15,9 @@ import { BALAdminEmails } from "./bal-admin-emails";
 import { useBALSettings } from "@/hooks/bal-settings";
 import RenewTokenDialog from "../renew-token-dialog";
 import { ShareBALAccessDialog } from "./share/share-bal-access-dialog";
-import FondDeCarteList from "./fond-de-carte-list";
+import FondDeCarteList from "./fond-de-carte/fond-de-carte-list";
 import FondDeCarteDialog from "./fond-de-carte/fond-de-carte-dialog";
+import AlertsAccordion from "./alerts/alerts-accordion";
 import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
@@ -53,6 +54,9 @@ function Settings({ baseLocale, token }: SettingsProps) {
     isRenewTokenWarningShown,
     setIsRenewTokenWarningShown,
     setError,
+    ignoredAlertCodes,
+    setIgnoredAlertCodes,
+    ignoredAlertCodesChanged,
   } = useBALSettings(baseLocale);
 
   return (
