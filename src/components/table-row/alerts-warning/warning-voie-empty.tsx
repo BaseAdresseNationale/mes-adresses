@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from "react";
 import { Paragraph, Pane, Text, Button, WarningSignIcon } from "evergreen-ui";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import BalDataContext from "@/contexts/bal-data";
 

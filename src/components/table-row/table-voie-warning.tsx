@@ -22,18 +22,18 @@ function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
       {alerts.map((alert, index) => {
         return (
           <div key={`alert-${index}`}>
-            {index > 0 && <hr />}
+            {index > 0 && <hr style={{ margin: "8px 0" }} />}
             {alert.model === AlertModelEnum.VOIE ? (
               <>
-                {alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) && (
+                {!alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) ? (
                   <WarningLink
                     title="Le nom de la voie est incorrect"
                     url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
                   />
-                )}
-                {!alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) && (
+                ) : null}
+                {alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) ? (
                   <WarningVoieEmpty baseLocale={baseLocale} voie={voie} />
-                )}
+                ) : null}
               </>
             ) : alert.model === AlertModelEnum.NUMERO ? (
               <>

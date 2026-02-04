@@ -1,7 +1,7 @@
 import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import { AlertNumero } from "@/lib/alerts/alerts.types";
-import { isAlertNumeroSuffixe } from "@/lib/alerts/utils/alerts-numeros.utils";
-import WarningNumero from "./warnings/warning-numero";
+import { isAlertNumeroSuffixe } from "@/lib/alerts/utils/alerts-numero.utils";
+import WarningNumero from "./alerts-warning/warning-numero";
 
 interface TableNumeroWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
