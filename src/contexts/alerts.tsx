@@ -11,7 +11,7 @@ import {
   getVoieNomAlert,
 } from "@/lib/alerts/utils/alerts-voies.utils";
 import { BasesLocalesService } from "@/lib/openapi-api-bal/services/BasesLocalesService";
-import { getNumeroSuffixeAlert } from "@/lib/alerts/utils/alerts-numeros.utils";
+import { getNumeroSuffixeAlert } from "@/lib/alerts/utils/alerts-numero.utils";
 
 interface AlertsContextType {
   voiesAlerts: Record<string, AlertVoie[]>;
