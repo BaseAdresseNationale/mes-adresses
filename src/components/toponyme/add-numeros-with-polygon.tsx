@@ -37,12 +37,10 @@ function AddNumerosWithPolygon({
 
   useEffect(() => {
     async function searchNumeros() {
-      const numeros: Numero[] = await BasesLocalesService.searchNumeros(
-        baseLocale.id,
-        {
+      const numeros: Numero[] =
+        await BasesLocalesService.searchNumerosInPolygon(baseLocale.id, {
           polygon: data.geometry.coordinates[0] as unknown as number[][],
-        }
-      );
+        });
       setNumerosSelected(numeros);
       setNumerosIds(numeros.map(({ id }) => id));
     }
