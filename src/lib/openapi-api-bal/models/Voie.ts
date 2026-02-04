@@ -1,11 +1,9 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { BaseLocale } from './BaseLocale';
 import type { Numero } from './Numero';
-
 export type Voie = {
     id: string;
     banId: string;
@@ -23,14 +21,10 @@ export type Voie = {
     baseLocale: BaseLocale;
     numeros: Array<Numero>;
 };
-
 export namespace Voie {
-
     export enum typeNumerotation {
         NUMERIQUE = 'numerique',
         METRIQUE = 'metrique',
     }
-
-
 }
 

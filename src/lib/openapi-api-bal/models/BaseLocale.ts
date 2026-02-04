@@ -1,14 +1,12 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { BaseLocaleSetting } from './BaseLocaleSetting';
 import type { BaseLocaleSync } from './BaseLocaleSync';
 import type { Numero } from './Numero';
 import type { Toponyme } from './Toponyme';
 import type { Voie } from './Voie';
-
 export type BaseLocale = {
     id: string;
     banId: string;
@@ -29,16 +27,12 @@ export type BaseLocale = {
     toponymes: Array<Toponyme>;
     numeros: Array<Numero>;
 };
-
 export namespace BaseLocale {
-
     export enum status {
         DRAFT = 'draft',
         PUBLISHED = 'published',
         DEMO = 'demo',
         REPLACED = 'replaced',
     }
-
-
 }
 

@@ -1,13 +1,11 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { BaseLocale } from './BaseLocale';
 import type { Position } from './Position';
 import type { Toponyme } from './Toponyme';
 import type { Voie } from './Voie';
-
 export type Numero = {
     id: string;
     banId: string;
