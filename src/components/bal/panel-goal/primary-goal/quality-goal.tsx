@@ -13,9 +13,8 @@ import { useState } from "react";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import Counter from "@/components/counter";
 import AlertsContext from "@/contexts/alerts";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
-import habilitation from "@/hooks/habilitation";
 
 interface QualityGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -28,10 +27,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
 
   const goToAlerts = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    void router.push({
-      pathname: `/bal/${baseLocale.id}/voies`,
-      query: { filters: ["alertes"] },
-    });
+    void router.push(`/bal/${baseLocale.id}/voies?filters=alerts`);
   };
 
   const isAllCorrected = Object.values(voiesAlerts).length === 0;

@@ -6,9 +6,9 @@ import {
   AlertNumero,
   AlertModelEnum,
 } from "@/lib/alerts/alerts.types";
-import WarningLink from "./warnings/warning-link";
+import WarningLink from "./alerts-warning/warning-link";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
-import WarningVoieEmpty from "./warnings/warning-voie-empty";
+import WarningVoieEmpty from "./alerts-warning/warning-voie-empty";
 
 interface TableVoieWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
