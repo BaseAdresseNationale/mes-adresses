@@ -94,9 +94,9 @@ export default function VoiesPage() {
     searchParams.get("filters")?.includes("uncertified") || false
   );
   const [showAlerts, setShowAlerts] = useState<boolean>(
-    searchParams.get("filters")?.includes("alertes") || false
+    searchParams.get("filters")?.includes("alerts") || false
   );
-
+  console.log(searchParams.get("filters"));
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(TabsEnum.VOIES, voies);
