@@ -104,21 +104,22 @@ export function VoieNumerosPage() {
         width="100%"
         overflow="hidden"
       >
-        {isFormOpen && (
+        {isFormOpen ? (
           <NumeroEditor
             initialVoieId={voie.id}
             initialValue={editedNumero}
             commune={commune}
             closeForm={reset}
           />
+        ) : (
+          <NumerosList
+            commune={commune}
+            token={token}
+            voieId={voie.id}
+            numeros={numeros}
+            handleEditing={handleEditing}
+          />
         )}
-        <NumerosList
-          commune={commune}
-          token={token}
-          voieId={voie.id}
-          numeros={numeros}
-          handleEditing={handleEditing}
-        />
       </Pane>
     </>
   );
