@@ -24,6 +24,17 @@ import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
 import { trimNomAlt } from "@/lib/utils/string";
 import { DrawMetricVoieEditor } from "./draw-metric-voie-editor";
+import AlertsContext from "@/contexts/alerts";
+import {
+  AlertFieldVoieEnum,
+  AlertVoie,
+  AlertModelEnum,
+  AlertCodeEnum,
+} from "@/lib/alerts/alerts.types";
+import { AlertVoieDefinitions } from "@/lib/alerts/alerts.definitions";
+import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
+import { isAlertVoieNom } from "@/lib/alerts/utils/alerts-voies.utils";
+import AlertEditor from "./alert-editor";
 import styles from "./voie-editor.module.css";
 
 interface VoieEditorProps {
@@ -61,6 +72,7 @@ function VoieEditor({
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
+  const { reloadVoieAlerts } = useContext(AlertsContext);
 
   const onFormSubmit = useCallback(
     async (e) => {
@@ -103,7 +115,13 @@ function VoieEditor({
         const voie = await submit();
 
         refreshBALSync();
-        await reloadVoies();
+        const newVoies = await reloadVoies();
+        // RELOAD ALERTS
+        await reloadVoieAlerts(
+          newVoies.find(({ id }) => id === voie.id),
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
+
         reloadTiles();
 
         if (initialValue?.id === voie.id) {
@@ -132,6 +150,8 @@ function VoieEditor({
       reloadTiles,
       onSubmit,
       toaster,
+      reloadVoieAlerts,
+      baseLocale.settings?.ignoredAlertCodes,
     ]
   );
 
@@ -168,6 +188,13 @@ function VoieEditor({
             value={nom}
             onChange={onNomChange}
             validationMessage={getValidationMessage("voie_nom")}
+          />
+          <AlertEditor
+            value={nom}
+            setValue={onNomChange}
+            validation={computeVoieNomAlerts}
+            model={AlertModelEnum.VOIE}
+            field={AlertFieldVoieEnum.VOIE_NOM}
           />
 
           <RadioGroup
