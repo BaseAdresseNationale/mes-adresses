@@ -32,7 +32,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
   const { emails, reloadEmails } = useContext(TokenContext);
 
   const { reloadBaseLocale, voies } = useContext(BalDataContext);
-  const { reloadVoiesAlerts } = useContext(AlertsContext);
+  const { reloadVoiesAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
   const { pushToast } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
@@ -109,6 +109,7 @@ export function useBALSettings(baseLocale: BaseLocale) {
             },
           });
           await reloadVoiesAlerts(voies, ignoredAlertCodes);
+          await reloadNumerosAlerts(baseLocale.id, ignoredAlertCodes);
         }
         await reloadBaseLocale();
         pushToast({

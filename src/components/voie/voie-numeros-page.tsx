@@ -115,7 +115,7 @@ export function VoieNumerosPage() {
           <NumerosList
             commune={commune}
             token={token}
-            voieId={voie.id}
+            voie={voie}
             numeros={numeros}
             handleEditing={handleEditing}
           />

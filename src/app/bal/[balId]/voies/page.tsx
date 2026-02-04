@@ -220,7 +220,6 @@ export default function VoiesPage() {
       const numerosWarnings = Object.values(numerosAlerts)
         .flat()
         .filter((alert) => alert.voieId === voieId);
-
       return [...voieWarnings, ...numerosWarnings];
     },
     [voiesAlerts, numerosAlerts]
