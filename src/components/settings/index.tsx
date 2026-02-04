@@ -60,7 +60,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
   } = useBALSettings(baseLocale);
 
   return (
-    <Pane>
+    <Pane height="100%">
       <Pane
         flexShrink={0}
         elevation={0}
@@ -77,10 +77,12 @@ function Settings({ baseLocale, token }: SettingsProps) {
       </Pane>
       <Pane
         is="form"
+        position="relative"
         onSubmit={onSubmit}
         display="flex"
+        background="gray75"
+        minHeight="100%"
         flexDirection="column"
-        background="white"
         paddingX={16}
         marginY={1}
       >
@@ -120,7 +122,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
           <Label display="block" marginBottom={8}>
             Fonds de cartes
           </Label>
-          <Pane display="flex" gap={16} marginBottom={16}>
+          <Pane display="flex" gap={16}>
             {baseLocale.settings?.fondsDeCartes?.length > 0 && (
               <FondDeCarteList baseLocale={baseLocale} />
             )}
@@ -135,11 +137,24 @@ function Settings({ baseLocale, token }: SettingsProps) {
             </Button>
           </Pane>
         </Pane>
+        <Pane marginBottom={16}>
+          <Label display="block" marginBottom={8}>
+            Alertes de qualités
+          </Label>
+          <Pane display="flex" gap={16} marginBottom={16}>
+            <AlertsAccordion
+              ignoredAlertCodes={ignoredAlertCodes}
+              setIgnoredAlertCodes={setIgnoredAlertCodes}
+            />
+          </Pane>
+        </Pane>
         <Button
           height={40}
           type="submit"
           appearance="primary"
-          disabled={!nomHasChanged && !emailsHaveChanged}
+          disabled={
+            !nomHasChanged && !emailsHaveChanged && !ignoredAlertCodesChanged
+          }
           isLoading={isLoading}
           width="fit-content"
         >
