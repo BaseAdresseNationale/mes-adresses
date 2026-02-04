@@ -228,9 +228,9 @@ export default function ToponymesPage() {
               <TableRowNotifications
                 communeDeleguee={getCommuneDeleguee(toponyme.communeDeleguee)}
                 warning={
-                  toponyme.positions.length === 0
-                    ? "Ce toponyme n’a pas de position"
-                    : null
+                  toponyme.positions.length === 0 ? (
+                    <Text color="white">Ce toponyme n’a pas de position</Text>
+                  ) : null
                 }
                 certification={
                   toponyme.isAllCertified
