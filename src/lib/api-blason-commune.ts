@@ -17,17 +17,28 @@ export const getCommuneFlag = async (codeCommune: string): Promise<string> => {
     return getCommuneFlagFromBal(codeCommune);
   }
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ANNUAIRE_DES_COLLECTIVITES}/commune/logo/${codeCommune}`
-  );
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_ANNUAIRE_DES_COLLECTIVITES}/commune/logo/${codeCommune}`
+    );
 
-  if (!response.ok) {
+    const url = await response.text();
+
+    const isValidUrl =
+      url && (url.startsWith("http") || url.startsWith("data:image"));
+
+    if (!response.ok || !isValidUrl) {
+      return getCommuneFlagFromBal(codeCommune);
+    }
+
+    return url;
+  } catch (err) {
+    console.error(
+      "Error fetching commune flag from annuaire des collectivités",
+      err
+    );
     return getCommuneFlagFromBal(codeCommune);
   }
-
-  const url = await response.text();
-
-  return url;
 };
 
 export const getCommuneFlagFromBal = async (
