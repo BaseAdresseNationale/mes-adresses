@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { Client } from '../models/Client';
 import type { CreateClientDTO } from '../models/CreateClientDTO';
 

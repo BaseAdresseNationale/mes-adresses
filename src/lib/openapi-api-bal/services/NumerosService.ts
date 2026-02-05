@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { GenerateCertificatDTO } from '../models/GenerateCertificatDTO';
 import type { Numero } from '../models/Numero';
 import type { UpdateNumeroDTO } from '../models/UpdateNumeroDTO';

@@ -2,9 +2,8 @@ import { ExtendedBaseLocaleDTO, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
 import {
   AlertCodeVoieEnum,
   AlertCodeNumeroEnum,
-  AlertVoie,
-  AlertNumero,
   AlertModelEnum,
+  Alert,
 } from "@/lib/alerts/alerts.types";
 import WarningLink from "./alerts-warning/warning-link";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
@@ -13,7 +12,7 @@ import WarningVoieEmpty from "./alerts-warning/warning-voie-empty";
 interface TableVoieWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
   voie: ExtendedVoieDTO;
-  alerts: (AlertVoie | AlertNumero)[];
+  alerts: Alert[];
 }
 
 function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {

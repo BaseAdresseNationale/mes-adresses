@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
 import type { BaseLocaleWithHabilitationDTO } from '../models/BaseLocaleWithHabilitationDTO';

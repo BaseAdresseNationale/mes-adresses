@@ -67,10 +67,13 @@ export function AlertsContextProvider(props: ChildrenProps) {
 
   const getVoieAlerts = useCallback(
     (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
-      const alerts = [getVoieNomAlert(voie), getVoieEmptyAlert(voie)];
+      const alerts: Array<AlertVoie | undefined> = [
+        getVoieNomAlert(voie),
+        getVoieEmptyAlert(voie),
+      ];
       const filteredAlerts = alerts
-        .filter((alert) => alert !== undefined)
-        .filter((alert) =>
+        .filter((alert: AlertVoie | undefined) => alert !== undefined)
+        .filter((alert: AlertVoie) =>
           alert.codes.every((code) => !ignoredAlertCodes.includes(code))
         );
       return filteredAlerts;

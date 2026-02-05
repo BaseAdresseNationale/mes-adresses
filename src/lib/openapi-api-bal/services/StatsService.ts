@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { BaseLocale } from '../models/BaseLocale';
 import type { BasesLocalesCreationDTO } from '../models/BasesLocalesCreationDTO';
 import type { BasesLocalesStatusDTO } from '../models/BasesLocalesStatusDTO';

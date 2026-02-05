@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { CreateNumeroDTO } from '../models/CreateNumeroDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { Numero } from '../models/Numero';

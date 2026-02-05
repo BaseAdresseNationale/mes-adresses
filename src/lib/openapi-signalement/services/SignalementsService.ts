@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { ChangesRequested } from '../models/ChangesRequested';
 import type { CreateSignalementDTO } from '../models/CreateSignalementDTO';
 import type { PaginatedSignalementsDTO } from '../models/PaginatedSignalementsDTO';

@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
 import type { Numero } from '../models/Numero';
 import type { Toponyme } from '../models/Toponyme';

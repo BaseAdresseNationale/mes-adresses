@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do no edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { CommuneSettingsDTO } from '../models/CommuneSettingsDTO';
 import type { CommuneStatusDTO } from '../models/CommuneStatusDTO';
 import type { EnabledListDTO } from '../models/EnabledListDTO';

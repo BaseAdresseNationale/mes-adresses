@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { HabilitationDTO } from '../models/HabilitationDTO';
 import type { SendPinCodeDTO } from '../models/SendPinCodeDTO';
 import type { ValidatePinCodeDTO } from '../models/ValidatePinCodeDTO';

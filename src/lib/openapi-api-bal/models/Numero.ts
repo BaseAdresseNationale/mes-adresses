@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { BaseLocale } from './BaseLocale';
 import type { Position } from './Position';
 import type { Toponyme } from './Toponyme';

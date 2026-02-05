@@ -1,4 +1,11 @@
-import { useState, useCallback, useMemo, useContext } from "react";
+import {
+  useState,
+  useCallback,
+  useMemo,
+  useContext,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { sortBy } from "lodash";
 import {
   Pane,
@@ -62,6 +69,7 @@ interface NumerosListProps {
   commune: CommuneType;
   token?: string;
   voie: Voie;
+  setVoie: Dispatch<SetStateAction<Voie>>;
   numeros: Array<Numero>;
   handleEditing: (id?: string) => void;
 }
@@ -74,6 +82,7 @@ function NumerosList({
   commune,
   token = null,
   voie,
+  setVoie,
   numeros,
   handleEditing,
 }: NumerosListProps) {
@@ -173,22 +182,32 @@ function NumerosList({
       const numerosRestants = numeros.filter(
         (numero) => !deletedNumerosIds.includes(numero.id)
       );
-      (voie as ExtendedVoieDTO).nbNumeros = numerosRestants.length;
-      (voie as ExtendedVoieDTO).nbNumerosCertifies = numerosRestants.filter(
-        (numero) => numero.certifie
-      ).length;
-      (voie as ExtendedVoieDTO).isAllCertified =
-        numerosRestants.length ===
-        numerosRestants.filter((numero) => numero.certifie).length;
-      (voie as ExtendedVoieDTO).commentedNumeros = numerosRestants
-        .filter((numero) => numero.comment !== null)
-        .map((numero) => numero.id);
+      const newVoie: ExtendedVoieDTO = {
+        ...voie,
+        nbNumeros: numerosRestants.length,
+        nbNumerosCertifies: numerosRestants.filter((numero) => numero.certifie)
+          .length,
+        isAllCertified:
+          numerosRestants.length ===
+          numerosRestants.filter((numero) => numero.certifie).length,
+        commentedNumeros: numerosRestants
+          .filter((numero) => numero.comment !== null)
+          .map((numero) => numero.id),
+      };
+
+      setVoie(voie);
       await reloadVoieAlerts(
-        voie as ExtendedVoieDTO,
+        newVoie,
         (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
       );
     },
-    [baseLocale.settings?.ignoredAlertCodes, numeros, reloadVoieAlerts, voie]
+    [
+      baseLocale.settings?.ignoredAlertCodes,
+      numeros,
+      reloadVoieAlerts,
+      setVoie,
+      voie,
+    ]
   );
 
   const onRemove = useCallback(

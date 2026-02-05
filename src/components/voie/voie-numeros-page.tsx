@@ -116,6 +116,7 @@ export function VoieNumerosPage() {
             commune={commune}
             token={token}
             voie={voie}
+            setVoie={setVoie}
             numeros={numeros}
             handleEditing={handleEditing}
           />
