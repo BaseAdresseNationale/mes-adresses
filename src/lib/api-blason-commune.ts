@@ -1,4 +1,4 @@
-const BASE_URL =
+const BAL_BLASON_BUCKET_URL =
   "https://base-adresse-locale-prod-blasons-communes.s3.fr-par.scw.cloud";
 
 const DEFAULT_URL_DISTRICT_FLAG = "/static/images/commune-default-flag.svg";
@@ -13,7 +13,38 @@ export const getCommuneFlagProxy = async (
 };
 
 export const getCommuneFlag = async (codeCommune: string): Promise<string> => {
-  const url = `${BASE_URL}/${codeCommune}.svg`;
+  if (!process.env.NEXT_PUBLIC_API_ANNUAIRE_DES_COLLECTIVITES) {
+    return getCommuneFlagFromBal(codeCommune);
+  }
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_ANNUAIRE_DES_COLLECTIVITES}/commune/logo/${codeCommune}`
+    );
+
+    const url = await response.text();
+
+    const isValidUrl =
+      url && (url.startsWith("http") || url.startsWith("data:image"));
+
+    if (!response.ok || !isValidUrl) {
+      return getCommuneFlagFromBal(codeCommune);
+    }
+
+    return url;
+  } catch (err) {
+    console.error(
+      "Error fetching commune flag from annuaire des collectivités",
+      err
+    );
+    return getCommuneFlagFromBal(codeCommune);
+  }
+};
+
+export const getCommuneFlagFromBal = async (
+  codeCommune: string
+): Promise<string> => {
+  const url = `${BAL_BLASON_BUCKET_URL}/${codeCommune}.svg`;
 
   const response = await fetch(url, {
     method: "HEAD",
