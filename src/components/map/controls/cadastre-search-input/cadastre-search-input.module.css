@@ -38,7 +38,8 @@
     border-bottom: 1px solid #e0e0e0;
   }
 
-  .parcelleBtn:hover {
+  .parcelleBtn:hover,
+  .parcelleBtn.selected {
     background-color: #f0f0f0;
   }
 }

@@ -22,9 +22,11 @@ function CadastreSearchInput({
 
   const [search, setSearch] = useState("");
   const [hasFocus, setHasFocus] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
     setFilteredParcelles(search);
+    setSelectedIndex(-1);
   }, [search, setFilteredParcelles]);
 
   const handleSelectParcelle = (parcelle: ParcelleFeature) => {
@@ -49,6 +51,36 @@ function CadastreSearchInput({
 
     setHasFocus(false);
     setSearch(parcelle.id);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!search || !hasFocus || filteredParcelles.length === 0) {
+      return;
+    }
+
+    const maxIndex = Math.min(filteredParcelles.length, 10) - 1;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev < maxIndex ? prev + 1 : prev));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (selectedIndex >= 0 && selectedIndex <= maxIndex) {
+          handleSelectParcelle(filteredParcelles[selectedIndex]);
+        }
+        break;
+      case "Escape":
+        e.preventDefault();
+        setHasFocus(false);
+        setSelectedIndex(-1);
+        break;
+    }
   };
 
   return (
@@ -91,10 +123,13 @@ function CadastreSearchInput({
               filteredParcelles.slice(0, 10).map((parcelle) => (
                 <button
                   key={parcelle.id}
-                  className={style.parcelleBtn}
+                  className={`${style.parcelleBtn} ${
+                    selectedIndex === index ? style.selected : ""
+                  }`}
                   onClick={() => handleSelectParcelle(parcelle)}
                   role="option"
                   aria-selected={search === parcelle.id}
+                  tabIndex={-1}
                 >
                   {parcelle.id}
                 </button>
@@ -112,6 +147,7 @@ function CadastreSearchInput({
         aria-expanded={hasFocus}
         aria-controls="cadastre-search-results"
         aria-autocomplete="list"
+        onKeyDown={handleKeyDown}
       />
     </Pane>
   );
