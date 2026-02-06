@@ -120,7 +120,7 @@ function CadastreSearchInput({
                 </Text>
               </Pane>
             ) : (
-              filteredParcelles.slice(0, 10).map((parcelle) => (
+              filteredParcelles.slice(0, 10).map((parcelle, index) => (
                 <button
                   key={parcelle.id}
                   className={`${style.parcelleBtn} ${
