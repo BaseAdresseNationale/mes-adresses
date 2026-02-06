@@ -28,6 +28,10 @@ function CadastreSearchInput({
   }, [search, setFilteredParcelles]);
 
   const handleSelectParcelle = (parcelle: ParcelleFeature) => {
+    if (!map) {
+      return;
+    }
+
     const parcelleBbox = bbox(parcelle.geometry as AllGeoJSON);
     const center = [
       (parcelleBbox[0] + parcelleBbox[2]) / 2,
@@ -62,6 +66,7 @@ function CadastreSearchInput({
         <>
           <Pane className={style.overlay} onClick={() => setHasFocus(false)} />
           <Pane
+            id="cadastre-search-results"
             overflow="hidden"
             position="absolute"
             bottom={0}
@@ -74,6 +79,7 @@ function CadastreSearchInput({
             borderTopLeftRadius={3}
             borderTopRightRadius={3}
             boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
+            role="listbox"
           >
             {filteredParcelles.length === 0 ? (
               <Pane padding={8}>
@@ -82,12 +88,13 @@ function CadastreSearchInput({
                 </Text>
               </Pane>
             ) : (
-              filteredParcelles.slice(0, 10).map((parcelle, index) => (
+              filteredParcelles.slice(0, 10).map((parcelle) => (
                 <button
                   key={parcelle.id}
                   className={style.parcelleBtn}
                   onClick={() => handleSelectParcelle(parcelle)}
-                  tabIndex={index}
+                  role="option"
+                  aria-selected={search === parcelle.id}
                 >
                   {parcelle.id}
                 </button>
@@ -102,6 +109,9 @@ function CadastreSearchInput({
         onChange={(e) => setSearch(e.target.value)}
         value={search}
         onFocus={() => setHasFocus(true)}
+        aria-expanded={hasFocus}
+        aria-controls="cadastre-search-results"
+        aria-autocomplete="list"
       />
     </Pane>
   );

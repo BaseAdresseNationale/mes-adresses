@@ -13,11 +13,11 @@ export type ParcelleFeature = {
   };
 };
 
-export function useCadastreSearch(codeCommune: string) {
-  if (!process.env.NEXT_PUBLIC_API_CADASTRE) {
-    throw new Error("API Cadastre URL is not defined");
-  }
+const API_CADASTRE_URL =
+  process.env.NEXT_PUBLIC_API_CADASTRE ||
+  "https://cadastre.data.gouv.fr/bundler/cadastre-etalab";
 
+export function useCadastreSearch(codeCommune: string) {
   const [parcelles, setParcelles] = useState<ParcelleFeature[]>([]);
   const [filteredParcelles, setFilteredParcelles] = useFuse(
     parcelles,
@@ -29,17 +29,18 @@ export function useCadastreSearch(codeCommune: string) {
     const fetchParcelles = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_CADASTRE}/communes/${codeCommune}/geojson/parcelles`
+          `${API_CADASTRE_URL}/communes/${codeCommune}/geojson/parcelles`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch parcelles");
         }
         const data = await response.json();
+        const features = Array.isArray(data.features) ? data.features : [];
         setParcelles(
-          data.features.map((feature: ParcelleFeature) => ({
+          features.map((feature: ParcelleFeature) => ({
             id: feature.id,
             geometry: feature.geometry,
-          })) || []
+          }))
         );
       } catch (error) {
         console.error("Error fetching parcelles:", error);
