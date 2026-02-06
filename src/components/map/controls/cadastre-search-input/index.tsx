@@ -141,7 +141,10 @@ function CadastreSearchInput({
       <SearchInput
         width="100%"
         placeholder="Rechercher une parcelle"
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => {
+          setHasFocus(true);
+          setSearch(e.target.value);
+        }}
         value={search}
         onFocus={() => setHasFocus(true)}
         aria-expanded={hasFocus}
