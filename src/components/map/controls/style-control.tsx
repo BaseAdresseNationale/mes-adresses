@@ -92,7 +92,7 @@ function StyleControl({
           selected={style}
           onSelect={(item) => onSelect(item.value as MapStyle | string)}
         >
-          <Button className="map-style-button" style={{ borderRadius: " 3px" }}>
+          <Button className="map-style-button" style={{ borderRadius: "3px" }}>
             <LayersIcon style={{ marginRight: ".5em", borderRadius: "3px" }} />
             <div className="map-style-label">
               {availableStyles.find(({ value }) => value === style)?.label}
