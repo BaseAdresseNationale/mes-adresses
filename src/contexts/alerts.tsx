@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from "react";
 import { ChildrenProps } from "@/types/context";
+import { omit } from "lodash";
 import {
   AlertCodeEnum,
   AlertVoie,
@@ -41,7 +42,6 @@ export function AlertsContextProvider(props: ChildrenProps) {
   const [numerosAlerts, setNumerosAlerts] = useState<
     Record<string, AlertNumero[]>
   >({});
-
   const reloadNumerosAlerts = useCallback(
     async (balId: string, ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const balNumeros = await BasesLocalesService.findNumeros(
@@ -84,7 +84,11 @@ export function AlertsContextProvider(props: ChildrenProps) {
   const reloadVoieAlerts = useCallback(
     (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const alerts = getVoieAlerts(voie, ignoredAlertCodes);
-      setVoiesAlerts((prev) => ({ ...prev, [voie.id]: alerts }));
+      if (alert.length <= 0) {
+        setVoiesAlerts((prev) => omit(prev, voie.id));
+      } else {
+        setVoiesAlerts((prev) => ({ ...prev, [voie.id]: alerts }));
+      }
     },
     [getVoieAlerts]
   );

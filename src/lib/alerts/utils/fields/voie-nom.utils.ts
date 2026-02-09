@@ -62,6 +62,7 @@ const STOP_WORDS = [
   "a",
   "à",
   "hui",
+  "en",
 ];
 
 const ALWAYS_UPPER = [
