@@ -185,7 +185,7 @@ function getWords(str: string, lowerCase: boolean = false): string[] {
       // SUPPRIME CE QUI EST ENTRE PARENTHESE
       .replace(/\([^()]*\)/g, "")
       // SUPPRIME LA PONCTUATION
-      .replace(/[,/#!$%^&*;:{}=\~()"?«»…]/g, "")
+      .replace(/[,/#!$%^&*;:{}=\~()"?«»…@]/g, "")
       // RAJOUTE UN ESPACE DERRIERE LES '
       .replace(/('|’)\s*/g, "’ ")
       // SUPPRIME LE POINT A LA FIN
@@ -220,7 +220,7 @@ function computeCommuneErrors(value: string): AlertCodeVoieEnum[] {
   const codes: AlertCodeVoieEnum[] = [];
 
   // SI CARACTERE INVALIDE
-  if (value.match(/[�_,/#!$%^&*;:{}=\~"?«»…]/g)) {
+  if (value.match(/[�_,/#!$%^&*;:{}=\~"?«»…@]/g)) {
     codes.push(AlertCodeVoieEnum.CARACTERE_INVALIDE);
   }
   // SI CELA COMMENCE PAR ESPACE ' ou -
