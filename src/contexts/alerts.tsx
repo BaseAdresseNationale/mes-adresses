@@ -84,7 +84,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
   const reloadVoieAlerts = useCallback(
     (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const alerts = getVoieAlerts(voie, ignoredAlertCodes);
-      if (alert.length <= 0) {
+      if (alerts.length <= 0) {
         setVoiesAlerts((prev) => omit(prev, voie.id));
       } else {
         setVoiesAlerts((prev) => ({ ...prev, [voie.id]: alerts }));

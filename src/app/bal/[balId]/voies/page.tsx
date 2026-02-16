@@ -19,6 +19,9 @@ import {
   TrashIcon,
   Popover,
   RadioGroup,
+  Button,
+  LightbulbIcon,
+  defaultTheme,
 } from "evergreen-ui";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import NextLink from "next/link";
@@ -63,6 +66,9 @@ import MatomoTrackingContext, {
 import { AlertNumero, AlertVoie } from "@/lib/alerts/alerts.types";
 import AlertsContext from "@/contexts/alerts";
 import TableVoieWarning from "@/components/table-row/table-voie-warning";
+import AlertsBatchProcessor, {
+  AlertBatchItem,
+} from "@/components/bal/alerts-batch-processor";
 
 const options = [
   { label: "Tous", value: "" },
@@ -104,6 +110,11 @@ export default function VoiesPage() {
     SearchPaginationContext
   );
   const { voiesAlerts, numerosAlerts } = useContext(AlertsContext);
+  const [isBatchMode, setIsBatchMode] = useState(false);
+
+  useEffect(() => {
+    setIsBatchMode(false);
+  }, [searchParams]);
 
   useEffect(() => {
     setTileLayersMode(TilesLayerMode.VOIE);
@@ -211,7 +222,45 @@ export default function VoiesPage() {
     return items;
   }, [filtered, filter, getVoieAlerts]);
 
+  const batchItems: AlertBatchItem[] = useMemo(() => {
+    const allSorted = sortBy(
+      filtered.filter(({ id }) => getVoieAlerts(id).length > 0),
+      (v) => normalizeSort(v.nom)
+    );
+    return allSorted.flatMap((voie) => {
+      const voieWarnings = (voiesAlerts[voie.id] || []).map((alert) => ({
+        voie,
+        alert,
+      }));
+      const numeroWarnings = Object.entries(numerosAlerts)
+        .filter(([, alerts]) => alerts.some((a) => a.voieId === voie.id))
+        .flatMap(([numeroId, alerts]) =>
+          alerts
+            .filter((a) => a.voieId === voie.id)
+            .map((alert) => ({ voie, alert, numeroId }))
+        );
+      return [...voieWarnings, ...numeroWarnings];
+    });
+  }, [filtered, getVoieAlerts, voiesAlerts, numerosAlerts]);
+
   const isEditingEnabled = !isEditing && Boolean(token);
+
+  const handleBatchSuggestionModeFinish = useCallback(() => {
+    if (batchItems?.length === 0) {
+      handleFilter("");
+    }
+    setIsBatchMode(false);
+  }, [batchItems, handleFilter, setIsBatchMode]);
+
+  if (isBatchMode) {
+    return (
+      <AlertsBatchProcessor
+        items={batchItems}
+        onClose={() => setIsBatchMode(false)}
+        onFinish={handleBatchSuggestionModeFinish}
+      />
+    );
+  }
 
   return (
     <>
@@ -314,6 +363,27 @@ export default function VoiesPage() {
             />
           </Table.HeaderCell>
         </Table.Head>
+
+        {filter === "with-suggestions" && batchItems.length > 0 && token && (
+          <Pane
+            padding={8}
+            background={defaultTheme.colors.purpleTint}
+            borderBottom="muted"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Button
+              iconBefore={LightbulbIcon}
+              appearance="primary"
+              onClick={() => setIsBatchMode(true)}
+              style={{ backgroundColor: defaultTheme.colors.purple600 }}
+            >
+              Traiter les {batchItems.length} suggestion
+              {batchItems.length > 1 ? "s" : ""}
+            </Button>
+          </Pane>
+        )}
 
         {filtered.length === 0 && (
           <Table.Row>
