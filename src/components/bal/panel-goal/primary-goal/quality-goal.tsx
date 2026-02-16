@@ -33,7 +33,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
 
   const goToAlerts = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    void router.push(`/bal/${baseLocale.id}/voies?filters=alerts`);
+    void router.push(`/bal/${baseLocale.id}/voies?filter=with-suggestions`);
   };
 
   const isAllCorrected = Object.values(voiesAlerts).length === 0;

@@ -12,17 +12,13 @@ import {
   IconButton,
   FilterIcon,
   FilterRemoveIcon,
-  Button,
   Menu,
   SendToMapIcon,
   EditIcon,
   EndorsedIcon,
   TrashIcon,
   Popover,
-  Checkbox,
-  WarningSignIcon,
-  LightbulbIcon,
-  defaultTheme,
+  RadioGroup,
 } from "evergreen-ui";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import NextLink from "next/link";
@@ -37,7 +33,6 @@ import DeleteWarning from "@/components/delete-warning";
 import {
   BaseLocale,
   ExtendedVoieDTO,
-  Toponyme,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
@@ -69,6 +64,12 @@ import { AlertNumero, AlertVoie } from "@/lib/alerts/alerts.types";
 import AlertsContext from "@/contexts/alerts";
 import TableVoieWarning from "@/components/table-row/table-voie-warning";
 
+const options = [
+  { label: "Tous", value: "" },
+  { label: "Avec suggestions", value: "with-suggestions" },
+  { label: "Sans certification", value: "without-certification" },
+];
+
 export default function VoiesPage() {
   const { token } = useContext(TokenContext);
   const [toRemove, setToRemove] = useState(null);
@@ -92,11 +93,9 @@ export default function VoiesPage() {
     useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [showUncertify, setShowUncertify] = useState<boolean>(
-    searchParams.get("filters")?.includes("uncertified") || false
-  );
-  const [showAlerts, setShowAlerts] = useState<boolean>(
-    searchParams.get("filters")?.includes("alerts") || false
+
+  const [filter, setFilter] = useState<string>(
+    searchParams.get("filter") || ""
   );
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
@@ -119,41 +118,13 @@ export default function VoiesPage() {
     };
   }, [setBreadcrumbs, scrollAndHighlightLastSelectedItem]);
 
-  const changeQueryParamsFilters = useCallback(
-    (key: string, value: boolean) => {
-      const params = new URLSearchParams(searchParams.toString());
-      const currentFilters = params.getAll("filters");
-
-      params.delete("filters");
-
-      const newFilters = value
-        ? currentFilters.includes(key)
-          ? currentFilters
-          : [...currentFilters, key]
-        : currentFilters.filter((f) => f !== key);
-
-      newFilters.forEach((f) => params.append("filters", f));
-
-      const query = params.toString();
-      router.push(`${pathname}${query ? `?${query}` : ""}`);
+  const handleFilter = useCallback(
+    (value: string) => {
+      const query = value ? `?filter=${value}` : "";
+      router.push(`${pathname}${query}`);
+      setFilter(value);
     },
-    [searchParams, pathname, router]
-  );
-
-  const changeUncertified = useCallback(
-    (value: boolean) => {
-      setShowUncertify(value);
-      changeQueryParamsFilters("uncertified", value);
-    },
-    [changeQueryParamsFilters]
-  );
-
-  const changeAlerts = useCallback(
-    (value: boolean) => {
-      setShowAlerts(value);
-      changeQueryParamsFilters("alerts", value);
-    },
-    [changeQueryParamsFilters]
+    [setFilter, router, pathname]
   );
 
   const handleRemove = async () => {
@@ -231,14 +202,14 @@ export default function VoiesPage() {
     let items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
       normalizeSort(v.nom)
     );
-    if (showUncertify) {
+    if (filter === "without-certification") {
       items = items.filter(({ isAllCertified }) => !isAllCertified);
     }
-    if (showAlerts) {
+    if (filter === "with-suggestions") {
       items = items.filter(({ id }) => getVoieAlerts(id).length > 0);
     }
     return items;
-  }, [filtered, showUncertify, showAlerts, getVoieAlerts]);
+  }, [filtered, filter, getVoieAlerts]);
 
   const isEditingEnabled = !isEditing && Boolean(token);
 
@@ -314,34 +285,17 @@ export default function VoiesPage() {
           <Table.HeaderCell flex="unset">
             <Popover
               content={
-                <Pane paddingX={16}>
-                  <Checkbox
-                    label={
-                      <Text>
-                        Non certifiées{" "}
-                        <EndorsedIcon style={{ verticalAlign: "text-top" }} />
-                      </Text>
-                    }
-                    checked={showUncertify}
-                    onChange={() => changeUncertified(!showUncertify)}
-                  />
-                  <Checkbox
-                    label={
-                      <Text>
-                        Avec suggestions
-                        <LightbulbIcon style={{ verticalAlign: "text-top" }} />
-                      </Text>
-                    }
-                    checked={showAlerts}
-                    onChange={() => changeAlerts(!showAlerts)}
-                  />
-                </Pane>
+                <RadioGroup
+                  padding={16}
+                  label="Filtre"
+                  value={filter}
+                  options={options}
+                  onChange={(event) => handleFilter(event.target.value)}
+                />
               }
             >
               <IconButton
-                icon={
-                  showUncertify || showAlerts ? FilterRemoveIcon : FilterIcon
-                }
+                icon={filter ? FilterRemoveIcon : FilterIcon}
                 title="filtres voies"
                 size="small"
                 marginRight={16}
