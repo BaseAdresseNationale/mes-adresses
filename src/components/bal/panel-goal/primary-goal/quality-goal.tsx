@@ -6,6 +6,8 @@ import {
   Button,
   EyeOpenIcon,
   defaultTheme,
+  Link,
+  MenuIcon,
 } from "evergreen-ui";
 
 import { AccordionCard } from "@/components/accordion-card";
@@ -15,12 +17,16 @@ import Counter from "@/components/counter";
 import AlertsContext from "@/contexts/alerts";
 import { useRouter } from "next/navigation";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
+import LayoutContext from "@/contexts/layout";
+import DrawerContext from "@/contexts/drawer";
 
 interface QualityGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
 }
 
 function QualityGoal({ baseLocale }: QualityGoalProps) {
+  const { isMobile } = useContext(LayoutContext);
+  const { setDrawerDisplayed } = useContext(DrawerContext);
   const [isActive, setIsActive] = useState(false);
   const { voiesAlerts } = useContext(AlertsContext);
   const router = useRouter();
@@ -50,7 +56,9 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
                 title="Publication"
                 completed={isAllCorrected}
               />
-              <Heading color={isAllCorrected && "#317159"}>Qualité</Heading>
+              <Heading color={isAllCorrected && "#317159"}>
+                Fiabilisation
+              </Heading>
             </Pane>
 
             {Object.values(voiesAlerts).length > 0 ? (
@@ -83,25 +91,30 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
         onClick={() => setIsActive(!isActive)}
         caretPosition="start"
       >
-        <Pane padding={8}>
-          <Heading size={400}>Qualité</Heading>
+        <Pane padding={8} marginBottom={16}>
           <Text>
-            Pour garantir la qualité de votre Base Adresse Locale, il est{" "}
-            <u>important de corriger les alertes</u>.
+            Pour vous aider dans la fiabilisation des adresses, profitez de
+            suggestions d&apos;améliorations en un clic.
             <br />
             <br />
-            Les alertes sont des indicateurs de qualité de votre Base Adresse
-            Locale. Elles sont classées en erreurs et avertissements.
-            <br />
-            Pour garantir la qualité de votre Base Adresse Locale, il est
-            important de corriger les alertes.
-            <br />
-            <br />
-            Les erreurs sont des alertes qui doivent être corrigées avant la
-            publication de votre Base Adresse Locale.
-            <br />
-            Les avertissements sont des alertes qui peuvent être corrigées après
-            la publication de votre Base Adresse Locale.
+            Ces suggestions sont tirées du{" "}
+            <Link
+              target="_blank"
+              href={`$https://doc.adresse.data.gouv.fr/docs/bonnes-pratiques/a-propos-du-guide-des-bonnes-pratiques`}
+            >
+              Guide des Bonnes Pratiques
+            </Link>{" "}
+            et paramétrables depuis le{" "}
+            <Button
+              onClick={() => setDrawerDisplayed(true)}
+              {...(!isMobile && {
+                iconAfter: MenuIcon,
+                marginRight: 16,
+                height: 24,
+              })}
+            >
+              {isMobile ? <MenuIcon /> : "Menu"}
+            </Button>
           </Text>
         </Pane>
       </AccordionCard>
