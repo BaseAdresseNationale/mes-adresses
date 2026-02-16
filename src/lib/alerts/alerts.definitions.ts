@@ -19,6 +19,7 @@ export const AlertVoieDefinitions: Record<AlertCodeVoieEnum, string> = {
     "Le nom de la voie contient une abréviation invalide",
   [AlertCodeVoieEnum.CASSE_INCORRECTE]:
     "Le nom de la voie contient une casse incorrecte",
+  [AlertCodeVoieEnum.LAKE_OF_ACCENT]: "Manque un ou plusieurs accents",
   [AlertCodeVoieEnum.VOIE_EMPTY]: "La voie n'a pas de numéro",
 };
 

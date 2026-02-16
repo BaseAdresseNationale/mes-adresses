@@ -75,7 +75,10 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
 
                 <Button
                   width="100%"
-                  appearance="primary"
+                  style={{
+                    backgroundColor: defaultTheme.colors.purple600,
+                    color: "white",
+                  }}
                   iconAfter={EyeOpenIcon}
                   title="Voir les alertes"
                   onClick={(e) => goToAlerts(e)}

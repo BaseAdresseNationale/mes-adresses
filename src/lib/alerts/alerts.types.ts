@@ -15,6 +15,7 @@ export enum AlertCodeVoieEnum {
   BAD_MULTI_WORD_RUE = "bad_multi_word_rue",
   ABBREVIATION_INVALID = "abbreviation_invalid",
   CASSE_INCORRECTE = "casse_incorrecte",
+  LAKE_OF_ACCENT = "lake_of_accent",
   VOIE_EMPTY = "voie_empty",
 }
 

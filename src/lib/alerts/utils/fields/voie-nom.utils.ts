@@ -6,6 +6,10 @@ const DIT_WORD = "dit";
 
 const LIEU_DIT_WORDS = [`${LIEU_WORD}${DIT_WORD}`, `${LIEU_WORD}-${DIT_WORD}`];
 
+const VOIE_WORD_WITH_ACCENT = {
+  allee: "allée",
+};
+
 const EXPAND_FIRST_WORD_TABLE = {
   pl: "place",
   av: "avenue",
@@ -14,7 +18,7 @@ const EXPAND_FIRST_WORD_TABLE = {
   che: "chemin",
   chem: "chemin",
   rte: "route",
-  all: "allee",
+  all: "allée",
   pas: "passage",
   vla: "villa",
   imp: "impasse",
@@ -27,7 +31,7 @@ const EXPAND_FIRST_WORD_TABLE = {
   r: "rue",
   rle: "ruelle",
   car: "carrefour",
-  mte: "montee",
+  mte: "montée",
   ptte: "placette",
   str: "sentier",
   tsse: "terrasse",
@@ -131,6 +135,15 @@ function fixCapitalize(words: string[]): string[] {
   );
 }
 
+function fixAccent(words: string[]): string[] {
+  return words.map((w) => {
+    if (Object.keys(VOIE_WORD_WITH_ACCENT).includes(w)) {
+      return VOIE_WORD_WITH_ACCENT[w];
+    }
+    return w;
+  });
+}
+
 function fixAbbreviation(words: string[]): string[] {
   return words.map((w, i) => {
     if (i !== 0) {
@@ -207,6 +220,7 @@ export function remediationVoieNom(str: string): string {
   words = fixMultiWordRue(words);
   words = fixWordLieuDit(words);
   words = fixAbbreviation(words);
+  words = fixAccent(words);
   words = fixCapitalize(words);
   return capitalize(
     words
@@ -273,6 +287,9 @@ function computeSpecificWordsAndAbbreviationErrors(
     )
   ) {
     codes.push(AlertCodeVoieEnum.ABBREVIATION_INVALID);
+  }
+  if (lowerWords.some((w) => Object.keys(VOIE_WORD_WITH_ACCENT).includes(w))) {
+    codes.push(AlertCodeVoieEnum.LAKE_OF_ACCENT);
   }
   return codes;
 }
