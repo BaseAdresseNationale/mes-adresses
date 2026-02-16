@@ -3,8 +3,8 @@ import { AlertCodeNumeroEnum, AlertCodeVoieEnum } from "./alerts.types";
 export const AlertVoieDefinitions: Record<AlertCodeVoieEnum, string> = {
   [AlertCodeVoieEnum.CARACTERE_INVALIDE]:
     "Le nom de la voie contient un caractère invalide",
-  [AlertCodeVoieEnum.CARACTERE_INVALIDE_START]:
-    "Le nom de la voie commence par un caractère invalide",
+  [AlertCodeVoieEnum.CARACTERE_INVALIDE_START_OR_END]:
+    "Le nom de la voie commence ou finit par un caractère invalide",
   [AlertCodeVoieEnum.CARACTERE_INVALIDE_END]:
     "Le nom de la voie finit par un caractère invalide",
   [AlertCodeVoieEnum.NO_WORDS_IN_PARENTHESES]:

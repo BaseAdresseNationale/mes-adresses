@@ -225,7 +225,7 @@ function computeCommuneErrors(value: string): AlertCodeVoieEnum[] {
   }
   // SI CELA COMMENCE PAR ESPACE ' ou -
   if (trim(value, " '-") !== value) {
-    codes.push(AlertCodeVoieEnum.CARACTERE_INVALIDE_START);
+    codes.push(AlertCodeVoieEnum.CARACTERE_INVALIDE_START_OR_END);
   }
   // SI CELA FINI PAR UN POINT
   if (value.match(/\.$/)) {

@@ -7,7 +7,7 @@ export enum AlertModelEnum {
 // CODE
 export enum AlertCodeVoieEnum {
   CARACTERE_INVALIDE = "caractere_invalide",
-  CARACTERE_INVALIDE_START = "caractere_invalide_start",
+  CARACTERE_INVALIDE_START_OR_END = "caractere_invalide_start_or_end",
   CARACTERE_INVALIDE_END = "caractere_invalide_end",
   NO_WORDS_IN_PARENTHESES = "no_words_in_parentheses",
   MULTI_SPACE_CARACTERE = "multi_space_caractere",
