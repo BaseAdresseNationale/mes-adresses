@@ -292,13 +292,6 @@ export function computeVoieNomAlerts(
 ): [codes: AlertCodeVoieEnum[], remediation?: string] {
   const codes: AlertCodeVoieEnum[] = [];
 
-  // SI CELA FAIT MOINS DE 3 OU PLUS QUE 200 CARACTERES
-  if (value.length < 3) {
-    return [[AlertCodeVoieEnum.TOO_SHORT]];
-  } else if (value.length > 200) {
-    return [[AlertCodeVoieEnum.TOO_LONG]];
-  }
-
   const communeErrors = computeCommuneErrors(value);
   codes.push(...communeErrors);
 
