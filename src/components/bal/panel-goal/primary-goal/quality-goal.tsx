@@ -68,9 +68,9 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
                 alignItems="center"
               >
                 <Counter
-                  label="Avertissements détectés"
+                  label="Suggestions proposé"
                   value={Object.values(voiesAlerts).length}
-                  color="orange"
+                  color={defaultTheme.colors.purple600}
                 />
 
                 <Button
@@ -80,7 +80,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
                   title="Voir les alertes"
                   onClick={(e) => goToAlerts(e)}
                 >
-                  Voir les alertes
+                  Voir les suggestions
                 </Button>
               </Pane>
             ) : null}

@@ -103,11 +103,6 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
       />
       <>
         <Pane marginBottom={8}>
-          <WarningSignIcon
-            color="white"
-            style={{ verticalAlign: "middle" }}
-            marginRight={4}
-          />
           <Text color="white">Cette voie ne contient aucun numéro</Text>
         </Pane>
         <Button

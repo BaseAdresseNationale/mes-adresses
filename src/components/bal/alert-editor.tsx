@@ -102,7 +102,8 @@ function AlertEditor({
     <>
       {alert && (
         <AlertEvergreen
-          intent="warning"
+          background={defaultTheme.colors.purpleTint}
+          borderColor={defaultTheme.colors.purple600}
           marginTop={8}
           hasIcon={false}
           padding={8}
@@ -110,14 +111,14 @@ function AlertEditor({
           {hasDefinition ? (
             <UnorderedList>
               {alertDefinition.map((def) => (
-                <ListItem key={def} color={defaultTheme.colors.yellow800}>
+                <ListItem key={def} color={defaultTheme.colors.purple600}>
                   {def}
                 </ListItem>
               ))}
             </UnorderedList>
           ) : null}
           {alert.remediation && (
-            <Text color={defaultTheme.colors.yellow800}>
+            <Text color={defaultTheme.colors.purple600}>
               Corriger en
               <Button
                 marginLeft={8}

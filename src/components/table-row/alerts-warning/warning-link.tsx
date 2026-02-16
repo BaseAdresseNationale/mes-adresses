@@ -10,15 +10,10 @@ function WarningLink({ title, url }: WarningLinkProps) {
   return (
     <>
       <Pane marginBottom={8}>
-        <WarningSignIcon
-          color="white"
-          style={{ verticalAlign: "middle" }}
-          marginRight={4}
-        />
         <Text color="white">{title}</Text>
       </Pane>
       <Button is={NextLink} href={url} title="Éditer la voie" size="small">
-        Corriger
+        Améliorer
       </Button>
     </>
   );

@@ -26,7 +26,7 @@ function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
               <>
                 {!alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) ? (
                   <WarningLink
-                    title="Le nom de la voie est incorrect"
+                    title="Suggestion sur le nom de la voie"
                     url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
                   />
                 ) : null}
@@ -40,7 +40,7 @@ function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
                   AlertCodeNumeroEnum.SUFFIXE_CARACTERE_INVALIDE
                 ) ? (
                   <WarningLink
-                    title="Un ou plusieurs numéros ont des alertes"
+                    title="Suggestion sur les numéros de la voie"
                     url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`}
                   />
                 ) : null}

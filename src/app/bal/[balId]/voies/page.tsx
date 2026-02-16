@@ -21,6 +21,8 @@ import {
   Popover,
   Checkbox,
   WarningSignIcon,
+  LightbulbIcon,
+  defaultTheme,
 } from "evergreen-ui";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import NextLink from "next/link";
@@ -326,10 +328,8 @@ export default function VoiesPage() {
                   <Checkbox
                     label={
                       <Text>
-                        Avec alertes{" "}
-                        <WarningSignIcon
-                          style={{ verticalAlign: "text-top" }}
-                        />
+                        Avec suggestions
+                        <LightbulbIcon style={{ verticalAlign: "text-top" }} />
                       </Text>
                     }
                     checked={showAlerts}
