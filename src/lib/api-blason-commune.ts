@@ -24,8 +24,11 @@ export const getCommuneFlag = async (codeCommune: string): Promise<string> => {
 
     const url = await response.text();
 
+    // Check if the URL is valid and does not point to Wikimedia Commons (to avoid discrepancies between the logo displayed on mes-adresses and the one one the generated documents)
     const isValidUrl =
-      url && (url.startsWith("http") || url.startsWith("data:image"));
+      url &&
+      (url.startsWith("http") || url.startsWith("data:image")) &&
+      !url.includes("commons.wikimedia.org");
 
     if (!response.ok || !isValidUrl) {
       return getCommuneFlagFromBal(codeCommune);
