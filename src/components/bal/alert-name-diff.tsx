@@ -23,12 +23,7 @@ function AlertNameDiff({
         <Text size={300} color="muted">
           Actuel :
         </Text>
-        <Pane
-          marginTop={4}
-          padding={8}
-          background="tint1"
-          borderRadius={4}
-        >
+        <Pane marginTop={4} padding={8} background="tint1" borderRadius={4}>
           <Text>
             {diffStr.map((diff, index) => {
               const [operation, text] = diff;
@@ -57,12 +52,7 @@ function AlertNameDiff({
         <Text size={300} color="muted">
           Suggestion :
         </Text>
-        <Pane
-          marginTop={4}
-          padding={8}
-          background="tint1"
-          borderRadius={4}
-        >
+        <Pane marginTop={4} padding={8} background="tint1" borderRadius={4}>
           <Text>
             {diffStr.map((diff, index) => {
               const [operation, text] = diff;
