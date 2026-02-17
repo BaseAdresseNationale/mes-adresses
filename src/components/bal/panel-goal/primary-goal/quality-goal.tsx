@@ -84,7 +84,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
                 alignItems="center"
               >
                 <Counter
-                  label="Suggestions proposé"
+                  label={`Suggestion${nbAlerts ? "s" : null} proposé${nbAlerts ? "es" : null}`}
                   value={nbAlerts}
                   color={defaultTheme.colors.purple600}
                 />
