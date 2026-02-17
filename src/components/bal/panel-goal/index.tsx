@@ -49,8 +49,8 @@ function PanelGoal({ commune, onEditNomsAlt }: PanelGoalProps) {
       <PublicationGoal commune={commune} baseLocale={baseLocale} />
       {isPublished && (
         <>
-          <CertificationGoal baseLocale={baseLocale} />
           <QualityGoal baseLocale={baseLocale} />
+          <CertificationGoal baseLocale={baseLocale} />
           {(!settings.toponymeGoalIgnored || !settings.languageGoalIgnored) && (
             <AccordionSimple
               title="Objectifs secondaires"

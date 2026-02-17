@@ -14,6 +14,7 @@ import {
   CrossIcon,
   defaultTheme,
   Badge,
+  Strong,
 } from "evergreen-ui";
 
 import {
@@ -40,6 +41,7 @@ import AlertsContext from "@/contexts/alerts";
 import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";
 import AlertNameDiff from "./alert-name-diff";
+import { isAlertNumeroSuffixe } from "@/lib/alerts/utils/alerts-numero.utils";
 
 export interface AlertBatchItem {
   voie: ExtendedVoieDTO;
@@ -79,7 +81,7 @@ function AlertsBatchProcessor({
     isAlertVoieNom(currentItem.alert);
   const isNumeroSuffixeAlert =
     currentItem?.alert.model === AlertModelEnum.NUMERO &&
-    Boolean(currentItem.numeroId);
+    isAlertNumeroSuffixe(currentItem.alert);
   const isVoieEmpty =
     currentItem?.alert.model === AlertModelEnum.VOIE &&
     (currentItem?.alert.codes as AlertCodeVoieEnum[]).includes(
@@ -263,34 +265,39 @@ function AlertsBatchProcessor({
 
       {/* Content */}
       <Pane flex={1} overflowY="auto" padding={16}>
-        <Pane display="flex" alignItems="center" gap={8} marginBottom={8}>
-          <Badge color={isNumeroSuffixeAlert ? "blue" : "green"}>
-            {isNumeroSuffixeAlert ? "Numéro" : "Voie"}
-          </Badge>
-          <Badge color="neutral">
-            {isNumeroSuffixeAlert
-              ? "Suffixe"
-              : isVoieEmpty
-                ? "Voie vide"
-                : "Nom de la voie"}
-          </Badge>
-        </Pane>
-        <Heading size={400} marginBottom={16}>
-          {currentItem.voie.nom}
+        <Heading marginBottom={8}>
+          {isVoieNameAlert
+            ? "Suggestion sur le nom de voie"
+            : isVoieEmpty
+              ? "Suggestion voie sans adresse"
+              : isNumeroSuffixeAlert
+                ? "Suggestion sur le suffixe du numero"
+                : null}
         </Heading>
+        <Text is="p">
+          {isVoieNameAlert || isVoieEmpty ? (
+            <>{currentItem.voie.nom}</>
+          ) : isNumeroSuffixeAlert ? (
+            <>
+              {(currentItem.alert as AlertNumero).numero}{" "}
+              {(currentItem.alert as AlertNumero).value} {currentItem.voie.nom}
+            </>
+          ) : null}
+        </Text>
 
         {/* Alert descriptions */}
         <Pane
-          background={defaultTheme.colors.purpleTint}
-          borderLeft={`3px solid ${defaultTheme.colors.purple600}`}
+          background={defaultTheme.colors.yellowTint}
+          borderLeft={`3px solid ${defaultTheme.colors.orange500}`}
           padding={12}
           borderRadius={4}
           marginBottom={16}
+          marginTop={16}
         >
           <UnorderedList>
             {alertDefinitions.map((def, i) => (
-              <ListItem key={i} color={defaultTheme.colors.purple600}>
-                <Text color={defaultTheme.colors.purple600}>{def}</Text>
+              <ListItem key={i} color={defaultTheme.colors.gray900}>
+                <Text color={defaultTheme.colors.gray900}>{def}</Text>
               </ListItem>
             ))}
           </UnorderedList>
@@ -300,8 +307,7 @@ function AlertsBatchProcessor({
         {isVoieNameAlert && hasRemediation && (
           <AlertNameDiff
             fieldLabel="Nom de la voie"
-            currentName={currentItem.alert.value}
-            suggestedName={(currentItem.alert as AlertVoie).remediation}
+            currentItem={currentItem}
           />
         )}
 
@@ -309,8 +315,8 @@ function AlertsBatchProcessor({
         {isNumeroSuffixeAlert && currentItem.alert.remediation && (
           <AlertNameDiff
             fieldLabel="Suffixe du numéro"
-            currentName={currentItem.alert.value}
-            suggestedName={currentItem.alert.remediation}
+            currentItem={currentItem}
+            isNumeroSuffixeAlert
           />
         )}
 
@@ -398,7 +404,7 @@ function AlertsBatchProcessor({
           appearance="minimal"
           iconBefore={CrossIcon}
         >
-          Quitter
+          Annuler
         </Button>
       </Pane>
     </Pane>

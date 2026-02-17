@@ -45,7 +45,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
   const reloadNumerosAlerts = useCallback(
     async (balId: string, ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const balNumeros = await BasesLocalesService.findNumeros(
-        ["id", "suffixe", "voieId"],
+        ["id", "numero", "suffixe", "voieId"],
         balId
       );
       const newNumerosAlerts: Record<string, AlertNumero[]> = {};

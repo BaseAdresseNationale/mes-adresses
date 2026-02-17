@@ -37,7 +37,6 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
   };
 
   const nbAlerts = useMemo(() => {
-    console.log(voiesAlerts);
     const nbVoiesAlerts =
       Object.values(voiesAlerts)?.reduce((acc, current) => [...acc, ...current])
         .length || 0;
@@ -120,7 +119,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
             Ces suggestions sont tirées du{" "}
             <Link
               target="_blank"
-              href={`$https://doc.adresse.data.gouv.fr/docs/bonnes-pratiques/a-propos-du-guide-des-bonnes-pratiques`}
+              href={`https://doc.adresse.data.gouv.fr/docs/bonnes-pratiques/a-propos-du-guide-des-bonnes-pratiques`}
             >
               Guide des Bonnes Pratiques
             </Link>{" "}
