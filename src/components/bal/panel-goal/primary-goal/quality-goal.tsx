@@ -28,7 +28,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
   const { isMobile } = useContext(LayoutContext);
   const { setDrawerDisplayed } = useContext(DrawerContext);
   const [isActive, setIsActive] = useState(false);
-  const { voiesAlerts } = useContext(AlertsContext);
+  const { voiesAlerts, numerosAlerts } = useContext(AlertsContext);
   const router = useRouter();
 
   const goToAlerts = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -36,14 +36,31 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
     void router.push(`/bal/${baseLocale.id}/voies?filter=with-suggestions`);
   };
 
-  const isAllCorrected = Object.values(voiesAlerts).length === 0;
+  const nbAlerts = useMemo(() => {
+    console.log(voiesAlerts);
+    const nbVoiesAlerts =
+      Object.values(voiesAlerts)?.reduce((acc, current) => [...acc, ...current])
+        .length || 0;
+
+    const nbNumerosAlerts =
+      Object.values(numerosAlerts)?.reduce((acc, current) => [
+        ...acc,
+        ...current,
+      ]).length || 0;
+
+    return nbVoiesAlerts + nbNumerosAlerts;
+  }, [voiesAlerts, numerosAlerts]);
+
+  const isAllCorrected = useMemo(() => {
+    return nbAlerts === 0;
+  }, [nbAlerts]);
 
   const colorCard = useMemo(() => {
-    if (Object.values(voiesAlerts).length === 0) {
+    if (nbAlerts === 0) {
       return defaultTheme.colors.green100;
     }
     return defaultTheme.colors.white;
-  }, [voiesAlerts]);
+  }, [nbAlerts]);
 
   return (
     <Pane paddingX={8}>
@@ -61,7 +78,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
               </Heading>
             </Pane>
 
-            {Object.values(voiesAlerts).length > 0 ? (
+            {nbAlerts > 0 ? (
               <Pane
                 display="flex"
                 justifyContent="space-between"
@@ -69,7 +86,7 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
               >
                 <Counter
                   label="Suggestions proposé"
-                  value={Object.values(voiesAlerts).length}
+                  value={nbAlerts}
                   color={defaultTheme.colors.purple600}
                 />
 
