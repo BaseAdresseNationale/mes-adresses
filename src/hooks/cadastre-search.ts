@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
-import useFuse from "./fuse";
-
-const fuseOptions = {
-  keys: ["id"],
-};
+import { useEffect, useRef } from "react";
+import Fuse from "fuse.js";
+import { SearchItemType } from "@/components/autocomplete";
 
 export type ParcelleFeature = {
   id: string;
@@ -18,12 +15,7 @@ const API_CADASTRE_URL =
   "https://cadastre.data.gouv.fr/bundler/cadastre-etalab";
 
 export function useCadastreSearch(codeCommune: string) {
-  const [parcelles, setParcelles] = useState<ParcelleFeature[]>([]);
-  const [filteredParcelles, setFilteredParcelles] = useFuse(
-    parcelles,
-    200,
-    fuseOptions
-  );
+  const fuseRef = useRef<Fuse<SearchItemType<ParcelleFeature>> | null>(null);
 
   useEffect(() => {
     const fetchParcelles = async () => {
@@ -36,27 +28,40 @@ export function useCadastreSearch(codeCommune: string) {
         }
         const data = await response.json();
         const features = Array.isArray(data.features) ? data.features : [];
-        setParcelles(
-          features.map((feature: ParcelleFeature) => ({
-            id: feature.id,
-            geometry: feature.geometry,
-          }))
-        );
+        const parcelles = features.map((feature: ParcelleFeature) => ({
+          id: feature.id,
+          label: feature.id,
+          geometry: feature.geometry,
+        }));
+
+        fuseRef.current = new Fuse(parcelles, {
+          keys: ["id"],
+          threshold: 0.1,
+        });
       } catch (error) {
         console.error("Error fetching parcelles:", error);
-        setParcelles([]);
       }
     };
 
     if (codeCommune) {
       fetchParcelles();
-    } else {
-      setParcelles([]);
     }
   }, [codeCommune]);
 
+  const handleSearchParcelle = async (inputValue: string) => {
+    if (!inputValue || !fuseRef.current) {
+      return [];
+    }
+
+    const fuse = fuseRef.current;
+    const results = fuse.search(inputValue, {
+      limit: 10,
+    });
+
+    return results.map((result) => result.item);
+  };
+
   return {
-    filteredParcelles,
-    setFilteredParcelles,
+    handleSearchParcelle,
   };
 }
