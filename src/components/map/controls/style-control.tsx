@@ -8,6 +8,7 @@ import { CommuneType } from "@/types/commune";
 import { MapStyle } from "@/contexts/map";
 import LocalStorageContext from "@/contexts/local-storage";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
+import CadastreSearchInput from "./cadastre-search-input";
 
 interface StyleControlProps {
   style: string;
@@ -71,6 +72,7 @@ function StyleControl({
     <Pane
       position="absolute"
       display="flex"
+      gap={8}
       left={22}
       bottom={22}
       border="none"
@@ -90,13 +92,8 @@ function StyleControl({
           selected={style}
           onSelect={(item) => onSelect(item.value as MapStyle | string)}
         >
-          <Button
-            className="map-style-button"
-            style={{ borderRadius: "3px 0 0 3px" }}
-          >
-            <LayersIcon
-              style={{ marginRight: ".5em", borderRadius: "0 3px 3px 0" }}
-            />
+          <Button className="map-style-button" style={{ borderRadius: "3px" }}>
+            <LayersIcon style={{ marginRight: ".5em", borderRadius: "3px" }} />
             <div className="map-style-label">
               {availableStyles.find(({ value }) => value === style)?.label}
             </div>
@@ -113,11 +110,17 @@ function StyleControl({
           <div className="map-style-label">{availableStyles[0].label}</div>
         </Button>
       )}
-      <CadastreControl
-        hasCadastre={commune.hasCadastre}
-        isCadastreDisplayed={isCadastreDisplayed}
-        onClick={() => handleCadastre((show) => !show)}
-      />
+      <Pane display="flex" alignItems="center">
+        <CadastreControl
+          hasCadastre={commune.hasCadastre}
+          isCadastreDisplayed={isCadastreDisplayed}
+          onClick={() => handleCadastre((show) => !show)}
+        />
+        <CadastreSearchInput
+          codeCommune={commune.code}
+          visible={isCadastreDisplayed}
+        />
+      </Pane>
     </Pane>
   );
 }

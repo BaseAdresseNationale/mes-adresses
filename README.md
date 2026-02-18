@@ -92,6 +92,7 @@ Elles peuvent être définies classiquement ou en créant un fichier `.env` sur 
 | `NEXT_PUBLIC_MOISSONNEUR_BAL_API_URL`        | URL de l'API moissonneur-bal                                    |
 | `NEXT_PUBLIC_PANORAMAX_API_ENDPOINT`         | URL de Panoramax                                                |
 | `NEXT_PUBLIC_API_ANNUAIRE_DES_COLLECTIVITES` | URL de l'API de l'annuaire des collectivités                    |
+| `NEXT_PUBLIC_API_CADASTRE`                   | URL de base de l'API Cadastre                                   |
 | `PORT`                                       | Port de l'application                                           |
 | `MATTERMOST_CHANNEL_URL`                     | Channel Mattermost où sont publiées les actualités              |
 | `MATTERMOST_TOKEN`                           | Token pour afficher les messages de Mattermost sur la home page |
