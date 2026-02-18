@@ -1,4 +1,10 @@
-import { Pane, Text, Button, WarningSignIcon } from "evergreen-ui";
+import {
+  Pane,
+  Text,
+  Button,
+  WarningSignIcon,
+  defaultTheme,
+} from "evergreen-ui";
 import NextLink from "next/link";
 
 interface WarningLinkProps {
@@ -10,9 +16,16 @@ function WarningLink({ title, url }: WarningLinkProps) {
   return (
     <>
       <Pane marginBottom={8}>
-        <Text color="white">{title}</Text>
+        <Text>{title}</Text>
       </Pane>
-      <Button is={NextLink} href={url} title="Éditer la voie" size="small">
+      <Button
+        is={NextLink}
+        href={url}
+        title="Éditer la voie"
+        size="small"
+        appearance="primary"
+        style={{ backgroundColor: defaultTheme.colors.purple600 }}
+      >
         Améliorer
       </Button>
     </>

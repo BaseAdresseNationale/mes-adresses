@@ -1,5 +1,12 @@
 import { useCallback, useContext, useState } from "react";
-import { Paragraph, Pane, Text, Button, WarningSignIcon } from "evergreen-ui";
+import {
+  Paragraph,
+  Pane,
+  Text,
+  Button,
+  WarningSignIcon,
+  defaultTheme,
+} from "evergreen-ui";
 import { useRouter } from "next/navigation";
 
 import BalDataContext from "@/contexts/bal-data";
@@ -103,12 +110,14 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
       />
       <>
         <Pane marginBottom={8}>
-          <Text color="white">Cette voie ne contient aucun numéro</Text>
+          <Text>Cette voie ne contient aucun numéro</Text>
         </Pane>
         <Button
           onClick={() => setToConvert(voie)}
           size="small"
           title="Convertir la voie en voie sans adresses"
+          appearance="primary"
+          style={{ backgroundColor: defaultTheme.colors.purple600 }}
         >
           Convertir en voie sans adresses
         </Button>
