@@ -1,6 +1,5 @@
 import { FileRejection, useDropzone } from "react-dropzone";
 import { Pane, Spinner, Paragraph, PaneProps } from "evergreen-ui";
-import { DragEventHandler } from "react";
 
 interface UploaderProps {
   file: File | null;

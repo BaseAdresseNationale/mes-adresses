@@ -1,11 +1,4 @@
-import {
-  useState,
-  useCallback,
-  useContext,
-  useMemo,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import { useState, useContext, useMemo, Dispatch, SetStateAction } from "react";
 import { sortBy } from "lodash";
 import { SelectField, SelectMenu, Pane, Button, Text } from "evergreen-ui";
 

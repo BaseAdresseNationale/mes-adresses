@@ -82,7 +82,7 @@ function AlertsAccordion({
               marginBottom={8}
               label={value}
               checked={!ignoredAlertCodes.includes(code as AlertCodeEnum)}
-              onChange={(e) => toggleAlertCode(code as AlertCodeEnum)}
+              onChange={() => toggleAlertCode(code as AlertCodeEnum)}
             />
           ))}
         </Pane>
@@ -114,7 +114,7 @@ function AlertsAccordion({
               marginBottom={8}
               label={value}
               checked={!ignoredAlertCodes.includes(code as AlertCodeEnum)}
-              onChange={(e) => toggleAlertCode(code as AlertCodeEnum)}
+              onChange={() => toggleAlertCode(code as AlertCodeEnum)}
             />
           ))}
         </Pane>

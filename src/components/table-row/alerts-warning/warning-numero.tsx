@@ -1,4 +1,4 @@
-import { Pane, Text, Button, WarningSignIcon } from "evergreen-ui";
+import { Pane, Text, Button, defaultTheme } from "evergreen-ui";
 
 interface WarningNumeroProps {
   title: string;
@@ -9,10 +9,16 @@ function WarningNumero({ title, goToFormNumero }: WarningNumeroProps) {
   return (
     <>
       <Pane marginBottom={8}>
-        <Text color="white">{title}</Text>
+        <Text>{title}</Text>
       </Pane>
-      <Button onClick={goToFormNumero} title="Éditer le numero" size="small">
-        Corriger
+      <Button
+        onClick={goToFormNumero}
+        title="Éditer le numero"
+        size="small"
+        appearance="primary"
+        style={{ backgroundColor: defaultTheme.colors.purple600 }}
+      >
+        Ameliorer
       </Button>
     </>
   );

@@ -1,10 +1,4 @@
-import {
-  Pane,
-  Text,
-  Button,
-  WarningSignIcon,
-  defaultTheme,
-} from "evergreen-ui";
+import { Pane, Text, Button, defaultTheme } from "evergreen-ui";
 import NextLink from "next/link";
 
 interface WarningLinkProps {

@@ -1,4 +1,4 @@
-import { useContext, useCallback, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Pane, Heading, Button, Alert, EraserIcon } from "evergreen-ui";
 
 import DrawContext, { DrawMode } from "@/contexts/draw";

@@ -27,13 +27,10 @@ import { DrawMetricVoieEditor } from "./draw-metric-voie-editor";
 import AlertsContext from "@/contexts/alerts";
 import {
   AlertFieldVoieEnum,
-  AlertVoie,
   AlertModelEnum,
   AlertCodeEnum,
 } from "@/lib/alerts/alerts.types";
-import { AlertVoieDefinitions } from "@/lib/alerts/alerts.definitions";
 import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
-import { isAlertVoieNom } from "@/lib/alerts/utils/alerts-voies.utils";
 import AlertEditor from "./alert-editor";
 import styles from "./voie-editor.module.css";
 

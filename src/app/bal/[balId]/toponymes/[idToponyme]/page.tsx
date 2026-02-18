@@ -15,7 +15,7 @@ export default async function ToponymePageSSR({
   let toponyme;
   try {
     toponyme = await ToponymesService.findToponyme(idToponyme);
-  } catch (e) {
+  } catch {
     notFound();
   }
 

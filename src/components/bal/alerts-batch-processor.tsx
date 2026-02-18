@@ -14,7 +14,6 @@ import {
   CrossIcon,
   defaultTheme,
   Badge,
-  Strong,
 } from "evergreen-ui";
 
 import {

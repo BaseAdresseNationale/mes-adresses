@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useContext, useMemo } from "react";
+import { useCallback, useEffect, useContext } from "react";
 import {
   Strong,
   Pane,
@@ -6,8 +6,6 @@ import {
   Button,
   AddIcon,
   FormField,
-  Alert,
-  Text,
 } from "evergreen-ui";
 
 import MarkersContext from "@/contexts/markers";

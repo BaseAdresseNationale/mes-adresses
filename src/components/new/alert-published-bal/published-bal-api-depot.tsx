@@ -1,4 +1,4 @@
-import { Alert, Paragraph, Strong } from "evergreen-ui";
+import { Paragraph, Strong } from "evergreen-ui";
 
 import { PublicClient, Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";

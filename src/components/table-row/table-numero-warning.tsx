@@ -2,6 +2,7 @@ import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import { AlertNumero } from "@/lib/alerts/alerts.types";
 import { isAlertNumeroSuffixe } from "@/lib/alerts/utils/alerts-numero.utils";
 import WarningNumero from "./alerts-warning/warning-numero";
+import { Li, majorScale, Menu, Pane, Ul } from "evergreen-ui";
 
 interface TableNumeroWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -12,21 +13,25 @@ interface TableNumeroWarningProps {
 
 function TableNumeroWarning({ alerts, onSelect }: TableNumeroWarningProps) {
   return (
-    <>
-      {alerts.map((alert, index) => {
-        return (
-          <div key={`alert-${index}`}>
-            {index > 0 && <hr />}
-            {isAlertNumeroSuffixe(alert) ? (
-              <WarningNumero
-                title="Le suffixe du numéro est incorrect"
-                goToFormNumero={onSelect}
-              />
-            ) : null}
-          </div>
-        );
-      })}
-    </>
+    <Menu>
+      <Ul listStyle="none" paddingRight={16}>
+        {alerts.map((alert, index) => {
+          return (
+            <Li key={`alert-${index}`}>
+              {index > 0 && (
+                <Pane borderTop={true} marginRight={majorScale(2)} />
+              )}
+              {isAlertNumeroSuffixe(alert) ? (
+                <WarningNumero
+                  title="Le suffixe du numéro est incorrect"
+                  goToFormNumero={onSelect}
+                />
+              ) : null}
+            </Li>
+          );
+        })}
+      </Ul>
+    </Menu>
   );
 }
 

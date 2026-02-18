@@ -1,4 +1,4 @@
-import { Button, Heading, Pane, Text } from "evergreen-ui";
+import { Heading, Pane, Text } from "evergreen-ui";
 import styles from "./stepper.module.css";
 
 interface StepperProps {

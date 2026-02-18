@@ -9,12 +9,6 @@ import {
   Popover,
   defaultTheme,
   LightbulbIcon,
-  Menu,
-  Ul,
-  IconButton,
-  Link,
-  Li,
-  Pane,
   Button,
 } from "evergreen-ui";
 import TokenContext from "@/contexts/token";

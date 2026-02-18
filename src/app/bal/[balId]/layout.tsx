@@ -21,7 +21,7 @@ export default async function EditorLayout({
   let baseLocale;
   try {
     baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
-  } catch (e) {
+  } catch {
     notFound();
   }
 

@@ -5,7 +5,7 @@ interface TutoProps {
   children: React.ReactNode;
 }
 
-function Tuto({ title, children }) {
+function Tuto({ title, children }: TutoProps) {
   return (
     <Card
       backgroundColor="white"
