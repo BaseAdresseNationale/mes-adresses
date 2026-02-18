@@ -38,15 +38,15 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
 
   const nbAlerts = useMemo(() => {
     const nbVoiesAlerts =
-      Object.values(voiesAlerts)?.reduce((acc, current) => [...acc, ...current])
-        .length || 0;
-
+      Object.values(voiesAlerts)?.reduce(
+        (acc, current) => acc + current.length,
+        0
+      ) || 0;
     const nbNumerosAlerts =
-      Object.values(numerosAlerts)?.reduce((acc, current) => [
-        ...acc,
-        ...current,
-      ]).length || 0;
-
+      Object.values(numerosAlerts)?.reduce(
+        (acc, current) => acc + current.length,
+        0
+      ) || 0;
     return nbVoiesAlerts + nbNumerosAlerts;
   }, [voiesAlerts, numerosAlerts]);
 
