@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Button, Link, Pane, Paragraph, Text } from "evergreen-ui";
 import NextLink from "next/link";
 import { Numero, Toponyme, Voie } from "@/lib/openapi-api-bal";
@@ -8,7 +14,10 @@ import { Signalement } from "@/lib/openapi-signalement";
 import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api-bal";
 import { useRouter } from "next/navigation";
 import LayoutContext from "@/contexts/layout";
-import { getSignalementLabel } from "@/lib/utils/signalement";
+import {
+  getSignalementLabel,
+  requestedLocationsExist,
+} from "@/lib/utils/signalement";
 import MapContext from "@/contexts/map";
 import BalDataContext from "@/contexts/bal-data";
 import ProtectedPage from "@/layouts/protected-page";
@@ -18,6 +27,7 @@ import SignalementContext from "@/contexts/signalement";
 import TokenContext from "@/contexts/token";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
+import { wait } from "@/lib/utils/promise";
 
 interface SignalementPageProps {
   signalement: Signalement;
@@ -60,6 +70,13 @@ export default function SignalementPage({
     };
   }, [setBreadcrumbs, baseLocale, signalement, setTileLayersMode]);
 
+  const isProcessableSignalement = useMemo(
+    () =>
+      signalement.status === Signalement.status.PENDING &&
+      (existingLocation || isNewVoieCreation) &&
+      requestedLocationsExist(requestedLocations),
+    [signalement, existingLocation, isNewVoieCreation, requestedLocations]
+  );
   // Mark the signalement as expired if the location is not found
   // and the signalement is still pending
   useEffect(() => {
@@ -70,22 +87,10 @@ export default function SignalementPage({
       });
     };
 
-    if (
-      (existingLocation === null ||
-        requestedLocations.toponyme === null ||
-        requestedLocations.voie === null) &&
-      signalement.status === Signalement.status.PENDING &&
-      !isNewVoieCreation
-    ) {
+    if (!isProcessableSignalement) {
       markSignalementAsExpired();
     }
-  }, [
-    existingLocation,
-    signalement,
-    baseLocale,
-    requestedLocations,
-    isNewVoieCreation,
-  ]);
+  }, [signalement, baseLocale, isProcessableSignalement]);
 
   // Fetch the author of the signalement
   useEffect(() => {
@@ -129,6 +134,8 @@ export default function SignalementPage({
 
       const nextSignalement = await getNextSignalement();
 
+      await wait(1000); // Wait for a smoother transition
+
       if (nextSignalement) {
         router.push(
           `/bal/${baseLocale.id}/${TabsEnum.SIGNALEMENTS}/${nextSignalement.id}`
@@ -162,10 +169,7 @@ export default function SignalementPage({
             )
           }
         />
-      ) : signalement.status === Signalement.status.PENDING &&
-        (existingLocation || isNewVoieCreation) &&
-        requestedLocations.toponyme !== null &&
-        requestedLocations.voie !== null ? (
+      ) : isProcessableSignalement ? (
         <Pane overflow="scroll" height="100%">
           <SignalementForm
             signalement={signalement}
