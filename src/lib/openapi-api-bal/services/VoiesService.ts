@@ -1,7 +1,7 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { CreateNumeroDTO } from '../models/CreateNumeroDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { Numero } from '../models/Numero';
@@ -10,13 +10,10 @@ import type { Toponyme } from '../models/Toponyme';
 import type { UpdateVoieDTO } from '../models/UpdateVoieDTO';
 import type { Voie } from '../models/Voie';
 import type { VoieMetas } from '../models/VoieMetas';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class VoiesService {
-
     /**
      * Find Voie by id
      * @param voieId
@@ -34,7 +31,6 @@ export class VoiesService {
             },
         });
     }
-
     /**
      * Update Voie by id
      * @param voieId
@@ -56,7 +52,6 @@ export class VoiesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Delete Voie by id
      * @param voieId
@@ -74,7 +69,6 @@ export class VoiesService {
             },
         });
     }
-
     /**
      * Find Voie Metas by id
      * @param voieId
@@ -92,7 +86,6 @@ export class VoiesService {
             },
         });
     }
-
     /**
      * Soft delete Voie by id
      * @param voieId
@@ -110,7 +103,6 @@ export class VoiesService {
             },
         });
     }
-
     /**
      * Restore Voie by id
      * @param voieId
@@ -132,7 +124,6 @@ export class VoiesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Find all numeros which belong to the voie
      * @param voieId
@@ -155,7 +146,6 @@ export class VoiesService {
             },
         });
     }
-
     /**
      * Create numero on the voie
      * @param voieId
@@ -177,7 +167,6 @@ export class VoiesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Convert Voie (without numeros) to Toponyme
      * @param voieId
@@ -195,7 +184,6 @@ export class VoiesService {
             },
         });
     }
-
     /**
      * Certify Voie numeros in Bal
      * @param voieId
@@ -213,7 +201,6 @@ export class VoiesService {
             },
         });
     }
-
     /**
      * Generate the arrete de numerotation by voie id
      * @param voieId
@@ -237,5 +224,4 @@ export class VoiesService {
             mediaType: 'multipart/form-data',
         });
     }
-
 }

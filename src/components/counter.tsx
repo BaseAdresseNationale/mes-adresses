@@ -1,4 +1,4 @@
-import { Heading, Pane, Strong, Text } from "evergreen-ui";
+import { Pane, Strong, Text } from "evergreen-ui";
 
 interface CounterProps {
   label: string;

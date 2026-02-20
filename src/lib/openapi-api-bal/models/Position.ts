@@ -1,11 +1,9 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { Numero } from './Numero';
 import type { Toponyme } from './Toponyme';
-
 export type Position = {
     id: string;
     toponymeId: string;
@@ -17,9 +15,7 @@ export type Position = {
     toponyme: Toponyme;
     numero: Numero;
 };
-
 export namespace Position {
-
     export enum type {
         ENTR_E = 'entrée',
         B_TIMENT = 'bâtiment',
@@ -30,7 +26,5 @@ export namespace Position {
         PARCELLE = 'parcelle',
         SEGMENT = 'segment',
     }
-
-
 }
 

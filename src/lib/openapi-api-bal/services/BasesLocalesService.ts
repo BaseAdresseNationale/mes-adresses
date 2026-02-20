@@ -1,7 +1,7 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
 import type { BaseLocaleWithHabilitationDTO } from '../models/BaseLocaleWithHabilitationDTO';
@@ -27,13 +27,10 @@ import type { UpdateBaseLocaleDTO } from '../models/UpdateBaseLocaleDTO';
 import type { UpdateBatchNumeroDTO } from '../models/UpdateBatchNumeroDTO';
 import type { Voie } from '../models/Voie';
 import type { VoieMetas } from '../models/VoieMetas';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class BasesLocalesService {
-
     /**
      * Create a base locale
      * @param requestBody
@@ -50,7 +47,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Create a base locale
      * @param requestBody
@@ -67,7 +63,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Search BAL by filters
      * @param limit
@@ -100,7 +95,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Find Many Bases Locales
      * @param requestBody
@@ -117,7 +111,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Find Base_Locale by id
      * @param baseLocaleId
@@ -140,7 +133,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Update one base locale
      * @param baseLocaleId
@@ -162,7 +154,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Delete one base locale
      * @param baseLocaleId
@@ -180,7 +171,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Update one base locale status to draft
      * @param baseLocaleId
@@ -202,7 +192,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Upload a CSV BAL file
      * @param baseLocaleId
@@ -226,7 +215,6 @@ export class BasesLocalesService {
             mediaType: 'multipart/form-data',
         });
     }
-
     /**
      * Recover BAL access
      * @param requestBody
@@ -243,7 +231,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Recover BAL access by commune
      * @param requestBody
@@ -260,7 +247,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Restore deleted BAL
      * @param token
@@ -281,7 +267,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Populate Base Locale
      * @param baseLocaleId
@@ -299,7 +284,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Is populate Base Locale
      * @param baseLocaleId
@@ -317,7 +301,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Renew Base Locale token
      * @param baseLocaleId
@@ -335,7 +318,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Find Base_Locale parcelles
      * @param baseLocaleId
@@ -353,7 +335,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Publish base locale
      * @param baseLocaleId
@@ -371,7 +352,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Update isPaused sync BAL to true
      * @param baseLocaleId
@@ -389,7 +369,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Update isPaused sync BAL to false
      * @param baseLocaleId
@@ -407,7 +386,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Find all model deleted in Bal
      * @param baseLocaleId
@@ -425,7 +403,28 @@ export class BasesLocalesService {
             },
         });
     }
-
+    /**
+     * Find all Voie in Bal
+     * @param select
+     * @param baseLocaleId
+     * @returns Numero
+     * @throws ApiError
+     */
+    public static findNumeros(
+        select: Array<string>,
+        baseLocaleId: string,
+    ): CancelablePromise<Array<Numero>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/numeros',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+            query: {
+                'select': select,
+            },
+        });
+    }
     /**
      * Search numero
      * @param baseLocaleId
@@ -433,13 +432,13 @@ export class BasesLocalesService {
      * @returns Numero
      * @throws ApiError
      */
-    public static searchNumeros(
+    public static searchNumerosInPolygon(
         baseLocaleId: string,
         requestBody: SearchNumeroDTO,
     ): CancelablePromise<Array<Numero>> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/v2/bases-locales/{baseLocaleId}/numeros',
+            url: '/v2/bases-locales/{baseLocaleId}/search/numeros',
             path: {
                 'baseLocaleId': baseLocaleId,
             },
@@ -447,7 +446,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Multi update numeros
      * @param baseLocaleId
@@ -469,7 +467,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Multi delete numeros
      * @param baseLocaleId
@@ -491,7 +488,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Multi soft delete numeros
      * @param baseLocaleId
@@ -513,7 +509,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Find all Voie in Bal
      * @param baseLocaleId
@@ -531,7 +526,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Create Voie in Bal
      * @param baseLocaleId
@@ -553,7 +547,6 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * get geojson of filaires voies
      * @param baseLocaleId
@@ -571,7 +564,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Find all Metas Voie in Bal
      * @param baseLocaleId
@@ -589,7 +581,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Find all Toponymes in Bal
      * @param baseLocaleId
@@ -607,7 +598,6 @@ export class BasesLocalesService {
             },
         });
     }
-
     /**
      * Create Toponyme in Bal
      * @param baseLocaleId
@@ -629,5 +619,4 @@ export class BasesLocalesService {
             mediaType: 'application/json',
         });
     }
-
 }

@@ -3,14 +3,9 @@ import {
   Button,
   ListItem,
   OrderedList,
-  UnorderedList,
   Pane,
   Paragraph,
   Text,
-  Strong,
-  CaretDownIcon,
-  UploadIcon,
-  EditIcon,
 } from "evergreen-ui";
 
 import StatusBadge from "@/components/status-badge";

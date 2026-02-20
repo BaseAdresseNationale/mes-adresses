@@ -8,6 +8,8 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
+import AlertsContext from "@/contexts/alerts";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -16,9 +18,21 @@ const mailHasChanged = (listA, listB) => {
   );
 };
 
+const ignoredAlertCodesHasChanged = (
+  listA: AlertCodeEnum[],
+  listB: AlertCodeEnum[]
+) => {
+  return (
+    listA.length !== listB.length ||
+    !listA.every((code) => listB.includes(code))
+  );
+};
+
 export function useBALSettings(baseLocale: BaseLocale) {
   const { emails, reloadEmails } = useContext(TokenContext);
-  const { reloadBaseLocale } = useContext(BalDataContext);
+
+  const { reloadBaseLocale, voies } = useContext(BalDataContext);
+  const { reloadVoiesAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
   const { pushToast } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
@@ -28,6 +42,18 @@ export function useBALSettings(baseLocale: BaseLocale) {
   const [error, setError] = useState("");
   const [isRenewTokenWarningShown, setIsRenewTokenWarningShown] =
     useState(false);
+  const [ignoredAlertCodes, setIgnoredAlertCodes] = useState<AlertCodeEnum[]>(
+    (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+  );
+
+  const ignoredAlertCodesChanged = useMemo(
+    () =>
+      ignoredAlertCodesHasChanged(
+        ignoredAlertCodes,
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+      ),
+    [ignoredAlertCodes, baseLocale.settings?.ignoredAlertCodes]
+  );
 
   const nomHasChanged = useMemo(
     () => nomInput !== baseLocale.nom,
@@ -75,6 +101,16 @@ export function useBALSettings(baseLocale: BaseLocale) {
             );
           }
         }
+        if (ignoredAlertCodesChanged) {
+          await BasesLocalesService.updateBaseLocale(baseLocale.id, {
+            settings: {
+              ...baseLocale.settings,
+              ignoredAlertCodes,
+            },
+          });
+          await reloadVoiesAlerts(voies, ignoredAlertCodes);
+          await reloadNumerosAlerts(baseLocale.id, ignoredAlertCodes);
+        }
         await reloadBaseLocale();
         pushToast({
           title: "Les paramètres ont été enregistrés avec succès",
@@ -97,6 +133,10 @@ export function useBALSettings(baseLocale: BaseLocale) {
       reloadBaseLocale,
       emails,
       matomoTrackEvent,
+      ignoredAlertCodesChanged,
+      ignoredAlertCodes,
+      reloadVoiesAlerts,
+      voies,
     ]
   );
 
@@ -113,5 +153,8 @@ export function useBALSettings(baseLocale: BaseLocale) {
     emailsHaveChanged,
     setError,
     setIsRenewTokenWarningShown,
+    ignoredAlertCodes,
+    setIgnoredAlertCodes,
+    ignoredAlertCodesChanged,
   };
 }

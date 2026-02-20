@@ -22,7 +22,7 @@ export async function getCommuneWithBBox(
       commune.bbox = bbox(communeApiGeo.contour);
       commune.contour = communeApiGeo.contour;
     }
-  } catch (e) {
+  } catch {
     if (voies.length > 0) {
       const bboxs = voies.map(({ bbox }) => bbox);
       commune.bbox = [

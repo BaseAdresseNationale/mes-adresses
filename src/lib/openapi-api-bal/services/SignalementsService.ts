@@ -1,16 +1,13 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { UpdateManySignalementDTO } from '../models/UpdateManySignalementDTO';
 import type { UpdateOneSignalementDTO } from '../models/UpdateOneSignalementDTO';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class SignalementsService {
-
     /**
      * Update one signalement
      * @param signalementId
@@ -35,7 +32,6 @@ export class SignalementsService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Update many signalements
      * @param baseLocaleId
@@ -57,7 +53,6 @@ export class SignalementsService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Get author by signalement id
      * @param idSignalement
@@ -78,5 +73,4 @@ export class SignalementsService {
             },
         });
     }
-
 }

@@ -1,7 +1,6 @@
 import { Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";
-import { Alert, Button, Pane, Paragraph } from "evergreen-ui";
-import NextLink from "next/link";
+import { Alert, Pane } from "evergreen-ui";
 import NextImage from "next/image";
 import PublishedBALMesAdresses from "./published-bal-mes-adresses";
 

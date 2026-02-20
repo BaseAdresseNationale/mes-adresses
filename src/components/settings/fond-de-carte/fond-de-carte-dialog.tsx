@@ -1,5 +1,4 @@
 import { Alert, Dialog, Pane } from "evergreen-ui";
-import { BaseLocale } from "@/lib/openapi-api-bal";
 import FondDeCarteForm from "./fond-de-carte-form";
 
 interface FondDeCarteDialogProps {

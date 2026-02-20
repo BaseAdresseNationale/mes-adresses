@@ -1,4 +1,4 @@
-import { Tooltip, Text, EndorsedIcon } from "evergreen-ui";
+import { Text, EndorsedIcon } from "evergreen-ui";
 
 interface CertificationCountProps {
   nbNumeros: number;

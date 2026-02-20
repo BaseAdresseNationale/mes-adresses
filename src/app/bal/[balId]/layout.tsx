@@ -1,3 +1,4 @@
+import { AlertsContextProvider } from "@/contexts/alerts";
 import { BalDataContextProvider } from "@/contexts/bal-data";
 import { SearchPaginationContextProvider } from "@/contexts/search-pagination";
 import { SignalementContextProvider } from "@/contexts/signalement";
@@ -20,19 +21,21 @@ export default async function EditorLayout({
   let baseLocale;
   try {
     baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
-  } catch (e) {
+  } catch {
     notFound();
   }
 
   return (
     <TokenContextProvider balId={balId}>
-      <BalDataContextProvider initialBaseLocale={baseLocale}>
-        <SearchPaginationContextProvider>
-          <SignalementContextProvider>
-            <Editor>{children}</Editor>
-          </SignalementContextProvider>
-        </SearchPaginationContextProvider>
-      </BalDataContextProvider>
+      <AlertsContextProvider>
+        <BalDataContextProvider initialBaseLocale={baseLocale}>
+          <SearchPaginationContextProvider>
+            <SignalementContextProvider>
+              <Editor>{children}</Editor>
+            </SignalementContextProvider>
+          </SearchPaginationContextProvider>
+        </BalDataContextProvider>
+      </AlertsContextProvider>
     </TokenContextProvider>
   );
 }
