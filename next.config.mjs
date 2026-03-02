@@ -1,4 +1,3 @@
-import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 import _withBundleAnalyzer from "@next/bundle-analyzer";
 
@@ -9,7 +8,7 @@ const withBundleAnalyzer = _withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 
-const nextConfig: NextConfig = withBundleAnalyzer({
+const nextConfig = withBundleAnalyzer({
   reactCompiler: true,
   redirects: async () => {
     return [
