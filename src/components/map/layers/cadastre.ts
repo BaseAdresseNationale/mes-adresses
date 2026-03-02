@@ -192,7 +192,11 @@ export const cadastreLayers = [
     filter: ["all"],
     layout: {
       visibility: "none",
-      "text-field": "{numero}",
+      "text-field": [
+        "concat",
+        ["get", "section"],
+        ["slice", ["concat", "000", ["to-string", ["get", "numero"]]], -4],
+      ],
       "text-font": ["Open Sans Regular"],
       "text-allow-overlap": false,
       "text-size": 16,

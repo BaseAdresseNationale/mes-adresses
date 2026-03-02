@@ -26,6 +26,9 @@ const nextConfig: NextConfig = withBundleAnalyzer({
         "https://base-adresse-locale-prod-blasons-communes.s3.fr-par.scw.cloud/**"
       ),
       new URL("https://api.panoramax.xyz/**"),
+      new URL(
+        "https://annuaire-des-collectivites-production-storage.s3.fr-par.scw.cloud/**"
+      ),
     ],
   },
 });

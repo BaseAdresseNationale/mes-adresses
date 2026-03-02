@@ -291,3 +291,12 @@ export const isNumeroChangesRequested = (
     numero && nomVoie && Array.isArray(parcelles) && Array.isArray(positions)
   );
 };
+
+export const requestedLocationsExist = (requestedLocations: {
+  voie?: Voie | null;
+  toponyme?: Toponyme | null;
+}) => {
+  return Object.values(requestedLocations).every(
+    (location) => location !== null
+  );
+};

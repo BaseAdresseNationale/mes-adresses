@@ -214,12 +214,15 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
           border="none"
           height={isBalWidgetOpen ? "600px" : "60px"}
           width={isBalWidgetOpen ? "450px" : "60px"}
+          maxHeight={isBalWidgetOpen ? "calc(100vh - 80px)" : undefined}
+          maxWidth={isBalWidgetOpen ? "calc(100vw - 80px)" : undefined}
           transform={isWidgetVisible ? "translateX(0)" : "translateX(300%)"}
           transition="transform 0.3s ease"
           {...(isMobile && {
             bottom: 10,
             right: 10,
             width: isBalWidgetOpen ? "calc(100% - 20px)" : "60px",
+            maxHeight: isBalWidgetOpen ? "calc(100vh - 20px)" : undefined,
           })}
         />
       )}

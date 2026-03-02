@@ -1,0 +1,12 @@
+.cadastreSearchInput.hidden {
+  overflow: hidden;
+  width: 0px;
+  transition: width 0.3s;
+  padding: 0;
+  border: 0;
+}
+
+.cadastreSearchInput.visible {
+  width: 200px;
+  transition: width 0.3s;
+}

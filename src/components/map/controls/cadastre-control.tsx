@@ -23,6 +23,10 @@ function CadastreControl({
         title={
           isCadastreDisplayed ? "Masquer le cadastre" : "Afficher le cadastre"
         }
+        {...(isCadastreDisplayed && {
+          borderBottomRightRadius: 0,
+          borderTopRightRadius: 0,
+        })}
       >
         <ControlIcon color={isCadastreDisplayed ? "selected" : "muted"} />
       </Button>
