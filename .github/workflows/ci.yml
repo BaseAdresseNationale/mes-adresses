@@ -17,12 +17,15 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 24.x
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 24.x
+          node-version: ${{ matrix.node-version }}
           cache: "yarn"
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -68,12 +71,15 @@ jobs:
     needs: build
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 24.x
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 24.x
+          node-version: ${{ matrix.node-version }}
       - uses: actions/cache/restore@v4
         with:
           path: |
