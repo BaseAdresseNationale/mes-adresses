@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
-import { Alert, Spinner } from "evergreen-ui";
-import { DataGouvService } from "@/lib/data-gouv/data-gouv";
-import { Dataset, Organization } from "@/lib/data-gouv/types";
+import { Alert } from "evergreen-ui";
 import { Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";
 import PublishedBALMoissoneur from "./published-bal-moissoneur";

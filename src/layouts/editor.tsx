@@ -50,74 +50,74 @@ function Editor({ children }: EditorProps) {
       <DrawContextProvider>
         <MarkersContextProvider>
           <ParcellesContextProvider>
-            <BalDataContext.Consumer>
-              {({ habilitationIsLoading }) =>
-                (tokenIsChecking || habilitationIsLoading) && (
-                  <Overlay text="Chargement de la Base Adresse Locale" />
-                )
-              }
-            </BalDataContext.Consumer>
-
             <DrawerContextProvider>
+              <BalDataContext.Consumer>
+                {({ habilitationIsLoading }) =>
+                  (tokenIsChecking || habilitationIsLoading) && (
+                    <Overlay text="Chargement de la Base Adresse Locale" />
+                  )
+                }
+              </BalDataContext.Consumer>
+
               <DrawerContent />
               <SubHeader commune={commune} />
-            </DrawerContextProvider>
 
-            <Map
-              top={isMobile ? 150 : 116}
-              bottom={isDemo || isReadonly || isMobile ? 50 : 0}
-              left={isMapFullscreen ? 0 : sidebarWidth}
-              commune={commune}
-              baseLocale={baseLocale}
-              isAddressFormOpen={isAddressFormOpen}
-              handleAddressForm={setIsAddressFormOpen}
-            />
-
-            <Sidebar
-              size={sidebarWidth}
-              top={isMobile ? 150 : 116}
-              bottom={isDemo || isReadonly ? 50 : 0}
-              isHidden={isMapFullscreen}
-              elevation={2}
-              background="tint2"
-              display="flex"
-              flexDirection="column"
-              onToggle={setIsMapFullscreen}
-            >
-              <MainTabs balId={baseLocale.id} />
-
-              {token && <ProductTours commune={commune} />}
-
-              {isAddressFormOpen ? (
-                <AddressEditor commune={commune} closeForm={closeForm} />
-              ) : (
-                <Pane
-                  position="relative"
-                  display="flex"
-                  flexDirection="column"
-                  height="100%"
-                  width="100%"
-                  overflow="hidden"
-                >
-                  {children}
-                </Pane>
-              )}
-            </Sidebar>
-            {isMobile && (
-              <MobileControls
-                isDemo={isDemo}
-                onToggle={setIsMapFullscreen}
-                isMapFullscreen={isMapFullscreen}
-              />
-            )}
-            {isReadonly && <ReadonlyWarning />}
-            {!isReadonly && isDemo && (
-              <DemoWarning
+              <Map
+                top={isMobile ? 150 : 116}
+                bottom={isDemo || isReadonly || isMobile ? 50 : 0}
+                left={isMapFullscreen ? 0 : sidebarWidth}
+                commune={commune}
                 baseLocale={baseLocale}
-                communeName={commune.nom}
-                isReadonly={isReadonly}
+                isAddressFormOpen={isAddressFormOpen}
+                handleAddressForm={setIsAddressFormOpen}
               />
-            )}
+
+              <Sidebar
+                size={sidebarWidth}
+                top={isMobile ? 150 : 116}
+                bottom={isDemo || isReadonly ? 50 : 0}
+                isHidden={isMapFullscreen}
+                elevation={2}
+                background="tint2"
+                display="flex"
+                flexDirection="column"
+                onToggle={setIsMapFullscreen}
+              >
+                <MainTabs balId={baseLocale.id} />
+
+                {token && <ProductTours commune={commune} />}
+
+                {isAddressFormOpen ? (
+                  <AddressEditor commune={commune} closeForm={closeForm} />
+                ) : (
+                  <Pane
+                    position="relative"
+                    display="flex"
+                    flexDirection="column"
+                    height="100%"
+                    width="100%"
+                    overflow="hidden"
+                  >
+                    {children}
+                  </Pane>
+                )}
+              </Sidebar>
+              {isMobile && (
+                <MobileControls
+                  isDemo={isDemo}
+                  onToggle={setIsMapFullscreen}
+                  isMapFullscreen={isMapFullscreen}
+                />
+              )}
+              {isReadonly && <ReadonlyWarning />}
+              {!isReadonly && isDemo && (
+                <DemoWarning
+                  baseLocale={baseLocale}
+                  communeName={commune.nom}
+                  isReadonly={isReadonly}
+                />
+              )}
+            </DrawerContextProvider>
           </ParcellesContextProvider>
         </MarkersContextProvider>
       </DrawContextProvider>

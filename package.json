@@ -18,7 +18,7 @@
     "build": "yarn build-available-flags && next build",
     "analyze": "ANALYZE=true next build",
     "build-available-flags": "node scripts/build-available-flags.mjs",
-    "generate:openapi:api-bal": "openapi --input http://localhost:5001/api-json --output ./lib/openapi-api-bal",
+    "generate:openapi:api-bal": "curl http://localhost:5001/api-json -o /tmp/api-bal.json && openapi --input /tmp/api-bal.json --output ./src/lib/openapi-api-bal",
     "generate:openapi:signalement": "openapi --input http://localhost:5005/api-json --output ./lib/openapi-signalement",
     "push-staging": "./scripts/push-staging.sh",
     "test": "playwright test --workers=1 --max-failures=1",

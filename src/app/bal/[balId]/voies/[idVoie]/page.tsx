@@ -15,7 +15,7 @@ export default async function VoiePageSSR({
   let voie;
   try {
     voie = await VoiesService.findVoie(idVoie);
-  } catch (e) {
+  } catch {
     notFound();
   }
 

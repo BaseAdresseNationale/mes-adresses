@@ -1,4 +1,4 @@
-import { Label, Text, TextareaField } from "evergreen-ui";
+import { Label, TextareaField } from "evergreen-ui";
 
 import FormInput from "@/components/form-input";
 

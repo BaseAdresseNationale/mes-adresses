@@ -111,7 +111,7 @@ export default function NewPageComponent({
           commune: commune.code,
         });
       }
-    } catch (err) {
+    } catch {
       pushToast({
         title: "Erreur",
         message:
@@ -130,7 +130,7 @@ export default function NewPageComponent({
       } else if (importValue === "ban") {
         await importFromBAN(bal);
       }
-    } catch (err) {
+    } catch {
       pushToast({
         title: "Erreur",
         message:
