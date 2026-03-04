@@ -3,7 +3,6 @@ import {
   Pane,
   Button,
   SelectMenu,
-  Tooltip,
   TrashIcon,
   PropertyIcon,
 } from "evergreen-ui";

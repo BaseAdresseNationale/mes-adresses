@@ -156,7 +156,7 @@ function Voies() {
         </OrderedList>
       </Tuto>
 
-      <Tuto title="Convertir une voie en toponyme">
+      <Tuto title="Convertir une voie en voie sans adresses">
         {before}
         <Paragraph marginTop="default">
           Vous pouvez transformer une voie en toponyme si cette première ne
@@ -175,7 +175,7 @@ function Voies() {
           <ListItem>
             Dans le menu qui vient d’apparaître, choisissez
             <Button iconBefore={KeyTabIcon} marginX={4}>
-              Convertir en toponyme
+              Convertir en voie sans adresses
             </Button>
           </ListItem>
           <ListItem>

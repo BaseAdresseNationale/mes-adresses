@@ -35,13 +35,13 @@ export default function usePublishProcess(
     setIsHabilitationProcessDisplayed,
   } = useContext(BalDataContext);
 
-  const { toaster, pushToast } = useContext(LayoutContext);
+  const { pushToast } = useContext(LayoutContext);
 
   const checkMassDeletion = async () => {
     try {
       const communeBAN = await getBANCommune(commune.code);
       return (baseLocale.nbNumeros / communeBAN.nbNumeros) * 100 <= 50;
-    } catch (error) {
+    } catch {
       pushToast({
         title: "Erreur",
         message:
@@ -74,7 +74,7 @@ export default function usePublishProcess(
         if (habilitation) {
           await reloadHabilitation();
         }
-      } catch (err) {
+      } catch {
         pushToast({
           title: "Erreur",
           message: "Impossible de créer un processus d'habilitation",

@@ -1,18 +1,15 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
+ 
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
 import type { Numero } from '../models/Numero';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateToponymeDTO } from '../models/UpdateToponymeDTO';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class ToponymesService {
-
     /**
      * Find Toponyme by id
      * @param toponymeId
@@ -30,7 +27,6 @@ export class ToponymesService {
             },
         });
     }
-
     /**
      * Update Toponyme by id
      * @param toponymeId
@@ -52,7 +48,6 @@ export class ToponymesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Delete Toponyme by id
      * @param toponymeId
@@ -70,7 +65,6 @@ export class ToponymesService {
             },
         });
     }
-
     /**
      * Soft delete Tpponyme by id
      * @param toponymeId
@@ -88,7 +82,6 @@ export class ToponymesService {
             },
         });
     }
-
     /**
      * Restore Toponyme by id
      * @param toponymeId
@@ -106,7 +99,6 @@ export class ToponymesService {
             },
         });
     }
-
     /**
      * Find all numeros which belong to the toponyme
      * @param toponymeId
@@ -124,5 +116,4 @@ export class ToponymesService {
             },
         });
     }
-
 }

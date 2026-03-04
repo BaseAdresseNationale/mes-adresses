@@ -6,7 +6,6 @@ import {
   Text,
   Heading,
   PeopleIcon,
-  TimeIcon,
   UnorderedList,
   ListItem,
 } from "evergreen-ui";

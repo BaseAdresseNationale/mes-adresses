@@ -1,12 +1,4 @@
-import React from "react";
-import {
-  Pane,
-  Alert,
-  Text,
-  Button,
-  defaultTheme,
-  Paragraph,
-} from "evergreen-ui";
+import { Pane, Alert, defaultTheme, Paragraph } from "evergreen-ui";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import Counter from "../counter";
 import ProgressBar from "../progress-bar";

@@ -1,0 +1,141 @@
+"use client";
+
+import React, { useState, useCallback, useMemo, useContext } from "react";
+import { ChildrenProps } from "@/types/context";
+import { omit } from "lodash";
+import {
+  AlertCodeEnum,
+  AlertVoie,
+  AlertNumero,
+} from "@/lib/alerts/alerts.types";
+import { ExtendedVoieDTO } from "@/lib/openapi-api-bal/models/ExtendedVoieDTO";
+import {
+  getVoieEmptyAlert,
+  getVoieNomAlert,
+} from "@/lib/alerts/utils/alerts-voies.utils";
+import { BasesLocalesService } from "@/lib/openapi-api-bal/services/BasesLocalesService";
+import {
+  getNumeroParcelleNotExistAlert,
+  getNumeroSuffixeAlert,
+} from "@/lib/alerts/utils/alerts-numero.utils";
+import CadastreContext from "./cadastre";
+
+interface AlertsContextType {
+  voiesAlerts: Record<string, AlertVoie[]>;
+  reloadVoieAlerts: (
+    voie: ExtendedVoieDTO,
+    ignoredAlertCodes: AlertCodeEnum[]
+  ) => void;
+  reloadVoiesAlerts: (
+    voies: ExtendedVoieDTO[],
+    ignoredAlertCodes: AlertCodeEnum[]
+  ) => void;
+  numerosAlerts: Record<string, AlertNumero[]>;
+  reloadNumerosAlerts: (
+    balId: string,
+    ignoredAlertCodes: AlertCodeEnum[]
+  ) => void;
+}
+
+const AlertsContext = React.createContext<AlertsContextType | null>(null);
+
+export function AlertsContextProvider(props: ChildrenProps) {
+  const [voiesAlerts, setVoiesAlerts] = useState<Record<string, AlertVoie[]>>(
+    {}
+  );
+  const [numerosAlerts, setNumerosAlerts] = useState<
+    Record<string, AlertNumero[]>
+  >({});
+  const { communeParcelles } = useContext(CadastreContext);
+
+  const reloadNumerosAlerts = useCallback(
+    async (balId: string, ignoredAlertCodes: AlertCodeEnum[] = []) => {
+      const balNumeros = await BasesLocalesService.findNumeros(
+        ["id", "numero", "suffixe", "voieId", "parcelles"],
+        balId
+      );
+      const newNumerosAlerts: Record<string, AlertNumero[]> = {};
+      for (const numero of balNumeros) {
+        console.log(numero);
+        const alerts = [
+          getNumeroSuffixeAlert(numero),
+          getNumeroParcelleNotExistAlert(numero, communeParcelles),
+        ];
+        console.log(alerts);
+        const filteredAlerts = alerts
+          .filter((alert) => alert !== undefined)
+          .filter((alert) =>
+            alert.codes.every((code) => !ignoredAlertCodes.includes(code))
+          );
+        if (filteredAlerts.length > 0) {
+          newNumerosAlerts[numero.id] = filteredAlerts;
+        }
+      }
+      setNumerosAlerts(newNumerosAlerts);
+    },
+    []
+  );
+
+  const getVoieAlerts = useCallback(
+    (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
+      const alerts: Array<AlertVoie | undefined> = [
+        getVoieNomAlert(voie),
+        getVoieEmptyAlert(voie),
+      ];
+      const filteredAlerts = alerts
+        .filter((alert: AlertVoie | undefined) => alert !== undefined)
+        .filter((alert: AlertVoie) =>
+          alert.codes.every((code) => !ignoredAlertCodes.includes(code))
+        );
+      return filteredAlerts;
+    },
+    []
+  );
+
+  const reloadVoieAlerts = useCallback(
+    (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
+      const alerts = getVoieAlerts(voie, ignoredAlertCodes);
+      if (alerts.length <= 0) {
+        setVoiesAlerts((prev) => omit(prev, voie.id));
+      } else {
+        setVoiesAlerts((prev) => ({ ...prev, [voie.id]: alerts }));
+      }
+    },
+    [getVoieAlerts]
+  );
+
+  const reloadVoiesAlerts = useCallback(
+    (voies: ExtendedVoieDTO[], ignoredAlertCodes: AlertCodeEnum[] = []) => {
+      const newVoiesAlerts: Record<string, AlertVoie[]> = {};
+      for (const voie of voies) {
+        const alerts = getVoieAlerts(voie, ignoredAlertCodes);
+        if (alerts.length > 0) {
+          newVoiesAlerts[voie.id] = alerts;
+        }
+      }
+      setVoiesAlerts(newVoiesAlerts);
+    },
+    [getVoieAlerts]
+  );
+
+  const value = useMemo(
+    () => ({
+      voiesAlerts,
+      reloadVoieAlerts,
+      reloadVoiesAlerts,
+      numerosAlerts,
+      reloadNumerosAlerts,
+    }),
+    [
+      voiesAlerts,
+      reloadVoieAlerts,
+      reloadVoiesAlerts,
+      numerosAlerts,
+      reloadNumerosAlerts,
+    ]
+  );
+
+  return <AlertsContext.Provider value={value} {...props} />;
+}
+
+export default AlertsContext;

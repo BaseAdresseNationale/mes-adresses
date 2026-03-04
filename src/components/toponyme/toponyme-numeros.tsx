@@ -6,7 +6,6 @@ import {
   EditIcon,
   Tooltip,
   CommentIcon,
-  WarningSignIcon,
   Position,
 } from "evergreen-ui";
 import { Numero } from "@/lib/openapi-api-bal";
