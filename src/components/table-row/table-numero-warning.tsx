@@ -1,6 +1,9 @@
 import { ExtendedBaseLocaleDTO, Numero } from "@/lib/openapi-api-bal";
 import { AlertNumero } from "@/lib/alerts/alerts.types";
-import { isAlertNumeroSuffixe } from "@/lib/alerts/utils/alerts-numero.utils";
+import {
+  isAlertNumeroParcelle,
+  isAlertNumeroSuffixe,
+} from "@/lib/alerts/utils/alerts-numero.utils";
 import WarningNumero from "./alerts-warning/warning-numero";
 import { Li, majorScale, Menu, Pane, Ul } from "evergreen-ui";
 
@@ -24,6 +27,12 @@ function TableNumeroWarning({ alerts, onSelect }: TableNumeroWarningProps) {
               {isAlertNumeroSuffixe(alert) ? (
                 <WarningNumero
                   title="Le suffixe du numéro est incorrect"
+                  goToFormNumero={onSelect}
+                />
+              ) : null}
+              {isAlertNumeroParcelle(alert) ? (
+                <WarningNumero
+                  title="Une parcelles n'existe pas dans le cadastre"
                   goToFormNumero={onSelect}
                 />
               ) : null}

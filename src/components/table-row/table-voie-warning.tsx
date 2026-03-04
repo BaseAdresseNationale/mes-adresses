@@ -39,16 +39,10 @@ function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
                   ) : null}
                 </>
               ) : alert.model === AlertModelEnum.NUMERO ? (
-                <>
-                  {alert.codes.includes(
-                    AlertCodeNumeroEnum.SUFFIXE_CARACTERE_INVALIDE
-                  ) ? (
-                    <WarningLink
-                      title="Suggestion sur les numéros de la voie"
-                      url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`}
-                    />
-                  ) : null}
-                </>
+                <WarningLink
+                  title="Suggestion sur les numéros de la voie"
+                  url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`}
+                />
               ) : null}
             </Li>
           );
