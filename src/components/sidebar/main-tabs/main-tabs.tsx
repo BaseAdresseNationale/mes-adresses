@@ -69,6 +69,7 @@ function MainTabs({ balId }: MainTabsProps) {
                   alt={`Illustration de l'onglet commune`}
                   draggable={false}
                   orientation="portrait"
+                  unoptimized
                 />
               </div>
             ),
@@ -87,6 +88,7 @@ function MainTabs({ balId }: MainTabsProps) {
                   alt={`Illustration de l'onglet voies`}
                   draggable={false}
                   orientation="portrait"
+                  unoptimized
                 />
               </DynamicTextIcon>
             ),
@@ -108,6 +110,7 @@ function MainTabs({ balId }: MainTabsProps) {
                   alt={`Illustration de l'onglet toponymes`}
                   draggable={false}
                   orientation="portrait"
+                  unoptimized
                 />
               </DynamicTextIcon>
             ),
@@ -126,6 +129,7 @@ function MainTabs({ balId }: MainTabsProps) {
                   alt={`Illustration de l'onglet signalements`}
                   draggable={false}
                   orientation="portrait"
+                  unoptimized
                 />
               </div>
             ),

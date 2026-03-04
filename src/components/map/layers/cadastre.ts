@@ -194,8 +194,6 @@ export const cadastreLayers = [
       visibility: "none",
       "text-field": [
         "concat",
-        ["get", "commune"],
-        ["get", "prefixe"],
         ["get", "section"],
         ["slice", ["concat", "000", ["to-string", ["get", "numero"]]], -4],
       ],
