@@ -7,7 +7,7 @@ interface ParcelleProperties {
   section: string;
   numero: string;
   contenance: number;
-  arpente: boolean
+  arpente: boolean;
   created: string;
   updated: string;
 }
@@ -29,7 +29,11 @@ export class CadastreService {
     return res.json();
   }
 
-  public static findCadastreCommune(coeCommune: string): Promise<ParcellesCollection> {
-    return this.request(`/cadastre-etalab/communes/${coeCommune}/geojson/parcelles`);
+  public static findCadastreCommune(
+    coeCommune: string
+  ): Promise<ParcellesCollection> {
+    return this.request(
+      `/cadastre-etalab/communes/${coeCommune}/geojson/parcelles`
+    );
   }
 }
