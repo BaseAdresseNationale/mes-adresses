@@ -7,10 +7,14 @@ import {
   TrashIcon,
   ControlIcon,
   Text,
+  defaultTheme,
+  UnorderedList,
+  ListItem,
 } from "evergreen-ui";
 
 import ParcellesContext from "@/contexts/parcelles";
 import MapContext from "@/contexts/map";
+import CadastreContext from "@/contexts/cadastre";
 
 import InputLabel from "@/components/input-label";
 
@@ -33,7 +37,12 @@ function SelectParcelles({
     handleHoveredParcelles,
     handleParcelles,
   } = useContext(ParcellesContext);
+  const { communeParcelles } = useContext(CadastreContext);
   const addressType = isToponyme ? "toponyme" : "numéro";
+
+  const invalidParcelles = highlightedParcelles.filter(
+    (p) => communeParcelles.length > 0 && !communeParcelles.includes(p)
+  );
 
   useEffect(() => {
     setHighlightedParcelles(initialParcelles);
@@ -42,7 +51,11 @@ function SelectParcelles({
     return () => {
       setIsParcelleSelectionEnabled(false);
     };
-  }, [setHighlightedParcelles, setIsParcelleSelectionEnabled]);
+  }, [
+    initialParcelles,
+    setHighlightedParcelles,
+    setIsParcelleSelectionEnabled,
+  ]);
 
   return (
     <Pane display="flex" flexDirection="column">
@@ -56,11 +69,12 @@ function SelectParcelles({
             const isHovered = hoveredParcelles.some(
               ({ id }) => id === parcelle
             );
+            const isInvalid = invalidParcelles.includes(parcelle);
             return (
               <Badge
                 key={parcelle}
                 isInteractive
-                color={isHovered ? "red" : "green"}
+                color={isHovered ? "red" : isInvalid ? "purple" : "green"}
                 margin={4}
                 onClick={() => handleParcelles([parcelle])}
                 onMouseEnter={() => handleHoveredParcelles([parcelle])}
@@ -88,6 +102,22 @@ function SelectParcelles({
             </Text>
           </Alert>
         </Pane>
+      )}
+
+      {invalidParcelles.length > 0 && (
+        <Alert
+          background={defaultTheme.colors.purpleTint}
+          borderColor={defaultTheme.colors.purple600}
+          marginTop={8}
+          hasIcon={false}
+          padding={8}
+        >
+          <Text color={defaultTheme.colors.purple600}>
+            {invalidParcelles.length > 1
+              ? "Plusieurs parcelles n'existent pas dans le cadastre"
+              : "Une parcelle n'existe pas dans le cadastre"}
+          </Text>
+        </Alert>
       )}
 
       <Button

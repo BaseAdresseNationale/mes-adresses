@@ -32,7 +32,7 @@ function TableNumeroWarning({ alerts, onSelect }: TableNumeroWarningProps) {
               ) : null}
               {isAlertNumeroParcelle(alert) ? (
                 <WarningNumero
-                  title="Une parcelles n'existe pas dans le cadastre"
+                  title="La parcelle n'existe pas dans le cadastre"
                   goToFormNumero={onSelect}
                 />
               ) : null}

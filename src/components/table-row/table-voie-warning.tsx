@@ -17,10 +17,16 @@ interface TableVoieWarningProps {
 }
 
 function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
+  const dedupedAlerts = alerts.filter(
+    (alert, index, self) =>
+      alert.model !== AlertModelEnum.NUMERO ||
+      self.findIndex((a) => a.model === AlertModelEnum.NUMERO) === index
+  );
+
   return (
     <Menu>
       <Ul listStyle="none" paddingRight={16}>
-        {alerts.map((alert, index) => {
+        {dedupedAlerts.map((alert, index) => {
           return (
             <Li key={`alert-${index}`}>
               {index > 0 && (

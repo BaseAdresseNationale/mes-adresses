@@ -60,7 +60,7 @@ export type Alert<M extends AlertModelEnum = AlertModelEnum> = {
   value: string;
   remediation?: string;
 } & (M extends AlertModelEnum.NUMERO
-  ? { voieId?: string; numero: number }
+  ? { voieId?: string; numero: number; suffixe: string }
   : unknown);
 
 export type AlertVoie = Alert<AlertModelEnum.VOIE>;

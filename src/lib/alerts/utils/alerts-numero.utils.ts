@@ -7,8 +7,6 @@ import {
 } from "../alerts.types";
 import { AlertModelEnum } from "../alerts.types";
 import { computeNumeroSuffixeAlerts } from "./fields/numero-suffixe.utils";
-import CadastreContext from "@/contexts/cadastre";
-import { useContext } from "react";
 
 export const getNumeroSuffixeAlert = (
   numero: Numero
@@ -23,6 +21,7 @@ export const getNumeroSuffixeAlert = (
       remediation,
       voieId: numero.voieId,
       numero: numero.numero,
+      suffixe: numero.suffixe,
     } as AlertNumero;
   }
 };
@@ -31,6 +30,9 @@ export const getNumeroParcelleNotExistAlert = (
   numero: Numero,
   communeParcelles: string[]
 ): AlertNumero | undefined => {
+  if (communeParcelles.length <= 0) {
+    return;
+  }
   for (const parcelle of numero.parcelles) {
     if (!communeParcelles.includes(parcelle)) {
       return {
@@ -40,6 +42,7 @@ export const getNumeroParcelleNotExistAlert = (
         value: parcelle,
         voieId: numero.voieId,
         numero: numero.numero,
+        suffixe: numero.suffixe,
       } as AlertNumero;
     }
   }

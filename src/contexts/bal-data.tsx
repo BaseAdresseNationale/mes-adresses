@@ -128,7 +128,13 @@ export function BalDataContextProvider({
     if (!isBALDataLoaded) {
       fetchBALData();
     }
-  }, [initialBaseLocale, isBALDataLoaded]);
+  }, [
+    baseLocale.settings?.ignoredAlertCodes,
+    initialBaseLocale,
+    isBALDataLoaded,
+    reloadNumerosAlerts,
+    reloadVoiesAlerts,
+  ]);
 
   const {
     habilitation,

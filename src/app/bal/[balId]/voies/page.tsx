@@ -379,7 +379,8 @@ export default function VoiesPage() {
               onClick={() => setIsBatchMode(true)}
               style={{ backgroundColor: defaultTheme.colors.purple600 }}
             >
-              Traiter les {batchItems.length} suggestion
+              Traiter {batchItems.length > 1 ? "les" : "la"}{" "}
+              {batchItems.length > 1 ? batchItems.length : ""} suggestion
               {batchItems.length > 1 ? "s" : ""}
             </Button>
           </Pane>

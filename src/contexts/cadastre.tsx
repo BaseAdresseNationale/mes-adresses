@@ -29,7 +29,6 @@ export function CadastreContextProvider({
       const parcelles = featureCollection.features?.map(
         ({ id }) => id
       ) as string[];
-      console.log(parcelles);
       setCommuneParcelles(parcelles);
     }
 

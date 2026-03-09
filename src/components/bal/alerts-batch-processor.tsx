@@ -40,7 +40,10 @@ import AlertsContext from "@/contexts/alerts";
 import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";
 import AlertNameDiff from "./alert-name-diff";
-import { isAlertNumeroSuffixe } from "@/lib/alerts/utils/alerts-numero.utils";
+import {
+  isAlertNumeroSuffixe,
+  isAlertNumeroParcelle,
+} from "@/lib/alerts/utils/alerts-numero.utils";
 
 export interface AlertBatchItem {
   voie: ExtendedVoieDTO;
@@ -81,6 +84,9 @@ function AlertsBatchProcessor({
   const isNumeroSuffixeAlert =
     currentItem?.alert.model === AlertModelEnum.NUMERO &&
     isAlertNumeroSuffixe(currentItem.alert);
+  const isNumeroParcellAlert =
+    currentItem?.alert.model === AlertModelEnum.NUMERO &&
+    isAlertNumeroParcelle(currentItem.alert);
   const isVoieEmpty =
     currentItem?.alert.model === AlertModelEnum.VOIE &&
     (currentItem?.alert.codes as AlertCodeVoieEnum[]).includes(
@@ -220,6 +226,49 @@ function AlertsBatchProcessor({
     baseLocale.settings?.ignoredAlertCodes,
   ]);
 
+  const handleRemoveInvalidParcelle = useCallback(async () => {
+    if (!currentItem || !isNumeroParcellAlert || !currentItem.numeroId) return;
+
+    setIsLoading(true);
+    try {
+      const numero = await NumerosService.findNumero(currentItem.numeroId);
+      const invalidParcelle = (currentItem.alert as AlertNumero).value;
+      const filteredParcelles = numero.parcelles.filter(
+        (p) => p !== invalidParcelle
+      );
+
+      const applyCorrection = toaster(
+        () =>
+          NumerosService.updateNumero(currentItem.numeroId, {
+            parcelles: filteredParcelles,
+          }),
+        "La parcelle a été supprimée",
+        "La parcelle n'a pas pu être supprimée"
+      );
+      await applyCorrection();
+
+      reloadNumerosAlerts(
+        baseLocale.id,
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+      );
+      reloadTiles();
+      refreshBALSync();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    currentItem,
+    isNumeroParcellAlert,
+    toaster,
+    reloadNumerosAlerts,
+    reloadTiles,
+    refreshBALSync,
+    baseLocale.id,
+    baseLocale.settings?.ignoredAlertCodes,
+  ]);
+
   if (!currentItem) {
     return (
       <Pane
@@ -271,17 +320,22 @@ function AlertsBatchProcessor({
               ? "Suggestion voie sans adresse"
               : isNumeroSuffixeAlert
                 ? "Suggestion sur le suffixe du numero"
-                : null}
+                : isNumeroParcellAlert
+                  ? "Parcelle inexistante dans le cadastre"
+                  : null}
         </Heading>
         <Text is="p">
           {isVoieNameAlert || isVoieEmpty ? (
             <>{currentItem.voie.nom}</>
-          ) : isNumeroSuffixeAlert ? (
+          ) : isNumeroSuffixeAlert || isNumeroParcellAlert ? (
             <>
               {(currentItem.alert as AlertNumero).numero}{" "}
-              {(currentItem.alert as AlertNumero).value} {currentItem.voie.nom}
+              {(currentItem.alert as AlertNumero).suffixe}{" "}
+              {currentItem.voie.nom}
             </>
-          ) : null}
+          ) : (
+            ""
+          )}
         </Text>
 
         {/* Alert descriptions */}
@@ -348,6 +402,21 @@ function AlertsBatchProcessor({
             </Text>
           </Pane>
         )}
+
+        {/* Info for parcelle not exist alerts */}
+        {isNumeroParcellAlert && (
+          <Pane
+            background="tint1"
+            padding={12}
+            borderRadius={4}
+            marginBottom={16}
+          >
+            <Text display="block" marginBottom={8}>
+              La parcelle &quot;{currentItem.alert.value}&quot; n&apos;existe
+              pas dans le cadastre de la commune.
+            </Text>
+          </Pane>
+        )}
       </Pane>
 
       {/* Action buttons - sticky bottom */}
@@ -383,6 +452,17 @@ function AlertsBatchProcessor({
             style={{ backgroundColor: defaultTheme.colors.purple600 }}
           >
             Convertir en toponyme
+          </Button>
+        )}
+        {isNumeroParcellAlert && (
+          <Button
+            isLoading={isLoading}
+            onClick={handleRemoveInvalidParcelle}
+            appearance="primary"
+            iconAfter={TickCircleIcon}
+            style={{ backgroundColor: defaultTheme.colors.purple600 }}
+          >
+            Supprimer la parcelle
           </Button>
         )}
         <Button

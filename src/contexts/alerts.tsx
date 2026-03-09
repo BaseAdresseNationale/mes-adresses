@@ -56,12 +56,10 @@ export function AlertsContextProvider(props: ChildrenProps) {
       );
       const newNumerosAlerts: Record<string, AlertNumero[]> = {};
       for (const numero of balNumeros) {
-        console.log(numero);
         const alerts = [
           getNumeroSuffixeAlert(numero),
           getNumeroParcelleNotExistAlert(numero, communeParcelles),
         ];
-        console.log(alerts);
         const filteredAlerts = alerts
           .filter((alert) => alert !== undefined)
           .filter((alert) =>
@@ -73,7 +71,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       }
       setNumerosAlerts(newNumerosAlerts);
     },
-    []
+    [communeParcelles]
   );
 
   const getVoieAlerts = useCallback(
