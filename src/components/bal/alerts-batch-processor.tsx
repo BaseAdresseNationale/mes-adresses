@@ -70,7 +70,6 @@ function AlertsBatchProcessor({
     reloadVoieAlerts,
     reloadNumerosAlerts,
   } = useContext(BalDataContext);
-  // const { reloadVoieAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
 
