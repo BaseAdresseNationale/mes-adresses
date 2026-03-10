@@ -21,7 +21,6 @@ import {
   AlertNumero,
   AlertModelEnum,
   AlertCodeVoieEnum,
-  AlertCodeEnum,
   isAlertCodeVoieEnum,
   isAlertCodeNumeroEnum,
 } from "@/lib/alerts/alerts.types";
@@ -36,7 +35,6 @@ import {
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import BalDataContext from "@/contexts/bal-data";
-import AlertsContext from "@/contexts/alerts";
 import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";
 import AlertNameDiff from "./alert-name-diff";
@@ -65,13 +63,14 @@ function AlertsBatchProcessor({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const {
-    baseLocale,
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
     refreshBALSync,
+    reloadVoieAlerts,
+    reloadNumerosAlerts,
   } = useContext(BalDataContext);
-  const { reloadVoieAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
+  // const { reloadVoieAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
 
@@ -138,10 +137,8 @@ function AlertsBatchProcessor({
           ({ id }) => id === currentItem.voie.id
         );
         if (updatedVoie) {
-          reloadVoieAlerts(
-            updatedVoie,
-            (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-          );
+          // RELOAD ALERTS
+          reloadVoieAlerts(updatedVoie);
         }
       } else if (isNumeroSuffixeAlert && currentItem.numeroId) {
         const applyCorrection = toaster(
@@ -154,10 +151,7 @@ function AlertsBatchProcessor({
         );
         await applyCorrection();
 
-        await reloadNumerosAlerts(
-          baseLocale.id,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-        );
+        await reloadNumerosAlerts();
       }
 
       reloadTiles();
@@ -180,8 +174,6 @@ function AlertsBatchProcessor({
     reloadNumerosAlerts,
     reloadTiles,
     refreshBALSync,
-    baseLocale.id,
-    baseLocale.settings?.ignoredAlertCodes,
   ]);
 
   const handleConvertToToponyme = useCallback(async () => {
@@ -195,10 +187,8 @@ function AlertsBatchProcessor({
           await reloadVoies();
           await reloadToponymes();
           await reloadParcelles();
-          reloadVoieAlerts(
-            currentItem.voie,
-            (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-          );
+          // RELOAD ALERTS
+          reloadVoieAlerts(currentItem.voie);
         },
         "La voie a bien été convertie en toponyme",
         "La voie n'a pas pu être convertie en toponyme"
@@ -223,7 +213,6 @@ function AlertsBatchProcessor({
     reloadVoieAlerts,
     reloadTiles,
     refreshBALSync,
-    baseLocale.settings?.ignoredAlertCodes,
   ]);
 
   const handleRemoveInvalidParcelle = useCallback(async () => {
@@ -247,10 +236,7 @@ function AlertsBatchProcessor({
       );
       await applyCorrection();
 
-      reloadNumerosAlerts(
-        baseLocale.id,
-        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-      );
+      reloadNumerosAlerts();
       reloadTiles();
       refreshBALSync();
     } catch (err) {
@@ -265,8 +251,6 @@ function AlertsBatchProcessor({
     reloadNumerosAlerts,
     reloadTiles,
     refreshBALSync,
-    baseLocale.id,
-    baseLocale.settings?.ignoredAlertCodes,
   ]);
 
   if (!currentItem) {

@@ -66,6 +66,9 @@ interface BALDataContextType {
   reloadVoieNumeros: (voieId: string) => Promise<void>;
   commune: CommuneType | null;
   setNumeros: React.Dispatch<React.SetStateAction<Numero[]>>;
+  reloadVoiesAlerts: () => Promise<void>;
+  reloadVoieAlerts: (voie: ExtendedVoieDTO) => Promise<void>;
+  reloadNumerosAlerts: () => Promise<void>;
 }
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null);
@@ -95,7 +98,8 @@ export function BalDataContextProvider({
   const { pushToast } = useContext(LayoutContext);
   const { token } = useContext(TokenContext);
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
-  const { reloadVoiesAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
+  const { reloadVoiesAlerts, reloadVoieAlerts, reloadNumerosAlerts } =
+    useContext(AlertsContext);
 
   useEffect(() => {
     async function fetchBALData() {
@@ -209,6 +213,34 @@ export function BalDataContextProvider({
     }
   }, [baseLocale, isRefrehSyncStat, reloadBaseLocale, pushToast]);
 
+  const _reloadVoieAlerts = useCallback(
+    async (voie: ExtendedVoieDTO) => {
+      reloadVoieAlerts(
+        voie,
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+      );
+    },
+    [baseLocale.settings?.ignoredAlertCodes, reloadVoieAlerts]
+  );
+
+  const _reloadVoiesAlerts = useCallback(async () => {
+    reloadVoiesAlerts(
+      voies,
+      (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+    );
+  }, [baseLocale.settings?.ignoredAlertCodes, reloadVoiesAlerts, voies]);
+
+  const _reloadNumerosAlerts = useCallback(async () => {
+    reloadNumerosAlerts(
+      baseLocale.id,
+      (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+    );
+  }, [
+    baseLocale.settings?.ignoredAlertCodes,
+    reloadNumerosAlerts,
+    baseLocale.id,
+  ]);
+
   const setEditingId = useCallback(
     (editingId: string) => {
       if (token) {
@@ -293,6 +325,9 @@ export function BalDataContextProvider({
       setIsHabilitationProcessDisplayed,
       reloadVoieNumeros,
       commune,
+      reloadVoieAlerts: _reloadVoieAlerts,
+      reloadVoiesAlerts: _reloadVoiesAlerts,
+      reloadNumerosAlerts: _reloadNumerosAlerts,
     }),
     [
       isEditing,
@@ -322,6 +357,9 @@ export function BalDataContextProvider({
       reloadVoieNumeros,
       commune,
       setNumeros,
+      _reloadVoieAlerts,
+      _reloadVoiesAlerts,
+      _reloadNumerosAlerts,
     ]
   );
 
