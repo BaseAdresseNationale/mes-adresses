@@ -2,11 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UpdateSignalementDTO = {
-    status: UpdateSignalementDTO.status;
-    rejectionReason?: string;
+export type UpdateAlertDTO = {
+    status: UpdateAlertDTO.status;
 };
-export namespace UpdateSignalementDTO {
+export namespace UpdateAlertDTO {
     export enum status {
         PENDING = 'PENDING',
         IGNORED = 'IGNORED',

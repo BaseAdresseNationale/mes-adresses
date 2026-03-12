@@ -1,12 +1,10 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { ExistingToponyme } from './ExistingToponyme';
 import type { ExistingVoie } from './ExistingVoie';
 import type { Position } from './Position';
-
 export type ExistingNumero = {
     type: ExistingNumero.type;
     banId?: string | null;
@@ -17,15 +15,11 @@ export type ExistingNumero = {
     toponyme: (ExistingVoie | ExistingToponyme);
     nomComplement?: string;
 };
-
 export namespace ExistingNumero {
-
     export enum type {
         NUMERO = 'NUMERO',
         VOIE = 'VOIE',
         TOPONYME = 'TOPONYME',
     }
-
-
 }
 

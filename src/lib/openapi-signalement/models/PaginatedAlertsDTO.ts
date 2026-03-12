@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Signalement } from './Signalement';
-export type PaginatedSignalementsDTO = {
-    data: Array<Signalement>;
+import type { Alert } from './Alert';
+export type PaginatedAlertsDTO = {
+    data: Array<Alert>;
     page: number;
     limit: number;
     total: number;
