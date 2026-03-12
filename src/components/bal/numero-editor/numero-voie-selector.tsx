@@ -59,6 +59,7 @@ function NumeroVoieSelector({
   };
 
   const handleVoieChange = (voie: Voie) => {
+    console.log("voie selected", voie);
     const idVoie = voie.id;
     handleVoie(idVoie ?? null);
   };

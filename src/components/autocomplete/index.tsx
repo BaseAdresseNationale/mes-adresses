@@ -104,7 +104,7 @@ function AutocompleteInput<T>({
             ...changes,
             ...(selectedValue
               ? {
-                  inputValue: selectedValue.id,
+                  inputValue: itemToString(selectedValue),
                 }
               : null),
           };
@@ -112,7 +112,7 @@ function AutocompleteInput<T>({
           return changes;
       }
     },
-    [onSelect]
+    [onSelect, itemToString]
   );
 
   const {

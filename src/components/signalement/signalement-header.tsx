@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/purity */
 import {
-  Alert,
+  Alert as AlertUI,
   LockIcon,
   Pane,
   Paragraph,
@@ -8,32 +8,35 @@ import {
   UnlockIcon,
 } from "evergreen-ui";
 import SignalementTypeBadge from "./signalement-type-badge";
-import { Signalement, Source } from "@/lib/openapi-signalement";
+import { Alert, Signalement, Source } from "@/lib/openapi-signalement";
 import { getDuration, getLongFormattedDate } from "@/lib/utils/date";
 
 interface SignalementHeaderProps {
-  signalement: Signalement;
+  signalement: Signalement | Alert;
   author?: Signalement["author"];
 }
 
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 
+function getComment(signalement: Signalement | Alert): string | undefined {
+  if ("changesRequested" in signalement) {
+    return (signalement as Signalement).changesRequested.comment;
+  }
+
+  return (signalement as Alert).comment;
+}
+
 export function SignalementHeader({
   signalement,
   author,
 }: SignalementHeaderProps) {
-  const {
-    type,
-    createdAt,
-    source,
-    changesRequested,
-    status,
-    updatedAt,
-    rejectionReason,
-  } = signalement;
+  const { type, createdAt, source, status, updatedAt } = signalement;
+  const rejectionReason =
+    "rejectionReason" in signalement ? signalement.rejectionReason : undefined;
+  const comment = getComment(signalement);
 
   return (
-    <Alert
+    <AlertUI
       hasIcon={false}
       title={<SignalementTypeBadge type={type} />}
       intent="info"
@@ -77,9 +80,9 @@ export function SignalementHeader({
           )}
         </Paragraph>
 
-        {changesRequested.comment && (
+        {comment && (
           <Paragraph marginTop={10}>
-            Commentaire : <b>{changesRequested.comment}</b>
+            Commentaire : <b>{comment}</b>
           </Paragraph>
         )}
 
@@ -105,6 +108,6 @@ export function SignalementHeader({
           </>
         )}
       </Pane>
-    </Alert>
+    </AlertUI>
   );
 }

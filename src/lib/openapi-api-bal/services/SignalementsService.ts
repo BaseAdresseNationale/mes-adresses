@@ -1,51 +1,67 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { UpdateManySignalementDTO } from '../models/UpdateManySignalementDTO';
-import type { UpdateOneSignalementDTO } from '../models/UpdateOneSignalementDTO';
-
+import type { UpdateManyReportsDTO } from '../models/UpdateManyReportsDTO';
+import type { UpdateOneReportDTO } from '../models/UpdateOneReportDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class SignalementsService {
-
     /**
-     * Update one signalement
-     * @param signalementId
+     * Get signalement by id
+     * @param idSignalement
+     * @param baseLocaleId
+     * @returns any
+     * @throws ApiError
+     */
+    public static getReport(
+        idSignalement: string,
+        baseLocaleId: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/signalements/{baseLocaleId}/{idSignalement}',
+            path: {
+                'idSignalement': idSignalement,
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+    /**
+     * Update one report
+     * @param reportId
      * @param baseLocaleId
      * @param requestBody
      * @returns boolean
      * @throws ApiError
      */
-    public static updateSignalement(
-        signalementId: string,
+    public static updateReport(
+        reportId: string,
         baseLocaleId: string,
-        requestBody: UpdateOneSignalementDTO,
+        requestBody: UpdateOneReportDTO,
     ): CancelablePromise<boolean> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/v2/signalements/{baseLocaleId}/{signalementId}',
+            url: '/v2/signalements/{baseLocaleId}/{reportId}',
             path: {
-                'signalementId': signalementId,
+                'reportId': reportId,
                 'baseLocaleId': baseLocaleId,
             },
             body: requestBody,
             mediaType: 'application/json',
         });
     }
-
     /**
-     * Update many signalements
+     * Update many reports
      * @param baseLocaleId
      * @param requestBody
      * @returns boolean
      * @throws ApiError
      */
-    public static updateSignalements(
+    public static updateReports(
         baseLocaleId: string,
-        requestBody: UpdateManySignalementDTO,
+        requestBody: UpdateManyReportsDTO,
     ): CancelablePromise<boolean> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -57,26 +73,4 @@ export class SignalementsService {
             mediaType: 'application/json',
         });
     }
-
-    /**
-     * Get author by signalement id
-     * @param idSignalement
-     * @param baseLocaleId
-     * @returns any
-     * @throws ApiError
-     */
-    public static getAuthor(
-        idSignalement: string,
-        baseLocaleId: string,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/v2/signalements/{baseLocaleId}/{idSignalement}/author',
-            path: {
-                'idSignalement': idSignalement,
-                'baseLocaleId': baseLocaleId,
-            },
-        });
-    }
-
 }

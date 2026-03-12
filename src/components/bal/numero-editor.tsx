@@ -43,7 +43,7 @@ interface NumeroEditorProps {
   initialValue?: Numero;
   commune: CommuneType;
   closeForm: () => void;
-  onSubmitted?: () => void;
+  onSubmitted?: (numero: Numero) => void;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
   certificationBtnProps?: Partial<CertificationButtonProps>;
   onVoieChanged?: () => void;
@@ -171,6 +171,7 @@ function NumeroEditor({
 
         const voie = await getEditedVoie();
 
+        let numero;
         if (initialValue?.id) {
           const updateNumero = toaster(
             () =>
@@ -184,7 +185,7 @@ function NumeroEditor({
               setValidationMessages(err.body.message);
             }
           );
-          await updateNumero();
+          numero = await updateNumero();
         } else {
           const createNumero = toaster(
             () => VoiesService.createNumero(voie.id, body),
@@ -194,7 +195,7 @@ function NumeroEditor({
               setValidationMessages(err.body.message);
             }
           );
-          await createNumero();
+          numero = await createNumero();
         }
 
         await reloadNumeros();
@@ -207,7 +208,7 @@ function NumeroEditor({
         await reloadVoies();
 
         if (onSubmitted) {
-          onSubmitted();
+          onSubmitted(numero);
         }
 
         refreshBALSync();

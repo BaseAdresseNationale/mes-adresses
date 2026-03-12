@@ -1,17 +1,14 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
 import type { GenerateCertificatDTO } from '../models/GenerateCertificatDTO';
 import type { Numero } from '../models/Numero';
 import type { UpdateNumeroDTO } from '../models/UpdateNumeroDTO';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class NumerosService {
-
     /**
      * Find the numero by id
      * @param numeroId
@@ -29,7 +26,6 @@ export class NumerosService {
             },
         });
     }
-
     /**
      * Update the numero by id
      * @param numeroId
@@ -51,7 +47,6 @@ export class NumerosService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Delete the numero by id
      * @param numeroId
@@ -69,7 +64,6 @@ export class NumerosService {
             },
         });
     }
-
     /**
      * Generate the certificat of the numero by id
      * @param numeroId
@@ -91,7 +85,6 @@ export class NumerosService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Generate the arrete de numerotation by numero id
      * @param numeroId
@@ -115,7 +108,6 @@ export class NumerosService {
             mediaType: 'multipart/form-data',
         });
     }
-
     /**
      * Soft delete the numero by id
      * @param numeroId
@@ -133,5 +125,4 @@ export class NumerosService {
             },
         });
     }
-
 }

@@ -81,7 +81,7 @@ export default function SignalementPage({
   // and the signalement is still pending
   useEffect(() => {
     const markSignalementAsExpired = async () => {
-      await SignalementsServiceBal.updateSignalements(baseLocale.id, {
+      await SignalementsServiceBal.updateReports(baseLocale.id, {
         ids: [signalement.id],
         status: Signalement.status.EXPIRED,
       });
@@ -95,11 +95,11 @@ export default function SignalementPage({
   // Fetch the author of the signalement
   useEffect(() => {
     const fetchAuthor = async () => {
-      const author = await SignalementsServiceBal.getAuthor(
+      const report = await SignalementsServiceBal.getReport(
         signalement.id,
         baseLocale.id
       );
-      setAuthor(author);
+      setAuthor(report.author);
     };
 
     if (token) {
@@ -118,10 +118,13 @@ export default function SignalementPage({
   }, [fetchPendingSignalements]);
 
   const handleSubmit = useCallback(
-    async (status: Signalement.status, reason?: string) => {
+    async (status: Signalement.status, rejectionReason?: string) => {
       const _updateSignalement = toaster(
         async () => {
-          await updateOneSignalement(signalement.id, status, reason);
+          await updateOneSignalement(signalement.id, {
+            status,
+            rejectionReason,
+          });
           await refreshBALSync();
         },
         status === Signalement.status.PROCESSED

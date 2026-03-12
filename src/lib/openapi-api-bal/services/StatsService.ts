@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -6,13 +6,10 @@ import type { BaseLocale } from '../models/BaseLocale';
 import type { BasesLocalesCreationDTO } from '../models/BasesLocalesCreationDTO';
 import type { BasesLocalesStatusDTO } from '../models/BasesLocalesStatusDTO';
 import type { CodeCommuneDTO } from '../models/CodeCommuneDTO';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class StatsService {
-
     /**
      * Find all Bals (filtered by codeCommune)
      * @param requestBody
@@ -34,7 +31,6 @@ export class StatsService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Find all Bals status
      * @returns BasesLocalesStatusDTO
@@ -46,7 +42,6 @@ export class StatsService {
             url: '/v2/stats/bals/status',
         });
     }
-
     /**
      * Find all created Bals between date
      * @param from
@@ -67,5 +62,4 @@ export class StatsService {
             },
         });
     }
-
 }

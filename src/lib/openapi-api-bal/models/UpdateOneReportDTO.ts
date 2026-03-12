@@ -1,22 +1,17 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
-export type UpdateOneSignalementDTO = {
-    status: UpdateOneSignalementDTO.status;
-    rejectionReason?: string;
+export type UpdateOneReportDTO = {
+    status: UpdateOneReportDTO.status;
+    rejectionReason?: string | null;
 };
-
-export namespace UpdateOneSignalementDTO {
-
+export namespace UpdateOneReportDTO {
     export enum status {
         PENDING = 'PENDING',
         IGNORED = 'IGNORED',
         PROCESSED = 'PROCESSED',
         EXPIRED = 'EXPIRED',
     }
-
-
 }
 

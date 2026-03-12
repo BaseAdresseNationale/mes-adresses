@@ -9,7 +9,10 @@ import React, {
 } from "react";
 
 import { Report, ReportsService, Signalement } from "@/lib/openapi-signalement";
-import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api-bal";
+import {
+  SignalementsService as SignalementsServiceBal,
+  UpdateOneReportDTO,
+} from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
 import BalDataContext from "./bal-data";
 import TokenContext from "./token";
@@ -24,8 +27,7 @@ interface SignalementContextType {
   ) => Promise<void>;
   updateOneSignalement: (
     id: string,
-    status: Signalement.status,
-    rejectionReason?: string
+    reportDTO: UpdateOneReportDTO
   ) => Promise<void>;
   fetchPendingSignalements: (
     limit?: number,
@@ -98,7 +100,7 @@ export function SignalementContextProvider(props: ChildrenProps) {
 
   const updateManySignalements = useCallback(
     async (ids: string[], status: Signalement.status) => {
-      await SignalementsServiceBal.updateSignalements(baseLocale.id, {
+      await SignalementsServiceBal.updateReports(baseLocale.id, {
         ids,
         status,
       });
@@ -108,15 +110,8 @@ export function SignalementContextProvider(props: ChildrenProps) {
   );
 
   const updateOneSignalement = useCallback(
-    async (
-      id: string,
-      status: Signalement.status,
-      rejectionReason?: string
-    ) => {
-      await SignalementsServiceBal.updateSignalement(id, baseLocale.id, {
-        status,
-        rejectionReason,
-      });
+    async (id: string, reportDTO: UpdateOneReportDTO) => {
+      await SignalementsServiceBal.updateReport(id, baseLocale.id, reportDTO);
       await fetchSignalementCount();
     },
     [baseLocale, fetchSignalementCount]

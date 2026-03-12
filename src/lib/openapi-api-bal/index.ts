@@ -1,4 +1,4 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
@@ -49,9 +49,9 @@ export type { UpdateBaseLocaleDemoDTO } from './models/UpdateBaseLocaleDemoDTO';
 export type { UpdateBaseLocaleDTO } from './models/UpdateBaseLocaleDTO';
 export type { UpdateBatchNumeroChangeDTO } from './models/UpdateBatchNumeroChangeDTO';
 export type { UpdateBatchNumeroDTO } from './models/UpdateBatchNumeroDTO';
-export { UpdateManySignalementDTO } from './models/UpdateManySignalementDTO';
+export { UpdateManyReportsDTO } from './models/UpdateManyReportsDTO';
 export type { UpdateNumeroDTO } from './models/UpdateNumeroDTO';
-export { UpdateOneSignalementDTO } from './models/UpdateOneSignalementDTO';
+export { UpdateOneReportDTO } from './models/UpdateOneReportDTO';
 export type { UpdateToponymeDTO } from './models/UpdateToponymeDTO';
 export { UpdateVoieDTO } from './models/UpdateVoieDTO';
 export type { ValidatePinCodeDTO } from './models/ValidatePinCodeDTO';
