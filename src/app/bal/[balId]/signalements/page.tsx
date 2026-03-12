@@ -1,6 +1,6 @@
 import SignalementsPage from "@/components/signalement/signalements-page";
 import { BasesLocalesService } from "@/lib/openapi-api-bal";
-import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
+import { Report, ReportsService } from "@/lib/openapi-signalement";
 
 export default async function SignalementsPageSSR({
   params,
@@ -13,14 +13,14 @@ export default async function SignalementsPageSSR({
 
   const baseLocale = await BasesLocalesService.findBaseLocale(balId, true);
 
-  const paginatedSignalements = await SignalementsService.getSignalements(
+  const paginatedReports = await ReportsService.getReports(
     100,
     undefined,
-    [Signalement.status.PENDING],
     undefined,
+    [Report.status.PENDING],
     undefined,
     [baseLocale.commune]
   );
 
-  return <SignalementsPage paginatedSignalements={paginatedSignalements} />;
+  return <SignalementsPage paginatedReports={paginatedReports} />;
 }

@@ -21,7 +21,7 @@ import {
 } from "@/lib/openapi-api-bal";
 import CertificationCount from "../certification-count";
 import { canFetchSignalements } from "@/lib/utils/signalement";
-import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
+import { ReportsService, Signalement } from "@/lib/openapi-signalement";
 import { getCommuneFlagProxy } from "@/lib/api-blason-commune";
 import styles from "./base-locale-card.module.css";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
@@ -62,11 +62,11 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
 
     const fetchPendingSignalementsCount = async () => {
       try {
-        const paginatedSignalements = await SignalementsService.getSignalements(
+        const paginatedSignalements = await ReportsService.getReports(
           1,
           undefined,
-          [Signalement.status.PENDING],
           undefined,
+          [Signalement.status.PENDING],
           undefined,
           [baseLocale.commune]
         );

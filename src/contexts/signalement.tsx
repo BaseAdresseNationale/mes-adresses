@@ -8,7 +8,7 @@ import React, {
   useMemo,
 } from "react";
 
-import { Signalement, SignalementsService } from "@/lib/openapi-signalement";
+import { Report, ReportsService, Signalement } from "@/lib/openapi-signalement";
 import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api-bal";
 import { ChildrenProps } from "@/types/context";
 import BalDataContext from "./bal-data";
@@ -29,12 +29,12 @@ interface SignalementContextType {
   ) => Promise<void>;
   fetchPendingSignalements: (
     limit?: number,
-    types?: Signalement.type[]
-  ) => Promise<Signalement[]>;
+    types?: Report.type[]
+  ) => Promise<Report[]>;
   fetchArchivedSignalements: (
     limit?: number,
-    types?: Signalement.type[]
-  ) => Promise<Signalement[]>;
+    types?: Report.type[]
+  ) => Promise<Report[]>;
 }
 
 const SignalementContext = React.createContext<SignalementContextType | null>(
@@ -48,45 +48,45 @@ export function SignalementContextProvider(props: ChildrenProps) {
   const { token } = useContext(TokenContext);
 
   const fetchPendingSignalements = useCallback(
-    async (limit: number = 100, types?: Signalement.type[]) => {
+    async (limit: number = 100, types?: Report.type[]) => {
       if (!canFetchSignalements(baseLocale, token)) {
         return [];
       }
 
-      const paginatedSignalements = await SignalementsService.getSignalements(
+      const paginatedSignalements = await ReportsService.getReports(
         limit,
         undefined,
-        [Signalement.status.PENDING],
         types,
+        [Report.status.PENDING],
         undefined,
         [baseLocale.commune]
       );
 
       setPendingSignalementsCount(paginatedSignalements.total);
 
-      return paginatedSignalements.data as unknown as Signalement[];
+      return paginatedSignalements.data as unknown as Report[];
     },
     [baseLocale, token]
   );
 
   const fetchArchivedSignalements = useCallback(
-    async (limit: number = 100, types?: Signalement.type[]) => {
+    async (limit: number = 100, types?: Report.type[]) => {
       if (!canFetchSignalements(baseLocale, token)) {
         return [];
       }
 
-      const paginatedSignalements = await SignalementsService.getSignalements(
+      const paginatedSignalements = await ReportsService.getReports(
         limit,
         undefined,
-        [Signalement.status.PROCESSED, Signalement.status.IGNORED],
         types,
+        [Report.status.PROCESSED, Report.status.IGNORED],
         undefined,
         [baseLocale.commune]
       );
 
       setArchivedSignalementsCount(paginatedSignalements.total);
 
-      return paginatedSignalements.data as unknown as Signalement[];
+      return paginatedSignalements.data as unknown as Report[];
     },
     [baseLocale, token]
   );
