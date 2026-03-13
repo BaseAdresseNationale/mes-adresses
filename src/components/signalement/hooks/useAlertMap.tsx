@@ -4,7 +4,7 @@ import { Alert } from "@/lib/openapi-signalement";
 import { useContext, useEffect } from "react";
 import { signalementTypeMap } from "../signalement-type-badge";
 
-export function useAlertMap(alert: Alert) {
+export function useAlertMap(alert: Alert, showMarker = true) {
   const { map } = useContext(MapContext);
   const { addMarker, disableMarkers } = useContext(MarkersContext);
 
@@ -20,17 +20,19 @@ export function useAlertMap(alert: Alert) {
       screenSpeed: 2,
     });
 
-    addMarker({
-      id: alert.id,
-      isMapMarker: true,
-      isDisabled: true,
-      color: signalementTypeMap[alert.type]?.color || "red",
-      longitude: alert.point.coordinates[0],
-      latitude: alert.point.coordinates[1],
-    });
+    if (showMarker) {
+      addMarker({
+        id: alert.id,
+        isMapMarker: true,
+        isDisabled: true,
+        color: signalementTypeMap[alert.type]?.color || "red",
+        longitude: alert.point.coordinates[0],
+        latitude: alert.point.coordinates[1],
+      });
+    }
 
     return () => {
       disableMarkers();
     };
-  }, [alert, map]);
+  }, [alert, map, showMarker]);
 }

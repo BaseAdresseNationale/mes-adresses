@@ -25,6 +25,7 @@ import { SignalementHeader } from "../signalement-header";
 import Form from "@/components/form";
 import { MissingAddressContextDTO, Numero } from "@/lib/openapi-api-bal";
 import { getAddressPreview } from "@/lib/utils/address";
+import { useAlertMap } from "../hooks/useAlertMap";
 
 interface MissingAddressAlertFormProps {
   alert: AlertType;
@@ -51,14 +52,16 @@ export function MissingAddressAlertForm({
   const { commune } = useContext(BalDataContext);
   const { pendingSignalementsCount } = useContext(SignalementContext);
 
+  useAlertMap(alert, !showNumeroEditor);
+
   const onCreateNewAddress = (_numero: Numero) => {
     const { numero, suffixe, banId, voie, toponyme } = _numero;
     const label = getAddressPreview(
       numero,
       suffixe,
       commune,
-      voie?.nom,
-      toponyme?.nom
+      toponyme?.nom,
+      voie?.nom
     );
 
     return handleAccept({

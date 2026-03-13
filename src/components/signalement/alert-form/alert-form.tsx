@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Alert } from "@/lib/openapi-signalement";
 import { MissingAddressAlertForm } from "./missing-address-alert-form";
 import { UpdateOneReportDTO } from "@/lib/openapi-api-bal";
-import { useAlertMap } from "../hooks/useAlertMap";
 
 interface AlertFormProps {
   alert: Alert;
@@ -23,8 +22,6 @@ export function AlertForm({
   onClose,
 }: AlertFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-
-  useAlertMap(alert);
 
   const handleSubmit = async (
     status: Alert["status"],

@@ -29,6 +29,7 @@ import {
   BasesLocalesService,
   Numero,
   NumerosService,
+  Voie,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
@@ -210,7 +211,9 @@ function NumeroEditor({
         if (onSubmitted) {
           onSubmitted({
             ...numero,
-            voie: voies.find((v) => v.id === voie.id),
+            voie: (voie as Voie).nom
+              ? voie
+              : voies.find((v) => v.id === voie.id),
             toponyme: toponymes.find((t) => t.id === numero.toponymeId),
           });
         }
