@@ -52,7 +52,6 @@ export function MissingAddressAlertForm({
   const { pendingSignalementsCount } = useContext(SignalementContext);
 
   const onCreateNewAddress = (_numero: Numero) => {
-    console.log("onCreateNewAddress", _numero);
     const { numero, suffixe, banId, voie, toponyme } = _numero;
     const label = getAddressPreview(
       numero,
