@@ -23,6 +23,7 @@ import {
   ExtendedVoieDTO,
 } from "@/lib/openapi-api-bal";
 import TokenContext from "@/contexts/token";
+import MatomoTrackingContext from "@/contexts/matomo-tracking";
 import useHabilitation from "@/hooks/habilitation";
 import LayoutContext from "./layout";
 import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
@@ -92,7 +93,16 @@ export function BalDataContextProvider({
   const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
   const { pushToast } = useContext(LayoutContext);
   const { token } = useContext(TokenContext);
+  const { setBaseLocale: setMatomoBaseLocale } = useContext(
+    MatomoTrackingContext
+  );
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
+
+  // Sync baseLocale to Matomo tracking context
+  useEffect(() => {
+    setMatomoBaseLocale(baseLocale);
+    return () => setMatomoBaseLocale(null);
+  }, [baseLocale, setMatomoBaseLocale]);
 
   useEffect(() => {
     async function fetchBALData() {

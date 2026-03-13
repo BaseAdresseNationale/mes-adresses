@@ -39,8 +39,7 @@ export default async function RootLayout({
       </head>
       <body>
         <OpenAPIContextProvider>
-          {/* TODO */}
-          <MatomoTrackingContextProvider pageProps={{}}>
+          <MatomoTrackingContextProvider>
             <LayoutContextProvider>
               <BALWidgetProvider>
                 <LocalStorageContextProvider>
