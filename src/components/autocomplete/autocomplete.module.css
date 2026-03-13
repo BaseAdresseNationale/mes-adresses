@@ -17,4 +17,22 @@
   .itemBtn.selected {
     background-color: #f0f0f0;
   }
+
+  .resultList {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: none;
+
+    &.visible {
+      display: block;
+    }
+  }
 }

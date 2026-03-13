@@ -131,6 +131,8 @@ function AutocompleteInput<T>({
     stateReducer,
   });
 
+  const showResultsList = isOpen && inputValue && !isLoading;
+
   return (
     <Pane className={style.autocomplete} position="relative" width="100%">
       {label && (
@@ -138,46 +140,37 @@ function AutocompleteInput<T>({
           <Label {...getLabelProps()}>{label}</Label>
         </Pane>
       )}
-      {isOpen && inputValue && !isLoading && (
-        <Pane
-          is="ul"
-          overflow="hidden"
-          position="absolute"
-          width="100%"
-          zIndex={1}
-          maxHeight={200}
-          overflowY="auto"
-          background="white"
-          borderTopLeftRadius={3}
-          borderTopRightRadius={3}
-          boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
-          {...(resultsListPosition === "top"
-            ? { top: 0, transform: "translateY(-100%)" }
-            : { bottom: 0, transform: "translateY(100%)" })}
-          {...getMenuProps()}
-        >
-          {items.length === 0 ? (
-            <Pane is="li" padding={8}>
+      <Pane
+        is="ul"
+        {...(resultsListPosition === "top"
+          ? { top: 0, transform: "translateY(-100%)" }
+          : { bottom: 0, transform: "translateY(100%)" })}
+        {...(showResultsList
+          ? { className: `${style.resultList} ${style.visible}` }
+          : { className: style.resultList })}
+        {...getMenuProps()}
+      >
+        {items.length === 0 ? (
+          <Pane is="li" padding={8}>
+            <Text fontSize={12} color="muted">
+              {noResultsMessage}
+            </Text>
+          </Pane>
+        ) : (
+          items.map((item, index) => (
+            <Pane
+              is="li"
+              key={item.id}
+              className={`${style.itemBtn}  ${selectedItem?.id === item.id || highlightedIndex === index ? style.selected : ""}`}
+              {...getItemProps({ item, index })}
+            >
               <Text fontSize={12} color="muted">
-                {noResultsMessage}
+                {itemToString(item)}
               </Text>
             </Pane>
-          ) : (
-            items.map((item, index) => (
-              <Pane
-                is="li"
-                key={item.id}
-                className={`${style.itemBtn}  ${selectedItem?.id === item.id || highlightedIndex === index ? style.selected : ""}`}
-                {...getItemProps({ item, index })}
-              >
-                <Text fontSize={12} color="muted">
-                  {itemToString(item)}
-                </Text>
-              </Pane>
-            ))
-          )}
-        </Pane>
-      )}
+          ))
+        )}
+      </Pane>
       <SearchInput {...inputProps} {...getInputProps()} />
     </Pane>
   );

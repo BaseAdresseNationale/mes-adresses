@@ -208,7 +208,11 @@ function NumeroEditor({
         await reloadVoies();
 
         if (onSubmitted) {
-          onSubmitted(numero);
+          onSubmitted({
+            ...numero,
+            voie: voies.find((v) => v.id === voie.id),
+            toponyme: toponymes.find((t) => t.id === numero.toponymeId),
+          });
         }
 
         refreshBALSync();
@@ -233,6 +237,8 @@ function NumeroEditor({
       onSubmitted,
       toaster,
       numero,
+      toponymes,
+      voies,
     ]
   );
 

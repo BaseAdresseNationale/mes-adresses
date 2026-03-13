@@ -5,7 +5,10 @@ import { Link, Pane, Text } from "evergreen-ui";
 import NextLink from "next/link";
 import { Alert } from "@/lib/openapi-signalement";
 import { Signalement } from "@/lib/openapi-signalement";
-import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api-bal";
+import {
+  SignalementsService as SignalementsServiceBal,
+  UpdateOneReportDTO,
+} from "@/lib/openapi-api-bal";
 import { useRouter } from "next/navigation";
 import LayoutContext from "@/contexts/layout";
 import { getSignalementLabel } from "@/lib/utils/signalement";
@@ -18,6 +21,7 @@ import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import { wait } from "@/lib/utils/promise";
 import { AlertForm } from "@/components/signalement/alert-form/alert-form";
+import { AlertViewer } from "@/components/signalement/alert-viewer/alert-viewer";
 
 interface AlertPageProps {
   alert: Alert;
@@ -74,12 +78,15 @@ export default function AlertPage({ alert }: AlertPageProps) {
   }, [fetchPendingSignalements]);
 
   const handleSubmit = useCallback(
-    async (status: Signalement.status, rejectionReason?: string) => {
+    async (
+      status: Signalement.status,
+      reportDTO?: Omit<UpdateOneReportDTO, "status">
+    ) => {
       const _updateSignalement = toaster(
         async () => {
           await updateOneSignalement(alert.id, {
             status,
-            rejectionReason,
+            ...reportDTO,
           });
           await refreshBALSync();
         },
@@ -118,12 +125,17 @@ export default function AlertPage({ alert }: AlertPageProps) {
   return (
     <ProtectedPage>
       <Pane overflow="scroll" height="100%">
-        <AlertForm
-          alert={alert}
-          author={author}
-          onClose={handleClose}
-          onSubmit={handleSubmit}
-        />
+        {alert.status === Alert.status.IGNORED ||
+        alert.status === Alert.status.PROCESSED ? (
+          <AlertViewer alert={alert} author={author} onClose={handleClose} />
+        ) : (
+          <AlertForm
+            alert={alert}
+            author={author}
+            onClose={handleClose}
+            onSubmit={handleSubmit}
+          />
+        )}
       </Pane>
     </ProtectedPage>
   );

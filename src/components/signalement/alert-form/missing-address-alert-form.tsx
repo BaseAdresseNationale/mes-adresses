@@ -7,6 +7,7 @@ import {
   Heading,
   Label,
   Pane,
+  Paragraph,
   PlusIcon,
   Text,
   Textarea,
@@ -20,17 +21,22 @@ import {
   rejectionReasonsOptions,
   RejectionReasonOption,
 } from "@/components/signalement/rejection-reasons";
+import { SignalementHeader } from "../signalement-header";
+import Form from "@/components/form";
+import { MissingAddressContextDTO, Numero } from "@/lib/openapi-api-bal";
+import { getAddressPreview } from "@/lib/utils/address";
 
 interface MissingAddressAlertFormProps {
   alert: AlertType;
   author?: AlertType["author"];
   isLoading: boolean;
-  handleAccept: () => Promise<void>;
+  handleAccept: (context: MissingAddressContextDTO) => Promise<void>;
   handleReject: (reason?: string) => Promise<void>;
   handleClose: () => void;
 }
 
 export function MissingAddressAlertForm({
+  alert,
   author,
   isLoading,
   handleAccept,
@@ -45,18 +51,45 @@ export function MissingAddressAlertForm({
   const { commune } = useContext(BalDataContext);
   const { pendingSignalementsCount } = useContext(SignalementContext);
 
+  const onCreateNewAddress = (_numero: Numero) => {
+    console.log("onCreateNewAddress", _numero);
+    const { numero, suffixe, banId, voie, toponyme } = _numero;
+    const label = getAddressPreview(
+      numero,
+      suffixe,
+      commune,
+      voie?.nom,
+      toponyme?.nom
+    );
+
+    return handleAccept({
+      ...alert.context,
+      createdAddress: {
+        idBAN: banId,
+        label,
+      },
+    });
+  };
+
   if (showNumeroEditor) {
     return (
       <NumeroEditor
         commune={commune}
         closeForm={() => setShowNumeroEditor(false)}
-        onSubmitted={handleAccept}
+        onSubmitted={onCreateNewAddress}
       />
     );
   }
 
   return (
-    <Pane padding={12}>
+    <Form
+      closeForm={handleClose}
+      onFormSubmit={(e) => {
+        e.preventDefault();
+        return Promise.resolve();
+      }}
+    >
+      <SignalementHeader signalement={alert} author={author} />
       <Heading size={400} marginBottom={12}>
         Que souhaitez-vous faire ?
       </Heading>
@@ -153,6 +186,10 @@ export function MissingAddressAlertForm({
           </Button>
         </Pane>
       )}
-    </Pane>
+      <Paragraph textAlign="center" marginTop={12}>
+        Il reste {pendingSignalementsCount} signalement
+        {pendingSignalementsCount === 1 ? "" : "s"} à traiter
+      </Paragraph>
+    </Form>
   );
 }

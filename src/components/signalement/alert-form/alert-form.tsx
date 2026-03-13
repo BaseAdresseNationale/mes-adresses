@@ -1,20 +1,20 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { Paragraph } from "evergreen-ui";
 import { Alert } from "@/lib/openapi-signalement";
-import { SignalementHeader } from "../signalement-header";
-import SignalementContext from "@/contexts/signalement";
 import MapContext from "@/contexts/map";
 import MarkersContext from "@/contexts/markers";
-import Form from "@/components/form";
 import { MissingAddressAlertForm } from "./missing-address-alert-form";
 import { signalementTypeMap } from "../signalement-type-badge";
+import { UpdateOneReportDTO } from "@/lib/openapi-api-bal";
 
 interface AlertFormProps {
   alert: Alert;
   author?: Alert["author"];
-  onSubmit: (status: Alert["status"], reason?: string) => Promise<void>;
+  onSubmit: (
+    status: Alert["status"],
+    reportDTO?: Omit<UpdateOneReportDTO, "status">
+  ) => Promise<void>;
   onClose: () => void;
 }
 
@@ -27,7 +27,6 @@ export function AlertForm({
   const [isLoading, setIsLoading] = useState(false);
   const { map } = useContext(MapContext);
   const { addMarker, disableMarkers } = useContext(MarkersContext);
-  const { pendingSignalementsCount } = useContext(SignalementContext);
 
   useEffect(() => {
     if (!map || !alert.point) {
@@ -53,12 +52,15 @@ export function AlertForm({
     return () => {
       disableMarkers();
     };
-  }, [alert, map, addMarker, disableMarkers]);
+  }, [alert, map]);
 
-  const handleSubmit = async (status: Alert["status"], reason?: string) => {
+  const handleSubmit = async (
+    status: Alert["status"],
+    reportDTO?: Omit<UpdateOneReportDTO, "status">
+  ) => {
     try {
       setIsLoading(true);
-      await onSubmit(status, reason);
+      await onSubmit(status, reportDTO);
     } catch (err) {
       console.error(err);
     } finally {
@@ -66,39 +68,22 @@ export function AlertForm({
     }
   };
 
-  const handleAccept = async () => {
-    await handleSubmit(Alert.status.PROCESSED);
+  const handleAccept = async (context?: UpdateOneReportDTO["context"]) => {
+    await handleSubmit(Alert.status.PROCESSED, { context });
   };
 
-  const handleReject = async (reason?: string) => {
-    await handleSubmit(Alert.status.IGNORED, reason);
+  const handleReject = async (rejectionReason?: string) => {
+    await handleSubmit(Alert.status.IGNORED, { rejectionReason });
   };
 
-  return (
-    <Form
-      closeForm={onClose}
-      onFormSubmit={(e) => {
-        e.preventDefault();
-        return Promise.resolve();
-      }}
-    >
-      <SignalementHeader signalement={alert} author={author} />
-
-      {alert.type === Alert.type.MISSING_ADDRESS && (
-        <MissingAddressAlertForm
-          alert={alert}
-          author={author}
-          isLoading={isLoading}
-          handleAccept={handleAccept}
-          handleReject={handleReject}
-          handleClose={onClose}
-        />
-      )}
-
-      <Paragraph textAlign="center">
-        Il reste {pendingSignalementsCount} signalement
-        {pendingSignalementsCount === 1 ? "" : "s"} à traiter
-      </Paragraph>
-    </Form>
-  );
+  return alert.type === Alert.type.MISSING_ADDRESS ? (
+    <MissingAddressAlertForm
+      alert={alert}
+      author={author}
+      isLoading={isLoading}
+      handleAccept={handleAccept}
+      handleReject={handleReject}
+      handleClose={onClose}
+    />
+  ) : null;
 }
