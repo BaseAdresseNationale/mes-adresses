@@ -1,12 +1,10 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { Alert } from "@/lib/openapi-signalement";
-import MapContext from "@/contexts/map";
-import MarkersContext from "@/contexts/markers";
 import { MissingAddressAlertForm } from "./missing-address-alert-form";
-import { signalementTypeMap } from "../signalement-type-badge";
 import { UpdateOneReportDTO } from "@/lib/openapi-api-bal";
+import { useAlertMap } from "../hooks/useAlertMap";
 
 interface AlertFormProps {
   alert: Alert;
@@ -25,34 +23,8 @@ export function AlertForm({
   onClose,
 }: AlertFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { map } = useContext(MapContext);
-  const { addMarker, disableMarkers } = useContext(MarkersContext);
 
-  useEffect(() => {
-    if (!map || !alert.point) {
-      return;
-    }
-
-    map.flyTo({
-      center: [alert.point.coordinates[0], alert.point.coordinates[1]],
-      offset: [0, 0],
-      zoom: 20,
-      screenSpeed: 2,
-    });
-
-    addMarker({
-      id: alert.id,
-      isMapMarker: true,
-      isDisabled: true,
-      color: signalementTypeMap[alert.type]?.color || "red",
-      longitude: alert.point.coordinates[0],
-      latitude: alert.point.coordinates[1],
-    });
-
-    return () => {
-      disableMarkers();
-    };
-  }, [alert, map]);
+  useAlertMap(alert);
 
   const handleSubmit = async (
     status: Alert["status"],

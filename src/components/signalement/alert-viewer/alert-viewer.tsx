@@ -2,6 +2,7 @@ import { Alert, Signalement } from "@/lib/openapi-signalement";
 import { SignalementHeader } from "../signalement-header";
 import Form from "@/components/form";
 import { Button, Pane, Paragraph } from "evergreen-ui";
+import { useAlertMap } from "../hooks/useAlertMap";
 
 interface AlertViewerProps {
   alert: Alert;
@@ -10,6 +11,8 @@ interface AlertViewerProps {
 }
 
 export function AlertViewer({ alert, author, onClose }: AlertViewerProps) {
+  useAlertMap(alert);
+
   const createdAddressLabel =
     alert.type === Alert.type.MISSING_ADDRESS &&
     alert.status === Alert.status.PROCESSED
