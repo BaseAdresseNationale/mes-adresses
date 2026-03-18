@@ -101,8 +101,12 @@ export function BalDataContextProvider({
   // Sync baseLocale to Matomo tracking context
   useEffect(() => {
     setMatomoBaseLocale(baseLocale);
-    return () => setMatomoBaseLocale(null);
   }, [baseLocale, setMatomoBaseLocale]);
+
+  // Clear Matomo baseLocale on unmount only
+  useEffect(() => {
+    return () => setMatomoBaseLocale(null);
+  }, [setMatomoBaseLocale]);
 
   useEffect(() => {
     async function fetchBALData() {

@@ -144,7 +144,7 @@ export function MatomoTrackingContextProvider({ children }: ChildrenProps) {
 
       window._paq.push(["setCustomUrl", urlToTrack], ["trackPageView"]);
     }
-  }, [matomoState, pathname, baseLocale]);
+  }, [matomoState, pathname, baseLocale?.commune]);
 
   const matomoTrackEvent = useCallback(
     (category: MatomoEventCategory, action: string) => {
@@ -165,7 +165,7 @@ export function MatomoTrackingContextProvider({ children }: ChildrenProps) {
       matomoTrackEvent,
       setBaseLocale,
     }),
-    [matomoTrackEvent]
+    [matomoTrackEvent, setBaseLocale]
   );
 
   return (
