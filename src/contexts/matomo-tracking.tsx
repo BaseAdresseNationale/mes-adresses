@@ -7,6 +7,7 @@ import {
   useMemo,
   useCallback,
 } from "react";
+import { usePathname } from "next/navigation";
 import { ChildrenProps } from "@/types/context";
 import { BaseLocale } from "@/lib/openapi-api-bal";
 
@@ -73,6 +74,7 @@ declare global {
 
 interface MatomoTrackingContextType {
   matomoTrackEvent: (category: MatomoEventCategory, action: string) => void;
+  setBaseLocale: (baseLocale: BaseLocale | null) => void;
 }
 
 const MatomoTrackingContext = createContext<MatomoTrackingContextType | null>(
@@ -83,11 +85,10 @@ const TRACKING_ENABLED = process.env.NODE_ENV === "production";
 const SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;
 const TRACKER_URL = process.env.NEXT_PUBLIC_MATOMO_TRACKER_URL;
 
-export function MatomoTrackingContextProvider({
-  pageProps,
-  ...props
-}: { pageProps: { baseLocale?: BaseLocale } } & ChildrenProps) {
+export function MatomoTrackingContextProvider({ children }: ChildrenProps) {
   const [matomoState, setMatomoState] = useState(null);
+  const [baseLocale, setBaseLocale] = useState<BaseLocale | null>(null);
+  const pathname = usePathname();
 
   // Load matomo script
   useEffect(() => {
@@ -118,23 +119,23 @@ export function MatomoTrackingContextProvider({
     }
   }, [matomoState]);
 
-  // Track pages when pageProps change
+  // Track pages when pathname or baseLocale change
   useEffect(() => {
     if (matomoState === "initialized") {
-      const commune = pageProps?.baseLocale?.commune;
-      let urlToTrack = location.href;
+      const commune = baseLocale?.commune;
+      let urlToTrack = `${location.origin}${pathname}`;
       const balEditorPageRe = /\/bal\/.*/;
-      const isOnBalEditor = balEditorPageRe.test(location.pathname);
+      const isOnBalEditor = balEditorPageRe.test(pathname);
       if (isOnBalEditor) {
         // Prevent the tracker from tracking the bal page and children
         const pageWithTokenPathRE = /\/bal\/[A-Za-z\d]{24}\/[A-Za-z\d]{20}/;
-        const isOnTokenRoute = pageWithTokenPathRE.test(location.pathname);
+        const isOnTokenRoute = pageWithTokenPathRE.test(pathname);
         if (isOnTokenRoute || !commune) {
           return;
         }
 
         // Replace the balId by the commune code if we are on the bal editor page
-        const pathToTrack = location.pathname
+        const pathToTrack = pathname
           .split("/")
           .map((pathPart, index) => (index === 2 ? commune : pathPart))
           .join("/");
@@ -143,7 +144,7 @@ export function MatomoTrackingContextProvider({
 
       window._paq.push(["setCustomUrl", urlToTrack], ["trackPageView"]);
     }
-  }, [matomoState, pageProps]);
+  }, [matomoState, pathname, baseLocale?.commune]);
 
   const matomoTrackEvent = useCallback(
     (category: MatomoEventCategory, action: string) => {
@@ -151,22 +152,27 @@ export function MatomoTrackingContextProvider({
         return;
       }
 
-      const codeCommune = pageProps?.baseLocale?.commune || "";
-      const balId = pageProps?.baseLocale?.id || "";
+      const codeCommune = baseLocale?.commune || "";
+      const balId = baseLocale?.id || "";
 
       window._paq.push(["trackEvent", category, action, codeCommune, balId]);
     },
-    [matomoState, pageProps]
+    [matomoState, baseLocale]
   );
 
   const value = useMemo(
     () => ({
       matomoTrackEvent,
+      setBaseLocale,
     }),
-    [matomoTrackEvent]
+    [matomoTrackEvent, setBaseLocale]
   );
 
-  return <MatomoTrackingContext.Provider value={value} {...props} />;
+  return (
+    <MatomoTrackingContext.Provider value={value}>
+      {children}
+    </MatomoTrackingContext.Provider>
+  );
 }
 
 export default MatomoTrackingContext;
