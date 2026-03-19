@@ -69,7 +69,7 @@ function BALInfosStep({
         />
         <FormInput padding={0}>
           <Pane marginBottom={8}>
-            <Label>Adresses emails de des administrateurs *</Label>
+            <Label>Adresses emails des administrateurs *</Label>
           </Pane>
           {adminEmails.map((email, index) => (
             <Pane
