@@ -60,7 +60,7 @@ function CadastreSearchInput({
         onSelect={handleSelectParcelle}
         noResultsMessage="Aucune parcelle ne correspond à votre recherche"
         resultsListPosition="top"
-        itemToString={(parcelle) => parcelle.id}
+        itemToString={(parcelle) => (parcelle ? parcelle.id : "")}
         inputProps={{
           width: "100%",
           placeholder: "Rechercher une parcelle",
