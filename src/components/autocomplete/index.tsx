@@ -1,4 +1,10 @@
-import { Pane, SearchInput, SearchInputOwnProps, Text } from "evergreen-ui";
+import {
+  Label,
+  Pane,
+  SearchInput,
+  SearchInputOwnProps,
+  Text,
+} from "evergreen-ui";
 import { useCallback, useRef, useState } from "react";
 import style from "./autocomplete.module.css";
 import {
@@ -24,6 +30,9 @@ type SearchInputProps<T> = SearchInputOwnProps & {
   onError?: (error: Error) => void;
   itemToString?: (item?: SearchItemType<T> | null) => string;
   label?: string;
+  noResultsMessage?: string;
+  resultsListPosition?: "top" | "bottom";
+  inputProps?: Omit<React.ComponentProps<typeof SearchInput>, "onChange">;
 };
 
 function AutocompleteInput<T>({
@@ -32,11 +41,13 @@ function AutocompleteInput<T>({
   onError,
   itemToString = (item) => (item ? item.label : ""),
   label,
-  ...inputProps
+  noResultsMessage = "Aucun résultat trouvé",
+  resultsListPosition = "bottom",
+  inputProps = {},
 }: SearchInputProps<T>) {
   const controller = useRef<AbortController | null>(null);
   const [items, setItems] = useState<SearchItemType<T>[]>([]);
-  const [_isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSearchAsync = useCallback(
     async (...args: [string, AbortSignal]) => {
@@ -93,7 +104,7 @@ function AutocompleteInput<T>({
             ...changes,
             ...(selectedValue
               ? {
-                  inputValue: selectedValue.id,
+                  inputValue: itemToString(selectedValue),
                 }
               : null),
           };
@@ -101,7 +112,7 @@ function AutocompleteInput<T>({
           return changes;
       }
     },
-    [onSelect]
+    [onSelect, itemToString]
   );
 
   const {
@@ -112,6 +123,7 @@ function AutocompleteInput<T>({
     getItemProps,
     isOpen,
     getLabelProps,
+    inputValue,
   } = useCombobox<SearchItemType<T>>({
     onInputValueChange,
     items,
@@ -119,48 +131,46 @@ function AutocompleteInput<T>({
     stateReducer,
   });
 
+  const showResultsList = isOpen && inputValue && !isLoading;
+
   return (
     <Pane className={style.autocomplete} position="relative" width="100%">
-      {label && <label {...getLabelProps()}>{label}</label>}
-      {isOpen && (
-        <Pane
-          is="ul"
-          overflow="hidden"
-          position="absolute"
-          bottom={0}
-          transform="translateY(-32px)"
-          width="100%"
-          zIndex={1}
-          maxHeight={200}
-          overflowY="auto"
-          background="white"
-          borderTopLeftRadius={3}
-          borderTopRightRadius={3}
-          boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
-          {...getMenuProps()}
-        >
-          {items.length === 0 ? (
-            <Pane is="li" padding={8}>
-              <Text fontSize={12} color="muted">
-                Aucune parcelle ne correspond à votre recherche
-              </Text>
-            </Pane>
-          ) : (
-            items.map((item, index) => (
-              <Pane
-                is="li"
-                key={item.id}
-                className={`${style.itemBtn}  ${selectedItem?.id === item.id || highlightedIndex === index ? style.selected : ""}`}
-                {...getItemProps({ item, index })}
-              >
-                <Text fontSize={12} color="muted">
-                  {itemToString(item)}
-                </Text>
-              </Pane>
-            ))
-          )}
+      {label && (
+        <Pane marginBottom={8}>
+          <Label {...getLabelProps()}>{label}</Label>
         </Pane>
       )}
+      <Pane
+        is="ul"
+        {...(resultsListPosition === "top"
+          ? { top: 0, transform: "translateY(-100%)" }
+          : { bottom: 0, transform: "translateY(100%)" })}
+        {...(showResultsList
+          ? { className: `${style.resultList} ${style.visible}` }
+          : { className: style.resultList })}
+        {...getMenuProps()}
+      >
+        {items.length === 0 ? (
+          <Pane is="li" padding={8}>
+            <Text fontSize={12} color="muted">
+              {noResultsMessage}
+            </Text>
+          </Pane>
+        ) : (
+          items.map((item, index) => (
+            <Pane
+              is="li"
+              key={item.id}
+              className={`${style.itemBtn}  ${selectedItem?.id === item.id || highlightedIndex === index ? style.selected : ""}`}
+              {...getItemProps({ item, index })}
+            >
+              <Text fontSize={12} color="muted">
+                {itemToString(item)}
+              </Text>
+            </Pane>
+          ))
+        )}
+      </Pane>
       <SearchInput {...inputProps} {...getInputProps()} />
     </Pane>
   );

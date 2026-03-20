@@ -1,11 +1,9 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { BaseLocale } from './BaseLocale';
 import type { Numero } from './Numero';
-
 export type ExtendedVoieDTO = {
     id: string;
     banId: string;
@@ -19,6 +17,7 @@ export type ExtendedVoieDTO = {
     centroid: Record<string, any>;
     trace: Record<string, any>;
     bbox: Array<number>;
+    codeVoie: string;
     comment: string;
     baseLocale: BaseLocale;
     numeros: Array<Numero>;
@@ -27,14 +26,10 @@ export type ExtendedVoieDTO = {
     isAllCertified: boolean;
     commentedNumeros: Array<string>;
 };
-
 export namespace ExtendedVoieDTO {
-
     export enum typeNumerotation {
         NUMERIQUE = 'numerique',
         METRIQUE = 'metrique',
     }
-
-
 }
 

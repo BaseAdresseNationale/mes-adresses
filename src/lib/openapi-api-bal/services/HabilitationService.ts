@@ -1,17 +1,14 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
 import type { HabilitationDTO } from '../models/HabilitationDTO';
 import type { SendPinCodeDTO } from '../models/SendPinCodeDTO';
 import type { ValidatePinCodeDTO } from '../models/ValidatePinCodeDTO';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class HabilitationService {
-
     /**
      * Find habiliation is Valid
      * @param baseLocaleId
@@ -29,7 +26,6 @@ export class HabilitationService {
             },
         });
     }
-
     /**
      * Find habiliation
      * @param baseLocaleId
@@ -47,7 +43,6 @@ export class HabilitationService {
             },
         });
     }
-
     /**
      * Create habiliation
      * @param baseLocaleId
@@ -65,7 +60,6 @@ export class HabilitationService {
             },
         });
     }
-
     /**
      * Send pin code of habilitation
      * @param baseLocaleId
@@ -87,7 +81,6 @@ export class HabilitationService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Valide pin code of habiliation
      * @param baseLocaleId
@@ -109,5 +102,4 @@ export class HabilitationService {
             mediaType: 'application/json',
         });
     }
-
 }
