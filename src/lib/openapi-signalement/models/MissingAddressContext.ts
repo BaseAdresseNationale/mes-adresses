@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { ExistingNumero } from './ExistingNumero';
+import type { CreatedAddress } from './CreatedAddress';
 export type MissingAddressContext = {
     idRNB?: string | null;
-    createdAddress?: ExistingNumero | null;
+    createdAddress?: CreatedAddress | null;
 };
 

@@ -18,6 +18,7 @@ export type Report = {
     point: Record<string, any>;
     source: Source;
     processedBy?: Client | null;
+    rejectionReason?: string;
     reportKind: Report.reportKind;
 };
 export namespace Report {

@@ -19,6 +19,7 @@ export type Alert = {
     point: Record<string, any>;
     source: Source;
     processedBy?: Client | null;
+    rejectionReason?: string;
     reportKind: Alert.reportKind;
     comment: string;
     context?: MissingAddressContext | null;

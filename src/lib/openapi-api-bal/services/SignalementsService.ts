@@ -9,21 +9,21 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class SignalementsService {
     /**
-     * Get signalement by id
-     * @param idSignalement
+     * Get report by id
+     * @param reportId
      * @param baseLocaleId
      * @returns any
      * @throws ApiError
      */
     public static getReport(
-        idSignalement: string,
+        reportId: string,
         baseLocaleId: string,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/v2/signalements/{baseLocaleId}/{idSignalement}',
+            url: '/v2/signalements/{baseLocaleId}/{reportId}',
             path: {
-                'idSignalement': idSignalement,
+                'reportId': reportId,
                 'baseLocaleId': baseLocaleId,
             },
         });

@@ -25,10 +25,10 @@ export type Signalement = {
     point: Record<string, any>;
     source: Source;
     processedBy?: Client | null;
+    rejectionReason?: string;
     reportKind: Signalement.reportKind;
     existingLocation?: (ExistingNumero | ExistingVoie | ExistingToponyme) | null;
     changesRequested: (NumeroChangesRequestedDTO | DeleteNumeroChangesRequestedDTO | ToponymeChangesRequestedDTO | VoieChangesRequestedDTO);
-    rejectionReason?: string;
 };
 export namespace Signalement {
     export enum type {
