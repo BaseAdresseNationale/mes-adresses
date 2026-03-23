@@ -1,8 +1,8 @@
-import { Signalement } from "@/lib/openapi-signalement";
+import { Report, Signalement } from "@/lib/openapi-signalement";
 import { Badge } from "evergreen-ui";
 
 interface SignalementTypeBadgeProps {
-  type: Signalement.type;
+  type: Report.type;
 }
 
 export const signalementTypeMap = {
@@ -23,6 +23,12 @@ export const signalementTypeMap = {
     color: "orange",
     backgroundColor: "#F8E3DA",
     foregroundColor: "#FFB020",
+  },
+  [Report.type.MISSING_ADDRESS]: {
+    label: "Adresse manquante",
+    color: "red",
+    backgroundColor: "#FCDADA",
+    foregroundColor: "#7D2828",
   },
 };
 

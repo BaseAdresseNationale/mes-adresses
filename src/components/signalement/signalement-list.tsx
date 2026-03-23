@@ -14,22 +14,22 @@ import {
 } from "evergreen-ui";
 
 import InfiniteScrollList from "../infinite-scroll-list";
-import { Signalement } from "@/lib/openapi-signalement";
+import { Report } from "@/lib/openapi-signalement";
 import SignalementTypeBadge from "./signalement-type-badge";
 import MarkersContext from "@/contexts/markers";
 import { SignalementListItem } from "./signalement-list-item";
 
 interface SignalementListProps {
-  signalements: Signalement[];
+  signalements: Report[];
   selectedSignalements: string[];
   setSelectedSignalements: (ids: string[]) => void;
   onSelect: (id: string) => void;
   onIgnore: (id: string) => Promise<void>;
   onToggleSelect: (ids: string[]) => void;
   filters: {
-    type: Signalement.type[];
+    type: Report.type[];
   };
-  setFilters: (filters: { type: Signalement.type[] }) => void;
+  setFilters: (filters: { type: Report.type[] }) => void;
   onSearch?: (search: string) => void;
   editionEnabled?: boolean;
   onShowPurgeExpiredSignalementsDialog?: () => void;
@@ -98,7 +98,7 @@ function SignalementList({
           <Tooltip
             content={
               <Pane margin={10}>
-                {Object.values(Signalement.type).map((type) => (
+                {Object.values(Report.type).map((type) => (
                   <Checkbox
                     key={type}
                     label={<SignalementTypeBadge type={type} />}
@@ -159,7 +159,7 @@ function SignalementList({
       )}
 
       <InfiniteScrollList items={signalements}>
-        {(signalement: Signalement & { label: string }) => (
+        {(signalement: Report & { label: string }) => (
           <SignalementListItem
             key={signalement.id}
             signalement={signalement}

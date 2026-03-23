@@ -1,10 +1,13 @@
 import SignalementPage from "@/components/signalement/signalement-page";
+import AlertPage from "@/components/signalement/alert-page";
 import { BasesLocalesService, Toponyme, Voie } from "@/lib/openapi-api-bal";
 import {
+  Alert,
   ExistingNumero,
   NumeroChangesRequestedDTO,
   Signalement,
   SignalementsService,
+  AlertsService,
 } from "@/lib/openapi-signalement";
 import {
   getAlreadyExistingLocation,
@@ -13,6 +16,21 @@ import {
   matchExistingToponyme,
 } from "@/lib/utils/signalement";
 import { ObjectId } from "bson";
+
+const fetchReport = async (idSignalement: string) => {
+  let report: Signalement | Alert;
+  try {
+    report = await SignalementsService.getSignalementById(idSignalement);
+  } catch {
+    // If the report is not found in signalements, it might be an alert
+    try {
+      report = await AlertsService.getAlertById(idSignalement);
+    } catch {
+      throw new Error("Report not found");
+    }
+  }
+  return report;
+};
 
 export default async function SignalementPageSSR({
   params,
@@ -24,11 +42,17 @@ export default async function SignalementPageSSR({
 }) {
   const { balId, idSignalement } = await params;
 
+  const report = await fetchReport(idSignalement);
+
+  // If this is an alert, render the page directly without location resolution
+  if (report.reportKind === Alert.reportKind.ALERT) {
+    return <AlertPage alert={report as Alert} />;
+  }
+
+  const signalement = report as Signalement;
+
   const voies = await BasesLocalesService.findBaseLocaleVoies(balId);
   const toponymes = await BasesLocalesService.findBaseLocaleToponymes(balId);
-
-  const signalement =
-    await SignalementsService.getSignalementById(idSignalement);
 
   if ((signalement.changesRequested as NumeroChangesRequestedDTO).positions) {
     (signalement.changesRequested as NumeroChangesRequestedDTO).positions = (

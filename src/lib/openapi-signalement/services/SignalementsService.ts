@@ -1,19 +1,16 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 import type { ChangesRequested } from '../models/ChangesRequested';
 import type { CreateSignalementDTO } from '../models/CreateSignalementDTO';
 import type { PaginatedSignalementsDTO } from '../models/PaginatedSignalementsDTO';
 import type { Signalement } from '../models/Signalement';
 import type { UpdateSignalementDTO } from '../models/UpdateSignalementDTO';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class SignalementsService {
-
     /**
      * Get signalements
      * @param limit
@@ -46,7 +43,6 @@ export class SignalementsService {
             },
         });
     }
-
     /**
      * Create a new signalement
      * @param requestBody
@@ -68,36 +64,6 @@ export class SignalementsService {
             mediaType: 'application/json',
         });
     }
-
-    /**
-     * Get tiles (with signalements features)
-     * @param status
-     * @param z
-     * @param x
-     * @param y
-     * @returns any
-     * @throws ApiError
-     */
-    public static getTiles(
-        status: string,
-        z: string,
-        x: string,
-        y: string,
-    ): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/signalements/tiles/{z}/{x}/{y}.pbf',
-            path: {
-                'z': z,
-                'x': x,
-                'y': y,
-            },
-            query: {
-                'status': status,
-            },
-        });
-    }
-
     /**
      * Validate changes requested
      * @param requestBody
@@ -114,7 +80,6 @@ export class SignalementsService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Get signalement by id
      * Get a signalement by its id, returns author info if client is authenticated
@@ -133,7 +98,6 @@ export class SignalementsService {
             },
         });
     }
-
     /**
      * Update a given signalement
      * @param idSignalement
@@ -155,5 +119,4 @@ export class SignalementsService {
             mediaType: 'application/json',
         });
     }
-
 }

@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
 import { sortBy } from "lodash";
-import {
-  Button,
-  Pane,
-  Text,
-  PlusIcon,
-  PropertyIcon,
-  SelectField,
-} from "evergreen-ui";
+import { Button, Pane, Text, PlusIcon, PropertyIcon } from "evergreen-ui";
 
 import { normalizeSort } from "@/lib/normalize";
 
 import useFocus from "@/hooks/focus";
 
 import AssistedTextField from "@/components/assisted-text-field";
+import AutocompleteInput, { SearchItemType } from "@/components/autocomplete";
+import { Voie } from "@/lib/openapi-api-bal";
 
 interface NumeroVoieSelectorProps {
   voieId: string | null;
@@ -47,8 +42,24 @@ function NumeroVoieSelector({
     handleNomVoie(e.target.value);
   };
 
-  const handleVoieChange = (e) => {
-    const idVoie = e.target.value;
+  const handleSearchVoie = async (
+    query: string
+  ): Promise<SearchItemType<Voie>[]> => {
+    if (!query) {
+      return [];
+    }
+    const filteredVoies = voies.filter((voie) =>
+      normalizeSort(voie.nom).includes(normalizeSort(query))
+    );
+
+    return sortBy(filteredVoies, (v) => normalizeSort(v.nom)).map((voie) => ({
+      label: voie.nom,
+      ...voie,
+    }));
+  };
+
+  const handleVoieChange = (voie: Voie) => {
+    const idVoie = voie.id;
     handleVoie(idVoie ?? null);
   };
 
@@ -72,21 +83,15 @@ function NumeroVoieSelector({
             onChange={handleNomVoieChange}
           />
         ) : (
-          <SelectField
-            required
-            label="Voie"
-            flex={1}
-            value={voieId}
-            margin={0}
-            onChange={handleVoieChange}
-          >
-            {!voieId && <option value="">- Choisir une voie-</option>}
-            {sortBy(voies, (v) => normalizeSort(v.nom)).map(({ id, nom }) => (
-              <option key={id} value={id}>
-                {nom}
-              </option>
-            ))}
-          </SelectField>
+          <AutocompleteInput
+            label="Voie*"
+            onSearch={handleSearchVoie}
+            onSelect={handleVoieChange}
+            resultsListPosition="bottom"
+            inputProps={{
+              placeholder: "Rechercher une voie",
+            }}
+          />
         )}
       </Pane>
 

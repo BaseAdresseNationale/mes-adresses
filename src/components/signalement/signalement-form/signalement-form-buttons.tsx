@@ -13,6 +13,10 @@ import {
   Text,
 } from "evergreen-ui";
 import { useContext, useState } from "react";
+import {
+  rejectionReasonsOptions,
+  RejectionReasonOption,
+} from "@/components/signalement/rejection-reasons";
 
 interface SignalementFormButtonsProps {
   author?: Signalement["author"];
@@ -21,17 +25,6 @@ interface SignalementFormButtonsProps {
   onReject: (reason?: string) => Promise<void>;
   onClose: () => void;
 }
-
-const rejectionReasonsOptions = [
-  "Signalement non pertinent",
-  "Signalement en double",
-  "Signalement déjà traité",
-  "Signalement mal positionné",
-  "Signalement non conforme",
-  "Autre",
-] as const;
-
-type RejectionReasonOption = (typeof rejectionReasonsOptions)[number];
 
 export function SignalementFormButtons({
   author,

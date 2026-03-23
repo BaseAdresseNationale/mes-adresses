@@ -70,7 +70,7 @@ export function PurgeExpiredSignalementsDialog({
         }
 
         if (!signalementLocation && !isNewVoieCreation) {
-          await SignalementsServiceBal.updateSignalements(baseLocale.id, {
+          await SignalementsServiceBal.updateReports(baseLocale.id, {
             ids: [pendingSignalement.id],
             status: Signalement.status.EXPIRED,
           });

@@ -29,6 +29,7 @@ import {
   BasesLocalesService,
   Numero,
   NumerosService,
+  Voie,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
@@ -51,7 +52,7 @@ interface NumeroEditorProps {
   initialValue?: Numero;
   commune: CommuneType;
   closeForm: () => void;
-  onSubmitted?: () => void;
+  onSubmitted?: (numero: Numero) => void;
   refs?: { [key: string]: React.RefObject<HTMLDivElement> };
   certificationBtnProps?: Partial<CertificationButtonProps>;
   onVoieChanged?: () => void;
@@ -180,6 +181,7 @@ function NumeroEditor({
 
         const voie = await getEditedVoie();
 
+        let numero;
         if (initialValue?.id) {
           const updateNumero = toaster(
             () =>
@@ -193,7 +195,7 @@ function NumeroEditor({
               setValidationMessages(err.body.message);
             }
           );
-          await updateNumero();
+          numero = await updateNumero();
         } else {
           const createNumero = toaster(
             () => VoiesService.createNumero(voie.id, body),
@@ -203,7 +205,7 @@ function NumeroEditor({
               setValidationMessages(err.body.message);
             }
           );
-          await createNumero();
+          numero = await createNumero();
         }
 
         await reloadNumeros();
@@ -226,7 +228,13 @@ function NumeroEditor({
         );
 
         if (onSubmitted) {
-          onSubmitted();
+          onSubmitted({
+            ...numero,
+            voie: (voie as Voie).nom
+              ? voie
+              : voies.find((v) => v.id === voie.id),
+            toponyme: toponymes.find((t) => t.id === numero.toponymeId),
+          });
         }
 
         refreshBALSync();
@@ -255,6 +263,8 @@ function NumeroEditor({
       reloadNumerosAlerts,
       reloadVoieAlerts,
       baseLocale.settings?.ignoredAlertCodes,
+      toponymes,
+      voies,
     ]
   );
 

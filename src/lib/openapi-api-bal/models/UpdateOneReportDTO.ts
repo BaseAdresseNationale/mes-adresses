@@ -2,11 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UpdateManySignalementDTO = {
-    ids: Array<string>;
-    status: UpdateManySignalementDTO.status;
+import type { MissingAddressContextDTO } from './MissingAddressContextDTO';
+export type UpdateOneReportDTO = {
+    status: UpdateOneReportDTO.status;
+    rejectionReason?: string | null;
+    context?: MissingAddressContextDTO | null;
 };
-export namespace UpdateManySignalementDTO {
+export namespace UpdateOneReportDTO {
     export enum status {
         PENDING = 'PENDING',
         IGNORED = 'IGNORED',

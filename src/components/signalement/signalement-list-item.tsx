@@ -1,4 +1,4 @@
-import { Signalement } from "@/lib/openapi-signalement";
+import { Report, Signalement } from "@/lib/openapi-signalement";
 import {
   Table,
   Popover,
@@ -17,7 +17,7 @@ import {
 import SignalementTypeBadge from "./signalement-type-badge";
 
 interface SignalementListItemProps {
-  signalement: Signalement & { label: string };
+  signalement: Report & { label: string };
   editionEnabled?: boolean;
   onToggleSelect: (ids: string[]) => void;
   selectedSignalements: string[];

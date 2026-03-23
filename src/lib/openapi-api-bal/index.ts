@@ -1,7 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 export { ApiError } from './core/ApiError';
 export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
@@ -21,6 +21,7 @@ export type { CommuneBalDTO } from './models/CommuneBalDTO';
 export type { CommuneDTO } from './models/CommuneDTO';
 export type { CommunePrecedenteDTO } from './models/CommunePrecedenteDTO';
 export type { CreateBaseLocaleDTO } from './models/CreateBaseLocaleDTO';
+export type { CreatedAddressDTO } from './models/CreatedAddressDTO';
 export type { CreateDemoBaseLocaleDTO } from './models/CreateDemoBaseLocaleDTO';
 export type { CreateNumeroDTO } from './models/CreateNumeroDTO';
 export type { CreateToponymeDTO } from './models/CreateToponymeDTO';
@@ -35,6 +36,7 @@ export type { GenerateCertificatDTO } from './models/GenerateCertificatDTO';
 export { HabilitationDTO } from './models/HabilitationDTO';
 export type { ImportFileBaseLocaleDTO } from './models/ImportFileBaseLocaleDTO';
 export { LineString } from './models/LineString';
+export type { MissingAddressContextDTO } from './models/MissingAddressContextDTO';
 export type { Numero } from './models/Numero';
 export type { PageBaseLocaleDTO } from './models/PageBaseLocaleDTO';
 export { Position } from './models/Position';
@@ -49,9 +51,9 @@ export type { UpdateBaseLocaleDemoDTO } from './models/UpdateBaseLocaleDemoDTO';
 export type { UpdateBaseLocaleDTO } from './models/UpdateBaseLocaleDTO';
 export type { UpdateBatchNumeroChangeDTO } from './models/UpdateBatchNumeroChangeDTO';
 export type { UpdateBatchNumeroDTO } from './models/UpdateBatchNumeroDTO';
-export { UpdateManySignalementDTO } from './models/UpdateManySignalementDTO';
+export { UpdateManyReportsDTO } from './models/UpdateManyReportsDTO';
 export type { UpdateNumeroDTO } from './models/UpdateNumeroDTO';
-export { UpdateOneSignalementDTO } from './models/UpdateOneSignalementDTO';
+export { UpdateOneReportDTO } from './models/UpdateOneReportDTO';
 export type { UpdateToponymeDTO } from './models/UpdateToponymeDTO';
 export { UpdateVoieDTO } from './models/UpdateVoieDTO';
 export type { ValidatePinCodeDTO } from './models/ValidatePinCodeDTO';
