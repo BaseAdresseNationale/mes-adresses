@@ -9,7 +9,6 @@ import MatomoTrackingContext, {
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
 import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
-import AlertsContext from "@/contexts/alerts";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -111,8 +110,12 @@ export function useBALSettings(baseLocale: BaseLocale) {
         }
         const bal = await reloadBaseLocale();
         if (ignoredAlertCodesChanged) {
-          await reloadVoiesAlerts(bal.settings?.ignoredAlertCodes as AlertCodeEnum[]);
-          await reloadNumerosAlerts(bal.settings?.ignoredAlertCodes as AlertCodeEnum[]);
+          await reloadVoiesAlerts(
+            bal.settings?.ignoredAlertCodes as AlertCodeEnum[]
+          );
+          await reloadNumerosAlerts(
+            bal.settings?.ignoredAlertCodes as AlertCodeEnum[]
+          );
         }
         pushToast({
           title: "Les paramètres ont été enregistrés avec succès",

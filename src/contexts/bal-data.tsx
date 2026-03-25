@@ -202,7 +202,7 @@ export function BalDataContextProvider({
   const reloadBaseLocale = useCallback(async () => {
     const bal = await BasesLocalesService.findBaseLocale(baseLocale.id);
     setBaseLocale(bal);
-    return bal
+    return bal;
   }, [baseLocale.id]);
 
   const refreshBALSync = useCallback(async () => {
@@ -238,25 +238,27 @@ export function BalDataContextProvider({
     [baseLocale.settings?.ignoredAlertCodes, reloadVoieAlerts]
   );
 
-  const _reloadVoiesAlerts = useCallback(async (overrideCodes?: AlertCodeEnum[]) => {
-    const codes = overrideCodes ?? (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) ?? [];
-    reloadVoiesAlerts(
-      voies,
-      codes
-    );
-  }, [baseLocale.settings?.ignoredAlertCodes, reloadVoiesAlerts, voies]);
+  const _reloadVoiesAlerts = useCallback(
+    async (overrideCodes?: AlertCodeEnum[]) => {
+      const codes =
+        overrideCodes ??
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) ??
+        [];
+      reloadVoiesAlerts(voies, codes);
+    },
+    [baseLocale.settings?.ignoredAlertCodes, reloadVoiesAlerts, voies]
+  );
 
-  const _reloadNumerosAlerts = useCallback(async (overrideCodes?: AlertCodeEnum[]) => {
-    const codes = overrideCodes ?? (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) ?? [];
-    reloadNumerosAlerts(
-      baseLocale.id,
-      codes
-    );
-  }, [
-    baseLocale.settings?.ignoredAlertCodes,
-    reloadNumerosAlerts,
-    baseLocale.id,
-  ]);
+  const _reloadNumerosAlerts = useCallback(
+    async (overrideCodes?: AlertCodeEnum[]) => {
+      const codes =
+        overrideCodes ??
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) ??
+        [];
+      reloadNumerosAlerts(baseLocale.id, codes);
+    },
+    [baseLocale.settings?.ignoredAlertCodes, reloadNumerosAlerts, baseLocale.id]
+  );
 
   const setEditingId = useCallback(
     (editingId: string) => {
