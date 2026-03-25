@@ -1,16 +1,13 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 import type { CreateSourceDTO } from '../models/CreateSourceDTO';
 import type { Source } from '../models/Source';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class SourcesService {
-
     /**
      * Get all sources
      * @param type
@@ -28,7 +25,6 @@ export class SourcesService {
             },
         });
     }
-
     /**
      * Create a new source
      * @param requestBody
@@ -45,7 +41,6 @@ export class SourcesService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Get source by id
      * @param idSource
@@ -63,7 +58,6 @@ export class SourcesService {
             },
         });
     }
-
     /**
      * Get source by token
      * @param token
@@ -81,5 +75,4 @@ export class SourcesService {
             },
         });
     }
-
 }

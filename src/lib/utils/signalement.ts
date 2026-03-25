@@ -12,6 +12,7 @@ import {
   ExistingToponyme,
   ExistingVoie,
   NumeroChangesRequestedDTO,
+  Report,
   Signalement,
   SignalementsService,
   ToponymeChangesRequestedDTO,
@@ -66,26 +67,26 @@ const getRequestedLocationLabel = (
 };
 
 export const getSignalementLabel = (
-  signalement: Signalement,
+  signalement: Signalement | Report,
   opts?: { withoutDate: boolean }
 ) => {
   let label = "";
+  const dateSuffix = opts?.withoutDate
+    ? ""
+    : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`;
+
   switch (signalement.type) {
+    case Report.type.MISSING_ADDRESS:
+      label = `Adresse manquante${dateSuffix}`;
+      break;
     case Signalement.type.LOCATION_TO_CREATE:
       label = `${getRequestedLocationLabel(
-        signalement.changesRequested as NumeroChangesRequestedDTO
-      )}${
-        opts?.withoutDate
-          ? ""
-          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
-      }`;
+        (signalement as Signalement)
+          .changesRequested as NumeroChangesRequestedDTO
+      )}${dateSuffix}`;
       break;
     default:
-      label = `${getExistingLocationLabel(signalement.existingLocation)}${
-        opts?.withoutDate
-          ? ""
-          : ` - ${new Date(signalement.createdAt).toLocaleDateString()}`
-      }`;
+      label = `${getExistingLocationLabel((signalement as Signalement).existingLocation)}${dateSuffix}`;
   }
 
   return label;

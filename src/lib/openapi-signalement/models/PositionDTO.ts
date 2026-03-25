@@ -1,17 +1,13 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
 import type { PositionCoordinatesDTO } from './PositionCoordinatesDTO';
-
 export type PositionDTO = {
     point: PositionCoordinatesDTO;
     type: PositionDTO.type;
 };
-
 export namespace PositionDTO {
-
     export enum type {
         ENTR_E = 'entrée',
         B_TIMENT = 'bâtiment',
@@ -22,7 +18,5 @@ export namespace PositionDTO {
         PARCELLE = 'parcelle',
         SEGMENT = 'segment',
     }
-
-
 }
 

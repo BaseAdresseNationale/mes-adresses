@@ -58,8 +58,18 @@ function CadastreSearchInput({
       <AutocompleteInput
         onSearch={handleSearchParcelle}
         onSelect={handleSelectParcelle}
-        placeholder="Rechercher une parcelle"
-        width="100%"
+        noResultsMessage="Aucune parcelle ne correspond à votre recherche"
+        resultsListPosition="top"
+        itemToString={(parcelle) => (parcelle ? parcelle.id : "")}
+        inputProps={{
+          width: "100%",
+          placeholder: "Rechercher une parcelle",
+          style: {
+            borderBottomLeftRadius: 0,
+            borderTopLeftRadius: 0,
+            borderLeft: 0,
+          },
+        }}
       />
     </Pane>
   );

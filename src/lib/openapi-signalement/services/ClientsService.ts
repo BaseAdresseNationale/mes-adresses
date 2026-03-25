@@ -1,16 +1,13 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 import type { Client } from '../models/Client';
 import type { CreateClientDTO } from '../models/CreateClientDTO';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class ClientsService {
-
     /**
      * Create a new Client
      * @param requestBody
@@ -27,5 +24,4 @@ export class ClientsService {
             mediaType: 'application/json',
         });
     }
-
 }

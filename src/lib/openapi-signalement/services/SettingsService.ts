@@ -1,17 +1,14 @@
-/* generated using openapi-typescript-codegen -- do no edit */
+/* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
- 
+/* eslint-disable */
 import type { CommuneSettingsDTO } from '../models/CommuneSettingsDTO';
 import type { CommuneStatusDTO } from '../models/CommuneStatusDTO';
 import type { EnabledListDTO } from '../models/EnabledListDTO';
-
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-
 export class SettingsService {
-
     /**
      * Get the submission status of the given commune
      * @param codeCommune
@@ -34,7 +31,6 @@ export class SettingsService {
             },
         });
     }
-
     /**
      * Get the communes settings for the given codeCommune
      * @param codeCommune
@@ -52,7 +48,6 @@ export class SettingsService {
             },
         });
     }
-
     /**
      * Delete commune settings for the given codeCommune
      * @param codeCommune
@@ -70,7 +65,6 @@ export class SettingsService {
             },
         });
     }
-
     /**
      * Set the communes settings for the given codeCommune
      * @param codeCommune
@@ -92,7 +86,6 @@ export class SettingsService {
             mediaType: 'application/json',
         });
     }
-
     /**
      * Check if the given id is in the enabled list for the given listKey
      * @param listKey
@@ -113,7 +106,6 @@ export class SettingsService {
             },
         });
     }
-
     /**
      * Update the enabled list for the given listKey
      * @param listKey
@@ -135,5 +127,4 @@ export class SettingsService {
             mediaType: 'application/json',
         });
     }
-
 }

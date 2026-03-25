@@ -16,7 +16,7 @@ import {
 import SignalementList from "@/components/signalement/signalement-list";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProtectedPage from "@/layouts/protected-page";
-import { Signalement } from "@/lib/openapi-signalement";
+import { Report, Signalement } from "@/lib/openapi-signalement";
 import MarkersContext from "@/contexts/markers";
 import { getSignalementLabel } from "@/lib/utils/signalement";
 import LayoutContext from "@/contexts/layout";
@@ -35,15 +35,15 @@ const fuseOptions = {
 };
 
 interface SignalementsPageProps {
-  paginatedSignalements: { data: Signalement[] };
+  paginatedReports: { data: Report[] };
 }
 
 export default function SignalementsPage({
-  paginatedSignalements: initialSignalements,
+  paginatedReports: initialReports,
 }: SignalementsPageProps) {
   const { commune, baseLocale } = useContext(BalDataContext);
-  const [signalements, setSignalements] = useState<Signalement[]>(
-    initialSignalements.data
+  const [signalements, setSignalements] = useState<Report[]>(
+    initialReports.data
   );
   const {
     pendingSignalementsCount,
@@ -68,7 +68,7 @@ export default function SignalementsPage({
   const [activeTabIndex, setActiveTabIndex] = useState(
     searchParams.get("tab") === "archived" ? 1 : 0
   );
-  const [filters, setFilters] = useState<{ type: Signalement.type[] }>({
+  const [filters, setFilters] = useState<{ type: Report.type[] }>({
     type: [],
   });
 
@@ -115,9 +115,15 @@ export default function SignalementsPage({
       setSelectedSignalements([]);
       let signalements;
       if (activeTabIndex === 0) {
-        signalements = await fetchPendingSignalements(100, filters.type);
+        signalements = await fetchPendingSignalements(
+          100,
+          filters.type as Report.type[]
+        );
       } else {
-        signalements = await fetchArchivedSignalements(100, filters.type);
+        signalements = await fetchArchivedSignalements(
+          100,
+          filters.type as Report.type[]
+        );
       }
       setSignalements(signalements);
     };
@@ -189,7 +195,10 @@ export default function SignalementsPage({
     );
 
     await _updateSignalements();
-    const signalements = await fetchPendingSignalements(100, filters.type);
+    const signalements = await fetchPendingSignalements(
+      100,
+      filters.type as Report.type[]
+    );
     setSignalements(signalements);
   };
 
