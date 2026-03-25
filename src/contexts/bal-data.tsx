@@ -31,6 +31,8 @@ import { CommuneType } from "@/types/commune";
 import { getCommuneWithBBox } from "@/lib/commune";
 import { Pane, Paragraph, Spinner } from "evergreen-ui";
 import { useSearchParams } from "next/navigation";
+import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
+import AlertsContext from "./alerts";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -52,7 +54,7 @@ interface BALDataContextType {
   numeros: Array<Numero>;
   reloadNumeros: () => Promise<void>;
   voies: ExtendedVoieDTO[];
-  reloadVoies: () => Promise<void>;
+  reloadVoies: () => Promise<ExtendedVoieDTO[]>;
   toponymes: ExtentedToponymeDTO[];
   reloadToponymes: () => Promise<void>;
   isRefrehSyncStat: boolean;
@@ -97,6 +99,7 @@ export function BalDataContextProvider({
     MatomoTrackingContext
   );
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
+  const { reloadVoiesAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
 
   // Sync baseLocale to Matomo tracking context
   useEffect(() => {
@@ -122,6 +125,15 @@ export function BalDataContextProvider({
         setToponymes(toponymes);
         setCommune(commune);
         setIsBALDataLoaded(true);
+        // LOAD ALERTS
+        reloadVoiesAlerts(
+          voies,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
+        reloadNumerosAlerts(
+          initialBaseLocale.id,
+          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+        );
       } catch (error) {
         console.error("Error fetching BAL data:", error);
       }
@@ -146,10 +158,11 @@ export function BalDataContextProvider({
     setParcelles(parcelles);
   }, [baseLocale.id]);
 
-  const reloadVoies = useCallback(async () => {
+  const reloadVoies = useCallback(async (): Promise<ExtendedVoieDTO[]> => {
     const voies: ExtendedVoieDTO[] =
       await BasesLocalesService.findBaseLocaleVoies(baseLocale.id);
     setVoies(voies);
+    return voies;
   }, [baseLocale.id]);
 
   const reloadToponymes = useCallback(async () => {

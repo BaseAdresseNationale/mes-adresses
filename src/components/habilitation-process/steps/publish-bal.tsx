@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
 import {
-  Alert,
   Pane,
   Strong,
   Spinner,
   Text,
-  Link,
   Button,
   Image,
   Heading,

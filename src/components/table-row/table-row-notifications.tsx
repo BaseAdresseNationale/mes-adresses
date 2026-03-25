@@ -4,9 +4,12 @@ import {
   Position,
   Tooltip,
   EndorsedIcon,
-  WarningSignIcon,
   CommentIcon,
   OfficeIcon,
+  Popover,
+  defaultTheme,
+  LightbulbIcon,
+  Button,
 } from "evergreen-ui";
 import TokenContext from "@/contexts/token";
 
@@ -51,16 +54,15 @@ function TableRowNotifications({
 
       {warning && (
         <Table.TextCell flex="0 1 1" paddingLeft="8px" paddingRight="8px">
-          <Tooltip
-            content={warning}
-            position={Position.BOTTOM_RIGHT}
-            statelessProps={{ maxWidth: "500px" }}
-          >
-            <WarningSignIcon
-              color="warning"
-              style={{ verticalAlign: "bottom" }}
-            />
-          </Tooltip>
+          <Popover position={Position.BOTTOM_LEFT} content={warning}>
+            <Button
+              borderColor={defaultTheme.colors.purple100}
+              paddingLeft={4}
+              paddingRight={4}
+            >
+              <LightbulbIcon color={defaultTheme.colors.purple600} />
+            </Button>
+          </Popover>
         </Table.TextCell>
       )}
     </>

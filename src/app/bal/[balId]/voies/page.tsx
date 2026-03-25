@@ -12,14 +12,18 @@ import {
   IconButton,
   FilterIcon,
   FilterRemoveIcon,
-  Button,
   Menu,
   SendToMapIcon,
   EditIcon,
   EndorsedIcon,
   TrashIcon,
+  Popover,
+  RadioGroup,
+  Button,
+  LightbulbIcon,
+  defaultTheme,
 } from "evergreen-ui";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import NextLink from "next/link";
 import { normalizeSort } from "@/lib/normalize";
 
@@ -32,7 +36,6 @@ import DeleteWarning from "@/components/delete-warning";
 import {
   BaseLocale,
   ExtendedVoieDTO,
-  Toponyme,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
@@ -60,6 +63,18 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
+import { AlertNumero, AlertVoie } from "@/lib/alerts/alerts.types";
+import AlertsContext from "@/contexts/alerts";
+import TableVoieWarning from "@/components/table-row/table-voie-warning";
+import AlertsBatchProcessor, {
+  AlertBatchItem,
+} from "@/components/bal/alerts-batch-processor";
+
+const options = [
+  { label: "Tous", value: "" },
+  { label: "Avec suggestions", value: "with-suggestions" },
+  { label: "Sans certification", value: "without-certification" },
+];
 
 export default function VoiesPage() {
   const { token } = useContext(TokenContext);
@@ -69,30 +84,37 @@ export default function VoiesPage() {
     voies,
     isEditing,
     reloadVoies,
-    reloadToponymes,
     reloadParcelles,
     refreshBALSync,
     reloadNumeros,
   } = useContext(BalDataContext);
   const { reloadTiles, setTileLayersMode } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
-
-  const [toConvert, setToConvert] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [toCertify, setToCertify] = useState<string | null>(null);
-  const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
   const [onCertifyLoading, setOnCertifyLoading] = useState<boolean>(false);
   const [documentGenerationData, setDocumentGenerationData] =
     useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [showUncertify, setShowUncertify] = useState(false);
-  const router = useRouter();
+
+  const [filter, setFilter] = useState<string>(
+    searchParams.get("filter") || ""
+  );
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(TabsEnum.VOIES, voies);
   const { scrollAndHighlightLastSelectedItem } = useContext(
     SearchPaginationContext
   );
+  const { voiesAlerts, numerosAlerts } = useContext(AlertsContext);
+  const [isBatchMode, setIsBatchMode] = useState(false);
+
+  useEffect(() => {
+    setIsBatchMode(false);
+  }, [searchParams]);
 
   useEffect(() => {
     setTileLayersMode(TilesLayerMode.VOIE);
@@ -106,6 +128,15 @@ export default function VoiesPage() {
       setBreadcrumbs(null);
     };
   }, [setBreadcrumbs, scrollAndHighlightLastSelectedItem]);
+
+  const handleFilter = useCallback(
+    (value: string) => {
+      const query = value ? `?filter=${value}` : "";
+      router.push(`${pathname}${query}`);
+      setFilter(value);
+    },
+    [setFilter, router, pathname]
+  );
 
   const handleRemove = async () => {
     setIsDisabled(true);
@@ -156,46 +187,6 @@ export default function VoiesPage() {
     [toaster, matomoTrackEvent]
   );
 
-  const onConvert = useCallback(async () => {
-    setOnConvertLoading(true);
-    const convertToponyme = toaster(
-      async () => {
-        const toponyme: Toponyme =
-          await VoiesService.convertToToponyme(toConvert);
-        await reloadVoies();
-        await reloadToponymes();
-        await reloadParcelles();
-        reloadTiles();
-        refreshBALSync();
-        await router.push(
-          `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
-        );
-      },
-      "La voie a bien été convertie en toponyme",
-      "La voie n’a pas pu être convertie en toponyme"
-    );
-
-    await convertToponyme();
-    matomoTrackEvent(
-      MatomoEventCategory.BAL_EDITOR,
-      MatomoEventAction[MatomoEventCategory.BAL_EDITOR].CONVERT_VOIE_TO_TOPONYME
-    );
-
-    setOnConvertLoading(false);
-    setToConvert(null);
-  }, [
-    baseLocale,
-    router,
-    reloadVoies,
-    refreshBALSync,
-    reloadToponymes,
-    reloadTiles,
-    reloadParcelles,
-    toConvert,
-    toaster,
-    matomoTrackEvent,
-  ]);
-
   const browseToVoie = (idVoie: string) => {
     void router.push(`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${idVoie}`);
   };
@@ -206,17 +197,70 @@ export default function VoiesPage() {
     );
   };
 
+  const getVoieAlerts = useCallback(
+    (voieId: string): (AlertVoie | AlertNumero)[] => {
+      const voieWarnings = voiesAlerts[voieId] || [];
+
+      const numerosWarnings = Object.values(numerosAlerts)
+        .flat()
+        .filter((alert) => alert.voieId === voieId);
+      return [...voieWarnings, ...numerosWarnings];
+    },
+    [voiesAlerts, numerosAlerts]
+  );
+
   const scrollableItems = useMemo(() => {
-    const items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
+    let items: ExtendedVoieDTO[] = sortBy(filtered, (v) =>
       normalizeSort(v.nom)
     );
-    if (showUncertify) {
-      return items.filter(({ isAllCertified }) => !isAllCertified);
+    if (filter === "without-certification") {
+      items = items.filter(({ isAllCertified }) => !isAllCertified);
+    }
+    if (filter === "with-suggestions") {
+      items = items.filter(({ id }) => getVoieAlerts(id).length > 0);
     }
     return items;
-  }, [filtered, showUncertify]);
+  }, [filtered, filter, getVoieAlerts]);
+
+  const batchItems: AlertBatchItem[] = useMemo(() => {
+    const allSorted = sortBy(
+      filtered.filter(({ id }) => getVoieAlerts(id).length > 0),
+      (v) => normalizeSort(v.nom)
+    );
+    return allSorted.flatMap((voie) => {
+      const voieWarnings = (voiesAlerts[voie.id] || []).map((alert) => ({
+        voie,
+        alert,
+      }));
+      const numeroWarnings = Object.entries(numerosAlerts)
+        .filter(([, alerts]) => alerts.some((a) => a.voieId === voie.id))
+        .flatMap(([numeroId, alerts]) =>
+          alerts
+            .filter((a) => a.voieId === voie.id)
+            .map((alert) => ({ voie, alert, numeroId }))
+        );
+      return [...voieWarnings, ...numeroWarnings];
+    });
+  }, [filtered, getVoieAlerts, voiesAlerts, numerosAlerts]);
 
   const isEditingEnabled = !isEditing && Boolean(token);
+
+  const handleBatchSuggestionModeFinish = useCallback(() => {
+    if (batchItems?.length === 0) {
+      handleFilter("");
+    }
+    setIsBatchMode(false);
+  }, [batchItems, handleFilter, setIsBatchMode]);
+
+  if (isBatchMode) {
+    return (
+      <AlertsBatchProcessor
+        items={batchItems}
+        onClose={() => setIsBatchMode(false)}
+        onFinish={handleBatchSuggestionModeFinish}
+      />
+    );
+  }
 
   return (
     <>
@@ -235,22 +279,6 @@ export default function VoiesPage() {
         }}
         onConfirm={onCertify}
       />
-
-      <DialogWarningAction
-        confirmLabel="Convertir en toponyme"
-        isShown={Boolean(toConvert)}
-        content={
-          <Paragraph>
-            Êtes vous bien sûr de vouloir convertir cette voie en toponyme ?
-          </Paragraph>
-        }
-        isLoading={onConvertLoading}
-        onCancel={() => {
-          setToConvert(null);
-        }}
-        onConfirm={onConvert}
-      />
-
       <DeleteWarning
         isShown={Boolean(toRemove)}
         content={
@@ -304,14 +332,24 @@ export default function VoiesPage() {
             value={search}
           />
           <Table.HeaderCell flex="unset">
-            <ButtonIconExpandHover
-              icon={showUncertify ? FilterRemoveIcon : FilterIcon}
-              title="Voir seulement les voies avec des adresses non certifiées"
-              size="small"
-              marginRight={16}
-              onClick={() => setShowUncertify(!showUncertify)}
-              message="Filtre adresses non certifiées"
-            />
+            <Popover
+              content={
+                <RadioGroup
+                  padding={16}
+                  label="Filtre"
+                  value={filter}
+                  options={options}
+                  onChange={(event) => handleFilter(event.target.value)}
+                />
+              }
+            >
+              <IconButton
+                icon={filter ? FilterRemoveIcon : FilterIcon}
+                title="filtres voies"
+                size="small"
+                marginRight={16}
+              />
+            </Popover>
             <ButtonIconExpandHover
               icon={AddIcon}
               title="Ajouter une voie"
@@ -325,6 +363,27 @@ export default function VoiesPage() {
             />
           </Table.HeaderCell>
         </Table.Head>
+
+        {filter === "with-suggestions" && batchItems.length > 0 && token && (
+          <Pane
+            padding={8}
+            background={defaultTheme.colors.purpleTint}
+            borderBottom="muted"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Button
+              iconBefore={LightbulbIcon}
+              appearance="primary"
+              onClick={() => setIsBatchMode(true)}
+              style={{ backgroundColor: defaultTheme.colors.purple600 }}
+            >
+              Traiter les {batchItems.length} suggestion
+              {batchItems.length > 1 ? "s" : ""}
+            </Button>
+          </Pane>
+        )}
 
         {filtered.length === 0 && (
           <Table.Row>
@@ -378,21 +437,12 @@ export default function VoiesPage() {
                   ) : null
                 }
                 warning={
-                  voie.nbNumeros === 0 ? (
-                    <>
-                      <Pane marginBottom={8}>
-                        <Text color="white">
-                          Cette voie ne contient aucun numéro
-                        </Text>
-                      </Pane>
-                      <Button
-                        onClick={() => setToConvert(voie.id)}
-                        size="small"
-                        title="Convertir la voie en toponyme"
-                      >
-                        Convertir en toponyme
-                      </Button>
-                    </>
+                  Boolean(token) && getVoieAlerts(voie.id).length > 0 ? (
+                    <TableVoieWarning
+                      baseLocale={baseLocale}
+                      voie={voie}
+                      alerts={getVoieAlerts(voie.id)}
+                    />
                   ) : null
                 }
               />
