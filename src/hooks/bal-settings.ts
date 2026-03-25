@@ -31,7 +31,7 @@ const ignoredAlertCodesHasChanged = (
 export function useBALSettings(baseLocale: BaseLocale) {
   const { emails, reloadEmails } = useContext(TokenContext);
 
-  const { reloadBaseLocale, voies, reloadVoiesAlerts, reloadNumerosAlerts } =
+  const { reloadBaseLocale, reloadVoiesAlerts, reloadNumerosAlerts } =
     useContext(BalDataContext);
   const { pushToast } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
@@ -109,10 +109,10 @@ export function useBALSettings(baseLocale: BaseLocale) {
             },
           });
         }
-        await reloadBaseLocale();
+        const bal = await reloadBaseLocale();
         if (ignoredAlertCodesChanged) {
-          await reloadVoiesAlerts();
-          await reloadNumerosAlerts();
+          await reloadVoiesAlerts(bal.settings?.ignoredAlertCodes as AlertCodeEnum[]);
+          await reloadNumerosAlerts(bal.settings?.ignoredAlertCodes as AlertCodeEnum[]);
         }
         pushToast({
           title: "Les paramètres ont été enregistrés avec succès",

@@ -41,7 +41,7 @@ interface BALDataContextType {
   setEditingId: (isEditing: string | null) => void;
   editingItem: Voie | Toponyme | Numero;
   baseLocale: ExtendedBaseLocaleDTO;
-  reloadBaseLocale: () => void;
+  reloadBaseLocale: () => Promise<ExtendedBaseLocaleDTO>;
   habilitation: HabilitationDTO;
   reloadHabilitation: () => Promise<void>;
   parcelles: Array<string>;
@@ -67,9 +67,9 @@ interface BALDataContextType {
   reloadVoieNumeros: (voieId: string) => Promise<void>;
   commune: CommuneType | null;
   setNumeros: React.Dispatch<React.SetStateAction<Numero[]>>;
-  reloadVoiesAlerts: () => Promise<void>;
+  reloadVoiesAlerts: (overrideCodes?: AlertCodeEnum[]) => Promise<void>;
   reloadVoieAlerts: (voie: ExtendedVoieDTO) => Promise<void>;
-  reloadNumerosAlerts: () => Promise<void>;
+  reloadNumerosAlerts: (overrideCodes?: AlertCodeEnum[]) => Promise<void>;
 }
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null);
@@ -202,6 +202,7 @@ export function BalDataContextProvider({
   const reloadBaseLocale = useCallback(async () => {
     const bal = await BasesLocalesService.findBaseLocale(baseLocale.id);
     setBaseLocale(bal);
+    return bal
   }, [baseLocale.id]);
 
   const refreshBALSync = useCallback(async () => {
@@ -237,17 +238,19 @@ export function BalDataContextProvider({
     [baseLocale.settings?.ignoredAlertCodes, reloadVoieAlerts]
   );
 
-  const _reloadVoiesAlerts = useCallback(async () => {
+  const _reloadVoiesAlerts = useCallback(async (overrideCodes?: AlertCodeEnum[]) => {
+    const codes = overrideCodes ?? (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) ?? [];
     reloadVoiesAlerts(
       voies,
-      (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+      codes
     );
   }, [baseLocale.settings?.ignoredAlertCodes, reloadVoiesAlerts, voies]);
 
-  const _reloadNumerosAlerts = useCallback(async () => {
+  const _reloadNumerosAlerts = useCallback(async (overrideCodes?: AlertCodeEnum[]) => {
+    const codes = overrideCodes ?? (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) ?? [];
     reloadNumerosAlerts(
       baseLocale.id,
-      (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+      codes
     );
   }, [
     baseLocale.settings?.ignoredAlertCodes,
