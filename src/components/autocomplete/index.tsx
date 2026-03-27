@@ -33,6 +33,7 @@ type SearchInputProps<T> = SearchInputOwnProps & {
   noResultsMessage?: string;
   resultsListPosition?: "top" | "bottom";
   inputProps?: Omit<React.ComponentProps<typeof SearchInput>, "onChange">;
+  initialValue?: string;
 };
 
 function AutocompleteInput<T>({
@@ -44,6 +45,7 @@ function AutocompleteInput<T>({
   noResultsMessage = "Aucun résultat trouvé",
   resultsListPosition = "bottom",
   inputProps = {},
+  initialValue,
 }: SearchInputProps<T>) {
   const controller = useRef<AbortController | null>(null);
   const [items, setItems] = useState<SearchItemType<T>[]>([]);
@@ -129,6 +131,7 @@ function AutocompleteInput<T>({
     items,
     itemToString,
     stateReducer,
+    ...(initialValue !== undefined && { initialInputValue: initialValue }),
   });
 
   const showResultsList = isOpen && inputValue && !isLoading;
