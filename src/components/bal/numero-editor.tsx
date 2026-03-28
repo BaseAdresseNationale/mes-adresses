@@ -36,9 +36,7 @@ import LayoutContext from "@/contexts/layout";
 import SelectCommune from "../select-commune";
 import { CommuneType } from "@/types/commune";
 import DrawContext from "@/contexts/draw";
-import AlertsContext from "@/contexts/alerts";
 import {
-  AlertCodeEnum,
   AlertFieldNumeroEnum,
   AlertModelEnum,
 } from "@/lib/alerts/alerts.types";
@@ -96,13 +94,14 @@ function NumeroEditor({
     reloadParcelles,
     refreshBALSync,
     reloadVoies,
+    reloadNumerosAlerts,
+    reloadVoieAlerts,
   } = useContext(BalDataContext);
   const { highlightedParcelles } = useContext(ParcellesContext);
   const { markers, suggestedNumero, setCompleteNumero } =
     useContext(MarkersContext);
   const { setHint } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
-  const { reloadNumerosAlerts, reloadVoieAlerts } = useContext(AlertsContext);
 
   const [ref] = useFocus(true);
 
@@ -218,14 +217,8 @@ function NumeroEditor({
         const newVoies = await reloadVoies();
 
         // RELOAD ALERTS
-        await reloadNumerosAlerts(
-          baseLocale.id,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-        );
-        await reloadVoieAlerts(
-          newVoies.find(({ id }) => id === voie.id),
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-        );
+        await reloadNumerosAlerts();
+        await reloadVoieAlerts(newVoies.find(({ id }) => id === voie.id));
 
         if (onSubmitted) {
           onSubmitted({
@@ -259,12 +252,8 @@ function NumeroEditor({
       onSubmitted,
       toaster,
       numero,
-      baseLocale.id,
       reloadNumerosAlerts,
       reloadVoieAlerts,
-      baseLocale.settings?.ignoredAlertCodes,
-      toponymes,
-      voies,
     ]
   );
 

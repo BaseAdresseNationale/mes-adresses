@@ -18,8 +18,6 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
-import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
-import AlertsContext from "@/contexts/alerts";
 
 interface WarningVoieEmptyProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -27,11 +25,15 @@ interface WarningVoieEmptyProps {
 }
 
 function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
-  const { reloadVoies, reloadToponymes, reloadParcelles, refreshBALSync } =
-    useContext(BalDataContext);
+  const {
+    reloadVoies,
+    reloadToponymes,
+    reloadParcelles,
+    refreshBALSync,
+    reloadVoieAlerts,
+  } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
-  const { reloadVoieAlerts } = useContext(AlertsContext);
   const [toConvert, setToConvert] = useState<ExtendedVoieDTO | null>(null);
   const [onConvertLoading, setOnConvertLoading] = useState<boolean>(false);
   const { toaster } = useContext(LayoutContext);
@@ -49,10 +51,8 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
         await reloadParcelles();
         reloadTiles();
         refreshBALSync();
-        reloadVoieAlerts(
-          toConvert,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-        );
+        // RELOAD ALERTS
+        reloadVoieAlerts(toConvert);
         await router.push(
           `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
         );
@@ -79,7 +79,6 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
     reloadTiles,
     refreshBALSync,
     reloadVoieAlerts,
-    baseLocale.settings?.ignoredAlertCodes,
     baseLocale.id,
     router,
   ]);

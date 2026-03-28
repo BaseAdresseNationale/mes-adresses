@@ -17,10 +17,16 @@ interface TableVoieWarningProps {
 }
 
 function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
+  const dedupedAlerts = alerts.filter(
+    (alert, index, self) =>
+      alert.model !== AlertModelEnum.NUMERO ||
+      self.findIndex((a) => a.model === AlertModelEnum.NUMERO) === index
+  );
+
   return (
     <Menu>
       <Ul listStyle="none" paddingRight={16}>
-        {alerts.map((alert, index) => {
+        {dedupedAlerts.map((alert, index) => {
           return (
             <Li key={`alert-${index}`}>
               {index > 0 && (
@@ -39,16 +45,10 @@ function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
                   ) : null}
                 </>
               ) : alert.model === AlertModelEnum.NUMERO ? (
-                <>
-                  {alert.codes.includes(
-                    AlertCodeNumeroEnum.SUFFIXE_CARACTERE_INVALIDE
-                  ) ? (
-                    <WarningLink
-                      title="Suggestion sur les numéros de la voie"
-                      url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`}
-                    />
-                  ) : null}
-                </>
+                <WarningLink
+                  title="Suggestion sur les numéros de la voie"
+                  url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`}
+                />
               ) : null}
             </Li>
           );
