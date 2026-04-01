@@ -42,11 +42,7 @@ function SelectParcelles({
     return () => {
       setIsParcelleSelectionEnabled(false);
     };
-  }, [
-    setHighlightedParcelles,
-    setIsParcelleSelectionEnabled,
-    initialParcelles,
-  ]);
+  }, [setHighlightedParcelles, setIsParcelleSelectionEnabled]);
 
   return (
     <Pane display="flex" flexDirection="column">
