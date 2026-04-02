@@ -165,12 +165,14 @@ export default function VoiesPage() {
   }, [toCertify, reloadVoies, reloadNumeros, reloadTiles]);
 
   const onDownloadArreteDeNumerotation = useCallback(
-    async (voieId: string, data: { file?: Blob }) => {
+    async (voieId: string, data: { file?: Blob; format?: "pdf" | "docx" }) => {
       const downloadArreteDeNumerotation = toaster(
         async () => {
+          const { format, ...formData } = data;
           const url = await VoiesService.generateArreteDeNumerotation(
             voieId,
-            data
+            formData,
+            format
           );
           window.open(url, "_blank");
         },
