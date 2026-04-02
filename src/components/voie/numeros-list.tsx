@@ -240,7 +240,12 @@ function NumerosList({
     async (numeroId: string, data: CertificatGenerationData) => {
       const downloadCertificat = toaster(
         async () => {
-          const url = await NumerosService.generateCertificat(numeroId, data);
+          const { format, ...requestBody } = data;
+          const url = await NumerosService.generateCertificat(
+            numeroId,
+            requestBody,
+            format
+          );
           window.open(url, "_blank");
         },
         "Le certificat d'adressage a bien été téléchargé",
@@ -257,12 +262,17 @@ function NumerosList({
   );
 
   const onDownloadArreteDeNumerotation = useCallback(
-    async (numeroId: string, data: { file?: Blob }) => {
+    async (
+      numeroId: string,
+      data: { file?: Blob; format?: "pdf" | "docx" }
+    ) => {
       const downloadArreteDeNumerotation = toaster(
         async () => {
+          const { format, ...formData } = data;
           const url = await NumerosService.generateArreteDeNumerotation(
             numeroId,
-            data
+            formData,
+            format
           );
           window.open(url, "_blank");
         },
