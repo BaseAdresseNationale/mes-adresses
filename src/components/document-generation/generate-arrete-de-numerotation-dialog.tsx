@@ -7,6 +7,7 @@ import {
   IconButton,
   CameraIcon,
   Text,
+  RadioGroup,
 } from "evergreen-ui";
 import {
   Dispatch,
@@ -43,7 +44,10 @@ interface GenerateArreteDeNumerotationDialogProps<
 > {
   data: DocumentGenerationData<type> | null;
   setData: Dispatch<SetStateAction<DocumentGenerationData<type> | null>>;
-  onDownload: (numeroId: string, data: { file?: Blob }) => Promise<void>;
+  onDownload: (
+    numeroId: string,
+    data: { file?: Blob; format?: "pdf" | "docx" }
+  ) => Promise<void>;
 }
 
 export function GenerateArreteDeNumerotationDialog<
@@ -58,6 +62,7 @@ export function GenerateArreteDeNumerotationDialog<
   const [fileRejections, setFileRejections] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isTakingScreenshot, setIsTakingScreenshot] = useState(false);
+  const [format, setFormat] = useState<"pdf" | "docx">("pdf");
 
   const handleChange = useCallback((files) => setFiles([files[0]]), []);
 
@@ -169,6 +174,7 @@ export function GenerateArreteDeNumerotationDialog<
     setIsLoading(true);
     await onDownload(data.for.id, {
       file: files[0],
+      format,
     });
     setIsLoading(false);
     setData(null);
@@ -250,6 +256,16 @@ export function GenerateArreteDeNumerotationDialog<
             pour générer le plan de situation automatiquement
           </Text>
         </Pane>
+        <RadioGroup
+          label="Format"
+          value={format}
+          options={[
+            { label: ".pdf", value: "pdf" },
+            { label: ".docx", value: "docx" },
+          ]}
+          onChange={(event) => setFormat(event.target.value as "pdf" | "docx")}
+          marginTop={16}
+        />
       </Pane>
     </Dialog>
   );

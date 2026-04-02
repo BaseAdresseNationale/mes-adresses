@@ -205,7 +205,8 @@ export class VoiesService {
      * Generate the arrete de numerotation by voie id
      * @param voieId
      * @param formData
-     * @returns string URL of the generated PDF arrête de numérotation
+     * @param format Format du document généré (pdf par défaut)
+     * @returns string URL of the generated arrête de numérotation
      * @throws ApiError
      */
     public static generateArreteDeNumerotation(
@@ -213,12 +214,16 @@ export class VoiesService {
         formData: {
             file?: Blob;
         },
+        format?: 'pdf' | 'docx',
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/voies/generate-arrete-de-numerotation/{voieId}',
             path: {
                 'voieId': voieId,
+            },
+            query: {
+                'format': format,
             },
             formData: formData,
             mediaType: 'multipart/form-data',
