@@ -62,7 +62,6 @@ import MatomoTrackingContext, {
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
 import AlertsContext from "@/contexts/alerts";
-import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 import TableNumeroWarning from "../table-row/table-numero-warning";
 
 interface NumerosListProps {
@@ -93,13 +92,14 @@ function NumerosList({
   const [selectedNumerosIds, setSelectedNumerosIds] = useState<string[]>([]);
   const { toaster } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
-  const { numerosAlerts, reloadVoieAlerts } = useContext(AlertsContext);
+  const { numerosAlerts } = useContext(AlertsContext);
   const {
     baseLocale,
     isEditing,
     reloadNumeros,
     reloadParcelles,
     refreshBALSync,
+    reloadVoieAlerts,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
@@ -196,18 +196,10 @@ function NumerosList({
       };
 
       setVoie(voie);
-      await reloadVoieAlerts(
-        newVoie,
-        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-      );
+      // RELOAD ALERTS
+      await reloadVoieAlerts(newVoie);
     },
-    [
-      baseLocale.settings?.ignoredAlertCodes,
-      numeros,
-      reloadVoieAlerts,
-      setVoie,
-      voie,
-    ]
+    [numeros, reloadVoieAlerts, setVoie, voie]
   );
 
   const onRemove = useCallback(

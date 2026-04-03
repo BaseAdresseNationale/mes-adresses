@@ -26,4 +26,6 @@ export const AlertVoieDefinitions: Record<AlertCodeVoieEnum, string> = {
 export const AlertNumeroDefinitions: Record<AlertCodeNumeroEnum, string> = {
   [AlertCodeNumeroEnum.SUFFIXE_CARACTERE_INVALIDE]:
     "Le suffixe du numéro contient un caractère invalide",
+  [AlertCodeNumeroEnum.PARCELLE_NOT_EXIST]:
+    "La parcelle n'existe pas dans le cadastre de la commune",
 };

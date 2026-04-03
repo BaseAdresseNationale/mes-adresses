@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useContext } from "react";
 import { ChildrenProps } from "@/types/context";
 import { omit } from "lodash";
 import {
@@ -14,7 +14,11 @@ import {
   getVoieNomAlert,
 } from "@/lib/alerts/utils/alerts-voies.utils";
 import { BasesLocalesService } from "@/lib/openapi-api-bal/services/BasesLocalesService";
-import { getNumeroSuffixeAlert } from "@/lib/alerts/utils/alerts-numero.utils";
+import {
+  getNumeroParcelleNotExistAlert,
+  getNumeroSuffixeAlert,
+} from "@/lib/alerts/utils/alerts-numero.utils";
+import CadastreContext from "./cadastre";
 
 interface AlertsContextType {
   voiesAlerts: Record<string, AlertVoie[]>;
@@ -42,15 +46,20 @@ export function AlertsContextProvider(props: ChildrenProps) {
   const [numerosAlerts, setNumerosAlerts] = useState<
     Record<string, AlertNumero[]>
   >({});
+  const { communeParcelles } = useContext(CadastreContext);
+
   const reloadNumerosAlerts = useCallback(
     async (balId: string, ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const balNumeros = await BasesLocalesService.findNumeros(
-        ["id", "numero", "suffixe", "voieId"],
+        ["id", "numero", "suffixe", "voieId", "parcelles"],
         balId
       );
       const newNumerosAlerts: Record<string, AlertNumero[]> = {};
       for (const numero of balNumeros) {
-        const alerts = [getNumeroSuffixeAlert(numero)];
+        const alerts = [
+          getNumeroSuffixeAlert(numero),
+          getNumeroParcelleNotExistAlert(numero, communeParcelles),
+        ];
         const filteredAlerts = alerts
           .filter((alert) => alert !== undefined)
           .filter((alert) =>
@@ -62,7 +71,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       }
       setNumerosAlerts(newNumerosAlerts);
     },
-    []
+    [communeParcelles]
   );
 
   const getVoieAlerts = useCallback(
