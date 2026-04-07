@@ -29,23 +29,24 @@ export const getNumeroSuffixeAlert = (
 export const getNumeroParcelleNotExistAlert = (
   numero: Numero,
   communeParcellesIds: string[]
-): AlertNumero | undefined => {
-  if (communeParcellesIds.length <= 0) {
-    return;
-  }
-  for (const parcelle of numero.parcelles) {
-    if (!communeParcellesIds.includes(parcelle)) {
-      return {
-        model: AlertModelEnum.NUMERO,
-        field: AlertFieldNumeroEnum.NUMERO_PARCELLE,
-        codes: [AlertCodeNumeroEnum.PARCELLE_NOT_EXIST],
-        value: parcelle,
-        voieId: numero.voieId,
-        numero: numero.numero,
-        suffixe: numero.suffixe,
-      } as AlertNumero;
+): AlertNumero[] => {
+  const alerts: AlertNumero[] = [];
+  if (communeParcellesIds.length > 0) {
+    for (const parcelle of numero.parcelles) {
+      if (!communeParcellesIds.includes(parcelle)) {
+        alerts.push({
+          model: AlertModelEnum.NUMERO,
+          field: AlertFieldNumeroEnum.NUMERO_PARCELLE,
+          codes: [AlertCodeNumeroEnum.PARCELLE_NOT_EXIST],
+          value: parcelle,
+          voieId: numero.voieId,
+          numero: numero.numero,
+          suffixe: numero.suffixe,
+        } as AlertNumero);
+      }
     }
   }
+  return alerts;
 };
 
 export function isAlertNumeroSuffixe(alert: Alert): boolean {

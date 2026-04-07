@@ -82,7 +82,7 @@ function AlertsBatchProcessor({
   const isNumeroSuffixeAlert =
     currentItem?.alert.model === AlertModelEnum.NUMERO &&
     isAlertNumeroSuffixe(currentItem.alert);
-  const isNumeroParcellAlert =
+  const isNumeroParcelleAlert =
     currentItem?.alert.model === AlertModelEnum.NUMERO &&
     isAlertNumeroParcelle(currentItem.alert);
   const isVoieEmpty =
@@ -215,7 +215,7 @@ function AlertsBatchProcessor({
   ]);
 
   const handleRemoveInvalidParcelle = useCallback(async () => {
-    if (!currentItem || !isNumeroParcellAlert || !currentItem.numeroId) return;
+    if (!currentItem || !isNumeroParcelleAlert || !currentItem.numeroId) return;
 
     setIsLoading(true);
     try {
@@ -245,7 +245,7 @@ function AlertsBatchProcessor({
     }
   }, [
     currentItem,
-    isNumeroParcellAlert,
+    isNumeroParcelleAlert,
     toaster,
     reloadNumerosAlerts,
     reloadTiles,
@@ -303,14 +303,14 @@ function AlertsBatchProcessor({
               ? "Suggestion voie sans adresse"
               : isNumeroSuffixeAlert
                 ? "Suggestion sur le suffixe du numero"
-                : isNumeroParcellAlert
+                : isNumeroParcelleAlert
                   ? "Parcelle inexistante dans le cadastre"
                   : null}
         </Heading>
         <Text is="p">
           {isVoieNameAlert || isVoieEmpty ? (
             <>{currentItem.voie.nom}</>
-          ) : isNumeroSuffixeAlert || isNumeroParcellAlert ? (
+          ) : isNumeroSuffixeAlert || isNumeroParcelleAlert ? (
             <>
               {(currentItem.alert as AlertNumero).numero}{" "}
               {(currentItem.alert as AlertNumero).suffixe}{" "}
@@ -331,11 +331,18 @@ function AlertsBatchProcessor({
           marginTop={16}
         >
           <UnorderedList>
-            {alertDefinitions.map((def, i) => (
-              <ListItem key={i} color={defaultTheme.colors.gray900}>
-                <Text color={defaultTheme.colors.gray900}>{def}</Text>
-              </ListItem>
-            ))}
+            {isNumeroParcelleAlert ? (
+              <Text>
+                La parcelle &quot;{currentItem.alert.value}&quot; n&apos;existe
+                pas dans le cadastre de la commune.
+              </Text>
+            ) : (
+              alertDefinitions.map((def, i) => (
+                <ListItem key={i} color={defaultTheme.colors.gray900}>
+                  <Text color={defaultTheme.colors.gray900}>{def}</Text>
+                </ListItem>
+              ))
+            )}
           </UnorderedList>
         </Pane>
 
@@ -385,21 +392,6 @@ function AlertsBatchProcessor({
             </Text>
           </Pane>
         )}
-
-        {/* Info for parcelle not exist alerts */}
-        {isNumeroParcellAlert && (
-          <Pane
-            background="tint1"
-            padding={12}
-            borderRadius={4}
-            marginBottom={16}
-          >
-            <Text display="block" marginBottom={8}>
-              La parcelle &quot;{currentItem.alert.value}&quot; n&apos;existe
-              pas dans le cadastre de la commune.
-            </Text>
-          </Pane>
-        )}
       </Pane>
 
       {/* Action buttons - sticky bottom */}
@@ -437,7 +429,7 @@ function AlertsBatchProcessor({
             Convertir en toponyme
           </Button>
         )}
-        {isNumeroParcellAlert && (
+        {isNumeroParcelleAlert && (
           <Button
             isLoading={isLoading}
             onClick={handleRemoveInvalidParcelle}

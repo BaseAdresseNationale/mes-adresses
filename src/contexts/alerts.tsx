@@ -59,7 +59,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
         for (const numero of balNumeros) {
           const alerts = [
             getNumeroSuffixeAlert(numero),
-            getNumeroParcelleNotExistAlert(numero, communeParcellesIds),
+            ...getNumeroParcelleNotExistAlert(numero, communeParcellesIds),
           ];
           const filteredAlerts = alerts
             .filter((alert) => alert !== undefined)

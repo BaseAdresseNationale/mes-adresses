@@ -15,10 +15,25 @@ interface TableNumeroWarningProps {
 }
 
 function TableNumeroWarning({ alerts, onSelect }: TableNumeroWarningProps) {
+  const multiAlertsNumeroParcelle =
+    alerts.filter((alert) => isAlertNumeroParcelle(alert)).length > 1;
+
+  const data = multiAlertsNumeroParcelle
+    ? alerts.filter((alert) => !isAlertNumeroParcelle(alert))
+    : alerts;
+
   return (
     <Menu>
       <Ul listStyle="none" paddingRight={16}>
-        {alerts.map((alert, index) => {
+        <Li>
+          {multiAlertsNumeroParcelle ? (
+            <WarningNumero
+              title="Plusieurs parcelles n'existent pas dans le cadastre"
+              goToFormNumero={onSelect}
+            />
+          ) : null}
+        </Li>
+        {data.map((alert, index) => {
           return (
             <Li key={`alert-${index}`}>
               {index > 0 && (
@@ -30,7 +45,7 @@ function TableNumeroWarning({ alerts, onSelect }: TableNumeroWarningProps) {
                   goToFormNumero={onSelect}
                 />
               ) : null}
-              {isAlertNumeroParcelle(alert) ? (
+              {!multiAlertsNumeroParcelle && isAlertNumeroParcelle(alert) ? (
                 <WarningNumero
                   title="La parcelle n'existe pas dans le cadastre"
                   goToFormNumero={onSelect}
