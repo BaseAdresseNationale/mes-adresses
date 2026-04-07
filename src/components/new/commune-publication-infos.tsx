@@ -11,7 +11,6 @@ import {
   BasesLocalesService,
   PageBaseLocaleDTO,
 } from "@/lib/openapi-api-bal";
-import AlertExistingBALMesAdresses from "./alert-published-bal/alert-existing-bal-mes-adresses";
 
 interface CommunePublicationInfosProps {
   commune: CommuneType;
@@ -114,16 +113,11 @@ function CommunePublicationInfos({
             )
           ) : null}
 
-          {existingBALCount > 0 && (
-            <AlertExistingBALMesAdresses
-              commune={commune}
-              existingBALCount={existingBALCount}
-            />
-          )}
-
-          <Button marginTop={16} intent="none" onClick={onCreateNewBAL}>
-            Créer une nouvelle Base Adresse Locale
-          </Button>
+          {!apiDepotLastRevision?.context.extras?.balId ? (
+            <Button marginTop={16} intent="none" onClick={onCreateNewBAL}>
+              Créer une nouvelle Base Adresse Locale
+            </Button>
+          ) : null}
         </>
       )}
     </Pane>
