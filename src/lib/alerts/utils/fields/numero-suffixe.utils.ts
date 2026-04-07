@@ -4,11 +4,11 @@ export function computeNumeroSuffixeAlerts(
   value: string
 ): [codes: AlertCodeNumeroEnum[], remediation?: string] {
   if (!/^[\da-z]/i.test(value)) {
-    return undefined;
+    return [[], null];
   }
 
   if (value?.length > 9) {
-    return undefined;
+    return [[], null];
   }
 
   const alphanumericRegex =

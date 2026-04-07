@@ -88,6 +88,9 @@ function NumeroVoieSelector({
             onSearch={handleSearchVoie}
             onSelect={handleVoieChange}
             resultsListPosition="bottom"
+            initialValue={
+              voieId ? voies.find((v) => v.id === voieId)?.nom : undefined
+            }
             inputProps={{
               placeholder: "Rechercher une voie",
             }}
