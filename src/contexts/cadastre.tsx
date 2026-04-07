@@ -3,10 +3,19 @@
 import React, { useState, useEffect, useMemo } from "react";
 
 import { CadastreService } from "@/lib/cadastre/cadastre";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
+
+export type ParcelleType = {
+  id: string;
+  label: string;
+  geometry: {
+    type: "Polygon" | "MultiPolygon";
+    coordinates: number[][][] | number[][][][];
+  };
+};
 
 interface CadastreContextType {
-  communeParcelles: string[];
+  communeParcellesIds: string[];
+  communeParcelles: ParcelleType[];
 }
 
 const CadastreContext = React.createContext<CadastreContextType | null>(null);
@@ -20,26 +29,48 @@ export function CadastreContextProvider({
   codeCommune,
   children,
 }: CadastreContextProviderProps) {
-  const [communeParcelles, setCommuneParcelles] = useState<string[]>([]);
+  const [communeParcellesIds, setcommuneParcellesIds] = useState<
+    string[] | null
+  >(null);
+
+  const [communeParcelles, setCommuneParcelles] = useState<
+    ParcelleType[] | null
+  >(null);
 
   useEffect(() => {
-    async function featchCommuneParcelles() {
-      const featureCollection =
-        await CadastreService.findCadastreCommune(codeCommune);
-      const parcelles = featureCollection.features?.map(
-        ({ id }) => id
-      ) as string[];
-      setCommuneParcelles(parcelles);
+    async function fetchCommuneParcelles() {
+      try {
+        const featureCollection =
+          await CadastreService.findCadastreCommune(codeCommune);
+        const parcellesIds = featureCollection.features?.map(
+          ({ id }) => id
+        ) as string[];
+        setcommuneParcellesIds(parcellesIds);
+
+        const parcelles: ParcelleType[] = featureCollection.features?.map(
+          (feature) =>
+            ({
+              id: feature.id,
+              label: feature.id,
+              geometry: feature.geometry,
+            }) as ParcelleType
+        );
+        setCommuneParcelles(parcelles);
+      } catch (e) {
+        console.error("ERROR lors fetch du cadastre", e);
+        setCommuneParcelles([]);
+      }
     }
 
-    featchCommuneParcelles();
+    fetchCommuneParcelles();
   }, [codeCommune]);
 
   const value = useMemo(
     () => ({
+      communeParcellesIds,
       communeParcelles,
     }),
-    [communeParcelles]
+    [communeParcellesIds, communeParcelles]
   );
 
   return (

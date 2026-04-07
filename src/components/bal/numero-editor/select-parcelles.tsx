@@ -8,8 +8,6 @@ import {
   ControlIcon,
   Text,
   defaultTheme,
-  UnorderedList,
-  ListItem,
 } from "evergreen-ui";
 
 import ParcellesContext from "@/contexts/parcelles";
@@ -37,11 +35,11 @@ function SelectParcelles({
     handleHoveredParcelles,
     handleParcelles,
   } = useContext(ParcellesContext);
-  const { communeParcelles } = useContext(CadastreContext);
+  const { communeParcellesIds } = useContext(CadastreContext);
   const addressType = isToponyme ? "toponyme" : "numéro";
 
   const invalidParcelles = highlightedParcelles.filter(
-    (p) => communeParcelles.length > 0 && !communeParcelles.includes(p)
+    (p) => communeParcellesIds.length > 0 && !communeParcellesIds.includes(p)
   );
 
   useEffect(() => {

@@ -28,13 +28,13 @@ export const getNumeroSuffixeAlert = (
 
 export const getNumeroParcelleNotExistAlert = (
   numero: Numero,
-  communeParcelles: string[]
+  communeParcellesIds: string[]
 ): AlertNumero | undefined => {
-  if (communeParcelles.length <= 0) {
+  if (communeParcellesIds.length <= 0) {
     return;
   }
   for (const parcelle of numero.parcelles) {
-    if (!communeParcelles.includes(parcelle)) {
+    if (!communeParcellesIds.includes(parcelle)) {
       return {
         model: AlertModelEnum.NUMERO,
         field: AlertFieldNumeroEnum.NUMERO_PARCELLE,

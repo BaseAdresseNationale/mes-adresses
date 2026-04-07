@@ -46,32 +46,34 @@ export function AlertsContextProvider(props: ChildrenProps) {
   const [numerosAlerts, setNumerosAlerts] = useState<
     Record<string, AlertNumero[]>
   >({});
-  const { communeParcelles } = useContext(CadastreContext);
+  const { communeParcellesIds } = useContext(CadastreContext);
 
   const reloadNumerosAlerts = useCallback(
     async (balId: string, ignoredAlertCodes: AlertCodeEnum[] = []) => {
-      const balNumeros = await BasesLocalesService.findNumeros(
-        ["id", "numero", "suffixe", "voieId", "parcelles"],
-        balId
-      );
-      const newNumerosAlerts: Record<string, AlertNumero[]> = {};
-      for (const numero of balNumeros) {
-        const alerts = [
-          getNumeroSuffixeAlert(numero),
-          getNumeroParcelleNotExistAlert(numero, communeParcelles),
-        ];
-        const filteredAlerts = alerts
-          .filter((alert) => alert !== undefined)
-          .filter((alert) =>
-            alert.codes.every((code) => !ignoredAlertCodes.includes(code))
-          );
-        if (filteredAlerts.length > 0) {
-          newNumerosAlerts[numero.id] = filteredAlerts;
+      if (communeParcellesIds !== null) {
+        const balNumeros = await BasesLocalesService.findNumeros(
+          ["id", "numero", "suffixe", "voieId", "parcelles"],
+          balId
+        );
+        const newNumerosAlerts: Record<string, AlertNumero[]> = {};
+        for (const numero of balNumeros) {
+          const alerts = [
+            getNumeroSuffixeAlert(numero),
+            getNumeroParcelleNotExistAlert(numero, communeParcellesIds),
+          ];
+          const filteredAlerts = alerts
+            .filter((alert) => alert !== undefined)
+            .filter((alert) =>
+              alert.codes.every((code) => !ignoredAlertCodes.includes(code))
+            );
+          if (filteredAlerts.length > 0) {
+            newNumerosAlerts[numero.id] = filteredAlerts;
+          }
         }
+        setNumerosAlerts(newNumerosAlerts);
       }
-      setNumerosAlerts(newNumerosAlerts);
     },
-    [communeParcelles]
+    [communeParcellesIds]
   );
 
   const getVoieAlerts = useCallback(
