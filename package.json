@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@ban-team/shared-data": "^1.4.2",
-    "@ban-team/validateur-bal": "^3.4.0",
+    "@ban-team/validateur-bal": "^3.5.1",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@next/bundle-analyzer": "^16.1.1",
     "@sentry/nextjs": "^10.33.0",
