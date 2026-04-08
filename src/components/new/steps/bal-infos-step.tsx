@@ -12,7 +12,7 @@ import {
   AddIcon,
 } from "evergreen-ui";
 import FormInput from "@/components/form-input";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { validateEmail } from "@/lib/utils/email";
 
 interface BALInfosStepProps {
@@ -20,6 +20,8 @@ interface BALInfosStepProps {
   setBalName: (name: string) => void;
   adminEmails: string[];
   setAdminEmails: (emails: string[]) => void;
+  newEmailInput: string;
+  setNewEmailInput: (email: string) => void;
   createDemoBAL: () => Promise<void>;
   isLoading?: boolean;
 }
@@ -29,11 +31,11 @@ function BALInfosStep({
   setBalName,
   adminEmails,
   setAdminEmails,
+  newEmailInput,
+  setNewEmailInput,
   createDemoBAL,
   isLoading,
 }: BALInfosStepProps) {
-  const [newEmailInput, setNewEmailInput] = useState("");
-
   const canAddEmail = useMemo(() => {
     return (
       newEmailInput &&
@@ -97,6 +99,9 @@ function BALInfosStep({
               placeholder="Ajouter une adresse email…"
               maxWidth={400}
               value={newEmailInput}
+              isInvalid={
+                newEmailInput.length > 0 && !validateEmail(newEmailInput)
+              }
               onChange={(e) => setNewEmailInput(e.target.value)}
             />
             <IconButton
