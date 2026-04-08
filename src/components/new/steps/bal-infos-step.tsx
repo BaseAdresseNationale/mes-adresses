@@ -5,15 +5,8 @@ import {
   Text,
   Alert,
   Spinner,
-  Label,
-  IconButton,
-  TextInput,
-  TrashIcon,
-  AddIcon,
 } from "evergreen-ui";
-import FormInput from "@/components/form-input";
-import { useMemo } from "react";
-import { validateEmail } from "@/lib/utils/email";
+import AdminEmailsField from "@/components/new/steps/admin-emails-field";
 
 interface BALInfosStepProps {
   balName: string;
@@ -36,26 +29,6 @@ function BALInfosStep({
   createDemoBAL,
   isLoading,
 }: BALInfosStepProps) {
-  const canAddEmail = useMemo(() => {
-    return (
-      newEmailInput &&
-      !adminEmails.includes(newEmailInput) &&
-      validateEmail(newEmailInput)
-    );
-  }, [newEmailInput, adminEmails]);
-
-  const onSubmitNewEmail = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (canAddEmail) {
-      setAdminEmails([...adminEmails, newEmailInput]);
-      setNewEmailInput("");
-    }
-  };
-
-  const onRemoveEmail = (emailToRemove: string) => {
-    setAdminEmails(adminEmails.filter((e) => e !== emailToRemove));
-  };
-
   return (
     <Pane>
       <Pane maxWidth={600} display="flex" flexDirection="column">
@@ -69,53 +42,12 @@ function BALInfosStep({
           onChange={(e) => setBalName(e.target.value)}
           disabled={isLoading}
         />
-        <FormInput padding={0}>
-          <Pane marginBottom={8}>
-            <Label>Adresses emails des administrateurs *</Label>
-          </Pane>
-          {adminEmails.map((email, index) => (
-            <Pane
-              key={`form-admin-emails-${index}`}
-              display="flex"
-              marginBottom={8}
-            >
-              <TextInput readOnly type="email" value={adminEmails[index]} />
-              <IconButton
-                type="button"
-                icon={TrashIcon}
-                marginLeft={4}
-                appearance="minimal"
-                intent="danger"
-                onClick={() => onRemoveEmail(email)}
-                disabled={adminEmails.length === 1}
-              />
-            </Pane>
-          ))}
-          <Pane display="flex" marginBottom={16}>
-            <TextInput
-              display="block"
-              type="email"
-              width="100%"
-              placeholder="Ajouter une adresse email…"
-              maxWidth={400}
-              value={newEmailInput}
-              isInvalid={
-                newEmailInput.length > 0 && !validateEmail(newEmailInput)
-              }
-              onChange={(e) => setNewEmailInput(e.target.value)}
-            />
-            <IconButton
-              type="button"
-              title="Ajouter"
-              icon={AddIcon}
-              marginLeft={4}
-              appearance="primary"
-              intent="success"
-              onClick={onSubmitNewEmail}
-              disabled={!canAddEmail}
-            />
-          </Pane>
-        </FormInput>
+        <AdminEmailsField
+          adminEmails={adminEmails}
+          setAdminEmails={setAdminEmails}
+          newEmailInput={newEmailInput}
+          setNewEmailInput={setNewEmailInput}
+        />
       </Pane>
       <Pane display="flex" flexWrap="wrap" alignItems="center" gap={10}>
         <Text>OU</Text>
