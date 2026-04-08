@@ -15,6 +15,7 @@ import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { useContext } from "react";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 interface BANSyncProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -31,6 +32,7 @@ function BANSync({
   handleSync,
   togglePause,
 }: BANSyncProps) {
+  const { otherBalIdPublished } = useContext(BALRecoveryContext);
   const { isMobile } = useContext(LayoutContext);
   const { intent, title, content } = computeStatus(
     baseLocale.status,
@@ -59,13 +61,15 @@ function BANSync({
               commune={commune}
             />
 
-            <SyncButton
-              isSync={baseLocale.sync.status === "synced"}
-              isConflicted={baseLocale.sync.status === "conflict"}
-              isPaused={baseLocale.sync.isPaused}
-              handleSync={handleSync}
-              togglePause={togglePause}
-            />
+            {!otherBalIdPublished && (
+              <SyncButton
+                isSync={baseLocale.sync.status === "synced"}
+                isConflicted={baseLocale.sync.status === "conflict"}
+                isPaused={baseLocale.sync.isPaused}
+                handleSync={handleSync}
+                togglePause={togglePause}
+              />
+            )}
           </Pane>
         }
         position={Position.BOTTOM_RIGHT}
