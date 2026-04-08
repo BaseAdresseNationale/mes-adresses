@@ -81,7 +81,15 @@ export default function NewPageComponent({
         canBrowseBack: !isLoading,
       },
     ];
-  }, [commune, importValue, csvImportFile, isLoading, balName, adminEmails, newEmailInput]);
+  }, [
+    commune,
+    importValue,
+    csvImportFile,
+    isLoading,
+    balName,
+    adminEmails,
+    newEmailInput,
+  ]);
 
   const onPreviousStep = useCallback(() => {
     if (currentStepIndex > 0) {
