@@ -116,6 +116,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
             onClick={onShowBALAccessDialog}
             width="fit-content"
             alignSelf="flex-end"
+            bottom={8}
           >
             <EyeOpenIcon marginRight={8} />
             Partage d&apos;accès

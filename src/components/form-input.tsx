@@ -5,16 +5,10 @@ interface FormInputProps {
   children: React.ReactNode;
   padding?: number;
   background?: string;
-  marginBottom?: number;
 }
 
 function FormInput(
-  {
-    children,
-    padding = 8,
-    background = "white",
-    marginBottom = 8,
-  }: FormInputProps,
+  { children, padding = 8, background = "white" }: FormInputProps,
   ref
 ) {
   return (
@@ -23,7 +17,7 @@ function FormInput(
       background={background}
       padding={padding}
       borderRadius={8}
-      marginBottom={marginBottom}
+      marginBottom={8}
       width="100%"
     >
       {children}

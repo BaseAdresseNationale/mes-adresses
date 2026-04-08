@@ -46,7 +46,7 @@ function AdminEmailsField({
   };
 
   return (
-    <FormInput padding={0} background={background} marginBottom={0}>
+    <FormInput padding={0} background={background}>
       <Pane marginBottom={8}>
         <Label>Adresses emails des administrateurs *</Label>
       </Pane>
