@@ -16,6 +16,7 @@ interface AdminEmailsFieldProps {
   newEmailInput: string;
   setNewEmailInput: (email: string) => void;
   label?: string;
+  background?: string;
 }
 
 function AdminEmailsField({
@@ -23,7 +24,7 @@ function AdminEmailsField({
   setAdminEmails,
   newEmailInput,
   setNewEmailInput,
-  label = "Adresses emails des administrateurs *",
+  background = "white",
 }: AdminEmailsFieldProps) {
   const canAddEmail = useMemo(() => {
     return (
@@ -45,9 +46,9 @@ function AdminEmailsField({
   };
 
   return (
-    <FormInput padding={0}>
+    <FormInput padding={0} background={background} marginBottom={0}>
       <Pane marginBottom={8}>
-        <Label>{label}</Label>
+        <Label>Adresses emails des administrateurs *</Label>
       </Pane>
       {adminEmails.map((email, index) => (
         <Pane
@@ -67,7 +68,7 @@ function AdminEmailsField({
           />
         </Pane>
       ))}
-      <Pane display="flex" marginBottom={16}>
+      <Pane display="flex">
         <TextInput
           display="block"
           type="email"

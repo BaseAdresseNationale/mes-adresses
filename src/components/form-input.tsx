@@ -4,16 +4,26 @@ import React from "react";
 interface FormInputProps {
   children: React.ReactNode;
   padding?: number;
+  background?: string;
+  marginBottom?: number;
 }
 
-function FormInput({ children, padding = 8 }: FormInputProps, ref) {
+function FormInput(
+  {
+    children,
+    padding = 8,
+    background = "white",
+    marginBottom = 8,
+  }: FormInputProps,
+  ref
+) {
   return (
     <Pane
       ref={ref}
-      background="white"
+      background={background}
       padding={padding}
       borderRadius={8}
-      marginBottom={8}
+      marginBottom={marginBottom}
       width="100%"
     >
       {children}

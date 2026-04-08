@@ -10,8 +10,9 @@ import {
   EyeOpenIcon,
   Label,
   MapCreateIcon,
+  defaultTheme,
 } from "evergreen-ui";
-import { BALAdminEmails } from "./bal-admin-emails";
+import AdminEmailsField from "@/components/new/steps/admin-emails-field";
 import { useBALSettings } from "@/hooks/bal-settings";
 import RenewTokenDialog from "../renew-token-dialog";
 import { ShareBALAccessDialog } from "./share/share-bal-access-dialog";
@@ -31,6 +32,7 @@ interface SettingsProps {
 function Settings({ baseLocale, token }: SettingsProps) {
   const [showBALAccessDialog, setShowBALAccessDialog] = useState(false);
   const [showFondDeCarteDialog, setShowFondDeCarteDialog] = useState(false);
+  const [newEmailInput, setNewEmailInput] = useState("");
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const onShowBALAccessDialog = () => {
@@ -101,7 +103,13 @@ function Settings({ baseLocale, token }: SettingsProps) {
 
         <Pane display="flex" gap={16} marginBottom={16}>
           <Pane flex={1}>
-            <BALAdminEmails value={emailsInput} onChange={setEmailsInput} />
+            <AdminEmailsField
+              adminEmails={emailsInput}
+              setAdminEmails={setEmailsInput}
+              newEmailInput={newEmailInput}
+              setNewEmailInput={setNewEmailInput}
+              background={defaultTheme.colors.tint2}
+            />
           </Pane>
           <Button
             type="button"
