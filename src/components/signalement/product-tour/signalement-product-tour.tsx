@@ -18,7 +18,7 @@ const steps = [
     ),
   },
   {
-    target: "div[class^='main-tabs_tabsList'] > a:last-child",
+    target: "div[role='tablist'] > a:last-child",
     content: (
       <Pane>
         <Paragraph>
@@ -29,14 +29,12 @@ const steps = [
     spotlightPadding: 15,
     callback: () => {
       const element = document.querySelector(
-        "div[class^='main-tabs_tabsList'] > a:last-child"
+        "div[role='tablist'] > a:last-child"
       ) as HTMLElement | null;
       if (element) {
         element.click();
       } else {
-        console.warn(
-          "Element not found: div[class^='main-tabs_tabsList'] > a:last-child"
-        );
+        console.warn("Element not found: div[role='tablist'] > a:last-child");
       }
     },
   },
