@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useBALDataImport } from "@/hooks/bal-data-import";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import { validateEmail } from "@/lib/utils/email";
 import styles from "./new.module.css";
 
 interface NewPageProps {
@@ -44,6 +45,7 @@ export default function NewPageComponent({
   const [csvImportFile, setCsvImportFile] = useState<File | null>(null);
   const [balName, setBalName] = useState<string | null>(null);
   const [adminEmails, setAdminEmails] = useState<string[]>([]);
+  const [newEmailInput, setNewEmailInput] = useState("");
   const { importFromCSVFile, importFromBAN } = useBALDataImport();
   const router = useRouter();
 
@@ -73,11 +75,21 @@ export default function NewPageComponent({
       {
         label: "Informations sur la BAL",
         canBrowseNext:
-          !isLoading && Boolean(balName) && Boolean(adminEmails.length),
+          !isLoading &&
+          Boolean(balName) &&
+          (Boolean(adminEmails.length) || validateEmail(newEmailInput)),
         canBrowseBack: !isLoading,
       },
     ];
-  }, [commune, importValue, csvImportFile, isLoading, balName, adminEmails]);
+  }, [
+    commune,
+    importValue,
+    csvImportFile,
+    isLoading,
+    balName,
+    adminEmails,
+    newEmailInput,
+  ]);
 
   const onPreviousStep = useCallback(() => {
     if (currentStepIndex > 0) {
@@ -94,7 +106,7 @@ export default function NewPageComponent({
     }
   }, [currentStepIndex, steps.length]);
 
-  const createNewBal = async (isDemo?: boolean) => {
+  const createNewBal = async (isDemo?: boolean, emails?: string[]) => {
     let bal: BaseLocale;
 
     setIsLoading(true);
@@ -107,7 +119,7 @@ export default function NewPageComponent({
       } else {
         bal = await BasesLocalesService.createBaseLocale({
           nom: balName,
-          emails: adminEmails,
+          emails: emails ?? adminEmails,
           commune: commune.code,
         });
       }
@@ -146,7 +158,11 @@ export default function NewPageComponent({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createNewBal();
+    const effectiveEmails =
+      validateEmail(newEmailInput) && !adminEmails.includes(newEmailInput)
+        ? [...adminEmails, newEmailInput]
+        : adminEmails;
+    await createNewBal(false, effectiveEmails);
   };
 
   return (
@@ -183,6 +199,8 @@ export default function NewPageComponent({
                   setBalName={setBalName}
                   adminEmails={adminEmails}
                   setAdminEmails={setAdminEmails}
+                  newEmailInput={newEmailInput}
+                  setNewEmailInput={setNewEmailInput}
                   createDemoBAL={() => createNewBal(true)}
                   isLoading={isLoading}
                 />

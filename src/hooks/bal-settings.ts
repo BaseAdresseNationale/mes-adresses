@@ -65,10 +65,16 @@ export function useBALSettings(baseLocale: BaseLocale) {
   );
 
   const onSubmit = useCallback(
-    async (e) => {
+    async (e, emailsOverride?: string[]) => {
       e.preventDefault();
       setError("");
       setIsLoading(true);
+
+      const effectiveEmails = emailsOverride ?? emailsInput;
+      const effectiveEmailsHaveChanged = mailHasChanged(
+        emails || [],
+        effectiveEmails
+      );
 
       try {
         if (nomHasChanged) {
@@ -81,13 +87,13 @@ export function useBALSettings(baseLocale: BaseLocale) {
             MatomoEventAction[MatomoEventCategory.SETTINGS].UPDATE_BAL_NAME
           );
         }
-        if (emailsHaveChanged) {
+        if (effectiveEmailsHaveChanged) {
           await BasesLocalesService.updateBaseLocale(baseLocale.id, {
-            emails: emailsInput,
+            emails: effectiveEmails,
           });
 
           await reloadEmails();
-          if (difference(emails, emailsInput).length > 0) {
+          if (difference(emails, effectiveEmails).length > 0) {
             setIsRenewTokenWarningShown(true);
             matomoTrackEvent(
               MatomoEventCategory.SETTINGS,
