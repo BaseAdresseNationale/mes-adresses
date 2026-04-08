@@ -1,5 +1,5 @@
 import { BaseLocale } from "@/lib/openapi-api-bal";
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import {
   TextInputField,
   Button,
@@ -13,6 +13,7 @@ import {
   defaultTheme,
 } from "evergreen-ui";
 import AdminEmailsField from "@/components/new/steps/admin-emails-field";
+import { validateEmail } from "@/lib/utils/email";
 import { useBALSettings } from "@/hooks/bal-settings";
 import RenewTokenDialog from "../renew-token-dialog";
 import { ShareBALAccessDialog } from "./share/share-bal-access-dialog";
@@ -61,6 +62,29 @@ function Settings({ baseLocale, token }: SettingsProps) {
     ignoredAlertCodesChanged,
   } = useBALSettings(baseLocale);
 
+  const isSubmitDisabled = useMemo(
+    () =>
+      !nomHasChanged &&
+      !emailsHaveChanged &&
+      !ignoredAlertCodesChanged &&
+      !(validateEmail(newEmailInput) && !emailsInput.includes(newEmailInput)),
+    [
+      nomHasChanged,
+      emailsHaveChanged,
+      ignoredAlertCodesChanged,
+      newEmailInput,
+      emailsInput,
+    ]
+  );
+
+  const handleSubmit = (e: React.FormEvent) => {
+    const effectiveEmails =
+      validateEmail(newEmailInput) && !emailsInput.includes(newEmailInput)
+        ? [...emailsInput, newEmailInput]
+        : emailsInput;
+    onSubmit(e, effectiveEmails);
+  };
+
   return (
     <Pane height="100%">
       <Pane
@@ -80,7 +104,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
       <Pane
         is="form"
         position="relative"
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         display="flex"
         background="gray75"
         minHeight="100%"
@@ -161,9 +185,7 @@ function Settings({ baseLocale, token }: SettingsProps) {
           height={40}
           type="submit"
           appearance="primary"
-          disabled={
-            !nomHasChanged && !emailsHaveChanged && !ignoredAlertCodesChanged
-          }
+          disabled={isSubmitDisabled}
           isLoading={isLoading}
           width="fit-content"
         >
