@@ -441,7 +441,9 @@ export default function VoiesPage() {
                   ) : null
                 }
                 warning={
-                  Boolean(token) && getVoieAlerts(voie.id).length > 0 ? (
+                  Boolean(token) &&
+                  !Boolean(otherBalIdPublished) &&
+                  getVoieAlerts(voie.id).length > 0 ? (
                     <TableVoieWarning
                       baseLocale={baseLocale}
                       voie={voie}
