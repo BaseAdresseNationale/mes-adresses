@@ -1,7 +1,7 @@
 import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";
 import { CommuneType } from "@/types/commune";
-import { Button, Pane, Spinner } from "evergreen-ui";
+import { Button, Link, Pane, Spinner, Text } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import AlertPublishedBALMesAdresses from "./alert-published-bal/alert-published-bal-mes-adresses";
 import AlertPublishedBALMoissoneur from "./alert-published-bal/alert-published-bal-moissoneur";
@@ -117,7 +117,15 @@ function CommunePublicationInfos({
             <Button marginTop={16} intent="none" onClick={onCreateNewBAL}>
               Créer une nouvelle Base Adresse Locale
             </Button>
-          ) : null}
+          ) : (
+            <Text is="div" color="muted" marginTop={16}>
+              Si vous rencontrer un problème vous pouvez contacter notre
+              support:{" "}
+              <Link href="mailto:adresse@data.gouv.fr">
+                adresse@data.gouv.fr
+              </Link>
+            </Text>
+          )}
         </>
       )}
     </Pane>
