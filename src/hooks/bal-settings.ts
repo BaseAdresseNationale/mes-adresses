@@ -9,7 +9,6 @@ import MatomoTrackingContext, {
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
 import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
-import AlertsContext from "@/contexts/alerts";
 
 const mailHasChanged = (listA, listB) => {
   return !isEqual(
@@ -31,8 +30,8 @@ const ignoredAlertCodesHasChanged = (
 export function useBALSettings(baseLocale: BaseLocale) {
   const { emails, reloadEmails } = useContext(TokenContext);
 
-  const { reloadBaseLocale, voies } = useContext(BalDataContext);
-  const { reloadVoiesAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
+  const { reloadBaseLocale, reloadVoiesAlerts, reloadNumerosAlerts } =
+    useContext(BalDataContext);
   const { pushToast } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
@@ -108,10 +107,16 @@ export function useBALSettings(baseLocale: BaseLocale) {
               ignoredAlertCodes,
             },
           });
-          await reloadVoiesAlerts(voies, ignoredAlertCodes);
-          await reloadNumerosAlerts(baseLocale.id, ignoredAlertCodes);
         }
-        await reloadBaseLocale();
+        const bal = await reloadBaseLocale();
+        if (ignoredAlertCodesChanged) {
+          await reloadVoiesAlerts(
+            bal.settings?.ignoredAlertCodes as AlertCodeEnum[]
+          );
+          await reloadNumerosAlerts(
+            bal.settings?.ignoredAlertCodes as AlertCodeEnum[]
+          );
+        }
         pushToast({
           title: "Les paramètres ont été enregistrés avec succès",
           intent: "success",
@@ -123,20 +128,21 @@ export function useBALSettings(baseLocale: BaseLocale) {
       }
     },
     [
-      baseLocale,
-      nomInput,
-      emailsInput,
-      reloadEmails,
       nomHasChanged,
       emailsHaveChanged,
-      pushToast,
-      reloadBaseLocale,
-      emails,
-      matomoTrackEvent,
       ignoredAlertCodesChanged,
+      reloadBaseLocale,
+      pushToast,
+      baseLocale.id,
+      baseLocale.settings,
+      nomInput,
+      matomoTrackEvent,
+      emailsInput,
+      reloadEmails,
+      emails,
       ignoredAlertCodes,
       reloadVoiesAlerts,
-      voies,
+      reloadNumerosAlerts,
     ]
   );
 

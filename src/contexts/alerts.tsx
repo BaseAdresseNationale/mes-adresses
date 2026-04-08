@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useContext } from "react";
 import { ChildrenProps } from "@/types/context";
 import { omit } from "lodash";
 import {
@@ -14,7 +14,11 @@ import {
   getVoieNomAlert,
 } from "@/lib/alerts/utils/alerts-voies.utils";
 import { BasesLocalesService } from "@/lib/openapi-api-bal/services/BasesLocalesService";
-import { getNumeroSuffixeAlert } from "@/lib/alerts/utils/alerts-numero.utils";
+import {
+  getNumeroParcelleNotExistAlert,
+  getNumeroSuffixeAlert,
+} from "@/lib/alerts/utils/alerts-numero.utils";
+import CadastreContext from "./cadastre";
 
 interface AlertsContextType {
   voiesAlerts: Record<string, AlertVoie[]>;
@@ -42,27 +46,34 @@ export function AlertsContextProvider(props: ChildrenProps) {
   const [numerosAlerts, setNumerosAlerts] = useState<
     Record<string, AlertNumero[]>
   >({});
+  const { communeParcellesIds } = useContext(CadastreContext);
+
   const reloadNumerosAlerts = useCallback(
     async (balId: string, ignoredAlertCodes: AlertCodeEnum[] = []) => {
-      const balNumeros = await BasesLocalesService.findNumeros(
-        ["id", "numero", "suffixe", "voieId"],
-        balId
-      );
-      const newNumerosAlerts: Record<string, AlertNumero[]> = {};
-      for (const numero of balNumeros) {
-        const alerts = [getNumeroSuffixeAlert(numero)];
-        const filteredAlerts = alerts
-          .filter((alert) => alert !== undefined)
-          .filter((alert) =>
-            alert.codes.every((code) => !ignoredAlertCodes.includes(code))
-          );
-        if (filteredAlerts.length > 0) {
-          newNumerosAlerts[numero.id] = filteredAlerts;
+      if (communeParcellesIds !== null) {
+        const balNumeros = await BasesLocalesService.findNumeros(
+          ["id", "numero", "suffixe", "voieId", "parcelles"],
+          balId
+        );
+        const newNumerosAlerts: Record<string, AlertNumero[]> = {};
+        for (const numero of balNumeros) {
+          const alerts = [
+            getNumeroSuffixeAlert(numero),
+            ...getNumeroParcelleNotExistAlert(numero, communeParcellesIds),
+          ];
+          const filteredAlerts = alerts
+            .filter((alert) => alert !== undefined)
+            .filter((alert) =>
+              alert.codes.every((code) => !ignoredAlertCodes.includes(code))
+            );
+          if (filteredAlerts.length > 0) {
+            newNumerosAlerts[numero.id] = filteredAlerts;
+          }
         }
+        setNumerosAlerts(newNumerosAlerts);
       }
-      setNumerosAlerts(newNumerosAlerts);
     },
-    []
+    [communeParcellesIds]
   );
 
   const getVoieAlerts = useCallback(

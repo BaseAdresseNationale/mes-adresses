@@ -21,7 +21,6 @@ import {
   AlertNumero,
   AlertModelEnum,
   AlertCodeVoieEnum,
-  AlertCodeEnum,
   isAlertCodeVoieEnum,
   isAlertCodeNumeroEnum,
 } from "@/lib/alerts/alerts.types";
@@ -36,11 +35,13 @@ import {
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import BalDataContext from "@/contexts/bal-data";
-import AlertsContext from "@/contexts/alerts";
 import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";
 import AlertNameDiff from "./alert-name-diff";
-import { isAlertNumeroSuffixe } from "@/lib/alerts/utils/alerts-numero.utils";
+import {
+  isAlertNumeroSuffixe,
+  isAlertNumeroParcelle,
+} from "@/lib/alerts/utils/alerts-numero.utils";
 
 export interface AlertBatchItem {
   voie: ExtendedVoieDTO;
@@ -62,13 +63,13 @@ function AlertsBatchProcessor({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const {
-    baseLocale,
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
     refreshBALSync,
+    reloadVoieAlerts,
+    reloadNumerosAlerts,
   } = useContext(BalDataContext);
-  const { reloadVoieAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
 
@@ -81,6 +82,9 @@ function AlertsBatchProcessor({
   const isNumeroSuffixeAlert =
     currentItem?.alert.model === AlertModelEnum.NUMERO &&
     isAlertNumeroSuffixe(currentItem.alert);
+  const isNumeroParcelleAlert =
+    currentItem?.alert.model === AlertModelEnum.NUMERO &&
+    isAlertNumeroParcelle(currentItem.alert);
   const isVoieEmpty =
     currentItem?.alert.model === AlertModelEnum.VOIE &&
     (currentItem?.alert.codes as AlertCodeVoieEnum[]).includes(
@@ -132,10 +136,8 @@ function AlertsBatchProcessor({
           ({ id }) => id === currentItem.voie.id
         );
         if (updatedVoie) {
-          reloadVoieAlerts(
-            updatedVoie,
-            (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-          );
+          // RELOAD ALERTS
+          reloadVoieAlerts(updatedVoie);
         }
       } else if (isNumeroSuffixeAlert && currentItem.numeroId) {
         const applyCorrection = toaster(
@@ -148,10 +150,7 @@ function AlertsBatchProcessor({
         );
         await applyCorrection();
 
-        await reloadNumerosAlerts(
-          baseLocale.id,
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-        );
+        await reloadNumerosAlerts();
       }
 
       reloadTiles();
@@ -174,8 +173,6 @@ function AlertsBatchProcessor({
     reloadNumerosAlerts,
     reloadTiles,
     refreshBALSync,
-    baseLocale.id,
-    baseLocale.settings?.ignoredAlertCodes,
   ]);
 
   const handleConvertToToponyme = useCallback(async () => {
@@ -189,10 +186,8 @@ function AlertsBatchProcessor({
           await reloadVoies();
           await reloadToponymes();
           await reloadParcelles();
-          reloadVoieAlerts(
-            currentItem.voie,
-            (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-          );
+          // RELOAD ALERTS
+          reloadVoieAlerts(currentItem.voie);
         },
         "La voie a bien été convertie en toponyme",
         "La voie n'a pas pu être convertie en toponyme"
@@ -217,7 +212,44 @@ function AlertsBatchProcessor({
     reloadVoieAlerts,
     reloadTiles,
     refreshBALSync,
-    baseLocale.settings?.ignoredAlertCodes,
+  ]);
+
+  const handleRemoveInvalidParcelle = useCallback(async () => {
+    if (!currentItem || !isNumeroParcelleAlert || !currentItem.numeroId) return;
+
+    setIsLoading(true);
+    try {
+      const numero = await NumerosService.findNumero(currentItem.numeroId);
+      const invalidParcelle = (currentItem.alert as AlertNumero).value;
+      const filteredParcelles = numero.parcelles.filter(
+        (p) => p !== invalidParcelle
+      );
+
+      const applyCorrection = toaster(
+        () =>
+          NumerosService.updateNumero(currentItem.numeroId, {
+            parcelles: filteredParcelles,
+          }),
+        "La parcelle a été supprimée",
+        "La parcelle n'a pas pu être supprimée"
+      );
+      await applyCorrection();
+
+      reloadNumerosAlerts();
+      reloadTiles();
+      refreshBALSync();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    currentItem,
+    isNumeroParcelleAlert,
+    toaster,
+    reloadNumerosAlerts,
+    reloadTiles,
+    refreshBALSync,
   ]);
 
   if (!currentItem) {
@@ -271,17 +303,22 @@ function AlertsBatchProcessor({
               ? "Suggestion voie sans adresse"
               : isNumeroSuffixeAlert
                 ? "Suggestion sur le suffixe du numero"
-                : null}
+                : isNumeroParcelleAlert
+                  ? "Parcelle inexistante dans le cadastre"
+                  : null}
         </Heading>
         <Text is="p">
           {isVoieNameAlert || isVoieEmpty ? (
             <>{currentItem.voie.nom}</>
-          ) : isNumeroSuffixeAlert ? (
+          ) : isNumeroSuffixeAlert || isNumeroParcelleAlert ? (
             <>
               {(currentItem.alert as AlertNumero).numero}{" "}
-              {(currentItem.alert as AlertNumero).value} {currentItem.voie.nom}
+              {(currentItem.alert as AlertNumero).suffixe}{" "}
+              {currentItem.voie.nom}
             </>
-          ) : null}
+          ) : (
+            ""
+          )}
         </Text>
 
         {/* Alert descriptions */}
@@ -294,11 +331,18 @@ function AlertsBatchProcessor({
           marginTop={16}
         >
           <UnorderedList>
-            {alertDefinitions.map((def, i) => (
-              <ListItem key={i} color={defaultTheme.colors.gray900}>
-                <Text color={defaultTheme.colors.gray900}>{def}</Text>
-              </ListItem>
-            ))}
+            {isNumeroParcelleAlert ? (
+              <Text>
+                La parcelle &quot;{currentItem.alert.value}&quot; n&apos;existe
+                pas dans le cadastre de la commune.
+              </Text>
+            ) : (
+              alertDefinitions.map((def, i) => (
+                <ListItem key={i} color={defaultTheme.colors.gray900}>
+                  <Text color={defaultTheme.colors.gray900}>{def}</Text>
+                </ListItem>
+              ))
+            )}
           </UnorderedList>
         </Pane>
 
@@ -383,6 +427,17 @@ function AlertsBatchProcessor({
             style={{ backgroundColor: defaultTheme.colors.purple600 }}
           >
             Convertir en toponyme
+          </Button>
+        )}
+        {isNumeroParcelleAlert && (
+          <Button
+            isLoading={isLoading}
+            onClick={handleRemoveInvalidParcelle}
+            appearance="primary"
+            iconAfter={TickCircleIcon}
+            style={{ backgroundColor: defaultTheme.colors.purple600 }}
+          >
+            Supprimer la parcelle
           </Button>
         )}
         <Button

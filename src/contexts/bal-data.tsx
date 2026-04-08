@@ -41,7 +41,7 @@ interface BALDataContextType {
   setEditingId: (isEditing: string | null) => void;
   editingItem: Voie | Toponyme | Numero;
   baseLocale: ExtendedBaseLocaleDTO;
-  reloadBaseLocale: () => void;
+  reloadBaseLocale: () => Promise<ExtendedBaseLocaleDTO>;
   habilitation: HabilitationDTO;
   reloadHabilitation: () => Promise<void>;
   parcelles: Array<string>;
@@ -67,6 +67,9 @@ interface BALDataContextType {
   reloadVoieNumeros: (voieId: string) => Promise<void>;
   commune: CommuneType | null;
   setNumeros: React.Dispatch<React.SetStateAction<Numero[]>>;
+  reloadVoiesAlerts: (overrideCodes?: AlertCodeEnum[]) => Promise<void>;
+  reloadVoieAlerts: (voie: ExtendedVoieDTO) => Promise<void>;
+  reloadNumerosAlerts: (overrideCodes?: AlertCodeEnum[]) => Promise<void>;
 }
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null);
@@ -99,7 +102,8 @@ export function BalDataContextProvider({
     MatomoTrackingContext
   );
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
-  const { reloadVoiesAlerts, reloadNumerosAlerts } = useContext(AlertsContext);
+  const { reloadVoiesAlerts, reloadVoieAlerts, reloadNumerosAlerts } =
+    useContext(AlertsContext);
 
   // Sync baseLocale to Matomo tracking context
   useEffect(() => {
@@ -142,7 +146,13 @@ export function BalDataContextProvider({
     if (!isBALDataLoaded) {
       fetchBALData();
     }
-  }, [initialBaseLocale, isBALDataLoaded]);
+  }, [
+    baseLocale.settings?.ignoredAlertCodes,
+    initialBaseLocale,
+    isBALDataLoaded,
+    reloadNumerosAlerts,
+    reloadVoiesAlerts,
+  ]);
 
   const {
     habilitation,
@@ -192,6 +202,7 @@ export function BalDataContextProvider({
   const reloadBaseLocale = useCallback(async () => {
     const bal = await BasesLocalesService.findBaseLocale(baseLocale.id);
     setBaseLocale(bal);
+    return bal;
   }, [baseLocale.id]);
 
   const refreshBALSync = useCallback(async () => {
@@ -216,6 +227,38 @@ export function BalDataContextProvider({
       }, 30000); // Maximum interval between CRON job
     }
   }, [baseLocale, isRefrehSyncStat, reloadBaseLocale, pushToast]);
+
+  const _reloadVoieAlerts = useCallback(
+    async (voie: ExtendedVoieDTO) => {
+      reloadVoieAlerts(
+        voie,
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+      );
+    },
+    [baseLocale.settings?.ignoredAlertCodes, reloadVoieAlerts]
+  );
+
+  const _reloadVoiesAlerts = useCallback(
+    async (overrideCodes?: AlertCodeEnum[]) => {
+      const codes =
+        overrideCodes ??
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) ??
+        [];
+      reloadVoiesAlerts(voies, codes);
+    },
+    [baseLocale.settings?.ignoredAlertCodes, reloadVoiesAlerts, voies]
+  );
+
+  const _reloadNumerosAlerts = useCallback(
+    async (overrideCodes?: AlertCodeEnum[]) => {
+      const codes =
+        overrideCodes ??
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) ??
+        [];
+      reloadNumerosAlerts(baseLocale.id, codes);
+    },
+    [baseLocale.settings?.ignoredAlertCodes, reloadNumerosAlerts, baseLocale.id]
+  );
 
   const setEditingId = useCallback(
     (editingId: string) => {
@@ -301,6 +344,9 @@ export function BalDataContextProvider({
       setIsHabilitationProcessDisplayed,
       reloadVoieNumeros,
       commune,
+      reloadVoieAlerts: _reloadVoieAlerts,
+      reloadVoiesAlerts: _reloadVoiesAlerts,
+      reloadNumerosAlerts: _reloadNumerosAlerts,
     }),
     [
       isEditing,
@@ -330,6 +376,9 @@ export function BalDataContextProvider({
       reloadVoieNumeros,
       commune,
       setNumeros,
+      _reloadVoieAlerts,
+      _reloadVoiesAlerts,
+      _reloadNumerosAlerts,
     ]
   );
 

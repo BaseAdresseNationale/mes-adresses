@@ -116,10 +116,7 @@ function StyleControl({
           isCadastreDisplayed={isCadastreDisplayed}
           onClick={() => handleCadastre((show) => !show)}
         />
-        <CadastreSearchInput
-          codeCommune={commune.code}
-          visible={isCadastreDisplayed}
-        />
+        <CadastreSearchInput visible={isCadastreDisplayed} />
       </Pane>
     </Pane>
   );

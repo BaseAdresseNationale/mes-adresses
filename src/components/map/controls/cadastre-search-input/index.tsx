@@ -9,16 +9,12 @@ import AutocompleteInput, { SearchItemType } from "@/components/autocomplete";
 import { ParcelleFeature, useCadastreSearch } from "@/hooks/cadastre-search";
 
 interface CadastreSearchInputProps {
-  codeCommune: string;
   visible?: boolean;
 }
 
-function CadastreSearchInput({
-  codeCommune,
-  visible,
-}: CadastreSearchInputProps) {
+function CadastreSearchInput({ visible }: CadastreSearchInputProps) {
   const { map } = useContext(MapContext);
-  const { handleSearchParcelle } = useCadastreSearch(codeCommune);
+  const { handleSearchParcelle } = useCadastreSearch();
 
   const handleSelectParcelle = useCallback(
     (parcelle: SearchItemType<ParcelleFeature>) => {
