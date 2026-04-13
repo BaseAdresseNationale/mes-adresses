@@ -98,45 +98,43 @@ function AlertEditor({
     };
   }, []);
 
-  return (
-    <>
-      {alert && (
-        <AlertEvergreen
-          background={defaultTheme.colors.purpleTint}
-          borderColor={defaultTheme.colors.purple600}
-          marginTop={8}
-          hasIcon={false}
-          padding={8}
-        >
-          {hasDefinition ? (
-            <UnorderedList>
-              {alertDefinition.map((def) => (
-                <ListItem key={def} color={defaultTheme.colors.purple600}>
-                  {def}
-                </ListItem>
-              ))}
-            </UnorderedList>
-          ) : null}
-          {alert.remediation && (
-            <Text color={defaultTheme.colors.purple600}>
-              Corriger en
-              <Button
-                marginLeft={8}
-                intent="primary"
-                size="small"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleCorrection(alert.remediation);
-                }}
-              >
-                {alert.remediation}
-              </Button>
-            </Text>
-          )}
-        </AlertEvergreen>
-      )}
-    </>
-  );
+  if (alert) {
+    return (
+      <AlertEvergreen
+        background={defaultTheme.colors.purpleTint}
+        borderColor={defaultTheme.colors.purple600}
+        marginTop={8}
+        hasIcon={false}
+        padding={8}
+      >
+        {hasDefinition ? (
+          <UnorderedList>
+            {alertDefinition.map((def) => (
+              <ListItem key={def} color={defaultTheme.colors.purple600}>
+                {def}
+              </ListItem>
+            ))}
+          </UnorderedList>
+        ) : null}
+        {alert.remediation && (
+          <Text color={defaultTheme.colors.purple600}>
+            Corriger en
+            <Button
+              marginLeft={8}
+              intent="primary"
+              size="small"
+              onClick={(e) => {
+                e.preventDefault();
+                handleCorrection(alert.remediation);
+              }}
+            >
+              {alert.remediation}
+            </Button>
+          </Text>
+        )}
+      </AlertEvergreen>
+    );
+  }
 }
 
 export default AlertEditor;
