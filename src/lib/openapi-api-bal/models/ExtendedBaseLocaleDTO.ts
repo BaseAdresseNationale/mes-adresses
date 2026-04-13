@@ -20,6 +20,7 @@ export type ExtendedBaseLocaleDTO = {
     emails: Array<string>;
     token: string;
     status: ExtendedBaseLocaleDTO.status;
+    importType: ExtendedBaseLocaleDTO.importType;
     habilitationId: string;
     sync: BaseLocaleSync;
     settings: BaseLocaleSetting;
@@ -37,6 +38,11 @@ export namespace ExtendedBaseLocaleDTO {
         PUBLISHED = 'published',
         DEMO = 'demo',
         REPLACED = 'replaced',
+    }
+    export enum importType {
+        API_DEPOT = 'api-depot',
+        BAN = 'ban',
+        CSV = 'csv',
     }
 }
 
