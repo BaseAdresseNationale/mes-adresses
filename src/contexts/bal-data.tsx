@@ -26,13 +26,14 @@ import TokenContext from "@/contexts/token";
 import MatomoTrackingContext from "@/contexts/matomo-tracking";
 import useHabilitation from "@/hooks/habilitation";
 import LayoutContext from "./layout";
-import { PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
+import { ApiDepotService, PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 import { CommuneType } from "@/types/commune";
 import { getCommuneWithBBox } from "@/lib/commune";
 import { Pane, Paragraph, Spinner } from "evergreen-ui";
 import { useSearchParams } from "next/navigation";
 import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 import AlertsContext from "./alerts";
+import BALRecoveryContext from "./bal-recovery";
 
 interface BALDataContextType {
   isEditing: boolean;
@@ -102,6 +103,7 @@ export function BalDataContextProvider({
     MatomoTrackingContext
   );
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
+  const { setOtherBalIdPublished } = useContext(BALRecoveryContext);
   const { reloadVoiesAlerts, reloadVoieAlerts, reloadNumerosAlerts } =
     useContext(AlertsContext);
 
@@ -115,6 +117,23 @@ export function BalDataContextProvider({
     return () => setMatomoBaseLocale(null);
   }, [setMatomoBaseLocale]);
 
+  const _setBalAlreadyPublished = useCallback(async (codeCommune) => {
+    try {
+      const revision = await ApiDepotService.getCurrentRevision(codeCommune);
+      const otherBalIdPublished = revision.context?.extras?.balId
+        ? revision.context?.extras?.balId !== baseLocale.id
+          ? revision.context?.extras?.balId
+          : null
+        : null;
+      setOtherBalIdPublished(otherBalIdPublished);
+    } catch (error) {
+      console.error(
+        "ERROR: Impossible de récupérer les révisions pour cette commune",
+        error.body
+      );
+    }
+  }, []);
+
   useEffect(() => {
     async function fetchBALData() {
       try {
@@ -125,6 +144,9 @@ export function BalDataContextProvider({
           initialBaseLocale.id
         );
         const commune = await getCommuneWithBBox(initialBaseLocale, voies);
+        if (!initialBaseLocale.settings.otherBalPublishedIgnored) {
+          _setBalAlreadyPublished(commune.code);
+        }
         setVoies(voies);
         setToponymes(toponymes);
         setCommune(commune);
@@ -147,6 +169,7 @@ export function BalDataContextProvider({
       fetchBALData();
     }
   }, [
+    _setBalAlreadyPublished,
     baseLocale.settings?.ignoredAlertCodes,
     initialBaseLocale,
     isBALDataLoaded,

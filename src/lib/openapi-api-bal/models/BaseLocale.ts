@@ -20,6 +20,7 @@ export type BaseLocale = {
     emails: Array<string>;
     token: string;
     status: BaseLocale.status;
+    importType: BaseLocale.importType;
     habilitationId: string;
     sync: BaseLocaleSync;
     settings: BaseLocaleSetting;
@@ -33,6 +34,11 @@ export namespace BaseLocale {
         PUBLISHED = 'published',
         DEMO = 'demo',
         REPLACED = 'replaced',
+    }
+    export enum importType {
+        API_DEPOT = 'api-depot',
+        BAN = 'ban',
+        CSV = 'csv',
     }
 }
 
