@@ -17,7 +17,9 @@ interface LanguagePreviewProps {
 }
 
 function LanguagePreview({ nomsAlt }: LanguagePreviewProps) {
-  const isFlagExist = availableFlags.includes(Object.keys(nomsAlt)[0]);
+  const langFlag = availableFlags.find(
+    ({ lang }) => lang === Object.keys(nomsAlt)[0]
+  );
   const foundLangueRegionale = languesRegionales.find(
     (lr) => lr.code === Object.keys(nomsAlt)[0]
   );
@@ -57,8 +59,8 @@ function LanguagePreview({ nomsAlt }: LanguagePreviewProps) {
                 >
                   <Image
                     src={
-                      isFlagExist
-                        ? `/static/images/flags/${language}.svg`
+                      langFlag
+                        ? `/static/images/flags/${langFlag.file}`
                         : "/images/icons/flags/ntr.svg"
                     }
                     height={22}
@@ -91,12 +93,14 @@ function LanguagePreview({ nomsAlt }: LanguagePreviewProps) {
     >
       <Image
         src={
-          isFlagExist
-            ? `/static/images/flags/${Object.keys(nomsAlt)[0]}.svg`
+          langFlag
+            ? `/static/images/flags/${langFlag.file}`
             : "/static/images/flags/ntr.svg"
         }
         height={18}
         width={18}
+        objectFit="cover"
+        style={{ borderRadius: "50%" }}
         alt={
           foundLangueRegionale
             ? `Nom de la voie en ${foundLangueRegionale.label}`
