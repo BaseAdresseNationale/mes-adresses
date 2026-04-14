@@ -89,7 +89,7 @@ function AdminEmailsField({
         <Button
           marginTop={8}
           type="button"
-          title="Ajouter"
+          title="Ajouter une adresse mail"
           iconAfter={AddIcon}
           appearance="primary"
           intent="success"

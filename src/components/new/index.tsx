@@ -234,7 +234,7 @@ export default function NewPageComponent({
                     type="button"
                   >
                     {currentStepIndex === steps.length - 1
-                      ? `Créer une Base Adresse Locale ${isDemoMode ? "de demonstration" : ""}`
+                      ? `Créer une Base Adresse Locale${isDemoMode ? " de demonstration" : ""}`
                       : "Suivant"}
                   </Button>
                 </Pane>
