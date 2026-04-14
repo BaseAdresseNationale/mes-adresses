@@ -5,6 +5,9 @@ import {
   Text,
   Alert,
   Spinner,
+  Switch,
+  Label,
+  FormField,
 } from "evergreen-ui";
 import AdminEmailsField from "@/components/new/steps/admin-emails-field";
 
@@ -17,6 +20,8 @@ interface BALInfosStepProps {
   setNewEmailInput: (email: string) => void;
   createDemoBAL: () => Promise<void>;
   isLoading?: boolean;
+  isDemoMode: boolean;
+  setIsDemoMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function BALInfosStep({
@@ -28,6 +33,8 @@ function BALInfosStep({
   setNewEmailInput,
   createDemoBAL,
   isLoading,
+  isDemoMode,
+  setIsDemoMode,
 }: BALInfosStepProps) {
   return (
     <Pane>
@@ -42,18 +49,28 @@ function BALInfosStep({
           onChange={(e) => setBalName(e.target.value)}
           disabled={isLoading}
         />
-        <AdminEmailsField
-          adminEmails={adminEmails}
-          setAdminEmails={setAdminEmails}
-          newEmailInput={newEmailInput}
-          setNewEmailInput={setNewEmailInput}
-        />
-      </Pane>
-      <Pane display="flex" flexWrap="wrap" alignItems="center" gap={10}>
-        <Text>OU</Text>
-        <Button onClick={createDemoBAL} type="button" disabled={isLoading}>
-          Créer une Base Adresse Locale de démonstration
-        </Button>
+        <FormField
+          display="flex"
+          marginBottom={24}
+          label="Créer un Base locale de Demo ?"
+          description="Elle ne sera pas sauvegardée."
+        >
+          <Switch
+            marginLeft={8}
+            checked={isDemoMode}
+            onChange={() => setIsDemoMode(!isDemoMode)}
+          />
+        </FormField>
+        {!isDemoMode ? (
+          <AdminEmailsField
+            adminEmails={adminEmails}
+            setAdminEmails={setAdminEmails}
+            newEmailInput={newEmailInput}
+            setNewEmailInput={setNewEmailInput}
+          />
+        ) : (
+          ""
+        )}
       </Pane>
       {isLoading && (
         <>

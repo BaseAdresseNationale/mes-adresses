@@ -5,6 +5,7 @@ import {
   TextInput,
   TrashIcon,
   AddIcon,
+  Button,
 } from "evergreen-ui";
 import { useMemo } from "react";
 import { validateEmail } from "@/lib/utils/email";
@@ -68,7 +69,7 @@ function AdminEmailsField({
           />
         </Pane>
       ))}
-      <Pane display="flex">
+      <Pane>
         <TextInput
           display="block"
           type="email"
@@ -85,16 +86,18 @@ function AdminEmailsField({
             }
           }}
         />
-        <IconButton
+        <Button
+          marginTop={8}
           type="button"
           title="Ajouter"
-          icon={AddIcon}
-          marginLeft={4}
+          iconAfter={AddIcon}
           appearance="primary"
           intent="success"
           onClick={onAddEmail}
           disabled={!canAddEmail}
-        />
+        >
+          Ajouter un mail administrateur
+        </Button>
       </Pane>
     </FormInput>
   );

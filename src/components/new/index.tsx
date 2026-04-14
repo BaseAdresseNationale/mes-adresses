@@ -46,6 +46,7 @@ export default function NewPageComponent({
   const [balName, setBalName] = useState<string | null>(null);
   const [adminEmails, setAdminEmails] = useState<string[]>([]);
   const [newEmailInput, setNewEmailInput] = useState("");
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const { importFromCSVFile, importFromBAN } = useBALDataImport();
   const router = useRouter();
 
@@ -77,11 +78,14 @@ export default function NewPageComponent({
         canBrowseNext:
           !isLoading &&
           Boolean(balName) &&
-          (Boolean(adminEmails.length) || validateEmail(newEmailInput)),
+          (isDemoMode ||
+            Boolean(adminEmails.length) ||
+            validateEmail(newEmailInput)),
         canBrowseBack: !isLoading,
       },
     ];
   }, [
+    isDemoMode,
     commune,
     importValue,
     csvImportFile,
@@ -203,6 +207,8 @@ export default function NewPageComponent({
                   setNewEmailInput={setNewEmailInput}
                   createDemoBAL={() => createNewBal(true)}
                   isLoading={isLoading}
+                  isDemoMode={isDemoMode}
+                  setIsDemoMode={setIsDemoMode}
                 />
               )}
               {currentStepIndex !== 0 && (
@@ -228,7 +234,7 @@ export default function NewPageComponent({
                     type="button"
                   >
                     {currentStepIndex === steps.length - 1
-                      ? "Terminer"
+                      ? `Créer une Base Adresse Locale ${isDemoMode ? "de demonstration" : ""}`
                       : "Suivant"}
                   </Button>
                 </Pane>
