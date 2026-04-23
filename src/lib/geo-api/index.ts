@@ -1,7 +1,4 @@
-"use client";
-
 import qs from "querystring";
-import { toaster } from "evergreen-ui";
 import { CommuneApiGeoType } from "./type";
 
 const GEO_API_URL =
@@ -13,9 +10,7 @@ export class ApiGeoService {
       const res = await fetch(`${GEO_API_URL}${url}`);
       return res.json();
     } catch (error) {
-      toaster.danger("Erreur inattendue", {
-        description: error.message,
-      });
+      console.error("Error fetching from Geo API:", error);
     }
 
     return null;
