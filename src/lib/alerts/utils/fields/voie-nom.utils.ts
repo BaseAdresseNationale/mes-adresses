@@ -10,7 +10,7 @@ const VOIE_WORD_WITH_ACCENT = {
   allee: "allée",
 };
 
-const EXPAND_FIRST_WORD_TABLE = {
+const EXPAND_WORD_TABLE = {
   pl: "place",
   av: "avenue",
   bd: "boulevard",
@@ -36,9 +36,6 @@ const EXPAND_FIRST_WORD_TABLE = {
   str: "sentier",
   tsse: "terrasse",
   snt: "sente",
-};
-
-const EXPAND_WORD_TABLE = {
   st: "saint",
   ste: "sainte",
   gal: "general",
@@ -46,7 +43,6 @@ const EXPAND_WORD_TABLE = {
 };
 
 const STOP_WORDS = [
-  ...Object.keys(EXPAND_FIRST_WORD_TABLE),
   ...Object.keys(EXPAND_WORD_TABLE),
   "la",
   "le",
@@ -146,15 +142,8 @@ function fixAccent(words: string[]): string[] {
 
 function fixAbbreviation(words: string[]): string[] {
   return words.map((w, i) => {
-    if (i !== 0) {
-      if (Object.keys(EXPAND_WORD_TABLE).includes(w)) {
-        return EXPAND_WORD_TABLE[w];
-      }
-      return w;
-    }
-
-    if (Object.keys(EXPAND_FIRST_WORD_TABLE).includes(w)) {
-      return EXPAND_FIRST_WORD_TABLE[w];
+    if (Object.keys(EXPAND_WORD_TABLE).includes(w)) {
+      return EXPAND_WORD_TABLE[w];
     }
 
     return w;
@@ -283,7 +272,7 @@ function computeSpecificWordsAndAbbreviationErrors(
     lowerWords.some(
       (w, i) =>
         (i !== 0 && Object.keys(EXPAND_WORD_TABLE).includes(w)) ||
-        Object.keys(EXPAND_FIRST_WORD_TABLE).includes(w)
+        Object.keys(EXPAND_WORD_TABLE).includes(w)
     )
   ) {
     codes.push(AlertCodeVoieEnum.ABBREVIATION_INVALID);
