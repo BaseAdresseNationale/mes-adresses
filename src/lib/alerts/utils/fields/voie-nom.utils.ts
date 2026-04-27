@@ -42,7 +42,7 @@ const EXPAND_WORD_TABLE = {
   st: "saint",
   ste: "sainte",
   gal: "general",
-  mal: "marechal",
+  mal: "maréchal",
 };
 
 const STOP_WORDS = [

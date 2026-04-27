@@ -8,7 +8,12 @@ const flagsFolder = "./public/static/images/flags";
 const __filename = fileURLToPath(import.meta.url);
 
 function main() {
-  const data = readdirSync(flagsFolder).map((file) => file.split(".")[0]);
+  const data = readdirSync(flagsFolder).map((file) => {
+    return {
+      lang: file.split(".")[0],
+      file,
+    };
+  });
 
   writeFileSync(
     join(dirname(__filename), "..", "available-flags.json"),

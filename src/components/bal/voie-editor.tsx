@@ -24,12 +24,7 @@ import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
 import { trimNomAlt } from "@/lib/utils/string";
 import { DrawMetricVoieEditor } from "./draw-metric-voie-editor";
-import AlertsContext from "@/contexts/alerts";
-import {
-  AlertFieldVoieEnum,
-  AlertModelEnum,
-  AlertCodeEnum,
-} from "@/lib/alerts/alerts.types";
+import { AlertFieldVoieEnum, AlertModelEnum } from "@/lib/alerts/alerts.types";
 import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
 import AlertEditor from "./alert-editor";
 import styles from "./voie-editor.module.css";
@@ -63,13 +58,12 @@ function VoieEditor({
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
-  const { baseLocale, refreshBALSync, reloadVoies, setVoie } =
+  const { baseLocale, refreshBALSync, reloadVoies, setVoie, reloadVoieAlerts } =
     useContext(BalDataContext);
   const { data } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [ref, setIsFocus] = useFocus(true);
-  const { reloadVoieAlerts } = useContext(AlertsContext);
 
   const onFormSubmit = useCallback(
     async (e) => {
@@ -114,10 +108,7 @@ function VoieEditor({
         refreshBALSync();
         const newVoies = await reloadVoies();
         // RELOAD ALERTS
-        await reloadVoieAlerts(
-          newVoies.find(({ id }) => id === voie.id),
-          (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-        );
+        await reloadVoieAlerts(newVoies.find(({ id }) => id === voie.id));
 
         reloadTiles();
 
@@ -148,7 +139,6 @@ function VoieEditor({
       onSubmit,
       toaster,
       reloadVoieAlerts,
-      baseLocale.settings?.ignoredAlertCodes,
     ]
   );
 

@@ -56,14 +56,20 @@ export function NumeroGeneratedDocuments<type extends GeneratedDocumentType>({
 
   if (!numero.certifie || numero.parcelles.length === 0) {
     generateCertificatAdressageItem = (
-      <Tooltip content="Le certificat d'adressage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle">
+      <Tooltip
+        content="Le certificat d'adressage ne peut être généré que pour un numéro certifié et lié à au moins une parcelle"
+        position="left"
+      >
         {generateCertificatAdressageItem}
       </Tooltip>
     );
   }
   if (!numero.certifie) {
     generateArreteDeNumerotationItem = (
-      <Tooltip content="L'arrêté de numérotation ne peut être généré que pour un numéro certifié">
+      <Tooltip
+        content="L'arrêté de numérotation ne peut être généré que pour un numéro certifié"
+        position="left"
+      >
         {generateArreteDeNumerotationItem}
       </Tooltip>
     );

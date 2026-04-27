@@ -25,8 +25,8 @@
     "test:ui": "playwright test --workers=1 --ui --max-failures=1"
   },
   "dependencies": {
-    "@ban-team/shared-data": "^1.4.2",
-    "@ban-team/validateur-bal": "^3.5.1",
+    "@ban-team/shared-data": "^1.4.3",
+    "@ban-team/validateur-bal": "^3.5.2",
     "@mapbox/mapbox-gl-draw": "^1.5.1",
     "@next/bundle-analyzer": "^16.1.1",
     "@sentry/nextjs": "^10.33.0",
@@ -66,6 +66,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
     "@playwright/test": "^1.57.0",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

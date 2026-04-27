@@ -224,12 +224,13 @@ export default function ToponymesPage() {
                   )}
                 </Table.TextCell>
               </Table.Cell>
-
               <TableRowNotifications
                 communeDeleguee={getCommuneDeleguee(toponyme.communeDeleguee)}
                 warning={
                   toponyme.positions.length === 0 ? (
-                    <Text color="white">Ce toponyme n’a pas de position</Text>
+                    <Text is="p" marginTop={8} paddingX={16}>
+                      Ce toponyme n’a pas de position
+                    </Text>
                   ) : null
                 }
                 certification={

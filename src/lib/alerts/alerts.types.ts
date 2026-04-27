@@ -21,6 +21,7 @@ export enum AlertCodeVoieEnum {
 
 export enum AlertCodeNumeroEnum {
   SUFFIXE_CARACTERE_INVALIDE = "suffixe_caractere_invalide",
+  PARCELLE_NOT_EXIST = "parcelle_not_exist",
 }
 
 export type AlertCodeEnum = AlertCodeVoieEnum | AlertCodeNumeroEnum;
@@ -39,6 +40,7 @@ export enum AlertFieldVoieEnum {
 
 export enum AlertFieldNumeroEnum {
   NUMERO_SUFFIXE = "numero_suffixe",
+  NUMERO_PARCELLE = "numero_parcelle",
 }
 
 export type AlertFieldEnum = AlertFieldVoieEnum | AlertFieldNumeroEnum;
@@ -58,7 +60,7 @@ export type Alert<M extends AlertModelEnum = AlertModelEnum> = {
   value: string;
   remediation?: string;
 } & (M extends AlertModelEnum.NUMERO
-  ? { voieId?: string; numero: number }
+  ? { voieId?: string; numero: number; suffixe: string }
   : unknown);
 
 export type AlertVoie = Alert<AlertModelEnum.VOIE>;

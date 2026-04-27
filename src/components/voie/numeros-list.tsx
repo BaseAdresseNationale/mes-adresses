@@ -62,7 +62,6 @@ import MatomoTrackingContext, {
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
 import AlertsContext from "@/contexts/alerts";
-import { AlertCodeEnum } from "@/lib/alerts/alerts.types";
 import TableNumeroWarning from "../table-row/table-numero-warning";
 
 interface NumerosListProps {
@@ -93,13 +92,14 @@ function NumerosList({
   const [selectedNumerosIds, setSelectedNumerosIds] = useState<string[]>([]);
   const { toaster } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
-  const { numerosAlerts, reloadVoieAlerts } = useContext(AlertsContext);
+  const { numerosAlerts } = useContext(AlertsContext);
   const {
     baseLocale,
     isEditing,
     reloadNumeros,
     reloadParcelles,
     refreshBALSync,
+    reloadVoieAlerts,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
@@ -196,18 +196,10 @@ function NumerosList({
       };
 
       setVoie(voie);
-      await reloadVoieAlerts(
-        newVoie,
-        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
-      );
+      // RELOAD ALERTS
+      await reloadVoieAlerts(newVoie);
     },
-    [
-      baseLocale.settings?.ignoredAlertCodes,
-      numeros,
-      reloadVoieAlerts,
-      setVoie,
-      voie,
-    ]
+    [numeros, reloadVoieAlerts, setVoie, voie]
   );
 
   const onRemove = useCallback(
@@ -240,7 +232,12 @@ function NumerosList({
     async (numeroId: string, data: CertificatGenerationData) => {
       const downloadCertificat = toaster(
         async () => {
-          const url = await NumerosService.generateCertificat(numeroId, data);
+          const { format, ...requestBody } = data;
+          const url = await NumerosService.generateCertificat(
+            numeroId,
+            requestBody,
+            format
+          );
           window.open(url, "_blank");
         },
         "Le certificat d'adressage a bien été téléchargé",
@@ -257,12 +254,17 @@ function NumerosList({
   );
 
   const onDownloadArreteDeNumerotation = useCallback(
-    async (numeroId: string, data: { file?: Blob }) => {
+    async (
+      numeroId: string,
+      data: { file?: Blob; format?: "pdf" | "docx" }
+    ) => {
       const downloadArreteDeNumerotation = toaster(
         async () => {
+          const { format, ...formData } = data;
           const url = await NumerosService.generateArreteDeNumerotation(
             numeroId,
-            data
+            formData,
+            format
           );
           window.open(url, "_blank");
         },
