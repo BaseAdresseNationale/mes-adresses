@@ -11,7 +11,7 @@ import { computeStatus } from "@/lib/statuses";
 
 import BANHistory from "@/components/sub-header/bal-status/ban-sync/ban-history";
 import SyncButton from "@/components/sub-header/bal-status/ban-sync/sync-button";
-import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
+import { BaseLocaleSync, ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import { useContext } from "react";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
@@ -63,8 +63,10 @@ function BANSync({
 
             {!otherBalIdPublished && (
               <SyncButton
-                isSync={baseLocale.sync.status === "synced"}
-                isConflicted={baseLocale.sync.status === "conflict"}
+                isSync={baseLocale.sync.status === BaseLocaleSync.status.SYNCED}
+                isConflicted={
+                  baseLocale.sync.status === BaseLocaleSync.status.CONFLICT
+                }
                 isPaused={baseLocale.sync.isPaused}
                 handleSync={handleSync}
                 togglePause={togglePause}
