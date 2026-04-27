@@ -6,7 +6,6 @@ import {
   Alert,
   Spinner,
   Switch,
-  Label,
   FormField,
 } from "evergreen-ui";
 import AdminEmailsField from "@/components/new/steps/admin-emails-field";
@@ -18,7 +17,6 @@ interface BALInfosStepProps {
   setAdminEmails: (emails: string[]) => void;
   newEmailInput: string;
   setNewEmailInput: (email: string) => void;
-  createDemoBAL: () => Promise<void>;
   isLoading?: boolean;
   isDemoMode: boolean;
   setIsDemoMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,7 +29,6 @@ function BALInfosStep({
   setAdminEmails,
   newEmailInput,
   setNewEmailInput,
-  createDemoBAL,
   isLoading,
   isDemoMode,
   setIsDemoMode,

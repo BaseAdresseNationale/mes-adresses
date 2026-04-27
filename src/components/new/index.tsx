@@ -166,7 +166,7 @@ export default function NewPageComponent({
       validateEmail(newEmailInput) && !adminEmails.includes(newEmailInput)
         ? [...adminEmails, newEmailInput]
         : adminEmails;
-    await createNewBal(false, effectiveEmails);
+    await createNewBal(isDemoMode, effectiveEmails);
   };
 
   return (
@@ -205,7 +205,6 @@ export default function NewPageComponent({
                   setAdminEmails={setAdminEmails}
                   newEmailInput={newEmailInput}
                   setNewEmailInput={setNewEmailInput}
-                  createDemoBAL={() => createNewBal(true)}
                   isLoading={isLoading}
                   isDemoMode={isDemoMode}
                   setIsDemoMode={setIsDemoMode}
