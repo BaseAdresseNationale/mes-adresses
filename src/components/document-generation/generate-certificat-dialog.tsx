@@ -1,6 +1,12 @@
 import LocalStorageContext from "@/contexts/local-storage";
 import { GenerateCertificatDTO } from "@/lib/openapi-api-bal";
-import { Dialog, Pane, TextInputField, Checkbox } from "evergreen-ui";
+import {
+  Dialog,
+  Pane,
+  TextInputField,
+  Checkbox,
+  RadioGroup,
+} from "evergreen-ui";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
   DocumentGenerationData,
@@ -9,6 +15,7 @@ import {
 
 export type CertificatGenerationData = GenerateCertificatDTO & {
   rememberEmetteur?: boolean;
+  format?: "pdf" | "docx";
 };
 
 interface GenerateCertificatDialogProps<type extends GeneratedDocumentType> {
@@ -29,6 +36,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
     (docData as DocumentGenerationData<GeneratedDocumentType.CERTIFICAT_ADRESSAGE>) ||
     {};
   const [isGeneratingCertificat, setIsGeneratingCertificat] = useState(false);
+  const [format, setFormat] = useState<"pdf" | "docx">("pdf");
   const { setCertificatEmetteur } = useContext(LocalStorageContext);
 
   return (
@@ -48,7 +56,7 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
       onConfirm={async () => {
         if (data) {
           setIsGeneratingCertificat(true);
-          await onDownload(docData.for.id, data);
+          await onDownload(docData.for.id, { ...data, format });
           if (data.rememberEmetteur) {
             setCertificatEmetteur(data.emetteur);
           } else {
@@ -103,6 +111,15 @@ export function GenerateCertificatDialog<type extends GeneratedDocumentType>({
             }))
           }
           placeholder="Mr Rémi Dupont"
+        />
+        <RadioGroup
+          label="Format"
+          value={format}
+          options={[
+            { label: ".pdf", value: "pdf" },
+            { label: ".docx", value: "docx" },
+          ]}
+          onChange={(event) => setFormat(event.target.value as "pdf" | "docx")}
         />
       </Pane>
     </Dialog>

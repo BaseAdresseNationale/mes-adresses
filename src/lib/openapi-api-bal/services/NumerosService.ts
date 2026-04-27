@@ -68,18 +68,23 @@ export class NumerosService {
      * Generate the certificat of the numero by id
      * @param numeroId
      * @param requestBody
-     * @returns string URL of the generated PDF certificat
+     * @param format Format du document généré (pdf par défaut)
+     * @returns string URL of the generated certificat
      * @throws ApiError
      */
     public static generateCertificat(
         numeroId: string,
         requestBody: GenerateCertificatDTO,
+        format?: 'pdf' | 'docx',
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/numeros/generate-certificat/{numeroId}',
             path: {
                 'numeroId': numeroId,
+            },
+            query: {
+                'format': format,
             },
             body: requestBody,
             mediaType: 'application/json',
@@ -89,7 +94,8 @@ export class NumerosService {
      * Generate the arrete de numerotation by numero id
      * @param numeroId
      * @param formData
-     * @returns string URL of the generated PDF arrête de numérotation
+     * @param format Format du document généré (pdf par défaut)
+     * @returns string URL of the generated arrête de numérotation
      * @throws ApiError
      */
     public static generateArreteDeNumerotation(
@@ -97,12 +103,16 @@ export class NumerosService {
         formData: {
             file?: Blob;
         },
+        format?: 'pdf' | 'docx',
     ): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/numeros/generate-arrete-de-numerotation/{numeroId}',
             path: {
                 'numeroId': numeroId,
+            },
+            query: {
+                'format': format,
             },
             formData: formData,
             mediaType: 'multipart/form-data',
