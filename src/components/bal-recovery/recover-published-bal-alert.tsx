@@ -48,10 +48,10 @@ function RecoverPublishedBALAlert({
         <Pane background="white" borderRadius={8} padding={16} marginTop={16}>
           <Text is="p">Vous devez repartir de la BAL publiée</Text>
           <Button height={30} onClick={handleGoToBAL} marginTop={8}>
-            Accéder a la BAL publiée
+            Accéder à la BAL publiée
           </Button>
           <Text is="p" marginTop={24}>
-            Si vous voulez quand même repartir de cette BAL, veulliez contacter
+            Si vous voulez quand même repartir de cette BAL, veuillez contacter
             le support:{" "}
             <Link href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</Link>
           </Text>
