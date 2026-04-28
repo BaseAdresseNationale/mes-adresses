@@ -173,7 +173,10 @@ const numerosLabelLayer = {
       ["format", ["get", "numero"], {}, " ", {}, ["get", "suffixe"], {}],
       ["get", "numero"],
     ],
-    "text-ignore-placement": true,
+    // "text-ignore-placement": true,
+    "text-allow-overlap": true,
+    "text-variable-anchor": ["left", "right"],
+    "text-radial-offset": 0.5,
   },
 };
 
