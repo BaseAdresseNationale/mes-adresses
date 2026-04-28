@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-let balId = null;
-let balToken = null;
-let voieId = null;
-let toponymeId = null;
+// let balId = null;
+// let balToken = null;
+// let voieId = null;
+// let toponymeId = null;
 
 test.describe("Page d'accueil", () => {
   test.beforeEach(async ({ page }) => {
