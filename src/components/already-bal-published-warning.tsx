@@ -1,7 +1,7 @@
 "use client";
 import NextLink from "next/link";
 import { useContext } from "react";
-import { Pane, Text, Button, WarningSignIcon } from "evergreen-ui";
+import { Pane, Text, Button, WarningSignIcon, Link } from "evergreen-ui";
 
 import LayoutContext from "@/contexts/layout";
 
@@ -35,9 +35,8 @@ function AlreadyBalPublishedWarning({
         marginX=".5em"
         style={{ verticalAlign: "sub" }}
       />
-      <Text fontSize={isMobile ? 10 : 14}>
-        Vous ne pouvez pas la modifier cette BAL car une autre a été publié pour{" "}
-        {communeName} :
+      <Text is="p" fontSize={isMobile ? 10 : 14}>
+        Une BAL est déjà publiée pour la commune de {communeName}
       </Text>
 
       <Button
@@ -46,8 +45,12 @@ function AlreadyBalPublishedWarning({
         is={NextLink}
         href={`/bal/${otherBalIdPublished}`}
       >
-        Voir la BAL publiée
+        Accèder à la BAL publiée
       </Button>
+      <Text is="p" fontSize={isMobile ? 10 : 14}>
+        ou contacter le support:{" "}
+        <Link href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</Link>
+      </Text>
     </Pane>
   );
 }
