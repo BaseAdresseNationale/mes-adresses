@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { BaseLocaleFondDeCarte } from './BaseLocaleFondDeCarte';
 export type BaseLocaleSetting = {
+    otherBalPublishedIgnored: boolean;
     languageGoalIgnored: boolean;
     toponymeGoalIgnored: boolean;
     fondsDeCartes: Array<BaseLocaleFondDeCarte>;

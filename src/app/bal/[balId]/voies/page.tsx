@@ -100,7 +100,11 @@ export default function VoiesPage() {
   const [filter, setFilter] = useState<string>(
     searchParams.get("filter") || ""
   );
-  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const {
+    setIsRecoveryDisplayed,
+    setIsRecoveryPublishedDisplayed,
+    otherBalIdPublished,
+  } = useContext(BALRecoveryContext);
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(TabsEnum.VOIES, voies);
   const { scrollAndHighlightLastSelectedItem } = useContext(
@@ -402,7 +406,9 @@ export default function VoiesPage() {
                   ) : null
                 }
                 warning={
-                  Boolean(token) && getVoieAlerts(voie.id).length > 0 ? (
+                  Boolean(token) &&
+                  !Boolean(otherBalIdPublished) &&
+                  getVoieAlerts(voie.id).length > 0 ? (
                     <TableVoieWarning
                       baseLocale={baseLocale}
                       voie={voie}
@@ -412,7 +418,7 @@ export default function VoiesPage() {
                 }
               />
 
-              {isEditingEnabled && (
+              {isEditingEnabled && !Boolean(otherBalIdPublished) && (
                 <TableRowActions>
                   <Menu.Item
                     icon={SendToMapIcon}
@@ -463,6 +469,18 @@ export default function VoiesPage() {
                 <Table.TextCell flex="0 1 1">
                   <IconButton
                     onClick={() => setIsRecoveryDisplayed(true)}
+                    type="button"
+                    height={24}
+                    icon={LockIcon}
+                    appearance="minimal"
+                  />
+                </Table.TextCell>
+              )}
+
+              {Boolean(otherBalIdPublished) && (
+                <Table.TextCell flex="0 1 1">
+                  <IconButton
+                    onClick={() => setIsRecoveryPublishedDisplayed(true)}
                     type="button"
                     height={24}
                     icon={LockIcon}
