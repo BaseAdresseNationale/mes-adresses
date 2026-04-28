@@ -42,14 +42,11 @@ function RecoverPublishedBALAlert({
       >
         <Pane background="white" borderRadius={8} padding={16}>
           <Heading is="h2" textAlign="center">
-            Une BAL est déjà publié pour cette commune
+            Une BAL est déjà publiée pour cette commune
           </Heading>
         </Pane>
         <Pane background="white" borderRadius={8} padding={16} marginTop={16}>
-          <Text is="p">
-            Une BAL est déjà publié pour cette commune, vous devez repartir de
-            la BAL publiée
-          </Text>
+          <Text is="p">Vous devez repartir de la BAL publiée</Text>
           <Button height={30} onClick={handleGoToBAL} marginTop={8}>
             Accéder a la BAL publiée
           </Button>
