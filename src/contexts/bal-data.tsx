@@ -145,7 +145,7 @@ export function BalDataContextProvider({
         );
         const commune = await getCommuneWithBBox(initialBaseLocale, voies);
         if (!initialBaseLocale.settings.otherBalPublishedIgnored) {
-          _setBalAlreadyPublished(commune.code);
+          await _setBalAlreadyPublished(commune.code);
         }
         setVoies(voies);
         setToponymes(toponymes);
