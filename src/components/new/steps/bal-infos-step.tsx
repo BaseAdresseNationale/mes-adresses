@@ -20,6 +20,7 @@ interface BALInfosStepProps {
   isLoading?: boolean;
   isDemoMode: boolean;
   setIsDemoMode: React.Dispatch<React.SetStateAction<boolean>>;
+  forceDemoMode: boolean;
 }
 
 function BALInfosStep({
@@ -32,6 +33,7 @@ function BALInfosStep({
   isLoading,
   isDemoMode,
   setIsDemoMode,
+  forceDemoMode,
 }: BALInfosStepProps) {
   return (
     <Pane>
@@ -46,19 +48,21 @@ function BALInfosStep({
           onChange={(e) => setBalName(e.target.value)}
           disabled={isLoading}
         />
-        <FormField
-          display="flex"
-          marginBottom={24}
-          label="Créer un Base locale de Demo ?"
-          description="Elle ne sera pas sauvegardée."
-        >
-          <Switch
-            marginLeft={8}
-            checked={isDemoMode}
-            onChange={() => setIsDemoMode(!isDemoMode)}
-          />
-        </FormField>
-        {!isDemoMode ? (
+        {!forceDemoMode && (
+          <FormField
+            display="flex"
+            marginBottom={24}
+            label="Créer un Base locale de Demo ?"
+            description="Cette BAL ne pourra jamais être publiée et ne sera pas sauvegardée."
+          >
+            <Switch
+              marginLeft={8}
+              checked={isDemoMode}
+              onChange={() => setIsDemoMode(!isDemoMode)}
+            />
+          </FormField>
+        )}
+        {!forceDemoMode && !isDemoMode ? (
           <AdminEmailsField
             adminEmails={adminEmails}
             setAdminEmails={setAdminEmails}
