@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Pane, Button, toaster } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
@@ -13,6 +13,7 @@ import {
   HabilitationService,
 } from "@/lib/openapi-api-bal";
 import { CommuneType } from "@/types/commune";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 interface BALStatusProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -38,6 +39,7 @@ function BALStatus({
   const [isHabilitationValid, setIsHabilitationValid] = useState<
     boolean | null
   >(null);
+  const { otherBalIdPublished } = useContext(BALRecoveryContext);
 
   useEffect(() => {
     async function checkHabilitationValid() {
@@ -103,7 +105,8 @@ function BALStatus({
         )}
       </Pane>
 
-      {token &&
+      {Boolean(token) &&
+        !Boolean(otherBalIdPublished) &&
         (baseLocale.sync && isHabilitationValid ? (
           <BANSync
             baseLocale={baseLocale}
