@@ -126,13 +126,7 @@ function Editor({ children }: EditorProps) {
                 />
               )}
               {isReadonly && <ReadonlyWarning />}
-              {!isReadonly && isDemo && (
-                <DemoWarning
-                  baseLocale={baseLocale}
-                  communeName={commune.nom}
-                  isReadonly={isReadonly}
-                />
-              )}
+              {!isReadonly && isDemo && <DemoWarning isReadonly={isReadonly} />}
               {!isDemo && Boolean(otherBalIdPublished) && (
                 <AlreadyBalPublishedWarning
                   otherBalIdPublished={otherBalIdPublished}
