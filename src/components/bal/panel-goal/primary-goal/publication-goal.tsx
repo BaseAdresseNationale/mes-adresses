@@ -1,4 +1,5 @@
 import { useMemo, useState, useContext } from "react";
+import NextLink from "next/link";
 import {
   Pane,
   Heading,
@@ -6,6 +7,8 @@ import {
   Paragraph,
   defaultTheme,
   Strong,
+  Text,
+  Link,
 } from "evergreen-ui";
 
 import usePublishProcess from "@/hooks/publish-process";
@@ -14,6 +17,7 @@ import { ExtendedBaseLocaleDTO, HabilitationDTO } from "@/lib/openapi-api-bal";
 import AchievementBadge from "../achievements-badge/achievements-badge";
 import { AccordionCard } from "@/components/accordion-card";
 import BalDataContext from "@/contexts/bal-data";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 interface PublicationGoalProps {
   commune: CommuneType;
@@ -26,6 +30,7 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
   const [isActive, setIsActive] = useState(
     baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT
   );
+  const { otherBalIdPublished } = useContext(BALRecoveryContext);
 
   const handlePublication = (e) => {
     e.stopPropagation();
@@ -72,36 +77,59 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
         caretPosition="start"
       >
         <Pane padding={8}>
-          {baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (
-            <Paragraph is="div">
-              Afin d&apos;être synchronisée avec la Base Adresse Nationale,
-              cette Base Adresse Locale doit être publiée par la commune de{" "}
-              {commune.nom}.
-              <br />
-              Notez qu&apos;une fois publiée,{" "}
-              <Strong>
-                toutes les modifications remonteront automatiquement
-              </Strong>{" "}
-              dans la Base Adresse Nationale.
-              <Pane display="flex" justifyContent="right">
-                <Button
-                  appearance="primary"
-                  onClick={(e) => handlePublication(e)}
-                  textAlign="center"
-                >
-                  Publier
-                </Button>
-              </Pane>
-            </Paragraph>
+          {Boolean(otherBalIdPublished) && (
+            <Pane>
+              <Text is="p">Vous devez repartir de la BAL publiée</Text>
+              <Button
+                height={30}
+                marginTop={8}
+                is={NextLink}
+                href={`/bal/${otherBalIdPublished}`}
+              >
+                Accéder à la BAL publiée
+              </Button>
+              <Text is="p" marginTop={24}>
+                Si vous voulez quand même repartir de cette BAL, veuillez
+                contacter le support:{" "}
+                <Link href="mailto:adresse@data.gouv.fr">
+                  adresse@data.gouv.fr
+                </Link>
+              </Text>
+            </Pane>
           )}
-          {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
+          {!Boolean(otherBalIdPublished) &&
+            baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT && (
+              <Paragraph is="div">
+                Afin d&apos;être synchronisée avec la Base Adresse Nationale,
+                cette Base Adresse Locale doit être publiée par la commune de{" "}
+                {commune.nom}.
+                <br />
+                Notez qu&apos;une fois publiée,{" "}
+                <Strong>
+                  toutes les modifications remonteront automatiquement
+                </Strong>{" "}
+                dans la Base Adresse Nationale.
+                <Pane display="flex" justifyContent="right">
+                  <Button
+                    appearance="primary"
+                    onClick={(e) => handlePublication(e)}
+                    textAlign="center"
+                  >
+                    Publier
+                  </Button>
+                </Pane>
+              </Paragraph>
+            )}
+          {!Boolean(otherBalIdPublished) &&
+            baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
             habilitation?.status === HabilitationDTO.status.ACCEPTED && (
               <Paragraph>
                 Toutes les modifications remonteront automatiquement dans la
                 Base Adresse Nationale
               </Paragraph>
             )}
-          {baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
+          {!Boolean(otherBalIdPublished) &&
+            baseLocale.status === ExtendedBaseLocaleDTO.status.PUBLISHED &&
             habilitation?.status !== HabilitationDTO.status.ACCEPTED && (
               <Paragraph display="flex" flexDirection="column" gap={8} is="div">
                 Votre habilitation n&apos;est plus valide, veuillez la
@@ -118,19 +146,20 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
                 </Pane>
               </Paragraph>
             )}
-          {baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED && (
-            <Pane>
-              <Paragraph color={defaultTheme.colors.red700}>
-                La Base Adresse Locale a été remplacée par une autre, une autre
-                Base Adresses Locale est synchronisée avec la Base Adresse
-                Nationale.
-              </Paragraph>
-              <Paragraph>
-                Veuillez entrer en contact les administrateurs de l’autre Base
-                Adresse Locale ou notre support: adresse@data.gouv.fr
-              </Paragraph>
-            </Pane>
-          )}
+          {!Boolean(otherBalIdPublished) &&
+            baseLocale.status === ExtendedBaseLocaleDTO.status.REPLACED && (
+              <Pane>
+                <Paragraph color={defaultTheme.colors.red700}>
+                  La Base Adresse Locale a été remplacée par une autre, une
+                  autre Base Adresses Locale est synchronisée avec la Base
+                  Adresse Nationale.
+                </Paragraph>
+                <Paragraph>
+                  Veuillez entrer en contact les administrateurs de l’autre Base
+                  Adresse Locale ou notre support: adresse@data.gouv.fr
+                </Paragraph>
+              </Pane>
+            )}
         </Pane>
       </AccordionCard>
     </Pane>
