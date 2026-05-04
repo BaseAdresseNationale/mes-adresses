@@ -46,6 +46,7 @@ export default function NewPageComponent({
   const [balName, setBalName] = useState<string | null>(null);
   const [adminEmails, setAdminEmails] = useState<string[]>([]);
   const [newEmailInput, setNewEmailInput] = useState("");
+  const [forceDemoMode, setForceDemoMode] = useState<boolean | null>(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const { importFromCSVFile, importFromBAN } = useBALDataImport();
   const router = useRouter();
@@ -181,7 +182,11 @@ export default function NewPageComponent({
             <Pane flex={1} display="flex" flexDirection="column">
               {currentStepIndex === 0 && (
                 <SearchCommuneStep
-                  onCreateNewBAL={onNextStep}
+                  onCreateNewBAL={(isDemoMode?: boolean) => {
+                    setForceDemoMode(Boolean(isDemoMode));
+                    setIsDemoMode(Boolean(isDemoMode));
+                    onNextStep();
+                  }}
                   commune={commune}
                   setCommune={setCommune}
                   outdatedApiDepotClients={outdatedApiDepotClients}
@@ -208,6 +213,7 @@ export default function NewPageComponent({
                   isLoading={isLoading}
                   isDemoMode={isDemoMode}
                   setIsDemoMode={setIsDemoMode}
+                  forceDemoMode={forceDemoMode}
                 />
               )}
               {currentStepIndex !== 0 && (
