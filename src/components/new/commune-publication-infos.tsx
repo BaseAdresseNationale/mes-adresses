@@ -114,7 +114,11 @@ function CommunePublicationInfos({
           ) : null}
 
           {!apiDepotLastRevision?.context.extras?.balId ? (
-            <Button marginTop={16} intent="none" onClick={onCreateNewBAL}>
+            <Button
+              marginTop={16}
+              intent="none"
+              onClick={() => onCreateNewBAL(false)}
+            >
               Créer une nouvelle Base Adresse Locale
             </Button>
           ) : (
@@ -129,7 +133,7 @@ function CommunePublicationInfos({
               <Button
                 marginTop={32}
                 intent="none"
-                onClick={onCreateNewBAL}
+                onClick={() => onCreateNewBAL(true)}
                 iconAfter={LabTestIcon}
               >
                 Créer une Base Adresse Locale de démonstration
