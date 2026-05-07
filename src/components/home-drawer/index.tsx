@@ -65,44 +65,57 @@ function HomeDrawer() {
   );
 
   return (
-    <Pane
-      className={`${styles["home-drawer"]} ${
-        isWide ? styles["home-drawer-wide"] : ""
-      }`}
-    >
+    <>
       {isWide ? (
-        isLoading ? (
-          <Pane
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            height="100%"
-          >
-            <Spinner />
-          </Pane>
-        ) : (
-          <Pane className={styles["split-container"]}>
-            <Pane className={styles["split-pane"]}>
-              <Heading size={500} className={styles["split-heading"]}>
-                Prochaines formations
-              </Heading>
-              <TrainingTab nextTrainings={nextTrainings} />
-            </Pane>
-            <Pane className={styles["split-pane"]}>
-              <Heading size={500} className={styles["split-heading"]}>
-                Actualités
-                {showPulsar && (
-                  <Pane position="absolute" top={8} right={16}>
-                    <Pulsar />
-                  </Pane>
-                )}
-              </Heading>
-              <NewsTab news={news} updateLastNewsSeen={updateLastNewsSeen} />
-            </Pane>
-          </Pane>
-        )
-      ) : (
         <>
+          <Pane
+            className={`${styles["home-drawer"]} ${styles["home-drawer-left"]}`}
+          >
+            <Heading size={500} className={styles["split-heading"]}>
+              Prochaines formations
+            </Heading>
+            {isLoading ? (
+              <Pane
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                flex={1}
+              >
+                <Spinner />
+              </Pane>
+            ) : (
+              <TrainingTab nextTrainings={nextTrainings} />
+            )}
+          </Pane>
+          <Pane className={styles["home-drawer"]}>
+            <Heading
+              size={500}
+              className={styles["split-heading"]}
+              position="relative"
+            >
+              Actualités
+              {showPulsar && (
+                <Pane position="absolute" top={8} right={16}>
+                  <Pulsar />
+                </Pane>
+              )}
+            </Heading>
+            {isLoading ? (
+              <Pane
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                flex={1}
+              >
+                <Spinner />
+              </Pane>
+            ) : (
+              <NewsTab news={news} updateLastNewsSeen={updateLastNewsSeen} />
+            )}
+          </Pane>
+        </>
+      ) : (
+        <Pane className={styles["home-drawer"]}>
           <Tablist padding={8}>
             {tabs.map(({ label, showPulsar }, index) => (
               <Tab
@@ -136,9 +149,9 @@ function HomeDrawer() {
           {!isLoading && selectedIndex === 1 && (
             <NewsTab news={news} updateLastNewsSeen={updateLastNewsSeen} />
           )}
-        </>
+        </Pane>
       )}
-    </Pane>
+    </>
   );
 }
 
