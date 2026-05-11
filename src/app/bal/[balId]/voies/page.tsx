@@ -192,6 +192,10 @@ export default function VoiesPage() {
   );
 
   const browseQualityBatch = () => {
+    matomoTrackEvent(
+      MatomoEventCategory.QUALITY,
+      MatomoEventAction[MatomoEventCategory.QUALITY].PROCESS_SUGGESTIONS
+    );
     void router.push(`/bal/${baseLocale.id}/${TabsEnum.VOIES}/quality-batch`);
   };
 

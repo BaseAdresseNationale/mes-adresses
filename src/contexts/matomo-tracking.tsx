@@ -62,9 +62,11 @@ export const MatomoEventAction = {
     SEE_ALL_SUGGESTIONS: "see_all_suggestions",
     SEE_SUGGESTION: "see_suggestion",
     IMPROVE_SUGGESTION: "improve_suggestion",
-    CONVERT_VOIE_TO_TOPONYME: "convert_voie_to_toponyme",
     PROCESS_SUGGESTIONS: "process_suggestions",
-    RESOLVE_SUGGESTION: "resolve_suggestion",
+    CONVERT_VOIE_TO_TOPONYME: "convert_voie_to_toponyme",
+    REMOVE_INVALID_PARCELLE: "remove_invalid_parcelle",
+    CORRECT_SUFFIX_NUMERO: "correct_suffix_numero",
+    CORRECT_NOM_VOIE: "correct_nom_voie",
   },
 };
 
