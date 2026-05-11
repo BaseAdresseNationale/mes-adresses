@@ -1,7 +1,6 @@
 import { ExtendedBaseLocaleDTO, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
 import {
   AlertCodeVoieEnum,
-  AlertCodeNumeroEnum,
   AlertModelEnum,
   Alert,
 } from "@/lib/alerts/alerts.types";
