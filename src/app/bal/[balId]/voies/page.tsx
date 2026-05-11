@@ -137,7 +137,7 @@ export default function VoiesPage() {
         );
       }
     },
-    [setFilter, router, pathname]
+    [setFilter, matomoTrackEvent, router, pathname]
   );
 
   const handleRemove = async () => {
