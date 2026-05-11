@@ -19,6 +19,10 @@ import { useRouter } from "next/navigation";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import DrawerContext from "@/contexts/drawer";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface QualityGoalProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -29,10 +33,15 @@ function QualityGoal({ baseLocale }: QualityGoalProps) {
   const { setDrawerDisplayed } = useContext(DrawerContext);
   const [isActive, setIsActive] = useState(false);
   const { voiesAlerts, numerosAlerts } = useContext(AlertsContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
   const router = useRouter();
 
   const goToAlerts = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    matomoTrackEvent(
+      MatomoEventCategory.QUALITY,
+      MatomoEventAction[MatomoEventCategory.QUALITY].SEE_ALL_SUGGESTIONS
+    );
     void router.push(`/bal/${baseLocale.id}/voies?filter=with-suggestions`);
   };
 

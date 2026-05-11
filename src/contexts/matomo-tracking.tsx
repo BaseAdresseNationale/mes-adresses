@@ -16,9 +16,9 @@ export enum MatomoEventCategory {
   DOCUMENT = "Document",
   MAP = "Carte",
   GAMIFICATION = "Gamification",
-  BAL_EDITOR = "Éditeur BAL",
   HOME_PAGE = "Page d'accueil",
   SETTINGS = "Paramètres",
+  QUALITY = "Qualité",
 }
 
 export const MatomoEventAction = {
@@ -46,9 +46,6 @@ export const MatomoEventAction = {
     IGNORE_GOAL_TOPONYME: "ignore_goal_toponyme",
     IGNORE_GOAL_LANGUAGE: "ignore_goal_language",
   },
-  [MatomoEventCategory.BAL_EDITOR]: {
-    CONVERT_VOIE_TO_TOPONYME: "convert_voie_to_toponyme",
-  },
   [MatomoEventCategory.HOME_PAGE]: {
     SHOW_NEWS: "show_news",
     OPEN_BAL_WIDGET: "open_bal_widget",
@@ -60,6 +57,14 @@ export const MatomoEventAction = {
     REMOVE_ADMIN: "remove_admin",
     UPDATE_CUSTOM_MAP_STYLES: "update_custom_map_styles",
     UPDATE_BAL_NAME: "update_bal_name",
+  },
+  [MatomoEventCategory.QUALITY]: {
+    SEE_ALL_SUGGESTIONS: "see_all_suggestions",
+    SEE_SUGGESTION: "see_suggestion",
+    IMPROVE_SUGGESTION: "improve_suggestion",
+    CONVERT_VOIE_TO_TOPONYME: "convert_voie_to_toponyme",
+    PROCESS_SUGGESTIONS: "process_suggestions",
+    RESOLVE_SUGGESTION: "resolve_suggestion",
   },
 };
 

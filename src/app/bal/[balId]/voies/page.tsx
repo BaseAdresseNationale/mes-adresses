@@ -130,6 +130,12 @@ export default function VoiesPage() {
       const query = value ? `?filter=${value}` : "";
       router.push(`${pathname}${query}`);
       setFilter(value);
+      if (value === "with-suggestions") {
+        matomoTrackEvent(
+          MatomoEventCategory.QUALITY,
+          MatomoEventAction[MatomoEventCategory.QUALITY].SEE_ALL_SUGGESTIONS
+        );
+      }
     },
     [setFilter, router, pathname]
   );

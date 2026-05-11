@@ -63,8 +63,8 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
 
     await convertToponyme();
     matomoTrackEvent(
-      MatomoEventCategory.BAL_EDITOR,
-      MatomoEventAction[MatomoEventCategory.BAL_EDITOR].CONVERT_VOIE_TO_TOPONYME
+      MatomoEventCategory.QUALITY,
+      MatomoEventAction[MatomoEventCategory.QUALITY].CONVERT_VOIE_TO_TOPONYME
     );
 
     setOnConvertLoading(false);
