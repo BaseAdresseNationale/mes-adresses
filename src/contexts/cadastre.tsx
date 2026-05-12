@@ -29,13 +29,9 @@ export function CadastreContextProvider({
   codeCommune,
   children,
 }: CadastreContextProviderProps) {
-  const [communeParcellesIds, setcommuneParcellesIds] = useState<
-    string[] | null
-  >(null);
+  const [communeParcellesIds, setcommuneParcellesIds] = useState<string[]>([]);
 
-  const [communeParcelles, setCommuneParcelles] = useState<
-    ParcelleType[] | null
-  >(null);
+  const [communeParcelles, setCommuneParcelles] = useState<ParcelleType[]>([]);
 
   useEffect(() => {
     async function fetchCommuneParcelles() {
