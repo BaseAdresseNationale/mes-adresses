@@ -9,7 +9,7 @@ interface SearchCommuneStepProps {
   setCommune: (commune: CommuneType | null) => void;
   outdatedApiDepotClients: string[];
   outdatedHarvestSources: string[];
-  onCreateNewBAL: () => void;
+  onCreateNewBAL: (isDemoForce?: boolean) => void;
 }
 
 function SearchCommuneStep({
