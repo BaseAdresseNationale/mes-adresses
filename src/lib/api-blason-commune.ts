@@ -22,19 +22,25 @@ export const getCommuneFlag = async (codeCommune: string): Promise<string> => {
       `${process.env.NEXT_PUBLIC_API_ANNUAIRE_DES_COLLECTIVITES}/commune/logo/${codeCommune}`
     );
 
-    const url = await response.text();
-
-    // Check if the URL is valid and does not point to Wikimedia Commons (to avoid discrepancies between the logo displayed on mes-adresses and the one one the generated documents)
-    const isValidUrl =
-      url &&
-      (url.startsWith("http") || url.startsWith("data:image")) &&
-      !url.includes("commons.wikimedia.org");
-
-    if (!response.ok || !isValidUrl) {
+    if (!response.ok) {
       return getCommuneFlagFromBal(codeCommune);
     }
 
-    return url;
+    const { logo, blason } = (await response.json()) as {
+      blason: string | null;
+      logo: string | null;
+    };
+
+    const imgUrl = logo || blason;
+
+    const isValidUrl =
+      imgUrl && (imgUrl.startsWith("http") || imgUrl.startsWith("data:image"));
+
+    if (!isValidUrl) {
+      return getCommuneFlagFromBal(codeCommune);
+    }
+
+    return imgUrl;
   } catch (err) {
     console.error(
       "Error fetching commune flag from annuaire des collectivités",
