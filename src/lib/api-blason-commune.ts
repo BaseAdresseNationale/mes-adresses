@@ -26,22 +26,21 @@ export const getCommuneFlag = async (codeCommune: string): Promise<string> => {
       return getCommuneFlagFromBal(codeCommune);
     }
 
-    const { logo } = (await response.json()) as {
+    const { logo, blason } = (await response.json()) as {
       blason: string | null;
       logo: string | null;
     };
 
-    // Check if the URL is valid and does not point to Wikimedia Commons (to avoid discrepancies between the logo displayed on mes-adresses and the one one the generated documents)
+    const imgUrl = logo || blason;
+
     const isValidUrl =
-      logo &&
-      (logo.startsWith("http") || logo.startsWith("data:image")) &&
-      !logo.includes("commons.wikimedia.org");
+      imgUrl && (imgUrl.startsWith("http") || imgUrl.startsWith("data:image"));
 
     if (!isValidUrl) {
       return getCommuneFlagFromBal(codeCommune);
     }
 
-    return logo;
+    return imgUrl;
   } catch (err) {
     console.error(
       "Error fetching commune flag from annuaire des collectivités",
