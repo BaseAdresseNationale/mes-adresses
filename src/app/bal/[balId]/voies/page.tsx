@@ -130,8 +130,14 @@ export default function VoiesPage() {
       const query = value ? `?filter=${value}` : "";
       router.push(`${pathname}${query}`);
       setFilter(value);
+      if (value === "with-suggestions") {
+        matomoTrackEvent(
+          MatomoEventCategory.QUALITY,
+          MatomoEventAction[MatomoEventCategory.QUALITY].SEE_ALL_SUGGESTIONS
+        );
+      }
     },
-    [setFilter, router, pathname]
+    [setFilter, matomoTrackEvent, router, pathname]
   );
 
   const handleRemove = async () => {
@@ -186,6 +192,10 @@ export default function VoiesPage() {
   );
 
   const browseQualityBatch = () => {
+    matomoTrackEvent(
+      MatomoEventCategory.QUALITY,
+      MatomoEventAction[MatomoEventCategory.QUALITY].PROCESS_SUGGESTIONS
+    );
     void router.push(`/bal/${baseLocale.id}/${TabsEnum.VOIES}/quality-batch`);
   };
 

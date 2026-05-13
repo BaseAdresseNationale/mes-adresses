@@ -12,6 +12,10 @@ import {
   Button,
 } from "evergreen-ui";
 import TokenContext from "@/contexts/token";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface TableRowNotificationsProps {
   certification?: string;
@@ -27,6 +31,15 @@ function TableRowNotifications({
   communeDeleguee,
 }: TableRowNotificationsProps) {
   const { token } = useContext(TokenContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
+
+  const handleMatomoEvent = () => {
+    matomoTrackEvent(
+      MatomoEventCategory.QUALITY,
+      MatomoEventAction[MatomoEventCategory.QUALITY].SEE_SUGGESTION
+    );
+  };
+
   return (
     <>
       {communeDeleguee && (
@@ -54,7 +67,11 @@ function TableRowNotifications({
 
       {warning && (
         <Table.TextCell flex="0 1 1" paddingLeft="8px" paddingRight="8px">
-          <Popover position={Position.BOTTOM_LEFT} content={warning}>
+          <Popover
+            position={Position.BOTTOM_LEFT}
+            content={warning}
+            onOpen={handleMatomoEvent}
+          >
             <Button
               borderColor={defaultTheme.colors.purple100}
               paddingLeft={4}
