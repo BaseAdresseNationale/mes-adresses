@@ -114,7 +114,7 @@ function CommunePublicationInfos({
             )
           ) : null}
 
-          {!apiDepotLastRevision.context.extras?.balId &&
+          {!apiDepotLastRevision?.context?.extras?.balId &&
             existingBALCount > 0 && (
               <AlertExistingBALMesAdresses
                 commune={commune}
