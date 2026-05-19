@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Heading, Pane, Text, IconButton, EditIcon } from "evergreen-ui";
 import {
   ExtendedBaseLocaleDTO,
@@ -58,7 +58,7 @@ function BALSummary({
           />
           {commune.nom} - {commune.code}
         </Pane>
-        {!isEditing && token && !Boolean(otherBalIdPublished) &&(
+        {!isEditing && token && !Boolean(otherBalIdPublished) && (
           <IconButton
             icon={EditIcon}
             marginTop={-4}

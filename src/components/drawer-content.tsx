@@ -25,7 +25,9 @@ function DrawerContent() {
   const isAdmin = Boolean(token);
 
   const tabs = [
-    ...(baseLocale.status !== BaseLocale.status.DEMO && isAdmin && !Boolean(otherBalIdPublished)
+    ...(baseLocale.status !== BaseLocale.status.DEMO &&
+    isAdmin &&
+    !Boolean(otherBalIdPublished)
       ? [
           {
             label: "Paramètres",
