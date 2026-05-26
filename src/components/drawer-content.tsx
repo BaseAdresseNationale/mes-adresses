@@ -12,8 +12,10 @@ import Settings from "@/components/settings";
 import Trash from "@/components/trash";
 import LayoutContext from "@/contexts/layout";
 import { BaseLocale } from "@/lib/openapi-api-bal";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 function DrawerContent() {
+  const { otherBalIdPublished } = useContext(BALRecoveryContext);
   const { isMobile } = useContext(LayoutContext);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { drawerDisplayed, setDrawerDisplayed } = useContext(DrawerContext);
@@ -23,7 +25,9 @@ function DrawerContent() {
   const isAdmin = Boolean(token);
 
   const tabs = [
-    ...(baseLocale.status !== BaseLocale.status.DEMO && isAdmin
+    ...(baseLocale.status !== BaseLocale.status.DEMO &&
+    isAdmin &&
+    !Boolean(otherBalIdPublished)
       ? [
           {
             label: "Paramètres",
@@ -37,7 +41,7 @@ function DrawerContent() {
       key: "downloads",
       content: <Downloads baseLocale={baseLocale} />,
     },
-    ...(isAdmin
+    ...(isAdmin && !Boolean(otherBalIdPublished)
       ? [
           {
             label: "Corbeille",

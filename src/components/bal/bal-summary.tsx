@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Heading, Pane, Text, IconButton, EditIcon } from "evergreen-ui";
 import {
   ExtendedBaseLocaleDTO,
@@ -9,6 +9,7 @@ import LanguagePreview from "../bal/language-preview";
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 import { CommuneType } from "@/types/commune";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 interface BALSummaryProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -27,6 +28,7 @@ function BALSummary({
   communeFlag,
   onEditNomsAlt,
 }: BALSummaryProps) {
+  const { otherBalIdPublished } = useContext(BALRecoveryContext);
   const { token } = useContext(TokenContext);
   const { isEditing } = useContext(BalDataContext);
   const { nbNumeros } = baseLocale;
@@ -56,7 +58,7 @@ function BALSummary({
           />
           {commune.nom} - {commune.code}
         </Pane>
-        {!isEditing && token && (
+        {!isEditing && token && !Boolean(otherBalIdPublished) && (
           <IconButton
             icon={EditIcon}
             marginTop={-4}
