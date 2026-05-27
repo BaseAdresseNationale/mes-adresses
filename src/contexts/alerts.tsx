@@ -10,6 +10,7 @@ import {
 } from "@/lib/alerts/alerts.types";
 import { ExtendedVoieDTO } from "@/lib/openapi-api-bal/models/ExtendedVoieDTO";
 import {
+  getVoieDoublonAlert,
   getVoieEmptyAlert,
   getVoieNomAlert,
 } from "@/lib/alerts/utils/alerts-voies.utils";
@@ -24,6 +25,7 @@ interface AlertsContextType {
   voiesAlerts: Record<string, AlertVoie[]>;
   reloadVoieAlerts: (
     voie: ExtendedVoieDTO,
+    voies: ExtendedVoieDTO[],
     ignoredAlertCodes: AlertCodeEnum[]
   ) => void;
   reloadVoiesAlerts: (
@@ -77,10 +79,15 @@ export function AlertsContextProvider(props: ChildrenProps) {
   );
 
   const getVoieAlerts = useCallback(
-    (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
+    (
+      voie: ExtendedVoieDTO,
+      voies: ExtendedVoieDTO[],
+      ignoredAlertCodes: AlertCodeEnum[] = []
+    ) => {
       const alerts: Array<AlertVoie | undefined> = [
         getVoieNomAlert(voie),
         getVoieEmptyAlert(voie),
+        getVoieDoublonAlert(voie, voies),
       ];
       const filteredAlerts = alerts
         .filter((alert: AlertVoie | undefined) => alert !== undefined)
@@ -93,8 +100,12 @@ export function AlertsContextProvider(props: ChildrenProps) {
   );
 
   const reloadVoieAlerts = useCallback(
-    (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
-      const alerts = getVoieAlerts(voie, ignoredAlertCodes);
+    (
+      voie: ExtendedVoieDTO,
+      voies: ExtendedVoieDTO[],
+      ignoredAlertCodes: AlertCodeEnum[] = []
+    ) => {
+      const alerts = getVoieAlerts(voie, voies, ignoredAlertCodes);
       if (alerts.length <= 0) {
         setVoiesAlerts((prev) => omit(prev, voie.id));
       } else {
@@ -108,7 +119,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
     (voies: ExtendedVoieDTO[], ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const newVoiesAlerts: Record<string, AlertVoie[]> = {};
       for (const voie of voies) {
-        const alerts = getVoieAlerts(voie, ignoredAlertCodes);
+        const alerts = getVoieAlerts(voie, voies, ignoredAlertCodes);
         if (alerts.length > 0) {
           newVoiesAlerts[voie.id] = alerts;
         }

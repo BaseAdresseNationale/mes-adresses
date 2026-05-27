@@ -1,4 +1,5 @@
 import { ExtendedVoieDTO } from "@/lib/openapi-api-bal";
+import { normalize } from "@ban-team/adresses-util/lib/voies";
 import {
   Alert,
   AlertCodeVoieEnum,
@@ -30,6 +31,24 @@ export const getVoieEmptyAlert = (
     return {
       model: AlertModelEnum.VOIE,
       codes: [AlertCodeVoieEnum.VOIE_EMPTY],
+    } as AlertVoie;
+  }
+};
+
+export const getVoieDoublonAlert = (
+  voie: ExtendedVoieDTO,
+  voies: ExtendedVoieDTO[]
+): AlertVoie | undefined => {
+  const voieNomNormalize = normalize(voie.nom);
+  const voiesNomsNormalize = voies
+    .filter(({ id }) => id !== voie.id)
+    .map(({ nom }) => normalize(nom));
+
+  if (voiesNomsNormalize.includes(voieNomNormalize)) {
+    return {
+      model: AlertModelEnum.VOIE,
+      codes: [AlertCodeVoieEnum.DOUBLON_VOIE_NOM],
+      value: voie.nom,
     } as AlertVoie;
   }
 };

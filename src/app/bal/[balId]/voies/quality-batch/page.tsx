@@ -37,7 +37,7 @@ export default function VoiesPage() {
     };
   }, [setBreadcrumbs]);
 
-  const getVoieAlerts = useCallback(
+  const getAllVoieAlerts = useCallback(
     (voieId: string): (AlertVoie | AlertNumero)[] => {
       const voieWarnings = voiesAlerts[voieId] || [];
 
@@ -51,7 +51,7 @@ export default function VoiesPage() {
 
   const batchItems: AlertBatchItem[] = useMemo(() => {
     const allSorted = sortBy(
-      voies.filter(({ id }) => getVoieAlerts(id).length > 0),
+      voies.filter(({ id }) => getAllVoieAlerts(id).length > 0),
       (v) => normalizeSort(v.nom)
     );
     return allSorted.flatMap((voie) => {
@@ -68,7 +68,7 @@ export default function VoiesPage() {
         );
       return [...voieWarnings, ...numeroWarnings];
     });
-  }, [voies, getVoieAlerts, voiesAlerts, numerosAlerts]);
+  }, [voies, getAllVoieAlerts, voiesAlerts, numerosAlerts]);
 
   const handleClose = useCallback(() => {
     const query = batchItems?.length > 0 ? "?filter=with-suggestions" : "";

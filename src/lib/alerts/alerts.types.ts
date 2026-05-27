@@ -17,6 +17,7 @@ export enum AlertCodeVoieEnum {
   CASSE_INCORRECTE = "casse_incorrecte",
   LAKE_OF_ACCENT = "lake_of_accent",
   VOIE_EMPTY = "voie_empty",
+  DOUBLON_VOIE_NOM = "doublon_voie_nom",
 }
 
 export enum AlertCodeNumeroEnum {

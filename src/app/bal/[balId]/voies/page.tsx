@@ -209,7 +209,7 @@ export default function VoiesPage() {
     );
   };
 
-  const getVoieAlerts = useCallback(
+  const getAllVoieAlerts = useCallback(
     (voieId: string): (AlertVoie | AlertNumero)[] => {
       const voieWarnings = voiesAlerts[voieId] || [];
 
@@ -229,14 +229,17 @@ export default function VoiesPage() {
       items = items.filter(({ isAllCertified }) => !isAllCertified);
     }
     if (filter === "with-suggestions") {
-      items = items.filter(({ id }) => getVoieAlerts(id).length > 0);
+      items = items.filter(({ id }) => getAllVoieAlerts(id).length > 0);
     }
     return items;
-  }, [filtered, filter, getVoieAlerts]);
+  }, [filtered, filter, getAllVoieAlerts]);
 
   const nbAlerts = useMemo(() => {
-    return filtered.reduce((acc, { id }) => acc + getVoieAlerts(id).length, 0);
-  }, [filtered, getVoieAlerts]);
+    return filtered.reduce(
+      (acc, { id }) => acc + getAllVoieAlerts(id).length,
+      0
+    );
+  }, [filtered, getAllVoieAlerts]);
 
   const isEditingEnabled = !isEditing && Boolean(token);
 
@@ -418,11 +421,11 @@ export default function VoiesPage() {
                 warning={
                   Boolean(token) &&
                   !Boolean(otherBalIdPublished) &&
-                  getVoieAlerts(voie.id).length > 0 ? (
+                  getAllVoieAlerts(voie.id).length > 0 ? (
                     <TableVoieWarning
                       baseLocale={baseLocale}
                       voie={voie}
-                      alerts={getVoieAlerts(voie.id)}
+                      alerts={getAllVoieAlerts(voie.id)}
                     />
                   ) : null
                 }

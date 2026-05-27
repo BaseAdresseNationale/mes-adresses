@@ -23,6 +23,8 @@ export const AlertVoieDefinitions: Record<AlertCodeVoieEnum, string> = {
     "Le nom de la voie semble manquer d'un ou plusieurs accents",
   [AlertCodeVoieEnum.VOIE_EMPTY]:
     "La voie n'a pas de numéro, est-ce une voie sans adresse ?",
+  [AlertCodeVoieEnum.DOUBLON_VOIE_NOM]:
+    "Plusieurs voies on l'air d'avoir le même nom",
 };
 
 export const AlertNumeroDefinitions: Record<AlertCodeNumeroEnum, string> = {

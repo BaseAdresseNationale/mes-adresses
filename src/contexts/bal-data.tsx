@@ -148,7 +148,7 @@ export function BalDataContextProvider({
           !initialBaseLocale.settings.otherBalPublishedIgnored &&
           initialBaseLocale.status !== ExtendedBaseLocaleDTO.status.DEMO
         ) {
-          _setBalAlreadyPublished(commune.code);
+          await _setBalAlreadyPublished(commune.code);
         }
         setVoies(voies);
         setToponymes(toponymes);
@@ -258,6 +258,7 @@ export function BalDataContextProvider({
     async (voie: ExtendedVoieDTO) => {
       reloadVoieAlerts(
         voie,
+        voies,
         (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
       );
     },
