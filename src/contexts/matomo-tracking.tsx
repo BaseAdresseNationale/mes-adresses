@@ -64,6 +64,7 @@ export const MatomoEventAction = {
     IMPROVE_SUGGESTION: "improve_suggestion",
     PROCESS_SUGGESTIONS: "process_suggestions",
     CONVERT_VOIE_TO_TOPONYME: "convert_voie_to_toponyme",
+    FUSION_VOIES: "fusion_voies",
     REMOVE_INVALID_PARCELLE: "remove_invalid_parcelle",
     CORRECT_SUFFIX_NUMERO: "correct_suffix_numero",
     CORRECT_NOM_VOIE: "correct_nom_voie",

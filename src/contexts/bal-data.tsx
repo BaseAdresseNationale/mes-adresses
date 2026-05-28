@@ -69,7 +69,10 @@ interface BALDataContextType {
   commune: CommuneType | null;
   setNumeros: React.Dispatch<React.SetStateAction<Numero[]>>;
   reloadVoiesAlerts: (overrideCodes?: AlertCodeEnum[]) => Promise<void>;
-  reloadVoieAlerts: (voie: ExtendedVoieDTO) => Promise<void>;
+  reloadVoieAlerts: (
+    voie: ExtendedVoieDTO,
+    voies: ExtendedVoieDTO[]
+  ) => Promise<void>;
   reloadNumerosAlerts: (overrideCodes?: AlertCodeEnum[]) => Promise<void>;
 }
 
@@ -255,7 +258,8 @@ export function BalDataContextProvider({
   }, [baseLocale, isRefrehSyncStat, reloadBaseLocale, pushToast]);
 
   const _reloadVoieAlerts = useCallback(
-    async (voie: ExtendedVoieDTO) => {
+    async (voie: ExtendedVoieDTO, voies: ExtendedVoieDTO[]) => {
+      console.log("_reloadVoieAlerts", voie, voies);
       reloadVoieAlerts(
         voie,
         voies,

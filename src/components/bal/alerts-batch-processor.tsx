@@ -140,13 +140,11 @@ function AlertsBatchProcessor({
         );
         await applyCorrection();
 
-        const newVoies = await reloadVoies();
-        const updatedVoie = newVoies.find(
-          ({ id }) => id === currentItem.voie.id
-        );
+        const voies = await reloadVoies();
+        const updatedVoie = voies.find(({ id }) => id === currentItem.voie.id);
         if (updatedVoie) {
           // RELOAD ALERTS
-          reloadVoieAlerts(updatedVoie);
+          reloadVoieAlerts(updatedVoie, voies);
         }
       } else if (isNumeroSuffixeAlert && currentItem.numeroId) {
         matomoTrackEvent(
@@ -200,11 +198,11 @@ function AlertsBatchProcessor({
       const convert = toaster(
         async () => {
           await VoiesService.convertToToponyme(currentItem.voie.id);
-          await reloadVoies();
+          const voies = await reloadVoies();
           await reloadToponymes();
           await reloadParcelles();
           // RELOAD ALERTS
-          reloadVoieAlerts(currentItem.voie);
+          reloadVoieAlerts(currentItem.voie, voies);
         },
         "La voie a bien été convertie en toponyme",
         "La voie n'a pas pu être convertie en toponyme"

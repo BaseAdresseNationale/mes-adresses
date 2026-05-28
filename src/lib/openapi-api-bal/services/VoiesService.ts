@@ -189,13 +189,13 @@ export class VoiesService {
      * Fusionne plusieurs voie en une
      * @param voieId
      * @param requestBody
-     * @returns Toponyme
+     * @returns Voie
      * @throws ApiError
      */
     public static fusionVoies(
         voieId: string,
         requestBody: FusionVoieDTO,
-    ): CancelablePromise<Toponyme> {
+    ): CancelablePromise<Voie> {
         return __request(OpenAPI, {
             method: 'PUT',
             url: '/v2/voies/{voieId}/fusion',

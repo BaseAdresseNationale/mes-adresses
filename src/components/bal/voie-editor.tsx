@@ -106,9 +106,12 @@ function VoieEditor({
         const voie = await submit();
 
         refreshBALSync();
-        const newVoies = await reloadVoies();
+        const voies = await reloadVoies();
         // RELOAD ALERTS
-        await reloadVoieAlerts(newVoies.find(({ id }) => id === voie.id));
+        await reloadVoieAlerts(
+          voies.find(({ id }) => id === voie.id),
+          voies
+        );
 
         reloadTiles();
 

@@ -40,4 +40,21 @@ export class AdminService {
                                 mediaType: 'application/json',
                             });
                         }
+                        /**
+                         * Synchro ids BAL with ids BAN and publish
+                         * @param baseLocaleId
+                         * @returns BaseLocale
+                         * @throws ApiError
+                         */
+                        public static syncIdsBanPublish(
+                            baseLocaleId: string,
+                        ): CancelablePromise<BaseLocale> {
+                            return __request(OpenAPI, {
+                                method: 'POST',
+                                url: '/v2/admin/bases-locales/{baseLocaleId}/sync-ids-ban-publish',
+                                path: {
+                                    'baseLocaleId': baseLocaleId,
+                                },
+                            });
+                        }
                     }

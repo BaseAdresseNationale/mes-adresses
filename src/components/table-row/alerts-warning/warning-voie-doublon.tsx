@@ -1,13 +1,13 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { Paragraph, Pane, Text, Button, defaultTheme } from "evergreen-ui";
 import { useRouter } from "next/navigation";
+import { normalize } from "@ban-team/adresses-util/lib/voies";
 
 import BalDataContext from "@/contexts/bal-data";
-
 import {
   ExtendedBaseLocaleDTO,
   ExtendedVoieDTO,
-  Toponyme,
+  Voie,
   VoiesService,
 } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
@@ -26,6 +26,7 @@ interface WarningVoieDoublonProps {
 
 function WarningVoieDoublon({ baseLocale, voie }: WarningVoieDoublonProps) {
   const {
+    voies,
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
@@ -39,32 +40,49 @@ function WarningVoieDoublon({ baseLocale, voie }: WarningVoieDoublonProps) {
   const { toaster } = useContext(LayoutContext);
   const router = useRouter();
 
+  const otherVoieIds = useMemo(() => {
+    const voieNomNormalize = normalize(voie.nom);
+    return voies
+      .filter(
+        ({ id, nom }) => id !== voie.id && normalize(nom) === voieNomNormalize
+      )
+      .map(({ id }) => id);
+  }, [voie, voies]);
+
   const onFusionVoie = useCallback(async () => {
     setOnFusionLoading(true);
-    const convertToponyme = toaster(
+    const findVoiesSameName = () => {
+      const voieNomNormalize = normalize(voie.nom);
+      return voies
+        .filter(
+          ({ id, nom }) => id !== voie.id && normalize(nom) === voieNomNormalize
+        )
+        .map(({ id }) => id);
+    };
+
+    const fusionVoies = toaster(
       async () => {
-        const toponyme: Toponyme = await VoiesService.convertToToponyme(
-          toFusion.id
-        );
-        await reloadVoies();
-        await reloadToponymes();
+        const voie: Voie = await VoiesService.fusionVoies(toFusion.id, {
+          otherVoieIds: findVoiesSameName(),
+        });
+        const voies = await reloadVoies();
         await reloadParcelles();
         reloadTiles();
         refreshBALSync();
         // RELOAD ALERTS
-        reloadVoieAlerts(toFusion);
+        reloadVoieAlerts(toFusion, voies);
         await router.push(
-          `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
+          `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`
         );
       },
-      "La voie a bien été convertie en toponyme",
-      "La voie n’a pas pu être convertie en toponyme"
+      "Les voies ont été fusionné",
+      "Les voies n’ont pas pu être fusionné"
     );
 
-    await convertToponyme();
+    await fusionVoies();
     matomoTrackEvent(
       MatomoEventCategory.QUALITY,
-      MatomoEventAction[MatomoEventCategory.QUALITY].CONVERT_VOIE_TO_TOPONYME
+      MatomoEventAction[MatomoEventCategory.QUALITY].FUSION_VOIES
     );
 
     setOnFusionLoading(false);
@@ -90,8 +108,8 @@ function WarningVoieDoublon({ baseLocale, voie }: WarningVoieDoublonProps) {
         isShown={Boolean(toFusion)}
         content={
           <Paragraph>
-            Êtes vous bien sûr de vouloir fusionner les {"3"} voies avec le nom{" "}
-            {"place de léglise"}
+            Êtes vous bien sûr de vouloir fusionner les{" "}
+            {otherVoieIds.length + 1} voies avec le nom {voie.nom}
           </Paragraph>
         }
         isLoading={onFusionLoading}
