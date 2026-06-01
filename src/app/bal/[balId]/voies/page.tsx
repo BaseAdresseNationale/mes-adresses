@@ -75,7 +75,7 @@ const options = [
 
 export default function VoiesPage() {
   const { token } = useContext(TokenContext);
-  const [toRemove, setToRemove] = useState(null);
+  const [toRemove, setToRemove] = useState<string | null>(null);
   const {
     baseLocale,
     voies,
@@ -84,6 +84,7 @@ export default function VoiesPage() {
     reloadParcelles,
     refreshBALSync,
     reloadNumeros,
+    reloadVoiesDoublonsAlerts,
   } = useContext(BalDataContext);
   const { reloadTiles, setTileLayersMode } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
@@ -150,6 +151,7 @@ export default function VoiesPage() {
     await softDeleteVoie();
     await reloadVoies();
     await reloadParcelles();
+    await reloadVoiesDoublonsAlerts(toRemove);
     reloadTiles();
     refreshBALSync();
     setToRemove(null);

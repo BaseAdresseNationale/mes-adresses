@@ -5,6 +5,7 @@ import { ChildrenProps } from "@/types/context";
 import { omit } from "lodash";
 import {
   AlertCodeEnum,
+  AlertCodeVoieEnum,
   AlertVoie,
   AlertNumero,
 } from "@/lib/alerts/alerts.types";
@@ -13,6 +14,7 @@ import {
   getVoieDoublonAlert,
   getVoieEmptyAlert,
   getVoieNomAlert,
+  getVoiesDoublonsAlertsByIdVoie,
 } from "@/lib/alerts/utils/alerts-voies.utils";
 import { BasesLocalesService } from "@/lib/openapi-api-bal/services/BasesLocalesService";
 import {
@@ -35,6 +37,10 @@ interface AlertsContextType {
   numerosAlerts: Record<string, AlertNumero[]>;
   reloadNumerosAlerts: (
     balId: string,
+    ignoredAlertCodes: AlertCodeEnum[]
+  ) => void;
+  reloadVoiesDoublonsAlerts: (
+    voies: ExtendedVoieDTO[],
     ignoredAlertCodes: AlertCodeEnum[]
   ) => void;
 }
@@ -79,15 +85,10 @@ export function AlertsContextProvider(props: ChildrenProps) {
   );
 
   const getVoieAlerts = useCallback(
-    (
-      voie: ExtendedVoieDTO,
-      voies: ExtendedVoieDTO[],
-      ignoredAlertCodes: AlertCodeEnum[] = []
-    ) => {
+    (voie: ExtendedVoieDTO, ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const alerts: Array<AlertVoie | undefined> = [
         getVoieNomAlert(voie),
         getVoieEmptyAlert(voie),
-        getVoieDoublonAlert(voie, voies),
       ];
       const filteredAlerts = alerts
         .filter((alert: AlertVoie | undefined) => alert !== undefined)
@@ -99,34 +100,63 @@ export function AlertsContextProvider(props: ChildrenProps) {
     []
   );
 
+  const reloadVoiesDoublonsAlerts = useCallback(
+    (voies: ExtendedVoieDTO[], ignoredAlertCodes: AlertCodeEnum[] = []) => {
+      setVoiesAlerts((prev) => {
+        const cleaned: Record<string, AlertVoie[]> = {};
+        for (const [voieId, alerts] of Object.entries(prev)) {
+          const remaining = alerts.filter(
+            (alert) => !alert.codes.includes(AlertCodeVoieEnum.DOUBLON_VOIE_NOM)
+          );
+          if (remaining.length > 0) {
+            cleaned[voieId] = remaining;
+          }
+        }
+        return cleaned;
+      });
+      if (!ignoredAlertCodes.includes[AlertCodeVoieEnum.DOUBLON_VOIE_NOM]) {
+        const alertsDoublons = getVoiesDoublonsAlertsByIdVoie(voies);
+        for (const [voieId, alertDoublon] of Object.entries(alertsDoublons)) {
+          setVoiesAlerts((prev) => ({
+            ...prev,
+            [voieId]: [...(prev[voieId] ?? []), alertDoublon],
+          }));
+        }
+      }
+    },
+    []
+  );
+
   const reloadVoieAlerts = useCallback(
     (
       voie: ExtendedVoieDTO,
       voies: ExtendedVoieDTO[],
       ignoredAlertCodes: AlertCodeEnum[] = []
     ) => {
-      const alerts = getVoieAlerts(voie, voies, ignoredAlertCodes);
+      const alerts = getVoieAlerts(voie, ignoredAlertCodes);
       if (alerts.length <= 0) {
         setVoiesAlerts((prev) => omit(prev, voie.id));
       } else {
         setVoiesAlerts((prev) => ({ ...prev, [voie.id]: alerts }));
       }
+      reloadVoiesDoublonsAlerts(voies);
     },
-    [getVoieAlerts]
+    [getVoieAlerts, reloadVoiesDoublonsAlerts]
   );
 
   const reloadVoiesAlerts = useCallback(
     (voies: ExtendedVoieDTO[], ignoredAlertCodes: AlertCodeEnum[] = []) => {
       const newVoiesAlerts: Record<string, AlertVoie[]> = {};
       for (const voie of voies) {
-        const alerts = getVoieAlerts(voie, voies, ignoredAlertCodes);
+        const alerts = getVoieAlerts(voie, ignoredAlertCodes);
         if (alerts.length > 0) {
           newVoiesAlerts[voie.id] = alerts;
         }
       }
       setVoiesAlerts(newVoiesAlerts);
+      reloadVoiesDoublonsAlerts(voies);
     },
-    [getVoieAlerts]
+    [getVoieAlerts, reloadVoiesDoublonsAlerts]
   );
 
   const value = useMemo(
@@ -136,6 +166,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       reloadVoiesAlerts,
       numerosAlerts,
       reloadNumerosAlerts,
+      reloadVoiesDoublonsAlerts,
     }),
     [
       voiesAlerts,
@@ -143,6 +174,7 @@ export function AlertsContextProvider(props: ChildrenProps) {
       reloadVoiesAlerts,
       numerosAlerts,
       reloadNumerosAlerts,
+      reloadVoiesDoublonsAlerts,
     ]
   );
 

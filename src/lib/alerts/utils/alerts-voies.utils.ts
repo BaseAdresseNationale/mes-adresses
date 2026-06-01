@@ -53,6 +53,39 @@ export const getVoieDoublonAlert = (
   }
 };
 
+export const getVoiesDoublonsAlertsByIdVoie = (
+  voies: ExtendedVoieDTO[]
+): Record<string, AlertVoie> => {
+  const normalized = voies.map(({ id, nom }) => ({
+    id,
+    nom,
+    normalized_nom: normalize(nom),
+  }));
+
+  const grouped = normalized.reduce<Record<string, typeof normalized>>(
+    (acc, voie) => {
+      acc[voie.normalized_nom] = [...(acc[voie.normalized_nom] ?? []), voie];
+      return acc;
+    },
+    {}
+  );
+
+  const duplicates = Object.values(grouped)
+    .filter((group) => group.length > 1)
+    .flat();
+
+  return Object.fromEntries(
+    duplicates.map((voie) => [
+      voie.id,
+      {
+        model: AlertModelEnum.VOIE,
+        codes: [AlertCodeVoieEnum.DOUBLON_VOIE_NOM],
+        value: voie.nom,
+      } as AlertVoie,
+    ])
+  );
+};
+
 export function isAlertVoieNom(alert: Alert): boolean {
   return "field" in alert && alert.field === AlertFieldVoieEnum.VOIE_NOM;
 }
