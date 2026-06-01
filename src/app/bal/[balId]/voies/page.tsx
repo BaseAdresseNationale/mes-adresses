@@ -335,34 +335,39 @@ export default function VoiesPage() {
               size="medium"
               appearance="primary"
               intent="success"
-              disabled={!token || (token && isEditing)}
+              disabled={
+                !token || (token && isEditing) || Boolean(otherBalIdPublished)
+              }
               href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/new`}
               message="Ajouter une voie"
             />
           </Table.HeaderCell>
         </Table.Head>
 
-        {filter === "with-suggestions" && nbAlerts > 0 && token && (
-          <Pane
-            padding={8}
-            background={defaultTheme.colors.purpleTint}
-            borderBottom="muted"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Button
-              iconBefore={LightbulbIcon}
-              appearance="primary"
-              onClick={browseQualityBatch}
-              style={{ backgroundColor: defaultTheme.colors.purple600 }}
+        {filter === "with-suggestions" &&
+          nbAlerts > 0 &&
+          token &&
+          !Boolean(otherBalIdPublished) && (
+            <Pane
+              padding={8}
+              background={defaultTheme.colors.purpleTint}
+              borderBottom="muted"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
             >
-              Traiter {nbAlerts > 1 ? "les" : "la"}{" "}
-              {nbAlerts > 1 ? nbAlerts : ""} suggestion
-              {nbAlerts > 1 ? "s" : ""}
-            </Button>
-          </Pane>
-        )}
+              <Button
+                iconBefore={LightbulbIcon}
+                appearance="primary"
+                onClick={browseQualityBatch}
+                style={{ backgroundColor: defaultTheme.colors.purple600 }}
+              >
+                Traiter {nbAlerts > 1 ? "les" : "la"}{" "}
+                {nbAlerts > 1 ? nbAlerts : ""} suggestion
+                {nbAlerts > 1 ? "s" : ""}
+              </Button>
+            </Pane>
+          )}
 
         {filtered.length === 0 && (
           <Table.Row>
@@ -487,7 +492,7 @@ export default function VoiesPage() {
                 </Table.TextCell>
               )}
 
-              {Boolean(otherBalIdPublished) && (
+              {Boolean(otherBalIdPublished) && Boolean(token) && (
                 <Table.TextCell flex="0 1 1">
                   <IconButton
                     onClick={() => setIsRecoveryPublishedDisplayed(true)}
