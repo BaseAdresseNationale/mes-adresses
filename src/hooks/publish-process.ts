@@ -62,9 +62,7 @@ export default function usePublishProcess(
 
     if (
       isReadyToPublish &&
-      (!habilitation ||
-        habilitation.status !== HabilitationDTO.status.ACCEPTED) &&
-      !commune.isCOM
+      (!habilitation || habilitation.status !== HabilitationDTO.status.ACCEPTED)
     ) {
       try {
         const habilitation = await HabilitationService.createHabilitation(
