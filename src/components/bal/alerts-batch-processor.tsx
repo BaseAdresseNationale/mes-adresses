@@ -46,6 +46,7 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
+import { useFusionVoies } from "@/hooks/fusion-voies";
 
 export interface AlertBatchItem {
   voie: ExtendedVoieDTO;
@@ -77,6 +78,7 @@ function AlertsBatchProcessor({
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
+  const { onFusionVoie } = useFusionVoies(setIsLoading);
 
   const currentItem = items[currentIndex];
   const isLastItem = currentIndex >= items.length - 1;
@@ -94,6 +96,11 @@ function AlertsBatchProcessor({
     currentItem?.alert.model === AlertModelEnum.VOIE &&
     (currentItem?.alert.codes as AlertCodeVoieEnum[]).includes(
       AlertCodeVoieEnum.VOIE_EMPTY
+    );
+  const isVoieDoublon =
+    currentItem?.alert.model === AlertModelEnum.VOIE &&
+    (currentItem?.alert.codes as AlertCodeVoieEnum[]).includes(
+      AlertCodeVoieEnum.DOUBLON_VOIE_NOM
     );
   const hasRemediation =
     Boolean(currentItem?.alert.remediation) &&
@@ -178,12 +185,13 @@ function AlertsBatchProcessor({
     hasRemediation,
     isVoieNameAlert,
     isNumeroSuffixeAlert,
+    reloadTiles,
+    refreshBALSync,
+    matomoTrackEvent,
     toaster,
     reloadVoies,
     reloadVoieAlerts,
     reloadNumerosAlerts,
-    reloadTiles,
-    refreshBALSync,
   ]);
 
   const handleConvertToToponyme = useCallback(async () => {
@@ -220,13 +228,14 @@ function AlertsBatchProcessor({
   }, [
     currentItem,
     isVoieEmpty,
+    matomoTrackEvent,
     toaster,
+    reloadTiles,
+    refreshBALSync,
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
     reloadVoieAlerts,
-    reloadTiles,
-    refreshBALSync,
   ]);
 
   const handleRemoveInvalidParcelle = useCallback(async () => {
@@ -265,11 +274,18 @@ function AlertsBatchProcessor({
   }, [
     currentItem,
     isNumeroParcelleAlert,
+    matomoTrackEvent,
     toaster,
     reloadNumerosAlerts,
     reloadTiles,
     refreshBALSync,
   ]);
+
+  const handleFusionVoies = useCallback(async () => {
+    if (!currentItem || !isVoieDoublon) return;
+
+    await onFusionVoie(currentItem.voie);
+  }, [currentItem, isVoieDoublon, onFusionVoie]);
 
   if (!currentItem) {
     return (
@@ -323,11 +339,13 @@ function AlertsBatchProcessor({
               : isNumeroSuffixeAlert
                 ? "Suggestion sur le suffixe du numero"
                 : isNumeroParcelleAlert
-                  ? "Parcelle inexistante dans le cadastre"
-                  : null}
+                  ? "Suggestion sur Parcelle inexistante dans le cadastre"
+                  : isVoieDoublon
+                    ? "Suggestion sur voies avec le même nom"
+                    : null}
         </Heading>
         <Text is="p">
-          {isVoieNameAlert || isVoieEmpty ? (
+          {isVoieNameAlert || isVoieEmpty || isVoieDoublon ? (
             <>{currentItem.voie.nom}</>
           ) : isNumeroSuffixeAlert || isNumeroParcelleAlert ? (
             <>
@@ -457,6 +475,17 @@ function AlertsBatchProcessor({
             style={{ backgroundColor: defaultTheme.colors.purple600 }}
           >
             Supprimer la parcelle
+          </Button>
+        )}
+        {isVoieDoublon && (
+          <Button
+            isLoading={isLoading}
+            onClick={handleFusionVoies}
+            appearance="primary"
+            iconAfter={TickCircleIcon}
+            style={{ backgroundColor: defaultTheme.colors.purple600 }}
+          >
+            Fusionner les voies
           </Button>
         )}
         <Button

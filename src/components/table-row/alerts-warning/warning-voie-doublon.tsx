@@ -1,44 +1,25 @@
 import { useCallback, useContext, useMemo, useState } from "react";
 import { Paragraph, Pane, Text, Button, defaultTheme } from "evergreen-ui";
-import { useRouter } from "next/navigation";
 import { normalize } from "@ban-team/adresses-util/lib/voies";
 
 import BalDataContext from "@/contexts/bal-data";
-import {
-  ExtendedBaseLocaleDTO,
-  ExtendedVoieDTO,
-  Voie,
-  VoiesService,
-} from "@/lib/openapi-api-bal";
-import LayoutContext from "@/contexts/layout";
+import { ExtendedBaseLocaleDTO, ExtendedVoieDTO } from "@/lib/openapi-api-bal";
 import DialogWarningAction from "@/components/dialog-warning-action";
-import MapContext from "@/contexts/map";
+import { useFusionVoies } from "@/hooks/fusion-voies";
+import { useRouter } from "next/navigation";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
-import MatomoTrackingContext, {
-  MatomoEventAction,
-  MatomoEventCategory,
-} from "@/contexts/matomo-tracking";
 
 interface WarningVoieDoublonProps {
   baseLocale: ExtendedBaseLocaleDTO;
   voie: ExtendedVoieDTO;
 }
 
-function WarningVoieDoublon({ baseLocale, voie }: WarningVoieDoublonProps) {
-  const {
-    voies,
-    reloadVoies,
-    reloadToponymes,
-    reloadParcelles,
-    refreshBALSync,
-    reloadVoieAlerts,
-  } = useContext(BalDataContext);
-  const { reloadTiles } = useContext(MapContext);
-  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
+function WarningVoieDoublon({ voie }: WarningVoieDoublonProps) {
+  const { baseLocale, voies } = useContext(BalDataContext);
   const [toFusion, setToFusion] = useState<ExtendedVoieDTO | null>(null);
   const [onFusionLoading, setOnFusionLoading] = useState<boolean>(false);
-  const { toaster } = useContext(LayoutContext);
   const router = useRouter();
+  const { onFusionVoie } = useFusionVoies(setOnFusionLoading);
 
   const otherVoieIds = useMemo(() => {
     const voieNomNormalize = normalize(voie.nom);
@@ -49,57 +30,12 @@ function WarningVoieDoublon({ baseLocale, voie }: WarningVoieDoublonProps) {
       .map(({ id }) => id);
   }, [voie, voies]);
 
-  const onFusionVoie = useCallback(async () => {
-    setOnFusionLoading(true);
-    const findVoiesSameName = () => {
-      const voieNomNormalize = normalize(voie.nom);
-      return voies
-        .filter(
-          ({ id, nom }) => id !== voie.id && normalize(nom) === voieNomNormalize
-        )
-        .map(({ id }) => id);
-    };
-
-    const fusionVoies = toaster(
-      async () => {
-        const voie: Voie = await VoiesService.fusionVoies(toFusion.id, {
-          otherVoieIds: findVoiesSameName(),
-        });
-        const voies = await reloadVoies();
-        await reloadParcelles();
-        reloadTiles();
-        refreshBALSync();
-        // RELOAD ALERTS
-        reloadVoieAlerts(toFusion, voies);
-        await router.push(
-          `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}/numeros`
-        );
-      },
-      "Les voies ont été fusionné",
-      "Les voies n’ont pas pu être fusionné"
+  const handleFusionVoies = useCallback(async () => {
+    await onFusionVoie(toFusion);
+    await router.push(
+      `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${toFusion.id}/numeros`
     );
-
-    await fusionVoies();
-    matomoTrackEvent(
-      MatomoEventCategory.QUALITY,
-      MatomoEventAction[MatomoEventCategory.QUALITY].FUSION_VOIES
-    );
-
-    setOnFusionLoading(false);
-    setToFusion(null);
-  }, [
-    toaster,
-    matomoTrackEvent,
-    toFusion,
-    reloadVoies,
-    reloadToponymes,
-    reloadParcelles,
-    reloadTiles,
-    refreshBALSync,
-    reloadVoieAlerts,
-    baseLocale.id,
-    router,
-  ]);
+  }, [baseLocale.id, onFusionVoie, router, toFusion]);
 
   return (
     <>
@@ -116,7 +52,7 @@ function WarningVoieDoublon({ baseLocale, voie }: WarningVoieDoublonProps) {
         onCancel={() => {
           setToFusion(null);
         }}
-        onConfirm={onFusionVoie}
+        onConfirm={() => handleFusionVoies()}
       />
       <>
         <Pane marginBottom={8}>
