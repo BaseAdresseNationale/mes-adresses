@@ -200,7 +200,7 @@ function NumerosList({
       // RELOAD ALERTS
       await reloadVoieAlerts(newVoie, voies);
     },
-    [numeros, reloadVoieAlerts, setVoie, voie]
+    [numeros, reloadVoieAlerts, setVoie, voie, voies]
   );
 
   const onRemove = useCallback(
