@@ -9,7 +9,6 @@ import TokenContext from "@/contexts/token";
 
 import HabilitationProcess from "@/components/habilitation-process/index";
 import Breadcrumbs from "@/components/breadcrumbs";
-import COMDialog from "./com-dialog";
 import SettingsMenu from "@/components/sub-header/settings-menu";
 import BALStatus from "@/components/sub-header/bal-status";
 import MassDeletionDialog from "@/components/mass-deletion-dialog";
@@ -123,10 +122,6 @@ function SubHeader({ commune }: SubHeaderProps) {
           </Pane>
         )}
       </Pane>
-
-      {isAdmin && isHabilitationProcessDisplayed && commune.isCOM && (
-        <COMDialog baseLocaleId={baseLocale.id} handleClose={handleClose} />
-      )}
 
       {isAdmin && habilitation && isHabilitationProcessDisplayed && (
         <HabilitationProcess
