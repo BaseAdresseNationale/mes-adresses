@@ -88,7 +88,11 @@ function NumerosList({
   const [isRemoveWarningShown, setIsRemoveWarningShown] = useState(false);
   const [documentGenerationData, setDocumentGenerationData] =
     useState<DocumentGenerationData<GeneratedDocumentType> | null>(null);
-
+  const {
+    setIsRecoveryDisplayed,
+    setIsRecoveryPublishedDisplayed,
+    otherBalIdPublished,
+  } = useContext(BALRecoveryContext);
   const [selectedNumerosIds, setSelectedNumerosIds] = useState<string[]>([]);
   const { toaster } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
@@ -103,7 +107,6 @@ function NumerosList({
     reloadVoieAlerts,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
-  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
 
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -338,18 +341,11 @@ function NumerosList({
 
         <Pane marginLeft="auto">
           <Button
-            iconBefore={token ? AddIcon : LockIcon}
+            iconBefore={AddIcon}
+            disabled={!token || Boolean(otherBalIdPublished)}
             appearance="primary"
             intent="success"
-            onClick={
-              token
-                ? () => {
-                    handleEditing();
-                  }
-                : () => {
-                    setIsRecoveryDisplayed(true);
-                  }
-            }
+            onClick={() => handleEditing()}
           >
             Ajouter un numéro
           </Button>
@@ -439,7 +435,7 @@ function NumerosList({
 
               <Table.Cell
                 className="main-table-cell"
-                {...(isEditingEnabled
+                {...(isEditingEnabled && !Boolean(otherBalIdPublished)
                   ? {
                       onClick: () => {
                         handleEditing(numero.id);
@@ -483,7 +479,7 @@ function NumerosList({
                 }
               />
 
-              {isEditingEnabled && (
+              {isEditingEnabled && !Boolean(otherBalIdPublished) && (
                 <TableRowActions>
                   <Menu.Item
                     icon={EditIcon}
@@ -517,6 +513,17 @@ function NumerosList({
                       setIsRecoveryDisplayed(true);
                     }}
                     title="Récupérer les accès d'administration de la BAL"
+                    type="button"
+                    height={24}
+                    icon={LockIcon}
+                    appearance="minimal"
+                  />
+                </Table.TextCell>
+              )}
+              {Boolean(otherBalIdPublished) && Boolean(token) && (
+                <Table.TextCell flex="0 1 1">
+                  <IconButton
+                    onClick={() => setIsRecoveryPublishedDisplayed(true)}
                     type="button"
                     height={24}
                     icon={LockIcon}
