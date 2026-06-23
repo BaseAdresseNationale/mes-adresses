@@ -18,6 +18,10 @@ import AchievementBadge from "../achievements-badge/achievements-badge";
 import { AccordionCard } from "@/components/accordion-card";
 import BalDataContext from "@/contexts/bal-data";
 import BALRecoveryContext from "@/contexts/bal-recovery";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 interface PublicationGoalProps {
   commune: CommuneType;
@@ -31,9 +35,14 @@ function PublicationGoal({ commune, baseLocale }: PublicationGoalProps) {
     baseLocale.status === ExtendedBaseLocaleDTO.status.DRAFT
   );
   const { otherBalIdPublished } = useContext(BALRecoveryContext);
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const handlePublication = (e) => {
     e.stopPropagation();
+    matomoTrackEvent(
+      MatomoEventCategory.HABILITATION,
+      MatomoEventAction[MatomoEventCategory.HABILITATION].OPEN_HABILITATION
+    );
     handleShowHabilitationProcess();
   };
   const isCompleted = useMemo(() => {

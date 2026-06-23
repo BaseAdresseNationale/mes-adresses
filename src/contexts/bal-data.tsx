@@ -322,7 +322,7 @@ export function BalDataContextProvider({
       await BasesLocalesService.resumeBaseLocale(baseLocale.id);
       await reloadBaseLocale();
     }
-    // SET RESUME BAL IF HABILITATION FRANCE_CONNECT
+    // SET RESUME BAL IF HABILITATION PRO_CONNECTED
     if (
       searchParams.get(PRO_CONNECT_QUERY_PARAM) === "1" &&
       habilitation?.status === HabilitationDTO.status.ACCEPTED &&
