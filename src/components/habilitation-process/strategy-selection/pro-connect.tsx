@@ -38,28 +38,25 @@ function ProConnect({ handleStrategy }: ProConnectProps) {
           </span>
         </button>
       </Pane>
-      <Alert intent="info" hasIcon={false}>
-        <Paragraph marginBottom={16}>
-          <Strong>
-            Pour toute question, contactez notre equipe: adresse@data.gouv.fr
-          </Strong>
+      <Alert intent="info">
+        <Paragraph>
+          <Strong>Une connexion plus sécurisée</Strong>
         </Paragraph>
-        <Paragraph marginBottom={4}>
-          ✅ <Strong>OUI</Strong> : Vous devez utiliser le mail officiel de
-          votre mairie
+        <Paragraph>
+          Pour plus de sécurité, Mes Adresses privilégie l’authentification avec
+          ProConnect.
         </Paragraph>
-        <Paragraph marginBottom={4}>
-          ❌ <Strong>NON</Strong> : Vous ne pouvez pas utiliser un mail
-          personnel (@gmail, laposte, wanadoo ...)
+        <Paragraph>
+          Connectez-vous avec l’adresse électronique indiquée dans l’annuaire de{" "}
+          <Link href="https://service-public.gouv.fr" target="_blank">
+            service-public.gouv.fr
+          </Link>{" "}
+          ou une adresse avec le même nom de domaine (exemple :
+          p.nom@commune.fr).
         </Paragraph>
-        <Paragraph marginBottom={4}>
-          💡{" "}
-          <Strong>
-            SI vous travaillez dans une collectivité et que vous n&apos;avez pas
-            d&apos;adresse de messagerie avec un nom de domaine dédié, la Suite
-            territoriale peut répondre à votre besoin. Écrivez-nous sur{" "}
-            <Link href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</Link>
-          </Strong>
+        <Paragraph>
+          Pour toute question, contactez notre equipe:{" "}
+          <Link href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</Link>
         </Paragraph>
       </Alert>
       {/* <Link
