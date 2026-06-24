@@ -19,6 +19,7 @@ export enum MatomoEventCategory {
   HOME_PAGE = "Page d'accueil",
   SETTINGS = "Paramètres",
   QUALITY = "Qualité",
+  HABILITATION = "Habilitation",
 }
 
 export const MatomoEventAction = {
@@ -67,6 +68,12 @@ export const MatomoEventAction = {
     REMOVE_INVALID_PARCELLE: "remove_invalid_parcelle",
     CORRECT_SUFFIX_NUMERO: "correct_suffix_numero",
     CORRECT_NOM_VOIE: "correct_nom_voie",
+  },
+  [MatomoEventCategory.HABILITATION]: {
+    OPEN_HABILITATION: "open_habilitation",
+    CLICK_PROCONNECT: "click_proconnect",
+    SUCCESS_PROCONNECT: "success_proconnect",
+    ERROR_PROCONNECT: "error_proconnect",
   },
 };
 

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useCallback, useContext, useEffect, useRef } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Dialog, Pane, Text, Spinner } from "evergreen-ui";
 
 const EDITEUR_URL =
   process.env.NEXT_PUBLIC_EDITEUR_URL || "https://mes-adresses.data.gouv.fr";
 
-import { ApiDepotService } from "@/lib/api-depot";
+import { ApiDepotService, PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 
 import BalDataContext from "@/contexts/bal-data";
 
@@ -27,8 +27,10 @@ import PublishBalStep from "./steps/publish-bal";
 import PublishedBalStep from "./steps/published-bal";
 import PublishBalRejectedStep from "./steps/publish-bal-rejected";
 import AuthenticationValidateStep from "./steps/validate-authentication";
-
-export const PRO_CONNECT_QUERY_PARAM = "pro-connect";
+import MatomoTrackingContext, {
+  MatomoEventAction,
+  MatomoEventCategory,
+} from "@/contexts/matomo-tracking";
 
 export const StepPublicationEnum = {
   STRATEGY_SELECTION: 0,
@@ -82,6 +84,8 @@ function HabilitationProcess({
   const { reloadHabilitation, reloadBaseLocale } = useContext(BalDataContext);
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { matomoTrackEvent } = useContext(MatomoTrackingContext);
 
   const sendCode = async () => {
     try {
@@ -101,6 +105,11 @@ function HabilitationProcess({
   };
 
   const redirectToProConnect = () => {
+    matomoTrackEvent(
+      MatomoEventCategory.HABILITATION,
+      MatomoEventAction[MatomoEventCategory.HABILITATION].CLICK_PROCONNECT
+    );
+
     const redirectUrl = encodeURIComponent(
       `${EDITEUR_URL}${pathname}?${PRO_CONNECT_QUERY_PARAM}=1`
     );
@@ -191,6 +200,17 @@ function HabilitationProcess({
     }
   };
 
+  const handleCloseDialog = async () => {
+    if (searchParams.get(PRO_CONNECT_QUERY_PARAM)) {
+      const nextSearchParams = new URLSearchParams(searchParams.toString());
+      nextSearchParams.delete(PRO_CONNECT_QUERY_PARAM);
+      const query = nextSearchParams.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname);
+    }
+
+    handleClose();
+  };
+
   useEffect(() => {
     fetchCommuneFlag();
   }, [baseLocale.commune]);
@@ -203,7 +223,7 @@ function HabilitationProcess({
       hasHeader={false}
       hasFooter={false}
       shouldCloseOnOverlayClick={!isLoadingPublish}
-      onCloseComplete={handleClose}
+      onCloseComplete={handleCloseDialog}
     >
       <Pane
         ref={wrapperRef}
