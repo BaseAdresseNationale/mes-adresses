@@ -1,4 +1,4 @@
-import { Report, Signalement } from "@/lib/openapi-signalement";
+import { Report, Signalement, Source } from "@/lib/openapi-signalement";
 import {
   Table,
   Popover,
@@ -13,6 +13,10 @@ import {
   TickCircleIcon,
   BanCircleIcon,
   Tooltip,
+  LockIcon,
+  UnlockIcon,
+  Text,
+  Strong,
 } from "evergreen-ui";
 import SignalementTypeBadge from "./signalement-type-badge";
 
@@ -68,6 +72,37 @@ export function SignalementListItem({
           </Tooltip>
         ) : null}
       </Table.Cell>
+      {editionEnabled && (
+        <Table.Cell flex="0 1 40px">
+          {signalement.source.type === Source.type.PRIVATE ? (
+            <Tooltip
+              content={
+                <>
+                  <Strong color="white" is="div">
+                    {signalement.source.nom}
+                  </Strong>
+                  <Text color="white">Acteur de confiance</Text>
+                </>
+              }
+            >
+              <LockIcon color="success" />
+            </Tooltip>
+          ) : (
+            <Tooltip
+              content={
+                <>
+                  <Strong color="white" is="div">
+                    {signalement.source.nom}
+                  </Strong>
+                  <Text color="white">Source grand public</Text>
+                </>
+              }
+            >
+              <UnlockIcon color="muted" />
+            </Tooltip>
+          )}
+        </Table.Cell>
+      )}
       <Table.TextCell
         flex="2"
         className="main-table-cell"
