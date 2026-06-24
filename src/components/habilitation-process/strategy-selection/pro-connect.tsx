@@ -55,7 +55,7 @@ function ProConnect({ handleStrategy }: ProConnectProps) {
           p.nom@commune.fr).
         </Paragraph>
         <Paragraph>
-          Pour toute question, contactez notre equipe:{" "}
+          Pour toute question, contactez notre équipe:{" "}
           <Link href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</Link>
         </Paragraph>
       </Alert>
