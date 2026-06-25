@@ -1,15 +1,9 @@
 /* eslint-disable react-hooks/purity */
-import {
-  Alert as AlertUI,
-  LockIcon,
-  Pane,
-  Paragraph,
-  Tooltip,
-  UnlockIcon,
-} from "evergreen-ui";
+import { Alert as AlertUI, Pane, Paragraph, Tooltip } from "evergreen-ui";
 import SignalementTypeBadge from "./signalement-type-badge";
 import { Alert, Signalement, Source } from "@/lib/openapi-signalement";
 import { getDuration, getLongFormattedDate } from "@/lib/utils/date";
+import Image from "next/image";
 
 interface SignalementHeaderProps {
   signalement: Signalement | Alert;
@@ -71,11 +65,29 @@ export function SignalementHeader({
           via <b>{source.nom}</b>
           {source.type === Source.type.PRIVATE ? (
             <Tooltip content="Ce signalement provient d'un acteur de confiance">
-              <LockIcon marginLeft={5} color="success" />
+              <Image
+                src="/static/images/signalement/source-service-public.svg"
+                alt="Icône source service public"
+                width={20}
+                height={20}
+                style={{
+                  marginLeft: 5,
+                  verticalAlign: "sub",
+                }}
+              />
             </Tooltip>
           ) : (
             <Tooltip content="Ce signalement provient d'une source grand public">
-              <UnlockIcon marginLeft={5} color="muted" />
+              <Image
+                src="/static/images/signalement/source-grand-public.svg"
+                alt="Icône source grand public"
+                width={20}
+                height={20}
+                style={{
+                  marginLeft: 5,
+                  verticalAlign: "middle",
+                }}
+              />
             </Tooltip>
           )}
         </Paragraph>

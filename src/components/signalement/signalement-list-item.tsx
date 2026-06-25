@@ -1,4 +1,4 @@
-import { Report, Signalement } from "@/lib/openapi-signalement";
+import { Report, Signalement, Source } from "@/lib/openapi-signalement";
 import {
   Table,
   Popover,
@@ -13,8 +13,12 @@ import {
   TickCircleIcon,
   BanCircleIcon,
   Tooltip,
+  Text,
+  Strong,
+  Pane,
 } from "evergreen-ui";
 import SignalementTypeBadge from "./signalement-type-badge";
+import Image from "next/image";
 
 interface SignalementListItemProps {
   signalement: Report & { label: string };
@@ -68,6 +72,47 @@ export function SignalementListItem({
           </Tooltip>
         ) : null}
       </Table.Cell>
+      {editionEnabled && (
+        <Table.Cell flex="0 1 40px">
+          {signalement.source.type === Source.type.PRIVATE ? (
+            <Tooltip
+              content={
+                <>
+                  <Strong color="white" is="div">
+                    {signalement.source.nom}
+                  </Strong>
+                  <Text color="white">Acteur de confiance</Text>
+                </>
+              }
+            >
+              <Image
+                src="/static/images/signalement/source-service-public.svg"
+                alt="Icône source service public"
+                width={20}
+                height={20}
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip
+              content={
+                <>
+                  <Strong color="white" is="div">
+                    {signalement.source.nom}
+                  </Strong>
+                  <Text color="white">Source grand public</Text>
+                </>
+              }
+            >
+              <Image
+                src="/static/images/signalement/source-grand-public.svg"
+                alt="Icône source grand public"
+                width={20}
+                height={20}
+              />
+            </Tooltip>
+          )}
+        </Table.Cell>
+      )}
       <Table.TextCell
         flex="2"
         className="main-table-cell"
@@ -76,7 +121,12 @@ export function SignalementListItem({
         onClick={() => onSelect(signalement.id)}
         cursor="pointer"
       >
-        <SignalementTypeBadge type={signalement.type} /> {signalement.label}
+        <Pane>
+          <SignalementTypeBadge type={signalement.type} />
+        </Pane>
+        <Pane marginTop={4} marginLeft={4}>
+          {signalement.label}
+        </Pane>
       </Table.TextCell>
       {editionEnabled && (
         <Table.Cell flex="0 1 40px">
