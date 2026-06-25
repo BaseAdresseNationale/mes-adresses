@@ -13,12 +13,12 @@ import {
   TickCircleIcon,
   BanCircleIcon,
   Tooltip,
-  LockIcon,
-  UnlockIcon,
   Text,
   Strong,
+  Pane,
 } from "evergreen-ui";
 import SignalementTypeBadge from "./signalement-type-badge";
+import Image from "next/image";
 
 interface SignalementListItemProps {
   signalement: Report & { label: string };
@@ -85,7 +85,12 @@ export function SignalementListItem({
                 </>
               }
             >
-              <LockIcon color="success" />
+              <Image
+                src="/static/images/signalement/source-service-public.svg"
+                alt="Icône source service public"
+                width={20}
+                height={20}
+              />
             </Tooltip>
           ) : (
             <Tooltip
@@ -98,7 +103,12 @@ export function SignalementListItem({
                 </>
               }
             >
-              <UnlockIcon color="muted" />
+              <Image
+                src="/static/images/signalement/source-grand-public.svg"
+                alt="Icône source grand public"
+                width={20}
+                height={20}
+              />
             </Tooltip>
           )}
         </Table.Cell>
@@ -111,7 +121,12 @@ export function SignalementListItem({
         onClick={() => onSelect(signalement.id)}
         cursor="pointer"
       >
-        <SignalementTypeBadge type={signalement.type} /> {signalement.label}
+        <Pane>
+          <SignalementTypeBadge type={signalement.type} />
+        </Pane>
+        <Pane marginTop={4} marginLeft={4}>
+          {signalement.label}
+        </Pane>
       </Table.TextCell>
       {editionEnabled && (
         <Table.Cell flex="0 1 40px">
