@@ -53,7 +53,7 @@ export function StrategySelectionStep({
         gap={16}
         background="gray300"
       >
-        <Pane
+        {/* <Pane
           onMouseEnter={() => setHovered(StrategyDTO.type.EMAIL)}
           onMouseLeave={() => setHovered(null)}
           elevation={hovered === StrategyDTO.type.EMAIL ? 3 : 0}
@@ -68,7 +68,7 @@ export function StrategySelectionStep({
             setEmailSelected={setEmailSelected}
             handleStrategy={() => handleStrategy(StrategyDTO.type.EMAIL)}
           />
-        </Pane>
+        </Pane> */}
         <Pane
           onMouseEnter={() => setHovered(StrategyDTO.type.PROCONNECT)}
           onMouseLeave={() => setHovered(null)}
@@ -83,7 +83,7 @@ export function StrategySelectionStep({
           />
         </Pane>
       </Pane>
-      <Pane
+      {/* <Pane
         display="flex"
         flexDirection="column"
         background="white"
@@ -107,7 +107,7 @@ export function StrategySelectionStep({
             <a href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</a>
           </Text>
         </Alert>
-      </Pane>
+      </Pane> */}
     </Pane>
   );
 }
