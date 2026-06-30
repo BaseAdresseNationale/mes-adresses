@@ -177,12 +177,17 @@ function VoieEditor({
 
   const validationVoieNomDoublon = useCallback(
     (voieNom: string): [codes: AlertCodeEnum[], remediation?: string] => {
-      if (getVoieDoublonAlert({ nom: voieNom } as ExtendedVoieDTO, voies)) {
+      if (
+        getVoieDoublonAlert(
+          { id: initialValue?.id, nom: voieNom } as ExtendedVoieDTO,
+          voies
+        )
+      ) {
         return [[AlertCodeVoieEnum.DOUBLON_VOIE_NOM], null];
       }
       return [[], null];
     },
-    [voies]
+    [initialValue?.id, voies]
   );
 
   return (
