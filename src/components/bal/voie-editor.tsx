@@ -16,6 +16,7 @@ import LanguesRegionalesForm from "@/components/langues-regionales-form";
 import {
   BasesLocalesService,
   CreateVoieDTO,
+  ExtendedVoieDTO,
   UpdateVoieDTO,
   Voie,
   VoiesService,
@@ -24,10 +25,16 @@ import LayoutContext from "@/contexts/layout";
 import Comment from "../comment";
 import { trimNomAlt } from "@/lib/utils/string";
 import { DrawMetricVoieEditor } from "./draw-metric-voie-editor";
-import { AlertFieldVoieEnum, AlertModelEnum } from "@/lib/alerts/alerts.types";
+import {
+  AlertCodeEnum,
+  AlertCodeVoieEnum,
+  AlertFieldVoieEnum,
+  AlertModelEnum,
+} from "@/lib/alerts/alerts.types";
 import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
 import AlertEditor from "./alert-editor";
 import styles from "./voie-editor.module.css";
+import { getVoieDoublonAlert } from "@/lib/alerts/utils/alerts-voies.utils";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -58,8 +65,14 @@ function VoieEditor({
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
-  const { baseLocale, refreshBALSync, reloadVoies, setVoie, reloadVoieAlerts } =
-    useContext(BalDataContext);
+  const {
+    baseLocale,
+    voies,
+    refreshBALSync,
+    reloadVoies,
+    setVoie,
+    reloadVoieAlerts,
+  } = useContext(BalDataContext);
   const { data } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
@@ -106,9 +119,12 @@ function VoieEditor({
         const voie = await submit();
 
         refreshBALSync();
-        const newVoies = await reloadVoies();
+        const voies = await reloadVoies();
         // RELOAD ALERTS
-        await reloadVoieAlerts(newVoies.find(({ id }) => id === voie.id));
+        await reloadVoieAlerts(
+          voies.find(({ id }) => id === voie.id),
+          voies
+        );
 
         reloadTiles();
 
@@ -159,6 +175,16 @@ function VoieEditor({
     onNomChange({ target: { value: initialValue?.nom } });
   }, [initialValue?.nom, onNomChange]);
 
+  const validationVoieNomDoublon = useCallback(
+    (voieNom: string): [codes: AlertCodeEnum[], remediation?: string] => {
+      if (getVoieDoublonAlert({ nom: voieNom } as ExtendedVoieDTO, voies)) {
+        return [[AlertCodeVoieEnum.DOUBLON_VOIE_NOM], null];
+      }
+      return [[], null];
+    },
+    [voies]
+  );
+
   return (
     <Form
       editingId={initialValue?.id}
@@ -180,6 +206,12 @@ function VoieEditor({
             value={nom}
             setValue={onNomChange}
             validation={computeVoieNomAlerts}
+            model={AlertModelEnum.VOIE}
+            field={AlertFieldVoieEnum.VOIE_NOM}
+          />
+          <AlertEditor
+            value={nom}
+            validation={validationVoieNomDoublon}
             model={AlertModelEnum.VOIE}
             field={AlertFieldVoieEnum.VOIE_NOM}
           />

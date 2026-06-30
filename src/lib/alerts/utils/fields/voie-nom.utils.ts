@@ -298,6 +298,10 @@ export function computeVoieNomAlerts(
 ): [codes: AlertCodeVoieEnum[], remediation?: string] {
   const codes: AlertCodeVoieEnum[] = [];
 
+  if (!value) {
+    return [codes, null];
+  }
+
   const communeErrors = computeCommuneErrors(value);
   codes.push(...communeErrors);
 

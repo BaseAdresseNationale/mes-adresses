@@ -10,7 +10,12 @@ import BalDataContext from "@/contexts/bal-data";
 import LayoutContext from "@/contexts/layout";
 import MapContext from "@/contexts/map";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
-import { AlertNumero, AlertVoie } from "@/lib/alerts/alerts.types";
+import {
+  AlertNumero,
+  AlertVoie,
+  AlertCodeVoieEnum,
+} from "@/lib/alerts/alerts.types";
+import { normalize } from "@ban-team/adresses-util/lib/voies";
 import AlertsContext from "@/contexts/alerts";
 import AlertsBatchProcessor, {
   AlertBatchItem,
@@ -37,7 +42,7 @@ export default function VoiesPage() {
     };
   }, [setBreadcrumbs]);
 
-  const getVoieAlerts = useCallback(
+  const getAllVoieAlerts = useCallback(
     (voieId: string): (AlertVoie | AlertNumero)[] => {
       const voieWarnings = voiesAlerts[voieId] || [];
 
@@ -51,14 +56,25 @@ export default function VoiesPage() {
 
   const batchItems: AlertBatchItem[] = useMemo(() => {
     const allSorted = sortBy(
-      voies.filter(({ id }) => getVoieAlerts(id).length > 0),
+      voies.filter(({ id }) => getAllVoieAlerts(id).length > 0),
       (v) => normalizeSort(v.nom)
     );
+    const seenDoublonNoms = new Set<string>();
     return allSorted.flatMap((voie) => {
-      const voieWarnings = (voiesAlerts[voie.id] || []).map((alert) => ({
-        voie,
-        alert,
-      }));
+      const voieWarnings = (voiesAlerts[voie.id] || []).flatMap((alert) => {
+        if (
+          (alert.codes as AlertCodeVoieEnum[]).includes(
+            AlertCodeVoieEnum.DOUBLON_VOIE_NOM
+          )
+        ) {
+          const normalizedNom = normalize(voie.nom);
+          if (seenDoublonNoms.has(normalizedNom)) {
+            return [];
+          }
+          seenDoublonNoms.add(normalizedNom);
+        }
+        return [{ voie, alert }];
+      });
       const numeroWarnings = Object.entries(numerosAlerts)
         .filter(([, alerts]) => alerts.some((a) => a.voieId === voie.id))
         .flatMap(([numeroId, alerts]) =>
@@ -68,7 +84,7 @@ export default function VoiesPage() {
         );
       return [...voieWarnings, ...numeroWarnings];
     });
-  }, [voies, getVoieAlerts, voiesAlerts, numerosAlerts]);
+  }, [voies, getAllVoieAlerts, voiesAlerts, numerosAlerts]);
 
   const handleClose = useCallback(() => {
     const query = batchItems?.length > 0 ? "?filter=with-suggestions" : "";

@@ -214,11 +214,13 @@ function NumeroEditor({
           await reloadParcelles();
         }
 
-        const newVoies = await reloadVoies();
+        const voies = await reloadVoies();
 
         // RELOAD ALERTS
         await reloadNumerosAlerts();
-        await reloadVoieAlerts(newVoies.find(({ id }) => id === voie.id));
+
+        const updatedVoie = voies.find(({ id }) => id === voie.id);
+        await reloadVoieAlerts(updatedVoie, voies);
 
         if (onSubmitted) {
           onSubmitted({

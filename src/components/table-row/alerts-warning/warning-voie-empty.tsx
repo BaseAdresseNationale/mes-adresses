@@ -46,13 +46,13 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
         const toponyme: Toponyme = await VoiesService.convertToToponyme(
           toConvert.id
         );
-        await reloadVoies();
+        const voies = await reloadVoies();
         await reloadToponymes();
         await reloadParcelles();
         reloadTiles();
         refreshBALSync();
         // RELOAD ALERTS
-        reloadVoieAlerts(toConvert);
+        reloadVoieAlerts(toConvert, voies);
         await router.push(
           `/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`
         );

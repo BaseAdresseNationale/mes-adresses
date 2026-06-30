@@ -98,6 +98,7 @@ function NumerosList({
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
   const { numerosAlerts } = useContext(AlertsContext);
   const {
+    voies,
     baseLocale,
     isEditing,
     reloadNumeros,
@@ -200,9 +201,9 @@ function NumerosList({
 
       setVoie(voie);
       // RELOAD ALERTS
-      await reloadVoieAlerts(newVoie);
+      await reloadVoieAlerts(newVoie, voies);
     },
-    [numeros, reloadVoieAlerts, setVoie, voie]
+    [numeros, reloadVoieAlerts, setVoie, voie, voies]
   );
 
   const onRemove = useCallback(

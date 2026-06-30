@@ -69,8 +69,12 @@ interface BALDataContextType {
   commune: CommuneType | null;
   setNumeros: React.Dispatch<React.SetStateAction<Numero[]>>;
   reloadVoiesAlerts: (overrideCodes?: AlertCodeEnum[]) => Promise<void>;
-  reloadVoieAlerts: (voie: ExtendedVoieDTO) => Promise<void>;
+  reloadVoieAlerts: (
+    voie: ExtendedVoieDTO,
+    voies: ExtendedVoieDTO[]
+  ) => Promise<void>;
   reloadNumerosAlerts: (overrideCodes?: AlertCodeEnum[]) => Promise<void>;
+  reloadVoiesDoublonsAlerts: (voieIdDeleted?: string) => Promise<void>;
 }
 
 const BalDataContext = React.createContext<BALDataContextType | null>(null);
@@ -104,8 +108,12 @@ export function BalDataContextProvider({
   );
   const [isBALDataLoaded, setIsBALDataLoaded] = useState<boolean>(false);
   const { setOtherBalIdPublished } = useContext(BALRecoveryContext);
-  const { reloadVoiesAlerts, reloadVoieAlerts, reloadNumerosAlerts } =
-    useContext(AlertsContext);
+  const {
+    reloadVoiesAlerts,
+    reloadVoieAlerts,
+    reloadNumerosAlerts,
+    reloadVoiesDoublonsAlerts,
+  } = useContext(AlertsContext);
 
   // Sync baseLocale to Matomo tracking context
   useEffect(() => {
@@ -148,7 +156,7 @@ export function BalDataContextProvider({
           !initialBaseLocale.settings.otherBalPublishedIgnored &&
           initialBaseLocale.status !== ExtendedBaseLocaleDTO.status.DEMO
         ) {
-          _setBalAlreadyPublished(commune.code);
+          await _setBalAlreadyPublished(commune.code);
         }
         setVoies(voies);
         setToponymes(toponymes);
@@ -254,10 +262,24 @@ export function BalDataContextProvider({
     }
   }, [baseLocale, isRefrehSyncStat, reloadBaseLocale, pushToast]);
 
+  const _reloadVoiesDoublonsAlerts = useCallback(
+    async (voieIdDeleted?: string) => {
+      const voiesUpdated = voieIdDeleted
+        ? voies.filter(({ id }) => id !== voieIdDeleted)
+        : voies;
+      reloadVoiesDoublonsAlerts(
+        voiesUpdated,
+        (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
+      );
+    },
+    [baseLocale.settings?.ignoredAlertCodes, reloadVoiesDoublonsAlerts, voies]
+  );
+
   const _reloadVoieAlerts = useCallback(
-    async (voie: ExtendedVoieDTO) => {
+    async (voie: ExtendedVoieDTO, voies: ExtendedVoieDTO[]) => {
       reloadVoieAlerts(
         voie,
+        voies,
         (baseLocale.settings?.ignoredAlertCodes as AlertCodeEnum[]) || []
       );
     },
@@ -373,6 +395,7 @@ export function BalDataContextProvider({
       reloadVoieAlerts: _reloadVoieAlerts,
       reloadVoiesAlerts: _reloadVoiesAlerts,
       reloadNumerosAlerts: _reloadNumerosAlerts,
+      reloadVoiesDoublonsAlerts: _reloadVoiesDoublonsAlerts,
     }),
     [
       isEditing,
@@ -405,6 +428,7 @@ export function BalDataContextProvider({
       _reloadVoieAlerts,
       _reloadVoiesAlerts,
       _reloadNumerosAlerts,
+      _reloadVoiesDoublonsAlerts,
     ]
   );
 

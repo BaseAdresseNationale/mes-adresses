@@ -31,7 +31,7 @@ import {
 
 interface VoieEditorProps {
   value?: any;
-  setValue: Dispatch<SetStateAction<any>>;
+  setValue?: Dispatch<SetStateAction<any>>;
   validation: (value: string) => [codes: AlertCodeEnum[], remediation?: string];
   model: AlertModelEnum;
   field: AlertFieldEnum;
@@ -116,7 +116,7 @@ function AlertEditor({
             ))}
           </UnorderedList>
         ) : null}
-        {alert.remediation && (
+        {alert.remediation && setValue && (
           <Text color={defaultTheme.colors.purple600}>
             Corriger en
             <Button

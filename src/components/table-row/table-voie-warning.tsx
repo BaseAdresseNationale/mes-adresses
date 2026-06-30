@@ -8,6 +8,7 @@ import WarningLink from "./alerts-warning/warning-link";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 import WarningVoieEmpty from "./alerts-warning/warning-voie-empty";
 import { Li, majorScale, Menu, Pane, Ul } from "evergreen-ui";
+import WarningVoieDoublon from "./alerts-warning/warning-voie-doublon";
 
 interface TableVoieWarningProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -33,15 +34,18 @@ function TableVoieWarning({ baseLocale, voie, alerts }: TableVoieWarningProps) {
               )}
               {alert.model === AlertModelEnum.VOIE ? (
                 <>
-                  {!alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) ? (
+                  {alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) ? (
+                    <WarningVoieEmpty baseLocale={baseLocale} voie={voie} />
+                  ) : alert.codes.includes(
+                      AlertCodeVoieEnum.DOUBLON_VOIE_NOM
+                    ) ? (
+                    <WarningVoieDoublon baseLocale={baseLocale} voie={voie} />
+                  ) : (
                     <WarningLink
                       title="Suggestion sur le nom de la voie"
                       url={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
                     />
-                  ) : null}
-                  {alert.codes.includes(AlertCodeVoieEnum.VOIE_EMPTY) ? (
-                    <WarningVoieEmpty baseLocale={baseLocale} voie={voie} />
-                  ) : null}
+                  )}
                 </>
               ) : alert.model === AlertModelEnum.NUMERO ? (
                 <WarningLink

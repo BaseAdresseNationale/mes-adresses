@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { CreateNumeroDTO } from '../models/CreateNumeroDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
+import type { FusionVoieDTO } from '../models/FusionVoieDTO';
 import type { Numero } from '../models/Numero';
 import type { RestoreVoieDTO } from '../models/RestoreVoieDTO';
 import type { Toponyme } from '../models/Toponyme';
@@ -182,6 +183,27 @@ export class VoiesService {
             path: {
                 'voieId': voieId,
             },
+        });
+    }
+    /**
+     * Fusionne plusieurs voie en une
+     * @param voieId
+     * @param requestBody
+     * @returns Voie
+     * @throws ApiError
+     */
+    public static fusionVoies(
+        voieId: string,
+        requestBody: FusionVoieDTO,
+    ): CancelablePromise<Voie> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/v2/voies/{voieId}/fusion',
+            path: {
+                'voieId': voieId,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
     /**
