@@ -1,5 +1,6 @@
 import {
   useState,
+  useRef,
   useCallback,
   useEffect,
   SetStateAction,
@@ -76,15 +77,18 @@ export default function useHabilitation(
     }
   }, [baseLocale.id, token, matomoTrackEvent, searchParams]);
 
+  const reloadHabilitationRef = useRef(reloadHabilitation);
+  reloadHabilitationRef.current = reloadHabilitation;
+
   useEffect(() => {
     async function handleReloadHabilitation() {
       setIsLoading(true);
-      await reloadHabilitation();
+      await reloadHabilitationRef.current();
       setIsLoading(false);
     }
 
     handleReloadHabilitation();
-  }, [token, reloadHabilitation]);
+  }, [token]);
 
   return {
     habilitation,
