@@ -79,6 +79,7 @@ export function StrategySelectionStep({
           flex={1}
         >
           <ProConnect
+            codeCommune={codeCommune}
             handleStrategy={() => handleStrategy(StrategyDTO.type.PROCONNECT)}
           />
         </Pane>

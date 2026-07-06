@@ -1,26 +1,32 @@
-import {
-  Pane,
-  Heading,
-  Strong,
-  Text,
-  Link,
-  Alert,
-  Paragraph,
-} from "evergreen-ui";
+import { Pane, Strong, Link, Alert, Paragraph } from "evergreen-ui";
 import styles from "./button-pro-connect.module.css";
+import { useEffect, useState } from "react";
+import { ApiAnnuaireService } from "@/lib/api_annuaire";
+import {
+  PEERTUBE_LINK,
+  VideoContainer,
+} from "@/components/help/video-container";
 
 interface ProConnectProps {
+  codeCommune: string;
   handleStrategy: () => void;
 }
 
-function ProConnect({ handleStrategy }: ProConnectProps) {
+function ProConnect({ codeCommune, handleStrategy }: ProConnectProps) {
+  const [emails, setEmails] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function loadEmailsMarie() {
+      const emailsMarie =
+        await ApiAnnuaireService.getEmailsCommune(codeCommune);
+      setEmails(emailsMarie);
+    }
+
+    loadEmailsMarie();
+  }, [codeCommune]);
+
   return (
     <>
-      <Pane>
-        <Heading is="h5" height={30} textAlign="center">
-          Via votre compte ProConnect
-        </Heading>
-      </Pane>
       <Pane
         display="flex"
         flexDirection="column"
@@ -38,39 +44,40 @@ function ProConnect({ handleStrategy }: ProConnectProps) {
           </span>
         </button>
       </Pane>
-      <Alert intent="info">
-        <Paragraph>
-          <Strong>Une connexion plus sécurisée</Strong>
+      <Alert intent="info" marginBottom={16}>
+        <Paragraph marginBottom={16}>
+          <Strong>
+            ProConnect, équivalent de FranceConnect pour les professionnels
+          </Strong>
         </Paragraph>
         <Paragraph>
-          Pour plus de sécurité, Mes Adresses privilégie l’authentification avec
-          ProConnect.
-        </Paragraph>
-        <Paragraph>
-          Connectez-vous avec l’adresse électronique indiquée dans l’annuaire de{" "}
+          <Strong>Connectez-vous avec</Strong> l’adresse électronique{" "}
+          {emails.length > 0 && <Strong>{emails.join(", ")} </Strong>}
+          indiquée par votre mairie dans{" "}
           <Link href="https://service-public.gouv.fr" target="_blank">
-            service-public.gouv.fr
+            l’annuaire du service public
           </Link>{" "}
-          ou une adresse avec le même nom de domaine (exemple :
+        </Paragraph>
+        <Paragraph>
+          Ou une adresse avec le même nom de domaine (exemple :
           p.nom@commune.fr).
         </Paragraph>
-        <Paragraph>
-          Pour toute question, contactez notre équipe:{" "}
+        <Paragraph marginTop={16}>
+          Pour toute question, <Strong>contactez notre équipe :</Strong>{" "}
           <Link href="mailto:adresse@data.gouv.fr">adresse@data.gouv.fr</Link>
         </Paragraph>
       </Alert>
-      {/* <Link
-        href="https://proconnect.crisp.help/fr/article/utiliser-proconnect-au-sein-dune-collectivite-ou-dune-mairie-1mobnb6/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Text textDecoration="underline">
-          <Strong>
-            Qu&apos;est-ce que Proconnect et comment l&apos;utiliser? Consulter
-            le tutoriel
-          </Strong>
-        </Text>
-      </Link> */}
+      <iframe
+        title="Tuto connection ProConnect"
+        src={`${PEERTUBE_LINK}/videos/embed/iojCiUnSuc29dq5a1bUPVy`}
+        // https://tube.numerique.gouv.fr/videos/embed/iojCiUnSuc29dq5a1bUPVy
+        height="315px"
+        width="100%"
+        frameBorder="0"
+        sandbox="allow-same-origin allow-scripts allow-popups"
+        allowFullScreen
+        style={{ borderRadius: "8px" }}
+      />
     </>
   );
 }
