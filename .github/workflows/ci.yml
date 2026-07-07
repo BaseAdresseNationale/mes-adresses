@@ -76,6 +76,8 @@ jobs:
           cache: "yarn"
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Generate available-flags.json
+        run: yarn build-available-flags
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
