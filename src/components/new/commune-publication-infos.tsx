@@ -13,6 +13,9 @@ import {
 } from "@/lib/openapi-api-bal";
 import AlertExistingBALMesAdresses from "./alert-published-bal/alert-existing-bal-mes-adresses";
 
+const ENABLE_CREATION_BAL =
+  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL || "prod";
+
 interface CommunePublicationInfosProps {
   commune: CommuneType;
   outdatedApiDepotClients: string[];
@@ -122,7 +125,8 @@ function CommunePublicationInfos({
               />
             )}
 
-          {!apiDepotLastRevision?.context.extras?.balId ? (
+          {!apiDepotLastRevision?.context.extras?.balId ||
+          ENABLE_CREATION_BAL === "true" ? (
             <Button
               marginTop={16}
               intent="none"
