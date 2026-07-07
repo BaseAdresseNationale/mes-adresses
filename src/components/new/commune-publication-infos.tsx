@@ -14,7 +14,7 @@ import {
 import AlertExistingBALMesAdresses from "./alert-published-bal/alert-existing-bal-mes-adresses";
 
 const ENABLE_CREATION_BAL =
-  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL || "prod";
+  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL || "false";
 
 interface CommunePublicationInfosProps {
   commune: CommuneType;
