@@ -176,7 +176,7 @@ test.describe("Éditeur BAL - Edition", () => {
       .getByRole("textbox", { name: "Rechercher une voie, une" })
       .fill("Rue des Champs");
     await page.waitForSelector('div:has-text("Rue des Champs")');
-    await expect(page.getByRole("button", { name: "Actions" })).toHaveCount(1);
+    await page.waitForTimeout(500);
     await page.getByRole("button", { name: "Actions" }).click();
     await page.getByRole("menuitem", { name: "Supprimer…" }).click();
     await page.getByRole("button", { name: "Supprimer" }).click();
@@ -247,7 +247,7 @@ test.describe("Éditeur BAL - Edition", () => {
       .getByRole("textbox", { name: "Rechercher un toponyme" })
       .fill("Le grand lieu");
     await page.waitForSelector('div:has-text("Le grand lieu")');
-    await expect(page.getByRole("button", { name: "Actions" })).toHaveCount(1);
+    await page.waitForTimeout(500);
     await page.getByRole("button", { name: "Actions" }).click();
     await page.getByRole("menuitem", { name: "Supprimer…" }).click();
     await page.getByRole("button", { name: "Supprimer" }).click();

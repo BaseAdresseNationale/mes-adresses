@@ -31,6 +31,8 @@ export default defineConfig({
     trace: "on-first-retry",
     /* Save video of each test */
     video: "on",
+    /* Longer navigation timeout for yarn dev on-demand compilation in CI */
+    navigationTimeout: 60000,
   },
 
   /* Configure projects for major browsers */
