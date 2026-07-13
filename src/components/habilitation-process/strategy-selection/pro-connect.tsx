@@ -54,7 +54,10 @@ function ProConnect({ codeCommune, handleStrategy }: ProConnectProps) {
           <Strong>Connectez-vous avec</Strong> l’adresse électronique{" "}
           {emails.length > 0 && <Strong>{emails.join(", ")} </Strong>}
           indiquée par votre mairie dans{" "}
-          <Link href="https://service-public.gouv.fr" target="_blank">
+          <Link
+            href="https://lannuaire.service-public.gouv.fr/"
+            target="_blank"
+          >
             l’annuaire du service public
           </Link>{" "}
         </Paragraph>
