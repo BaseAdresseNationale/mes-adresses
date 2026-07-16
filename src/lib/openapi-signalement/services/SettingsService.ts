@@ -87,6 +87,17 @@ export class SettingsService {
         });
     }
     /**
+     * Get the settings of all communes
+     * @returns CommuneSettingsDTO Map of commune codes to their settings
+     * @throws ApiError
+     */
+    public static getAllCommuneSettings(): CancelablePromise<Record<string, CommuneSettingsDTO>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/settings/commune-settings',
+        });
+    }
+    /**
      * Check if the given id is in the enabled list for the given listKey
      * @param listKey
      * @param id

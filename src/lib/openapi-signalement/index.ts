@@ -41,10 +41,12 @@ export { Source } from './models/Source';
 export type { ToponymeChangesRequestedDTO } from './models/ToponymeChangesRequestedDTO';
 export { UpdateAlertDTO } from './models/UpdateAlertDTO';
 export { UpdateSignalementDTO } from './models/UpdateSignalementDTO';
+export type { UpdateSourceDTO } from './models/UpdateSourceDTO';
 export type { VoieChangesRequestedDTO } from './models/VoieChangesRequestedDTO';
 
 export { AlertsService } from './services/AlertsService';
 export { ClientsService } from './services/ClientsService';
+export { ProconnectService } from './services/ProconnectService';
 export { ReportsService } from './services/ReportsService';
 export { SettingsService } from './services/SettingsService';
 export { SignalementsService } from './services/SignalementsService';
