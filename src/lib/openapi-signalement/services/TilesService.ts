@@ -12,7 +12,7 @@ export class TilesService {
      * @param x
      * @param y
      * @param status Filter by status
-     * @param layers Layers to include in the tiles (defaults to both alerts and signalements)
+     * @param layers Layers to include in the tiles (defaults to alerts and signalements)
      * @returns any PBF vector tile with requested layers
      * @throws ApiError
      */

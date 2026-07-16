@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { CreateSourceDTO } from '../models/CreateSourceDTO';
 import type { Source } from '../models/Source';
+import type { UpdateSourceDTO } from '../models/UpdateSourceDTO';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -56,6 +57,27 @@ export class SourcesService {
             path: {
                 'idSource': idSource,
             },
+        });
+    }
+    /**
+     * Update a source
+     * @param idSource
+     * @param requestBody
+     * @returns Source
+     * @throws ApiError
+     */
+    public static updateSource(
+        idSource: string,
+        requestBody: UpdateSourceDTO,
+    ): CancelablePromise<Source> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/sources/{idSource}',
+            path: {
+                'idSource': idSource,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
     /**
