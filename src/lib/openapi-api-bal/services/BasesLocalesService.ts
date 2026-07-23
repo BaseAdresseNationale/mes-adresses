@@ -2,7 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
 import type { BaseLocaleWithHabilitationDTO } from '../models/BaseLocaleWithHabilitationDTO';
 import type { BatchNumeroResponseDTO } from '../models/BatchNumeroResponseDTO';
@@ -11,6 +10,7 @@ import type { CreateDemoBaseLocaleDTO } from '../models/CreateDemoBaseLocaleDTO'
 import type { CreateToponymeDTO } from '../models/CreateToponymeDTO';
 import type { CreateVoieDTO } from '../models/CreateVoieDTO';
 import type { DeleteBatchNumeroDTO } from '../models/DeleteBatchNumeroDTO';
+import type { EventPageDTO } from '../models/EventPageDTO';
 import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
@@ -387,32 +387,15 @@ export class BasesLocalesService {
         });
     }
     /**
-     * Find all model deleted in Bal
+     * Find all numeros in Bal
      * @param baseLocaleId
-     * @returns AllDeletedInBalDTO
-     * @throws ApiError
-     */
-    public static findAllDeleted(
-        baseLocaleId: string,
-    ): CancelablePromise<AllDeletedInBalDTO> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/v2/bases-locales/{baseLocaleId}/all/deleted',
-            path: {
-                'baseLocaleId': baseLocaleId,
-            },
-        });
-    }
-    /**
-     * Find all Voie in Bal
-     * @param select
-     * @param baseLocaleId
+     * @param select Liste (séparée par des virgules) des champs à retourner pour chaque numero
      * @returns Numero
      * @throws ApiError
      */
     public static findNumeros(
-        select: Array<string>,
         baseLocaleId: string,
+        select?: string,
     ): CancelablePromise<Array<Numero>> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -481,27 +464,6 @@ export class BasesLocalesService {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v2/bases-locales/{baseLocaleId}/numeros/batch',
-            path: {
-                'baseLocaleId': baseLocaleId,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
-    /**
-     * Multi soft delete numeros
-     * @param baseLocaleId
-     * @param requestBody
-     * @returns BatchNumeroResponseDTO
-     * @throws ApiError
-     */
-    public static softDeleteNumeros(
-        baseLocaleId: string,
-        requestBody: DeleteBatchNumeroDTO,
-    ): CancelablePromise<BatchNumeroResponseDTO> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/v2/bases-locales/{baseLocaleId}/numeros/batch/soft-delete',
             path: {
                 'baseLocaleId': baseLocaleId,
             },
@@ -617,6 +579,34 @@ export class BasesLocalesService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * Find all events for a Bal
+     * @param baseLocaleId
+     * @param isSynced
+     * @param limit
+     * @param offset
+     * @returns EventPageDTO
+     * @throws ApiError
+     */
+    public static findBaseLocaleEvents(
+        baseLocaleId: string,
+        isSynced?: boolean,
+        limit?: number,
+        offset?: number,
+    ): CancelablePromise<EventPageDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/events',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+            query: {
+                'isSynced': isSynced,
+                'limit': limit,
+                'offset': offset,
+            },
         });
     }
 }

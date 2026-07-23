@@ -118,21 +118,4 @@ export class NumerosService {
             mediaType: 'multipart/form-data',
         });
     }
-    /**
-     * Soft delete the numero by id
-     * @param numeroId
-     * @returns Numero
-     * @throws ApiError
-     */
-    public static softDeleteNumero(
-        numeroId: string,
-    ): CancelablePromise<Numero> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/v2/numeros/{numeroId}/soft-delete',
-            path: {
-                'numeroId': numeroId,
-            },
-        });
-    }
 }

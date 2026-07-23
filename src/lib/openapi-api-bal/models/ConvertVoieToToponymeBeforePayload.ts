@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type RestoreVoieDTO = {
-    numerosIds: Array<string> | null;
+import type { SerializedVoie } from './SerializedVoie';
+export type ConvertVoieToToponymeBeforePayload = {
+    voie: SerializedVoie;
 };
 

@@ -12,7 +12,6 @@ export type BaseLocaleWithHabilitationDTO = {
     banId: string;
     createdAt: string;
     updatedAt: string;
-    deletedAt: string;
     nom: string;
     communeNom?: string;
     communeNomsAlt: Record<string, any>;
@@ -25,6 +24,7 @@ export type BaseLocaleWithHabilitationDTO = {
     voies: Array<Voie>;
     toponymes: Array<Toponyme>;
     numeros: Array<Numero>;
+    deletedAt: string;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;

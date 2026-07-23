@@ -9,7 +9,6 @@ export type Voie = {
     banId: string;
     createdAt: string;
     updatedAt: string;
-    deletedAt: string;
     balId: string;
     nom: string;
     nomAlt: Record<string, any>;
