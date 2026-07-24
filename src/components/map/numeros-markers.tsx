@@ -82,13 +82,13 @@ function NumerosMarkers({
 
   const removeAddress = useCallback(
     async (numeroId: string) => {
-      const softDeleteNumero = toaster(
-        () => NumerosService.softDeleteNumero(numeroId),
-        "Le numéro a bien été archivé",
-        "Le numéro n’a pas pu être archivé"
+      const deleteNumero = toaster(
+        () => NumerosService.deleteNumero(numeroId),
+        "Le numéro a bien été supprimé",
+        "Le numéro n’a pas pu être supprimé"
       );
 
-      await softDeleteNumero();
+      await deleteNumero();
       await reloadNumeros();
       await reloadParcelles();
       reloadTiles();

@@ -33,7 +33,7 @@ function SignalementDeleteToponyme({
 
   const onAccept = async () => {
     try {
-      await ToponymesService.softDeleteToponyme(existingLocation.id);
+      await ToponymesService.deleteToponyme(existingLocation.id);
       await reloadToponymes();
       await handleAccept();
     } catch (error) {

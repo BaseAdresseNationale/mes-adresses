@@ -30,7 +30,7 @@ function SignalementDeleteVoie({
 
   const onAccept = async () => {
     try {
-      await VoiesService.softDeleteVoie(existingLocation.id);
+      await VoiesService.deleteVoie(existingLocation.id);
       await reloadVoies();
       await handleAccept();
     } catch (error) {

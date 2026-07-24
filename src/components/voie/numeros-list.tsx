@@ -208,18 +208,18 @@ function NumerosList({
 
   const onRemove = useCallback(
     async (idNumero) => {
-      const softDeleteNumero = toaster(
+      const deleteNumero = toaster(
         async () => {
-          await NumerosService.softDeleteNumero(idNumero);
+          await NumerosService.deleteNumero(idNumero);
           await reloadNumeros();
           await reloadParcelles();
           reloadTiles();
           refreshBALSync();
         },
-        "Le numéro a bien été archivé",
-        "Le numéro n’a pas pu être archivé"
+        "Le numéro a bien été supprimé",
+        "Le numéro n’a pas pu être supprimé"
       );
-      await softDeleteNumero();
+      await deleteNumero();
       await reloadVoie([idNumero]);
     },
     [
@@ -287,9 +287,9 @@ function NumerosList({
 
   const onMultipleRemove = async () => {
     setIsDisabled(true);
-    const softDeleteNumeros = toaster(
+    const deleteNumeros = toaster(
       async () => {
-        await BasesLocalesService.softDeleteNumeros(baseLocale.id, {
+        await BasesLocalesService.deleteNumeros(baseLocale.id, {
           numerosIds: selectedNumerosIds,
         });
 
@@ -304,7 +304,7 @@ function NumerosList({
       "Les numéros ont bien été archivés",
       "Les numéros n’ont pas pu être archivés"
     );
-    await softDeleteNumeros();
+    await deleteNumeros();
     await reloadVoie(selectedNumerosIds);
     setIsDisabled(false);
   };

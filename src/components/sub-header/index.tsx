@@ -9,6 +9,7 @@ import TokenContext from "@/contexts/token";
 
 import HabilitationProcess from "@/components/habilitation-process/index";
 import Breadcrumbs from "@/components/breadcrumbs";
+import EventsHistory from "@/components/sub-header/events-history";
 import SettingsMenu from "@/components/sub-header/settings-menu";
 import BALStatus from "@/components/sub-header/bal-status";
 import MassDeletionDialog from "@/components/mass-deletion-dialog";
@@ -95,11 +96,17 @@ function SubHeader({ commune }: SubHeaderProps) {
           >
             {isMobile ? (
               ReactDOM.createPortal(
-                <SettingsMenu />,
+                <>
+                  <EventsHistory />
+                  <SettingsMenu />
+                </>,
                 document.getElementById("header-menu-wrapper")
               )
             ) : (
-              <SettingsMenu />
+              <>
+                <EventsHistory />
+                <SettingsMenu />
+              </>
             )}
             <Pane
               display="flex"

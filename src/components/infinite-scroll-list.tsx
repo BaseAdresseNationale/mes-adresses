@@ -9,31 +9,47 @@ const SPINNER_HEIGHT = ELEMENT_HEIGHT * 0.75;
 interface InfiniteScrollListProps {
   items: any[];
   children: (item: any) => JSX.Element;
+  onReachEnd?: () => void;
 }
 
-function InfiniteScrollList({ items, children }: InfiniteScrollListProps) {
+function InfiniteScrollList({
+  items,
+  children,
+  onReachEnd,
+}: InfiniteScrollListProps) {
   const [limit, setLimit] = useState(5);
 
   const visibleElements = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const scrollPosition = useRef({ target: null, limit });
 
-  const handleScroll = useCallback(({ target }) => {
-    const isAtBottom =
-      target.scrollHeight - target.scrollTop <=
-      target.clientHeight + SPINNER_HEIGHT;
+  const handleScroll = useCallback(
+    ({ target }) => {
+      const isAtBottom =
+        target.scrollHeight - target.scrollTop <=
+        target.clientHeight + SPINNER_HEIGHT;
 
-    // Increase limit
-    if (isAtBottom) {
-      setLimit((limit) => {
-        scrollPosition.current = { target, limit };
+      // Increase limit
+      if (isAtBottom) {
+        setLimit((limit) => {
+          scrollPosition.current = { target, limit };
 
-        return limit + visibleElements.current;
-      });
-    } else {
-      scrollPosition.current = { target, limit: scrollPosition.current.limit };
-    }
-  }, []);
+          const newLimit = limit + visibleElements.current;
+          if (newLimit >= items.length) {
+            onReachEnd?.();
+          }
+
+          return newLimit;
+        });
+      } else {
+        scrollPosition.current = {
+          target,
+          limit: scrollPosition.current.limit,
+        };
+      }
+    },
+    [items.length, onReachEnd]
+  );
 
   useEffect(() => {
     function updateMaxVisibleElements() {
