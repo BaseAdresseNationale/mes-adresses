@@ -50,18 +50,20 @@ export function useFusionVoies(
           refreshBALSync();
           // RELOAD ALERTS
           reloadVoieAlerts(newVoie as ExtendedVoieDTO, voies);
+          return newVoie;
         },
         "Les voies ont été fusionné",
         "Les voies n’ont pas pu être fusionné"
       );
 
-      await fusionVoies();
+      const newVoie = await fusionVoies();
       matomoTrackEvent(
         MatomoEventCategory.QUALITY,
         MatomoEventAction[MatomoEventCategory.QUALITY].FUSION_VOIES
       );
 
       setLoading(false);
+      return newVoie;
     },
     [
       toaster,
