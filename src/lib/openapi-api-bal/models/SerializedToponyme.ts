@@ -12,5 +12,6 @@ export type SerializedToponyme = {
     communeDeleguee: string;
     parcelles: Array<string>;
     codeVoie: string;
+    numeroIds: Array<string>;
 };
 

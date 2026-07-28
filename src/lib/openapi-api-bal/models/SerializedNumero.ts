@@ -8,7 +8,6 @@ export type SerializedNumero = {
     createdAt: string;
     balId: string;
     voieId: string;
-    toponymeId: string;
     numero: number;
     suffixe: string;
     comment: string;

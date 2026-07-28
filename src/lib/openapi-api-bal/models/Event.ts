@@ -13,7 +13,9 @@ import type { SerializedVoie } from './SerializedVoie';
 export type Event = {
     id: string;
     balId: string;
+    voieId: string;
     parentEventId: string;
+    childEvents: Array<Event> | null;
     entityType: Event.entityType;
     entityId: string;
     action: Event.action;
