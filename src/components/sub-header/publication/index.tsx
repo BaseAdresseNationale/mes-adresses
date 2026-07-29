@@ -19,7 +19,7 @@ function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
 
   function handleOpen() {
     reloadSyncedEventsCount();
-    if (events.length === 0) {
+    if (events.length >= 0) {
       loadEvents();
     }
   }
