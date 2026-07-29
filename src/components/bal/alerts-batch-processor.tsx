@@ -47,6 +47,7 @@ import MatomoTrackingContext, {
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
 import { useFusionVoies } from "@/hooks/fusion-voies";
+import EventsContext from "@/contexts/events";
 
 export interface AlertBatchItem {
   voie: ExtendedVoieDTO;
@@ -71,10 +72,10 @@ function AlertsBatchProcessor({
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
-    refreshBALSync,
     reloadVoieAlerts,
     reloadNumerosAlerts,
   } = useContext(BalDataContext);
+  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
@@ -172,7 +173,7 @@ function AlertsBatchProcessor({
       }
 
       reloadTiles();
-      refreshBALSync();
+      reloadSyncedEventsCount();
       // Ne pas incrémenter l'index : l'item corrigé va disparaître de la liste
       // et le suivant prendra sa place au même index.
     } catch (err) {
@@ -186,7 +187,7 @@ function AlertsBatchProcessor({
     isVoieNameAlert,
     isNumeroSuffixeAlert,
     reloadTiles,
-    refreshBALSync,
+    reloadSyncedEventsCount,
     matomoTrackEvent,
     toaster,
     reloadVoies,
@@ -218,7 +219,7 @@ function AlertsBatchProcessor({
       await convert();
 
       reloadTiles();
-      refreshBALSync();
+      reloadSyncedEventsCount();
       // Ne pas incrémenter l'index : la voie convertie va disparaître de la liste.
     } catch (err) {
       console.error(err);
@@ -231,7 +232,7 @@ function AlertsBatchProcessor({
     matomoTrackEvent,
     toaster,
     reloadTiles,
-    refreshBALSync,
+    reloadSyncedEventsCount,
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
@@ -265,7 +266,7 @@ function AlertsBatchProcessor({
 
       reloadNumerosAlerts();
       reloadTiles();
-      refreshBALSync();
+      reloadSyncedEventsCount();
     } catch (err) {
       console.error(err);
     } finally {
@@ -278,7 +279,7 @@ function AlertsBatchProcessor({
     toaster,
     reloadNumerosAlerts,
     reloadTiles,
-    refreshBALSync,
+    reloadSyncedEventsCount,
   ]);
 
   const handleFusionVoies = useCallback(async () => {

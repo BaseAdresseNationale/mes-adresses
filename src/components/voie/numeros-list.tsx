@@ -63,6 +63,7 @@ import MatomoTrackingContext, {
 } from "@/contexts/matomo-tracking";
 import AlertsContext from "@/contexts/alerts";
 import TableNumeroWarning from "../table-row/table-numero-warning";
+import EventsContext from "@/contexts/events";
 
 interface NumerosListProps {
   commune: CommuneType;
@@ -103,9 +104,9 @@ function NumerosList({
     isEditing,
     reloadNumeros,
     reloadParcelles,
-    refreshBALSync,
     reloadVoieAlerts,
   } = useContext(BalDataContext);
+  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { reloadTiles } = useContext(MapContext);
 
   const [isDisabled, setIsDisabled] = useState(false);
@@ -214,7 +215,7 @@ function NumerosList({
           await reloadNumeros();
           await reloadParcelles();
           reloadTiles();
-          refreshBALSync();
+          reloadSyncedEventsCount();
         },
         "Le numéro a bien été supprimé",
         "Le numéro n’a pas pu être supprimé"
@@ -225,7 +226,7 @@ function NumerosList({
     [
       reloadNumeros,
       reloadParcelles,
-      refreshBALSync,
+      reloadSyncedEventsCount,
       reloadTiles,
       toaster,
       reloadVoie,
@@ -296,7 +297,7 @@ function NumerosList({
         await reloadNumeros();
         await reloadParcelles();
         reloadTiles();
-        refreshBALSync();
+        reloadSyncedEventsCount();
 
         setSelectedNumerosIds([]);
         setIsRemoveWarningShown(false);
@@ -314,7 +315,7 @@ function NumerosList({
       async () => {
         await BasesLocalesService.updateNumeros(balId, body);
         await reloadNumeros();
-        refreshBALSync();
+        reloadSyncedEventsCount();
       },
       "Les numéros ont bien été modifiés",
       "Les numéros n’ont pas pu être modifiés"

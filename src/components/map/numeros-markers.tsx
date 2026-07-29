@@ -7,6 +7,7 @@ import MapContext from "@/contexts/map";
 import NumeroMarker from "@/components/map/numero-marker";
 import { Numero, NumerosService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import EventsContext from "@/contexts/events";
 
 interface NumerosMarkersProps {
   numeros: Numero[];
@@ -23,13 +24,9 @@ function NumerosMarkers({
 }: NumerosMarkersProps) {
   const { toaster } = useContext(LayoutContext);
 
-  const {
-    setEditingId,
-    isEditing,
-    reloadNumeros,
-    reloadParcelles,
-    refreshBALSync,
-  } = useContext(BalDataContext);
+  const { setEditingId, isEditing, reloadNumeros, reloadParcelles } =
+    useContext(BalDataContext);
+  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { reloadTiles } = useContext(MapContext);
 
   const onEnableMenu = useCallback(
@@ -92,7 +89,7 @@ function NumerosMarkers({
       await reloadNumeros();
       await reloadParcelles();
       reloadTiles();
-      refreshBALSync();
+      reloadSyncedEventsCount();
 
       setIsContextMenuDisplayed(null);
     },
@@ -100,7 +97,7 @@ function NumerosMarkers({
       reloadNumeros,
       reloadParcelles,
       setIsContextMenuDisplayed,
-      refreshBALSync,
+      reloadSyncedEventsCount,
       reloadTiles,
       toaster,
     ]

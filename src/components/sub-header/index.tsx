@@ -24,7 +24,6 @@ function SubHeader({ commune }: SubHeaderProps) {
   const {
     baseLocale,
     habilitation,
-    isRefrehSyncStat,
     habilitationIsLoading,
     isHabilitationProcessDisplayed,
     setIsHabilitationProcessDisplayed,
@@ -132,7 +131,6 @@ function SubHeader({ commune }: SubHeaderProps) {
                 <Publication
                   baseLocale={baseLocale}
                   isAdmin={isAdmin}
-                  isRefrehSyncStat={isRefrehSyncStat}
                   onPublication={onPublication}
                 />
               </Pane>

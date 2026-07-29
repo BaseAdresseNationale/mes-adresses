@@ -35,6 +35,7 @@ import { computeVoieNomAlerts } from "@/lib/alerts/utils/fields/voie-nom.utils";
 import AlertEditor from "./alert-editor";
 import styles from "./voie-editor.module.css";
 import { getVoieDoublonAlert } from "@/lib/alerts/utils/alerts-voies.utils";
+import EventsContext from "@/contexts/events";
 
 interface VoieEditorProps {
   initialValue?: Voie;
@@ -65,14 +66,9 @@ function VoieEditor({
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
-  const {
-    baseLocale,
-    voies,
-    refreshBALSync,
-    reloadVoies,
-    setVoie,
-    reloadVoieAlerts,
-  } = useContext(BalDataContext);
+  const { baseLocale, voies, reloadVoies, setVoie, reloadVoieAlerts } =
+    useContext(BalDataContext);
+  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { data } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
@@ -118,7 +114,7 @@ function VoieEditor({
 
         const voie = await submit();
 
-        refreshBALSync();
+        reloadSyncedEventsCount();
         const voies = await reloadVoies();
         // RELOAD ALERTS
         await reloadVoieAlerts(
@@ -150,7 +146,7 @@ function VoieEditor({
       setValidationMessages,
       setVoie,
       reloadVoies,
-      refreshBALSync,
+      reloadSyncedEventsCount,
       reloadTiles,
       onSubmit,
       toaster,

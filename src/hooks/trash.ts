@@ -12,6 +12,7 @@ import {
 import BalDataContext from "@/contexts/bal-data";
 import MapContext from "@/contexts/map";
 import LayoutContext from "@/contexts/layout";
+import EventsContext from "@/contexts/events";
 
 interface UseTrashType {
   voiesDeleted: Voie[];
@@ -31,8 +32,8 @@ function useTrash(): UseTrashType {
     reloadNumeros,
     reloadToponymes,
     reloadParcelles,
-    refreshBALSync,
   } = useContext(BalDataContext);
+  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
   const [voiesDeleted, setVoiesDeleted] = useState<Voie[]>([]);
@@ -76,7 +77,7 @@ function useTrash(): UseTrashType {
         await reloadParcelles();
         reloadTiles();
         await reloadAllDeleted();
-        await refreshBALSync();
+        await reloadSyncedEventsCount();
       }
     },
     [
@@ -84,7 +85,7 @@ function useTrash(): UseTrashType {
       reloadParcelles,
       reloadVoies,
       reloadTiles,
-      refreshBALSync,
+      reloadSyncedEventsCount,
       reloadAllDeleted,
       toaster,
     ]
@@ -135,7 +136,7 @@ function useTrash(): UseTrashType {
         await reloadParcelles();
         await reloadToponymes();
         reloadTiles();
-        await refreshBALSync();
+        await reloadSyncedEventsCount();
         await reloadAllDeleted();
       }
     },
@@ -143,7 +144,7 @@ function useTrash(): UseTrashType {
       reloadParcelles,
       reloadToponymes,
       reloadTiles,
-      refreshBALSync,
+      reloadSyncedEventsCount,
       reloadAllDeleted,
       toaster,
     ]

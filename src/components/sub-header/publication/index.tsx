@@ -11,16 +11,10 @@ import PublicationPopover from "./publication-popover";
 interface PublicationProps {
   baseLocale: ExtendedBaseLocaleDTO;
   isAdmin: boolean;
-  isRefrehSyncStat: boolean;
   onPublication: () => void;
 }
 
-function Publication({
-  baseLocale,
-  isAdmin,
-  isRefrehSyncStat,
-  onPublication,
-}: PublicationProps) {
+function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
   const { events, eventsCount, loadEvents, reloadSyncedEventsCount } =
     useContext(EventsContext);
 
@@ -65,15 +59,11 @@ function Publication({
       )}
 
       <Pane height={28} marginRight={8} flexShrink={0}>
-        {isRefrehSyncStat ? (
-          <RefreshSyncBadge />
-        ) : (
-          <StatusBadge
-            status={baseLocale.status}
-            sync={baseLocale.sync}
-            eventsCount={eventsCount}
-          />
-        )}
+        <StatusBadge
+          status={baseLocale.status}
+          sync={baseLocale.sync}
+          eventsCount={eventsCount}
+        />
       </Pane>
     </>
   );

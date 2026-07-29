@@ -42,6 +42,7 @@ import {
 } from "@/lib/alerts/alerts.types";
 import { computeNumeroSuffixeAlerts } from "@/lib/alerts/utils/fields/numero-suffixe.utils";
 import AlertEditor from "./alert-editor";
+import EventsContext from "@/contexts/events";
 
 const REMOVE_TOPONYME_LABEL = "Aucun toponyme";
 
@@ -92,11 +93,11 @@ function NumeroEditor({
     toponymes,
     reloadNumeros,
     reloadParcelles,
-    refreshBALSync,
     reloadVoies,
     reloadNumerosAlerts,
     reloadVoieAlerts,
   } = useContext(BalDataContext);
+  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { highlightedParcelles } = useContext(ParcellesContext);
   const { markers, suggestedNumero, setCompleteNumero } =
     useContext(MarkersContext);
@@ -232,7 +233,7 @@ function NumeroEditor({
           });
         }
 
-        refreshBALSync();
+        reloadSyncedEventsCount();
         closeForm();
       } catch (err) {
         console.error(err);
@@ -245,7 +246,7 @@ function NumeroEditor({
       getEditedVoie,
       closeForm,
       reloadNumeros,
-      refreshBALSync,
+      reloadSyncedEventsCount,
       reloadParcelles,
       initialValue,
       setValidationMessages,

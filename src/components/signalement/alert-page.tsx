@@ -22,6 +22,7 @@ import { TilesLayerMode } from "@/components/map/layers/tiles";
 import { wait } from "@/lib/utils/promise";
 import { AlertForm } from "@/components/signalement/alert-form/alert-form";
 import { AlertViewer } from "@/components/signalement/alert-viewer/alert-viewer";
+import EventsContext from "@/contexts/events";
 
 interface AlertPageProps {
   alert: Alert;
@@ -33,7 +34,8 @@ export default function AlertPage({ alert }: AlertPageProps) {
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const { setTileLayersMode } = useContext(MapContext);
-  const { refreshBALSync, baseLocale } = useContext(BalDataContext);
+  const { baseLocale } = useContext(BalDataContext);
+  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
 
@@ -88,7 +90,7 @@ export default function AlertPage({ alert }: AlertPageProps) {
             status,
             ...reportDTO,
           });
-          await refreshBALSync();
+          await reloadSyncedEventsCount();
         },
         status === Signalement.status.PROCESSED
           ? "Le signalement a bien été pris en compte"
@@ -116,7 +118,7 @@ export default function AlertPage({ alert }: AlertPageProps) {
       handleClose,
       getNextSignalement,
       router,
-      refreshBALSync,
+      reloadSyncedEventsCount,
       updateOneSignalement,
       baseLocale,
     ]

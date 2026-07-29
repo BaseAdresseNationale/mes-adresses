@@ -28,6 +28,7 @@ import TokenContext from "@/contexts/token";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import { wait } from "@/lib/utils/promise";
+import EventsContext from "@/contexts/events";
 
 interface SignalementPageProps {
   signalement: Signalement;
@@ -45,7 +46,8 @@ export default function SignalementPage({
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const { setTileLayersMode } = useContext(MapContext);
-  const { refreshBALSync, baseLocale } = useContext(BalDataContext);
+  const { baseLocale } = useContext(BalDataContext);
+  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
 
@@ -125,7 +127,7 @@ export default function SignalementPage({
             status,
             rejectionReason,
           });
-          await refreshBALSync();
+          await reloadSyncedEventsCount();
         },
         status === Signalement.status.PROCESSED
           ? "Le signalement a bien été pris en compte"
@@ -153,7 +155,7 @@ export default function SignalementPage({
       handleClose,
       getNextSignalement,
       router,
-      refreshBALSync,
+      reloadSyncedEventsCount,
       updateOneSignalement,
       baseLocale,
     ]

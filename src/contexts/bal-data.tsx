@@ -56,8 +56,6 @@ interface BALDataContextType {
   reloadVoies: () => Promise<ExtendedVoieDTO[]>;
   toponymes: ExtentedToponymeDTO[];
   reloadToponymes: () => Promise<void>;
-  // isRefrehSyncStat: boolean;
-  // refreshBALSync: () => Promise<void>;
   habilitationIsLoading: boolean;
   isHabilitationProcessDisplayed: boolean;
   setIsHabilitationProcessDisplayed: (
@@ -236,29 +234,6 @@ export function BalDataContextProvider({
     setBaseLocale(bal);
     return bal;
   }, [baseLocale.id]);
-
-  // const refreshBALSync = useCallback(async () => {
-  //   const { sync }: { sync: BaseLocaleSync } = baseLocale;
-  //   if (
-  //     sync &&
-  //     sync.status === BaseLocaleSync.status.SYNCED &&
-  //     !sync.isPaused &&
-  //     !isRefrehSyncStat
-  //   ) {
-  //     setIsRefrehSyncStat(true);
-  //     setTimeout(async () => {
-  //       await reloadBaseLocale();
-  //       setIsRefrehSyncStat(false);
-  //       pushToast({
-  //         title: "De nouvelles modifications ont été détectées",
-  //         message:
-  //           "Elles seront automatiquement transmises dans la Base Adresses Nationale d’ici quelques heures.",
-  //         intent: "info",
-  //         duration: 5000,
-  //       });
-  //     }, 30000); // Maximum interval between CRON job
-  //   }
-  // }, [baseLocale, isRefrehSyncStat, reloadBaseLocale, pushToast]);
 
   const _reloadVoiesDoublonsAlerts = useCallback(
     async (voieIdDeleted?: string) => {
