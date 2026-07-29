@@ -13,13 +13,13 @@ import BalDataContext from "./bal-data";
 
 const EVENTS_PAGE_SIZE = 30;
 
-function sortByCreatedAtDesc(events: Event[]): Event[] {
+export function sortByCreatedAtDesc(events: Event[]): Event[] {
   return [...events].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 }
 
-function mergeEvents(current: Event[], incoming: Event[]): Event[] {
+export function mergeEvents(current: Event[], incoming: Event[]): Event[] {
   const byId = new Map(current.map((event) => [event.id, event]));
   for (const event of incoming) {
     byId.set(event.id, event);

@@ -606,4 +606,32 @@ export class BasesLocalesService {
             },
         });
     }
+    /**
+     * Find all events synced with a given revision for a Bal
+     * @param revisionId
+     * @param baseLocaleId
+     * @param limit
+     * @param offset
+     * @returns EventPageDTO
+     * @throws ApiError
+     */
+    public static findBaseLocaleSyncedEvents(
+        revisionId: string,
+        baseLocaleId: string,
+        limit?: number,
+        offset?: number,
+    ): CancelablePromise<EventPageDTO> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/events/synced',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+            query: {
+                'revisionId': revisionId,
+                'limit': limit,
+                'offset': offset,
+            },
+        });
+    }
 }
