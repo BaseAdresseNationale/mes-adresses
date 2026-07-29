@@ -52,7 +52,6 @@ export function EventsContextProvider(props: ChildrenProps) {
   const reloadSyncedEventsCount = useCallback(async () => {
     const { count } = await BasesLocalesService.findBaseLocaleEvents(
       baseLocale.id,
-      false,
       1,
       0
     );
@@ -64,7 +63,6 @@ export function EventsContextProvider(props: ChildrenProps) {
     try {
       const page = await BasesLocalesService.findBaseLocaleEvents(
         baseLocale.id,
-        false,
         EVENTS_PAGE_SIZE,
         0
       );
@@ -84,7 +82,6 @@ export function EventsContextProvider(props: ChildrenProps) {
     try {
       const page = await BasesLocalesService.findBaseLocaleEvents(
         baseLocale.id,
-        false,
         EVENTS_PAGE_SIZE,
         offset
       );

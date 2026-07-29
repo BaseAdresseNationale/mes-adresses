@@ -584,7 +584,6 @@ export class BasesLocalesService {
     /**
      * Find all events for a Bal
      * @param baseLocaleId
-     * @param isSynced
      * @param limit
      * @param offset
      * @returns EventPageDTO
@@ -592,7 +591,6 @@ export class BasesLocalesService {
      */
     public static findBaseLocaleEvents(
         baseLocaleId: string,
-        isSynced?: boolean,
         limit?: number,
         offset?: number,
     ): CancelablePromise<EventPageDTO> {
@@ -603,7 +601,6 @@ export class BasesLocalesService {
                 'baseLocaleId': baseLocaleId,
             },
             query: {
-                'isSynced': isSynced,
                 'limit': limit,
                 'offset': offset,
             },

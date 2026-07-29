@@ -17,8 +17,7 @@ export type Event = {
     action: Event.action;
     payloadBefore: (SerializedVoie | SerializedToponyme | SerializedNumero | SerializedPosition) | null;
     payloadAfter: (SerializedVoie | SerializedToponyme | SerializedNumero | SerializedPosition) | null;
-    isSynced: boolean;
-    syncedAt: string;
+    isSyncedWithRevision: string | null;
     createdAt: string;
     updatedAt: string;
 };
