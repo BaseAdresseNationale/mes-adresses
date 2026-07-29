@@ -1,12 +1,10 @@
 import {
-  TimeIcon,
   TickCircleIcon,
-  PauseIcon,
+  IssueIcon,
   ErrorIcon,
   ManuallyEnteredDataIcon,
   LabTestIcon,
   IconComponent,
-  EyeOpenIcon,
 } from "evergreen-ui";
 
 import { BaseLocale, BaseLocaleSync } from "./openapi-api-bal";
@@ -30,43 +28,14 @@ type StatusType = {
 };
 
 const STATUSES: { [key: string]: StatusType } = {
-  consultation: {
-    label: "Consultation",
-    title: "Vous consultez cette Base Adresse Locale",
-    content:
-      "Vous consultez cette Base Adresse Locale, aucune modification ne sera répercutée dans la Base Adresse Nationale.",
-    color: "yellow",
-    intent: "none",
-    icon: EyeOpenIcon,
-  },
-  paused: {
-    label: "Suspendue",
-    title:
-      "Les mises à jour automatiques de cette Base Adresse Locale sont actuellement suspendues, elle n’alimente plus la Base Adresse Nationale",
-    content:
-      "Les mises à jour automatiques de cette Base Adresse Locale sont actuellement suspendues. Vous pouvez relancer la synchronisation à tout moment.",
-    color: "yellow",
-    intent: "warning",
-    icon: PauseIcon,
-  },
-  "no-habilitation": {
-    label: "Aucune habilitation",
-    title:
-      "Cette Base Adresse Locale a besoin d'une habilitation pour alimenter la Base Adresse Nationale",
-    content:
-      "Les modifications ne seront pas répercutées dans la Base Adresse Nationale.",
-    color: "yellow",
-    intent: "none",
-    icon: TimeIcon,
-  },
   outdated: {
-    label: "Mise à jour programmée",
+    label: "Modifications non publiées",
     title: "Cette Base Adresse Locale va alimenter la Base Adresse Nationale",
     content:
       "De nouvelles modifications ont été détectées, elles seront automatiquement répercutées dans la Base Adresse Nationale dans les prochaines heures.",
     color: "blue",
     intent: "none",
-    icon: TimeIcon,
+    icon: IssueIcon,
   },
   synced: {
     label: "À jour",
@@ -107,17 +76,15 @@ const STATUSES: { [key: string]: StatusType } = {
 export function computeStatus(
   balStatus: BaseLocale.status,
   sync: Partial<BaseLocaleSync>,
-  isHabilitationValid: boolean
+  eventsCount: number
 ): StatusType {
-  if (sync?.isPaused && balStatus !== BaseLocale.status.REPLACED) {
-    return STATUSES.paused;
-  }
-
-  if (balStatus === BaseLocale.status.PUBLISHED && sync.status) {
-    if (!isHabilitationValid) {
-      return STATUSES["no-habilitation"];
+  if (balStatus === BaseLocale.status.PUBLISHED) {
+    if (sync.status === BaseLocaleSync.status.CONFLICT) {
+      return STATUSES.replaced;
+    } else if (eventsCount > 0) {
+      return STATUSES.outdated;
     }
-    return STATUSES[sync.status];
+    return STATUSES.synced;
   }
 
   return STATUSES[balStatus];

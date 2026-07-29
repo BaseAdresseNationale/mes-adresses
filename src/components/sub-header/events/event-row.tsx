@@ -17,16 +17,12 @@ const ACTION_LABELS: Record<Event.action, string> = {
   [Event.action.CREATE]: "Création",
   [Event.action.UPDATE]: "Modification",
   [Event.action.DELETE]: "Suppression",
-  [Event.action.MERGE_VOIES]: "Fusion",
-  [Event.action.CONVERT_VOIE_TO_TOPONYME]: "Conversion",
 };
 
 const ACTION_COLORS: Record<Event.action, string> = {
   [Event.action.CREATE]: defaultTheme.colors.green600,
   [Event.action.UPDATE]: defaultTheme.colors.blue600,
   [Event.action.DELETE]: defaultTheme.colors.red600,
-  [Event.action.MERGE_VOIES]: defaultTheme.colors.purple600,
-  [Event.action.CONVERT_VOIE_TO_TOPONYME]: defaultTheme.colors.purple600,
 };
 
 function getEventTargetLabel(event: Event): string {
