@@ -30,7 +30,7 @@ export type ExtendedBaseLocaleDTO = {
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
-    isHabilitationValid: boolean;
+    eventsCount: number;
 };
 export namespace ExtendedBaseLocaleDTO {
     export enum status {

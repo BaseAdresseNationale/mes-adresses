@@ -7,7 +7,7 @@ import type { BaseLocaleSync } from './BaseLocaleSync';
 import type { Numero } from './Numero';
 import type { Toponyme } from './Toponyme';
 import type { Voie } from './Voie';
-export type BaseLocaleWithHabilitationDTO = {
+export type ExtendedBaseLocaleSafeDTO = {
     id: string;
     banId: string;
     createdAt: string;
@@ -16,8 +16,8 @@ export type BaseLocaleWithHabilitationDTO = {
     communeNom?: string;
     communeNomsAlt: Record<string, any>;
     commune: string;
-    status: BaseLocaleWithHabilitationDTO.status;
-    importType: BaseLocaleWithHabilitationDTO.importType;
+    status: ExtendedBaseLocaleSafeDTO.status;
+    importType: ExtendedBaseLocaleSafeDTO.importType;
     habilitationId: string;
     sync: BaseLocaleSync;
     settings: BaseLocaleSetting;
@@ -28,9 +28,9 @@ export type BaseLocaleWithHabilitationDTO = {
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
-    isHabilitationValid: boolean;
+    eventsCount: number;
 };
-export namespace BaseLocaleWithHabilitationDTO {
+export namespace ExtendedBaseLocaleSafeDTO {
     export enum status {
         DRAFT = 'draft',
         PUBLISHED = 'published',

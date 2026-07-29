@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BaseLocale } from '../models/BaseLocale';
-import type { BaseLocaleWithHabilitationDTO } from '../models/BaseLocaleWithHabilitationDTO';
 import type { BatchNumeroResponseDTO } from '../models/BatchNumeroResponseDTO';
 import type { CreateBaseLocaleDTO } from '../models/CreateBaseLocaleDTO';
 import type { CreateDemoBaseLocaleDTO } from '../models/CreateDemoBaseLocaleDTO';
@@ -12,6 +11,7 @@ import type { CreateVoieDTO } from '../models/CreateVoieDTO';
 import type { DeleteBatchNumeroDTO } from '../models/DeleteBatchNumeroDTO';
 import type { EventPageDTO } from '../models/EventPageDTO';
 import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
+import type { ExtendedBaseLocaleSafeDTO } from '../models/ExtendedBaseLocaleSafeDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
 import type { FindManyBaseLocalDTO } from '../models/FindManyBaseLocalDTO';
@@ -98,12 +98,12 @@ export class BasesLocalesService {
     /**
      * Find Many Bases Locales
      * @param requestBody
-     * @returns BaseLocaleWithHabilitationDTO
+     * @returns ExtendedBaseLocaleSafeDTO
      * @throws ApiError
      */
     public static findManyBaseLocales(
         requestBody: FindManyBaseLocalDTO,
-    ): CancelablePromise<Array<BaseLocaleWithHabilitationDTO>> {
+    ): CancelablePromise<Array<ExtendedBaseLocaleSafeDTO>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/search-by-ids',
@@ -395,7 +395,7 @@ export class BasesLocalesService {
      */
     public static findNumeros(
         baseLocaleId: string,
-        select?: string,
+        select?: Array<string>,
     ): CancelablePromise<Array<Numero>> {
         return __request(OpenAPI, {
             method: 'GET',
