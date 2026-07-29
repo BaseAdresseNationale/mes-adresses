@@ -1,5 +1,9 @@
 import { isEqual } from "lodash";
-import { SerializedNumero, SerializedToponyme, SerializedVoie } from "@/lib/openapi-api-bal";
+import {
+  SerializedNumero,
+  SerializedToponyme,
+  SerializedVoie,
+} from "@/lib/openapi-api-bal";
 
 export function formatFieldValue(value: unknown): string {
   if (value === null || value === undefined || value === "") {
@@ -76,7 +80,9 @@ export function getFilledFields<T>(
   return fields.filter((field) => hasFieldValue(payload?.[field.key]));
 }
 
-function formatTypeNumerotation(value: SerializedVoie["typeNumerotation"]): string {
+function formatTypeNumerotation(
+  value: SerializedVoie["typeNumerotation"]
+): string {
   if (value === SerializedVoie.typeNumerotation.NUMERIQUE) {
     return "Numérique";
   }
