@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { Pane, Button, Popover, Position, Pill } from "evergreen-ui";
 
 import StatusBadge from "@/components/status-badge";
-import RefreshSyncBadge from "@/components/sub-header/bal-status/refresh-sync-badge";
 import { ExtendedBaseLocaleDTO } from "@/lib/openapi-api-bal";
 import EventsContext from "@/contexts/events";
 import styles from "./button-pill.module.css";
@@ -31,13 +30,16 @@ function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
         <Popover
           position={Position.BOTTOM_RIGHT}
           onOpen={handleOpen}
-          content={
+          content={({ close }) => (
             <PublicationPopover
-              onPublication={onPublication}
+              onPublication={() => {
+                onPublication();
+                close();
+              }}
               eventsCount={eventsCount}
               balStatus={baseLocale.status}
             />
-          }
+          )}
         >
           <Button
             marginRight={8}
@@ -58,7 +60,7 @@ function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
         </Popover>
       )}
 
-      <Pane height={28} marginRight={8} flexShrink={0}>
+      <Pane height={28} marginRight={8}>
         <StatusBadge
           status={baseLocale.status}
           sync={baseLocale.sync}

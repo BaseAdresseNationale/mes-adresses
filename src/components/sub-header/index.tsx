@@ -15,6 +15,7 @@ import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import Publication from "./publication";
 import { HabilitationDTO, HabilitationService } from "@/lib/openapi-api-bal";
+import RefreshSyncBadge from "./publication/refresh-sync-badge";
 
 interface SubHeaderProps {
   commune: CommuneType;
@@ -37,6 +38,7 @@ function SubHeader({ commune }: SubHeaderProps) {
   }, [setIsHabilitationProcessDisplayed]);
 
   const {
+    isPublishing,
     massDeletionConfirm,
     setMassDeletionConfirm,
     handleShowHabilitationProcess,
@@ -62,7 +64,6 @@ function SubHeader({ commune }: SubHeaderProps) {
   }, [habilitation, baseLocale.id]);
 
   const onPublication = useCallback(() => {
-    console.log("PUBLIER");
     if (isAdmin && habilitation && isHabilitationValid) {
       handlePublication();
     } else {
@@ -128,11 +129,15 @@ function SubHeader({ commune }: SubHeaderProps) {
                     }
                   : { marginRight: 16 })}
               >
-                <Publication
-                  baseLocale={baseLocale}
-                  isAdmin={isAdmin}
-                  onPublication={onPublication}
-                />
+                {isPublishing ? (
+                  <RefreshSyncBadge />
+                ) : (
+                  <Publication
+                    baseLocale={baseLocale}
+                    isAdmin={isAdmin}
+                    onPublication={onPublication}
+                  />
+                )}
               </Pane>
             )}
             {isMobile ? (
