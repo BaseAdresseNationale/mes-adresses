@@ -63,8 +63,7 @@ function SignalementDeleteToponyme({
       />
       <Alert flexShrink={0}>
         <Text>
-          En acceptant ce signalement, le toponyme {nom} sera placé dans la
-          corbeille
+          En acceptant ce signalement, le toponyme {nom} sera supprimé
         </Text>
       </Alert>
       <SignalementFormButtons

@@ -41,15 +41,6 @@ function DrawerContent() {
       key: "downloads",
       content: <Downloads baseLocale={baseLocale} />,
     },
-    ...(isAdmin && !Boolean(otherBalIdPublished)
-      ? [
-          {
-            label: "Corbeille",
-            key: "trash",
-            content: <Trash />,
-          },
-        ]
-      : []),
   ];
 
   return (

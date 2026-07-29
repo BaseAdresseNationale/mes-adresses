@@ -53,8 +53,7 @@ function SignalementDeleteVoie({
       />
       <Alert intent={nbNumeros > 0 ? "warning" : "info"} flexShrink={0}>
         <Text>
-          En acceptant ce signalement, la voie <b>{nom}</b> sera placée dans la
-          corbeille{" "}
+          En acceptant ce signalement, la voie <b>{nom}</b> sera supprimé{" "}
           {nbNumeros > 0 && (
             <>
               avec les <b>{nbNumeros} adresses</b> qui y sont rattachées
