@@ -24,7 +24,7 @@ function EventsHistory({
   onToggleEvent,
 }: EventsHistoryProps) {
   return (
-    <Pane flex={1} display="flex">
+    <Pane flex={1} display="flex" height="calc(100% - 70px)">
       {isLoadingEvents && events.length === 0 ? (
         <Pane
           flex={1}
