@@ -15,9 +15,13 @@ import EventsContext from "@/contexts/events";
 export function useFusionVoies(
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) {
-  const { voies, reloadVoies, reloadParcelles, reloadVoieAlerts } =
-    useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
+  const {
+    voies,
+    reloadVoies,
+    reloadParcelles,
+    reloadVoieAlerts,
+    reloadBaseLocale,
+  } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
   const { toaster } = useContext(LayoutContext);
@@ -44,7 +48,7 @@ export function useFusionVoies(
           const voies = await reloadVoies();
           await reloadParcelles();
           reloadTiles();
-          reloadSyncedEventsCount();
+          reloadBaseLocale();
           // RELOAD ALERTS
           reloadVoieAlerts(newVoie as ExtendedVoieDTO, voies);
           return newVoie;
@@ -69,7 +73,7 @@ export function useFusionVoies(
       reloadVoies,
       reloadParcelles,
       reloadTiles,
-      reloadSyncedEventsCount,
+      reloadBaseLocale,
       reloadVoieAlerts,
       setLoading,
     ]

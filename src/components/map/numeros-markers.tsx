@@ -24,9 +24,13 @@ function NumerosMarkers({
 }: NumerosMarkersProps) {
   const { toaster } = useContext(LayoutContext);
 
-  const { setEditingId, isEditing, reloadNumeros, reloadParcelles } =
-    useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
+  const {
+    setEditingId,
+    isEditing,
+    reloadNumeros,
+    reloadParcelles,
+    reloadBaseLocale,
+  } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
 
   const onEnableMenu = useCallback(
@@ -89,7 +93,7 @@ function NumerosMarkers({
       await reloadNumeros();
       await reloadParcelles();
       reloadTiles();
-      reloadSyncedEventsCount();
+      reloadBaseLocale();
 
       setIsContextMenuDisplayed(null);
     },
@@ -97,7 +101,7 @@ function NumerosMarkers({
       reloadNumeros,
       reloadParcelles,
       setIsContextMenuDisplayed,
-      reloadSyncedEventsCount,
+      reloadBaseLocale,
       reloadTiles,
       toaster,
     ]

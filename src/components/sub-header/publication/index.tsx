@@ -14,8 +14,7 @@ interface PublicationProps {
 }
 
 function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
-  const { events, eventsCount, loadEvents, reloadSyncedEventsCount } =
-    useContext(EventsContext);
+  const { events, loadEvents } = useContext(EventsContext);
   const [excludedEventIds, setExcludedEventIds] = useState<Set<string>>(
     new Set()
   );
@@ -33,7 +32,6 @@ function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
   }, []);
 
   function handleOpen() {
-    reloadSyncedEventsCount();
     setExcludedEventIds(new Set());
     if (events.length >= 0) {
       loadEvents();
@@ -52,7 +50,7 @@ function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
                 onPublication(ignoreEvents);
                 close();
               }}
-              eventsCount={eventsCount}
+              eventsCount={baseLocale.eventsCount}
               balStatus={baseLocale.status}
               excludedEventIds={excludedEventIds}
               onToggleEvent={toggleEventExclusion}
@@ -64,13 +62,13 @@ function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
             height={28}
             appearance="primary"
             disabled={
-              eventsCount <= 0 &&
+              baseLocale.eventsCount <= 0 &&
               baseLocale.status !== ExtendedBaseLocaleDTO.status.DRAFT
             }
           >
-            {eventsCount > 0 && (
+            {baseLocale.eventsCount > 0 && (
               <Pill className={styles["pill-top-right"]} color="blue">
-                {eventsCount}
+                {baseLocale.eventsCount}
               </Pill>
             )}
             Publier
@@ -82,7 +80,7 @@ function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
         <StatusBadge
           status={baseLocale.status}
           sync={baseLocale.sync}
-          eventsCount={eventsCount}
+          eventsCount={baseLocale.eventsCount}
         />
       </Pane>
     </>

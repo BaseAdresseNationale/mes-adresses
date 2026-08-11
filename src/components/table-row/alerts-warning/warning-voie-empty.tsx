@@ -26,9 +26,13 @@ interface WarningVoieEmptyProps {
 }
 
 function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
-  const { reloadVoies, reloadToponymes, reloadParcelles, reloadVoieAlerts } =
-    useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
+  const {
+    reloadVoies,
+    reloadToponymes,
+    reloadParcelles,
+    reloadVoieAlerts,
+    reloadBaseLocale,
+  } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
   const [toConvert, setToConvert] = useState<ExtendedVoieDTO | null>(null);
@@ -47,7 +51,7 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
         await reloadToponymes();
         await reloadParcelles();
         reloadTiles();
-        reloadSyncedEventsCount();
+        reloadBaseLocale();
         // RELOAD ALERTS
         reloadVoieAlerts(toConvert, voies);
         await router.push(
@@ -74,7 +78,7 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
     reloadToponymes,
     reloadParcelles,
     reloadTiles,
-    reloadSyncedEventsCount,
+    reloadBaseLocale,
     reloadVoieAlerts,
     baseLocale.id,
     router,

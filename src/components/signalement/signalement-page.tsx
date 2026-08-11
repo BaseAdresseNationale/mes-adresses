@@ -46,8 +46,7 @@ export default function SignalementPage({
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const { setTileLayersMode } = useContext(MapContext);
-  const { baseLocale } = useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
+  const { baseLocale, reloadBaseLocale } = useContext(BalDataContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
 
@@ -127,7 +126,7 @@ export default function SignalementPage({
             status,
             rejectionReason,
           });
-          await reloadSyncedEventsCount();
+          await reloadBaseLocale();
         },
         status === Signalement.status.PROCESSED
           ? "Le signalement a bien été pris en compte"
@@ -155,7 +154,7 @@ export default function SignalementPage({
       handleClose,
       getNextSignalement,
       router,
-      reloadSyncedEventsCount,
+      reloadBaseLocale,
       updateOneSignalement,
       baseLocale,
     ]

@@ -65,8 +65,8 @@ function ToponymeEditor({
     reloadToponymes,
     reloadParcelles,
     reloadNumeros,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { markers } = useContext(MarkersContext);
   const { setHint } = useContext(DrawContext);
   const { highlightedParcelles } = useContext(ParcellesContext);
@@ -144,7 +144,7 @@ function ToponymeEditor({
 
         const toponyme = await submit();
 
-        reloadSyncedEventsCount();
+        reloadBaseLocale();
         await reloadToponymes();
         reloadTiles();
 
@@ -171,7 +171,7 @@ function ToponymeEditor({
       markers,
       highlightedParcelles,
       setToponyme,
-      reloadSyncedEventsCount,
+      reloadBaseLocale,
       reloadToponymes,
       reloadParcelles,
       setValidationMessages,

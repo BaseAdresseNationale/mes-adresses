@@ -38,8 +38,6 @@ export default function usePublishProcess(
     setIsHabilitationProcessDisplayed,
   } = useContext(BalDataContext);
 
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
-
   const { pushToast } = useContext(LayoutContext);
 
   const checkMassDeletion = async () => {
@@ -99,7 +97,6 @@ export default function usePublishProcess(
       console.error("ERROR: durant la publication", e);
     } finally {
       await reloadBaseLocale();
-      await reloadSyncedEventsCount();
       setIsPublishing(false);
     }
   };

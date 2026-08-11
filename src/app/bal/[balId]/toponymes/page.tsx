@@ -43,7 +43,6 @@ import MapContext from "@/contexts/map";
 import SearchPaginationContext from "@/contexts/search-pagination";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
 import { ButtonIconExpandHover } from "@/components/expand-button-hover/button-expand-hover";
-import EventsContext from "@/contexts/events";
 
 export default function ToponymesPage() {
   const { token } = useContext(TokenContext);
@@ -55,10 +54,10 @@ export default function ToponymesPage() {
     isEditing,
     reloadToponymes,
     reloadParcelles,
+    reloadBaseLocale,
     baseLocale,
   } = useContext(BalDataContext);
 
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const router = useRouter();
   const [page, changePage, search, changeFilter, filtered] =
@@ -94,7 +93,7 @@ export default function ToponymesPage() {
     await reloadToponymes();
     await reloadParcelles();
     reloadTiles();
-    reloadSyncedEventsCount();
+    reloadBaseLocale();
     setToRemove(null);
     setIsDisabled(false);
   };

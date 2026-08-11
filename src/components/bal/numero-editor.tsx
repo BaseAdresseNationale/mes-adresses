@@ -96,8 +96,8 @@ function NumeroEditor({
     reloadVoies,
     reloadNumerosAlerts,
     reloadVoieAlerts,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { highlightedParcelles } = useContext(ParcellesContext);
   const { markers, suggestedNumero, setCompleteNumero } =
     useContext(MarkersContext);
@@ -233,7 +233,7 @@ function NumeroEditor({
           });
         }
 
-        reloadSyncedEventsCount();
+        reloadBaseLocale();
         closeForm();
       } catch (err) {
         console.error(err);
@@ -246,7 +246,7 @@ function NumeroEditor({
       getEditedVoie,
       closeForm,
       reloadNumeros,
-      reloadSyncedEventsCount,
+      reloadBaseLocale,
       reloadParcelles,
       initialValue,
       setValidationMessages,

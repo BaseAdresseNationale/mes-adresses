@@ -66,9 +66,14 @@ function VoieEditor({
   const { getValidationMessage, setValidationMessages } =
     useValidationMessage();
   const [nomAlt, setNomAlt] = useState(initialValue?.nomAlt);
-  const { baseLocale, voies, reloadVoies, setVoie, reloadVoieAlerts } =
-    useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
+  const {
+    baseLocale,
+    voies,
+    reloadVoies,
+    setVoie,
+    reloadVoieAlerts,
+    reloadBaseLocale,
+  } = useContext(BalDataContext);
   const { data } = useContext(DrawContext);
   const { reloadTiles } = useContext(MapContext);
   const { toaster } = useContext(LayoutContext);
@@ -114,7 +119,7 @@ function VoieEditor({
 
         const voie = await submit();
 
-        reloadSyncedEventsCount();
+        reloadBaseLocale();
         const voies = await reloadVoies();
         // RELOAD ALERTS
         await reloadVoieAlerts(
@@ -146,7 +151,7 @@ function VoieEditor({
       setValidationMessages,
       setVoie,
       reloadVoies,
-      reloadSyncedEventsCount,
+      reloadBaseLocale,
       reloadTiles,
       onSubmit,
       toaster,

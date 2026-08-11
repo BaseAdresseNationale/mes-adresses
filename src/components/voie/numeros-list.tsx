@@ -105,8 +105,8 @@ function NumerosList({
     reloadNumeros,
     reloadParcelles,
     reloadVoieAlerts,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { reloadTiles } = useContext(MapContext);
 
   const [isDisabled, setIsDisabled] = useState(false);
@@ -215,7 +215,7 @@ function NumerosList({
           await reloadNumeros();
           await reloadParcelles();
           reloadTiles();
-          reloadSyncedEventsCount();
+          reloadBaseLocale();
         },
         "Le numéro a bien été supprimé",
         "Le numéro n’a pas pu être supprimé"
@@ -226,7 +226,7 @@ function NumerosList({
     [
       reloadNumeros,
       reloadParcelles,
-      reloadSyncedEventsCount,
+      reloadBaseLocale,
       reloadTiles,
       toaster,
       reloadVoie,
@@ -297,7 +297,7 @@ function NumerosList({
         await reloadNumeros();
         await reloadParcelles();
         reloadTiles();
-        reloadSyncedEventsCount();
+        reloadBaseLocale();
 
         setSelectedNumerosIds([]);
         setIsRemoveWarningShown(false);
@@ -315,7 +315,7 @@ function NumerosList({
       async () => {
         await BasesLocalesService.updateNumeros(balId, body);
         await reloadNumeros();
-        reloadSyncedEventsCount();
+        reloadBaseLocale();
       },
       "Les numéros ont bien été modifiés",
       "Les numéros n’ont pas pu être modifiés"

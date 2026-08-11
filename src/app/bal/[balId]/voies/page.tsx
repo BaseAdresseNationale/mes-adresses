@@ -66,7 +66,6 @@ import MatomoTrackingContext, {
 import { AlertNumero, AlertVoie } from "@/lib/alerts/alerts.types";
 import AlertsContext from "@/contexts/alerts";
 import TableVoieWarning from "@/components/table-row/table-voie-warning";
-import EventsContext from "@/contexts/events";
 
 const options = [
   { label: "Tous", value: "" },
@@ -85,8 +84,8 @@ export default function VoiesPage() {
     reloadParcelles,
     reloadNumeros,
     reloadVoiesDoublonsAlerts,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
-  const { reloadSyncedEventsCount } = useContext(EventsContext);
   const { reloadTiles, setTileLayersMode } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
   const router = useRouter();
@@ -154,7 +153,7 @@ export default function VoiesPage() {
     await reloadParcelles();
     await reloadVoiesDoublonsAlerts(toRemove);
     reloadTiles();
-    reloadSyncedEventsCount();
+    reloadBaseLocale();
     setToRemove(null);
     setIsDisabled(false);
   };
