@@ -63,19 +63,22 @@ function SubHeader({ commune }: SubHeaderProps) {
     }
   }, [habilitation, baseLocale.id]);
 
-  const onPublication = useCallback((ignoreEvents: string[]) => {
-    if (isAdmin && habilitation && isHabilitationValid) {
-      handlePublication(ignoreEvents);
-    } else {
-      handleShowHabilitationProcess();
-    }
-  }, [
-    isAdmin,
-    habilitation,
-    handlePublication,
-    isHabilitationValid,
-    handleShowHabilitationProcess,
-  ]);
+  const onPublication = useCallback(
+    (ignoreEvents: string[]) => {
+      if (isAdmin && habilitation && isHabilitationValid) {
+        handlePublication(ignoreEvents);
+      } else {
+        handleShowHabilitationProcess();
+      }
+    },
+    [
+      isAdmin,
+      habilitation,
+      handlePublication,
+      isHabilitationValid,
+      handleShowHabilitationProcess,
+    ]
+  );
 
   return (
     <>
