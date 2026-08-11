@@ -33,8 +33,8 @@ const STATUSES: { [key: string]: StatusType } = {
     title: "Cette Base Adresse Locale va alimenter la Base Adresse Nationale",
     content:
       "De nouvelles modifications ont été détectées, elles seront automatiquement répercutées dans la Base Adresse Nationale dans les prochaines heures.",
-    color: "blue",
-    intent: "none",
+    color: "orange",
+    intent: "danger",
     icon: IssueIcon,
   },
   synced: {

@@ -11,6 +11,8 @@ interface EventsHistoryProps {
   isLoadingEvents?: boolean;
   onReachEnd?: () => void;
   emptyMessage?: string;
+  excludedEventIds?: Set<string>;
+  onToggleEvent?: (eventId: string) => void;
 }
 
 function EventsHistory({
@@ -18,6 +20,8 @@ function EventsHistory({
   isLoadingEvents = false,
   onReachEnd,
   emptyMessage = "Aucune modification pour le moment.",
+  excludedEventIds,
+  onToggleEvent,
 }: EventsHistoryProps) {
   return (
     <Pane flex={1} display="flex">
@@ -42,7 +46,16 @@ function EventsHistory({
         </Pane>
       ) : (
         <InfiniteScrollList items={events} onReachEnd={onReachEnd}>
-          {(event: Event) => <EventRow key={event.id} event={event} />}
+          {(event: Event) => (
+            <EventRow
+              key={event.id}
+              event={event}
+              isExcluded={excludedEventIds?.has(event.id)}
+              onToggle={
+                onToggleEvent ? () => onToggleEvent(event.id) : undefined
+              }
+            />
+          )}
         </InfiniteScrollList>
       )}
     </Pane>

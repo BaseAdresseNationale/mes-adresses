@@ -19,7 +19,7 @@ interface UsePublishProcess {
   massDeletionConfirm: null | (() => void);
   setMassDeletionConfirm: Dispatch<SetStateAction<() => void>>;
   handleShowHabilitationProcess: () => Promise<void>;
-  handlePublication: () => Promise<void>;
+  handlePublication: (ignoreEvents?: string[]) => Promise<void>;
 }
 
 export default function usePublishProcess(
@@ -89,10 +89,12 @@ export default function usePublishProcess(
     setIsHabilitationProcessDisplayed(isReadyToPublish);
   };
 
-  const handleSync = async () => {
+  const handleSync = async (ignoreEvents: string[] = []) => {
     try {
       setIsPublishing(true);
-      await BasesLocalesService.publishBaseLocale(baseLocale.id);
+      await BasesLocalesService.publishBaseLocale(baseLocale.id, {
+        ignoreEvents,
+      });
     } catch (e) {
       console.error("ERROR: durant la publication", e);
     } finally {
@@ -102,13 +104,13 @@ export default function usePublishProcess(
     }
   };
 
-  const handlePublication = async () => {
+  const handlePublication = async (ignoreEvents: string[] = []) => {
     const isMassDeletionDetected = await checkMassDeletion();
 
     if (isMassDeletionDetected) {
-      setMassDeletionConfirm(() => handleSync);
+      setMassDeletionConfirm(() => () => handleSync(ignoreEvents));
     } else {
-      await handleSync();
+      await handleSync(ignoreEvents);
     }
   };
 

@@ -63,9 +63,9 @@ function SubHeader({ commune }: SubHeaderProps) {
     }
   }, [habilitation, baseLocale.id]);
 
-  const onPublication = useCallback(() => {
+  const onPublication = useCallback((ignoreEvents: string[]) => {
     if (isAdmin && habilitation && isHabilitationValid) {
-      handlePublication();
+      handlePublication(ignoreEvents);
     } else {
       handleShowHabilitationProcess();
     }

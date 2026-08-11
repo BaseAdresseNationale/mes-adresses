@@ -51,6 +51,7 @@ export { SerializedPosition } from './models/SerializedPosition';
 export type { SerializedToponyme } from './models/SerializedToponyme';
 export { SerializedVoie } from './models/SerializedVoie';
 export { StrategyDTO } from './models/StrategyDTO';
+export type { SyncExecDTO } from './models/SyncExecDTO';
 export type { Toponyme } from './models/Toponyme';
 export type { UpdateBaseLocaleDemoDTO } from './models/UpdateBaseLocaleDemoDTO';
 export type { UpdateBaseLocaleDTO } from './models/UpdateBaseLocaleDTO';

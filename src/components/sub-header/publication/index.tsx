@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { Pane, Button, Popover, Position, Pill } from "evergreen-ui";
 
 import StatusBadge from "@/components/status-badge";
@@ -10,15 +10,31 @@ import PublicationPopover from "./publication-popover";
 interface PublicationProps {
   baseLocale: ExtendedBaseLocaleDTO;
   isAdmin: boolean;
-  onPublication: () => void;
+  onPublication: (ignoreEvents: string[]) => void;
 }
 
 function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
   const { events, eventsCount, loadEvents, reloadSyncedEventsCount } =
     useContext(EventsContext);
+  const [excludedEventIds, setExcludedEventIds] = useState<Set<string>>(
+    new Set()
+  );
+
+  const toggleEventExclusion = useCallback((eventId: string) => {
+    setExcludedEventIds((current) => {
+      const next = new Set(current);
+      if (next.has(eventId)) {
+        next.delete(eventId);
+      } else {
+        next.add(eventId);
+      }
+      return next;
+    });
+  }, []);
 
   function handleOpen() {
     reloadSyncedEventsCount();
+    setExcludedEventIds(new Set());
     if (events.length >= 0) {
       loadEvents();
     }
@@ -32,12 +48,14 @@ function Publication({ baseLocale, isAdmin, onPublication }: PublicationProps) {
           onOpen={handleOpen}
           content={({ close }) => (
             <PublicationPopover
-              onPublication={() => {
-                onPublication();
+              onPublication={(ignoreEvents) => {
+                onPublication(ignoreEvents);
                 close();
               }}
               eventsCount={eventsCount}
               balStatus={baseLocale.status}
+              excludedEventIds={excludedEventIds}
+              onToggleEvent={toggleEventExclusion}
             />
           )}
         >

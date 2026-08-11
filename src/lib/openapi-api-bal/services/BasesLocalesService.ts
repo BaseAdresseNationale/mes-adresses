@@ -21,6 +21,7 @@ import type { PageBaseLocaleDTO } from '../models/PageBaseLocaleDTO';
 import type { RecoverBaseLocaleDTO } from '../models/RecoverBaseLocaleDTO';
 import type { RecoverCommuneDTO } from '../models/RecoverCommuneDTO';
 import type { SearchNumeroDTO } from '../models/SearchNumeroDTO';
+import type { SyncExecDTO } from '../models/SyncExecDTO';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateBaseLocaleDemoDTO } from '../models/UpdateBaseLocaleDemoDTO';
 import type { UpdateBaseLocaleDTO } from '../models/UpdateBaseLocaleDTO';
@@ -338,11 +339,13 @@ export class BasesLocalesService {
     /**
      * Publish base locale
      * @param baseLocaleId
+     * @param requestBody
      * @returns BaseLocale
      * @throws ApiError
      */
     public static publishBaseLocale(
         baseLocaleId: string,
+        requestBody?: SyncExecDTO,
     ): CancelablePromise<BaseLocale> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -350,6 +353,8 @@ export class BasesLocalesService {
             path: {
                 'baseLocaleId': baseLocaleId,
             },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
     /**

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Pane, Text, defaultTheme } from "evergreen-ui";
+import { Checkbox, Pane, Text, defaultTheme } from "evergreen-ui";
 
 import {
   Event,
@@ -64,9 +64,11 @@ function getEventDescription(event: Event): string {
 
 interface EventRowProps {
   event: Event;
+  isExcluded?: boolean;
+  onToggle?: () => void;
 }
 
-function EventRow({ event }: EventRowProps) {
+function EventRow({ event, isExcluded, onToggle }: EventRowProps) {
   const [isActive, setIsActive] = useState(false);
   const details = getEventDetails(event);
 
@@ -86,28 +88,33 @@ function EventRow({ event }: EventRowProps) {
           <Text display="block" size={400}>
             {getEventDescription(event)}
           </Text>
-          <Pane
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            marginTop={2}
-          >
-            <Text size={300} color="muted">
-              il y a {getDuration(new Date(event.createdAt))}
+          <Text display="block" size={300} color="muted" marginTop={2}>
+            il y a {getDuration(new Date(event.createdAt))}
+          </Text>
+          {details && (
+            <Text
+              display="block"
+              size={300}
+              color="blue500"
+              cursor="pointer"
+              userSelect="none"
+              marginTop={2}
+              onClick={() => setIsActive((active) => !active)}
+            >
+              {isActive ? "masquer" : "détails"}
             </Text>
-            {details && (
-              <Text
-                size={300}
-                color="blue500"
-                cursor="pointer"
-                userSelect="none"
-                onClick={() => setIsActive((active) => !active)}
-              >
-                {isActive ? "masquer" : "détails"}
-              </Text>
-            )}
-          </Pane>
+          )}
         </Pane>
+
+        {onToggle && (
+          <Checkbox
+            checked={!isExcluded}
+            onChange={onToggle}
+            margin={0}
+            marginTop={2}
+            flexShrink={0}
+          />
+        )}
       </Pane>
 
       {isActive && details && (
