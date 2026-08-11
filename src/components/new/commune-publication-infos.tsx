@@ -14,7 +14,14 @@ import {
 import AlertExistingBALMesAdresses from "./alert-published-bal/alert-existing-bal-mes-adresses";
 
 const ENABLE_CREATION_BAL =
-  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL || "false";
+  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL_FOR_ALREADY_PUBLISHED_COMMUNES ===
+  "true";
+
+console.log(
+  "ENABLE_CREATION_BAL",
+  ENABLE_CREATION_BAL,
+  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL_FOR_ALREADY_PUBLISHED_COMMUNES
+);
 
 interface CommunePublicationInfosProps {
   commune: CommuneType;
@@ -126,7 +133,7 @@ function CommunePublicationInfos({
             )}
 
           {!apiDepotLastRevision?.context.extras?.balId ||
-          ENABLE_CREATION_BAL === "true" ? (
+          ENABLE_CREATION_BAL ? (
             <Button
               marginTop={16}
               intent="none"

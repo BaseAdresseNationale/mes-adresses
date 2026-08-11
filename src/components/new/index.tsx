@@ -23,7 +23,8 @@ import styles from "./new.module.css";
 import OpenAPIContext from "@/contexts/open-api";
 
 const ENABLE_CREATION_BAL =
-  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL || "false";
+  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL_FOR_ALREADY_PUBLISHED_COMMUNES ===
+  "true";
 
 interface NewPageProps {
   defaultCommune?: CommuneType;
@@ -133,16 +134,16 @@ export default function NewPageComponent({
           emails: emails ?? adminEmails,
           commune: commune.code,
         });
-      }
 
-      if (ENABLE_CREATION_BAL === "true") {
-        assignBALToken(bal.token);
-        await BasesLocalesService.updateBaseLocale(bal.id, {
-          settings: {
-            ...bal.settings,
-            otherBalPublishedIgnored: true,
-          },
-        });
+        if (ENABLE_CREATION_BAL) {
+          assignBALToken(bal.token);
+          await BasesLocalesService.updateBaseLocale(bal.id, {
+            settings: {
+              ...bal.settings,
+              otherBalPublishedIgnored: true,
+            },
+          });
+        }
       }
     } catch {
       pushToast({
