@@ -31,6 +31,8 @@ export default defineConfig({
     trace: "on-first-retry",
     /* Save video of each test */
     video: "on",
+    /* Longer navigation timeout for yarn dev on-demand compilation in CI */
+    navigationTimeout: 60000,
   },
 
   /* Configure projects for major browsers */
@@ -73,8 +75,11 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "yarn start",
+    command: "yarn dev",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
+    env: {
+      NEXT_PUBLIC_ENABLE_CREATION_BAL_FOR_ALREADY_PUBLISHED_COMMUNES: "true",
+    },
   },
 });

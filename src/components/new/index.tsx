@@ -20,6 +20,11 @@ import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
 import { validateEmail } from "@/lib/utils/email";
 import styles from "./new.module.css";
+import OpenAPIContext from "@/contexts/open-api";
+
+const ENABLE_CREATION_BAL =
+  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL_FOR_ALREADY_PUBLISHED_COMMUNES ===
+  "true";
 
 interface NewPageProps {
   defaultCommune?: CommuneType;
@@ -49,6 +54,8 @@ export default function NewPageComponent({
   const [forceDemoMode, setForceDemoMode] = useState<boolean | null>(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const { importFromCSVFile, importFromBAN } = useBALDataImport();
+  const { assignBALToken } = useContext(OpenAPIContext);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -127,6 +134,16 @@ export default function NewPageComponent({
           emails: emails ?? adminEmails,
           commune: commune.code,
         });
+
+        if (ENABLE_CREATION_BAL) {
+          assignBALToken(bal.token);
+          await BasesLocalesService.updateBaseLocale(bal.id, {
+            settings: {
+              ...bal.settings,
+              otherBalPublishedIgnored: true,
+            },
+          });
+        }
       }
     } catch {
       pushToast({
