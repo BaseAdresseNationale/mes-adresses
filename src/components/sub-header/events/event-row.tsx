@@ -3,67 +3,17 @@
 import { useContext, useState } from "react";
 import { Checkbox, Pane, Text, defaultTheme } from "evergreen-ui";
 
-import {
-  Event,
-  ExtendedVoieDTO,
-  SerializedNumero,
-  SerializedPosition,
-  SerializedToponyme,
-  SerializedVoie,
-} from "@/lib/openapi-api-bal";
+import { Event } from "@/lib/openapi-api-bal";
 import BalDataContext from "@/contexts/bal-data";
 import { getDuration } from "@/lib/utils/date";
+import { getEventDescription } from "@/lib/events/event-description";
 import { getEventDetails } from "./event-details";
-
-const ACTION_LABELS: Record<Event.action, string> = {
-  [Event.action.CREATE]: "Création",
-  [Event.action.UPDATE]: "Modification",
-  [Event.action.DELETE]: "Suppression",
-};
 
 const ACTION_COLORS: Record<Event.action, string> = {
   [Event.action.CREATE]: defaultTheme.colors.green600,
   [Event.action.UPDATE]: defaultTheme.colors.blue600,
   [Event.action.DELETE]: defaultTheme.colors.red600,
 };
-
-function getEventTargetLabel(event: Event, voies: ExtendedVoieDTO[]): string {
-  const payload =
-    event.action === Event.action.DELETE
-      ? event.payloadBefore
-      : event.payloadAfter;
-
-  switch (event.entityType) {
-    case Event.entityType.VOIE: {
-      const voie = payload as SerializedVoie;
-      return `de la voie « ${voie?.nom ?? "inconnue"} »`;
-    }
-
-    case Event.entityType.TOPONYME: {
-      const toponyme = payload as SerializedToponyme;
-      return `du toponyme « ${toponyme?.nom ?? "inconnu"} »`;
-    }
-
-    case Event.entityType.NUMERO: {
-      const numero = payload as SerializedNumero;
-      const voie = voies?.find((v) => v.id === numero?.voieId);
-      return `du numéro « ${numero?.numero ?? ""}${numero?.suffixe ?? ""} ${voie ? `${voie.nom} ` : ""}»`;
-    }
-
-    case Event.entityType.POSITION: {
-      const position = payload as SerializedPosition;
-      return `d'une position (${position?.type ?? "inconnue"})`;
-    }
-
-    default:
-      return "un élément";
-  }
-}
-
-function getEventDescription(event: Event, voies: ExtendedVoieDTO[]): string {
-  const action = ACTION_LABELS[event.action] ?? event.action;
-  return `${action} ${getEventTargetLabel(event, voies)}`;
-}
 
 interface EventRowProps {
   event: Event;

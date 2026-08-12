@@ -1,11 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Heading, HistoryIcon, Pane, Spinner, Text } from "evergreen-ui";
+import { useContext, useEffect, useMemo, useState } from "react";
+import {
+  Heading,
+  HistoryIcon,
+  Pane,
+  SearchInput,
+  Spinner,
+  Text,
+} from "evergreen-ui";
 
 import { BaseLocale, BasesLocalesService, Event } from "@/lib/openapi-api-bal";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";
+import BalDataContext from "@/contexts/bal-data";
+import useFuse from "@/hooks/fuse";
+import { getEventDescription } from "@/lib/events/event-description";
 import RevisionRow from "./revision-row";
 
 interface HistoryPublicationProps {
@@ -34,11 +44,11 @@ function matchEventsToRevisions(events: Event[]): Map<string, Event[]> {
     bucket.push(event);
     eventsByRevisionId.set(event.isSyncedWithRevision, bucket);
   }
-
   return eventsByRevisionId;
 }
 
 function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
+  const { voies } = useContext(BalDataContext);
   const [revisions, setRevisions] = useState<Revision[]>([]);
   const [syncedEvents, setSyncedEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,7 +66,6 @@ function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
           BasesLocalesService.findBaseLocaleSyncedEvents(baseLocale.id),
         ]);
         if (isMounted) {
-          console.log(syncedEventsResult);
           setRevisions(sortByPublishedAtDesc(revisionsResult));
           setSyncedEvents(syncedEventsResult);
         }
@@ -87,6 +96,24 @@ function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
     [syncedEvents]
   );
 
+  const revisionsWithSearchText = useMemo(
+    () =>
+      revisions.map((revision) => ({
+        ...revision,
+        eventDescriptions: (
+          (revision.id && eventsByRevisionId.get(revision.id)) ||
+          []
+        )
+          .map((event) => getEventDescription(event, voies))
+          .join(" · "),
+      })),
+    [revisions, eventsByRevisionId, voies]
+  );
+
+  const [filteredRevisions, setSearch] = useFuse(revisionsWithSearchText, 200, {
+    keys: ["eventDescriptions"],
+  });
+
   return (
     <Pane display="flex" flexDirection="column" flex={1} overflow="hidden">
       <Pane
@@ -103,6 +130,16 @@ function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
           <Heading paddingLeft={5}>Historique des Publications</Heading>
         </Pane>
       </Pane>
+
+      {!isLoading && !hasError && revisions.length > 0 && (
+        <Pane flexShrink={0} padding={16} borderBottom="muted">
+          <SearchInput
+            width="100%"
+            placeholder="Rechercher dans les modifications publiées"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </Pane>
+      )}
 
       <Pane flex={1}>
         {isLoading ? (
@@ -124,10 +161,17 @@ function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
           <Pane padding={16}>
             <Text color="muted">Aucune révision publiée pour le moment.</Text>
           </Pane>
+        ) : filteredRevisions.length === 0 ? (
+          <Pane padding={16}>
+            <Text color="muted">
+              Aucune révision ne correspond à cette recherche.
+            </Text>
+          </Pane>
         ) : (
-          revisions.map((revision) => (
+          filteredRevisions.map((revision) => (
             <RevisionRow
               key={revision.id}
+              balId={baseLocale.id}
               revision={revision}
               events={
                 (revision.id && eventsByRevisionId.get(revision.id)) || []

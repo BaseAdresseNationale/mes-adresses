@@ -18,11 +18,17 @@ import EventsHistory from "../sub-header/events/events-history";
 
 interface ClientBadgeProps {
   client: PublicClient;
+  otherBAL: boolean;
 }
 
-const ClientBadge = ({ client }: ClientBadgeProps) => {
+const ClientBadge = ({ client, otherBAL }: ClientBadgeProps) => {
   if (client.legacyId === "mes-adresses") {
-    return <Badge color="blue">MES ADRESSES</Badge>;
+    return (
+      <Pane>
+        <Badge color="blue">MES ADRESSES</Badge>{" "}
+        {otherBAL && <Badge color="orange">AUTRE BAL</Badge>}
+      </Pane>
+    );
   } else if (client.legacyId === "formulaire-publication") {
     return <Badge color="yellow">FORMULAIRE DE PUBLICATION</Badge>;
   } else if (client.legacyId === "moissonneur-bal") {
@@ -33,11 +39,12 @@ const ClientBadge = ({ client }: ClientBadgeProps) => {
 };
 
 interface RevisionRowProps {
+  balId: string;
   revision: Revision;
   events: Event[];
 }
 
-function RevisionRow({ revision, events }: RevisionRowProps) {
+function RevisionRow({ balId, revision, events }: RevisionRowProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const revisionDate = new Date(revision.publishedAt ?? revision.createdAt);
@@ -81,7 +88,10 @@ function RevisionRow({ revision, events }: RevisionRowProps) {
           <Text display="block" size={400}>
             Révision publiée {getDuration(revisionDate)}
           </Text>
-          <ClientBadge client={revision.client} />
+          <ClientBadge
+            client={revision.client}
+            otherBAL={balId !== revision.context?.extras?.balId}
+          />
         </Pane>
       </Pane>
 

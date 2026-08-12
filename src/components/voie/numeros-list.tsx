@@ -63,7 +63,6 @@ import MatomoTrackingContext, {
 } from "@/contexts/matomo-tracking";
 import AlertsContext from "@/contexts/alerts";
 import TableNumeroWarning from "../table-row/table-numero-warning";
-import EventsContext from "@/contexts/events";
 
 interface NumerosListProps {
   commune: CommuneType;
