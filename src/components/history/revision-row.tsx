@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Badge,
   ChevronDownIcon,
@@ -16,7 +16,7 @@ import { sortByCreatedAtDesc, mergeEvents } from "@/contexts/events";
 import { getDuration } from "@/lib/utils/date";
 import EventsHistory from "../sub-header/events/events-history";
 
-const REVISION_EVENTS_PAGE_SIZE = 30;
+const REVISION_EVENTS_PAGE_SIZE = 1;
 
 interface ClientBadgeProps {
   client: PublicClient;
