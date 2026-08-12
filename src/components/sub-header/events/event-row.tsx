@@ -93,7 +93,7 @@ function EventRow({ event, isExcluded, onToggle }: EventRowProps) {
             {getEventDescription(event, voies)}
           </Text>
           <Text display="block" size={300} color="muted" marginTop={2}>
-            il y a {getDuration(new Date(event.createdAt))}
+            {getDuration(new Date(event.createdAt))}
           </Text>
           {details && (
             <Text

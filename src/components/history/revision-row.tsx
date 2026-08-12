@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Badge,
   ChevronDownIcon,
   ChevronRightIcon,
   defaultTheme,
@@ -9,13 +10,29 @@ import {
   Text,
 } from "evergreen-ui";
 
-import { Revision } from "@/lib/api-depot/types";
+import { PublicClient, Revision } from "@/lib/api-depot/types";
 import { BasesLocalesService, Event } from "@/lib/openapi-api-bal";
 import { sortByCreatedAtDesc, mergeEvents } from "@/contexts/events";
-import { getDuration, getFullDate } from "@/lib/utils/date";
+import { getDuration } from "@/lib/utils/date";
 import EventsHistory from "../sub-header/events/events-history";
 
 const REVISION_EVENTS_PAGE_SIZE = 30;
+
+interface ClientBadgeProps {
+  client: PublicClient;
+}
+
+const ClientBadge = ({ client }: ClientBadgeProps) => {
+  if (client.legacyId === "mes-adresses") {
+    return <Badge color="blue">MES ADRESSES</Badge>;
+  } else if (client.legacyId === "formulaire-publication") {
+    return <Badge color="yellow">FORMULAIRE DE PUBLICATION</Badge>;
+  } else if (client.legacyId === "moissonneur-bal") {
+    return <Badge color="purple">MOISSONNEUR</Badge>;
+  } else {
+    return <Badge color="orange">{client?.nom}</Badge>;
+  }
+};
 
 interface RevisionRowProps {
   revision: Revision;
@@ -24,6 +41,9 @@ interface RevisionRowProps {
 
 function RevisionRow({ revision, baseLocaleId }: RevisionRowProps) {
   const [isOpen, setIsOpen] = useState(false);
+  // Tant que le premier chargement n'est pas terminé, on ne sait pas encore
+  // si cette révision a des events — le chevron reste affiché par défaut
+  // (optimiste : la plupart des révisions en ont) le temps de le savoir.
   const [hasLoaded, setHasLoaded] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [offset, setOffset] = useState(0);
@@ -32,32 +52,43 @@ function RevisionRow({ revision, baseLocaleId }: RevisionRowProps) {
 
   const revisionDate = new Date(revision.publishedAt ?? revision.createdAt);
 
-  const loadEvents = async (currentOffset: number) => {
-    setIsLoadingEvents(true);
-    try {
-      const page = await BasesLocalesService.findBaseLocaleSyncedEvents(
-        revision.id,
-        baseLocaleId,
-        REVISION_EVENTS_PAGE_SIZE,
-        currentOffset
-      );
-      setEvents((current) =>
-        currentOffset === 0
-          ? sortByCreatedAtDesc(page.results)
-          : mergeEvents(current, page.results)
-      );
-      setCount(page.count);
-      setOffset(currentOffset + page.results.length);
-    } finally {
-      setIsLoadingEvents(false);
-    }
-  };
+  const loadEvents = useCallback(
+    async (currentOffset: number) => {
+      setIsLoadingEvents(true);
+      try {
+        const page = await BasesLocalesService.findBaseLocaleSyncedEvents(
+          revision.id,
+          baseLocaleId,
+          REVISION_EVENTS_PAGE_SIZE,
+          currentOffset
+        );
+        setEvents((current) =>
+          currentOffset === 0
+            ? sortByCreatedAtDesc(page.results)
+            : mergeEvents(current, page.results)
+        );
+        setCount(page.count);
+        setOffset(currentOffset + page.results.length);
+      } finally {
+        setIsLoadingEvents(false);
+        setHasLoaded(true);
+      }
+    },
+    [revision.id, baseLocaleId]
+  );
+
+  // Chargé dès le montage (et non plus au premier clic) : c'est le seul
+  // moyen de savoir si cette révision a des events, pour décider d'afficher
+  // ou non le chevron.
+  useEffect(() => {
+    loadEvents(0);
+  }, [loadEvents]);
+
+  const hasEvents = !hasLoaded || count > 0;
 
   const handleToggle = () => {
-    setIsOpen((open) => !open);
-    if (!hasLoaded) {
-      setHasLoaded(true);
-      loadEvents(0);
+    if (hasEvents) {
+      setIsOpen((open) => !open);
     }
   };
 
@@ -75,22 +106,35 @@ function RevisionRow({ revision, baseLocaleId }: RevisionRowProps) {
         alignItems="center"
         gap={8}
         padding={12}
-        cursor="pointer"
+        cursor={hasEvents ? "pointer" : "default"}
         onClick={handleToggle}
         backgroundColor={defaultTheme.colors.gray100}
       >
-        {isOpen ? <ChevronDownIcon /> : <ChevronRightIcon />}
-        <Pane flex={1} minWidth={0}>
+        <Pane
+          flexShrink={0}
+          width={16}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          {hasEvents && (isOpen ? <ChevronDownIcon /> : <ChevronRightIcon />)}
+        </Pane>
+        <Pane
+          flex={1}
+          minWidth={0}
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          gap={8}
+        >
           <Text display="block" size={400}>
-            Révision publiée le {getFullDate(revisionDate)}
+            Révision publiée {getDuration(revisionDate)}
           </Text>
-          <Text size={300} color="muted">
-            il y a {getDuration(revisionDate)}
-          </Text>
+          <ClientBadge client={revision.client} />
         </Pane>
       </Pane>
 
-      {isOpen && (
+      {isOpen && hasEvents && (
         <Pane display="flex" flexDirection="column">
           <EventsHistory
             events={events}
