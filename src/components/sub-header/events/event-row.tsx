@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Checkbox, Pane, Text, defaultTheme } from "evergreen-ui";
 
 import {
   Event,
+  ExtendedVoieDTO,
   SerializedNumero,
   SerializedPosition,
   SerializedToponyme,
   SerializedVoie,
 } from "@/lib/openapi-api-bal";
+import BalDataContext from "@/contexts/bal-data";
 import { getDuration } from "@/lib/utils/date";
 import { getEventDetails } from "./event-details";
 
@@ -25,7 +27,7 @@ const ACTION_COLORS: Record<Event.action, string> = {
   [Event.action.DELETE]: defaultTheme.colors.red600,
 };
 
-function getEventTargetLabel(event: Event): string {
+function getEventTargetLabel(event: Event, voies: ExtendedVoieDTO[]): string {
   const payload =
     event.action === Event.action.DELETE
       ? event.payloadBefore
@@ -44,7 +46,8 @@ function getEventTargetLabel(event: Event): string {
 
     case Event.entityType.NUMERO: {
       const numero = payload as SerializedNumero;
-      return `du numéro « ${numero?.numero ?? ""}${numero?.suffixe ?? ""} »`;
+      const voie = voies?.find((v) => v.id === numero?.voieId);
+      return `du numéro « ${numero?.numero ?? ""}${numero?.suffixe ?? ""} ${voie ? `${voie.nom} ` : ""}»`;
     }
 
     case Event.entityType.POSITION: {
@@ -57,9 +60,9 @@ function getEventTargetLabel(event: Event): string {
   }
 }
 
-function getEventDescription(event: Event): string {
+function getEventDescription(event: Event, voies: ExtendedVoieDTO[]): string {
   const action = ACTION_LABELS[event.action] ?? event.action;
-  return `${action} ${getEventTargetLabel(event)}`;
+  return `${action} ${getEventTargetLabel(event, voies)}`;
 }
 
 interface EventRowProps {
@@ -69,6 +72,7 @@ interface EventRowProps {
 }
 
 function EventRow({ event, isExcluded, onToggle }: EventRowProps) {
+  const { voies } = useContext(BalDataContext);
   const [isActive, setIsActive] = useState(false);
   const details = getEventDetails(event);
 
@@ -86,7 +90,7 @@ function EventRow({ event, isExcluded, onToggle }: EventRowProps) {
 
         <Pane flex={1} minWidth={0}>
           <Text display="block" size={400}>
-            {getEventDescription(event)}
+            {getEventDescription(event, voies)}
           </Text>
           <Text display="block" size={300} color="muted" marginTop={2}>
             il y a {getDuration(new Date(event.createdAt))}
