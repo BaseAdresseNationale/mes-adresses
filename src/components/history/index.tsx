@@ -22,6 +22,18 @@ interface HistoryPublicationProps {
   baseLocale: BaseLocale;
 }
 
+// Fuse.js note ses correspondances en tenant compte de la position/longueur
+// de la chaîne testée : sur une description agrégeant beaucoup d'events, un
+// petit mot isolé perd du score et n'est plus retrouvé. En donnant à Fuse un
+// tableau de mots plutôt qu'une seule longue chaîne, chaque mot est noté
+// indépendamment — un seul mot qui matche suffit à faire remonter la révision.
+function tokenizeDescription(text: string): string[] {
+  return text
+    .split(/[\s«»,·]+/)
+    .map((word) => word.trim())
+    .filter(Boolean);
+}
+
 function sortByPublishedAtDesc(revisions: Revision[]): Revision[] {
   return [...revisions].sort((a, b) => {
     const dateA = new Date(a.publishedAt ?? a.createdAt).getTime();
@@ -98,20 +110,21 @@ function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
 
   const revisionsWithSearchText = useMemo(
     () =>
-      revisions.map((revision) => ({
-        ...revision,
-        eventDescriptions: (
-          (revision.id && eventsByRevisionId.get(revision.id)) ||
-          []
-        )
-          .map((event) => getEventDescription(event, voies))
-          .join(" · "),
-      })),
+      revisions.map((revision) => {
+        const events =
+          (revision.id && eventsByRevisionId.get(revision.id)) || [];
+        return {
+          ...revision,
+          eventDescriptionWords: events.flatMap((event) =>
+            tokenizeDescription(getEventDescription(event, voies))
+          ),
+        };
+      }),
     [revisions, eventsByRevisionId, voies]
   );
 
   const [filteredRevisions, setSearch] = useFuse(revisionsWithSearchText, 200, {
-    keys: ["eventDescriptions"],
+    keys: ["eventDescriptionWords"],
   });
 
   return (
