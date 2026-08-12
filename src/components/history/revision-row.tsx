@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Badge,
   ChevronDownIcon,
@@ -11,7 +11,7 @@ import {
 } from "evergreen-ui";
 
 import { PublicClient, Revision } from "@/lib/api-depot/types";
-import { BasesLocalesService, Event } from "@/lib/openapi-api-bal";
+import { Event } from "@/lib/openapi-api-bal";
 import { sortByCreatedAtDesc } from "@/contexts/events";
 import { getDuration } from "@/lib/utils/date";
 import EventsHistory from "../sub-header/events/events-history";
@@ -34,44 +34,15 @@ const ClientBadge = ({ client }: ClientBadgeProps) => {
 
 interface RevisionRowProps {
   revision: Revision;
-  baseLocaleId: string;
+  events: Event[];
 }
 
-function RevisionRow({ revision, baseLocaleId }: RevisionRowProps) {
+function RevisionRow({ revision, events }: RevisionRowProps) {
   const [isOpen, setIsOpen] = useState(false);
-  // Tant que le premier chargement n'est pas terminé, on ne sait pas encore
-  // si cette révision a des events — le chevron reste affiché par défaut
-  // (optimiste : la plupart des révisions en ont) le temps de le savoir.
-  const [hasLoaded, setHasLoaded] = useState(false);
-  const [events, setEvents] = useState<Event[]>([]);
-  const [isLoadingEvents, setIsLoadingEvents] = useState(false);
 
   const revisionDate = new Date(revision.publishedAt ?? revision.createdAt);
-
-  const loadEvents = useCallback(async () => {
-    setIsLoadingEvents(true);
-    try {
-      // Le typage généré (EventPageDTO) est obsolète : la route renvoie
-      // désormais directement le tableau d'events, plus de pagination.
-      const results = (await BasesLocalesService.findBaseLocaleSyncedEvents(
-        revision.id,
-        baseLocaleId
-      )) as unknown as Event[];
-      setEvents(sortByCreatedAtDesc(results));
-    } finally {
-      setIsLoadingEvents(false);
-      setHasLoaded(true);
-    }
-  }, [revision.id, baseLocaleId]);
-
-  // Chargé dès le montage (et non plus au premier clic) : c'est le seul
-  // moyen de savoir si cette révision a des events, pour décider d'afficher
-  // ou non le chevron.
-  useEffect(() => {
-    loadEvents();
-  }, [loadEvents]);
-
-  const hasEvents = !hasLoaded || events.length > 0;
+  const sortedEvents = sortByCreatedAtDesc(events);
+  const hasEvents = sortedEvents.length > 0;
 
   const handleToggle = () => {
     if (hasEvents) {
@@ -117,8 +88,7 @@ function RevisionRow({ revision, baseLocaleId }: RevisionRowProps) {
       {isOpen && hasEvents && (
         <Pane display="flex" flexDirection="column">
           <EventsHistory
-            events={events}
-            isLoadingEvents={isLoadingEvents}
+            events={sortedEvents}
             emptyMessage="Aucun modification trouvé"
           />
         </Pane>

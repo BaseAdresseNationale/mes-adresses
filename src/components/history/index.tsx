@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Heading, HistoryIcon, Pane, Spinner, Text } from "evergreen-ui";
 
-import { BaseLocale } from "@/lib/openapi-api-bal";
+import { BaseLocale, BasesLocalesService, Event } from "@/lib/openapi-api-bal";
 import { ApiDepotService } from "@/lib/api-depot";
 import { Revision } from "@/lib/api-depot/types";
 import RevisionRow from "./revision-row";
@@ -20,25 +20,49 @@ function sortByPublishedAtDesc(revisions: Revision[]): Revision[] {
   });
 }
 
+// Chaque event synchronisé porte l'id de la révision qui l'a publié
+// (`isSyncedWithRevision`) : le rattachement est direct, pas besoin
+// d'heuristique par date.
+function matchEventsToRevisions(events: Event[]): Map<string, Event[]> {
+  const eventsByRevisionId = new Map<string, Event[]>();
+
+  for (const event of events) {
+    if (!event.isSyncedWithRevision) {
+      continue;
+    }
+    const bucket = eventsByRevisionId.get(event.isSyncedWithRevision) ?? [];
+    bucket.push(event);
+    eventsByRevisionId.set(event.isSyncedWithRevision, bucket);
+  }
+
+  return eventsByRevisionId;
+}
+
 function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
   const [revisions, setRevisions] = useState<Revision[]>([]);
+  const [syncedEvents, setSyncedEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
 
-    async function fetchRevisions() {
+    async function fetchHistory() {
       setIsLoading(true);
       setHasError(false);
       try {
-        const result = await ApiDepotService.getRevisions(baseLocale.commune);
+        const [revisionsResult, syncedEventsResult] = await Promise.all([
+          ApiDepotService.getRevisions(baseLocale.commune),
+          BasesLocalesService.findBaseLocaleSyncedEvents(baseLocale.id),
+        ]);
         if (isMounted) {
-          setRevisions(sortByPublishedAtDesc(result));
+          console.log(syncedEventsResult);
+          setRevisions(sortByPublishedAtDesc(revisionsResult));
+          setSyncedEvents(syncedEventsResult);
         }
       } catch (error) {
         console.error(
-          "ERROR: Impossible de récupérer les révisions pour cette commune",
+          "ERROR: Impossible de récupérer l'historique des révisions",
           error
         );
         if (isMounted) {
@@ -51,12 +75,17 @@ function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
       }
     }
 
-    fetchRevisions();
+    fetchHistory();
 
     return () => {
       isMounted = false;
     };
-  }, [baseLocale.commune]);
+  }, [baseLocale.commune, baseLocale.id]);
+
+  const eventsByRevisionId = useMemo(
+    () => matchEventsToRevisions(syncedEvents),
+    [syncedEvents]
+  );
 
   return (
     <Pane display="flex" flexDirection="column" flex={1} overflow="hidden">
@@ -100,7 +129,9 @@ function HistoryPublication({ baseLocale }: HistoryPublicationProps) {
             <RevisionRow
               key={revision.id}
               revision={revision}
-              baseLocaleId={baseLocale.id}
+              events={
+                (revision.id && eventsByRevisionId.get(revision.id)) || []
+              }
             />
           ))
         )}

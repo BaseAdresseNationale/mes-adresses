@@ -9,7 +9,7 @@ import type { CreateDemoBaseLocaleDTO } from '../models/CreateDemoBaseLocaleDTO'
 import type { CreateToponymeDTO } from '../models/CreateToponymeDTO';
 import type { CreateVoieDTO } from '../models/CreateVoieDTO';
 import type { DeleteBatchNumeroDTO } from '../models/DeleteBatchNumeroDTO';
-import type { EventPageDTO } from '../models/EventPageDTO';
+import type { Event } from '../models/Event';
 import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
 import type { ExtendedBaseLocaleSafeDTO } from '../models/ExtendedBaseLocaleSafeDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
@@ -589,12 +589,12 @@ export class BasesLocalesService {
     /**
      * Find all events for a Bal
      * @param baseLocaleId
-     * @returns EventPageDTO
+     * @returns Event
      * @throws ApiError
      */
     public static findBaseLocaleEvents(
         baseLocaleId: string,
-    ): CancelablePromise<EventPageDTO> {
+    ): CancelablePromise<Array<Event>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}/events',
@@ -605,23 +605,18 @@ export class BasesLocalesService {
     }
     /**
      * Find all events synced with a given revision for a Bal
-     * @param revisionId
      * @param baseLocaleId
-     * @returns EventPageDTO
+     * @returns Event
      * @throws ApiError
      */
     public static findBaseLocaleSyncedEvents(
-        revisionId: string,
         baseLocaleId: string,
-    ): CancelablePromise<EventPageDTO> {
+    ): CancelablePromise<Array<Event>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/bases-locales/{baseLocaleId}/events/synced',
             path: {
                 'baseLocaleId': baseLocaleId,
-            },
-            query: {
-                'revisionId': revisionId,
             },
         });
     }

@@ -26,7 +26,6 @@ export type { CreateToponymeDTO } from './models/CreateToponymeDTO';
 export { CreateVoieDTO } from './models/CreateVoieDTO';
 export type { DeleteBatchNumeroDTO } from './models/DeleteBatchNumeroDTO';
 export { Event } from './models/Event';
-export type { EventPageDTO } from './models/EventPageDTO';
 export { ExtendedBaseLocaleDTO } from './models/ExtendedBaseLocaleDTO';
 export { ExtendedBaseLocaleSafeDTO } from './models/ExtendedBaseLocaleSafeDTO';
 export { ExtendedVoieDTO } from './models/ExtendedVoieDTO';
