@@ -12,11 +12,9 @@ import {
 
 import { PublicClient, Revision } from "@/lib/api-depot/types";
 import { BasesLocalesService, Event } from "@/lib/openapi-api-bal";
-import { sortByCreatedAtDesc, mergeEvents } from "@/contexts/events";
+import { sortByCreatedAtDesc } from "@/contexts/events";
 import { getDuration } from "@/lib/utils/date";
 import EventsHistory from "../sub-header/events/events-history";
-
-const REVISION_EVENTS_PAGE_SIZE = 1;
 
 interface ClientBadgeProps {
   client: PublicClient;
@@ -46,57 +44,39 @@ function RevisionRow({ revision, baseLocaleId }: RevisionRowProps) {
   // (optimiste : la plupart des révisions en ont) le temps de le savoir.
   const [hasLoaded, setHasLoaded] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
-  const [offset, setOffset] = useState(0);
-  const [count, setCount] = useState(0);
   const [isLoadingEvents, setIsLoadingEvents] = useState(false);
 
   const revisionDate = new Date(revision.publishedAt ?? revision.createdAt);
 
-  const loadEvents = useCallback(
-    async (currentOffset: number) => {
-      setIsLoadingEvents(true);
-      try {
-        const page = await BasesLocalesService.findBaseLocaleSyncedEvents(
-          revision.id,
-          baseLocaleId,
-          REVISION_EVENTS_PAGE_SIZE,
-          currentOffset
-        );
-        setEvents((current) =>
-          currentOffset === 0
-            ? sortByCreatedAtDesc(page.results)
-            : mergeEvents(current, page.results)
-        );
-        setCount(page.count);
-        setOffset(currentOffset + page.results.length);
-      } finally {
-        setIsLoadingEvents(false);
-        setHasLoaded(true);
-      }
-    },
-    [revision.id, baseLocaleId]
-  );
+  const loadEvents = useCallback(async () => {
+    setIsLoadingEvents(true);
+    try {
+      // Le typage généré (EventPageDTO) est obsolète : la route renvoie
+      // désormais directement le tableau d'events, plus de pagination.
+      const results = (await BasesLocalesService.findBaseLocaleSyncedEvents(
+        revision.id,
+        baseLocaleId
+      )) as unknown as Event[];
+      setEvents(sortByCreatedAtDesc(results));
+    } finally {
+      setIsLoadingEvents(false);
+      setHasLoaded(true);
+    }
+  }, [revision.id, baseLocaleId]);
 
   // Chargé dès le montage (et non plus au premier clic) : c'est le seul
   // moyen de savoir si cette révision a des events, pour décider d'afficher
   // ou non le chevron.
   useEffect(() => {
-    loadEvents(0);
+    loadEvents();
   }, [loadEvents]);
 
-  const hasEvents = !hasLoaded || count > 0;
+  const hasEvents = !hasLoaded || events.length > 0;
 
   const handleToggle = () => {
     if (hasEvents) {
       setIsOpen((open) => !open);
     }
-  };
-
-  const loadMoreEvents = async () => {
-    if (isLoadingEvents || events.length >= count) {
-      return;
-    }
-    await loadEvents(offset);
   };
 
   return (
@@ -139,7 +119,6 @@ function RevisionRow({ revision, baseLocaleId }: RevisionRowProps) {
           <EventsHistory
             events={events}
             isLoadingEvents={isLoadingEvents}
-            onReachEnd={loadMoreEvents}
             emptyMessage="Aucun modification trouvé"
           />
         </Pane>

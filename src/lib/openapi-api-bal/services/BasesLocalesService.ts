@@ -589,15 +589,11 @@ export class BasesLocalesService {
     /**
      * Find all events for a Bal
      * @param baseLocaleId
-     * @param limit
-     * @param offset
      * @returns EventPageDTO
      * @throws ApiError
      */
     public static findBaseLocaleEvents(
         baseLocaleId: string,
-        limit?: number,
-        offset?: number,
     ): CancelablePromise<EventPageDTO> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -605,26 +601,18 @@ export class BasesLocalesService {
             path: {
                 'baseLocaleId': baseLocaleId,
             },
-            query: {
-                'limit': limit,
-                'offset': offset,
-            },
         });
     }
     /**
      * Find all events synced with a given revision for a Bal
      * @param revisionId
      * @param baseLocaleId
-     * @param limit
-     * @param offset
      * @returns EventPageDTO
      * @throws ApiError
      */
     public static findBaseLocaleSyncedEvents(
         revisionId: string,
         baseLocaleId: string,
-        limit?: number,
-        offset?: number,
     ): CancelablePromise<EventPageDTO> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -634,8 +622,6 @@ export class BasesLocalesService {
             },
             query: {
                 'revisionId': revisionId,
-                'limit': limit,
-                'offset': offset,
             },
         });
     }

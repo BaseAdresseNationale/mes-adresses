@@ -20,7 +20,7 @@ function PublicationPopover({
   excludedEventIds,
   onToggleEvent,
 }: PublicationPopoverProps) {
-  const { events, isLoadingEvents, loadMoreEvents } = useContext(EventsContext);
+  const { events, isLoadingEvents } = useContext(EventsContext);
   const checkedCount = eventsCount - excludedEventIds.size;
   const isDisabled =
     balStatus !== ExtendedBaseLocaleDTO.status.DRAFT && checkedCount <= 0;
@@ -36,7 +36,6 @@ function PublicationPopover({
       <EventsHistory
         events={events}
         isLoadingEvents={isLoadingEvents}
-        onReachEnd={loadMoreEvents}
         excludedEventIds={excludedEventIds}
         onToggleEvent={onToggleEvent}
       />
