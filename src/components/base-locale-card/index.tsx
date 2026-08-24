@@ -15,10 +15,7 @@ import {
 } from "evergreen-ui";
 import NextLink from "next/link";
 import StatusBadge from "@/components/status-badge";
-import {
-  BaseLocale,
-  BaseLocaleWithHabilitationDTO,
-} from "@/lib/openapi-api-bal";
+import { BaseLocale, ExtendedBaseLocaleSafeDTO } from "@/lib/openapi-api-bal";
 import CertificationCount from "../certification-count";
 import { canFetchSignalements } from "@/lib/utils/signalement";
 import { ReportsService, Signalement } from "@/lib/openapi-signalement";
@@ -30,7 +27,7 @@ const ADRESSE_URL =
   process.env.NEXT_PUBLIC_ADRESSE_URL || "https://adresse.data.gouv.fr";
 
 interface BaseLocaleCardProps {
-  baseLocale: BaseLocaleWithHabilitationDTO & { token: string };
+  baseLocale: ExtendedBaseLocaleSafeDTO & { token: string };
   onRemove: () => void;
 }
 
@@ -47,6 +44,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
     updatedAt,
     nbNumeros,
     nbNumerosCertifies,
+    eventsCount,
   } = baseLocale;
 
   useEffect(() => {
@@ -91,8 +89,8 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
   const majDate = formatDistanceToNow(new Date(updatedAt), { locale: fr });
 
   const canHardDelete =
-    status === BaseLocaleWithHabilitationDTO.status.DRAFT ||
-    status === BaseLocaleWithHabilitationDTO.status.DEMO;
+    status === ExtendedBaseLocaleSafeDTO.status.DRAFT ||
+    status === ExtendedBaseLocaleSafeDTO.status.DEMO;
 
   return (
     <Card
@@ -106,11 +104,7 @@ function BaseLocaleCard({ baseLocale, onRemove }: BaseLocaleCardProps) {
       margin={12}
     >
       <Pane position="absolute" top={16} left={16} height={20} elevation={2}>
-        <StatusBadge
-          status={status}
-          sync={sync}
-          isHabilitationValid={baseLocale.isHabilitationValid}
-        />
+        <StatusBadge status={status} sync={sync} eventsCount={eventsCount} />
       </Pane>
       <Pane
         height={100}

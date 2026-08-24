@@ -82,9 +82,9 @@ export default function VoiesPage() {
     isEditing,
     reloadVoies,
     reloadParcelles,
-    refreshBALSync,
     reloadNumeros,
     reloadVoiesDoublonsAlerts,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
   const { reloadTiles, setTileLayersMode } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
@@ -143,17 +143,17 @@ export default function VoiesPage() {
 
   const handleRemove = async () => {
     setIsDisabled(true);
-    const softDeleteVoie = toaster(
-      () => VoiesService.softDeleteVoie(toRemove),
-      "La voie a bien été archivée",
-      "La voie n’a pas pu être archivée"
+    const deleteVoie = toaster(
+      () => VoiesService.deleteVoie(toRemove),
+      "La voie a bien été supprimée",
+      "La voie n’a pas pu être supprimée"
     );
-    await softDeleteVoie();
+    await deleteVoie();
     await reloadVoies();
     await reloadParcelles();
     await reloadVoiesDoublonsAlerts(toRemove);
     reloadTiles();
-    refreshBALSync();
+    reloadBaseLocale();
     setToRemove(null);
     setIsDisabled(false);
   };

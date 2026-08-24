@@ -1,14 +1,14 @@
 import React from "react";
 import { Pane, Badge } from "evergreen-ui";
-import RefreshIconRotate from "./refresh-icon-rotate/refresh-icon-rotate";
+import RefreshIconRotate from "@/components/refresh-icon-rotate/refresh-icon-rotate";
 
 function RefreshSyncBadge() {
   return (
     <Badge
+      data-testid="status-badge"
       display="flex"
       justifyContent="center"
-      color="neutral"
-      height="100%"
+      height={28}
       width="100%"
     >
       <Pane display="flex" alignItems="center">

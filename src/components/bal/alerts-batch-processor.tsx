@@ -47,6 +47,7 @@ import MatomoTrackingContext, {
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
 import { useFusionVoies } from "@/hooks/fusion-voies";
+import EventsContext from "@/contexts/events";
 
 export interface AlertBatchItem {
   voie: ExtendedVoieDTO;
@@ -68,10 +69,10 @@ function AlertsBatchProcessor({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const {
+    reloadBaseLocale,
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
-    refreshBALSync,
     reloadVoieAlerts,
     reloadNumerosAlerts,
   } = useContext(BalDataContext);
@@ -172,7 +173,7 @@ function AlertsBatchProcessor({
       }
 
       reloadTiles();
-      refreshBALSync();
+      reloadBaseLocale();
       // Ne pas incrémenter l'index : l'item corrigé va disparaître de la liste
       // et le suivant prendra sa place au même index.
     } catch (err) {
@@ -186,7 +187,7 @@ function AlertsBatchProcessor({
     isVoieNameAlert,
     isNumeroSuffixeAlert,
     reloadTiles,
-    refreshBALSync,
+    reloadBaseLocale,
     matomoTrackEvent,
     toaster,
     reloadVoies,
@@ -218,7 +219,7 @@ function AlertsBatchProcessor({
       await convert();
 
       reloadTiles();
-      refreshBALSync();
+      reloadBaseLocale();
       // Ne pas incrémenter l'index : la voie convertie va disparaître de la liste.
     } catch (err) {
       console.error(err);
@@ -231,7 +232,7 @@ function AlertsBatchProcessor({
     matomoTrackEvent,
     toaster,
     reloadTiles,
-    refreshBALSync,
+    reloadBaseLocale,
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
@@ -265,7 +266,7 @@ function AlertsBatchProcessor({
 
       reloadNumerosAlerts();
       reloadTiles();
-      refreshBALSync();
+      reloadBaseLocale();
     } catch (err) {
       console.error(err);
     } finally {
@@ -278,7 +279,7 @@ function AlertsBatchProcessor({
     toaster,
     reloadNumerosAlerts,
     reloadTiles,
-    refreshBALSync,
+    reloadBaseLocale,
   ]);
 
   const handleFusionVoies = useCallback(async () => {

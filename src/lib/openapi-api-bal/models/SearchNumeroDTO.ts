@@ -3,6 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SearchNumeroDTO = {
-    polygon: Array<any[]>;
+    polygon: Array<Array<number>>;
 };
 

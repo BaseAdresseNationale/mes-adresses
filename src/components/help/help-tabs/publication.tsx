@@ -85,7 +85,7 @@ function Publication() {
               <StatusBadge
                 status={BaseLocale.status.PUBLISHED}
                 sync={{ isPaused: false, status: BaseLocaleSync.status.SYNCED }}
-                isHabilitationValid={true}
+                eventsCount={1}
               />
             </Pane>
             <Text>
@@ -102,7 +102,7 @@ function Publication() {
                   isPaused: false,
                   status: BaseLocaleSync.status.OUTDATED,
                 }}
-                isHabilitationValid={true}
+                eventsCount={1}
               />
             </Pane>
             <Text>
@@ -117,7 +117,7 @@ function Publication() {
               <StatusBadge
                 status={BaseLocale.status.PUBLISHED}
                 sync={{ isPaused: true, status: BaseLocaleSync.status.SYNCED }}
-                isHabilitationValid={true}
+                eventsCount={0}
               />
             </Pane>
             <Text>
@@ -135,7 +135,7 @@ function Publication() {
                   isPaused: true,
                   status: BaseLocaleSync.status.CONFLICT,
                 }}
-                isHabilitationValid={true}
+                eventsCount={0}
               />
             </Pane>
             <Text>
@@ -154,7 +154,7 @@ function Publication() {
                   isPaused: false,
                   status: BaseLocaleSync.status.OUTDATED,
                 }}
-                isHabilitationValid={false}
+                eventsCount={0}
               />
             </Pane>
             <Text>

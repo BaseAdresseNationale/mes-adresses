@@ -3,7 +3,7 @@ import { cloneDeep, differenceWith, isEqual } from "lodash";
 import { Button, AddIcon, Pane } from "evergreen-ui";
 
 import { validateSourceWithTempMap } from "@/lib/utils/map";
-import RefreshIconRotate from "@/components/sub-header/bal-status/refresh-icon-rotate/refresh-icon-rotate";
+import RefreshIconRotate from "@/components/refresh-icon-rotate/refresh-icon-rotate";
 import BalDataContext from "@/contexts/bal-data";
 import {
   BaseLocaleFondDeCarte,

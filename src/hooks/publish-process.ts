@@ -12,17 +12,20 @@ import {
 import { BaseLocale } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import EventsContext from "@/contexts/events";
 
 interface UsePublishProcess {
+  isPublishing: boolean;
   massDeletionConfirm: null | (() => void);
   setMassDeletionConfirm: Dispatch<SetStateAction<() => void>>;
   handleShowHabilitationProcess: () => Promise<void>;
-  handlePublication: () => Promise<void>;
+  handlePublication: (ignoreEvents?: string[]) => Promise<void>;
 }
 
 export default function usePublishProcess(
   commune: CommuneType
 ): UsePublishProcess {
+  const [isPublishing, setIsPublishing] = useState<boolean>(false);
   const [massDeletionConfirm, setMassDeletionConfirm] = useState<
     null | (() => void)
   >(null);
@@ -84,22 +87,32 @@ export default function usePublishProcess(
     setIsHabilitationProcessDisplayed(isReadyToPublish);
   };
 
-  const handleSync = async () => {
-    await BasesLocalesService.publishBaseLocale(baseLocale.id);
-    await reloadBaseLocale();
+  const handleSync = async (ignoreEvents: string[] = []) => {
+    try {
+      setIsPublishing(true);
+      await BasesLocalesService.publishBaseLocale(baseLocale.id, {
+        ignoreEvents,
+      });
+    } catch (e) {
+      console.error("ERROR: durant la publication", e);
+    } finally {
+      await reloadBaseLocale();
+      setIsPublishing(false);
+    }
   };
 
-  const handlePublication = async () => {
+  const handlePublication = async (ignoreEvents: string[] = []) => {
     const isMassDeletionDetected = await checkMassDeletion();
 
     if (isMassDeletionDetected) {
-      setMassDeletionConfirm(() => handleSync);
+      setMassDeletionConfirm(() => () => handleSync(ignoreEvents));
     } else {
-      await handleSync();
+      await handleSync(ignoreEvents);
     }
   };
 
   return {
+    isPublishing,
     massDeletionConfirm,
     setMassDeletionConfirm,
     handleShowHabilitationProcess,

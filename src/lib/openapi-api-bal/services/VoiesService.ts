@@ -6,7 +6,6 @@ import type { CreateNumeroDTO } from '../models/CreateNumeroDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { FusionVoieDTO } from '../models/FusionVoieDTO';
 import type { Numero } from '../models/Numero';
-import type { RestoreVoieDTO } from '../models/RestoreVoieDTO';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateVoieDTO } from '../models/UpdateVoieDTO';
 import type { Voie } from '../models/Voie';
@@ -88,62 +87,19 @@ export class VoiesService {
         });
     }
     /**
-     * Soft delete Voie by id
-     * @param voieId
-     * @returns Voie
-     * @throws ApiError
-     */
-    public static softDeleteVoie(
-        voieId: string,
-    ): CancelablePromise<Voie> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/v2/voies/{voieId}/soft-delete',
-            path: {
-                'voieId': voieId,
-            },
-        });
-    }
-    /**
-     * Restore Voie by id
-     * @param voieId
-     * @param requestBody
-     * @returns Voie
-     * @throws ApiError
-     */
-    public static restoreVoie(
-        voieId: string,
-        requestBody: RestoreVoieDTO,
-    ): CancelablePromise<Voie> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/v2/voies/{voieId}/restore',
-            path: {
-                'voieId': voieId,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
-    /**
      * Find all numeros which belong to the voie
      * @param voieId
-     * @param isdeleted
      * @returns Numero
      * @throws ApiError
      */
     public static findVoieNumeros(
         voieId: string,
-        isdeleted?: boolean,
     ): CancelablePromise<Array<Numero>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v2/voies/{voieId}/numeros',
             path: {
                 'voieId': voieId,
-            },
-            query: {
-                'isdeleted': isdeleted,
             },
         });
     }

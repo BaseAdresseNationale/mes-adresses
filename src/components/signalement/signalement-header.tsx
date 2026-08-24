@@ -47,7 +47,7 @@ export function SignalementHeader({
           </Paragraph>
         ) : (
           <Paragraph>
-            Déposée il y a <b>{getDuration(new Date(createdAt))}</b>{" "}
+            Déposée <b>{getDuration(new Date(createdAt))}</b>{" "}
           </Paragraph>
         )}
         {author && !author.anonymizedAt && (

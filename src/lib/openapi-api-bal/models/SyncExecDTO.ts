@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type RestoreVoieDTO = {
-    numerosIds: Array<string> | null;
+export type SyncExecDTO = {
+    ignoreEvents?: Array<string>;
 };
 

@@ -7,6 +7,7 @@ import MapContext from "@/contexts/map";
 import NumeroMarker from "@/components/map/numero-marker";
 import { Numero, NumerosService } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
+import EventsContext from "@/contexts/events";
 
 interface NumerosMarkersProps {
   numeros: Numero[];
@@ -28,7 +29,7 @@ function NumerosMarkers({
     isEditing,
     reloadNumeros,
     reloadParcelles,
-    refreshBALSync,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
 
@@ -82,17 +83,17 @@ function NumerosMarkers({
 
   const removeAddress = useCallback(
     async (numeroId: string) => {
-      const softDeleteNumero = toaster(
-        () => NumerosService.softDeleteNumero(numeroId),
-        "Le numéro a bien été archivé",
-        "Le numéro n’a pas pu être archivé"
+      const deleteNumero = toaster(
+        () => NumerosService.deleteNumero(numeroId),
+        "Le numéro a bien été supprimé",
+        "Le numéro n’a pas pu être supprimé"
       );
 
-      await softDeleteNumero();
+      await deleteNumero();
       await reloadNumeros();
       await reloadParcelles();
       reloadTiles();
-      refreshBALSync();
+      reloadBaseLocale();
 
       setIsContextMenuDisplayed(null);
     },
@@ -100,7 +101,7 @@ function NumerosMarkers({
       reloadNumeros,
       reloadParcelles,
       setIsContextMenuDisplayed,
-      refreshBALSync,
+      reloadBaseLocale,
       reloadTiles,
       toaster,
     ]

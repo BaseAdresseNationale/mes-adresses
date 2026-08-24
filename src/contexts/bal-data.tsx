@@ -17,7 +17,6 @@ import {
   BasesLocalesService,
   VoiesService,
   ToponymesService,
-  BaseLocaleSync,
   ExtendedBaseLocaleDTO,
   ExtentedToponymeDTO,
   ExtendedVoieDTO,
@@ -25,7 +24,6 @@ import {
 import TokenContext from "@/contexts/token";
 import MatomoTrackingContext from "@/contexts/matomo-tracking";
 import useHabilitation from "@/hooks/habilitation";
-import LayoutContext from "./layout";
 import { ApiDepotService, PRO_CONNECT_QUERY_PARAM } from "@/lib/api-depot";
 import { CommuneType } from "@/types/commune";
 import { getCommuneWithBBox } from "@/lib/commune";
@@ -58,8 +56,6 @@ interface BALDataContextType {
   reloadVoies: () => Promise<ExtendedVoieDTO[]>;
   toponymes: ExtentedToponymeDTO[];
   reloadToponymes: () => Promise<void>;
-  isRefrehSyncStat: boolean;
-  refreshBALSync: () => Promise<void>;
   habilitationIsLoading: boolean;
   isHabilitationProcessDisplayed: boolean;
   setIsHabilitationProcessDisplayed: (
@@ -100,8 +96,8 @@ export function BalDataContextProvider({
   const [toponyme, setToponyme] = useState<Toponyme | undefined>();
   const [baseLocale, setBaseLocale] =
     useState<ExtendedBaseLocaleDTO>(initialBaseLocale);
-  const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
-  const { pushToast } = useContext(LayoutContext);
+  // const [isRefrehSyncStat, setIsRefrehSyncStat] = useState<boolean>(false);
+  // const { pushToast } = useContext(LayoutContext);
   const { token } = useContext(TokenContext);
   const { setBaseLocale: setMatomoBaseLocale } = useContext(
     MatomoTrackingContext
@@ -239,29 +235,6 @@ export function BalDataContextProvider({
     return bal;
   }, [baseLocale.id]);
 
-  const refreshBALSync = useCallback(async () => {
-    const { sync }: { sync: BaseLocaleSync } = baseLocale;
-    if (
-      sync &&
-      sync.status === BaseLocaleSync.status.SYNCED &&
-      !sync.isPaused &&
-      !isRefrehSyncStat
-    ) {
-      setIsRefrehSyncStat(true);
-      setTimeout(async () => {
-        await reloadBaseLocale();
-        setIsRefrehSyncStat(false);
-        pushToast({
-          title: "De nouvelles modifications ont été détectées",
-          message:
-            "Elles seront automatiquement transmises dans la Base Adresses Nationale d’ici quelques heures.",
-          intent: "info",
-          duration: 5000,
-        });
-      }, 30000); // Maximum interval between CRON job
-    }
-  }, [baseLocale, isRefrehSyncStat, reloadBaseLocale, pushToast]);
-
   const _reloadVoiesDoublonsAlerts = useCallback(
     async (voieIdDeleted?: string) => {
       const voiesUpdated = voieIdDeleted
@@ -374,9 +347,7 @@ export function BalDataContextProvider({
       numeros,
       voies: voies,
       toponymes: toponymes,
-      isRefrehSyncStat,
       setEditingId,
-      refreshBALSync,
       reloadHabilitation,
       reloadParcelles,
       reloadNumeros,
@@ -417,8 +388,6 @@ export function BalDataContextProvider({
       reloadVoies,
       reloadToponymes,
       toponyme,
-      isRefrehSyncStat,
-      refreshBALSync,
       habilitationIsLoading,
       isHabilitationProcessDisplayed,
       setIsHabilitationProcessDisplayed,

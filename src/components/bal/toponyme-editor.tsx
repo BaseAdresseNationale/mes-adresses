@@ -30,6 +30,7 @@ import { CommuneType } from "@/types/commune";
 import { trimNomAlt } from "@/lib/utils/string";
 import MapContext from "@/contexts/map";
 import DrawContext from "@/contexts/draw";
+import EventsContext from "@/contexts/events";
 
 interface ToponymeEditorProps {
   initialValue?: Toponyme;
@@ -62,9 +63,9 @@ function ToponymeEditor({
     baseLocale,
     setToponyme,
     reloadToponymes,
-    refreshBALSync,
     reloadParcelles,
     reloadNumeros,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
   const { markers } = useContext(MarkersContext);
   const { setHint } = useContext(DrawContext);
@@ -143,7 +144,7 @@ function ToponymeEditor({
 
         const toponyme = await submit();
 
-        refreshBALSync();
+        reloadBaseLocale();
         await reloadToponymes();
         reloadTiles();
 
@@ -170,7 +171,7 @@ function ToponymeEditor({
       markers,
       highlightedParcelles,
       setToponyme,
-      refreshBALSync,
+      reloadBaseLocale,
       reloadToponymes,
       reloadParcelles,
       setValidationMessages,

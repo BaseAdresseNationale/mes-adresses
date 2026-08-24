@@ -2,16 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AllDeletedInBalDTO } from '../models/AllDeletedInBalDTO';
 import type { BaseLocale } from '../models/BaseLocale';
-import type { BaseLocaleWithHabilitationDTO } from '../models/BaseLocaleWithHabilitationDTO';
 import type { BatchNumeroResponseDTO } from '../models/BatchNumeroResponseDTO';
 import type { CreateBaseLocaleDTO } from '../models/CreateBaseLocaleDTO';
 import type { CreateDemoBaseLocaleDTO } from '../models/CreateDemoBaseLocaleDTO';
 import type { CreateToponymeDTO } from '../models/CreateToponymeDTO';
 import type { CreateVoieDTO } from '../models/CreateVoieDTO';
 import type { DeleteBatchNumeroDTO } from '../models/DeleteBatchNumeroDTO';
+import type { Event } from '../models/Event';
 import type { ExtendedBaseLocaleDTO } from '../models/ExtendedBaseLocaleDTO';
+import type { ExtendedBaseLocaleSafeDTO } from '../models/ExtendedBaseLocaleSafeDTO';
 import type { ExtendedVoieDTO } from '../models/ExtendedVoieDTO';
 import type { ExtentedToponymeDTO } from '../models/ExtentedToponymeDTO';
 import type { FindManyBaseLocalDTO } from '../models/FindManyBaseLocalDTO';
@@ -21,6 +21,7 @@ import type { PageBaseLocaleDTO } from '../models/PageBaseLocaleDTO';
 import type { RecoverBaseLocaleDTO } from '../models/RecoverBaseLocaleDTO';
 import type { RecoverCommuneDTO } from '../models/RecoverCommuneDTO';
 import type { SearchNumeroDTO } from '../models/SearchNumeroDTO';
+import type { SyncExecDTO } from '../models/SyncExecDTO';
 import type { Toponyme } from '../models/Toponyme';
 import type { UpdateBaseLocaleDemoDTO } from '../models/UpdateBaseLocaleDemoDTO';
 import type { UpdateBaseLocaleDTO } from '../models/UpdateBaseLocaleDTO';
@@ -98,12 +99,12 @@ export class BasesLocalesService {
     /**
      * Find Many Bases Locales
      * @param requestBody
-     * @returns BaseLocaleWithHabilitationDTO
+     * @returns ExtendedBaseLocaleSafeDTO
      * @throws ApiError
      */
     public static findManyBaseLocales(
         requestBody: FindManyBaseLocalDTO,
-    ): CancelablePromise<Array<BaseLocaleWithHabilitationDTO>> {
+    ): CancelablePromise<Array<ExtendedBaseLocaleSafeDTO>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/v2/bases-locales/search-by-ids',
@@ -338,11 +339,13 @@ export class BasesLocalesService {
     /**
      * Publish base locale
      * @param baseLocaleId
+     * @param requestBody
      * @returns BaseLocale
      * @throws ApiError
      */
     public static publishBaseLocale(
         baseLocaleId: string,
+        requestBody?: SyncExecDTO,
     ): CancelablePromise<BaseLocale> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -350,6 +353,8 @@ export class BasesLocalesService {
             path: {
                 'baseLocaleId': baseLocaleId,
             },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
     /**
@@ -387,32 +392,15 @@ export class BasesLocalesService {
         });
     }
     /**
-     * Find all model deleted in Bal
+     * Find all numeros in Bal
      * @param baseLocaleId
-     * @returns AllDeletedInBalDTO
-     * @throws ApiError
-     */
-    public static findAllDeleted(
-        baseLocaleId: string,
-    ): CancelablePromise<AllDeletedInBalDTO> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/v2/bases-locales/{baseLocaleId}/all/deleted',
-            path: {
-                'baseLocaleId': baseLocaleId,
-            },
-        });
-    }
-    /**
-     * Find all Voie in Bal
-     * @param select
-     * @param baseLocaleId
+     * @param select Liste (séparée par des virgules) des champs à retourner pour chaque numero
      * @returns Numero
      * @throws ApiError
      */
     public static findNumeros(
-        select: Array<string>,
         baseLocaleId: string,
+        select?: Array<string>,
     ): CancelablePromise<Array<Numero>> {
         return __request(OpenAPI, {
             method: 'GET',
@@ -481,27 +469,6 @@ export class BasesLocalesService {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/v2/bases-locales/{baseLocaleId}/numeros/batch',
-            path: {
-                'baseLocaleId': baseLocaleId,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
-        });
-    }
-    /**
-     * Multi soft delete numeros
-     * @param baseLocaleId
-     * @param requestBody
-     * @returns BatchNumeroResponseDTO
-     * @throws ApiError
-     */
-    public static softDeleteNumeros(
-        baseLocaleId: string,
-        requestBody: DeleteBatchNumeroDTO,
-    ): CancelablePromise<BatchNumeroResponseDTO> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/v2/bases-locales/{baseLocaleId}/numeros/batch/soft-delete',
             path: {
                 'baseLocaleId': baseLocaleId,
             },
@@ -617,6 +584,40 @@ export class BasesLocalesService {
             },
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * Find all events for a Bal
+     * @param baseLocaleId
+     * @returns Event
+     * @throws ApiError
+     */
+    public static findBaseLocaleEvents(
+        baseLocaleId: string,
+    ): CancelablePromise<Array<Event>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/events',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
+        });
+    }
+    /**
+     * Find all events synced with a given revision for a Bal
+     * @param baseLocaleId
+     * @returns Event
+     * @throws ApiError
+     */
+    public static findBaseLocaleSyncedEvents(
+        baseLocaleId: string,
+    ): CancelablePromise<Array<Event>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/v2/bases-locales/{baseLocaleId}/events/synced',
+            path: {
+                'baseLocaleId': baseLocaleId,
+            },
         });
     }
 }

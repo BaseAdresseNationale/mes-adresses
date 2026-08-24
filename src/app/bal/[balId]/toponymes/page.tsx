@@ -54,9 +54,10 @@ export default function ToponymesPage() {
     isEditing,
     reloadToponymes,
     reloadParcelles,
-    refreshBALSync,
+    reloadBaseLocale,
     baseLocale,
   } = useContext(BalDataContext);
+
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
   const router = useRouter();
   const [page, changePage, search, changeFilter, filtered] =
@@ -83,16 +84,16 @@ export default function ToponymesPage() {
 
   const handleRemove = async () => {
     setIsDisabled(true);
-    const softDeleteToponyme = toaster(
-      () => ToponymesService.softDeleteToponyme(toRemove),
-      "Le toponyme a bien été archivé",
-      "Le toponyme n’a pas pu être archivé"
+    const deleteToponyme = toaster(
+      () => ToponymesService.deleteToponyme(toRemove),
+      "Le toponyme a bien été supprimé",
+      "Le toponyme n’a pas pu être supprimé"
     );
-    await softDeleteToponyme();
+    await deleteToponyme();
     await reloadToponymes();
     await reloadParcelles();
     reloadTiles();
-    refreshBALSync();
+    reloadBaseLocale();
     setToRemove(null);
     setIsDisabled(false);
   };

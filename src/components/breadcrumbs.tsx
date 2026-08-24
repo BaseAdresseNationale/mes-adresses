@@ -1,22 +1,15 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import NextLink from "next/link";
 import { Pane, Text, Link, PaneProps } from "evergreen-ui";
-import { BaseLocale, Toponyme, Voie } from "@/lib/openapi-api-bal";
+import { BaseLocale } from "@/lib/openapi-api-bal";
 import LayoutContext from "@/contexts/layout";
 
 type BreadcrumbsProps = {
   baseLocale: BaseLocale;
-  voie?: Voie;
-  toponyme?: Toponyme;
   [x: string]: any;
 } & PaneProps;
 
-function Breadcrumbs({
-  baseLocale,
-  voie,
-  toponyme,
-  ...props
-}: BreadcrumbsProps) {
+function Breadcrumbs({ baseLocale, ...props }: BreadcrumbsProps) {
   const { breadcrumbs } = useContext(LayoutContext);
 
   return (

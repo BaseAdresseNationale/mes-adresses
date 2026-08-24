@@ -12,7 +12,6 @@ export type BaseLocale = {
     banId: string;
     createdAt: string;
     updatedAt: string;
-    deletedAt: string;
     nom: string;
     communeNom?: string;
     communeNomsAlt: Record<string, any>;
@@ -27,6 +26,7 @@ export type BaseLocale = {
     voies: Array<Voie>;
     toponymes: Array<Toponyme>;
     numeros: Array<Numero>;
+    deletedAt: string;
 };
 export namespace BaseLocale {
     export enum status {
