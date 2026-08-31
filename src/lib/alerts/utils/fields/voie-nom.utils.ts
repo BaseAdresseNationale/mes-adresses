@@ -4,7 +4,11 @@ import { AlertCodeVoieEnum } from "../../alerts.types";
 const LIEU_WORD = "lieu";
 const DIT_WORD = "dit";
 
-const LIEU_DIT_WORDS = [`${LIEU_WORD}${DIT_WORD}`, `${LIEU_WORD}-${DIT_WORD}`];
+const FORBIDDEN_DIT_WORDS = [
+  `${LIEU_WORD}${DIT_WORD}`,
+  `${LIEU_WORD}-${DIT_WORD}`,
+  "hameau",
+];
 
 const VOIE_WORD_WITH_ACCENT = {
   allee: "allée",
@@ -153,7 +157,7 @@ function fixAbbreviation(words: string[]): string[] {
 function fixWordLieuDit(words: string[]) {
   if (words.length < 2) {
     return words;
-  } else if (LIEU_DIT_WORDS.includes(words[0])) {
+  } else if (FORBIDDEN_DIT_WORDS.includes(words[0])) {
     return words.slice(1);
   } else if (words[0] === LIEU_WORD && words[1] === DIT_WORD) {
     return words.slice(2);
@@ -254,7 +258,7 @@ function computeSpecificWordsAndAbbreviationErrors(
   // SI CELA COMMENCE PAR LIEU DIT
   if (
     lowerWords.length > 1 &&
-    (LIEU_DIT_WORDS.includes(lowerWords[0]) ||
+    (FORBIDDEN_DIT_WORDS.includes(lowerWords[0]) ||
       (lowerWords[0] === LIEU_WORD && lowerWords[1] === DIT_WORD))
   ) {
     codes.push(AlertCodeVoieEnum.BAD_WORD_LIEUDIT);
