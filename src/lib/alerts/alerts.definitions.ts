@@ -12,7 +12,7 @@ export const AlertVoieDefinitions: Record<AlertCodeVoieEnum, string> = {
   [AlertCodeVoieEnum.MULTI_SPACE_CARACTERE]:
     "Le nom de la voie semble contenir plusieurs espaces de suite",
   [AlertCodeVoieEnum.BAD_WORD_LIEUDIT]:
-    "Le nom de la voie semble contenir un mot de lieu-dit invalide",
+    "Le nom de la voie semble contenir un préfix invalide",
   [AlertCodeVoieEnum.BAD_MULTI_WORD_RUE]:
     "Le nom de la voie semble contenir plusieurs fois le mot rue",
   [AlertCodeVoieEnum.ABBREVIATION_INVALID]:
