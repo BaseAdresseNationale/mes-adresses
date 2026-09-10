@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/legacy/image";
 
 import {
   Pane,
@@ -31,16 +30,6 @@ export default function Accessibilite() {
         marginTop="2em"
         fontSize={14}
       >
-        <Pane width="100%" maxWidth={500} textAlign="center">
-          <Image
-            src="/static/images/accessibilite-illustration.svg"
-            layout="responsive"
-            height={100}
-            width={500}
-            alt=""
-          />
-        </Pane>
-
         <Pane gap="1em" display="flex" flexDirection="column">
           <Heading is="h2" size={900} color="#2952CC">
             Déclaration d’accessibilité
@@ -48,17 +37,22 @@ export default function Accessibilite() {
           <Pane display="flex" flexDirection="column" justifyContent="center">
             <Pane>
               <Paragraph lineHeight="200%">
-                <Strong>La Base Adresse Nationale</Strong> s’engage à rendre ses
-                sites internet, intranet, extranet et ses progiciels accessibles
-                (et ses applications mobiles et mobilier urbain numérique)
-                conformément à l’article 47 de{" "}
+                <Strong>ANCT / Incubateur des territoires</Strong> s’engage à
+                rendre son service accessible, conformément à l’article 47 de{" "}
                 <Strong>la loi n°2005-102 du 11 février 2005</Strong>. À cette
-                fin, elle met en œuvre la stratégie et les actions suivantes :
+                fin, nous mettons en œuvre la stratégie et les actions suivantes
+                :
               </Paragraph>
               <UnorderedList>
-                <ListItem>Fournir un site web accessible.</ListItem>
                 <ListItem>
-                  Prêter attention aux informations d’accessibilité des données.
+                  <Link
+                    href="https://docs.numerique.gouv.fr/docs/b8f7f83e-56cd-489f-a474-55ec325a2ba6/"
+                    textDecoration="underline"
+                    color="neutral"
+                    target="_blank"
+                  >
+                    Schéma pluriannuel
+                  </Link>
                 </ListItem>
               </UnorderedList>
             </Pane>
@@ -73,8 +67,17 @@ export default function Accessibilite() {
             >
               <Text fontSize={16}>
                 Cette déclaration d’accessibilité a été établie le{" "}
-                <Strong>01/08/2022</Strong> et s’applique à{" "}
-                <Strong>mes-adresses.data.gouv</Strong>
+                <Strong>10 septembre 2026</Strong> et s’applique à{" "}
+                <Strong>Mes Adresses</Strong> (
+                <Link
+                  href="https://mes-adresses.data.gouv.fr/"
+                  textDecoration="underline"
+                  color="neutral"
+                  target="_blank"
+                >
+                  https://mes-adresses.data.gouv.fr/
+                </Link>
+                ).
               </Text>
             </Pane>
           </Pane>
@@ -98,24 +101,59 @@ export default function Accessibilite() {
             </Text>
           </Pane>
           <Paragraph lineHeight="200%">
-            <Strong>mes-adresses.data.gouv</Strong> est non-conforme avec le{" "}
+            <Strong>Mes Adresses</Strong> est non-conforme avec le{" "}
             <Strong>
               référentiel général d’amélioration de l’accessibilité
             </Strong>{" "}
-            (RGAA), un audit d’accessibilité n’ayant pas encore été réalisé.
-            L’absence d’audit d’accessibilité ne remet pas en cause{" "}
-            <Strong>le caractère accessible</Strong> du site web actuel.
+            (RGAA).
           </Paragraph>
+        </Pane>
+
+        <Pane display="flex" flexDirection="column" gap="1em">
+          <Heading is="h3" size={800} color="#2952CC">
+            Résultats des tests
+          </Heading>
+          <Paragraph lineHeight="200%">
+            L’audit de conformité réalisé par évaluation externe révèle que{" "}
+            <Strong>32,76 %</Strong> des critères sont respectés.
+          </Paragraph>
+        </Pane>
+
+        <Pane display="flex" flexDirection="column" gap="1em">
+          <Heading is="h3" size={800} color="#2952CC">
+            Établissement de cette déclaration d’accessibilité
+          </Heading>
+          <Paragraph lineHeight="200%">
+            Cette déclaration a été établie le{" "}
+            <Strong>10 septembre 2026</Strong>.
+          </Paragraph>
+          <Heading is="h4" size={600} color="#2952CC">
+            Technologies utilisées
+          </Heading>
+          <Paragraph lineHeight="200%">
+            L’accessibilité de <Strong>Mes Adresses</Strong> s’appuie sur les
+            technologies suivantes :
+          </Paragraph>
+          <UnorderedList>
+            <ListItem>HTML</ListItem>
+            <ListItem>WAI-ARIA</ListItem>
+            <ListItem>CSS</ListItem>
+            <ListItem>JavaScript</ListItem>
+          </UnorderedList>
         </Pane>
 
         <Pane width="100%" display="flex" flexDirection="column" gap="1em">
           <Heading is="h3" size={800} color="#2952CC">
-            Information et contact
+            Amélioration et contact
           </Heading>
           <Paragraph width="100%" lineHeight="200%">
             Si vous n’arrivez pas à accéder à un contenu ou à un service, vous
-            pouvez contacter notre équipe pour être orienté vers une alternative
-            accessible ou obtenir le contenu sous une autre forme.
+            pouvez contacter le responsable de <Strong>Mes Adresses</Strong>{" "}
+            pour être orienté vers une alternative accessible ou obtenir le
+            contenu sous une autre forme.
+          </Paragraph>
+          <Paragraph width="100%" lineHeight="200%">
+            Adresse : <Strong>ANCT, Ségur, Paris</Strong>
           </Paragraph>
           <Button
             onClick={async () => {
