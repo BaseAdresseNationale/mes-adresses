@@ -83,7 +83,7 @@ export default function Accessibilite() {
           </Pane>
         </Pane>
 
-        <Pane display="flex" flexDirection="column" gap="1em">
+        <Pane width="100%" display="flex" flexDirection="column" gap="1em">
           <Heading is="h3" size={800} color="#2952CC">
             État de conformité
           </Heading>
@@ -109,7 +109,7 @@ export default function Accessibilite() {
           </Paragraph>
         </Pane>
 
-        <Pane display="flex" flexDirection="column" gap="1em">
+        <Pane width="100%" display="flex" flexDirection="column" gap="1em">
           <Heading is="h3" size={800} color="#2952CC">
             Résultats des tests
           </Heading>
@@ -119,7 +119,7 @@ export default function Accessibilite() {
           </Paragraph>
         </Pane>
 
-        <Pane display="flex" flexDirection="column" gap="1em">
+        <Pane width="100%" display="flex" flexDirection="column" gap="1em">
           <Heading is="h3" size={800} color="#2952CC">
             Établissement de cette déclaration d’accessibilité
           </Heading>
