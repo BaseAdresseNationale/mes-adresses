@@ -6,6 +6,7 @@ import LanguagePreview from "../bal/language-preview";
 import { ExtendedBaseLocaleDTO, Toponyme } from "@/lib/openapi-api-bal";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
 import NextLink from "next/link";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 interface ToponymeHeadingProps {
   toponyme: Toponyme;
@@ -15,7 +16,7 @@ interface ToponymeHeadingProps {
 function ToponymeHeading({ toponyme, baseLocale }: ToponymeHeadingProps) {
   const { token } = useContext(TokenContext);
   const { numeros } = useContext(BalDataContext);
-
+  const { otherBalIdPublished } = useContext(BALRecoveryContext);
   return (
     <Pane display="flex" flexDirection="column" background="white" padding={16}>
       <Heading>
@@ -39,6 +40,7 @@ function ToponymeHeading({ toponyme, baseLocale }: ToponymeHeadingProps) {
                 icon={EditIcon}
                 marginBottom={-2}
                 marginLeft={8}
+                disabled={Boolean(otherBalIdPublished)}
               />
             )}
           </Pane>

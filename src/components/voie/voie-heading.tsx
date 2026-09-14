@@ -1,11 +1,19 @@
 import { useContext } from "react";
-import { Pane, Heading, EditIcon, Text, IconButton } from "evergreen-ui";
+import {
+  Pane,
+  Heading,
+  EditIcon,
+  Text,
+  IconButton,
+  LockIcon,
+} from "evergreen-ui";
 import NextLink from "next/link";
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
 import LanguagePreview from "../bal/language-preview";
 import { ExtendedBaseLocaleDTO, Voie } from "@/lib/openapi-api-bal";
 import { TabsEnum } from "../sidebar/main-tabs/main-tabs";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 interface VoieHeadingProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -13,6 +21,11 @@ interface VoieHeadingProps {
 }
 
 function VoieHeading({ voie, baseLocale }: VoieHeadingProps) {
+  const {
+    setIsRecoveryDisplayed,
+    setIsRecoveryPublishedDisplayed,
+    otherBalIdPublished,
+  } = useContext(BALRecoveryContext);
   const { token } = useContext(TokenContext);
   const { numeros } = useContext(BalDataContext);
 
@@ -31,7 +44,7 @@ function VoieHeading({ voie, baseLocale }: VoieHeadingProps) {
             justifyContent="space-between"
           >
             {voie.nom}
-            {token && (
+            {Boolean(token) && (
               <IconButton
                 is={NextLink}
                 href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
@@ -39,6 +52,7 @@ function VoieHeading({ voie, baseLocale }: VoieHeadingProps) {
                 icon={EditIcon}
                 marginBottom={-2}
                 marginLeft={8}
+                disabled={Boolean(otherBalIdPublished)}
               />
             )}
           </Pane>

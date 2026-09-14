@@ -47,7 +47,8 @@ export default function ToponymeNumerosPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { token } = useContext(TokenContext);
-  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const { otherBalIdPublished, setIsRecoveryDisplayed } =
+    useContext(BALRecoveryContext);
   const { pushToast, setBreadcrumbs } = useContext(LayoutContext);
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
@@ -204,7 +205,9 @@ export default function ToponymeNumerosPage() {
                 iconBefore={token ? AddIcon : LockIcon}
                 appearance="primary"
                 intent="success"
-                disabled={token && isEditing}
+                disabled={
+                  (Boolean(token) && isEditing) || Boolean(otherBalIdPublished)
+                }
                 onClick={
                   token
                     ? onEnableAdding
