@@ -17,6 +17,7 @@ function ToponymeHeading({ toponyme, baseLocale }: ToponymeHeadingProps) {
   const { token } = useContext(TokenContext);
   const { numeros } = useContext(BalDataContext);
   const { otherBalIdPublished } = useContext(BALRecoveryContext);
+
   return (
     <Pane display="flex" flexDirection="column" background="white" padding={16}>
       <Heading>

@@ -1,12 +1,5 @@
 import { useContext } from "react";
-import {
-  Pane,
-  Heading,
-  EditIcon,
-  Text,
-  IconButton,
-  LockIcon,
-} from "evergreen-ui";
+import { Pane, Heading, EditIcon, Text, IconButton } from "evergreen-ui";
 import NextLink from "next/link";
 import TokenContext from "@/contexts/token";
 import BalDataContext from "@/contexts/bal-data";
@@ -21,11 +14,7 @@ interface VoieHeadingProps {
 }
 
 function VoieHeading({ voie, baseLocale }: VoieHeadingProps) {
-  const {
-    setIsRecoveryDisplayed,
-    setIsRecoveryPublishedDisplayed,
-    otherBalIdPublished,
-  } = useContext(BALRecoveryContext);
+  const { otherBalIdPublished } = useContext(BALRecoveryContext);
   const { token } = useContext(TokenContext);
   const { numeros } = useContext(BalDataContext);
 

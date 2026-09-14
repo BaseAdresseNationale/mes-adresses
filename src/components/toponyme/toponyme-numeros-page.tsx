@@ -142,12 +142,17 @@ export default function ToponymeNumerosPage() {
           Toponymes
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Link
-          is={NextLink}
-          href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`}
-        >
-          {toponyme.nom}
-        </Link>
+        {Boolean(token) && !Boolean(otherBalIdPublished) ? (
+          <Link
+            is={NextLink}
+            href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`}
+          >
+            {toponyme.nom}
+          </Link>
+        ) : (
+          <Text color="muted">{toponyme.nom}</Text>
+        )}
+
         <Text color="muted">{" > "}</Text>
         <Text aria-current="page">Liste des numéros</Text>
       </>
@@ -157,11 +162,13 @@ export default function ToponymeNumerosPage() {
       setBreadcrumbs(null);
     };
   }, [
+    token,
     setBreadcrumbs,
     baseLocale.id,
     toponyme,
     setLastSelectedItem,
     savedSearchPagination,
+    otherBalIdPublished,
   ]);
 
   return (
