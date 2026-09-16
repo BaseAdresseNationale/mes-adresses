@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import {
   BanCircleIcon,
   Button,
@@ -53,6 +53,12 @@ export function MissingAddressAlertForm({
   const { pendingSignalementsCount } = useContext(SignalementContext);
 
   useAlertMap(alert, !showNumeroEditor);
+
+  useEffect(() => {
+    if (rejectionReasonSelected) {
+      setRejectionReason(rejectionReasonsOptions[rejectionReasonSelected]);
+    }
+  }, [rejectionReasonSelected]);
 
   const onCreateNewAddress = (_numero: Numero) => {
     const { numero, suffixe, banId, voie, toponyme } = _numero;
@@ -114,22 +120,20 @@ export function MissingAddressAlertForm({
               )}
             </Label>
             <BadgeSelect
-              options={rejectionReasonsOptions}
+              options={Object.keys(rejectionReasonsOptions)}
               onChange={(value: string) =>
                 setRejectionReasonSelected(value as RejectionReasonOption)
               }
               value={rejectionReasonSelected}
             />
-            {rejectionReasonSelected === "Autre" && (
-              <Textarea
-                id="reject-reason"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="Précisez la raison du refus, merci de ne pas indiquer de données personnelles"
-                rows={4}
-                resize="none"
-              />
-            )}
+            <Textarea
+              id="reject-reason"
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Précisez la raison du refus, merci de ne pas indiquer de données personnelles"
+              rows={4}
+              resize="none"
+            />
           </Pane>
           <Pane display="flex" justifyContent="center" gap={8}>
             <Button
@@ -138,11 +142,7 @@ export function MissingAddressAlertForm({
               intent="danger"
               iconAfter={BanCircleIcon}
               onClick={async () => {
-                await handleReject(
-                  rejectionReasonSelected === "Autre"
-                    ? rejectionReason
-                    : rejectionReasonSelected
-                );
+                await handleReject(rejectionReason);
                 setShowRejectionForm(false);
                 setRejectionReason("");
               }}

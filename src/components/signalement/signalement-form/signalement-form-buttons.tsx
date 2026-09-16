@@ -12,7 +12,7 @@ import {
   TickCircleIcon,
   Text,
 } from "evergreen-ui";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   rejectionReasonsOptions,
   RejectionReasonOption,
@@ -38,6 +38,12 @@ export function SignalementFormButtons({
     useState<RejectionReasonOption | null>(null);
   const [showRejectionForm, setShowRejectionForm] = useState(false);
   const [rejectionReason, setRejectionReason] = useState<string>("");
+
+  useEffect(() => {
+    if (rejectionReasonSelected) {
+      setRejectionReason(rejectionReasonsOptions[rejectionReasonSelected]);
+    }
+  }, [rejectionReasonSelected]);
 
   return (
     <Pane
@@ -70,22 +76,20 @@ export function SignalementFormButtons({
               )}
             </Label>
             <BadgeSelect
-              options={rejectionReasonsOptions}
+              options={Object.keys(rejectionReasonsOptions)}
               onChange={(value: string) =>
                 setRejectionReasonSelected(value as RejectionReasonOption)
               }
               value={rejectionReasonSelected}
             />
-            {rejectionReasonSelected === "Autre" && (
-              <Textarea
-                id="reject-reason"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="Précisez la raison du refus, merci de ne pas indiquer de données personnelles"
-                rows={4}
-                resize="none"
-              />
-            )}
+            <Textarea
+              id="reject-reason"
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Précisez la raison du refus, merci de ne pas indiquer de données personnelles"
+              rows={4}
+              resize="none"
+            />
           </Pane>
           <Pane display="flex" flexDirection="column" width="100%">
             <Pane
@@ -101,11 +105,7 @@ export function SignalementFormButtons({
                 <Button
                   isLoading={isLoading}
                   onClick={async () => {
-                    await onReject(
-                      rejectionReasonSelected === "Autre"
-                        ? rejectionReason
-                        : rejectionReasonSelected
-                    );
+                    await onReject(rejectionReason);
                     setShowRejectionForm(false);
                     setRejectionReason("");
                   }}
