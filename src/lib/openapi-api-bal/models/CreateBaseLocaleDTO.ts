@@ -6,5 +6,6 @@ export type CreateBaseLocaleDTO = {
     nom: string;
     emails: Array<string>;
     commune: string;
+    otherBalPublishedIgnored: boolean;
 };
 
