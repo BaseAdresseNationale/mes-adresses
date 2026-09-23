@@ -19,12 +19,13 @@ import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
 import { getLinkWithPagination } from "@/hooks/search-pagination";
 import MapContext from "@/contexts/map";
 import { TilesLayerMode } from "@/components/map/layers/tiles";
+import BALRecoveryContext from "@/contexts/bal-recovery";
 
 export function VoieNumerosPage() {
   const { isFormOpen, handleEditing, editedNumero, reset } = useFormState();
 
   useHelp(3);
-
+  const { otherBalIdPublished } = useContext(BALRecoveryContext);
   const { token } = useContext(TokenContext);
   const { setVoie, reloadVoieNumeros, commune, baseLocale, voie, numeros } =
     useContext(BalDataContext);
@@ -55,12 +56,16 @@ export function VoieNumerosPage() {
           Voies
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Link
-          is={NextLink}
-          href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
-        >
-          {voie.nom}{" "}
-        </Link>
+        {Boolean(token) && !Boolean(otherBalIdPublished) ? (
+          <Link
+            is={NextLink}
+            href={`/bal/${baseLocale.id}/${TabsEnum.VOIES}/${voie.id}`}
+          >
+            {voie.nom}{" "}
+          </Link>
+        ) : (
+          <Text color="muted">{voie.nom}</Text>
+        )}
         <Text color="muted">{" > "}</Text>
         <Text aria-current="page">Liste des numéros</Text>
       </>
@@ -75,6 +80,8 @@ export function VoieNumerosPage() {
     voie,
     setLastSelectedItem,
     savedSearchPagination,
+    token,
+    otherBalIdPublished,
   ]);
 
   useEffect(() => {

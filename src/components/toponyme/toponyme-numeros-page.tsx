@@ -47,7 +47,8 @@ export default function ToponymeNumerosPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { token } = useContext(TokenContext);
-  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const { otherBalIdPublished, setIsRecoveryDisplayed } =
+    useContext(BALRecoveryContext);
   const { pushToast, setBreadcrumbs } = useContext(LayoutContext);
   const { savedSearchPagination, setLastSelectedItem } = useContext(
     SearchPaginationContext
@@ -141,12 +142,17 @@ export default function ToponymeNumerosPage() {
           Toponymes
         </Link>
         <Text color="muted">{" > "}</Text>
-        <Link
-          is={NextLink}
-          href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`}
-        >
-          {toponyme.nom}
-        </Link>
+        {Boolean(token) && !Boolean(otherBalIdPublished) ? (
+          <Link
+            is={NextLink}
+            href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/${toponyme.id}`}
+          >
+            {toponyme.nom}
+          </Link>
+        ) : (
+          <Text color="muted">{toponyme.nom}</Text>
+        )}
+
         <Text color="muted">{" > "}</Text>
         <Text aria-current="page">Liste des numéros</Text>
       </>
@@ -156,11 +162,13 @@ export default function ToponymeNumerosPage() {
       setBreadcrumbs(null);
     };
   }, [
+    token,
     setBreadcrumbs,
     baseLocale.id,
     toponyme,
     setLastSelectedItem,
     savedSearchPagination,
+    otherBalIdPublished,
   ]);
 
   return (
@@ -204,7 +212,9 @@ export default function ToponymeNumerosPage() {
                 iconBefore={token ? AddIcon : LockIcon}
                 appearance="primary"
                 intent="success"
-                disabled={token && isEditing}
+                disabled={
+                  (Boolean(token) && isEditing) || Boolean(otherBalIdPublished)
+                }
                 onClick={
                   token
                     ? onEnableAdding

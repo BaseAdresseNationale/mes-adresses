@@ -352,7 +352,7 @@ function NumerosList({
         </Pane>
       </Pane>
 
-      {isGroupedActionsShown && (
+      {isGroupedActionsShown && !Boolean(otherBalIdPublished) && (
         <GroupedActions
           commune={commune}
           idVoie={voie.id}

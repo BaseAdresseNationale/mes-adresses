@@ -125,22 +125,33 @@ export function BalDataContextProvider({
     return () => setMatomoBaseLocale(null);
   }, [setMatomoBaseLocale]);
 
-  const _setBalAlreadyPublished = useCallback(async (codeCommune) => {
-    try {
-      const revision = await ApiDepotService.getCurrentRevision(codeCommune);
-      const otherBalIdPublished = revision.context?.extras?.balId
-        ? revision.context?.extras?.balId !== baseLocale.id
-          ? revision.context?.extras?.balId
-          : null
-        : null;
-      setOtherBalIdPublished(otherBalIdPublished);
-    } catch (error) {
-      console.error(
-        "ERROR: Impossible de récupérer les révisions pour cette commune",
-        error.body
-      );
-    }
-  }, []);
+  const _setBalAlreadyPublished = useCallback(
+    async (commune) => {
+      try {
+        const { count, results } = await BasesLocalesService.searchBaseLocale(
+          "1",
+          "0",
+          undefined,
+          commune,
+          undefined,
+          undefined,
+          "true"
+        );
+        if (count >= 1) {
+          const currentBal = results[0];
+          setOtherBalIdPublished(
+            currentBal.id !== baseLocale.id ? currentBal.id : null
+          );
+        }
+      } catch (error) {
+        console.error(
+          "ERROR: Impossible de récupérer les révisions pour cette commune",
+          error.body
+        );
+      }
+    },
+    [baseLocale.id, setOtherBalIdPublished]
+  );
 
   useEffect(() => {
     async function fetchBALData() {

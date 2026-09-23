@@ -61,7 +61,11 @@ export default function ToponymesPage() {
   const router = useRouter();
   const [page, changePage, search, changeFilter, filtered] =
     useSearchPagination(TabsEnum.TOPONYMES, toponymes);
-  const { setIsRecoveryDisplayed } = useContext(BALRecoveryContext);
+  const {
+    setIsRecoveryDisplayed,
+    otherBalIdPublished,
+    setIsRecoveryPublishedDisplayed,
+  } = useContext(BALRecoveryContext);
   const { reloadTiles } = useContext(MapContext);
   const { scrollAndHighlightLastSelectedItem } = useContext(
     SearchPaginationContext
@@ -179,7 +183,7 @@ export default function ToponymesPage() {
               is={NextLink}
               appearance="primary"
               intent="success"
-              disabled={!token || (token && isEditing)}
+              disabled={!token || (token && isEditing) || otherBalIdPublished}
               href={`/bal/${baseLocale.id}/${TabsEnum.TOPONYMES}/new`}
               message="Ajouter un toponyme"
             />
@@ -249,7 +253,7 @@ export default function ToponymesPage() {
                 }
               />
 
-              {isEditingEnabled && (
+              {!Boolean(otherBalIdPublished) && isEditingEnabled && (
                 <TableRowActions>
                   <Menu.Item
                     icon={SendToMapIcon}
@@ -277,6 +281,17 @@ export default function ToponymesPage() {
                     Supprimer…
                   </Menu.Item>
                 </TableRowActions>
+              )}
+              {Boolean(otherBalIdPublished) && Boolean(token) && (
+                <Table.TextCell flex="0 1 1">
+                  <IconButton
+                    onClick={() => setIsRecoveryPublishedDisplayed(true)}
+                    type="button"
+                    height={24}
+                    icon={LockIcon}
+                    appearance="minimal"
+                  />
+                </Table.TextCell>
               )}
 
               {!Boolean(token) && (

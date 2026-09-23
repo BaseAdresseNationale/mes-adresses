@@ -133,17 +133,8 @@ export default function NewPageComponent({
           nom: balName,
           emails: emails ?? adminEmails,
           commune: commune.code,
+          otherBalPublishedIgnored: ENABLE_CREATION_BAL,
         });
-
-        if (ENABLE_CREATION_BAL) {
-          assignBALToken(bal.token);
-          await BasesLocalesService.updateBaseLocale(bal.id, {
-            settings: {
-              ...bal.settings,
-              otherBalPublishedIgnored: true,
-            },
-          });
-        }
       }
     } catch {
       pushToast({

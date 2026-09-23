@@ -17,12 +17,6 @@ const ENABLE_CREATION_BAL =
   process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL_FOR_ALREADY_PUBLISHED_COMMUNES ===
   "true";
 
-console.log(
-  "ENABLE_CREATION_BAL",
-  ENABLE_CREATION_BAL,
-  process.env.NEXT_PUBLIC_ENABLE_CREATION_BAL_FOR_ALREADY_PUBLISHED_COMMUNES
-);
-
 interface CommunePublicationInfosProps {
   commune: CommuneType;
   outdatedApiDepotClients: string[];
