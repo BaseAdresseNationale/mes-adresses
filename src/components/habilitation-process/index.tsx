@@ -182,7 +182,6 @@ function HabilitationProcess({
       }
     }
     setIsLoadingPublish(false);
-
     if (baseLocale.status === BaseLocale.status.PUBLISHED) {
       setStep(StepPublicationEnum.PUBLISHED_BAL);
     } else {
@@ -214,7 +213,7 @@ function HabilitationProcess({
   useEffect(() => {
     fetchCommuneFlag();
   }, [baseLocale.commune]);
-
+  console.log("HAB", habilitation);
   return (
     <Dialog
       isShown
