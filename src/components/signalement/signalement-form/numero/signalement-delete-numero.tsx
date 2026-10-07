@@ -29,7 +29,7 @@ function SignalementDeleteNumero({
 
   const onAccept = async () => {
     try {
-      await NumerosService.softDeleteNumero(existingLocation.id);
+      await NumerosService.deleteNumero(existingLocation.id);
       await handleAccept();
     } catch (error) {
       console.error("Error accepting signalement:", error);

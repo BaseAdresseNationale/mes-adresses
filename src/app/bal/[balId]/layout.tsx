@@ -1,6 +1,7 @@
 import { AlertsContextProvider } from "@/contexts/alerts";
 import { BalDataContextProvider } from "@/contexts/bal-data";
 import { CadastreContextProvider } from "@/contexts/cadastre";
+import { EventsContextProvider } from "@/contexts/events";
 import { SearchPaginationContextProvider } from "@/contexts/search-pagination";
 import { SignalementContextProvider } from "@/contexts/signalement";
 import { TokenContextProvider } from "@/contexts/token";
@@ -31,11 +32,13 @@ export default async function EditorLayout({
       <CadastreContextProvider codeCommune={baseLocale.commune}>
         <AlertsContextProvider>
           <BalDataContextProvider initialBaseLocale={baseLocale}>
-            <SearchPaginationContextProvider>
-              <SignalementContextProvider>
-                <Editor>{children}</Editor>
-              </SignalementContextProvider>
-            </SearchPaginationContextProvider>
+            <EventsContextProvider>
+              <SearchPaginationContextProvider>
+                <SignalementContextProvider>
+                  <Editor>{children}</Editor>
+                </SignalementContextProvider>
+              </SearchPaginationContextProvider>
+            </EventsContextProvider>
           </BalDataContextProvider>
         </AlertsContextProvider>
       </CadastreContextProvider>

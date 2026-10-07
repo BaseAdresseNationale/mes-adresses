@@ -12,7 +12,6 @@ export type ExtendedBaseLocaleDTO = {
     banId: string;
     createdAt: string;
     updatedAt: string;
-    deletedAt: string;
     nom: string;
     communeNom?: string;
     communeNomsAlt: Record<string, any>;
@@ -27,10 +26,11 @@ export type ExtendedBaseLocaleDTO = {
     voies: Array<Voie>;
     toponymes: Array<Toponyme>;
     numeros: Array<Numero>;
+    deletedAt: string;
     nbNumeros: number;
     nbNumerosCertifies: number;
     isAllCertified: boolean;
-    isHabilitationValid: boolean;
+    eventsCount: number;
 };
 export namespace ExtendedBaseLocaleDTO {
     export enum status {

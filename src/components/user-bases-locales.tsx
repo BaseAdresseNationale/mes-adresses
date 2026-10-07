@@ -5,8 +5,8 @@ import { Pane, Spinner } from "evergreen-ui";
 import LocalStorageContext from "@/contexts/local-storage";
 import BasesLocalesList from "@/components/bases-locales-list";
 import {
-  BaseLocaleWithHabilitationDTO,
   BasesLocalesService,
+  ExtendedBaseLocaleSafeDTO,
 } from "@/lib/openapi-api-bal";
 import { sortBalByUpdate } from "@/lib/utils/sort-bal";
 import HomeDrawer from "./home-drawer";
@@ -15,7 +15,7 @@ function UserBasesLocales() {
   const { balAccess } = useContext(LocalStorageContext);
   const [isLoading, setIsLoading] = useState(true);
   const [basesLocales, setBasesLocales] = useState<
-    Array<BaseLocaleWithHabilitationDTO & { token: string }>
+    Array<ExtendedBaseLocaleSafeDTO & { token: string }>
   >([]);
 
   const getUserBals = useCallback(async () => {
@@ -24,15 +24,14 @@ function UserBasesLocales() {
       const basesLocalesResponse =
         await BasesLocalesService.findManyBaseLocales({ ids });
 
-      const basesLocales: Array<
-        BaseLocaleWithHabilitationDTO & { token: string }
-      > = basesLocalesResponse.map((baseLocale) => ({
-        ...baseLocale,
-        token: balAccess[baseLocale.id],
-      }));
+      const basesLocales: Array<ExtendedBaseLocaleSafeDTO & { token: string }> =
+        basesLocalesResponse.map((baseLocale) => ({
+          ...baseLocale,
+          token: balAccess[baseLocale.id],
+        }));
 
       const orderedBALs = sortBalByUpdate<
-        BaseLocaleWithHabilitationDTO & { token: string }
+        ExtendedBaseLocaleSafeDTO & { token: string }
       >(basesLocales.filter(Boolean));
 
       setBasesLocales(orderedBALs);

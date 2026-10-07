@@ -31,9 +31,9 @@ function WarningVoieDoublon({ voie }: WarningVoieDoublonProps) {
   }, [voie, voies]);
 
   const handleFusionVoies = useCallback(async () => {
-    await onFusionVoie(toFusion);
+    const newVoie = await onFusionVoie(toFusion);
     await router.push(
-      `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${toFusion.id}/numeros`
+      `/bal/${baseLocale.id}/${TabsEnum.VOIES}/${newVoie.id}/numeros`
     );
   }, [baseLocale.id, onFusionVoie, router, toFusion]);
 

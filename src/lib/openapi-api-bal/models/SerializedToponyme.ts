@@ -2,22 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { BaseLocale } from './BaseLocale';
-import type { Numero } from './Numero';
-import type { Position } from './Position';
-export type Toponyme = {
+export type SerializedToponyme = {
     id: string;
     banId: string;
     createdAt: string;
-    updatedAt: string;
     balId: string;
     nom: string;
     nomAlt: Record<string, any>;
     communeDeleguee: string;
     parcelles: Array<string>;
-    positions: Array<Position>;
     codeVoie: string;
-    baseLocale: BaseLocale;
-    numeros: Array<Numero>;
+    numeroIds: Array<string>;
 };
 

@@ -66,40 +66,6 @@ export class ToponymesService {
         });
     }
     /**
-     * Soft delete Tpponyme by id
-     * @param toponymeId
-     * @returns Toponyme
-     * @throws ApiError
-     */
-    public static softDeleteToponyme(
-        toponymeId: string,
-    ): CancelablePromise<Toponyme> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/v2/toponymes/{toponymeId}/soft-delete',
-            path: {
-                'toponymeId': toponymeId,
-            },
-        });
-    }
-    /**
-     * Restore Toponyme by id
-     * @param toponymeId
-     * @returns Toponyme
-     * @throws ApiError
-     */
-    public static restoreToponyme(
-        toponymeId: string,
-    ): CancelablePromise<Toponyme> {
-        return __request(OpenAPI, {
-            method: 'PUT',
-            url: '/v2/toponymes/{toponymeId}/restore',
-            path: {
-                'toponymeId': toponymeId,
-            },
-        });
-    }
-    /**
      * Find all numeros which belong to the toponyme
      * @param toponymeId
      * @returns Numero

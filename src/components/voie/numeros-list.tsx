@@ -103,8 +103,8 @@ function NumerosList({
     isEditing,
     reloadNumeros,
     reloadParcelles,
-    refreshBALSync,
     reloadVoieAlerts,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
 
@@ -208,24 +208,24 @@ function NumerosList({
 
   const onRemove = useCallback(
     async (idNumero) => {
-      const softDeleteNumero = toaster(
+      const deleteNumero = toaster(
         async () => {
-          await NumerosService.softDeleteNumero(idNumero);
+          await NumerosService.deleteNumero(idNumero);
           await reloadNumeros();
           await reloadParcelles();
           reloadTiles();
-          refreshBALSync();
+          reloadBaseLocale();
         },
-        "Le numéro a bien été archivé",
-        "Le numéro n’a pas pu être archivé"
+        "Le numéro a bien été supprimé",
+        "Le numéro n’a pas pu être supprimé"
       );
-      await softDeleteNumero();
+      await deleteNumero();
       await reloadVoie([idNumero]);
     },
     [
       reloadNumeros,
       reloadParcelles,
-      refreshBALSync,
+      reloadBaseLocale,
       reloadTiles,
       toaster,
       reloadVoie,
@@ -287,16 +287,16 @@ function NumerosList({
 
   const onMultipleRemove = async () => {
     setIsDisabled(true);
-    const softDeleteNumeros = toaster(
+    const deleteNumeros = toaster(
       async () => {
-        await BasesLocalesService.softDeleteNumeros(baseLocale.id, {
+        await BasesLocalesService.deleteNumeros(baseLocale.id, {
           numerosIds: selectedNumerosIds,
         });
 
         await reloadNumeros();
         await reloadParcelles();
         reloadTiles();
-        refreshBALSync();
+        reloadBaseLocale();
 
         setSelectedNumerosIds([]);
         setIsRemoveWarningShown(false);
@@ -304,7 +304,7 @@ function NumerosList({
       "Les numéros ont bien été archivés",
       "Les numéros n’ont pas pu être archivés"
     );
-    await softDeleteNumeros();
+    await deleteNumeros();
     await reloadVoie(selectedNumerosIds);
     setIsDisabled(false);
   };
@@ -314,7 +314,7 @@ function NumerosList({
       async () => {
         await BasesLocalesService.updateNumeros(balId, body);
         await reloadNumeros();
-        refreshBALSync();
+        reloadBaseLocale();
       },
       "Les numéros ont bien été modifiés",
       "Les numéros n’ont pas pu être modifiés"

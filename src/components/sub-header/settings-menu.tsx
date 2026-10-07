@@ -10,9 +10,8 @@ function SettingsMenu() {
 
   return (
     <Button
-      appearance="minimal"
       onClick={() => setDrawerDisplayed(true)}
-      {...(!isMobile && { iconAfter: MenuIcon, marginRight: 16, height: 24 })}
+      {...(!isMobile && { iconAfter: MenuIcon, height: 28 })}
     >
       {isMobile ? <MenuIcon /> : "Menu"}
     </Button>

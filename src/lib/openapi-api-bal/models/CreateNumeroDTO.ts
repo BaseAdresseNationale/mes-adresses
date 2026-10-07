@@ -12,5 +12,6 @@ export type CreateNumeroDTO = {
     certifie?: boolean;
     communeDeleguee?: string;
     positions: Array<Position>;
+    banId?: string | null;
 };
 

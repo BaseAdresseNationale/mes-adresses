@@ -9,6 +9,7 @@ export type CreateVoieDTO = {
     typeNumerotation?: CreateVoieDTO.typeNumerotation;
     trace?: LineString;
     comment?: string | null;
+    banId?: string | null;
 };
 export namespace CreateVoieDTO {
     export enum typeNumerotation {

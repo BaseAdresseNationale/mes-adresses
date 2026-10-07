@@ -10,6 +10,7 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
+import EventsContext from "@/contexts/events";
 
 export function useFusionVoies(
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
@@ -18,8 +19,8 @@ export function useFusionVoies(
     voies,
     reloadVoies,
     reloadParcelles,
-    refreshBALSync,
     reloadVoieAlerts,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
@@ -47,21 +48,23 @@ export function useFusionVoies(
           const voies = await reloadVoies();
           await reloadParcelles();
           reloadTiles();
-          refreshBALSync();
+          reloadBaseLocale();
           // RELOAD ALERTS
           reloadVoieAlerts(newVoie as ExtendedVoieDTO, voies);
+          return newVoie;
         },
         "Les voies ont été fusionné",
         "Les voies n’ont pas pu être fusionné"
       );
 
-      await fusionVoies();
+      const newVoie = await fusionVoies();
       matomoTrackEvent(
         MatomoEventCategory.QUALITY,
         MatomoEventAction[MatomoEventCategory.QUALITY].FUSION_VOIES
       );
 
       setLoading(false);
+      return newVoie;
     },
     [
       toaster,
@@ -70,7 +73,7 @@ export function useFusionVoies(
       reloadVoies,
       reloadParcelles,
       reloadTiles,
-      refreshBALSync,
+      reloadBaseLocale,
       reloadVoieAlerts,
       setLoading,
     ]

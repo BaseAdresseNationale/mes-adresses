@@ -1,7 +1,7 @@
 import { orderBy } from "lodash";
 import {
   BaseLocale,
-  BaseLocaleWithHabilitationDTO,
+  ExtendedBaseLocaleSafeDTO,
   ExtendedBaseLocaleDTO,
 } from "../openapi-api-bal";
 
@@ -9,7 +9,7 @@ export function sortBalByUpdate<
   T extends
     | BaseLocale
     | ExtendedBaseLocaleDTO
-    | (BaseLocaleWithHabilitationDTO & { token: string }),
+    | (ExtendedBaseLocaleSafeDTO & { token: string }),
 >(array: T[]): T[] {
   return orderBy(array, ["updatedAt"], ["desc"]);
 }

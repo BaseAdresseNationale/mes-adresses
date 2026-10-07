@@ -9,7 +9,7 @@ import TokenContext from "@/contexts/token";
 
 import Downloads from "@/components/downloads";
 import Settings from "@/components/settings";
-import Trash from "@/components/trash";
+import HistoryPublication from "@/components/history";
 import LayoutContext from "@/contexts/layout";
 import { BaseLocale } from "@/lib/openapi-api-bal";
 import BALRecoveryContext from "@/contexts/bal-recovery";
@@ -41,12 +41,14 @@ function DrawerContent() {
       key: "downloads",
       content: <Downloads baseLocale={baseLocale} />,
     },
-    ...(isAdmin && !Boolean(otherBalIdPublished)
+    ...(baseLocale.status !== BaseLocale.status.DEMO &&
+    isAdmin &&
+    !Boolean(otherBalIdPublished)
       ? [
           {
-            label: "Corbeille",
-            key: "trash",
-            content: <Trash />,
+            label: "Historique Publication",
+            key: "history",
+            content: <HistoryPublication baseLocale={baseLocale} />,
           },
         ]
       : []),

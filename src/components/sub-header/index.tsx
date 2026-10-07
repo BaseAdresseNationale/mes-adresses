@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Pane } from "evergreen-ui";
 
@@ -10,10 +10,12 @@ import TokenContext from "@/contexts/token";
 import HabilitationProcess from "@/components/habilitation-process/index";
 import Breadcrumbs from "@/components/breadcrumbs";
 import SettingsMenu from "@/components/sub-header/settings-menu";
-import BALStatus from "@/components/sub-header/bal-status";
 import MassDeletionDialog from "@/components/mass-deletion-dialog";
 import LayoutContext from "@/contexts/layout";
 import { CommuneType } from "@/types/commune";
+import Publication from "./publication";
+import { HabilitationDTO, HabilitationService } from "@/lib/openapi-api-bal";
+import RefreshSyncBadge from "./publication/refresh-sync-badge";
 
 interface SubHeaderProps {
   commune: CommuneType;
@@ -23,10 +25,6 @@ function SubHeader({ commune }: SubHeaderProps) {
   const {
     baseLocale,
     habilitation,
-    reloadBaseLocale,
-    voie,
-    toponyme,
-    isRefrehSyncStat,
     habilitationIsLoading,
     isHabilitationProcessDisplayed,
     setIsHabilitationProcessDisplayed,
@@ -40,11 +38,47 @@ function SubHeader({ commune }: SubHeaderProps) {
   }, [setIsHabilitationProcessDisplayed]);
 
   const {
+    isPublishing,
     massDeletionConfirm,
     setMassDeletionConfirm,
     handleShowHabilitationProcess,
     handlePublication,
   } = usePublishProcess(commune);
+
+  const [isHabilitationValid, setIsHabilitationValid] = useState<
+    boolean | null
+  >(null);
+
+  useEffect(() => {
+    async function checkHabilitationValid() {
+      const result = await HabilitationService.findIsValid(baseLocale.id);
+      setIsHabilitationValid(result);
+    }
+    if (habilitation) {
+      setIsHabilitationValid(
+        habilitation?.status === HabilitationDTO.status.ACCEPTED
+      );
+    } else {
+      checkHabilitationValid();
+    }
+  }, [habilitation, baseLocale.id]);
+
+  const onPublication = useCallback(
+    (ignoreEvents: string[]) => {
+      if (isAdmin && habilitation && isHabilitationValid) {
+        handlePublication(ignoreEvents);
+      } else {
+        handleShowHabilitationProcess();
+      }
+    },
+    [
+      isAdmin,
+      habilitation,
+      handlePublication,
+      isHabilitationValid,
+      handleShowHabilitationProcess,
+    ]
+  );
 
   return (
     <>
@@ -77,12 +111,7 @@ function SubHeader({ commune }: SubHeaderProps) {
           : { height: 40 })}
       >
         <Pane order={isMobile ? 2 : 1}>
-          <Breadcrumbs
-            baseLocale={baseLocale}
-            voie={voie}
-            toponyme={toponyme}
-            marginLeft={8}
-          />
+          <Breadcrumbs baseLocale={baseLocale} marginLeft={8} />
         </Pane>
         {!tokenIsChecking && !habilitationIsLoading && (
           <Pane
@@ -93,6 +122,27 @@ function SubHeader({ commune }: SubHeaderProps) {
               ? { order: 1, justifyContent: "space-between" }
               : { order: 2, justifyContent: "flex-end" })}
           >
+            {isAdmin && (
+              <Pane
+                display="flex"
+                {...(isMobile
+                  ? {
+                      justifyContent: "space-between",
+                      width: "100%",
+                    }
+                  : { marginRight: 16 })}
+              >
+                {isPublishing ? (
+                  <RefreshSyncBadge />
+                ) : (
+                  <Publication
+                    baseLocale={baseLocale}
+                    isAdmin={isAdmin}
+                    onPublication={onPublication}
+                  />
+                )}
+              </Pane>
+            )}
             {isMobile ? (
               ReactDOM.createPortal(
                 <SettingsMenu />,
@@ -101,24 +151,6 @@ function SubHeader({ commune }: SubHeaderProps) {
             ) : (
               <SettingsMenu />
             )}
-            <Pane
-              display="flex"
-              {...(isMobile && {
-                justifyContent: "space-between",
-                width: "100%",
-              })}
-            >
-              <BALStatus
-                baseLocale={baseLocale}
-                commune={commune}
-                token={token}
-                habilitation={habilitation}
-                isRefrehSyncStat={isRefrehSyncStat}
-                handlePublication={handlePublication}
-                handleHabilitation={handleShowHabilitationProcess}
-                reloadBaseLocale={async () => reloadBaseLocale()}
-              />
-            </Pane>
           </Pane>
         )}
       </Pane>

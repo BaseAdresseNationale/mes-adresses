@@ -18,6 +18,7 @@ import MatomoTrackingContext, {
   MatomoEventAction,
   MatomoEventCategory,
 } from "@/contexts/matomo-tracking";
+import EventsContext from "@/contexts/events";
 
 interface WarningVoieEmptyProps {
   baseLocale: ExtendedBaseLocaleDTO;
@@ -29,8 +30,8 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
     reloadVoies,
     reloadToponymes,
     reloadParcelles,
-    refreshBALSync,
     reloadVoieAlerts,
+    reloadBaseLocale,
   } = useContext(BalDataContext);
   const { reloadTiles } = useContext(MapContext);
   const { matomoTrackEvent } = useContext(MatomoTrackingContext);
@@ -50,7 +51,7 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
         await reloadToponymes();
         await reloadParcelles();
         reloadTiles();
-        refreshBALSync();
+        reloadBaseLocale();
         // RELOAD ALERTS
         reloadVoieAlerts(toConvert, voies);
         await router.push(
@@ -77,7 +78,7 @@ function WarningVoieEmpty({ baseLocale, voie }: WarningVoieEmptyProps) {
     reloadToponymes,
     reloadParcelles,
     reloadTiles,
-    refreshBALSync,
+    reloadBaseLocale,
     reloadVoieAlerts,
     baseLocale.id,
     router,
