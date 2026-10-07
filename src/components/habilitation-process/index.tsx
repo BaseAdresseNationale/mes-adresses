@@ -213,7 +213,7 @@ function HabilitationProcess({
   useEffect(() => {
     fetchCommuneFlag();
   }, [baseLocale.commune]);
-  console.log("HAB", habilitation);
+
   return (
     <Dialog
       isShown
