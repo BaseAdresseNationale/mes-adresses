@@ -35,7 +35,7 @@ function AuthenticationRejectedStep({
                 href="https://identite.proconnect.gouv.fr/manage-organizations"
                 target="_blank"
               >
-                rejoindre l'organisation correspondant à votre mairie
+                rejoindre l&apos;organisation correspondant à votre mairie
               </Link>{" "}
               en saisissant son SIRET.
             </Text>
