@@ -297,8 +297,6 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
         TOPONYME_LABEL: toponymeLabelLayer,
       };
     case TilesLayerMode.INACTIVE:
-      // Layers visibles mais non cliquables : numerosPointLayer est masqué,
-      // numerosLabelLayer reste visible à zoom élevé
       return {
         NUMEROS_LABEL: numerosLabelLayer,
         VOIE_TRACE_LINE: voieTraceLineLayer,
