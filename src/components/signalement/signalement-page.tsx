@@ -45,12 +45,8 @@ export default function SignalementPage({
   const { fetchPendingSignalements, updateOneSignalement } =
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const {
-    map,
-    setTileLayersMode,
-    isStyleLoaded,
-    isTileSourceLoaded,
-  } = useContext(MapContext);
+  const { map, setTileLayersMode, isStyleLoaded, isTileSourceLoaded } =
+    useContext(MapContext);
   const { refreshBALSync, baseLocale } = useContext(BalDataContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
