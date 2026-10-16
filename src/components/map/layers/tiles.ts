@@ -48,6 +48,7 @@ export enum TilesLayerMode {
   VOIE = "voie",
   TOPONYME = "toponyme",
   HIDDEN = "hidden",
+  INACTIVE = "inactive",
 }
 
 const voieLabelLayer = {
@@ -293,6 +294,13 @@ export const getTilesLayers = (mode = TilesLayerMode.VOIE) => {
             "circle-color": ["get", "colorToponyme"],
           },
         },
+        TOPONYME_LABEL: toponymeLabelLayer,
+      };
+    case TilesLayerMode.INACTIVE:
+      return {
+        NUMEROS_LABEL: numerosLabelLayer,
+        VOIE_TRACE_LINE: voieTraceLineLayer,
+        VOIE_LABEL: voieLabelLayer,
         TOPONYME_LABEL: toponymeLabelLayer,
       };
     default:

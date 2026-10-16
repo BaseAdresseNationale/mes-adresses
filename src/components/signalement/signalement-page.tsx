@@ -10,7 +10,7 @@ import React, {
 import { Button, Link, Pane, Paragraph, Text } from "evergreen-ui";
 import NextLink from "next/link";
 import { Numero, Toponyme, Voie } from "@/lib/openapi-api-bal";
-import { Signalement } from "@/lib/openapi-signalement";
+import { ExistingLocation, Signalement } from "@/lib/openapi-signalement";
 import { SignalementsService as SignalementsServiceBal } from "@/lib/openapi-api-bal";
 import { useRouter } from "next/navigation";
 import LayoutContext from "@/contexts/layout";
@@ -26,7 +26,8 @@ import { SignalementViewer } from "@/components/signalement/signalement-viewer/s
 import SignalementContext from "@/contexts/signalement";
 import TokenContext from "@/contexts/token";
 import { TabsEnum } from "@/components/sidebar/main-tabs/main-tabs";
-import { TilesLayerMode } from "@/components/map/layers/tiles";
+import { NUMEROS_LABEL, TilesLayerMode } from "@/components/map/layers/tiles";
+import { setMapFilter } from "@/lib/utils/map";
 import { wait } from "@/lib/utils/promise";
 
 interface SignalementPageProps {
@@ -44,7 +45,8 @@ export default function SignalementPage({
   const { fetchPendingSignalements, updateOneSignalement } =
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const { setTileLayersMode } = useContext(MapContext);
+  const { map, setTileLayersMode, isStyleLoaded, isTileSourceLoaded } =
+    useContext(MapContext);
   const { refreshBALSync, baseLocale } = useContext(BalDataContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
@@ -54,7 +56,7 @@ export default function SignalementPage({
     signalement.existingLocation === null;
 
   useEffect(() => {
-    setTileLayersMode(TilesLayerMode.HIDDEN);
+    setTileLayersMode(TilesLayerMode.INACTIVE);
     setBreadcrumbs(
       <>
         <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>
@@ -69,6 +71,27 @@ export default function SignalementPage({
       setBreadcrumbs(null);
     };
   }, [setBreadcrumbs, baseLocale, signalement, setTileLayersMode]);
+
+  // Masque le numéro de l'adresse concernée pour ne laisser que son marqueur
+  useEffect(() => {
+    if (
+      !map ||
+      !existingLocation ||
+      signalement.existingLocation?.type !== ExistingLocation.type.NUMERO
+    ) {
+      return;
+    }
+
+    setMapFilter(map, NUMEROS_LABEL, [
+      "!=",
+      ["get", "id"],
+      existingLocation.id,
+    ]);
+
+    return () => {
+      setMapFilter(map, NUMEROS_LABEL, null);
+    };
+  }, [map, isStyleLoaded, isTileSourceLoaded, existingLocation, signalement]);
 
   const isProcessableSignalement = useMemo(
     () =>
