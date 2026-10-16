@@ -38,7 +38,7 @@ export default function AlertPage({ alert }: AlertPageProps) {
   const { token } = useContext(TokenContext);
 
   useEffect(() => {
-    setTileLayersMode(TilesLayerMode.HIDDEN);
+    setTileLayersMode(TilesLayerMode.INACTIVE);
     setBreadcrumbs(
       <>
         <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>

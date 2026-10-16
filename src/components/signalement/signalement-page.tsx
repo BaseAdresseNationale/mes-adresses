@@ -54,7 +54,7 @@ export default function SignalementPage({
     signalement.existingLocation === null;
 
   useEffect(() => {
-    setTileLayersMode(TilesLayerMode.HIDDEN);
+    setTileLayersMode(TilesLayerMode.INACTIVE);
     setBreadcrumbs(
       <>
         <Link is={NextLink} href={`/bal/${baseLocale.id}/signalements`}>

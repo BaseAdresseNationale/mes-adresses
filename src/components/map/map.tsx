@@ -224,14 +224,16 @@ function Map({
     }
 
     if (!isEditing && isTileSourceLoaded) {
-      layers.push(
-        VOIE_TRACE_LINE,
-        NUMEROS_POINT,
-        NUMEROS_LABEL,
-        VOIE_LABEL,
-        TOPONYME_LABEL,
-        PANORAMAX_PICTURE_LAYER_ID
-      );
+      if (tileLayersMode !== TilesLayerMode.INACTIVE) {
+        layers.push(
+          VOIE_TRACE_LINE,
+          NUMEROS_POINT,
+          NUMEROS_LABEL,
+          VOIE_LABEL,
+          TOPONYME_LABEL
+        );
+      }
+      layers.push(PANORAMAX_PICTURE_LAYER_ID);
     }
 
     return layers;
@@ -240,6 +242,7 @@ function Map({
     isParcelleSelectionEnabled,
     isCadastreDisplayed,
     isTileSourceLoaded,
+    tileLayersMode,
   ]);
 
   const onClick = useCallback(
@@ -271,7 +274,11 @@ function Map({
           break;
         }
         case "tiles": {
-          if (feature && !isEditing) {
+          if (
+            feature &&
+            !isEditing &&
+            tileLayersMode !== TilesLayerMode.INACTIVE
+          ) {
             if (tileLayersMode === TilesLayerMode.TOPONYME) {
               handleSelectToponyme(feature, router, balId as string);
             } else {
