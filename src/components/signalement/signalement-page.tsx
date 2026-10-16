@@ -45,7 +45,12 @@ export default function SignalementPage({
   const { fetchPendingSignalements, updateOneSignalement } =
     useContext(SignalementContext);
   const { toaster, setBreadcrumbs } = useContext(LayoutContext);
-  const { map, setTileLayersMode, isStyleLoaded } = useContext(MapContext);
+  const {
+    map,
+    setTileLayersMode,
+    isStyleLoaded,
+    isTileSourceLoaded,
+  } = useContext(MapContext);
   const { refreshBALSync, baseLocale } = useContext(BalDataContext);
   const [author, setAuthor] = useState<Signalement["author"]>();
   const { token } = useContext(TokenContext);
@@ -90,7 +95,7 @@ export default function SignalementPage({
     return () => {
       setMapFilter(map, NUMEROS_LABEL, null);
     };
-  }, [map, isStyleLoaded, existingLocation, signalement]);
+  }, [map, isStyleLoaded, isTileSourceLoaded, existingLocation, signalement]);
 
   const isProcessableSignalement = useMemo(
     () =>
