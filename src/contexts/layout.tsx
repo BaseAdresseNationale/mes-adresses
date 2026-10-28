@@ -31,6 +31,8 @@ interface LayoutContextType {
   breadcrumbs?: React.ReactNode;
   setBreadcrumbs: (value: React.ReactNode) => void;
   selectedTab?: string;
+  alertBannerHeight: number;
+  setAlertBannerHeight: (value: number) => void;
 }
 
 const LayoutContext = React.createContext<LayoutContextType>({
@@ -41,6 +43,8 @@ const LayoutContext = React.createContext<LayoutContextType>({
   toasts: [],
   pushToast: () => {},
   setBreadcrumbs: () => {},
+  alertBannerHeight: 0,
+  setAlertBannerHeight: () => {},
 });
 
 export function LayoutContextProvider(props: ChildrenProps) {
@@ -48,6 +52,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState<React.ReactNode>();
+  const [alertBannerHeight, setAlertBannerHeight] = useState(0);
 
   useEffect(() => {
     const lastToast = toasts[toasts.length - 1];
@@ -109,6 +114,8 @@ export function LayoutContextProvider(props: ChildrenProps) {
       toasts,
       breadcrumbs,
       setBreadcrumbs,
+      alertBannerHeight,
+      setAlertBannerHeight,
     }),
     [
       isMapFullscreen,
@@ -118,6 +125,7 @@ export function LayoutContextProvider(props: ChildrenProps) {
       toasts,
       breadcrumbs,
       setBreadcrumbs,
+      alertBannerHeight,
     ]
   );
 

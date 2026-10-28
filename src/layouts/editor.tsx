@@ -33,7 +33,7 @@ interface EditorProps {
 }
 
 function Editor({ children }: EditorProps) {
-  const { isMobile, isMapFullscreen, setIsMapFullscreen } =
+  const { isMobile, isMapFullscreen, setIsMapFullscreen, alertBannerHeight } =
     useContext(LayoutContext);
   const { otherBalIdPublished } = useContext(BALRecoveryContext);
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
@@ -66,7 +66,7 @@ function Editor({ children }: EditorProps) {
               <SubHeader commune={commune} />
 
               <Map
-                top={isMobile ? 150 : 116}
+                top={(isMobile ? 150 : 116) + alertBannerHeight}
                 bottom={
                   isDemo ||
                   isReadonly ||
@@ -84,7 +84,7 @@ function Editor({ children }: EditorProps) {
 
               <Sidebar
                 size={sidebarWidth}
-                top={isMobile ? 150 : 116}
+                top={(isMobile ? 150 : 116) + alertBannerHeight}
                 bottom={
                   isDemo ||
                   isReadonly ||

@@ -115,7 +115,7 @@ function Map({
   } = useContext(MapContext);
   const { isParcelleSelectionEnabled, handleParcelles } =
     useContext(ParcellesContext);
-  const { isMobile } = useContext(LayoutContext);
+  const { isMobile, alertBannerHeight } = useContext(LayoutContext);
   const [showPanoramax, setShowPanoramax] = useState(false);
 
   const [cursor, setCursor] = useState("default");
@@ -462,7 +462,7 @@ function Map({
           zIndex={1}
           position="fixed"
           alignSelf="center"
-          top={130}
+          top={130 + alertBannerHeight}
           maxWidth="50%"
         >
           <Alert title={hint} />

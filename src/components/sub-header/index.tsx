@@ -33,7 +33,7 @@ function SubHeader({ commune }: SubHeaderProps) {
   } = useContext(BalDataContext);
   const { token, tokenIsChecking } = useContext(TokenContext);
   const isAdmin = Boolean(token);
-  const { isMobile } = useContext(LayoutContext);
+  const { isMobile, alertBannerHeight } = useContext(LayoutContext);
 
   const handleClose = useCallback(() => {
     setIsHabilitationProcessDisplayed(false);
@@ -57,7 +57,7 @@ function SubHeader({ commune }: SubHeaderProps) {
 
       <Pane
         position="fixed"
-        top={isMobile ? 70 : 76}
+        top={(isMobile ? 70 : 76) + alertBannerHeight}
         left={0}
         height={40}
         width="100%"

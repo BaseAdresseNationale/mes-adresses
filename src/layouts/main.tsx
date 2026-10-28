@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useContext } from "react";
 import Header from "@/components/header";
 import { Pane } from "evergreen-ui";
 import IEWarning from "@/components/ie-warning";
 import AlertBanner from "@/components/alert-banner";
+import LayoutContext from "@/contexts/layout";
 
 interface MainProps {
   children: React.ReactNode;
 }
 
 function Main({ children }: MainProps) {
-  const [alertBannerHeight, setAlertBannerHeight] = useState(0);
+  const { alertBannerHeight, setAlertBannerHeight } = useContext(LayoutContext);
 
   return (
     <Pane
