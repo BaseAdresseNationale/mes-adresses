@@ -90,7 +90,10 @@ export default function usePublishProcess(
   };
 
   const handlePublication = async () => {
+    console.log("a");
     const isMassDeletionDetected = await checkMassDeletion();
+    console.log(isMassDeletionDetected);
+    console.log("b");
 
     if (isMassDeletionDetected) {
       setMassDeletionConfirm(() => handleSync);
