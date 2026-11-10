@@ -104,7 +104,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
         {
           type: "BAL_WIDGET_OPEN",
         },
-        "*"
+        new URL(process.env.NEXT_PUBLIC_BAL_WIDGET_URL).origin
       );
     }
   }, [balWidgetRef]);
@@ -115,7 +115,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
         {
           type: "BAL_WIDGET_CLOSE",
         },
-        "*"
+        new URL(process.env.NEXT_PUBLIC_BAL_WIDGET_URL).origin
       );
     }
   }, [balWidgetRef]);
@@ -128,7 +128,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
             type: "BAL_WIDGET_NAVIGATE",
             content: to,
           },
-          "*"
+          new URL(process.env.NEXT_PUBLIC_BAL_WIDGET_URL).origin
         );
       }
     },
@@ -164,7 +164,7 @@ export function BALWidgetProvider({ children }: BALWidgetProviderProps) {
           type: "BAL_WIDGET_CONFIG",
           content: balWidgetConfig,
         },
-        "*"
+        new URL(process.env.NEXT_PUBLIC_BAL_WIDGET_URL).origin
       );
     }
   }, [
